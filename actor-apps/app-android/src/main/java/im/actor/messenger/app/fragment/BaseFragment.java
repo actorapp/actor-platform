@@ -8,8 +8,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.ViewUtils;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
+import im.actor.core.concurrency.Command;
+import im.actor.core.concurrency.CommandCallback;
 
 public class BaseFragment extends BinderCompatFragment {
 

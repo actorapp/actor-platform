@@ -16,7 +16,7 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.SearchHighlight;
-import im.actor.model.entity.SearchEntity;
+import im.actor.core.entity.SearchEntity;
 
 /**
  * Created by ex3ndr on 05.04.15.

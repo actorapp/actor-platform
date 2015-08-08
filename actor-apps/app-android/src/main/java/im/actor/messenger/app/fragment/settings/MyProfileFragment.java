@@ -37,12 +37,12 @@ import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueModel;
-import im.actor.model.mvvm.generics.ArrayListUserPhone;
-import im.actor.model.viewmodel.UserPhone;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.mvvm.ValueChangedListener;
+import im.actor.core.mvvm.ValueModel;
+import im.actor.core.mvvm.generics.ArrayListUserPhone;
+import im.actor.core.viewmodel.UserPhone;
+import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;

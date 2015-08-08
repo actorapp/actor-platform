@@ -11,7 +11,7 @@ import im.actor.messenger.app.util.images.common.ImageLoadException;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.messenger.app.util.images.BitmapUtil;
 import im.actor.messenger.app.view.FastBitmapDrawable;
-import im.actor.model.mvvm.MVVMEngine;
+import im.actor.core.mvvm.MVVMEngine;
 
 /**
  * Created by ex3ndr on 27.02.15.

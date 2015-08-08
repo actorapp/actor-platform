@@ -20,9 +20,9 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.model.entity.PublicGroup;
-import im.actor.model.files.FileSystemReference;
-import im.actor.model.viewmodel.FileVMCallback;
+import im.actor.core.entity.PublicGroup;
+import im.actor.core.files.FileSystemReference;
+import im.actor.core.viewmodel.FileVMCallback;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

@@ -3,17 +3,16 @@ package im.actor.cli;
 import im.actor.cli.providers.CliDispatcherProvider;
 import im.actor.cli.providers.CliLifecycleProvider;
 import im.actor.cli.providers.CliMainThreadProvider;
-import im.actor.model.ApiConfiguration;
-import im.actor.model.AppCategory;
-import im.actor.model.ConfigurationBuilder;
-import im.actor.model.Messenger;
-import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
-import im.actor.model.runtime.JavaRandomProvider;
-import im.actor.model.runtime.JavaThreadingProvider;
-import im.actor.model.jvm.JvmLocale;
-import im.actor.model.mem.MemoryStorageProvider;
-import im.actor.model.providers.EmptyPhoneProvider;
-import im.actor.model.tcp.TcpNetworkProvider;
+import im.actor.core.ApiConfiguration;
+import im.actor.core.AppCategory;
+import im.actor.core.ConfigurationBuilder;
+import im.actor.core.Messenger;
+import im.actor.core.runtime.crypto.bouncycastle.BouncyCastleRuntime;
+import im.actor.core.jvm.JvmLocale;
+import im.actor.core.mem.MemoryStorageProvider;
+import im.actor.core.providers.EmptyPhoneProvider;
+import im.actor.core.runtime.JavaRandomProvider;
+import im.actor.core.tcp.TcpNetworkProvider;
 
 /**
  * Created by ex3ndr on 29.07.15.
@@ -23,11 +22,10 @@ public class CliConfiguration {
 
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
         configurationBuilder.setAppCategory(AppCategory.GENERIC);
-        configurationBuilder.setThreadingRuntime(new JavaThreadingProvider());
         configurationBuilder.setNetworkProvider(new TcpNetworkProvider());
         configurationBuilder.setLocaleProvider(new JvmLocale("En"));
         configurationBuilder.setPhoneBookProvider(new EmptyPhoneProvider());
-        configurationBuilder.setCryptoProvider(new BouncyCastleProvider(new JavaRandomProvider()));
+        configurationBuilder.setCryptoProvider(new BouncyCastleRuntime(new JavaRandomProvider()));
         configurationBuilder.setStorageProvider(new MemoryStorageProvider());
 
         configurationBuilder.setMainThreadProvider(new CliMainThreadProvider());

@@ -28,12 +28,12 @@ import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.model.api.TextExMarkdown;
-import im.actor.model.api.TextMessageEx;
-import im.actor.model.entity.Message;
-import im.actor.model.entity.PeerType;
-import im.actor.model.entity.content.TextContent;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.api.TextExMarkdown;
+import im.actor.core.api.TextMessageEx;
+import im.actor.core.entity.Message;
+import im.actor.core.entity.PeerType;
+import im.actor.core.entity.content.TextContent;
+import im.actor.core.viewmodel.UserVM;
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.MentionSpan;
 

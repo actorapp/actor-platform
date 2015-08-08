@@ -17,9 +17,9 @@ import java.util.List;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.model.api.AuthHolder;
-import im.actor.model.api.AuthSession;
-import im.actor.model.concurrency.CommandCallback;
+import im.actor.core.api.AuthHolder;
+import im.actor.core.api.AuthSession;
+import im.actor.core.concurrency.CommandCallback;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

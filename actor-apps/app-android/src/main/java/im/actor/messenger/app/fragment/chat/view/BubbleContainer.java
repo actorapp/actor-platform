@@ -14,7 +14,7 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.core.Core.users;
 

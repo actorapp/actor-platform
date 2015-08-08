@@ -15,14 +15,14 @@ import im.actor.messenger.app.fragment.chat.adapter.PhotoHolder;
 import im.actor.messenger.app.fragment.chat.adapter.ServiceHolder;
 import im.actor.messenger.app.fragment.chat.adapter.TextHolder;
 import im.actor.messenger.app.fragment.chat.adapter.UnsupportedHolder;
-import im.actor.model.entity.Message;
-import im.actor.model.entity.content.AbsContent;
-import im.actor.model.entity.content.DocumentContent;
-import im.actor.model.entity.content.PhotoContent;
-import im.actor.model.entity.content.ServiceContent;
-import im.actor.model.entity.content.TextContent;
-import im.actor.model.entity.content.VideoContent;
-import im.actor.model.mvvm.BindedDisplayList;
+import im.actor.core.entity.Message;
+import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.PhotoContent;
+import im.actor.core.entity.content.ServiceContent;
+import im.actor.core.entity.content.TextContent;
+import im.actor.core.entity.content.VideoContent;
+import im.actor.core.mvvm.BindedDisplayList;
 
 /**
  * Created by ex3ndr on 26.02.15.
