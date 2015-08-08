@@ -1,6 +1,6 @@
 package im.actor.cli.providers;
 
-import im.actor.model.MainThreadProvider;
+import im.actor.core.MainThreadProvider;
 
 /**
  * Created by ex3ndr on 29.07.15.

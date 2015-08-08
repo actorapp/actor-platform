@@ -26,10 +26,10 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.model.entity.Contact;
-import im.actor.model.mvvm.BindedDisplayList;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueModel;
+import im.actor.core.entity.Contact;
+import im.actor.core.mvvm.BindedDisplayList;
+import im.actor.core.mvvm.ValueChangedListener;
+import im.actor.core.mvvm.ValueModel;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

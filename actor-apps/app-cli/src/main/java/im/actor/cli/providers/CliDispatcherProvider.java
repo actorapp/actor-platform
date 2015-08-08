@@ -1,6 +1,6 @@
 package im.actor.cli.providers;
 
-import im.actor.model.DispatcherProvider;
+import im.actor.core.DispatcherProvider;
 
 /**
  * Created by ex3ndr on 29.07.15.

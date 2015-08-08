@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-import im.actor.model.entity.Peer;
+import im.actor.core.entity.Peer;
 
 /**
  * Created by ex3ndr on 01.09.14.

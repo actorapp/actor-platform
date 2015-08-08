@@ -4,8 +4,8 @@ import android.widget.EditText;
 
 import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.model.AuthState;
-import im.actor.model.concurrency.Command;
+import im.actor.core.AuthState;
+import im.actor.core.concurrency.Command;
 
 /**
  * Created by ex3ndr on 31.08.14.

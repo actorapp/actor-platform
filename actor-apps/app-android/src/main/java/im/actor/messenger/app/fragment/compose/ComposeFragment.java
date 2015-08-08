@@ -2,7 +2,7 @@ package im.actor.messenger.app.fragment.compose;
 
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
-import im.actor.model.entity.Contact;
+import im.actor.core.entity.Contact;
 
 /**
  * Created by ex3ndr on 23.09.14.

@@ -20,8 +20,8 @@ import im.actor.messenger.app.fragment.compose.view.UserSpan;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
 import im.actor.messenger.app.util.BoxUtil;
 import im.actor.messenger.app.util.Screen;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Contact;
+import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.entity.Contact;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;

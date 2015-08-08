@@ -10,14 +10,14 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.core.Core;
 import im.actor.messenger.app.fragment.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Avatar;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueDoubleChangedListener;
-import im.actor.model.mvvm.ValueModel;
-import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.concurrency.Command;
+import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.entity.Avatar;
+import im.actor.core.mvvm.ValueChangedListener;
+import im.actor.core.mvvm.ValueDoubleChangedListener;
+import im.actor.core.mvvm.ValueModel;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 
 /**
  * Created by ex3ndr on 29.12.14.

@@ -9,7 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import im.actor.messenger.R;
-import im.actor.model.modules.Auth;
+import im.actor.core.modules.Auth;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

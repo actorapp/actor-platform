@@ -22,9 +22,9 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.viewmodel.GroupVM;
+import im.actor.core.concurrency.Command;
+import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.viewmodel.GroupVM;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;

@@ -20,11 +20,11 @@ import im.actor.messenger.app.view.anko.*
 import im.actor.messenger.app.view.emoji.SmileProcessor
 import im.actor.messenger.app.view.emoji.SmileProcessor.emoji
 import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener
-import im.actor.model.entity.Dialog
-import im.actor.model.entity.MessageState
-import im.actor.model.entity.PeerType
-import im.actor.model.mvvm.ValueChangedListener
-import im.actor.model.mvvm.ValueModel
+import im.actor.core.entity.Dialog
+import im.actor.core.entity.MessageState
+import im.actor.core.entity.PeerType
+import im.actor.core.mvvm.ValueChangedListener
+import im.actor.core.mvvm.ValueModel
 import org.jetbrains.anko.*
 
 public class DialogHolder(private val _context: Context, onClickListener: OnItemClickedListener<Dialog>) : AnkoViewHolder(_context) {

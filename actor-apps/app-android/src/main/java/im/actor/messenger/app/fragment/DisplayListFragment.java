@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
-import im.actor.model.droidkit.bser.BserObject;
-import im.actor.model.droidkit.engine.ListEngineItem;
-import im.actor.model.mvvm.BindedDisplayList;
-import im.actor.model.mvvm.DisplayList;
+import im.actor.core.droidkit.bser.BserObject;
+import im.actor.core.droidkit.engine.ListEngineItem;
+import im.actor.core.mvvm.BindedDisplayList;
+import im.actor.core.mvvm.DisplayList;
 
 /**
  * Created by ex3ndr on 15.03.15.
