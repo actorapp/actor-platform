@@ -7,14 +7,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.model.Configuration;
-import im.actor.model.entity.PublicGroup;
+import im.actor.core.Configuration;
+import im.actor.core.entity.PublicGroup;
 
 /**
  * Created by korka on 30.06.15.

@@ -1,10 +1,10 @@
 package im.actor.cli;
 
-import im.actor.model.AuthState;
-import im.actor.model.Messenger;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Peer;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.AuthState;
+import im.actor.core.Messenger;
+import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.entity.Peer;
+import im.actor.core.viewmodel.UserVM;
 
 public class Main {
 

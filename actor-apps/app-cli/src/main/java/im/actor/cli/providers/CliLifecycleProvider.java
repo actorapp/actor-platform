@@ -1,6 +1,6 @@
 package im.actor.cli.providers;
 
-import im.actor.model.LifecycleProvider;
+import im.actor.core.LifecycleProvider;
 
 /**
  * Created by ex3ndr on 29.07.15.

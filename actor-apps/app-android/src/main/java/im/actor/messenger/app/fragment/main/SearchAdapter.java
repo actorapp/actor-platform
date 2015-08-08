@@ -5,8 +5,8 @@ import android.view.ViewGroup;
 
 import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.model.entity.SearchEntity;
-import im.actor.model.mvvm.BindedDisplayList;
+import im.actor.core.entity.SearchEntity;
+import im.actor.core.mvvm.BindedDisplayList;
 
 /**
  * Created by ex3ndr on 05.04.15.

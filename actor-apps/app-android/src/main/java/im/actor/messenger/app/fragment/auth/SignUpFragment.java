@@ -17,8 +17,8 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.model.api.Sex;
-import im.actor.model.modules.Auth;
+import im.actor.core.api.Sex;
+import im.actor.core.modules.Auth;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

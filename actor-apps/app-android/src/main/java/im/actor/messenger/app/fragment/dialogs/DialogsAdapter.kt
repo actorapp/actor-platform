@@ -5,8 +5,8 @@ import android.view.ViewGroup
 
 import im.actor.android.view.BindedListAdapter
 import im.actor.messenger.app.view.OnItemClickedListener
-import im.actor.model.entity.Dialog
-import im.actor.model.mvvm.BindedDisplayList
+import im.actor.core.entity.Dialog
+import im.actor.core.mvvm.BindedDisplayList
 
 public class DialogsAdapter(displayList: BindedDisplayList<Dialog>, private val itemClicked: OnItemClickedListener<Dialog>, private val context: Context) : BindedListAdapter<Dialog, DialogHolder>(displayList) {
 

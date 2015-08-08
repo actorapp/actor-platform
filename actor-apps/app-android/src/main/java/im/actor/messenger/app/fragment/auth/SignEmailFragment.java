@@ -16,7 +16,7 @@ import android.widget.TextView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.model.modules.Auth;
+import im.actor.core.modules.Auth;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

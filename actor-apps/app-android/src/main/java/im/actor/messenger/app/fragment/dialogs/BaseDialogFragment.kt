@@ -18,11 +18,11 @@ import im.actor.messenger.app.fragment.DisplayListFragment
 import im.actor.messenger.app.util.Screen
 import im.actor.messenger.app.view.Fonts
 import im.actor.messenger.app.view.OnItemClickedListener
-import im.actor.model.concurrency.CommandCallback
-import im.actor.model.entity.Dialog
-import im.actor.model.mvvm.BindedDisplayList
-import im.actor.model.mvvm.ValueChangedListener
-import im.actor.model.mvvm.ValueModel
+import im.actor.core.concurrency.CommandCallback
+import im.actor.core.entity.Dialog
+import im.actor.core.mvvm.BindedDisplayList
+import im.actor.core.mvvm.ValueChangedListener
+import im.actor.core.mvvm.ValueModel
 
 import im.actor.messenger.app.core.Core.messenger
 import org.jetbrains.anko.*

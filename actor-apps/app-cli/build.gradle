@@ -7,7 +7,7 @@ apply plugin: 'application'
 mainClassName = "im.actor.cli.Main"
 
 dependencies {
-    compile project(':core')
+    //compile project(':core:runtimeJava')
 //    compile project(':core-mem')
 //    compile project(':core-async')
 

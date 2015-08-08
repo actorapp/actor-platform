@@ -39,12 +39,12 @@ import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-import im.actor.model.entity.Dialog;
-import im.actor.model.entity.SearchEntity;
-import im.actor.model.mvvm.BindedDisplayList;
-import im.actor.model.mvvm.DisplayList;
-import im.actor.model.mvvm.ValueDoubleChangedListener;
-import im.actor.model.mvvm.ValueModel;
+import im.actor.core.entity.Dialog;
+import im.actor.core.entity.SearchEntity;
+import im.actor.core.mvvm.BindedDisplayList;
+import im.actor.core.mvvm.DisplayList;
+import im.actor.core.mvvm.ValueDoubleChangedListener;
+import im.actor.core.mvvm.ValueModel;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;

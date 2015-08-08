@@ -23,8 +23,8 @@ import im.actor.messenger.app.fragment.preview.PictureActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
 import im.actor.messenger.app.util.io.IOUtils;
-import im.actor.model.entity.FileReference;
-import im.actor.model.entity.Peer;
+import im.actor.core.entity.FileReference;
+import im.actor.core.entity.Peer;
 
 /**
  * Created by ex3ndr on 07.10.14.

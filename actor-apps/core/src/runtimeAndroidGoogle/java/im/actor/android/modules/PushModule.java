@@ -3,13 +3,13 @@ package im.actor.android.modules;
 import android.content.Context;
 
 import im.actor.android.modules.push.PushActor;
-import im.actor.model.droidkit.actors.ActorCreator;
-import im.actor.model.droidkit.actors.ActorRef;
-import im.actor.model.droidkit.actors.Props;
-import im.actor.model.modules.BaseModule;
-import im.actor.model.modules.Modules;
+import im.actor.core.droidkit.actors.ActorCreator;
+import im.actor.core.droidkit.actors.ActorRef;
+import im.actor.core.droidkit.actors.Props;
+import im.actor.core.modules.BaseModule;
+import im.actor.core.modules.Modules;
 
-import static im.actor.model.droidkit.actors.ActorSystem.system;
+import static im.actor.core.droidkit.actors.ActorSystem.system;
 
 /**
  * Created by ex3ndr on 02.04.15.

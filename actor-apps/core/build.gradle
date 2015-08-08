@@ -9,31 +9,12 @@ project(':core') {
     sourceSets {
         main {
             java {
-                srcDirs = ['src/core',
-                           'src/coreRuntime',
-                           'src/annotationsJ2objc',
-                           'src/annotationsJetbrains']
+                srcDirs = ['src/main/java/core',
+                           '../runtime/src/main',
+                           '../runtime/src/template']
             }
             resources {
-                srcDir 'resources'
-            }
-        }
-
-        storageMemory {
-            java {
-                srcDirs = ['src/storageMemory']
-            }
-        }
-
-        crypto {
-            java {
-                srcDirs = ['src/crypto']
-            }
-        }
-
-        mvvm {
-            java {
-                srcDirs = ['src/mvvm']
+                srcDir 'src/main/resources'
             }
         }
     }

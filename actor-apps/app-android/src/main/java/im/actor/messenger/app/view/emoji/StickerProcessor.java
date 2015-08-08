@@ -12,8 +12,8 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.ImageView;
 
-import im.actor.model.droidkit.json.JSONArray;
-import im.actor.model.droidkit.json.JSONObject;
+import im.actor.core.droidkit.json.JSONArray;
+import im.actor.core.droidkit.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,8 +27,8 @@ import im.actor.messenger.app.view.emoji.stickers.Sticker;
 import im.actor.messenger.app.view.emoji.stickers.StickerRecentController;
 import im.actor.messenger.app.view.emoji.stickers.StickersPack;
 import im.actor.messenger.app.util.io.IOUtils;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueModel;
+import im.actor.core.mvvm.ValueChangedListener;
+import im.actor.core.mvvm.ValueModel;
 
 /**
  * Created by Jesus Christ. Amen.
