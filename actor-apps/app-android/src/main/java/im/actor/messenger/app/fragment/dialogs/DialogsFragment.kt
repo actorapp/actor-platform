@@ -7,9 +7,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import im.actor.messenger.R
 import im.actor.messenger.app.Intents
 import im.actor.messenger.app.activity.MainActivity
-import im.actor.model.entity.Dialog
-import im.actor.model.entity.PeerType
-import im.actor.model.viewmodel.GroupVM
+import im.actor.core.entity.Dialog
+import im.actor.core.entity.PeerType
+import im.actor.core.viewmodel.GroupVM
 
 import im.actor.messenger.app.core.Core.groups
 import im.actor.messenger.app.core.Core.messenger

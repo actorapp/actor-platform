@@ -2,7 +2,7 @@ package im.actor.android;
 
 import android.content.Context;
 
-import im.actor.model.Configuration;
+import im.actor.core.Configuration;
 
 public class AndroidMessenger extends AndroidBaseMessenger {
     

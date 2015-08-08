@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Contact;
+import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.entity.Contact;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

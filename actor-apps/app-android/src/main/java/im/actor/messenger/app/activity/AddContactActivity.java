@@ -11,8 +11,8 @@ import android.widget.EditText;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

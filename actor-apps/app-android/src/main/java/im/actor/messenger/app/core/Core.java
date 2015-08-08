@@ -20,16 +20,16 @@ import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
-import im.actor.model.ApiConfiguration;
-import im.actor.model.AppCategory;
-import im.actor.model.DeviceCategory;
-import im.actor.model.android.providers.AndroidNotifications;
-import im.actor.model.android.providers.AndroidPhoneBook;
-import im.actor.model.entity.Group;
-import im.actor.model.entity.User;
-import im.actor.model.mvvm.MVVMCollection;
-import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.ApiConfiguration;
+import im.actor.core.AppCategory;
+import im.actor.core.DeviceCategory;
+import im.actor.core.android.providers.AndroidNotifications;
+import im.actor.core.android.providers.AndroidPhoneBook;
+import im.actor.core.entity.Group;
+import im.actor.core.entity.User;
+import im.actor.core.mvvm.MVVMCollection;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.util.io.IOUtils.readAll;
 

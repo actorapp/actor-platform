@@ -1,7 +1,6 @@
 include ':app-android'
 include ':app-cli'
 include ':core'
-include ':core:runtimeJava'
-project(":core:runtimeJava").projectDir = file("core/src/runtimeJava")
+include ':runtime'
 include ':core-js'
 include ':core-cocoa'

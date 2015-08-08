@@ -3,7 +3,7 @@ package im.actor.android;
 import android.content.Context;
 
 import im.actor.android.modules.PushModule;
-import im.actor.model.Configuration;
+import im.actor.core.Configuration;
 
 /**
  * Created by ex3ndr on 02.04.15.

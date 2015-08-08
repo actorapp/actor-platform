@@ -1,0 +1,35 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main',
+                       'src/template',
+                       '../annotationsJ2objc',
+                       '../annotationsJetbrains']
+        }
+    }
+
+    bouncycastle {
+        java {
+            srcDirs = ['src/bouncycastle']
+        }
+    }
+
+    generic {
+        java {
+            srcDirs = ['src/generic']
+        }
+    }
+
+    cli {
+        java {
+            srcDirs = ['src/cli']
+        }
+    }
+}

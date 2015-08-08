@@ -8,11 +8,11 @@ import android.widget.Toast;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Contact;
-import im.actor.model.entity.GroupMember;
-import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.entity.Contact;
+import im.actor.core.entity.GroupMember;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
