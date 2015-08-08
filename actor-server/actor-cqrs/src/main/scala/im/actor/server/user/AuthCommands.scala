@@ -58,7 +58,7 @@ trait AuthCommands {
   }
 
   def logout(session: models.AuthSession)(implicit ec: ExecutionContext, system: ActorSystem, timeout: Timeout, db: Database, userProcessorRegion: UserProcessorRegion): Future[Unit] = {
-    system.log.debug(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
+    system.log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
 
     implicit val seqExt = SeqUpdatesExtension(system)
     val mediator = DistributedPubSubExtension(system).mediator
