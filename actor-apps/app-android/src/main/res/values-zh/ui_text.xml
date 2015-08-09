@@ -114,10 +114,10 @@
     <string name="typing_group_many">{0} 个人正在输入…</string>
 
     <!-- Main -->
-    <string name="main_search_hint">输入要检索的关键字</string>
+    <string name="main_search_hint">输入要搜索的关键字</string>
     <string name="main_search_empty">什么都没找到</string>
     <string name="main_menu_help">帮助</string>
-    <string name="main_menu_search">检索</string>
+    <string name="main_menu_search">搜索</string>
 
     <string name="main_bar_chats">消息</string>
     <string name="main_bar_contacts">通讯录</string>
@@ -131,14 +131,14 @@
     <string name="main_sync_message">请稍等，应用马上可用</string>
 
     <string name="main_empty_title">邀请好友</string>
-    <string name="main_empty_invite_hint">你的好友无人使用优聆，使用下面按钮邀请他们吧。</string>
+    <string name="main_empty_invite_hint">你的好友无人使用优聆，点击下面按钮邀请他们吧。</string>
     <string name="main_empty_invite_action">告诉好友</string>
     <string name="main_empty_add_hint">或者手动添加好友</string>
     <string name="main_empty_add_action">添加好友</string>
 
     <!-- Own profile/settings -->
     <string name="settings_share_profile_title">发送我的联络方式…</string>
-    <string name="settings_share_text">我的电话号码是 {0}</string>
+    <string name="settings_share_text">我的手机号码是 {0}</string>
     <string name="settings_menu_edit_profile">编辑个人信息</string>
     <string name="settings_menu_change_photo">设置头像</string>
     <string name="settings_header">设置</string>
@@ -176,7 +176,7 @@
     <string name="contacts_add">添加好友...</string>
 
     <string name="contacts_empty_title">邀请好友</string>
-    <string name="contacts_empty_invite_hint">你的好友无人使用优聆，使用下面按钮邀请他们吧。</string>
+    <string name="contacts_empty_invite_hint">你的好友无人使用优聆，点击下面按钮邀请他们吧。</string>
     <string name="contacts_empty_invite_action">告诉好友</string>
     <string name="contacts_empty_add_hint">或者点击下面的＋号按钮手动添加好友。</string>
 
@@ -274,7 +274,7 @@
 
     <!-- Add Contact -->
     <string name="add_contact_title">添加好友</string>
-    <string name="add_contact_phone_hint">输入电话号码</string>
+    <string name="add_contact_phone_hint">输入手机号码</string>
     <string name="add_contact_bar_cancel">取消</string>
     <string name="add_contact_bar_continue">确认</string>
 
@@ -285,7 +285,7 @@
     <string name="create_group_title">创建群组</string>
     <string name="create_group_name_hint">为群组命名</string>
     <string name="create_group_hint">进入群组主题设置群组图片</string>
-    <string name="create_group_search_hint">通过群名检索</string>
+    <string name="create_group_search_hint">通过群名搜索</string>
     <string name="create_group_done">完成</string>
 
     <!-- Group add -->
@@ -306,7 +306,7 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">邀请链接</string>
-    <string name="invite_link_hint">通过以下链接可以邀请已经安装优聆的用户加入你的群组</string>
+    <string name="invite_link_hint">通过以下链接可以邀请已经安装优聆的用户加入群组</string>
     <string name="invite_link_action_copy">复制链接</string>
     <string name="invite_link_action_revoke">重置链接</string>
     <string name="invite_link_action_share">分享链接</string>
@@ -334,12 +334,12 @@
     <string name="documents_empty">还没有文档</string>
 
     <!-- Edit name -->
-    <string name="edit_name_title_you">输入您的名称</string>
-    <string name="edit_name_title_contact">输入好友名称</string>
+    <string name="edit_name_title_you">输入您的名字</string>
+    <string name="edit_name_title_contact">输入好友名字</string>
     <string name="edit_name_title_group">输入群组名称</string>
     <string name="edit_name_cancel">取消</string>
     <string name="edit_name_save">保存</string>
-    <string name="edit_name_process">正在更改名称…</string>
+    <string name="edit_name_process">正在更改…</string>
 
     <!-- Help -->
     <string name="help_title">帮助</string>
@@ -362,7 +362,7 @@
     <string name="not_sound_subtitle">推送通知到达时播放声音</string>
     <string name="not_vibration">震动</string>
     <string name="not_vibration_subtitle">推送通知到达时震动</string>
-    <string name="not_show_text">显示名称和消息</string>
+    <string name="not_show_text">显示名字和消息</string>
     <string name="not_show_text_subtitle">在通知面板中显示消息文本和发送者称呼</string>
 
     <!-- Pick user -->
