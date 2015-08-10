@@ -26,6 +26,7 @@ const russian = {
     'leaveGroup': 'Покинуть группу',
     'sharedMedia': 'Вложения',
     'notifications': 'Уведомления',
+    'integrationTokenCopied': 'Ссылка скопирована.',
     'members':
       '{numMembers, plural,' +
         'zero {Нет участников}' +
@@ -42,7 +43,10 @@ const russian = {
     'inviteByLinkModalTitle': 'Пригласить по ссылке',
     'inviteByLinkModalDescription': 'Любой в интернете теперь может присоедениться к ”{groupName}” открыв эту ссылку:',
     'inviteByLinkModalCopyButton': 'Скопировать',
-    'inviteByLinkModalRevokeButton': 'Отменить'
+    'inviteByLinkModalRevokeButton': 'Отменить',
+    'inviteLinkCopied': 'Ссылка скопирована.',
+
+    'preferencesModalTitle': 'Настройки'
 
   }
 };
