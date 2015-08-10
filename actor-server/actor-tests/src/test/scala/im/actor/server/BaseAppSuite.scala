@@ -14,6 +14,8 @@ import slick.jdbc.JdbcDataSource
 
 import scala.concurrent.ExecutionContext
 
+import im.actor.server.db.DbExtension
+
 abstract class BaseAppSuite(_system: ActorSystem = {
                               ActorSpecification.createSystem()
                             })
@@ -22,24 +24,21 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   with ScalaFutures
   with Matchers
   with ServiceSpecMatchers
-  with SqlSpecHelpers
   with ServiceSpecHelpers {
 
+  ActorSerializer.clean()
   CommonSerialization.register()
 
-  protected implicit val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
   protected implicit val materializer: ActorMaterializer = ActorMaterializer()
   protected implicit lazy val ec: ExecutionContext = _system.dispatcher
 
   protected lazy val mediator = DistributedPubSubExtension(system).mediator
 
+  protected implicit lazy val db: PostgresDriver.api.Database = DbExtension(_system).db
+
+  DbExtension(_system).clean()
+  DbExtension(_system).migrate()
+
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(30, Seconds))
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    ActorSerializer.clean()
-    db.close()
-    ds.close()
-  }
 }

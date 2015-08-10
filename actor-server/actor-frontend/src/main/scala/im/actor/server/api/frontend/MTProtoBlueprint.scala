@@ -5,8 +5,7 @@ import scala.util.{ Failure, Success }
 import akka.actor._
 import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl._
-import akka.util.{ ByteString, Timeout }
-import slick.driver.PostgresDriver.api.Database
+import akka.util.ByteString
 
 import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
@@ -19,8 +18,8 @@ object MTProtoBlueprint {
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def apply(connId: String)(implicit sessionRegion: SessionRegion, db: Database, system: ActorSystem): Flow[ByteString, ByteString, Unit] = {
-    val authManager = system.actorOf(AuthorizationManager.props(db), s"authManager-${connId}")
+  def apply(connId: String)(implicit sessionRegion: SessionRegion, system: ActorSystem): Flow[ByteString, ByteString, Unit] = {
+    val authManager = system.actorOf(AuthorizationManager.props, s"authManager-${connId}")
     val authSource = Source(ActorPublisher[MTProto](authManager))
 
     val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient-${connId}")

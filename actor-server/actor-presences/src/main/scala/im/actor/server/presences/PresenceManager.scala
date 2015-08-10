@@ -11,6 +11,7 @@ import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
+import im.actor.server.db.DbExtension
 import im.actor.server.{ models, persist }
 
 case class PresenceManagerRegion(val ref: ActorRef)
@@ -74,11 +75,11 @@ object PresenceManager {
       shardResolver = shardResolver
     ))
 
-  def startRegion()(implicit system: ActorSystem, db: Database): PresenceManagerRegion = startRegion(Some(props))
+  def startRegion()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(Some(props))
 
-  def startRegionProxy()(implicit system: ActorSystem, db: Database): PresenceManagerRegion = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(None)
 
-  def props(implicit db: Database) = Props(classOf[PresenceManager], db)
+  def props = Props(classOf[PresenceManager])
 
   def subscribe(userId: Int, consumer: ActorRef)(implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(userId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
@@ -100,11 +101,12 @@ object PresenceManager {
   }
 }
 
-class PresenceManager(implicit db: Database) extends Actor with ActorLogging with Stash {
+class PresenceManager extends Actor with ActorLogging with Stash {
   import Presences._
   import PresenceManager._
 
   implicit val ec: ExecutionContext = context.dispatcher
+  private val db: Database = DbExtension(context.system).db
 
   private val receiveTimeout = 15.minutes // TODO: configurable
   context.setReceiveTimeout(receiveTimeout)
