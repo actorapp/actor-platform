@@ -26,7 +26,6 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   with ServiceSpecMatchers
   with ServiceSpecHelpers {
 
-  ActorSerializer.clean()
   CommonSerialization.register()
 
   protected implicit val materializer: ActorMaterializer = ActorMaterializer()
