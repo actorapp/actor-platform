@@ -1,0 +1,44 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 22
+    }
+}
+
+android {
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src/main/java',
+                           '../core/src/main/java',
+                           '../runtime/src/main/java',
+                           '../runtime/src/generic/java',
+                           '../runtime-android/src/main/java']
+            }
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile 'com.android.support:recyclerview-v7:22.1.1'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+}

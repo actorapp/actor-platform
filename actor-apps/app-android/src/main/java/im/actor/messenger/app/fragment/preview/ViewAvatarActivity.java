@@ -18,22 +18,22 @@ import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
 
+import im.actor.core.entity.Avatar;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
+import im.actor.core.viewmodel.AvatarUploadState;
+import im.actor.core.viewmodel.FileVM;
+import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.util.images.common.ImageLoadException;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
-import im.actor.core.entity.Avatar;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.PeerType;
-import im.actor.core.files.FileSystemReference;
-import im.actor.core.mvvm.ValueChangedListener;
-import im.actor.core.mvvm.ValueDoubleChangedListener;
-import im.actor.core.mvvm.ValueModel;
-import im.actor.core.viewmodel.AvatarUploadState;
-import im.actor.core.viewmodel.FileVM;
-import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.runtime.files.FileSystemReference;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 import uk.co.senab.photoview.PhotoView;
 
 import static im.actor.messenger.app.core.Core.groups;

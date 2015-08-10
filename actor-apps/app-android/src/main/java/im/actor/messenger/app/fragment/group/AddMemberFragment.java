@@ -5,22 +5,19 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import im.actor.core.entity.Contact;
+import im.actor.core.entity.GroupMember;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
-import im.actor.core.concurrency.CommandCallback;
-import im.actor.core.entity.Contact;
-import im.actor.core.entity.GroupMember;
-import im.actor.core.viewmodel.GroupVM;
-import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
 
-/**
- * Created by ex3ndr on 08.10.14.
- */
 public class AddMemberFragment extends BaseContactFragment {
 
     public static AddMemberFragment create(int gid) {

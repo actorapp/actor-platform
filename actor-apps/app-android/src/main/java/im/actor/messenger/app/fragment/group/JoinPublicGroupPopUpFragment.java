@@ -9,17 +9,17 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-import im.actor.messenger.R;
-import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.core.concurrency.CommandCallback;
-import im.actor.core.droidkit.bser.Bser;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Peer;
 import im.actor.core.network.RpcException;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
+import im.actor.messenger.app.view.CoverAvatarView;
+import im.actor.messenger.app.view.Fonts;
+import im.actor.runtime.bser.Bser;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

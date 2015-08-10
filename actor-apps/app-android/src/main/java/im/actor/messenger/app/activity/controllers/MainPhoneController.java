@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import im.actor.core.entity.Dialog;
+import im.actor.core.entity.SearchEntity;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
@@ -39,12 +41,10 @@ import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-import im.actor.core.entity.Dialog;
-import im.actor.core.entity.SearchEntity;
-import im.actor.core.mvvm.BindedDisplayList;
-import im.actor.core.mvvm.DisplayList;
-import im.actor.core.mvvm.ValueDoubleChangedListener;
-import im.actor.core.mvvm.ValueModel;
+import im.actor.runtime.mvvm.BindedDisplayList;
+import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
@@ -429,7 +429,7 @@ public class MainPhoneController extends MainBaseController {
         }
         isSearchVisible = true;
 
-        searchDisplay = messenger().buildSearchList();
+        searchDisplay = messenger().buildSearchDisplayList();
         searchAdapter = new SearchAdapter(getActivity(), searchDisplay, new OnItemClickedListener<SearchEntity>() {
             @Override
             public void onClicked(SearchEntity item) {
