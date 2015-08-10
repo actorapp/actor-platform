@@ -1,5 +1,6 @@
-package im.actor.core;
+package im.actor.core.utils;
 
+import im.actor.core.AndroidMessenger;
 import im.actor.runtime.actors.Actor;
 
 /**
