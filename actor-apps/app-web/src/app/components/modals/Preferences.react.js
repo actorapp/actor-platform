@@ -18,7 +18,8 @@ const ThemeManager = new Styles.ThemeManager();
 
 const getStateFromStores = () => {
   return {
-    isOpen: PreferencesStore.isModalOpen()
+    isOpen: PreferencesStore.isModalOpen,
+    preferences: PreferencesStore.preferences
   };
 };
 
@@ -63,6 +64,14 @@ class PreferencesModal extends React.Component {
     PreferencesActionCreators.hide();
   };
 
+  onDone = () => {
+    PreferencesActionCreators.save({
+      //language: this.state.language,
+      sendByEnter: this.refs.sendByEnter.getSelectedValue()
+    });
+    this.onClose();
+  };
+
   onKeyDown = event => {
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
@@ -70,10 +79,19 @@ class PreferencesModal extends React.Component {
     }
   };
 
+  //onLanguageChange = (event, selectedIndex) => {
+  //  //console.info('lng change', menuItems[selectedIndex].val);
+  //  //this.setState({language: menuItems[selectedIndex].val});
+  //};
+
   render() {
-    let menuItems = [
-      { payload: '1', text: 'English' },
-      { payload: '2', text: 'Russian' }
+    const preferences = this.state.preferences;
+
+    //console.info('preferences', preferences);
+
+    const menuItems = [
+      { payload: '1', text: 'English'},
+      { payload: '2', text: 'Russian'}
     ];
 
     if (this.state.isOpen === true) {
@@ -92,7 +110,7 @@ class PreferencesModal extends React.Component {
               <FlatButton hoverColor="rgba(81,145,219,.17)"
                           label="Done"
                           labelStyle={{padding: '0 8px'}}
-                          onClick={this.onClose}
+                          onClick={this.onDone}
                           secondary={true}
                           style={{marginTop: -6}}/>
             </div>
@@ -102,10 +120,10 @@ class PreferencesModal extends React.Component {
             <div className="preferences">
               <aside className="preferences__tabs">
                 <a className="preferences__tabs__tab preferences__tabs__tab--active">General</a>
-                <a className="preferences__tabs__tab">Notifications</a>
-                <a className="preferences__tabs__tab">Sidebar colors</a>
-                <a className="preferences__tabs__tab">Security</a>
-                <a className="preferences__tabs__tab">Other Options</a>
+                <a className="preferences__tabs__tab hide">Notifications</a>
+                <a className="preferences__tabs__tab hide">Sidebar colors</a>
+                <a className="preferences__tabs__tab hide">Security</a>
+                <a className="preferences__tabs__tab hide">Other Options</a>
               </aside>
               <div className="preferences__body">
                 <div className="preferences__list">
@@ -113,16 +131,17 @@ class PreferencesModal extends React.Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">keyboard</i>
-                        <RadioButtonGroup defaultSelected="default" name="send">
+                        <RadioButtonGroup defaultSelected={preferences.sendByEnter}
+                                          name="send"
+                                          ref="sendByEnter">
                           <RadioButton label="Enter – send message, Shift + Enter – new line"
                                        style={{marginBottom: 12}}
-                                       value="default"/>
+                                       value="true"/>
                           <RadioButton label="Cmd + Enter – send message, Enter – new line"
-                                       //style={{marginBottom: 16}}
-                                       value="alt"/>
+                                       value="false"/>
                         </RadioButtonGroup>
                       </li>
-                      <li className="language">
+                      <li className="language hide">
                         <i className="icon material-icons">menu</i>
                         Language: <DropDownMenu labelStyle={{color: '#5191db'}}
                                                 menuItemStyle={{height: '40px', lineHeight: '40px'}}
@@ -132,7 +151,7 @@ class PreferencesModal extends React.Component {
                       </li>
                     </ul>
                   </div>
-                  <div className="preferences__list__item preferences__list__item--notifications">
+                  <div className="preferences__list__item preferences__list__item--notifications hide">
                     <ul>
                       <li>
                         <i className="icon material-icons">notifications</i>
