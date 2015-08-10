@@ -2,30 +2,27 @@ package im.actor.server.oauth
 
 import java.net.URLEncoder
 import java.time.temporal.ChronoUnit.SECONDS
+import java.time.{ LocalDateTime, ZoneOffset }
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Try
-import akka.http.scaladsl.model.headers.Authorization
-import akka.http.scaladsl.model.headers.OAuth2BearerToken
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.headers.{ Authorization, OAuth2BearerToken }
 import akka.http.scaladsl.unmarshalling._
 import akka.stream.Materializer
-import java.time.{ ZoneOffset, LocalDateTime }
 import slick.dbio.DBIO
-import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models.OAuth2Token
 import im.actor.server.{ models, persist }
 
 class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
   implicit
-  db:               Database,
   system:           ActorSystem,
   val materializer: Materializer
 ) extends OAuth2Provider with Implicits {

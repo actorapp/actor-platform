@@ -10,6 +10,7 @@ import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 
+import im.actor.server.db.DbExtension
 import im.actor.server.persist
 
 case class GroupPresenceManagerRegion(ref: ActorRef)
@@ -62,11 +63,11 @@ object GroupPresenceManager {
       shardResolver = shardResolver
     ))
 
-  def startRegion()(implicit presenceManagerRegion: PresenceManagerRegion, system: ActorSystem, db: Database): GroupPresenceManagerRegion = startRegion(Some(props))
+  def startRegion()(implicit presenceManagerRegion: PresenceManagerRegion, system: ActorSystem): GroupPresenceManagerRegion = startRegion(Some(props))
 
-  def startRegionProxy()(implicit system: ActorSystem, db: Database): GroupPresenceManagerRegion = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): GroupPresenceManagerRegion = startRegion(None)
 
-  def props(implicit presenceManagerRegion: PresenceManagerRegion, db: Database) = Props(classOf[GroupPresenceManager], presenceManagerRegion, db)
+  def props(implicit presenceManagerRegion: PresenceManagerRegion) = Props(classOf[GroupPresenceManager], presenceManagerRegion)
 
   def subscribe(groupId: Int, consumer: ActorRef)(implicit region: GroupPresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(groupId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
@@ -90,14 +91,15 @@ object GroupPresenceManager {
 
 class GroupPresenceManager(
   implicit
-  presenceManagerRegion: PresenceManagerRegion,
-  db:                    Database
+  presenceManagerRegion: PresenceManagerRegion
 ) extends Actor with ActorLogging with Stash {
   import GroupPresenceManager._
   import Presences._
 
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val timeout = Timeout(5.seconds)
+
+  private val db: Database = DbExtension(context.system).db
 
   private val receiveTimeout = 15.minutes // TODO: configurable
   context.setReceiveTimeout(receiveTimeout)

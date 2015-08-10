@@ -13,6 +13,7 @@ import com.google.protobuf.ByteString
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
+import slick.driver.PostgresDriver
 
 import im.actor.api.rpc.RpcResult
 import im.actor.api.rpc.codecs._
@@ -22,6 +23,8 @@ import im.actor.server.api.CommonSerialization
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
+import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.MTPackage
@@ -30,13 +33,14 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.SessionEnvelope.Payload
 import im.actor.server.user.UserProcessorRegion
-import im.actor.server.{ DummyCodeActivation, ImplicitUserRegions, SqlSpecHelpers, persist }
+import im.actor.server.{ DummyCodeActivation, ImplicitUserRegions, persist }
 
 abstract class BaseSessionSpec(_system: ActorSystem = {
                                  server.ActorSpecification.createSystem()
                                })
-  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ImplicitUserRegions {
+  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with ImplicitUserRegions {
 
+  ActorSerializer.clean()
   CommonSerialization.register()
 
   override implicit def patienceConfig: PatienceConfig =
@@ -45,8 +49,11 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected implicit val timeout = Timeout(10.seconds)
 
   protected implicit val materializer = ActorMaterializer()
-  protected implicit val (ds, db) = migrateAndInitDb()
   protected implicit val ec = system.dispatcher
+
+  protected implicit val db: PostgresDriver.api.Database = DbExtension(_system).db
+  DbExtension(_system).clean()
+  DbExtension(_system).migrate()
 
   protected implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   protected implicit val presenceManagerRegion = PresenceManager.startRegion()
@@ -196,15 +203,4 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
       probe.ref
     )
   }
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    system.awaitTermination()
-    closeDb()
-  }
-
-  private def closeDb(): Unit = {
-    ds.close()
-  }
-
 }
