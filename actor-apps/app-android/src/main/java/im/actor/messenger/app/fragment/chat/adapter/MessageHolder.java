@@ -5,7 +5,7 @@ import android.view.View;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
 import im.actor.messenger.app.util.TextUtils;
-import im.actor.android.view.BindedViewHolder;
+import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
