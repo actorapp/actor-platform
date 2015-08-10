@@ -14,19 +14,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import im.actor.core.api.rpc.RequestGetPublicGroups;
+import im.actor.core.api.rpc.ResponseGetPublicGroups;
+import im.actor.core.entity.PublicGroup;
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.core.viewmodel.GroupVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.PublicGroupCardView;
 import im.actor.messenger.app.fragment.group.view.PublicGroupSet;
 import im.actor.messenger.app.fragment.group.view.PublicGroupSetView;
-import im.actor.core.api.rpc.RequestGetPublicGroups;
-import im.actor.core.api.rpc.ResponseGetPublicGroups;
-import im.actor.core.concurrency.Command;
-import im.actor.core.concurrency.CommandCallback;
-import im.actor.core.entity.PublicGroup;
-import im.actor.core.files.FileSystemReference;
-import im.actor.core.viewmodel.FileVMCallback;
-import im.actor.core.viewmodel.GroupVM;
+import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;

@@ -15,11 +15,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.core.api.AuthHolder;
 import im.actor.core.api.AuthSession;
-import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.messenger.R;
+import im.actor.messenger.app.fragment.BaseFragment;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

@@ -1,9 +1,11 @@
 include ':app-android'
 include ':app-cli'
-include ':core'
 
 include ':runtime'
 include ':runtime-android'
+
+include ':core'
+include ':core-android'
 
 include ':core-js'
 include ':core-cocoa'

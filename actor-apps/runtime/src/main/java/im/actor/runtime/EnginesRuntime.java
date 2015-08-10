@@ -17,4 +17,11 @@ public interface EnginesRuntime {
      * @return the List Engine
      */
     <T extends BserObject & ListEngineItem> ListEngine<T> createListEngine(ListStorage storage, BserCreator<T> creator);
+
+    /**
+     * Is DisplayLists supported
+     *
+     * @return Is DisplayLists supported value
+     */
+    boolean isDisplayListSupported();
 }

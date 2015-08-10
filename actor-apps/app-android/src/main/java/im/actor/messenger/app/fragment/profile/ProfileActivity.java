@@ -8,13 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.MainActivity;
 import im.actor.messenger.app.activity.BaseFragmentActivity;
-import im.actor.core.mvvm.ValueChangedListener;
-import im.actor.core.mvvm.ValueModel;
-import im.actor.core.viewmodel.UserVM;
+import im.actor.messenger.app.activity.MainActivity;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;

@@ -28,21 +28,21 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.UserPhone;
+import im.actor.core.viewmodel.UserVM;
+import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
 import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.help.HelpActivity;
+import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.core.concurrency.CommandCallback;
-import im.actor.core.mvvm.ValueChangedListener;
-import im.actor.core.mvvm.ValueModel;
-import im.actor.core.mvvm.generics.ArrayListUserPhone;
-import im.actor.core.viewmodel.UserPhone;
-import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;

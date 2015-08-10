@@ -8,15 +8,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
-import im.actor.messenger.R;
-import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.core.AuthState;
-import im.actor.core.concurrency.Command;
-import im.actor.core.concurrency.CommandCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
 import im.actor.core.network.RpcTimeoutException;
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.messenger.R;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
+import im.actor.messenger.app.activity.MainActivity;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

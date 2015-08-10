@@ -48,6 +48,10 @@ public class Storage {
         storageRuntime.resetStorage();
     }
 
+    public static boolean isDisplayListsSupported() {
+        return enginesRuntime.isDisplayListSupported();
+    }
+
     // Files
 
     public static FileSystemReference createTempFile() {
