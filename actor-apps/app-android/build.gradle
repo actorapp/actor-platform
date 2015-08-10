@@ -7,12 +7,10 @@ repositories {
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:0.12.613'
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 
 def basicVersion = '1.0'
 def customVersionCode = '10240';
@@ -134,6 +132,8 @@ dependencies {
 //        exclude module: 'annotations'
 //    }
 
+    compile project(':core-android')
+
     // UI
     compile 'com.droidkit:progress:0.5'
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
@@ -160,12 +160,6 @@ dependencies {
     compile 'com.mixpanel.android:mixpanel-android:4.5.3'
     compile 'com.splunk.mint:mint:4.0.8'
     compile files('libs/HockeySDK-3.5.0.jar')
-
-    // Kotlin
-    compile('org.jetbrains.kotlin:kotlin-stdlib:0.12.613') {
-        exclude group:'org.jetbrains', module: 'annotations'
-    }
-    compile 'org.jetbrains.anko:anko:0.6.3-15s'
 }
 
 task dist(dependsOn: ['assembleRelease', 'assembleFree']) {

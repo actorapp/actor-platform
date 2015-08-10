@@ -21,13 +21,6 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-import im.actor.runtime.android.view.BindedListAdapter;
-import im.actor.messenger.R;
-import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.fragment.DisplayListFragment;
-import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
-import im.actor.messenger.app.util.Screen;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.DocumentContent;
@@ -36,9 +29,15 @@ import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
-import im.actor.core.mvvm.BindedDisplayList;
 import im.actor.core.viewmodel.ConversationVM;
-import im.actor.core.viewmodel.ConversationVMCallback;
+import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.MainActivity;
+import im.actor.messenger.app.fragment.DisplayListFragment;
+import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
+import im.actor.messenger.app.util.Screen;
+import im.actor.runtime.android.view.BindedListAdapter;
+import im.actor.runtime.mvvm.BindedDisplayList;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
@@ -78,7 +77,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
             throw new RuntimeException(e);
         }
 
-        View res = inflate(inflater, container, R.layout.fragment_messages, messenger().getMessagesGlobalList(peer));
+        View res = inflate(inflater, container, R.layout.fragment_messages, messenger().getMessageDisplayList(peer));
 
         View footer = new View(getActivity());
         footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
@@ -96,27 +95,27 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     }
 
     private void scrollToUnread() {
-        conversationVM = messenger().buildConversationVM(peer, getDisplayList(),
-                new ConversationVMCallback() {
-                    @Override
-                    public void onLoaded(long unreadId, final int index) {
-
-                        if (messagesAdapter != null) {
-                            messagesAdapter.setFirstUnread(unreadId);
-                        }
-
-                        if (index > 0) {
-                            linearLayoutManager.setStackFromEnd(false);
-                            linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
-                            // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
-                            // linearLayoutManager.scrollToPosition(index + 1);
-                            // getCollection().scrollToPosition(index + 1);
-                        } else {
-                            // linearLayoutManager.scrollToPosition(0);
-                            getCollection().scrollToPosition(0);
-                        }
-                    }
-                });
+//        conversationVM = messenger().buildConversationVM(peer, getDisplayList(),
+//                new ConversationVMCallback() {
+//                    @Override
+//                    public void onLoaded(long unreadId, final int index) {
+//
+//                        if (messagesAdapter != null) {
+//                            messagesAdapter.setFirstUnread(unreadId);
+//                        }
+//
+//                        if (index > 0) {
+//                            linearLayoutManager.setStackFromEnd(false);
+//                            linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
+//                            // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
+//                            // linearLayoutManager.scrollToPosition(index + 1);
+//                            // getCollection().scrollToPosition(index + 1);
+//                        } else {
+//                            // linearLayoutManager.scrollToPosition(0);
+//                            getCollection().scrollToPosition(0);
+//                        }
+//                    }
+//                });
     }
 
     @Override
@@ -142,7 +141,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     public void onResume() {
         super.onResume();
-        if(onPauseSize!= 0 && getDisplayList().getSize()!=onPauseSize)scrollToUnread();
+        if (onPauseSize != 0 && getDisplayList().getSize() != onPauseSize) scrollToUnread();
         messenger().onConversationOpen(peer);
     }
 
@@ -151,7 +150,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     }
 
     public void onAvatarLongClick(int uid) {
-        ((ChatActivity)getActivity()).onAvatarLongClick(uid);
+        ((ChatActivity) getActivity()).onAvatarLongClick(uid);
     }
 
     public boolean onClick(Message message) {
@@ -248,10 +247,10 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                                 String text = ((TextContent) m.getContent()).getText();
                                 quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n"))));
                                 rawQuote = rawQuote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n").concat("\n\n"))));
-                                if(i++!=messagesAdapter.getSelectedCount()-1){
-                                    quote+=";\n\n";
-                                }else{
-                                    quote+="\n\n";
+                                if (i++ != messagesAdapter.getSelectedCount() - 1) {
+                                    quote += ";\n\n";
+                                } else {
+                                    quote += "\n\n";
                                 }
                             }
                         }
@@ -288,10 +287,10 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                                     String text = ((TextContent) m.getContent()).getText();
                                     quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n"))));
                                     rawQuote = rawQuote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n").concat("\n\n"))));
-                                    if(j++!=messagesAdapter.getSelectedCount()-1){
-                                        quote+=";\n\n";
-                                    }else{
-                                        quote+="\n\n";
+                                    if (j++ != messagesAdapter.getSelectedCount() - 1) {
+                                        quote += ";\n\n";
+                                    } else {
+                                        quote += "\n\n";
                                     }
                                 }
                             }

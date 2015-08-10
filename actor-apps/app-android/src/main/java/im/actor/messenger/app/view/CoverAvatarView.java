@@ -14,9 +14,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.io.File;
 
 import im.actor.core.entity.Avatar;
-import im.actor.core.files.FileSystemReference;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

@@ -3,11 +3,11 @@ package im.actor.messenger.app.fragment;
 import android.view.View;
 import android.widget.TextView;
 
-import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.core.entity.Avatar;
-import im.actor.core.mvvm.ValueChangedListener;
-import im.actor.core.mvvm.ValueModel;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.messenger.app.view.CoverAvatarView;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
 /**
  * Created by ex3ndr on 17.09.14.
@@ -16,7 +16,7 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
 
     private final ActorBinder BINDER = new ActorBinder();
 
-    public void bind(final TextView textView, im.actor.core.mvvm.ValueModel<String> value) {
+    public void bind(final TextView textView, ValueModel<String> value) {
         BINDER.bind(textView, value);
     }
 
@@ -24,7 +24,7 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
         BINDER.bind(value, listener);
     }
 
-    public void bind(final CoverAvatarView avatarView, final im.actor.core.mvvm.ValueModel<Avatar> avatar) {
+    public void bind(final CoverAvatarView avatarView, final ValueModel<Avatar> avatar) {
         BINDER.bind(avatarView, avatar);
     }
 

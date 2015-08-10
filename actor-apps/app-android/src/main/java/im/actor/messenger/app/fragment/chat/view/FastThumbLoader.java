@@ -7,11 +7,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import im.actor.messenger.app.util.images.BitmapUtil;
 import im.actor.messenger.app.util.images.common.ImageLoadException;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
-import im.actor.messenger.app.util.images.BitmapUtil;
 import im.actor.messenger.app.view.FastBitmapDrawable;
-import im.actor.core.mvvm.MVVMEngine;
 
 /**
  * Created by ex3ndr on 27.02.15.
@@ -76,7 +75,7 @@ public class FastThumbLoader {
             }
             try {
                 final Bitmap res = blur ? BitmapUtil.fastBlur(ImageLoading.loadBitmap(d), blurRadius) : ImageLoading.loadBitmap(d);
-                MVVMEngine.runOnUiThread(new Runnable() {
+                im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (LOCKER) {

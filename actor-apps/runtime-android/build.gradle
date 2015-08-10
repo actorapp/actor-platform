@@ -25,9 +25,8 @@ android {
         main {
             java {
                 srcDirs = ['src/main/java',
-                           '../runtime/src/main',
-                           '../runtime/src/generic',
-                           '../runtime/src/bouncycastle']
+                           '../runtime/src/main/java',
+                           '../runtime/src/generic/java']
             }
         }
     }

@@ -2,10 +2,10 @@ package im.actor.messenger.app.fragment.auth;
 
 import android.widget.EditText;
 
+import im.actor.core.AuthState;
+import im.actor.core.viewmodel.Command;
 import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.core.AuthState;
-import im.actor.core.concurrency.Command;
 
 /**
  * Created by ex3ndr on 31.08.14.
