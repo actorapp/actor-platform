@@ -15,15 +15,11 @@ public class Runtime {
     private static final MainThreadRuntimeProvider mainThreadRuntime = new MainThreadRuntimeProvider();
     private static final LifecycleRuntime lifecycleRuntime = new LifecycleRuntimeProvider();
     private static final LocaleRuntime localeRuntime = new LocaleRuntimeProvider();
-    private static final LogRuntime logRuntime = new LogRuntimeProvider();
 
     public static LocaleRuntime getLocaleRuntime() {
         return localeRuntime;
     }
 
-    public static LogRuntime getLogRuntime() {
-        return logRuntime;
-    }
 
     public static ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem actorSystem) {
         return threadingRuntime.createDefaultDispatcher(name, priority, actorSystem);

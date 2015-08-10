@@ -1,12 +1,7 @@
 package im.actor.runtime;
 
-import im.actor.runtime.mtproto.ConnectionCallback;
-import im.actor.runtime.mtproto.ConnectionEndpoint;
-import im.actor.runtime.mtproto.CreateConnectionCallback;
+import im.actor.core.runtime.generic.GenericNetworkProvider;
 
-public class NetworkRuntimeProvider implements NetworkRuntime {
-    @Override
-    public void createConnection(int connectionId, int mtprotoVersion, int apiMajorVersion, int apiMinorVersion, ConnectionEndpoint endpoint, ConnectionCallback callback, CreateConnectionCallback createCallback) {
-        throw new RuntimeException("Dumb");
-    }
+public class NetworkRuntimeProvider extends GenericNetworkProvider {
+
 }

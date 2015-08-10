@@ -30,6 +30,9 @@ android {
                            '../runtime/src/generic/java',
                            '../runtime-android/src/main/java']
             }
+            resources {
+                srcDirs = ['../core/src/main/resources']
+            }
         }
     }
 
