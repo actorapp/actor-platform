@@ -13,15 +13,6 @@ public interface LocaleRuntime {
     String getCurrentLocale();
 
     /**
-     * Is local settings use 24 hours format
-     *
-     * @return is 24 hour format
-     */
-    @ObjectiveCName("is24Hours")
-    boolean is24Hours();
-
-
-    /**
      * Format date
      *
      * @param date date value
