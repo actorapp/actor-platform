@@ -14,13 +14,15 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
+import im.actor.server.api.CommonSerialization
 import im.actor.server.api.frontend.TcpFrontend
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
-import im.actor.server.db.DbInit
+import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
@@ -37,7 +39,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
       |}
     """.stripMargin
   ))
-) with DbInit with SqlSpecHelpers with ImplicitFileStorageAdapter with ImplicitUserRegions with ImplicitGroupRegions {
+) with ImplicitFileStorageAdapter with ImplicitUserRegions with ImplicitGroupRegions {
   behavior of "Server"
 
   it should "connect and Handshake" in Server.e1
@@ -50,7 +52,11 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
   it should "throw AuthIdInvalid if valid AuthId invalidated by some reason" in Server.e5
 
-  implicit lazy val (ds, db) = migrateAndInitDb()
+  ActorSerializer.clean()
+  CommonSerialization.register()
+
+  DbExtension(system).clean()
+  DbExtension(system).migrate()
 
   object Server {
     val serverConfig = system.settings.config
@@ -348,11 +354,5 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
       mb.body shouldBe a[NewSession]
       mb.body should ===(expectedNewSession)
     }
-  }
-
-  override def afterAll = {
-    super.afterAll()
-    system.awaitTermination()
-    ds.close()
   }
 }

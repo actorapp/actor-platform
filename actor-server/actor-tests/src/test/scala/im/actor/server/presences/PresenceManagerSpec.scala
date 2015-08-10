@@ -7,9 +7,9 @@ import akka.testkit.TestProbe
 import akka.util.Timeout
 import org.scalatest.time.{ Seconds, Span }
 
-import im.actor.server.{ ActorSuite, SqlSpecHelpers }
+import im.actor.server.ActorSuite
 
-class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
+class PresenceManagerSpec extends ActorSuite {
   behavior of "PresenceManager"
 
   it should "subscribe to presences" in e1
@@ -21,7 +21,6 @@ class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   import Presences._
 
   implicit val ec: ExecutionContext = system.dispatcher
-  implicit lazy val (ds, db) = migrateAndInitDb()
 
   override implicit val patienceConfig = PatienceConfig(timeout = Span(5, Seconds))
   implicit val timeout: Timeout = Timeout(5.seconds)
@@ -66,11 +65,5 @@ class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
       case PresenceState(1, Offline, Some(ls)) ⇒
         ls should ===(lastSeenAt)
     }
-  }
-
-  override def afterAll: Unit = {
-    super.afterAll()
-    system.awaitTermination()
-    ds.close()
   }
 }

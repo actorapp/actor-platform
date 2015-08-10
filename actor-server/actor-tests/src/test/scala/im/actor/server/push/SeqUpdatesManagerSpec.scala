@@ -2,7 +2,7 @@ package im.actor.server.push
 
 import akka.util.Timeout
 import im.actor.server.sequence.SeqState
-import im.actor.server.{ ImplicitSeqUpdatesManagerRegion, ActorSpecification, ActorSuite, SqlSpecHelpers }
+import im.actor.server.{ ImplicitSeqUpdatesManagerRegion, ActorSpecification, ActorSuite }
 import org.scalatest.time.{ Span, Seconds }
 
 import scala.concurrent.duration._
@@ -21,7 +21,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
                                 """)
     )
   }
-) with SqlSpecHelpers with ImplicitSeqUpdatesManagerRegion {
+) with ImplicitSeqUpdatesManagerRegion {
   behavior of "SeqUpdatesManager"
 
   it should "increment seq on update push" in e1
@@ -30,7 +30,6 @@ class SeqUpdatesManagerSpec extends ActorSuite(
 
   import SeqUpdatesManagerMessages._
 
-  implicit val (ds, db) = migrateAndInitDb()
   implicit val timeout: Timeout = Timeout(5.seconds)
 
   override implicit def patienceConfig: PatienceConfig =
@@ -93,13 +92,4 @@ class SeqUpdatesManagerSpec extends ActorSuite(
         }
     }
   }
-
-  override def afterAll: Unit = {
-    super.afterAll()
-    system.awaitTermination()
-    closeDb()
-  }
-
-  private def closeDb(): Unit =
-    ds.close()
 }

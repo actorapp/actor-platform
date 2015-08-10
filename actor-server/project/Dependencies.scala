@@ -67,6 +67,8 @@ object Dependencies {
 
     val scrImageCore            = "com.sksamuel.scrimage"         %% "scrimage-core"                 % "1.4.2"
 
+    val tyrex                   = "tyrex"                         %  "tyrex"                         % "1.0.1"
+
     val gcmServer               = "com.google.android.gcm"        %  "gcm-server"                    % "1.0.2"
     val pushy                   = "com.relayrides"                %  "pushy"                         % "0.4.3"
 
@@ -93,7 +95,7 @@ object Dependencies {
   import Compile._
   import Testing._
 
-  val shared = Seq(javaCompat, logbackClassic, scalaLogging, configs)
+  val shared = Seq(configs, javaCompat, logbackClassic, scalaLogging, tyrex)
 
   val root = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
