@@ -141,7 +141,7 @@ class ContactsServiceImpl(
         optNumber ← optUser.map(user ⇒ persist.UserPhone.findByUserId(user.id).headOption).getOrElse(DBIO.successful(None))
       } yield {
         (optUser, optNumber map (_.number))
-      }).flatMap {
+      }) flatMap {
         case (Some(user), Some(userPhoneNumber)) ⇒
           if (accessHash == ACLUtils.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
             persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
@@ -158,7 +158,7 @@ class ContactsServiceImpl(
         case (_, None) ⇒ DBIO.successful(Error(CommonErrors.UserPhoneNotFound))
       }
 
-      action.transactionally
+      action
     }
 
     db.run(toDBIOAction(authorizedAction))
