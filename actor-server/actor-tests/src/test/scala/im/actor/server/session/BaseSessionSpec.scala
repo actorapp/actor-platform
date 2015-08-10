@@ -32,7 +32,6 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.SessionEnvelope.Payload
-import im.actor.server.user.UserProcessorRegion
 import im.actor.server.{ DummyCodeActivation, ImplicitUserRegions, persist }
 
 abstract class BaseSessionSpec(_system: ActorSystem = {
@@ -40,7 +39,6 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
                                })
   extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with ImplicitUserRegions {
 
-  ActorSerializer.clean()
   CommonSerialization.register()
 
   override implicit def patienceConfig: PatienceConfig =

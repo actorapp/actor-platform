@@ -32,7 +32,7 @@ class SessionSpec extends BaseSessionSpec {
   it should "subscribe to sequence updates" in sessions().e5
   it should "subscribe to weak updates" in sessions().e6
   it should "subscribe to presences" in sessions().e7
-  it should "React to SessionHello" in sessions().e8
+  it should "react to SessionHello" in sessions().e8
 
   case class sessions() {
 

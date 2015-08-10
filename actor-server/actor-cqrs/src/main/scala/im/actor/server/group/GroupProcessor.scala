@@ -81,7 +81,6 @@ object GroupProcessor {
     ActorSerializer.register(20011, classOf[GroupCommands.MakePublic])
     ActorSerializer.register(20012, classOf[GroupCommands.MakePublicAck])
     ActorSerializer.register(20013, classOf[GroupCommands.UpdateTitle])
-    ActorSerializer.register(20014, classOf[GroupCommands.UpdateTitle])
     ActorSerializer.register(20015, classOf[GroupCommands.ChangeTopic])
     ActorSerializer.register(20016, classOf[GroupCommands.ChangeAbout])
     ActorSerializer.register(20017, classOf[GroupCommands.MakeUserAdmin])
@@ -104,7 +103,6 @@ object GroupProcessor {
     ActorSerializer.register(22011, classOf[GroupEvents.AboutUpdated])
     ActorSerializer.register(22012, classOf[GroupEvents.TitleUpdated])
     ActorSerializer.register(22013, classOf[GroupEvents.TopicUpdated])
-    ActorSerializer.register(22014, classOf[GroupEvents.AboutUpdated])
     ActorSerializer.register(22015, classOf[GroupEvents.UserBecameAdmin])
     ActorSerializer.register(22016, classOf[GroupEvents.IntegrationTokenRevoked])
   }
