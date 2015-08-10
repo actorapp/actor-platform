@@ -344,7 +344,7 @@ object SeqUpdatesManager {
       updLeft match {
         case h +: t ⇒
           val newSize = currSize + h.serializedData.length
-          if (newSize > maxSizeInBytes) {
+          if (newSize > maxSizeInBytes && acc.nonEmpty) {
             (acc, currSize, false)
           } else {
             run(t, acc :+ h, newSize)
