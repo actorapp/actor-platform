@@ -39,7 +39,9 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
     val ds = initDs(sqlConfig).get
     val db = initDb(ds)
 
-    system.registerOnTermination(db.close())
+    system.registerOnTermination {
+      db.close()
+    }
 
     new DbExtensionImpl(ds, db)
   }

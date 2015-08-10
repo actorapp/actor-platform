@@ -29,10 +29,10 @@ class SessionResendSpec extends BaseSessionSpec(
 ) {
   behavior of "Session's ReSender"
 
-  it should "Resend messages if no ack received within ack-timeout" in Sessions().e1
-  it should "Resend messages to new client" in Sessions().e2
-  it should "not Resend messages if ack received within ack-timeout" in Sessions().e3
-  it should "Resend updates if no ack received within ack-timeout" in Sessions().e4
+  it should "resend messages if no ack received within ack-timeout" in Sessions().e1
+  it should "resend messages to new client" in Sessions().e2
+  it should "not resend messages if ack received within ack-timeout" in Sessions().e3
+  it should "resend updates if no ack received within ack-timeout" in Sessions().e4
 
   case class Sessions() {
     def e1() = {

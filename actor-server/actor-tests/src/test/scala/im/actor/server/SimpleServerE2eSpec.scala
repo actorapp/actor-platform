@@ -31,7 +31,7 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 
-class SimpleServerE2eSpec extends ActorFlatSuite(
+class SimpleServerE2eSpec extends ActorSuite(
   ActorSpecification.createSystem(ConfigFactory.parseString(
     """
       |session {
@@ -52,7 +52,6 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
   it should "throw AuthIdInvalid if valid AuthId invalidated by some reason" in Server.e5
 
-  ActorSerializer.clean()
   CommonSerialization.register()
 
   DbExtension(system).clean()
