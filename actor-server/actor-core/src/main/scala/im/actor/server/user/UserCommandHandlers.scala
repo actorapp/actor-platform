@@ -169,10 +169,8 @@ private[user] trait UserCommandHandlers {
             _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
             SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
             _ ← Future.successful(recordRelation(senderUserId, userId))
-          } yield {
-            db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
-            SeqStateDate(seq, state, dateMillis)
-          }
+            _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
+          } yield SeqStateDate(seq, state, dateMillis)
         }
       sendFuture onComplete {
         case Success(seqstate) ⇒
