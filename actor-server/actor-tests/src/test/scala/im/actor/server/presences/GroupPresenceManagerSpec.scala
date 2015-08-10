@@ -8,6 +8,7 @@ import akka.util.Timeout
 import org.scalatest.time.{ Seconds, Span }
 
 import im.actor.server.ActorSuite
+import im.actor.server.db.DbExtension
 
 class GroupPresenceManagerSpec extends ActorSuite {
   behavior of "GroupPresenceManager"
@@ -20,6 +21,9 @@ class GroupPresenceManagerSpec extends ActorSuite {
 
   override implicit val patienceConfig = PatienceConfig(timeout = Span(5, Seconds))
   implicit val timeout: Timeout = Timeout(5.seconds)
+
+  DbExtension(system).clean()
+  DbExtension(system).migrate()
 
   implicit val userPresenceRegion = PresenceManager.startRegion()
   implicit val region = GroupPresenceManager.startRegion()

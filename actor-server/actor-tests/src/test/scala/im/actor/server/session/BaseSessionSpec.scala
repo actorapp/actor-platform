@@ -23,7 +23,6 @@ import im.actor.server.api.CommonSerialization
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
-import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
