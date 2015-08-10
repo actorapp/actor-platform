@@ -21,6 +21,7 @@ import im.actor.api.rpc.users.User
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.HistoryMessage
+import im.actor.server.push.SeqUpdatesManager.UpdateRefs
 import im.actor.server.sequence.SeqState
 import im.actor.server.{ models, persist ⇒ p }
 
@@ -43,6 +44,7 @@ object SeqUpdatesManagerMessages {
   case class PushUpdate(
     header:         Int,
     serializedData: Array[Byte],
+    refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
     fatData:        Option[FatData]
@@ -52,6 +54,7 @@ object SeqUpdatesManagerMessages {
   private[push] case class PushUpdateGetSequenceState(
     header:         Int,
     serializedData: Array[Byte],
+    refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
     fatData:        Option[FatData]
@@ -128,12 +131,12 @@ private final class SeqUpdatesManagerActor(
   def receiveInitialized: Receive = {
     case GetSequenceState ⇒
       sender() ! sequenceState(seq, SeqUpdatesManager.timestampToBytes(lastTimestamp))
-    case PushUpdate(header, updBytes, pushText, originPeer, fatData) ⇒
-      pushUpdate(authId, header, updBytes, pushText, originPeer, fatData)
-    case PushUpdateGetSequenceState(header, serializedData, pushText, originPeer, fatData) ⇒
+    case PushUpdate(header, updBytes, refs, pushText, originPeer, fatData) ⇒
+      pushUpdate(authId, header, updBytes, refs, pushText, originPeer, fatData)
+    case PushUpdateGetSequenceState(header, serializedData, refs, pushText, originPeer, fatData) ⇒
       val replyTo = sender()
 
-      pushUpdate(authId, header, serializedData, pushText, originPeer, fatData, { seqstate: SeqState ⇒
+      pushUpdate(authId, header, serializedData, refs, pushText, originPeer, fatData, { seqstate: SeqState ⇒
         replyTo ! seqstate
       })
     case Subscribe(consumer: ActorRef) ⇒
@@ -227,17 +230,19 @@ private final class SeqUpdatesManagerActor(
     authId:         Long,
     header:         Int,
     serializedData: Array[Byte],
+    refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
     fatData:        Option[FatData]
   ): Unit = {
-    pushUpdate(authId, header, serializedData, pushText, originPeer, fatData, _ ⇒ ())
+    pushUpdate(authId, header, serializedData, refs, pushText, originPeer, fatData, _ ⇒ ())
   }
 
   private def pushUpdate(
     authId:         Long,
     header:         Int,
     serializedData: Array[Byte],
+    refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
     fatData:        Option[FatData],
@@ -247,7 +252,7 @@ private final class SeqUpdatesManagerActor(
     implicit val ec = context.dispatcher
 
     def push(seq: Int, timestamp: Long): Future[Int] = {
-      val (userIds, groupIds) = fatData map (d ⇒ (d.users.map(_.id) → d.groups.map(_.id))) getOrElse (Seq.empty → Seq.empty)
+      val (userIds, groupIds) = refs
 
       val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds.toSet, groupIds.toSet)
 
