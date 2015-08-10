@@ -9,9 +9,9 @@ project(':core') {
     sourceSets {
         main {
             java {
-                srcDirs = ['src/main/java/core',
-                           '../runtime/src/main',
-                           '../runtime/src/template']
+                srcDirs = ['src/main/java',
+                           '../runtime/src/main/java',
+                           '../runtime/src/template/java']
             }
             resources {
                 srcDir 'src/main/resources'
