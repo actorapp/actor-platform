@@ -7,7 +7,7 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.AppCategory;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.Messenger;
-import im.actor.core.runtime.crypto.bouncycastle.BouncyCastleRuntime;
+import im.actor.runtime.crypto.bouncycastle.BouncyCastleRuntime;
 import im.actor.core.jvm.JvmLocale;
 import im.actor.core.mem.MemoryStorageProvider;
 import im.actor.core.providers.EmptyPhoneProvider;
