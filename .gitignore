@@ -77,3 +77,5 @@ actor-apps/app-ios/ActorApp.xcworkspace
 actor-apps/app-ios/Actor-Build
 actor-apps/runtime-android/build
 actor-apps/runtime/build
+actor-apps/runtime-js/build
+actor-apps/runtime-js/war
