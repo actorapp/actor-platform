@@ -8,7 +8,7 @@ import javax.sql.DataSource
 import scala.util.Try
 
 import akka.actor._
-import com.typesafe.config.Config
+import com.typesafe.config.{ ConfigFactory, Config }
 import com.github.kxbmap.configs._
 import org.flywaydb.core.Flyway
 import slick.driver.PostgresDriver.api.Database
@@ -48,12 +48,16 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
 
   private def initDs(sqlConfig: Config): Try[HikariCPJdbcDataSource] = {
     for {
-      _ ← sqlConfig.get[Try[String]]("host")
-      _ ← sqlConfig.get[Try[Int]]("port")
-      _ ← sqlConfig.get[Try[String]]("db")
+      host ← sqlConfig.get[Try[String]]("host")
+      port ← sqlConfig.get[Try[Int]]("port")
+      db ← sqlConfig.get[Try[String]]("db")
       _ ← sqlConfig.get[Try[String]]("user")
       _ ← sqlConfig.get[Try[String]]("password")
-    } yield HikariCPJdbcDataSource.forConfig(sqlConfig, null, "main")
+    } yield HikariCPJdbcDataSource.forConfig(sqlConfig.withFallback(ConfigFactory.parseString(
+      s"""
+        |url: "jdbc:postgresql://"${host}":"${port}"/"${db}
+      """.stripMargin
+    )).resolve(), null, "main")
   }
 
   private def initDb(ds: HikariCPJdbcDataSource): Database = {
