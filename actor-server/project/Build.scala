@@ -155,11 +155,11 @@ object Build extends sbt.Build {
         )
   )
 
-  lazy val actorCQRS = Project(
-    id = "actor-cqrs",
-    base = file("actor-cqrs"),
+  lazy val actorCore = Project(
+    id = "actor-core",
+    base = file("actor-core"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.cqrs
+      libraryDependencies ++= Dependencies.core
     )
   ).dependsOn(actorCommonsApi, actorModels, actorPresences, actorSocial, actorUtils, actorUtilsCache)
 
@@ -186,7 +186,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.httpApi
     )
-  ).dependsOn(actorCQRS, actorPersist, actorTls)
+  ).dependsOn(actorCore, actorPersist, actorTls)
 
   lazy val actorOAuth = Project(
     id = "actor-oauth",
@@ -203,7 +203,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.session
     )
-  ).dependsOn(actorPersist, actorCQRS, actorCodecs, actorCommonsApi, actorRpcApi)
+  ).dependsOn(actorPersist, actorCore, actorCodecs, actorCommonsApi, actorRpcApi)
 
   lazy val actorSessionMessages = Project(
     id = "actor-session-messages",
@@ -227,7 +227,7 @@ object Build extends sbt.Build {
       actorActivation,
       actorCodecs,
       actorCommonsApi,
-      actorCQRS,
+      actorCore,
       actorHttpApi, // FIXME: remove this dependency
       actorOAuth,
       actorPersist,
