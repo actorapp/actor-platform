@@ -14,14 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import im.actor.core.entity.Contact;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.compose.view.UserSpan;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
 import im.actor.messenger.app.util.BoxUtil;
 import im.actor.messenger.app.util.Screen;
-import im.actor.core.concurrency.CommandCallback;
-import im.actor.core.entity.Contact;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;

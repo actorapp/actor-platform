@@ -10,26 +10,25 @@ import android.widget.TextView;
 
 import com.droidkit.progress.CircularView;
 
-import im.actor.messenger.app.util.images.common.ImageLoadException;
-import im.actor.messenger.app.util.images.ops.ImageLoading;
-import im.actor.messenger.R;
-import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.chat.MessagesAdapter;
-import im.actor.messenger.app.util.FileTypes;
-import im.actor.messenger.app.view.TintImageView;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
-import im.actor.core.files.FileSystemReference;
-import im.actor.core.mvvm.MVVMEngine;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
+import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.fragment.chat.MessagesAdapter;
+import im.actor.messenger.app.util.FileTypes;
+import im.actor.messenger.app.util.images.common.ImageLoadException;
+import im.actor.messenger.app.util.images.ops.ImageLoading;
+import im.actor.messenger.app.view.TintImageView;
+import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
@@ -263,7 +262,7 @@ public class DocHolder extends MessageHolder {
 
                 @Override
                 public void onDownloaded(final FileSystemReference reference) {
-                    MVVMEngine.runOnUiThread(new Runnable() {
+                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                         @Override
                         public void run() {
                             Activity activity = getAdapter().getMessagesFragment().getActivity();
