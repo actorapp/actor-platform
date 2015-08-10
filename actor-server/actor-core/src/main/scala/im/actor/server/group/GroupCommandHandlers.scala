@@ -136,10 +136,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           Future.successful(SeqState(0, ByteString.EMPTY))
         else
           UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
-      } yield {
-        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
-        SeqStateDate(seq, state, date.getMillis)
-      }
+        _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
+      } yield SeqStateDate(seq, state, date.getMillis)
     }
   }
 
