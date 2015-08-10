@@ -16,11 +16,11 @@ export default {
     });
   },
 
-  //load: () => {
-  //  ActorAppDispatcher.dispatch({
-  //    type: ActionTypes.PREFERENCES_LOAD
-  //  });
-  //},
+  load: () => {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.PREFERENCES_LOAD
+    });
+  },
 
   save: (preferences) => {
     ActorAppDispatcher.dispatch({

@@ -2,12 +2,15 @@ import { EventEmitter } from 'events';
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 
+import { english, russian } from 'l18n';
+
 const CHANGE_EVENT = 'change';
 
 let _isModalOpen = false,
     _preferences = {},
-    _sendByEnter = '';//,
-    //_language = '';
+    _sendByEnter = '',
+    _language = '',
+    _languageData = null;
 
 class PreferencesStore extends EventEmitter {
   constructor() {
@@ -38,28 +41,41 @@ class PreferencesStore extends EventEmitter {
     return _sendByEnter;
   }
 
-  //get language() {
-  //  return _language;
-  //}
+  get language() {
+    return _language;
+  }
+
+  get languageData() {
+    switch (_language) {
+      case 'ru':
+        _languageData = russian;
+        break;
+      //case 'en':
+      //  _languageData = english;
+      //  break;
+      default:
+        _languageData = english;
+        break;
+    }
+
+    return _languageData;
+  }
 
   savePreferences(newPreferences) {
-    //console.info('savePreferences', newPreferences);
-    localStorage['preferences.send_by_enter'] = _sendByEnter = newPreferences.sendByEnter;
-    //localStorage['preferences.language'] = newPreferences.language;
+    localStorage['preferences.SEND_BY_ENTER'] = _sendByEnter = newPreferences.sendByEnter;
+    localStorage['preferences.LANGUAGE'] = _language = newPreferences.language;
+
     _preferences = newPreferences;
   }
 
   loadPreferences() {
-    _sendByEnter = localStorage['preferences.send_by_enter'];
-    //_language = localStorage['preferences.language'];
+    _sendByEnter = localStorage.getItem('preferences.SEND_BY_ENTER') || 'true';
+    _language = localStorage.getItem('preferences.LANGUAGE') || 'en';
 
     _preferences = {
-      sendByEnter: _sendByEnter
-      //language: _language,
+      sendByEnter: _sendByEnter,
+      language: _language
     };
-
-    //console.info('loadPreferences', _preferences);
-    //return _preferences;
   }
 }
 
@@ -79,7 +95,7 @@ PreferencesStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
       PreferencesStoreInstance.savePreferences(action.preferences);
       break;
 
-    case ActionTypes.SET_LOGGED_IN:
+    case ActionTypes.PREFERENCES_LOAD:
       PreferencesStoreInstance.loadPreferences();
       break;
     default:
