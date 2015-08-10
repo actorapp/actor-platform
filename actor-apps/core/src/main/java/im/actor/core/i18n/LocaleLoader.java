@@ -15,7 +15,9 @@ public class LocaleLoader {
                 continue;
             }
             String[] lineVal = line.split("=", 2);
-            res.put(lineVal[0], lineVal[1]);
+            if (lineVal.length == 2) {
+                res.put(lineVal[0], lineVal[1]);
+            }
         }
         return res;
     }

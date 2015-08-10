@@ -125,19 +125,21 @@ public class MainPhoneController extends MainBaseController {
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
-                joinGroupUrl = getIntent().getData().toString();
-            } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
-                if ("text/plain".equals(getIntent().getType())) {
-                    sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                } else {
-                    sendUriString = intent.getParcelableExtra(Intent.EXTRA_STREAM).toString();
-                }
-            } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
-                ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-                if (imageUris != null) {
-                    for (Uri u : imageUris) {
-                        sendUriMultiple.add(u.toString());
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
+                    joinGroupUrl = getIntent().getData().toString();
+                } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
+                    if ("text/plain".equals(getIntent().getType())) {
+                        sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                    } else {
+                        sendUriString = intent.getParcelableExtra(Intent.EXTRA_STREAM).toString();
+                    }
+                } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+                    ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                    if (imageUris != null) {
+                        for (Uri u : imageUris) {
+                            sendUriMultiple.add(u.toString());
+                        }
                     }
                 }
             }
