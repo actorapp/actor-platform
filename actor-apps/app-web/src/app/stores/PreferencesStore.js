@@ -4,15 +4,14 @@ import { ActionTypes } from 'constants/ActorAppConstants';
 
 const CHANGE_EVENT = 'change';
 
-let _isModalOpen = false;
+let _isModalOpen = false,
+    _preferences = {},
+    _sendByEnter = '';//,
+    //_language = '';
 
-class SettingsStore extends EventEmitter {
+class PreferencesStore extends EventEmitter {
   constructor() {
     super();
-  }
-
-  isModalOpen() {
-    return _isModalOpen;
   }
 
   emitChange() {
@@ -26,23 +25,67 @@ class SettingsStore extends EventEmitter {
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
   }
+
+  get isModalOpen() {
+    return _isModalOpen;
+  }
+
+  get preferences() {
+    return _preferences;
+  }
+
+  get sendByEnter() {
+    return _sendByEnter;
+  }
+
+  //get language() {
+  //  return _language;
+  //}
+
+  savePreferences(newPreferences) {
+    //console.info('savePreferences', newPreferences);
+    localStorage['preferences.send_by_enter'] = _sendByEnter = newPreferences.sendByEnter;
+    //localStorage['preferences.language'] = newPreferences.language;
+    _preferences = newPreferences;
+  }
+
+  loadPreferences() {
+    _sendByEnter = localStorage['preferences.send_by_enter'];
+    //_language = localStorage['preferences.language'];
+
+    _preferences = {
+      sendByEnter: _sendByEnter
+      //language: _language,
+    };
+
+    //console.info('loadPreferences', _preferences);
+    //return _preferences;
+  }
 }
 
-let SettingsStoreInstance = new SettingsStore();
+let PreferencesStoreInstance = new PreferencesStore();
 
-SettingsStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
-  //console.info(action);
+PreferencesStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
+  console.info(action);
   switch(action.type) {
-    case ActionTypes.SETTINGS_SHOW:
+    case ActionTypes.PREFERENCES_MODAL_SHOW:
       _isModalOpen = true;
       break;
-    case ActionTypes.SETTINGS_HIDE:
+    case ActionTypes.PREFERENCES_MODAL_HIDE:
       _isModalOpen = false;
+      break;
+
+    case ActionTypes.PREFERENCES_SAVE:
+      PreferencesStoreInstance.savePreferences(action.preferences);
+      break;
+
+    case ActionTypes.SET_LOGGED_IN:
+      PreferencesStoreInstance.loadPreferences();
       break;
     default:
       return;
   }
-  SettingsStoreInstance.emitChange();
+  PreferencesStoreInstance.emitChange();
 });
 
-export default SettingsStoreInstance;
+export default PreferencesStoreInstance;
