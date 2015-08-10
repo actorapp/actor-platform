@@ -71,8 +71,10 @@ export const ActionTypes = keymirror({
   INVITE_USER_BY_LINK_MODAL_SHOW: null,
   INVITE_USER_BY_LINK_MODAL_HIDE: null,
 
-  SETTINGS_SHOW: null,
-  SETTINGS_HIDE: null
+  PREFERENCES_SAVE: null,
+  PREFERENCES_LOAD: null,
+  PREFERENCES_MODAL_HIDE: null,
+  PREFERENCES_MODAL_SHOW: null
 });
 
 export const PeerTypes = {

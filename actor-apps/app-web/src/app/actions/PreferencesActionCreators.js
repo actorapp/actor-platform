@@ -4,15 +4,28 @@ import ActorAppConstants from 'constants/ActorAppConstants';
 const ActionTypes = ActorAppConstants.ActionTypes;
 
 export default {
-  show() {
+  show: () => {
     ActorAppDispatcher.dispatch({
-      type: ActionTypes.SETTINGS_SHOW
+      type: ActionTypes.PREFERENCES_MODAL_SHOW
     });
   },
 
-  hide() {
+  hide: () => {
     ActorAppDispatcher.dispatch({
-      type: ActionTypes.SETTINGS_HIDE
+      type: ActionTypes.PREFERENCES_MODAL_HIDE
+    });
+  },
+
+  load: () => {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.PREFERENCES_LOAD
+    });
+  },
+
+  save: (preferences) => {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.PREFERENCES_SAVE,
+      preferences: preferences
     });
   }
 };

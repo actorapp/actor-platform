@@ -48,6 +48,8 @@
 
     .dropdown--opened {
       .dropdown__button {
+        transition: transform $default-transition-duration $default-transition-timing;
+
         background-color: transparent !important;
         box-shadow: none !important;
       }
@@ -168,9 +170,9 @@
       padding: 7px 14px;
 
       cursor: pointer;
-
       //opacity: .6;
       //color: rgba(white, .6);
+
       color: white;
       //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {

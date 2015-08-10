@@ -16,6 +16,7 @@ import TypingActionCreators from 'actions/TypingActionCreators';
 import DraftActionCreators from 'actions/DraftActionCreators';
 
 import DraftStore from 'stores/DraftStore';
+import PreferencesStore from 'stores/PreferencesStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 
@@ -24,7 +25,8 @@ const ThemeManager = new Styles.ThemeManager();
 const getStateFromStores = () => {
   return {
     text: DraftStore.getDraft(),
-    profile: ActorClient.getUser(ActorClient.getUid())
+    profile: ActorClient.getUser(ActorClient.getUid()),
+    sendByEnter: PreferencesStore.sendByEnter
   };
 };
 
@@ -44,11 +46,14 @@ class ComposeSection extends React.Component {
     this.state = getStateFromStores();
 
     ThemeManager.setTheme(ActorTheme);
-    DraftStore.addLoadDraftListener(this.onDraftLoad);
+
+    DraftStore.addLoadDraftListener(this.onChange);
+    PreferencesStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
-    DraftStore.removeLoadDraftListener(this.onDraftLoad);
+    DraftStore.removeLoadDraftListener(this.onChange);
+    PreferencesStore.removeChangeListener(this.onChange);
   }
 
   getChildContext() {
@@ -57,20 +62,30 @@ class ComposeSection extends React.Component {
     };
   }
 
-  onDraftLoad = () => {
+  onChange = () => {
     this.setState(getStateFromStores());
   };
 
-  onChange = event => {
+  onMessageChange = event => {
     TypingActionCreators.onTyping(this.props.peer);
     this.setState({text: event.target.value});
   };
 
   onKeyDown = event => {
-    if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
-      event.preventDefault();
-      this.sendTextMessage();
-    } else if (event.keyCode === 50 && event.shiftKey) {
+    if (this.state.sendByEnter === 'true') {
+      if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
+        event.preventDefault();
+        this.sendTextMessage();
+      }
+    } else {
+      if (event.keyCode === KeyCodes.ENTER && event.metaKey) {
+        event.preventDefault();
+        this.sendTextMessage();
+      }
+    }
+
+    // TODO: Mentions
+    if (event.keyCode === 50 && event.shiftKey) {
       console.warn('Mention should show now.');
     }
   };
@@ -137,7 +152,7 @@ class ComposeSection extends React.Component {
 
 
           <textarea className="compose__message"
-                    onChange={this.onChange}
+                    onChange={this.onMessageChange}
                     onKeyDown={this.onKeyDown}
                     onKeyUp={this.onKeyUp}
                     value={text}>
