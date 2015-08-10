@@ -8,6 +8,7 @@ import akka.util.Timeout
 import org.scalatest.time.{ Seconds, Span }
 
 import im.actor.server.ActorSuite
+import im.actor.server.db.DbExtension
 
 class PresenceManagerSpec extends ActorSuite {
   behavior of "PresenceManager"
@@ -24,6 +25,9 @@ class PresenceManagerSpec extends ActorSuite {
 
   override implicit val patienceConfig = PatienceConfig(timeout = Span(5, Seconds))
   implicit val timeout: Timeout = Timeout(5.seconds)
+
+  DbExtension(system).clean()
+  DbExtension(system).migrate()
 
   implicit val region = PresenceManager.startRegion()
 
