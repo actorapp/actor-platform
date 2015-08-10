@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import React from 'react';
 import Modal from 'react-modal';
 import ReactMixin from 'react-mixin';
@@ -16,10 +18,18 @@ Modal.setAppElement(appElement);
 
 const ThemeManager = new Styles.ThemeManager();
 
+const menuItems = [
+  { payload: '1', text: 'English', value: 'en'},
+  { payload: '2', text: 'Russian', value: 'ru'}
+];
+
 const getStateFromStores = () => {
+  const language = PreferencesStore.language;
   return {
     isOpen: PreferencesStore.isModalOpen,
-    preferences: PreferencesStore.preferences
+    preferences: PreferencesStore.preferences,
+    language: language,
+    selectedLanguage: _.findIndex(menuItems, {value: language})
   };
 };
 
@@ -66,7 +76,7 @@ class PreferencesModal extends React.Component {
 
   onDone = () => {
     PreferencesActionCreators.save({
-      //language: this.state.language,
+      language: this.state.language,
       sendByEnter: this.refs.sendByEnter.getSelectedValue()
     });
     this.onClose();
@@ -79,20 +89,15 @@ class PreferencesModal extends React.Component {
     }
   };
 
-  //onLanguageChange = (event, selectedIndex) => {
-  //  //console.info('lng change', menuItems[selectedIndex].val);
-  //  //this.setState({language: menuItems[selectedIndex].val});
-  //};
+  onLanguageChange = (event, selectedIndex, menuItem) => {
+    this.setState({
+      language: menuItem.value,
+      selectedLanguage: _.findIndex(menuItems, {value: menuItem.value})
+    });
+  };
 
   render() {
     const preferences = this.state.preferences;
-
-    //console.info('preferences', preferences);
-
-    const menuItems = [
-      { payload: '1', text: 'English'},
-      { payload: '2', text: 'Russian'}
-    ];
 
     if (this.state.isOpen === true) {
       return (
@@ -141,11 +146,13 @@ class PreferencesModal extends React.Component {
                                        value="false"/>
                         </RadioButtonGroup>
                       </li>
-                      <li className="language hide">
+                      <li className="language">
                         <i className="icon material-icons">menu</i>
                         Language: <DropDownMenu labelStyle={{color: '#5191db'}}
                                                 menuItemStyle={{height: '40px', lineHeight: '40px'}}
                                                 menuItems={menuItems}
+                                                onChange={this.onLanguageChange}
+                                                selectedIndex={this.state.selectedLanguage}
                                                 style={{verticalAlign: 'top', height: 52}}
                                                 underlineStyle={{display: 'none'}}/>
                       </li>

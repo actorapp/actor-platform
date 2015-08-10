@@ -46,6 +46,7 @@ class ComposeSection extends React.Component {
     this.state = getStateFromStores();
 
     ThemeManager.setTheme(ActorTheme);
+
     DraftStore.addLoadDraftListener(this.onChange);
     PreferencesStore.addChangeListener(this.onChange);
   }
@@ -85,7 +86,7 @@ class ComposeSection extends React.Component {
 
     // TODO: Mentions
     if (event.keyCode === 50 && event.shiftKey) {
-      //console.warn('Mention should show now.');
+      console.warn('Mention should show now.');
     }
   };
 
