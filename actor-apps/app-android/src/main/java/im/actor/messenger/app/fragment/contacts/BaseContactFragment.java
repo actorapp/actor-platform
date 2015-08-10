@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import im.actor.android.view.BindedListAdapter;
+import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;

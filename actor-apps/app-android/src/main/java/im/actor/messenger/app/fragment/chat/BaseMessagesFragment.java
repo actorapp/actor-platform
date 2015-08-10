@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
-import im.actor.android.view.BindedListAdapter;
+import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;

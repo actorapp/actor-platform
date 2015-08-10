@@ -10,7 +10,7 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import im.actor.android.view.BindedViewHolder;
+import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;

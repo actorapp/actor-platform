@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import im.actor.android.view.BindedListAdapter;
+import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.core.droidkit.bser.BserObject;
