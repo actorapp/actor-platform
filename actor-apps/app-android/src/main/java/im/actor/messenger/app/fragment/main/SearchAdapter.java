@@ -3,7 +3,7 @@ package im.actor.messenger.app.fragment.main;
 import android.content.Context;
 import android.view.ViewGroup;
 
-import im.actor.android.view.BindedListAdapter;
+import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.mvvm.BindedDisplayList;

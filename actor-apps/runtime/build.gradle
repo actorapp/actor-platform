@@ -8,28 +8,31 @@ compileJava {
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main',
-                       'src/template',
-                       '../annotationsJ2objc',
-                       '../annotationsJetbrains']
-        }
-    }
-
-    bouncycastle {
-        java {
-            srcDirs = ['src/bouncycastle']
+            srcDirs = ['src/main/java',
+                       'src/template/java']
         }
     }
 
     generic {
         java {
-            srcDirs = ['src/generic']
-        }
-    }
-
-    cli {
-        java {
-            srcDirs = ['src/cli']
+            srcDirs = ['src/generic/java']
         }
     }
 }
+
+//project('android') {
+//    apply plugin: 'java'
+//
+//    compileJava {
+//        sourceCompatibility = 1.6
+//        targetCompatibility = 1.6
+//    }
+//    main {
+//        java {
+//            srcDirs = ['../src/main',
+//                       '../src/template',
+//                       '../../annotationsJ2objc',
+//                       '../../annotationsJetbrains']
+//        }
+//    }
+//}

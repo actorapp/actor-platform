@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import java.util.HashMap;
 
-import im.actor.android.view.BindedListAdapter;
+import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.adapter.DocHolder;
 import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
