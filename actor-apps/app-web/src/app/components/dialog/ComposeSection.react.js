@@ -15,6 +15,7 @@ import MessageActionCreators from 'actions/MessageActionCreators';
 import TypingActionCreators from 'actions/TypingActionCreators';
 import DraftActionCreators from 'actions/DraftActionCreators';
 
+import GroupStore from 'stores/GroupStore';
 import DraftStore from 'stores/DraftStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
@@ -44,11 +45,13 @@ class ComposeSection extends React.Component {
     this.state = getStateFromStores();
 
     ThemeManager.setTheme(ActorTheme);
+    GroupStore.addChangeListener(getStateFromStores);
     DraftStore.addLoadDraftListener(this.onDraftLoad);
   }
 
   componentWillUnmount() {
     DraftStore.removeLoadDraftListener(this.onDraftLoad);
+    GroupStore.removeChangeListener(getStateFromStores);
   }
 
   getChildContext() {
