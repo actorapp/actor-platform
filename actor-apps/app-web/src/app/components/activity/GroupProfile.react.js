@@ -65,7 +65,7 @@ class GroupProfile extends React.Component {
 
   componentWillUnmount() {
     DialogStore.removeNotificationsListener(this.onChange);
-    GroupStore.addChangeListener(this.onChange);
+    GroupStore.removeChangeListener(this.onChange);
   }
 
   componentWillReceiveProps(newProps) {
