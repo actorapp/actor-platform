@@ -7,6 +7,9 @@ package im.actor.core.js.entity;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 
 import im.actor.core.entity.Avatar;
@@ -34,19 +37,28 @@ public class JsGroup extends JavaScriptObject {
             }
         }
 
-        JsArray<JsGroupMember> convertedMembers = JsArray.createArray().cast();
+        ArrayList<JsGroupMember> convertedMembers = new ArrayList<JsGroupMember>();
         HashSet<GroupMember> groupMembers = groupVM.getMembers().get();
         GroupMember[] members = groupMembers.toArray(new GroupMember[groupMembers.size()]);
         for (GroupMember g : members) {
             JsPeerInfo peerInfo = messenger.buildPeerInfo(Peer.user(g.getUid()));
-            convertedMembers.push(JsGroupMember.create(peerInfo,
+            convertedMembers.add(JsGroupMember.create(peerInfo,
                     g.isAdministrator(),
                     g.getInviterUid() == messenger.myUid() || groupVM.getCreatorId() == messenger.myUid()));
         }
-
+        Collections.sort(convertedMembers, new Comparator<JsGroupMember>() {
+            @Override
+            public int compare(JsGroupMember o1, JsGroupMember o2) {
+                return o1.getPeerInfo().getTitle().compareToIgnoreCase(o2.getPeerInfo().getTitle());
+            }
+        });
+        JsArray<JsGroupMember> jsMembers = JsArray.createArray().cast();
+        for (JsGroupMember member : convertedMembers) {
+            jsMembers.push(member);
+        }
         return create(groupVM.getId(), groupVM.getName().get(), fileUrl, bigFileUrl,
                 Placeholders.getPlaceholder(groupVM.getId()), groupVM.getCreatorId(), presence,
-                convertedMembers);
+                jsMembers);
     }
 
     public static native JsGroup create(int id, String name, String avatar, String bigAvatar,

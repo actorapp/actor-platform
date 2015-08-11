@@ -9,6 +9,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import im.actor.core.entity.ContentType;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.PeerType;
+import im.actor.core.js.JsMessenger;
 import im.actor.runtime.js.mvvm.JsEntityConverter;
 
 public class JsDialog extends JavaScriptObject {
@@ -16,6 +17,8 @@ public class JsDialog extends JavaScriptObject {
     public static final JsEntityConverter<Dialog, JsDialog> CONVERTER = new JsEntityConverter<Dialog, JsDialog>() {
         @Override
         public JsDialog convert(Dialog src) {
+
+            JsMessenger messenger = JsMessenger.getInstance();
 
             boolean showSender = false;
             if (src.getPeer().getPeerType() == PeerType.GROUP) {
@@ -26,20 +29,19 @@ public class JsDialog extends JavaScriptObject {
 
             String senderName = null;
             if (showSender) {
-                senderName = "asd";//messenger.getUsers().get(src.getSenderId()).getName().get();
+                senderName = messenger.getUsers().get(src.getSenderId()).getName().get();
             }
 
-            String date = "123";// messenger.getFormatter().formatShortDate(src.getDate());
+            String date = messenger.getFormatter().formatShortDate(src.getDate());
 
             String fileUrl = null;
-//            if (src.getDialogAvatar() != null && src.getDialogAvatar().getSmallImage() != null) {
-//                fileUrl = messenger.getFileUrl(src.getDialogAvatar().getSmallImage().getFileReference());
-//            }
+            if (src.getDialogAvatar() != null && src.getDialogAvatar().getSmallImage() != null) {
+                fileUrl = messenger.getFileUrl(src.getDialogAvatar().getSmallImage().getFileReference());
+            }
 
             boolean highlightContent = src.getMessageType() != ContentType.TEXT;
-//            String messageText = messenger.getFormatter().formatContentText(src.getSenderId(),
-//                    src.getMessageType(), src.getText(), src.getRelatedUid());
-            String messageText = "";
+            String messageText = messenger.getFormatter().formatContentText(src.getSenderId(),
+                    src.getMessageType(), src.getText(), src.getRelatedUid());
 
             JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), fileUrl,
                     Placeholders.getPlaceholder(src.getPeer().getPeerId()));
