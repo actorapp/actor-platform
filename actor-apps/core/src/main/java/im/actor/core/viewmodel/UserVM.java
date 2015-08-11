@@ -269,6 +269,24 @@ public class UserVM extends BaseValueModel<User> {
     }
 
     /**
+     * Subscribe to UserVM updates
+     *
+     * @param listener UserVM changed listener
+     */
+    @MainThread
+    @ObjectiveCName("subscribeWithListener:withNotify:")
+    public void subscribe(@NotNull ModelChangedListener<UserVM> listener, boolean notify) {
+        Runtime.checkMainThread();
+        if (listeners.contains(listener)) {
+            return;
+        }
+        listeners.add(listener);
+        if (notify) {
+            listener.onChanged(this);
+        }
+    }
+
+    /**
      * Unsubscribe from UserVM
      *
      * @param listener UserVM changed listener

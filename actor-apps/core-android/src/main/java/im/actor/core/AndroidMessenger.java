@@ -248,19 +248,19 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     }
 
     public BindedDisplayList<Dialog> getDialogsDisplayList() {
-        return (BindedDisplayList<Dialog>) modules.getDisplayLists().getDialogsSharedList();
+        return (BindedDisplayList<Dialog>) modules.getDisplayListsModule().getDialogsSharedList();
     }
 
     public BindedDisplayList<Message> getMessageDisplayList(Peer peer) {
-        return (BindedDisplayList<Message>) modules.getDisplayLists().getMessagesSharedList(peer);
+        return (BindedDisplayList<Message>) modules.getDisplayListsModule().getMessagesSharedList(peer);
     }
 
     public BindedDisplayList<SearchEntity> buildSearchDisplayList() {
-        return (BindedDisplayList<SearchEntity>) modules.getDisplayLists().buildSearchList(false);
+        return (BindedDisplayList<SearchEntity>) modules.getDisplayListsModule().buildSearchList(false);
     }
 
     public BindedDisplayList<Contact> buildContactsDisplayList() {
-        return (BindedDisplayList<Contact>) modules.getDisplayLists().buildContactList(false);
+        return (BindedDisplayList<Contact>) modules.getDisplayListsModule().buildContactList(false);
     }
 
     private boolean isScreenOn() {

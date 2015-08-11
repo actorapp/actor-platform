@@ -163,6 +163,7 @@ public class GroupVM extends BaseValueModel<Group> {
         }
     }
 
+
     /**
      * Subscribe for GroupVM updates
      *
@@ -177,6 +178,24 @@ public class GroupVM extends BaseValueModel<Group> {
         }
         listeners.add(listener);
         listener.onChanged(this);
+    }
+
+    /**
+     * Subscribe for GroupVM updates
+     *
+     * @param listener Listener for updates
+     */
+    @MainThread
+    @ObjectiveCName("subscribeWithListener:withNotify:")
+    public void subscribe(@NotNull ModelChangedListener<GroupVM> listener, boolean notify) {
+        im.actor.runtime.Runtime.checkMainThread();
+        if (listeners.contains(listener)) {
+            return;
+        }
+        listeners.add(listener);
+        if (notify) {
+            listener.onChanged(this);
+        }
     }
 
     /**

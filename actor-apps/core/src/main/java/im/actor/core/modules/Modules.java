@@ -279,7 +279,7 @@ public class Modules implements ModuleContext {
         return external;
     }
 
-    public DisplayLists getDisplayLists() {
+    public DisplayLists getDisplayListsModule() {
         return displayLists;
     }
 
