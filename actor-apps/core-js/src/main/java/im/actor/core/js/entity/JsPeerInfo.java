@@ -15,4 +15,16 @@ public class JsPeerInfo extends JavaScriptObject {
     protected JsPeerInfo() {
 
     }
+
+    public final native JsPeer getPeer()/*-{
+        return peer;
+    }-*/;
+
+    public final native String getTitle()/*-{
+        return title;
+    }-*/;
+
+    public final native String getAvatar()/*-{
+        return avatar;
+    }-*/;
 }
