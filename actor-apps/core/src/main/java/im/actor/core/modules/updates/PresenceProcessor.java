@@ -4,18 +4,18 @@
 
 package im.actor.core.modules.updates;
 
-import im.actor.runtime.annotations.Verified;
+import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.presence.PresenceActor;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.core.modules.BaseModule;
-import im.actor.core.modules.Modules;
-import im.actor.core.modules.presence.PresenceActor;
+import im.actor.runtime.annotations.Verified;
 
 @Verified
-public class PresenceProcessor extends BaseModule {
+public class PresenceProcessor extends AbsModule {
     private ActorRef presenceActor;
 
     @Verified
-    public PresenceProcessor(Modules modules) {
+    public PresenceProcessor(ModuleContext modules) {
         super(modules);
         this.presenceActor = PresenceActor.get(modules);
     }

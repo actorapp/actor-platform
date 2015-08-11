@@ -27,6 +27,8 @@ public class Message extends BserObject implements ListEngineItem {
         }
     };
 
+    public static final String ENTITY_NAME = "Message";
+
     private long rid;
     private long sortDate;
     private long date;

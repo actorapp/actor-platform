@@ -29,6 +29,8 @@ public class Dialog extends BserObject implements ListEngineItem {
         }
     };
 
+    public static final String ENTITY_NAME = "Dialog";
+
     @NotNull
     @SuppressWarnings("NullableProblems")
     private Peer peer;

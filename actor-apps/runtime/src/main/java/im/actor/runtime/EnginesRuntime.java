@@ -2,6 +2,7 @@ package im.actor.runtime;
 
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
+import im.actor.runtime.mvvm.DisplayList;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.ListEngineItem;
 import im.actor.runtime.storage.ListStorage;
@@ -19,9 +20,14 @@ public interface EnginesRuntime {
     <T extends BserObject & ListEngineItem> ListEngine<T> createListEngine(ListStorage storage, BserCreator<T> creator);
 
     /**
-     * Is DisplayLists supported
+     * Creating of Display List instance
      *
-     * @return Is DisplayLists supported value
+     * @param listEngine       list engine
+     * @param isSharedInstance is this list can be used by different lists
+     * @param clazz            entity simple class name
+     * @param <T>              type of object
+     * @return the Display List
      */
-    boolean isDisplayListSupported();
+    <T extends BserObject & ListEngineItem> DisplayList<T> createDisplayList(ListEngine<T> listEngine, boolean isSharedInstance,
+                                                                             String clazz);
 }

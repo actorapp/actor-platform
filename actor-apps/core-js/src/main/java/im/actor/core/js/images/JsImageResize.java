@@ -4,7 +4,7 @@
 
 package im.actor.core.js.images;
 
-import im.actor.core.js.providers.fs.JsBlob;
+import im.actor.runtime.js.fs.JsBlob;
 
 public class JsImageResize {
     public static native void resize(JsBlob file, JsResizeListener resizeListener)/*-{
@@ -44,7 +44,7 @@ public class JsImageResize {
 
             var compressedImage = canvas.toDataURL("image/jpeg", 0.55);
 
-            resizeListener.@im.actor.model.js.images.JsResizeListener::onResized(*)(compressedImage,
+            resizeListener.@im.actor.core.js.images.JsResizeListener::onResized(*)(compressedImage,
                   width, height, img.width, img.height);
         }
         reader.readAsDataURL(file);

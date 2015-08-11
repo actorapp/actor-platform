@@ -72,17 +72,8 @@ public class Messenger {
         ActorSystem.system().addDispatcher("heavy");
         ActorSystem.system().addDispatcher("updates", 1);
 
-        // TODO: Move somewhere
-        if (!im.actor.runtime.Runtime.isSingleThread()) {
-            ActorSystem.system().addDispatcher("display_list");
-            ActorSystem.system().addDispatcher("db", 1);
-        }
-
         timing.section("Modules:Create");
         this.modules = new Modules(this, configuration);
-
-        timing.section("Modules:Run");
-        this.modules.run();
 
         timing.end();
     }
@@ -108,18 +99,6 @@ public class Messenger {
      */
     public boolean isLoggedIn() {
         return getAuthState() == AuthState.LOGGED_IN;
-    }
-
-    /**
-     * Request sms activation code
-     *
-     * @param phone phone number in international format
-     * @return Command for execution
-     */
-    @NotNull
-    @ObjectiveCName("requestSmsObsoleteCommandWithPhone:")
-    public Command<AuthState> requestSmsObsolete(final long phone) {
-        return modules.getAuthModule().requestSmsObsolete(phone);
     }
 
     /**
@@ -169,19 +148,6 @@ public class Messenger {
         return modules.getAuthModule().requestCompleteOauth(code);
     }
 
-
-    /**
-     * Sending activation code
-     *
-     * @param code activation code
-     * @return Command for execution
-     */
-    @NotNull
-    @ObjectiveCName("sendCodeObsoleteCommand:")
-    public Command<AuthState> sendCodeObsolete(final int code) {
-        return modules.getAuthModule().sendCodeObsolete(code);
-    }
-
     /**
      * Sending activation code
      *
@@ -192,20 +158,6 @@ public class Messenger {
     @ObjectiveCName("validateCodeCommandWithCode:")
     public Command<AuthState> validateCode(final String code) {
         return modules.getAuthModule().requestValidateCode(code);
-    }
-
-    /**
-     * Perform signup
-     *
-     * @param name       Name of User
-     * @param avatarPath File descriptor of avatar (may be null if not set)
-     * @param isSilent   is silent registration (disable notification about registration)
-     * @return Comand for execution
-     */
-    @NotNull
-    @ObjectiveCName("signUpObsoleteCommandWithName:withAvatar:silently:")
-    public Command<AuthState> signUpObsolete(String name, String avatarPath, boolean isSilent) {
-        return modules.getAuthModule().signUpObsolete(name, avatarPath, isSilent);
     }
 
     /**
@@ -297,7 +249,7 @@ public class Messenger {
         if (modules.getUsersModule() == null) {
             return null;
         }
-        return modules.getUsersModule().getUsersCollection();
+        return modules.getUsersModule().getUsers();
     }
 
     /**
@@ -379,7 +331,7 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("getOwnAvatarVM")
     public OwnAvatarVM getOwnAvatarVM() {
-        return modules.getProfile().getOwnAvatarVM();
+        return modules.getProfileModule().getOwnAvatarVM();
     }
 
     /**
@@ -420,8 +372,8 @@ public class Messenger {
      */
     @ObjectiveCName("onDialogsOpen")
     public void onDialogsOpen() {
-        if (modules.getNotifications() != null) {
-            modules.getNotifications().onDialogsOpen();
+        if (modules.getNotificationsModule() != null) {
+            modules.getNotificationsModule().onDialogsOpen();
         }
     }
 
@@ -430,8 +382,8 @@ public class Messenger {
      */
     @ObjectiveCName("onDialogsClosed")
     public void onDialogsClosed() {
-        if (modules.getNotifications() != null) {
-            modules.getNotifications().onDialogsClosed();
+        if (modules.getNotificationsModule() != null) {
+            modules.getNotificationsModule().onDialogsClosed();
         }
     }
 
@@ -442,10 +394,10 @@ public class Messenger {
      */
     @ObjectiveCName("onConversationOpenWithPeer:")
     public void onConversationOpen(@NotNull Peer peer) {
-        modules.getAnalytics().trackChatOpen(peer);
+        modules.getAnalyticsModule().trackChatOpen(peer);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(peer);
-            modules.getNotifications().onConversationOpen(peer);
+            modules.getNotificationsModule().onConversationOpen(peer);
             modules.getMessagesModule().onConversationOpen(peer);
         }
     }
@@ -457,9 +409,9 @@ public class Messenger {
      */
     @ObjectiveCName("onConversationClosedWithPeer:")
     public void onConversationClosed(@NotNull Peer peer) {
-        modules.getAnalytics().trackChatClosed(peer);
+        modules.getAnalyticsModule().trackChatClosed(peer);
         if (modules.getPresenceModule() != null) {
-            modules.getNotifications().onConversationClose(peer);
+            modules.getNotificationsModule().onConversationClose(peer);
         }
     }
 
@@ -470,7 +422,7 @@ public class Messenger {
      */
     @ObjectiveCName("onProfileOpenWithUid:")
     public void onProfileOpen(int uid) {
-        modules.getAnalytics().trackProfileOpen(uid);
+        modules.getAnalyticsModule().trackProfileOpen(uid);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(Peer.user(uid));
         }
@@ -483,7 +435,7 @@ public class Messenger {
      */
     @ObjectiveCName("onProfileClosedWithUid:")
     public void onProfileClosed(int uid) {
-        modules.getAnalytics().trackProfileClosed(uid);
+        modules.getAnalyticsModule().trackProfileClosed(uid);
     }
 
     /**
@@ -778,7 +730,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeMyAvatarWithDescriptor:")
     public void changeMyAvatar(String descriptor) {
-        modules.getProfile().changeAvatar(descriptor);
+        modules.getProfileModule().changeAvatar(descriptor);
     }
 
     /**
@@ -786,7 +738,7 @@ public class Messenger {
      */
     @ObjectiveCName("removeMyAvatar")
     public void removeMyAvatar() {
-        modules.getProfile().removeAvatar();
+        modules.getProfileModule().removeAvatar();
     }
 
     /**
@@ -1179,7 +1131,7 @@ public class Messenger {
      */
     @ObjectiveCName("isConversationTonesEnabled")
     public boolean isConversationTonesEnabled() {
-        return modules.getSettings().isConversationTonesEnabled();
+        return modules.getSettingsModule().isConversationTonesEnabled();
     }
 
     /**
@@ -1189,7 +1141,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeConversationTonesEnabledWithValue:")
     public void changeConversationTonesEnabled(boolean val) {
-        modules.getSettings().changeConversationTonesEnabled(val);
+        modules.getSettingsModule().changeConversationTonesEnabled(val);
     }
 
     /**
@@ -1199,7 +1151,7 @@ public class Messenger {
      */
     @ObjectiveCName("isNotificationsEnabled")
     public boolean isNotificationsEnabled() {
-        return modules.getSettings().isNotificationsEnabled();
+        return modules.getSettingsModule().isNotificationsEnabled();
     }
 
     /**
@@ -1209,7 +1161,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeNotificationsEnabledWithValue:")
     public void changeNotificationsEnabled(boolean val) {
-        modules.getSettings().changeNotificationsEnabled(val);
+        modules.getSettingsModule().changeNotificationsEnabled(val);
     }
 
     /**
@@ -1219,7 +1171,7 @@ public class Messenger {
      */
     @ObjectiveCName("isNotificationSoundEnabled")
     public boolean isNotificationSoundEnabled() {
-        return modules.getSettings().isNotificationSoundEnabled();
+        return modules.getSettingsModule().isNotificationSoundEnabled();
     }
 
     /**
@@ -1229,7 +1181,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeNotificationSoundEnabledWithValue:")
     public void changeNotificationSoundEnabled(boolean val) {
-        modules.getSettings().changeNotificationSoundEnabled(val);
+        modules.getSettingsModule().changeNotificationSoundEnabled(val);
     }
 
     /**
@@ -1240,7 +1192,7 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("getNotificationSound")
     public String getNotificationSound() {
-        return modules.getSettings().getNotificationSound();
+        return modules.getSettingsModule().getNotificationSound();
     }
 
     /**
@@ -1250,7 +1202,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeNotificationSoundWithSound:")
     public void changeNotificationSound(String sound) {
-        modules.getSettings().changeNotificationSound(sound);
+        modules.getSettingsModule().changeNotificationSound(sound);
     }
 
     /**
@@ -1260,7 +1212,7 @@ public class Messenger {
      */
     @ObjectiveCName("isNotificationVibrationEnabled")
     public boolean isNotificationVibrationEnabled() {
-        return modules.getSettings().isVibrationEnabled();
+        return modules.getSettingsModule().isVibrationEnabled();
     }
 
     /**
@@ -1270,7 +1222,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeNotificationVibrationEnabledWithValue")
     public void changeNotificationVibrationEnabled(boolean val) {
-        modules.getSettings().changeNotificationVibrationEnabled(val);
+        modules.getSettingsModule().changeNotificationVibrationEnabled(val);
     }
 
     /**
@@ -1280,7 +1232,7 @@ public class Messenger {
      */
     @ObjectiveCName("isShowNotificationsText")
     public boolean isShowNotificationsText() {
-        return modules.getSettings().isShowNotificationsText();
+        return modules.getSettingsModule().isShowNotificationsText();
     }
 
     /**
@@ -1290,7 +1242,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeShowNotificationTextEnabledWithValue:")
     public void changeShowNotificationTextEnabled(boolean val) {
-        modules.getSettings().changeShowNotificationTextEnabled(val);
+        modules.getSettingsModule().changeShowNotificationTextEnabled(val);
     }
 
     /**
@@ -1300,7 +1252,7 @@ public class Messenger {
      */
     @ObjectiveCName("isSendByEnterEnabled")
     public boolean isSendByEnterEnabled() {
-        return modules.getSettings().isSendByEnterEnabled();
+        return modules.getSettingsModule().isSendByEnterEnabled();
     }
 
     /**
@@ -1310,7 +1262,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeSendByEnterWithValue:")
     public void changeSendByEnter(boolean val) {
-        modules.getSettings().changeSendByEnter(val);
+        modules.getSettingsModule().changeSendByEnter(val);
     }
 
     /**
@@ -1320,7 +1272,7 @@ public class Messenger {
      */
     @ObjectiveCName("isMarkdownEnabled")
     public boolean isMarkdownEnabled() {
-        return modules.getSettings().isMarkdownEnabled();
+        return modules.getSettingsModule().isMarkdownEnabled();
     }
 
     /**
@@ -1330,7 +1282,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeMarkdownWithValue:")
     public void changeMarkdown(boolean val) {
-        modules.getSettings().changeMarkdown(val);
+        modules.getSettingsModule().changeMarkdown(val);
     }
 
     /**
@@ -1341,7 +1293,7 @@ public class Messenger {
      */
     @ObjectiveCName("isNotificationsEnabledWithPeer:")
     public boolean isNotificationsEnabled(Peer peer) {
-        return modules.getSettings().isNotificationsEnabled(peer);
+        return modules.getSettingsModule().isNotificationsEnabled(peer);
     }
 
     /**
@@ -1352,7 +1304,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeNotificationsEnabledWithPeer:withValue:")
     public void changeNotificationsEnabled(Peer peer, boolean val) {
-        modules.getSettings().changeNotificationsEnabled(peer, val);
+        modules.getSettingsModule().changeNotificationsEnabled(peer, val);
     }
 
     /**
@@ -1362,7 +1314,7 @@ public class Messenger {
      */
     @ObjectiveCName("isInAppNotificationsEnabled")
     public boolean isInAppNotificationsEnabled() {
-        return modules.getSettings().isInAppEnabled();
+        return modules.getSettingsModule().isInAppEnabled();
     }
 
     /**
@@ -1372,7 +1324,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeInAppNotificationsEnabledWithValue:")
     public void changeInAppNotificationsEnabled(boolean val) {
-        modules.getSettings().changeInAppEnabled(val);
+        modules.getSettingsModule().changeInAppEnabled(val);
     }
 
     /**
@@ -1382,7 +1334,7 @@ public class Messenger {
      */
     @ObjectiveCName("isInAppNotificationSoundEnabled")
     public boolean isInAppNotificationSoundEnabled() {
-        return modules.getSettings().isInAppSoundEnabled();
+        return modules.getSettingsModule().isInAppSoundEnabled();
     }
 
     /**
@@ -1392,7 +1344,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeInAppNotificationSoundEnabledWithValue:")
     public void changeInAppNotificationSoundEnabled(boolean val) {
-        modules.getSettings().changeInAppSoundEnabled(val);
+        modules.getSettingsModule().changeInAppSoundEnabled(val);
     }
 
     /**
@@ -1402,7 +1354,7 @@ public class Messenger {
      */
     @ObjectiveCName("isInAppNotificationVibrationEnabled")
     public boolean isInAppNotificationVibrationEnabled() {
-        return modules.getSettings().isInAppVibrationEnabled();
+        return modules.getSettingsModule().isInAppVibrationEnabled();
     }
 
     /**
@@ -1412,7 +1364,7 @@ public class Messenger {
      */
     @ObjectiveCName("changeInAppNotificationVibrationEnabledWithValue:")
     public void changeInAppNotificationVibrationEnabled(boolean val) {
-        modules.getSettings().changeInAppVibrationEnabled(val);
+        modules.getSettingsModule().changeInAppVibrationEnabled(val);
     }
 
 
@@ -1423,7 +1375,7 @@ public class Messenger {
      */
     @ObjectiveCName("isRenameHintShown")
     public boolean isRenameHintShown() {
-        return modules.getSettings().isRenameHintShown();
+        return modules.getSettingsModule().isRenameHintShown();
     }
 
     //////////////////////////////////////
@@ -1438,7 +1390,7 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("loadSessionsCommand")
     public Command<List<AuthSession>> loadSessions() {
-        return modules.getSecurity().loadSessions();
+        return modules.getSecurityModule().loadSessions();
     }
 
     /**
@@ -1449,7 +1401,7 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("terminateAllSessionsCommand")
     public Command<Boolean> terminateAllSessions() {
-        return modules.getSecurity().terminateAllSessions();
+        return modules.getSecurityModule().terminateAllSessions();
     }
 
     /**
@@ -1461,7 +1413,7 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("terminateSessionCommandWithId:")
     public Command<Boolean> terminateSession(int id) {
-        return modules.getSecurity().terminateSession(id);
+        return modules.getSecurityModule().terminateSession(id);
     }
 
     //////////////////////////////////////
@@ -1473,7 +1425,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackAuthPhoneOpen")
     public void trackAuthPhoneOpen() {
-        modules.getAnalytics().trackAuthPhoneOpen();
+        modules.getAnalyticsModule().trackAuthPhoneOpen();
     }
 
     /**
@@ -1481,7 +1433,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackAuthCountryOpen")
     public void trackAuthCountryOpen() {
-        modules.getAnalytics().trackAuthCountryOpen();
+        modules.getAnalyticsModule().trackAuthCountryOpen();
     }
 
     /**
@@ -1489,7 +1441,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackAuthCountryClosed")
     public void trackAuthCountryClosed() {
-        modules.getAnalytics().trackAuthCountryClosed();
+        modules.getAnalyticsModule().trackAuthCountryClosed();
     }
 
     /**
@@ -1497,7 +1449,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackAuthCountryPickedWithCountry:")
     public void trackAuthCountryPicked(String country) {
-        modules.getAnalytics().trackAuthCountryPicked(country);
+        modules.getAnalyticsModule().trackAuthCountryPicked(country);
     }
 
     /**
@@ -1505,7 +1457,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackAuthPhoneTypeWithValue:")
     public void trackAuthPhoneType(String newValue) {
-        modules.getAnalytics().trackAuthPhoneType(newValue);
+        modules.getAnalyticsModule().trackAuthPhoneType(newValue);
     }
 
     /**
@@ -1513,7 +1465,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackAuthPhoneInfoOpen")
     public void trackAuthPhoneInfoOpen() {
-        modules.getAnalytics().trackAuthPhoneInfoOpen();
+        modules.getAnalyticsModule().trackAuthPhoneInfoOpen();
     }
 
     /**
@@ -1521,155 +1473,155 @@ public class Messenger {
      */
     @ObjectiveCName("trackCodeRequest")
     public void trackCodeRequest() {
-        modules.getAnalytics().trackCodeRequest();
+        modules.getAnalyticsModule().trackCodeRequest();
     }
 
     @ObjectiveCName("trackAuthCodeTypeWithValue:")
     public void trackAuthCodeType(String newValue) {
-        modules.getAnalytics().trackAuthCodeType(newValue);
+        modules.getAnalyticsModule().trackAuthCodeType(newValue);
     }
 
     @ObjectiveCName("trackBackPressed")
     public void trackBackPressed() {
-        modules.getAnalytics().trackBackPressed();
+        modules.getAnalyticsModule().trackBackPressed();
     }
 
     @ObjectiveCName("trackUpPressed")
     public void trackUpPressed() {
-        modules.getAnalytics().trackUpPressed();
+        modules.getAnalyticsModule().trackUpPressed();
     }
 
     @ObjectiveCName("trackAuthCodeWrongNumber")
     public void trackAuthCodeWrongNumber() {
-        modules.getAnalytics().trackAuthCodeWrongNumber();
+        modules.getAnalyticsModule().trackAuthCodeWrongNumber();
     }
 
     @ObjectiveCName("trackAuthCodeWrongNumberCancel")
     public void trackAuthCodeWrongNumberCancel() {
-        modules.getAnalytics().trackAuthCodeWrongNumberCancel();
+        modules.getAnalyticsModule().trackAuthCodeWrongNumberCancel();
     }
 
     @ObjectiveCName("trackAuthCodeWrongNumberChange")
     public void trackAuthCodeWrongNumberChange() {
-        modules.getAnalytics().trackAuthCodeWrongNumberChange();
+        modules.getAnalyticsModule().trackAuthCodeWrongNumberChange();
     }
 
     @ObjectiveCName("trackAuthCodeOpen")
     public void trackAuthCodeOpen() {
-        modules.getAnalytics().trackAuthCodeOpen();
+        modules.getAnalyticsModule().trackAuthCodeOpen();
     }
 
     @ObjectiveCName("trackAuthCodeClosed")
     public void trackAuthCodeClosed() {
-        modules.getAnalytics().trackAuthCodeClosed();
+        modules.getAnalyticsModule().trackAuthCodeClosed();
     }
 
     // Auth signup
 
     @ObjectiveCName("trackAuthSignupOpen")
     public void trackAuthSignupOpen() {
-        modules.getAnalytics().trackAuthSignupOpen();
+        modules.getAnalyticsModule().trackAuthSignupOpen();
     }
 
     @ObjectiveCName("trackAuthSignupClosed")
     public void trackAuthSignupClosed() {
-        modules.getAnalytics().trackAuthSignupClosed();
+        modules.getAnalyticsModule().trackAuthSignupClosed();
     }
 
     @ObjectiveCName("trackAuthSignupNameTypeWithValue:")
     public void trackAuthSignupNameType(String newValue) {
-        modules.getAnalytics().trackAuthSignupClosedNameType(newValue);
+        modules.getAnalyticsModule().trackAuthSignupClosedNameType(newValue);
     }
 
     @ObjectiveCName("trackAuthSignupPressedAvatar")
     public void trackAuthSignupPressedAvatar() {
-        modules.getAnalytics().trackAuthSignupPressedAvatar();
+        modules.getAnalyticsModule().trackAuthSignupPressedAvatar();
     }
 
     @ObjectiveCName("trackAuthSignupAvatarPicked")
     public void trackAuthSignupAvatarPicked() {
-        modules.getAnalytics().trackAuthSignupAvatarPicked();
+        modules.getAnalyticsModule().trackAuthSignupAvatarPicked();
     }
 
     @ObjectiveCName("trackAuthSignupAvatarDeleted")
     public void trackAuthSignupAvatarDeleted() {
-        modules.getAnalytics().trackAuthSignupAvatarDeleted();
+        modules.getAnalyticsModule().trackAuthSignupAvatarDeleted();
     }
 
     @ObjectiveCName("trackAuthSignupAvatarCanelled")
     public void trackAuthSignupAvatarCanelled() {
-        modules.getAnalytics().trackAuthSignupAvatarCanelled();
+        modules.getAnalyticsModule().trackAuthSignupAvatarCanelled();
     }
 
     // Auth success
 
     @ObjectiveCName("trackAuthSuccess")
     public void trackAuthSuccess() {
-        modules.getAnalytics().trackAuthSuccess();
+        modules.getAnalyticsModule().trackAuthSuccess();
     }
 
     // Main screens
 
     @ObjectiveCName("trackDialogsOpen")
     public void trackDialogsOpen() {
-        modules.getAnalytics().trackDialogsOpen();
+        modules.getAnalyticsModule().trackDialogsOpen();
     }
 
     @ObjectiveCName("trackDialogsClosed")
     public void trackDialogsClosed() {
-        modules.getAnalytics().trackDialogsClosed();
+        modules.getAnalyticsModule().trackDialogsClosed();
     }
 
     @ObjectiveCName("trackContactsOpen")
     public void trackContactsOpen() {
-        modules.getAnalytics().trackContactsOpen();
+        modules.getAnalyticsModule().trackContactsOpen();
     }
 
     @ObjectiveCName("trackContactsClosed")
     public void trackContactsClosed() {
-        modules.getAnalytics().trackContactsClosed();
+        modules.getAnalyticsModule().trackContactsClosed();
     }
 
     @ObjectiveCName("trackMainScreensOpen")
     public void trackMainScreensOpen() {
-        modules.getAnalytics().trackMainScreensOpen();
+        modules.getAnalyticsModule().trackMainScreensOpen();
     }
 
     @ObjectiveCName("trackMainScreensClosed")
     public void trackMainScreensClosed() {
-        modules.getAnalytics().trackMainScreensClosed();
+        modules.getAnalyticsModule().trackMainScreensClosed();
     }
 
     @ObjectiveCName("trackOwnProfileOpen")
     public void trackOwnProfileOpen() {
-        modules.getAnalytics().trackOwnProfileOpen();
+        modules.getAnalyticsModule().trackOwnProfileOpen();
     }
 
     @ObjectiveCName("trackOwnProfileClosed")
     public void trackOwnProfileClosed() {
-        modules.getAnalytics().trackOwnProfileClosed();
+        modules.getAnalyticsModule().trackOwnProfileClosed();
     }
 
     // Track message send
 
     @ObjectiveCName("trackTextSendWithPeer:")
     public void trackTextSend(Peer peer) {
-        modules.getAnalytics().trackTextSend(peer);
+        modules.getAnalyticsModule().trackTextSend(peer);
     }
 
     @ObjectiveCName("trackPhotoSendWithPeer:")
     public void trackPhotoSend(Peer peer) {
-        modules.getAnalytics().trackPhotoSend(peer);
+        modules.getAnalyticsModule().trackPhotoSend(peer);
     }
 
     @ObjectiveCName("trackVideoSendWithPeer:")
     public void trackVideoSend(Peer peer) {
-        modules.getAnalytics().trackVideoSend(peer);
+        modules.getAnalyticsModule().trackVideoSend(peer);
     }
 
     @ObjectiveCName("trackDocumentSendWithPeer:")
     public void trackDocumentSend(Peer peer) {
-        modules.getAnalytics().trackDocumentSend(peer);
+        modules.getAnalyticsModule().trackDocumentSend(peer);
     }
 
     /**
@@ -1681,7 +1633,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackActionError:withTag:withMessage:")
     public void trackActionError(String action, String tag, String message) {
-        modules.getAnalytics().trackActionError(action, tag, message);
+        modules.getAnalyticsModule().trackActionError(action, tag, message);
     }
 
     /**
@@ -1691,7 +1643,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackActionSuccess:")
     public void trackActionSuccess(String action) {
-        modules.getAnalytics().trackActionSuccess(action);
+        modules.getAnalyticsModule().trackActionSuccess(action);
     }
 
     /**
@@ -1701,7 +1653,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackActionTryAgain:")
     public void trackActionTryAgain(String action) {
-        modules.getAnalytics().trackActionTryAgain(action);
+        modules.getAnalyticsModule().trackActionTryAgain(action);
     }
 
     /**
@@ -1711,7 +1663,7 @@ public class Messenger {
      */
     @ObjectiveCName("trackActionCancel:")
     public void trackActionCancel(String action) {
-        modules.getAnalytics().trackActionCancel(action);
+        modules.getAnalyticsModule().trackActionCancel(action);
     }
 
     //////////////////////////////////////
@@ -1726,7 +1678,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("getFormatter")
     public I18nEngine getFormatter() {
-        return modules.getI18nEngine();
+        return modules.getI18nModule();
     }
 
     /**
@@ -1737,7 +1689,7 @@ public class Messenger {
      */
     @ObjectiveCName("registerGooglePushWithProjectId:withToken:")
     public void registerGooglePush(long projectId, String token) {
-        modules.getPushes().registerGooglePush(projectId, token);
+        modules.getPushesModule().registerGooglePush(projectId, token);
     }
 
     /**
@@ -1748,7 +1700,7 @@ public class Messenger {
      */
     @ObjectiveCName("registerApplePushWithApnsId:withToken:")
     public void registerApplePush(int apnsId, String token) {
-        modules.getPushes().registerApplePush(apnsId, token);
+        modules.getPushesModule().registerApplePush(apnsId, token);
     }
 
     /**
@@ -1773,7 +1725,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("executeExternalCommand:")
     public <T extends Response> Command<T> executeExternalCommand(@NotNull Request<T> request) {
-        return modules.getExternal().externalMethod(request);
+        return modules.getExternalModule().externalMethod(request);
     }
 
     /**

@@ -19,11 +19,11 @@ import im.actor.core.network.parser.Update;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
-public class Updates extends BaseModule {
+public class Updates extends AbsModule {
 
     private ActorRef updateActor;
 
-    public Updates(Modules messenger) {
+    public Updates(ModuleContext messenger) {
         super(messenger);
     }
 
@@ -31,7 +31,7 @@ public class Updates extends BaseModule {
         this.updateActor = system().actorOf(Props.create(SequenceActor.class, new ActorCreator<SequenceActor>() {
             @Override
             public SequenceActor create() {
-                return new SequenceActor(modules());
+                return new SequenceActor(context());
             }
         }).changeDispatcher("updates"), "actor/updates");
     }
@@ -39,7 +39,6 @@ public class Updates extends BaseModule {
     public void onNewSessionCreated() {
         updateActor.send(new SequenceActor.Invalidate());
     }
-
 
     public void onPushReceived(int seq) {
         updateActor.send(new SequenceActor.PushSeq(seq));

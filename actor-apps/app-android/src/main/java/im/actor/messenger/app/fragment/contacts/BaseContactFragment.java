@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.actor.core.entity.Contact;
+import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;
@@ -27,7 +28,6 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.runtime.android.view.BindedListAdapter;
-import im.actor.runtime.mvvm.BindedDisplayList;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 

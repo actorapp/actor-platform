@@ -7,8 +7,7 @@ package im.actor.core.runtime.generic.mvvm.alg;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.runtime.mvvm.ChangeDescription;
-import im.actor.runtime.mvvm.alg.Modification;
+import im.actor.core.runtime.generic.mvvm.ChangeDescription;
 import im.actor.runtime.storage.ListEngineItem;
 
 public class Modifications {
@@ -20,7 +19,7 @@ public class Modifications {
     }
 
     public static <T extends ListEngineItem> im.actor.core.runtime.generic.mvvm.alg.Modification<T> addOrUpdate(final List<T> items) {
-        return new im.actor.runtime.mvvm.alg.Modification<T>() {
+        return new Modification<T>() {
             @Override
             public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
                 ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
@@ -33,7 +32,7 @@ public class Modifications {
     }
 
     public static <T extends ListEngineItem> im.actor.core.runtime.generic.mvvm.alg.Modification<T> addLoadMore(final List<T> items) {
-        return new im.actor.runtime.mvvm.alg.Modification<T>() {
+        return new Modification<T>() {
             @Override
             public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
                 ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
@@ -46,7 +45,7 @@ public class Modifications {
     }
 
     public static <T extends ListEngineItem> im.actor.core.runtime.generic.mvvm.alg.Modification<T> replace(final List<T> items) {
-        return new im.actor.runtime.mvvm.alg.Modification<T>() {
+        return new Modification<T>() {
             @Override
             public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
                 ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
@@ -61,7 +60,7 @@ public class Modifications {
     }
 
     public static <T extends ListEngineItem> im.actor.core.runtime.generic.mvvm.alg.Modification<T> remove(final long[] dstIds) {
-        return new im.actor.runtime.mvvm.alg.Modification<T>() {
+        return new Modification<T>() {
             @Override
             public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
                 ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();

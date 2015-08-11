@@ -11,18 +11,15 @@ import java.util.HashSet;
 import im.actor.core.api.FileLocation;
 import im.actor.core.api.rpc.RequestGetFileUrl;
 import im.actor.core.api.rpc.ResponseGetFileUrl;
-import im.actor.core.droidkit.actors.Environment;
 import im.actor.core.js.angular.entity.CachedFileUrl;
-import im.actor.core.modules.BaseModule;
+import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.utils.BaseKeyValueEngine;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
+import im.actor.runtime.Storage;
 
-/**
- * Created by ex3ndr on 01.05.15.
- */
-public class AngularFilesModule extends BaseModule {
+public class AngularFilesModule extends AbsModule {
 
     private static final String TAG = "AngularFilesModule";
 
@@ -33,10 +30,7 @@ public class AngularFilesModule extends BaseModule {
     public AngularFilesModule(Modules modules) {
         super(modules);
 
-        keyValueStorage = new BaseKeyValueEngine<CachedFileUrl>(
-                modules.getConfiguration()
-                        .getStorageProvider()
-                        .createKeyValue("file_url_cache")) {
+        keyValueStorage = new BaseKeyValueEngine<CachedFileUrl>(Storage.createKeyValue("file_url_cache")) {
 
             @Override
             protected byte[] serialize(CachedFileUrl value) {
@@ -68,7 +62,7 @@ public class AngularFilesModule extends BaseModule {
     public String getFileUrl(long id, long accessHash) {
         CachedFileUrl cachedFileUrl = keyValueStorage.getValue(id);
         if (cachedFileUrl != null) {
-            if (cachedFileUrl.getTimeout() <= Environment.getCurrentSyncedTime()) {
+            if (cachedFileUrl.getTimeout() <= im.actor.runtime.Runtime.getCurrentSyncedTime()) {
                 keyValueStorage.removeItem(id);
             } else {
                 return cachedFileUrl.getUrl();
@@ -89,7 +83,7 @@ public class AngularFilesModule extends BaseModule {
             public void onResult(ResponseGetFileUrl response) {
                 requestedFiles.remove(id);
                 keyValueStorage.addOrUpdateItem(new CachedFileUrl(id, response.getUrl(),
-                        Environment.getCurrentSyncedTime() + response.getTimeout() * 1000L));
+                        im.actor.runtime.Runtime.getCurrentSyncedTime() + response.getTimeout() * 1000L));
                 for (AngularFileLoadedListener listener : listeners) {
                     listener.onFileLoaded(id);
                 }

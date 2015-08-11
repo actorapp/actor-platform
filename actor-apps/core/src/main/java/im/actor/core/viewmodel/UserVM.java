@@ -15,7 +15,7 @@ import im.actor.core.entity.ContactRecord;
 import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
-import im.actor.core.modules.Modules;
+import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.core.viewmodel.generics.AvatarValueModel;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
@@ -36,7 +36,7 @@ public class UserVM extends BaseValueModel<User> {
 
     private static final long PRESENCE_UPDATE_DELAY = 60 * 1000L;
 
-    public static ValueModelCreator<User, UserVM> CREATOR(final Modules modules) {
+    public static ValueModelCreator<User, UserVM> CREATOR(final ModuleContext modules) {
         return new ValueModelCreator<User, UserVM>() {
             @Override
             public UserVM create(User baseValue) {
@@ -80,7 +80,7 @@ public class UserVM extends BaseValueModel<User> {
      * @param user    Initial User value
      * @param modules im.actor.android.modules reference
      */
-    public UserVM(@NotNull User user, @NotNull Modules modules) {
+    public UserVM(@NotNull User user, @NotNull ModuleContext modules) {
         super(user);
 
         id = user.getUid();

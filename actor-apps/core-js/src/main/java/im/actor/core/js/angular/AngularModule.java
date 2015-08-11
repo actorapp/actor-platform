@@ -7,40 +7,28 @@ package im.actor.core.js.angular;
 import java.util.HashMap;
 
 import im.actor.core.entity.Avatar;
-import im.actor.core.entity.Contact;
-import im.actor.core.entity.Dialog;
-import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
-import im.actor.core.entity.content.DocumentContent;
-import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.js.JsMessenger;
-import im.actor.core.js.entity.JsContact;
-import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsGroup;
-import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsTyping;
 import im.actor.core.js.entity.JsUser;
-import im.actor.core.js.providers.storage.JsListEngine;
-import im.actor.core.modules.BaseModule;
+import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
-import im.actor.core.mvvm.ModelChangedListener;
-import im.actor.core.mvvm.ValueChangedListener;
-import im.actor.core.mvvm.ValueModel;
 import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.GroupTypingVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserTypingVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.mvvm.ModelChangedListener;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
-public class AngularModule extends BaseModule implements AngularFileLoadedListener {
+public class AngularModule extends AbsModule implements AngularFileLoadedListener {
     private JsMessenger messenger;
-    private AngularList<JsDialog, Dialog> dialogsList;
-    private AngularList<JsContact, Contact> contactsList;
     private AngularFilesModule filesModule;
 
-    private HashMap<Peer, AngularList<JsMessage, Message>> messagesList = new HashMap<Peer, AngularList<JsMessage, Message>>();
     private HashMap<Integer, AngularValue<JsUser>> users = new HashMap<Integer, AngularValue<JsUser>>();
     private HashMap<Integer, AngularValue<JsGroup>> groups = new HashMap<Integer, AngularValue<JsGroup>>();
     private HashMap<Peer, AngularValue<JsTyping>> typing = new HashMap<Peer, AngularValue<JsTyping>>();
@@ -53,36 +41,10 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
         this.filesModule.registerListener(this);
     }
 
-    public AngularList<JsContact, Contact> getContactsList() {
-        if (contactsList == null) {
-            contactsList = new AngularList<JsContact, Contact>(
-                    (JsListEngine<Contact>) modules().getContactsModule().getContacts(),
-                    false, JsContact.CONVERTER, messenger);
-        }
-        return contactsList;
-    }
-
-    public AngularList<JsDialog, Dialog> getDialogsList() {
-        if (dialogsList == null) {
-            dialogsList = new AngularList<JsDialog, Dialog>((JsListEngine<Dialog>) modules().getMessagesModule().getDialogsEngine(),
-                    false, JsDialog.CONVERTER, messenger);
-        }
-        return dialogsList;
-    }
-
-    public AngularList<JsMessage, Message> getMessagesList(Peer peer) {
-        if (!messagesList.containsKey(peer)) {
-            messagesList.put(peer, new AngularList<JsMessage, Message>(
-                    (JsListEngine<Message>) modules().getMessagesModule().getConversationEngine(peer),
-                    true, JsMessage.CONVERTER, messenger));
-        }
-        return messagesList.get(peer);
-    }
-
     public AngularValue<String> getOnlineStatus() {
         if (onlineState == null) {
 
-            final AppStateVM vm = modules().getAppStateModule().getAppStateVM();
+            final AppStateVM vm = context().getAppStateModule().getAppStateVM();
             onlineState = new AngularValue<String>("online");
 
             vm.getIsConnecting().subscribe(new ValueChangedListener<Boolean>() {
@@ -120,7 +82,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
 
     public AngularValue<JsUser> getUser(int uid) {
         if (!users.containsKey(uid)) {
-            final UserVM userVM = modules().getUsersModule().getUsersCollection().get(uid);
+            final UserVM userVM = context().getUsersModule().getUsers().get(uid);
             final AngularValue<JsUser> value = new AngularValue<JsUser>(JsUser.fromUserVM(userVM, messenger));
             userVM.subscribe(new ModelChangedListener<UserVM>() {
                 @Override
@@ -141,7 +103,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
 
     public AngularValue<JsGroup> getGroup(int gid) {
         if (!groups.containsKey(gid)) {
-            final GroupVM groupVM = modules().getGroupsModule().getGroupsCollection().get(gid);
+            final GroupVM groupVM = context().getGroupsModule().getGroupsCollection().get(gid);
             final AngularValue<JsGroup> value = new AngularValue<JsGroup>(JsGroup.fromGroupVM(groupVM, messenger));
             groupVM.subscribe(new ModelChangedListener<GroupVM>() {
                 @Override
@@ -163,7 +125,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
     public AngularValue<JsTyping> getTyping(final Peer peer) {
         if (!typing.containsKey(peer)) {
             if (peer.getPeerType() == PeerType.PRIVATE) {
-                UserTypingVM userTypingVM = modules().getTypingModule().getTyping(peer.getPeerId());
+                UserTypingVM userTypingVM = context().getTypingModule().getTyping(peer.getPeerId());
 
                 final AngularValue<JsTyping> value = new AngularValue<JsTyping>();
                 userTypingVM.getTyping().subscribe(new ValueChangedListener<Boolean>() {
@@ -178,16 +140,16 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
                 });
                 typing.put(peer, value);
             } else if (peer.getPeerType() == PeerType.GROUP) {
-                GroupTypingVM groupTypingVM = modules().getTypingModule().getGroupTyping(peer.getPeerId());
+                GroupTypingVM groupTypingVM = context().getTypingModule().getGroupTyping(peer.getPeerId());
                 final AngularValue<JsTyping> value = new AngularValue<JsTyping>();
                 groupTypingVM.getActive().subscribe(new ValueChangedListener<int[]>() {
                     @Override
                     public void onChanged(int[] val, ValueModel<int[]> valueModel) {
                         String typingValue = null;
                         if (val.length == 1) {
-                            typingValue = messenger.getFormatter().formatTyping(modules()
+                            typingValue = messenger.getFormatter().formatTyping(context()
                                     .getUsersModule()
-                                    .getUsersCollection()
+                                    .getUsers()
                                     .get(val[0])
                                     .getName()
                                     .get());
@@ -207,52 +169,52 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
 
     @Override
     public void onFileLoaded(long fileId) {
-        if (dialogsList != null) {
-            for (Dialog dialog : dialogsList.getRawItems()) {
-                if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
-                    dialogsList.forceReconvert(dialog.getEngineId());
-                }
-            }
-        }
-
-        for (AngularList<JsMessage, Message> messageList : messagesList.values()) {
-            boolean founded = false;
-            for (Message message : messageList.getRawItems()) {
-                UserVM user = modules().getUsersModule().getUsersCollection().get(message.getSenderId());
-                if (checkAvatar(user.getAvatar().get(), fileId)) {
-                    founded = true;
-                    break;
-                }
-                if (message.getContent() instanceof DocumentContent) {
-                    DocumentContent doc = (DocumentContent) message.getContent();
-                    if (doc.getSource() instanceof FileRemoteSource) {
-                        if (((FileRemoteSource) doc.getSource()).getFileReference().getFileId() == fileId) {
-                            founded = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (founded) {
-                messageList.forceReconvert();
-            }
-        }
-
-        for (AngularValue<JsUser> u : users.values()) {
-            int uid = u.get().getUid();
-            UserVM userVM = modules().getUsersModule().getUsersCollection().get(uid);
-            if (checkAvatar(userVM.getAvatar().get(), fileId)) {
-                u.changeValue(JsUser.fromUserVM(userVM, messenger));
-            }
-        }
-
-        for (AngularValue<JsGroup> g : groups.values()) {
-            int gid = g.get().getGid();
-            GroupVM groupVM = modules().getGroupsModule().getGroupsCollection().get(gid);
-            if (checkAvatar(groupVM.getAvatar().get(), fileId)) {
-                g.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
-            }
-        }
+//        if (dialogsList != null) {
+//            for (Dialog dialog : dialogsList.getRawItems()) {
+//                if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
+//                    dialogsList.forceReconvert(dialog.getEngineId());
+//                }
+//            }
+//        }
+//
+//        for (AngularList<JsMessage, Message> messageList : messagesList.values()) {
+//            boolean founded = false;
+//            for (Message message : messageList.getRawItems()) {
+//                UserVM user = modules().getUsersModule().getUsersCollection().get(message.getSenderId());
+//                if (checkAvatar(user.getAvatar().get(), fileId)) {
+//                    founded = true;
+//                    break;
+//                }
+//                if (message.getContent() instanceof DocumentContent) {
+//                    DocumentContent doc = (DocumentContent) message.getContent();
+//                    if (doc.getSource() instanceof FileRemoteSource) {
+//                        if (((FileRemoteSource) doc.getSource()).getFileReference().getFileId() == fileId) {
+//                            founded = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//            if (founded) {
+//                messageList.forceReconvert();
+//            }
+//        }
+//
+//        for (AngularValue<JsUser> u : users.values()) {
+//            int uid = u.get().getUid();
+//            UserVM userVM = modules().getUsersModule().getUsersCollection().get(uid);
+//            if (checkAvatar(userVM.getAvatar().get(), fileId)) {
+//                u.changeValue(JsUser.fromUserVM(userVM, messenger));
+//            }
+//        }
+//
+//        for (AngularValue<JsGroup> g : groups.values()) {
+//            int gid = g.get().getGid();
+//            GroupVM groupVM = modules().getGroupsModule().getGroupsCollection().get(gid);
+//            if (checkAvatar(groupVM.getAvatar().get(), fileId)) {
+//                g.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
+//            }
+//        }
     }
 
     protected boolean checkAvatar(Avatar avatar, long fileId) {

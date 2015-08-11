@@ -21,6 +21,8 @@ public class SearchEntity extends BserObject implements ListEngineItem {
         }
     };
 
+    public static final String ENTITY_NAME = "Search";
+
     @SuppressWarnings("NullableProblems")
     private Peer peer;
     private long order;

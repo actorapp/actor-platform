@@ -12,16 +12,13 @@ import org.timepedia.exporter.client.Exportable;
 
 import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
-import im.actor.core.concurrency.CommandCallback;
+import im.actor.core.ConfigurationBuilder;
 import im.actor.core.entity.Peer;
-import im.actor.core.js.angular.AngularListCallback;
 import im.actor.core.js.angular.AngularValueCallback;
 import im.actor.core.js.entity.Enums;
 import im.actor.core.js.entity.JsAuthErrorClosure;
 import im.actor.core.js.entity.JsAuthSuccessClosure;
 import im.actor.core.js.entity.JsClosure;
-import im.actor.core.js.entity.JsContact;
-import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsGroup;
 import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsPeer;
@@ -29,14 +26,17 @@ import im.actor.core.js.entity.JsPromise;
 import im.actor.core.js.entity.JsPromiseExecutor;
 import im.actor.core.js.entity.JsTyping;
 import im.actor.core.js.entity.JsUser;
-import im.actor.core.js.providers.JsFileSystemProvider;
-import im.actor.core.js.providers.fs.JsBlob;
-import im.actor.core.js.providers.fs.JsFile;
+import im.actor.core.js.providers.JsNotificationsProvider;
+import im.actor.core.js.providers.JsPhoneBookProvider;
 import im.actor.core.js.utils.IdentityUtils;
-import im.actor.core.log.Log;
-import im.actor.core.mvvm.MVVMEngine;
 import im.actor.core.network.RpcException;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.Log;
+import im.actor.runtime.Storage;
+import im.actor.runtime.js.JsFileSystemProvider;
+import im.actor.runtime.js.fs.JsBlob;
+import im.actor.runtime.js.fs.JsFile;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -77,13 +77,17 @@ public class JsFacade implements Exportable {
 
     @Export
     public JsFacade(String[] endpoints) {
+        Log.d(TAG, "Creating...");
+        provider = (JsFileSystemProvider) Storage.getFileSystemRuntime();
+
         String clientName = IdentityUtils.getClientName();
         String uniqueId = IdentityUtils.getUniqueId();
-        provider = new JsFileSystemProvider();
 
-        JsConfigurationBuilder configuration = new JsConfigurationBuilder();
+        ConfigurationBuilder configuration = new ConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
-        configuration.setFileSystemProvider(provider);
+        configuration.setPhoneBookProvider(new JsPhoneBookProvider());
+        configuration.setNotificationProvider(new JsNotificationsProvider());
+
         // configuration.setEnableNetworkLogging(true);
 
         for (String endpoint : endpoints) {
@@ -117,7 +121,7 @@ public class JsFacade implements Exportable {
                            final JsAuthErrorClosure error) {
         try {
             long res = Long.parseLong(phone);
-            messenger.requestSmsObsolete(res).start(new CommandCallback<AuthState>() {
+            messenger.requestStartPhoneAuth(res).start(new CommandCallback<AuthState>() {
                 @Override
                 public void onResult(AuthState res) {
                     success.onResult(Enums.convert(res));
@@ -138,7 +142,7 @@ public class JsFacade implements Exportable {
             });
         } catch (Exception e) {
             Log.e(TAG, e);
-            MVVMEngine.runOnUiThread(new Runnable() {
+            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                 @Override
                 public void run() {
                     error.onError("PHONE_NUMBER_INVALID", "Invalid phone number", false,
@@ -151,8 +155,7 @@ public class JsFacade implements Exportable {
     public void sendCode(String code, final JsAuthSuccessClosure success,
                          final JsAuthErrorClosure error) {
         try {
-            int res = Integer.parseInt(code);
-            messenger.sendCodeObsolete(res).start(new CommandCallback<AuthState>() {
+            messenger.validateCode(code).start(new CommandCallback<AuthState>() {
                 @Override
                 public void onResult(AuthState res) {
                     success.onResult(Enums.convert(res));
@@ -173,7 +176,7 @@ public class JsFacade implements Exportable {
             });
         } catch (Exception e) {
             e.printStackTrace();
-            MVVMEngine.runOnUiThread(new Runnable() {
+            im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                 @Override
                 public void run() {
                     error.onError("PHONE_CODE_INVALID", "Invalid code number", false,
@@ -185,7 +188,7 @@ public class JsFacade implements Exportable {
 
     public void signUp(String name, final JsAuthSuccessClosure success,
                        final JsAuthErrorClosure error) {
-        messenger.signUpObsolete(name, null, false).start(new CommandCallback<AuthState>() {
+        messenger.signUp(name, null, null).start(new CommandCallback<AuthState>() {
             @Override
             public void onResult(AuthState res) {
                 success.onResult(Enums.convert(res));
@@ -208,53 +211,53 @@ public class JsFacade implements Exportable {
 
     // Dialogs
 
-    public void bindDialogs(AngularListCallback<JsDialog> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getDialogsList().subscribe(callback);
-    }
-
-    public void unbindDialogs(AngularListCallback<JsDialog> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getDialogsList().unsubscribe(callback);
-    }
-
-    // Contacts
-
-    public void bindContacts(AngularListCallback<JsContact> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getContactsList().subscribe(callback);
-    }
-
-    public void unbindContacts(AngularListCallback<JsContact> callback) {
-        if (callback == null) {
-            return;
-        }
-        messenger.getContactsList().unsubscribe(callback);
-    }
-
-    // Chats
-
-    public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
-        Log.d(TAG, "bindChat: " + peer);
-        if (callback == null) {
-            return;
-        }
-        messenger.getConversationList(peer.convert()).subscribe(callback);
-    }
-
-    public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
-        Log.d(TAG, "unbindChat: " + peer);
-        if (callback == null) {
-            return;
-        }
-        messenger.getConversationList(peer.convert()).unsubscribe(callback);
-    }
+//    public void bindDialogs(AngularListCallback<JsDialog> callback) {
+//        if (callback == null) {
+//            return;
+//        }
+//        messenger.getDialogsList().subscribe(callback);
+//    }
+//
+//    public void unbindDialogs(AngularListCallback<JsDialog> callback) {
+//        if (callback == null) {
+//            return;
+//        }
+//        messenger.getDialogsList().unsubscribe(callback);
+//    }
+//
+//    // Contacts
+//
+//    public void bindContacts(AngularListCallback<JsContact> callback) {
+//        if (callback == null) {
+//            return;
+//        }
+//        messenger.getContactsList().subscribe(callback);
+//    }
+//
+//    public void unbindContacts(AngularListCallback<JsContact> callback) {
+//        if (callback == null) {
+//            return;
+//        }
+//        messenger.getContactsList().unsubscribe(callback);
+//    }
+//
+//    // Chats
+//
+//    public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+//        Log.d(TAG, "bindChat: " + peer);
+//        if (callback == null) {
+//            return;
+//        }
+//        messenger.getConversationList(peer.convert()).subscribe(callback);
+//    }
+//
+//    public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+//        Log.d(TAG, "unbindChat: " + peer);
+//        if (callback == null) {
+//            return;
+//        }
+//        messenger.getConversationList(peer.convert()).unsubscribe(callback);
+//    }
 
     public void onMessageShown(JsPeer peer, JsMessage message) {
         if (message.isOnServer()) {
