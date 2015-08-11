@@ -136,6 +136,7 @@ class GroupPresenceManager(
       }
 
       sender ! SubscribeAck(consumer)
+      deliverState(groupId)
     case Envelope(_, Unsubscribe(consumer)) ⇒
       consumers -= consumer
       context.unwatch(consumer)
@@ -149,13 +150,15 @@ class GroupPresenceManager(
     case PresenceState(userId, Online, _) ⇒
       if (!onlineUserIds.contains(userId)) {
         onlineUserIds += userId
-        deliverState(groupId)
       }
+
+      deliverState(groupId)
     case PresenceState(userId, Offline, _) ⇒
       if (onlineUserIds.contains(userId)) {
         onlineUserIds -= userId
-        deliverState(groupId)
       }
+
+      deliverState(groupId)
     case Terminated(consumer) if consumers.contains(consumer) ⇒
       consumers -= consumer
     case ReceiveTimeout ⇒
