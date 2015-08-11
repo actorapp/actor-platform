@@ -8,6 +8,15 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsDate;
 
 import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.FileLocalSource;
+import im.actor.core.entity.content.FileRemoteSource;
+import im.actor.core.entity.content.PhotoContent;
+import im.actor.core.entity.content.ServiceContent;
+import im.actor.core.entity.content.TextContent;
+import im.actor.core.js.JsMessenger;
+import im.actor.runtime.crypto.Base64Utils;
 import im.actor.runtime.js.mvvm.JsEntityConverter;
 
 public class JsMessage extends JavaScriptObject {
@@ -16,57 +25,57 @@ public class JsMessage extends JavaScriptObject {
         @Override
         public JsMessage convert(Message value) {
 
+            JsMessenger messenger = JsMessenger.getInstance();
+
             String rid = value.getRid() + "";
             String sortKey = value.getSortDate() + "";
 
-            JsPeerInfo sender = null; // modules.buildPeerInfo(Peer.user(value.getSenderId()));
-            boolean isOut = false;//value.getSenderId() == modules.myUid();
+            JsPeerInfo sender = messenger.buildPeerInfo(Peer.user(value.getSenderId()));
+            boolean isOut = value.getSenderId() == messenger.myUid();
             boolean isOnServer = value.isOnServer();
-            String date = ""; //modules.getFormatter().formatTime(value.getDate());
+            String date = messenger.getFormatter().formatTime(value.getDate());
             JsDate fullDate = JsDate.create(value.getDate());
-//
-            JsContent content = null;
-//            if (value.getContent() instanceof TextContent) {
-//                String text = ((TextContent) value.getContent()).getText();
-////                text = SafeHtmlUtils.htmlEscape(text).replace("\n", "<br />");
-////                content = JsContentText.create(text);
-//                content = JsContentText.create(text);
-//            } else if (value.getContent() instanceof ServiceContent) {
-//                content = JsContentService.create(modules.getFormatter().formatFullServiceMessage(value.getSenderId(), (ServiceContent) value.getContent()));
-//            } else if (value.getContent() instanceof DocumentContent) {
-//                DocumentContent doc = (DocumentContent) value.getContent();
-//
-//                String fileName = doc.getName();
-//                String fileExtension = doc.getExt();
-//                String fileSize = modules.getFormatter().formatFileSize(doc.getSource().getSize());
-//                String fileUrl = null;
-//
-//                if (doc.getSource() instanceof FileRemoteSource) {
-//                    fileUrl = modules.getFileUrl(((FileRemoteSource) doc.getSource()).getFileReference());
-//                }
-//
-//                boolean isUploading = doc.getSource() instanceof FileLocalSource;
-//
-//                String thumb = null;
-//                if (doc.getFastThumb() != null) {
-//                    String thumbBase64 = Base64Utils.toBase64(doc.getFastThumb().getImage());
-//                    thumb = "data:image/jpg;base64," + thumbBase64;
-//                }
-//
-//                if (value.getContent() instanceof PhotoContent && thumb != null) {
-//                    PhotoContent photoContent = (PhotoContent) value.getContent();
-//                    content = JsContentPhoto.create(
-//                            fileName, fileExtension, fileSize,
-//                            photoContent.getW(), photoContent.getH(), thumb,
-//                            fileUrl, isUploading);
-//                } else {
-//                    content = JsContentDocument.create(fileName, fileExtension, fileSize,
-//                            thumb, fileUrl, isUploading);
-//                }
-//
-//            } else {
-//                content = JsContentUnsupported.create();
-//            }
+
+            JsContent content;
+            if (value.getContent() instanceof TextContent) {
+                String text = ((TextContent) value.getContent()).getText();
+                content = JsContentText.create(text);
+            } else if (value.getContent() instanceof ServiceContent) {
+                content = JsContentService.create(messenger.getFormatter().formatFullServiceMessage(value.getSenderId(), (ServiceContent) value.getContent()));
+            } else if (value.getContent() instanceof DocumentContent) {
+                DocumentContent doc = (DocumentContent) value.getContent();
+
+                String fileName = doc.getName();
+                String fileExtension = doc.getExt();
+                String fileSize = messenger.getFormatter().formatFileSize(doc.getSource().getSize());
+                String fileUrl = null;
+
+                if (doc.getSource() instanceof FileRemoteSource) {
+                    fileUrl = messenger.getFileUrl(((FileRemoteSource) doc.getSource()).getFileReference());
+                }
+
+                boolean isUploading = doc.getSource() instanceof FileLocalSource;
+
+                String thumb = null;
+                if (doc.getFastThumb() != null) {
+                    String thumbBase64 = Base64Utils.toBase64(doc.getFastThumb().getImage());
+                    thumb = "data:image/jpg;base64," + thumbBase64;
+                }
+
+                if (value.getContent() instanceof PhotoContent && thumb != null) {
+                    PhotoContent photoContent = (PhotoContent) value.getContent();
+                    content = JsContentPhoto.create(
+                            fileName, fileExtension, fileSize,
+                            photoContent.getW(), photoContent.getH(), thumb,
+                            fileUrl, isUploading);
+                } else {
+                    content = JsContentDocument.create(fileName, fileExtension, fileSize,
+                            thumb, fileUrl, isUploading);
+                }
+
+            } else {
+                content = JsContentUnsupported.create();
+            }
 
             return create(rid, sortKey, sender, isOut, date, fullDate, Enums.convert(value.getMessageState()), isOnServer, content);
         }

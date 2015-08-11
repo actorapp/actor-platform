@@ -36,6 +36,6 @@ public class JsLocaleProvider implements LocaleRuntime {
         if (min < 10) {
             min = "0" + min;
         }
-        return ht + ":" + min;
+        return hr + ":" + min;
     }-*/;
 }
