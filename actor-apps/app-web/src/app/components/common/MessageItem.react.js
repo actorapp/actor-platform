@@ -9,17 +9,17 @@ import emojify from 'emojify.js';
 import hljs from 'highlight.js';
 import marked from 'marked';
 import emojiCharacters from 'emoji-named-characters';
-import Lightbox from 'jsonlylightbox';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
 import AvatarItem from 'components/common/AvatarItem.react';
+import Image from './Image.react';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import { MessageContentTypes } from 'constants/ActorAppConstants';
 
-let lastMessageSenderId,
-    lastMessageContentType;
+let lastMessageSenderId = null,
+    lastMessageContentType = null;
 
 var MessageItem = React.createClass({
   displayName: 'MessageItem',
@@ -174,35 +174,19 @@ const memoizedProcessText = memoize(processText, {
     max: 10000
 });
 
-// lightbox init
-const lightbox = new Lightbox();
-const lightboxOptions = {
-  animation: false,
-  controlClose: '<i class="material-icons">close</i>'
-};
-lightbox.load(lightboxOptions);
-
 MessageItem.Content = React.createClass({
   propTypes: {
     content: React.PropTypes.object.isRequired
   },
 
-  mixins: [PureRenderMixin],
-
-  getInitialState() {
-    return {
-      isImageLoaded: false
-    };
-  },
-
   render() {
     const content = this.props.content;
-    const isImageLoaded = this.state.isImageLoaded;
+
+    // TODO: move all types to subcomponents
+
     let contentClassName = classNames('message__content', {
       'message__content--service': content.content === MessageContentTypes.SERVICE,
       'message__content--text': content.content === MessageContentTypes.TEXT,
-      'message__content--photo': content.content === MessageContentTypes.PHOTO,
-      'message__content--photo--loaded': isImageLoaded,
       'message__content--document': content.content === MessageContentTypes.DOCUMENT,
       'message__content--unsupported': content.content === MessageContentTypes.UNSUPPORTED
     });
@@ -221,39 +205,10 @@ MessageItem.Content = React.createClass({
           </div>
         );
       case 'photo':
-        const preview = <img className="photo photo--preview" src={content.preview}/>;
-        const k = content.w / 300;
-        const photoMessageStyes = {
-          width: Math.round(content.w / k),
-          height: Math.round(content.h / k)
-        };
-
-        let original,
-            preloader;
-
-        if (content.fileUrl) {
-          original = (
-            <img className="photo photo--original"
-                 height={content.h}
-                 onClick={this.openLightBox}
-                 onLoad={this.imageLoaded}
-                 src={content.fileUrl}
-                 width={content.w}/>
-          );
-        }
-
-        if (content.isUploading === true || isImageLoaded === false) {
-          preloader =
-            <div className="preloader"><div/><div/><div/><div/><div/></div>;
-        }
-
         return (
-          <div className={contentClassName} style={photoMessageStyes}>
-            {preview}
-            {original}
-            {preloader}
-            <svg dangerouslySetInnerHTML={{__html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>'}}></svg>
-          </div>
+          <Image content={content}
+                 loadingClassName="message__content--photo"
+                 loadedClassName="message__content--photo message__content--photo--loaded"/>
         );
       case 'document':
         contentClassName = classNames(contentClassName, 'row');
@@ -287,14 +242,6 @@ MessageItem.Content = React.createClass({
         );
       default:
     }
-  },
-
-  imageLoaded() {
-    this.setState({isImageLoaded: true});
-  },
-
-  openLightBox() {
-    lightbox.open(this.props.content.fileUrl);
   }
 });
 
