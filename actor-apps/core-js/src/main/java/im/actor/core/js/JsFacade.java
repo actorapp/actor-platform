@@ -19,11 +19,11 @@ import im.actor.core.js.entity.Enums;
 import im.actor.core.js.entity.JsAuthErrorClosure;
 import im.actor.core.js.entity.JsAuthSuccessClosure;
 import im.actor.core.js.entity.JsClosure;
+import im.actor.core.js.entity.JsContact;
+import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsGroup;
 import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsPeer;
-import im.actor.core.js.entity.JsPromise;
-import im.actor.core.js.entity.JsPromiseExecutor;
 import im.actor.core.js.entity.JsTyping;
 import im.actor.core.js.entity.JsUser;
 import im.actor.core.js.providers.JsNotificationsProvider;
@@ -37,6 +37,9 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.js.JsFileSystemProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
+import im.actor.runtime.js.mvvm.JsDisplayListCallback;
+import im.actor.runtime.js.utils.JsPromise;
+import im.actor.runtime.js.utils.JsPromiseExecutor;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -211,53 +214,53 @@ public class JsFacade implements Exportable {
 
     // Dialogs
 
-//    public void bindDialogs(AngularListCallback<JsDialog> callback) {
-//        if (callback == null) {
-//            return;
-//        }
-//        messenger.getDialogsList().subscribe(callback);
-//    }
-//
-//    public void unbindDialogs(AngularListCallback<JsDialog> callback) {
-//        if (callback == null) {
-//            return;
-//        }
-//        messenger.getDialogsList().unsubscribe(callback);
-//    }
-//
-//    // Contacts
-//
-//    public void bindContacts(AngularListCallback<JsContact> callback) {
-//        if (callback == null) {
-//            return;
-//        }
-//        messenger.getContactsList().subscribe(callback);
-//    }
-//
-//    public void unbindContacts(AngularListCallback<JsContact> callback) {
-//        if (callback == null) {
-//            return;
-//        }
-//        messenger.getContactsList().unsubscribe(callback);
-//    }
-//
-//    // Chats
-//
-//    public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
-//        Log.d(TAG, "bindChat: " + peer);
-//        if (callback == null) {
-//            return;
-//        }
-//        messenger.getConversationList(peer.convert()).subscribe(callback);
-//    }
-//
-//    public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
-//        Log.d(TAG, "unbindChat: " + peer);
-//        if (callback == null) {
-//            return;
-//        }
-//        messenger.getConversationList(peer.convert()).unsubscribe(callback);
-//    }
+    public void bindDialogs(JsDisplayListCallback<JsDialog> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedDialogList().subscribe(callback);
+    }
+
+    public void unbindDialogs(JsDisplayListCallback<JsDialog> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedDialogList().unsubscribe(callback);
+    }
+
+    // Contacts
+
+    public void bindContacts(JsDisplayListCallback<JsContact> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedContactList().subscribe(callback);
+    }
+
+    public void unbindContacts(JsDisplayListCallback<JsContact> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedContactList().unsubscribe(callback);
+    }
+
+    // Chats
+
+    public void bindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
+        Log.d(TAG, "bindChat: " + peer);
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedChatList(peer.convert()).subscribe(callback);
+    }
+
+    public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
+        Log.d(TAG, "unbindChat: " + peer);
+        if (callback == null) {
+            return;
+        }
+        messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
+    }
 
     public void onMessageShown(JsPeer peer, JsMessage message) {
         if (message.isOnServer()) {
