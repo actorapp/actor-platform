@@ -170,11 +170,11 @@
       padding: 7px 14px;
 
       cursor: pointer;
-      //opacity: .6;
+      opacity: .6;
       //color: rgba(white, .6);
 
       color: white;
-      //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
+      transition: opacity $default-transition-duration $default-transition-timing, background $default-transition-duration $default-transition-timing;
       .avatar {
         margin: 0 10px 0 0;
 
