@@ -42,6 +42,7 @@ public class JsNotificationsProvider implements NotificationProvider {
     public void onNotification(ModuleContext messenger, List<Notification> topNotifications,
                                int messagesCount, int conversationsCount, boolean silentUpdate,
                                boolean isInApp) {
+
         if (silentUpdate) {
             return;
         }

@@ -2,23 +2,23 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.js.angular;
+package im.actor.core.js.modules;
 
 import java.util.ArrayList;
 
 /**
  * Created by ex3ndr on 27.03.15.
  */
-public class AngularValue<T> {
+public class JsBindedValue<T> {
 
     private T value;
-    private ArrayList<AngularValueCallback> callbacks = new ArrayList<AngularValueCallback>();
+    private ArrayList<JsBindedValueCallback> callbacks = new ArrayList<JsBindedValueCallback>();
 
-    public AngularValue(T value) {
+    public JsBindedValue(T value) {
         this.value = value;
     }
 
-    public AngularValue() {
+    public JsBindedValue() {
 
     }
 
@@ -26,20 +26,20 @@ public class AngularValue<T> {
         return value;
     }
 
-    public void subscribe(AngularValueCallback callback) {
+    public void subscribe(JsBindedValueCallback callback) {
         if (!callbacks.contains(callback)) {
             callbacks.add(callback);
             callback.onChanged(value);
         }
     }
 
-    public void unsubscribe(AngularValueCallback callback) {
+    public void unsubscribe(JsBindedValueCallback callback) {
         callbacks.remove(callback);
     }
 
     public void changeValue(T value) {
         this.value = value;
-        for (AngularValueCallback callback : callbacks) {
+        for (JsBindedValueCallback callback : callbacks) {
             callback.onChanged(value);
         }
     }

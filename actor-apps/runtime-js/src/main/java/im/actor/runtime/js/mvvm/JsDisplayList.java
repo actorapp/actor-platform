@@ -24,6 +24,7 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
     private final JsEntityConverter<V, T> entityConverter;
 
     private ArrayList<JsDisplayListCallback<T>> callbacks = new ArrayList<JsDisplayListCallback<T>>();
+    private ArrayList<JsDisplayListCallback<T>> callbacksInverted = new ArrayList<JsDisplayListCallback<T>>();
 
     private ArrayList<V> values;
     private JsArray<T> jsValues;
@@ -52,11 +53,26 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
         if (!callbacks.contains(callback)) {
             callbacks.add(callback);
         }
+
+        // new JsArray<T>(jsValues)
+
         callback.onCollectionChanged(jsValues);
     }
 
     public void unsubscribe(JsDisplayListCallback<T> callback) {
         callbacks.remove(callback);
+    }
+
+    public void subscribeInverted(JsDisplayListCallback<T> callback) {
+        if (!callbacksInverted.contains(callback)) {
+            callbacksInverted.add(callback);
+        }
+
+        callback.onCollectionChanged(reverse(jsValues));
+    }
+
+    public void unsubscribeInverted(JsDisplayListCallback<T> callback) {
+        callbacksInverted.remove(callback);
     }
 
     public void forceReconvert(long id) {
@@ -161,6 +177,13 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
         for (JsDisplayListCallback<T> callback : callbacks) {
             callback.onCollectionChanged(jsValues);
         }
+
+        if (callbacksInverted.size() > 0) {
+            JsArray<T> rev = reverse(jsValues);
+            for (JsDisplayListCallback<T> callback : callbacksInverted) {
+                callback.onCollectionChanged(rev);
+            }
+        }
     }
 
     protected native void clear(JsArray<T> array)/*-{ array.splice(0, array.length); }-*/;
@@ -168,6 +191,8 @@ public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & Li
     protected native void insert(JsArray<T> array, int index, T obj)/*-{ array.splice(index, 0, obj); }-*/;
 
     protected native void remove(JsArray<T> array, int index)/*-{ array.splice(index, 1); }-*/;
+
+    protected native JsArray<T> reverse(JsArray<T> array)/*-{ return array.slice().reverse(); }-*/;
 
     @Override
     public void initCenter(long rid) {

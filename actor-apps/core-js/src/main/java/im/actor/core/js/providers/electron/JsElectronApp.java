@@ -1,8 +1,5 @@
 package im.actor.core.js.providers.electron;
 
-/**
- * Created by ex3ndr on 31.07.15.
- */
 public class JsElectronApp {
     public static native boolean isSupported()/*-{
         return 'require' in $wnd;
@@ -21,5 +18,10 @@ public class JsElectronApp {
     public static native void hideNewMessages()/*-{
         var ipc = $wnd.require('ipc');
         ipc.send('new-messages-hide');
+    }-*/;
+
+    public static native void updateBadge(int count)/*-{
+        var ipc = $wnd.require('ipc');
+        ipc.send('tray-badge', { count: count });
     }-*/;
 }

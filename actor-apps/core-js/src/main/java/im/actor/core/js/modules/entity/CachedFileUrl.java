@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.js.angular.entity;
+package im.actor.core.js.modules.entity;
 
 import java.io.IOException;
 

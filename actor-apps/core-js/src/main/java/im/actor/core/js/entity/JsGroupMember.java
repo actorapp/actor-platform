@@ -16,6 +16,6 @@ public class JsGroupMember extends JavaScriptObject {
     }
 
     public final native JsPeerInfo getPeerInfo()/*-{
-        return peerInfo;
+        return this.peerInfo;
     }-*/;
 }
