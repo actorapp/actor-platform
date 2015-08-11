@@ -10,6 +10,8 @@ const lightboxOptions = {
 };
 lightbox.load(lightboxOptions);
 
+let cache = {};
+
 class Image extends React.Component {
   static propTypes = {
     content: React.PropTypes.object.isRequired,
@@ -21,7 +23,7 @@ class Image extends React.Component {
     super(props);
 
     this.state = {
-      isImageLoaded: false
+      isImageLoaded: this.isCached()
     };
   }
 
@@ -29,33 +31,59 @@ class Image extends React.Component {
     lightbox.open(this.props.content.fileUrl, "message");
   }
 
+  onLoad() {
+    this.setCached();
+    if (!this.state.isImageLoaded) {
+      this.setState({isImageLoaded: true});
+    }
+  }
+
+  isCached() {
+    return (cache[this.props.content.fileUrl] === true);
+  }
+
+  setCached() {
+    cache[this.props.content.fileUrl] = true;
+  }
+
   render() {
     const content = this.props.content;
 
-    const preview = <img className="photo photo--preview" src={content.preview}/>;
     const k = content.w / 300;
     const styles = {
       width: Math.round(content.w / k),
       height: Math.round(content.h / k)
     };
 
-    let original,
-      preloader;
+    let original = null;
 
     if (content.fileUrl) {
       original = (
         <img className="photo photo--original"
              height={content.h}
              onClick={this.openLightBox.bind(this)}
-             onLoad={() => this.setState({isImageLoaded: true})}
+             onLoad={this.onLoad.bind(this)}
              src={content.fileUrl}
              width={content.w}/>
       );
     }
 
-    if (content.isUploading === true || this.state.isImageLoaded === false) {
-      preloader =
-        <div className="preloader"><div/><div/><div/><div/><div/></div>;
+    let preview = null,
+        preloader = null;
+
+    if (!this.isCached()) {
+      preview = <img className="photo photo--preview" src={content.preview}/>;
+
+      if (content.isUploading === true || this.state.isImageLoaded === false) {
+        preloader =
+          <div className="preloader">
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+            <div/>
+          </div>;
+      }
     }
 
     const className = this.state.isImageLoaded ? this.props.loadedClassName : this.props.loadingClassName;
