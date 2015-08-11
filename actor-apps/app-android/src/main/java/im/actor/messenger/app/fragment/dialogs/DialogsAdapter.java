@@ -5,9 +5,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import im.actor.core.entity.Dialog;
+import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
-import im.actor.runtime.mvvm.BindedDisplayList;
 
 public class DialogsAdapter extends BindedListAdapter<Dialog, DialogHolder> {
 

@@ -9,18 +9,19 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.runtime.generic.mvvm.alg.Modification;
+import im.actor.core.runtime.generic.mvvm.alg.Modifications;
 import im.actor.runtime.Log;
 import im.actor.runtime.annotations.MainThread;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.mvvm.ValueModel;
-import im.actor.runtime.mvvm.alg.Modification;
-import im.actor.runtime.mvvm.alg.Modifications;
 import im.actor.runtime.storage.ListEngineDisplayExt;
 import im.actor.runtime.storage.ListEngineDisplayListener;
 import im.actor.runtime.storage.ListEngineDisplayLoadCallback;
 import im.actor.runtime.storage.ListEngineItem;
 
-public class BindedDisplayList<T extends BserObject & ListEngineItem> extends DisplayList<T> {
+public class BindedDisplayList<T extends BserObject & ListEngineItem> extends DisplayList<T>
+        implements im.actor.runtime.mvvm.DisplayList<T> {
 
     private static final String TAG = "BindedDisplayList";
 
@@ -96,6 +97,16 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     }
 
     // Init methods
+
+    @Override
+    public void initCenter(long rid) {
+        initCenter(rid, false);
+    }
+
+    @Override
+    public void initTop() {
+        initTop(false);
+    }
 
     @MainThread
     @ObjectiveCName("initEmpty")

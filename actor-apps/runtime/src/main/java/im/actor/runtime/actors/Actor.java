@@ -53,14 +53,14 @@ public class Actor {
         return context.getSelf();
     }
 
-    /**
-     * Actor context
-     *
-     * @return context
-     */
-    protected final ActorContext context() {
-        return context;
-    }
+//    /**
+//     * Actor context
+//     *
+//     * @return context
+//     */
+//    protected final ActorContext context() {
+//        return context;
+//    }
 
     /**
      * Sender of last received message

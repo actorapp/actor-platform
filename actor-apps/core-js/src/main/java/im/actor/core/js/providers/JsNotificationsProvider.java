@@ -8,7 +8,6 @@ import com.google.gwt.media.client.Audio;
 
 import java.util.List;
 
-import im.actor.core.Messenger;
 import im.actor.core.NotificationProvider;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Notification;
@@ -17,6 +16,7 @@ import im.actor.core.js.JsMessenger;
 import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.providers.notification.JsManagedNotification;
 import im.actor.core.js.providers.notification.JsNotification;
+import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 
@@ -34,12 +34,12 @@ public class JsNotificationsProvider implements NotificationProvider {
     }
 
     @Override
-    public void onMessageArriveInApp(Messenger messenger) {
+    public void onMessageArriveInApp(ModuleContext messenger) {
         playSound();
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications,
+    public void onNotification(ModuleContext messenger, List<Notification> topNotifications,
                                int messagesCount, int conversationsCount, boolean silentUpdate,
                                boolean isInApp) {
         if (silentUpdate) {
@@ -56,11 +56,11 @@ public class JsNotificationsProvider implements NotificationProvider {
         if (conversationsCount == 1) {
             Avatar peerAvatar;
             if (notification.getPeer().getPeerType() == PeerType.PRIVATE) {
-                UserVM userVM = messenger.getUsers().get(notification.getPeer().getPeerId());
+                UserVM userVM = messenger.getUsersModule().getUsers().get(notification.getPeer().getPeerId());
                 peerTitle = userVM.getName().get();
                 peerAvatar = userVM.getAvatar().get();
             } else {
-                GroupVM groupVM = messenger.getGroups().get(notification.getPeer().getPeerId());
+                GroupVM groupVM = messenger.getGroupsModule().getGroupsCollection().get(notification.getPeer().getPeerId());
                 peerTitle = groupVM.getName().get();
                 peerAvatar = groupVM.getAvatar().get();
             }
@@ -88,9 +88,9 @@ public class JsNotificationsProvider implements NotificationProvider {
                     contentMessage += "\n";
                 }
                 if (notification.getPeer().getPeerType() == PeerType.GROUP) {
-                    contentMessage += messenger.getUsers().get(notification.getSender()).getName().get() + ": ";
+                    contentMessage += messenger.getUsersModule().getUsers().get(notification.getSender()).getName().get() + ": ";
                 }
-                contentMessage += messenger.getFormatter().formatContentText(n.getSender(),
+                contentMessage += messenger.getI18nModule().formatContentText(n.getSender(),
                         n.getContentDescription().getContentType(),
                         n.getContentDescription().getText(),
                         n.getContentDescription().getRelatedUser());
@@ -105,14 +105,14 @@ public class JsNotificationsProvider implements NotificationProvider {
                 if (contentMessage.length() > 0) {
                     contentMessage += "\n";
                 }
-                String senderName = messenger.getUser(n.getSender()).getName().get();
+                String senderName = messenger.getUsersModule().getUsers().get(n.getSender()).getName().get();
                 if (n.getPeer().getPeerType() == PeerType.GROUP) {
-                    String groupName = messenger.getGroup(n.getPeer().getPeerId()).getName().get();
+                    String groupName = messenger.getGroupsModule().getGroupsCollection().get(n.getPeer().getPeerId()).getName().get();
                     contentMessage += "[" + groupName + "] " + senderName + ": ";
                 } else {
                     contentMessage += senderName + ": ";
                 }
-                contentMessage += messenger.getFormatter().formatContentText(n.getSender(),
+                contentMessage += messenger.getI18nModule().formatContentText(n.getSender(),
                         n.getContentDescription().getContentType(),
                         n.getContentDescription().getText(),
                         n.getContentDescription().getRelatedUser());

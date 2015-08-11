@@ -6,43 +6,59 @@ package im.actor.core.modules;
 
 import im.actor.core.Configuration;
 import im.actor.core.Messenger;
-import im.actor.core.MessengerEnvironment;
-import im.actor.runtime.*;
-import im.actor.runtime.storage.PreferencesStorage;
 import im.actor.core.i18n.I18nEngine;
+import im.actor.core.modules.internal.AnalyticsModule;
+import im.actor.core.modules.internal.AppStateModule;
+import im.actor.core.modules.internal.ContactsModule;
+import im.actor.core.modules.internal.DisplayLists;
+import im.actor.core.modules.internal.ExternalModule;
+import im.actor.core.modules.internal.FilesModule;
+import im.actor.core.modules.internal.GroupsModule;
+import im.actor.core.modules.internal.MessagesModule;
+import im.actor.core.modules.internal.NotificationsModule;
+import im.actor.core.modules.internal.PresenceModule;
+import im.actor.core.modules.internal.ProfileModule;
+import im.actor.core.modules.internal.PushesModule;
+import im.actor.core.modules.internal.SearchModule;
+import im.actor.core.modules.internal.SecurityModule;
+import im.actor.core.modules.internal.SettingsModule;
+import im.actor.core.modules.internal.TypingModule;
+import im.actor.core.modules.internal.users.UsersModule;
 import im.actor.core.modules.utils.PreferenceApiStorage;
 import im.actor.core.network.ActorApi;
 import im.actor.core.network.ActorApiCallback;
 import im.actor.core.network.Endpoints;
 import im.actor.core.util.Timing;
+import im.actor.runtime.Storage;
+import im.actor.runtime.storage.PreferencesStorage;
 
-public class Modules {
+public class Modules implements ModuleContext {
 
     private final Configuration configuration;
     private final I18nEngine i18nEngine;
-    private final Analytics analytics;
+    private final AnalyticsModule analytics;
     private final ActorApi actorApi;
-    private final Auth auth;
+    private final Authentication authentication;
     private final AppStateModule appStateModule;
     private final Messenger messenger;
-    private final External external;
+    private final ExternalModule external;
 
     private boolean isAppVisible;
     private volatile PreferencesStorage preferences;
-    private volatile Users users;
-    private volatile Groups groups;
+    private volatile UsersModule users;
+    private volatile GroupsModule groups;
     private volatile Updates updates;
-    private volatile Messages messages;
-    private volatile Pushes pushes;
-    private volatile Presence presence;
-    private volatile Typing typing;
-    private volatile Files filesModule;
-    private volatile Contacts contacts;
-    private volatile Notifications notifications;
-    private volatile Settings settings;
-    private volatile Profile profile;
+    private volatile MessagesModule messages;
+    private volatile PushesModule pushes;
+    private volatile PresenceModule presence;
+    private volatile TypingModule typing;
+    private volatile FilesModule filesModule;
+    private volatile ContactsModule contacts;
+    private volatile NotificationsModule notifications;
+    private volatile SettingsModule settings;
+    private volatile ProfileModule profile;
     private volatile SearchModule search;
-    private volatile Security security;
+    private volatile SecurityModule security;
     private volatile DisplayLists displayLists;
 
     public Modules(Messenger messenger, Configuration configuration) {
@@ -58,7 +74,7 @@ public class Modules {
         this.preferences = Storage.createPreferencesStorage();
 
         timing.section("Analytics");
-        this.analytics = new Analytics(this);
+        this.analytics = new AnalyticsModule(this);
 
         timing.section("API");
         this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
@@ -69,53 +85,53 @@ public class Modules {
                 configuration.getMaxDelay(),
                 configuration.getMaxFailureCount());
 
-        timing.section("Auth");
-        this.auth = new Auth(this);
-
-        timing.section("Pushes");
-        this.pushes = new Pushes(this);
-
         timing.section("App State");
         this.appStateModule = new AppStateModule(this);
 
         timing.section("External");
-        this.external = new External(this);
+        this.external = new ExternalModule(this);
 
+        timing.section("Pushes");
+        this.pushes = new PushesModule(this);
+
+        timing.section("Auth");
+        this.authentication = new Authentication(this);
+        this.authentication.run();
         timing.end();
     }
 
-    public void run() {
-        this.auth.run();
-    }
+//    public void run() {
+//        this.auth.run();
+//    }
 
     public void onLoggedIn() {
         Timing timing = new Timing("ACCOUNT_CREATE");
         timing.section("Users");
-        users = new Users(this);
+        users = new UsersModule(this);
         timing.section("Groups");
-        groups = new Groups(this);
+        groups = new GroupsModule(this);
         timing.section("Search");
         search = new SearchModule(this);
         timing.section("Security");
-        security = new Security(this);
+        security = new SecurityModule(this);
         timing.section("Messages");
-        messages = new Messages(this);
+        messages = new MessagesModule(this);
         timing.section("Updates");
         updates = new Updates(this);
         timing.section("Presence");
-        presence = new Presence(this);
+        presence = new PresenceModule(this);
         timing.section("Typing");
-        typing = new Typing(this);
+        typing = new TypingModule(this);
         timing.section("Files");
-        filesModule = new Files(this);
+        filesModule = new FilesModule(this);
         timing.section("Notifications");
-        notifications = new Notifications(this);
+        notifications = new NotificationsModule(this);
         timing.section("Contacts");
-        contacts = new Contacts(this);
+        contacts = new ContactsModule(this);
         timing.section("Settings");
-        settings = new Settings(this);
+        settings = new SettingsModule(this);
         timing.section("Profile");
-        profile = new Profile(this);
+        profile = new ProfileModule(this);
         timing.end();
 
         timing = new Timing("ACCOUNT_RUN");
@@ -137,11 +153,8 @@ public class Modules {
         updates.run();
         timing.section("Presence");
         presence.run();
-
-        if (Storage.isDisplayListsSupported()) {
-            timing.section("DisplayLists");
-            displayLists = new DisplayLists(MessengerEnvironment.ANDROID, this);
-        }
+        timing.section("DisplayLists");
+        displayLists = new DisplayLists(this);
         timing.end();
 
         // Notify about app visible
@@ -169,6 +182,11 @@ public class Modules {
         });
     }
 
+    @Override
+    public Module getModule(String name) {
+        return null;
+    }
+
     public PreferencesStorage getPreferences() {
         return preferences;
     }
@@ -177,19 +195,19 @@ public class Modules {
         return configuration;
     }
 
-    public Auth getAuthModule() {
-        return auth;
+    public Authentication getAuthModule() {
+        return authentication;
     }
 
-    public Users getUsersModule() {
+    public UsersModule getUsersModule() {
         return users;
     }
 
-    public Groups getGroupsModule() {
+    public GroupsModule getGroupsModule() {
         return groups;
     }
 
-    public Messages getMessagesModule() {
+    public MessagesModule getMessagesModule() {
         return messages;
     }
 
@@ -197,11 +215,11 @@ public class Modules {
         return updates;
     }
 
-    public Typing getTypingModule() {
+    public TypingModule getTypingModule() {
         return typing;
     }
 
-    public Presence getPresenceModule() {
+    public PresenceModule getPresenceModule() {
         return presence;
     }
 
@@ -209,27 +227,27 @@ public class Modules {
         return actorApi;
     }
 
-    public I18nEngine getI18nEngine() {
+    public I18nEngine getI18nModule() {
         return i18nEngine;
     }
 
-    public Contacts getContactsModule() {
+    public ContactsModule getContactsModule() {
         return contacts;
     }
 
-    public Files getFilesModule() {
+    public FilesModule getFilesModule() {
         return filesModule;
     }
 
-    public Notifications getNotifications() {
+    public NotificationsModule getNotificationsModule() {
         return notifications;
     }
 
-    public Settings getSettings() {
+    public SettingsModule getSettingsModule() {
         return settings;
     }
 
-    public Profile getProfile() {
+    public ProfileModule getProfileModule() {
         return profile;
     }
 
@@ -237,15 +255,15 @@ public class Modules {
         return appStateModule;
     }
 
-    public Pushes getPushes() {
+    public PushesModule getPushesModule() {
         return pushes;
     }
 
-    public Security getSecurity() {
+    public SecurityModule getSecurityModule() {
         return security;
     }
 
-    public SearchModule getSearch() {
+    public SearchModule getSearchModule() {
         return search;
     }
 
@@ -253,11 +271,11 @@ public class Modules {
         return messenger;
     }
 
-    public Analytics getAnalytics() {
+    public AnalyticsModule getAnalyticsModule() {
         return analytics;
     }
 
-    public External getExternal() {
+    public ExternalModule getExternalModule() {
         return external;
     }
 
@@ -271,7 +289,7 @@ public class Modules {
         analytics.trackAppVisible();
         if (getPresenceModule() != null) {
             getPresenceModule().onAppVisible();
-            getNotifications().onAppVisible();
+            getNotificationsModule().onAppVisible();
         }
     }
 
@@ -280,7 +298,7 @@ public class Modules {
         analytics.trackAppHidden();
         if (getPresenceModule() != null) {
             getPresenceModule().onAppHidden();
-            getNotifications().onAppHidden();
+            getNotificationsModule().onAppHidden();
         }
     }
 

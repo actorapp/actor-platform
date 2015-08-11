@@ -9,7 +9,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import im.actor.messenger.R;
-import im.actor.core.modules.Auth;
 
 import static im.actor.messenger.app.core.Core.messenger;
 
@@ -23,7 +22,8 @@ public class OAuthFragment extends BaseAuthFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         wv = new WebView(getActivity());
         wv.getSettings().setJavaScriptEnabled(true);
-        wv.loadUrl(messenger().getPreferences().getString(Auth.KEY_OAUTH_REDIRECT_URL));
+        // TODO: Fix URL
+        wv.loadUrl(messenger().getAuthEmail());
         wv.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

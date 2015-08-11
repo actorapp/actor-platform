@@ -4,21 +4,21 @@
 
 package im.actor.core.modules.updates;
 
-import im.actor.runtime.annotations.Verified;
 import im.actor.core.api.Peer;
 import im.actor.core.api.PeerType;
 import im.actor.core.api.TypingType;
+import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.typing.TypingActor;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.core.modules.BaseModule;
-import im.actor.core.modules.Modules;
-import im.actor.core.modules.typing.TypingActor;
+import im.actor.runtime.annotations.Verified;
 
 @Verified
-public class TypingProcessor extends BaseModule {
+public class TypingProcessor extends AbsModule {
     private ActorRef typingActor;
 
     @Verified
-    public TypingProcessor(Modules modules) {
+    public TypingProcessor(ModuleContext modules) {
         super(modules);
         this.typingActor = TypingActor.get(modules);
     }
