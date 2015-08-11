@@ -1,30 +1,24 @@
 package im.actor.server.group
 
-import im.actor.server.db.DbExtension
-import im.actor.server.event.TSEvent
-
-import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success }
-
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
-import com.github.benmanes.caffeine.cache.Cache
+import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.server.db.DbExtension
+import im.actor.server.event.TSEvent
+import im.actor.server.file.Avatar
+import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
+import im.actor.server.peer.{ GroupPeerExtension, GroupPeerRegion }
+import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
+import im.actor.server.util.{ FileStorageAdapter, S3StorageExtension }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.commons.serialization.ActorSerializer
-import im.actor.server.file.Avatar
-import im.actor.server.office.PeerProcessor.MessageSentComplete
-import im.actor.server.office.{ ProcessorState, PeerProcessor, StopOffice }
-import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManagerRegion }
-import im.actor.server.sequence.SeqStateDate
-import im.actor.server.user.{ UserExtension, UserViewRegion, UserProcessorRegion }
-import im.actor.server.util.{ S3StorageExtension, FileStorageAdapter }
-import im.actor.utils.cache.CacheHelpers._
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 
 private[group] case class Member(
   userId:        Int,
@@ -65,8 +59,6 @@ trait GroupQuery {
 
 object GroupProcessor {
 
-  private case class Initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean)
-
   def register(): Unit = {
     ActorSerializer.register(20001, classOf[GroupCommands.Create])
     ActorSerializer.register(20002, classOf[GroupCommands.CreateAck])
@@ -74,9 +66,6 @@ object GroupProcessor {
     ActorSerializer.register(20004, classOf[GroupCommands.Join])
     ActorSerializer.register(20005, classOf[GroupCommands.Kick])
     ActorSerializer.register(20006, classOf[GroupCommands.Leave])
-    ActorSerializer.register(20007, classOf[GroupCommands.SendMessage])
-    ActorSerializer.register(20008, classOf[GroupCommands.MessageReceived])
-    ActorSerializer.register(20009, classOf[GroupCommands.MessageRead])
     ActorSerializer.register(20010, classOf[GroupCommands.UpdateAvatar])
     ActorSerializer.register(20011, classOf[GroupCommands.MakePublic])
     ActorSerializer.register(20012, classOf[GroupCommands.MakePublicAck])
@@ -86,11 +75,14 @@ object GroupProcessor {
     ActorSerializer.register(20017, classOf[GroupCommands.MakeUserAdmin])
     ActorSerializer.register(20018, classOf[GroupCommands.RevokeIntegrationToken])
     ActorSerializer.register(20020, classOf[GroupCommands.RevokeIntegrationTokenAck])
-    ActorSerializer.register(20021, classOf[GroupCommands.MessageReceivedAck])
-    ActorSerializer.register(20022, classOf[GroupCommands.MessageReadAck])
+    ActorSerializer.register(20023, classOf[GroupCommands.JoinAfterFirstRead])
 
     ActorSerializer.register(21001, classOf[GroupQueries.GetIntegrationToken])
     ActorSerializer.register(21002, classOf[GroupQueries.GetIntegrationTokenResponse])
+    ActorSerializer.register(21003, classOf[GroupQueries.CheckAccessHash])
+    ActorSerializer.register(21004, classOf[GroupQueries.CheckAccessHashResponse])
+    ActorSerializer.register(21005, classOf[GroupQueries.GetMembers])
+    ActorSerializer.register(21006, classOf[GroupQueries.GetMembersResponse])
 
     ActorSerializer.register(22003, classOf[GroupEvents.UserInvited])
     ActorSerializer.register(22004, classOf[GroupEvents.UserJoined])
@@ -119,7 +111,6 @@ private[group] final class GroupProcessor
   with GroupsImplicits {
 
   import GroupCommands._
-  import GroupErrors._
 
   protected implicit val system: ActorSystem = context.system
   protected implicit val ec: ExecutionContext = context.dispatcher
@@ -133,18 +124,13 @@ private[group] final class GroupProcessor
   protected implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
+  protected implicit val groupPeerRegion: GroupPeerRegion = GroupPeerExtension(system).region
+
   protected val groupId = self.path.name.toInt
 
   override def persistenceId = GroupOffice.persistenceIdFor(groupId)
 
   context.setReceiveTimeout(5.hours)
-
-  private val MaxCacheSize = 100L
-
-  protected var lastSenderId: Option[Int] = None
-
-  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
-    createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   def updatedState(evt: TSEvent, state: Group): Group = {
     evt match {
@@ -184,6 +170,8 @@ private[group] final class GroupProcessor
   override def handleQuery(state: Group): Receive = {
     case GroupQueries.GetIntegrationToken(_, userId) ⇒ getIntegrationToken(state, userId)
     case GroupQueries.GetApiStruct(_, userId)        ⇒ getApiStruct(state, userId)
+    case GroupQueries.CheckAccessHash(_, accessHash) ⇒ checkAccessHash(state, accessHash)
+    case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
   }
 
   override def handleInitCommand: Receive = {
@@ -192,39 +180,6 @@ private[group] final class GroupProcessor
   }
 
   override def handleCommand(state: Group): Receive = {
-    case SendMessage(_, senderUserId, senderAuthId, hash, randomId, message, isFat) ⇒
-      if (hash == state.accessHash) {
-        if (hasMember(state, senderUserId) || isBot(state, senderUserId)) {
-          context.become {
-            case MessageSentComplete ⇒
-              unstashAll()
-              context become working(state)
-            case msg ⇒
-              stash()
-          }
-
-          val date = new DateTime
-          val replyTo = sender()
-
-          sendMessage(state, senderUserId, senderAuthId, state.members.keySet, randomId, date, message, isFat) onComplete {
-            case Success(seqstatedate) ⇒
-              replyTo ! seqstatedate
-              self ! MessageSentComplete
-            case Failure(e) ⇒
-              replyTo ! Status.Failure(e)
-              log.error(e, "Failed to send message")
-              self ! MessageSentComplete
-          }
-        } else {
-          sender() ! Status.Failure(NotAMember)
-        }
-      } else {
-        sender() ! Status.Failure(InvalidAccessHash)
-      }
-    case MessageReceived(_, receiverUserId, _, date) ⇒
-      messageReceived(state, receiverUserId, date)
-    case MessageRead(_, readerUserId, readerAuthId, date) ⇒
-      messageRead(state, readerUserId, readerAuthId, date)
     case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
       if (!hasMember(state, inviteeUserId)) {
         persist(TSEvent(now(), GroupEvents.UserInvited(inviteeUserId, inviterUserId))) { evt ⇒
@@ -239,6 +194,8 @@ private[group] final class GroupProcessor
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
       }
+    case JoinAfterFirstRead(_, joiningUserId) ⇒
+      joinAfterFirstRead(state, joiningUserId)
     case Join(_, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
       join(state, joiningUserId, joiningUserAuthId, invitingUserId)
     case Kick(_, kickedUserId, kickerUserId, kickerAuthId, randomId) ⇒
