@@ -4,12 +4,16 @@
 
 package im.actor.runtime.js;
 
+import com.google.gwt.i18n.client.LocaleInfo;
+
 import im.actor.runtime.LocaleRuntime;
+import im.actor.runtime.Log;
 
 public class JsLocaleProvider implements LocaleRuntime {
 
     @Override
     public String getCurrentLocale() {
+        Log.d("JsLocaleProvider", "Locale Name: " + LocaleInfo.getCurrentLocale().getLocaleName());
         return "En";
     }
 
