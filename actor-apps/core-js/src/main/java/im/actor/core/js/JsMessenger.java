@@ -14,9 +14,9 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.FastThumb;
-import im.actor.core.js.angular.AngularFilesModule;
-import im.actor.core.js.angular.AngularModule;
-import im.actor.core.js.angular.AngularValue;
+import im.actor.core.js.modules.JsFilesModule;
+import im.actor.core.js.modules.JsBindingModule;
+import im.actor.core.js.modules.JsBindedValue;
 import im.actor.core.js.entity.JsContact;
 import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsGroup;
@@ -49,15 +49,15 @@ public class JsMessenger extends Messenger {
         return instance;
     }
 
-    private AngularModule angularModule;
-    private AngularFilesModule angularFilesModule;
+    private JsBindingModule jsBindingModule;
+    private JsFilesModule filesModule;
     private JsFileSystemProvider fileSystemProvider;
 
     public JsMessenger(Configuration configuration) {
         super(configuration);
         fileSystemProvider = (JsFileSystemProvider) Storage.getFileSystemRuntime();
-        angularFilesModule = new AngularFilesModule(modules);
-        angularModule = new AngularModule(this, angularFilesModule, modules);
+        filesModule = new JsFilesModule(modules);
+        jsBindingModule = new JsBindingModule(this, filesModule, modules);
 
         if (JsChromePush.isSupported()) {
             Log.d("JsMessenger", "ChromePush Supported");
@@ -126,20 +126,20 @@ public class JsMessenger extends Messenger {
         modules.getMessagesModule().loadMoreHistory(peer);
     }
 
-    public AngularValue<JsUser> getJsUser(int uid) {
-        return angularModule.getUser(uid);
+    public JsBindedValue<JsUser> getJsUser(int uid) {
+        return jsBindingModule.getUser(uid);
     }
 
-    public AngularValue<JsGroup> getJsGroup(int gid) {
-        return angularModule.getGroup(gid);
+    public JsBindedValue<JsGroup> getJsGroup(int gid) {
+        return jsBindingModule.getGroup(gid);
     }
 
-    public AngularValue<JsTyping> getTyping(Peer peer) {
-        return angularModule.getTyping(peer);
+    public JsBindedValue<JsTyping> getTyping(Peer peer) {
+        return jsBindingModule.getTyping(peer);
     }
 
-    public AngularValue<String> getOnlineStatus() {
-        return angularModule.getOnlineStatus();
+    public JsBindedValue<String> getOnlineStatus() {
+        return jsBindingModule.getOnlineStatus();
     }
 
     public JsPeerInfo buildPeerInfo(Peer peer) {
@@ -163,15 +163,15 @@ public class JsMessenger extends Messenger {
     }
 
     public JsDisplayList<JsDialog, Dialog> getSharedDialogList() {
-        return (JsDisplayList<JsDialog, Dialog>) modules.getDisplayLists().getDialogsSharedList();
+        return jsBindingModule.getSharedDialogList();
     }
 
     public JsDisplayList<JsContact, Contact> getSharedContactList() {
-        return (JsDisplayList<JsContact, Contact>) modules.getDisplayLists().getContactsSharedList();
+        return jsBindingModule.getSharedContactList();
     }
 
     public JsDisplayList<JsMessage, Message> getSharedChatList(Peer peer) {
-        return (JsDisplayList<JsMessage, Message>) modules.getDisplayLists().getMessagesSharedList(peer);
+        return jsBindingModule.getSharedMessageList(peer);
     }
 
     private String getSmallAvatarUrl(Avatar avatar) {
@@ -182,6 +182,6 @@ public class JsMessenger extends Messenger {
     }
 
     public String getFileUrl(FileReference fileReference) {
-        return angularFilesModule.getFileUrl(fileReference.getFileId(), fileReference.getAccessHash());
+        return filesModule.getFileUrl(fileReference.getFileId(), fileReference.getAccessHash());
     }
 }

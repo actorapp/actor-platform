@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.js.angular;
+package im.actor.core.js.modules;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import im.actor.core.api.FileLocation;
 import im.actor.core.api.rpc.RequestGetFileUrl;
 import im.actor.core.api.rpc.ResponseGetFileUrl;
-import im.actor.core.js.angular.entity.CachedFileUrl;
+import im.actor.core.js.modules.entity.CachedFileUrl;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.utils.BaseKeyValueEngine;
@@ -19,15 +19,15 @@ import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.runtime.Storage;
 
-public class AngularFilesModule extends AbsModule {
+public class JsFilesModule extends AbsModule {
 
-    private static final String TAG = "AngularFilesModule";
+    private static final String TAG = "JsFilesModule";
 
     private BaseKeyValueEngine<CachedFileUrl> keyValueStorage;
     private HashSet<Long> requestedFiles = new HashSet<Long>();
-    private ArrayList<AngularFileLoadedListener> listeners = new ArrayList<AngularFileLoadedListener>();
+    private ArrayList<JsFileLoadedListener> listeners = new ArrayList<JsFileLoadedListener>();
 
-    public AngularFilesModule(Modules modules) {
+    public JsFilesModule(Modules modules) {
         super(modules);
 
         keyValueStorage = new BaseKeyValueEngine<CachedFileUrl>(Storage.createKeyValue("file_url_cache")) {
@@ -49,13 +49,13 @@ public class AngularFilesModule extends AbsModule {
         };
     }
 
-    public void registerListener(AngularFileLoadedListener listener) {
+    public void registerListener(JsFileLoadedListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
-    public void unregisterListener(AngularFileLoadedListener listener) {
+    public void unregisterListener(JsFileLoadedListener listener) {
         listeners.remove(listener);
     }
 
@@ -72,7 +72,7 @@ public class AngularFilesModule extends AbsModule {
         return null;
     }
 
-    public void requestFileUrl(final long id, long accessHash) {
+    private void requestFileUrl(final long id, long accessHash) {
         if (requestedFiles.contains(id)) {
             return;
         }
@@ -84,7 +84,7 @@ public class AngularFilesModule extends AbsModule {
                 requestedFiles.remove(id);
                 keyValueStorage.addOrUpdateItem(new CachedFileUrl(id, response.getUrl(),
                         im.actor.runtime.Runtime.getCurrentSyncedTime() + response.getTimeout() * 1000L));
-                for (AngularFileLoadedListener listener : listeners) {
+                for (JsFileLoadedListener listener : listeners) {
                     listener.onFileLoaded(id);
                 }
             }
