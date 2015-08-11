@@ -236,6 +236,18 @@ message UserQueries {
         repeated int64 phones = 1;
         repeated string emails = 2;
     }
+
+    message CheckAccessHash {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+        required int64 sender_auth_id = 2;
+        required int64 access_hash = 3;
+    }
+
+    message CheckAccessHashResponse {
+        required bool is_correct = 1;
+    }
 }
 
 message UserEvents {

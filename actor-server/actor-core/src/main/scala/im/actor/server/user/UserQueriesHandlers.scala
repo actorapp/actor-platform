@@ -12,11 +12,6 @@ private[user] trait UserQueriesHandlers {
 
   import UserQueries._
 
-  protected def handleQuery(q: UserQuery, state: User): Unit =
-    q match {
-      case GetAuthIds(_) ⇒ getAuthIds(state)
-    }
-
   protected def getAuthIds(state: User): Unit = {
     sender() ! GetAuthIdsResponse(state.authIds.toSeq)
   }
@@ -42,4 +37,8 @@ private[user] trait UserQueriesHandlers {
   protected def getContactRecords(state: User): Unit = {
     sender() ! GetContactRecordsResponse(state.phones, state.emails)
   }
+
+  protected def checkAccessHash(state: User, senderAuthId: Long, accessHash: Long): Unit =
+    sender() ! CheckAccessHashResponse(isCorrect = accessHash == ACLUtils.userAccessHash(senderAuthId, userId, state.accessSalt))
+
 }

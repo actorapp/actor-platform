@@ -40,4 +40,15 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
 
     sender() ! GetApiStructResponse(struct)
   }
+
+  def checkAccessHash(group: Group, hash: Long): Unit =
+    sender() ! CheckAccessHashResponse(isCorrect = group.accessHash == hash)
+
+  def getMembers(group: Group): Unit = {
+    val members = group.members.keySet.toSeq
+    val invited = group.invitedUserIds.toSeq
+    val bot = group.bot.map(_.userId).getOrElse(throw new Exception("Not bot provided for this group"))
+    sender() ! GetMembersResponse(members, invited, bot)
+  }
+
 }
