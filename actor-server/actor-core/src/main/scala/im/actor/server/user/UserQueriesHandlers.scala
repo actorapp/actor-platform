@@ -22,7 +22,7 @@ private[user] trait UserQueriesHandlers {
   }
 
   protected def getApiStruct(state: User, clientUserId: Int, clientAuthId: Long): Unit = {
-    db.run(p.contact.UserContact.findName(clientUserId: Int, state.id).headOption map (_.getOrElse(None))).map { localName ⇒
+    db.run(p.contact.UserContact.findName(clientUserId, state.id).headOption map (_.getOrElse(None))).map { localName ⇒
       GetApiStructResponse(ApiUser(
         id = state.id,
         accessHash = ACLUtils.userAccessHash(clientAuthId, state.id, state.accessSalt),
