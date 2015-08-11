@@ -1,3 +1,4 @@
+import polyfills from 'utils/polyfills'; // eslint-disable-line
 import crosstab from 'crosstab';
 
 import React from 'react';
