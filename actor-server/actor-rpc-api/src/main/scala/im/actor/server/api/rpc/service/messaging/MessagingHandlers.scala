@@ -1,11 +1,14 @@
 package im.actor.server.api.rpc.service.messaging
 
+import im.actor.api.rpc._
+import im.actor.server.peer.GroupPeerOperations
+import im.actor.server.sequence.SeqStateDate
+
 import scala.concurrent._
 import scala.concurrent.duration._
 
 import akka.util.Timeout
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
+import DBIOResult._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
@@ -24,28 +27,31 @@ private[messaging] trait MessagingHandlers {
 
   override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: Message, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      val dateTime = new DateTime
-      val dateMillis = dateTime.getMillis
-
       val seqstateAction = outPeer.`type` match {
         case PeerType.Private ⇒
-          DBIO.from(UserOffice.sendMessage(outPeer.id, client.userId, client.authId, outPeer.accessHash, randomId, message))
+          for {
+            isChecked ← fromFuture(UserOffice.checkAccessHash(outPeer.id, client.authId, outPeer.accessHash))
+            _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
+            result ← fromFuture(UserOffice.sendMessage(outPeer.id, client.userId, client.authId, outPeer.accessHash, randomId, message))
+          } yield result
         case PeerType.Group ⇒
-          DBIO.from(GroupOffice.sendMessage(outPeer.id, client.userId, client.authId, outPeer.accessHash, randomId, message))
+          for {
+            isChecked ← fromFuture(GroupOffice.checkAccessHash(outPeer.id, outPeer.accessHash))
+            _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
+            result ← fromFuture(GroupPeerOperations.sendMessage(outPeer.id, client.userId, client.authId, randomId, message))
+          } yield result
       }
 
-      for (seqstate ← seqstateAction) yield {
+      (for (SeqStateDate(seq, state, date) ← seqstateAction) yield {
         val fromPeer = Peer(PeerType.Private, client.userId)
         val toPeer = outPeer.asPeer
-        onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, dateMillis, message))
-        Ok(ResponseSeqDate(seqstate.seq, seqstate.state.toByteArray, dateMillis))
-      }
+        onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, date, message))
+        ResponseSeqDate(seq, state.toByteArray, date)
+      }).run
     }
 
     db.run(toDBIOAction(authorizedAction)) recover {
-      case GroupErrors.InvalidAccessHash ⇒ Error(CommonErrors.InvalidAccessHash)
-      case GroupErrors.NotAMember        ⇒ Error(CommonErrors.forbidden("You are not a group member."))
-      case UserOffice.InvalidAccessHash  ⇒ Error(CommonErrors.InvalidAccessHash)
+      case GroupErrors.NotAMember ⇒ Error(CommonErrors.forbidden("You are not a group member."))
     }
   }
 }

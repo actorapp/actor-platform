@@ -38,11 +38,9 @@ trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[
 
   type AuthIdRandomId = (Long, Long)
 
-  protected def formatAuthored(authorName: String, message: String): String = s"${authorName}: ${message}"
+  private def formatAuthored(authorName: String, message: String): String = s"${authorName}: ${message}"
 
   protected def privatePeerStruct(userId: Int): Peer = Peer(PeerType.Private, userId)
-
-  protected def groupPeerStruct(groupId: Int): Peer = Peer(PeerType.Group, groupId)
 
   protected def getUpdateCountersChanged(userId: Int): DBIO[UpdateCountersChanged] = for {
     unreadTotal ← p.HistoryMessage.getUnreadTotal(userId)
