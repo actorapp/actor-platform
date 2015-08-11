@@ -24,6 +24,8 @@ public class Contact extends BserObject implements ListEngineItem {
         }
     };
 
+    public static final String ENTITY_NAME = "Contact";
+
     private int uid;
     private long sortKey;
     @Nullable

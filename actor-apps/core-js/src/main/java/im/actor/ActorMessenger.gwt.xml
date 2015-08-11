@@ -2,15 +2,15 @@
     "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to="actor">
 
-
     <entry-point class='im.actor.js.AppEntryPoint' />
 
     <source path='js' />
-    <source path='model' />
+    <source path='core' />
     <resource path='model' />
 
     <inherits name="com.google.gwt.logging.Logging" />
     <inherits name="org.bouncycastle.BouncyCastle" />
+    <inherits name="im.actor.ActorRuntime" />
     <inherits name="com.google.gwt.storage.Storage" />
     <inherits name="com.google.gwt.resources.Resources" />
     <inherits name="com.google.gwt.http.HTTP"/>

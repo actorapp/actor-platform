@@ -509,6 +509,6 @@ public class I18nEngine {
     }
 
     private User getUser(int uid) {
-        return modules.getUsersModule().getUsers().getValue(uid);
+        return modules.getUsersModule().getUsersStorage().getValue(uid);
     }
 }

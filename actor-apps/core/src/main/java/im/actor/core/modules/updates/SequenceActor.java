@@ -19,14 +19,14 @@ import im.actor.core.api.rpc.RequestGetDifference;
 import im.actor.core.api.rpc.RequestGetState;
 import im.actor.core.api.rpc.ResponseGetDifference;
 import im.actor.core.api.rpc.ResponseSeq;
-import im.actor.runtime.*;
-import im.actor.core.modules.Modules;
+import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
 import im.actor.core.modules.updates.internal.InternalUpdate;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Update;
+import im.actor.runtime.Log;
 
 public class SequenceActor extends ModuleActor {
 
@@ -50,7 +50,7 @@ public class SequenceActor extends ModuleActor {
     private UpdateProcessor processor;
     private UpdatesParser parser;
 
-    public SequenceActor(Modules modules) {
+    public SequenceActor(ModuleContext modules) {
         super(modules);
     }
 
@@ -59,7 +59,7 @@ public class SequenceActor extends ModuleActor {
         seq = preferences().getInt(KEY_SEQ, -1);
         state = preferences().getBytes(KEY_STATE);
         parser = new UpdatesParser();
-        processor = new UpdateProcessor(modules());
+        processor = new UpdateProcessor(context());
 
         self().send(new Invalidate());
     }
@@ -172,34 +172,35 @@ public class SequenceActor extends ModuleActor {
         }
 
         // Checking update
-        Update update;
+        Update update = null;
         try {
             update = new UpdatesParser().read(type, body);
         } catch (IOException e) {
             Log.w(TAG, "Unable to parse update: ignoring");
             e.printStackTrace();
-            return;
         }
 
-        if ((!(u instanceof FatSeqUpdate)) && processor.isCausesInvalidation(update)) {
-            Log.w(TAG, "Message causes invalidation");
-            invalidate();
-            return;
-        }
+        if (update != null) {
+            if ((!(u instanceof FatSeqUpdate)) && processor.isCausesInvalidation(update)) {
+                Log.w(TAG, "Message causes invalidation");
+                invalidate();
+                return;
+            }
 
-        // Processing update
-        Log.d(TAG, "Processing update: " + update);
+            // Processing update
+            Log.d(TAG, "Processing update: " + update);
 
-        if (u instanceof FatSeqUpdate) {
-            FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
-            processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), false);
-        }
+            if (u instanceof FatSeqUpdate) {
+                FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
+                processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), false);
+            }
 
-        processor.processUpdate(update);
+            processor.processUpdate(update);
 
-        if (u instanceof FatSeqUpdate) {
-            FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
-            processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), true);
+            if (u instanceof FatSeqUpdate) {
+                FatSeqUpdate fatSeqUpdate = (FatSeqUpdate) u;
+                processor.applyRelated(fatSeqUpdate.getUsers(), fatSeqUpdate.getGroups(), true);
+            }
         }
 
         // Saving state
@@ -329,11 +330,11 @@ public class SequenceActor extends ModuleActor {
     }
 
     private void onUpdateStarted() {
-        modules().getAppStateModule().getAppStateVM().getIsSyncing().change(true);
+        context().getAppStateModule().getAppStateVM().getIsSyncing().change(true);
     }
 
     private void onUpdateEnded() {
-        modules().getAppStateModule().getAppStateVM().getIsSyncing().change(false);
+        context().getAppStateModule().getAppStateVM().getIsSyncing().change(false);
     }
 
     private void checkFuture() {

@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.runtime.annotations.Verified;
 import im.actor.core.api.AppCounters;
 import im.actor.core.api.HistoryMessage;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
@@ -18,23 +17,24 @@ import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
-import im.actor.core.modules.BaseModule;
-import im.actor.core.modules.Modules;
-import im.actor.core.modules.messages.ConversationActor;
-import im.actor.core.modules.messages.ConversationHistoryActor;
-import im.actor.core.modules.messages.CursorReceiverActor;
-import im.actor.core.modules.messages.DialogsActor;
-import im.actor.core.modules.messages.DialogsHistoryActor;
-import im.actor.core.modules.messages.OwnReadActor;
-import im.actor.core.modules.messages.SenderActor;
-import im.actor.core.modules.messages.entity.DialogHistory;
-import im.actor.core.modules.messages.entity.EntityConverter;
+import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.messages.ConversationActor;
+import im.actor.core.modules.internal.messages.ConversationHistoryActor;
+import im.actor.core.modules.internal.messages.CursorReceiverActor;
+import im.actor.core.modules.internal.messages.DialogsActor;
+import im.actor.core.modules.internal.messages.DialogsHistoryActor;
+import im.actor.core.modules.internal.messages.OwnReadActor;
+import im.actor.core.modules.internal.messages.SenderActor;
+import im.actor.core.modules.internal.messages.entity.DialogHistory;
+import im.actor.core.modules.internal.messages.entity.EntityConverter;
+import im.actor.runtime.annotations.Verified;
 
-import static im.actor.core.modules.messages.entity.EntityConverter.convert;
+import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
-public class MessagesProcessor extends BaseModule {
-    public MessagesProcessor(Modules messenger) {
-        super(messenger);
+public class MessagesProcessor extends AbsModule {
+    public MessagesProcessor(ModuleContext context) {
+        super(context);
     }
 
     @Verified
@@ -199,7 +199,7 @@ public class MessagesProcessor extends BaseModule {
         if (dialogs.size() > 0) {
             dialogsActor().send(new DialogsActor.HistoryLoaded(dialogs));
         } else {
-            modules().getAppStateModule().onDialogsLoaded();
+            context().getAppStateModule().onDialogsLoaded();
         }
 
         // Sending notification to history actor
@@ -242,6 +242,6 @@ public class MessagesProcessor extends BaseModule {
     }
 
     public void onCountersChanged(AppCounters counters) {
-        modules().getAppStateModule().onCountersChanged(counters);
+        context().getAppStateModule().onCountersChanged(counters);
     }
 }

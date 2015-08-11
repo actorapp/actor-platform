@@ -7,12 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.core.runtime.generic.mvvm.DisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.bser.BserObject;
-import im.actor.runtime.mvvm.BindedDisplayList;
-import im.actor.runtime.mvvm.DisplayList;
 import im.actor.runtime.storage.ListEngineItem;
 
 /**

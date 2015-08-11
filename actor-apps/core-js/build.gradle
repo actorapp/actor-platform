@@ -13,7 +13,8 @@ gwt {
 
     compiler {
         strict = true;
-        style = "OBF"
+        // style = "OBF"
+        style = "PRETTY"
         enableClosureCompiler = false;
         disableClassMetadata = true;
         disableCastChecking = true;
@@ -23,16 +24,16 @@ gwt {
     maxHeapSize = "1024M";
 }
 
-//sourceSets {
-//    main {
-//        java {
-//            srcDirs = ['src/main/java', '../core/src/main/java', '../core-crypto/src/main/java', '../core-annotations/src/main/java']
-//        }
-//        resources {
-//            srcDirs = ['../core/src/main/resources']
-//        }
-//    }
-//}
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', '../core/src/main/java', '../runtime/src/main/java', '../runtime-js/src/main/java']
+        }
+        resources {
+            srcDirs = ['../core/src/main/resources']
+        }
+    }
+}
 
 dependencies {
     gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
@@ -44,7 +45,8 @@ dependencies {
 
 task buildPackage(dependsOn: ['war']) {
     doFirst {
-        delete "$buildDir/library"
+        delete "$buildDir/package"
+        delete "$buildDir/library "
 
         copy {
             into "$buildDir/library"

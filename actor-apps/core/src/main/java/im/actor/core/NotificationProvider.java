@@ -9,6 +9,7 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import java.util.List;
 
 import im.actor.core.entity.Notification;
+import im.actor.core.modules.ModuleContext;
 
 /**
  * Provider for notifications support
@@ -19,8 +20,8 @@ public interface NotificationProvider {
      *
      * @param messenger Messenger object
      */
-    @ObjectiveCName("onMessageArriveInAppWithMessenger:")
-    void onMessageArriveInApp(Messenger messenger);
+    @ObjectiveCName("onMessageArriveInAppWithContext:")
+    void onMessageArriveInApp(ModuleContext messenger);
 
     /**
      * On background notification
@@ -32,9 +33,9 @@ public interface NotificationProvider {
      * @param silentUpdate       is silent notification update required
      * @param isInApp            is notification performed in application window
      */
-    @ObjectiveCName("onNotificationWithMessenger:withTopNotifications:withMessagesCount:withConversationsCount:" +
+    @ObjectiveCName("onNotificationWithContext:withTopNotifications:withMessagesCount:withConversationsCount:" +
             "withSilentUpdate:withIsInApp:")
-    void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount,
+    void onNotification(ModuleContext messenger, List<Notification> topNotifications, int messagesCount,
                         int conversationsCount, boolean silentUpdate, boolean isInApp);
 
     /**

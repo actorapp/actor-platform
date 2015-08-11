@@ -10,10 +10,7 @@ import im.actor.runtime.crypto.bouncycastle.BouncyCastleRuntime;
 import im.actor.runtime.js.crypto.Rsa;
 
 public class JsCryptoProvider extends BouncyCastleRuntime {
-//    public JsCryptoProvider() {
-//        super(new JsRandomProvider());
-//    }
-//
+
     @Override
     public CryptoKeyPair generateRSA1024KeyPair() {
         return Rsa.generate1024RsaKey();

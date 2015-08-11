@@ -29,6 +29,7 @@ import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -37,7 +38,6 @@ import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
 import im.actor.messenger.app.util.Screen;
 import im.actor.runtime.android.view.BindedListAdapter;
-import im.actor.runtime.mvvm.BindedDisplayList;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;

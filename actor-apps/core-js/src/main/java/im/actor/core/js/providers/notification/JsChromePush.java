@@ -72,7 +72,7 @@ public class JsChromePush extends JavaScriptObject {
                         var endpointSections = mergedEndpoint.split('/');
                         var subscriptionId = endpointSections[endpointSections.length - 1];
 
-                        callback.@im.actor.model.js.providers.notification.PushSubscribeResult::onSubscribedChrome(*)(subscriptionId);
+                        callback.@im.actor.core.js.providers.notification.PushSubscribeResult::onSubscribedChrome(*)(subscriptionId);
                         return;
                     });
              });
