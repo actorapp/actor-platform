@@ -4,21 +4,21 @@
 
 package im.actor.core.modules.updates;
 
-import im.actor.runtime.annotations.Verified;
+import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.runtime.actors.ActorRef;
-import im.actor.core.modules.BaseModule;
-import im.actor.core.modules.Modules;
-import im.actor.core.modules.contacts.ContactsSyncActor;
+import im.actor.runtime.annotations.Verified;
 
 @Verified
-public class ContactsProcessor extends BaseModule {
+public class ContactsProcessor extends AbsModule {
 
     private ActorRef contactsSyncActor;
 
     @Verified
-    public ContactsProcessor(Modules modules) {
-        super(modules);
-        contactsSyncActor = modules().getContactsModule().getContactSyncActor();
+    public ContactsProcessor(ModuleContext context) {
+        super(context);
+        contactsSyncActor = context().getContactsModule().getContactSyncActor();
     }
 
     @Verified

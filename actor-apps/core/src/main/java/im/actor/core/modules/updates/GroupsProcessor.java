@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import im.actor.runtime.annotations.Verified;
 import im.actor.core.api.Member;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
@@ -21,17 +20,18 @@ import im.actor.core.entity.content.ServiceGroupTitleChanged;
 import im.actor.core.entity.content.ServiceGroupUserInvited;
 import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
-import im.actor.core.modules.BaseModule;
-import im.actor.core.modules.Modules;
-import im.actor.core.modules.messages.DialogsActor;
-import im.actor.core.modules.messages.entity.EntityConverter;
+import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.messages.DialogsActor;
+import im.actor.core.modules.internal.messages.entity.EntityConverter;
+import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.util.JavaUtil.equalsE;
 
-public class GroupsProcessor extends BaseModule {
+public class GroupsProcessor extends AbsModule {
 
-    public GroupsProcessor(Modules modules) {
-        super(modules);
+    public GroupsProcessor(ModuleContext context) {
+        super(context);
     }
 
     @Verified
@@ -245,7 +245,7 @@ public class GroupsProcessor extends BaseModule {
 
     @Verified
     private void onGroupDescChanged(Group group) {
-        modules().getMessagesModule().getDialogsActor()
+        context().getMessagesModule().getDialogsActor()
                 .send(new DialogsActor.GroupChanged(group));
     }
 }

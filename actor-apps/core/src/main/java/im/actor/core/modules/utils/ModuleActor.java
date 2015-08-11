@@ -10,7 +10,7 @@ import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
-import im.actor.core.modules.Modules;
+import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Updates;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -29,10 +29,10 @@ public class ModuleActor extends Actor {
     protected static final long CURSOR_OWN_READ = 2;
     protected static final long CURSOR_DELETE = 3;
 
-    private Modules modules;
+    private ModuleContext context;
 
-    public ModuleActor(Modules modules) {
-        this.modules = modules;
+    public ModuleActor(ModuleContext context) {
+        this.context = context;
     }
 
     public OutPeer buidOutPeer(Peer peer) {
@@ -64,11 +64,11 @@ public class ModuleActor extends Actor {
     }
 
     public KeyValueEngine<User> users() {
-        return modules.getUsersModule().getUsers();
+        return context.getUsersModule().getUsersStorage();
     }
 
     public KeyValueEngine<Group> groups() {
-        return modules.getGroupsModule().getGroups();
+        return context.getGroupsModule().getGroups();
     }
 
     public Group getGroup(int gid) {
@@ -80,31 +80,31 @@ public class ModuleActor extends Actor {
     }
 
     public UserVM getUserVM(int uid) {
-        return modules.getUsersModule().getUsersCollection().get(uid);
+        return context.getUsersModule().getUsers().get(uid);
     }
 
     public GroupVM getGroupVM(int gid) {
-        return modules.getGroupsModule().getGroupsCollection().get(gid);
+        return context.getGroupsModule().getGroupsCollection().get(gid);
     }
 
     public PreferencesStorage preferences() {
-        return modules.getPreferences();
+        return context.getPreferences();
     }
 
     public Configuration config() {
-        return modules.getConfiguration();
+        return context.getConfiguration();
     }
 
     public Updates updates() {
-        return modules.getUpdatesModule();
+        return context.getUpdatesModule();
     }
 
     public int myUid() {
-        return modules.getAuthModule().myUid();
+        return context.getAuthModule().myUid();
     }
 
-    public Modules modules() {
-        return modules;
+    public ModuleContext context() {
+        return context;
     }
 
     public <T extends Response> void request(Request<T> request) {
@@ -122,7 +122,7 @@ public class ModuleActor extends Actor {
     }
 
     public <T extends Response> void request(final Request<T> request, final RpcCallback<T> callback) {
-        modules.getActorApi().request(request, new RpcCallback<T>() {
+        context.getActorApi().request(request, new RpcCallback<T>() {
             @Override
             public void onResult(final T response) {
                 self().send(new Runnable() {

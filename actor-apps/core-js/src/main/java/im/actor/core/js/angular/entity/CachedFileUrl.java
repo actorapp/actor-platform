@@ -6,11 +6,11 @@ package im.actor.core.js.angular.entity;
 
 import java.io.IOException;
 
-import im.actor.core.droidkit.bser.Bser;
-import im.actor.core.droidkit.bser.BserObject;
-import im.actor.core.droidkit.bser.BserValues;
-import im.actor.core.droidkit.bser.BserWriter;
-import im.actor.core.droidkit.engine.KeyValueItem;
+import im.actor.runtime.bser.Bser;
+import im.actor.runtime.bser.BserObject;
+import im.actor.runtime.bser.BserValues;
+import im.actor.runtime.bser.BserWriter;
+import im.actor.runtime.storage.KeyValueItem;
 
 /**
  * Created by ex3ndr on 01.05.15.

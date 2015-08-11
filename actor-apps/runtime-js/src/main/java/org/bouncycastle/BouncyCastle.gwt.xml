@@ -5,4 +5,6 @@
     <source path="crypto"/>
     <source path="math"/>
     <source path="util"/>
+
+    <inherits name="im.actor.ActorRuntime" />
 </module>

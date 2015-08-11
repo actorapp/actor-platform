@@ -35,17 +35,14 @@ import im.actor.core.api.updates.UpdateMessageReceived;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.api.updates.UpdateParameterChanged;
 import im.actor.core.api.updates.UpdateTyping;
-import im.actor.core.api.updates.UpdateUserAboutChanged;
-import im.actor.core.api.updates.UpdateUserAvatarChanged;
 import im.actor.core.api.updates.UpdateUserLastSeen;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
-import im.actor.core.api.updates.UpdateUserNameChanged;
-import im.actor.core.api.updates.UpdateUserNickChanged;
 import im.actor.core.api.updates.UpdateUserOffline;
 import im.actor.core.api.updates.UpdateUserOnline;
-import im.actor.core.modules.BaseModule;
-import im.actor.core.modules.Modules;
-import im.actor.core.modules.contacts.ContactsSyncActor;
+import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.contacts.ContactsSyncActor;
+import im.actor.core.modules.internal.users.UsersProcessor;
 import im.actor.core.modules.updates.internal.ContactsLoaded;
 import im.actor.core.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.core.modules.updates.internal.GroupCreated;
@@ -56,7 +53,7 @@ import im.actor.core.modules.updates.internal.UsersFounded;
 import im.actor.core.network.parser.Update;
 import im.actor.core.viewmodel.UserVM;
 
-public class UpdateProcessor extends BaseModule {
+public class UpdateProcessor extends AbsModule {
 
     private static final String TAG = "Updates";
 
@@ -68,15 +65,15 @@ public class UpdateProcessor extends BaseModule {
     private TypingProcessor typingProcessor;
     private ContactsProcessor contactsProcessor;
 
-    public UpdateProcessor(Modules modules) {
-        super(modules);
-        this.settingsProcessor = new SettingsProcessor(modules);
-        this.usersProcessor = new UsersProcessor(modules);
-        this.messagesProcessor = new MessagesProcessor(modules);
-        this.groupsProcessor = new GroupsProcessor(modules);
-        this.presenceProcessor = new PresenceProcessor(modules);
-        this.typingProcessor = new TypingProcessor(modules);
-        this.contactsProcessor = new ContactsProcessor(modules);
+    public UpdateProcessor(ModuleContext context) {
+        super(context);
+        this.settingsProcessor = new SettingsProcessor(context);
+        this.usersProcessor = new UsersProcessor(context);
+        this.messagesProcessor = new MessagesProcessor(context);
+        this.groupsProcessor = new GroupsProcessor(context);
+        this.presenceProcessor = new PresenceProcessor(context);
+        this.typingProcessor = new TypingProcessor(context);
+        this.contactsProcessor = new ContactsProcessor(context);
     }
 
     public void applyRelated(List<User> users,
@@ -103,14 +100,14 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof ContactsLoaded) {
             ContactsLoaded contactsLoaded = (ContactsLoaded) update;
             applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<Group>(), false);
-            modules().getContactsModule().getContactSyncActor()
+            context().getContactsModule().getContactSyncActor()
                     .send(new ContactsSyncActor.ContactsLoaded(contactsLoaded.getContacts()));
         } else if (update instanceof UsersFounded) {
             final UsersFounded founded = (UsersFounded) update;
             applyRelated(((UsersFounded) update).getUsers(), new ArrayList<Group>(), false);
             final ArrayList<UserVM> users = new ArrayList<UserVM>();
             for (User u : founded.getUsers()) {
-                users.add(modules().getUsersModule().getUsersCollection().get(u.getId()));
+                users.add(context().getUsersModule().getUsers().get(u.getId()));
             }
             runOnUiThread(new Runnable() {
                 @Override
@@ -135,11 +132,11 @@ public class UpdateProcessor extends BaseModule {
     public void applyDifferenceUpdate(List<User> users, List<Group> groups, List<Update> updates) {
         applyRelated(users, groups, false);
 
-        modules().getNotifications().pauseNotifications();
+        context().getNotificationsModule().pauseNotifications();
         for (int i = 0; i < updates.size(); i++) {
             processUpdate(updates.get(i));
         }
-        modules().getNotifications().resumeNotifications();
+        context().getNotificationsModule().resumeNotifications();
 
         applyRelated(users, groups, true);
     }
@@ -165,22 +162,10 @@ public class UpdateProcessor extends BaseModule {
 
     public void processUpdate(Update update) {
         // Log.d(TAG, update + "");
-        if (update instanceof UpdateUserNameChanged) {
-            UpdateUserNameChanged userNameChanged = (UpdateUserNameChanged) update;
-            usersProcessor.onUserNameChanged(userNameChanged.getUid(), userNameChanged.getName());
-        } else if (update instanceof UpdateUserLocalNameChanged) {
-            UpdateUserLocalNameChanged localNameChanged = (UpdateUserLocalNameChanged) update;
-            usersProcessor.onUserLocalNameChanged(localNameChanged.getUid(), localNameChanged.getLocalName());
-        } else if (update instanceof UpdateUserNickChanged) {
-            UpdateUserNickChanged nickChanged = (UpdateUserNickChanged) update;
-            usersProcessor.onUserNickChanged(nickChanged.getUid(), nickChanged.getNickname());
-        } else if (update instanceof UpdateUserAboutChanged) {
-            UpdateUserAboutChanged userAboutChanged = (UpdateUserAboutChanged) update;
-            usersProcessor.onUserAboutChanged(userAboutChanged.getUid(), userAboutChanged.getAbout());
-        } else if (update instanceof UpdateUserAvatarChanged) {
-            UpdateUserAvatarChanged avatarChanged = (UpdateUserAvatarChanged) update;
-            usersProcessor.onUserAvatarChanged(avatarChanged.getUid(), avatarChanged.getAvatar());
-        } else if (update instanceof UpdateMessage) {
+        if (usersProcessor.process(update)) {
+            return;
+        }
+        if (update instanceof UpdateMessage) {
             UpdateMessage message = (UpdateMessage) update;
             messagesProcessor.onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
                     message.getMessage());

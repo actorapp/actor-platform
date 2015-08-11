@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.core.runtime.generic.mvvm.DisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
@@ -41,8 +43,6 @@ import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-import im.actor.runtime.mvvm.BindedDisplayList;
-import im.actor.runtime.mvvm.DisplayList;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 

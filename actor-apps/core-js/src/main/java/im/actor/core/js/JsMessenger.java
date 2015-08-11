@@ -7,21 +7,14 @@ package im.actor.core.js;
 import im.actor.core.Configuration;
 import im.actor.core.Messenger;
 import im.actor.core.entity.Avatar;
-import im.actor.core.entity.Contact;
-import im.actor.core.entity.Dialog;
 import im.actor.core.entity.FileReference;
-import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.js.angular.AngularFilesModule;
-import im.actor.core.js.angular.AngularList;
 import im.actor.core.js.angular.AngularModule;
 import im.actor.core.js.angular.AngularValue;
-import im.actor.core.js.entity.JsContact;
-import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsGroup;
-import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsPeer;
 import im.actor.core.js.entity.JsPeerInfo;
 import im.actor.core.js.entity.JsTyping;
@@ -29,16 +22,17 @@ import im.actor.core.js.entity.JsUser;
 import im.actor.core.js.entity.Placeholders;
 import im.actor.core.js.images.JsImageResize;
 import im.actor.core.js.images.JsResizeListener;
-import im.actor.core.js.providers.JsFileSystemProvider;
-import im.actor.core.js.providers.fs.JsBlob;
-import im.actor.core.js.providers.fs.JsFile;
 import im.actor.core.js.providers.notification.JsChromePush;
 import im.actor.core.js.providers.notification.JsSafariPush;
 import im.actor.core.js.providers.notification.PushSubscribeResult;
-import im.actor.core.log.Log;
-import im.actor.core.util.Base64Utils;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.Log;
+import im.actor.runtime.Storage;
+import im.actor.runtime.crypto.Base64Utils;
+import im.actor.runtime.js.JsFileSystemProvider;
+import im.actor.runtime.js.fs.JsBlob;
+import im.actor.runtime.js.fs.JsFile;
 
 public class JsMessenger extends Messenger {
 
@@ -48,7 +42,7 @@ public class JsMessenger extends Messenger {
 
     public JsMessenger(Configuration configuration) {
         super(configuration);
-        fileSystemProvider = (JsFileSystemProvider) configuration.getFileSystemProvider();
+        fileSystemProvider = (JsFileSystemProvider) Storage.getFileSystemRuntime();
         angularFilesModule = new AngularFilesModule(modules);
         angularModule = new AngularModule(this, angularFilesModule, modules);
 
@@ -115,18 +109,6 @@ public class JsMessenger extends Messenger {
 
     public void loadMoreHistory(Peer peer) {
         modules.getMessagesModule().loadMoreHistory(peer);
-    }
-
-    public AngularList<JsDialog, Dialog> getDialogsList() {
-        return angularModule.getDialogsList();
-    }
-
-    public AngularList<JsMessage, Message> getConversationList(Peer peer) {
-        return angularModule.getMessagesList(peer);
-    }
-
-    public AngularList<JsContact, Contact> getContactsList() {
-        return angularModule.getContactsList();
     }
 
     public AngularValue<JsUser> getJsUser(int uid) {

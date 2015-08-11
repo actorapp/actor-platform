@@ -4,16 +4,16 @@
 
 package im.actor.core.modules.updates;
 
-import im.actor.core.modules.BaseModule;
-import im.actor.core.modules.Modules;
+import im.actor.core.modules.AbsModule;
+import im.actor.core.modules.ModuleContext;
 
-public class SettingsProcessor extends BaseModule {
+public class SettingsProcessor extends AbsModule {
 
-    public SettingsProcessor(Modules modules) {
+    public SettingsProcessor(ModuleContext modules) {
         super(modules);
     }
 
     public void onSettingsChanged(String key, String value) {
-        modules().getSettings().onUpdatedSetting(key, value);
+        context().getSettingsModule().onUpdatedSetting(key, value);
     }
 }

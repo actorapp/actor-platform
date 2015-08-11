@@ -11,7 +11,7 @@ public class JsPromise extends JavaScriptObject {
     public static native JsPromise create(JsPromiseExecutor executor)/*-{
         var _executor = executor
         return new Promise(function (resolve, reject) {
-            _executor.@im.actor.model.js.entity.JsPromiseExecutor::performExecute(*)(resolve, reject);
+            _executor.@im.actor.core.js.entity.JsPromiseExecutor::performExecute(*)(resolve, reject);
         });
     }-*/;
 

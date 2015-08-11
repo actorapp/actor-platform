@@ -10,27 +10,32 @@ public class JsLocaleProvider implements LocaleRuntime {
 
     @Override
     public String getCurrentLocale() {
-        return null;
+        return "En";
     }
 
     @Override
     public String formatDate(long date) {
-        return formatDate(date / 1000);
+        return formatDateNative((int) (date / 1000));
     }
 
     @Override
     public String formatTime(long date) {
-        return formatTime(date / 1000);
+        return formatTimeNative((int) (date / 1000));
     }
 
-    private final native String formatDate(int dateVal)/*-{
+    private native String formatDateNative(int dateVal)/*-{
         var date = new Date(dateVal * 1000);
-        return date.toLocaleDateString()
+        return date.toLocaleDateString();
     }-*/;
 
-    // TODO: Reimplement
-    private final native String formatTime(int dateVal)/*-{
-        var date = new Date(dateVal * 1000);
-        return date.toLocaleTimeString()
+    // TODO: 24/12 hour format handling
+    private native String formatTimeNative(int dateVal)/*-{
+        var d = new Date(dateVal * 1000);
+        var hr = d.getHours();
+        var min = d.getMinutes();
+        if (min < 10) {
+            min = "0" + min;
+        }
+        return ht + ":" + min;
     }-*/;
 }

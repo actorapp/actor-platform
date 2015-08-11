@@ -20,13 +20,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import im.actor.core.Messenger;
 import im.actor.core.NotificationProvider;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Notification;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
-import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.core.modules.ModuleContext;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;
@@ -61,12 +60,12 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onMessageArriveInApp(Messenger messenger) {
+    public void onMessageArriveInApp(ModuleContext messenger) {
         soundPool.play(soundId, 1.0f, 1.0f, 0, 0, 1.0f);
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount,
+    public void onNotification(ModuleContext messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount,
                                boolean silentUpdate, boolean isInApp) {
 
         // Android ignores isInApp argument because it is ok to send normal notification
@@ -80,10 +79,10 @@ public class AndroidNotifications implements NotificationProvider {
         builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
         int defaults = NotificationCompat.DEFAULT_LIGHTS;
-        if (messenger.isNotificationSoundEnabled()) {
+        if (messenger.getSettingsModule().isNotificationSoundEnabled()) {
             defaults |= NotificationCompat.DEFAULT_SOUND;
         }
-        if (messenger.isNotificationVibrationEnabled()) {
+        if (messenger.getSettingsModule().isVibrationEnabled()) {
             defaults |= NotificationCompat.DEFAULT_VIBRATE;
         }
         if (silentUpdate) {
@@ -112,7 +111,7 @@ public class AndroidNotifications implements NotificationProvider {
             final String sender = getNotificationSender(topNotification);
 
 //            final CharSequence text = bypass.markdownToSpannable(messenger().getFormatter().formatNotificationText(topNotification), true).toString();
-            final CharSequence text = messenger.getFormatter().formatNotificationText(topNotification);
+            final CharSequence text = messenger.getI18nModule().formatNotificationText(topNotification);
             visiblePeer = topNotification.getPeer();
 
             Avatar avatar = null;
@@ -140,25 +139,25 @@ public class AndroidNotifications implements NotificationProvider {
             manager.notify(NOTIFICATION_ID, result);
 
             if (avatar != null && avatar.getSmallImage() != null && avatar.getSmallImage().getFileReference() != null) {
-                messenger.bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
-
-                    @Override
-                    public void onNotDownloaded() {
-                    }
-
-                    @Override
-                    public void onDownloading(float progress) {
-                    }
-
-                    @Override
-                    public void onDownloaded(FileSystemReference reference) {
-
-                        RoundedBitmapDrawable d = getRoundedBitmapDrawable(reference);
-                        android.app.Notification result = buildSingleMessageNotification(d, builder, sender, text, topNotification);
-                        //NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                        manager.notify(NOTIFICATION_ID, result);
-                    }
-                });
+//                messenger.bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+//
+//                    @Override
+//                    public void onNotDownloaded() {
+//                    }
+//
+//                    @Override
+//                    public void onDownloading(float progress) {
+//                    }
+//
+//                    @Override
+//                    public void onDownloaded(FileSystemReference reference) {
+//
+//                        RoundedBitmapDrawable d = getRoundedBitmapDrawable(reference);
+//                        android.app.Notification result = buildSingleMessageNotification(d, builder, sender, text, topNotification);
+//                        //NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//                        manager.notify(NOTIFICATION_ID, result);
+//                    }
+//                });
             } else {
                 manager.notify(NOTIFICATION_ID, result);
             }
@@ -182,7 +181,7 @@ public class AndroidNotifications implements NotificationProvider {
                 if (topNotification.getPeer().getPeerType() == PeerType.GROUP) {
                     inboxStyle.addLine(getNotificationTextFull(n, messenger));
                 } else {
-                    inboxStyle.addLine(messenger.getFormatter().formatNotificationText(n));
+                    inboxStyle.addLine(messenger.getI18nModule().formatNotificationText(n));
                 }
             }
             inboxStyle.setSummaryText(messagesCount + " messages");
@@ -210,23 +209,23 @@ public class AndroidNotifications implements NotificationProvider {
             manager.notify(NOTIFICATION_ID, result);
 
             if (avatar != null && avatar.getSmallImage() != null && avatar.getSmallImage().getFileReference() != null) {
-                messenger.bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
-
-                    @Override
-                    public void onNotDownloaded() {
-                    }
-
-                    @Override
-                    public void onDownloading(float progress) {
-                    }
-
-                    @Override
-                    public void onDownloaded(FileSystemReference reference) {
-                        RoundedBitmapDrawable d = getRoundedBitmapDrawable(reference);
-                        android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d);
-                        manager.notify(NOTIFICATION_ID, result);
-                    }
-                });
+//                messenger.bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+//
+//                    @Override
+//                    public void onNotDownloaded() {
+//                    }
+//
+//                    @Override
+//                    public void onDownloading(float progress) {
+//                    }
+//
+//                    @Override
+//                    public void onDownloaded(FileSystemReference reference) {
+//                        RoundedBitmapDrawable d = getRoundedBitmapDrawable(reference);
+//                        android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d);
+//                        manager.notify(NOTIFICATION_ID, result);
+//                    }
+//                });
             } else {
                 manager.notify(NOTIFICATION_ID, result);
             }
@@ -306,15 +305,15 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
 
-    private CharSequence getNotificationTextFull(Notification notification, Messenger messenger) {
+    private CharSequence getNotificationTextFull(Notification notification, ModuleContext messenger) {
         SpannableStringBuilder res = new SpannableStringBuilder();
-        if (!messenger.getFormatter().isLargeDialogMessage(notification.getContentDescription().getContentType())) {
+        if (!messenger.getI18nModule().isLargeDialogMessage(notification.getContentDescription().getContentType())) {
             res.append(getNotificationSender(notification));
             res.append(": ");
             res.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, res.length(), 0);
         }
 //        res.append(bypass.markdownToSpannable(messenger().getFormatter().formatNotificationText(notification), true).toString());
-        res.append(messenger.getFormatter().formatNotificationText(notification));
+        res.append(messenger.getI18nModule().formatNotificationText(notification));
         return res;
     }
 

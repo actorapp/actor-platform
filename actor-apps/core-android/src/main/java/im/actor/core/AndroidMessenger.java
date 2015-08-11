@@ -27,12 +27,12 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.network.NetworkState;
+import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.ImageHelper;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
-import im.actor.runtime.mvvm.BindedDisplayList;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -248,19 +248,19 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     }
 
     public BindedDisplayList<Dialog> getDialogsDisplayList() {
-        return modules.getDisplayLists().getDialogsGlobalList();
+        return (BindedDisplayList<Dialog>) modules.getDisplayLists().getDialogsSharedList();
     }
 
     public BindedDisplayList<Message> getMessageDisplayList(Peer peer) {
-        return modules.getDisplayLists().getMessagesGlobalList(peer);
+        return (BindedDisplayList<Message>) modules.getDisplayLists().getMessagesSharedList(peer);
     }
 
     public BindedDisplayList<SearchEntity> buildSearchDisplayList() {
-        return modules.getDisplayLists().buildNewSearchList(false);
+        return (BindedDisplayList<SearchEntity>) modules.getDisplayLists().buildSearchList(false);
     }
 
     public BindedDisplayList<Contact> buildContactsDisplayList() {
-        return modules.getDisplayLists().buildNewContactList(false);
+        return (BindedDisplayList<Contact>) modules.getDisplayLists().buildContactList(false);
     }
 
     private boolean isScreenOn() {
