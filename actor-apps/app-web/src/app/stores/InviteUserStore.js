@@ -49,13 +49,16 @@ InviteUserStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
     case ActionTypes.INVITE_USER_MODAL_SHOW:
       _isInviteModalOpen = true;
       _group = action.group;
+      InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_MODAL_HIDE:
       _isInviteModalOpen = false;
       //_group = null;
+      InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
       _group = action.info;
+      InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
       _isInviteByLinkModalOpen = true;
@@ -65,14 +68,15 @@ InviteUserStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
           _inviteUrl = url;
           InviteUserStoreInstance.emitChange();
         });
+      InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE:
       _isInviteByLinkModalOpen = false;
+      InviteUserStoreInstance.emitChange();
       break;
     default:
       return;
   }
-  InviteUserStoreInstance.emitChange();
 });
 
 export default InviteUserStoreInstance;
