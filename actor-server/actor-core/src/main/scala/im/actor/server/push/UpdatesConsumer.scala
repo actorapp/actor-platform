@@ -153,10 +153,15 @@ private[push] class UpdatesConsumer(
             }
         }
 
+      log.debug("Pushing presence {}", update)
+
       val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
       sendUpdateBox(updateBox)
     case GroupPresenceState(groupId, onlineCount) ⇒
       val update = UpdateGroupOnline(groupId, onlineCount)
+
+      log.debug("Pushing presence {}", update)
+
       val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
       sendUpdateBox(updateBox)
   }
