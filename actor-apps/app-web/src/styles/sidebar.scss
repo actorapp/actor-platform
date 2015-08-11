@@ -174,7 +174,8 @@
       //color: rgba(white, .6);
 
       color: white;
-      transition: opacity $default-transition-duration $default-transition-timing, background $default-transition-duration $default-transition-timing;
+      //transition: opacity $default-transition-duration $default-transition-timing, background $default-transition-duration $default-transition-timing;
+      transition: 0s;
       .avatar {
         margin: 0 10px 0 0;
 
