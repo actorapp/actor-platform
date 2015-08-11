@@ -87,7 +87,7 @@ class MessagesSection extends React.Component {
         flushDelayedDebounced();
       }
     }
-  }
+  };
 
   render() {
     let messages = _.map(this.props.messages, this.getMessagesListItem);
