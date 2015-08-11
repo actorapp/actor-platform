@@ -1,6 +1,7 @@
 package im.actor.server.push
 
 import akka.util.Timeout
+import im.actor.server.db.DbExtension
 import im.actor.server.sequence.SeqState
 import im.actor.server.{ ImplicitSeqUpdatesManagerRegion, ActorSpecification, ActorSuite }
 import org.scalatest.time.{ Span, Seconds }
@@ -34,6 +35,9 @@ class SeqUpdatesManagerSpec extends ActorSuite(
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(10, Seconds))
+
+  DbExtension(system).clean()
+  DbExtension(system).migrate()
 
   val region = seqUpdExt.region
   val probe = TestProbe()
