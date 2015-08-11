@@ -64,5 +64,10 @@ task buildPackage(dependsOn: ['war']) {
             into "$buildDir/package"
             from "$projectDir/src/main/javascript"
         }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/../runtime-js/src/main/javascript"
+        }
     }
 }

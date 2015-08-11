@@ -14,7 +14,7 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.entity.Peer;
-import im.actor.core.js.angular.AngularValueCallback;
+import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.entity.Enums;
 import im.actor.core.js.entity.JsAuthErrorClosure;
 import im.actor.core.js.entity.JsAuthSuccessClosure;
@@ -251,7 +251,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedChatList(peer.convert()).subscribe(callback);
+        messenger.getSharedChatList(peer.convert()).subscribeInverted(callback);
     }
 
     public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
@@ -259,7 +259,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getSharedChatList(peer.convert()).unsubscribe(callback);
+        messenger.getSharedChatList(peer.convert()).unsubscribeInverted(callback);
     }
 
     public void onMessageShown(JsPeer peer, JsMessage message) {
@@ -312,14 +312,14 @@ public class JsFacade implements Exportable {
         return messenger.getJsUser(uid).get();
     }
 
-    public void bindUser(int uid, AngularValueCallback callback) {
+    public void bindUser(int uid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
         }
         messenger.getJsUser(uid).subscribe(callback);
     }
 
-    public void unbindUser(int uid, AngularValueCallback callback) {
+    public void unbindUser(int uid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
         }
@@ -332,14 +332,14 @@ public class JsFacade implements Exportable {
         return messenger.getJsGroup(gid).get();
     }
 
-    public void bindGroup(int gid, AngularValueCallback callback) {
+    public void bindGroup(int gid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
         }
         messenger.getJsGroup(gid).subscribe(callback);
     }
 
-    public void unbindGroup(int gid, AngularValueCallback callback) {
+    public void unbindGroup(int gid, JsBindedValueCallback callback) {
         if (callback == null) {
             return;
         }
@@ -386,21 +386,21 @@ public class JsFacade implements Exportable {
         return messenger.getTyping(peer.convert()).get();
     }
 
-    public void bindTyping(JsPeer peer, AngularValueCallback callback) {
+    public void bindTyping(JsPeer peer, JsBindedValueCallback callback) {
         messenger.getTyping(peer.convert()).subscribe(callback);
     }
 
-    public void unbindTyping(JsPeer peer, AngularValueCallback callback) {
+    public void unbindTyping(JsPeer peer, JsBindedValueCallback callback) {
         messenger.getTyping(peer.convert()).unsubscribe(callback);
     }
 
     // Updating state
 
-    public void bindConnectState(AngularValueCallback callback) {
+    public void bindConnectState(JsBindedValueCallback callback) {
         messenger.getOnlineStatus().subscribe(callback);
     }
 
-    public void unbindConnectState(AngularValueCallback callback) {
+    public void unbindConnectState(JsBindedValueCallback callback) {
         messenger.getOnlineStatus().unsubscribe(callback);
     }
 
@@ -537,6 +537,7 @@ public class JsFacade implements Exportable {
             @Override
             public void execute() {
                 String avatarDescriptor = provider.registerUploadFile(file);
+                //noinspection ConstantConditions
                 messenger.createGroup(title, avatarDescriptor, uids).start(new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {

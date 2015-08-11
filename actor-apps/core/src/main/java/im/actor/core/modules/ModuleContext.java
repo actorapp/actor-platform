@@ -5,6 +5,7 @@ import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AnalyticsModule;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.internal.ContactsModule;
+import im.actor.core.modules.internal.DisplayLists;
 import im.actor.core.modules.internal.ExternalModule;
 import im.actor.core.modules.internal.FilesModule;
 import im.actor.core.modules.internal.GroupsModule;
@@ -73,4 +74,6 @@ public interface ModuleContext {
     AnalyticsModule getAnalyticsModule();
 
     ExternalModule getExternalModule();
+
+    DisplayLists getDisplayListsModule();
 }
