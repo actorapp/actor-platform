@@ -149,7 +149,7 @@ export default {
   },
 
   leaveGroup(groupId) {
-    window.messenger.leaveGroup(groupId);
+    return window.messenger.leaveGroup(groupId);
   },
 
   createGroup(title, avatar, userIds) {
