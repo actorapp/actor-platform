@@ -7,14 +7,20 @@ package im.actor.core.js;
 import im.actor.core.Configuration;
 import im.actor.core.Messenger;
 import im.actor.core.entity.Avatar;
+import im.actor.core.entity.Contact;
+import im.actor.core.entity.Dialog;
 import im.actor.core.entity.FileReference;
+import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.js.angular.AngularFilesModule;
 import im.actor.core.js.angular.AngularModule;
 import im.actor.core.js.angular.AngularValue;
+import im.actor.core.js.entity.JsContact;
+import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsGroup;
+import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsPeer;
 import im.actor.core.js.entity.JsPeerInfo;
 import im.actor.core.js.entity.JsTyping;
@@ -33,8 +39,15 @@ import im.actor.runtime.crypto.Base64Utils;
 import im.actor.runtime.js.JsFileSystemProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
+import im.actor.runtime.js.mvvm.JsDisplayList;
 
 public class JsMessenger extends Messenger {
+
+    private static JsMessenger instance = null;
+
+    public static JsMessenger getInstance() {
+        return instance;
+    }
 
     private AngularModule angularModule;
     private AngularFilesModule angularFilesModule;
@@ -69,6 +82,8 @@ public class JsMessenger extends Messenger {
         } else {
             Log.d("JsMessenger", "SafariPush NOT Supported");
         }
+
+        JsMessenger.instance = this;
     }
 
     public void onMessageShown(Peer peer, Long sortKey) {
@@ -145,6 +160,18 @@ public class JsMessenger extends Messenger {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public JsDisplayList<JsDialog, Dialog> getSharedDialogList() {
+        return (JsDisplayList<JsDialog, Dialog>) modules.getDisplayLists().getDialogsSharedList();
+    }
+
+    public JsDisplayList<JsContact, Contact> getSharedContactList() {
+        return (JsDisplayList<JsContact, Contact>) modules.getDisplayLists().getContactsSharedList();
+    }
+
+    public JsDisplayList<JsMessage, Message> getSharedChatList(Peer peer) {
+        return (JsDisplayList<JsMessage, Message>) modules.getDisplayLists().getMessagesSharedList(peer);
     }
 
     private String getSmallAvatarUrl(Avatar avatar) {

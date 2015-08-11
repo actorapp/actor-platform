@@ -9,8 +9,10 @@ import com.google.gwt.core.client.JsArray;
 
 import im.actor.core.entity.Avatar;
 import im.actor.core.js.JsMessenger;
+import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 
 public class JsUser extends JavaScriptObject {
 
@@ -29,10 +31,10 @@ public class JsUser extends JavaScriptObject {
             }
         }
         JsArray<JsPhone> convertedPhones = JsArray.createArray().cast();
-//        ArrayListUserPhone phones = userVM.getPhones().get();
-//        for (UserPhone p : phones) {
-//            convertedPhones.push(JsPhone.create(p.getPhone() + "", p.getTitle()));
-//        }
+        ArrayListUserPhone phones = userVM.getPhones().get();
+        for (UserPhone p : phones) {
+            convertedPhones.push(JsPhone.create(p.getPhone() + "", p.getTitle()));
+        }
 
         return create(userVM.getId(), userVM.getName().get(),
                 fileUrl, bigFileUrl,

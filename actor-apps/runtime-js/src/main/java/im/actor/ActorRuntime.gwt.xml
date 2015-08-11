@@ -10,8 +10,10 @@
     <inherits name="com.google.gwt.storage.Storage" />
     <inherits name="com.google.gwt.resources.Resources" />
     <inherits name="com.google.gwt.http.HTTP"/>
+    <inherits name='org.timepedia.exporter.Exporter' />
 
     <set-property name='gwt.logging.enabled' value='TRUE' />
     <set-property name='gwt.logging.consoleHandler' value='ENABLED' />
+    <set-property name="export" value="yes" />
 
 </module>
