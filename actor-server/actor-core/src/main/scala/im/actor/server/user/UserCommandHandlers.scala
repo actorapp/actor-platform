@@ -123,15 +123,14 @@ private[user] trait UserCommandHandlers {
       randomId = randomId,
       message = message
     )
-    db.run {
-      for {
-        senderUser ← getUserUnsafe(senderUserId)
-        pushText ← getPushText(message, senderUser, userId)
-        counterUpdate ← getUpdateCountersChanged(userId)
-        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, counterUpdate, None, isFat = false)
-        seqs ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, update, Some(pushText), isFat)
-      } yield seqs
-    }
+    for {
+      senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
+      senderName = senderUser.localName.getOrElse(senderUser.name)
+      pushText = getPushText(message, senderName, userId)
+      counterUpdate ← db.run(getUpdateCountersChanged(userId))
+      _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None, isFat = false)
+      seqs ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat)
+    } yield seqs
   }
 
   protected def deliverOwnMessage(user: User, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
@@ -326,6 +325,10 @@ private[user] trait UserCommandHandlers {
       })
       _ ← p.contact.UnregisteredEmailContact.deleteAll(email)
     } yield ()
+  }
+
+  private def getAuthIdUnsafe(user: User): Long = {
+    user.authIds.headOption.getOrElse(throw new scala.Exception(s"There was no authId for user ${user.id}"))
   }
 
 }
