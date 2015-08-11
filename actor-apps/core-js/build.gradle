@@ -9,7 +9,7 @@ apply plugin: 'gwt'
 
 gwt {
     gwtVersion = '2.7.0'
-    modules 'im.actor.ActorMessenger'
+    modules 'im.actor.ActorCore'
 
     compiler {
         strict = true;
