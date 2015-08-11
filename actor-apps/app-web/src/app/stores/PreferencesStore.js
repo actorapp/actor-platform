@@ -86,22 +86,25 @@ PreferencesStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
   switch(action.type) {
     case ActionTypes.PREFERENCES_MODAL_SHOW:
       _isModalOpen = true;
+      PreferencesStoreInstance.emitChange();
       break;
     case ActionTypes.PREFERENCES_MODAL_HIDE:
       _isModalOpen = false;
+      PreferencesStoreInstance.emitChange();
       break;
 
     case ActionTypes.PREFERENCES_SAVE:
       PreferencesStoreInstance.savePreferences(action.preferences);
+      PreferencesStoreInstance.emitChange();
       break;
 
     case ActionTypes.PREFERENCES_LOAD:
       PreferencesStoreInstance.loadPreferences();
+      PreferencesStoreInstance.emitChange();
       break;
     default:
       return;
   }
-  PreferencesStoreInstance.emitChange();
 });
 
 export default PreferencesStoreInstance;

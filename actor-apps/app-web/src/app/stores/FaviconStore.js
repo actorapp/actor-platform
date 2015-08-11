@@ -35,14 +35,15 @@ FaviconStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
   switch(action.type) {
     case ActionTypes.FAVICON_SET_DEFAULT:
       _iconPath = FaviconPath.DEFAULT;
+      FaviconStoreInstance.emitChange();
       break;
     case ActionTypes.FAVICON_SET_NOTIFICATION:
       _iconPath = FaviconPath.NOTIFICATION;
+      FaviconStoreInstance.emitChange();
       break;
     default:
       return;
   }
-  FaviconStoreInstance.emitChange();
 });
 
 export default FaviconStoreInstance;
