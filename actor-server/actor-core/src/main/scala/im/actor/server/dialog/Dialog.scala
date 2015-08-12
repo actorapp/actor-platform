@@ -10,6 +10,8 @@ object Dialog {
 
   case object ReadFailed extends Exception with NoStackTrace
 
+  private[dialog] case object StopDialog
+
 }
 
 trait Dialog extends Actor with Stash with ActorLogging with UpdateCounters {

@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service.messaging
 
 import im.actor.server.dialog.Dialog.{ ReadFailed, ReceiveFailed }
-import im.actor.server.dialog.pair.PairDialogOperations
+import im.actor.server.dialog.privat.PrivateDialogOperations
 import im.actor.server.group.GroupOffice
 import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.user.UserOffice
@@ -42,7 +42,7 @@ trait HistoryHandlers {
         case PeerType.Private ⇒
           for {
             //клиент получил сообщение от пира
-            _ ← PairDialogOperations.messageReceived(client.userId, peer.id, date)
+            _ ← PrivateDialogOperations.messageReceived(client.userId, peer.id, date)
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
@@ -63,7 +63,7 @@ trait HistoryHandlers {
       val readFuture = peer.`type` match {
         case PeerType.Private ⇒
           for {
-            _ ← PairDialogOperations.messageRead(client.userId, client.authId, peer.id, date)
+            _ ← PrivateDialogOperations.messageRead(client.userId, client.authId, peer.id, date)
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
