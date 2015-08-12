@@ -31,6 +31,10 @@ export const ActionTypes = keymirror({
   SELECT_DIALOG_PEER: null,
   SELECTED_DIALOG_INFO_CHANGED: null,
 
+  COMPOSE_CLEAN: null,
+  COMPOSE_TYPING: null,
+  COMPOSE_MENTION_INSERT: null,
+
   SEND_MESSAGE_TEXT: null,
   SEND_MESSAGE_FILE: null,
   SEND_MESSAGE_PHOTO: null,
@@ -71,8 +75,10 @@ export const ActionTypes = keymirror({
   INVITE_USER_BY_LINK_MODAL_SHOW: null,
   INVITE_USER_BY_LINK_MODAL_HIDE: null,
 
-  SETTINGS_SHOW: null,
-  SETTINGS_HIDE: null,
+  PREFERENCES_SAVE: null,
+  PREFERENCES_LOAD: null,
+  PREFERENCES_MODAL_HIDE: null,
+  PREFERENCES_MODAL_SHOW: null,
 
   LEFT_GROUP: null
 });
