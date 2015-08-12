@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service.messaging
 
 import im.actor.server.group.GroupErrors.{ ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupOffice
-import im.actor.server.peer.GroupPeerOperations
+import im.actor.server.dialog.GroupDialogOperations
 import im.actor.server.user.UserOffice
 
 import scala.concurrent.Future
@@ -44,7 +44,7 @@ trait HistoryHandlers {
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
-            _ ← GroupPeerOperations.messageReceived(peer.id, client.userId, client.authId, date)
+            _ ← GroupDialogOperations.messageReceived(peer.id, client.userId, client.authId, date)
           } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }
@@ -65,7 +65,7 @@ trait HistoryHandlers {
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
-            _ ← GroupPeerOperations.messageRead(peer.id, client.userId, client.authId, date)
+            _ ← GroupDialogOperations.messageRead(peer.id, client.userId, client.authId, date)
           } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }

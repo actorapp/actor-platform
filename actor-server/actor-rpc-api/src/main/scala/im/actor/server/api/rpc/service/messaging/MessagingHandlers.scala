@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service.messaging
 
 import im.actor.api.rpc._
-import im.actor.server.peer.GroupPeerOperations
+import im.actor.server.dialog.GroupDialogOperations
 import im.actor.server.sequence.SeqStateDate
 
 import scala.concurrent._
@@ -38,7 +38,7 @@ private[messaging] trait MessagingHandlers {
           for {
             isChecked ← fromFuture(GroupOffice.checkAccessHash(outPeer.id, outPeer.accessHash))
             _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
-            result ← fromFuture(GroupPeerOperations.sendMessage(outPeer.id, client.userId, client.authId, randomId, message))
+            result ← fromFuture(GroupDialogOperations.sendMessage(outPeer.id, client.userId, client.authId, randomId, message))
           } yield result
       }
 

@@ -1,6 +1,6 @@
 package im.actor.server.api.rpc.service.messaging
 
-import im.actor.server.peer.{ GroupPeerExtension, GroupPeerRegion }
+import im.actor.server.dialog.{ GroupDialogExtension, GroupDialogRegion }
 
 import scala.concurrent.duration._
 
@@ -85,7 +85,7 @@ final class MessagingServiceImpl(
   protected implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
   protected implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(actorSystem).processorRegion
   protected implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
-  protected implicit val groupPeerRegion: GroupPeerRegion = GroupPeerExtension(actorSystem).region
+  protected implicit val groupPeerRegion: GroupDialogRegion = GroupDialogExtension(actorSystem).region
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
   protected implicit val timeout = Timeout(30.seconds)
 }

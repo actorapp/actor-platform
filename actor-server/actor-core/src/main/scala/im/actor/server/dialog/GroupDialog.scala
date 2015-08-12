@@ -1,4 +1,4 @@
-package im.actor.server.peer
+package im.actor.server.dialog
 
 import akka.actor._
 import akka.util.Timeout
@@ -19,40 +19,40 @@ import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
-trait GroupPeerCommand {
+trait GroupDialogCommand {
   def groupId: Int
 }
 
-case class GroupPeerState(lastSenderId: Option[Int], lastReceiveDate: Option[Long], lastReadDate: Option[Long])
+case class GroupDialogState(lastSenderId: Option[Int], lastReceiveDate: Option[Long], lastReadDate: Option[Long])
 
-object GroupPeer {
+object GroupDialog {
 
   def register(): Unit = {
-    ActorSerializer.register(13000, classOf[GroupPeerCommands])
-    ActorSerializer.register(13001, classOf[GroupPeerCommands.SendMessage])
-    ActorSerializer.register(13002, classOf[GroupPeerCommands.MessageReceived])
-    ActorSerializer.register(13003, classOf[GroupPeerCommands.MessageReceivedAck])
-    ActorSerializer.register(13004, classOf[GroupPeerCommands.MessageRead])
-    ActorSerializer.register(13005, classOf[GroupPeerCommands.MessageReadAck])
+    ActorSerializer.register(13000, classOf[GroupDialogCommands])
+    ActorSerializer.register(13001, classOf[GroupDialogCommands.SendMessage])
+    ActorSerializer.register(13002, classOf[GroupDialogCommands.MessageReceived])
+    ActorSerializer.register(13003, classOf[GroupDialogCommands.MessageReceivedAck])
+    ActorSerializer.register(13004, classOf[GroupDialogCommands.MessageRead])
+    ActorSerializer.register(13005, classOf[GroupDialogCommands.MessageReadAck])
   }
 
   type AuthIdRandomId = (Long, Long)
 
   private val MaxCacheSize = 100L
 
-  private[peer] case object MessageSentComplete extends Serializable
+  private[dialog] case object MessageSentComplete extends Serializable
 
-  def props: Props = Props(classOf[GroupPeer])
+  def props: Props = Props(classOf[GroupDialog])
 }
 
-class GroupPeer
+class GroupDialog
   extends Actor
   with ActorLogging
-  with GroupPeerHandlers
+  with GroupDialogHandlers
   with Stash {
 
-  import GroupPeer._
-  import GroupPeerCommands._
+  import GroupDialog._
+  import GroupDialogCommands._
 
   protected val groupId = self.path.name.toInt
   protected val groupPeer = Peer(PeerType.Group, groupId)
@@ -66,7 +66,7 @@ class GroupPeer
   protected implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(system).processorRegion
   protected implicit val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
   protected implicit val userProcessorRegion: UserProcessorRegion = UserExtension(context.system).processorRegion
-  protected implicit val peerRegion: GroupPeerRegion = GroupPeerExtension(system).region
+  protected implicit val peerRegion: GroupDialogRegion = GroupDialogExtension(system).region
   protected implicit val timeout = Timeout(5.seconds)
 
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
@@ -74,9 +74,9 @@ class GroupPeer
 
   override def receive: Receive = working(initState)
 
-  private def initState: GroupPeerState = GroupPeerState(None, None, None)
+  private def initState: GroupDialogState = GroupDialogState(None, None, None)
 
-  def working(state: GroupPeerState): Receive = {
+  def working(state: GroupDialogState): Receive = {
     case SendMessage(_, senderUserId, senderAuthId, randomId, message, isFat) ⇒
       val replyTo = sender()
       withMemberIds(groupId) { (memberIds, _, botId) ⇒
