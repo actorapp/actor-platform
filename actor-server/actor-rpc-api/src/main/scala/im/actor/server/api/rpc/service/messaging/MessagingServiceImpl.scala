@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service.messaging
 
 import im.actor.server.dialog.pair.{ PairDialogExtension, PairDialogRegion }
-import im.actor.server.dialog.{ GroupDialogExtension, GroupDialogRegion }
+import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialogRegion }
 
 import scala.concurrent.duration._
 

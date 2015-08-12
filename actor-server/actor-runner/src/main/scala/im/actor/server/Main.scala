@@ -30,7 +30,7 @@ import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.dialog.{ GroupDialog, GroupDialogExtension }
+import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig, SessionMessage }

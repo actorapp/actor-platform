@@ -13,7 +13,7 @@ import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
-import im.actor.server.dialog.GroupDialogOperations
+import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice

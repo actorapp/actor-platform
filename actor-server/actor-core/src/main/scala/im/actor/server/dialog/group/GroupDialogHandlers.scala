@@ -1,10 +1,11 @@
-package im.actor.server.dialog
+package im.actor.server.dialog.group
 
 import akka.actor.{ ActorRef, Status }
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.server.dialog.Dialog.{ ReadFailed, ReceiveFailed }
+import im.actor.server.dialog.GroupDialogCommands
 import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
 import im.actor.server.models
