@@ -35,6 +35,7 @@ final class AuthServiceSpec
   extends BaseAppSuite
   with ImplicitUserRegions
   with ImplicitSequenceService
+  with ImplicitSessionRegionProxy
   with SequenceMatchers {
   behavior of "AuthService"
 

@@ -19,7 +19,6 @@ import im.actor.api.rpc.RpcResult
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
 import im.actor.server
-import im.actor.server.api.CommonSerialization
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
@@ -31,14 +30,17 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.SessionEnvelope.Payload
-import im.actor.server.{ DummyCodeActivation, ImplicitUserRegions, persist }
+import im.actor.server._
 
 abstract class BaseSessionSpec(_system: ActorSystem = {
                                  server.ActorSpecification.createSystem()
                                })
-  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with ImplicitUserRegions {
-
-  CommonSerialization.register()
+  extends server.ActorSuite(_system)
+  with FlatSpecLike
+  with ScalaFutures
+  with Matchers
+  with ImplicitUserRegions
+  with ActorSerializerPrepare {
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(30, Seconds))
@@ -56,7 +58,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected implicit val presenceManagerRegion = PresenceManager.startRegion()
   protected implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
-  protected val mediator = DistributedPubSubExtension(_system).mediator
+  protected val mediator = DistributedPubSubExtension(system).mediator
 
   protected implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
 
