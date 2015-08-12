@@ -112,22 +112,20 @@ class Dropdown extends React.Component {
     let dropdownItems = [];
 
     React.Children.forEach(children, (child, index) => {
-      if (child.type.name === 'DropdownItem') {
-        let elClassName = 'dropdown__menu__item';
+      let elClassName = 'dropdown__menu__item';
 
-        if (this.state.selectedIndex === index) {
-          elClassName += ' dropdown__menu__item--active';
-        }
-
-        dropdownItems.push(
-          <li className={elClassName}
-              key={index}
-              onClick={this.onSelect.bind(this, child.props.value)}
-              onMouseOver={() => this.setState({selectedIndex: index})}>
-            {child.props.children}
-          </li>
-        );
+      if (this.state.selectedIndex === index) {
+        elClassName += ' dropdown__menu__item--active';
       }
+
+      dropdownItems.push(
+        <li className={elClassName}
+            key={index}
+            onClick={this.onSelect.bind(this, child.props.value)}
+            onMouseOver={() => this.setState({selectedIndex: index})}>
+          {child.props.children}
+        </li>
+      );
     });
 
     const dropdownClassName = classnames({
