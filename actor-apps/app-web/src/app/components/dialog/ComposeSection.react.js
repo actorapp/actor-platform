@@ -77,15 +77,17 @@ class ComposeSection extends React.Component {
   };
 
   onKeyDown = event => {
-    if (this.state.sendByEnter === 'true') {
-      if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
-        event.preventDefault();
-        this.sendTextMessage();
-      }
-    } else {
-      if (event.keyCode === KeyCodes.ENTER && event.metaKey) {
-        event.preventDefault();
-        this.sendTextMessage();
+    if (this.state.mentions === null) {
+      if (this.state.sendByEnter === 'true') {
+        if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
+          event.preventDefault();
+          this.sendTextMessage();
+        }
+      } else {
+        if (event.keyCode === KeyCodes.ENTER && event.metaKey) {
+          event.preventDefault();
+          this.sendTextMessage();
+        }
       }
     }
   };
@@ -150,7 +152,7 @@ class ComposeSection extends React.Component {
     const text = this.state.text;
     const profile = this.state.profile;
 
-    const mentionsShown = this.state.mentions.length > 0;
+    const mentionsShown = this.state.mentions && this.state.mentions.length > 0;
 
     let mentionsElements = null;
 
