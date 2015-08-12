@@ -2,41 +2,32 @@ package im.actor.server.user
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import im.actor.server.group.GroupErrors.{ ReadFailed, ReceiveFailed }
-
-import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.util.{ Failure, Success }
-
-import akka.actor.Status
 import akka.pattern.pipe
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.users._
 import im.actor.server.api.ApiConversions._
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
-import im.actor.server.office.PeerProcessor.MessageSentComplete
+import im.actor.server.misc.UpdateCounters
 import im.actor.server.push.SeqUpdatesManager
-import im.actor.server.sequence.{ SeqState, SeqStateDate }
+import im.actor.server.sequence.SeqState
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
-import im.actor.server.user.UserOffice.InvalidAccessHash
-import im.actor.server.util.HistoryUtils._
-import im.actor.server.util.UserUtils._
-import im.actor.server.util.{ ImageUtils, ACLUtils, HistoryUtils }
+import im.actor.server.util.{ ACLUtils, HistoryUtils, ImageUtils }
 import im.actor.server.{ models, persist ⇒ p }
-import im.actor.utils.cache.CacheHelpers._
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.Future
+import scala.concurrent.forkjoin.ThreadLocalRandom
 
 private object ServiceMessages {
   def contactRegistered(userId: Int) = ServiceMessage("Contact registered", Some(ServiceExContactRegistered(userId)))
 }
 
-private[user] trait UserCommandHandlers {
+private[user] trait UserCommandHandlers extends UpdateCounters {
   this: UserProcessor ⇒
 
   import ImageUtils._
@@ -146,90 +137,6 @@ private[user] trait UserCommandHandlers {
 
     val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
     SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, ownUpdate, None, isFat) pipeTo sender()
-  }
-
-  protected def sendMessage(user: User, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean): Unit = {
-    if (accessHash == ACLUtils.userAccessHash(senderAuthId, userId, user.accessSalt)) {
-      val replyTo = sender()
-      context become {
-        case MessageSentComplete ⇒
-          unstashAll()
-          context become working(user)
-        case msg ⇒ stash()
-      }
-      val date = new DateTime
-      val dateMillis = date.getMillis
-
-      val sendFuture: Future[SeqStateDate] =
-        withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
-          this.lastMessageDate = Some(dateMillis)
-
-          for {
-
-            _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
-            SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
-            _ ← Future.successful(recordRelation(senderUserId, userId))
-            _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
-          } yield SeqStateDate(seq, state, dateMillis)
-        }
-      sendFuture onComplete {
-        case Success(seqstate) ⇒
-          replyTo ! seqstate
-          context.self ! MessageSentComplete
-        case Failure(e) ⇒
-          replyTo ! Status.Failure(e)
-          log.error(e, "Failed to send message")
-          context.self ! MessageSentComplete
-      }
-    } else {
-      sender() ! Status.Failure(InvalidAccessHash)
-    }
-  }
-
-  protected def messageReceived(user: User, receiverAuthIdId: Long, peerUserId: Int, date: Long): Unit = {
-    val receiveFuture = if (!this.lastReceiveDate.exists(_ >= date) && (this.lastMessageDate.isEmpty || this.lastMessageDate.exists(_ >= date))) {
-      this.lastReceiveDate = Some(date)
-      val now = System.currentTimeMillis
-      val update = UpdateMessageReceived(Peer(PeerType.Private, user.id), date, now)
-      for {
-        _ ← UserOffice.broadcastUserUpdate(peerUserId, update, None, isFat = false)
-        _ ← db.run(markMessagesReceived(models.Peer.privat(user.id), models.Peer.privat(peerUserId), new DateTime(date)))
-      } yield MessageReceivedAck()
-    } else {
-      Future.successful(MessageReceivedAck())
-    }
-
-    val replyTo = sender()
-    receiveFuture pipeTo replyTo onFailure {
-      case e ⇒
-        replyTo ! Status.Failure(ReceiveFailed)
-        log.error(e, "Failed to mark messages received")
-    }
-  }
-
-  protected def messageRead(user: User, readerAuthId: Long, peerUserId: Int, date: Long): Unit = {
-    val readFuture = if (!this.lastReadDate.exists(_ >= date) && (this.lastMessageDate.isEmpty || this.lastMessageDate.exists(_ >= date))) {
-      this.lastReadDate = Some(date)
-      val now = System.currentTimeMillis
-      val update = UpdateMessageRead(Peer(PeerType.Private, user.id), date, now)
-      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, peerUserId), date)
-      for {
-        _ ← UserOffice.broadcastUserUpdate(peerUserId, update, None, isFat = false)
-        _ ← db.run(markMessagesRead(models.Peer.privat(user.id), models.Peer.privat(peerUserId), new DateTime(date)))
-        counterUpdate ← db.run(getUpdateCountersChanged(user.id))
-        _ ← UserOffice.broadcastUserUpdate(user.id, counterUpdate, None, isFat = false)
-        _ ← db.run(SeqUpdatesManager.notifyUserUpdate(user.id, readerAuthId, readerUpdate, None, isFat = false))
-      } yield MessageReadAck()
-    } else {
-      Future.successful(MessageReadAck())
-    }
-
-    val replyTo = sender()
-    readFuture pipeTo replyTo onFailure {
-      case e ⇒
-        replyTo ! Status.Failure(ReadFailed)
-        log.error(e, "Failed to mark messages read")
-    }
   }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {

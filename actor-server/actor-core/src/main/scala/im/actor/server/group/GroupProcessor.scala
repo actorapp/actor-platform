@@ -124,7 +124,7 @@ private[group] final class GroupProcessor
   protected implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
-  protected implicit val groupPeerRegion: GroupDialogRegion = GroupDialogExtension(system).region
+  protected implicit val groupDialogRegion: GroupDialogRegion = GroupDialogExtension(system).region
 
   protected val groupId = self.path.name.toInt
 
