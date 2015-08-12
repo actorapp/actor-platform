@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service.messaging
 import im.actor.server.dialog.Dialog.{ ReadFailed, ReceiveFailed }
 import im.actor.server.dialog.pair.PairDialogOperations
 import im.actor.server.group.GroupOffice
-import im.actor.server.dialog.GroupDialogOperations
+import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.user.UserOffice
 
 import scala.concurrent.Future

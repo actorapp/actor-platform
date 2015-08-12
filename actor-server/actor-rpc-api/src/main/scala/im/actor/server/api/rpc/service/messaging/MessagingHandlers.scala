@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service.messaging
 
 import im.actor.api.rpc._
-import im.actor.server.dialog.GroupDialogOperations
+import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.dialog.pair.PairDialogOperations
 import im.actor.server.sequence.SeqStateDate
 

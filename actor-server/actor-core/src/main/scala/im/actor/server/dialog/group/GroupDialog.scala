@@ -1,4 +1,4 @@
-package im.actor.server.dialog
+package im.actor.server.dialog.group
 
 import akka.actor._
 import akka.util.Timeout
@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.{ Dialog, GroupDialogCommands }
 import im.actor.server.group.{ GroupExtension, GroupOffice, GroupProcessorRegion, GroupViewRegion }
 import im.actor.server.push.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
