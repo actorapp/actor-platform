@@ -159,7 +159,8 @@ class ComposeSection extends React.Component {
           <DropdownItem value="@prettynatty">prettynatty</DropdownItem>
         </Dropdown>
 
-        <AvatarItem image={profile.avatar}
+        <AvatarItem className="my-avatar"
+                    image={profile.avatar}
                     placeholder={profile.placeholder}
                     title={profile.name}/>
 
