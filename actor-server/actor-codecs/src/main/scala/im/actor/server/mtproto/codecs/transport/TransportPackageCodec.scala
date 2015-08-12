@@ -80,13 +80,9 @@ object TransportPackageCodec extends Codec[TransportPackage] {
       // FIXME: validate if body length fits in int32
       lengthBits ← C.int32.encode((bodyBits.size / byteSize).toInt)
       crc32 = new CRC32
-      _ = crc32.update(bodyBits.toByteArray)
+      _ = crc32.update(bodyBits.toByteBuffer)
       crc32Bits ← C.uint32.encode(crc32.getValue)
-    } yield {
-      val crc32 = new CRC32
-      crc32.update(bodyBits.toByteArray)
-      indexBits ++ headerBits ++ lengthBits ++ bodyBits ++ crc32Bits
-    }
+    } yield indexBits ++ headerBits ++ lengthBits ++ bodyBits ++ crc32Bits
   }
 
   override def decode(bits: BitVector) = {

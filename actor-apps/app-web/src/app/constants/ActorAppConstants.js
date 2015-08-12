@@ -31,6 +31,10 @@ export const ActionTypes = keymirror({
   SELECT_DIALOG_PEER: null,
   SELECTED_DIALOG_INFO_CHANGED: null,
 
+  COMPOSE_CLEAN: null,
+  COMPOSE_TYPING: null,
+  COMPOSE_MENTION_INSERT: null,
+
   SEND_MESSAGE_TEXT: null,
   SEND_MESSAGE_FILE: null,
   SEND_MESSAGE_PHOTO: null,
@@ -74,7 +78,9 @@ export const ActionTypes = keymirror({
   PREFERENCES_SAVE: null,
   PREFERENCES_LOAD: null,
   PREFERENCES_MODAL_HIDE: null,
-  PREFERENCES_MODAL_SHOW: null
+  PREFERENCES_MODAL_SHOW: null,
+
+  LEFT_GROUP: null
 });
 
 export const PeerTypes = {
@@ -97,7 +103,9 @@ export const MessageContentTypes = {
 
 export const KeyCodes = {
   ESC: 27,
-  ENTER: 13
+  ENTER: 13,
+  ARROW_UP: 38,
+  ARROW_DOWN: 40
 };
 
 export const version = app.base_version;

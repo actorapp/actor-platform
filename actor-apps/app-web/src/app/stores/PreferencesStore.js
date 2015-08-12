@@ -82,7 +82,6 @@ class PreferencesStore extends EventEmitter {
 let PreferencesStoreInstance = new PreferencesStore();
 
 PreferencesStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
-  console.info(action);
   switch(action.type) {
     case ActionTypes.PREFERENCES_MODAL_SHOW:
       _isModalOpen = true;

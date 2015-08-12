@@ -123,15 +123,14 @@ private[user] trait UserCommandHandlers {
       randomId = randomId,
       message = message
     )
-    db.run {
-      for {
-        senderUser ← getUserUnsafe(senderUserId)
-        pushText ← getPushText(message, senderUser, userId)
-        counterUpdate ← getUpdateCountersChanged(userId)
-        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, counterUpdate, None, isFat = false)
-        seqs ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, update, Some(pushText), isFat)
-      } yield seqs
-    }
+    for {
+      senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
+      senderName = senderUser.localName.getOrElse(senderUser.name)
+      pushText = getPushText(message, senderName, userId)
+      counterUpdate ← db.run(getUpdateCountersChanged(userId))
+      _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None, isFat = false)
+      seqs ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat)
+    } yield seqs
   }
 
   protected def deliverOwnMessage(user: User, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
@@ -169,10 +168,8 @@ private[user] trait UserCommandHandlers {
             _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
             SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
             _ ← Future.successful(recordRelation(senderUserId, userId))
-          } yield {
-            db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
-            SeqStateDate(seq, state, dateMillis)
-          }
+            _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
+          } yield SeqStateDate(seq, state, dateMillis)
         }
       sendFuture onComplete {
         case Success(seqstate) ⇒
@@ -328,6 +325,10 @@ private[user] trait UserCommandHandlers {
       })
       _ ← p.contact.UnregisteredEmailContact.deleteAll(email)
     } yield ()
+  }
+
+  private def getAuthIdUnsafe(user: User): Long = {
+    user.authIds.headOption.getOrElse(throw new scala.Exception(s"There was no authId for user ${user.id}"))
   }
 
 }
