@@ -19,6 +19,7 @@ import DraftStore from 'stores/DraftStore';
 import PreferencesStore from 'stores/PreferencesStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
+import { Dropdown, DropdownItem } from 'components/common/Dropdown.react';
 
 const ThemeManager = new Styles.ThemeManager();
 
@@ -86,7 +87,8 @@ class ComposeSection extends React.Component {
 
     // TODO: Mentions
     if (event.keyCode === 50 && event.shiftKey) {
-      console.warn('Mention should show now.');
+      //console.warn('Mention should show now.');
+      this.refs.mentions.openDropdown();
     }
   };
 
@@ -139,12 +141,23 @@ class ComposeSection extends React.Component {
     }
   };
 
+  onMentionSelect = (value) => {
+    console.info('select', value);
+  };
+
   render() {
     const text = this.state.text;
     const profile = this.state.profile;
 
     return (
       <section className="compose" onPaste={this.onPaste}>
+
+        <Dropdown className="dropdown--mentions"
+                  onSelect={this.onMentionSelect}
+                  ref="mentions">
+          <DropdownItem value="@olegshilov">olegshilov</DropdownItem>
+          <DropdownItem value="@prettynatty">prettynatty</DropdownItem>
+        </Dropdown>
 
         <AvatarItem image={profile.avatar}
                     placeholder={profile.placeholder}

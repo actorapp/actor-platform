@@ -99,4 +99,12 @@
       }
     }
   }
+
+  &--mentions {
+    .dropdown__menu {
+      position: absolute;
+      top: auto;
+      bottom: 6px;
+    }
+  }
 }
