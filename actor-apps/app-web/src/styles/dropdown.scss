@@ -105,6 +105,14 @@
       position: absolute;
       top: auto;
       bottom: 6px;
+      .dropdown__menu__item {
+        .avatar {
+          float: left;
+          margin-right: 0;
+          margin-top: -1px;
+          margin-left: -34px;
+        }
+      }
     }
   }
 }
