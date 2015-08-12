@@ -46,7 +46,7 @@ public class I18nEngine {
     private final String[] MONTHS_SHORT;
     private final String[] MONTHS;
 
-    @ObjectiveCName("initWithProvider:withModules:")
+    @ObjectiveCName("initWithModules:")
     public I18nEngine(Modules modules) {
         this.modules = modules;
         this.runtime = Runtime.getLocaleRuntime();

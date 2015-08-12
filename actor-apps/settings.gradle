@@ -4,6 +4,7 @@ include ':app-cli'
 include ':runtime'
 include ':runtime-android'
 include ':runtime-js'
+include ':runtime-cocoa'
 
 include ':core'
 include ':core-android'
