@@ -10,7 +10,6 @@ import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.group.GroupOffice
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 
 class WebhookHandlerSpec
@@ -19,6 +18,7 @@ class WebhookHandlerSpec
   with MessageParsing
   with ImplicitGroupRegions
   with ImplicitSequenceService
+  with ImplicitSessionRegionProxy
   with ImplicitAuthService
   with SequenceMatchers {
 

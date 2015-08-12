@@ -5,7 +5,6 @@ import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Success
 
 import akka.actor.ActorSystem
-import akka.event.Logging
 import akka.stream.Materializer
 import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
@@ -20,7 +19,6 @@ import im.actor.server.models
 import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.session._
 import im.actor.server.user.{ UserViewRegion, UserExtension, UserOffice }
-import im.actor.server.util.{ AnyRefLogSource, UserUtils }
 
 final class SequenceServiceImpl(config: SequenceServiceConfig)(
   implicit
@@ -29,11 +27,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   materializer:  Materializer
 ) extends SequenceService {
 
-  import AnyRefLogSource._
   import SeqUpdatesManager._
-  import UserUtils._
-
-  private val log = Logging(actorSystem, this)
 
   protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout: Timeout = Timeout(30.seconds)
@@ -43,7 +37,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   private implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
   private implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
 
-  private val maxUpdateSizeInBytes: Long = config.maxUpdateSizeInBytes
+  private val maxDifferenceSize: Long = config.maxDifferenceSize
 
   override def jhandleGetState(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -60,15 +54,11 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
       for {
         // FIXME: would new updates between getSeqState and getDifference break client state?
-        (updates, needMore) ← getDifference(client.authId, bytesToTimestamp(state), maxUpdateSizeInBytes)
+        (updates, needMore) ← getDifference(client.authId, bytesToTimestamp(state), maxDifferenceSize)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, groups) ← getUsersGroups(userIds, groupIds)
       } yield {
         val (newSeq, newState) = updates.lastOption map { u ⇒ u.seq → timestampToBytes(u.timestamp) } getOrElse (seq → state)
-
-        log.debug("Requested timestamp {}, {}", bytesToTimestamp(state), clientData)
-        log.debug("Updates {}, {}", updates, clientData)
-        log.debug("New state {}, {}", bytesToTimestamp(newState), clientData)
 
         Ok(ResponseGetDifference(
           seq = newSeq,

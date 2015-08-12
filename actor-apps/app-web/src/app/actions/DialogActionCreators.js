@@ -55,7 +55,14 @@ const DialogActionCreators = {
   },
 
   leaveGroup(groupId) {
-    ActorClient.leaveGroup(groupId);
+    ActorClient
+      .leaveGroup(groupId)
+      .then(() => {
+        ActorAppDispatcher.dispatch({
+          type: ActionTypes.LEFT_GROUP,
+          groupId: groupId
+        });
+      });
   },
 
   kickMember(userId, groupId) {
