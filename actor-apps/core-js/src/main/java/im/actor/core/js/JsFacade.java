@@ -80,7 +80,7 @@ public class JsFacade implements Exportable {
 
     @Export
     public JsFacade(String[] endpoints) {
-        Log.d(TAG, "Creating...");
+
         provider = (JsFileSystemProvider) Storage.getFileSystemRuntime();
 
         String clientName = IdentityUtils.getClientName();
@@ -90,8 +90,6 @@ public class JsFacade implements Exportable {
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setPhoneBookProvider(new JsPhoneBookProvider());
         configuration.setNotificationProvider(new JsNotificationsProvider());
-
-        // configuration.setEnableNetworkLogging(true);
 
         for (String endpoint : endpoints) {
             configuration.addEndpoint(endpoint);
@@ -247,7 +245,6 @@ public class JsFacade implements Exportable {
     // Chats
 
     public void bindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
-        Log.d(TAG, "bindChat: " + peer);
         if (callback == null) {
             return;
         }
@@ -255,7 +252,6 @@ public class JsFacade implements Exportable {
     }
 
     public void unbindChat(JsPeer peer, JsDisplayListCallback<JsMessage> callback) {
-        Log.d(TAG, "unbindChat: " + peer);
         if (callback == null) {
             return;
         }
@@ -415,12 +411,10 @@ public class JsFacade implements Exportable {
     }
 
     public void onConversationOpen(JsPeer peer) {
-        Log.d(TAG, "onConversationOpen: " + peer);
         messenger.onConversationOpen(peer.convert());
     }
 
     public void onConversationClosed(JsPeer peer) {
-        Log.d(TAG, "onConversationClosed: " + peer);
         messenger.onConversationClosed(peer.convert());
     }
 
@@ -758,11 +752,21 @@ public class JsFacade implements Exportable {
         });
     }
 
+    // Settings
+
     public void changeNotificationsEnabled(JsPeer peer, boolean isEnabled) {
         messenger.changeNotificationsEnabled(peer.convert(), isEnabled);
     }
 
     public boolean isNotificationsEnabled(JsPeer peer) {
         return messenger.isNotificationsEnabled(peer.convert());
+    }
+
+    public boolean isSendByEnterEnabled() {
+        return messenger.isSendByEnterEnabled();
+    }
+
+    public void changeSendByEnter(boolean sendByEnter) {
+        messenger.changeSendByEnter(sendByEnter);
     }
 }
