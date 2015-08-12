@@ -1,11 +1,13 @@
 package im.actor.server.dialog.group
 
 import akka.actor._
+import akka.contrib.pattern.ShardRegion
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.Dialog.StopDialog
 import im.actor.server.dialog.{ Dialog, GroupDialogCommands }
 import im.actor.server.group.{ GroupExtension, GroupOffice, GroupProcessorRegion, GroupViewRegion }
 import im.actor.server.push.SeqUpdatesExtension
@@ -61,6 +63,8 @@ class GroupDialog extends Dialog with GroupDialogHandlers {
 
   override type State = GroupDialogState
 
+  context.setReceiveTimeout(1.hours)
+
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](GroupDialog.MaxCacheSize)
 
@@ -83,6 +87,8 @@ class GroupDialog extends Dialog with GroupDialogHandlers {
       withMemberIds(groupId) { (memberIds, invitedUserIds, _) ⇒
         messageRead(replyTo, state, memberIds, invitedUserIds, readerUserId, readerAuthId, date)
       }
+    case StopDialog     ⇒ context stop self
+    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }
 
   private def initState: GroupDialogState = GroupDialogState(None, None, None)
