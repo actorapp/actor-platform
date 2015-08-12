@@ -34,6 +34,7 @@ export const ActionTypes = keymirror({
   COMPOSE_CLEAN: null,
   COMPOSE_TYPING: null,
   COMPOSE_MENTION_INSERT: null,
+  COMPOSE_MENTION_CLOSE: null,
 
   SEND_MESSAGE_TEXT: null,
   SEND_MESSAGE_FILE: null,

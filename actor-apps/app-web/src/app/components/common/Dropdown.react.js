@@ -8,7 +8,8 @@ class Dropdown extends React.Component {
     isShown: React.PropTypes.bool,
     className: React.PropTypes.string,
     children: React.PropTypes.array,
-    onSelect: React.PropTypes.func.isRequired
+    onSelect: React.PropTypes.func.isRequired,
+    onClose: React.PropTypes.func
   };
 
   constructor(props) {
@@ -57,6 +58,7 @@ class Dropdown extends React.Component {
   closeDropdown = () => {
     this.setState({isShown: false});
     document.removeEventListener('click', this.closeDropdown, false);
+    document.removeEventListener('keydown', this.onKeyDown, false);
   };
 
   onSelect = (value) => {

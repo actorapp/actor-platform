@@ -79,6 +79,9 @@ let onTyping = (action) => {
   let all = getAll(action.peer);
   let query = getQuery(text, action.caretPosition);
   mentions = _.filter(all, m => m.title.toLowerCase().indexOf(query) > -1);
+  if (mentions.length === 0) {
+    mentions = null;
+  }
   instance.emitChange();
 };
 
@@ -90,6 +93,11 @@ let onMentionInsert = (action) => {
     action.text.substring(action.caretPosition, action.text.length) +
     ' ';
 
+  mentions = null;
+  instance.emitChange();
+};
+
+let onMentionClose = () => {
   mentions = null;
   instance.emitChange();
 };
@@ -113,6 +121,9 @@ instance.dispatchToken = ActorAppDispatcher.register(action => {
       break;
     case ActionTypes.COMPOSE_MENTION_INSERT:
       onMentionInsert(action);
+      break;
+    case ActionTypes.COMPOSE_MENTION_CLOSE:
+      onMentionClose();
       break;
     case ActionTypes.COMPOSE_CLEAN:
       onComposeClean();
