@@ -1,7 +1,8 @@
 import { EventEmitter } from 'events';
+import ActorClient from 'utils/ActorClient';
+
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
-import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
 
 const CHANGE_EVENT = 'change';
 
@@ -9,7 +10,7 @@ let _integrationToken;
 
 class GroupStore extends EventEmitter {
   getGroup(gid) {
-    return GroupProfileActionCreators.getGroup(gid);
+    return ActorClient.getGroup(gid);
   }
 
   getIntegrationToken() {
