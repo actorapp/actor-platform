@@ -1,0 +1,66 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       '../runtime/src/main/java',
+                       '../runtime/src/generic/java']
+        }
+    }
+}
+
+task j2objc() {
+
+    doFirst {
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        delete "${projectDir}/src/gen/cocoa/"
+
+        exec {
+
+            executable "${properties.get("j2objcDir")}j2objc"
+
+            args "-use-arc", "--strip-reflection"
+
+            // args "-g"
+
+            args "-d", "${projectDir}/src/gen/cocoa/"
+
+            args "-sourcepath", "${projectDir}/src/main/java/:${projectDir}/../runtime/src/main/java/:${projectDir}/../runtime/src/generic/java/"
+
+//            args "--prefixes", "${projectDir}/prefixes.properties"
+
+            def srcFiles = fileTree("${projectDir}/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../runtime/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../runtime/src/generic/java").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+        }
+    }
+}
+
+j2objc.dependsOn compileJava
+build.dependsOn j2objc

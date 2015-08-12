@@ -79,3 +79,6 @@ actor-apps/runtime-android/build
 actor-apps/runtime/build
 actor-apps/runtime-js/build
 actor-apps/runtime-js/war
+actor-apps/core-cocoa/build
+actor-apps/core-cocoa/src/gen
+actor-apps/runtime-cocoa/src/gen
