@@ -2,7 +2,7 @@ package im.actor.server.api.http
 
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupProcessorRegion }
-import im.actor.server.peer.{ GroupPeerExtension, GroupPeerRegion }
+import im.actor.server.dialog.{ GroupDialogExtension, GroupDialogRegion }
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }
@@ -55,7 +55,7 @@ object HttpApiFrontend {
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val db: Database = DbExtension(system).db
     implicit val groupProcessorRegion: GroupViewRegion = GroupExtension(system).viewRegion
-    implicit val groupPeerRegion: GroupPeerRegion = GroupPeerExtension(system).region
+    implicit val groupPeerRegion: GroupDialogRegion = GroupDialogExtension(system).region
     implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(system).s3StorageAdapter
 
     val webhooks = new WebhooksHandler

@@ -29,7 +29,7 @@ import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peer.{ GroupPeer, GroupPeerExtension }
+import im.actor.server.dialog.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
@@ -41,7 +41,7 @@ class Main extends Bootable {
   CommonSerialization.register()
   UserProcessor.register()
   GroupProcessor.register()
-  GroupPeer.register()
+  GroupDialog.register()
 
   val serverConfig = ActorConfig.load()
 
@@ -78,7 +78,7 @@ class Main extends Bootable {
     implicit val userViewRegion = UserExtension(system).viewRegion
     implicit val groupProcessorRegion = GroupExtension(system).processorRegion
     implicit val groupViewRegion = GroupExtension(system).viewRegion
-    implicit val groupPeerRegion = GroupPeerExtension(system).region //no need to be implicit
+    implicit val groupPeerRegion = GroupDialogExtension(system).region //no need to be implicit
 
     val mediator = DistributedPubSubExtension(system).mediator
 

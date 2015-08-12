@@ -1,4 +1,4 @@
-package im.actor.server.peer
+package im.actor.server.dialog
 
 import akka.actor.{ ActorRef, Status }
 import akka.pattern.pipe
@@ -20,14 +20,14 @@ import slick.dbio.DBIO
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-trait GroupPeerHandlers {
-  this: GroupPeer ⇒
+trait GroupDialogHandlers {
+  this: GroupDialog ⇒
 
-  import GroupPeer._
-  import GroupPeerCommands._
+  import GroupDialog._
+  import GroupDialogCommands._
 
   protected def sendMessage(
-    state:        GroupPeerState,
+    state:        GroupDialogState,
     memberIds:    Set[Int],
     botId:        Int,
     senderUserId: Int,
@@ -56,7 +56,7 @@ trait GroupPeerHandlers {
     }
   }
 
-  protected def messageReceived(replyTo: ActorRef, state: GroupPeerState, memberIds: Set[Int], receiverUserId: Int, date: Long): Unit = {
+  protected def messageReceived(replyTo: ActorRef, state: GroupDialogState, memberIds: Set[Int], receiverUserId: Int, date: Long): Unit = {
     val receiveFuture: Future[MessageReceivedAck] =
       if (!state.lastReceiveDate.exists(_ >= date) && !state.lastSenderId.contains(receiverUserId)) {
         context become working(state.copy(lastReceiveDate = Some(date)))
@@ -79,7 +79,7 @@ trait GroupPeerHandlers {
     }
   }
 
-  protected def messageRead(replyTo: ActorRef, state: GroupPeerState, memberIds: Set[Int], invitedUserIds: Set[Int], readerUserId: Int, readerAuthId: Long, date: Long): Unit = {
+  protected def messageRead(replyTo: ActorRef, state: GroupDialogState, memberIds: Set[Int], invitedUserIds: Set[Int], readerUserId: Int, readerAuthId: Long, date: Long): Unit = {
     val readFuture: Future[MessageReadAck] =
       if (!state.lastSenderId.contains(readerUserId)) {
         db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))) foreach { _ ⇒
@@ -96,7 +96,7 @@ trait GroupPeerHandlers {
         if (invitedUserIds contains readerUserId) {
           val randomId = ThreadLocalRandom.current().nextLong()
           GroupOffice.joinAfterFirstRead(groupId, readerUserId)
-          GroupPeerOperations.sendMessage(groupId, readerUserId, readerAuthId, randomId, GroupServiceMessages.userJoined)
+          GroupDialogOperations.sendMessage(groupId, readerUserId, readerAuthId, randomId, GroupServiceMessages.userJoined)
         }
 
         if (!state.lastReadDate.exists(_ >= date) && !state.lastSenderId.contains(readerUserId)) {
