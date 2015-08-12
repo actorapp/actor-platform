@@ -7,6 +7,7 @@ import { PeerTypes } from 'constants/ActorAppConstants';
 import MessagesSection from 'components/dialog/MessagesSection.react';
 import TypingSection from 'components/dialog/TypingSection.react';
 import ComposeSection from 'components/dialog/ComposeSection.react';
+import ConnectionState from 'components/common/ConnectionState.react';
 
 import DialogStore from 'stores/DialogStore';
 import MessageStore from 'stores/MessageStore';
@@ -91,6 +92,8 @@ class DialogSection extends React.Component {
 
       return (
         <section className="dialog" onScroll={this.loadMessagesByScroll}>
+          <ConnectionState/>
+
           <div className="messages">
             <MessagesSection messages={this.state.messagesToRender}
                              peer={this.state.peer}
@@ -104,6 +107,7 @@ class DialogSection extends React.Component {
     } else {
       return (
         <section className="dialog dialog--empty row center-xs middle-xs">
+          <ConnectionState/>
           <h2>Select dialog or start a new one.</h2>
         </section>
       );
