@@ -47,7 +47,7 @@ let getQuery = (text, position) => {
 };
 
 let text = '';
-let mentions = [];
+let mentions = null;
 
 class ComposeStore extends EventEmitter {
   getMentions() {
@@ -90,12 +90,13 @@ let onMentionInsert = (action) => {
     action.text.substring(action.caretPosition, action.text.length) +
     ' ';
 
-  mentions = [];
+  mentions = null;
   instance.emitChange();
 };
 
 let onComposeClean = () => {
   text = '';
+  mentions = null;
   instance.emitChange();
 };
 
