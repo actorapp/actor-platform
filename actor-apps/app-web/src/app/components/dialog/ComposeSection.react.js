@@ -143,7 +143,7 @@ class ComposeSection extends React.Component {
   };
 
   onMentionClose = () => {
-    ComposeActionCreators.clearMention();
+    ComposeActionCreators.closeMention();
   };
 
   getCaretPosition = () => {

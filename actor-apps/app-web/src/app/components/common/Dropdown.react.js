@@ -19,15 +19,22 @@ class Dropdown extends React.Component {
       isShown: props.isShown,
       selectedIndex: this.getDefaultIndex(props.children)
     };
-  }
 
-  componentWillMount() {
-    document.addEventListener('keydown', this.onKeyDown, false);
+    if (props.isShown) {
+      this.setListeners();
+    }
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.closeDropdown);
-    document.removeEventListener('keydown', this.onKeyDown, false);
+    this.cleanListeners();
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isShown && !this.state.isShown) {
+      this.setListeners();
+    } else if (!nextState.isShown && this.state.isShown) {
+      this.cleanListeners();
+    }
   }
 
   componentWillReceiveProps(props) {
@@ -35,6 +42,14 @@ class Dropdown extends React.Component {
       isShown: props.isShown,
       selectedIndex: this.getDefaultIndex(props.children)
     });
+  }
+
+  setListeners() {
+    document.addEventListener('keydown', this.onKeyDown, false);
+  }
+
+  cleanListeners() {
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   getDefaultIndex = (children) => {
@@ -57,8 +72,6 @@ class Dropdown extends React.Component {
 
   closeDropdown = () => {
     this.setState({isShown: false});
-    document.removeEventListener('click', this.closeDropdown, false);
-    document.removeEventListener('keydown', this.onKeyDown, false);
   };
 
   onSelect = (value) => {
@@ -66,7 +79,6 @@ class Dropdown extends React.Component {
       this.props.onSelect(value);
     }
   };
-
 
   onKeyDown = (e) => {
     let index = this.state.selectedIndex;
@@ -105,6 +117,9 @@ class Dropdown extends React.Component {
 
     if (e.keyCode === KeyCodes.ESC) {
       this.closeDropdown();
+      if (this.props.onClose) {
+        this.props.onClose();
+      }
     }
   };
 
