@@ -78,7 +78,7 @@ let onTyping = (action) => {
 
   let all = getAll(action.peer);
   let query = getQuery(text, action.caretPosition);
-  mentions = _.filter(all, m => m.title.indexOf(query) > -1);
+  mentions = _.filter(all, m => m.title.toLowerCase().indexOf(query) > -1);
   instance.emitChange();
 };
 
