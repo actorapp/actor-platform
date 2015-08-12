@@ -64,6 +64,13 @@ private[group] sealed trait Commands {
   ): Future[(SeqStateDate, Vector[Int], Long)] =
     (peerManagerRegion.ref ? Join(groupId, joiningUserId, joiningUserAuthId, invitingUserId)).mapTo[(SeqStateDate, Vector[Int], Long)]
 
+  def joinAfterFirstRead(groupId: Int, joiningUserId: Int, joiningUserAuthId: Long)(
+    implicit
+    region:  GroupProcessorRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Unit = region.ref ! JoinAfterFirstRead(groupId, joiningUserId, joiningUserAuthId)
+
   def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(
     implicit
     timeout:           Timeout,
@@ -114,13 +121,6 @@ private[group] sealed trait Commands {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[String] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
-
-  def joinAfterFirstRead(groupId: Int, joiningUserId: Int)(
-    implicit
-    region:  GroupProcessorRegion,
-    timeout: Timeout,
-    ec:      ExecutionContext
-  ): Unit = region.ref ! JoinAfterFirstRead(groupId, joiningUserId)
 }
 
 private[group] sealed trait Queries {

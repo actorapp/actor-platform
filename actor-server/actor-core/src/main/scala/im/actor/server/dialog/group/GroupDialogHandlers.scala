@@ -114,9 +114,7 @@ trait GroupDialogHandlers {
         }
 
         if (invitedUserIds contains readerUserId) {
-          val randomId = ThreadLocalRandom.current().nextLong()
-          GroupOffice.joinAfterFirstRead(groupId, readerUserId)
-          GroupDialogOperations.sendMessage(groupId, readerUserId, readerAuthId, randomId, GroupServiceMessages.userJoined)
+          GroupOffice.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
         }
 
         if (!state.lastReadDate.exists(_ >= date) && !state.lastSenderId.contains(readerUserId)) {
