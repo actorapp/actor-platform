@@ -63,6 +63,14 @@ export default {
     window.messenger.unbindContacts(peer, callback);
   },
 
+  bindConnectState(callback) {
+    window.messenger.bindConnectState(callback);
+  },
+
+  unbindConnectState(callback) {
+    window.messenger.unbindConnectState(callback);
+  },
+
   getUser(userId) {
     return window.messenger.getUser(userId);
   },
