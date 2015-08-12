@@ -3,7 +3,7 @@ package im.actor.server
 import akka.actor.ActorSystem
 
 import im.actor.server.group.{ GroupExtension, GroupProcessor, GroupProcessorRegion, GroupViewRegion }
-import im.actor.server.peer.{ GroupPeerExtension, GroupPeer, GroupPeerRegion }
+import im.actor.server.dialog.{ GroupDialogExtension, GroupDialog, GroupDialogRegion }
 import org.scalatest.Suite
 
 trait ImplicitGroupRegions extends ImplicitUserRegions with ImplicitFileStorageAdapter with ActorSerializerPrepare {
@@ -11,7 +11,7 @@ trait ImplicitGroupRegions extends ImplicitUserRegions with ImplicitFileStorageA
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
-    GroupPeer.register()
+    GroupDialog.register()
     GroupProcessor.register()
   }
 
@@ -19,5 +19,5 @@ trait ImplicitGroupRegions extends ImplicitUserRegions with ImplicitFileStorageA
 
   protected implicit lazy val groupProcessorRegion: GroupProcessorRegion = GroupExtension(system).processorRegion
   protected implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-  protected implicit lazy val groupPeerRegion: GroupPeerRegion = GroupPeerExtension(system).region
+  protected implicit lazy val groupPeerRegion: GroupDialogRegion = GroupDialogExtension(system).region
 }

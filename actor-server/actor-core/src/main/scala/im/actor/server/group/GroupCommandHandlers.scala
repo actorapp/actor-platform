@@ -13,7 +13,7 @@ import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
-import im.actor.server.peer.GroupPeerOperations
+import im.actor.server.dialog.GroupDialogOperations
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
@@ -159,7 +159,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               val randomId = ThreadLocalRandom.current().nextLong()
               for {
                 _ ← p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
-                seqstatedate ← DBIO.from(GroupPeerOperations.sendMessage(groupId, joiningUserId, joiningUserAuthId, randomId, GroupServiceMessages.userJoined, isFat = true))
+                seqstatedate ← DBIO.from(GroupDialogOperations.sendMessage(groupId, joiningUserId, joiningUserAuthId, randomId, GroupServiceMessages.userJoined, isFat = true))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
           } yield updates

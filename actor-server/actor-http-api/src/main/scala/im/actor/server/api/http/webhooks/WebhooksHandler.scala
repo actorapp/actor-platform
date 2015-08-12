@@ -11,7 +11,7 @@ import akka.util.Timeout
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json._
-import im.actor.server.peer.{ GroupPeerRegion, GroupPeerOperations }
+import im.actor.server.dialog.{ GroupDialogRegion, GroupDialogOperations }
 import im.actor.server.persist
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -26,7 +26,7 @@ class WebhooksHandler()(
   db:                   Database,
   ec:                   ExecutionContext,
   groupProcessorRegion: GroupViewRegion,
-  groupPeerRegion:      GroupPeerRegion,
+  groupPeerRegion:      GroupDialogRegion,
   val materializer:     Materializer
 ) extends RoutesHandler with ContentUnmarshaler {
 
@@ -66,7 +66,7 @@ class WebhooksHandler()(
               val sendFuture = for {
                 isChecked ← GroupOffice.checkAccessHash(group.id, group.accessHash)
                 _ ← if (isChecked) {
-                  GroupPeerOperations.sendMessage(group.id, bot.userId, 0, ThreadLocalRandom.current().nextLong(), message) map (_ ⇒ ())
+                  GroupDialogOperations.sendMessage(group.id, bot.userId, 0, ThreadLocalRandom.current().nextLong(), message) map (_ ⇒ ())
                 } else {
                   Future.successful(())
                 }

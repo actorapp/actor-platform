@@ -10,7 +10,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
-import im.actor.server.peer.{ GroupPeerExtension, GroupPeerRegion }
+import im.actor.server.dialog.{ GroupDialogExtension, GroupDialogRegion }
 import im.actor.server.push.SeqUpdatesExtension
 import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
 import im.actor.server.util.{ FileStorageAdapter, S3StorageExtension }
@@ -124,7 +124,7 @@ private[group] final class GroupProcessor
   protected implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
-  protected implicit val groupPeerRegion: GroupPeerRegion = GroupPeerExtension(system).region
+  protected implicit val groupPeerRegion: GroupDialogRegion = GroupDialogExtension(system).region
 
   protected val groupId = self.path.name.toInt
 

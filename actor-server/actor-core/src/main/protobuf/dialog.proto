@@ -9,9 +9,9 @@ option (scalapb.options) = {
 
 import "scalapb/scalapb.proto";
 
-message GroupPeerCommands {
+message GroupDialogCommands {
     message SendMessage {
-        option (scalapb.message).extends = "im.actor.server.peer.GroupPeerCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.GroupDialogCommand";
 
         required int32 group_id = 1;
         required int32 sender_user_id = 2;
@@ -22,7 +22,7 @@ message GroupPeerCommands {
     }
 
     message MessageReceived {
-        option (scalapb.message).extends = "im.actor.server.peer.GroupPeerCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.GroupDialogCommand";
 
         required int32 group_id = 1;
         required int32 receiver_user_id = 2;
@@ -33,7 +33,7 @@ message GroupPeerCommands {
     message MessageReceivedAck {}
 
     message MessageRead {
-        option (scalapb.message).extends = "im.actor.server.peer.GroupPeerCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.GroupDialogCommand";
 
         required int32 group_id = 1;
         required int32 receiver_user_id = 2;
