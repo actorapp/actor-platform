@@ -143,8 +143,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def join(group: Group, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int): Unit = {
-    if (!hasMember(group, joiningUserId)) {
+  protected def setJoined(group: Group, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int): Unit = {
+    if (!hasMember(group, joiningUserId) || isInvited(group, joiningUserId)) {
       val replyTo = sender()
 
       persist(TSEvent(now(), GroupEvents.UserJoined(joiningUserId, invitingUserId))) { evt ⇒
@@ -175,14 +175,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def joinAfterFirstRead(group: Group, joiningUserId: Int): Unit = {
-    val joinEvent = TSEvent(now(), GroupEvents.UserJoined(joiningUserId, group.creatorUserId))
-    persistStashing[Unit](joinEvent, group) { e ⇒
-      for {
-        _ ← db.run(p.GroupUser.setJoined(groupId, joiningUserId, LocalDateTime.now(ZoneOffset.UTC)))
-      } yield ()
-    }
-  }
+  protected def joinAfterFirstRead(group: Group, joiningUserId: Int, joiningUserAuthId: Long): Unit =
+    setJoined(group, joiningUserId, joiningUserAuthId, group.creatorUserId)
 
   protected def kick(group: Group, kickedUserId: Int, kickerUserId: Int, kickerAuthId: Long, randomId: Long): Unit = {
     val replyTo = sender()
