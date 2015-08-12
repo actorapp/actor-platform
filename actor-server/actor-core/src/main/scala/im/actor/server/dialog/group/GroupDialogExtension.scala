@@ -1,4 +1,4 @@
-package im.actor.server.dialog
+package im.actor.server.dialog.group
 
 import akka.actor._
 

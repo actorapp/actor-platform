@@ -11,7 +11,7 @@ import "scalapb/scalapb.proto";
 
 message GroupDialogCommands {
     message SendMessage {
-        option (scalapb.message).extends = "im.actor.server.dialog.GroupDialogCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.group.GroupDialogCommand";
 
         required int32 group_id = 1;
         required int32 sender_user_id = 2;
@@ -22,7 +22,7 @@ message GroupDialogCommands {
     }
 
     message MessageReceived {
-        option (scalapb.message).extends = "im.actor.server.dialog.GroupDialogCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.group.GroupDialogCommand";
 
         required int32 group_id = 1;
         required int32 receiver_user_id = 2;
@@ -33,7 +33,7 @@ message GroupDialogCommands {
     message MessageReceivedAck {}
 
     message MessageRead {
-        option (scalapb.message).extends = "im.actor.server.dialog.GroupDialogCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.group.GroupDialogCommand";
 
         required int32 group_id = 1;
         required int32 receiver_user_id = 2;
