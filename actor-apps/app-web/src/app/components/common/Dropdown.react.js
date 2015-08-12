@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 class Dropdown extends React.Component {
   static propTypes = {
+    isShown: React.PropTypes.bool,
     className: React.PropTypes.string,
     children: React.PropTypes.array,
     onSelect: React.PropTypes.func
@@ -13,8 +14,12 @@ class Dropdown extends React.Component {
     super(props);
 
     this.state = {
-      isShown: false
+      isShown: props.isShown
     };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({isShown: props.isShown});
   }
 
   openDropdown = () => {

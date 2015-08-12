@@ -31,6 +31,10 @@ export const ActionTypes = keymirror({
   SELECT_DIALOG_PEER: null,
   SELECTED_DIALOG_INFO_CHANGED: null,
 
+  COMPOSE_CLEAN: null,
+  COMPOSE_TYPING: null,
+  COMPOSE_MENTION_INSERT: null,
+
   SEND_MESSAGE_TEXT: null,
   SEND_MESSAGE_FILE: null,
   SEND_MESSAGE_PHOTO: null,
