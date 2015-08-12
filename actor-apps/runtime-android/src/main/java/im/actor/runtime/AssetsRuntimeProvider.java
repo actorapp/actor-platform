@@ -1,6 +1,7 @@
 package im.actor.runtime;
 
-import im.actor.core.runtime.generic.GenericAssetsProvider;
+import im.actor.runtime.android.AndroidAssetsProvider;
 
-public class AssetsRuntimeProvider extends GenericAssetsProvider {
+public class AssetsRuntimeProvider extends AndroidAssetsProvider {
+
 }
