@@ -1,7 +1,7 @@
 package im.actor.server
 
 import akka.actor.ActorSystem
-import im.actor.server.dialog.pair.{ PairDialogExtension, PairDialogRegion, PairDialog }
+import im.actor.server.dialog.privat.{ PrivateDialogExtension, PrivateDialogRegion, PrivateDialog }
 
 import im.actor.server.user.{ UserExtension, UserProcessor, UserProcessorRegion, UserViewRegion }
 import org.scalatest.Suite
@@ -11,7 +11,7 @@ trait ImplicitUserRegions extends ImplicitSocialManagerRegion with ImplicitSeqUp
 
   override protected def beforeAll(): Unit = {
     super.beforeAll()
-    PairDialog.register()
+    PrivateDialog.register()
     UserProcessor.register()
   }
 
@@ -19,6 +19,6 @@ trait ImplicitUserRegions extends ImplicitSocialManagerRegion with ImplicitSeqUp
 
   protected implicit lazy val userProcessorRegion: UserProcessorRegion = UserExtension(system).processorRegion
   protected implicit lazy val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
-  protected implicit lazy val pairDialogRegion: PairDialogRegion = PairDialogExtension(system).region
+  protected implicit lazy val privateDialogRegion: PrivateDialogRegion = PrivateDialogExtension(system).region
 
 }
