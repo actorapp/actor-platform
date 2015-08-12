@@ -147,6 +147,7 @@ message GroupCommands {
 
         required int32 group_id = 1;
         required int32 joining_user_id = 2;
+        required int64 joining_user_auth_id = 3;
     }
 }
 

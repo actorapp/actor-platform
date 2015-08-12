@@ -195,10 +195,10 @@ private[group] final class GroupProcessor
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
       }
-    case JoinAfterFirstRead(_, joiningUserId) ⇒
-      joinAfterFirstRead(state, joiningUserId)
+    case JoinAfterFirstRead(_, joiningUserId, joiningUserAuthId) ⇒
+      joinAfterFirstRead(state, joiningUserId, joiningUserAuthId)
     case Join(_, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
-      join(state, joiningUserId, joiningUserAuthId, invitingUserId)
+      setJoined(state, joiningUserId, joiningUserAuthId, invitingUserId)
     case Kick(_, kickedUserId, kickerUserId, kickerAuthId, randomId) ⇒
       kick(state, kickedUserId, kickerUserId, kickerAuthId, randomId)
     case Leave(_, userId, authId, randomId) ⇒
@@ -257,6 +257,8 @@ private[group] final class GroupProcessor
   }
 
   protected def hasMember(group: Group, userId: Int): Boolean = group.members.keySet.contains(userId)
+
+  protected def isInvited(group: Group, userId: Int): Boolean = group.invitedUserIds.contains(userId)
 
   protected def isBot(group: Group, userId: Int): Boolean = userId == 0 || (group.bot exists (_.userId == userId))
 
