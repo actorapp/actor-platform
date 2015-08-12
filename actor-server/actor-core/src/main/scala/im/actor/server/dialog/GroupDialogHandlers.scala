@@ -3,56 +3,75 @@ package im.actor.server.dialog
 import akka.actor.{ ActorRef, Status }
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
-import im.actor.api.rpc.counters.{ AppCounters, UpdateCountersChanged }
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
-import im.actor.server.group.GroupErrors.{ ReadFailed, ReceiveFailed }
+import im.actor.server.dialog.Dialog.{ ReadFailed, ReceiveFailed }
+import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
+import im.actor.server.models
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
 import im.actor.server.util.GroupServiceMessages
 import im.actor.server.util.HistoryUtils._
-import im.actor.server.{ models, persist }
 import im.actor.utils.cache.CacheHelpers._
 import org.joda.time.DateTime
-import slick.dbio.DBIO
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.util.{ Failure, Success }
 
 trait GroupDialogHandlers {
   this: GroupDialog ⇒
 
-  import GroupDialog._
   import GroupDialogCommands._
 
   protected def sendMessage(
+    replyTo:      ActorRef,
     state:        GroupDialogState,
     memberIds:    Set[Int],
     botId:        Int,
     senderUserId: Int,
     senderAuthId: Long,
     randomId:     Long,
-    date:         DateTime,
     message:      ApiMessage,
     isFat:        Boolean
-  ): Future[SeqStateDate] = {
-
-    withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
-      context become working(state.copy(lastSenderId = Some(senderUserId)))
-
-      memberIds.filterNot(_ == senderUserId) foreach { userId ⇒
-        UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
+  ): Unit = {
+    if ((memberIds contains senderUserId) || senderUserId == botId) {
+      context.become {
+        case MessageSentComplete(newState) ⇒
+          unstashAll()
+          context become working(newState)
+        case msg ⇒
+          stash()
       }
+      val date = new DateTime
 
-      for {
-        SeqState(seq, state) ← if (senderUserId == botId) {
-          Future.successful(SeqState(0, ByteString.EMPTY))
-        } else {
-          UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
+      val sendMessageFuture = withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
+
+        memberIds.filterNot(_ == senderUserId) foreach { userId ⇒
+          UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
         }
-        _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
-      } yield SeqStateDate(seq, state, date.getMillis)
+
+        for {
+          SeqState(seq, state) ← if (senderUserId == botId) {
+            Future.successful(SeqState(0, ByteString.EMPTY))
+          } else {
+            UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
+          }
+          _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
+        } yield SeqStateDate(seq, state, date.getMillis)
+      }
+      sendMessageFuture onComplete {
+        case Success(seqStateDate) ⇒
+          replyTo ! seqStateDate
+          self ! MessageSentComplete(state.copy(lastSenderId = Some(senderUserId)))
+        case Failure(e) ⇒
+          replyTo ! Status.Failure(e)
+          log.error(e, "Failed to send message")
+          self ! MessageSentComplete(state)
+      }
+    } else {
+      replyTo ! Status.Failure(NotAMember)
     }
   }
 
@@ -120,10 +139,5 @@ trait GroupDialogHandlers {
     }
 
   }
-
-  private def getUpdateCountersChanged(userId: Int): DBIO[UpdateCountersChanged] = for {
-    unreadTotal ← persist.HistoryMessage.getUnreadTotal(userId)
-    unreadOpt = if (unreadTotal == 0) None else Some(unreadTotal)
-  } yield UpdateCountersChanged(AppCounters(unreadOpt))
 
 }
