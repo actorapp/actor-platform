@@ -143,6 +143,7 @@ class ComposeSection extends React.Component {
 
   onMentionSelect = (value) => {
     console.info('select', value);
+    this.setState({text: this.state.text + value + ', '});
   };
 
   render() {
@@ -155,8 +156,20 @@ class ComposeSection extends React.Component {
         <Dropdown className="dropdown--mentions"
                   onSelect={this.onMentionSelect}
                   ref="mentions">
-          <DropdownItem value="@olegshilov">olegshilov</DropdownItem>
-          <DropdownItem value="@prettynatty">prettynatty</DropdownItem>
+          <DropdownItem value="olegshilov">
+            <AvatarItem image={profile.avatar}
+                        placeholder={profile.placeholder}
+                        size="tiny"
+                        title={profile.name}/>
+            olegshilov
+          </DropdownItem>
+          <DropdownItem value="prettynatty">
+            <AvatarItem image={profile.avatar}
+                        placeholder={profile.placeholder}
+                        size="tiny"
+                        title={profile.name}/>
+            prettynatty
+          </DropdownItem>
         </Dropdown>
 
         <AvatarItem className="my-avatar"
