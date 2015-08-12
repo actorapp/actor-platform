@@ -4,7 +4,7 @@ import ActorClient from 'utils/ActorClient';
 
 const GroupProfileActionCreators = {
   getUser(id) {
-    console.warn("GroupProfileActionCreators.getUser is deprecated, use ActorClient.getUser or UserStore.getUser");
+    console.warn('GroupProfileActionCreators.getUser is deprecated, use ActorClient.getUser or UserStore.getUser');
     return ActorClient.getUser(id);
   },
 

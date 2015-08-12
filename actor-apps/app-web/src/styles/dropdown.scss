@@ -112,6 +112,10 @@
           margin-top: -1px;
           margin-left: -34px;
         }
+        &--active {
+          color: white;
+          background-color: $dark-sky-blue;
+        }
       }
     }
   }

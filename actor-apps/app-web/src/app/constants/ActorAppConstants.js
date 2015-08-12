@@ -103,7 +103,9 @@ export const MessageContentTypes = {
 
 export const KeyCodes = {
   ESC: 27,
-  ENTER: 13
+  ENTER: 13,
+  ARROW_UP: 38,
+  ARROW_DOWN: 40
 };
 
 export const version = app.base_version;
