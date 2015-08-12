@@ -86,8 +86,7 @@ class ToolbarSection extends React.Component {
       );
     } else {
       return (
-        <header className="toolbar">
-        </header>
+        <header className="toolbar"/>
       );
     }
   }
