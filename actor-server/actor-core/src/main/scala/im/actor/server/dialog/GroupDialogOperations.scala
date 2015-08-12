@@ -1,4 +1,4 @@
-package im.actor.server.peer
+package im.actor.server.dialog
 
 import akka.pattern.ask
 import akka.util.Timeout
@@ -7,12 +7,12 @@ import im.actor.server.sequence.SeqStateDate
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-object GroupPeerOperations {
-  import GroupPeerCommands._
+object GroupDialogOperations {
+  import GroupDialogCommands._
 
   def sendMessage(groupId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false)(
     implicit
-    region:  GroupPeerRegion,
+    region:  GroupDialogRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqStateDate] =
@@ -21,7 +21,7 @@ object GroupPeerOperations {
   def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long)(
     implicit
     timeout: Timeout,
-    region:  GroupPeerRegion,
+    region:  GroupDialogRegion,
     ec:      ExecutionContext
   ): Future[Unit] = {
     (region.ref ? MessageReceived(groupId, receiverUserId, receiverAuthId, date)).mapTo[MessageReceivedAck] map (_ ⇒ ())
@@ -30,7 +30,7 @@ object GroupPeerOperations {
   def messageRead(groupId: Int, readerUserId: Int, readerAuthId: Long, date: Long)(
     implicit
     timeout: Timeout,
-    region:  GroupPeerRegion,
+    region:  GroupDialogRegion,
     ec:      ExecutionContext
   ): Future[Unit] = {
     (region.ref ? MessageRead(groupId, readerUserId, readerAuthId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
