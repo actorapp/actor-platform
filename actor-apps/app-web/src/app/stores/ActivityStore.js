@@ -87,18 +87,20 @@ ActivityStore.dispatchToken = ActorAppDispatcher.register(action => {
   switch (action.type) {
     case ActionTypes.HIDE_ACTIVITY:
       _isOpen = false;
+      ActivityStore.emitChange();
       break;
     case ActionTypes.SHOW_ACTIVITY:
       _isOpen = true;
+      ActivityStore.emitChange();
       break;
     case ActionTypes.SELECT_DIALOG_PEER:
       ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
       _setActivityFromPeer();
+      ActivityStore.emitChange();
       break;
     default:
       return;
   }
-  ActivityStore.emitChange();
 });
 
 export default ActivityStore;

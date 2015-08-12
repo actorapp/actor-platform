@@ -115,7 +115,7 @@ class InviteByLink extends React.Component {
         </footer>
 
         <Snackbar autoHideDuration={3000}
-                  message={this.getIntlMessage('integrationTokenCopied')}
+                  message={this.getIntlMessage('inviteLinkCopied')}
                   ref="inviteLinkCopied"
                   style={snackbarStyles}/>
       </Modal>
