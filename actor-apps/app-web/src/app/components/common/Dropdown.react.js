@@ -70,7 +70,6 @@ class Dropdown extends React.Component {
     let index = this.state.selectedIndex;
 
     if (index !== null) {
-
       switch (e.keyCode) {
         case KeyCodes.ENTER:
           e.stopPropagation();
@@ -92,7 +91,7 @@ class Dropdown extends React.Component {
           e.stopPropagation();
           e.preventDefault();
 
-          if (index !== this.props.children.length) {
+          if (index !== this.props.children.length - 1) {
             index += 1;
           }
 
@@ -100,6 +99,10 @@ class Dropdown extends React.Component {
           break;
         default:
       }
+    }
+
+    if (e.keyCode === KeyCodes.ESC) {
+      this.closeDropdown();
     }
   };
 
