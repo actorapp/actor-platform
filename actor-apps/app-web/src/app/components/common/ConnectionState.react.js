@@ -1,6 +1,6 @@
 import React from 'react';
-import ConnectionStateStore from 'stores/ConnectionStateStore';
 import classnames from 'classnames';
+import ConnectionStateStore from 'stores/ConnectionStateStore';
 
 const getStateFromStore = () => {
   return {
@@ -27,7 +27,6 @@ class ConnectionState extends React.Component {
 
   render() {
     const { connectionState } = this.state;
-    let connectionStateText;
 
     const className = classnames('connection-state', {
       'connection-state--online': connectionState === 'online',
@@ -36,18 +35,18 @@ class ConnectionState extends React.Component {
 
     switch (connectionState) {
       case 'online':
-        connectionStateText = 'You\'re back online!';
-        break;
+        return (
+          <div className={className}>'You're back online!'</div>
+        );
       case 'connecting':
-        connectionStateText = 'Houston, we have a problem! Connection to Actor server is lost. Trying to reconnect now...';
-        break;
+        return (
+          <div className={className}>
+            Houston, we have a problem! Connection to Actor server is lost. Trying to reconnect now...
+          </div>
+        );
+      default:
+        return null;
     }
-
-    return (
-      <div className={className}>
-        {connectionStateText}
-      </div>
-    );
   }
 }
 
