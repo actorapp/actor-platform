@@ -26,7 +26,7 @@ class WebhooksHandler()(
   db:                   Database,
   ec:                   ExecutionContext,
   groupProcessorRegion: GroupViewRegion,
-  groupPeerRegion:      GroupDialogRegion,
+  groupDialogRegion:    GroupDialogRegion,
   val materializer:     Materializer
 ) extends RoutesHandler with ContentUnmarshaler {
 
