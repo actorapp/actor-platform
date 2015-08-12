@@ -1,30 +1,57 @@
-/* eslint-disable */
 import React from 'react';
 import classnames from 'classnames';
+
+import { KeyCodes } from 'constants/ActorAppConstants';
 
 class Dropdown extends React.Component {
   static propTypes = {
     isShown: React.PropTypes.bool,
     className: React.PropTypes.string,
     children: React.PropTypes.array,
-    onSelect: React.PropTypes.func
+    onSelect: React.PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      isShown: props.isShown
+      isShown: props.isShown,
+      selectedIndex: this.getDefaultIndex(props.children)
     };
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({isShown: props.isShown});
+  componentWillMount() {
+    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
-  openDropdown = () => {
-    this.setState({isShown: true});
-    document.addEventListener('click', this.closeDropdown, false);
+  componentWillUnmount() {
+    document.removeEventListener('click', this.closeDropdown);
+    document.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      isShown: props.isShown,
+      selectedIndex: this.getDefaultIndex(props.children)
+    });
+  }
+
+  getDefaultIndex = (children) => {
+    let index = null;
+
+    if (children && children.length > 0) {
+      index = children.length - 1;
+    }
+
+    return index;
+  };
+
+  getValue = (index) => {
+    if (this.props.children.length > 0) {
+      return this.props.children[index].props.value;
+    } else {
+      return null;
+    }
   };
 
   closeDropdown = () => {
@@ -38,6 +65,44 @@ class Dropdown extends React.Component {
     }
   };
 
+
+  onKeyDown = (e) => {
+    let index = this.state.selectedIndex;
+
+    if (index !== null) {
+
+      switch (e.keyCode) {
+        case KeyCodes.ENTER:
+          e.stopPropagation();
+          e.preventDefault();
+
+          this.onSelect(this.getValue(this.state.selectedIndex));
+          break;
+        case KeyCodes.ARROW_UP:
+          e.stopPropagation();
+          e.preventDefault();
+
+          if (index !== 0) {
+            index -= 1;
+          }
+
+          this.setState({selectedIndex: index});
+          break;
+        case KeyCodes.ARROW_DOWN:
+          e.stopPropagation();
+          e.preventDefault();
+
+          if (index !== this.props.children.length) {
+            index += 1;
+          }
+
+          this.setState({selectedIndex: index});
+          break;
+        default:
+      }
+    }
+  };
+
   render() {
     const { className, children } = this.props;
 
@@ -45,8 +110,14 @@ class Dropdown extends React.Component {
 
     React.Children.forEach(children, (child, index) => {
       if (child.type.name === 'DropdownItem') {
+        let elClassName = 'dropdown__menu__item';
+
+        if (this.state.selectedIndex === index) {
+          elClassName += ' dropdown__menu__item--active';
+        }
+
         dropdownItems.push(
-          <li className="dropdown__menu__item" key={index} onClick={this.onSelect.bind(this, child.props.value)}>
+          <li className={elClassName} key={index} onClick={this.onSelect.bind(this, child.props.value)}>
             {child.props.children}
           </li>
         );
