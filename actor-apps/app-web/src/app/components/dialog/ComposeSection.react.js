@@ -142,6 +142,10 @@ class ComposeSection extends React.Component {
     this.refs.area.getDOMNode().focus();
   };
 
+  onMentionClose = () => {
+    ComposeActionCreators.clearMention();
+  };
+
   getCaretPosition = () => {
     let el = this.refs.area.getDOMNode();
     let selection = Inputs.getInputSelection(el);
@@ -175,6 +179,7 @@ class ComposeSection extends React.Component {
 
         <Dropdown className="dropdown--mentions"
                   onSelect={this.onMentionSelect.bind(this)}
+                  onClose={this.onMentionClose.bind(this)}
                   isShown={mentionsShown}
                   ref="mentions">
           {mentionsElements}
