@@ -120,7 +120,10 @@ class Dropdown extends React.Component {
         }
 
         dropdownItems.push(
-          <li className={elClassName} key={index} onClick={this.onSelect.bind(this, child.props.value)}>
+          <li className={elClassName}
+              key={index}
+              onClick={this.onSelect.bind(this, child.props.value)}
+              onMouseOver={() => this.setState({selectedIndex: index})}>
             {child.props.children}
           </li>
         );
