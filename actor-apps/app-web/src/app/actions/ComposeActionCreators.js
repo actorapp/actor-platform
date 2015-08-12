@@ -24,6 +24,12 @@ export default {
     });
   },
 
+  closeMention: () => {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.COMPOSE_MENTION_CLOSE
+    });
+  },
+
   onTyping: function(peer, text, caretPosition) {
     if (text !== '') {
       ActorClient.onTyping(peer);
