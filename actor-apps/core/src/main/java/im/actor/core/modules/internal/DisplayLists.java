@@ -14,21 +14,21 @@ import im.actor.core.entity.SearchEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.Storage;
-import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.PlatformDisplayList;
 
 public class DisplayLists extends AbsModule {
 
-    private DisplayList<Dialog> dialogGlobalList;
+    private PlatformDisplayList<Dialog> dialogGlobalList;
 
-    private DisplayList<Contact> contactsGlobalList;
+    private PlatformDisplayList<Contact> contactsGlobalList;
 
-    private HashMap<Peer, DisplayList<Message>> chatsGlobalLists = new HashMap<Peer, DisplayList<Message>>();
+    private HashMap<Peer, PlatformDisplayList<Message>> chatsGlobalLists = new HashMap<Peer, PlatformDisplayList<Message>>();
 
     public DisplayLists(ModuleContext context) {
         super(context);
     }
 
-    public DisplayList<Contact> getContactsSharedList() {
+    public PlatformDisplayList<Contact> getContactsSharedList() {
         im.actor.runtime.Runtime.checkMainThread();
 
         if (contactsGlobalList == null) {
@@ -38,7 +38,7 @@ public class DisplayLists extends AbsModule {
         return contactsGlobalList;
     }
 
-    public DisplayList<Dialog> getDialogsSharedList() {
+    public PlatformDisplayList<Dialog> getDialogsSharedList() {
         im.actor.runtime.Runtime.checkMainThread();
 
         if (dialogGlobalList == null) {
@@ -48,7 +48,7 @@ public class DisplayLists extends AbsModule {
         return dialogGlobalList;
     }
 
-    public DisplayList<Message> getMessagesSharedList(Peer peer) {
+    public PlatformDisplayList<Message> getMessagesSharedList(Peer peer) {
         im.actor.runtime.Runtime.checkMainThread();
 
         if (!chatsGlobalLists.containsKey(peer)) {
@@ -59,10 +59,10 @@ public class DisplayLists extends AbsModule {
     }
 
 
-    public DisplayList<Dialog> buildDialogsList(boolean isShared) {
+    public PlatformDisplayList<Dialog> buildDialogsList(boolean isShared) {
         im.actor.runtime.Runtime.checkMainThread();
 
-        DisplayList<Dialog> res = Storage.createDisplayList(context().getMessagesModule().getDialogsEngine(),
+        PlatformDisplayList<Dialog> res = Storage.createDisplayList(context().getMessagesModule().getDialogsEngine(),
                 isShared, Dialog.ENTITY_NAME);
 
         res.initTop();
@@ -95,19 +95,19 @@ public class DisplayLists extends AbsModule {
 //        return displayList;
     }
 
-    public DisplayList<Contact> buildContactList(boolean isShared) {
+    public PlatformDisplayList<Contact> buildContactList(boolean isShared) {
         im.actor.runtime.Runtime.checkMainThread();
 
-        DisplayList<Contact> res = Storage.createDisplayList(context().getContactsModule().getContacts(),
+        PlatformDisplayList<Contact> res = Storage.createDisplayList(context().getContactsModule().getContacts(),
                 isShared, Contact.ENTITY_NAME);
         res.initTop();
         return res;
     }
 
-    public DisplayList<Message> buildChatList(final Peer peer, boolean isShared) {
+    public PlatformDisplayList<Message> buildChatList(final Peer peer, boolean isShared) {
         im.actor.runtime.Runtime.checkMainThread();
 
-        DisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationEngine(peer),
+        PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationEngine(peer),
                 isShared, Message.ENTITY_NAME);
 
         long lastRead = context().getMessagesModule().loadReadState(peer);
@@ -163,10 +163,10 @@ public class DisplayLists extends AbsModule {
     }
 
 
-    public DisplayList<SearchEntity> buildSearchList(boolean isGlobalList) {
+    public PlatformDisplayList<SearchEntity> buildSearchList(boolean isGlobalList) {
         im.actor.runtime.Runtime.checkMainThread();
 
-        DisplayList<SearchEntity> res = Storage.createDisplayList(context().getSearchModule().getSearchList(),
+        PlatformDisplayList<SearchEntity> res = Storage.createDisplayList(context().getSearchModule().getSearchList(),
                 isGlobalList, SearchEntity.ENTITY_NAME);
         res.initEmpty();
         return res;

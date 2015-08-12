@@ -2,7 +2,7 @@ package im.actor.runtime;
 
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
-import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.PlatformDisplayList;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.ListEngineItem;
 import im.actor.runtime.storage.ListStorage;
@@ -15,7 +15,7 @@ public class EnginesRuntimeProvider implements EnginesRuntime {
     }
 
     @Override
-    public <T extends BserObject & ListEngineItem> DisplayList<T> createDisplayList(ListEngine<T> listEngine, boolean isSharedInstance, String clazz) {
+    public <T extends BserObject & ListEngineItem> PlatformDisplayList<T> createDisplayList(ListEngine<T> listEngine, boolean isSharedInstance, String clazz) {
         throw new RuntimeException("Dumb");
     }
 }

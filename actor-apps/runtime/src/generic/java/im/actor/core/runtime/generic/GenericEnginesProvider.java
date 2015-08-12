@@ -6,7 +6,7 @@ import im.actor.runtime.EnginesRuntime;
 import im.actor.runtime.actors.ActorSystem;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
-import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.PlatformDisplayList;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.ListEngineItem;
 import im.actor.runtime.storage.ListStorage;
@@ -25,7 +25,7 @@ public class GenericEnginesProvider implements EnginesRuntime {
     }
 
     @Override
-    public <T extends BserObject & ListEngineItem> DisplayList<T> createDisplayList(ListEngine<T> listEngine, boolean isSharedInstance, String clazz) {
+    public <T extends BserObject & ListEngineItem> PlatformDisplayList<T> createDisplayList(ListEngine<T> listEngine, boolean isSharedInstance, String clazz) {
         return new BindedDisplayList<T>((AsyncListEngine<T>) listEngine,
                 isSharedInstance, 20, 20, im.actor.core.runtime.generic.mvvm.DisplayList.OperationMode.GENERAL,
                 null);
