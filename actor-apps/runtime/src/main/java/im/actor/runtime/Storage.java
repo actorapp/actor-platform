@@ -4,7 +4,7 @@ import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.mvvm.BaseValueModel;
-import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.PlatformDisplayList;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.mvvm.ValueModelCreator;
 import im.actor.runtime.storage.IndexStorage;
@@ -60,7 +60,7 @@ public class Storage {
         return new MVVMCollection<T, V>(storageRuntime.createKeyValue(name), wrapperCreator, creator);
     }
 
-    public static <T extends BserObject & ListEngineItem> DisplayList<T> createDisplayList(ListEngine<T> engine,
+    public static <T extends BserObject & ListEngineItem> PlatformDisplayList<T> createDisplayList(ListEngine<T> engine,
                                                                                            boolean isSharedInstance,
                                                                                            String entityName) {
         return enginesRuntime.createDisplayList(engine, isSharedInstance, entityName);

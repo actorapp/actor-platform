@@ -2,7 +2,7 @@ package im.actor.runtime;
 
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
-import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.PlatformDisplayList;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.ListEngineItem;
 import im.actor.runtime.storage.ListStorage;
@@ -28,6 +28,6 @@ public interface EnginesRuntime {
      * @param <T>              type of object
      * @return the Display List
      */
-    <T extends BserObject & ListEngineItem> DisplayList<T> createDisplayList(ListEngine<T> listEngine, boolean isSharedInstance,
+    <T extends BserObject & ListEngineItem> PlatformDisplayList<T> createDisplayList(ListEngine<T> listEngine, boolean isSharedInstance,
                                                                              String clazz);
 }
