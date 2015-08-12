@@ -11,7 +11,7 @@ import akka.util.Timeout
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json._
-import im.actor.server.dialog.{ GroupDialogRegion, GroupDialogOperations }
+import im.actor.server.dialog.group.{ GroupDialogRegion, GroupDialogOperations }
 import im.actor.server.persist
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._

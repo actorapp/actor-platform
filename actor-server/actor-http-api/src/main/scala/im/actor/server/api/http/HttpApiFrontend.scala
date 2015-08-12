@@ -2,7 +2,7 @@ package im.actor.server.api.http
 
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupProcessorRegion }
-import im.actor.server.dialog.{ GroupDialogExtension, GroupDialogRegion }
+import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialogRegion }
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }

@@ -1,8 +1,9 @@
-package im.actor.server.dialog
+package im.actor.server.dialog.group
 
 import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
+import im.actor.server.dialog.GroupDialogCommands
 import im.actor.server.sequence.SeqStateDate
 
 import scala.concurrent.{ ExecutionContext, Future }
