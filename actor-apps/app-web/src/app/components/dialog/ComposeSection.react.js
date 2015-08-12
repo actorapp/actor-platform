@@ -6,28 +6,30 @@ import addons from 'react/addons';
 const {addons: { PureRenderMixin }} = addons;
 
 import ActorClient from 'utils/ActorClient';
+import Inputs from 'utils/Inputs';
 import { Styles, FlatButton } from 'material-ui';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 import ActorTheme from 'constants/ActorTheme';
 
 import MessageActionCreators from 'actions/MessageActionCreators';
-import TypingActionCreators from 'actions/TypingActionCreators';
-import DraftActionCreators from 'actions/DraftActionCreators';
+import ComposeActionCreators from 'actions/ComposeActionCreators';
 
-import DraftStore from 'stores/DraftStore';
+import GroupStore from 'stores/GroupStore';
 import PreferencesStore from 'stores/PreferencesStore';
+import ComposeStore from 'stores/ComposeStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import { Dropdown, DropdownItem } from 'components/common/Dropdown.react';
 
 const ThemeManager = new Styles.ThemeManager();
 
-const getStateFromStores = () => {
+let getStateFromStores = () => {
   return {
-    text: DraftStore.getDraft(),
+    text: ComposeStore.getText(),
     profile: ActorClient.getUser(ActorClient.getUid()),
-    sendByEnter: PreferencesStore.sendByEnter
+    sendByEnter: PreferencesStore.sendByEnter,
+    mentions: ComposeStore.getMentions()
   };
 };
 
@@ -47,15 +49,20 @@ class ComposeSection extends React.Component {
     this.state = getStateFromStores();
 
     ThemeManager.setTheme(ActorTheme);
-
-    DraftStore.addLoadDraftListener(this.onChange);
+    GroupStore.addChangeListener(this.onChange);
+    ComposeStore.addChangeListener(this.onChange);
     PreferencesStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
-    DraftStore.removeLoadDraftListener(this.onChange);
-    PreferencesStore.removeChangeListener(this.onChange);
+    GroupStore.removeChangeListener(this.onChange);
+    GroupStore.removeChangeListener(getStateFromStores);
+    PreferencesStore.addChangeListener(this.onChange);
   }
+
+  onChange = () => {
+    this.setState(getStateFromStores());
+  };
 
   getChildContext() {
     return {
@@ -63,13 +70,10 @@ class ComposeSection extends React.Component {
     };
   }
 
-  onChange = () => {
-    this.setState(getStateFromStores());
-  };
-
   onMessageChange = event => {
-    TypingActionCreators.onTyping(this.props.peer);
-    this.setState({text: event.target.value});
+    let text = event.target.value;
+
+    ComposeActionCreators.onTyping(this.props.peer, text, this.getCaretPosition());
   };
 
   onKeyDown = event => {
@@ -84,16 +88,6 @@ class ComposeSection extends React.Component {
         this.sendTextMessage();
       }
     }
-
-    // TODO: Mentions
-    if (event.keyCode === 50 && event.shiftKey) {
-      //console.warn('Mention should show now.');
-      this.refs.mentions.openDropdown();
-    }
-  };
-
-  onKeyUp = () => {
-    DraftActionCreators.saveDraft(this.state.text);
   };
 
   sendTextMessage = () => {
@@ -101,8 +95,7 @@ class ComposeSection extends React.Component {
     if (text) {
       MessageActionCreators.sendTextMessage(this.props.peer, text);
     }
-    this.setState({text: ''});
-    DraftActionCreators.saveDraft('', true);
+    ComposeActionCreators.cleanText();
   };
 
   onSendFileClick = () => {
@@ -142,34 +135,47 @@ class ComposeSection extends React.Component {
   };
 
   onMentionSelect = (value) => {
-    console.info('select', value);
-    this.setState({text: this.state.text + value + ', '});
+    ComposeActionCreators.insertMention(this.props.peer, this.state.text, this.getCaretPosition(), value);
+    //this.setState({text: this.state.text + value + ', '});
+    this.refs.area.getDOMNode().focus();
+  };
+
+  getCaretPosition = () => {
+    let el = this.refs.area.getDOMNode();
+    let selection = Inputs.getInputSelection(el);
+    return selection.start;
   };
 
   render() {
     const text = this.state.text;
     const profile = this.state.profile;
 
+    const mentionsShown = this.state.mentions.length > 0;
+
+    let mentionsElements = null;
+
+    if (mentionsShown) {
+      mentionsElements = _.map(this.state.mentions, (mention) => {
+        return (
+          <DropdownItem value={mention.title}>
+            <AvatarItem image={mention.avatar}
+                        placeholder={mention.placeholder}
+                        size="tiny"
+                        title={mention.title}/>
+            {mention.title}
+          </DropdownItem>
+        );
+      });
+    }
+
     return (
       <section className="compose" onPaste={this.onPaste}>
 
         <Dropdown className="dropdown--mentions"
-                  onSelect={this.onMentionSelect}
+                  onSelect={this.onMentionSelect.bind(this)}
+                  isShown={mentionsShown}
                   ref="mentions">
-          <DropdownItem value="olegshilov">
-            <AvatarItem image={profile.avatar}
-                        placeholder={profile.placeholder}
-                        size="tiny"
-                        title={profile.name}/>
-            olegshilov
-          </DropdownItem>
-          <DropdownItem value="prettynatty">
-            <AvatarItem image={profile.avatar}
-                        placeholder={profile.placeholder}
-                        size="tiny"
-                        title={profile.name}/>
-            prettynatty
-          </DropdownItem>
+          {mentionsElements}
         </Dropdown>
 
         <AvatarItem className="my-avatar"
@@ -181,8 +187,8 @@ class ComposeSection extends React.Component {
           <textarea className="compose__message"
                     onChange={this.onMessageChange}
                     onKeyDown={this.onKeyDown}
-                    onKeyUp={this.onKeyUp}
-                    value={text}>
+                    value={text}
+                    ref="area">
           </textarea>
 
         <footer className="compose__footer row">
