@@ -21,7 +21,7 @@ import im.actor.runtime.storage.ListEngineDisplayLoadCallback;
 import im.actor.runtime.storage.ListEngineItem;
 
 public class BindedDisplayList<T extends BserObject & ListEngineItem> extends DisplayList<T>
-        implements im.actor.runtime.mvvm.DisplayList<T> {
+        implements im.actor.runtime.mvvm.PlatformDisplayList<T> {
 
     private static final String TAG = "BindedDisplayList";
 
