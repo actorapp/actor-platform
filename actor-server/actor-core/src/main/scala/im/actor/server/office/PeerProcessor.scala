@@ -1,23 +1,12 @@
 package im.actor.server.office
 
-import im.actor.api.rpc.counters.{ AppCounters, UpdateCountersChanged }
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.server.{ persist ⇒ p }
-import slick.dbio.DBIO
 
 import scala.concurrent.ExecutionContext
-
-object PeerProcessor {
-  case object MessageSentComplete extends Serializable
-}
 
 trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[State, Event] {
 
   private implicit val ec: ExecutionContext = context.dispatcher
-
-  protected var lastReadDate: Option[Long] = None
-  protected var lastReceiveDate: Option[Long] = None
 
   protected def getPushText(message: Message, clientName: String, outUser: Int): String = {
     message match {
@@ -36,15 +25,5 @@ trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[
     }
   }
 
-  type AuthIdRandomId = (Long, Long)
-
   private def formatAuthored(authorName: String, message: String): String = s"${authorName}: ${message}"
-
-  protected def privatePeerStruct(userId: Int): Peer = Peer(PeerType.Private, userId)
-
-  protected def getUpdateCountersChanged(userId: Int): DBIO[UpdateCountersChanged] = for {
-    unreadTotal ← p.HistoryMessage.getUnreadTotal(userId)
-    unreadOpt = if (unreadTotal == 0) None else Some(unreadTotal)
-  } yield UpdateCountersChanged(AppCounters(unreadOpt))
-
 }

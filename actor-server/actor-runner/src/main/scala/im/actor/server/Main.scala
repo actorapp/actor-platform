@@ -25,6 +25,7 @@ import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.commons.ActorConfig
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.pair.{ PairDialog, PairDialogExtension }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
@@ -38,10 +39,12 @@ import im.actor.server.social.SocialExtension
 import im.actor.server.user._
 
 class Main extends Bootable {
+  SessionMessage.register()
   CommonSerialization.register()
   UserProcessor.register()
   GroupProcessor.register()
   GroupDialog.register()
+  PairDialog.register()
 
   val serverConfig = ActorConfig.load()
 
@@ -66,7 +69,6 @@ class Main extends Bootable {
   def startup() = {
     DbExtension(system).migrate()
 
-    SessionMessage.register()
     UserMigrator.migrateAll()
     GroupMigrator.migrateAll()
 
@@ -78,7 +80,8 @@ class Main extends Bootable {
     implicit val userViewRegion = UserExtension(system).viewRegion
     implicit val groupProcessorRegion = GroupExtension(system).processorRegion
     implicit val groupViewRegion = GroupExtension(system).viewRegion
-    implicit val groupPeerRegion = GroupDialogExtension(system).region //no need to be implicit
+    implicit val groupDialogRegion = GroupDialogExtension(system).region //no need to be implicit
+    implicit val pairDialogRegion = PairDialogExtension(system).region
 
     val mediator = DistributedPubSubExtension(system).mediator
 

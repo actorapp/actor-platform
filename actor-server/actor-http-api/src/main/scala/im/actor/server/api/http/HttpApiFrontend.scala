@@ -55,7 +55,7 @@ object HttpApiFrontend {
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val db: Database = DbExtension(system).db
     implicit val groupProcessorRegion: GroupViewRegion = GroupExtension(system).viewRegion
-    implicit val groupPeerRegion: GroupDialogRegion = GroupDialogExtension(system).region
+    implicit val groupDialogRegion: GroupDialogRegion = GroupDialogExtension(system).region
     implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(system).s3StorageAdapter
 
     val webhooks = new WebhooksHandler
