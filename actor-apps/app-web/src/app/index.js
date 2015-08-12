@@ -1,3 +1,4 @@
+import polyfills from 'utils/polyfills'; // eslint-disable-line
 import crosstab from 'crosstab';
 
 import React from 'react';
@@ -9,19 +10,20 @@ import ReactMixin from 'react-mixin';
 import Intl from 'intl'; // eslint-disable-line
 import LocaleData from 'intl/locale-data/jsonp/en-US'; // eslint-disable-line
 import { IntlMixin } from 'react-intl';
-import { english, russian } from 'l18n';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
+
+import LoginStore from 'stores/LoginStore';
+import PreferencesStore from 'stores/PreferencesStore';
+
+import LoginActionCreators from 'actions/LoginActionCreators';
+import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 import Deactivated from 'components/Deactivated.react';
 import Login from 'components/Login.react';
 import Main from 'components/Main.react';
 import JoinGroup from 'components/JoinGroup.react';
 import Install from 'components/Install.react';
-
-import LoginStore from 'stores/LoginStore';
-import LoginActionCreators from 'actions/LoginActionCreators';
-
 //import AppCache from 'utils/AppCache'; // eslint-disable-line
 
 import Pace from 'pace';
@@ -62,18 +64,13 @@ class App extends React.Component {
 }
 
 // Internationalisation
-// TODO: Move to preferences
-const language = 'en-US';
-//const language = 'ru-RU';
 let intlData;
-switch (language) {
-  case 'ru-RU':
-    intlData = russian;
-    break;
-  case 'en-US':
-    intlData = english;
-    break;
-}
+PreferencesStore.addChangeListener(() => {
+  intlData = PreferencesStore.languageData;
+});
+PreferencesActionCreators.load();
+
+
 
 const initReact = () => {
   if (window.location.hash !== '#/deactivated') {
@@ -99,9 +96,9 @@ const initReact = () => {
     </Route>
   );
 
-  const router = Router.run(routes, Router.HashLocation, function (Handler) {
+  const router = Router.run(routes, Router.HashLocation, (Root) => {
     injectTapEventPlugin();
-    React.render(<Handler {...intlData}/>, document.getElementById('actor-web-app'));
+    React.render(<Root {...intlData}/>, document.getElementById('actor-web-app'));
   });
 
   if (window.location.hash !== '#/deactivated') {
