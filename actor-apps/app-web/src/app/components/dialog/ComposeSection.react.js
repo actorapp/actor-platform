@@ -178,8 +178,8 @@ class ComposeSection extends React.Component {
       <section className="compose" onPaste={this.onPaste}>
 
         <Dropdown className="dropdown--mentions"
-                  onSelect={this.onMentionSelect.bind(this)}
-                  onClose={this.onMentionClose.bind(this)}
+                  onSelect={this.onMentionSelect}
+                  onClose={this.onMentionClose}
                   isShown={mentionsShown}
                   ref="mentions">
           {mentionsElements}
