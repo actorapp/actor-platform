@@ -165,6 +165,7 @@ private[user] trait UserCommandHandlers {
           this.lastMessageDate = Some(dateMillis)
 
           for {
+
             _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
             SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
             _ ← Future.successful(recordRelation(senderUserId, userId))
