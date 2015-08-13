@@ -262,6 +262,10 @@ public class JsFacade implements Exportable {
         }
     }
 
+    public void deleteMessages(JsPeer peer, final long[] rids) {
+        messenger.deleteMessages(peer.convert(), rids);
+    }
+
     public void deleteChat(JsPeer peer, final JsClosure success, final JsClosure error) {
         messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
             @Override
