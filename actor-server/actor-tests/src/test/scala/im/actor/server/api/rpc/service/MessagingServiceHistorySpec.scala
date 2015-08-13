@@ -25,9 +25,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   with SequenceMatchers {
   behavior of "MessagingServiceHistoryService"
 
-  "Private messaging" should "Load history (private)" in s.privat
+  "Private messaging" should "load history" in s.privat
 
-  it should "Load dialogs" in s.dialogs // TODO: remove this test's dependency on previous example
+  it should "load dialogs" in s.dialogs // TODO: remove this test's dependency on previous example
 
   it should "mark messages received and send updates" in s.historyPrivate.markReceived
 
@@ -71,19 +71,16 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
       val (message1Date, message2Date, message3Date) = {
         implicit val clientData = clientData1
 
-        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None)))(_ ⇒ ())
+        val message1Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None)))(_.toOption.get.date)
 
-        val message1Date = System.currentTimeMillis()
         Thread.sleep(step)
 
-        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 2", Vector.empty, None)))(_ ⇒ ())
+        val message2Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 2", Vector.empty, None)))(_.toOption.get.date)
 
-        val message2Date = System.currentTimeMillis()
         Thread.sleep(step)
 
-        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 3", Vector.empty, None)))(_ ⇒ ())
+        val message3Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 3", Vector.empty, None)))(_.toOption.get.date)
 
-        val message3Date = System.currentTimeMillis()
         Thread.sleep(step)
 
         whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 4", Vector.empty, None)))(_ ⇒ ())
