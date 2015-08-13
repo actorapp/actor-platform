@@ -4,7 +4,7 @@ import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
 import memoize from 'memoizee';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import emojify from 'emojify.js';
 import hljs from 'highlight.js';
 import marked from 'marked';
@@ -34,6 +34,12 @@ var MessageItem = React.createClass({
 
   mixins: [PureRenderMixin],
 
+  getInitialState() {
+    return {
+      isActionsShown: false
+    };
+  },
+
   onClick() {
     DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
   },
@@ -44,6 +50,16 @@ var MessageItem = React.createClass({
 
   onDelete() {
     DialogActionCreators.deleteMessages(this.props.peer, [this.props.message.rid]);
+  },
+
+  showActions() {
+    this.setState({isActionsShown: true});
+    document.addEventListener('click', this.hideActions, false);
+  },
+
+  hideActions() {
+    this.setState({isActionsShown: false});
+    document.removeEventListener('click', this.hideActions, false);
   },
 
   render() {
@@ -61,10 +77,15 @@ var MessageItem = React.createClass({
                        !isFirstMessage &&
                        !newDay;
 
-    let messageClassName = classNames({
+    let messageClassName = classnames({
       'message': true,
       'row': true,
       'message--same-sender': isSameSender
+    });
+
+    let actionsDropdownClassName = classnames({
+      'dropdown': true,
+      'dropdown--opened': this.state.isActionsShown
     });
 
     if (isSameSender) {
@@ -116,14 +137,29 @@ var MessageItem = React.createClass({
           {visibilitySensor}
         </div>
         <div className="message__actions">
-          <ul>
-            <li onClick={this.onDelete}>Delete</li>
-          </ul>
+          <div className={actionsDropdownClassName}>
+            <span className="dropdown__button" onClick={this.showActions}>
+              <i className="material-icons">arrow_drop_down</i>
+            </span>
+            <ul className="dropdown__menu dropdown__menu--right">
+              <li className="dropdown__menu__item">
+                <i className="material-icons">reply</i>
+                Reply
+              </li>
+              <li className="dropdown__menu__item hide">
+                <i className="material-icons">forward</i>
+                Forward
+              </li>
+              <li className="dropdown__menu__item" onClick={this.onDelete}>
+                <i className="material-icons">close</i>
+                Delete
+              </li>
+            </ul>
+          </div>
         </div>
       </li>
     );
   }
-
 });
 
 
@@ -194,7 +230,7 @@ MessageItem.Content = React.createClass({
 
     // TODO: move all types to subcomponents
 
-    let contentClassName = classNames('message__content', {
+    let contentClassName = classnames('message__content', {
       'message__content--service': content.content === MessageContentTypes.SERVICE,
       'message__content--text': content.content === MessageContentTypes.TEXT,
       'message__content--document': content.content === MessageContentTypes.DOCUMENT,
@@ -221,7 +257,7 @@ MessageItem.Content = React.createClass({
                  loadedClassName="message__content--photo message__content--photo--loaded"/>
         );
       case 'document':
-        contentClassName = classNames(contentClassName, 'row');
+        contentClassName = classnames(contentClassName, 'row');
 
         let availableActions;
         if (content.isUploading === true) {
