@@ -22,17 +22,17 @@ task j2objc() {
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
-        delete "${projectDir}/src/gen/objc/"
+        delete "${projectDir}/../app-ios/Core/runtime/gen/"
 
         exec {
 
             executable "${properties.get("j2objcDir")}j2objc"
 
-            args "-use-arc", "--strip-reflection"
+            args "-use-arc", "--strip-reflection", "--generate-deprecated", "--doc-comments"
 
             // args "-g"
 
-            args "-d", "${projectDir}/src/gen/objc/"
+            args "-d", "${projectDir}/../app-ios/Core/runtime/gen/"
 
             args "-sourcepath", "${projectDir}/src/main/java/:${projectDir}/../runtime/src/main/java/:${projectDir}/../runtime/src/generic/java/"
 

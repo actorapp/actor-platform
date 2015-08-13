@@ -23,15 +23,15 @@ import im.actor.core.network.mtp.entity.ProtoMessage;
 import im.actor.core.network.mtp.entity.SessionHello;
 import im.actor.core.network.util.MTUids;
 
-public class SenderActor extends Actor {
+public class PusherActor extends Actor {
 
     private static final String TAG = "ProtoSender";
 
     public static ActorRef senderActor(final MTProto proto) {
-        return ActorSystem.system().actorOf(new ActorSelection(Props.create(SenderActor.class, new ActorCreator<SenderActor>() {
+        return ActorSystem.system().actorOf(new ActorSelection(Props.create(PusherActor.class, new ActorCreator<PusherActor>() {
             @Override
-            public SenderActor create() {
-                return new SenderActor(proto);
+            public PusherActor create() {
+                return new PusherActor(proto);
             }
         }).changeDispatcher("network"), proto.getActorPath() + "/sender"));
     }
@@ -49,7 +49,7 @@ public class SenderActor extends Actor {
 
     private HashSet<Long> pendingConfirm;
 
-    public SenderActor(MTProto proto) {
+    public PusherActor(MTProto proto) {
         this.proto = proto;
         this.isEnableLog = proto.isEnableLog();
         this.unsentPackages = new HashMap<Long, ProtoMessage>();

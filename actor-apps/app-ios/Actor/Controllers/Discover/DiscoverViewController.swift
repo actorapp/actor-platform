@@ -93,7 +93,7 @@ class DiscoverViewController: AATableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroup
+        var g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroupEntity
         var res = PublicCell()
         res.bind(g, isLast: (indexPath.row == self.groups.size() - 1))
         return res
@@ -101,15 +101,15 @@ class DiscoverViewController: AATableViewController {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        var g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroup
+        var g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroupEntity
         confirmAlertUser("JoinAlertMessage", action: "AlertYes") { () -> () in
             var gid = g.getId()
             self.execute(MSG.joinPublicGroupCommandWithGig(g.getId(), withAccessHash: g.getAccessHash()), successBlock: { (val) -> Void in
-                self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: false)
+                self.navigateNext(ConversationViewController(peer: ACPeerEntity.groupWithInt(gid)), removeCurrent: false)
             }, failureBlock: { (val) -> Void in
                 // Try to open chat, why not?
                 // TODO: Better logic
-                self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: false)
+                self.navigateNext(ConversationViewController(peer: ACPeerEntity.groupWithInt(gid)), removeCurrent: false)
             })
         }
     }

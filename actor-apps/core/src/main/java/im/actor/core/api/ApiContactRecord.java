@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class ContactRecord extends BserObject {
+public class ApiContactRecord extends BserObject {
 
     private ContactType type;
     private String stringValue;
@@ -19,7 +19,7 @@ public class ContactRecord extends BserObject {
     private String title;
     private String subtitle;
 
-    public ContactRecord(@NotNull ContactType type, @Nullable String stringValue, @Nullable Long longValue, @Nullable String title, @Nullable String subtitle) {
+    public ApiContactRecord(@NotNull ContactType type, @Nullable String stringValue, @Nullable Long longValue, @Nullable String title, @Nullable String subtitle) {
         this.type = type;
         this.stringValue = stringValue;
         this.longValue = longValue;
@@ -27,7 +27,7 @@ public class ContactRecord extends BserObject {
         this.subtitle = subtitle;
     }
 
-    public ContactRecord() {
+    public ApiContactRecord() {
 
     }
 

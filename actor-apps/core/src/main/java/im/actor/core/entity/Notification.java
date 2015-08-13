@@ -5,17 +5,17 @@
 package im.actor.core.entity;
 
 public class Notification {
-    private Peer peer;
+    private PeerEntity peer;
     private int sender;
     private ContentDescription contentDescription;
 
-    public Notification(Peer peer, int sender, ContentDescription contentDescription) {
+    public Notification(PeerEntity peer, int sender, ContentDescription contentDescription) {
         this.peer = peer;
         this.sender = sender;
         this.contentDescription = contentDescription;
     }
 
-    public Peer getPeer() {
+    public PeerEntity getPeer() {
         return peer;
     }
 

@@ -4,6 +4,7 @@
 
 package im.actor.core.entity.content;
 
+import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.DocumentExVideo;
 import im.actor.core.api.DocumentMessage;
 import im.actor.core.entity.FileReference;
@@ -35,7 +36,7 @@ public class VideoContent extends DocumentContent {
                         reference.getFileName(),
                         "video/mp4",
                         fastThumb != null ?
-                                new im.actor.core.api.FastThumb(
+                                new ApiFastThumb(
                                         fastThumb.getW(),
                                         fastThumb.getH(),
                                         fastThumb.getImage()) :

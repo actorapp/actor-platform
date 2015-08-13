@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiPeer;
 import im.actor.core.api.GroupOutPeer;
 import im.actor.core.api.Member;
 import im.actor.core.api.OutPeer;
-import im.actor.core.api.PeerType;
+import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ServiceExUserJoined;
 import im.actor.core.api.ServiceMessage;
 import im.actor.core.api.UserOutPeer;
@@ -41,9 +43,9 @@ import im.actor.core.api.updates.UpdateGroupUserKick;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Avatar;
-import im.actor.core.entity.Group;
-import im.actor.core.entity.PublicGroup;
-import im.actor.core.entity.User;
+import im.actor.core.entity.GroupEntity;
+import im.actor.core.entity.PublicGroupEntity;
+import im.actor.core.entity.UserEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.avatar.GroupAvatarChangeActor;
@@ -66,15 +68,15 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class GroupsModule extends AbsModule {
 
-    private KeyValueEngine<Group> groups;
-    private MVVMCollection<Group, GroupVM> collection;
+    private KeyValueEngine<GroupEntity> groups;
+    private MVVMCollection<GroupEntity, GroupVM> collection;
     private HashMap<Integer, GroupAvatarVM> avatarVMs;
     private ActorRef avatarChangeActor;
 
     public GroupsModule(final ModuleContext context) {
         super(context);
         
-        collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR, Group.CREATOR);
+        collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR, GroupEntity.CREATOR);
         groups = collection.getEngine();
 
         avatarVMs = new HashMap<Integer, GroupAvatarVM>();
@@ -95,11 +97,11 @@ public class GroupsModule extends AbsModule {
         }
     }
 
-    public KeyValueEngine<Group> getGroups() {
+    public KeyValueEngine<GroupEntity> getGroups() {
         return groups;
     }
 
-    public MVVMCollection<Group, GroupVM> getGroupsCollection() {
+    public MVVMCollection<GroupEntity, GroupVM> getGroupsCollection() {
         return collection;
     }
 
@@ -117,7 +119,7 @@ public class GroupsModule extends AbsModule {
             public void start(final CommandCallback<Integer> callback) {
                 ArrayList<UserOutPeer> peers = new ArrayList<UserOutPeer>();
                 for (int u : uids) {
-                    User user = users().getValue(u);
+                    UserEntity user = users().getValue(u);
                     if (user != null) {
                         peers.add(new UserOutPeer(u, user.getAccessHash()));
                     }
@@ -130,12 +132,12 @@ public class GroupsModule extends AbsModule {
                         for (int u : uids) {
                             members.add(new Member(u, myUid(), response.getDate(), u == myUid()));
                         }
-                        final im.actor.core.api.Group group = new im.actor.core.api.Group(
+                        final ApiGroup group = new ApiGroup(
                                 response.getGroupPeer().getGroupId(),
                                 response.getGroupPeer().getAccessHash(),
                                 title, null, true, myUid(), members,
                                 response.getDate(), null, null, null, null, null, true, null, null);
-                        ArrayList<im.actor.core.api.Group> groups = new ArrayList<im.actor.core.api.Group>();
+                        ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
                         groups.add(group);
 
                         updates().onFatSeqUpdateReceived(
@@ -185,7 +187,7 @@ public class GroupsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
+                GroupEntity group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -242,7 +244,7 @@ public class GroupsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
+                GroupEntity group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -300,8 +302,8 @@ public class GroupsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                User user = users().getValue(uid);
+                GroupEntity group = getGroups().getValue(gid);
+                UserEntity user = users().getValue(uid);
                 if (group == null || user == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -357,8 +359,8 @@ public class GroupsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                Group group = getGroups().getValue(gid);
-                User user = users().getValue(uid);
+                GroupEntity group = getGroups().getValue(gid);
+                UserEntity user = users().getValue(uid);
                 if (group == null || user == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -416,7 +418,7 @@ public class GroupsModule extends AbsModule {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
-                final Group group = getGroups().getValue(gid);
+                final GroupEntity group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -455,7 +457,7 @@ public class GroupsModule extends AbsModule {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
-                final Group group = getGroups().getValue(gid);
+                final GroupEntity group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -498,15 +500,15 @@ public class GroupsModule extends AbsModule {
                             @Override
                             public void onResult(final ResponseJoinGroup response) {
 
-                                im.actor.core.api.Group group = response.getGroup();
-                                ArrayList<im.actor.core.api.Group> groups = new ArrayList<im.actor.core.api.Group>();
+                                ApiGroup group = response.getGroup();
+                                ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
                                 groups.add(group);
 
                                 updates().onFatSeqUpdateReceived(
                                         response.getSeq(),
                                         response.getState(),
                                         new UpdateMessage(
-                                                new im.actor.core.api.Peer(PeerType.GROUP, group.getId()),
+                                                new ApiPeer(ApiPeerType.GROUP, group.getId()),
                                                 myUid(),
                                                 response.getDate(),
                                                 response.getRid(),
@@ -548,7 +550,7 @@ public class GroupsModule extends AbsModule {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
-                final Group group = getGroups().getValue(gid);
+                final GroupEntity group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -558,7 +560,7 @@ public class GroupsModule extends AbsModule {
                     });
                     return;
                 }
-                request(new RequestGetIntegrationToken(new OutPeer(PeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
+                request(new RequestGetIntegrationToken(new OutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
                     @Override
                     public void onResult(final ResponseIntegrationToken response) {
                         runOnUiThread(new Runnable() {
@@ -587,7 +589,7 @@ public class GroupsModule extends AbsModule {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
-                final Group group = getGroups().getValue(gid);
+                final GroupEntity group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -597,7 +599,7 @@ public class GroupsModule extends AbsModule {
                     });
                     return;
                 }
-                request(new RequestRevokeIntegrationToken(new OutPeer(PeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
+                request(new RequestRevokeIntegrationToken(new OutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
                     @Override
                     public void onResult(final ResponseIntegrationToken response) {
                         runOnUiThread(new Runnable() {
@@ -629,15 +631,15 @@ public class GroupsModule extends AbsModule {
                 request(new RequestEnterGroup(new GroupOutPeer(gid, accessHash)), new RpcCallback<ResponseEnterGroup>() {
                     @Override
                     public void onResult(final ResponseEnterGroup response) {
-                        im.actor.core.api.Group group = response.getGroup();
-                        ArrayList<im.actor.core.api.Group> groups = new ArrayList<im.actor.core.api.Group>();
+                        ApiGroup group = response.getGroup();
+                        ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
                         groups.add(group);
 
                         updates().onFatSeqUpdateReceived(
                                 response.getSeq(),
                                 response.getState(),
                                 new UpdateMessage(
-                                        new im.actor.core.api.Peer(PeerType.GROUP, group.getId()),
+                                        new ApiPeer(ApiPeerType.GROUP, group.getId()),
                                         myUid(),
                                         response.getDate(),
                                         response.getRid(),
@@ -673,20 +675,20 @@ public class GroupsModule extends AbsModule {
         };
     }
 
-    public Command<List<PublicGroup>> listPublicGroups() {
-        return new Command<List<PublicGroup>>() {
+    public Command<List<PublicGroupEntity>> listPublicGroups() {
+        return new Command<List<PublicGroupEntity>>() {
             @Override
-            public void start(final CommandCallback<List<PublicGroup>> callback) {
+            public void start(final CommandCallback<List<PublicGroupEntity>> callback) {
                 request(new RequestGetPublicGroups(), new RpcCallback<ResponseGetPublicGroups>() {
                     @Override
                     public void onResult(ResponseGetPublicGroups response) {
-                        ArrayList<PublicGroup> groups = new ArrayList<PublicGroup>();
+                        ArrayList<PublicGroupEntity> groups = new ArrayList<PublicGroupEntity>();
                         for (im.actor.core.api.PublicGroup g : response.getGroups()) {
                             Avatar avatar = null;
                             if (g.getAvatar() != null) {
                                 avatar = new Avatar(g.getAvatar());
                             }
-                            groups.add(new PublicGroup(g.getId(), g.getAccessHash(),
+                            groups.add(new PublicGroupEntity(g.getId(), g.getAccessHash(),
                                     g.getTitle(), avatar, g.getDescription(), g.getMembersCount(), g.getFriendsCount()));
                         }
                         callback.onResult(groups);

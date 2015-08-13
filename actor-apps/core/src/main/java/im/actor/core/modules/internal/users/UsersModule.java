@@ -14,7 +14,7 @@ import im.actor.core.api.updates.UpdateUserAboutChanged;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
-import im.actor.core.entity.User;
+import im.actor.core.entity.UserEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Module;
 import im.actor.core.modules.ModuleContext;
@@ -30,21 +30,21 @@ import im.actor.runtime.storage.KeyValueEngine;
 
 public class UsersModule extends AbsModule implements Module {
 
-    private KeyValueEngine<User> users;
-    private MVVMCollection<User, UserVM> collection;
+    private KeyValueEngine<UserEntity> users;
+    private MVVMCollection<UserEntity, UserVM> collection;
 
     public UsersModule(ModuleContext context) {
         super(context);
 
-        this.collection = Storage.createKeyValue(STORAGE_USERS, UserVM.CREATOR(context()), User.CREATOR);
+        this.collection = Storage.createKeyValue(STORAGE_USERS, UserVM.CREATOR(context()), UserEntity.CREATOR);
         this.users = collection.getEngine();
     }
 
-    public KeyValueEngine<User> getUsersStorage() {
+    public KeyValueEngine<UserEntity> getUsersStorage() {
         return users;
     }
 
-    public MVVMCollection<User, UserVM> getUsers() {
+    public MVVMCollection<UserEntity, UserVM> getUsers() {
         return collection;
     }
 
@@ -87,7 +87,7 @@ public class UsersModule extends AbsModule implements Module {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                User user = getUsersStorage().getValue(uid);
+                UserEntity user = getUsersStorage().getValue(uid);
                 if (user == null) {
                     runOnUiThread(new Runnable() {
                         @Override

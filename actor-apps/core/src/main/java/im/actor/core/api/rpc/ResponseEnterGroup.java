@@ -20,14 +20,14 @@ public class ResponseEnterGroup extends Response {
         return Bser.parse(new ResponseEnterGroup(), data);
     }
 
-    private Group group;
+    private ApiGroup group;
     private List<User> users;
     private long rid;
     private int seq;
     private byte[] state;
     private long date;
 
-    public ResponseEnterGroup(@NotNull Group group, @NotNull List<User> users, long rid, int seq, @NotNull byte[] state, long date) {
+    public ResponseEnterGroup(@NotNull ApiGroup group, @NotNull List<User> users, long rid, int seq, @NotNull byte[] state, long date) {
         this.group = group;
         this.users = users;
         this.rid = rid;
@@ -41,7 +41,7 @@ public class ResponseEnterGroup extends Response {
     }
 
     @NotNull
-    public Group getGroup() {
+    public ApiGroup getGroup() {
         return this.group;
     }
 
@@ -69,7 +69,7 @@ public class ResponseEnterGroup extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.group = values.getObj(1, new Group());
+        this.group = values.getObj(1, new ApiGroup());
         List<User> _users = new ArrayList<User>();
         for (int i = 0; i < values.getRepeatedCount(2); i ++) {
             _users.add(new User());

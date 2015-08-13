@@ -19,8 +19,8 @@ import com.soundcloud.android.crop.Crop;
 import java.io.File;
 
 import im.actor.core.entity.Avatar;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.PeerType;
+import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.PeerTypeEntity;
 import im.actor.core.viewmodel.AvatarUploadState;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
@@ -50,13 +50,13 @@ public class ViewAvatarActivity extends BaseActivity {
 
     public static Intent viewAvatar(int uid, Context context) {
         Intent res = new Intent(context, ViewAvatarActivity.class);
-        res.putExtra(Intents.EXTRA_CHAT_PEER, Peer.user(uid).getUnuqueId());
+        res.putExtra(Intents.EXTRA_CHAT_PEER, PeerEntity.user(uid).getUnuqueId());
         return res;
     }
 
     public static Intent viewGroupAvatar(int gid, Context context) {
         Intent res = new Intent(context, ViewAvatarActivity.class);
-        res.putExtra(Intents.EXTRA_CHAT_PEER, Peer.group(gid).getUnuqueId());
+        res.putExtra(Intents.EXTRA_CHAT_PEER, PeerEntity.group(gid).getUnuqueId());
         return res;
     }
 
@@ -66,7 +66,7 @@ public class ViewAvatarActivity extends BaseActivity {
     private String externalFile;
     private String avatarPath;
 
-    private Peer peer;
+    private PeerEntity peer;
 
     private PhotoView photoView;
     private View progress;
@@ -79,7 +79,7 @@ public class ViewAvatarActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        peer = Peer.fromUniqueId(getIntent().getLongExtra(Intents.EXTRA_CHAT_PEER, 0));
+        peer = PeerEntity.fromUniqueId(getIntent().getLongExtra(Intents.EXTRA_CHAT_PEER, 0));
 
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,7 +91,7 @@ public class ViewAvatarActivity extends BaseActivity {
             avatarPath = savedInstanceState.getString("avatarPath", null);
         }
 
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
             if (peer.getPeerId() == myUid()) {
                 getSupportActionBar().setTitle(R.string.avatar_title_your);
             } else {
@@ -114,21 +114,21 @@ public class ViewAvatarActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        if (peer.getPeerType() == PeerType.PRIVATE && peer.getPeerId() == myUid()) {
+        if (peer.getPeerType() == PeerTypeEntity.PRIVATE && peer.getPeerId() == myUid()) {
             bind(getAvatar(), messenger().getOwnAvatarVM().getUploadState(), new ValueDoubleChangedListener<Avatar, AvatarUploadState>() {
                 @Override
                 public void onChanged(Avatar val, ValueModel<Avatar> valueModel, AvatarUploadState val2, ValueModel<AvatarUploadState> valueModel2) {
                     performBind(val, val2);
                 }
             });
-        } else if (peer.getPeerType() == PeerType.GROUP) {
+        } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
             bind(getAvatar(), messenger().getGroupAvatarVM(peer.getPeerId()).getUploadState(), new ValueDoubleChangedListener<Avatar, AvatarUploadState>() {
                 @Override
                 public void onChanged(Avatar val, ValueModel<Avatar> valueModel, AvatarUploadState val2, ValueModel<AvatarUploadState> valueModel2) {
                     performBind(val, val2);
                 }
             });
-        } else if (peer.getPeerType() == PeerType.PRIVATE) {
+        } else if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
             bind(getAvatar(), new ValueChangedListener<Avatar>() {
                 @Override
                 public void onChanged(Avatar val, ValueModel<Avatar> valueModel) {
@@ -141,7 +141,7 @@ public class ViewAvatarActivity extends BaseActivity {
     }
 
     private ValueModel<Avatar> getAvatar() {
-        if (peer.getPeerType() == PeerType.GROUP) {
+        if (peer.getPeerType() == PeerTypeEntity.GROUP) {
             return groups().get(peer.getPeerId()).getAvatar();
         } else {
             return users().get(peer.getPeerId()).getAvatar();
@@ -247,9 +247,9 @@ public class ViewAvatarActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.avatar, menu);
 
-        if (peer.getPeerType() == PeerType.GROUP) {
+        if (peer.getPeerType() == PeerTypeEntity.GROUP) {
             menu.findItem(R.id.editAvatar).setVisible(true);
-        } else if (peer.getPeerType() == PeerType.PRIVATE && peer.getPeerId() == myUid()) {
+        } else if (peer.getPeerType() == PeerTypeEntity.PRIVATE && peer.getPeerId() == myUid()) {
             menu.findItem(R.id.editAvatar).setVisible(true);
         } else {
             menu.findItem(R.id.editAvatar).setVisible(false);
@@ -291,11 +291,11 @@ public class ViewAvatarActivity extends BaseActivity {
                                 i.setType("image/*");
                                 startActivityForResult(i, REQUEST_GALLERY);
                             } else if (which == 2) {
-                                if (peer.getPeerType() == PeerType.PRIVATE) {
+                                if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
                                     if (peer.getPeerId() == myUid()) {
                                         messenger().removeMyAvatar();
                                     }
-                                } else if (peer.getPeerType() == PeerType.GROUP) {
+                                } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
                                     messenger().removeGroupAvatar(peer.getPeerId());
                                 }
                             }
@@ -326,11 +326,11 @@ public class ViewAvatarActivity extends BaseActivity {
                     .asSquare()
                     .start(this);
         } else if (requestCode == Crop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
-            if (peer.getPeerType() == PeerType.PRIVATE) {
+            if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
                 if (peer.getPeerId() == myUid()) {
                     messenger().changeMyAvatar(avatarPath);
                 }
-            } else if (peer.getPeerType() == PeerType.GROUP) {
+            } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
                 messenger().changeGroupAvatar(peer.getPeerId(), avatarPath);
             }
         }

@@ -4,6 +4,7 @@
 
 package im.actor.core.entity.content;
 
+import im.actor.core.api.ApiFastThumb;
 import im.actor.core.entity.content.internal.LocalFastThumb;
 
 public class FastThumb {
@@ -18,7 +19,7 @@ public class FastThumb {
         image = localFastThumb.getImage();
     }
 
-    public FastThumb(im.actor.core.api.FastThumb fastThumb) {
+    public FastThumb(ApiFastThumb fastThumb) {
         w = fastThumb.getW();
         h = fastThumb.getH();
         image = fastThumb.getThumb();

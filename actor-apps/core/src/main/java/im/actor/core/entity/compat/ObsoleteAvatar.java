@@ -9,7 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-import im.actor.core.api.Avatar;
+import im.actor.core.api.ApiAvatarImage;
+import im.actor.core.api.ApiAvatar;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -32,10 +33,10 @@ public class ObsoleteAvatar extends BserObject {
     }
 
     @NotNull
-    public Avatar toApiAvatar() {
-        im.actor.core.api.AvatarImage smallImage = null;
-        im.actor.core.api.AvatarImage largeImage = null;
-        im.actor.core.api.AvatarImage fullImage = null;
+    public ApiAvatar toApiAvatar() {
+        ApiAvatarImage smallImage = null;
+        ApiAvatarImage largeImage = null;
+        ApiAvatarImage fullImage = null;
 
         if (this.smallImage != null) {
             smallImage = this.smallImage.toApiAvatarImage();
@@ -47,7 +48,7 @@ public class ObsoleteAvatar extends BserObject {
             fullImage = this.fullImage.toApiAvatarImage();
         }
 
-        return new Avatar(smallImage, largeImage, fullImage);
+        return new ApiAvatar(smallImage, largeImage, fullImage);
     }
 
     @Nullable

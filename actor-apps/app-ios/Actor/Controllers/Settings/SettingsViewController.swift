@@ -268,7 +268,7 @@ class SettingsViewController: AATableViewController {
                         }
                     }
                 }
-                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                self.navigateDetail(ConversationViewController(peer: ACPeerEntity.userWithInt(user.getId())))
             }, failureBlock: { (val) -> Void in
                 // TODO: Implement
             })

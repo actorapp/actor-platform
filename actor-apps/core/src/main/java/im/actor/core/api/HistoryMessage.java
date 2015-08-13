@@ -15,10 +15,10 @@ public class HistoryMessage extends BserObject {
     private int senderUid;
     private long rid;
     private long date;
-    private Message message;
-    private MessageState state;
+    private ApiMessage message;
+    private ApiMessageState state;
 
-    public HistoryMessage(int senderUid, long rid, long date, @NotNull Message message, @Nullable MessageState state) {
+    public HistoryMessage(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state) {
         this.senderUid = senderUid;
         this.rid = rid;
         this.date = date;
@@ -43,12 +43,12 @@ public class HistoryMessage extends BserObject {
     }
 
     @NotNull
-    public Message getMessage() {
+    public ApiMessage getMessage() {
         return this.message;
     }
 
     @Nullable
-    public MessageState getState() {
+    public ApiMessageState getState() {
         return this.state;
     }
 
@@ -57,10 +57,10 @@ public class HistoryMessage extends BserObject {
         this.senderUid = values.getInt(1);
         this.rid = values.getLong(2);
         this.date = values.getLong(3);
-        this.message = Message.fromBytes(values.getBytes(5));
+        this.message = ApiMessage.fromBytes(values.getBytes(5));
         int val_state = values.getInt(6, 0);
         if (val_state != 0) {
-            this.state = MessageState.parse(val_state);
+            this.state = ApiMessageState.parse(val_state);
         }
     }
 

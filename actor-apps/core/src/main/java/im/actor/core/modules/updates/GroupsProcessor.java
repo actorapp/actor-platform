@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiGroup;
 import im.actor.core.api.Member;
-import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupEntity;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
@@ -35,14 +37,14 @@ public class GroupsProcessor extends AbsModule {
     }
 
     @Verified
-    public void applyGroups(Collection<im.actor.core.api.Group> updated, boolean forced) {
-        ArrayList<Group> batch = new ArrayList<Group>();
-        for (im.actor.core.api.Group group : updated) {
-            Group saved = groups().getValue(group.getId());
+    public void applyGroups(Collection<ApiGroup> updated, boolean forced) {
+        ArrayList<GroupEntity> batch = new ArrayList<GroupEntity>();
+        for (ApiGroup group : updated) {
+            GroupEntity saved = groups().getValue(group.getId());
             if (saved == null) {
                 batch.add(EntityConverter.convert(group));
             } else if (forced) {
-                Group upd = EntityConverter.convert(group);
+                GroupEntity upd = EntityConverter.convert(group);
                 batch.add(upd);
 
                 // Sending changes to dialogs
@@ -60,7 +62,7 @@ public class GroupsProcessor extends AbsModule {
 
     @Verified
     public void onGroupInvite(int groupId, long rid, int inviterId, long date, boolean isSilent) {
-        Group group = groups().getValue(groupId);
+        GroupEntity group = groups().getValue(groupId);
         if (group != null) {
 
             // Updating group
@@ -86,7 +88,7 @@ public class GroupsProcessor extends AbsModule {
 
     @Verified
     public void onUserLeave(int groupId, long rid, int uid, long date, boolean isSilent) {
-        Group group = groups().getValue(groupId);
+        GroupEntity group = groups().getValue(groupId);
         if (group != null) {
 
             if (uid == myUid()) {
@@ -112,7 +114,7 @@ public class GroupsProcessor extends AbsModule {
 
     @Verified
     public void onUserKicked(int groupId, long rid, int uid, int kicker, long date, boolean isSilent) {
-        Group group = groups().getValue(groupId);
+        GroupEntity group = groups().getValue(groupId);
         if (group != null) {
 
             if (uid == myUid()) {
@@ -138,7 +140,7 @@ public class GroupsProcessor extends AbsModule {
 
     @Verified
     public void onUserAdded(int groupId, long rid, int uid, int adder, long date, boolean isSilent) {
-        Group group = groups().getValue(groupId);
+        GroupEntity group = groups().getValue(groupId);
         if (group != null) {
 
             // Adding member
@@ -157,7 +159,7 @@ public class GroupsProcessor extends AbsModule {
     @Verified
     public void onTitleChanged(int groupId, long rid, int uid, String title, long date,
                                boolean isSilent) {
-        Group group = groups().getValue(groupId);
+        GroupEntity group = groups().getValue(groupId);
         if (group != null) {
 
             // We can't just ignore not changed avatar
@@ -166,7 +168,7 @@ public class GroupsProcessor extends AbsModule {
 
             if (!group.getTitle().equals(title)) {
                 // Change group title
-                Group upd = group.editTitle(title);
+                GroupEntity upd = group.editTitle(title);
 
                 // Update group
                 groups().addOrUpdateItem(upd);
@@ -186,9 +188,9 @@ public class GroupsProcessor extends AbsModule {
     }
 
     @Verified
-    public void onAvatarChanged(int groupId, long rid, int uid, @Nullable im.actor.core.api.Avatar avatar, long date,
+    public void onAvatarChanged(int groupId, long rid, int uid, @Nullable ApiAvatar avatar, long date,
                                 boolean isSilent) {
-        Group group = groups().getValue(groupId);
+        GroupEntity group = groups().getValue(groupId);
         if (group != null) {
 
             // We can't just ignore not changed avatar
@@ -200,7 +202,7 @@ public class GroupsProcessor extends AbsModule {
             // if (!equalsE(group.getRawAvatar(), avatar)) {
 
             // Change group avatar
-            Group upd = group.editAvatar(avatar);
+            GroupEntity upd = group.editAvatar(avatar);
 
             // Update group
             groups().addOrUpdateItem(upd);
@@ -222,7 +224,7 @@ public class GroupsProcessor extends AbsModule {
 
     @Verified
     public void onMembersUpdated(int groupId, List<Member> members) {
-        Group group = groups().getValue(groupId);
+        GroupEntity group = groups().getValue(groupId);
         if (group != null) {
 
             // Updating members list
@@ -244,7 +246,7 @@ public class GroupsProcessor extends AbsModule {
     }
 
     @Verified
-    private void onGroupDescChanged(Group group) {
+    private void onGroupDescChanged(GroupEntity group) {
         context().getMessagesModule().getDialogsActor()
                 .send(new DialogsActor.GroupChanged(group));
     }

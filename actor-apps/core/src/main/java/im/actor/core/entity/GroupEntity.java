@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiGroup;
 import im.actor.core.api.Member;
 import im.actor.core.entity.compat.ObsoleteGroup;
 import im.actor.runtime.bser.BserCreator;
@@ -18,14 +20,14 @@ import im.actor.runtime.storage.KeyValueItem;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-public class Group extends WrapperEntity<im.actor.core.api.Group> implements KeyValueItem {
+public class GroupEntity extends WrapperEntity<ApiGroup> implements KeyValueItem {
 
     private static final int RECORD_ID = 10;
 
-    public static BserCreator<Group> CREATOR = new BserCreator<Group>() {
+    public static BserCreator<GroupEntity> CREATOR = new BserCreator<GroupEntity>() {
         @Override
-        public Group createInstance() {
-            return new Group();
+        public GroupEntity createInstance() {
+            return new GroupEntity();
         }
     };
 
@@ -42,20 +44,20 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
     @SuppressWarnings("NullableProblems")
     private List<GroupMember> members;
 
-    public Group(@NotNull im.actor.core.api.Group group) {
+    public GroupEntity(@NotNull ApiGroup group) {
         super(RECORD_ID, group);
     }
 
-    public Group(@NotNull byte[] data) throws IOException {
+    public GroupEntity(@NotNull byte[] data) throws IOException {
         super(RECORD_ID, data);
     }
 
-    private Group() {
+    private GroupEntity() {
         super(RECORD_ID);
     }
 
-    public Peer peer() {
-        return new Peer(PeerType.GROUP, groupId);
+    public PeerEntity peer() {
+        return new PeerEntity(PeerTypeEntity.GROUP, groupId);
     }
 
     public int getGroupId() {
@@ -89,9 +91,9 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
         return isMember;
     }
 
-    public Group changeMember(boolean isMember) {
-        im.actor.core.api.Group w = getWrapped();
-        im.actor.core.api.Group res = new im.actor.core.api.Group(
+    public GroupEntity changeMember(boolean isMember) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
                 w.getId(),
                 w.getAccessHash(),
                 w.getTitle(),
@@ -109,12 +111,12 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
                 w.getTheme(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res);
+        return new GroupEntity(res);
     }
 
-    public Group clearMembers() {
-        im.actor.core.api.Group w = getWrapped();
-        im.actor.core.api.Group res = new im.actor.core.api.Group(
+    public GroupEntity clearMembers() {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
                 w.getId(),
                 w.getAccessHash(),
                 w.getTitle(),
@@ -132,18 +134,18 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
                 w.getTheme(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res);
+        return new GroupEntity(res);
     }
 
-    public Group removeMember(int uid) {
-        im.actor.core.api.Group w = getWrapped();
+    public GroupEntity removeMember(int uid) {
+        ApiGroup w = getWrapped();
         ArrayList<Member> nMembers = new ArrayList<Member>();
         for (Member member : w.getMembers()) {
             if (member.getUid() != uid) {
                 nMembers.add(member);
             }
         }
-        im.actor.core.api.Group res = new im.actor.core.api.Group(
+        ApiGroup res = new ApiGroup(
                 w.getId(),
                 w.getAccessHash(),
                 w.getTitle(),
@@ -161,11 +163,11 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
                 w.getTheme(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res);
+        return new GroupEntity(res);
     }
 
-    public Group addMember(int uid, int inviterUid, long inviteDate) {
-        im.actor.core.api.Group w = getWrapped();
+    public GroupEntity addMember(int uid, int inviterUid, long inviteDate) {
+        ApiGroup w = getWrapped();
         ArrayList<Member> nMembers = new ArrayList<Member>();
         for (Member member : w.getMembers()) {
             if (member.getUid() != uid) {
@@ -173,7 +175,7 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
             }
         }
         nMembers.add(new Member(uid, inviterUid, inviteDate, null));
-        im.actor.core.api.Group res = new im.actor.core.api.Group(
+        ApiGroup res = new ApiGroup(
                 w.getId(),
                 w.getAccessHash(),
                 w.getTitle(),
@@ -191,12 +193,12 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
                 w.getTheme(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res);
+        return new GroupEntity(res);
     }
 
-    public Group updateMembers(List<Member> nMembers) {
-        im.actor.core.api.Group w = getWrapped();
-        im.actor.core.api.Group res = new im.actor.core.api.Group(
+    public GroupEntity updateMembers(List<Member> nMembers) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
                 w.getId(),
                 w.getAccessHash(),
                 w.getTitle(),
@@ -214,12 +216,12 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
                 w.getTheme(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res);
+        return new GroupEntity(res);
     }
 
-    public Group editTitle(String title) {
-        im.actor.core.api.Group w = getWrapped();
-        im.actor.core.api.Group res = new im.actor.core.api.Group(
+    public GroupEntity editTitle(String title) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
                 w.getId(),
                 w.getAccessHash(),
                 title,
@@ -237,12 +239,12 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
                 w.getTheme(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res);
+        return new GroupEntity(res);
     }
 
-    public Group editAvatar(im.actor.core.api.Avatar avatar) {
-        im.actor.core.api.Group w = getWrapped();
-        im.actor.core.api.Group res = new im.actor.core.api.Group(
+    public GroupEntity editAvatar(ApiAvatar avatar) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
                 w.getId(),
                 w.getAccessHash(),
                 w.getTitle(),
@@ -260,11 +262,11 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
                 w.getTheme(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res);
+        return new GroupEntity(res);
     }
 
     @Override
-    protected void applyWrapped(@NotNull im.actor.core.api.Group wrapped) {
+    protected void applyWrapped(@NotNull ApiGroup wrapped) {
         this.groupId = wrapped.getId();
         this.accessHash = wrapped.getAccessHash();
         this.title = wrapped.getTitle();
@@ -304,8 +306,8 @@ public class Group extends WrapperEntity<im.actor.core.api.Group> implements Key
 
     @Override
     @NotNull
-    protected im.actor.core.api.Group createInstance() {
-        return new im.actor.core.api.Group();
+    protected ApiGroup createInstance() {
+        return new ApiGroup();
     }
 
 }

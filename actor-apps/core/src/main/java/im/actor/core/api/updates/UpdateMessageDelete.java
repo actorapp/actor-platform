@@ -20,10 +20,10 @@ public class UpdateMessageDelete extends Update {
         return Bser.parse(new UpdateMessageDelete(), data);
     }
 
-    private Peer peer;
+    private ApiPeer peer;
     private List<Long> rids;
 
-    public UpdateMessageDelete(@NotNull Peer peer, @NotNull List<Long> rids) {
+    public UpdateMessageDelete(@NotNull ApiPeer peer, @NotNull List<Long> rids) {
         this.peer = peer;
         this.rids = rids;
     }
@@ -33,7 +33,7 @@ public class UpdateMessageDelete extends Update {
     }
 
     @NotNull
-    public Peer getPeer() {
+    public ApiPeer getPeer() {
         return this.peer;
     }
 
@@ -44,7 +44,7 @@ public class UpdateMessageDelete extends Update {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new Peer());
+        this.peer = values.getObj(1, new ApiPeer());
         this.rids = values.getRepeatedLong(2);
     }
 

@@ -6,7 +6,7 @@ package im.actor.core.modules.internal;
 
 import java.util.HashMap;
 
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.typing.OwnTypingActor;
@@ -47,7 +47,7 @@ public class TypingModule extends AbsModule {
         }
     }
 
-    public void onTyping(Peer peer) {
+    public void onTyping(PeerEntity peer) {
         ownTypingActor.send(new OwnTypingActor.Typing(peer));
     }
 

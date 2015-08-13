@@ -11,8 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiContactRecord;
 import im.actor.core.api.ContactType;
-import im.actor.core.api.Sex;
+import im.actor.core.api.ApiSex;
 import im.actor.core.api.User;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
@@ -29,7 +30,7 @@ public class ObsoleteUser extends BserObject {
     private String localName;
     @NotNull
     @SuppressWarnings("NullableProblems")
-    private im.actor.core.api.Sex sex;
+    private ApiSex sex;
     @Nullable
     private ObsoleteAvatar avatar;
     @NotNull
@@ -45,13 +46,13 @@ public class ObsoleteUser extends BserObject {
     }
 
     public User toApiUser() {
-        List<im.actor.core.api.ContactRecord> records = new ArrayList<im.actor.core.api.ContactRecord>();
+        List<ApiContactRecord> records = new ArrayList<ApiContactRecord>();
         for (ObsoleteContactRecord r : this.records) {
             if (r.getRecordType() == 0) {
                 if (r.getRecordData().equals("0")) {
                     continue;
                 }
-                records.add(new im.actor.core.api.ContactRecord(ContactType.PHONE, null,
+                records.add(new ApiContactRecord(ContactType.PHONE, null,
                         Long.parseLong(r.getRecordData()), r.getRecordTitle(), null));
             }
         }
@@ -85,7 +86,7 @@ public class ObsoleteUser extends BserObject {
     }
 
     @NotNull
-    public Sex getSex() {
+    public ApiSex getSex() {
         return sex;
     }
 
@@ -105,13 +106,13 @@ public class ObsoleteUser extends BserObject {
         accessHash = values.getLong(2);
         name = values.getString(3);
         localName = values.optString(4);
-        sex = im.actor.core.api.Sex.UNKNOWN;
+        sex = ApiSex.UNKNOWN;
         switch (values.getInt(6)) {
             case 3:
-                sex = im.actor.core.api.Sex.FEMALE;
+                sex = ApiSex.FEMALE;
                 break;
             case 2:
-                sex = im.actor.core.api.Sex.MALE;
+                sex = ApiSex.MALE;
                 break;
         }
 

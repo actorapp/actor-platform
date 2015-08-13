@@ -4,8 +4,8 @@
 
 package im.actor.core.modules.updates;
 
-import im.actor.core.api.Peer;
-import im.actor.core.api.PeerType;
+import im.actor.core.api.ApiPeer;
+import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.TypingType;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -24,19 +24,19 @@ public class TypingProcessor extends AbsModule {
     }
 
     @Verified
-    public void onTyping(Peer peer, int uid, TypingType type) {
-        if (peer.getType() == PeerType.PRIVATE) {
+    public void onTyping(ApiPeer peer, int uid, TypingType type) {
+        if (peer.getType() == ApiPeerType.PRIVATE) {
             typingActor.sendOnce(new TypingActor.PrivateTyping(uid, type));
-        } else if (peer.getType() == PeerType.GROUP) {
+        } else if (peer.getType() == ApiPeerType.GROUP) {
             typingActor.sendOnce(new TypingActor.GroupTyping(peer.getId(), uid, type));
         }
     }
 
     @Verified
-    public void onMessage(Peer peer, int uid) {
-        if (peer.getType() == PeerType.PRIVATE) {
+    public void onMessage(ApiPeer peer, int uid) {
+        if (peer.getType() == ApiPeerType.PRIVATE) {
             typingActor.sendOnce(new TypingActor.StopTyping(uid));
-        } else if (peer.getType() == PeerType.GROUP) {
+        } else if (peer.getType() == ApiPeerType.GROUP) {
             typingActor.sendOnce(new TypingActor.StopGroupTyping(peer.getId(), uid));
         }
     }

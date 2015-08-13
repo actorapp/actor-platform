@@ -19,11 +19,11 @@ public class UpdateMessageDateChanged extends Update {
         return Bser.parse(new UpdateMessageDateChanged(), data);
     }
 
-    private Peer peer;
+    private ApiPeer peer;
     private long rid;
     private long date;
 
-    public UpdateMessageDateChanged(@NotNull Peer peer, long rid, long date) {
+    public UpdateMessageDateChanged(@NotNull ApiPeer peer, long rid, long date) {
         this.peer = peer;
         this.rid = rid;
         this.date = date;
@@ -34,7 +34,7 @@ public class UpdateMessageDateChanged extends Update {
     }
 
     @NotNull
-    public Peer getPeer() {
+    public ApiPeer getPeer() {
         return this.peer;
     }
 
@@ -48,7 +48,7 @@ public class UpdateMessageDateChanged extends Update {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new Peer());
+        this.peer = values.getObj(1, new ApiPeer());
         this.rid = values.getLong(2);
         this.date = values.getLong(3);
     }

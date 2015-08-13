@@ -23,11 +23,11 @@ public class ResponseGetDifference extends Response {
     private int seq;
     private byte[] state;
     private List<User> users;
-    private List<Group> groups;
+    private List<ApiGroup> groups;
     private List<DifferenceUpdate> updates;
     private boolean needMore;
 
-    public ResponseGetDifference(int seq, @NotNull byte[] state, @NotNull List<User> users, @NotNull List<Group> groups, @NotNull List<DifferenceUpdate> updates, boolean needMore) {
+    public ResponseGetDifference(int seq, @NotNull byte[] state, @NotNull List<User> users, @NotNull List<ApiGroup> groups, @NotNull List<DifferenceUpdate> updates, boolean needMore) {
         this.seq = seq;
         this.state = state;
         this.users = users;
@@ -55,7 +55,7 @@ public class ResponseGetDifference extends Response {
     }
 
     @NotNull
-    public List<Group> getGroups() {
+    public List<ApiGroup> getGroups() {
         return this.groups;
     }
 
@@ -77,9 +77,9 @@ public class ResponseGetDifference extends Response {
             _users.add(new User());
         }
         this.users = values.getRepeatedObj(3, _users);
-        List<Group> _groups = new ArrayList<Group>();
+        List<ApiGroup> _groups = new ArrayList<ApiGroup>();
         for (int i = 0; i < values.getRepeatedCount(6); i ++) {
-            _groups.add(new Group());
+            _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(6, _groups);
         List<DifferenceUpdate> _updates = new ArrayList<DifferenceUpdate>();

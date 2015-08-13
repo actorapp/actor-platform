@@ -27,9 +27,9 @@ public class FatSeqUpdate extends RpcScope {
     private int updateHeader;
     private byte[] update;
     private List<User> users;
-    private List<Group> groups;
+    private List<ApiGroup> groups;
 
-    public FatSeqUpdate(int seq, @NotNull byte[] state, int updateHeader, @NotNull byte[] update, @NotNull List<User> users, @NotNull List<Group> groups) {
+    public FatSeqUpdate(int seq, @NotNull byte[] state, int updateHeader, @NotNull byte[] update, @NotNull List<User> users, @NotNull List<ApiGroup> groups) {
         this.seq = seq;
         this.state = state;
         this.updateHeader = updateHeader;
@@ -66,7 +66,7 @@ public class FatSeqUpdate extends RpcScope {
     }
 
     @NotNull
-    public List<Group> getGroups() {
+    public List<ApiGroup> getGroups() {
         return this.groups;
     }
 
@@ -81,9 +81,9 @@ public class FatSeqUpdate extends RpcScope {
             _users.add(new User());
         }
         this.users = values.getRepeatedObj(5, _users);
-        List<Group> _groups = new ArrayList<Group>();
+        List<ApiGroup> _groups = new ArrayList<ApiGroup>();
         for (int i = 0; i < values.getRepeatedCount(6); i ++) {
-            _groups.add(new Group());
+            _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(6, _groups);
     }

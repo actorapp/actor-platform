@@ -19,11 +19,11 @@ public class UpdateMessageContentChanged extends Update {
         return Bser.parse(new UpdateMessageContentChanged(), data);
     }
 
-    private Peer peer;
+    private ApiPeer peer;
     private long rid;
-    private Message message;
+    private ApiMessage message;
 
-    public UpdateMessageContentChanged(@NotNull Peer peer, long rid, @NotNull Message message) {
+    public UpdateMessageContentChanged(@NotNull ApiPeer peer, long rid, @NotNull ApiMessage message) {
         this.peer = peer;
         this.rid = rid;
         this.message = message;
@@ -34,7 +34,7 @@ public class UpdateMessageContentChanged extends Update {
     }
 
     @NotNull
-    public Peer getPeer() {
+    public ApiPeer getPeer() {
         return this.peer;
     }
 
@@ -43,15 +43,15 @@ public class UpdateMessageContentChanged extends Update {
     }
 
     @NotNull
-    public Message getMessage() {
+    public ApiMessage getMessage() {
         return this.message;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new Peer());
+        this.peer = values.getObj(1, new ApiPeer());
         this.rid = values.getLong(2);
-        this.message = Message.fromBytes(values.getBytes(3));
+        this.message = ApiMessage.fromBytes(values.getBytes(3));
     }
 
     @Override
