@@ -341,6 +341,12 @@
       }
     }
   }
+
+  .dropdown {
+    &__menu {
+      top: 24px;
+    }
+  }
 }
 
 .date-divider {
