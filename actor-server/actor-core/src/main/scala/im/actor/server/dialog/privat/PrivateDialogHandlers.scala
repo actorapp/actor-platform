@@ -5,6 +5,7 @@ import akka.pattern.pipe
 
 import im.actor.server.dialog.Dialog._
 import im.actor.server.dialog.PrivateDialogCommands
+import im.actor.server.dialog.PrivateDialogCommands.Origin.{ RIGHT, LEFT }
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.util.HistoryUtils._
 import im.actor.server.social.SocialManager._
@@ -26,8 +27,8 @@ trait PrivateDialogHandlers {
   import PrivateDialogCommands._
 
   protected def sendMessage(
-    userState:    DialogState,
-    state:        PrivateDialogState,
+    state:        State,
+    origin:       Origin,
     senderAuthId: Long,
     randomId:     Long,
     message:      ApiMessage,
@@ -40,6 +41,7 @@ trait PrivateDialogHandlers {
         context become working(newState)
       case msg ⇒ stash()
     }
+    val userState = state(origin)
     val date = new DateTime
     val dateMillis = date.getMillis
 
@@ -55,7 +57,7 @@ trait PrivateDialogHandlers {
     sendFuture onComplete {
       case Success(seqstate) ⇒
         replyTo ! seqstate
-        context.self ! MessageSentComplete(state.copy(lastMessageDate = Some(dateMillis)))
+        context.self ! MessageSentComplete(updateState(state, reverse(origin), LastMessageDate(dateMillis)))
       case Failure(e) ⇒
         replyTo ! Status.Failure(e)
         log.error(e, "Failed to send message")
@@ -63,9 +65,11 @@ trait PrivateDialogHandlers {
     }
   }
 
-  protected def messageReceived(state: PrivateDialogState, origin: Origin, date: Long): Unit = {
-    val userState = state.userState(origin)
-    val receiveFuture = if (!userState.lastReceiveDate.exists(_ >= date) && (state.lastMessageDate.isEmpty || state.lastMessageDate.exists(_ >= date))) {
+  protected def messageReceived(state: State, origin: Origin, date: Long): Unit = {
+    val userState = state(origin)
+    val receiveFuture = if (!userState.lastReceiveDate.exists(_ >= date) &&
+      !(date > System.currentTimeMillis()) &&
+      (userState.lastMessageDate.isEmpty || userState.lastMessageDate.exists(_ >= date))) {
       context become working(updateState(state, origin, LastReceiveDate(date)))
 
       val now = System.currentTimeMillis
@@ -86,10 +90,11 @@ trait PrivateDialogHandlers {
     }
   }
 
-  protected def messageRead(state: PrivateDialogState, origin: Origin, readerAuthId: Long, date: Long): Unit = {
-    val userState = state.userState(origin)
-
-    val readFuture = if (!userState.lastReadDate.exists(_ >= date) && (state.lastMessageDate.isEmpty || state.lastMessageDate.exists(_ >= date))) {
+  protected def messageRead(state: State, origin: Origin, readerAuthId: Long, date: Long): Unit = {
+    val userState = state(origin)
+    val readFuture = if (!userState.lastReadDate.exists(_ >= date) &&
+      !(date > System.currentTimeMillis()) &&
+      (userState.lastMessageDate.isEmpty || userState.lastMessageDate.exists(_ >= date))) {
       context become working(updateState(state, origin, LastReadDate(date)))
 
       val now = System.currentTimeMillis
@@ -116,12 +121,18 @@ trait PrivateDialogHandlers {
 
   private def privatePeerStruct(userId: Int): Peer = Peer(PeerType.Private, userId)
 
-  private def updateState(state: PrivateDialogState, origin: Origin, change: StateChange): PrivateDialogState = {
-    val userState = state.userState(origin)
+  private def updateState(state: State, origin: Origin, change: StateChange): State = {
+    val userState = state(origin)
     change match {
-      case LastReceiveDate(date) ⇒ state.copy(userState = state.userState.updated(origin, userState.copy(lastReceiveDate = Some(date))))
-      case LastReadDate(date)    ⇒ state.copy(userState = state.userState.updated(origin, userState.copy(lastReadDate = Some(date))))
+      case LastMessageDate(date) ⇒ state.updated(origin, userState.copy(lastMessageDate = Some(date)))
+      case LastReceiveDate(date) ⇒ state.updated(origin, userState.copy(lastReceiveDate = Some(date)))
+      case LastReadDate(date)    ⇒ state.updated(origin, userState.copy(lastReadDate = Some(date)))
     }
+  }
+
+  private def reverse: PartialFunction[Origin, Origin] = {
+    case LEFT  ⇒ RIGHT
+    case RIGHT ⇒ LEFT
   }
 
 }
