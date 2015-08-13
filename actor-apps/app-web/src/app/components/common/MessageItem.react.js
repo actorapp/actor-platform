@@ -25,6 +25,7 @@ var MessageItem = React.createClass({
   displayName: 'MessageItem',
 
   propTypes: {
+    peer: React.PropTypes.object.isRequired,
     message: React.PropTypes.object.isRequired,
     newDay: React.PropTypes.bool,
     index: React.PropTypes.number,
@@ -39,6 +40,10 @@ var MessageItem = React.createClass({
 
   onVisibilityChange(isVisible) {
     this.props.onVisibilityChange(this.props.message, isVisible);
+  },
+
+  onDelete() {
+    DialogActionCreators.deleteMessages(this.props.peer, [this.props.message.rid]);
   },
 
   render() {
@@ -111,7 +116,9 @@ var MessageItem = React.createClass({
           {visibilitySensor}
         </div>
         <div className="message__actions">
-          {/* Actions here */}
+          <ul>
+            <li onClick={this.onDelete}>Delete</li>
+          </ul>
         </div>
       </li>
     );

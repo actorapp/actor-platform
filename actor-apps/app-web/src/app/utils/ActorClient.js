@@ -205,6 +205,9 @@ export default {
 
   findUsers(phone) {
     return window.messenger.findUsers(phone.toString());
-  }
+  },
 
+  deleteMessages(peer, rids) {
+    return window.messenger.deleteMessages(peer, rids);
+  }
 };
