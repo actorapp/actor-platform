@@ -110,6 +110,9 @@ var MessageItem = React.createClass({
           <MessageItem.Content content={message.content}/>
           {visibilitySensor}
         </div>
+        <div className="message__actions">
+          {/* Actions here */}
+        </div>
       </li>
     );
   }
