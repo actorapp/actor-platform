@@ -3,6 +3,8 @@ import classnames from 'classnames';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
+let scrollIndex = 0;
+
 class Dropdown extends React.Component {
   static propTypes = {
     isShown: React.PropTypes.bool,
@@ -85,9 +87,14 @@ class Dropdown extends React.Component {
     }
   };
 
+  handleScroll = (top) => {
+    const menuNode = React.findDOMNode(this.refs.menu);
+    menuNode.scrollTop = top;
+  };
+
   onKeyDown = (e) => {
     let index = this.state.selectedIndex;
-    const menuNode = React.findDOMNode(this.refs.menu);
+    const visibleItems = 5;
 
     if (index !== null) {
       switch (e.keyCode) {
@@ -105,7 +112,11 @@ class Dropdown extends React.Component {
             index -= 1;
           }
 
-          menuNode.scrollTop = menuNode.scrollTop - 42;
+          if (scrollIndex > index) {
+            scrollIndex = index;
+          }
+
+          this.handleScroll(scrollIndex * 42);
 
           this.setState({selectedIndex: index});
           break;
@@ -117,7 +128,11 @@ class Dropdown extends React.Component {
             index += 1;
           }
 
-          menuNode.scrollTop = menuNode.scrollTop + 42;
+          if (index + 1 > scrollIndex + visibleItems) {
+            scrollIndex += 1;
+          }
+
+          this.handleScroll(scrollIndex * 42);
 
           this.setState({selectedIndex: index});
           break;
