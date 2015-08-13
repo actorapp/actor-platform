@@ -12,8 +12,10 @@ Pod::Spec.new do |s|
   
   # s.header_mappings_dir = 'core/gen/'
   # s.preserve_paths = 'core/gen/**/*', 'runtime/gen/**/*'
-  
+
+  s.public_header_files = 'core/main/**/*.h', 'runtime/main/**/*.h'
   s.private_header_files = 'core/gen/**/*.h', 'runtime/gen/**/*.h'
+
   s.libraries = 'jre_emul', 'z'
 
   s.source_files = 'core/gen/**/*', 'runtime/gen/**/*'
