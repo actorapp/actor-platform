@@ -11,7 +11,7 @@ class GroupViewController: AATableViewController {
     private let CellIdentifier = "CellIdentifier"
     
     let gid: Int
-    var group: AMGroupVM?
+    var group: ACGroupVM?
     var binder = Binder()
     
     private var tableData: UATableData!
@@ -114,7 +114,7 @@ class GroupViewController: AATableViewController {
                 .setStyle(.Switch)
                 .setContent("GroupNotifications")
                 .setModificator { (cell) -> () in
-                    let groupPeer: AMPeer! = AMPeer.groupWithInt(jint(self.gid))
+                    let groupPeer: ACPeer! = ACPeer.groupWithInt(jint(self.gid))
                     cell.setSwitcherOn(MSG.isNotificationsEnabledWithPeer(groupPeer))
                 
                     cell.switchBlock = { (on: Bool) -> () in
@@ -135,16 +135,16 @@ class GroupViewController: AATableViewController {
             return 0
         }) { (tableView, index, indexPath) -> UITableViewCell in
             var cell: GroupMemberCell = tableView.dequeueReusableCellWithIdentifier(self.UserCellIdentifier, forIndexPath: indexPath) as! GroupMemberCell
-            if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? AMGroupMember,
+            if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? ACGroupMember,
                 let user = MSG.getUserWithUid(groupMember.getUid()) {
                     var username = user.getNameModel().get()
-                    let avatar: AMAvatar? = user.getAvatarModel().get()
+                    let avatar: ACAvatar? = user.getAvatarModel().get()
                     cell.userAvatarView.bind(username, id: user.getId(), avatar: avatar)
                     cell.setUsername(username)
             }
             return cell
         }.setAction { (index) -> () in
-            if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? AMGroupMember, let user = MSG.getUserWithUid(groupMember.getUid()) {
+            if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? ACGroupMember, let user = MSG.getUserWithUid(groupMember.getUid()) {
                 if (user.getId() == MSG.myUid()) {
                     return
                 }
@@ -170,7 +170,7 @@ class GroupViewController: AATableViewController {
                             if (index == 0) {
                                 self.navigateNext(UserViewController(uid: Int(user.getId())), removeCurrent: false)
                             } else if (index == 1) {
-                                self.navigateDetail(ConversationViewController(peer: AMPeer.userWithInt(user.getId())))
+                                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
                                 self.popover?.dismissPopoverAnimated(true)
                             } else if (index == 2) {
                                 var phones = user.getPhonesModel().get()
@@ -243,7 +243,7 @@ class GroupViewController: AATableViewController {
             self.title = value!
         })
         
-        binder.bind(group!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
+        binder.bind(group!.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? GroupPhotoCell {
                 if (self.group!.isMemberModel().get().booleanValue()) {
                     cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: value)

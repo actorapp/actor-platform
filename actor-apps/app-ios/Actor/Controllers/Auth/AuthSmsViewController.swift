@@ -142,10 +142,10 @@ class AuthSmsViewController: AuthViewController, UIAlertViewDelegate {
     func nextButtonPressed() {
         if count(codeTextField.text) > 0 {
             var action = "Send Code"
-            execute(MSG.sendCodeObsoleteCommand(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
-                if let state = val as? AMAuthStateEnum {
+            execute(MSG.validateCodeCommandWithCode(codeTextField.text), successBlock: { (val) -> () in
+                if let state = val as? ACAuthStateEnum {
                     MSG.trackActionSuccess(action)
-                    let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
+                    let loggedInState: jint = jint(ACAuthState.LOGGED_IN.rawValue)
                     if state.ordinal() == loggedInState {
                         self.onAuthenticated()
                     } else {
@@ -155,7 +155,7 @@ class AuthSmsViewController: AuthViewController, UIAlertViewDelegate {
                 }, failureBlock: { (val) -> () in
                     var message = "Unknwon Error"
                     var tag = "UNKNOWN"
-                    if let exception = val as? AMRpcException {
+                    if let exception = val as? ACRpcException {
                         tag = exception.getTag()
                         if (tag == "PHONE_CODE_EMPTY" || tag == "PHONE_CODE_INVALID") {
                             self.shakeView(self.codeTextField, originalX: self.codeTextField.frame.origin.x)
@@ -178,7 +178,7 @@ class AuthSmsViewController: AuthViewController, UIAlertViewDelegate {
     }
     
     func alertView(alertView: UIAlertView, willDismissWithButtonIndex buttonIndex: Int) {
-        if (MSG.getAuthState() != AMAuthState.CODE_VALIDATION_PHONE.rawValue) {
+        if (MSG.getAuthState() != ACAuthState.CODE_VALIDATION_PHONE.rawValue) {
             navigateBack()
         }
     }

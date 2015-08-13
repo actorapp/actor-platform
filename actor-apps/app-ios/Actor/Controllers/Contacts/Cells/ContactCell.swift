@@ -36,7 +36,7 @@ class ContactCell : BasicCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bindContact(contact: AMContact, shortValue: String?, isLast: Bool) {
+    func bindContact(contact: ACContact, shortValue: String?, isLast: Bool) {
         avatarView.bind(contact.getName(), id: contact.getUid(), avatar: contact.getAvatar());
         
         titleView.text = contact.getName();

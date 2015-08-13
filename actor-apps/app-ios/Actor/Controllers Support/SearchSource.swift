@@ -3,9 +3,9 @@
 //
 
 import Foundation
-class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, AMDisplayList_Listener {
+class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, ARDisplayList_Listener {
     
-    private var displayList: AMBindedDisplayList!;
+    private var displayList: ARBindedDisplayList!;
     private let searchDisplay: UISearchDisplayController
     
     init(searchDisplay: UISearchDisplayController){
@@ -42,7 +42,7 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
         return cell;
     }
     
-    func buildDisplayList() -> AMBindedDisplayList {
+    func buildDisplayList() -> ARBindedDisplayList {
         fatalError("Not implemented");
     }
     

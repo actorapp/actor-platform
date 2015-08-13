@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc class FMDBIndex: NSObject, DKIndexStorage {
+@objc class FMDBIndex: NSObject, ARIndexStorage {
     
     var db :FMDatabase? = nil
     var isTableChecked: Bool = false

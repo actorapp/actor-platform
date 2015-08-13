@@ -199,12 +199,12 @@ extension MainTabViewController: UIAlertViewDelegate {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
                 self.execute(MSG.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> Void in
-                    var user: AMUserVM?
-                    user = val as? AMUserVM
+                    var user: ACUserVM?
+                    user = val as? ACUserVM
                     if user == nil {
                         if let users = val as? IOSObjectArray {
                             if Int(users.length()) > 0 {
-                                if let tempUser = users.objectAtIndex(0) as? AMUserVM {
+                                if let tempUser = users.objectAtIndex(0) as? ACUserVM {
                                     user = tempUser
                                 }
                             }

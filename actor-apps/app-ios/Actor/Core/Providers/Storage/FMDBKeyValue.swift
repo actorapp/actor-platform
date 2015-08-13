@@ -4,7 +4,7 @@
 
 import Foundation
 
-@objc class FMDBKeyValue: NSObject, DKKeyValueStorage {
+@objc class FMDBKeyValue: NSObject, ARKeyValueStorage {
     var db :FMDatabase?;
     
     let databasePath: String;
@@ -53,7 +53,7 @@ import Foundation
         
         db!.beginTransaction()
         for i in 0..<values.size() {
-            let record = values.getWithInt(i) as! DKKeyValueRecord;
+            let record = values.getWithInt(i) as! ARKeyValueRecord;
             db!.executeUpdate(queryAdd, record.getId().toNSNumber(),record.getData()!.toNSData())
         }
         db!.commit()

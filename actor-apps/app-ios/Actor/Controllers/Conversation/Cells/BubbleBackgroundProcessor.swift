@@ -8,12 +8,12 @@
 
 import Foundation
 
-class BubbleBackgroundProcessor: NSObject, AMBackgroundProcessor {
+class BubbleBackgroundProcessor: NSObject, ARBackgroundProcessor {
     
     let layoutCache: LayoutCache = LayoutCache()
     
     func processInBackgroundWithId(item: AnyObject!) {
-        var message = item as! AMMessage
+        var message = item as! ACMessage
         
         MSG.getUserWithUid(message.getSenderId())
         

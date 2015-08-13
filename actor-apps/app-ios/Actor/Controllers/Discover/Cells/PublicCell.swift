@@ -16,7 +16,7 @@ class PublicCell: UITableViewCell {
     let members: UILabel = UILabel()
     let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor)
     
-    var group: AMPublicGroup!
+    var group: ACPublicGroup!
     
     init() {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
@@ -43,7 +43,7 @@ class PublicCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(group: AMPublicGroup, isLast: Bool) {
+    func bind(group: ACPublicGroup, isLast: Bool) {
         self.group = group
         
         title.text = self.group.getTitle()

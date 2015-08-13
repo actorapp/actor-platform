@@ -17,7 +17,7 @@ class SettingsViewController: AATableViewController {
     private var tableData: UATableData!
     
     private let uid: Int
-    private var user: AMUserVM?
+    private var user: ACUserVM?
     private var binder = Binder()
     
     private var phones: JavaUtilArrayList?
@@ -151,7 +151,7 @@ class SettingsViewController: AATableViewController {
             return 0
             }) { (tableView, index, indexPath) -> UITableViewCell in
                 var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
-                if let phone = self.phones!.getWithInt(jint(index)) as? AMUserPhone {
+                if let phone = self.phones!.getWithInt(jint(index)) as? ACUserPhone {
                     cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
                 }
                 return cell
@@ -260,15 +260,15 @@ class SettingsViewController: AATableViewController {
         // Support: Ask Question
         supportSection.addNavigationCell("SettingsAskQuestion", actionClosure: { () -> () in
             self.execute(MSG.findUsersCommandWithQuery("75551234567"), successBlock: { (val) -> Void in
-                var user:AMUserVM!
+                var user:ACUserVM!
                 if let users = val as? IOSObjectArray {
                     if Int(users.length()) > 0 {
-                        if let tempUser = users.objectAtIndex(0) as? AMUserVM {
+                        if let tempUser = users.objectAtIndex(0) as? ACUserVM {
                             user = tempUser
                         }
                     }
                 }
-                self.navigateDetail(ConversationViewController(peer: AMPeer.userWithInt(user.getId())))
+                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
             }, failureBlock: { (val) -> Void in
                 // TODO: Implement
             })
@@ -315,7 +315,7 @@ class SettingsViewController: AATableViewController {
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
         })
         
-        binder.bind(MSG.getOwnAvatarVM().getUploadState(), valueModel2: user!.getAvatarModel()) { (upload: AMAvatarUploadState?, avatar:  AMAvatar?) -> () in
+        binder.bind(MSG.getOwnAvatarVM().getUploadState(), valueModel2: user!.getAvatarModel()) { (upload: ACAvatarUploadState?, avatar:  ACAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                 if (upload != nil && upload!.isUploading().boolValue) {
                     cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), fileName: upload?.getDescriptor())
@@ -327,7 +327,7 @@ class SettingsViewController: AATableViewController {
             }
         }
         
-        binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
+        binder.bind(user!.getPresenceModel(), closure: { (presence: ACUserPresence?) -> () in
             var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {

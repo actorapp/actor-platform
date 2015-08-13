@@ -1,6 +1,6 @@
 package im.actor.runtime.cocoa;
 
-import im.actor.core.runtime.generic.GenericNetworkProvider;
+import im.actor.runtime.generic.GenericNetworkProvider;
 
 public class CocoaNetworkRuntime extends GenericNetworkProvider {
 }

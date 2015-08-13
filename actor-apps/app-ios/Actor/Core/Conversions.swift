@@ -67,7 +67,7 @@ extension JavaLangLong {
     }
 }
 
-extension DKListEngineRecord {
+extension ARListEngineRecord {
     func dbQuery() -> AnyObject {
         if (self.getQuery() == nil) {
             return NSNull()

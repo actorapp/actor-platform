@@ -19,7 +19,7 @@ class ContactsSearchSource: SearchSource {
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        var contact = item as! AMContact;
+        var contact = item as! ACContact;
         let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
         
         // Building short name
@@ -27,7 +27,7 @@ class ContactsSearchSource: SearchSource {
         if (indexPath.row == 0) {
             shortName = contact.getName().smallValue();
         } else {
-            var prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! AMContact;
+            var prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! ACContact;
             
             var prevName = prevContact.getName().smallValue();
             var name = contact.getName().smallValue();
@@ -40,7 +40,8 @@ class ContactsSearchSource: SearchSource {
         (cell as! ContactCell).bindContact(contact, shortValue: shortName, isLast: isLast);
     }
     
-    override func buildDisplayList() -> AMBindedDisplayList {
-        return MSG.buildContactDisplayList()
+    override func buildDisplayList() -> ARBindedDisplayList {
+        // return MSG.buildContactDisplayList()
+        return ARBindedDisplayList()
     }
 }

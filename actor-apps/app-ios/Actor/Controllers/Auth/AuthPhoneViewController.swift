@@ -191,7 +191,7 @@ class AuthPhoneViewController: AuthViewController, UITextFieldDelegate {
             SVProgressHUD.showErrorWithStatus(msg)
             MSG.trackActionError(action, withTag: "LOCAL_EMPTY_PHONE", withMessage: msg)
         } else {
-            execute(MSG.requestSmsObsoleteCommandWithPhone(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
+            execute(MSG.requestStartPhoneAuthCommandWithEmail(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
                 successBlock: { (val) -> () in
                     MSG.trackActionSuccess(action)
                     self.navigateToSms()
@@ -201,7 +201,7 @@ class AuthPhoneViewController: AuthViewController, UITextFieldDelegate {
                     var tag = "UNKNOWN"
                     var canTryAgain = false
                     
-                    if let exception = val as? AMRpcException {
+                    if let exception = val as? ACRpcException {
                         tag = exception.getTag()
                         if (tag == "PHONE_NUMBER_INVALID") {
                             message = NSLocalizedString("ErrorPhoneIncorrect", comment: "PHONE_NUMBER_INVALID error")
