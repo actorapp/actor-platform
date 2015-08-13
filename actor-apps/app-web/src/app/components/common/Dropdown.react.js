@@ -58,11 +58,11 @@ class Dropdown extends React.Component {
     let index = null;
 
     if (children && children.length > 0) {
-      index = children.length - 1;
-    }
+      //index = children.length - 1;
 
-    // Set first element selected
-    index = 0;
+      // Set first element selected
+      index = 0;
+    }
 
     return index;
   };
