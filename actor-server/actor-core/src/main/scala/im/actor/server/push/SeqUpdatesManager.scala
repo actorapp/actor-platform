@@ -12,7 +12,7 @@ import akka.util.Timeout
 import slick.dbio.DBIO
 
 import im.actor.api.rpc.messaging.UpdateMessage
-import im.actor.api.rpc.peers.Peer
+import im.actor.api.rpc.peers.{ PeerType, Peer }
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.db.DbExtension
 import im.actor.server.models.sequence
@@ -381,8 +381,16 @@ object SeqUpdatesManager {
     update match {
       case _: api.misc.UpdateConfig              ⇒ empty
       case _: api.configs.UpdateParameterChanged ⇒ empty
-      case api.messaging.UpdateChatClear(peer)   ⇒ (Set.empty, Set(peer.id))
-      case api.messaging.UpdateChatDelete(peer)  ⇒ (Set.empty, Set(peer.id))
+      case api.messaging.UpdateChatClear(peer) ⇒
+        peer.`type` match {
+          case PeerType.Private ⇒ (Set(peer.id), Set.empty)
+          case PeerType.Group   ⇒ (Set.empty, Set(peer.id))
+        }
+      case api.messaging.UpdateChatDelete(peer) ⇒
+        peer.`type` match {
+          case PeerType.Private ⇒ (Set(peer.id), Set.empty)
+          case PeerType.Group   ⇒ (Set.empty, Set(peer.id))
+        }
       case api.messaging.UpdateMessage(peer, senderUserId, _, _, _) ⇒
         val refs = peerRefs(peer)
         refs.copy(_1 = refs._1 + senderUserId)
