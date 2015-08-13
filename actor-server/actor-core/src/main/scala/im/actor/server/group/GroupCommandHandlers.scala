@@ -158,7 +158,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               val date = new DateTime
               val randomId = ThreadLocalRandom.current().nextLong()
               for {
-                _ ← p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
+                exists ← p.GroupUser.exists(groupId, joiningUserId)
+                _ ← if (exists) DBIO.successful(()) else p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
                 seqstatedate ← DBIO.from(GroupDialogOperations.sendMessage(groupId, joiningUserId, joiningUserAuthId, randomId, GroupServiceMessages.userJoined, isFat = true))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
@@ -174,9 +175,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
     }
   }
-
-  protected def joinAfterFirstRead(group: Group, joiningUserId: Int, joiningUserAuthId: Long): Unit =
-    setJoined(group, joiningUserId, joiningUserAuthId, group.creatorUserId)
 
   protected def kick(group: Group, kickedUserId: Int, kickerUserId: Int, kickerAuthId: Long, randomId: Long): Unit = {
     val replyTo = sender()

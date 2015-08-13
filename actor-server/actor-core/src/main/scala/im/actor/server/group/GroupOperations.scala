@@ -69,7 +69,7 @@ private[group] sealed trait Commands {
     region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Unit = region.ref ! JoinAfterFirstRead(groupId, joiningUserId, joiningUserAuthId)
+  ): Future[Unit] = (region.ref ? JoinAfterFirstRead(groupId, joiningUserId, joiningUserAuthId)) map (_ ⇒ ())
 
   def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(
     implicit

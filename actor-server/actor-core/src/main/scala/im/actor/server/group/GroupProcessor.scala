@@ -196,7 +196,8 @@ private[group] final class GroupProcessor
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
       }
     case JoinAfterFirstRead(_, joiningUserId, joiningUserAuthId) ⇒
-      joinAfterFirstRead(state, joiningUserId, joiningUserAuthId)
+      val invitingUserId = state.members.get(joiningUserId).map(_.inviterUserId) getOrElse state.creatorUserId
+      setJoined(state, joiningUserId, joiningUserAuthId, invitingUserId)
     case Join(_, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
       setJoined(state, joiningUserId, joiningUserAuthId, invitingUserId)
     case Kick(_, kickedUserId, kickerUserId, kickerAuthId, randomId) ⇒

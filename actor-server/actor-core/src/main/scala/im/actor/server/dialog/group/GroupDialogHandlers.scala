@@ -113,22 +113,23 @@ trait GroupDialogHandlers {
           }
         }
 
-        if (invitedUserIds contains readerUserId) {
-          GroupOffice.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
-        }
+        for {
+          _ ← if (invitedUserIds contains readerUserId) {
+            GroupOffice.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
+          } else Future.successful(())
+          result ← if (!state.lastReadDate.exists(_ >= date) && !state.lastSenderId.contains(readerUserId)) {
+            context become working(state.copy(lastReadDate = Some(date)))
 
-        if (!state.lastReadDate.exists(_ >= date) && !state.lastSenderId.contains(readerUserId)) {
-          context become working(state.copy(lastReadDate = Some(date)))
+            val now = new DateTime().getMillis
+            val authIdsF = Future.sequence(memberIds.filterNot(_ == readerUserId) map UserOffice.getAuthIds) map (_.flatten.toSet)
 
-          val now = new DateTime().getMillis
-          val authIdsF = Future.sequence(memberIds.filterNot(_ == readerUserId) map UserOffice.getAuthIds) map (_.flatten.toSet)
-
-          for {
-            authIds ← authIdsF
-            _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-            _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
-          } yield MessageReadAck()
-        } else Future.successful(MessageReadAck())
+            for {
+              authIds ← authIdsF
+              _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+              _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
+            } yield MessageReadAck()
+          } else Future.successful(MessageReadAck())
+        } yield result
       } else Future.successful(MessageReadAck())
 
     readFuture pipeTo replyTo onFailure {
