@@ -4,7 +4,7 @@
 
 import Foundation
 
-class FMDBList : NSObject, DKListStorageDisplayEx {
+class FMDBList : NSObject, ARListStorageDisplayEx {
     
     var db :FMDatabase? = nil;
     var isTableChecked: Bool = false;
@@ -90,7 +90,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         }
     }
     
-    func updateOrAddWithValue(valueContainer: DKListEngineRecord!) {
+    func updateOrAddWithValue(valueContainer: ARListEngineRecord!) {
         checkTable();
         
         var start = NSDate()
@@ -108,7 +108,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         
         db!.beginTransaction()
         for i in 0..<items.size() {
-            let record = items.getWithInt(i) as! DKListEngineRecord;
+            let record = items.getWithInt(i) as! ARListEngineRecord;
             db!.executeUpdate(queryAdd, record.getKey().toNSNumber(), record.dbQuery(), record.getOrder().toNSNumber(),
                 record.getData().toNSData())
         }
@@ -178,7 +178,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         db!.commit()
     }
     
-    func loadItemWithKey(key: jlong) -> DKListEngineRecord! {
+    func loadItemWithKey(key: jlong) -> ARListEngineRecord! {
         checkTable();
         
         var result = db!.executeQuery(queryItem, key.toNSNumber());
@@ -190,7 +190,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull){
                 query = nil
             }
-            var res = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            var res = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
             result?.close()
             return res;
         } else {
@@ -238,7 +238,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             dataSize += Int(data.length())
             rowCount++
             
-            var record = DKListEngineRecord(key: key, withOrder: order, withQuery: query as! String?, withData: data)
+            var record = ARListEngineRecord(key: key, withOrder: order, withQuery: query as! String?, withData: data)
             res.addWithId(record)
         }
         result!.close()
@@ -270,7 +270,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull) {
                 query = nil
             }
-            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            var record = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
             res.addWithId(record)
         }
         result!.close()
@@ -299,7 +299,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull) {
                 query = nil
             }
-            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            var record = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
             res.addWithId(record)
         }
         result!.close()
@@ -327,7 +327,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull) {
                 query = nil
             }
-            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            var record = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
             res.addWithId(record)
         }
         result!.close()
@@ -357,7 +357,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull) {
                 query = nil
             }
-            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            var record = ARListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
             res.addWithId(record)
         }
         result!.close()

@@ -29,7 +29,7 @@ import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
-import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.core.viewmodel.ConversationVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;

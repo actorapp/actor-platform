@@ -136,10 +136,10 @@ import Foundation
                             if (index == view.firstOtherButtonIndex) {
                                 self.execute(MSG.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
                                     var groupId = val as! JavaLangInteger
-                                    self.openChat(AMPeer.groupWithInt(groupId.intValue))
+                                    self.openChat(ACPeer.groupWithInt(groupId.intValue))
                                 }, failureBlock: { (val) -> Void in
                                     
-                                    if let res = val as? AMRpcException {
+                                    if let res = val as? ACRpcException {
                                         if res.getTag() == "USER_ALREADY_INVITED" {
                                             UIAlertView.showWithTitle(nil, message: localized("ErrorAlreadyJoined"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
                                             return
@@ -223,11 +223,11 @@ import Foundation
         self.completionHandler = completionHandler
     }
     
-    func execute(command: AMCommand) {
+    func execute(command: ACCommand) {
         execute(command, successBlock: nil, failureBlock: nil)
     }
     
-    func execute(command: AMCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
+    func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         var window = UIApplication.sharedApplication().windows[1] as! UIWindow
         var hud = MBProgressHUD(window: window)
         hud.mode = MBProgressHUDMode.Indeterminate
@@ -248,7 +248,7 @@ import Foundation
         }))
     }
     
-    func openChat(peer: AMPeer) {
+    func openChat(peer: ACPeer) {
         for i in UIApplication.sharedApplication().windows {
             var root = (i as! UIWindow).rootViewController
             if let tab = root as? MainTabViewController {

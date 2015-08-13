@@ -38,7 +38,7 @@ class ConversationViewController: ConversationBaseViewController {
     // MARK: -
     // MARK: Constructors
     
-    override init(peer: AMPeer) {
+    override init(peer: ACPeer) {
         super.init(peer: peer);
         
         // Messages
@@ -131,7 +131,7 @@ class ConversationViewController: ConversationBaseViewController {
         textView.text = MSG.loadDraftWithPeer(peer)
         
         // Installing bindings
-        if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
+        if (UInt(peer.getPeerType().ordinal()) == ACPeerType.PRIVATE.rawValue) {
             let user = MSG.getUserWithUid(peer.getPeerId())
             var nameModel = user.getNameModel();
             
@@ -139,11 +139,11 @@ class ConversationViewController: ConversationBaseViewController {
                 self.titleView.text = String(value!);
                 self.navigationView.sizeToFit();
             })
-            binder.bind(user.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
+            binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
                 self.avatarView.bind(user.getNameModel().get(), id: user.getId(), avatar: value)
             })
             
-            binder.bind(MSG.getTypingWithUid(peer.getPeerId())!, valueModel2: user.getPresenceModel()!, closure:{ (typing:JavaLangBoolean?, presence:AMUserPresence?) -> () in
+            binder.bind(MSG.getTypingWithUid(peer.getPeerId())!, valueModel2: user.getPresenceModel()!, closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = MSG.getFormatter().formatTyping();
@@ -152,14 +152,14 @@ class ConversationViewController: ConversationBaseViewController {
                     var stateText = MSG.getFormatter().formatPresence(presence, withSex: user.getSex())
                     self.subtitleView.text = stateText;
                     var state = UInt(presence!.getState().ordinal())
-                    if (state == AMUserPresence_State.ONLINE.rawValue) {
+                    if (state == ACUserPresence_State.ONLINE.rawValue) {
                         self.subtitleView.textColor = Resources.PrimaryLightText
                     } else {
                         self.subtitleView.textColor = Resources.SecondaryLightText
                     }
                 }
             })
-        } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
+        } else if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
             let group = MSG.getGroupWithGid(peer.getPeerId())
             var nameModel = group.getNameModel()
             
@@ -167,7 +167,7 @@ class ConversationViewController: ConversationBaseViewController {
                 self.titleView.text = String(value!);
                 self.navigationView.sizeToFit();
             })
-            binder.bind(group.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
+            binder.bind(group.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
                 self.avatarView.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
             })
             binder.bind(MSG.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
@@ -305,9 +305,9 @@ class ConversationViewController: ConversationBaseViewController {
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         var controller: AAViewController
-        if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
+        if (UInt(peer.getPeerType().ordinal()) == ACPeerType.PRIVATE.rawValue) {
             controller = UserViewController(uid: id)
-        } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
+        } else if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
             controller = GroupViewController(gid: id)
         } else {
             return
@@ -384,15 +384,15 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
-        var message = (item as! AMMessage);
+        var message = (item as! ACMessage);
         var cell: AABubbleCell
-        if (message.getContent() is AMTextContent) {
+        if (message.getContent() is ACTextContent) {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
-        } else if (message.getContent() is AMPhotoContent) {
+        } else if (message.getContent() is ACPhotoContent) {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleMediaIdentifier, forIndexPath: indexPath) as! AABubbleMediaCell
-        } else if (message.getContent() is AMDocumentContent) {
+        } else if (message.getContent() is ACDocumentContent) {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleDocumentIdentifier, forIndexPath: indexPath) as! AABubbleDocumentCell
-        } else if (message.getContent() is AMServiceContent){
+        } else if (message.getContent() is ACServiceContent){
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleServiceIdentifier, forIndexPath: indexPath) as! AABubbleServiceCell
         } else {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
@@ -402,7 +402,7 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UICollectionViewCell) {
-        var message = item as! AMMessage
+        var message = item as! ACMessage
         var bubbleCell = (cell as! AABubbleCell)
         var setting = buildCellSetting(indexPath.row)
         bubbleCell.performBind(message, setting: setting, layoutCache: layoutCache)
@@ -421,7 +421,7 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64 {
-        var message = objectAtIndexPath(indexPath) as! AMMessage
+        var message = objectAtIndexPath(indexPath) as! ACMessage
         return Int64(message.getRid())
     }
     
@@ -431,9 +431,9 @@ class ConversationViewController: ConversationBaseViewController {
     
     override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        var message = objectAtIndexPath(indexPath) as! AMMessage;
+        var message = objectAtIndexPath(indexPath) as! ACMessage;
         var setting = buildCellSetting(indexPath.row)
-        let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
+        let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
         var height = MessagesLayouting.measureHeight(message, group: group, setting: setting, layoutCache: layoutCache)
         return CGSizeMake(self.view.bounds.width, height)
     }
@@ -468,9 +468,9 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
-        var message = (item as! AMMessage);
+        var message = (item as! ACMessage);
         if cell is AABubbleTextCell {
-            if (message.getContent() is AMPhotoContent) {
+            if (message.getContent() is ACPhotoContent) {
                 return true
             }
         }
@@ -481,9 +481,9 @@ class ConversationViewController: ConversationBaseViewController {
     func buildCellSetting(index: Int) -> CellSetting {
 //        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
         
-        var current = objectAtIndex(index) as! AMMessage
-        var next: AMMessage! = index > 0 ? objectAtIndex(index - 1) as! AMMessage : nil
-        var prev: AMMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! AMMessage : nil
+        var current = objectAtIndex(index) as! ACMessage
+        var next: ACMessage! = index > 0 ? objectAtIndex(index - 1) as! ACMessage : nil
+        var prev: ACMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! ACMessage : nil
         
         var isShowDate = true
         var isShowDateNext = true
@@ -507,13 +507,13 @@ class ConversationViewController: ConversationBaseViewController {
         return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom, showNewMessages: isShowNewMessages)
     }
     
-    func useCompact(source: AMMessage, next: AMMessage) -> Bool {
-        if (source.getContent() is AMServiceContent) {
-            if (next.getContent() is AMServiceContent) {
+    func useCompact(source: ACMessage, next: ACMessage) -> Bool {
+        if (source.getContent() is ACServiceContent) {
+            if (next.getContent() is ACServiceContent) {
                 return true
             }
         } else {
-            if (next.getContent() is AMServiceContent) {
+            if (next.getContent() is ACServiceContent) {
                 return false
             }
             if (source.getSenderId() == next.getSenderId()) {
@@ -524,7 +524,7 @@ class ConversationViewController: ConversationBaseViewController {
         return false
     }
     
-    func areSameDate(source:AMMessage, prev: AMMessage) -> Bool {
+    func areSameDate(source:ACMessage, prev: ACMessage) -> Bool {
         let calendar = NSCalendar.currentCalendar()
         
         var currentDate = NSDate(timeIntervalSince1970: Double(source.getDate())/1000.0)
@@ -536,8 +536,8 @@ class ConversationViewController: ConversationBaseViewController {
         return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
     }
 
-    override func displayListForController() -> AMBindedDisplayList {
-        var res = MSG.getMessagesGlobalListWithPeer(peer)
+    override func displayListForController() -> ARBindedDisplayList {
+        var res = ARBindedDisplayList()// MSG.getMessagesGlobalListWithPeer(peer)
         if (res.getBackgroundProcessor() == nil) {
             res.setBackgroundProcessor(BubbleBackgroundProcessor())
         }
@@ -547,10 +547,10 @@ class ConversationViewController: ConversationBaseViewController {
     
     // Completition
     
-    var filteredMembers = [AMUserVM]()
+    var filteredMembers = [ACUserVM]()
     
     override func canShowAutoCompletion() -> Bool {
-        if UInt(self.peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue {
+        if UInt(self.peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue {
             if self.foundPrefix == "@" {
                 var group = MSG.getGroups().getWithId(jlong(self.peer.getPeerId()))
                 var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()
@@ -558,7 +558,7 @@ class ConversationViewController: ConversationBaseViewController {
                 var oldCount = filteredMembers.count
                 filteredMembers.removeAll(keepCapacity: true)
                 for index in 0..<members.length() {
-                    if let groupMember = members.objectAtIndex(UInt(index)) as? AMGroupMember,
+                    if let groupMember = members.objectAtIndex(UInt(index)) as? ACGroupMember,
                         let user = MSG.getUserWithUid(groupMember.getUid()) {
                             if user.getId() != MSG.myUid() {
                                 var isFiltered = false

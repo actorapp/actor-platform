@@ -219,12 +219,12 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
             return
         }
         
-        var contact: AMContact!;
+        var contact: ACContact!;
         
         if (tableView == self.tableView) {
-            contact = objectAtIndexPath(indexPath) as! AMContact
+            contact = objectAtIndexPath(indexPath) as! ACContact
         } else {
-            contact = searchSource!.objectAtIndexPath(indexPath) as! AMContact
+            contact = searchSource!.objectAtIndexPath(indexPath) as! ACContact
         }
         
         navigateToMessagesWithUid(contact.getUid())
@@ -250,7 +250,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     }
     
     private func navigateToMessagesWithUid(uid: jint) {
-        let conversationController = ConversationViewController(peer: AMPeer.userWithInt(uid))
+        let conversationController = ConversationViewController(peer: ACPeer.userWithInt(uid))
         navigateDetail(conversationController)
         MainAppTheme.navigation.applyStatusBar()
     }    
@@ -277,12 +277,12 @@ extension ContactsViewController: UIAlertViewDelegate {
             if count(textField.text) > 0 {
                 execute(MSG.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> () in
                     println("\(val.self)")
-                    var user: AMUserVM?
-                    user = val as? AMUserVM
+                    var user: ACUserVM?
+                    user = val as? ACUserVM
                     if user == nil {
                         if let users = val as? IOSObjectArray {
                             if Int(users.length()) > 0 {
-                                if let tempUser = users.objectAtIndex(0) as? AMUserVM {
+                                if let tempUser = users.objectAtIndex(0) as? ACUserVM {
                                     user = tempUser
                                 }
                             }

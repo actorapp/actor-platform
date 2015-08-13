@@ -8,7 +8,7 @@
 
 import Foundation
 
-class MixpanelProvider:NSObject, AMAnalyticsProvider {
+class MixpanelProvider:NSObject, ACAnalyticsProvider {
     
     var mixpanel: Mixpanel!
     

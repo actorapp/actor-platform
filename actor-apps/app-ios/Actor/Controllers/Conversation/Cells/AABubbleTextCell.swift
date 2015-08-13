@@ -17,7 +17,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     var isClanchBottom:Bool = false
     
     private let dateText = UILabel()
-    private var messageState: UInt = AMMessageState.UNKNOWN.rawValue
+    private var messageState: UInt = ACMessageState.UNKNOWN.rawValue
     private var cellLayout: TextCellLayout!
     
     init(frame: CGRect) {
@@ -55,7 +55,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
         if action == "copy:" {
-            if (bindedMessage!.getContent() is AMTextContent) {
+            if (bindedMessage!.getContent() is ACTextContent) {
                 return true
             }
         }
@@ -66,7 +66,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     }
     
     override func copy(sender: AnyObject?) {
-        UIPasteboard.generalPasteboard().string = (bindedMessage!.getContent() as! AMTextContent).getText()
+        UIPasteboard.generalPasteboard().string = (bindedMessage!.getContent() as! ACTextContent).getText()
     }
     
     func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
@@ -77,7 +77,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         UIApplication.sharedApplication().openURL(url)
     }
     
-    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+    override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         self.cellLayout = cellLayout as! TextCellLayout
         isClanchTop = setting.clenchTop
         isClanchBottom = setting.clenchBottom
@@ -155,23 +155,23 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         if (isOut) {
             switch(self.messageState) {
-            case AMMessageState.PENDING.rawValue:
+            case ACMessageState.PENDING.rawValue:
                 self.statusView.image = Resources.iconClock;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
                 break;
-            case AMMessageState.SENT.rawValue:
+            case ACMessageState.SENT.rawValue:
                 self.statusView.image = Resources.iconCheck1;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSent
                 break;
-            case AMMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED.rawValue:
                 self.statusView.image = Resources.iconCheck2;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusReceived
                 break;
-            case AMMessageState.READ.rawValue:
+            case ACMessageState.READ.rawValue:
                 self.statusView.image = Resources.iconCheck2;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusRead
                 break;
-            case AMMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR.rawValue:
                 self.statusView.image = Resources.iconError;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusError
                 break

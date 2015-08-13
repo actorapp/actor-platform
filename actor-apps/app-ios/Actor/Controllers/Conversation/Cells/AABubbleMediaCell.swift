@@ -23,7 +23,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     var contentViewSize: CGSize? = nil
     
     // Binded data
-    var thumb : AMFastThumb? = nil
+    var thumb : ACFastThumb? = nil
     var thumbLoaded = false
     var contentLoaded = false
     
@@ -64,7 +64,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     
     // MARK: -
     
-    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+    override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         
         bubbleInsets = UIEdgeInsets(
             top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
@@ -82,13 +82,13 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             }
             
             // Build bubble size
-            if (message.getContent() is AMPhotoContent) {
-                var photo = message.getContent() as! AMPhotoContent;
+            if (message.getContent() is ACPhotoContent) {
+                var photo = message.getContent() as! ACPhotoContent;
                 thumb = photo.getFastThumb()
                 contentWidth = Int(photo.getW())
                 contentHeight = Int(photo.getH())
-            } else if (message.getContent() is AMVideoContent) {
-                var video = message.getContent() as! AMVideoContent;
+            } else if (message.getContent() is ACVideoContent) {
+                var video = message.getContent() as! ACVideoContent;
                 thumb = video.getFastThumb()
                 contentWidth = Int(video.getW())
                 contentHeight = Int(video.getH())
@@ -112,7 +112,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             })
             
             // Bind file
-            fileBind(message, autoDownload: message.getContent() is AMPhotoContent)
+            fileBind(message, autoDownload: message.getContent() is ACPhotoContent)
         }
         
         // Update time
@@ -122,23 +122,23 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         if (isOut) {
             statusView.hidden = false
             switch(UInt(message.getMessageState().ordinal())) {
-            case AMMessageState.PENDING.rawValue:
+            case ACMessageState.PENDING.rawValue:
                 self.statusView.image = Resources.iconClock;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSending
                 break;
-            case AMMessageState.SENT.rawValue:
+            case ACMessageState.SENT.rawValue:
                 self.statusView.image = Resources.iconCheck1;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSent
                 break;
-            case AMMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED.rawValue:
                 self.statusView.image = Resources.iconCheck2;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaReceived
                 break;
-            case AMMessageState.READ.rawValue:
+            case ACMessageState.READ.rawValue:
                 self.statusView.image = Resources.iconCheck2;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaRead
                 break;
-            case AMMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR.rawValue:
                 self.statusView.image = Resources.iconError;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaError
                 break
@@ -153,8 +153,8 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     }
     
     func mediaDidTap() {
-        var content = bindedMessage!.getContent() as! AMDocumentContent
-        if let fileSource = content.getSource() as? AMFileRemoteSource {
+        var content = bindedMessage!.getContent() as! ACDocumentContent
+        if let fileSource = content.getSource() as? ACFileRemoteSource {
             MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
                 notDownloaded: { () -> () in
                     MSG.startDownloadingWithReference(fileSource.getFileReference())
@@ -162,12 +162,12 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                 }, onDownloaded: { (reference) -> () in
                     
-                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
-                    var controller = NYTPhotosViewController(photos: [photoInfo])
-                    controller.delegate = self
-                    self.controller.presentViewController(controller, animated: true, completion: nil)
+//                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
+//                    var controller = NYTPhotosViewController(photos: [photoInfo])
+//                    controller.delegate = self
+//                    self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
-        } else if let fileSource = content.getSource() as? AMFileLocalSource {
+        } else if let fileSource = content.getSource() as? ACFileLocalSource {
             var rid = bindedMessage!.getRid()
             MSG.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
                 notUploaded: { () -> () in
@@ -176,10 +176,10 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     MSG.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
                    
-                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-                    var controller = NYTPhotosViewController(photos: [photoInfo])
-                    controller.delegate = self
-                    self.controller.presentViewController(controller, animated: true, completion: nil)
+//                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+//                    var controller = NYTPhotosViewController(photos: [photoInfo])
+//                    controller.delegate = self
+//                    self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
         }
     }
@@ -245,15 +245,15 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
         contentLoaded = true
         
-        var loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(contentViewSize!.width - 2, h: contentViewSize!.height - 2, roundSize: 14)
-        
-        if (loadedContent == nil) {
-            return
-        }
-        
-        runOnUiThread(selfGeneration, closure: { () -> () in
-            self.setPreviewImage(loadedContent!, fast: false)
-        })
+//        var loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(contentViewSize!.width - 2, h: contentViewSize!.height - 2, roundSize: 14)
+//        
+//        if (loadedContent == nil) {
+//            return
+//        }
+//        
+//        runOnUiThread(selfGeneration, closure: { () -> () in
+//            self.setPreviewImage(loadedContent!, fast: false)
+//        })
     }
     
     // Progress show/hide
@@ -326,12 +326,12 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         return CGSize(width: scale * CGFloat(w), height: scale * CGFloat(h))
     }
     
-    class func measureMediaHeight(message: AMMessage) -> CGFloat {
-        if (message.getContent() is AMPhotoContent) {
-            var photo = message.getContent() as! AMPhotoContent;
+    class func measureMediaHeight(message: ACMessage) -> CGFloat {
+        if (message.getContent() is ACPhotoContent) {
+            var photo = message.getContent() as! ACPhotoContent;
             return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 2;
-        } else if (message.getContent() is AMVideoContent) {
-            var video = message.getContent() as! AMVideoContent;
+        } else if (message.getContent() is ACVideoContent) {
+            var video = message.getContent() as! ACVideoContent;
             return measureMedia(Int(video.getW()), h: Int(video.getH())).height + 2;
         } else {
             fatalError("Unknown content type")

@@ -4,7 +4,7 @@
 
 import Foundation
 
-class CocoaCallback: NSObject, AMCommandCallback {
+class CocoaCallback: NSObject, ACCommandCallback {
     
     var resultClosure: ((val: AnyObject!) -> ())?;
     var errorClosure: ((val:JavaLangException!) -> ())?;
@@ -26,7 +26,7 @@ class CocoaCallback: NSObject, AMCommandCallback {
     }
 }
 
-class CocoaDownloadCallback : NSObject, AMFileCallback {
+class CocoaDownloadCallback : NSObject, ACFileCallback {
     
     let notDownloaded: (()->())?
     let onDownloading: ((progress: Double) -> ())?
@@ -52,12 +52,12 @@ class CocoaDownloadCallback : NSObject, AMFileCallback {
         self.onDownloading?(progress: Double(progress));
     }
     
-    func onDownloaded(reference: AMFileSystemReference!) {
+    func onDownloaded(reference: ARFileSystemReference!) {
         self.onDownloaded?(fileName: reference!.getDescriptor());
     }
 }
 
-class CocoaUploadCallback : NSObject, AMUploadFileCallback {
+class CocoaUploadCallback : NSObject, ACUploadFileCallback {
     
     let notUploaded: (()->())?
     let onUploading: ((progress: Double) -> ())?
@@ -82,7 +82,7 @@ class CocoaUploadCallback : NSObject, AMUploadFileCallback {
     }
 }
 
-class CocoaConversationVMCallback: NSObject, AMConversationVMCallback {
+class CocoaConversationVMCallback: NSObject, ACConversationVMCallback {
     
     let closure: ((unreadId: jlong, index: jint)->())?
     
