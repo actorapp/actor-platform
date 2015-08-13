@@ -7,8 +7,6 @@
       transition: opacity $default-transition-duration $default-transition-timing, visibility 0s;
 
       opacity: 1;
-      background-color: rgba(74, 143, 226, .19) !important;
-      box-shadow: 0 2px 2px 0 rgba(81, 145, 219, .35) !important;
     }
     .dropdown__menu {
       visibility: visible;
@@ -20,6 +18,7 @@
   }
   &__button {
     display: inline-block;
+    cursor: pointer;
   }
   &__menu {
     position: absolute;
