@@ -9,7 +9,7 @@ import java.util.List;
 
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
@@ -34,7 +34,7 @@ public class ConversationActor extends ModuleActor {
     private final String OUT_READ_STATE_PREF;
     private final String OUT_RECEIVE_STATE_PREF;
 
-    private Peer peer;
+    private PeerEntity peer;
     private ListEngine<Message> messages;
     private IndexStorage outPendingIndex;
     private IndexStorage inPendingIndex;
@@ -43,7 +43,7 @@ public class ConversationActor extends ModuleActor {
     private long outReadState;
     private long outReceiveState;
 
-    public ConversationActor(Peer peer, ModuleContext context) {
+    public ConversationActor(PeerEntity peer, ModuleContext context) {
         super(context);
         this.peer = peer;
         this.IN_READ_STATE_PREF = "chat_state." + peer + ".in_read";

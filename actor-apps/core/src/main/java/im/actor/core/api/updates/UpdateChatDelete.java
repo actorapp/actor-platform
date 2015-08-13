@@ -19,9 +19,9 @@ public class UpdateChatDelete extends Update {
         return Bser.parse(new UpdateChatDelete(), data);
     }
 
-    private Peer peer;
+    private ApiPeer peer;
 
-    public UpdateChatDelete(@NotNull Peer peer) {
+    public UpdateChatDelete(@NotNull ApiPeer peer) {
         this.peer = peer;
     }
 
@@ -30,13 +30,13 @@ public class UpdateChatDelete extends Update {
     }
 
     @NotNull
-    public Peer getPeer() {
+    public ApiPeer getPeer() {
         return this.peer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new Peer());
+        this.peer = values.getObj(1, new ApiPeer());
     }
 
     @Override

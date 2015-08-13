@@ -24,13 +24,13 @@ public class SearchEntity extends BserObject implements ListEngineItem {
     public static final String ENTITY_NAME = "Search";
 
     @SuppressWarnings("NullableProblems")
-    private Peer peer;
+    private PeerEntity peer;
     private long order;
     private Avatar avatar;
     @SuppressWarnings("NullableProblems")
     private String title;
 
-    public SearchEntity(Peer peer, long order, Avatar avatar, String title) {
+    public SearchEntity(PeerEntity peer, long order, Avatar avatar, String title) {
         this.peer = peer;
         this.order = order;
         this.avatar = avatar;
@@ -41,7 +41,7 @@ public class SearchEntity extends BserObject implements ListEngineItem {
 
     }
 
-    public Peer getPeer() {
+    public PeerEntity getPeer() {
         return peer;
     }
 
@@ -59,7 +59,7 @@ public class SearchEntity extends BserObject implements ListEngineItem {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = Peer.fromBytes(values.getBytes(1));
+        peer = PeerEntity.fromBytes(values.getBytes(1));
         order = values.getLong(2);
         if (values.optBytes(3) != null) {
             avatar = new Avatar(values.getBytes(3));

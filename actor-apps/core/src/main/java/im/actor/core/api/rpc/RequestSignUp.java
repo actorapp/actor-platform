@@ -21,9 +21,9 @@ public class RequestSignUp extends Request<ResponseAuth> {
 
     private String transactionHash;
     private String name;
-    private Sex sex;
+    private ApiSex sex;
 
-    public RequestSignUp(@NotNull String transactionHash, @NotNull String name, @Nullable Sex sex) {
+    public RequestSignUp(@NotNull String transactionHash, @NotNull String name, @Nullable ApiSex sex) {
         this.transactionHash = transactionHash;
         this.name = name;
         this.sex = sex;
@@ -44,7 +44,7 @@ public class RequestSignUp extends Request<ResponseAuth> {
     }
 
     @Nullable
-    public Sex getSex() {
+    public ApiSex getSex() {
         return this.sex;
     }
 
@@ -54,7 +54,7 @@ public class RequestSignUp extends Request<ResponseAuth> {
         this.name = values.getString(2);
         int val_sex = values.getInt(3, 0);
         if (val_sex != 0) {
-            this.sex = Sex.parse(val_sex);
+            this.sex = ApiSex.parse(val_sex);
         }
     }
 

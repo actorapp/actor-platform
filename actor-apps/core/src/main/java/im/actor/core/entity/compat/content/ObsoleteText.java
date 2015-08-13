@@ -7,7 +7,7 @@ package im.actor.core.entity.compat.content;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import im.actor.core.api.Message;
+import im.actor.core.api.ApiMessage;
 import im.actor.core.api.TextMessage;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
@@ -21,7 +21,7 @@ public class ObsoleteText extends BserObject {
         parse(values);
     }
 
-    public Message toApiMessage() {
+    public ApiMessage toApiMessage() {
         return new TextMessage(text, new ArrayList<Integer>(), null);
     }
 

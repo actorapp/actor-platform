@@ -5,7 +5,7 @@
 package im.actor.core.modules.internal;
 
 import im.actor.core.entity.ContentDescription;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.internal.notifications.NotificationsActor;
@@ -40,19 +40,19 @@ public class NotificationsModule extends AbsModule {
         return notificationsStorage;
     }
 
-    public void onOwnRead(Peer peer, long fromDate) {
+    public void onOwnRead(PeerEntity peer, long fromDate) {
         notificationsActor.send(new NotificationsActor.MessagesRead(peer, fromDate));
     }
 
-    public void onInMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription, boolean hasCurrentUserMention) {
+    public void onInMessage(PeerEntity peer, int sender, long sortDate, ContentDescription contentDescription, boolean hasCurrentUserMention) {
         notificationsActor.send(new NotificationsActor.NewMessage(peer, sender, sortDate, contentDescription, hasCurrentUserMention));
     }
 
-    public void onConversationOpen(Peer peer) {
+    public void onConversationOpen(PeerEntity peer) {
         notificationsActor.send(new NotificationsActor.OnConversationVisible(peer));
     }
 
-    public void onConversationClose(Peer peer) {
+    public void onConversationClose(PeerEntity peer) {
         notificationsActor.send(new NotificationsActor.OnConversationHidden(peer));
     }
 

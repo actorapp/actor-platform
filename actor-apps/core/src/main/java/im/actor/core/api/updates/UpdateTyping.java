@@ -19,11 +19,11 @@ public class UpdateTyping extends Update {
         return Bser.parse(new UpdateTyping(), data);
     }
 
-    private Peer peer;
+    private ApiPeer peer;
     private int uid;
     private TypingType typingType;
 
-    public UpdateTyping(@NotNull Peer peer, int uid, @NotNull TypingType typingType) {
+    public UpdateTyping(@NotNull ApiPeer peer, int uid, @NotNull TypingType typingType) {
         this.peer = peer;
         this.uid = uid;
         this.typingType = typingType;
@@ -34,7 +34,7 @@ public class UpdateTyping extends Update {
     }
 
     @NotNull
-    public Peer getPeer() {
+    public ApiPeer getPeer() {
         return this.peer;
     }
 
@@ -49,7 +49,7 @@ public class UpdateTyping extends Update {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new Peer());
+        this.peer = values.getObj(1, new ApiPeer());
         this.uid = values.getInt(2);
         this.typingType = TypingType.parse(values.getInt(3));
     }

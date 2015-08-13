@@ -6,7 +6,7 @@ package im.actor.core.entity.compat.content;
 
 import java.io.IOException;
 
-import im.actor.core.api.Message;
+import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ServiceExUserKicked;
 import im.actor.core.api.ServiceMessage;
 import im.actor.runtime.bser.BserObject;
@@ -21,7 +21,7 @@ public class ObsoleteServiceKicked extends BserObject {
         parse(values);
     }
 
-    public Message toApiMessage() {
+    public ApiMessage toApiMessage() {
         return new ServiceMessage("Member kicked",
                 new ServiceExUserKicked(kickedUid));
     }

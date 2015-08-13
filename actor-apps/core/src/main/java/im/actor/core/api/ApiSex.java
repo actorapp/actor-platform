@@ -5,7 +5,7 @@ package im.actor.core.api;
 
 import java.io.IOException;
 
-public enum Sex {
+public enum ApiSex {
 
     UNKNOWN(1),
     MALE(2),
@@ -14,7 +14,7 @@ public enum Sex {
 
     private int value;
 
-    Sex(int value) {
+    ApiSex(int value) {
         this.value = value;
     }
 
@@ -22,12 +22,12 @@ public enum Sex {
         return value;
     }
 
-    public static Sex parse(int value) throws IOException {
+    public static ApiSex parse(int value) throws IOException {
         switch(value) {
-            case 1: return Sex.UNKNOWN;
-            case 2: return Sex.MALE;
-            case 3: return Sex.FEMALE;
-            default: return Sex.UNSUPPORTED_VALUE;
+            case 1: return ApiSex.UNKNOWN;
+            case 2: return ApiSex.MALE;
+            case 3: return ApiSex.FEMALE;
+            default: return ApiSex.UNSUPPORTED_VALUE;
         }
     }
 }

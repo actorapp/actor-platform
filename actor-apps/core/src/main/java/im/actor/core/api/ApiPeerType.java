@@ -5,7 +5,7 @@ package im.actor.core.api;
 
 import java.io.IOException;
 
-public enum PeerType {
+public enum ApiPeerType {
 
     PRIVATE(1),
     GROUP(2),
@@ -13,7 +13,7 @@ public enum PeerType {
 
     private int value;
 
-    PeerType(int value) {
+    ApiPeerType(int value) {
         this.value = value;
     }
 
@@ -21,11 +21,11 @@ public enum PeerType {
         return value;
     }
 
-    public static PeerType parse(int value) throws IOException {
+    public static ApiPeerType parse(int value) throws IOException {
         switch(value) {
-            case 1: return PeerType.PRIVATE;
-            case 2: return PeerType.GROUP;
-            default: return PeerType.UNSUPPORTED_VALUE;
+            case 1: return ApiPeerType.PRIVATE;
+            case 2: return ApiPeerType.GROUP;
+            default: return ApiPeerType.UNSUPPORTED_VALUE;
         }
     }
 }

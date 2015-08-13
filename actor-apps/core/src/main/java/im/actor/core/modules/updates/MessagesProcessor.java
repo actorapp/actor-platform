@@ -8,13 +8,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiDialog;
+import im.actor.core.api.ApiMessage;
+import im.actor.core.api.ApiPeer;
 import im.actor.core.api.AppCounters;
 import im.actor.core.api.HistoryMessage;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadHistory;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
@@ -38,10 +41,10 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onMessage(im.actor.core.api.Peer _peer, int senderUid, long date, long rid,
-                          im.actor.core.api.Message content) {
+    public void onMessage(ApiPeer _peer, int senderUid, long date, long rid,
+                          ApiMessage content) {
 
-        Peer peer = convert(_peer);
+        PeerEntity peer = convert(_peer);
         AbsContent msgContent;
         try {
             msgContent = AbsContent.fromMessage(content);
@@ -72,36 +75,36 @@ public class MessagesProcessor extends AbsModule {
         Message message = new Message(rid, date, date, uid,
                 MessageState.UNKNOWN, ServiceUserRegistered.create());
 
-        conversationActor(Peer.user(uid)).send(message);
+        conversationActor(PeerEntity.user(uid)).send(message);
     }
 
     @Verified
-    public void onMessageRead(im.actor.core.api.Peer _peer, long startDate, long readDate) {
-        Peer peer = convert(_peer);
+    public void onMessageRead(ApiPeer _peer, long startDate, long readDate) {
+        PeerEntity peer = convert(_peer);
 
         // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageRead(startDate));
     }
 
     @Verified
-    public void onMessageReceived(im.actor.core.api.Peer _peer, long startDate, long receivedDate) {
-        Peer peer = convert(_peer);
+    public void onMessageReceived(ApiPeer _peer, long startDate, long receivedDate) {
+        PeerEntity peer = convert(_peer);
 
         // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageReceived(startDate));
     }
 
     @Verified
-    public void onMessageReadByMe(im.actor.core.api.Peer _peer, long startDate) {
-        Peer peer = convert(_peer);
+    public void onMessageReadByMe(ApiPeer _peer, long startDate) {
+        PeerEntity peer = convert(_peer);
 
         // Sending event to own read actor
         ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
     }
 
     @Verified
-    public void onMessageSent(im.actor.core.api.Peer _peer, long rid, long date) {
-        Peer peer = convert(_peer);
+    public void onMessageSent(ApiPeer _peer, long rid, long date) {
+        PeerEntity peer = convert(_peer);
 
         // Change message state in conversation
         conversationActor(peer).send(new ConversationActor.MessageSent(rid, date));
@@ -111,17 +114,17 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Deprecated
-    public void onMessageDateChanged(im.actor.core.api.Peer _peer, long rid, long ndate) {
-        Peer peer = convert(_peer);
+    public void onMessageDateChanged(ApiPeer _peer, long rid, long ndate) {
+        PeerEntity peer = convert(_peer);
 
         // Change message state in conversation
         conversationActor(peer).send(new ConversationActor.MessageDateChange(rid, ndate));
     }
 
     @Verified
-    public void onMessageContentChanged(im.actor.core.api.Peer _peer, long rid,
-                                        im.actor.core.api.Message message) {
-        Peer peer = convert(_peer);
+    public void onMessageContentChanged(ApiPeer _peer, long rid,
+                                        ApiMessage message) {
+        PeerEntity peer = convert(_peer);
 
         AbsContent content;
         try {
@@ -136,8 +139,8 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onMessageDelete(im.actor.core.api.Peer _peer, List<Long> rids) {
-        Peer peer = convert(_peer);
+    public void onMessageDelete(ApiPeer _peer, List<Long> rids) {
+        PeerEntity peer = convert(_peer);
 
         // Deleting messages from conversation
         conversationActor(peer).send(new ConversationActor.MessagesDeleted(rids));
@@ -146,8 +149,8 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onChatClear(im.actor.core.api.Peer _peer) {
-        Peer peer = convert(_peer);
+    public void onChatClear(ApiPeer _peer) {
+        PeerEntity peer = convert(_peer);
 
         // Clearing conversation
         conversationActor(peer).send(new ConversationActor.ClearConversation());
@@ -156,8 +159,8 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onChatDelete(im.actor.core.api.Peer _peer) {
-        Peer peer = convert(_peer);
+    public void onChatDelete(ApiPeer _peer) {
+        PeerEntity peer = convert(_peer);
 
         // Deleting conversation
         conversationActor(peer).send(new ConversationActor.DeleteConversation());
@@ -174,11 +177,11 @@ public class MessagesProcessor extends AbsModule {
 
         long maxLoadedDate = Long.MAX_VALUE;
 
-        for (im.actor.core.api.Dialog dialog : dialogsResponse.getDialogs()) {
+        for (ApiDialog dialog : dialogsResponse.getDialogs()) {
 
             maxLoadedDate = Math.min(dialog.getSortDate(), maxLoadedDate);
 
-            Peer peer = convert(dialog.getPeer());
+            PeerEntity peer = convert(dialog.getPeer());
 
             AbsContent msgContent = null;
             try {
@@ -208,7 +211,7 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onMessagesLoaded(Peer peer, ResponseLoadHistory historyResponse) {
+    public void onMessagesLoaded(PeerEntity peer, ResponseLoadHistory historyResponse) {
         ArrayList<Message> messages = new ArrayList<Message>();
         long maxLoadedDate = Long.MAX_VALUE;
         for (HistoryMessage historyMessage : historyResponse.getHistory()) {

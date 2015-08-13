@@ -11,11 +11,11 @@ import java.io.IOException;
 
 public class OutPeer extends BserObject {
 
-    private PeerType type;
+    private ApiPeerType type;
     private int id;
     private long accessHash;
 
-    public OutPeer(@NotNull PeerType type, int id, long accessHash) {
+    public OutPeer(@NotNull ApiPeerType type, int id, long accessHash) {
         this.type = type;
         this.id = id;
         this.accessHash = accessHash;
@@ -26,7 +26,7 @@ public class OutPeer extends BserObject {
     }
 
     @NotNull
-    public PeerType getType() {
+    public ApiPeerType getType() {
         return this.type;
     }
 
@@ -40,7 +40,7 @@ public class OutPeer extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.type = PeerType.parse(values.getInt(1));
+        this.type = ApiPeerType.parse(values.getInt(1));
         this.id = values.getInt(2);
         this.accessHash = values.getLong(3);
     }

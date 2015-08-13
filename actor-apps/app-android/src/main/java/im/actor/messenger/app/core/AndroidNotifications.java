@@ -23,8 +23,8 @@ import java.util.List;
 import im.actor.core.NotificationProvider;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Notification;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.PeerType;
+import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.PeerTypeEntity;
 import im.actor.core.modules.ModuleContext;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -46,7 +46,7 @@ public class AndroidNotifications implements NotificationProvider {
     private SoundPool soundPool;
     private int soundId;
 
-    private Peer visiblePeer;
+    private PeerEntity visiblePeer;
 
     private Context context;
 
@@ -178,7 +178,7 @@ public class AndroidNotifications implements NotificationProvider {
 
             final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (Notification n : topNotifications) {
-                if (topNotification.getPeer().getPeerType() == PeerType.GROUP) {
+                if (topNotification.getPeer().getPeerType() == PeerTypeEntity.GROUP) {
                     inboxStyle.addLine(getNotificationTextFull(n, messenger));
                 } else {
                     inboxStyle.addLine(messenger.getI18nModule().formatNotificationText(n));
@@ -319,7 +319,7 @@ public class AndroidNotifications implements NotificationProvider {
 
     private String getNotificationSender(Notification pendingNotification) {
         String sender;
-        if (pendingNotification.getPeer().getPeerType() == PeerType.GROUP) {
+        if (pendingNotification.getPeer().getPeerType() == PeerTypeEntity.GROUP) {
             sender = users().get(pendingNotification.getSender()).getName().get();
             sender += "@";
             sender += groups().get(pendingNotification.getPeer().getPeerId()).getName().get();

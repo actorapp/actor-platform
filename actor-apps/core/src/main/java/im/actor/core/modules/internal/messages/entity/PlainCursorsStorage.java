@@ -12,7 +12,7 @@ import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 
 public class PlainCursorsStorage extends BserObject {
 
@@ -20,9 +20,9 @@ public class PlainCursorsStorage extends BserObject {
         return Bser.parse(new PlainCursorsStorage(), data);
     }
 
-    private HashMap<Peer, PlainCursor> cursors = new HashMap<Peer, PlainCursor>();
+    private HashMap<PeerEntity, PlainCursor> cursors = new HashMap<PeerEntity, PlainCursor>();
 
-    public PlainCursor getCursor(Peer peer) {
+    public PlainCursor getCursor(PeerEntity peer) {
         if (!cursors.containsKey(peer)) {
             cursors.put(peer, new PlainCursor(peer, 0, 0));
         }

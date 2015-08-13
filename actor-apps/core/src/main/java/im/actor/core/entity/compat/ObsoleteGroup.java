@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.core.api.Group;
+import im.actor.core.api.ApiGroup;
 import im.actor.core.api.Member;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
@@ -32,13 +32,13 @@ public class ObsoleteGroup extends BserObject {
         parse(values);
     }
 
-    public Group toApiGroup() {
+    public ApiGroup toApiGroup() {
         List<Member> members = new ArrayList<Member>();
         for (ObsoleteGroupMember member : this.members) {
             members.add(new Member(member.getUid(), member.getInviterUid(), member.getInviteDate(), null));
         }
 
-        return new im.actor.core.api.Group(
+        return new ApiGroup(
                 groupId,
                 accessHash,
                 title,

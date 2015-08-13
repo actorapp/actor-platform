@@ -10,7 +10,7 @@ import java.util.List;
 
 import im.actor.core.PhoneBookProvider;
 import im.actor.core.api.EmailToImport;
-import im.actor.core.api.Group;
+import im.actor.core.api.ApiGroup;
 import im.actor.core.api.PhoneToImport;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.rpc.RequestImportContacts;
@@ -195,7 +195,7 @@ public class BookImportActor extends ModuleActor {
                         UpdateContactsAdded.HEADER,
                         new UpdateContactsAdded(uids).toByteArray(),
                         response.getUsers(),
-                        new ArrayList<Group>()));
+                        new ArrayList<ApiGroup>()));
             }
 
             @Override

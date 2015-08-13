@@ -13,7 +13,7 @@ import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 
 public class DeleteStorage extends BserObject {
 
@@ -21,9 +21,9 @@ public class DeleteStorage extends BserObject {
         return Bser.parse(new DeleteStorage(), data);
     }
 
-    private HashMap<Peer, Delete> pendingDeletions = new HashMap<Peer, Delete>();
+    private HashMap<PeerEntity, Delete> pendingDeletions = new HashMap<PeerEntity, Delete>();
 
-    public HashMap<Peer, Delete> getPendingDeletions() {
+    public HashMap<PeerEntity, Delete> getPendingDeletions() {
         return pendingDeletions;
     }
 

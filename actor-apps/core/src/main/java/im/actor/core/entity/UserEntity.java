@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiAvatar;
+import im.actor.core.api.ApiContactRecord;
 import im.actor.core.api.ContactType;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
@@ -18,14 +20,14 @@ import im.actor.runtime.bser.BserWriter;
 import im.actor.runtime.storage.KeyValueItem;
 import im.actor.core.entity.compat.ObsoleteUser;
 
-public class User extends WrapperEntity<im.actor.core.api.User> implements KeyValueItem {
+public class UserEntity extends WrapperEntity<im.actor.core.api.User> implements KeyValueItem {
 
     private static final int RECORD_ID = 10;
 
-    public static BserCreator<User> CREATOR = new BserCreator<User>() {
+    public static BserCreator<UserEntity> CREATOR = new BserCreator<UserEntity>() {
         @Override
-        public User createInstance() {
-            return new User();
+        public UserEntity createInstance() {
+            return new UserEntity();
         }
     };
 
@@ -50,21 +52,21 @@ public class User extends WrapperEntity<im.actor.core.api.User> implements KeyVa
     @SuppressWarnings("NullableProblems")
     private List<ContactRecord> records;
 
-    public User(@NotNull im.actor.core.api.User wrappedUser) {
+    public UserEntity(@NotNull im.actor.core.api.User wrappedUser) {
         super(RECORD_ID, wrappedUser);
     }
 
-    public User(@NotNull byte[] data) throws IOException {
+    public UserEntity(@NotNull byte[] data) throws IOException {
         super(RECORD_ID, data);
     }
 
-    private User() {
+    private UserEntity() {
         super(RECORD_ID);
     }
 
     @NotNull
-    public Peer peer() {
-        return new Peer(PeerType.PRIVATE, uid);
+    public PeerEntity peer() {
+        return new PeerEntity(PeerTypeEntity.PRIVATE, uid);
     }
 
     public int getUid() {
@@ -123,7 +125,7 @@ public class User extends WrapperEntity<im.actor.core.api.User> implements KeyVa
         return isBot;
     }
 
-    public User editName(@NotNull String name) {
+    public UserEntity editName(@NotNull String name) {
         im.actor.core.api.User w = getWrapped();
         im.actor.core.api.User res = new im.actor.core.api.User(
                 w.getId(),
@@ -137,10 +139,10 @@ public class User extends WrapperEntity<im.actor.core.api.User> implements KeyVa
                 w.getNick(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new UserEntity(res);
     }
 
-    public User editLocalName(@NotNull String localName) {
+    public UserEntity editLocalName(@NotNull String localName) {
         im.actor.core.api.User w = getWrapped();
         im.actor.core.api.User res = new im.actor.core.api.User(
                 w.getId(),
@@ -154,10 +156,10 @@ public class User extends WrapperEntity<im.actor.core.api.User> implements KeyVa
                 w.getNick(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new UserEntity(res);
     }
 
-    public User editNick(@Nullable String nick) {
+    public UserEntity editNick(@Nullable String nick) {
         im.actor.core.api.User w = getWrapped();
         im.actor.core.api.User res = new im.actor.core.api.User(
                 w.getId(),
@@ -171,10 +173,10 @@ public class User extends WrapperEntity<im.actor.core.api.User> implements KeyVa
                 nick,
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new UserEntity(res);
     }
 
-    public User editAbout(@Nullable String about) {
+    public UserEntity editAbout(@Nullable String about) {
         im.actor.core.api.User w = getWrapped();
         im.actor.core.api.User res = new im.actor.core.api.User(
                 w.getId(),
@@ -188,10 +190,10 @@ public class User extends WrapperEntity<im.actor.core.api.User> implements KeyVa
                 w.getNick(),
                 about);
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new UserEntity(res);
     }
 
-    public User editAvatar(@Nullable im.actor.core.api.Avatar avatar) {
+    public UserEntity editAvatar(@Nullable ApiAvatar avatar) {
         im.actor.core.api.User w = getWrapped();
         im.actor.core.api.User res = new im.actor.core.api.User(
                 w.getId(),
@@ -205,7 +207,7 @@ public class User extends WrapperEntity<im.actor.core.api.User> implements KeyVa
                 w.getNick(),
                 w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return new User(res);
+        return new UserEntity(res);
     }
 
     @Override
@@ -233,7 +235,7 @@ public class User extends WrapperEntity<im.actor.core.api.User> implements KeyVa
         }
 
         this.records = new ArrayList<ContactRecord>();
-        for (im.actor.core.api.ContactRecord record : wrapped.getContactInfo()) {
+        for (ApiContactRecord record : wrapped.getContactInfo()) {
             if (record.getType() == ContactType.PHONE) {
                 this.records.add(new ContactRecord(ContactRecordType.PHONE, "" + record.getLongValue(),
                         record.getTitle()));

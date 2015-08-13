@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import im.actor.core.entity.Message;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
@@ -47,14 +47,14 @@ import static im.actor.messenger.app.core.Core.users;
  */
 public abstract class BaseMessagesFragment extends DisplayListFragment<Message, MessageHolder> {
 
-    private Peer peer;
+    private PeerEntity peer;
     private ChatLinearLayoutManager linearLayoutManager;
     private MessagesAdapter messagesAdapter;
     private ConversationVM conversationVM;
     private ActionMode actionMode;
     private int onPauseSize = 0;
 
-    protected BaseMessagesFragment(Peer peer) {
+    protected BaseMessagesFragment(PeerEntity peer) {
         this.peer = peer;
         Bundle bundle = new Bundle();
         bundle.putByteArray("EXTRA_PEER", peer.toByteArray());
@@ -65,14 +65,14 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
 
     }
 
-    public Peer getPeer() {
+    public PeerEntity getPeer() {
         return peer;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         try {
-            peer = Peer.fromBytes(getArguments().getByteArray("EXTRA_PEER"));
+            peer = PeerEntity.fromBytes(getArguments().getByteArray("EXTRA_PEER"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

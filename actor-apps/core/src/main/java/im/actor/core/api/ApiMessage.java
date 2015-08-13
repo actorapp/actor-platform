@@ -7,8 +7,8 @@ import im.actor.runtime.bser.*;
 
 import java.io.IOException;
 
-public abstract class Message extends BserObject {
-    public static Message fromBytes(byte[] src) throws IOException {
+public abstract class ApiMessage extends BserObject {
+    public static ApiMessage fromBytes(byte[] src) throws IOException {
         BserValues values = new BserValues(BserParser.deserialize(new DataInput(src, 0, src.length)));
         int key = values.getInt(1);
         byte[] content = values.getBytes(2);

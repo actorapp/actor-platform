@@ -11,17 +11,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class DocumentMessage extends Message {
+public class DocumentMessage extends ApiMessage {
 
     private long fileId;
     private long accessHash;
     private int fileSize;
     private String name;
     private String mimeType;
-    private FastThumb thumb;
+    private ApiFastThumb thumb;
     private DocumentEx ext;
 
-    public DocumentMessage(long fileId, long accessHash, int fileSize, @NotNull String name, @NotNull String mimeType, @Nullable FastThumb thumb, @Nullable DocumentEx ext) {
+    public DocumentMessage(long fileId, long accessHash, int fileSize, @NotNull String name, @NotNull String mimeType, @Nullable ApiFastThumb thumb, @Nullable DocumentEx ext) {
         this.fileId = fileId;
         this.accessHash = accessHash;
         this.fileSize = fileSize;
@@ -62,7 +62,7 @@ public class DocumentMessage extends Message {
     }
 
     @Nullable
-    public FastThumb getThumb() {
+    public ApiFastThumb getThumb() {
         return this.thumb;
     }
 
@@ -78,7 +78,7 @@ public class DocumentMessage extends Message {
         this.fileSize = values.getInt(3);
         this.name = values.getString(4);
         this.mimeType = values.getString(5);
-        this.thumb = values.optObj(6, new FastThumb());
+        this.thumb = values.optObj(6, new ApiFastThumb());
         if (values.optBytes(8) != null) {
             this.ext = DocumentEx.fromBytes(values.getBytes(8));
         }

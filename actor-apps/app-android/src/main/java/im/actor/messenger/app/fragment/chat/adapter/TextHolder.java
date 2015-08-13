@@ -31,7 +31,7 @@ import im.actor.messenger.app.view.TintImageView;
 import im.actor.core.api.TextExMarkdown;
 import im.actor.core.api.TextMessageEx;
 import im.actor.core.entity.Message;
-import im.actor.core.entity.PeerType;
+import im.actor.core.entity.PeerTypeEntity;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.viewmodel.UserVM;
 import in.uncod.android.bypass.Bypass;
@@ -134,7 +134,7 @@ public class TextHolder extends MessageHolder {
         }
 
 
-        if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
+        if (getPeer().getPeerType() == PeerTypeEntity.GROUP && message.getSenderId() != myUid()) {
             String name;
             UserVM userModel = users().get(message.getSenderId());
             if (userModel != null) {

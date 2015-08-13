@@ -10,7 +10,7 @@ import im.actor.core.network.Endpoints;
 import im.actor.core.network.NetworkState;
 import im.actor.core.network.mtp.actors.ManagerActor;
 import im.actor.core.network.mtp.actors.ReceiverActor;
-import im.actor.core.network.mtp.actors.SenderActor;
+import im.actor.core.network.mtp.actors.PusherActor;
 import im.actor.core.network.mtp.entity.MTRpcRequest;
 import im.actor.core.network.mtp.entity.ProtoStruct;
 import im.actor.core.network.util.MTUids;
@@ -54,7 +54,7 @@ public class MTProto {
         this.maxFailureCount = maxFailureCount;
         this.isClosed = false;
         this.manager = ManagerActor.manager(this);
-        this.sender = SenderActor.senderActor(this);
+        this.sender = PusherActor.senderActor(this);
         this.receiver = ReceiverActor.receiver(this);
     }
 
@@ -84,12 +84,12 @@ public class MTProto {
 
     public long sendRpcMessage(ProtoStruct protoStruct) {
         long mtId = MTUids.nextId();
-        sender.send(new SenderActor.SendMessage(mtId, new MTRpcRequest(protoStruct.toByteArray()).toByteArray()));
+        sender.send(new PusherActor.SendMessage(mtId, new MTRpcRequest(protoStruct.toByteArray()).toByteArray()));
         return mtId;
     }
 
     public void cancelRpc(long mtId) {
-        sender.send(new SenderActor.ForgetMessage(mtId));
+        sender.send(new PusherActor.ForgetMessage(mtId));
     }
 
     public void onNetworkChanged(NetworkState state) {

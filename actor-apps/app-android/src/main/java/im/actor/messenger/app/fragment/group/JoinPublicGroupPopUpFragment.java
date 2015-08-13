@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.io.IOException;
 
 import im.actor.core.entity.Avatar;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
@@ -83,13 +83,13 @@ public class JoinPublicGroupPopUpFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (isMember) {
-                    startActivity(Intents.openDialog(Peer.group(id), false, getActivity()));
+                    startActivity(Intents.openDialog(PeerEntity.group(id), false, getActivity()));
                     getActivity().finish();
                 } else {
                     execute(messenger().joinPublicGroup(id, accessHash), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
                         @Override
                         public void onResult(Integer res) {
-                            startActivity(Intents.openDialog(Peer.group(res), false, getActivity()));
+                            startActivity(Intents.openDialog(PeerEntity.group(res), false, getActivity()));
                             getActivity().finish();
                         }
 
@@ -98,7 +98,7 @@ public class JoinPublicGroupPopUpFragment extends BaseFragment {
                             if (e instanceof RpcException) {
                                 RpcException re = (RpcException) e;
                                 if ("USER_ALREADY_INVITED".equals(re.getTag())) {
-                                    startActivity(Intents.openDialog(Peer.group(id), false, getActivity()));
+                                    startActivity(Intents.openDialog(PeerEntity.group(id), false, getActivity()));
                                     getActivity().finish();
                                 }
                             }

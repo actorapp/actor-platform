@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class JsonMessage extends Message {
+public class JsonMessage extends ApiMessage {
 
     private String rawJson;
 

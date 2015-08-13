@@ -2,23 +2,23 @@ package im.actor.messenger.app.fragment.group.view;
 
 import java.util.ArrayList;
 
-import im.actor.core.entity.PublicGroup;
+import im.actor.core.entity.PublicGroupEntity;
 
 /**
  * Created by korka on 30.06.15.
  */
 public class PublicGroupSet {
-    private ArrayList<PublicGroup> groups;
+    private ArrayList<PublicGroupEntity> groups;
     private String title;
     private String subtitle;
 
-    public PublicGroupSet(ArrayList<PublicGroup> groups, String title, String subtitle) {
+    public PublicGroupSet(ArrayList<PublicGroupEntity> groups, String title, String subtitle) {
         this.groups = groups;
         this.title = title;
         this.subtitle = subtitle;
     }
 
-    public ArrayList<PublicGroup> getGroups() {
+    public ArrayList<PublicGroupEntity> getGroups() {
         return groups;
     }
 

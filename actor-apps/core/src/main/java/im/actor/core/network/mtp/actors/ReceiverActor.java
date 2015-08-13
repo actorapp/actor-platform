@@ -56,7 +56,7 @@ public class ReceiverActor extends Actor {
 
     @Override
     public void preStart() {
-        sender = SenderActor.senderActor(proto);
+        sender = PusherActor.senderActor(proto);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ReceiverActor extends Actor {
 
     private void onReceive(ProtoMessage message) {
 
-        sender.send(new SenderActor.ReadPackageFromConnection());
+        sender.send(new PusherActor.ReadPackageFromConnection());
 
         boolean disableConfirm = false;
         try {
@@ -106,7 +106,7 @@ public class ReceiverActor extends Actor {
 
             if (obj instanceof NewSessionCreated) {
                 NewSessionCreated newSessionCreated = (NewSessionCreated) obj;
-                sender.send(new SenderActor.NewSession(newSessionCreated.getMessageId()));
+                sender.send(new PusherActor.NewSession(newSessionCreated.getMessageId()));
                 proto.getCallback().onSessionCreated();
             } else if (obj instanceof Container) {
                 Container container = (Container) obj;
@@ -114,17 +114,17 @@ public class ReceiverActor extends Actor {
                     self().send(m, sender());
                 }
             } else if (obj instanceof SessionLost) {
-                sender.send(new SenderActor.SessionLost());
+                sender.send(new PusherActor.SessionLost());
             } else if (obj instanceof MTRpcResponse) {
                 MTRpcResponse responseBox = (MTRpcResponse) obj;
                 // Forget messages
-                sender.send(new SenderActor.ForgetMessage(responseBox.getMessageId()));
+                sender.send(new PusherActor.ForgetMessage(responseBox.getMessageId()));
                 proto.getCallback().onRpcResponse(responseBox.getMessageId(), responseBox.getPayload());
             } else if (obj instanceof MessageAck) {
                 MessageAck ack = (MessageAck) obj;
 
                 for (long ackMsgId : ack.messagesIds) {
-                    sender.send(new SenderActor.ForgetMessage(ackMsgId));
+                    sender.send(new PusherActor.ForgetMessage(ackMsgId));
                 }
             } else if (obj instanceof MTPush) {
                 MTPush box = (MTPush) obj;
@@ -133,14 +133,14 @@ public class ReceiverActor extends Actor {
                 UnsentResponse unsent = (UnsentResponse) obj;
                 if (!receivedMessages.contains(unsent.getResponseMessageId())) {
                     disableConfirm = true;
-                    sender.send(new SenderActor.SendMessage(MTUids.nextId(),
+                    sender.send(new PusherActor.SendMessage(MTUids.nextId(),
                             new RequestResend(unsent.getMessageId()).toByteArray()));
                 }
             } else if (obj instanceof UnsentMessage) {
                 UnsentMessage unsent = (UnsentMessage) obj;
                 if (!receivedMessages.contains(unsent.getMessageId())) {
                     disableConfirm = true;
-                    sender.send(new SenderActor.SendMessage(MTUids.nextId(),
+                    sender.send(new PusherActor.SendMessage(MTUids.nextId(),
                             new RequestResend(unsent.getMessageId()).toByteArray()));
                 }
             } else if (obj instanceof AuthIdInvalid) {
@@ -154,7 +154,7 @@ public class ReceiverActor extends Actor {
         } finally {
 
             if (!disableConfirm) {
-                sender.send(new SenderActor.ConfirmMessage(message.getMessageId()));
+                sender.send(new PusherActor.ConfirmMessage(message.getMessageId()));
             }
         }
     }

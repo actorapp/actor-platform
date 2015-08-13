@@ -5,7 +5,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import im.actor.core.entity.Dialog;
-import im.actor.core.entity.PeerType;
+import im.actor.core.entity.PeerTypeEntity;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -21,7 +21,7 @@ public class DialogsFragment extends BaseDialogFragment {
     }
 
     protected boolean onItemLongClick(final Dialog dialog) {
-        if (dialog.getPeer().getPeerType() == PeerType.PRIVATE) {
+        if (dialog.getPeer().getPeerType() == PeerTypeEntity.PRIVATE) {
             new MaterialDialog.Builder(getActivity())
                     .items(new CharSequence[]{
                             getString(R.string.dialogs_menu_contact_view),
@@ -61,7 +61,7 @@ public class DialogsFragment extends BaseDialogFragment {
                     })
                     .show();
             return true;
-        } else if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
+        } else if (dialog.getPeer().getPeerType() == PeerTypeEntity.GROUP) {
             GroupVM groupVM = groups().get(dialog.getPeer().getPeerId());
             final boolean isMember = groupVM.isMember().get();
 
