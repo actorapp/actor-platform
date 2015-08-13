@@ -9,22 +9,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class Peer extends BserObject {
+public class ApiPeer extends BserObject {
 
-    private PeerType type;
+    private ApiPeerType type;
     private int id;
 
-    public Peer(@NotNull PeerType type, int id) {
+    public ApiPeer(@NotNull ApiPeerType type, int id) {
         this.type = type;
         this.id = id;
     }
 
-    public Peer() {
+    public ApiPeer() {
 
     }
 
     @NotNull
-    public PeerType getType() {
+    public ApiPeerType getType() {
         return this.type;
     }
 
@@ -34,7 +34,7 @@ public class Peer extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.type = PeerType.parse(values.getInt(1));
+        this.type = ApiPeerType.parse(values.getInt(1));
         this.id = values.getInt(2);
     }
 

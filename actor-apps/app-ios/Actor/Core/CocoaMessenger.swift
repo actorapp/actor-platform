@@ -54,7 +54,7 @@ get{
         super.init(configuration: configuration)
     }
     
-    func sendUIImage(image: UIImage, peer: ACPeer) {
+    func sendUIImage(image: UIImage, peer: ACPeerEntity) {
 //        var thumb = image.resizeSquare(90, maxH: 90);
 //        var resized = image.resizeOptimize(1200 * 1200);
 //        

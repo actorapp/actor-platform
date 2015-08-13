@@ -250,7 +250,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         navigateDetail(ComposeController())
     }
     
-    private func navigateToMessagesWithPeer(peer: ACPeer) {
+    private func navigateToMessagesWithPeer(peer: ACPeerEntity) {
         navigateDetail(ConversationViewController(peer: peer))
         MainAppTheme.navigation.applyStatusBar()
     }

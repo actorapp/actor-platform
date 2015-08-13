@@ -6,6 +6,7 @@ package im.actor.core.entity.content;
 
 import org.jetbrains.annotations.Nullable;
 
+import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ServiceExChangedAvatar;
 import im.actor.core.api.ServiceMessage;
 import im.actor.core.entity.Avatar;
@@ -13,7 +14,7 @@ import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupAvatarChanged extends ServiceContent {
 
-    public static ServiceGroupAvatarChanged create(im.actor.core.api.Avatar avatar) {
+    public static ServiceGroupAvatarChanged create(ApiAvatar avatar) {
         return new ServiceGroupAvatarChanged(new ContentRemoteContainer(
                 new ServiceMessage("Avatar changed", new ServiceExChangedAvatar(avatar))));
     }

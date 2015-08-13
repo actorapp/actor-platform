@@ -21,10 +21,10 @@ public class UpdateGroupAvatarChanged extends Update {
     private int groupId;
     private long rid;
     private int uid;
-    private Avatar avatar;
+    private ApiAvatar avatar;
     private long date;
 
-    public UpdateGroupAvatarChanged(int groupId, long rid, int uid, @Nullable Avatar avatar, long date) {
+    public UpdateGroupAvatarChanged(int groupId, long rid, int uid, @Nullable ApiAvatar avatar, long date) {
         this.groupId = groupId;
         this.rid = rid;
         this.uid = uid;
@@ -49,7 +49,7 @@ public class UpdateGroupAvatarChanged extends Update {
     }
 
     @Nullable
-    public Avatar getAvatar() {
+    public ApiAvatar getAvatar() {
         return this.avatar;
     }
 
@@ -62,7 +62,7 @@ public class UpdateGroupAvatarChanged extends Update {
         this.groupId = values.getInt(1);
         this.rid = values.getLong(5);
         this.uid = values.getInt(2);
-        this.avatar = values.optObj(3, new Avatar());
+        this.avatar = values.optObj(3, new ApiAvatar());
         this.date = values.getLong(4);
     }
 

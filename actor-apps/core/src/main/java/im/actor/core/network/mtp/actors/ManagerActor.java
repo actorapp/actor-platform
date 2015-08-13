@@ -76,7 +76,7 @@ public class ManagerActor extends Actor {
     @Override
     public void preStart() {
         receiver = ReceiverActor.receiver(mtProto);
-        sender = SenderActor.senderActor(mtProto);
+        sender = PusherActor.senderActor(mtProto);
         connectionStateChanged();
         checkConnection();
     }
@@ -155,7 +155,7 @@ public class ManagerActor extends Actor {
         isCheckingConnections = false;
         requestCheckConnection();
 
-        sender.send(new SenderActor.ConnectionCreated());
+        sender.send(new PusherActor.ConnectionCreated());
     }
 
     private void onConnectionCreateFailure() {

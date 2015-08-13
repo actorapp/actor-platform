@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupEntity;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.generics.AvatarValueModel;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
@@ -25,11 +25,11 @@ import im.actor.runtime.mvvm.ValueModelCreator;
 /**
  * Group View Model
  */
-public class GroupVM extends BaseValueModel<Group> {
+public class GroupVM extends BaseValueModel<GroupEntity> {
 
-    public static ValueModelCreator<Group, GroupVM> CREATOR = new ValueModelCreator<Group, GroupVM>() {
+    public static ValueModelCreator<GroupEntity, GroupVM> CREATOR = new ValueModelCreator<GroupEntity, GroupVM>() {
         @Override
-        public GroupVM create(Group baseValue) {
+        public GroupVM create(GroupEntity baseValue) {
             return new GroupVM(baseValue);
         }
     };
@@ -55,7 +55,7 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @param rawObj initial value of Group
      */
-    public GroupVM(@NotNull Group rawObj) {
+    public GroupVM(@NotNull GroupEntity rawObj) {
         super(rawObj);
         this.id = rawObj.getGroupId();
         this.creatorId = rawObj.getAdminId();
@@ -152,7 +152,7 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     @Override
-    protected void updateValues(@NotNull Group rawObj) {
+    protected void updateValues(@NotNull GroupEntity rawObj) {
         boolean isChanged = name.change(rawObj.getTitle());
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= isMember.change(rawObj.isMember());

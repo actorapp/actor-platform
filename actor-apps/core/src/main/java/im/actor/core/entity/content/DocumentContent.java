@@ -4,6 +4,7 @@
 
 package im.actor.core.entity.content;
 
+import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.DocumentMessage;
 import im.actor.core.api.FileLocation;
 import im.actor.core.entity.FileReference;
@@ -29,7 +30,7 @@ public class DocumentContent extends AbsContent {
                         reference.getFileName(),
                         "image/jpeg",
                         fastThumb != null ?
-                                new im.actor.core.api.FastThumb(
+                                new ApiFastThumb(
                                         fastThumb.getW(),
                                         fastThumb.getH(),
                                         fastThumb.getImage()) :

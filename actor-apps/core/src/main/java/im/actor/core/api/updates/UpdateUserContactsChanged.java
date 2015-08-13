@@ -21,9 +21,9 @@ public class UpdateUserContactsChanged extends Update {
     }
 
     private int uid;
-    private List<ContactRecord> contactRecords;
+    private List<ApiContactRecord> contactRecords;
 
-    public UpdateUserContactsChanged(int uid, @NotNull List<ContactRecord> contactRecords) {
+    public UpdateUserContactsChanged(int uid, @NotNull List<ApiContactRecord> contactRecords) {
         this.uid = uid;
         this.contactRecords = contactRecords;
     }
@@ -37,16 +37,16 @@ public class UpdateUserContactsChanged extends Update {
     }
 
     @NotNull
-    public List<ContactRecord> getContactRecords() {
+    public List<ApiContactRecord> getContactRecords() {
         return this.contactRecords;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
-        List<ContactRecord> _contactRecords = new ArrayList<ContactRecord>();
+        List<ApiContactRecord> _contactRecords = new ArrayList<ApiContactRecord>();
         for (int i = 0; i < values.getRepeatedCount(4); i ++) {
-            _contactRecords.add(new ContactRecord());
+            _contactRecords.add(new ApiContactRecord());
         }
         this.contactRecords = values.getRepeatedObj(4, _contactRecords);
     }

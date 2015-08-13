@@ -6,7 +6,7 @@ package im.actor.core.entity.content.internal;
 
 import java.io.IOException;
 
-import im.actor.core.api.Message;
+import im.actor.core.api.ApiMessage;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -24,7 +24,7 @@ public abstract class AbsContentContainer {
         if (type == TYPE_LOCAL) {
             return new ContentLocalContainer(AbsLocalContent.loadContainer(content));
         } else if (type == TYPE_REMOTE) {
-            return new ContentRemoteContainer(Message.fromBytes(content));
+            return new ContentRemoteContainer(ApiMessage.fromBytes(content));
         } else {
             throw new IOException("Unknown type");
         }

@@ -9,11 +9,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
+import im.actor.core.api.ApiAvatar;
 import im.actor.core.entity.compat.ObsoleteAvatar;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-public class Avatar extends WrapperEntity<im.actor.core.api.Avatar> {
+public class Avatar extends WrapperEntity<ApiAvatar> {
 
     private static final int RECORD_ID = 10;
 
@@ -24,7 +25,7 @@ public class Avatar extends WrapperEntity<im.actor.core.api.Avatar> {
     @Nullable
     private AvatarImage fullImage;
 
-    public Avatar(@NotNull im.actor.core.api.Avatar wrapped) {
+    public Avatar(@NotNull ApiAvatar wrapped) {
         super(RECORD_ID, wrapped);
     }
 
@@ -33,7 +34,7 @@ public class Avatar extends WrapperEntity<im.actor.core.api.Avatar> {
     }
 
     public Avatar() {
-        super(RECORD_ID, new im.actor.core.api.Avatar());
+        super(RECORD_ID, new ApiAvatar());
     }
 
     @Nullable
@@ -72,7 +73,7 @@ public class Avatar extends WrapperEntity<im.actor.core.api.Avatar> {
     }
 
     @Override
-    protected void applyWrapped(@NotNull im.actor.core.api.Avatar wrapped) {
+    protected void applyWrapped(@NotNull ApiAvatar wrapped) {
         if (wrapped.getSmallImage() != null) {
             smallImage = new AvatarImage(wrapped.getSmallImage());
         } else {
@@ -117,7 +118,7 @@ public class Avatar extends WrapperEntity<im.actor.core.api.Avatar> {
 
     @Override
     @NotNull
-    protected im.actor.core.api.Avatar createInstance() {
-        return new im.actor.core.api.Avatar();
+    protected ApiAvatar createInstance() {
+        return new ApiAvatar();
     }
 }

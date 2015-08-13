@@ -13,12 +13,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Group extends BserObject {
+public class ApiGroup extends BserObject {
 
     private int id;
     private long accessHash;
     private String title;
-    private Avatar avatar;
+    private ApiAvatar avatar;
     private boolean isMember;
     private int creatorUid;
     private List<Member> members;
@@ -32,7 +32,7 @@ public class Group extends BserObject {
     private String theme;
     private String about;
 
-    public Group(int id, long accessHash, @NotNull String title, @Nullable Avatar avatar, boolean isMember, int creatorUid, @NotNull List<Member> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, boolean isMember, int creatorUid, @NotNull List<Member> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -51,7 +51,7 @@ public class Group extends BserObject {
         this.about = about;
     }
 
-    public Group() {
+    public ApiGroup() {
 
     }
 
@@ -69,7 +69,7 @@ public class Group extends BserObject {
     }
 
     @Nullable
-    public Avatar getAvatar() {
+    public ApiAvatar getAvatar() {
         return this.avatar;
     }
 
@@ -135,7 +135,7 @@ public class Group extends BserObject {
         this.id = values.getInt(1);
         this.accessHash = values.getLong(2);
         this.title = values.getString(3);
-        this.avatar = values.optObj(4, new Avatar());
+        this.avatar = values.optObj(4, new ApiAvatar());
         this.isMember = values.getBool(6);
         this.creatorUid = values.getInt(8);
         List<Member> _members = new ArrayList<Member>();

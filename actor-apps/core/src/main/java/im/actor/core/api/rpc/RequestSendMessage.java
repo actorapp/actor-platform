@@ -21,9 +21,9 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
 
     private OutPeer peer;
     private long rid;
-    private Message message;
+    private ApiMessage message;
 
-    public RequestSendMessage(@NotNull OutPeer peer, long rid, @NotNull Message message) {
+    public RequestSendMessage(@NotNull OutPeer peer, long rid, @NotNull ApiMessage message) {
         this.peer = peer;
         this.rid = rid;
         this.message = message;
@@ -43,7 +43,7 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
     }
 
     @NotNull
-    public Message getMessage() {
+    public ApiMessage getMessage() {
         return this.message;
     }
 
@@ -51,7 +51,7 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new OutPeer());
         this.rid = values.getLong(3);
-        this.message = Message.fromBytes(values.getBytes(4));
+        this.message = ApiMessage.fromBytes(values.getBytes(4));
     }
 
     @Override

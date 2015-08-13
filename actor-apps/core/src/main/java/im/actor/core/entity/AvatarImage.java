@@ -9,12 +9,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+import im.actor.core.api.ApiAvatarImage;
 import im.actor.core.api.FileLocation;
 import im.actor.core.entity.compat.ObsoleteAvatarImage;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-public class AvatarImage extends WrapperEntity<im.actor.core.api.AvatarImage> {
+public class AvatarImage extends WrapperEntity<ApiAvatarImage> {
 
     private static final int RECORD_ID = 10;
 
@@ -24,7 +25,7 @@ public class AvatarImage extends WrapperEntity<im.actor.core.api.AvatarImage> {
     @SuppressWarnings("NullableProblems")
     private FileReference fileReference;
 
-    public AvatarImage(@NotNull im.actor.core.api.AvatarImage wrapped) {
+    public AvatarImage(@NotNull ApiAvatarImage wrapped) {
         super(RECORD_ID, wrapped);
     }
 
@@ -55,7 +56,7 @@ public class AvatarImage extends WrapperEntity<im.actor.core.api.AvatarImage> {
             // Convert old layout
             ObsoleteAvatarImage obsoleteAvatarImage = new ObsoleteAvatarImage(values);
 
-            setWrapped(new im.actor.core.api.AvatarImage(
+            setWrapped(new ApiAvatarImage(
                     new FileLocation(
                             obsoleteAvatarImage.getFileReference().getFileId(),
                             obsoleteAvatarImage.getFileReference().getAccessHash()),
@@ -74,7 +75,7 @@ public class AvatarImage extends WrapperEntity<im.actor.core.api.AvatarImage> {
     }
 
     @Override
-    protected void applyWrapped(@NotNull im.actor.core.api.AvatarImage wrapped) {
+    protected void applyWrapped(@NotNull ApiAvatarImage wrapped) {
         this.width = wrapped.getWidth();
         this.height = wrapped.getHeight();
         this.fileReference = new FileReference(wrapped.getFileLocation(),
@@ -105,7 +106,7 @@ public class AvatarImage extends WrapperEntity<im.actor.core.api.AvatarImage> {
 
     @Override
     @NotNull
-    protected im.actor.core.api.AvatarImage createInstance() {
-        return new im.actor.core.api.AvatarImage();
+    protected ApiAvatarImage createInstance() {
+        return new ApiAvatarImage();
     }
 }

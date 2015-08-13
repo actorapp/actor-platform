@@ -10,18 +10,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class Dialog extends BserObject {
+public class ApiDialog extends BserObject {
 
-    private Peer peer;
+    private ApiPeer peer;
     private int unreadCount;
     private long sortDate;
     private int senderUid;
     private long rid;
     private long date;
-    private Message message;
-    private MessageState state;
+    private ApiMessage message;
+    private ApiMessageState state;
 
-    public Dialog(@NotNull Peer peer, int unreadCount, long sortDate, int senderUid, long rid, long date, @NotNull Message message, @Nullable MessageState state) {
+    public ApiDialog(@NotNull ApiPeer peer, int unreadCount, long sortDate, int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state) {
         this.peer = peer;
         this.unreadCount = unreadCount;
         this.sortDate = sortDate;
@@ -32,12 +32,12 @@ public class Dialog extends BserObject {
         this.state = state;
     }
 
-    public Dialog() {
+    public ApiDialog() {
 
     }
 
     @NotNull
-    public Peer getPeer() {
+    public ApiPeer getPeer() {
         return this.peer;
     }
 
@@ -62,27 +62,27 @@ public class Dialog extends BserObject {
     }
 
     @NotNull
-    public Message getMessage() {
+    public ApiMessage getMessage() {
         return this.message;
     }
 
     @Nullable
-    public MessageState getState() {
+    public ApiMessageState getState() {
         return this.state;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new Peer());
+        this.peer = values.getObj(1, new ApiPeer());
         this.unreadCount = values.getInt(3);
         this.sortDate = values.getLong(4);
         this.senderUid = values.getInt(5);
         this.rid = values.getLong(6);
         this.date = values.getLong(7);
-        this.message = Message.fromBytes(values.getBytes(8));
+        this.message = ApiMessage.fromBytes(values.getBytes(8));
         int val_state = values.getInt(9, 0);
         if (val_state != 0) {
-            this.state = MessageState.parse(val_state);
+            this.state = ApiMessageState.parse(val_state);
         }
     }
 

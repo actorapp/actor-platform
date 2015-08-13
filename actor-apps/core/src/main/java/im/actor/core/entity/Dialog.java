@@ -33,7 +33,7 @@ public class Dialog extends BserObject implements ListEngineItem {
 
     @NotNull
     @SuppressWarnings("NullableProblems")
-    private Peer peer;
+    private PeerEntity peer;
     @NotNull
     @SuppressWarnings("NullableProblems")
     private String dialogTitle;
@@ -55,7 +55,7 @@ public class Dialog extends BserObject implements ListEngineItem {
     private Avatar dialogAvatar;
     private int relatedUid;
 
-    public Dialog(@NotNull Peer peer,
+    public Dialog(@NotNull PeerEntity peer,
                   long sortKey,
                   @NotNull String dialogTitle,
                   @Nullable Avatar dialogAvatar,
@@ -86,7 +86,7 @@ public class Dialog extends BserObject implements ListEngineItem {
     }
 
     @NotNull
-    public Peer getPeer() {
+    public PeerEntity getPeer() {
         return peer;
     }
 
@@ -146,7 +146,7 @@ public class Dialog extends BserObject implements ListEngineItem {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = Peer.fromBytes(values.getBytes(1));
+        peer = PeerEntity.fromBytes(values.getBytes(1));
 
         dialogTitle = values.getString(2);
         byte[] av = values.optBytes(3);

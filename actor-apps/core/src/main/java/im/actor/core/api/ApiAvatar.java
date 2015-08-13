@@ -10,42 +10,42 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-public class Avatar extends BserObject {
+public class ApiAvatar extends BserObject {
 
-    private AvatarImage smallImage;
-    private AvatarImage largeImage;
-    private AvatarImage fullImage;
+    private ApiAvatarImage smallImage;
+    private ApiAvatarImage largeImage;
+    private ApiAvatarImage fullImage;
 
-    public Avatar(@Nullable AvatarImage smallImage, @Nullable AvatarImage largeImage, @Nullable AvatarImage fullImage) {
+    public ApiAvatar(@Nullable ApiAvatarImage smallImage, @Nullable ApiAvatarImage largeImage, @Nullable ApiAvatarImage fullImage) {
         this.smallImage = smallImage;
         this.largeImage = largeImage;
         this.fullImage = fullImage;
     }
 
-    public Avatar() {
+    public ApiAvatar() {
 
     }
 
     @Nullable
-    public AvatarImage getSmallImage() {
+    public ApiAvatarImage getSmallImage() {
         return this.smallImage;
     }
 
     @Nullable
-    public AvatarImage getLargeImage() {
+    public ApiAvatarImage getLargeImage() {
         return this.largeImage;
     }
 
     @Nullable
-    public AvatarImage getFullImage() {
+    public ApiAvatarImage getFullImage() {
         return this.fullImage;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.smallImage = values.optObj(1, new AvatarImage());
-        this.largeImage = values.optObj(2, new AvatarImage());
-        this.fullImage = values.optObj(3, new AvatarImage());
+        this.smallImage = values.optObj(1, new ApiAvatarImage());
+        this.largeImage = values.optObj(2, new ApiAvatarImage());
+        this.fullImage = values.optObj(3, new ApiAvatarImage());
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }

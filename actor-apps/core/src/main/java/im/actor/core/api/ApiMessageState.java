@@ -5,7 +5,7 @@ package im.actor.core.api;
 
 import java.io.IOException;
 
-public enum MessageState {
+public enum ApiMessageState {
 
     SENT(1),
     RECEIVED(2),
@@ -14,7 +14,7 @@ public enum MessageState {
 
     private int value;
 
-    MessageState(int value) {
+    ApiMessageState(int value) {
         this.value = value;
     }
 
@@ -22,12 +22,12 @@ public enum MessageState {
         return value;
     }
 
-    public static MessageState parse(int value) throws IOException {
+    public static ApiMessageState parse(int value) throws IOException {
         switch(value) {
-            case 1: return MessageState.SENT;
-            case 2: return MessageState.RECEIVED;
-            case 3: return MessageState.READ;
-            default: return MessageState.UNSUPPORTED_VALUE;
+            case 1: return ApiMessageState.SENT;
+            case 2: return ApiMessageState.RECEIVED;
+            case 3: return ApiMessageState.READ;
+            default: return ApiMessageState.UNSUPPORTED_VALUE;
         }
     }
 }

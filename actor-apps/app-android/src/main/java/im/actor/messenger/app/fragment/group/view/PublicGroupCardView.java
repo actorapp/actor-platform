@@ -9,7 +9,7 @@ import android.widget.TextView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
-import im.actor.core.entity.PublicGroup;
+import im.actor.core.entity.PublicGroupEntity;
 
 /**
  * Created by korka on 30.06.15.
@@ -25,7 +25,7 @@ public class PublicGroupCardView extends LinearLayout {
         super(context);
     }
 
-    public PublicGroupCardView(Context context, PublicGroup data, int counterType) {
+    public PublicGroupCardView(Context context, PublicGroupEntity data, int counterType) {
         super(context);
         setPadding(Screen.dp(8), 0, Screen.dp(8), 0);
         setOrientation(VERTICAL);

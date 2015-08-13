@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
 import im.actor.core.api.EmailActivationType;
-import im.actor.core.api.Sex;
+import im.actor.core.api.ApiSex;
 import im.actor.core.api.rpc.RequestCompleteOAuth2;
 import im.actor.core.api.rpc.RequestGetOAuth2Params;
 import im.actor.core.api.rpc.RequestSignUp;
@@ -22,7 +22,7 @@ import im.actor.core.api.rpc.ResponseStartEmailAuth;
 import im.actor.core.api.rpc.ResponseStartPhoneAuth;
 import im.actor.core.entity.ContactRecord;
 import im.actor.core.entity.ContactRecordType;
-import im.actor.core.entity.User;
+import im.actor.core.entity.UserEntity;
 import im.actor.core.modules.updates.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -92,7 +92,7 @@ public class Authentication {
             modules.onLoggedIn();
 
             // Notify Analytics
-            User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
+            UserEntity user = modules.getUsersModule().getUsersStorage().getValue(myUid);
             ArrayList<Long> records = new ArrayList<Long>();
             for (ContactRecord contactRecord : user.getRecords()) {
                 if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
@@ -262,7 +262,7 @@ public class Authentication {
         };
     }
 
-    public Command<AuthState> signUp(final String name, final Sex sex, final String avatarPath) {
+    public Command<AuthState> signUp(final String name, final ApiSex sex, final String avatarPath) {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
@@ -358,7 +358,7 @@ public class Authentication {
                 callback.onResult(state);
 
                 // Notify Analytics
-                User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
+                UserEntity user = modules.getUsersModule().getUsersStorage().getValue(myUid);
                 ArrayList<Long> records = new ArrayList<Long>();
                 for (ContactRecord contactRecord : user.getRecords()) {
                     if (contactRecord.getRecordType() == ContactRecordType.PHONE) {

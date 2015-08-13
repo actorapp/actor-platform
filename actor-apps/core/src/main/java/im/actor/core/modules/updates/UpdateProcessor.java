@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.api.Group;
-import im.actor.core.api.PeerType;
+import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.User;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.updates.UpdateChatClear;
@@ -77,7 +77,7 @@ public class UpdateProcessor extends AbsModule {
     }
 
     public void applyRelated(List<User> users,
-                             List<Group> groups,
+                             List<ApiGroup> groups,
                              boolean force) {
         usersProcessor.applyUsers(users, force);
         groupsProcessor.applyGroups(groups, force);
@@ -90,21 +90,21 @@ public class UpdateProcessor extends AbsModule {
             messagesProcessor.onDialogsLoaded(dialogs);
         } else if (update instanceof MessagesHistoryLoaded) {
             MessagesHistoryLoaded historyLoaded = (MessagesHistoryLoaded) update;
-            applyRelated(historyLoaded.getLoadHistory().getUsers(), new ArrayList<Group>(), false);
+            applyRelated(historyLoaded.getLoadHistory().getUsers(), new ArrayList<ApiGroup>(), false);
             messagesProcessor.onMessagesLoaded(historyLoaded.getPeer(), historyLoaded.getLoadHistory());
         } else if (update instanceof LoggedIn) {
             ArrayList<User> users = new ArrayList<User>();
             users.add(((LoggedIn) update).getAuth().getUser());
-            applyRelated(users, new ArrayList<Group>(), true);
+            applyRelated(users, new ArrayList<ApiGroup>(), true);
             runOnUiThread(((LoggedIn) update).getRunnable());
         } else if (update instanceof ContactsLoaded) {
             ContactsLoaded contactsLoaded = (ContactsLoaded) update;
-            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<Group>(), false);
+            applyRelated(contactsLoaded.getContacts().getUsers(), new ArrayList<ApiGroup>(), false);
             context().getContactsModule().getContactSyncActor()
                     .send(new ContactsSyncActor.ContactsLoaded(contactsLoaded.getContacts()));
         } else if (update instanceof UsersFounded) {
             final UsersFounded founded = (UsersFounded) update;
-            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<Group>(), false);
+            applyRelated(((UsersFounded) update).getUsers(), new ArrayList<ApiGroup>(), false);
             final ArrayList<UserVM> users = new ArrayList<UserVM>();
             for (User u : founded.getUsers()) {
                 users.add(context().getUsersModule().getUsers().get(u.getId()));
@@ -117,7 +117,7 @@ public class UpdateProcessor extends AbsModule {
             });
         } else if (update instanceof GroupCreated) {
             final GroupCreated created = (GroupCreated) update;
-            ArrayList<Group> groups = new ArrayList<Group>();
+            ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
             groups.add(created.getGroup());
             applyRelated(created.getUsers(), groups, false);
             runOnUiThread(new Runnable() {
@@ -129,7 +129,7 @@ public class UpdateProcessor extends AbsModule {
         }
     }
 
-    public void applyDifferenceUpdate(List<User> users, List<Group> groups, List<Update> updates) {
+    public void applyDifferenceUpdate(List<User> users, List<ApiGroup> groups, List<Update> updates) {
         applyRelated(users, groups, false);
 
         context().getNotificationsModule().pauseNotifications();
@@ -263,10 +263,10 @@ public class UpdateProcessor extends AbsModule {
         if (update instanceof UpdateMessage) {
             UpdateMessage updateMessage = (UpdateMessage) update;
             users.add(updateMessage.getSenderUid());
-            if (updateMessage.getPeer().getType() == PeerType.GROUP) {
+            if (updateMessage.getPeer().getType() == ApiPeerType.GROUP) {
                 groups.add(updateMessage.getPeer().getId());
             }
-            if (updateMessage.getPeer().getType() == PeerType.PRIVATE) {
+            if (updateMessage.getPeer().getType() == ApiPeerType.PRIVATE) {
                 users.add(updateMessage.getPeer().getId());
             }
         } else if (update instanceof UpdateContactRegistered) {

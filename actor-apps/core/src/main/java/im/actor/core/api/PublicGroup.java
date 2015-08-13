@@ -15,12 +15,12 @@ public class PublicGroup extends BserObject {
     private int id;
     private long accessHash;
     private String title;
-    private Avatar avatar;
+    private ApiAvatar avatar;
     private int membersCount;
     private int friendsCount;
     private String description;
 
-    public PublicGroup(int id, long accessHash, @NotNull String title, @Nullable Avatar avatar, int membersCount, int friendsCount, @NotNull String description) {
+    public PublicGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, int membersCount, int friendsCount, @NotNull String description) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -48,7 +48,7 @@ public class PublicGroup extends BserObject {
     }
 
     @Nullable
-    public Avatar getAvatar() {
+    public ApiAvatar getAvatar() {
         return this.avatar;
     }
 
@@ -70,7 +70,7 @@ public class PublicGroup extends BserObject {
         this.id = values.getInt(1);
         this.accessHash = values.getLong(2);
         this.title = values.getString(3);
-        this.avatar = values.optObj(7, new Avatar());
+        this.avatar = values.optObj(7, new ApiAvatar());
         this.membersCount = values.getInt(4);
         this.friendsCount = values.getInt(5);
         this.description = values.getString(6);

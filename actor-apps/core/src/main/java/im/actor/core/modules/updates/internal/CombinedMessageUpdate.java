@@ -6,7 +6,7 @@ package im.actor.core.modules.updates.internal;
 
 import java.util.ArrayList;
 
-import im.actor.core.api.Message;
+import im.actor.core.api.ApiMessage;
 
 public class CombinedMessageUpdate {
 
@@ -38,9 +38,9 @@ public class CombinedMessageUpdate {
         private long rid;
         private int sender;
         private long date;
-        private Message message;
+        private ApiMessage message;
 
-        public CombinedMessage(long rid, int sender, long date, Message message) {
+        public CombinedMessage(long rid, int sender, long date, ApiMessage message) {
             this.rid = rid;
             this.sender = sender;
             this.date = date;
@@ -59,7 +59,7 @@ public class CombinedMessageUpdate {
             return date;
         }
 
-        public Message getMessage() {
+        public ApiMessage getMessage() {
             return message;
         }
     }

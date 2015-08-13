@@ -10,21 +10,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class AvatarImage extends BserObject {
+public class ApiAvatarImage extends BserObject {
 
     private FileLocation fileLocation;
     private int width;
     private int height;
     private int fileSize;
 
-    public AvatarImage(@NotNull FileLocation fileLocation, int width, int height, int fileSize) {
+    public ApiAvatarImage(@NotNull FileLocation fileLocation, int width, int height, int fileSize) {
         this.fileLocation = fileLocation;
         this.width = width;
         this.height = height;
         this.fileSize = fileSize;
     }
 
-    public AvatarImage() {
+    public ApiAvatarImage() {
 
     }
 

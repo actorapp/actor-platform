@@ -19,11 +19,11 @@ public class ResponseEditAvatar extends Response {
         return Bser.parse(new ResponseEditAvatar(), data);
     }
 
-    private Avatar avatar;
+    private ApiAvatar avatar;
     private int seq;
     private byte[] state;
 
-    public ResponseEditAvatar(@NotNull Avatar avatar, int seq, @NotNull byte[] state) {
+    public ResponseEditAvatar(@NotNull ApiAvatar avatar, int seq, @NotNull byte[] state) {
         this.avatar = avatar;
         this.seq = seq;
         this.state = state;
@@ -34,7 +34,7 @@ public class ResponseEditAvatar extends Response {
     }
 
     @NotNull
-    public Avatar getAvatar() {
+    public ApiAvatar getAvatar() {
         return this.avatar;
     }
 
@@ -49,7 +49,7 @@ public class ResponseEditAvatar extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.avatar = values.getObj(1, new Avatar());
+        this.avatar = values.getObj(1, new ApiAvatar());
         this.seq = values.getInt(2);
         this.state = values.getBytes(3);
     }

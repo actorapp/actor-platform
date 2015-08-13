@@ -19,9 +19,9 @@ public class UpdateUserAvatarChanged extends Update {
     }
 
     private int uid;
-    private Avatar avatar;
+    private ApiAvatar avatar;
 
-    public UpdateUserAvatarChanged(int uid, @Nullable Avatar avatar) {
+    public UpdateUserAvatarChanged(int uid, @Nullable ApiAvatar avatar) {
         this.uid = uid;
         this.avatar = avatar;
     }
@@ -35,14 +35,14 @@ public class UpdateUserAvatarChanged extends Update {
     }
 
     @Nullable
-    public Avatar getAvatar() {
+    public ApiAvatar getAvatar() {
         return this.avatar;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
-        this.avatar = values.optObj(2, new Avatar());
+        this.avatar = values.optObj(2, new ApiAvatar());
     }
 
     @Override
