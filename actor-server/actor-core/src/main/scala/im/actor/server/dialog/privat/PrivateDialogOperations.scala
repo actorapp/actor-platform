@@ -37,7 +37,7 @@ object PrivateDialogOperations {
     ec:      ExecutionContext
   ): Future[Unit] = {
     val r = Routing(peerUserId, readerUserId)
-    (region.ref ? MessageRead(r.left, r.right, r.origin(readerUserId), date)).mapTo[MessageReadAck] map (_ ⇒ ())
+    (region.ref ? MessageRead(r.left, r.right, r.origin(readerUserId), readerAuthId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
   }
 
   case class Routing(private val a: Int, private val b: Int) {
