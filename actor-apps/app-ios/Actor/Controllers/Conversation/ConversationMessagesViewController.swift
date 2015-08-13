@@ -5,10 +5,10 @@
 import Foundation
 import UIKit;
 
-class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDelegate, AMDisplayList_AppleChangeListener {
+class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDelegate, ARDisplayList_AppleChangeListener {
 
-    private var displayList: AMBindedDisplayList!
-    private var applyingUpdate: AMAndroidListUpdate?
+    private var displayList: ARBindedDisplayList!
+    private var applyingUpdate: ARAndroidListUpdate?
     private var isStarted: Bool = isIPad
     private var isUpdating: Bool = false
     private var isVisible: Bool = false
@@ -16,9 +16,9 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     private var isLoadedAfter: Bool = false
     private var unreadIndex: Int? = nil
     private let layout = MessagesLayout()
-    let peer: AMPeer
+    let peer: ACPeer
     
-    init(peer: AMPeer) {
+    init(peer: ACPeer) {
         self.peer = peer
         
         super.init(collectionViewLayout: layout)
@@ -119,7 +119,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     
     // Model updates
     
-    func displayListForController() -> AMBindedDisplayList {
+    func displayListForController() -> ARBindedDisplayList {
         fatalError("Not implemented");
     }
     
@@ -169,7 +169,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         })
     }
     
-    func onCollectionChangedWithChanges(modification: AMAppleListUpdate!) {
+    func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
         if modification.isLoadMore() {
             UIView.setAnimationsEnabled(false)
         }
@@ -254,22 +254,22 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             isLoaded = true
             isLoadedAfter = true
             
-            var readState = MSG.loadLastReadState(peer)
-            
-            if readState > 0 {
-                for i in 0..<getCount() {
-                    var ind = getCount() - 1 - i
-                    var item = objectAtIndex(ind)!
-                
-                    if item.getSenderId() != MSG.myUid() {
-                        if readState < item.getSortDate() {
-                            unreadIndex = ind
-                            setUnread(item.getRid())
-                            break
-                        }
-                    }
-                }
-            }
+//            var readState = MSG.loadLastReadState(peer)
+//            
+//            if readState > 0 {
+//                for i in 0..<getCount() {
+//                    var ind = getCount() - 1 - i
+//                    var item = objectAtIndex(ind)!
+//                
+//                    if item.getSenderId() != MSG.myUid() {
+//                        if readState < item.getSortDate() {
+//                            unreadIndex = ind
+//                            setUnread(item.getRid())
+//                            break
+//                        }
+//                    }
+//                }
+//            }
         }
     }
     

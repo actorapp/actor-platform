@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.core.runtime.generic.mvvm.DisplayList;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.runtime.android.view.BindedListAdapter;

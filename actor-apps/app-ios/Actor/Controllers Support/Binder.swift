@@ -8,7 +8,7 @@ class Binder {
     
     var bindings : [BindHolder] = [];
     
-    func bind<T1,T2,T3>(valueModel1:AMValueModel, valueModel2:AMValueModel, valueModel3:AMValueModel, closure: (value1:T1?, value2:T2?, value3:T3?) -> ()) {
+    func bind<T1,T2,T3>(valueModel1:ARValueModel, valueModel2:ARValueModel, valueModel3:ARValueModel, closure: (value1:T1?, value2:T2?, value3:T3?) -> ()) {
         
         var listener1 = BindListener { (_value1) -> () in
             closure(value1: _value1 as? T1, value2: valueModel2.get() as? T2, value3: valueModel3.get() as? T3)
@@ -29,7 +29,7 @@ class Binder {
     }
 
     
-    func bind<T1,T2>(valueModel1:AMValueModel, valueModel2:AMValueModel, closure: (value1:T1?, value2:T2?) -> ()) {
+    func bind<T1,T2>(valueModel1:ARValueModel, valueModel2:ARValueModel, closure: (value1:T1?, value2:T2?) -> ()) {
         var listener1 = BindListener { (_value1) -> () in
             closure(value1: _value1 as? T1, value2: valueModel2.get() as? T2)
         };
@@ -43,7 +43,7 @@ class Binder {
         closure(value1: valueModel1.get() as? T1, value2: valueModel2.get() as? T2)
     }
     
-    func bind<T>(value:AMValueModel, closure: (value: T?)->()) {
+    func bind<T>(value:ARValueModel, closure: (value: T?)->()) {
         var listener = BindListener { (value2) -> () in
             closure(value: value2 as? T);
         };
@@ -61,7 +61,7 @@ class Binder {
     
 }
 
-class BindListener: NSObject, JavaObject, AMValueChangedListener {
+class BindListener: NSObject, JavaObject, ARValueChangedListener {
     
     var closure: (value: AnyObject?)->();
     
@@ -69,16 +69,16 @@ class BindListener: NSObject, JavaObject, AMValueChangedListener {
         self.closure = closure;
     }
     
-    func onChanged(val: AnyObject!, withModel valueModel: AMValueModel!) {
+    func onChanged(val: AnyObject!, withModel valueModel: ARValueModel!) {
         closure(value: val);
     }
 }
 
 class BindHolder {
     var listener: BindListener;
-    var valueModel: AMValueModel;
+    var valueModel: ARValueModel;
     
-    init(valueModel: AMValueModel, listener: BindListener) {
+    init(valueModel: ARValueModel, listener: BindListener) {
         self.valueModel = valueModel;
         self.listener = listener;
     }

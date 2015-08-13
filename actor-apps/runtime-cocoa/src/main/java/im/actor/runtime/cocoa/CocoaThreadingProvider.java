@@ -4,7 +4,7 @@
 
 package im.actor.runtime.cocoa;
 
-import im.actor.core.runtime.generic.GenericThreadingProvider;
+import im.actor.runtime.generic.GenericThreadingProvider;
 
 public class CocoaThreadingProvider extends GenericThreadingProvider {
 

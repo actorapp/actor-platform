@@ -24,8 +24,8 @@ import java.util.ArrayList;
 
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.SearchEntity;
-import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.core.runtime.generic.mvvm.DisplayList;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;

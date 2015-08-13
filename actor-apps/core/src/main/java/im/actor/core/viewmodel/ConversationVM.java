@@ -9,7 +9,7 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.modules.Modules;
-import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.PlatformDisplayList;
 
 public class ConversationVM {
 //    private DisplayList<Message> displayList;
@@ -17,7 +17,7 @@ public class ConversationVM {
 //    private boolean isLoaded = false;
 
     public ConversationVM(final Peer peer, final ConversationVMCallback callback,
-                          final Modules modules, final DisplayList<Message> displayList) {
+                          final Modules modules, final PlatformDisplayList<Message> displayList) {
 //        this.displayList = displayList;
 //        this.listener = new DisplayList.Listener() {
 //            @Override

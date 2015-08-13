@@ -49,8 +49,9 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         // view = tableView
     }
     
-    override func buildDisplayList() -> AMBindedDisplayList {
-        return MSG.getDialogsGlobalList()
+    override func buildDisplayList() -> ARBindedDisplayList {
+        // return MSG.getDialogsGlobalList()
+        return ARBindedDisplayList()
     }
     
     func isTableEditing() -> Bool {
@@ -207,7 +208,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
-            var dialog = objectAtIndexPath(indexPath) as! AMDialog
+            var dialog = objectAtIndexPath(indexPath) as! ACDialog
             
             execute(MSG.deleteChatCommandWithPeer(dialog.getPeer()));
         }
@@ -227,17 +228,17 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        var dialog = item as! AMDialog;
+        var dialog = item as! ACDialog;
         let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
         (cell as! DialogCell).bindDialog(dialog, isLast: isLast);
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if (tableView == self.tableView) {
-            var dialog = objectAtIndexPath(indexPath) as! AMDialog
+            var dialog = objectAtIndexPath(indexPath) as! ACDialog
             navigateToMessagesWithPeer(dialog.getPeer())
         } else {
-            var searchEntity = searchSource!.objectAtIndexPath(indexPath) as! AMSearchEntity
+            var searchEntity = searchSource!.objectAtIndexPath(indexPath) as! ACSearchEntity
             navigateToMessagesWithPeer(searchEntity.getPeer())
         }
     }
@@ -249,7 +250,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         navigateDetail(ComposeController())
     }
     
-    private func navigateToMessagesWithPeer(peer: AMPeer) {
+    private func navigateToMessagesWithPeer(peer: ACPeer) {
         navigateDetail(ConversationViewController(peer: peer))
         MainAppTheme.navigation.applyStatusBar()
     }

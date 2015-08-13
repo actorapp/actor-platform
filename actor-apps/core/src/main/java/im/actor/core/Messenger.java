@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.AuthSession;
-import im.actor.core.api.Sex;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PublicGroup;
+import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.i18n.I18nEngine;
@@ -171,7 +171,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
     public Command<AuthState> signUp(String name, Sex sex, String avatarPath) {
-        return modules.getAuthModule().signUp(name, sex, avatarPath);
+        return modules.getAuthModule().signUp(name, im.actor.core.api.Sex.UNKNOWN, avatarPath);
     }
 
     /**

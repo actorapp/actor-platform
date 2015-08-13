@@ -61,7 +61,7 @@ class DialogCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bindDialog(dialog: AMDialog, isLast:Bool) {        
+    func bindDialog(dialog: ACDialog, isLast:Bool) {
         self.avatarView.bind(dialog.getDialogTitle(), id: dialog.getPeer().getPeerId(), avatar: dialog.getDialogAvatar());
         
         self.titleView.text = dialog.getDialogTitle();
@@ -86,23 +86,23 @@ class DialogCell: UITableViewCell {
         
         var messageState = UInt(dialog.getStatus().ordinal());
         
-        if (messageState == AMMessageState.PENDING.rawValue) {
+        if (messageState == ACMessageState.PENDING.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSending
             self.statusView.image =  Resources.iconClock;
             self.statusView.hidden = false;
-        } else if (messageState == AMMessageState.READ.rawValue) {
+        } else if (messageState == ACMessageState.READ.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogRead
             self.statusView.image = Resources.iconCheck2;
             self.statusView.hidden = false;
-        } else if (messageState == AMMessageState.RECEIVED.rawValue) {
+        } else if (messageState == ACMessageState.RECEIVED.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogReceived
             self.statusView.image = Resources.iconCheck2;
             self.statusView.hidden = false;
-        } else if (messageState == AMMessageState.SENT.rawValue) {
+        } else if (messageState == ACMessageState.SENT.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSent
             self.statusView.image = Resources.iconCheck1;
             self.statusView.hidden = false;
-        } else if (messageState == AMMessageState.ERROR.rawValue) {
+        } else if (messageState == ACMessageState.ERROR.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogError
             self.statusView.image = Resources.iconError;
             self.statusView.hidden = false;

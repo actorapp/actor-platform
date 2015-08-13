@@ -59,7 +59,7 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
             if self.groupImage != nil {
                 MSG.changeGroupAvatar(gid, image: self.groupImage!)
             }
-            self.navigateNext(ConversationViewController(peer: AMPeer.groupWithInt(gid)), removeCurrent: true)
+            self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: true)
         }) { (val) -> Void in
             
         }
@@ -68,7 +68,7 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        var contact = objectAtIndexPath(indexPath) as! AMContact
+        var contact = objectAtIndexPath(indexPath) as! ACContact
         
         for i in 0..<selected.count {
             var n = selected[i]
@@ -114,10 +114,10 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
 }
 
 private class TokenRef {
-    var contact: AMContact
+    var contact: ACContact
     var token: CLToken
     
-    init(contact: AMContact, token: CLToken) {
+    init(contact: ACContact, token: CLToken) {
         self.contact = contact
         self.token = token
     }

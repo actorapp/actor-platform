@@ -10,7 +10,7 @@ import Foundation
 
 class MessagesLayouting {
     
-    class func measureHeight(message: AMMessage, group: Bool, setting: CellSetting, layoutCache: LayoutCache) -> CGFloat {
+    class func measureHeight(message: ACMessage, group: Bool, setting: CellSetting, layoutCache: LayoutCache) -> CGFloat {
         var content = message.getContent()!
         
         var layout = layoutCache.pick(message.getRid())
@@ -21,7 +21,7 @@ class MessagesLayouting {
         }
 
         var height = layout!.height
-        if content is AMServiceContent {
+        if content is ACServiceContent {
             height += AABubbleCell.bubbleTop
             height += AABubbleCell.bubbleBottom
         } else {
@@ -31,7 +31,7 @@ class MessagesLayouting {
         
         // Sender name
         let isIn = message.getSenderId() != MSG.myUid()
-        if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) && !(content is AMDocumentContent) {
+        if group && isIn && !(content is ACServiceContent) && !(content is ACPhotoContent) && !(content is ACDocumentContent) {
             height += CGFloat(20.0)
         }
         
@@ -49,20 +49,20 @@ class MessagesLayouting {
         return height
     }
     
-    class func buildLayout(message: AMMessage, layoutCache: LayoutCache) -> CellLayout {
+    class func buildLayout(message: ACMessage, layoutCache: LayoutCache) -> CellLayout {
 
         var content = message.getContent()!
         
         var res: CellLayout
-        if (content is AMTextContent) {
+        if (content is ACTextContent) {
             res = TextCellLayout(message: message)
-        } else if (content is AMPhotoContent) {
+        } else if (content is ACPhotoContent) {
             res = CellLayout(message: message)
             res.height = AABubbleMediaCell.measureMediaHeight(message)
-        } else if (content is AMServiceContent) {
+        } else if (content is ACServiceContent) {
             res = CellLayout(message: message)
             res.height = AABubbleServiceCell.measureServiceHeight(message)
-        } else if (content is AMDocumentContent) {
+        } else if (content is ACDocumentContent) {
             res = CellLayout(message: message)
             res.height = AABubbleDocumentCell.measureDocumentHeight(message)
         } else {
@@ -92,7 +92,7 @@ class CellLayout: NSObject {
     var height: CGFloat = 0
     var date: String
     
-    init(message: AMMessage) {
+    init(message: ACMessage) {
         self.date = CellLayout.formatDate(Int64(message.getDate()))
     }
     
@@ -117,9 +117,9 @@ class TextCellLayout: CellLayout {
     var textSizeWithPadding: CGSize
     var textSize: CGSize
     
-    override init(message: AMMessage) {
+    override init(message: ACMessage) {
         
-        if let content = message.getContent() as? AMTextContent {
+        if let content = message.getContent() as? ACTextContent {
             text = content.getText()
             isUnsupported = false
         } else {

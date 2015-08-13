@@ -1,6 +1,6 @@
 package im.actor.runtime.cocoa;
 
-import im.actor.core.runtime.generic.GenericEnginesProvider;
+import im.actor.runtime.generic.GenericEnginesProvider;
 
 public class CocoaEnginesProvider extends GenericEnginesProvider {
 }

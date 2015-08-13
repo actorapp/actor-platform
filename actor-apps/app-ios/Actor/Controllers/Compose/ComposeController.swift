@@ -100,11 +100,11 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
                 }
                 MainAppTheme.navigation.applyStatusBar()
             } else {
-                var contact = objectAtIndexPath(indexPath) as! AMContact
+                var contact = objectAtIndexPath(indexPath) as! ACContact
                 navigateToMessagesWithPeerId(contact.getUid())
             }
         } else {
-            var contact = searchSource!.objectAtIndexPath(indexPath) as! AMContact
+            var contact = searchSource!.objectAtIndexPath(indexPath) as! ACContact
             navigateToMessagesWithPeerId(contact.getUid())
         }
     }
@@ -113,7 +113,7 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
     // MARK: Navigation
     
     private func navigateToMessagesWithPeerId(peerId: jint) {
-        navigateNext(ConversationViewController(peer: AMPeer.userWithInt(peerId)), removeCurrent: true)
+        navigateNext(ConversationViewController(peer: ACPeer.userWithInt(peerId)), removeCurrent: true)
         MainAppTheme.navigation.applyStatusBar()
     }
     

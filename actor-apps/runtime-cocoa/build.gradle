@@ -36,7 +36,7 @@ task j2objc() {
 
             args "-sourcepath", "${projectDir}/src/main/java/:${projectDir}/../runtime/src/main/java/:${projectDir}/../runtime/src/generic/java/"
 
-//            args "--prefixes", "${projectDir}/prefixes.properties"
+            args "--prefixes", "${projectDir}/src/main/prefixes.properties"
 
             def srcFiles = fileTree("${projectDir}/src/main/java/").matching {
                 exclude "**/ObjectiveCName.java"

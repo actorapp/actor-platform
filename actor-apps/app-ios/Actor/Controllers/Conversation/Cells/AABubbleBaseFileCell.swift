@@ -17,8 +17,8 @@ class AABubbleBaseFileCell: AABubbleCell {
     var bindedUploadFile: jlong? = nil
     var bindedUploadCallback: CocoaUploadCallback? = nil
     
-    func fileBind(message: AMMessage, autoDownload: Bool) {
-        if let doc = message.getContent() as? AMDocumentContent {
+    func fileBind(message: ACMessage, autoDownload: Bool) {
+        if let doc = message.getContent() as? ACDocumentContent {
             
             // Next generation of binding
             bindGeneration++
@@ -28,7 +28,7 @@ class AABubbleBaseFileCell: AABubbleCell {
             // Remove old bindings
             fileUnbind()
             
-            if let source = doc.getSource() as? AMFileRemoteSource {
+            if let source = doc.getSource() as? ACFileRemoteSource {
                 var fileReference = source.getFileReference();
             
                 bindedDownloadFile = fileReference.getFileId()
@@ -50,7 +50,7 @@ class AABubbleBaseFileCell: AABubbleCell {
                 })
             
                 MSG.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
-            } else if let source = doc.getSource() as? AMFileLocalSource {
+            } else if let source = doc.getSource() as? ACFileLocalSource {
                 var fileReference = source.getFileDescriptor();
             
                 bindedUploadFile = message.getRid();

@@ -10,7 +10,7 @@ class UserViewController: AATableViewController {
     private let TitledCellIdentifier = "TitledCellIdentifier"
     
     let uid: Int
-    var user: AMUserVM?
+    var user: ACUserVM?
     var phones: JavaUtilArrayList?
     var binder = Binder()
     
@@ -70,7 +70,7 @@ class UserViewController: AATableViewController {
         if (!user!.isBot().boolValue) {
             contactsSection
                 .addActionCell("ProfileSendMessage", actionClosure: { () -> () in
-                    self.navigateDetail(ConversationViewController(peer: AMPeer.userWithInt(jint(self.uid))))
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
                     self.popover?.dismissPopoverAnimated(true)
                 })
         }
@@ -96,7 +96,7 @@ class UserViewController: AATableViewController {
                 return 0
                 }) { (tableView, index, indexPath) -> UITableViewCell in
                     var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
-                    if let phone = self.phones!.getWithInt(jint(index)) as? AMUserPhone {
+                    if let phone = self.phones!.getWithInt(jint(index)) as? ACUserPhone {
                         cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
                     }
                     return cell
@@ -127,7 +127,7 @@ class UserViewController: AATableViewController {
             .setHeaderHeight(15)
             .setFooterHeight(15)
             .addCommonCell { (cell) -> () in
-                let peer = AMPeer.userWithInt(jint(self.uid))
+                let peer = ACPeer.userWithInt(jint(self.uid))
                 cell.setSwitcherOn(MSG.isNotificationsEnabledWithPeer(peer))
                 cell.switchBlock = { (on: Bool) -> () in
                     if !on && !self.user!.isBot().boolValue {
@@ -185,7 +185,7 @@ class UserViewController: AATableViewController {
         // Binding data
         tableView.reloadData()
         
-        binder.bind(user!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
+        binder.bind(user!.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                 cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
             }
@@ -198,7 +198,7 @@ class UserViewController: AATableViewController {
             self.title = name!
         })
 
-        binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
+        binder.bind(user!.getPresenceModel(), closure: { (presence: ACUserPresence?) -> () in
             var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
@@ -214,7 +214,7 @@ class UserViewController: AATableViewController {
             }
         })
         
-        binder.bind(user!.isContactModel(), closure: { (contect: AMValueModel?) -> () in
+        binder.bind(user!.isContactModel(), closure: { (contect: ARValueModel?) -> () in
             self.tableView.reloadSections(NSIndexSet(index: contactSection.index), withRowAnimation: UITableViewRowAnimation.None)
         })
     }
