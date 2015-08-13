@@ -5,10 +5,10 @@
 import Foundation
 import UIKit
 
-class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_AppleChangeListener {
+class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, ARDisplayList_AppleChangeListener {
     
     private var engineTableView: UITableView!
-    private var displayList: AMBindedDisplayList!
+    private var displayList: ARBindedDisplayList!
     private var fade: Bool = false
     private var contentSection: Int = 0
     
@@ -74,7 +74,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     
     // Table Data Source
     
-    func onCollectionChangedWithChanges(modification: AMAppleListUpdate!) {
+    func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
         if (self.engineTableView == nil) {
             return
         }
@@ -183,7 +183,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     
     // Abstract methods
     
-    func buildDisplayList() -> AMBindedDisplayList {
+    func buildDisplayList() -> ARBindedDisplayList {
         fatalError("Not implemented");
     }
     

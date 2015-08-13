@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.actor.core.entity.Contact;
-import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;

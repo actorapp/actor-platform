@@ -4,9 +4,9 @@
 
 import Foundation
 
-class PhoneBookProvider: NSObject, AMPhoneBookProvider {
+class PhoneBookProvider: NSObject, ACPhoneBookProvider {
     
-    func loadPhoneBookWithCallback(callback: AMPhoneBookProvider_Callback!) {
+    func loadPhoneBookWithCallback(callback: ACPhoneBookProvider_Callback!) {
         var rawBook = ABAddressBookCreateWithOptions(nil, nil);
         if (rawBook == nil) {
             println("Access to AddressBook denied");
@@ -38,7 +38,7 @@ class PhoneBookProvider: NSObject, AMPhoneBookProvider {
                     
                     var contactPhones = JavaUtilArrayList()
                     var contactEmails = JavaUtilArrayList()
-                    var contact = AMPhoneBookContact(long: jlong(index++), withNSString: contactName, withJavaUtilArrayList: contactPhones, withJavaUtilArrayList: contactEmails)
+                    var contact = ACPhoneBookContact(long: jlong(index++), withNSString: contactName, withJavaUtilArrayList: contactPhones, withJavaUtilArrayList: contactEmails)
                     
                     if let phones: ABMultiValueRef =
                         self.extractProperty(person as ABRecord, propertyName: kABPersonPhoneProperty) as ABMultiValueRef? {
@@ -51,7 +51,7 @@ class PhoneBookProvider: NSObject, AMPhoneBookProvider {
                                 phoneStr = phoneStr?.strip(numbersSet)
                                 var phoneVal = phoneStr?.toLong()
                                 if (phoneVal != nil) {
-                                    contactPhones.addWithId(AMPhoneBookPhone(long: jlong(index++), withLong: jlong(phoneVal!)))
+                                    contactPhones.addWithId(ACPhoneBookPhone(long: jlong(index++), withLong: jlong(phoneVal!)))
                                 }
                             }
                     }
@@ -63,7 +63,7 @@ class PhoneBookProvider: NSObject, AMPhoneBookProvider {
                                 if (emailStr == nil || emailStr!.trim().size() == 0) {
                                     continue
                                 }
-                                contactEmails.addWithId(AMPhoneBookEmail(long: jlong(index++), withNSString: emailStr!))
+                                contactEmails.addWithId(ACPhoneBookEmail(long: jlong(index++), withNSString: emailStr!))
                             }
                     }
                     

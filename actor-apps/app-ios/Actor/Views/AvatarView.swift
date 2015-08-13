@@ -106,9 +106,9 @@ class AvatarView: UIImageView {
         self.bindedId = -1
         
         image = nil
-        if (fileName != nil) {
-            image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileName!))
-        }
+//        if (fileName != nil) {
+//            image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileName!))
+//        }
         
         if (image == nil) {
             if (self.placeholderImage == nil) {
@@ -118,15 +118,15 @@ class AvatarView: UIImageView {
         }
     }
     
-    func bind(title: String, id: jint, avatar: AMAvatar!) {
+    func bind(title: String, id: jint, avatar: ACAvatar!) {
         self.bind(title, id: id, avatar: avatar, clearPrev: true)
     }
     
-    func bind(title: String, id: jint, avatar: AMAvatar!, clearPrev: Bool) {
+    func bind(title: String, id: jint, avatar: ACAvatar!, clearPrev: Bool) {
         
         var needSmallAvatar: Bool = frameSize < 100
         
-        var fileLocation: AMFileReference?
+        var fileLocation: ACFileReference?
         if needSmallAvatar == true {
             fileLocation = avatar?.getSmallImage()?.getFileReference();
         } else {
@@ -201,30 +201,30 @@ class AvatarView: UIImageView {
                 return;
             }
             
-            var image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference));
-            
-            if (image == nil) {
-                return
-            }
-            
-            if (self.avatarType == .Rounded) {
-                image = image!.roundImage(self.frameSize)
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), {
-                if (callbackRequestId != self.requestId) {
-                    return;
-                }
-                
-                self.putToCache(self.frameSize, id: Int64(self.bindedFileId!), image: image!)
-                if (self.enableAnimation) {
-                    UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
-                        self.image = image;
-                    }, completion: nil)
-                } else {
-                    self.image = image;
-                }
-            });
+//            var image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference));
+//            
+//            if (image == nil) {
+//                return
+//            }
+//            
+//            if (self.avatarType == .Rounded) {
+//                image = image!.roundImage(self.frameSize)
+//            }
+//            
+//            dispatch_async(dispatch_get_main_queue(), {
+//                if (callbackRequestId != self.requestId) {
+//                    return;
+//                }
+//                
+//                self.putToCache(self.frameSize, id: Int64(self.bindedFileId!), image: image!)
+//                if (self.enableAnimation) {
+//                    UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
+//                        self.image = image;
+//                    }, completion: nil)
+//                } else {
+//                    self.image = image;
+//                }
+//            });
         });
         MSG.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
     }

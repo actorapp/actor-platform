@@ -25,14 +25,15 @@ class DialogsSearchSource: SearchSource {
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        var searchEntity = item as! AMSearchEntity
+        var searchEntity = item as! ACSearchEntity
         
         let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section) - 1;
         (cell as? DialogsSearchCell)?.bindSearchEntity(searchEntity, isLast: isLast)
     }
     
-    override func buildDisplayList() -> AMBindedDisplayList {
-        return MSG.buildSearchList()
+    override func buildDisplayList() -> ARBindedDisplayList {
+        return ARBindedDisplayList()
+//        return MSG.buildSearchList()
     }
    
 }

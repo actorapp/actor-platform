@@ -54,7 +54,7 @@ class ContactsBaseViewController: EngineListController {
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        var contact = item as! AMContact;
+        var contact = item as! ACContact;
         var isLast = false
         if (indexPath.section == tableView.numberOfSections() - 1) {
             isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)
@@ -66,7 +66,7 @@ class ContactsBaseViewController: EngineListController {
         if (indexPath.row == 0) {
             shortName = contact.getName().smallValue();
         } else {
-            var prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! AMContact;
+            var prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! ACContact;
         
             var prevName = prevContact.getName().smallValue();
             var name = contact.getName().smallValue();
@@ -79,7 +79,8 @@ class ContactsBaseViewController: EngineListController {
         (cell as! ContactCell).bindContact(contact, shortValue: shortName, isLast: isLast);
     }
     
-    override func buildDisplayList() -> AMBindedDisplayList {
-        return MSG.buildContactDisplayList()
+    override func buildDisplayList() -> ARBindedDisplayList {
+        //return MSG.buildContactDisplayList()
+        return ARBindedDisplayList()
     }
 }

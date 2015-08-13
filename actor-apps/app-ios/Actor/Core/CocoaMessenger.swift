@@ -13,27 +13,16 @@ get{
         var config = Config()
         
         // Providers
-        var builder = AMConfigurationBuilder();    
-        builder.setLogProvider(CocoaLogProvider())
-        builder.setNetworkProvider(CocoaNetworkProvider())
-        builder.setHttpProvider(CocoaHttpProvider())
-        builder.setThreadingProvider(CocoaThreadingProvider())
-        builder.setStorageProvider(CocoaStorage())
-        builder.setMainThreadProvider(CocoaMainThreadProvider())
-        builder.setLocaleProvider(CocoaLocaleProvider())
-        builder.setPhoneBookProvider(PhoneBookProvider())
-        builder.setCryptoProvider(CocoaCryptoProvider())
-        builder.setFileSystemProvider(CocoaFileSystem())
-        builder.setDispatcherProvider(CocoaDispatcherProvider())
-        builder.setNotificationProvider(iOSNotificationProvider())
-        builder.setAppCategory(AMAppCategoryEnum.values().objectAtIndex(AMAppCategory.IOS.rawValue) as! AMAppCategoryEnum)
-        builder.setDeviceCategory(AMDeviceCategoryEnum.values().objectAtIndex(AMDeviceCategory.MOBILE.rawValue) as! AMDeviceCategoryEnum)
-        builder.setLifecycleProvider(CocoaLifecycleProvider())
+        var builder = ACConfigurationBuilder();
+//        builder.setPhoneBookProvider(PhoneBookProvider())
+//        builder.setNotificationProvider(iOSNotificationProvider())
+        builder.setAppCategory(ACAppCategoryEnum.values().objectAtIndex(ACAppCategory.IOS.rawValue) as! ACAppCategoryEnum)
+        builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
         builder.setEnableFilesLogging(true)
         
         // Setting Analytics provider
         if config.mixpanel != nil {
-            builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
+//            builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
         }
         
         // Parameters
@@ -47,7 +36,7 @@ get{
             builder.addEndpoint(url);
         }
         
-        builder.setApiConfiguration(AMApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
+        builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
 
         // Creating messenger
         holder = CocoaMessenger(configuration: builder.build(), config: config);
@@ -56,38 +45,37 @@ get{
     }
 }
 
-@objc class CocoaMessenger : AMBaseMessenger {
-    class func messenger() -> CocoaMessenger { return MSG }
+@objc class CocoaMessenger : ACMessenger {
     
     let config: Config
 
-    init!(configuration: AMConfiguration!, config: Config) {
-        var env = AMMessengerEnvironmentEnum.values().objectAtIndex(AMMessengerEnvironment.IOS.rawValue) as! AMMessengerEnvironmentEnum
+    init!(configuration: ACConfiguration!, config: Config) {
         self.config = config
-        super.init(environment: env, withConfiguration: configuration)
+        super.init(configuration: configuration)
     }
     
-    func sendUIImage(image: UIImage, peer: AMPeer) {
-        var thumb = image.resizeSquare(90, maxH: 90);
-        var resized = image.resizeOptimize(1200 * 1200);
-        
-        var thumbData = UIImageJPEGRepresentation(thumb, 0.55);
-        var fastThumb = AMFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData.toJavaBytes())
-        
-        var descriptor = "/tmp/"+NSUUID().UUIDString
-        var path = CocoaFiles.pathFromDescriptor(descriptor);
-        
-        UIImageJPEGRepresentation(resized, 0.80).writeToFile(path, atomically: true)
-        
-        sendPhotoWithPeer(peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor)
+    func sendUIImage(image: UIImage, peer: ACPeer) {
+//        var thumb = image.resizeSquare(90, maxH: 90);
+//        var resized = image.resizeOptimize(1200 * 1200);
+//        
+//        var thumbData = UIImageJPEGRepresentation(thumb, 0.55);
+//        var fastThumb = ACFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData.toJavaBytes())
+//        
+//        var descriptor = "/tmp/"+NSUUID().UUIDString
+//        var path = CocoaFiles.pathFromDescriptor(descriptor);
+//        
+//        UIImageJPEGRepresentation(resized, 0.80).writeToFile(path, atomically: true)
+//        
+//        sendPhotoWithPeer(peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor)
     }
     
     private func prepareAvatar(image: UIImage) -> String {
-        var res = "/tmp/" + NSUUID().UUIDString
-        let avatarPath = CocoaFiles.pathFromDescriptor(res)
-        var thumb = image.resizeSquare(800, maxH: 800);
-        UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)
-        return res
+//        var res = "/tmp/" + NSUUID().UUIDString
+//        let avatarPath = CocoaFiles.pathFromDescriptor(res)
+//        var thumb = image.resizeSquare(800, maxH: 800);
+//        UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)
+//        return res
+        return ""
     }
     
     func changeOwnAvatar(image: UIImage) {

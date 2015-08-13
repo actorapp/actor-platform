@@ -73,13 +73,13 @@ class AABubbleCell: UICollectionViewCell {
     let bubbleMediaPadding: CGFloat = 10;
     
     // Binded data
-    var peer: AMPeer!
+    var peer: ACPeer!
     var controller: ConversationViewController!
     var isGroup: Bool = false
     var isFullSize: Bool!
     var bindedSetting: CellSetting?
     
-    var bindedMessage: AMMessage? = nil
+    var bindedMessage: ACMessage? = nil
     var bubbleType:BubbleType? = nil
     var isOut: Bool = false
     var isShowDate: Bool = false
@@ -134,10 +134,10 @@ class AABubbleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setConfig(peer: AMPeer, controller: ConversationViewController) {
+    func setConfig(peer: ACPeer, controller: ConversationViewController) {
         self.peer = peer
         self.controller = controller
-        if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
+        if (peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue) && !isFullSize) {
             self.isGroup = true
         }
     }
@@ -165,7 +165,7 @@ class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    func performBind(message: AMMessage, setting: CellSetting, layoutCache: LayoutCache) {
+    func performBind(message: ACMessage, setting: CellSetting, layoutCache: LayoutCache) {
         self.clipsToBounds = false
         self.contentView.clipsToBounds = false
         
@@ -180,7 +180,7 @@ class AABubbleCell: UICollectionViewCell {
             if (!isFullSize) {
                 if (!isOut && isGroup) {
                     if let user = MSG.getUserWithUid(message.getSenderId()) {
-                        let avatar: AMAvatar? = user.getAvatarModel().get()
+                        let avatar: ACAvatar? = user.getAvatarModel().get()
                         let name = user.getNameModel().get()
                         avatarView.bind(name, id: user.getId(), avatar: avatar)
                     }
@@ -213,7 +213,7 @@ class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+    func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         fatalError("bind(message:) has not been implemented")
     }
     

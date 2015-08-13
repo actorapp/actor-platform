@@ -237,17 +237,17 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
         } else {
             var avatarPath: String? = nil
             
-            if avatarImageView.image != nil {
-                avatarPath = "/tmp/avatar_" + NSUUID().UUIDString + ".jpg"
-                var avatarFilePath = CocoaFiles.pathFromDescriptor(avatarPath!)
-                var image = avatarImageView.image
-                var thumb = image?.resizeSquare(600, maxH: 600);
-                UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
-            }
+//            if avatarImageView.image != nil {
+//                avatarPath = "/tmp/avatar_" + NSUUID().UUIDString + ".jpg"
+//                var avatarFilePath = CocoaFiles.pathFromDescriptor(avatarPath!)
+//                var image = avatarImageView.image
+//                var thumb = image?.resizeSquare(600, maxH: 600);
+//                UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
+//            }
             
             var action = "SignUp";
             
-            execute(MSG.signUpObsoleteCommandWithName(username, withAvatar: avatarPath, silently: false), successBlock: { (val) -> Void in
+            execute(MSG.signUpCommandWithName(username, withSex: ACSexEnum_get_UNKNOWN(), withAvatar: avatarPath), successBlock: { (val) -> Void in
                 MSG.trackActionSuccess(action)
                 self.onAuthenticated()
             }, failureBlock: { (val) -> Void in
@@ -255,7 +255,7 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
                 var message = "Unknwon Error"
                 var tag = "UNKNOWN"
                 
-                if let exception = val as? AMRpcException {
+                if let exception = val as? ACRpcException {
                     tag = exception.getTag()
                     if (tag == "PHONE_CODE_EXPIRED") {
                         message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
@@ -283,7 +283,7 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     }
     
     func alertView(alertView: UIAlertView, willDismissWithButtonIndex buttonIndex: Int) {
-        if (MSG.getAuthState() != AMAuthState.SIGN_UP.rawValue) {
+        if (MSG.getAuthState() != ACAuthState.SIGN_UP.rawValue) {
             navigateBack()
         }
     }

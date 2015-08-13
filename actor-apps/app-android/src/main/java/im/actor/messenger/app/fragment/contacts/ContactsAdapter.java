@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import java.util.HashSet;
 
 import im.actor.core.entity.Contact;
-import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
 

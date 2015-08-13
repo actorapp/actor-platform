@@ -36,7 +36,7 @@ class DialogsSearchCell: CommonCell {
     // MARK: -
     // MARK: Methods
     
-    func bindSearchEntity(searchEntity: AMSearchEntity, isLast: Bool) {
+    func bindSearchEntity(searchEntity: ACSearchEntity, isLast: Bool) {
         avatarView.bind(searchEntity.getTitle(), id: searchEntity.getPeer().getPeerId(), avatar: searchEntity.getAvatar());
         titleView.text = searchEntity.getTitle();
         self.separatorView.hidden = isLast;

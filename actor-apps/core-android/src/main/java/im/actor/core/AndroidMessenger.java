@@ -27,7 +27,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.network.NetworkState;
-import im.actor.core.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.core.utils.AppStateActor;
 import im.actor.core.utils.ImageHelper;
 import im.actor.runtime.actors.ActorCreator;

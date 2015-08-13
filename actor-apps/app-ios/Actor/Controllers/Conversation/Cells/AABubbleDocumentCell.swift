@@ -72,8 +72,8 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: -
     // MARK: Bind
     
-    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
-        let document = message.getContent() as! AMDocumentContent
+    override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+        let document = message.getContent() as! ACDocumentContent
         
         self.bubbleInsets = UIEdgeInsets(
             top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
@@ -111,23 +111,23 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         dateLabel.text = cellLayout.date
         if (isOut) {
             switch(UInt(message.getMessageState().ordinal())) {
-            case AMMessageState.PENDING.rawValue:
+            case ACMessageState.PENDING.rawValue:
                 self.statusView.image = Resources.iconClock
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
                 break
-            case AMMessageState.SENT.rawValue:
+            case ACMessageState.SENT.rawValue:
                 self.statusView.image = Resources.iconCheck1
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSent
                 break
-            case AMMessageState.RECEIVED.rawValue:
+            case ACMessageState.RECEIVED.rawValue:
                 self.statusView.image = Resources.iconCheck2
                 self.statusView.tintColor = MainAppTheme.bubbles.statusReceived
                 break
-            case AMMessageState.READ.rawValue:
+            case ACMessageState.READ.rawValue:
                 self.statusView.image = Resources.iconCheck2
                 self.statusView.tintColor = MainAppTheme.bubbles.statusRead
                 break
-            case AMMessageState.ERROR.rawValue:
+            case ACMessageState.ERROR.rawValue:
                 self.statusView.image = Resources.iconError
                 self.statusView.tintColor = MainAppTheme.bubbles.statusError
                 break
@@ -140,31 +140,31 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     }
     
     func documentDidTap() {
-        var content = bindedMessage!.getContent() as! AMDocumentContent
-        if let fileSource = content.getSource() as? AMFileRemoteSource {
-            MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
-                notDownloaded: { () -> () in
-                    MSG.startDownloadingWithReference(fileSource.getFileReference())
-                }, onDownloading: { (progress) -> () in
-                    MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
-                }, onDownloaded: { (reference) -> () in
-                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
-                    docController.delegate = self
-                    docController.presentPreviewAnimated(true)
-            }))
-        } else if let fileSource = content.getSource() as? AMFileLocalSource {
-            var rid = bindedMessage!.getRid()
-            MSG.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
-                notUploaded: { () -> () in
-                    MSG.resumeUploadWithRid(rid)
-                }, onUploading: { (progress) -> () in
-                    MSG.pauseUploadWithRid(rid)
-                }, onUploadedClosure: { () -> () in
-                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-                    docController.delegate = self
-                    docController.presentPreviewAnimated(true)
-            }))
-        }
+//        var content = bindedMessage!.getContent() as! ACDocumentContent
+//        if let fileSource = content.getSource() as? ACFileRemoteSource {
+//            MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
+//                notDownloaded: { () -> () in
+//                    MSG.startDownloadingWithReference(fileSource.getFileReference())
+//                }, onDownloading: { (progress) -> () in
+//                    MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
+//                }, onDownloaded: { (reference) -> () in
+//                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
+//                    docController.delegate = self
+//                    docController.presentPreviewAnimated(true)
+//            }))
+//        } else if let fileSource = content.getSource() as? ACFileLocalSource {
+//            var rid = bindedMessage!.getRid()
+//            MSG.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
+//                notUploaded: { () -> () in
+//                    MSG.resumeUploadWithRid(rid)
+//                }, onUploading: { (progress) -> () in
+//                    MSG.pauseUploadWithRid(rid)
+//                }, onUploadedClosure: { () -> () in
+//                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+//                    docController.delegate = self
+//                    docController.presentPreviewAnimated(true)
+//            }))
+//        }
     }
     
     override func fileUploadPaused(reference: String, selfGeneration: Int) {
@@ -295,7 +295,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: -
     // MARK: Getters
     
-    class func measureDocumentHeight(message: AMMessage) -> CGFloat {
+    class func measureDocumentHeight(message: ACMessage) -> CGFloat {
         return 66
     }
     

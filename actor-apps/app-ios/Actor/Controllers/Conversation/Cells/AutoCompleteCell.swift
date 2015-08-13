@@ -33,7 +33,7 @@ class AutoCompleteCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func bindData(user: AMUserVM, highlightWord: String) {
+    func bindData(user: ACUserVM, highlightWord: String) {
         avatarView.bind(user.getNameModel().get(), id: user.getId(), avatar: user.getAvatarModel().get(), clearPrev: true)
         
         var nickText: String
