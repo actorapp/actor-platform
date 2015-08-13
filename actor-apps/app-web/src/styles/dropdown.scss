@@ -114,9 +114,13 @@
           margin-top: -1px;
           margin-left: -34px;
         }
+        &:hover {
+          color: $greyish-brown;
+          background-color: transparent;
+        }
         &--active {
-          color: white;
-          background-color: $dark-sky-blue;
+          color: white !important;
+          background-color: $dark-sky-blue !important;
         }
       }
     }

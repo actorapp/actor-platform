@@ -46,10 +46,12 @@ class Dropdown extends React.Component {
 
   setListeners() {
     document.addEventListener('keydown', this.onKeyDown, false);
+    document.addEventListener('click', this.closeDropdown, false);
   }
 
   cleanListeners() {
     document.removeEventListener('keydown', this.onKeyDown, false);
+    document.removeEventListener('click', this.closeDropdown, false);
   }
 
   getDefaultIndex = (children) => {
