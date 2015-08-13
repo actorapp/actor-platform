@@ -95,6 +95,7 @@ object UserProcessor {
     ActorSerializer.register(10025, classOf[UserCommands.ChangeAbout])
     ActorSerializer.register(10026, classOf[UserCommands.UpdateAvatar])
     ActorSerializer.register(10027, classOf[UserCommands.UpdateAvatarAck])
+    ActorSerializer.register(10028, classOf[UserCommands.DeliverMessageAck])
 
     ActorSerializer.register(11001, classOf[UserQueries.GetAuthIds])
     ActorSerializer.register(11002, classOf[UserQueries.GetAuthIdsResponse])

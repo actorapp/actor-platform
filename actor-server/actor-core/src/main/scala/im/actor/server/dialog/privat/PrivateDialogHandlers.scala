@@ -46,9 +46,9 @@ trait PrivateDialogHandlers {
 
     val sendFuture: Future[SeqStateDate] = withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
       for {
-        _ ← Future.successful(UserOffice.deliverMessage(userState.peerId, privatePeerStruct(userState.userId), userState.userId, randomId, date, message, isFat))
+        _ ← UserOffice.deliverMessage(userState.peerId, privatePeerStruct(userState.userId), userState.userId, randomId, date, message, isFat)
         SeqState(seq, state) ← UserOffice.deliverOwnMessage(userState.userId, privatePeerStruct(userState.peerId), senderAuthId, randomId, date, message, isFat)
-        _ ← Future.successful(recordRelation(userState.userId, userState.peerId))
+        _ = recordRelation(userState.userId, userState.peerId)
         _ ← db.run(writeHistoryMessage(models.Peer.privat(userState.userId), models.Peer.privat(userState.peerId), date, randomId, message.header, message.toByteArray))
       } yield SeqStateDate(seq, state, dateMillis)
     }

@@ -95,8 +95,8 @@ private[user] sealed trait Commands extends AuthCommands {
     region:  UserProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Unit =
-    region.ref ! DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat)
+  ): Future[Unit] =
+    (region.ref ? DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat)) map (_ ⇒ ())
 
   def deliverOwnMessage(userId: Int, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
     implicit

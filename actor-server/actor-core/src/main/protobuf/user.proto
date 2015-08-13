@@ -107,6 +107,8 @@ message UserCommands {
         required bool is_fat = 6;
     }
 
+    message DeliverMessageAck {}
+
     message DeliverOwnMessage {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
