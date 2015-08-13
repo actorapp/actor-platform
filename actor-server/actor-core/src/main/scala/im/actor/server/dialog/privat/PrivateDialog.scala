@@ -27,11 +27,17 @@ trait PrivateDialogCommand {
   def right: Int
 }
 
-case class DialogState(userId: Int, peerId: Int, lastReceiveDate: Option[Long], lastReadDate: Option[Long])
-case class PrivateDialogState(lastMessageDate: Option[Long], userState: Map[Origin, DialogState])
+case class DialogState(
+  userId:          Int,
+  peerId:          Int,
+  lastMessageDate: Option[Long],
+  lastReceiveDate: Option[Long],
+  lastReadDate:    Option[Long]
+)
 
 object PrivateDialog {
   private[dialog] sealed trait StateChange
+  private[dialog] case class LastMessageDate(date: Long) extends StateChange
   private[dialog] case class LastReceiveDate(date: Long) extends StateChange
   private[dialog] case class LastReadDate(date: Long) extends StateChange
 
@@ -70,18 +76,16 @@ class PrivateDialog extends Dialog with PrivateDialogHandlers {
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
-  override type State = PrivateDialogState
+  override type State = Map[Origin, DialogState]
 
   context.setReceiveTimeout(1.hours)
 
   override def receive: Receive = working(initState)
 
-  def working(state: PrivateDialogState): Receive = {
+  def working(state: State): Receive = {
     case SendMessage(_, _, origin, senderAuthId, randomId, message, isFat) ⇒
-      val userState = state.userState(origin)
-      sendMessage(userState, state, senderAuthId, randomId, message, isFat)
+      sendMessage(state, origin, senderAuthId, randomId, message, isFat)
     case MessageReceived(_, _, origin, date) ⇒
-      val userState = state.userState(origin)
       messageReceived(state, origin, date)
     case MessageRead(_, _, origin, readerAuthId, date) ⇒
       messageRead(state, origin, readerAuthId, date)
@@ -89,12 +93,9 @@ class PrivateDialog extends Dialog with PrivateDialogHandlers {
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }
 
-  private def initState: PrivateDialogState =
-    PrivateDialogState(
-      None,
-      Map(
-        LEFT → DialogState(left, right, None, None),
-        RIGHT → DialogState(right, left, None, None)
-      )
+  private def initState: State =
+    Map(
+      LEFT → DialogState(left, right, None, None, None),
+      RIGHT → DialogState(right, left, None, None, None)
     )
 }
