@@ -106,7 +106,7 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       } yield AddEmailAck())
     }
 
-  protected def deliverMessage(user: User, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[Seq[SeqState]] = {
+  protected def deliverMessage(user: User, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Unit = {
     val update = UpdateMessage(
       peer = peer,
       senderUserId = senderUserId,
@@ -114,14 +114,14 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       randomId = randomId,
       message = message
     )
-    for {
+    (for {
       senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
       senderName = senderUser.localName.getOrElse(senderUser.name)
       pushText = getPushText(message, senderName, userId)
       counterUpdate ← db.run(getUpdateCountersChanged(userId))
       _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None, isFat = false)
-      seqs ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat)
-    } yield seqs
+      _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat)
+    } yield DeliverMessageAck()) pipeTo sender()
   }
 
   protected def deliverOwnMessage(user: User, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
