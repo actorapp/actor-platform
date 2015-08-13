@@ -78,6 +78,8 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
     handleQuery(state) orElse stashingBehavior(evt)
 
   final def persistReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
+    log.debug("[persistReply] {}", e)
+
     persist(e) { evt ⇒
       f(evt) pipeTo sender() onComplete {
         case Success(_) ⇒
@@ -91,6 +93,7 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
   }
 
   final def persistStashing[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
+    log.debug("[persistStashing], event {}", e)
     context become stashing(e, state)
 
     persistAsync(e) { evt ⇒
@@ -109,6 +112,7 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
   final def persistStashingReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
     val replyTo = sender()
 
+    log.debug("[persistStashingReply], event {}", e)
     context become stashing(e, state)
 
     persistAsync(e) { evt ⇒
@@ -129,6 +133,7 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
   final def persistStashingReply[R](es: immutable.Seq[Event], state: State)(f: immutable.Seq[Event] ⇒ Future[R]): Unit = {
     val replyTo = sender()
 
+    log.debug("[persistStashingReply], events {}", es)
     context become stashing(es, state)
 
     persistAsync(es)(_ ⇒ ())
