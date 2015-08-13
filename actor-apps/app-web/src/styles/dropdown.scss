@@ -105,13 +105,16 @@
       position: absolute;
       top: auto;
       bottom: 6px;
-      max-height: 210px;
+
       overflow: auto;
+
+      max-height: 210px;
       .dropdown__menu__item {
         .avatar {
           float: left;
-          margin-right: 0;
+
           margin-top: -1px;
+          margin-right: 0;
           margin-left: -34px;
         }
         &:hover {

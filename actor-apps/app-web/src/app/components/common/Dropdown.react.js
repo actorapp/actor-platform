@@ -61,6 +61,9 @@ class Dropdown extends React.Component {
       index = children.length - 1;
     }
 
+    // Set first element selected
+    index = 0;
+
     return index;
   };
 
@@ -84,6 +87,7 @@ class Dropdown extends React.Component {
 
   onKeyDown = (e) => {
     let index = this.state.selectedIndex;
+    const menuNode = React.findDOMNode(this.refs.menu);
 
     if (index !== null) {
       switch (e.keyCode) {
@@ -101,6 +105,8 @@ class Dropdown extends React.Component {
             index -= 1;
           }
 
+          menuNode.scrollTop = menuNode.scrollTop - 42;
+
           this.setState({selectedIndex: index});
           break;
         case KeyCodes.ARROW_DOWN:
@@ -110,6 +116,8 @@ class Dropdown extends React.Component {
           if (index !== this.props.children.length - 1) {
             index += 1;
           }
+
+          menuNode.scrollTop = menuNode.scrollTop + 42;
 
           this.setState({selectedIndex: index});
           break;
@@ -154,7 +162,7 @@ class Dropdown extends React.Component {
 
     return (
       <div className={dropdownClassName}>
-        <ul className="dropdown__menu">
+        <ul className="dropdown__menu" ref="menu">
           {dropdownItems}
         </ul>
       </div>
