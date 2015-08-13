@@ -2,19 +2,18 @@ package im.actor.server.dialog.privat
 
 import akka.actor.Status
 import akka.pattern.pipe
-
+import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
+import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.dialog.Dialog._
 import im.actor.server.dialog.PrivateDialogCommands
-import im.actor.server.dialog.PrivateDialogCommands.Origin.{ RIGHT, LEFT }
-import im.actor.server.push.SeqUpdatesManager
-import im.actor.server.util.HistoryUtils._
-import im.actor.server.social.SocialManager._
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageReadByMe, UpdateMessageRead, UpdateMessageReceived }
-import im.actor.api.rpc.peers.{ PeerType, Peer }
-import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.UserOffice
-import im.actor.utils.cache.CacheHelpers._
+import im.actor.server.dialog.PrivateDialogCommands.Origin.{ LEFT, RIGHT }
 import im.actor.server.models
+import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.sequence.{ SeqState, SeqStateDate }
+import im.actor.server.social.SocialManager._
+import im.actor.server.user.UserOffice
+import im.actor.server.util.HistoryUtils._
+import im.actor.utils.cache.CacheHelpers._
 import org.joda.time.DateTime
 
 import scala.concurrent.Future
