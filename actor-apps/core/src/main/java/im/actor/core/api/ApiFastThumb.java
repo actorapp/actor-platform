@@ -11,19 +11,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class FastThumb extends BserObject {
+public class ApiFastThumb extends BserObject {
 
     private int w;
     private int h;
     private byte[] thumb;
 
-    public FastThumb(int w, int h, @NotNull byte[] thumb) {
+    public ApiFastThumb(int w, int h, @NotNull byte[] thumb) {
         this.w = w;
         this.h = h;
         this.thumb = thumb;
     }
 
-    public FastThumb() {
+    public ApiFastThumb() {
 
     }
 

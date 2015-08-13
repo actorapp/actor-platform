@@ -12,9 +12,9 @@ import java.io.IOException;
 
 public class ServiceExChangedAvatar extends ServiceEx {
 
-    private Avatar avatar;
+    private ApiAvatar avatar;
 
-    public ServiceExChangedAvatar(@Nullable Avatar avatar) {
+    public ServiceExChangedAvatar(@Nullable ApiAvatar avatar) {
         this.avatar = avatar;
     }
 
@@ -27,13 +27,13 @@ public class ServiceExChangedAvatar extends ServiceEx {
     }
 
     @Nullable
-    public Avatar getAvatar() {
+    public ApiAvatar getAvatar() {
         return this.avatar;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.avatar = values.optObj(1, new Avatar());
+        this.avatar = values.optObj(1, new ApiAvatar());
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }

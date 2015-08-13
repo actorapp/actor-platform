@@ -114,7 +114,7 @@ class GroupViewController: AATableViewController {
                 .setStyle(.Switch)
                 .setContent("GroupNotifications")
                 .setModificator { (cell) -> () in
-                    let groupPeer: ACPeer! = ACPeer.groupWithInt(jint(self.gid))
+                    let groupPeer: ACPeerEntity! = ACPeerEntity.groupWithInt(jint(self.gid))
                     cell.setSwitcherOn(MSG.isNotificationsEnabledWithPeer(groupPeer))
                 
                     cell.switchBlock = { (on: Bool) -> () in
@@ -170,7 +170,7 @@ class GroupViewController: AATableViewController {
                             if (index == 0) {
                                 self.navigateNext(UserViewController(uid: Int(user.getId())), removeCurrent: false)
                             } else if (index == 1) {
-                                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                                self.navigateDetail(ConversationViewController(peer: ACPeerEntity.userWithInt(user.getId())))
                                 self.popover?.dismissPopoverAnimated(true)
                             } else if (index == 2) {
                                 var phones = user.getPhonesModel().get()

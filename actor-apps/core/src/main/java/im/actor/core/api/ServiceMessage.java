@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class ServiceMessage extends Message {
+public class ServiceMessage extends ApiMessage {
 
     private String text;
     private ServiceEx ext;

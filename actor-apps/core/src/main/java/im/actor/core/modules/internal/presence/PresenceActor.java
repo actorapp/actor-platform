@@ -13,10 +13,10 @@ import im.actor.core.api.GroupOutPeer;
 import im.actor.core.api.UserOutPeer;
 import im.actor.core.api.rpc.RequestSubscribeToGroupOnline;
 import im.actor.core.api.rpc.RequestSubscribeToOnline;
-import im.actor.core.entity.Group;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.PeerType;
-import im.actor.core.entity.User;
+import im.actor.core.entity.GroupEntity;
+import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.PeerTypeEntity;
+import im.actor.core.entity.UserEntity;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.viewmodel.GroupVM;
@@ -123,14 +123,14 @@ public class PresenceActor extends ModuleActor {
     }
 
     @Verified
-    private void subscribe(Peer peer) {
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+    private void subscribe(PeerEntity peer) {
+        if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
             // Already subscribed
             if (uids.contains(peer.getPeerId())) {
                 return;
             }
 
-            User user = getUser(peer.getPeerId());
+            UserEntity user = getUser(peer.getPeerId());
             if (user == null) {
                 return;
             }
@@ -140,13 +140,13 @@ public class PresenceActor extends ModuleActor {
             List<UserOutPeer> peers = new ArrayList<UserOutPeer>();
             peers.add(new UserOutPeer(user.getUid(), user.getAccessHash()));
             request(new RequestSubscribeToOnline(peers));
-        } else if (peer.getPeerType() == PeerType.GROUP) {
+        } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
             // Already subscribed
             if (gids.contains(peer.getPeerId())) {
                 return;
             }
 
-            Group group = getGroup(peer.getPeerId());
+            GroupEntity group = getGroup(peer.getPeerId());
             if (group == null) {
                 return;
             }
@@ -165,7 +165,7 @@ public class PresenceActor extends ModuleActor {
         // Resubscribing for online states of users
         List<UserOutPeer> userPeers = new ArrayList<UserOutPeer>();
         for (int uid : uids) {
-            User user = getUser(uid);
+            UserEntity user = getUser(uid);
             if (user == null) {
                 continue;
             }
@@ -178,7 +178,7 @@ public class PresenceActor extends ModuleActor {
         // Resubscribing for online states of groups
         List<GroupOutPeer> groupPeers = new ArrayList<GroupOutPeer>();
         for (int gid : gids) {
-            Group group = getGroup(gid);
+            GroupEntity group = getGroup(gid);
             if (group == null) {
                 continue;
             }
@@ -373,13 +373,13 @@ public class PresenceActor extends ModuleActor {
     }
 
     public static class Subscribe {
-        private Peer peer;
+        private PeerEntity peer;
 
-        public Subscribe(Peer peer) {
+        public Subscribe(PeerEntity peer) {
             this.peer = peer;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
     }

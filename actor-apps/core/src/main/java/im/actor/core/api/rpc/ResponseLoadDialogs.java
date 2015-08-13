@@ -20,11 +20,11 @@ public class ResponseLoadDialogs extends Response {
         return Bser.parse(new ResponseLoadDialogs(), data);
     }
 
-    private List<Group> groups;
+    private List<ApiGroup> groups;
     private List<User> users;
-    private List<Dialog> dialogs;
+    private List<ApiDialog> dialogs;
 
-    public ResponseLoadDialogs(@NotNull List<Group> groups, @NotNull List<User> users, @NotNull List<Dialog> dialogs) {
+    public ResponseLoadDialogs(@NotNull List<ApiGroup> groups, @NotNull List<User> users, @NotNull List<ApiDialog> dialogs) {
         this.groups = groups;
         this.users = users;
         this.dialogs = dialogs;
@@ -35,7 +35,7 @@ public class ResponseLoadDialogs extends Response {
     }
 
     @NotNull
-    public List<Group> getGroups() {
+    public List<ApiGroup> getGroups() {
         return this.groups;
     }
 
@@ -45,15 +45,15 @@ public class ResponseLoadDialogs extends Response {
     }
 
     @NotNull
-    public List<Dialog> getDialogs() {
+    public List<ApiDialog> getDialogs() {
         return this.dialogs;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<Group> _groups = new ArrayList<Group>();
+        List<ApiGroup> _groups = new ArrayList<ApiGroup>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _groups.add(new Group());
+            _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(1, _groups);
         List<User> _users = new ArrayList<User>();
@@ -61,9 +61,9 @@ public class ResponseLoadDialogs extends Response {
             _users.add(new User());
         }
         this.users = values.getRepeatedObj(2, _users);
-        List<Dialog> _dialogs = new ArrayList<Dialog>();
+        List<ApiDialog> _dialogs = new ArrayList<ApiDialog>();
         for (int i = 0; i < values.getRepeatedCount(3); i ++) {
-            _dialogs.add(new Dialog());
+            _dialogs.add(new ApiDialog());
         }
         this.dialogs = values.getRepeatedObj(3, _dialogs);
     }

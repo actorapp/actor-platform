@@ -10,7 +10,7 @@ import im.actor.core.api.DocumentExPhoto;
 import im.actor.core.api.DocumentExVideo;
 import im.actor.core.api.DocumentMessage;
 import im.actor.core.api.JsonMessage;
-import im.actor.core.api.Message;
+import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ServiceEx;
 import im.actor.core.api.ServiceExChangedAvatar;
 import im.actor.core.api.ServiceExChangedTitle;
@@ -49,7 +49,7 @@ public abstract class AbsContent {
         return dataOutput.toByteArray();
     }
 
-    public static AbsContent fromMessage(Message message) throws IOException {
+    public static AbsContent fromMessage(ApiMessage message) throws IOException {
         return convertData(new ContentRemoteContainer(message));
     }
 
@@ -80,7 +80,7 @@ public abstract class AbsContent {
             }
         } else if (container instanceof ContentRemoteContainer) {
             ContentRemoteContainer remoteContainer = (ContentRemoteContainer) container;
-            Message content = ((ContentRemoteContainer) container).getMessage();
+            ApiMessage content = ((ContentRemoteContainer) container).getMessage();
             try {
                 if (content instanceof DocumentMessage) {
                     DocumentMessage d = (DocumentMessage) content;

@@ -11,7 +11,7 @@ import java.util.List;
 
 import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.Notification;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.notifications.entity.PendingNotification;
 import im.actor.core.modules.internal.notifications.entity.PendingStorage;
@@ -25,12 +25,12 @@ public class NotificationsActor extends ModuleActor {
     private SyncKeyValue storage;
     private PendingStorage pendingStorage;
 
-    private Peer visiblePeer;
+    private PeerEntity visiblePeer;
     private boolean isAppVisible = false;
     private boolean isDialogsVisible = false;
 
     private boolean isNotificationsPaused = false;
-    private HashSet<Peer> notificationsDuringPause = new HashSet<Peer>();
+    private HashSet<PeerEntity> notificationsDuringPause = new HashSet<PeerEntity>();
 
     public NotificationsActor(ModuleContext messenger) {
         super(messenger);
@@ -54,7 +54,7 @@ public class NotificationsActor extends ModuleActor {
         return pendingStorage.getNotifications();
     }
 
-    public void onNewMessage(Peer peer, int sender, long date, ContentDescription description,
+    public void onNewMessage(PeerEntity peer, int sender, long date, ContentDescription description,
                              boolean hasCurrentUserMention) {
 
         boolean isPeerEnabled = context().getSettingsModule().isNotificationsEnabled(peer);
@@ -94,7 +94,7 @@ public class NotificationsActor extends ModuleActor {
         }
     }
 
-    public void onMessagesRead(Peer peer, long fromDate) {
+    public void onMessagesRead(PeerEntity peer, long fromDate) {
         boolean isChanged = false;
         List<PendingNotification> notifications = pendingStorage.getNotifications();
         for (PendingNotification p : notifications.toArray(new PendingNotification[notifications.size()])) {
@@ -139,12 +139,12 @@ public class NotificationsActor extends ModuleActor {
         notificationsDuringPause.clear();
     }
 
-    public void onConversationVisible(Peer peer) {
+    public void onConversationVisible(PeerEntity peer) {
         this.visiblePeer = peer;
         performNotification(true);
     }
 
-    public void onConversationHidden(Peer peer) {
+    public void onConversationHidden(PeerEntity peer) {
         if (visiblePeer != null && visiblePeer.equals(peer)) {
             this.visiblePeer = null;
         }
@@ -194,7 +194,7 @@ public class NotificationsActor extends ModuleActor {
         }
 
         int messagesCount = allPending.size();
-        HashSet<Peer> peers = new HashSet<Peer>();
+        HashSet<PeerEntity> peers = new HashSet<PeerEntity>();
         for (PendingNotification p : allPending) {
             peers.add(p.getPeer());
         }
@@ -245,13 +245,13 @@ public class NotificationsActor extends ModuleActor {
     }
 
     public static class NewMessage {
-        private Peer peer;
+        private PeerEntity peer;
         private int sender;
         private long sortDate;
         private ContentDescription contentDescription;
         private boolean hasCurrentUserMention;
 
-        public NewMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription,
+        public NewMessage(PeerEntity peer, int sender, long sortDate, ContentDescription contentDescription,
                           boolean hasCurrentUserMention) {
             this.peer = peer;
             this.sender = sender;
@@ -260,7 +260,7 @@ public class NotificationsActor extends ModuleActor {
             this.hasCurrentUserMention = hasCurrentUserMention;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
 
@@ -282,15 +282,15 @@ public class NotificationsActor extends ModuleActor {
     }
 
     public static class MessagesRead {
-        private Peer peer;
+        private PeerEntity peer;
         private long fromDate;
 
-        public MessagesRead(Peer peer, long fromDate) {
+        public MessagesRead(PeerEntity peer, long fromDate) {
             this.peer = peer;
             this.fromDate = fromDate;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
 
@@ -300,25 +300,25 @@ public class NotificationsActor extends ModuleActor {
     }
 
     public static class OnConversationVisible {
-        private Peer peer;
+        private PeerEntity peer;
 
-        public OnConversationVisible(Peer peer) {
+        public OnConversationVisible(PeerEntity peer) {
             this.peer = peer;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
     }
 
     public static class OnConversationHidden {
-        private Peer peer;
+        private PeerEntity peer;
 
-        public OnConversationHidden(Peer peer) {
+        public OnConversationHidden(PeerEntity peer) {
             this.peer = peer;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
     }

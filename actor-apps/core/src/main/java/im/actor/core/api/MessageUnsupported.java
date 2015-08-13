@@ -7,7 +7,7 @@ import im.actor.runtime.bser.*;
 
 import java.io.IOException;
 
-public class MessageUnsupported extends Message {
+public class MessageUnsupported extends ApiMessage {
 
     private int key;
     private byte[] content;

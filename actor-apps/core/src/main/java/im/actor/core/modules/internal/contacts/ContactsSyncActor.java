@@ -15,7 +15,7 @@ import java.util.List;
 import im.actor.core.api.rpc.RequestGetContacts;
 import im.actor.core.api.rpc.ResponseGetContacts;
 import im.actor.core.entity.Contact;
-import im.actor.core.entity.User;
+import im.actor.core.entity.UserEntity;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.network.RpcCallback;
@@ -217,7 +217,7 @@ public class ContactsSyncActor extends ModuleActor {
         self().send(new PerformSync());
     }
 
-    public void onUserChanged(User user) {
+    public void onUserChanged(UserEntity user) {
         if (ENABLE_LOG) {
             Log.d(TAG, "OnUserChanged #" + user.getUid() + " received");
         }
@@ -233,20 +233,20 @@ public class ContactsSyncActor extends ModuleActor {
         if (ENABLE_LOG) {
             Log.d(TAG, "Saving contact EngineList");
         }
-        ArrayList<User> userList = new ArrayList<User>();
+        ArrayList<UserEntity> userList = new ArrayList<UserEntity>();
         for (int u : contacts) {
             userList.add(getUser(u));
         }
-        Collections.sort(userList, new Comparator<User>() {
+        Collections.sort(userList, new Comparator<UserEntity>() {
             @Override
-            public int compare(User lhs, User rhs) {
+            public int compare(UserEntity lhs, UserEntity rhs) {
                 return lhs.getName().compareTo(rhs.getName());
             }
         });
 
         List<Contact> registeredContacts = new ArrayList<Contact>();
         int index = -1;
-        for (User userModel : userList) {
+        for (UserEntity userModel : userList) {
             Contact contact = new Contact(userModel.getUid(),
                     (long) index--,
                     userModel.getAvatar(),
@@ -256,7 +256,7 @@ public class ContactsSyncActor extends ModuleActor {
         context().getContactsModule().getContacts().replaceItems(registeredContacts);
         Integer[] sorted = new Integer[contacts.size()];
         int sindex = 0;
-        for (User userModel : userList) {
+        for (UserEntity userModel : userList) {
             sorted[sindex++] = userModel.getUid();
         }
         context().getSearchModule().onContactsChanged(sorted);
@@ -338,13 +338,13 @@ public class ContactsSyncActor extends ModuleActor {
     }
 
     public static class UserChanged {
-        private User user;
+        private UserEntity user;
 
-        public UserChanged(User user) {
+        public UserChanged(UserEntity user) {
             this.user = user;
         }
 
-        public User getUser() {
+        public UserEntity getUser() {
             return user;
         }
     }

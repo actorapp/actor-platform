@@ -5,8 +5,8 @@
 #ifndef ActorClient_ActorModel_h
 #define ActorClient_ActorModel_h
 
-#import "runtime.h"
 #import "actor.h"
+#import "runtime.h"
 
 //// Messenger
 //

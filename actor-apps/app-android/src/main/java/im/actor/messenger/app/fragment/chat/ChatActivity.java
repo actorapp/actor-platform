@@ -44,8 +44,8 @@ import java.util.ArrayList;
 
 import im.actor.core.Messenger;
 import im.actor.core.entity.GroupMember;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.PeerType;
+import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.PeerTypeEntity;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
@@ -89,7 +89,7 @@ public class ChatActivity extends BaseActivity {
     private static final String MENTION_BOUNDS_STR = MENTION_BOUNDS_CHR.toString();
 
 
-    private Peer peer;
+    private PeerEntity peer;
 
     private Messenger messenger;
 
@@ -151,7 +151,7 @@ public class ChatActivity extends BaseActivity {
 
         keyboardUtils = new KeyboardHelper(this);
 
-        peer = Peer.fromUniqueId(getIntent().getExtras().getLong(Intents.EXTRA_CHAT_PEER));
+        peer = PeerEntity.fromUniqueId(getIntent().getExtras().getLong(Intents.EXTRA_CHAT_PEER));
 
         isCompose = saveInstance == null && getIntent().getExtras().getBoolean(Intents.EXTRA_CHAT_COMPOSE, false);
 
@@ -183,9 +183,9 @@ public class ChatActivity extends BaseActivity {
         barView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (peer.getPeerType() == PeerType.PRIVATE) {
+                if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
                     startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
-                } else if (peer.getPeerType() == PeerType.GROUP) {
+                } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
                     startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
                 } else {
                     // Nothing to do
@@ -237,7 +237,7 @@ public class ChatActivity extends BaseActivity {
                 String firstPeace = str.substring(0, start + count);
 
 
-                if (peer.getPeerType() == PeerType.GROUP) {
+                if (peer.getPeerType() == PeerTypeEntity.GROUP) {
                     //Open mentions
                     if (count == 1 && s.charAt(start) == '@') {
                         showMentions(false);
@@ -529,7 +529,7 @@ public class ChatActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
 
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
             final UserVM user = users().get(peer.getPeerId());
             if (user == null) {
                 finish();
@@ -542,7 +542,7 @@ public class ChatActivity extends BaseActivity {
             bindPrivateTyping(barTyping, barTypingContainer, barSubtitle, messenger().getTyping(user.getId()));
 
             kicked.setVisibility(View.GONE);
-        } else if (peer.getPeerType() == PeerType.GROUP) {
+        } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
             GroupVM group = groups().get(peer.getPeerId());
             if (group == null) {
                 finish();
@@ -934,13 +934,13 @@ public class ChatActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_menu, menu);
 
-        if (peer.getPeerType() == PeerType.PRIVATE) {
+        if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
             menu.findItem(R.id.contact).setVisible(true);
         } else {
             menu.findItem(R.id.contact).setVisible(false);
         }
 
-        if (peer.getPeerType() == PeerType.GROUP) {
+        if (peer.getPeerType() == PeerTypeEntity.GROUP) {
             if (groups().get(peer.getPeerId()).isMember().get()) {
                 menu.findItem(R.id.leaveGroup).setVisible(true);
                 menu.findItem(R.id.groupInfo).setVisible(true);

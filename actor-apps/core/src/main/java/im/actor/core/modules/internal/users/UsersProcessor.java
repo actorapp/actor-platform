@@ -3,13 +3,14 @@ package im.actor.core.modules.internal.users;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import im.actor.core.api.Avatar;
+import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.User;
 import im.actor.core.api.updates.UpdateUserAboutChanged;
 import im.actor.core.api.updates.UpdateUserAvatarChanged;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
+import im.actor.core.entity.UserEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Processor;
@@ -27,14 +28,14 @@ public class UsersProcessor extends AbsModule implements Processor {
 
     @Verified
     public void applyUsers(Collection<User> updated, boolean forced) {
-        ArrayList<im.actor.core.entity.User> batch = new ArrayList<im.actor.core.entity.User>();
+        ArrayList<UserEntity> batch = new ArrayList<UserEntity>();
         for (im.actor.core.api.User u : updated) {
 
-            im.actor.core.entity.User saved = users().getValue(u.getId());
+            UserEntity saved = users().getValue(u.getId());
             if (saved == null) {
-                batch.add(new im.actor.core.entity.User(u));
+                batch.add(new UserEntity(u));
             } else if (forced) {
-                im.actor.core.entity.User upd = new im.actor.core.entity.User(u);
+                UserEntity upd = new UserEntity(u);
                 batch.add(upd);
 
                 // Sending changes to dialogs
@@ -62,7 +63,7 @@ public class UsersProcessor extends AbsModule implements Processor {
 
     @Verified
     private void onUserNameChanged(int uid, String name) {
-        im.actor.core.entity.User u = users().getValue(uid);
+        UserEntity u = users().getValue(uid);
         if (u != null) {
 
             // Ignore if name not changed
@@ -85,7 +86,7 @@ public class UsersProcessor extends AbsModule implements Processor {
 
     @Verified
     private void onUserNickChanged(int uid, String nick) {
-        im.actor.core.entity.User u = users().getValue(uid);
+        UserEntity u = users().getValue(uid);
         if (u != null) {
 
             // Ignore if name not changed
@@ -103,7 +104,7 @@ public class UsersProcessor extends AbsModule implements Processor {
 
     @Verified
     private void onUserAboutChanged(int uid, String about) {
-        im.actor.core.entity.User u = users().getValue(uid);
+        UserEntity u = users().getValue(uid);
         if (u != null) {
 
             // Ignore if name not changed
@@ -121,7 +122,7 @@ public class UsersProcessor extends AbsModule implements Processor {
 
     @Verified
     private void onUserLocalNameChanged(int uid, String name) {
-        im.actor.core.entity.User u = users().getValue(uid);
+        UserEntity u = users().getValue(uid);
         if (u != null) {
 
             // Ignore if local name not changed
@@ -141,8 +142,8 @@ public class UsersProcessor extends AbsModule implements Processor {
     }
 
     @Verified
-    private void onUserAvatarChanged(int uid, Avatar avatar) {
-        im.actor.core.entity.User u = users().getValue(uid);
+    private void onUserAvatarChanged(int uid, ApiAvatar avatar) {
+        UserEntity u = users().getValue(uid);
         if (u != null) {
 
             // Ignore if avatar not changed
@@ -189,7 +190,7 @@ public class UsersProcessor extends AbsModule implements Processor {
     }
 
     @Verified
-    private void onUserDescChanged(im.actor.core.entity.User u) {
+    private void onUserDescChanged(UserEntity u) {
         context().getMessagesModule().getDialogsActor().send(
                 new DialogsActor.UserChanged(u));
         context().getContactsModule().getContactSyncActor()

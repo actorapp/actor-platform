@@ -12,8 +12,7 @@ import android.widget.TextView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.core.Configuration;
-import im.actor.core.entity.PublicGroup;
+import im.actor.core.entity.PublicGroupEntity;
 
 /**
  * Created by korka on 30.06.15.
@@ -84,7 +83,7 @@ public class PublicGroupSetView extends LinearLayout {
 
 
     public interface GroupClickListener {
-        void onClick(PublicGroup group);
+        void onClick(PublicGroupEntity group);
     }
 
     @Override
@@ -112,7 +111,7 @@ public class PublicGroupSetView extends LinearLayout {
             boolean isPortrait = config.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT;
             boolean useScrollView = data.getGroups().size() > (isPortrait ? MAX_GROUPS_IN_SET_LANDSCAPE : MAX_GROUPS_IN_SET_PARTRAIT);
 
-            for (final PublicGroup group : data.getGroups()) {
+            for (final PublicGroupEntity group : data.getGroups()) {
                 final PublicGroupCardView card = new PublicGroupCardView(context, group, counterType);
                 card.setOnClickListener(new OnClickListener() {
                     @Override

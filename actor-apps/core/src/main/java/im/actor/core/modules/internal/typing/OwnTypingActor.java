@@ -7,7 +7,7 @@ package im.actor.core.modules.internal.typing;
 import im.actor.core.api.OutPeer;
 import im.actor.core.api.TypingType;
 import im.actor.core.api.rpc.RequestTyping;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
@@ -39,7 +39,7 @@ public class OwnTypingActor extends ModuleActor {
     }
 
     @Verified
-    private void onTyping(Peer peer) {
+    private void onTyping(PeerEntity peer) {
         if (ActorTime.currentTime() - lastTypingTime < TYPING_DELAY) {
             return;
         }
@@ -65,13 +65,13 @@ public class OwnTypingActor extends ModuleActor {
     }
 
     public static class Typing {
-        private Peer peer;
+        private PeerEntity peer;
 
-        public Typing(Peer peer) {
+        public Typing(PeerEntity peer) {
             this.peer = peer;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
     }

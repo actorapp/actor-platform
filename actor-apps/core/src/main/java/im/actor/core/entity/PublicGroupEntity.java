@@ -1,6 +1,6 @@
 package im.actor.core.entity;
 
-public class PublicGroup {
+public class PublicGroupEntity {
 
     private int id;
     private long accessHash;
@@ -10,7 +10,7 @@ public class PublicGroup {
     private int members;
     private int friends;
 
-    public PublicGroup(int id, long accessHash, String title, Avatar avatar, String description, int members, int friends) {
+    public PublicGroupEntity(int id, long accessHash, String title, Avatar avatar, String description, int members, int friends) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -20,7 +20,7 @@ public class PublicGroup {
         this.friends = friends;
     }
 
-    public PublicGroup(im.actor.core.api.PublicGroup raw) {
+    public PublicGroupEntity(im.actor.core.api.PublicGroup raw) {
         this.id = raw.getId();
         this.accessHash = raw.getAccessHash();
         this.title = raw.getTitle();

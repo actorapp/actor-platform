@@ -7,6 +7,7 @@ package im.actor.core.entity.content;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.DocumentExPhoto;
 import im.actor.core.api.DocumentMessage;
 import im.actor.core.entity.FileReference;
@@ -40,7 +41,7 @@ public class PhotoContent extends DocumentContent {
                         reference.getFileName(),
                         "image/jpeg",
                         fastThumb != null ?
-                                new im.actor.core.api.FastThumb(
+                                new ApiFastThumb(
                                         fastThumb.getW(),
                                         fastThumb.getH(),
                                         fastThumb.getImage()) :

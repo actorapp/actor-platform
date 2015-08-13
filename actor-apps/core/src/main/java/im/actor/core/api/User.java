@@ -19,14 +19,14 @@ public class User extends BserObject {
     private long accessHash;
     private String name;
     private String localName;
-    private Sex sex;
-    private Avatar avatar;
-    private List<ContactRecord> contactInfo;
+    private ApiSex sex;
+    private ApiAvatar avatar;
+    private List<ApiContactRecord> contactInfo;
     private Boolean isBot;
     private String nick;
     private String about;
 
-    public User(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable Sex sex, @Nullable Avatar avatar, @NotNull List<ContactRecord> contactInfo, @Nullable Boolean isBot, @Nullable String nick, @Nullable String about) {
+    public User(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable ApiSex sex, @Nullable ApiAvatar avatar, @NotNull List<ApiContactRecord> contactInfo, @Nullable Boolean isBot, @Nullable String nick, @Nullable String about) {
         this.id = id;
         this.accessHash = accessHash;
         this.name = name;
@@ -62,17 +62,17 @@ public class User extends BserObject {
     }
 
     @Nullable
-    public Sex getSex() {
+    public ApiSex getSex() {
         return this.sex;
     }
 
     @Nullable
-    public Avatar getAvatar() {
+    public ApiAvatar getAvatar() {
         return this.avatar;
     }
 
     @NotNull
-    public List<ContactRecord> getContactInfo() {
+    public List<ApiContactRecord> getContactInfo() {
         return this.contactInfo;
     }
 
@@ -99,12 +99,12 @@ public class User extends BserObject {
         this.localName = values.optString(4);
         int val_sex = values.getInt(5, 0);
         if (val_sex != 0) {
-            this.sex = Sex.parse(val_sex);
+            this.sex = ApiSex.parse(val_sex);
         }
-        this.avatar = values.optObj(8, new Avatar());
-        List<ContactRecord> _contactInfo = new ArrayList<ContactRecord>();
+        this.avatar = values.optObj(8, new ApiAvatar());
+        List<ApiContactRecord> _contactInfo = new ArrayList<ApiContactRecord>();
         for (int i = 0; i < values.getRepeatedCount(12); i ++) {
-            _contactInfo.add(new ContactRecord());
+            _contactInfo.add(new ApiContactRecord());
         }
         this.contactInfo = values.getRepeatedObj(12, _contactInfo);
         this.isBot = values.optBool(11);

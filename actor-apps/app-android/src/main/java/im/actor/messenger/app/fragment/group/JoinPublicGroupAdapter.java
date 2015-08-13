@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.entity.PublicGroup;
+import im.actor.core.entity.PublicGroupEntity;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
@@ -29,22 +29,22 @@ import static im.actor.messenger.app.core.Core.messenger;
 /**
  * Created by ex3ndr on 07.10.14.
  */
-public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
-    private PublicGroup[] groupsToShow;
-    private PublicGroup[] allGroups;
-    private HashMap<String, PublicGroup> searchMap;
+public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroupEntity> {
+    private PublicGroupEntity[] groupsToShow;
+    private PublicGroupEntity[] allGroups;
+    private HashMap<String, PublicGroupEntity> searchMap;
     private String query;
     private int highlightColor;
 
-    public JoinPublicGroupAdapter(List<PublicGroup> groups, Context context) {
+    public JoinPublicGroupAdapter(List<PublicGroupEntity> groups, Context context) {
         super(context);
         highlightColor = context.getResources().getColor(R.color.primary);
 
-        this.allGroups = groups.toArray(new PublicGroup[groups.size()]);
+        this.allGroups = groups.toArray(new PublicGroupEntity[groups.size()]);
         this.groupsToShow = allGroups;
-        searchMap = new HashMap<String, PublicGroup>();
+        searchMap = new HashMap<String, PublicGroupEntity>();
         String groupTitle;
-        for (PublicGroup m : groups) {
+        for (PublicGroupEntity m : groups) {
             groupTitle = m.getTitle();
 
             searchMap.put(groupTitle.toLowerCase(), m);
@@ -54,8 +54,8 @@ public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
     }
 
 
-    public void updateGroups(Collection<PublicGroup> groups) {
-        this.groupsToShow = groups.toArray(new PublicGroup[groups.size()]);
+    public void updateGroups(Collection<PublicGroupEntity> groups) {
+        this.groupsToShow = groups.toArray(new PublicGroupEntity[groups.size()]);
         notifyDataSetChanged();
     }
 
@@ -67,12 +67,12 @@ public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
             }
             this.groupsToShow = allGroups;
         } else {
-            HashSet<PublicGroup> foundMembers = new HashSet<PublicGroup>();
+            HashSet<PublicGroupEntity> foundMembers = new HashSet<PublicGroupEntity>();
             for (String s : searchMap.keySet()) {
                 if (s.startsWith(q))
                     foundMembers.add(searchMap.get(s));
             }
-            this.groupsToShow = foundMembers.toArray(new PublicGroup[foundMembers.size()]);
+            this.groupsToShow = foundMembers.toArray(new PublicGroupEntity[foundMembers.size()]);
         }
         notifyDataSetChanged();
     }
@@ -84,7 +84,7 @@ public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
     }
 
     @Override
-    public PublicGroup getItem(int position) {
+    public PublicGroupEntity getItem(int position) {
         return groupsToShow[position];
     }
 
@@ -94,11 +94,11 @@ public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
     }
 
     @Override
-    protected ViewHolder<PublicGroup> createHolder(PublicGroup obj) {
+    protected ViewHolder<PublicGroupEntity> createHolder(PublicGroupEntity obj) {
         return new PublicGroupHolder();
     }
 
-    private class PublicGroupHolder extends ViewHolder<PublicGroup> {
+    private class PublicGroupHolder extends ViewHolder<PublicGroupEntity> {
 
         private TextView title;
         private TextView description;
@@ -106,10 +106,10 @@ public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
         private TextView friendsCount;
         private TextView friendsCountText;
         private AvatarView avatarView;
-        PublicGroup publicGroup;
+        PublicGroupEntity publicGroup;
 
         @Override
-        public View init(final PublicGroup data, ViewGroup viewGroup, Context context) {
+        public View init(final PublicGroupEntity data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_join_public_group_item, viewGroup, false);
             title = (TextView) res.findViewById(R.id.title);
             title.setTextColor(context.getResources().getColor(R.color.chats_title));
@@ -134,7 +134,7 @@ public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
         }
 
         @Override
-        public void bind(PublicGroup data, int position, Context context) {
+        public void bind(PublicGroupEntity data, int position, Context context) {
 
             publicGroup = data;
             avatarView.bind(data);

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-import im.actor.core.api.AvatarImage;
+import im.actor.core.api.ApiAvatarImage;
 import im.actor.core.api.FileLocation;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
@@ -31,8 +31,8 @@ public class ObsoleteAvatarImage extends BserObject {
     }
 
     @NotNull
-    public AvatarImage toApiAvatarImage() {
-        return new AvatarImage(new FileLocation(
+    public ApiAvatarImage toApiAvatarImage() {
+        return new ApiAvatarImage(new FileLocation(
                 fileReference.getFileId(),
                 fileReference.getAccessHash()),
                 width,

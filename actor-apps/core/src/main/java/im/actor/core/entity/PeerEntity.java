@@ -12,49 +12,49 @@ import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-public class Peer extends BserObject {
+public class PeerEntity extends BserObject {
 
-    public static final BserCreator<Peer> CREATOR = new BserCreator<Peer>() {
+    public static final BserCreator<PeerEntity> CREATOR = new BserCreator<PeerEntity>() {
         @Override
-        public Peer createInstance() {
-            return new Peer();
+        public PeerEntity createInstance() {
+            return new PeerEntity();
         }
     };
 
-    public static Peer fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new Peer(), data);
+    public static PeerEntity fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new PeerEntity(), data);
     }
 
-    public static Peer fromUniqueId(long uid) {
+    public static PeerEntity fromUniqueId(long uid) {
         int id = (int) (uid & 0xFFFFFFFFL);
         int type = (int) ((uid >> 32) & 0xFFFFFFFFL);
 
         switch (type) {
             default:
             case 0:
-                return new Peer(PeerType.PRIVATE, id);
+                return new PeerEntity(PeerTypeEntity.PRIVATE, id);
             case 1:
-                return new Peer(PeerType.GROUP, id);
+                return new PeerEntity(PeerTypeEntity.GROUP, id);
         }
     }
 
-    public static Peer user(int uid) {
-        return new Peer(PeerType.PRIVATE, uid);
+    public static PeerEntity user(int uid) {
+        return new PeerEntity(PeerTypeEntity.PRIVATE, uid);
     }
 
-    public static Peer group(int gid) {
-        return new Peer(PeerType.GROUP, gid);
+    public static PeerEntity group(int gid) {
+        return new PeerEntity(PeerTypeEntity.GROUP, gid);
     }
 
-    private PeerType peerType;
+    private PeerTypeEntity peerType;
     private int peerId;
 
-    public Peer(PeerType peerType, int peerId) {
+    public PeerEntity(PeerTypeEntity peerType, int peerId) {
         this.peerType = peerType;
         this.peerId = peerId;
     }
 
-    private Peer() {
+    private PeerEntity() {
 
     }
 
@@ -72,7 +72,7 @@ public class Peer extends BserObject {
         return ((long)peerId & 0xFFFFFFFFL)+ (((long) type & 0xFFFFFFFFL) << 32);
     }
 
-    public PeerType getPeerType() {
+    public PeerTypeEntity getPeerType() {
         return peerType;
     }
 
@@ -85,7 +85,7 @@ public class Peer extends BserObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Peer peer = (Peer) o;
+        PeerEntity peer = (PeerEntity) o;
 
         if (peerId != peer.peerId) return false;
         if (peerType != peer.peerType) return false;
@@ -106,10 +106,10 @@ public class Peer extends BserObject {
         switch (values.getInt(2)) {
             default:
             case 1:
-                peerType = PeerType.PRIVATE;
+                peerType = PeerTypeEntity.PRIVATE;
                 break;
             case 3:
-                peerType = PeerType.GROUP;
+                peerType = PeerTypeEntity.GROUP;
                 break;
         }
     }

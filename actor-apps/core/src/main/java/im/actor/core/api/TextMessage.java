@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 
-public class TextMessage extends Message {
+public class TextMessage extends ApiMessage {
 
     private String text;
     private List<Integer> mentions;

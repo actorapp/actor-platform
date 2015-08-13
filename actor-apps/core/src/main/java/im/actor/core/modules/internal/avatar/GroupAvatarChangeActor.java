@@ -15,7 +15,7 @@ import im.actor.core.api.rpc.ResponseEditGroupAvatar;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
 import im.actor.core.entity.FileReference;
-import im.actor.core.entity.Group;
+import im.actor.core.entity.GroupEntity;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
@@ -130,7 +130,7 @@ public class GroupAvatarChangeActor extends ModuleActor {
         currentTasks.put(gid, rid);
         tasksMap.put(rid, gid);
 
-        Group group = context().getGroupsModule().getGroups().getValue(gid);
+        GroupEntity group = context().getGroupsModule().getGroups().getValue(gid);
 
         GroupOutPeer outPeer = new GroupOutPeer(gid, group.getAccessHash());
 

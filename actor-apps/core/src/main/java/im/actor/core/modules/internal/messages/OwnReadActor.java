@@ -6,7 +6,7 @@ package im.actor.core.modules.internal.messages;
 
 import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.Message;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
@@ -17,7 +17,7 @@ public class OwnReadActor extends ModuleActor {
         super(context);
     }
 
-    public void onInMessage(Peer peer, Message message) {
+    public void onInMessage(PeerEntity peer, Message message) {
         // Detecting if message already read
         long readState = context().getMessagesModule().loadReadState(peer);
         if (message.getSortDate() <= readState) {
@@ -36,7 +36,7 @@ public class OwnReadActor extends ModuleActor {
                 hasUserMention);
     }
 
-    public void onMessageRead(Peer peer, long sortingDate) {
+    public void onMessageRead(PeerEntity peer, long sortingDate) {
         // Detecting if message already read
         long readState = context().getMessagesModule().loadReadState(peer);
         if (sortingDate <= readState) {
@@ -58,7 +58,7 @@ public class OwnReadActor extends ModuleActor {
         context().getNotificationsModule().onOwnRead(peer, sortingDate);
     }
 
-    public void onMessageReadByMe(Peer peer, long sortingDate) {
+    public void onMessageReadByMe(PeerEntity peer, long sortingDate) {
         long readState = context().getMessagesModule().loadReadState(peer);
         if (sortingDate <= readState) {
             // Already read
@@ -91,15 +91,15 @@ public class OwnReadActor extends ModuleActor {
     }
 
     public static class MessageReadByMe {
-        Peer peer;
+        PeerEntity peer;
         long sortDate;
 
-        public MessageReadByMe(Peer peer, long sortDate) {
+        public MessageReadByMe(PeerEntity peer, long sortDate) {
             this.peer = peer;
             this.sortDate = sortDate;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
 
@@ -109,15 +109,15 @@ public class OwnReadActor extends ModuleActor {
     }
 
     public static class MessageRead {
-        Peer peer;
+        PeerEntity peer;
         long sortingDate;
 
-        public MessageRead(Peer peer, long sortingDate) {
+        public MessageRead(PeerEntity peer, long sortingDate) {
             this.peer = peer;
             this.sortingDate = sortingDate;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
 
@@ -127,15 +127,15 @@ public class OwnReadActor extends ModuleActor {
     }
 
     public static class InMessage {
-        private Peer peer;
+        private PeerEntity peer;
         private Message message;
 
-        public InMessage(Peer peer, Message message) {
+        public InMessage(PeerEntity peer, Message message) {
             this.peer = peer;
             this.message = message;
         }
 
-        public Peer getPeer() {
+        public PeerEntity getPeer() {
             return peer;
         }
 

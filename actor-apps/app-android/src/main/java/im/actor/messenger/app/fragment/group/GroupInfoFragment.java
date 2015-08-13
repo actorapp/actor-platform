@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import im.actor.core.entity.GroupMember;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPhone;
@@ -128,11 +128,11 @@ public class GroupInfoFragment extends BaseFragment {
         // Settings
 
         final SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
-        isNotificationsEnabled.setChecked(messenger().isNotificationsEnabled(Peer.group(chatId)));
+        isNotificationsEnabled.setChecked(messenger().isNotificationsEnabled(PeerEntity.group(chatId)));
         isNotificationsEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                messenger().changeNotificationsEnabled(Peer.group(chatId), isChecked);
+                messenger().changeNotificationsEnabled(PeerEntity.group(chatId), isChecked);
             }
         });
         header.findViewById(R.id.notificationsCont).setOnClickListener(new View.OnClickListener() {

@@ -113,7 +113,7 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
     // MARK: Navigation
     
     private func navigateToMessagesWithPeerId(peerId: jint) {
-        navigateNext(ConversationViewController(peer: ACPeer.userWithInt(peerId)), removeCurrent: true)
+        navigateNext(ConversationViewController(peer: ACPeerEntity.userWithInt(peerId)), removeCurrent: true)
         MainAppTheme.navigation.applyStatusBar()
     }
     

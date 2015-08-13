@@ -247,37 +247,37 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
             
             var action = "SignUp";
             
-            execute(MSG.signUpCommandWithName(username, withSex: ACSexEnum_get_UNKNOWN(), withAvatar: avatarPath), successBlock: { (val) -> Void in
-                MSG.trackActionSuccess(action)
-                self.onAuthenticated()
-            }, failureBlock: { (val) -> Void in
-                
-                var message = "Unknwon Error"
-                var tag = "UNKNOWN"
-                
-                if let exception = val as? ACRpcException {
-                    tag = exception.getTag()
-                    if (tag == "PHONE_CODE_EXPIRED") {
-                        message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
-                    } else if (tag == "NAME_INVALID") {
-                        let screenSize = UIScreen.mainScreen().bounds.size
-                        let fieldWidth : CGFloat = isIPad
-                            ? (520)
-                            : (screenSize.width)
-                        self.shakeView(self.firstNameField, originalX: (screenSize.width - fieldWidth)/2+135.0)
-                        return
-                    } else {
-                        message = exception.getLocalizedMessage()
-                    }
-                } else if let exception = val as? JavaLangException {
-                    message = exception.getLocalizedMessage()
-                }
-                
-                MSG.trackActionError(action, withTag: tag, withMessage: message)
-                
-                var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
-                alertView.show()
-            })
+//            execute(MSG.signUpCommandWithName(username, withSex: ACSexEnum_get_UNKNOWN(), withAvatar: avatarPath), successBlock: { (val) -> Void in
+//                MSG.trackActionSuccess(action)
+//                self.onAuthenticated()
+//            }, failureBlock: { (val) -> Void in
+//                
+//                var message = "Unknwon Error"
+//                var tag = "UNKNOWN"
+//                
+//                if let exception = val as? ACRpcException {
+//                    tag = exception.getTag()
+//                    if (tag == "PHONE_CODE_EXPIRED") {
+//                        message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
+//                    } else if (tag == "NAME_INVALID") {
+//                        let screenSize = UIScreen.mainScreen().bounds.size
+//                        let fieldWidth : CGFloat = isIPad
+//                            ? (520)
+//                            : (screenSize.width)
+//                        self.shakeView(self.firstNameField, originalX: (screenSize.width - fieldWidth)/2+135.0)
+//                        return
+//                    } else {
+//                        message = exception.getLocalizedMessage()
+//                    }
+//                } else if let exception = val as? JavaLangException {
+//                    message = exception.getLocalizedMessage()
+//                }
+//                
+//                MSG.trackActionError(action, withTag: tag, withMessage: message)
+//                
+//                var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
+//                alertView.show()
+//            })
             
         }
     }

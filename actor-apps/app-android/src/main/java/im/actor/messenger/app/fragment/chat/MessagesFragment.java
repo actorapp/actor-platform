@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 
 /**
  * Created by ex3ndr on 01.09.14.
@@ -12,7 +12,7 @@ import im.actor.core.entity.Peer;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MessagesFragment extends BaseMessagesFragment {
 
-    public static MessagesFragment create(Peer peer) {
+    public static MessagesFragment create(PeerEntity peer) {
         return new MessagesFragment(peer);
     }
 
@@ -21,7 +21,7 @@ public class MessagesFragment extends BaseMessagesFragment {
     }
 
     @SuppressLint("ValidFragment")
-    public MessagesFragment(Peer peer) {
+    public MessagesFragment(PeerEntity peer) {
         super(peer);
     }
 }

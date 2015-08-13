@@ -6,6 +6,7 @@ package im.actor.core.entity.compat.content;
 
 import java.io.IOException;
 
+import im.actor.core.api.ApiFastThumb;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -33,8 +34,8 @@ public class ObsoleteFastThumb extends BserObject {
         return image;
     }
 
-    public im.actor.core.api.FastThumb toApiFastThumb() {
-        return new im.actor.core.api.FastThumb(w, h, image);
+    public ApiFastThumb toApiFastThumb() {
+        return new ApiFastThumb(w, h, image);
     }
 
     public LocalFastThumb toFastThumb() {

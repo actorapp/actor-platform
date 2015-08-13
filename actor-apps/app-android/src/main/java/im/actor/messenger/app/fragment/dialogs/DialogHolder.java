@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Dialog;
-import im.actor.core.entity.PeerType;
+import im.actor.core.entity.PeerTypeEntity;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
@@ -210,7 +210,7 @@ public class DialogHolder extends BindedViewHolder {
         title.setText(data.getDialogTitle());
 
         Drawable left = null;
-        if (data.getPeer().getPeerType() == PeerType.GROUP) {
+        if (data.getPeer().getPeerType() == PeerTypeEntity.GROUP) {
             left = new TintDrawable(R.drawable.dialogs_group, R.color.chats_title, context);
         }
         title.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
@@ -255,7 +255,7 @@ public class DialogHolder extends BindedViewHolder {
             groupTypingListener = null;
         }
 
-        if (data.getPeer().getPeerType() == PeerType.PRIVATE) {
+        if (data.getPeer().getPeerType() == PeerTypeEntity.PRIVATE) {
             bindedUid = data.getPeer().getPeerId();
             privateTypingListener = new ValueChangedListener<Boolean>() {
                 @Override
@@ -270,7 +270,7 @@ public class DialogHolder extends BindedViewHolder {
                 }
             };
             messenger().getTyping(bindedUid).subscribe(privateTypingListener);
-        } else if (data.getPeer().getPeerType() == PeerType.GROUP) {
+        } else if (data.getPeer().getPeerType() == PeerTypeEntity.GROUP) {
             bindedGid = data.getPeer().getPeerId();
             groupTypingListener = new ValueChangedListener<int[]>() {
                 @Override

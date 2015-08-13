@@ -10,7 +10,7 @@ import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 import im.actor.core.entity.content.AbsContent;
 
 public class PendingMessage extends BserObject {
@@ -19,12 +19,12 @@ public class PendingMessage extends BserObject {
         return Bser.parse(new PendingMessage(), data);
     }
 
-    private Peer peer;
+    private PeerEntity peer;
     private long rid;
     private AbsContent content;
     private boolean isError;
 
-    public PendingMessage(Peer peer, long rid, AbsContent content) {
+    public PendingMessage(PeerEntity peer, long rid, AbsContent content) {
         this.peer = peer;
         this.rid = rid;
         this.content = content;
@@ -34,7 +34,7 @@ public class PendingMessage extends BserObject {
 
     }
 
-    public Peer getPeer() {
+    public PeerEntity getPeer() {
         return peer;
     }
 
@@ -52,7 +52,7 @@ public class PendingMessage extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = Peer.fromUniqueId(values.getLong(1));
+        peer = PeerEntity.fromUniqueId(values.getLong(1));
         rid = values.getLong(2);
         content = AbsContent.parse(values.getBytes(3));
         isError = values.getBool(4, false);

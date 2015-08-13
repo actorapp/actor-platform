@@ -4,16 +4,16 @@
 
 package im.actor.core.entity.content.internal;
 
-import im.actor.core.api.Message;
+import im.actor.core.api.ApiMessage;
 
 public class ContentRemoteContainer extends AbsContentContainer {
-    private Message message;
+    private ApiMessage message;
 
-    public ContentRemoteContainer(Message message) {
+    public ContentRemoteContainer(ApiMessage message) {
         this.message = message;
     }
 
-    public Message getMessage() {
+    public ApiMessage getMessage() {
         return message;
     }
 }

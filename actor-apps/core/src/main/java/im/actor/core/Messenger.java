@@ -12,13 +12,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiSex;
 import im.actor.core.api.AuthSession;
 import im.actor.core.entity.FileReference;
-import im.actor.core.entity.Group;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.PublicGroup;
+import im.actor.core.entity.GroupEntity;
+import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.PublicGroupEntity;
 import im.actor.core.entity.Sex;
-import im.actor.core.entity.User;
+import im.actor.core.entity.UserEntity;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.Modules;
@@ -171,7 +172,7 @@ public class Messenger {
     @NotNull
     @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
     public Command<AuthState> signUp(String name, Sex sex, String avatarPath) {
-        return modules.getAuthModule().signUp(name, im.actor.core.api.Sex.UNKNOWN, avatarPath);
+        return modules.getAuthModule().signUp(name, ApiSex.UNKNOWN, avatarPath);
     }
 
     /**
@@ -245,7 +246,7 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("getUsers")
-    public MVVMCollection<User, UserVM> getUsers() {
+    public MVVMCollection<UserEntity, UserVM> getUsers() {
         if (modules.getUsersModule() == null) {
             return null;
         }
@@ -272,7 +273,7 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("getGroups")
-    public MVVMCollection<Group, GroupVM> getGroups() {
+    public MVVMCollection<GroupEntity, GroupVM> getGroups() {
         if (modules.getGroupsModule() == null) {
             return null;
         }
@@ -393,7 +394,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     @ObjectiveCName("onConversationOpenWithPeer:")
-    public void onConversationOpen(@NotNull Peer peer) {
+    public void onConversationOpen(@NotNull PeerEntity peer) {
         modules.getAnalyticsModule().trackChatOpen(peer);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(peer);
@@ -408,7 +409,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     @ObjectiveCName("onConversationClosedWithPeer:")
-    public void onConversationClosed(@NotNull Peer peer) {
+    public void onConversationClosed(@NotNull PeerEntity peer) {
         modules.getAnalyticsModule().trackChatClosed(peer);
         if (modules.getPresenceModule() != null) {
             modules.getNotificationsModule().onConversationClose(peer);
@@ -424,7 +425,7 @@ public class Messenger {
     public void onProfileOpen(int uid) {
         modules.getAnalyticsModule().trackProfileOpen(uid);
         if (modules.getPresenceModule() != null) {
-            modules.getPresenceModule().subscribe(Peer.user(uid));
+            modules.getPresenceModule().subscribe(PeerEntity.user(uid));
         }
     }
 
@@ -445,7 +446,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     @ObjectiveCName("onTypingWithPeer:")
-    public void onTyping(@NotNull Peer peer) {
+    public void onTyping(@NotNull PeerEntity peer) {
         modules.getTypingModule().onTyping(peer);
     }
 
@@ -499,7 +500,7 @@ public class Messenger {
      * @param mentions     user's mentions
      */
     @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:withMentions:autoDetect:")
-    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText,
+    public void sendMessage(@NotNull PeerEntity peer, @NotNull String text, @Nullable String markDownText,
                             @Nullable ArrayList<Integer> mentions, boolean autoDetect) {
         modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions, autoDetect);
     }
@@ -513,7 +514,7 @@ public class Messenger {
      * @param mentions     user's mentions
      */
     @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:withMentions:")
-    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText,
+    public void sendMessage(@NotNull PeerEntity peer, @NotNull String text, @Nullable String markDownText,
                             @Nullable ArrayList<Integer> mentions) {
         modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions, false);
     }
@@ -526,7 +527,7 @@ public class Messenger {
      * @param markDownText message markdown text
      */
     @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:")
-    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText) {
+    public void sendMessage(@NotNull PeerEntity peer, @NotNull String text, @Nullable String markDownText) {
         sendMessage(peer, text, markDownText, null, false);
     }
 
@@ -538,7 +539,7 @@ public class Messenger {
      * @param mentions user's mentions
      */
     @ObjectiveCName("sendMessageWithPeer:withText:withMentions:")
-    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable ArrayList<Integer> mentions) {
+    public void sendMessage(@NotNull PeerEntity peer, @NotNull String text, @Nullable ArrayList<Integer> mentions) {
         sendMessage(peer, text, null, mentions, false);
     }
 
@@ -549,7 +550,7 @@ public class Messenger {
      * @param text message text
      */
     @ObjectiveCName("sendMessageWithPeer:withText:")
-    public void sendMessage(@NotNull Peer peer, @NotNull String text) {
+    public void sendMessage(@NotNull PeerEntity peer, @NotNull String text) {
         sendMessage(peer, text, null, null, false);
     }
 
@@ -560,7 +561,7 @@ public class Messenger {
      * @param text message text
      */
     @ObjectiveCName("sendMessageWithMentionsDetect:withText:")
-    public void sendMessageWithMentionsDetect(@NotNull Peer peer, @NotNull String text) {
+    public void sendMessageWithMentionsDetect(@NotNull PeerEntity peer, @NotNull String text) {
         sendMessage(peer, text, null, null, true);
     }
 
@@ -575,7 +576,7 @@ public class Messenger {
      * @param descriptor File Descriptor
      */
     @ObjectiveCName("sendPhotoWithPeer:withName:withW:withH:withThumb:withDescriptor:")
-    public void sendPhoto(@NotNull Peer peer, @NotNull String fileName,
+    public void sendPhoto(@NotNull PeerEntity peer, @NotNull String fileName,
                           int w, int h, @Nullable FastThumb fastThumb,
                           @NotNull String descriptor) {
         modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, descriptor);
@@ -593,7 +594,7 @@ public class Messenger {
      * @param descriptor File Descriptor
      */
     @ObjectiveCName("sendVideoWithPeer:withName:withW:withH:withDuration:withThumb:withDescriptor:")
-    public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
+    public void sendVideo(PeerEntity peer, String fileName, int w, int h, int duration,
                           FastThumb fastThumb, String descriptor) {
         modules.getMessagesModule().sendVideo(peer, fileName, w, h, duration, fastThumb, descriptor);
     }
@@ -607,7 +608,7 @@ public class Messenger {
      * @param descriptor File Descriptor
      */
     @ObjectiveCName("sendDocumentWithPeer:withName:withMime:withDescriptor:")
-    public void sendDocument(Peer peer, String fileName, String mimeType, String descriptor) {
+    public void sendDocument(PeerEntity peer, String fileName, String mimeType, String descriptor) {
         sendDocument(peer, fileName, mimeType, null, descriptor);
     }
 
@@ -621,7 +622,7 @@ public class Messenger {
      * @param fastThumb  FastThumb of preview
      */
     @ObjectiveCName("sendDocumentWithPeer:withName:withMime:withThumb:withDescriptor:")
-    public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
+    public void sendDocument(PeerEntity peer, String fileName, String mimeType, FastThumb fastThumb,
                              String descriptor) {
         modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, descriptor);
     }
@@ -633,7 +634,7 @@ public class Messenger {
      * @param rids rids of messages
      */
     @ObjectiveCName("deleteMessagesWithPeer:withRids:")
-    public void deleteMessages(Peer peer, long[] rids) {
+    public void deleteMessages(PeerEntity peer, long[] rids) {
         modules.getMessagesModule().deleteMessages(peer, rids);
     }
 
@@ -644,7 +645,7 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("deleteChatCommandWithPeer:")
-    public Command<Boolean> deleteChat(Peer peer) {
+    public Command<Boolean> deleteChat(PeerEntity peer) {
         return modules.getMessagesModule().deleteChat(peer);
     }
 
@@ -655,7 +656,7 @@ public class Messenger {
      * @return Command for execution
      */
     @ObjectiveCName("clearChatCommandWithPeer:")
-    public Command<Boolean> clearChat(Peer peer) {
+    public Command<Boolean> clearChat(PeerEntity peer) {
         return modules.getMessagesModule().clearChat(peer);
     }
 
@@ -666,7 +667,7 @@ public class Messenger {
      * @param draft message draft
      */
     @ObjectiveCName("saveDraftWithPeer:withDraft:")
-    public void saveDraft(Peer peer, String draft) {
+    public void saveDraft(PeerEntity peer, String draft) {
         modules.getMessagesModule().saveDraft(peer, draft);
     }
 
@@ -678,7 +679,7 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("loadDraftWithPeer:")
-    public String loadDraft(Peer peer) {
+    public String loadDraft(PeerEntity peer) {
         return modules.getMessagesModule().loadDraft(peer);
     }
 
@@ -902,7 +903,7 @@ public class Messenger {
      */
     @Nullable
     @ObjectiveCName("listPublicGroups")
-    public Command<List<PublicGroup>> listPublicGroups() {
+    public Command<List<PublicGroupEntity>> listPublicGroups() {
         return modules.getGroupsModule().listPublicGroups();
     }
 
@@ -1292,7 +1293,7 @@ public class Messenger {
      * @return is notifications enabled
      */
     @ObjectiveCName("isNotificationsEnabledWithPeer:")
-    public boolean isNotificationsEnabled(Peer peer) {
+    public boolean isNotificationsEnabled(PeerEntity peer) {
         return modules.getSettingsModule().isNotificationsEnabled(peer);
     }
 
@@ -1303,7 +1304,7 @@ public class Messenger {
      * @param val  is notifications enabled
      */
     @ObjectiveCName("changeNotificationsEnabledWithPeer:withValue:")
-    public void changeNotificationsEnabled(Peer peer, boolean val) {
+    public void changeNotificationsEnabled(PeerEntity peer, boolean val) {
         modules.getSettingsModule().changeNotificationsEnabled(peer, val);
     }
 
@@ -1605,22 +1606,22 @@ public class Messenger {
     // Track message send
 
     @ObjectiveCName("trackTextSendWithPeer:")
-    public void trackTextSend(Peer peer) {
+    public void trackTextSend(PeerEntity peer) {
         modules.getAnalyticsModule().trackTextSend(peer);
     }
 
     @ObjectiveCName("trackPhotoSendWithPeer:")
-    public void trackPhotoSend(Peer peer) {
+    public void trackPhotoSend(PeerEntity peer) {
         modules.getAnalyticsModule().trackPhotoSend(peer);
     }
 
     @ObjectiveCName("trackVideoSendWithPeer:")
-    public void trackVideoSend(Peer peer) {
+    public void trackVideoSend(PeerEntity peer) {
         modules.getAnalyticsModule().trackVideoSend(peer);
     }
 
     @ObjectiveCName("trackDocumentSendWithPeer:")
-    public void trackDocumentSend(Peer peer) {
+    public void trackDocumentSend(PeerEntity peer) {
         modules.getAnalyticsModule().trackDocumentSend(peer);
     }
 

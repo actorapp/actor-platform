@@ -5,18 +5,18 @@
 package im.actor.core.modules.updates.internal;
 
 import im.actor.core.api.rpc.ResponseLoadHistory;
-import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerEntity;
 
 public class MessagesHistoryLoaded extends InternalUpdate {
-    private Peer peer;
+    private PeerEntity peer;
     private ResponseLoadHistory loadHistory;
 
-    public MessagesHistoryLoaded(Peer peer, ResponseLoadHistory loadHistory) {
+    public MessagesHistoryLoaded(PeerEntity peer, ResponseLoadHistory loadHistory) {
         this.peer = peer;
         this.loadHistory = loadHistory;
     }
 
-    public Peer getPeer() {
+    public PeerEntity getPeer() {
         return peer;
     }
 

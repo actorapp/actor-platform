@@ -4,15 +4,20 @@
 
 package im.actor.core.modules.internal.messages.entity;
 
-import im.actor.core.entity.Group;
+import im.actor.core.api.ApiFastThumb;
+import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiMessageState;
+import im.actor.core.api.ApiPeer;
+import im.actor.core.api.ApiPeerType;
+import im.actor.core.entity.GroupEntity;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.Peer;
-import im.actor.core.entity.PeerType;
+import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.PeerTypeEntity;
 import im.actor.core.entity.content.FastThumb;
 
 public class EntityConverter {
 
-    public static MessageState convert(im.actor.core.api.MessageState state) {
+    public static MessageState convert(ApiMessageState state) {
         if (state == null) {
             return MessageState.UNKNOWN;
         }
@@ -35,26 +40,26 @@ public class EntityConverter {
 //        return new Avatar(avatar);
 //    }
 
-    public static Group convert(im.actor.core.api.Group group) {
-        return new Group(group);
+    public static GroupEntity convert(ApiGroup group) {
+        return new GroupEntity(group);
     }
 
-    public static PeerType convert(im.actor.core.api.PeerType peerType) {
+    public static PeerTypeEntity convert(ApiPeerType peerType) {
         switch (peerType) {
             case GROUP:
-                return PeerType.GROUP;
+                return PeerTypeEntity.GROUP;
             default:
             case PRIVATE:
-                return PeerType.PRIVATE;
+                return PeerTypeEntity.PRIVATE;
         }
     }
 
-    public static Peer convert(im.actor.core.api.Peer peer) {
-        return new Peer(convert(peer.getType()), peer.getId());
+    public static PeerEntity convert(ApiPeer peer) {
+        return new PeerEntity(convert(peer.getType()), peer.getId());
     }
 
 
-    public static FastThumb convert(im.actor.core.api.FastThumb fastThumb) {
+    public static FastThumb convert(ApiFastThumb fastThumb) {
         if (fastThumb == null) {
             return null;
         }

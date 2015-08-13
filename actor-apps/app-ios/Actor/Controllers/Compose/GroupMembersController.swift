@@ -59,7 +59,7 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
             if self.groupImage != nil {
                 MSG.changeGroupAvatar(gid, image: self.groupImage!)
             }
-            self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: true)
+            self.navigateNext(ConversationViewController(peer: ACPeerEntity.groupWithInt(gid)), removeCurrent: true)
         }) { (val) -> Void in
             
         }

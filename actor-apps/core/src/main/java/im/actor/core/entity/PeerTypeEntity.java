@@ -4,6 +4,6 @@
 
 package im.actor.core.entity;
 
-public enum PeerType {
+public enum PeerTypeEntity {
     PRIVATE, GROUP
 }
