@@ -1,19 +1,15 @@
-import _ from 'lodash';
-
 import React from 'react';
-import { PureRenderMixin } from 'react/addons';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
 
-import memoize from 'memoizee';
 import classnames from 'classnames';
-import emojify from 'emojify.js';
-import hljs from 'highlight.js';
-import marked from 'marked';
-import emojiCharacters from 'emoji-named-characters';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
 import AvatarItem from 'components/common/AvatarItem.react';
+import Text from './Text.react';
 import Image from './Image.react';
+import Document from './Document.react';
 import State from './State.react';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
@@ -22,53 +18,54 @@ import { MessageContentTypes } from 'constants/ActorAppConstants';
 let lastMessageSenderId = null,
     lastMessageContentType = null;
 
-var MessageItem = React.createClass({
-  displayName: 'MessageItem',
+const {addons: { PureRenderMixin }} = addons;
 
-  propTypes: {
+@ReactMixin.decorate(PureRenderMixin)
+class MessageItem extends React.Component {
+  static propTypes = {
     peer: React.PropTypes.object.isRequired,
     message: React.PropTypes.object.isRequired,
     newDay: React.PropTypes.bool,
     index: React.PropTypes.number,
     onVisibilityChange: React.PropTypes.func
-  },
+  };
 
-  mixins: [PureRenderMixin],
+  constructor(props) {
+    super(props);
 
-  getInitialState() {
-    return {
+    this.state = {
       isActionsShown: false
     };
-  },
+  }
 
-  onClick() {
+  onClick = () => {
     DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
-  },
+  };
 
-  onVisibilityChange(isVisible) {
+  onVisibilityChange = (isVisible) => {
     this.props.onVisibilityChange(this.props.message, isVisible);
-  },
+  };
 
-  onDelete() {
+  onDelete = () => {
     DialogActionCreators.deleteMessages(this.props.peer, [this.props.message.rid]);
-  },
+  };
 
-  showActions() {
+  showActions = () => {
     this.setState({isActionsShown: true});
     document.addEventListener('click', this.hideActions, false);
-  },
+  };
 
-  hideActions() {
+  hideActions = () => {
     this.setState({isActionsShown: false});
     document.removeEventListener('click', this.hideActions, false);
-  },
+  };
 
   render() {
-    const message = this.props.message;
-    const newDay = this.props.newDay;
+    const { message, newDay } = this.props;
     const isFirstMessage = this.props.index === 0;
 
     let header,
+        messageContent,
         visibilitySensor,
         leftBlock;
 
@@ -122,6 +119,33 @@ var MessageItem = React.createClass({
       header = null;
     }
 
+    switch (message.content.content) {
+      case MessageContentTypes.SERVICE:
+        messageContent = <div className="message__content message__content--service">{message.content.text}</div>;
+        break;
+      case MessageContentTypes.TEXT:
+        messageContent = (
+          <Text content={message.content}
+                className="message__content message__content--text"/>
+        );
+        break;
+      case MessageContentTypes.PHOTO:
+        messageContent = (
+          <Image content={message.content}
+                 сlassName="message__content message__content--photo"
+                 loadedClassName="message__content--photo--loaded"/>
+        );
+        break;
+      case MessageContentTypes.DOCUMENT:
+        messageContent = (
+          <Document content={message.content}
+                    className="message__content message__content--document"/>
+        );
+        break;
+      default:
+        return null;
+    }
+
     if (this.props.onVisibilityChange) {
       visibilitySensor = <VisibilitySensor onChange={this.onVisibilityChange}/>;
     }
@@ -134,7 +158,7 @@ var MessageItem = React.createClass({
         {leftBlock}
         <div className="message__body col-xs">
           {header}
-          <MessageItem.Content content={message.content}/>
+          {messageContent}
           {visibilitySensor}
         </div>
         <div className="message__actions">
@@ -161,135 +185,6 @@ var MessageItem = React.createClass({
       </li>
     );
   }
-});
-
-
-emojify.setConfig({
-  mode: 'img',
-  img_dir: 'assets/img/emoji' // eslint-disable-line
-});
-
-const mdRenderer = new marked.Renderer();
-// target _blank for links
-mdRenderer.link = function(href, title, text) {
-  let external, newWindow, out;
-  external = /^https?:\/\/.+$/.test(href);
-  newWindow = external || title === 'newWindow';
-  out = '<a href=\"' + href + '\"';
-  if (newWindow) {
-    out += ' target="_blank"';
-  }
-  if (title && title !== 'newWindow') {
-    out += ' title=\"' + title + '\"';
-  }
-  return (out + '>' + text + '</a>');
-};
-
-const markedOptions = {
-  sanitize: true,
-  breaks: true,
-  highlight: function (code) {
-    return hljs.highlightAuto(code).value;
-  },
-  renderer: mdRenderer
-};
-
-
-const inversedEmojiCharacters = _.invert(_.mapValues(emojiCharacters, (e) => e.character));
-
-const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), function(name) {
-  return name.replace(/\+/g, '\\+');
-});
-
-const emojiRegexp = new RegExp('(' + emojiVariants.join('|') + ')', 'gi');
-
-const processText = function(text) {
-  let markedText = marked(text, markedOptions);
-
-  // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
-  const noPTag = markedText.replace(/<p>/g, '<p> ');
-
-  let emojifiedText = emojify
-    .replace(noPTag.replace(emojiRegexp, (match) => ':' + inversedEmojiCharacters[match] + ':'));
-
-  return emojifiedText;
-};
-
-const memoizedProcessText = memoize(processText, {
-    length: 1000,
-    maxAge: 60 * 60 * 1000,
-    max: 10000
-});
-
-MessageItem.Content = React.createClass({
-  propTypes: {
-    content: React.PropTypes.object.isRequired
-  },
-
-  render() {
-    const content = this.props.content;
-
-    // TODO: move all types to subcomponents
-
-    let contentClassName = classnames('message__content', {
-      'message__content--service': content.content === MessageContentTypes.SERVICE,
-      'message__content--text': content.content === MessageContentTypes.TEXT,
-      'message__content--document': content.content === MessageContentTypes.DOCUMENT,
-      'message__content--unsupported': content.content === MessageContentTypes.UNSUPPORTED
-    });
-
-    switch (content.content) {
-      case 'service':
-        return (
-          <div className={contentClassName}>
-            {content.text}
-          </div>
-        );
-      case 'text':
-        return (
-          <div className={contentClassName}
-               dangerouslySetInnerHTML={{__html: memoizedProcessText(content.text)}}>
-          </div>
-        );
-      case 'photo':
-        return (
-          <Image content={content}
-                 loadingClassName="message__content--photo"
-                 loadedClassName="message__content--photo message__content--photo--loaded"/>
-        );
-      case 'document':
-        contentClassName = classnames(contentClassName, 'row');
-
-        let availableActions;
-        if (content.isUploading === true) {
-          availableActions = <span>Loading...</span>;
-        } else {
-          availableActions = <a href={content.fileUrl}>Open</a>;
-        }
-
-        return (
-          <div className={contentClassName}>
-            <div className="document row">
-              <div className="document__icon">
-                <i className="material-icons">attach_file</i>
-              </div>
-              <div className="col-xs">
-                <span className="document__filename">{content.fileName}</span>
-                <div className="document__meta">
-                  <span className="document__meta__size">{content.fileSize}</span>
-                  <span className="document__meta__ext">{content.fileExtension}</span>
-                </div>
-                <div className="document__actions">
-                  {availableActions}
-                </div>
-              </div>
-            </div>
-            <div className="col-xs"></div>
-          </div>
-        );
-      default:
-    }
-  }
-});
+}
 
 export default MessageItem;
