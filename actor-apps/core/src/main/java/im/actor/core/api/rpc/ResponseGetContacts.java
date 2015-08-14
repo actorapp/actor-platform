@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,10 +22,10 @@ public class ResponseGetContacts extends Response {
         return Bser.parse(new ResponseGetContacts(), data);
     }
 
-    private List<User> users;
+    private List<ApiUser> users;
     private boolean isNotChanged;
 
-    public ResponseGetContacts(@NotNull List<User> users, boolean isNotChanged) {
+    public ResponseGetContacts(@NotNull List<ApiUser> users, boolean isNotChanged) {
         this.users = users;
         this.isNotChanged = isNotChanged;
     }
@@ -33,7 +35,7 @@ public class ResponseGetContacts extends Response {
     }
 
     @NotNull
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return this.users;
     }
 
@@ -43,9 +45,9 @@ public class ResponseGetContacts extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<User> _users = new ArrayList<User>();
+        List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _users.add(new User());
+            _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(1, _users);
         this.isNotChanged = values.getBool(2);

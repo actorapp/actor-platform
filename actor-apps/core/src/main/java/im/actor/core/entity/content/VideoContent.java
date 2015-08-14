@@ -4,9 +4,9 @@
 
 package im.actor.core.entity.content;
 
+import im.actor.core.api.ApiDocumentExVideo;
+import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiFastThumb;
-import im.actor.core.api.DocumentExVideo;
-import im.actor.core.api.DocumentMessage;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.content.internal.ContentLocalContainer;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
@@ -30,7 +30,7 @@ public class VideoContent extends DocumentContent {
     public static VideoContent createRemoteVideo(FileReference reference, int w, int h,
                                                  int duration, FastThumb fastThumb) {
         return new VideoContent(new ContentRemoteContainer(
-                new DocumentMessage(reference.getFileId(),
+                new ApiDocumentMessage(reference.getFileId(),
                         reference.getAccessHash(),
                         reference.getFileSize(),
                         reference.getFileName(),
@@ -41,7 +41,7 @@ public class VideoContent extends DocumentContent {
                                         fastThumb.getH(),
                                         fastThumb.getImage()) :
                                 null,
-                        new DocumentExVideo(w, h, duration))));
+                        new ApiDocumentExVideo(w, h, duration))));
     }
 
     private int duration;
@@ -50,8 +50,8 @@ public class VideoContent extends DocumentContent {
 
     public VideoContent(ContentRemoteContainer contentContainer) {
         super(contentContainer);
-        DocumentExVideo video =
-                (DocumentExVideo) ((DocumentMessage) contentContainer.getMessage()).getExt();
+        ApiDocumentExVideo video =
+                (ApiDocumentExVideo) ((ApiDocumentMessage) contentContainer.getMessage()).getExt();
         w = video.getW();
         h = video.getH();
         duration = video.getDuration();

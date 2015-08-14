@@ -4,7 +4,7 @@
 
 package im.actor.core.modules.internal.file;
 
-import im.actor.core.api.FileLocation;
+import im.actor.core.api.ApiFileLocation;
 import im.actor.core.api.rpc.RequestGetFileUrl;
 import im.actor.core.api.rpc.ResponseGetFileUrl;
 import im.actor.core.entity.FileReference;
@@ -94,7 +94,7 @@ public class DownloadTask extends ModuleActor {
         if (LOG) {
             Log.d(TAG, "Loading url...");
         }
-        request(new RequestGetFileUrl(new FileLocation(fileReference.getFileId(),
+        request(new RequestGetFileUrl(new ApiFileLocation(fileReference.getFileId(),
                 fileReference.getAccessHash())), new RpcCallback<ResponseGetFileUrl>() {
             @Override
             public void onResult(ResponseGetFileUrl response) {

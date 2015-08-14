@@ -37,7 +37,7 @@ import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 
@@ -201,11 +201,11 @@ public class ProfileFragment extends BaseFragment {
 
         View notificationContainter = res.findViewById(R.id.notificationsCont);
         final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
-        notificationEnable.setChecked(messenger().isNotificationsEnabled(PeerEntity.user(uid)));
+        notificationEnable.setChecked(messenger().isNotificationsEnabled(Peer.user(uid)));
         notificationEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                messenger().changeNotificationsEnabled(PeerEntity.user(uid), isChecked);
+                messenger().changeNotificationsEnabled(Peer.user(uid), isChecked);
             }
         });
         notificationContainter.setOnClickListener(new View.OnClickListener() {

@@ -14,24 +14,24 @@ import java.util.List;
 import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
-import im.actor.core.api.DocumentEx;
-import im.actor.core.api.DocumentExPhoto;
-import im.actor.core.api.DocumentExVideo;
-import im.actor.core.api.DocumentMessage;
-import im.actor.core.api.OutPeer;
-import im.actor.core.api.TextMessage;
+import im.actor.core.api.ApiDocumentEx;
+import im.actor.core.api.ApiDocumentExPhoto;
+import im.actor.core.api.ApiDocumentExVideo;
+import im.actor.core.api.ApiDocumentMessage;
+import im.actor.core.api.ApiOutPeer;
+import im.actor.core.api.ApiTextMessage;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestSendMessage;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.entity.FileReference;
-import im.actor.core.entity.GroupEntity;
+import im.actor.core.entity.Group;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.PeerTypeEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
+import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FastThumb;
@@ -116,7 +116,7 @@ public class SenderActor extends ModuleActor {
 
     // Sending text
 
-    public void doSendText(@NotNull PeerEntity peer, @NotNull String text,
+    public void doSendText(@NotNull Peer peer, @NotNull String text,
                            @Nullable ArrayList<Integer> mentions, @Nullable String markDownText,
                            boolean autoDetect) {
 
@@ -128,11 +128,11 @@ public class SenderActor extends ModuleActor {
 
         if (autoDetect) {
             mentions = new ArrayList<Integer>();
-            if (peer.getPeerType() == PeerTypeEntity.GROUP) {
-                GroupEntity group = getGroup(peer.getPeerId());
+            if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = getGroup(peer.getPeerId());
                 String lowText = text.toLowerCase();
                 for (GroupMember member : group.getMembers()) {
-                    UserEntity user = getUser(member.getUid());
+                    User user = getUser(member.getUid());
                     if (user.getNick() != null) {
                         String nick = "@" + user.getNick().toLowerCase();
                         // TODO: Better filtering
@@ -161,7 +161,7 @@ public class SenderActor extends ModuleActor {
 
     // Sending documents
 
-    public void doSendDocument(PeerEntity peer, String fileName, String mimeType, int fileSize,
+    public void doSendDocument(Peer peer, String fileName, String mimeType, int fileSize,
                                FastThumb fastThumb, String descriptor) {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
@@ -178,7 +178,7 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor, fileName);
     }
 
-    public void doSendPhoto(PeerEntity peer, FastThumb fastThumb, String descriptor, String fileName,
+    public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
                             int fileSize, int w, int h) {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
@@ -194,7 +194,7 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor, fileName);
     }
 
-    public void doSendVideo(PeerEntity peer, String fileName, int w, int h, int duration,
+    public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
                             FastThumb fastThumb, String descriptor, int fileSize) {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
@@ -257,8 +257,8 @@ public class SenderActor extends ModuleActor {
 
     // Sending content
 
-    private void performSendContent(final PeerEntity peer, final long rid, AbsContent content) {
-        final OutPeer outPeer = buidOutPeer(peer);
+    private void performSendContent(final Peer peer, final long rid, AbsContent content) {
+        final ApiOutPeer outPeer = buidOutPeer(peer);
         final ApiPeer apiPeer = buildApiPeer(peer);
         if (outPeer == null || apiPeer == null) {
             return;
@@ -266,20 +266,20 @@ public class SenderActor extends ModuleActor {
 
         ApiMessage message;
         if (content instanceof TextContent) {
-            message = new TextMessage(((TextContent) content).getText(), ((TextContent) content).getMentions(), ((TextContent) content).getTextMessageEx());
+            message = new ApiTextMessage(((TextContent) content).getText(), ((TextContent) content).getMentions(), ((TextContent) content).getTextMessageEx());
         } else if (content instanceof DocumentContent) {
             DocumentContent documentContent = (DocumentContent) content;
 
             FileRemoteSource source = (FileRemoteSource) documentContent.getSource();
 
-            DocumentEx documentEx = null;
+            ApiDocumentEx documentEx = null;
 
             if (content instanceof PhotoContent) {
                 PhotoContent photoContent = (PhotoContent) content;
-                documentEx = new DocumentExPhoto(photoContent.getW(), photoContent.getH());
+                documentEx = new ApiDocumentExPhoto(photoContent.getW(), photoContent.getH());
             } else if (content instanceof VideoContent) {
                 VideoContent videoContent = (VideoContent) content;
-                documentEx = new DocumentExVideo(videoContent.getW(), videoContent.getH(), videoContent.getDuration());
+                documentEx = new ApiDocumentExVideo(videoContent.getW(), videoContent.getH(), videoContent.getDuration());
             }
 
             ApiFastThumb fastThumb = null;
@@ -290,7 +290,7 @@ public class SenderActor extends ModuleActor {
                         documentContent.getFastThumb().getImage());
             }
 
-            message = new DocumentMessage(source.getFileReference().getFileId(),
+            message = new ApiDocumentMessage(source.getFileReference().getFileId(),
                     source.getFileReference().getAccessHash(),
                     source.getFileReference().getFileSize(),
                     source.getFileReference().getFileName(),
@@ -318,7 +318,7 @@ public class SenderActor extends ModuleActor {
                 });
     }
 
-    private void onSent(PeerEntity peer, long rid) {
+    private void onSent(Peer peer, long rid) {
         for (PendingMessage pending : pendingMessages.getPendingMessages()) {
             if (pending.getRid() == rid && pending.getPeer().equals(peer)) {
                 pendingMessages.getPendingMessages().remove(pending);
@@ -328,7 +328,7 @@ public class SenderActor extends ModuleActor {
         savePending();
     }
 
-    private void onError(PeerEntity peer, long rid) {
+    private void onError(Peer peer, long rid) {
         for (PendingMessage pending : pendingMessages.getPendingMessages()) {
             if (pending.getRid() == rid && pending.getPeer().equals(peer)) {
                 pendingMessages.getPendingMessages().remove(pending);
@@ -392,14 +392,14 @@ public class SenderActor extends ModuleActor {
     }
 
     public static class SendDocument {
-        private PeerEntity peer;
+        private Peer peer;
         private FastThumb fastThumb;
         private String descriptor;
         private String fileName;
         private String mimeType;
         private int fileSize;
 
-        public SendDocument(PeerEntity peer, String fileName, String mimeType, int fileSize, String descriptor,
+        public SendDocument(Peer peer, String fileName, String mimeType, int fileSize, String descriptor,
                             FastThumb fastThumb) {
             this.peer = peer;
             this.fastThumb = fastThumb;
@@ -425,7 +425,7 @@ public class SenderActor extends ModuleActor {
             return mimeType;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -435,7 +435,7 @@ public class SenderActor extends ModuleActor {
     }
 
     public static class SendPhoto {
-        private PeerEntity peer;
+        private Peer peer;
         private FastThumb fastThumb;
         private String descriptor;
         private String fileName;
@@ -443,7 +443,7 @@ public class SenderActor extends ModuleActor {
         private int w;
         private int h;
 
-        public SendPhoto(PeerEntity peer, FastThumb fastThumb, String descriptor, String fileName,
+        public SendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
                          int fileSize, int w, int h) {
             this.peer = peer;
             this.fastThumb = fastThumb;
@@ -454,7 +454,7 @@ public class SenderActor extends ModuleActor {
             this.h = h;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -484,7 +484,7 @@ public class SenderActor extends ModuleActor {
     }
 
     public static class SendVideo {
-        private PeerEntity peer;
+        private Peer peer;
         private String fileName;
         private int w;
         private int h;
@@ -493,7 +493,7 @@ public class SenderActor extends ModuleActor {
         private String descriptor;
         private int fileSize;
 
-        public SendVideo(PeerEntity peer, String fileName, int w, int h, int duration,
+        public SendVideo(Peer peer, String fileName, int w, int h, int duration,
                          FastThumb fastThumb, String descriptor, int fileSize) {
             this.peer = peer;
             this.fileName = fileName;
@@ -505,7 +505,7 @@ public class SenderActor extends ModuleActor {
             this.fileSize = fileSize;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -539,13 +539,13 @@ public class SenderActor extends ModuleActor {
     }
 
     public static class SendText {
-        private PeerEntity peer;
+        private Peer peer;
         private String text;
         private String markDownText;
         private ArrayList<Integer> mentions;
         private boolean autoDetect;
 
-        public SendText(@NotNull PeerEntity peer, @NotNull String text, @Nullable String markDownText, @Nullable ArrayList<Integer> mentions,
+        public SendText(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText, @Nullable ArrayList<Integer> mentions,
                         boolean autoDetect) {
             this.peer = peer;
             this.text = text;
@@ -554,7 +554,7 @@ public class SenderActor extends ModuleActor {
             this.autoDetect = autoDetect;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -576,15 +576,15 @@ public class SenderActor extends ModuleActor {
     }
 
     public static class MessageSent {
-        private PeerEntity peer;
+        private Peer peer;
         private long rid;
 
-        public MessageSent(PeerEntity peer, long rid) {
+        public MessageSent(Peer peer, long rid) {
             this.peer = peer;
             this.rid = rid;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -594,15 +594,15 @@ public class SenderActor extends ModuleActor {
     }
 
     public static class MessageError {
-        private PeerEntity peer;
+        private Peer peer;
         private long rid;
 
-        public MessageError(PeerEntity peer, long rid) {
+        public MessageError(Peer peer, long rid) {
             this.peer = peer;
             this.rid = rid;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 

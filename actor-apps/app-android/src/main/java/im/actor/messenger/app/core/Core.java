@@ -18,8 +18,8 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.AppCategory;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
-import im.actor.core.entity.GroupEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.Group;
+import im.actor.core.entity.User;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.BuildConfig;
@@ -176,11 +176,11 @@ public class Core {
         return core().messenger;
     }
 
-    public static MVVMCollection<UserEntity, UserVM> users() {
+    public static MVVMCollection<User, UserVM> users() {
         return core().messenger.getUsers();
     }
 
-    public static MVVMCollection<GroupEntity, GroupVM> groups() {
+    public static MVVMCollection<Group, GroupVM> groups() {
         return core().messenger.getGroups();
     }
 }

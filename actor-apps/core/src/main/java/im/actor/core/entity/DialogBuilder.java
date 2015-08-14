@@ -5,7 +5,7 @@
 package im.actor.core.entity;
 
 public class DialogBuilder {
-    private PeerEntity peer;
+    private Peer peer;
     private long sortKey;
     private String dialogTitle;
     private Avatar dialogAvatar;
@@ -37,7 +37,7 @@ public class DialogBuilder {
         relatedUid = dialog.getRelatedUid();
     }
 
-    public DialogBuilder setPeer(PeerEntity peer) {
+    public DialogBuilder setPeer(Peer peer) {
         this.peer = peer;
         return this;
     }

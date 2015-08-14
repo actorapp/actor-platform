@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,11 +22,11 @@ public class ResponseImportContacts extends Response {
         return Bser.parse(new ResponseImportContacts(), data);
     }
 
-    private List<User> users;
+    private List<ApiUser> users;
     private int seq;
     private byte[] state;
 
-    public ResponseImportContacts(@NotNull List<User> users, int seq, @NotNull byte[] state) {
+    public ResponseImportContacts(@NotNull List<ApiUser> users, int seq, @NotNull byte[] state) {
         this.users = users;
         this.seq = seq;
         this.state = state;
@@ -35,7 +37,7 @@ public class ResponseImportContacts extends Response {
     }
 
     @NotNull
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return this.users;
     }
 
@@ -50,9 +52,9 @@ public class ResponseImportContacts extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<User> _users = new ArrayList<User>();
+        List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _users.add(new User());
+            _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(1, _users);
         this.seq = values.getInt(2);

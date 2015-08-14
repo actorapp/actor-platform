@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,10 +22,10 @@ public class ResponseLoadHistory extends Response {
         return Bser.parse(new ResponseLoadHistory(), data);
     }
 
-    private List<HistoryMessage> history;
-    private List<User> users;
+    private List<ApiHistoryMessage> history;
+    private List<ApiUser> users;
 
-    public ResponseLoadHistory(@NotNull List<HistoryMessage> history, @NotNull List<User> users) {
+    public ResponseLoadHistory(@NotNull List<ApiHistoryMessage> history, @NotNull List<ApiUser> users) {
         this.history = history;
         this.users = users;
     }
@@ -33,25 +35,25 @@ public class ResponseLoadHistory extends Response {
     }
 
     @NotNull
-    public List<HistoryMessage> getHistory() {
+    public List<ApiHistoryMessage> getHistory() {
         return this.history;
     }
 
     @NotNull
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return this.users;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<HistoryMessage> _history = new ArrayList<HistoryMessage>();
+        List<ApiHistoryMessage> _history = new ArrayList<ApiHistoryMessage>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _history.add(new HistoryMessage());
+            _history.add(new ApiHistoryMessage());
         }
         this.history = values.getRepeatedObj(1, _history);
-        List<User> _users = new ArrayList<User>();
+        List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(2); i ++) {
-            _users.add(new User());
+            _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(2, _users);
     }

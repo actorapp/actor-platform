@@ -7,15 +7,15 @@ package im.actor.core.modules;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
-import im.actor.core.api.User;
+import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
-import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.ActorRef;
-import im.actor.runtime.actors.Props;
 import im.actor.core.modules.updates.SequenceActor;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
 import im.actor.core.network.parser.Update;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Props;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -49,7 +49,7 @@ public class Updates extends AbsModule {
     }
 
     public void onFatSeqUpdateReceived(int seq, byte[] state, Update update,
-                                       List<User> users, List<ApiGroup> groups) {
+                                       List<ApiUser> users, List<ApiGroup> groups) {
         updateActor.send(new FatSeqUpdate(seq, state, update.getHeaderKey(), update.toByteArray(),
                 users, groups));
     }

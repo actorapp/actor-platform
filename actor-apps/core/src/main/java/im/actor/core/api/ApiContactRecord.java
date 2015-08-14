@@ -5,21 +5,24 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
+import static im.actor.runtime.bser.Utils.*;
+import im.actor.core.network.parser.*;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ApiContactRecord extends BserObject {
 
-    private ContactType type;
+    private ApiContactType type;
     private String stringValue;
     private Long longValue;
     private String title;
     private String subtitle;
 
-    public ApiContactRecord(@NotNull ContactType type, @Nullable String stringValue, @Nullable Long longValue, @Nullable String title, @Nullable String subtitle) {
+    public ApiContactRecord(@NotNull ApiContactType type, @Nullable String stringValue, @Nullable Long longValue, @Nullable String title, @Nullable String subtitle) {
         this.type = type;
         this.stringValue = stringValue;
         this.longValue = longValue;
@@ -32,7 +35,7 @@ public class ApiContactRecord extends BserObject {
     }
 
     @NotNull
-    public ContactType getType() {
+    public ApiContactType getType() {
         return this.type;
     }
 
@@ -58,7 +61,7 @@ public class ApiContactRecord extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.type = ContactType.parse(values.getInt(1));
+        this.type = ApiContactType.parse(values.getInt(1));
         this.stringValue = values.optString(2);
         this.longValue = values.optLong(3);
         this.title = values.optString(4);

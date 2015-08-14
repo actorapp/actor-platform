@@ -6,7 +6,7 @@ package im.actor.core.entity.compat.content;
 
 import java.io.IOException;
 
-import im.actor.core.api.DocumentMessage;
+import im.actor.core.api.ApiDocumentMessage;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -37,7 +37,7 @@ public class ObsoleteDocument extends BserObject {
                     fastThumb != null ? fastThumb.toFastThumb() : null));
         } else if (source instanceof ObsoleteRemoteFileSource) {
             ObsoleteRemoteFileSource fSource = (ObsoleteRemoteFileSource) source;
-            return new ContentRemoteContainer(new DocumentMessage(
+            return new ContentRemoteContainer(new ApiDocumentMessage(
                     fSource.getFileReference().getFileId(),
                     fSource.getFileReference().getAccessHash(),
                     fSource.getFileReference().getFileSize(),

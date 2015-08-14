@@ -9,7 +9,6 @@
 #import <FMDB/FMDB.h>
 #import <PSTAlertController/PSTAlertController.h>
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <AsyncDisplayKit/ASDisplayNode+Subclasses.h>
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <VENTokenField/VENTokenField.h>

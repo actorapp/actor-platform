@@ -9,10 +9,10 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiMessageState;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.entity.GroupEntity;
+import im.actor.core.entity.Group;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.PeerTypeEntity;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.FastThumb;
 
 public class EntityConverter {
@@ -40,22 +40,22 @@ public class EntityConverter {
 //        return new Avatar(avatar);
 //    }
 
-    public static GroupEntity convert(ApiGroup group) {
-        return new GroupEntity(group);
+    public static Group convert(ApiGroup group) {
+        return new Group(group);
     }
 
-    public static PeerTypeEntity convert(ApiPeerType peerType) {
+    public static PeerType convert(ApiPeerType peerType) {
         switch (peerType) {
             case GROUP:
-                return PeerTypeEntity.GROUP;
+                return PeerType.GROUP;
             default:
             case PRIVATE:
-                return PeerTypeEntity.PRIVATE;
+                return PeerType.PRIVATE;
         }
     }
 
-    public static PeerEntity convert(ApiPeer peer) {
-        return new PeerEntity(convert(peer.getType()), peer.getId());
+    public static Peer convert(ApiPeer peer) {
+        return new Peer(convert(peer.getType()), peer.getId());
     }
 
 

@@ -4,13 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
-
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestDeleteMessage extends Request<ResponseSeq> {
@@ -20,10 +22,10 @@ public class RequestDeleteMessage extends Request<ResponseSeq> {
         return Bser.parse(new RequestDeleteMessage(), data);
     }
 
-    private OutPeer peer;
+    private ApiOutPeer peer;
     private List<Long> rids;
 
-    public RequestDeleteMessage(@NotNull OutPeer peer, @NotNull List<Long> rids) {
+    public RequestDeleteMessage(@NotNull ApiOutPeer peer, @NotNull List<Long> rids) {
         this.peer = peer;
         this.rids = rids;
     }
@@ -33,7 +35,7 @@ public class RequestDeleteMessage extends Request<ResponseSeq> {
     }
 
     @NotNull
-    public OutPeer getPeer() {
+    public ApiOutPeer getPeer() {
         return this.peer;
     }
 
@@ -44,7 +46,7 @@ public class RequestDeleteMessage extends Request<ResponseSeq> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new OutPeer());
+        this.peer = values.getObj(1, new ApiOutPeer());
         this.rids = values.getRepeatedLong(3);
     }
 

@@ -6,7 +6,7 @@ package im.actor.core.modules.internal.state;
 
 import java.io.IOException;
 
-import im.actor.core.api.AppCounters;
+import im.actor.core.api.ApiAppCounters;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.runtime.bser.BserParser;
@@ -15,7 +15,7 @@ import im.actor.runtime.bser.DataInput;
 
 public class ListsStatesActor extends ModuleActor {
 
-    private AppCounters counters;
+    private ApiAppCounters counters;
 
     public ListsStatesActor(ModuleContext context) {
         super(context);
@@ -25,11 +25,11 @@ public class ListsStatesActor extends ModuleActor {
     public void preStart() {
         super.preStart();
 
-        counters = new AppCounters();
+        counters = new ApiAppCounters();
         byte[] data = preferences().getBytes("app.counter_raw");
         if (data != null) {
             try {
-                AppCounters nCounters = new AppCounters();
+                ApiAppCounters nCounters = new ApiAppCounters();
                 nCounters.parse(new BserValues(BserParser.deserialize(new DataInput(data))));
                 counters = nCounters;
             } catch (IOException e) {
@@ -45,7 +45,7 @@ public class ListsStatesActor extends ModuleActor {
         }
     }
 
-    public void onCounterChanged(AppCounters counters) {
+    public void onCounterChanged(ApiAppCounters counters) {
         preferences().putBytes("app.counter_raw", counters.toByteArray());
         Integer counter = counters.getGlobalCounter();
         if (counter != null) {
@@ -95,13 +95,13 @@ public class ListsStatesActor extends ModuleActor {
     }
 
     public static class OnAppCounterChanged {
-        private AppCounters counters;
+        private ApiAppCounters counters;
 
-        public OnAppCounterChanged(AppCounters counters) {
+        public OnAppCounterChanged(ApiAppCounters counters) {
             this.counters = counters;
         }
 
-        public AppCounters getCounters() {
+        public ApiAppCounters getCounters() {
             return counters;
         }
     }

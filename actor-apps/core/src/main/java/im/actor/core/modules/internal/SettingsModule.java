@@ -4,8 +4,8 @@
 
 package im.actor.core.modules.internal;
 
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.PeerTypeEntity;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.settings.SettingsSyncActor;
@@ -201,19 +201,19 @@ public class SettingsModule extends AbsModule {
 
     // Peer settings
 
-    public boolean isNotificationsEnabled(PeerEntity peer) {
+    public boolean isNotificationsEnabled(Peer peer) {
         return loadValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".enabled", true);
     }
 
-    public void changeNotificationsEnabled(PeerEntity peer, boolean val) {
+    public void changeNotificationsEnabled(Peer peer, boolean val) {
         changeValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".enabled", val);
     }
 
-    public String getNotificationSound(PeerEntity peer) {
+    public String getNotificationSound(Peer peer) {
         return readValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".sound");
     }
 
-    public void changeNotificationSound(PeerEntity peer, String sound) {
+    public void changeNotificationSound(Peer peer, String sound) {
         changeValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".sound", sound);
     }
 
@@ -229,10 +229,10 @@ public class SettingsModule extends AbsModule {
 
     // Private
 
-    private String getChatKey(PeerEntity peer) {
-        if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
+    private String getChatKey(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
             return "PRIVATE_" + peer.getPeerId();
-        } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
+        } else if (peer.getPeerType() == PeerType.GROUP) {
             return "GROUP_" + peer.getPeerId();
         } else {
             throw new RuntimeException("Unsupported peer");

@@ -4,13 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
-
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class ResponseCreateGroup extends Response {
@@ -20,13 +22,13 @@ public class ResponseCreateGroup extends Response {
         return Bser.parse(new ResponseCreateGroup(), data);
     }
 
-    private GroupOutPeer groupPeer;
+    private ApiGroupOutPeer groupPeer;
     private int seq;
     private byte[] state;
     private List<Integer> users;
     private long date;
 
-    public ResponseCreateGroup(@NotNull GroupOutPeer groupPeer, int seq, @NotNull byte[] state, @NotNull List<Integer> users, long date) {
+    public ResponseCreateGroup(@NotNull ApiGroupOutPeer groupPeer, int seq, @NotNull byte[] state, @NotNull List<Integer> users, long date) {
         this.groupPeer = groupPeer;
         this.seq = seq;
         this.state = state;
@@ -39,7 +41,7 @@ public class ResponseCreateGroup extends Response {
     }
 
     @NotNull
-    public GroupOutPeer getGroupPeer() {
+    public ApiGroupOutPeer getGroupPeer() {
         return this.groupPeer;
     }
 
@@ -63,7 +65,7 @@ public class ResponseCreateGroup extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, new GroupOutPeer());
+        this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.seq = values.getInt(3);
         this.state = values.getBytes(4);
         this.users = values.getRepeatedInt(5);

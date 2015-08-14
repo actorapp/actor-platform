@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestLoadHistory extends Request<ResponseLoadHistory> {
@@ -19,11 +22,11 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
         return Bser.parse(new RequestLoadHistory(), data);
     }
 
-    private OutPeer peer;
+    private ApiOutPeer peer;
     private long minDate;
     private int limit;
 
-    public RequestLoadHistory(@NotNull OutPeer peer, long minDate, int limit) {
+    public RequestLoadHistory(@NotNull ApiOutPeer peer, long minDate, int limit) {
         this.peer = peer;
         this.minDate = minDate;
         this.limit = limit;
@@ -34,7 +37,7 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
     }
 
     @NotNull
-    public OutPeer getPeer() {
+    public ApiOutPeer getPeer() {
         return this.peer;
     }
 
@@ -48,7 +51,7 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new OutPeer());
+        this.peer = values.getObj(1, new ApiOutPeer());
         this.minDate = values.getLong(3);
         this.limit = values.getInt(4);
     }

@@ -11,7 +11,7 @@ class SettingsPrivacyViewController: AATableViewController {
     
     private let CellIdentifier = "CellIdentifier"
     
-    private var authSessions: [ARAuthSession]?
+    private var authSessions: [ARApiAuthSession]?
     
     // MARK: -
     // MARK: Constructors
@@ -39,7 +39,7 @@ class SettingsPrivacyViewController: AATableViewController {
             var list = val as! JavaUtilList
             self.authSessions = []
             for i in 0..<list.size() {
-                self.authSessions!.append(list.getWithInt(jint(i)) as! ARAuthSession)
+                self.authSessions!.append(list.getWithInt(jint(i)) as! ARApiAuthSession)
             }
             self.tableView.reloadData()
         }, failureBlock: nil)
@@ -120,7 +120,7 @@ class SettingsPrivacyViewController: AATableViewController {
                     var list = val as! JavaUtilList
                     self.authSessions = []
                     for i in 0..<list.size() {
-                        self.authSessions!.append(list.getWithInt(jint(i)) as! ARAuthSession)
+                        self.authSessions!.append(list.getWithInt(jint(i)) as! ARApiAuthSession)
                     }
                     self.tableView.reloadData()
                     }, failureBlock: nil)

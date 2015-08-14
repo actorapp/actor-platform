@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,9 +22,9 @@ public class ResponseGetAvailableInterests extends Response {
         return Bser.parse(new ResponseGetAvailableInterests(), data);
     }
 
-    private List<Interest> rootInterests;
+    private List<ApiInterest> rootInterests;
 
-    public ResponseGetAvailableInterests(@NotNull List<Interest> rootInterests) {
+    public ResponseGetAvailableInterests(@NotNull List<ApiInterest> rootInterests) {
         this.rootInterests = rootInterests;
     }
 
@@ -31,15 +33,15 @@ public class ResponseGetAvailableInterests extends Response {
     }
 
     @NotNull
-    public List<Interest> getRootInterests() {
+    public List<ApiInterest> getRootInterests() {
         return this.rootInterests;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<Interest> _rootInterests = new ArrayList<Interest>();
+        List<ApiInterest> _rootInterests = new ArrayList<ApiInterest>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _rootInterests.add(new Interest());
+            _rootInterests.add(new ApiInterest());
         }
         this.rootInterests = values.getRepeatedObj(1, _rootInterests);
     }

@@ -9,7 +9,7 @@ import java.util.HashMap;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -22,7 +22,7 @@ public class DisplayLists extends AbsModule {
 
     private PlatformDisplayList<Contact> contactsGlobalList;
 
-    private HashMap<PeerEntity, PlatformDisplayList<Message>> chatsGlobalLists = new HashMap<PeerEntity, PlatformDisplayList<Message>>();
+    private HashMap<Peer, PlatformDisplayList<Message>> chatsGlobalLists = new HashMap<Peer, PlatformDisplayList<Message>>();
 
     public DisplayLists(ModuleContext context) {
         super(context);
@@ -48,7 +48,7 @@ public class DisplayLists extends AbsModule {
         return dialogGlobalList;
     }
 
-    public PlatformDisplayList<Message> getMessagesSharedList(PeerEntity peer) {
+    public PlatformDisplayList<Message> getMessagesSharedList(Peer peer) {
         im.actor.runtime.Runtime.checkMainThread();
 
         if (!chatsGlobalLists.containsKey(peer)) {
@@ -104,7 +104,7 @@ public class DisplayLists extends AbsModule {
         return res;
     }
 
-    public PlatformDisplayList<Message> buildChatList(final PeerEntity peer, boolean isShared) {
+    public PlatformDisplayList<Message> buildChatList(final Peer peer, boolean isShared) {
         im.actor.runtime.Runtime.checkMainThread();
 
         PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationEngine(peer),

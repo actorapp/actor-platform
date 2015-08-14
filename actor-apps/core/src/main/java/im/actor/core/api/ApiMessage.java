@@ -4,8 +4,15 @@ package im.actor.core.api;
  */
 
 import im.actor.runtime.bser.*;
-
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
+import im.actor.core.network.parser.*;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 public abstract class ApiMessage extends BserObject {
     public static ApiMessage fromBytes(byte[] src) throws IOException {
@@ -13,11 +20,11 @@ public abstract class ApiMessage extends BserObject {
         int key = values.getInt(1);
         byte[] content = values.getBytes(2);
         switch(key) { 
-            case 1: return Bser.parse(new TextMessage(), content);
-            case 2: return Bser.parse(new ServiceMessage(), content);
-            case 3: return Bser.parse(new DocumentMessage(), content);
-            case 4: return Bser.parse(new JsonMessage(), content);
-            default: return new MessageUnsupported(key, content);
+            case 1: return Bser.parse(new ApiTextMessage(), content);
+            case 2: return Bser.parse(new ApiServiceMessage(), content);
+            case 3: return Bser.parse(new ApiDocumentMessage(), content);
+            case 4: return Bser.parse(new ApiJsonMessage(), content);
+            default: return new ApiMessageUnsupported(key, content);
         }
     }
     public abstract int getHeader();

@@ -4,23 +4,23 @@
 
 package im.actor.core.entity.content;
 
-import im.actor.core.api.ServiceExUserInvited;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExUserInvited;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupUserInvited extends ServiceContent {
 
     public static ServiceGroupUserInvited create(int uid) {
         return new ServiceGroupUserInvited(new ContentRemoteContainer(
-                new ServiceMessage("User added", new ServiceExUserInvited(uid))));
+                new ApiServiceMessage("User added", new ApiServiceExUserInvited(uid))));
     }
 
     private int addedUid;
 
     public ServiceGroupUserInvited(ContentRemoteContainer contentContainer) {
         super(contentContainer);
-        ServiceMessage serviceMessage = (ServiceMessage) contentContainer.getMessage();
-        addedUid = ((ServiceExUserInvited) serviceMessage.getExt()).getInvitedUid();
+        ApiServiceMessage serviceMessage = (ApiServiceMessage) contentContainer.getMessage();
+        addedUid = ((ApiServiceExUserInvited) serviceMessage.getExt()).getInvitedUid();
     }
 
     public int getAddedUid() {

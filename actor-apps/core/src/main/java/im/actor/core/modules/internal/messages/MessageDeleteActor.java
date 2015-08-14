@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiPeer;
-import im.actor.core.api.OutPeer;
+import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestDeleteMessage;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateMessageDelete;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.entity.Delete;
 import im.actor.core.modules.internal.messages.entity.DeleteStorage;
@@ -48,7 +48,7 @@ public class MessageDeleteActor extends ModuleActor {
             deleteStorage = new DeleteStorage();
         }
 
-        for (PeerEntity peer : deleteStorage.getPendingDeletions().keySet()) {
+        for (Peer peer : deleteStorage.getPendingDeletions().keySet()) {
             Delete delete = deleteStorage.getPendingDeletions().get(peer);
             if (delete.getRids().size() > 0) {
                 performDelete(peer, delete.getRids());
@@ -60,8 +60,8 @@ public class MessageDeleteActor extends ModuleActor {
         syncKeyValue.put(CURSOR_DELETE, deleteStorage.toByteArray());
     }
 
-    public void performDelete(final PeerEntity peer, final List<Long> rids) {
-        final OutPeer outPeer = buidOutPeer(peer);
+    public void performDelete(final Peer peer, final List<Long> rids) {
+        final ApiOutPeer outPeer = buidOutPeer(peer);
         final ApiPeer apiPeer = buildApiPeer(peer);
         request(new RequestDeleteMessage(outPeer, rids), new RpcCallback<ResponseSeq>() {
 
@@ -83,7 +83,7 @@ public class MessageDeleteActor extends ModuleActor {
         });
     }
 
-    public void onDeleteMessage(PeerEntity peer, List<Long> rids) {
+    public void onDeleteMessage(Peer peer, List<Long> rids) {
         // Add to storage
         if (!deleteStorage.getPendingDeletions().containsKey(peer)) {
             deleteStorage.getPendingDeletions().put(peer, new Delete(peer,new ArrayList<Long>()));
@@ -110,15 +110,15 @@ public class MessageDeleteActor extends ModuleActor {
     }
 
     public static class DeleteMessage {
-        private PeerEntity peer;
+        private Peer peer;
         private long[] rids;
 
-        public DeleteMessage(PeerEntity peer, long[] rids) {
+        public DeleteMessage(Peer peer, long[] rids) {
             this.peer = peer;
             this.rids = rids;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 

@@ -4,15 +4,15 @@
 
 package im.actor.core.entity.content;
 
-import im.actor.core.api.ServiceExUserKicked;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExUserKicked;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupUserKicked extends ServiceContent {
 
     public static ServiceGroupUserKicked create(int uid) {
         return new ServiceGroupUserKicked(new ContentRemoteContainer(
-                new ServiceMessage("User kicked", new ServiceExUserKicked(uid))));
+                new ApiServiceMessage("User kicked", new ApiServiceExUserKicked(uid))));
     }
 
     private int kickedUid;
@@ -20,8 +20,8 @@ public class ServiceGroupUserKicked extends ServiceContent {
     public ServiceGroupUserKicked(ContentRemoteContainer contentContainer) {
         super(contentContainer);
 
-        ServiceMessage serviceMessage = (ServiceMessage) contentContainer.getMessage();
-        kickedUid = ((ServiceExUserKicked) serviceMessage.getExt()).getKickedUid();
+        ApiServiceMessage serviceMessage = (ApiServiceMessage) contentContainer.getMessage();
+        kickedUid = ((ApiServiceExUserKicked) serviceMessage.getExt()).getKickedUid();
     }
 
     public int getKickedUid() {

@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestGetVoxUser extends Request<ResponseGetVoxUser> {
@@ -19,9 +22,9 @@ public class RequestGetVoxUser extends Request<ResponseGetVoxUser> {
         return Bser.parse(new RequestGetVoxUser(), data);
     }
 
-    private UserOutPeer userPeer;
+    private ApiUserOutPeer userPeer;
 
-    public RequestGetVoxUser(@NotNull UserOutPeer userPeer) {
+    public RequestGetVoxUser(@NotNull ApiUserOutPeer userPeer) {
         this.userPeer = userPeer;
     }
 
@@ -30,13 +33,13 @@ public class RequestGetVoxUser extends Request<ResponseGetVoxUser> {
     }
 
     @NotNull
-    public UserOutPeer getUserPeer() {
+    public ApiUserOutPeer getUserPeer() {
         return this.userPeer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.userPeer = values.getObj(1, new UserOutPeer());
+        this.userPeer = values.getObj(1, new ApiUserOutPeer());
     }
 
     @Override

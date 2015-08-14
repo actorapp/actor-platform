@@ -6,11 +6,11 @@ target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
 	# Model
-    pod 'CoreLib', :path => './Core/'
-	pod 'RegexKitLite', :inhibit_warnings => true
-	pod 'CocoaAsyncSocket'
-	pod 'FMDB'
-
+    pod 'CoreLib', :path => '../'
+    pod 'RegexKitLite', :inhibit_warnings => true
+    pod 'CocoaAsyncSocket'
+    pod 'FMDB'    
+    
 	# UI
 	pod 'VENTokenField'
 	pod 'AsyncDisplayKit'

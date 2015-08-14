@@ -4,12 +4,15 @@ package im.actor.core.api.updates;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class UpdateCountersChanged extends Update {
@@ -19,9 +22,9 @@ public class UpdateCountersChanged extends Update {
         return Bser.parse(new UpdateCountersChanged(), data);
     }
 
-    private AppCounters counters;
+    private ApiAppCounters counters;
 
-    public UpdateCountersChanged(@NotNull AppCounters counters) {
+    public UpdateCountersChanged(@NotNull ApiAppCounters counters) {
         this.counters = counters;
     }
 
@@ -30,13 +33,13 @@ public class UpdateCountersChanged extends Update {
     }
 
     @NotNull
-    public AppCounters getCounters() {
+    public ApiAppCounters getCounters() {
         return this.counters;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.counters = values.getObj(1, new AppCounters());
+        this.counters = values.getObj(1, new ApiAppCounters());
     }
 
     @Override

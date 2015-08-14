@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -21,10 +23,10 @@ public class ResponseLoadDialogs extends Response {
     }
 
     private List<ApiGroup> groups;
-    private List<User> users;
+    private List<ApiUser> users;
     private List<ApiDialog> dialogs;
 
-    public ResponseLoadDialogs(@NotNull List<ApiGroup> groups, @NotNull List<User> users, @NotNull List<ApiDialog> dialogs) {
+    public ResponseLoadDialogs(@NotNull List<ApiGroup> groups, @NotNull List<ApiUser> users, @NotNull List<ApiDialog> dialogs) {
         this.groups = groups;
         this.users = users;
         this.dialogs = dialogs;
@@ -40,7 +42,7 @@ public class ResponseLoadDialogs extends Response {
     }
 
     @NotNull
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return this.users;
     }
 
@@ -56,9 +58,9 @@ public class ResponseLoadDialogs extends Response {
             _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(1, _groups);
-        List<User> _users = new ArrayList<User>();
+        List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(2); i ++) {
-            _users.add(new User());
+            _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(2, _users);
         List<ApiDialog> _dialogs = new ArrayList<ApiDialog>();

@@ -1,49 +1,41 @@
-////
-////  Copyright (c) 2015 Actor LLC. <https://actor.im>
-////
 //
-//import Foundation
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
-//class CocoaStorage : AMBaseAsyncStorageProvider {
-//    
-//    let dbPath: String;
-//    let preferences = UDPreferencesStorage()
-//    
-//    override init() {
-//        self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
-//            .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db")
-//    }
-//
-//    override func createPreferencesStorage() -> DKPreferencesStorage! {
-//        return preferences
-//    }
-//    
-//    override func createIndexWithName(name: String!) -> DKIndexStorage! {
-//        return FMDBIndex(databasePath: dbPath, tableName: name)
-//    }
-//    
-//    override func createKeyValueWithName(name: String!) -> DKKeyValueStorage! {
-//        return FMDBKeyValue(databasePath: dbPath, tableName: name)
-//    }
-//    
-//    override func createListWithName(name: String!) -> DKListStorage! {
-//        return FMDBList(databasePath: dbPath, tableName: name)
-//    }
-//    
-//    override func getMessagesLoadGap() -> jint {
-//        return 30
-//    }
-//    
-//    override func getMessagesLoadPage() -> jint {
-//        return 30
-//    }
-//    
-//    override func resetStorage() {
-//        preferences.clear()
-//        
-//        var db = FMDatabase(path: dbPath)
-//        db.open()
-//        db.executeStatements("select 'drop table ' || name || ';' from sqlite_master where type = 'table';")
-//        db.close()
-//    }
-//}
+
+import Foundation
+
+@objc class CocoaStorage : NSObject, ARStorageRuntime {
+    
+    let dbPath: String;
+    let preferences = UDPreferencesStorage()
+    
+    override init() {
+        self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
+            .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db")
+    }
+    
+    func createPreferencesStorage() -> ARPreferencesStorage! {
+        return preferences
+    }
+    
+    func createIndexWithName(name: String!) -> ARIndexStorage! {
+        return FMDBIndex(databasePath: dbPath, tableName: name)
+    }
+
+    func createKeyValueWithName(name: String!) -> ARKeyValueStorage! {
+        return FMDBKeyValue(databasePath: dbPath, tableName: name)
+    }
+    
+    func createListWithName(name: String!) -> ARListStorage! {
+        return FMDBList(databasePath: dbPath, tableName: name)
+    }
+    
+    func resetStorage() {
+        preferences.clear()
+        
+        var db = FMDatabase(path: dbPath)
+        db.open()
+        db.executeStatements("select 'drop table ' || name || ';' from sqlite_master where type = 'table';")
+        db.close()
+    }
+}

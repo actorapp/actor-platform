@@ -48,9 +48,9 @@ public class StructGenerator {
             generator.appendLn("switch(key) { ");
             generator.increaseDepth();
             for (SchemeStruct r : definition.getTraitedStructs(u.getName())) {
-                generator.appendLn("case " + r.getTraitRef().getKey() + ": return Bser.parse(new " + r.getName() + "(), content);");
+                generator.appendLn("case " + r.getTraitRef().getKey() + ": return Bser.parse(new " + JavaConfig.getStructName(r.getName()) + "(), content);");
             }
-            generator.appendLn("default: return new " + u.getName() + "Unsupported(key, content);");
+            generator.appendLn("default: return new " + JavaConfig.getStructName(u.getName()) + "Unsupported(key, content);");
             generator.decreaseDepth();
             generator.appendLn("}");
             generator.decreaseDepth();

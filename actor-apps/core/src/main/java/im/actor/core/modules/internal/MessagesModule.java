@@ -10,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.OutPeer;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestClearChat;
 import im.actor.core.api.rpc.RequestDeleteChat;
@@ -20,11 +20,11 @@ import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.entity.Dialog;
-import im.actor.core.entity.GroupEntity;
+import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.PeerTypeEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
+import im.actor.core.entity.User;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
@@ -63,9 +63,9 @@ public class MessagesModule extends AbsModule {
     private ActorRef sendMessageActor;
     private ActorRef deletionsActor;
 
-    private final HashMap<PeerEntity, ListEngine<Message>> conversationEngines = new HashMap<PeerEntity, ListEngine<Message>>();
-    private final HashMap<PeerEntity, ActorRef> conversationActors = new HashMap<PeerEntity, ActorRef>();
-    private final HashMap<PeerEntity, ActorRef> conversationHistoryActors = new HashMap<PeerEntity, ActorRef>();
+    private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
+    private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
+    private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
 
     private final SyncKeyValue cursorStorage;
 
@@ -141,7 +141,7 @@ public class MessagesModule extends AbsModule {
         return cursorStorage;
     }
 
-    private void assumeConvActor(final PeerEntity peer) {
+    private void assumeConvActor(final Peer peer) {
         synchronized (conversationActors) {
             if (!conversationActors.containsKey(peer)) {
                 conversationActors.put(peer, system().actorOf(Props.create(ConversationActor.class,
@@ -161,25 +161,25 @@ public class MessagesModule extends AbsModule {
         }
     }
 
-    public ActorRef getConversationHistoryActor(final PeerEntity peer) {
+    public ActorRef getConversationHistoryActor(final Peer peer) {
         assumeConvActor(peer);
         synchronized (conversationActors) {
             return conversationHistoryActors.get(peer);
         }
     }
 
-    public ActorRef getConversationActor(final PeerEntity peer) {
+    public ActorRef getConversationActor(final Peer peer) {
         assumeConvActor(peer);
         synchronized (conversationActors) {
             return conversationActors.get(peer);
         }
     }
 
-    public void onConversationOpen(PeerEntity peer) {
+    public void onConversationOpen(Peer peer) {
         assumeConvActor(peer);
     }
 
-    public ListEngine<Message> getConversationEngine(PeerEntity peer) {
+    public ListEngine<Message> getConversationEngine(Peer peer) {
         synchronized (conversationEngines) {
             if (!conversationEngines.containsKey(peer)) {
                 conversationEngines.put(peer,
@@ -201,7 +201,7 @@ public class MessagesModule extends AbsModule {
         return dialogs;
     }
 
-    public void deleteMessages(PeerEntity peer, long[] rids) {
+    public void deleteMessages(Peer peer, long[] rids) {
         ActorRef conversationActor = getConversationActor(peer);
         ArrayList<Long> deleted = new ArrayList<Long>();
         for (long rid : rids) {
@@ -215,17 +215,17 @@ public class MessagesModule extends AbsModule {
         dialogsHistoryActor.send(new DialogsHistoryActor.LoadMore());
     }
 
-    public void loadMoreHistory(PeerEntity peer) {
+    public void loadMoreHistory(Peer peer) {
         getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
     }
 
-    public void sendMessage(@NotNull PeerEntity peer, @NotNull String message, @Nullable String markDownText,
+    public void sendMessage(@NotNull Peer peer, @NotNull String message, @Nullable String markDownText,
                             @Nullable ArrayList<Integer> mentions, boolean autoDetect) {
         sendMessageActor.send(new SenderActor.SendText(peer, message, markDownText, mentions,
                 autoDetect));
     }
 
-    public void sendPhoto(@NotNull PeerEntity peer, @NotNull String fileName, int w, int h, @Nullable FastThumb fastThumb,
+    public void sendPhoto(@NotNull Peer peer, @NotNull String fileName, int w, int h, @Nullable FastThumb fastThumb,
                           @NotNull String descriptor) {
         FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendPhoto(peer, fastThumb,
@@ -233,38 +233,38 @@ public class MessagesModule extends AbsModule {
                 fileName, reference.getSize(), w, h));
     }
 
-    public void sendVideo(PeerEntity peer, String fileName, int w, int h, int duration,
+    public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
                           FastThumb fastThumb, String descriptor) {
         FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendVideo(peer, fileName, w, h, duration,
                 fastThumb, descriptor, reference.getSize()));
     }
 
-    public void sendDocument(PeerEntity peer, String fileName, String mimeType, FastThumb fastThumb,
+    public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
                              String descriptor) {
         FileSystemReference reference = Storage.fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendDocument(peer, fileName, mimeType,
                 reference.getSize(), reference.getDescriptor(), fastThumb));
     }
 
-    public void onMessageShown(PeerEntity peer, long sortDate) {
+    public void onMessageShown(Peer peer, long sortDate) {
         ownReadActor.send(new OwnReadActor.MessageRead(peer, sortDate));
         conversationActor(peer).send(new ConversationActor.MessageReadByMe(sortDate));
     }
 
-    public void saveReadState(PeerEntity peer, long lastReadDate) {
+    public void saveReadState(Peer peer, long lastReadDate) {
         preferences().putLong("read_state_" + peer.getUnuqueId(), lastReadDate);
     }
 
-    public long loadReadState(PeerEntity peer) {
+    public long loadReadState(Peer peer) {
         return preferences().getLong("read_state_" + peer.getUnuqueId(), 0);
     }
 
-    public void saveDraft(PeerEntity peer, String draft) {
+    public void saveDraft(Peer peer, String draft) {
         preferences().putString("draft_" + peer.getUnuqueId(), draft);
     }
 
-    public String loadDraft(PeerEntity peer) {
+    public String loadDraft(Peer peer) {
         String res = preferences().getString("draft_" + peer.getUnuqueId());
         if (res == null) {
             return "";
@@ -273,14 +273,14 @@ public class MessagesModule extends AbsModule {
         }
     }
 
-    public Command<Boolean> deleteChat(final PeerEntity peer) {
+    public Command<Boolean> deleteChat(final Peer peer) {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                OutPeer outPeer;
+                ApiOutPeer outPeer;
                 final ApiPeer apiPeer;
-                if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
-                    UserEntity user = users().getValue(peer.getPeerId());
+                if (peer.getPeerType() == PeerType.PRIVATE) {
+                    User user = users().getValue(peer.getPeerId());
                     if (user == null) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -290,12 +290,12 @@ public class MessagesModule extends AbsModule {
                         });
                         return;
                     }
-                    outPeer = new OutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
                             user.getAccessHash());
                     apiPeer = new ApiPeer(ApiPeerType.PRIVATE,
                             user.getUid());
-                } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
-                    GroupEntity group = groups().getValue(peer.getPeerId());
+                } else if (peer.getPeerType() == PeerType.GROUP) {
+                    Group group = groups().getValue(peer.getPeerId());
                     if (group == null) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -305,7 +305,7 @@ public class MessagesModule extends AbsModule {
                         });
                         return;
                     }
-                    outPeer = new OutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
                             group.getAccessHash());
                     apiPeer = new ApiPeer(ApiPeerType.GROUP,
                             group.getGroupId());
@@ -347,14 +347,14 @@ public class MessagesModule extends AbsModule {
         };
     }
 
-    public Command<Boolean> clearChat(final PeerEntity peer) {
+    public Command<Boolean> clearChat(final Peer peer) {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                OutPeer outPeer;
+                ApiOutPeer outPeer;
                 final ApiPeer apiPeer;
-                if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
-                    UserEntity user = users().getValue(peer.getPeerId());
+                if (peer.getPeerType() == PeerType.PRIVATE) {
+                    User user = users().getValue(peer.getPeerId());
                     if (user == null) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -364,12 +364,12 @@ public class MessagesModule extends AbsModule {
                         });
                         return;
                     }
-                    outPeer = new OutPeer(ApiPeerType.PRIVATE, user.getUid(),
+                    outPeer = new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(),
                             user.getAccessHash());
                     apiPeer = new ApiPeer(ApiPeerType.PRIVATE,
                             user.getUid());
-                } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
-                    GroupEntity group = groups().getValue(peer.getPeerId());
+                } else if (peer.getPeerType() == PeerType.GROUP) {
+                    Group group = groups().getValue(peer.getPeerId());
                     if (group == null) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -379,7 +379,7 @@ public class MessagesModule extends AbsModule {
                         });
                         return;
                     }
-                    outPeer = new OutPeer(ApiPeerType.GROUP, group.getGroupId(),
+                    outPeer = new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(),
                             group.getAccessHash());
                     apiPeer = new ApiPeer(ApiPeerType.GROUP,
                             group.getGroupId());

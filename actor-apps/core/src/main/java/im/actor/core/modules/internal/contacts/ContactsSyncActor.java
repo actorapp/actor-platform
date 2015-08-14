@@ -12,10 +12,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.RequestGetContacts;
 import im.actor.core.api.rpc.ResponseGetContacts;
 import im.actor.core.entity.Contact;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.network.RpcCallback;
@@ -143,7 +144,7 @@ public class ContactsSyncActor extends ModuleActor {
 
         outer:
         for (Integer uid : contacts.toArray(new Integer[contacts.size()])) {
-            for (im.actor.core.api.User u : result.getUsers()) {
+            for (ApiUser u : result.getUsers()) {
                 if (u.getId() == uid) {
                     continue outer;
                 }
@@ -157,7 +158,7 @@ public class ContactsSyncActor extends ModuleActor {
             }
             context().getContactsModule().markNonContact(uid);
         }
-        for (im.actor.core.api.User u : result.getUsers()) {
+        for (ApiUser u : result.getUsers()) {
             if (contacts.contains(u.getId())) {
                 continue;
             }
@@ -217,7 +218,7 @@ public class ContactsSyncActor extends ModuleActor {
         self().send(new PerformSync());
     }
 
-    public void onUserChanged(UserEntity user) {
+    public void onUserChanged(User user) {
         if (ENABLE_LOG) {
             Log.d(TAG, "OnUserChanged #" + user.getUid() + " received");
         }
@@ -233,20 +234,20 @@ public class ContactsSyncActor extends ModuleActor {
         if (ENABLE_LOG) {
             Log.d(TAG, "Saving contact EngineList");
         }
-        ArrayList<UserEntity> userList = new ArrayList<UserEntity>();
+        ArrayList<User> userList = new ArrayList<User>();
         for (int u : contacts) {
             userList.add(getUser(u));
         }
-        Collections.sort(userList, new Comparator<UserEntity>() {
+        Collections.sort(userList, new Comparator<User>() {
             @Override
-            public int compare(UserEntity lhs, UserEntity rhs) {
+            public int compare(User lhs, User rhs) {
                 return lhs.getName().compareTo(rhs.getName());
             }
         });
 
         List<Contact> registeredContacts = new ArrayList<Contact>();
         int index = -1;
-        for (UserEntity userModel : userList) {
+        for (User userModel : userList) {
             Contact contact = new Contact(userModel.getUid(),
                     (long) index--,
                     userModel.getAvatar(),
@@ -256,7 +257,7 @@ public class ContactsSyncActor extends ModuleActor {
         context().getContactsModule().getContacts().replaceItems(registeredContacts);
         Integer[] sorted = new Integer[contacts.size()];
         int sindex = 0;
-        for (UserEntity userModel : userList) {
+        for (User userModel : userList) {
             sorted[sindex++] = userModel.getUid();
         }
         context().getSearchModule().onContactsChanged(sorted);
@@ -338,13 +339,13 @@ public class ContactsSyncActor extends ModuleActor {
     }
 
     public static class UserChanged {
-        private UserEntity user;
+        private User user;
 
-        public UserChanged(UserEntity user) {
+        public UserChanged(User user) {
             this.user = user;
         }
 
-        public UserEntity getUser() {
+        public User getUser() {
             return user;
         }
     }

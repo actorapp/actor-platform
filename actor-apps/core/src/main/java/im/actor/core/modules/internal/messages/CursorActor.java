@@ -7,7 +7,7 @@ package im.actor.core.modules.internal.messages;
 import java.io.IOException;
 import java.util.HashSet;
 
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.entity.PlainCursor;
 import im.actor.core.modules.internal.messages.entity.PlainCursorsStorage;
@@ -17,7 +17,7 @@ import im.actor.runtime.storage.SyncKeyValue;
 public abstract class CursorActor extends ModuleActor {
 
     private PlainCursorsStorage plainCursorsStorage;
-    private HashSet<PeerEntity> inProgress = new HashSet<PeerEntity>();
+    private HashSet<Peer> inProgress = new HashSet<Peer>();
     private long cursorId;
     private SyncKeyValue keyValue;
 
@@ -49,7 +49,7 @@ public abstract class CursorActor extends ModuleActor {
         }
     }
 
-    protected final void moveCursor(PeerEntity peer, long date) {
+    protected final void moveCursor(Peer peer, long date) {
         PlainCursor cursor = plainCursorsStorage.getCursor(peer);
         if (date <= cursor.getSortDate()) {
             return;
@@ -72,7 +72,7 @@ public abstract class CursorActor extends ModuleActor {
         perform(peer, date);
     }
 
-    protected final void onMoved(PeerEntity peer, long date) {
+    protected final void onMoved(Peer peer, long date) {
         inProgress.remove(peer);
 
         PlainCursor cursor = plainCursorsStorage.getCursor(peer);
@@ -87,13 +87,13 @@ public abstract class CursorActor extends ModuleActor {
     }
 
     // Execution
-    protected abstract void perform(PeerEntity peer, long date);
+    protected abstract void perform(Peer peer, long date);
 
-    protected void onCompleted(PeerEntity peer, long date) {
+    protected void onCompleted(Peer peer, long date) {
         self().send(new OnCompleted(peer, date));
     }
 
-    protected void onError(PeerEntity peer, long date) {
+    protected void onError(Peer peer, long date) {
         // Ignore
     }
 
@@ -113,15 +113,15 @@ public abstract class CursorActor extends ModuleActor {
     }
 
     private static class OnCompleted {
-        private PeerEntity peer;
+        private Peer peer;
         private long date;
 
-        private OnCompleted(PeerEntity peer, long date) {
+        private OnCompleted(Peer peer, long date) {
             this.peer = peer;
             this.date = date;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
