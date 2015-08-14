@@ -132,7 +132,7 @@ class MessageItem extends React.Component {
       case MessageContentTypes.PHOTO:
         messageContent = (
           <Image content={message.content}
-                 сlassName="message__content message__content--photo"
+                 className="message__content message__content--photo"
                  loadedClassName="message__content--photo--loaded"/>
         );
         break;
