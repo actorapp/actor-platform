@@ -236,6 +236,15 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         if (tableView == self.tableView) {
             var dialog = objectAtIndexPath(indexPath) as! AMDialog
             navigateToMessagesWithPeer(dialog.getPeer())
+
+            var globalUnreadCount = 0;
+            var dialoglist = MSG.getDialogsGlobalList()
+            for var i = 0 ; i<Int(dialoglist.size()) ;i++ {
+                var eachDialog = dialoglist.itemWithIndex(jint(i)) as! AMDialog
+                globalUnreadCount = globalUnreadCount + Int(eachDialog.getUnreadCount())
+            }
+            globalUnreadCount = globalUnreadCount - Int(dialog.getUnreadCount())
+            UIApplication.sharedApplication().applicationIconBadgeNumber = globalUnreadCount
         } else {
             var searchEntity = searchSource!.objectAtIndexPath(indexPath) as! AMSearchEntity
             navigateToMessagesWithPeer(searchEntity.getPeer())

@@ -216,6 +216,11 @@ class ConversationViewController: ConversationBaseViewController {
         super.viewDidLoad()
         // unreadMessageId = MSG.loadLastReadState(peer)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment: "Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: "appCameToForeground:",
+            name: UIApplicationWillEnterForegroundNotification,
+            object: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -478,6 +483,18 @@ class ConversationViewController: ConversationBaseViewController {
         return false
     }
     
+    func appCameToForeground(notification: NSNotification){
+    
+        var globalUnreadCount = 0;
+        var dialoglist = MSG.getDialogsGlobalList()
+        for var i = 0 ; i<Int(dialoglist.size()) ;i++ {
+            var eachDialog = dialoglist.itemWithIndex(jint(i)) as! AMDialog
+            globalUnreadCount = globalUnreadCount + Int(eachDialog.getUnreadCount())
+        }
+
+        UIApplication.sharedApplication().applicationIconBadgeNumber = globalUnreadCount 
+    }
+
     func buildCellSetting(index: Int) -> CellSetting {
 //        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
         
