@@ -138,7 +138,6 @@ class ComposeSection extends React.Component {
 
   onMentionSelect = (value) => {
     ComposeActionCreators.insertMention(this.props.peer, this.state.text, this.getCaretPosition(), value);
-    //this.setState({text: this.state.text + value + ', '});
     this.refs.area.getDOMNode().focus();
   };
 
