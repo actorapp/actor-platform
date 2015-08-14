@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.entity.Dialog;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.runtime.storage.ListEngine;
@@ -44,8 +44,8 @@ public class SearchActor extends ModuleActor {
     private void onContactsUpdated(int[] contactsList) {
         List<SearchEntity> updated = new ArrayList<SearchEntity>();
         for (int i = 0; i < contactsList.length; i++) {
-            UserEntity user = users().getValue(contactsList[i]);
-            updated.add(new SearchEntity(PeerEntity.user(user.getUid()), CONTACTS_PREFIX + i, user.getAvatar(),
+            User user = users().getValue(contactsList[i]);
+            updated.add(new SearchEntity(Peer.user(user.getUid()), CONTACTS_PREFIX + i, user.getAvatar(),
                     user.getName()));
         }
         listEngine.addOrUpdateItems(updated);

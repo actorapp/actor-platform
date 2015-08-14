@@ -41,7 +41,6 @@ class ContactsSearchSource: SearchSource {
     }
     
     override func buildDisplayList() -> ARBindedDisplayList {
-        // return MSG.buildContactDisplayList()
-        return ARBindedDisplayList()
+        return MSG.buildContactsDisplayList()
     }
 }

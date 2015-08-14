@@ -19,7 +19,7 @@ import java.io.File;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
-import im.actor.core.entity.PublicGroupEntity;
+import im.actor.core.entity.PublicGroup;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.GroupVM;
@@ -87,7 +87,7 @@ public class AvatarView extends SimpleDraweeView {
         bind(group.getAvatar().get(), group.getName().get(), group.getId());
     }
 
-    public void bind(PublicGroupEntity group) {
+    public void bind(PublicGroup group) {
         bind(group.getAvatar(), group.getTitle(), group.getId());
     }
 

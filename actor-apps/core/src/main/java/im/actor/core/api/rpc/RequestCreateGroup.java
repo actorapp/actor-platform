@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -22,9 +24,9 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
 
     private long rid;
     private String title;
-    private List<UserOutPeer> users;
+    private List<ApiUserOutPeer> users;
 
-    public RequestCreateGroup(long rid, @NotNull String title, @NotNull List<UserOutPeer> users) {
+    public RequestCreateGroup(long rid, @NotNull String title, @NotNull List<ApiUserOutPeer> users) {
         this.rid = rid;
         this.title = title;
         this.users = users;
@@ -44,7 +46,7 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
     }
 
     @NotNull
-    public List<UserOutPeer> getUsers() {
+    public List<ApiUserOutPeer> getUsers() {
         return this.users;
     }
 
@@ -52,9 +54,9 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
     public void parse(BserValues values) throws IOException {
         this.rid = values.getLong(1);
         this.title = values.getString(2);
-        List<UserOutPeer> _users = new ArrayList<UserOutPeer>();
+        List<ApiUserOutPeer> _users = new ArrayList<ApiUserOutPeer>();
         for (int i = 0; i < values.getRepeatedCount(3); i ++) {
-            _users.add(new UserOutPeer());
+            _users.add(new ApiUserOutPeer());
         }
         this.users = values.getRepeatedObj(3, _users);
     }

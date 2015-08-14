@@ -7,7 +7,7 @@ package im.actor.core.modules.internal.typing;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import im.actor.core.api.TypingType;
+import im.actor.core.api.ApiTypingType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
@@ -52,9 +52,9 @@ public class TypingActor extends ModuleActor {
     }
 
     @Verified
-    private void privateTyping(int uid, TypingType type) {
+    private void privateTyping(int uid, ApiTypingType type) {
         // Support only text typings
-        if (type != TypingType.TEXT) {
+        if (type != ApiTypingType.TEXT) {
             return;
         }
 
@@ -80,9 +80,9 @@ public class TypingActor extends ModuleActor {
     }
 
     @Verified
-    private void groupTyping(int gid, int uid, TypingType type) {
+    private void groupTyping(int gid, int uid, ApiTypingType type) {
         // Support only text typings
-        if (type != TypingType.TEXT) {
+        if (type != ApiTypingType.TEXT) {
             return;
         }
 
@@ -234,9 +234,9 @@ public class TypingActor extends ModuleActor {
 
     public static class PrivateTyping {
         private int uid;
-        private TypingType type;
+        private ApiTypingType type;
 
-        public PrivateTyping(int uid, TypingType type) {
+        public PrivateTyping(int uid, ApiTypingType type) {
             this.uid = uid;
             this.type = type;
         }
@@ -245,7 +245,7 @@ public class TypingActor extends ModuleActor {
             return uid;
         }
 
-        public TypingType getType() {
+        public ApiTypingType getType() {
             return type;
         }
 
@@ -273,9 +273,9 @@ public class TypingActor extends ModuleActor {
     public static class GroupTyping {
         private int gid;
         private int uid;
-        private TypingType type;
+        private ApiTypingType type;
 
-        public GroupTyping(int gid, int uid, TypingType type) {
+        public GroupTyping(int gid, int uid, ApiTypingType type) {
             this.gid = gid;
             this.uid = uid;
             this.type = type;
@@ -289,7 +289,7 @@ public class TypingActor extends ModuleActor {
             return uid;
         }
 
-        public TypingType getType() {
+        public ApiTypingType getType() {
             return type;
         }
 

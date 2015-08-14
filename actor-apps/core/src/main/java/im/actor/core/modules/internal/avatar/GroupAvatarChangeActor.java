@@ -6,8 +6,8 @@ package im.actor.core.modules.internal.avatar;
 
 import java.util.HashMap;
 
-import im.actor.core.api.FileLocation;
-import im.actor.core.api.GroupOutPeer;
+import im.actor.core.api.ApiFileLocation;
+import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestEditGroupAvatar;
 import im.actor.core.api.rpc.RequestRemoveGroupAvatar;
@@ -15,7 +15,7 @@ import im.actor.core.api.rpc.ResponseEditGroupAvatar;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
 import im.actor.core.entity.FileReference;
-import im.actor.core.entity.GroupEntity;
+import im.actor.core.entity.Group;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
@@ -59,7 +59,7 @@ public class GroupAvatarChangeActor extends ModuleActor {
             return;
         }
 
-        request(new RequestEditGroupAvatar(new GroupOutPeer(gid, accessHash), rid, new FileLocation(fileReference.getFileId(),
+        request(new RequestEditGroupAvatar(new ApiGroupOutPeer(gid, accessHash), rid, new ApiFileLocation(fileReference.getFileId(),
                 fileReference.getAccessHash())), new RpcCallback<ResponseEditGroupAvatar>() {
 
             @Override
@@ -130,9 +130,9 @@ public class GroupAvatarChangeActor extends ModuleActor {
         currentTasks.put(gid, rid);
         tasksMap.put(rid, gid);
 
-        GroupEntity group = context().getGroupsModule().getGroups().getValue(gid);
+        Group group = context().getGroupsModule().getGroups().getValue(gid);
 
-        GroupOutPeer outPeer = new GroupOutPeer(gid, group.getAccessHash());
+        ApiGroupOutPeer outPeer = new ApiGroupOutPeer(gid, group.getAccessHash());
 
         context().getProfileModule().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, true));
         request(new RequestRemoveGroupAvatar(outPeer, rid), new RpcCallback<ResponseSeqDate>() {

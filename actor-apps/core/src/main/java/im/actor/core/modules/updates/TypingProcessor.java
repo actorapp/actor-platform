@@ -6,7 +6,7 @@ package im.actor.core.modules.updates;
 
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.TypingType;
+import im.actor.core.api.ApiTypingType;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.typing.TypingActor;
@@ -24,7 +24,7 @@ public class TypingProcessor extends AbsModule {
     }
 
     @Verified
-    public void onTyping(ApiPeer peer, int uid, TypingType type) {
+    public void onTyping(ApiPeer peer, int uid, ApiTypingType type) {
         if (peer.getType() == ApiPeerType.PRIVATE) {
             typingActor.sendOnce(new TypingActor.PrivateTyping(uid, type));
         } else if (peer.getType() == ApiPeerType.GROUP) {

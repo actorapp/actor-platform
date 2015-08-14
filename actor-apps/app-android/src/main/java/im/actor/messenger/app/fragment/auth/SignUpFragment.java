@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import im.actor.core.api.ApiSex;
+import im.actor.core.entity.Sex;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.util.Screen;
@@ -76,7 +76,7 @@ public class SignUpFragment extends BaseAuthFragment {
         sendConfirmCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                executeAuth(messenger().signUp(firstNameEditText.getText().toString().trim(), ApiSex.UNKNOWN, avatarPath), "SignUp");
+                executeAuth(messenger().signUp(firstNameEditText.getText().toString().trim(), Sex.UNKNOWN, avatarPath), "SignUp");
             }
         });
 

@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestGetFileUrl extends Request<ResponseGetFileUrl> {
@@ -19,9 +22,9 @@ public class RequestGetFileUrl extends Request<ResponseGetFileUrl> {
         return Bser.parse(new RequestGetFileUrl(), data);
     }
 
-    private FileLocation file;
+    private ApiFileLocation file;
 
-    public RequestGetFileUrl(@NotNull FileLocation file) {
+    public RequestGetFileUrl(@NotNull ApiFileLocation file) {
         this.file = file;
     }
 
@@ -30,13 +33,13 @@ public class RequestGetFileUrl extends Request<ResponseGetFileUrl> {
     }
 
     @NotNull
-    public FileLocation getFile() {
+    public ApiFileLocation getFile() {
         return this.file;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.file = values.getObj(1, new FileLocation());
+        this.file = values.getObj(1, new ApiFileLocation());
     }
 
     @Override

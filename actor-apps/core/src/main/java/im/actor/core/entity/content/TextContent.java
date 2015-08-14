@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import im.actor.core.api.TextExMarkdown;
-import im.actor.core.api.TextMessage;
-import im.actor.core.api.TextMessageEx;
+import im.actor.core.api.ApiTextExMarkdown;
+import im.actor.core.api.ApiTextMessage;
+import im.actor.core.api.ApiTextMessageEx;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
 public class TextContent extends AbsContent {
@@ -23,23 +23,23 @@ public class TextContent extends AbsContent {
         }
 
         return new TextContent(new ContentRemoteContainer(
-                new TextMessage(
+                new ApiTextMessage(
                         text,
                         mentions,
                         markDownText == null || markDownText.isEmpty()
                                 ? null
-                                : new TextExMarkdown(markDownText))));
+                                : new ApiTextExMarkdown(markDownText))));
     }
 
     private String text;
     private ArrayList<Integer> mentions;
-    private TextMessageEx textMessageEx;
+    private ApiTextMessageEx textMessageEx;
 
     public TextContent(ContentRemoteContainer remoteContainer) {
         super(remoteContainer);
-        text = ((TextMessage) remoteContainer.getMessage()).getText();
-        mentions = (ArrayList<Integer>) ((TextMessage) remoteContainer.getMessage()).getMentions();
-        textMessageEx = ((TextMessage) remoteContainer.getMessage()).getExt();
+        text = ((ApiTextMessage) remoteContainer.getMessage()).getText();
+        mentions = (ArrayList<Integer>) ((ApiTextMessage) remoteContainer.getMessage()).getMentions();
+        textMessageEx = ((ApiTextMessage) remoteContainer.getMessage()).getExt();
     }
 
     public ArrayList<Integer> getMentions() {
@@ -50,7 +50,7 @@ public class TextContent extends AbsContent {
         return text;
     }
 
-    public TextMessageEx getTextMessageEx() {
+    public ApiTextMessageEx getTextMessageEx() {
         return textMessageEx;
     }
 }

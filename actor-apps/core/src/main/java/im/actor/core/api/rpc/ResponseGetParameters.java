@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,9 +22,9 @@ public class ResponseGetParameters extends Response {
         return Bser.parse(new ResponseGetParameters(), data);
     }
 
-    private List<Parameter> parameters;
+    private List<ApiParameter> parameters;
 
-    public ResponseGetParameters(@NotNull List<Parameter> parameters) {
+    public ResponseGetParameters(@NotNull List<ApiParameter> parameters) {
         this.parameters = parameters;
     }
 
@@ -31,15 +33,15 @@ public class ResponseGetParameters extends Response {
     }
 
     @NotNull
-    public List<Parameter> getParameters() {
+    public List<ApiParameter> getParameters() {
         return this.parameters;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<Parameter> _parameters = new ArrayList<Parameter>();
+        List<ApiParameter> _parameters = new ArrayList<ApiParameter>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _parameters.add(new Parameter());
+            _parameters.add(new ApiParameter());
         }
         this.parameters = values.getRepeatedObj(1, _parameters);
     }

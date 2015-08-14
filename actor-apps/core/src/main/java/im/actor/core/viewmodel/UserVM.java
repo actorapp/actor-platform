@@ -14,7 +14,7 @@ import java.util.List;
 import im.actor.core.entity.ContactRecord;
 import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.Sex;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.core.viewmodel.generics.AvatarValueModel;
@@ -32,14 +32,14 @@ import im.actor.runtime.threading.AbsTimerCompat;
 /**
  * User View Model
  */
-public class UserVM extends BaseValueModel<UserEntity> {
+public class UserVM extends BaseValueModel<User> {
 
     private static final long PRESENCE_UPDATE_DELAY = 60 * 1000L;
 
-    public static ValueModelCreator<UserEntity, UserVM> CREATOR(final ModuleContext modules) {
-        return new ValueModelCreator<UserEntity, UserVM>() {
+    public static ValueModelCreator<User, UserVM> CREATOR(final ModuleContext modules) {
+        return new ValueModelCreator<User, UserVM>() {
             @Override
-            public UserVM create(UserEntity baseValue) {
+            public UserVM create(User baseValue) {
                 return new UserVM(baseValue, modules);
             }
         };
@@ -80,7 +80,7 @@ public class UserVM extends BaseValueModel<UserEntity> {
      * @param user    Initial User value
      * @param modules im.actor.android.modules reference
      */
-    public UserVM(@NotNull UserEntity user, @NotNull ModuleContext modules) {
+    public UserVM(@NotNull User user, @NotNull ModuleContext modules) {
         super(user);
 
         id = user.getUid();
@@ -108,7 +108,7 @@ public class UserVM extends BaseValueModel<UserEntity> {
     }
 
     @Override
-    protected void updateValues(@NotNull UserEntity rawObj) {
+    protected void updateValues(@NotNull User rawObj) {
         boolean isChanged = name.change(rawObj.getName());
         isChanged |= localName.change(rawObj.getLocalName());
         isChanged |= serverName.change(rawObj.getServerName());

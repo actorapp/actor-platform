@@ -7,8 +7,8 @@ package im.actor.core.entity.content;
 import org.jetbrains.annotations.Nullable;
 
 import im.actor.core.api.ApiAvatar;
-import im.actor.core.api.ServiceExChangedAvatar;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExChangedAvatar;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
@@ -16,7 +16,7 @@ public class ServiceGroupAvatarChanged extends ServiceContent {
 
     public static ServiceGroupAvatarChanged create(ApiAvatar avatar) {
         return new ServiceGroupAvatarChanged(new ContentRemoteContainer(
-                new ServiceMessage("Avatar changed", new ServiceExChangedAvatar(avatar))));
+                new ApiServiceMessage("Avatar changed", new ApiServiceExChangedAvatar(avatar))));
     }
 
     @Nullable
@@ -25,8 +25,8 @@ public class ServiceGroupAvatarChanged extends ServiceContent {
     public ServiceGroupAvatarChanged(ContentRemoteContainer remoteContainer) {
         super(remoteContainer);
 
-        ServiceMessage serviceMessage = (ServiceMessage) remoteContainer.getMessage();
-        ServiceExChangedAvatar changedAvatar = ((ServiceExChangedAvatar) serviceMessage.getExt());
+        ApiServiceMessage serviceMessage = (ApiServiceMessage) remoteContainer.getMessage();
+        ApiServiceExChangedAvatar changedAvatar = ((ApiServiceExChangedAvatar) serviceMessage.getExt());
         newAvatar = (changedAvatar.getAvatar() != null) ? new Avatar(changedAvatar.getAvatar()) : null;
     }
 

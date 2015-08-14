@@ -8,18 +8,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-import im.actor.core.api.FileLocation;
+import im.actor.core.api.ApiFileLocation;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
-public class FileReference extends WrapperEntity<FileLocation> {
+public class FileReference extends WrapperEntity<ApiFileLocation> {
 
     private static final int RECORD_ID = 10;
 
     private int fileSize;
     private String fileName;
 
-    public FileReference(FileLocation fileLocation, String fileName, int fileSize) {
+    public FileReference(ApiFileLocation fileLocation, String fileName, int fileSize) {
         super(RECORD_ID, fileLocation);
         this.fileSize = fileSize;
         this.fileName = fileName;
@@ -29,7 +29,7 @@ public class FileReference extends WrapperEntity<FileLocation> {
         super(RECORD_ID, data);
     }
 
-    public FileLocation getFileLocation() {
+    public ApiFileLocation getFileLocation() {
         return getWrapped();
     }
 
@@ -55,7 +55,7 @@ public class FileReference extends WrapperEntity<FileLocation> {
         if (!values.getBool(5, false)) {
             long fileId = values.getLong(1);
             long accessHash = values.getLong(2);
-            setWrapped(new FileLocation(fileId, accessHash));
+            setWrapped(new ApiFileLocation(fileId, accessHash));
         }
 
         // Deserialize new layout
@@ -95,7 +95,7 @@ public class FileReference extends WrapperEntity<FileLocation> {
 
     @Override
     @NotNull
-    protected FileLocation createInstance() {
-        return new FileLocation();
+    protected ApiFileLocation createInstance() {
+        return new ApiFileLocation();
     }
 }

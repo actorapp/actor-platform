@@ -12,11 +12,11 @@ import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.ContentType;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.DialogBuilder;
-import im.actor.core.entity.GroupEntity;
+import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.entity.DialogHistory;
@@ -46,7 +46,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onMessage(PeerEntity peer, Message message, boolean forceWrite, int counter) {
+    private void onMessage(Peer peer, Message message, boolean forceWrite, int counter) {
         long start = im.actor.runtime.Runtime.getCurrentTime();
         PeerDesc peerDesc = buildPeerDesc(peer);
         if (peerDesc == null) {
@@ -116,7 +116,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onUserChanged(UserEntity user) {
+    private void onUserChanged(User user) {
         Dialog dialog = dialogs.getValue(user.peer().getUnuqueId());
         if (dialog != null) {
             // Ignore if nothing changed
@@ -133,7 +133,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onGroupChanged(GroupEntity group) {
+    private void onGroupChanged(Group group) {
         Dialog dialog = dialogs.getValue(group.peer().getUnuqueId());
         if (dialog != null) {
             // Ignore if nothing changed
@@ -150,7 +150,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onChatDeleted(PeerEntity peer) {
+    private void onChatDeleted(Peer peer) {
         // Removing dialog
         dialogs.removeItem(peer.getUnuqueId());
 
@@ -158,7 +158,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onChatClear(PeerEntity peer) {
+    private void onChatClear(Peer peer) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
         // If we have dialog for this peer
@@ -178,7 +178,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onMessageStatusChanged(PeerEntity peer, long rid, MessageState state) {
+    private void onMessageStatusChanged(Peer peer, long rid, MessageState state) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
         // If message is on top
@@ -192,7 +192,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onMessageContentChanged(PeerEntity peer, long rid, AbsContent content) {
+    private void onMessageContentChanged(Peer peer, long rid, AbsContent content) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
         // If message is on top
@@ -209,7 +209,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onCounterChanged(PeerEntity peer, int count) {
+    private void onCounterChanged(Peer peer, int count) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
 
         // If we have dialog for this peer
@@ -287,13 +287,13 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private PeerDesc buildPeerDesc(PeerEntity peer) {
+    private PeerDesc buildPeerDesc(Peer peer) {
         switch (peer.getPeerType()) {
             case PRIVATE:
-                UserEntity u = getUser(peer.getPeerId());
+                User u = getUser(peer.getPeerId());
                 return new PeerDesc(u.getName(), u.getAvatar());
             case GROUP:
-                GroupEntity g = getGroup(peer.getPeerId());
+                Group g = getGroup(peer.getPeerId());
                 return new PeerDesc(g.getTitle(), g.getAvatar());
             default:
                 return null;
@@ -359,17 +359,17 @@ public class DialogsActor extends ModuleActor {
     }
 
     public static class InMessage {
-        private PeerEntity peer;
+        private Peer peer;
         private Message message;
         private int counter;
 
-        public InMessage(PeerEntity peer, Message message, int counter) {
+        public InMessage(Peer peer, Message message, int counter) {
             this.peer = peer;
             this.message = message;
             this.counter = counter;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -383,15 +383,15 @@ public class DialogsActor extends ModuleActor {
     }
 
     public static class CounterChanged {
-        private PeerEntity peer;
+        private Peer peer;
         private int counter;
 
-        public CounterChanged(PeerEntity peer, int counter) {
+        public CounterChanged(Peer peer, int counter) {
             this.peer = peer;
             this.counter = counter;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -401,65 +401,65 @@ public class DialogsActor extends ModuleActor {
     }
 
     public static class UserChanged {
-        private UserEntity user;
+        private User user;
 
-        public UserChanged(UserEntity user) {
+        public UserChanged(User user) {
             this.user = user;
         }
 
-        public UserEntity getUser() {
+        public User getUser() {
             return user;
         }
     }
 
     public static class GroupChanged {
-        private GroupEntity group;
+        private Group group;
 
-        public GroupChanged(GroupEntity group) {
+        public GroupChanged(Group group) {
             this.group = group;
         }
 
-        public GroupEntity getGroup() {
+        public Group getGroup() {
             return group;
         }
     }
 
     public static class ChatClear {
-        private PeerEntity peer;
+        private Peer peer;
 
-        public ChatClear(PeerEntity peer) {
+        public ChatClear(Peer peer) {
             this.peer = peer;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
     }
 
     public static class ChatDelete {
-        private PeerEntity peer;
+        private Peer peer;
 
-        public ChatDelete(PeerEntity peer) {
+        public ChatDelete(Peer peer) {
             this.peer = peer;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
     }
 
     public static class MessageStateChanged {
-        private PeerEntity peer;
+        private Peer peer;
         private long rid;
         private MessageState state;
 
-        public MessageStateChanged(PeerEntity peer, long rid, MessageState state) {
+        public MessageStateChanged(Peer peer, long rid, MessageState state) {
             this.peer = peer;
             this.rid = rid;
             this.state = state;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -473,17 +473,17 @@ public class DialogsActor extends ModuleActor {
     }
 
     public static class MessageContentChanged {
-        private PeerEntity peer;
+        private Peer peer;
         private long rid;
         private AbsContent content;
 
-        public MessageContentChanged(PeerEntity peer, long rid, AbsContent content) {
+        public MessageContentChanged(Peer peer, long rid, AbsContent content) {
             this.peer = peer;
             this.rid = rid;
             this.content = content;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 
@@ -497,15 +497,15 @@ public class DialogsActor extends ModuleActor {
     }
 
     public static class MessageDeleted {
-        private PeerEntity peer;
+        private Peer peer;
         private Message topMessage;
 
-        public MessageDeleted(PeerEntity peer, Message topMessage) {
+        public MessageDeleted(Peer peer, Message topMessage) {
             this.peer = peer;
             this.topMessage = topMessage;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 

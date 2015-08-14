@@ -5,10 +5,11 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
+import static im.actor.runtime.bser.Utils.*;
+import im.actor.core.network.parser.*;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class ApiGroup extends BserObject {
     private ApiAvatar avatar;
     private boolean isMember;
     private int creatorUid;
-    private List<Member> members;
+    private List<ApiMember> members;
     private long createDate;
     private Boolean disableEdit;
     private Boolean disableInviteView;
@@ -32,7 +33,7 @@ public class ApiGroup extends BserObject {
     private String theme;
     private String about;
 
-    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, boolean isMember, int creatorUid, @NotNull List<Member> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, boolean isMember, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -82,7 +83,7 @@ public class ApiGroup extends BserObject {
     }
 
     @NotNull
-    public List<Member> getMembers() {
+    public List<ApiMember> getMembers() {
         return this.members;
     }
 
@@ -138,9 +139,9 @@ public class ApiGroup extends BserObject {
         this.avatar = values.optObj(4, new ApiAvatar());
         this.isMember = values.getBool(6);
         this.creatorUid = values.getInt(8);
-        List<Member> _members = new ArrayList<Member>();
+        List<ApiMember> _members = new ArrayList<ApiMember>();
         for (int i = 0; i < values.getRepeatedCount(9); i ++) {
-            _members.add(new Member());
+            _members.add(new ApiMember());
         }
         this.members = values.getRepeatedObj(9, _members);
         this.createDate = values.getLong(10);

@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,9 +22,9 @@ public class RequestSubscribeFromGroupOnline extends Request<ResponseVoid> {
         return Bser.parse(new RequestSubscribeFromGroupOnline(), data);
     }
 
-    private List<GroupOutPeer> groups;
+    private List<ApiGroupOutPeer> groups;
 
-    public RequestSubscribeFromGroupOnline(@NotNull List<GroupOutPeer> groups) {
+    public RequestSubscribeFromGroupOnline(@NotNull List<ApiGroupOutPeer> groups) {
         this.groups = groups;
     }
 
@@ -31,15 +33,15 @@ public class RequestSubscribeFromGroupOnline extends Request<ResponseVoid> {
     }
 
     @NotNull
-    public List<GroupOutPeer> getGroups() {
+    public List<ApiGroupOutPeer> getGroups() {
         return this.groups;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<GroupOutPeer> _groups = new ArrayList<GroupOutPeer>();
+        List<ApiGroupOutPeer> _groups = new ArrayList<ApiGroupOutPeer>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _groups.add(new GroupOutPeer());
+            _groups.add(new ApiGroupOutPeer());
         }
         this.groups = values.getRepeatedObj(1, _groups);
     }

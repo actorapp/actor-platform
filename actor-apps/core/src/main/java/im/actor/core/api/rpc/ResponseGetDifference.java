@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -22,12 +24,12 @@ public class ResponseGetDifference extends Response {
 
     private int seq;
     private byte[] state;
-    private List<User> users;
+    private List<ApiUser> users;
     private List<ApiGroup> groups;
-    private List<DifferenceUpdate> updates;
+    private List<ApiDifferenceUpdate> updates;
     private boolean needMore;
 
-    public ResponseGetDifference(int seq, @NotNull byte[] state, @NotNull List<User> users, @NotNull List<ApiGroup> groups, @NotNull List<DifferenceUpdate> updates, boolean needMore) {
+    public ResponseGetDifference(int seq, @NotNull byte[] state, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups, @NotNull List<ApiDifferenceUpdate> updates, boolean needMore) {
         this.seq = seq;
         this.state = state;
         this.users = users;
@@ -50,7 +52,7 @@ public class ResponseGetDifference extends Response {
     }
 
     @NotNull
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return this.users;
     }
 
@@ -60,7 +62,7 @@ public class ResponseGetDifference extends Response {
     }
 
     @NotNull
-    public List<DifferenceUpdate> getUpdates() {
+    public List<ApiDifferenceUpdate> getUpdates() {
         return this.updates;
     }
 
@@ -72,9 +74,9 @@ public class ResponseGetDifference extends Response {
     public void parse(BserValues values) throws IOException {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
-        List<User> _users = new ArrayList<User>();
+        List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(3); i ++) {
-            _users.add(new User());
+            _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(3, _users);
         List<ApiGroup> _groups = new ArrayList<ApiGroup>();
@@ -82,9 +84,9 @@ public class ResponseGetDifference extends Response {
             _groups.add(new ApiGroup());
         }
         this.groups = values.getRepeatedObj(6, _groups);
-        List<DifferenceUpdate> _updates = new ArrayList<DifferenceUpdate>();
+        List<ApiDifferenceUpdate> _updates = new ArrayList<ApiDifferenceUpdate>();
         for (int i = 0; i < values.getRepeatedCount(4); i ++) {
-            _updates.add(new DifferenceUpdate());
+            _updates.add(new ApiDifferenceUpdate());
         }
         this.updates = values.getRepeatedObj(4, _updates);
         this.needMore = values.getBool(5);

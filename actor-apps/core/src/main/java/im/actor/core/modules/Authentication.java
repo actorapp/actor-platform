@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
-import im.actor.core.api.EmailActivationType;
+import im.actor.core.api.ApiEmailActivationType;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.rpc.RequestCompleteOAuth2;
 import im.actor.core.api.rpc.RequestGetOAuth2Params;
@@ -22,7 +22,7 @@ import im.actor.core.api.rpc.ResponseStartEmailAuth;
 import im.actor.core.api.rpc.ResponseStartPhoneAuth;
 import im.actor.core.entity.ContactRecord;
 import im.actor.core.entity.ContactRecordType;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.User;
 import im.actor.core.modules.updates.internal.LoggedIn;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -92,7 +92,7 @@ public class Authentication {
             modules.onLoggedIn();
 
             // Notify Analytics
-            UserEntity user = modules.getUsersModule().getUsersStorage().getValue(myUid);
+            User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
             ArrayList<Long> records = new ArrayList<Long>();
             for (ContactRecord contactRecord : user.getRecords()) {
                 if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
@@ -123,10 +123,11 @@ public class Authentication {
                     public void onResult(ResponseStartEmailAuth response) {
                         modules.getPreferences().putString(KEY_EMAIL, email);
                         modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
-                        EmailActivationType emailActivationType = response.getActivationType();
-                        if (emailActivationType.equals(EmailActivationType.OAUTH2)) {
+
+                        ApiEmailActivationType emailActivationType = response.getActivationType();
+                        if (emailActivationType.equals(ApiEmailActivationType.OAUTH2)) {
                             state = AuthState.GET_OAUTH_PARAMS;
-                        } else if (emailActivationType.equals(EmailActivationType.CODE)) {
+                        } else if (emailActivationType.equals(ApiEmailActivationType.CODE)) {
                             state = AuthState.CODE_VALIDATION_EMAIL;
                         }
 
@@ -358,7 +359,7 @@ public class Authentication {
                 callback.onResult(state);
 
                 // Notify Analytics
-                UserEntity user = modules.getUsersModule().getUsersStorage().getValue(myUid);
+                User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
                 ArrayList<Long> records = new ArrayList<Long>();
                 for (ContactRecord contactRecord : user.getRecords()) {
                     if (contactRecord.getRecordType() == ContactRecordType.PHONE) {

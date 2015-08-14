@@ -7,9 +7,9 @@ package im.actor.core.entity.content;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import im.actor.core.api.ApiDocumentExPhoto;
+import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiFastThumb;
-import im.actor.core.api.DocumentExPhoto;
-import im.actor.core.api.DocumentMessage;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.content.internal.ContentLocalContainer;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
@@ -35,7 +35,7 @@ public class PhotoContent extends DocumentContent {
     public static PhotoContent createRemotePhoto(@NotNull FileReference reference, int w, int h,
                                                  @Nullable FastThumb fastThumb) {
         return new PhotoContent(new ContentRemoteContainer(
-                new DocumentMessage(reference.getFileId(),
+                new ApiDocumentMessage(reference.getFileId(),
                         reference.getAccessHash(),
                         reference.getFileSize(),
                         reference.getFileName(),
@@ -46,7 +46,7 @@ public class PhotoContent extends DocumentContent {
                                         fastThumb.getH(),
                                         fastThumb.getImage()) :
                                 null,
-                        new DocumentExPhoto(w, h))));
+                        new ApiDocumentExPhoto(w, h))));
     }
 
     private int w;
@@ -61,8 +61,8 @@ public class PhotoContent extends DocumentContent {
 
     public PhotoContent(ContentRemoteContainer contentRemoteContainer) {
         super(contentRemoteContainer);
-        DocumentMessage message = (DocumentMessage) contentRemoteContainer.getMessage();
-        DocumentExPhoto photo = (DocumentExPhoto) message.getExt();
+        ApiDocumentMessage message = (ApiDocumentMessage) contentRemoteContainer.getMessage();
+        ApiDocumentExPhoto photo = (ApiDocumentExPhoto) message.getExt();
         if (photo != null) {
             w = photo.getW();
             h = photo.getH();

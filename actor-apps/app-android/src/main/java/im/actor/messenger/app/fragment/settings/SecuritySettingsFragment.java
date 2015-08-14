@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import im.actor.core.api.AuthHolder;
-import im.actor.core.api.AuthSession;
+import im.actor.core.api.ApiAuthHolder;
+import im.actor.core.api.ApiAuthSession;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
@@ -85,23 +85,23 @@ public class SecuritySettingsFragment extends BaseFragment {
         loading.setClickable(true);
         showView(loading, false);
 
-        executeSilent(messenger().loadSessions(), new CommandCallback<List<AuthSession>>() {
+        executeSilent(messenger().loadSessions(), new CommandCallback<List<ApiAuthSession>>() {
             @Override
-            public void onResult(List<AuthSession> res) {
+            public void onResult(List<ApiAuthSession> res) {
                 goneView(loading, false);
                 authItems.removeAllViews();
-                ArrayList<AuthSession> items = new ArrayList<AuthSession>(res);
-                Collections.sort(items, new Comparator<AuthSession>() {
+                ArrayList<ApiAuthSession> items = new ArrayList<ApiAuthSession>(res);
+                Collections.sort(items, new Comparator<ApiAuthSession>() {
                     @Override
-                    public int compare(AuthSession lhs, AuthSession rhs) {
+                    public int compare(ApiAuthSession lhs, ApiAuthSession rhs) {
                         return rhs.getAuthTime() - lhs.getAuthTime();
                     }
                 });
-                for (final AuthSession item : items) {
+                for (final ApiAuthSession item : items) {
                     if (getActivity() == null) return;
                     View view = getActivity().getLayoutInflater().inflate(R.layout.adapter_auth, authItems, false);
 
-                    boolean isThisDevice = item.getAuthHolder() == AuthHolder.OTHERDEVICE;
+                    boolean isThisDevice = item.getAuthHolder() == ApiAuthHolder.OTHERDEVICE;
                     String deviceTitle = (isThisDevice ? "(This) " : "") + item.getDeviceTitle();
                     ((TextView) view.findViewById(R.id.date)).setText(messenger().getFormatter().formatShortDate(item.getAuthTime() * 1000L));
                     ((TextView) view.findViewById(R.id.appTitle)).setText(item.getAppTitle());

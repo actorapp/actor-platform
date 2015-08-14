@@ -9,9 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.PhoneBookProvider;
-import im.actor.core.api.EmailToImport;
+import im.actor.core.api.ApiEmailToImport;
 import im.actor.core.api.ApiGroup;
-import im.actor.core.api.PhoneToImport;
+import im.actor.core.api.ApiPhoneToImport;
+import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.rpc.RequestImportContacts;
 import im.actor.core.api.rpc.ResponseImportContacts;
@@ -79,8 +80,8 @@ public class BookImportActor extends ModuleActor {
             Log.d(TAG, "Book load completed");
         }
 
-        ArrayList<PhoneToImport> phoneToImports = new ArrayList<PhoneToImport>();
-        ArrayList<EmailToImport> emailToImports = new ArrayList<EmailToImport>();
+        ArrayList<ApiPhoneToImport> phoneToImports = new ArrayList<ApiPhoneToImport>();
+        ArrayList<ApiEmailToImport> emailToImports = new ArrayList<ApiEmailToImport>();
         for (PhoneBookContact record : phoneBook) {
             for (PhoneBookPhone phone : record.getPhones()) {
                 if (isImported(phone.getNumber())) {
@@ -90,7 +91,7 @@ public class BookImportActor extends ModuleActor {
                     continue;
                 }
                 importingPhones.add(phone.getNumber());
-                phoneToImports.add(new PhoneToImport(phone.getNumber(), record.getName()));
+                phoneToImports.add(new ApiPhoneToImport(phone.getNumber(), record.getName()));
             }
 
             for (PhoneBookEmail email : record.getEmails()) {
@@ -101,7 +102,7 @@ public class BookImportActor extends ModuleActor {
                     continue;
                 }
                 importingEmails.add(email.getEmail().toLowerCase());
-                emailToImports.add(new EmailToImport(email.getEmail().toLowerCase(), record.getName()));
+                emailToImports.add(new ApiEmailToImport(email.getEmail().toLowerCase(), record.getName()));
             }
         }
 
@@ -117,10 +118,10 @@ public class BookImportActor extends ModuleActor {
             }
         }
 
-        ArrayList<PhoneToImport> phoneToImportsPart = new ArrayList<PhoneToImport>();
-        ArrayList<EmailToImport> emailToImportsPart = new ArrayList<EmailToImport>();
+        ArrayList<ApiPhoneToImport> phoneToImportsPart = new ArrayList<ApiPhoneToImport>();
+        ArrayList<ApiEmailToImport> emailToImportsPart = new ArrayList<ApiEmailToImport>();
         int count = 0;
-        for (PhoneToImport phoneToImport : phoneToImports) {
+        for (ApiPhoneToImport phoneToImport : phoneToImports) {
             phoneToImportsPart.add(phoneToImport);
             count++;
             if (count >= MAX_IMPORT_SIZE) {
@@ -131,7 +132,7 @@ public class BookImportActor extends ModuleActor {
             }
         }
 
-        for (EmailToImport emailToImport : emailToImports) {
+        for (ApiEmailToImport emailToImport : emailToImports) {
             emailToImportsPart.add(emailToImport);
             count++;
             if (count >= MAX_IMPORT_SIZE) {
@@ -147,26 +148,26 @@ public class BookImportActor extends ModuleActor {
         }
     }
 
-    private void performImport(ArrayList<PhoneToImport> phoneToImportsPart,
-                               ArrayList<EmailToImport> emailToImportsPart) {
+    private void performImport(ArrayList<ApiPhoneToImport> phoneToImportsPart,
+                               ArrayList<ApiEmailToImport> emailToImportsPart) {
 
         if (ENABLE_LOG) {
             Log.d(TAG, "Performing import part with " + phoneToImportsPart.size() +
                     " phones and " + emailToImportsPart.size() + " emails");
         }
 
-        final PhoneToImport[] phones = phoneToImportsPart.toArray(new PhoneToImport[phoneToImportsPart.size()]);
-        final EmailToImport[] emailToImports = emailToImportsPart.toArray(new EmailToImport[emailToImportsPart.size()]);
+        final ApiPhoneToImport[] phones = phoneToImportsPart.toArray(new ApiPhoneToImport[phoneToImportsPart.size()]);
+        final ApiEmailToImport[] emailToImports = emailToImportsPart.toArray(new ApiEmailToImport[emailToImportsPart.size()]);
 
-        request(new RequestImportContacts((java.util.List<PhoneToImport>) phoneToImportsPart.clone(),
-                (java.util.List<EmailToImport>) emailToImportsPart.clone()), new RpcCallback<ResponseImportContacts>() {
+        request(new RequestImportContacts((java.util.List<ApiPhoneToImport>) phoneToImportsPart.clone(),
+                (java.util.List<ApiEmailToImport>) emailToImportsPart.clone()), new RpcCallback<ResponseImportContacts>() {
             @Override
             public void onResult(ResponseImportContacts response) {
-                for (PhoneToImport phoneToImport : phones) {
+                for (ApiPhoneToImport phoneToImport : phones) {
                     markImported(phoneToImport.getPhoneNumber());
                     importingPhones.remove(phoneToImport.getPhoneNumber());
                 }
-                for (EmailToImport emailToImport : emailToImports) {
+                for (ApiEmailToImport emailToImport : emailToImports) {
                     markImported(emailToImport.getEmail());
                     importingEmails.remove(emailToImport.getEmail());
                 }
@@ -187,7 +188,7 @@ public class BookImportActor extends ModuleActor {
                 }
 
                 ArrayList<Integer> uids = new ArrayList<Integer>();
-                for (im.actor.core.api.User u : response.getUsers()) {
+                for (ApiUser u : response.getUsers()) {
                     uids.add(u.getId());
                 }
                 updates().onUpdateReceived(new FatSeqUpdate(

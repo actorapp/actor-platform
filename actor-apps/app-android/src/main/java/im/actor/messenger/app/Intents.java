@@ -24,7 +24,7 @@ import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.core.entity.FileReference;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 
 /**
  * Created by ex3ndr on 07.10.14.
@@ -89,7 +89,7 @@ public class Intents {
         return res;
     }
 
-    public static Intent openDialog(PeerEntity peer, boolean compose, Context context) {
+    public static Intent openDialog(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
         intent.putExtra(EXTRA_CHAT_PEER, peer.getUnuqueId());
         intent.putExtra(EXTRA_CHAT_COMPOSE, compose);
@@ -97,11 +97,11 @@ public class Intents {
     }
 
     public static Intent openPrivateDialog(int uid, boolean compose, Context context) {
-        return openDialog(PeerEntity.user(uid), compose, context);
+        return openDialog(Peer.user(uid), compose, context);
     }
 
     public static Intent openGroupDialog(int chatId, boolean compose, Context context) {
-        return openDialog(PeerEntity.group(chatId), compose, context);
+        return openDialog(Peer.group(chatId), compose, context);
     }
 
     public static Intent openProfile(int uid, Context context) {

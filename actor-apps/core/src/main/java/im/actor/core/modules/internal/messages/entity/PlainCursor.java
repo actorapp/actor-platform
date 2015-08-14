@@ -10,7 +10,7 @@ import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 
 public class PlainCursor extends BserObject {
 
@@ -18,11 +18,11 @@ public class PlainCursor extends BserObject {
         return Bser.parse(new PlainCursor(), data);
     }
 
-    private PeerEntity peer;
+    private Peer peer;
     private long sortDate;
     private long pendingSortDate;
 
-    public PlainCursor(PeerEntity peer, long sortDate, long pendingSortDate) {
+    public PlainCursor(Peer peer, long sortDate, long pendingSortDate) {
         this.peer = peer;
         this.sortDate = sortDate;
         this.pendingSortDate = pendingSortDate;
@@ -32,7 +32,7 @@ public class PlainCursor extends BserObject {
 
     }
 
-    public PeerEntity getPeer() {
+    public Peer getPeer() {
         return peer;
     }
 
@@ -54,7 +54,7 @@ public class PlainCursor extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = PeerEntity.fromUniqueId(values.getLong(1));
+        peer = Peer.fromUniqueId(values.getLong(1));
         sortDate = values.getLong(2);
         pendingSortDate = values.getLong(3);
     }

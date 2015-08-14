@@ -6,7 +6,7 @@ package im.actor.core.modules.internal.settings;
 
 import java.io.IOException;
 
-import im.actor.core.api.Parameter;
+import im.actor.core.api.ApiParameter;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestEditParameter;
 import im.actor.core.api.rpc.RequestGetParameters;
@@ -53,7 +53,7 @@ public class SettingsSyncActor extends ModuleActor {
             request(new RequestGetParameters(), new RpcCallback<ResponseGetParameters>() {
                 @Override
                 public void onResult(ResponseGetParameters response) {
-                    for (Parameter p : response.getParameters()) {
+                    for (ApiParameter p : response.getParameters()) {
                         context().getSettingsModule().onUpdatedSetting(p.getKey(), p.getValue());
                     }
                     preferences().putBool(SYNC_STATE_LOADED, true);

@@ -7,16 +7,16 @@ package im.actor.core.modules.updates.internal;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
-import im.actor.core.api.User;
+import im.actor.core.api.ApiUser;
 import im.actor.core.viewmodel.CommandCallback;
 
 public class GroupCreated extends InternalUpdate {
     private ApiGroup group;
 
-    private List<User> users;
+    private List<ApiUser> users;
 
     private CommandCallback<Integer> callback;
-    public GroupCreated(ApiGroup group, List<User> users,CommandCallback<Integer> callback) {
+    public GroupCreated(ApiGroup group, List<ApiUser> users,CommandCallback<Integer> callback) {
         this.group = group;
         this.users = users;
         this.callback = callback;
@@ -26,7 +26,7 @@ public class GroupCreated extends InternalUpdate {
         return group;
     }
 
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return users;
     }
 

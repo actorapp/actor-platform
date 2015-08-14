@@ -4,9 +4,9 @@
 
 package im.actor.core.entity.content;
 
+import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiFastThumb;
-import im.actor.core.api.DocumentMessage;
-import im.actor.core.api.FileLocation;
+import im.actor.core.api.ApiFileLocation;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.content.internal.ContentLocalContainer;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
@@ -24,7 +24,7 @@ public class DocumentContent extends AbsContent {
 
     public static DocumentContent createRemoteDocument(FileReference reference, FastThumb fastThumb) {
         return new DocumentContent(new ContentRemoteContainer(
-                new DocumentMessage(reference.getFileId(),
+                new ApiDocumentMessage(reference.getFileId(),
                         reference.getAccessHash(),
                         reference.getFileSize(),
                         reference.getFileName(),
@@ -45,9 +45,9 @@ public class DocumentContent extends AbsContent {
 
     public DocumentContent(ContentRemoteContainer contentContainer) {
         super(contentContainer);
-        DocumentMessage doc = ((DocumentMessage) contentContainer.getMessage());
+        ApiDocumentMessage doc = ((ApiDocumentMessage) contentContainer.getMessage());
         source = new FileRemoteSource(new FileReference(
-                new FileLocation(doc.getFileId(), doc.getAccessHash()), doc.getName(),
+                new ApiFileLocation(doc.getFileId(), doc.getAccessHash()), doc.getName(),
                 doc.getFileSize()));
         mimeType = doc.getMimeType();
         name = doc.getName();

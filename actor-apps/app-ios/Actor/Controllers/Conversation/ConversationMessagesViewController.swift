@@ -16,9 +16,9 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     private var isLoadedAfter: Bool = false
     private var unreadIndex: Int? = nil
     private let layout = MessagesLayout()
-    let peer: ACPeerEntity
+    let peer: ACPeer
     
-    init(peer: ACPeerEntity) {
+    init(peer: ACPeer) {
         self.peer = peer
         
         super.init(collectionViewLayout: layout)

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import im.actor.core.api.DifferenceUpdate;
+import im.actor.core.api.ApiDifferenceUpdate;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.base.SeqUpdateTooLong;
@@ -280,7 +280,7 @@ public class SequenceActor extends ModuleActor {
 
                     long parseStart = im.actor.runtime.Runtime.getCurrentTime();
                     ArrayList<Update> updates = new ArrayList<Update>();
-                    for (DifferenceUpdate u : response.getUpdates()) {
+                    for (ApiDifferenceUpdate u : response.getUpdates()) {
                         try {
                             updates.add(parser.read(u.getUpdateHeader(), u.getUpdate()));
                         } catch (IOException e) {
