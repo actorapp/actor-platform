@@ -24,6 +24,8 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
 
   case class UnstashAndWorkBatch(es: immutable.Seq[Event], state: State)
 
+  case class Work(state: State)
+
   private val passivationIntervalMs = context.system.settings.config.getDuration("office.passivation-interval", TimeUnit.MILLISECONDS)
   private implicit val ec = context.dispatcher
 
@@ -31,18 +33,8 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
 
   protected def workWith(e: Event, s: State): State = {
     val updated = updatedState(e, s)
-    context become working(updated)
+    self ! Work(updated)
     updated
-  }
-
-  protected def workWith(es: immutable.Seq[Event], state: State): State = {
-    val newState = es.foldLeft(state) {
-      case (s, e) ⇒
-        log.debug("Updating state: {} with event: {}", s, e)
-        updatedState(e, s)
-    }
-    context become working(newState)
-    newState
   }
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
@@ -62,15 +54,21 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
   protected final def initializing: Receive = handleInitCommand orElse stashingBehavior()
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
+    case Work(newState) => context become working(newState)
     case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
   }
 
   private final def stashingBehavior(): Receive = {
-    case UnstashAndWork(evt, newState) =>
-      workWith(evt, newState)
+    case UnstashAndWork(evt, s) =>
+      context become working(updatedState(evt, s))
       unstashAll()
-    case UnstashAndWorkBatch(es, newState) =>
-      workWith(es, newState)
+    case UnstashAndWorkBatch(es, s) =>
+      val newState = es.foldLeft(s) {
+        case (acc, e) ⇒
+          log.debug("Updating state: {} with event: {}", acc, e)
+          updatedState(e, acc)
+      }
+      context become working(newState)
       unstashAll()
     case msg ⇒
       log.debug("Stashing while initializing. Message: {}", msg)
@@ -132,7 +130,7 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
     val replyTo = sender()
 
     log.debug("[persistStashingReply], events {}", es)
-    context become stashing(state)//remove es
+    context become stashing(state)
 
     persistAsync(es)(_ ⇒ ())
 
@@ -164,20 +162,6 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
 
         unstashAndWork(e, state)
     }
-  }
-
-  final def reply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
-    val replyTo = sender()
-    log.debug("[reply] {}", e)
-
-      f(e) pipeTo replyTo onComplete {
-        case Success(_) ⇒
-        case Failure(f) ⇒
-          log.error(f, "Failure while processing event {}", e)
-          replyTo ! Status.Failure(f)
-      }
-
-      workWith(e, state)
   }
 
   private final def unstashAndWork(evt: Event, state: State): Unit = self ! UnstashAndWork(evt, state)
