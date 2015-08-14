@@ -14,6 +14,7 @@ import VisibilitySensor from 'react-visibility-sensor';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import Image from './Image.react';
+import State from './State.react';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import { MessageContentTypes } from 'constants/ActorAppConstants';
@@ -92,7 +93,7 @@ var MessageItem = React.createClass({
       leftBlock = (
         <div className="message__info text-right">
           <time className="message__timestamp">{message.date}</time>
-          <MessageItem.State message={message}/>
+          <State message={message}/>
         </div>
       );
     } else {
@@ -111,7 +112,7 @@ var MessageItem = React.createClass({
             <a onClick={this.onClick}>{message.sender.title}</a>
           </h3>
           <time className="message__timestamp">{message.date}</time>
-          <MessageItem.State message={message}/>
+          <State message={message}/>
         </header>
       );
     }
@@ -287,45 +288,6 @@ MessageItem.Content = React.createClass({
           </div>
         );
       default:
-    }
-  }
-});
-
-MessageItem.State = React.createClass({
-  propTypes: {
-    message: React.PropTypes.object.isRequired
-  },
-
-  render() {
-    const message = this.props.message;
-
-    if (message.content.content === MessageContentTypes.SERVICE) {
-      return null;
-    } else {
-      let icon = null;
-
-      switch(message.state) {
-        case 'pending':
-          icon = <i className="status status--penging material-icons">access_time</i>;
-          break;
-        case 'sent':
-          icon = <i className="status status--sent material-icons">done</i>;
-          break;
-        case 'received':
-          icon = <i className="status status--received material-icons">done_all</i>;
-          break;
-        case 'read':
-          icon = <i className="status status--read material-icons">done_all</i>;
-          break;
-        case 'error':
-          icon = <i className="status status--error material-icons">report_problem</i>;
-          break;
-        default:
-      }
-
-      return (
-        <div className="message__status">{icon}</div>
-      );
     }
   }
 });
