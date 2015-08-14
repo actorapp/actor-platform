@@ -9,13 +9,23 @@ import {PeerTypes} from 'constants/ActorAppConstants';
 
 import GroupStore from './GroupStore';
 import DraftStore from './DraftStore';
+import UserStore from './UserStore';
 
 const CHANGE_EVENT = 'change';
 
 let getAll = (peer) => {
   if (peer.type === PeerTypes.GROUP) {
-    let members = GroupStore.getGroup(peer.id).members;
-    return _.map(members, (m) => m.peerInfo);
+    let allMembers = GroupStore.getGroup(peer.id).members;
+    let members = [];
+    const myId = UserStore.getMyId();
+
+    _.map(allMembers, (member) => {
+      if (member.peerInfo.peer.id !== myId) {
+        members.push(member.peerInfo);
+      }
+    });
+
+    return members;
   } else {
     return [];
   }
@@ -77,6 +87,7 @@ let onTyping = (action) => {
   text = action.text;
 
   let all = getAll(action.peer);
+  console.warn(all);
   let query = getQuery(text, action.caretPosition);
   mentions = _.filter(all, m => m.title.toLowerCase().indexOf(query) > -1);
   if (mentions.length === 0) {
