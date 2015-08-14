@@ -16,11 +16,13 @@ import scala.util.{ Failure, Success }
 
 case object StopOffice
 
-case object UnStash
-
 trait ProcessorState
 
 trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActor with ActorLogging {
+
+  case class UnstashAndWork(evt: Event, state: State)
+
+  case class UnstashAndWorkBatch(es: immutable.Seq[Event], state: State)
 
   private val passivationIntervalMs = context.system.settings.config.getDuration("office.passivation-interval", TimeUnit.MILLISECONDS)
   private implicit val ec = context.dispatcher
@@ -60,24 +62,22 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
   protected final def initializing: Receive = handleInitCommand orElse stashingBehavior()
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
-    case UnStash => unstashAll()
     case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
   }
 
   private final def stashingBehavior(): Receive = {
+    case UnstashAndWork(evt, newState) =>
+      workWith(evt, newState)
+      unstashAll()
+    case UnstashAndWorkBatch(es, newState) =>
+      workWith(es, newState)
+      unstashAll()
     case msg ⇒
       log.debug("Stashing while initializing. Message: {}", msg)
       stash()
   }
 
-  private final def stashingBehavior(evt: Any): Receive = {
-    case msg ⇒
-      log.debug("Stashing while event processing. Message: {}, Event: {}", msg, evt)
-      stash()
-  }
-
-  protected final def stashing(evt: Any, state: State): Receive =
-    handleQuery(state) orElse stashingBehavior(evt)
+  protected final def stashing(state: State): Receive = handleQuery(state) orElse stashingBehavior()
 
   final def persistReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
     log.debug("[persistReply] {}", e)
@@ -96,17 +96,15 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
 
   final def persistStashing[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
     log.debug("[persistStashing], event {}", e)
-    context become stashing(e, state)
+    context become stashing(state)
 
     persistAsync(e) { evt ⇒
       f(evt) andThen {
         case Success(_) ⇒
-          workWith(e, state)
-          unstashAll()
+          unstashAndWork(e, state)
         case Failure(f) ⇒
           log.error(f, "Failure while processing event {}", e)
-          workWith(e, state)
-          unstashAll()
+          unstashAndWork(e, state)
       }
     }
   }
@@ -115,19 +113,17 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
     val replyTo = sender()
 
     log.debug("[persistStashingReply], event {}", e)
-    context become stashing(e, state)
+    context become stashing(state)
 
     persistAsync(e) { evt ⇒
       f(evt) pipeTo replyTo onComplete {
         case Success(r) ⇒
-          workWith(e, state)
-          unstashAll()
+          unstashAndWork(e, state)
         case Failure(f) ⇒
           log.error(f, "Failure while processing event {}", e)
           replyTo ! Status.Failure(f)
 
-          workWith(e, state)
-          unstashAll()
+          unstashAndWork(e, state)
       }
     }
   }
@@ -136,27 +132,19 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
     val replyTo = sender()
 
     log.debug("[persistStashingReply], events {}", es)
-    context become stashing(es, state)
+    context become stashing(state)//remove es
 
     persistAsync(es)(_ ⇒ ())
-
-    def updateBatch(es: immutable.Seq[Event], s: State): State =
-      es.foldLeft(state) {
-        case (s, e) ⇒
-          updatedState(e, s)
-      }
 
     defer(()) { _ ⇒
       f(es) pipeTo replyTo onComplete {
         case Success(_) ⇒
-          context become working(updateBatch(es, state))
-          unstashAll()
+          unstashAndWorkBatch(es, state)
         case Failure(e) ⇒
           log.error(e, "Failure while processing event {}", e)
           replyTo ! Status.Failure(e)
 
-          context become working(updateBatch(es, state))
-          unstashAll()
+          unstashAndWorkBatch(es, state)
       }
     }
   }
@@ -165,18 +153,16 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
     val replyTo = sender()
 
     log.debug("[deferStashingReply], event {}", e)
-    context become stashing(e, state)
+    context become stashing(state)
 
     f(e) pipeTo replyTo onComplete {
       case Success(result) ⇒
-        workWith(e, state)
-        self ! UnStash
+        unstashAndWork(e, state)
       case Failure(f) ⇒
         log.error(f, "Failure while processing event {}", e)
         replyTo ! Status.Failure(f)
 
-        workWith(e, state)
-        self ! UnStash
+        unstashAndWork(e, state)
     }
   }
 
@@ -193,6 +179,10 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
 
       workWith(e, state)
   }
+
+  private final def unstashAndWork(evt: Event, state: State): Unit = self ! UnstashAndWork(evt, state)
+
+  private final def unstashAndWorkBatch(es: immutable.Seq[Event], state: State): Unit = self ! UnstashAndWorkBatch(es, state)
 
   def now(): DateTime = new DateTime()
 
