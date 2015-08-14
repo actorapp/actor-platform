@@ -199,9 +199,9 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, lifecycleProvider_, id<AMLifecyclePr
   }
   jint port = -1;
   if ([((NSString *) nil_chk(host)) contains:@":"]) {
-    IOSObjectArray *parts = [host split:@":"];
-    host = IOSObjectArray_Get(nil_chk(parts), 0);
-    port = JavaLangInteger_parseIntWithNSString_(IOSObjectArray_Get(parts, 1));
+    NSArray *parts = [host componentsSeparatedByString:@":"];
+    host = parts[0];
+    port = JavaLangInteger_parseIntWithNSString_(parts[1]);
   }
   if ([((NSString *) nil_chk(scheme)) isEqual:@"ssl"] || [scheme isEqual:@"tls"]) {
     if (port <= 0) {
