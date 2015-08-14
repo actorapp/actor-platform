@@ -2,15 +2,16 @@ package im.actor.server.dialog.privat
 
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
+import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.Dialog.StopDialog
 import im.actor.server.dialog.PrivateDialogCommands.Origin
 import im.actor.server.dialog.PrivateDialogCommands.Origin.{ LEFT, RIGHT }
-import im.actor.server.dialog.privat.PrivateDialog.MaxCacheSize
-import im.actor.server.dialog.{ Dialog, PrivateDialogCommands }
+import im.actor.server.dialog.privat.PrivateDialogEvents.PrivateDialogEvent
+import im.actor.server.dialog.{ StopDialog, AuthIdRandomId, PrivateDialogCommands }
+import im.actor.server.office.{ ProcessorState, Processor }
 import im.actor.server.push.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
@@ -35,12 +36,22 @@ case class DialogState(
   lastReadDate:    Option[Long]
 )
 
-object PrivateDialog {
-  private[dialog] sealed trait StateChange
-  private[dialog] case class LastMessageDate(date: Long) extends StateChange
-  private[dialog] case class LastReceiveDate(date: Long) extends StateChange
-  private[dialog] case class LastReadDate(date: Long) extends StateChange
+object PrivateDialogEvents {
+  private[dialog] sealed trait PrivateDialogEvent {
+    def origin: Origin
+  }
+  private[dialog] case class LastMessageDate(date: Long, origin: Origin) extends PrivateDialogEvent
+  private[dialog] case class LastReceiveDate(date: Long, origin: Origin) extends PrivateDialogEvent
+  private[dialog] case class LastReadDate(date: Long, origin: Origin) extends PrivateDialogEvent
+}
 
+case class PrivateDialogState(private val state: Map[Origin, DialogState]) extends ProcessorState {
+  //def apply to allow syntax like val userState = state(origin)
+  def get(origin: Origin): DialogState = state(origin)
+  def updated(origin: Origin, dialogState: DialogState): PrivateDialogState = PrivateDialogState(state.updated(origin, dialogState))
+}
+
+object PrivateDialog {
   def register(): Unit = {
     ActorSerializer.register(13000, classOf[PrivateDialogCommands])
     ActorSerializer.register(13001, classOf[PrivateDialogCommands.SendMessage])
@@ -53,15 +64,25 @@ object PrivateDialog {
   val MaxCacheSize = 100L
 
   def props = Props(classOf[PrivateDialog])
+
+  def persistenceIdFor(left: Int, right: Int): String = s"PrivateDialog-${left}_${right}"
 }
 
-class PrivateDialog extends Dialog with PrivateDialogHandlers {
+class PrivateDialog extends Processor[PrivateDialogState, PrivateDialogEvent] with PrivateDialogHandlers {
+
+  import PrivateDialog._
   import PrivateDialogCommands._
+  import PrivateDialogEvents._
 
   val (left, right) = {
     val lr = self.path.name.toString split "_" map (_.toInt)
     (lr(0), lr(1))
   }
+
+  private val initState: PrivateDialogState = PrivateDialogState(Map(
+    LEFT → DialogState(left, right, None, None, None),
+    RIGHT → DialogState(right, left, None, None, None)
+  ))
 
   protected implicit val ec: ExecutionContext = context.dispatcher
   protected implicit val system: ActorSystem = context.system
@@ -76,13 +97,19 @@ class PrivateDialog extends Dialog with PrivateDialogHandlers {
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
-  override type State = Map[Origin, DialogState]
-
   context.setReceiveTimeout(1.hours)
 
-  override def receive: Receive = working(initState)
+  override protected def updatedState(evt: PrivateDialogEvent, state: PrivateDialogState): PrivateDialogState = evt match {
+    case LastMessageDate(date, origin) ⇒ state.updated(origin, state.get(origin).copy(lastMessageDate = Some(date)))
+    case LastReceiveDate(date, origin) ⇒ state.updated(origin, state.get(origin).copy(lastReceiveDate = Some(date)))
+    case LastReadDate(date, origin)    ⇒ state.updated(origin, state.get(origin).copy(lastReadDate = Some(date)))
+  }
 
-  def working(state: State): Receive = {
+  override protected def handleQuery(state: PrivateDialogState): Receive = PartialFunction.empty[Any, Unit]
+
+  override protected def handleInitCommand: Receive = working(initState)
+
+  override protected def handleCommand(state: PrivateDialogState): Receive = {
     case SendMessage(_, _, origin, senderAuthId, randomId, message, isFat) ⇒
       sendMessage(state, origin, senderAuthId, randomId, message, isFat)
     case MessageReceived(_, _, origin, date) ⇒
@@ -93,9 +120,16 @@ class PrivateDialog extends Dialog with PrivateDialogHandlers {
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }
 
-  private def initState: State =
-    Map(
-      LEFT → DialogState(left, right, None, None, None),
-      RIGHT → DialogState(right, left, None, None, None)
-    )
+  private[this] var tmpDialogState: PrivateDialogState = initState
+  override def receiveRecover = {
+    case e: PrivateDialogEvent ⇒ tmpDialogState = updatedState(e, tmpDialogState)
+    case RecoveryFailure(e) ⇒
+      log.error(e, "Failed to recover")
+    case RecoveryCompleted ⇒
+      context become working(tmpDialogState)
+    case unmatched ⇒
+      log.error("Unmatched recovery event {}", unmatched)
+  }
+
+  override def persistenceId: String = PrivateDialog.persistenceIdFor(left, right)
 }

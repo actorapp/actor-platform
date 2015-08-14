@@ -16,13 +16,14 @@ import scala.util.{ Failure, Success }
 
 case object StopOffice
 
+case object UnStash
+
 trait ProcessorState
 
 trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActor with ActorLogging {
+
   private val passivationIntervalMs = context.system.settings.config.getDuration("office.passivation-interval", TimeUnit.MILLISECONDS)
   private implicit val ec = context.dispatcher
-
-  protected type ProcessorQuery
 
   protected def updatedState(evt: Event, state: State): State
 
@@ -59,6 +60,7 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
   protected final def initializing: Receive = handleInitCommand orElse stashingBehavior()
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
+    case UnStash => unstashAll()
     case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
   }
 
@@ -157,6 +159,39 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
           unstashAll()
       }
     }
+  }
+
+  final def deferStashingReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
+    val replyTo = sender()
+
+    log.debug("[deferStashingReply], event {}", e)
+    context become stashing(e, state)
+
+    f(e) pipeTo replyTo onComplete {
+      case Success(result) ⇒
+        workWith(e, state)
+        self ! UnStash
+      case Failure(f) ⇒
+        log.error(f, "Failure while processing event {}", e)
+        replyTo ! Status.Failure(f)
+
+        workWith(e, state)
+        self ! UnStash
+    }
+  }
+
+  final def reply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
+    val replyTo = sender()
+    log.debug("[reply] {}", e)
+
+      f(e) pipeTo replyTo onComplete {
+        case Success(_) ⇒
+        case Failure(f) ⇒
+          log.error(f, "Failure while processing event {}", e)
+          replyTo ! Status.Failure(f)
+      }
+
+      workWith(e, state)
   }
 
   def now(): DateTime = new DateTime()
