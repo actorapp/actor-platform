@@ -15,9 +15,9 @@ import im.actor.core.entity.ContentType;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Notification;
-import im.actor.core.entity.PeerTypeEntity;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Sex;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.User;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
@@ -300,7 +300,7 @@ public class I18nEngine {
         } else {
             String contentText = formatContentText(dialog.getSenderId(),
                     dialog.getMessageType(), dialog.getText(), dialog.getRelatedUid());
-            if (dialog.getPeer().getPeerType() == PeerTypeEntity.GROUP) {
+            if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
                 if (!isLargeDialogMessage(dialog.getMessageType())) {
                     return formatPerformerName(dialog.getSenderId()) + ": " + contentText;
                 } else {
@@ -498,7 +498,7 @@ public class I18nEngine {
             }
         }
         if (locale.containsKey(baseString + "Male") && locale.containsKey(baseString + "Female")) {
-            UserEntity u = getUser(senderId);
+            User u = getUser(senderId);
             if (u.getSex() == Sex.MALE) {
                 return locale.get(baseString + "Male");
             } else if (u.getSex() == Sex.FEMALE) {
@@ -508,7 +508,7 @@ public class I18nEngine {
         return locale.get(baseString);
     }
 
-    private UserEntity getUser(int uid) {
+    private User getUser(int uid) {
         return modules.getUsersModule().getUsersStorage().getValue(uid);
     }
 }

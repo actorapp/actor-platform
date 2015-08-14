@@ -4,10 +4,10 @@
 
 package im.actor.core.modules.internal.typing;
 
-import im.actor.core.api.OutPeer;
-import im.actor.core.api.TypingType;
+import im.actor.core.api.ApiOutPeer;
+import im.actor.core.api.ApiTypingType;
 import im.actor.core.api.rpc.RequestTyping;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.runtime.actors.ActorCreator;
@@ -39,18 +39,18 @@ public class OwnTypingActor extends ModuleActor {
     }
 
     @Verified
-    private void onTyping(PeerEntity peer) {
+    private void onTyping(Peer peer) {
         if (ActorTime.currentTime() - lastTypingTime < TYPING_DELAY) {
             return;
         }
         lastTypingTime = ActorTime.currentTime();
 
-        OutPeer outPeer = buidOutPeer(peer);
+        ApiOutPeer outPeer = buidOutPeer(peer);
         if (outPeer == null) {
             return;
         }
 
-        request(new RequestTyping(outPeer, TypingType.TEXT));
+        request(new RequestTyping(outPeer, ApiTypingType.TEXT));
     }
 
     // Messages
@@ -65,13 +65,13 @@ public class OwnTypingActor extends ModuleActor {
     }
 
     public static class Typing {
-        private PeerEntity peer;
+        private Peer peer;
 
-        public Typing(PeerEntity peer) {
+        public Typing(Peer peer) {
             this.peer = peer;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
     }

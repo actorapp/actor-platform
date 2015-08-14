@@ -7,8 +7,8 @@ package im.actor.core.entity.compat.content;
 import java.io.IOException;
 
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ServiceExUserKicked;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExUserKicked;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -22,8 +22,8 @@ public class ObsoleteServiceKicked extends BserObject {
     }
 
     public ApiMessage toApiMessage() {
-        return new ServiceMessage("Member kicked",
-                new ServiceExUserKicked(kickedUid));
+        return new ApiServiceMessage("Member kicked",
+                new ApiServiceExUserKicked(kickedUid));
     }
 
     @Override

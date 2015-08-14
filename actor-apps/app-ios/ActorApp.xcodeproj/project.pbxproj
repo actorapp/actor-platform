@@ -59,10 +59,6 @@
 		062774391AC073D700A4A8B3 /* ContactsSearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062774381AC073D700A4A8B3 /* ContactsSearchSource.swift */; };
 		063BCF311AB7AC0F00D469AB /* iOSNotificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */; };
 		064153E41B4A09E500238CB0 /* app.json in Resources */ = {isa = PBXBuildFile; fileRef = 064153E31B4A09E500238CB0 /* app.json */; };
-		064153F21B4A1F1C00238CB0 /* AppText.properties in Resources */ = {isa = PBXBuildFile; fileRef = 064153EE1B4A1F1C00238CB0 /* AppText.properties */; };
-		064153F31B4A1F1C00238CB0 /* AppText_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 064153EF1B4A1F1C00238CB0 /* AppText_Ru.properties */; };
-		064153F41B4A1F1C00238CB0 /* Months.properties in Resources */ = {isa = PBXBuildFile; fileRef = 064153F01B4A1F1C00238CB0 /* Months.properties */; };
-		064153F51B4A1F1C00238CB0 /* Months_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 064153F11B4A1F1C00238CB0 /* Months_Ru.properties */; };
 		064153F61B4A1F3D00238CB0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2537F8421A966B9D004A02E9 /* LaunchScreen.xib */; };
 		064153F71B4A1F3D00238CB0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0699D4C81ADC8D820005AB9B /* Localizable.strings */; };
 		064154061B4A35B700238CB0 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064154051B4A35B700238CB0 /* Config.swift */; };
@@ -82,8 +78,6 @@
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
 		0672D2011AE64CAB0001CD32 /* LlectroTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */; };
 		0672D2031AE676D60001CD32 /* TableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2021AE676D60001CD32 /* TableViewHeader.swift */; };
-		06738AF51B694F9D008DE798 /* AppText_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06738AF31B694F9D008DE798 /* AppText_Pt.properties */; };
-		06738AF61B694F9D008DE798 /* Months_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06738AF41B694F9D008DE798 /* Months_Pt.properties */; };
 		06896B101AFF204100BA271D /* MixpanelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06896B0F1AFF204100BA271D /* MixpanelProvider.swift */; };
 		068A03301B0169610001092D /* notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = 068A032E1B0169600001092D /* notification.caf */; };
 		068A03311B0169610001092D /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = 068A032F1B0169610001092D /* silence.caf */; };
@@ -94,8 +88,6 @@
 		0699D4D41ADD9F0C0005AB9B /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */; };
 		0699D4D61ADDA0B30005AB9B /* ContactActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */; };
 		069B09C91B603A3E005A17C5 /* FastCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069B09C81B603A3E005A17C5 /* FastCache.swift */; };
-		069B09CE1B633BE3005A17C5 /* AppText_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */; };
-		069B09CF1B633BE3005A17C5 /* Months_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 069B09CD1B633BE3005A17C5 /* Months_Cn.properties */; };
 		069B09D21B633F29005A17C5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 069B09D41B633F29005A17C5 /* InfoPlist.strings */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
@@ -137,6 +129,7 @@
 		06E484311AB7933100AA272F /* LruCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E484301AB7933100AA272F /* LruCache.swift */; };
 		06ED29861AB2373800719875 /* CocoaFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ED29851AB2373800719875 /* CocoaFileSystem.swift */; };
 		06F46F0F1B129FE0009E3308 /* AABubbleAdCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F46F0E1B129FE0009E3308 /* AABubbleAdCell.swift */; };
+		06F579821B7E095C00E62315 /* CocoaTcpRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F579811B7E095C00E62315 /* CocoaTcpRuntime.swift */; };
 		06F6B7101AB0CE9600A7DB91 /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */; };
 		06F6B7121AB0F53400A7DB91 /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B7111AB0F53400A7DB91 /* Binder.swift */; };
 		06F6B7141AB0F56300A7DB91 /* Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B7131AB0F56300A7DB91 /* Wrappers.swift */; };
@@ -147,7 +140,7 @@
 		2537F8671A9753DD004A02E9 /* ABPhoneField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2537F8661A9753DD004A02E9 /* ABPhoneField.m */; };
 		2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */ = {isa = PBXBuildFile; fileRef = 2537F86A1A9762F6004A02E9 /* PhoneFormats.dat */; };
 		2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2537F86B1A9762F6004A02E9 /* ABPhoneFieldCodes.txt */; };
-		593617CB99210C20660D44C4 /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B117098A374A503ABA90DFD /* libPods-ActorApp.a */; };
+		3953FBAB7FF33E9872029004 /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D04A4CF66F9FEFE30F6DFC3F /* libPods-ActorApp.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -213,10 +206,6 @@
 		062774381AC073D700A4A8B3 /* ContactsSearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsSearchSource.swift; sourceTree = "<group>"; };
 		063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSNotificationProvider.swift; sourceTree = "<group>"; };
 		064153E31B4A09E500238CB0 /* app.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = app.json; sourceTree = "<group>"; };
-		064153EE1B4A1F1C00238CB0 /* AppText.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppText.properties; sourceTree = "<group>"; };
-		064153EF1B4A1F1C00238CB0 /* AppText_Ru.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppText_Ru.properties; sourceTree = "<group>"; };
-		064153F01B4A1F1C00238CB0 /* Months.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months.properties; sourceTree = "<group>"; };
-		064153F11B4A1F1C00238CB0 /* Months_Ru.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months_Ru.properties; sourceTree = "<group>"; };
 		064154051B4A35B700238CB0 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		064154071B4A413400238CB0 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorApp.entitlements; sourceTree = "<group>"; };
 		064903781AB38C6200FA7B1C /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
@@ -237,8 +226,6 @@
 		0672D2021AE676D60001CD32 /* TableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewHeader.swift; sourceTree = "<group>"; };
 		06738AF11B694DD9008DE798 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = Localization/pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		06738AF21B694DD9008DE798 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		06738AF31B694F9D008DE798 /* AppText_Pt.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppText_Pt.properties; sourceTree = "<group>"; };
-		06738AF41B694F9D008DE798 /* Months_Pt.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months_Pt.properties; sourceTree = "<group>"; };
 		06896B0F1AFF204100BA271D /* MixpanelProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixpanelProvider.swift; sourceTree = "<group>"; };
 		068A032E1B0169600001092D /* notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = notification.caf; sourceTree = "<group>"; };
 		068A032F1B0169610001092D /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = silence.caf; sourceTree = "<group>"; };
@@ -254,8 +241,6 @@
 		0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactActionCell.swift; sourceTree = "<group>"; };
 		069B09C81B603A3E005A17C5 /* FastCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastCache.swift; sourceTree = "<group>"; };
 		069B09CB1B633A46005A17C5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Localization/zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppText_Cn.properties; sourceTree = "<group>"; };
-		069B09CD1B633BE3005A17C5 /* Months_Cn.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months_Cn.properties; sourceTree = "<group>"; };
 		069B09D31B633F29005A17C5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		069B09D61B633F2B005A17C5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		069B09D71B633F2D005A17C5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -264,7 +249,7 @@
 		06A16C231ACA9F5700EA96BD /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABActionShit.h; sourceTree = "<group>"; };
 		06A16C241ACA9F5700EA96BD /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABActionShit.m; sourceTree = "<group>"; };
 		06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSPhoneBookProvider.swift; sourceTree = "<group>"; };
-		06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaHttpProvider.swift; sourceTree = "<group>"; };
+		06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaHttpProvider.swift; path = ../Core/Providers/CocoaHttpProvider.swift; sourceTree = "<group>"; };
 		06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBaseFileCell.swift; sourceTree = "<group>"; };
 		06A6FCF81B08ADD1000E11CE /* Views.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
@@ -295,11 +280,12 @@
 		06D8D8BD1AB430EE00A80E40 /* FMDBExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBExtensions.swift; sourceTree = "<group>"; };
 		06D8D8BF1AB431D800A80E40 /* FMDBKeyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBKeyValue.swift; sourceTree = "<group>"; };
 		06D8D8C11AB4390600A80E40 /* Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversions.swift; sourceTree = "<group>"; };
-		06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaStorage.swift; sourceTree = "<group>"; };
+		06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaStorage.swift; path = ../Core/Providers/CocoaStorage.swift; sourceTree = "<group>"; };
 		06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogsViewController.swift; sourceTree = "<group>"; };
 		06E484301AB7933100AA272F /* LruCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LruCache.swift; sourceTree = "<group>"; };
-		06ED29851AB2373800719875 /* CocoaFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaFileSystem.swift; sourceTree = "<group>"; };
+		06ED29851AB2373800719875 /* CocoaFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaFileSystem.swift; path = ../Core/Providers/CocoaFileSystem.swift; sourceTree = "<group>"; };
 		06F46F0E1B129FE0009E3308 /* AABubbleAdCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleAdCell.swift; sourceTree = "<group>"; };
+		06F579811B7E095C00E62315 /* CocoaTcpRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaTcpRuntime.swift; sourceTree = "<group>"; };
 		06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resouces.swift; sourceTree = "<group>"; };
 		06F6B7111AB0F53400A7DB91 /* Binder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
 		06F6B7131AB0F56300A7DB91 /* Wrappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wrappers.swift; sourceTree = "<group>"; };
@@ -315,10 +301,10 @@
 		2537F8661A9753DD004A02E9 /* ABPhoneField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABPhoneField.m; sourceTree = "<group>"; };
 		2537F86A1A9762F6004A02E9 /* PhoneFormats.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = PhoneFormats.dat; sourceTree = "<group>"; };
 		2537F86B1A9762F6004A02E9 /* ABPhoneFieldCodes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ABPhoneFieldCodes.txt; sourceTree = "<group>"; };
-		2B117098A374A503ABA90DFD /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D890431BAB17750EE5196FE /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		83228B1B49BDB7F5D71E8D76 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
 		B30D5B68EC3C911BB612D6EA /* ActorClient-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActorClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		D04A4CF66F9FEFE30F6DFC3F /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,8 +312,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				593617CB99210C20660D44C4 /* libPods-ActorApp.a in Frameworks */,
 				06B9DC3E1B55F0DA0053182B /* CloudKit.framework in Frameworks */,
+				3953FBAB7FF33E9872029004 /* libPods-ActorApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,22 +484,6 @@
 			path = Discover;
 			sourceTree = "<group>";
 		};
-		064153ED1B4A1F1B00238CB0 /* Core Resources */ = {
-			isa = PBXGroup;
-			children = (
-				064153EE1B4A1F1C00238CB0 /* AppText.properties */,
-				064153EF1B4A1F1C00238CB0 /* AppText_Ru.properties */,
-				069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */,
-				06738AF31B694F9D008DE798 /* AppText_Pt.properties */,
-				064153F01B4A1F1C00238CB0 /* Months.properties */,
-				064153F11B4A1F1C00238CB0 /* Months_Ru.properties */,
-				069B09CD1B633BE3005A17C5 /* Months_Cn.properties */,
-				06738AF41B694F9D008DE798 /* Months_Pt.properties */,
-			);
-			name = "Core Resources";
-			path = ../../../core/src/main/resources;
-			sourceTree = "<group>";
-		};
 		064153F81B4A22C200238CB0 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -619,10 +589,6 @@
 			isa = PBXGroup;
 			children = (
 				06CFA9731B65DD9F007606CA /* Concurrency */,
-				256388CB1A99C7B500A5E0E3 /* Storage */,
-				06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */,
-				06ED29851AB2373800719875 /* CocoaFileSystem.swift */,
-				06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */,
 				063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */,
 				06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */,
 				06896B0F1AFF204100BA271D /* MixpanelProvider.swift */,
@@ -633,7 +599,6 @@
 		0672D1FF1AE64C670001CD32 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				064153ED1B4A1F1B00238CB0 /* Core Resources */,
 				0623AC501B001F61007CD6B7 /* Sounds */,
 				06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */,
 				0699D4C01ADC80B20005AB9B /* AppTheme.swift */,
@@ -696,6 +661,18 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		06F579801B7DED9000E62315 /* Runtime */ = {
+			isa = PBXGroup;
+			children = (
+				256388CB1A99C7B500A5E0E3 /* Storage */,
+				06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */,
+				06ED29851AB2373800719875 /* CocoaFileSystem.swift */,
+				06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */,
+				06F579811B7E095C00E62315 /* CocoaTcpRuntime.swift */,
+			);
+			name = Runtime;
+			sourceTree = "<group>";
+		};
 		2537F8241A966B9D004A02E9 = {
 			isa = PBXGroup;
 			children = (
@@ -734,6 +711,7 @@
 		2537F8301A966B9D004A02E9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				06F579801B7DED9000E62315 /* Runtime */,
 				064153E31B4A09E500238CB0 /* app.json */,
 				2537F8311A966B9D004A02E9 /* Info.plist */,
 				2537F8321A966B9D004A02E9 /* main.m */,
@@ -777,14 +755,15 @@
 				06FCF1791AB61D3800422FEC /* FMDBList.swift */,
 				0607BAA41B65CCCF0038A741 /* FMDBIndex.swift */,
 			);
-			path = Storage;
+			name = Storage;
+			path = ../Core/Providers/Storage;
 			sourceTree = "<group>";
 		};
 		E2A36FB6A30EED3811CC45C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				06B9DC3D1B55F0DA0053182B /* CloudKit.framework */,
-				2B117098A374A503ABA90DFD /* libPods-ActorApp.a */,
+				D04A4CF66F9FEFE30F6DFC3F /* libPods-ActorApp.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -898,28 +877,20 @@
 				0623AC651B001F8E007CD6B7 /* tethys.caf in Resources */,
 				0623AC621B001F8E007CD6B7 /* io.caf in Resources */,
 				0623AC631B001F8E007CD6B7 /* rhea.caf in Resources */,
-				069B09CE1B633BE3005A17C5 /* AppText_Cn.properties in Resources */,
 				2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */,
-				064153F41B4A1F1C00238CB0 /* Months.properties in Resources */,
-				069B09CF1B633BE3005A17C5 /* Months_Cn.properties in Resources */,
 				0623AC661B001F8E007CD6B7 /* titan.caf in Resources */,
-				06738AF61B694F9D008DE798 /* Months_Pt.properties in Resources */,
 				2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */,
-				064153F21B4A1F1C00238CB0 /* AppText.properties in Resources */,
 				0623AC5C1B001F8E007CD6B7 /* ariel.caf in Resources */,
 				0623AC5F1B001F8E007CD6B7 /* elara.caf in Resources */,
-				064153F51B4A1F1C00238CB0 /* Months_Ru.properties in Resources */,
 				0623AC601B001F8E007CD6B7 /* europa.caf in Resources */,
 				068A03311B0169610001092D /* silence.caf in Resources */,
 				069B09D21B633F29005A17C5 /* InfoPlist.strings in Resources */,
-				064153F31B4A1F1C00238CB0 /* AppText_Ru.properties in Resources */,
 				0623AC5D1B001F8E007CD6B7 /* carme.caf in Resources */,
 				0623AC611B001F8E007CD6B7 /* iapetus.caf in Resources */,
 				0623AC641B001F8E007CD6B7 /* salacia.caf in Resources */,
 				064153E41B4A09E500238CB0 /* app.json in Resources */,
 				06CCE9401AD4A67D00A17705 /* Pods-ActorApp.release.xcconfig in Resources */,
 				0623AC5E1B001F8E007CD6B7 /* ceres.caf in Resources */,
-				06738AF51B694F9D008DE798 /* AppText_Pt.properties in Resources */,
 				068A03301B0169610001092D /* notification.caf in Resources */,
 				06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */,
 			);
@@ -962,7 +933,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"Pods: ${PODS_ROOT}\"\n\ndiff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1032,6 +1003,7 @@
 				06AABD511B3D90B100F0931B /* LayoutCache.swift in Sources */,
 				069FE6CC1AC017BC00C6C033 /* ContactsBaseViewController.swift in Sources */,
 				064154061B4A35B700238CB0 /* Config.swift in Sources */,
+				06F579821B7E095C00E62315 /* CocoaTcpRuntime.swift in Sources */,
 				06CFA9751B65DDA9007606CA /* SwiftTimer.swift in Sources */,
 				06A6FCF91B08ADD1000E11CE /* Views.swift in Sources */,
 				06F6B7121AB0F53400A7DB91 /* Binder.swift in Sources */,

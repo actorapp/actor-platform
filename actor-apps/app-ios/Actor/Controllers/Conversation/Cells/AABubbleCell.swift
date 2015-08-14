@@ -73,7 +73,7 @@ class AABubbleCell: UICollectionViewCell {
     let bubbleMediaPadding: CGFloat = 10;
     
     // Binded data
-    var peer: ACPeerEntity!
+    var peer: ACPeer!
     var controller: ConversationViewController!
     var isGroup: Bool = false
     var isFullSize: Bool!
@@ -134,10 +134,10 @@ class AABubbleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setConfig(peer: ACPeerEntity, controller: ConversationViewController) {
+    func setConfig(peer: ACPeer, controller: ConversationViewController) {
         self.peer = peer
         self.controller = controller
-        if (peer.getPeerType().ordinal() == jint(ACPeerTypeEntity.GROUP.rawValue) && !isFullSize) {
+        if (peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue) && !isFullSize) {
             self.isGroup = true
         }
     }

@@ -14,7 +14,7 @@ import im.actor.core.api.rpc.ResponseSearchContacts;
 import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.viewmodel.Command;
@@ -125,7 +125,7 @@ public class ContactsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                UserEntity user = users().getValue(uid);
+                User user = users().getValue(uid);
                 if (user == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -170,7 +170,7 @@ public class ContactsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                UserEntity user = users().getValue(uid);
+                User user = users().getValue(uid);
                 if (user == null) {
                     runOnUiThread(new Runnable() {
                         @Override

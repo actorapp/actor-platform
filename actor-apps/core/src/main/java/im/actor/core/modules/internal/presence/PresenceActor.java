@@ -9,14 +9,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.core.api.GroupOutPeer;
-import im.actor.core.api.UserOutPeer;
+import im.actor.core.api.ApiGroupOutPeer;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestSubscribeToGroupOnline;
 import im.actor.core.api.rpc.RequestSubscribeToOnline;
-import im.actor.core.entity.GroupEntity;
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.PeerTypeEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.Group;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
+import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.viewmodel.GroupVM;
@@ -123,38 +123,38 @@ public class PresenceActor extends ModuleActor {
     }
 
     @Verified
-    private void subscribe(PeerEntity peer) {
-        if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
+    private void subscribe(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
             // Already subscribed
             if (uids.contains(peer.getPeerId())) {
                 return;
             }
 
-            UserEntity user = getUser(peer.getPeerId());
+            User user = getUser(peer.getPeerId());
             if (user == null) {
                 return;
             }
 
             // Subscribing to user online sates
             uids.add(user.getUid());
-            List<UserOutPeer> peers = new ArrayList<UserOutPeer>();
-            peers.add(new UserOutPeer(user.getUid(), user.getAccessHash()));
+            List<ApiUserOutPeer> peers = new ArrayList<ApiUserOutPeer>();
+            peers.add(new ApiUserOutPeer(user.getUid(), user.getAccessHash()));
             request(new RequestSubscribeToOnline(peers));
-        } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
+        } else if (peer.getPeerType() == PeerType.GROUP) {
             // Already subscribed
             if (gids.contains(peer.getPeerId())) {
                 return;
             }
 
-            GroupEntity group = getGroup(peer.getPeerId());
+            Group group = getGroup(peer.getPeerId());
             if (group == null) {
                 return;
             }
 
             // Subscribing to group online sates
             gids.add(peer.getPeerId());
-            List<GroupOutPeer> peers = new ArrayList<GroupOutPeer>();
-            peers.add(new GroupOutPeer(group.getGroupId(), group.getAccessHash()));
+            List<ApiGroupOutPeer> peers = new ArrayList<ApiGroupOutPeer>();
+            peers.add(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()));
             request(new RequestSubscribeToGroupOnline(peers));
         }
     }
@@ -163,26 +163,26 @@ public class PresenceActor extends ModuleActor {
     private void onNewSessionCreated() {
 
         // Resubscribing for online states of users
-        List<UserOutPeer> userPeers = new ArrayList<UserOutPeer>();
+        List<ApiUserOutPeer> userPeers = new ArrayList<ApiUserOutPeer>();
         for (int uid : uids) {
-            UserEntity user = getUser(uid);
+            User user = getUser(uid);
             if (user == null) {
                 continue;
             }
-            userPeers.add(new UserOutPeer(uid, user.getAccessHash()));
+            userPeers.add(new ApiUserOutPeer(uid, user.getAccessHash()));
         }
         if (userPeers.size() > 0) {
             request(new RequestSubscribeToOnline(userPeers));
         }
 
         // Resubscribing for online states of groups
-        List<GroupOutPeer> groupPeers = new ArrayList<GroupOutPeer>();
+        List<ApiGroupOutPeer> groupPeers = new ArrayList<ApiGroupOutPeer>();
         for (int gid : gids) {
-            GroupEntity group = getGroup(gid);
+            Group group = getGroup(gid);
             if (group == null) {
                 continue;
             }
-            groupPeers.add(new GroupOutPeer(group.getGroupId(), group.getAccessHash()));
+            groupPeers.add(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()));
         }
         if (groupPeers.size() > 0) {
             request(new RequestSubscribeToGroupOnline(groupPeers));
@@ -373,13 +373,13 @@ public class PresenceActor extends ModuleActor {
     }
 
     public static class Subscribe {
-        private PeerEntity peer;
+        private Peer peer;
 
-        public Subscribe(PeerEntity peer) {
+        public Subscribe(Peer peer) {
             this.peer = peer;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
     }

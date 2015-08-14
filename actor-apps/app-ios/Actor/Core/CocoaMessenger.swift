@@ -12,18 +12,9 @@ get{
         
         var config = Config()
         
-        // Providers
-        var builder = ACConfigurationBuilder();
-//        builder.setPhoneBookProvider(PhoneBookProvider())
-//        builder.setNotificationProvider(iOSNotificationProvider())
-        builder.setAppCategory(ACAppCategoryEnum.values().objectAtIndex(ACAppCategory.IOS.rawValue) as! ACAppCategoryEnum)
-        builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
-        builder.setEnableFilesLogging(true)
-        
-        // Setting Analytics provider
-        if config.mixpanel != nil {
-//            builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
-        }
+        ARCocoaStorageProxyProvider.setStorageRuntimeWithARStorageRuntime(CocoaStorage())
+        ARCocoaFileSystemProxyProvider.setFileSystemRuntimeWithARFileSystemRuntime(CocoaFileSystem())
+        ARCocoaHttpProxyProvider.setHttpRuntimeWithARHttpRuntime(CocoaHttpProvider())
         
         // Parameters
         var apiId = 2
@@ -32,8 +23,21 @@ get{
         var deviceName = UIDevice.currentDevice().name
         var appTitle = "Actor iOS"
 
+        var builder = ACConfigurationBuilder();
         for url in config.endpoints {
             builder.addEndpoint(url);
+        }
+        // Providers
+
+        builder.setPhoneBookProvider(PhoneBookProvider())
+        //        builder.setNotificationProvider(iOSNotificationProvider())
+        builder.setAppCategory(ACAppCategoryEnum.values().objectAtIndex(ACAppCategory.IOS.rawValue) as! ACAppCategoryEnum)
+        builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
+        builder.setEnableFilesLogging(true)
+        
+        // Setting Analytics provider
+        if config.mixpanel != nil {
+            //            builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
         }
         
         builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
@@ -45,7 +49,7 @@ get{
     }
 }
 
-@objc class CocoaMessenger : ACMessenger {
+@objc class CocoaMessenger : ACCocoaMessenger {
     
     let config: Config
 
@@ -54,7 +58,7 @@ get{
         super.init(configuration: configuration)
     }
     
-    func sendUIImage(image: UIImage, peer: ACPeerEntity) {
+    func sendUIImage(image: UIImage, peer: ACPeer) {
 //        var thumb = image.resizeSquare(90, maxH: 90);
 //        var resized = image.resizeOptimize(1200 * 1200);
 //        

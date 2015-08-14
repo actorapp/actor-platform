@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiContactRecord;
-import im.actor.core.api.ContactType;
+import im.actor.core.api.ApiContactType;
 import im.actor.core.api.ApiSex;
-import im.actor.core.api.User;
+import im.actor.core.api.ApiUser;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -45,18 +45,18 @@ public class ObsoleteUser extends BserObject {
         parse(values);
     }
 
-    public User toApiUser() {
+    public ApiUser toApiUser() {
         List<ApiContactRecord> records = new ArrayList<ApiContactRecord>();
         for (ObsoleteContactRecord r : this.records) {
             if (r.getRecordType() == 0) {
                 if (r.getRecordData().equals("0")) {
                     continue;
                 }
-                records.add(new ApiContactRecord(ContactType.PHONE, null,
+                records.add(new ApiContactRecord(ApiContactType.PHONE, null,
                         Long.parseLong(r.getRecordData()), r.getRecordTitle(), null));
             }
         }
-        return new im.actor.core.api.User(
+        return new ApiUser(
                 uid,
                 accessHash,
                 name,

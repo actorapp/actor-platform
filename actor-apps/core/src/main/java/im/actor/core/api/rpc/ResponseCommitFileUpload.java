@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class ResponseCommitFileUpload extends Response {
@@ -19,9 +22,9 @@ public class ResponseCommitFileUpload extends Response {
         return Bser.parse(new ResponseCommitFileUpload(), data);
     }
 
-    private FileLocation uploadedFileLocation;
+    private ApiFileLocation uploadedFileLocation;
 
-    public ResponseCommitFileUpload(@NotNull FileLocation uploadedFileLocation) {
+    public ResponseCommitFileUpload(@NotNull ApiFileLocation uploadedFileLocation) {
         this.uploadedFileLocation = uploadedFileLocation;
     }
 
@@ -30,13 +33,13 @@ public class ResponseCommitFileUpload extends Response {
     }
 
     @NotNull
-    public FileLocation getUploadedFileLocation() {
+    public ApiFileLocation getUploadedFileLocation() {
         return this.uploadedFileLocation;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.uploadedFileLocation = values.getObj(1, new FileLocation());
+        this.uploadedFileLocation = values.getObj(1, new ApiFileLocation());
     }
 
     @Override

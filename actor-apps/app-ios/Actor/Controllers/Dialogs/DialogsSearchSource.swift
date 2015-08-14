@@ -32,8 +32,7 @@ class DialogsSearchSource: SearchSource {
     }
     
     override func buildDisplayList() -> ARBindedDisplayList {
-        return ARBindedDisplayList()
-//        return MSG.buildSearchList()
+        return MSG.buildSearchDisplayList()
     }
    
 }

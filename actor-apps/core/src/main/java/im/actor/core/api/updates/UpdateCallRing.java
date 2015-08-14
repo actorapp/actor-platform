@@ -4,12 +4,15 @@ package im.actor.core.api.updates;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class UpdateCallRing extends Update {
@@ -19,10 +22,10 @@ public class UpdateCallRing extends Update {
         return Bser.parse(new UpdateCallRing(), data);
     }
 
-    private User user;
+    private ApiUser user;
     private String callId;
 
-    public UpdateCallRing(@NotNull User user, @NotNull String callId) {
+    public UpdateCallRing(@NotNull ApiUser user, @NotNull String callId) {
         this.user = user;
         this.callId = callId;
     }
@@ -32,7 +35,7 @@ public class UpdateCallRing extends Update {
     }
 
     @NotNull
-    public User getUser() {
+    public ApiUser getUser() {
         return this.user;
     }
 
@@ -43,7 +46,7 @@ public class UpdateCallRing extends Update {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.user = values.getObj(1, new User());
+        this.user = values.getObj(1, new ApiUser());
         this.callId = values.getString(2);
     }
 

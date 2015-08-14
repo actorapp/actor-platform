@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
@@ -19,11 +22,11 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
         return Bser.parse(new RequestEditGroupAvatar(), data);
     }
 
-    private GroupOutPeer groupPeer;
+    private ApiGroupOutPeer groupPeer;
     private long rid;
-    private FileLocation fileLocation;
+    private ApiFileLocation fileLocation;
 
-    public RequestEditGroupAvatar(@NotNull GroupOutPeer groupPeer, long rid, @NotNull FileLocation fileLocation) {
+    public RequestEditGroupAvatar(@NotNull ApiGroupOutPeer groupPeer, long rid, @NotNull ApiFileLocation fileLocation) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.fileLocation = fileLocation;
@@ -34,7 +37,7 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
     }
 
     @NotNull
-    public GroupOutPeer getGroupPeer() {
+    public ApiGroupOutPeer getGroupPeer() {
         return this.groupPeer;
     }
 
@@ -43,15 +46,15 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
     }
 
     @NotNull
-    public FileLocation getFileLocation() {
+    public ApiFileLocation getFileLocation() {
         return this.fileLocation;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, new GroupOutPeer());
+        this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.rid = values.getLong(4);
-        this.fileLocation = values.getObj(3, new FileLocation());
+        this.fileLocation = values.getObj(3, new ApiFileLocation());
     }
 
     @Override

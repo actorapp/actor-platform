@@ -7,7 +7,7 @@ package im.actor.core.modules.internal;
 import java.util.HashMap;
 
 import im.actor.core.AnalyticsProvider;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 
@@ -67,19 +67,19 @@ public class AnalyticsModule extends AbsModule {
         track("Contacts Open");
     }
 
-    public void trackTextSend(PeerEntity peer) {
+    public void trackTextSend(Peer peer) {
         track("Text Send", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
     }
 
-    public void trackPhotoSend(PeerEntity peer) {
+    public void trackPhotoSend(Peer peer) {
         track("Photo Send", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
     }
 
-    public void trackVideoSend(PeerEntity peer) {
+    public void trackVideoSend(Peer peer) {
         track("Video Send", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
     }
 
-    public void trackDocumentSend(PeerEntity peer) {
+    public void trackDocumentSend(Peer peer) {
         track("Document Send", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
     }
 
@@ -87,11 +87,11 @@ public class AnalyticsModule extends AbsModule {
         track("Contacts Closed");
     }
 
-    public void trackChatOpen(PeerEntity peer) {
+    public void trackChatOpen(Peer peer) {
         track("Chat Open", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
     }
 
-    public void trackChatClosed(PeerEntity peer) {
+    public void trackChatClosed(Peer peer) {
         track("Chat Closed", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
     }
 

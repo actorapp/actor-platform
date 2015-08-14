@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestEditGroupTopic extends Request<ResponseSeqDate> {
@@ -19,11 +22,11 @@ public class RequestEditGroupTopic extends Request<ResponseSeqDate> {
         return Bser.parse(new RequestEditGroupTopic(), data);
     }
 
-    private GroupOutPeer groupPeer;
+    private ApiGroupOutPeer groupPeer;
     private long rid;
     private String topic;
 
-    public RequestEditGroupTopic(@NotNull GroupOutPeer groupPeer, long rid, @Nullable String topic) {
+    public RequestEditGroupTopic(@NotNull ApiGroupOutPeer groupPeer, long rid, @Nullable String topic) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.topic = topic;
@@ -34,7 +37,7 @@ public class RequestEditGroupTopic extends Request<ResponseSeqDate> {
     }
 
     @NotNull
-    public GroupOutPeer getGroupPeer() {
+    public ApiGroupOutPeer getGroupPeer() {
         return this.groupPeer;
     }
 
@@ -49,7 +52,7 @@ public class RequestEditGroupTopic extends Request<ResponseSeqDate> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, new GroupOutPeer());
+        this.groupPeer = values.getObj(1, new ApiGroupOutPeer());
         this.rid = values.getLong(2);
         this.topic = values.optString(3);
     }

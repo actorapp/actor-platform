@@ -38,7 +38,7 @@ class ConversationViewController: ConversationBaseViewController {
     // MARK: -
     // MARK: Constructors
     
-    override init(peer: ACPeerEntity) {
+    override init(peer: ACPeer) {
         super.init(peer: peer);
         
         // Messages
@@ -131,7 +131,7 @@ class ConversationViewController: ConversationBaseViewController {
         textView.text = MSG.loadDraftWithPeer(peer)
         
         // Installing bindings
-        if (UInt(peer.getPeerType().ordinal()) == ACPeerTypeEntity.PRIVATE.rawValue) {
+        if (UInt(peer.getPeerType().ordinal()) == ACPeerType.PRIVATE.rawValue) {
             let user = MSG.getUserWithUid(peer.getPeerId())
             var nameModel = user.getNameModel();
             
@@ -159,7 +159,7 @@ class ConversationViewController: ConversationBaseViewController {
                     }
                 }
             })
-        } else if (UInt(peer.getPeerType().ordinal()) == ACPeerTypeEntity.GROUP.rawValue) {
+        } else if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
             let group = MSG.getGroupWithGid(peer.getPeerId())
             var nameModel = group.getNameModel()
             
@@ -305,9 +305,9 @@ class ConversationViewController: ConversationBaseViewController {
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         var controller: AAViewController
-        if (UInt(peer.getPeerType().ordinal()) == ACPeerTypeEntity.PRIVATE.rawValue) {
+        if (UInt(peer.getPeerType().ordinal()) == ACPeerType.PRIVATE.rawValue) {
             controller = UserViewController(uid: id)
-        } else if (UInt(peer.getPeerType().ordinal()) == ACPeerTypeEntity.GROUP.rawValue) {
+        } else if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
             controller = GroupViewController(gid: id)
         } else {
             return
@@ -433,7 +433,7 @@ class ConversationViewController: ConversationBaseViewController {
         
         var message = objectAtIndexPath(indexPath) as! ACMessage;
         var setting = buildCellSetting(indexPath.row)
-        let group = peer.getPeerType().ordinal() == jint(ACPeerTypeEntity.GROUP.rawValue)
+        let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
         var height = MessagesLayouting.measureHeight(message, group: group, setting: setting, layoutCache: layoutCache)
         return CGSizeMake(self.view.bounds.width, height)
     }
@@ -537,7 +537,7 @@ class ConversationViewController: ConversationBaseViewController {
     }
 
     override func displayListForController() -> ARBindedDisplayList {
-        var res = ARBindedDisplayList()// MSG.getMessagesGlobalListWithPeer(peer)
+        var res = MSG.getMessageDisplayList(peer)
         if (res.getBackgroundProcessor() == nil) {
             res.setBackgroundProcessor(BubbleBackgroundProcessor())
         }
@@ -550,7 +550,7 @@ class ConversationViewController: ConversationBaseViewController {
     var filteredMembers = [ACUserVM]()
     
     override func canShowAutoCompletion() -> Bool {
-        if UInt(self.peer.getPeerType().ordinal()) == ACPeerTypeEntity.GROUP.rawValue {
+        if UInt(self.peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue {
             if self.foundPrefix == "@" {
                 var group = MSG.getGroups().getWithId(jlong(self.peer.getPeerId()))
                 var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()

@@ -4,10 +4,12 @@ package im.actor.core.api.updates;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -21,9 +23,9 @@ public class UpdateGroupMembersUpdate extends Update {
     }
 
     private int groupId;
-    private List<Member> members;
+    private List<ApiMember> members;
 
-    public UpdateGroupMembersUpdate(int groupId, @NotNull List<Member> members) {
+    public UpdateGroupMembersUpdate(int groupId, @NotNull List<ApiMember> members) {
         this.groupId = groupId;
         this.members = members;
     }
@@ -37,16 +39,16 @@ public class UpdateGroupMembersUpdate extends Update {
     }
 
     @NotNull
-    public List<Member> getMembers() {
+    public List<ApiMember> getMembers() {
         return this.members;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.groupId = values.getInt(1);
-        List<Member> _members = new ArrayList<Member>();
+        List<ApiMember> _members = new ArrayList<ApiMember>();
         for (int i = 0; i < values.getRepeatedCount(2); i ++) {
-            _members.add(new Member());
+            _members.add(new ApiMember());
         }
         this.members = values.getRepeatedObj(2, _members);
     }

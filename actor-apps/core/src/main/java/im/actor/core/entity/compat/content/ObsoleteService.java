@@ -7,7 +7,7 @@ package im.actor.core.entity.compat.content;
 import java.io.IOException;
 
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -20,7 +20,7 @@ public class ObsoleteService extends BserObject {
     }
 
     public ApiMessage toApiMessage() {
-        return new ServiceMessage(compatText, null);
+        return new ApiServiceMessage(compatText, null);
     }
 
     @Override

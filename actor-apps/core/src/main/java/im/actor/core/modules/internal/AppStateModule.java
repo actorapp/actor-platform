@@ -4,7 +4,7 @@
 
 package im.actor.core.modules.internal;
 
-import im.actor.core.api.AppCounters;
+import im.actor.core.api.ApiAppCounters;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.state.ListsStatesActor;
@@ -53,7 +53,7 @@ public class AppStateModule extends AbsModule {
         listStatesActor.send(new ListsStatesActor.OnDialogsLoaded());
     }
 
-    public void onCountersChanged(AppCounters counters) {
+    public void onCountersChanged(ApiAppCounters counters) {
         listStatesActor.send(new ListsStatesActor.OnAppCounterChanged(counters));
     }
 

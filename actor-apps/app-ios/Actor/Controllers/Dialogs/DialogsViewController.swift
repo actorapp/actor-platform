@@ -50,8 +50,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     override func buildDisplayList() -> ARBindedDisplayList {
-        // return MSG.getDialogsGlobalList()
-        return ARBindedDisplayList()
+        return MSG.getDialogsDisplayList()
     }
     
     func isTableEditing() -> Bool {
@@ -250,7 +249,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         navigateDetail(ComposeController())
     }
     
-    private func navigateToMessagesWithPeer(peer: ACPeerEntity) {
+    private func navigateToMessagesWithPeer(peer: ACPeer) {
         navigateDetail(ConversationViewController(peer: peer))
         MainAppTheme.navigation.applyStatusBar()
     }

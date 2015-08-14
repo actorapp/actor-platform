@@ -10,15 +10,15 @@ import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 import im.actor.core.entity.ContentDescription;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 
 public class PendingNotification extends BserObject {
-    private PeerEntity peer;
+    private Peer peer;
     private int sender;
     private long date;
     private ContentDescription content;
 
-    public PendingNotification(PeerEntity peer, int sender, long date, ContentDescription content) {
+    public PendingNotification(Peer peer, int sender, long date, ContentDescription content) {
         this.peer = peer;
         this.sender = sender;
         this.date = date;
@@ -28,7 +28,7 @@ public class PendingNotification extends BserObject {
     public PendingNotification() {
     }
 
-    public PeerEntity getPeer() {
+    public Peer getPeer() {
         return peer;
     }
 
@@ -46,7 +46,7 @@ public class PendingNotification extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = PeerEntity.fromUniqueId(values.getLong(1));
+        peer = Peer.fromUniqueId(values.getLong(1));
         sender = values.getInt(2);
         date = values.getLong(4);
         content = ContentDescription.fromBytes(values.getBytes(5));

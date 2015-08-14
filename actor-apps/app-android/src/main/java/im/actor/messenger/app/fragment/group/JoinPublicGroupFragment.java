@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import im.actor.core.api.ApiPublicGroup;
 import im.actor.core.api.rpc.RequestGetPublicGroups;
 import im.actor.core.api.rpc.ResponseGetPublicGroups;
-import im.actor.core.entity.PublicGroupEntity;
+import im.actor.core.entity.PublicGroup;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.FileVMCallback;
@@ -50,17 +51,17 @@ public class JoinPublicGroupFragment extends BaseFragment {
         if (cmd != null) cmd.start(new CommandCallback<ResponseGetPublicGroups>() {
             @Override
             public void onResult(ResponseGetPublicGroups res) {
-                final ArrayList<PublicGroupEntity> groups = new ArrayList<PublicGroupEntity>();
-                for (im.actor.core.api.PublicGroup g : res.getGroups()) {
-                    groups.add(new PublicGroupEntity(g));
+                final ArrayList<PublicGroup> groups = new ArrayList<PublicGroup>();
+                for (ApiPublicGroup g : res.getGroups()) {
+                    groups.add(new PublicGroup(g));
                 }
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ArrayList<PublicGroupEntity> sortedByMembersGroups = new ArrayList<PublicGroupEntity>(groups);
-                        Collections.sort(sortedByMembersGroups, new Comparator<PublicGroupEntity>() {
+                        ArrayList<PublicGroup> sortedByMembersGroups = new ArrayList<PublicGroup>(groups);
+                        Collections.sort(sortedByMembersGroups, new Comparator<PublicGroup>() {
                             @Override
-                            public int compare(PublicGroupEntity lhs, PublicGroupEntity rhs) {
+                            public int compare(PublicGroup lhs, PublicGroup rhs) {
                                 if (lhs.getMembers() < rhs.getMembers()) {
                                     return 1;
                                 } else if (lhs.getMembers() > rhs.getMembers()) {
@@ -70,10 +71,10 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             }
                         });
 
-                        ArrayList<PublicGroupEntity> sortedByFriendsGroups = new ArrayList<PublicGroupEntity>(groups);
-                        Collections.sort(sortedByFriendsGroups, new Comparator<PublicGroupEntity>() {
+                        ArrayList<PublicGroup> sortedByFriendsGroups = new ArrayList<PublicGroup>(groups);
+                        Collections.sort(sortedByFriendsGroups, new Comparator<PublicGroup>() {
                             @Override
-                            public int compare(PublicGroupEntity lhs, PublicGroupEntity rhs) {
+                            public int compare(PublicGroup lhs, PublicGroup rhs) {
                                 if (lhs.getFriends() < rhs.getFriends()) {
                                     return 1;
                                 } else if (lhs.getMembers() > rhs.getMembers()) {
@@ -83,10 +84,10 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             }
                         });
 
-                        ArrayList<PublicGroupEntity> topByMembersGroupsSet = new ArrayList<PublicGroupEntity>();
+                        ArrayList<PublicGroup> topByMembersGroupsSet = new ArrayList<PublicGroup>();
 
                         for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
-                            PublicGroupEntity group = sortedByMembersGroups.get(i);
+                            PublicGroup group = sortedByMembersGroups.get(i);
                             topByMembersGroupsSet.add(group);
                             if (group.getAvatar() != null && group.getAvatar().getFullImage() != null) {
                                 messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
@@ -109,17 +110,17 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         PublicGroupSetView topMembersGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByMembersGroupsSet, getString(R.string.join_public_group_top_title), getString(R.string.join_public_group_top_subtitle)), PublicGroupCardView.COUNTER_TYPE_MEMBERS);
                         topMembersGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
                             @Override
-                            public void onClick(PublicGroupEntity group) {
+                            public void onClick(PublicGroup group) {
                                 openGroup(group);
                             }
 
 
                         });
 
-                        ArrayList<PublicGroupEntity> topByFriendsGroupsSet = new ArrayList<PublicGroupEntity>();
+                        ArrayList<PublicGroup> topByFriendsGroupsSet = new ArrayList<PublicGroup>();
 
                         for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
-                            PublicGroupEntity group = sortedByFriendsGroups.get(i);
+                            PublicGroup group = sortedByFriendsGroups.get(i);
                             if (group.getFriends() > 0) {
                                 topByFriendsGroupsSet.add(group);
                                 if (group.getAvatar() != null && group.getAvatar().getFullImage() != null) {
@@ -144,7 +145,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             PublicGroupSetView topFriendsGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByFriendsGroupsSet, getString(R.string.join_public_group_top_by_friends_title), getString(R.string.join_public_group_top_by_friends_subtitle)), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
                             topFriendsGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
                                 @Override
-                                public void onClick(PublicGroupEntity group) {
+                                public void onClick(PublicGroup group) {
                                     openGroup(group);
                                 }
                             });
@@ -176,11 +177,11 @@ public class JoinPublicGroupFragment extends BaseFragment {
         listView = (ListView) res.findViewById(R.id.listView);
         emptyView = (TextView) res.findViewById(R.id.emptyView);
         emptyView.setText(getString(R.string.picker_loading));
-        adapter = new JoinPublicGroupAdapter(new ArrayList<PublicGroupEntity>(), getActivity());
+        adapter = new JoinPublicGroupAdapter(new ArrayList<PublicGroup>(), getActivity());
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final PublicGroupEntity item = (PublicGroupEntity) parent.getItemAtPosition(position);
+                final PublicGroup item = (PublicGroup) parent.getItemAtPosition(position);
                 openGroup(item);
             }
         });
@@ -188,7 +189,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
         return res;
     }
 
-    private void openGroup(final PublicGroupEntity item) {
+    private void openGroup(final PublicGroup item) {
         GroupVM groupVM = null;
         try {
             groupVM = groups().get(item.getId());
@@ -198,7 +199,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
         joinGroup(item, groupVM != null && groupVM.isMember().get());
     }
 
-    private void joinGroup(final PublicGroupEntity item, boolean isMember) {
+    private void joinGroup(final PublicGroup item, boolean isMember) {
         Intent i = new Intent(getActivity(), JoinGroupPopUpActivity.class);
         if (item.getAvatar() != null) i.putExtra("avatar", item.getAvatar().toByteArray());
         i.putExtra("id", item.getId());

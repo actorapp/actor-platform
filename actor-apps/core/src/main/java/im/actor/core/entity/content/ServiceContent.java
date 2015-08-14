@@ -4,7 +4,7 @@
 
 package im.actor.core.entity.content;
 
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceContent extends AbsContent {
@@ -13,7 +13,7 @@ public class ServiceContent extends AbsContent {
 
     public ServiceContent(ContentRemoteContainer contentContainer) {
         super(contentContainer);
-        compatText = ((ServiceMessage) contentContainer.getMessage()).getText();
+        compatText = ((ApiServiceMessage) contentContainer.getMessage()).getText();
     }
 
     public String getCompatText() {

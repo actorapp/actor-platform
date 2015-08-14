@@ -6,7 +6,7 @@ package im.actor.core.modules.internal.messages;
 
 import im.actor.core.api.rpc.RequestLoadHistory;
 import im.actor.core.api.rpc.ResponseLoadHistory;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.updates.internal.MessagesHistoryLoaded;
 import im.actor.core.modules.utils.ModuleActor;
@@ -20,14 +20,14 @@ public class ConversationHistoryActor extends ModuleActor {
     private final String KEY_LOADED_DATE;
     private final String KEY_LOADED;
     private final String KEY_LOADED_INIT;
-    private final PeerEntity peer;
+    private final Peer peer;
 
     private long historyMaxDate;
     private boolean historyLoaded;
 
     private boolean isLoading = false;
 
-    public ConversationHistoryActor(PeerEntity peer, ModuleContext context) {
+    public ConversationHistoryActor(Peer peer, ModuleContext context) {
         super(context);
         this.peer = peer;
         this.KEY_LOADED_DATE = "conv_" + peer + "_history_date";

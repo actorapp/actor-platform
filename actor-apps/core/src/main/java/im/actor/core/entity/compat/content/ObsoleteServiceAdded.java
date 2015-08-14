@@ -7,8 +7,8 @@ package im.actor.core.entity.compat.content;
 import java.io.IOException;
 
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ServiceExUserInvited;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExUserInvited;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -22,8 +22,8 @@ public class ObsoleteServiceAdded extends BserObject {
     }
 
     public ApiMessage toApiMessage() {
-        return new ServiceMessage("Member added",
-                new ServiceExUserInvited(addedUid));
+        return new ApiServiceMessage("Member added",
+                new ApiServiceExUserInvited(addedUid));
     }
 
     @Override
