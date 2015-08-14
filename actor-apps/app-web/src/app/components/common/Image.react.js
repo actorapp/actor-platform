@@ -16,7 +16,7 @@ let cache = {};
 class Image extends React.Component {
   static propTypes = {
     content: React.PropTypes.object.isRequired,
-    className: React.PropTypes.string,
+    сlassName: React.PropTypes.string,
     loadedClassName: React.PropTypes.string
   };
 
@@ -48,7 +48,7 @@ class Image extends React.Component {
   }
 
   render() {
-    const { content, className, loadedClassName } = this.props;
+    const { content, сlassName, loadedClassName } = this.props;
     const { isImageLoaded } = this.state;
 
     const k = content.w / 300;
@@ -81,7 +81,7 @@ class Image extends React.Component {
       }
     }
 
-    const imageClassName = isImageLoaded ? className : classnames(className, loadedClassName);
+    const imageClassName = isImageLoaded ? classnames(сlassName, loadedClassName) : сlassName;
 
     return (
       <div className={imageClassName} style={styles}>

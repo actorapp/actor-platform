@@ -344,7 +344,9 @@
 
   .dropdown {
     &__menu {
-      top: 24px;
+      top: auto;
+      right: 24px;
+      bottom: 0;
     }
   }
 }
