@@ -71,12 +71,9 @@ export default {
 
       // Fonts
       {
-        test: /\.woff|\.woff2$/,
-        loader: 'url?prefix=font/&limit=5000&mimetype=application/font-woff'
+        test: /\.woff|\.woff2$|\.ttf$|\.eot$/,
+        loaders: ['file?name=fonts/[name].[ext]', 'url']
       },
-      {test: /\.ttf$/, loader: 'file?prefix=font/'},
-      {test: /\.eot$/, loader: 'file?prefix=font/'},
-      {test: /\.svg$/, loader: 'file?prefix=font/'},
 
       {
         test: /\.js$/,
