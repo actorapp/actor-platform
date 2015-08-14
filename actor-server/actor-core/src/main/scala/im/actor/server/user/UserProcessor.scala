@@ -71,7 +71,6 @@ private[user] object User {
 
 object UserProcessor {
   def register(): Unit = {
-    ActorSerializer.register(10000, classOf[UserCommands])
     ActorSerializer.register(10001, classOf[UserCommands.NewAuth])
     ActorSerializer.register(10002, classOf[UserCommands.NewAuthAck])
     ActorSerializer.register(10005, classOf[UserCommands.BroadcastUpdate])
