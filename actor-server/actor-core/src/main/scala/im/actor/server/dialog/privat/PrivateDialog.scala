@@ -53,19 +53,16 @@ case class PrivateDialogState(private val state: Map[Origin, DialogState]) exten
 
 object PrivateDialog {
   def register(): Unit = {
-    ActorSerializer.register(13000, classOf[PrivateDialogCommands])
-    ActorSerializer.register(13001, classOf[PrivateDialogCommands.SendMessage])
-    ActorSerializer.register(13002, classOf[PrivateDialogCommands.MessageReceived])
-    ActorSerializer.register(13003, classOf[PrivateDialogCommands.MessageReceivedAck])
-    ActorSerializer.register(13004, classOf[PrivateDialogCommands.MessageRead])
-    ActorSerializer.register(13005, classOf[PrivateDialogCommands.MessageReadAck])
+    ActorSerializer.register(30000, classOf[PrivateDialogCommands.SendMessage])
+    ActorSerializer.register(30001, classOf[PrivateDialogCommands.MessageReceived])
+    ActorSerializer.register(30002, classOf[PrivateDialogCommands.MessageReceivedAck])
+    ActorSerializer.register(30003, classOf[PrivateDialogCommands.MessageRead])
+    ActorSerializer.register(30004, classOf[PrivateDialogCommands.MessageReadAck])
   }
 
   val MaxCacheSize = 100L
 
   def props = Props(classOf[PrivateDialog])
-
-  def persistenceIdFor(left: Int, right: Int): String = s"PrivateDialog-${left}_${right}"
 }
 
 class PrivateDialog extends Processor[PrivateDialogState, PrivateDialogEvent] with PrivateDialogHandlers {
@@ -131,5 +128,5 @@ class PrivateDialog extends Processor[PrivateDialogState, PrivateDialogEvent] wi
       log.error("Unmatched recovery event {}", unmatched)
   }
 
-  override def persistenceId: String = PrivateDialog.persistenceIdFor(left, right)
+  override def persistenceId: String = self.path.parent.name + "_" + self.path.name
 }

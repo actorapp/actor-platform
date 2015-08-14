@@ -41,19 +41,16 @@ object GroupDialogEvents {
 
 object GroupDialog {
   def register(): Unit = {
-    ActorSerializer.register(23000, classOf[GroupDialogCommands])
-    ActorSerializer.register(23001, classOf[GroupDialogCommands.SendMessage])
-    ActorSerializer.register(23002, classOf[GroupDialogCommands.MessageReceived])
-    ActorSerializer.register(23003, classOf[GroupDialogCommands.MessageReceivedAck])
-    ActorSerializer.register(23004, classOf[GroupDialogCommands.MessageRead])
-    ActorSerializer.register(23005, classOf[GroupDialogCommands.MessageReadAck])
+    ActorSerializer.register(40000, classOf[GroupDialogCommands.SendMessage])
+    ActorSerializer.register(40001, classOf[GroupDialogCommands.MessageReceived])
+    ActorSerializer.register(40002, classOf[GroupDialogCommands.MessageReceivedAck])
+    ActorSerializer.register(40003, classOf[GroupDialogCommands.MessageRead])
+    ActorSerializer.register(40004, classOf[GroupDialogCommands.MessageReadAck])
   }
 
   val MaxCacheSize = 100L
 
   def props: Props = Props(classOf[GroupDialog])
-
-  def persistenceIdFor(groupId: Int): String = s"GroupDialog-$groupId"
 }
 
 class GroupDialog extends Processor[GroupDialogState, GroupDialogEvent] with GroupDialogHandlers {
@@ -62,7 +59,6 @@ class GroupDialog extends Processor[GroupDialogState, GroupDialogEvent] with Gro
   import GroupDialogEvents._
 
   protected val groupId = self.path.name.toInt
-  override def persistenceId: String = persistenceIdFor(groupId)
   protected val groupPeer = Peer(PeerType.Group, groupId)
 
   private val initState = GroupDialogState(None, None, None)
@@ -115,4 +111,7 @@ class GroupDialog extends Processor[GroupDialogState, GroupDialogEvent] with Gro
     case unmatched ⇒
       log.error("Unmatched recovery event {}", unmatched)
   }
+
+  override def persistenceId: String = self.path.parent.name + "_" + self.path.name
+
 }
