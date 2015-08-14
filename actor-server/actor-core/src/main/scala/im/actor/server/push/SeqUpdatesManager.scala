@@ -2,6 +2,8 @@ package im.actor.server.push
 
 import java.nio.ByteBuffer
 
+import im.actor.server.util.AnyRefLogSource
+
 import scala.annotation.tailrec
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -26,6 +28,8 @@ object SeqUpdatesManager {
 
   type Sequence = Int
   type UpdateRefs = (Set[Int], Set[Int])
+
+  private val log = org.slf4j.LoggerFactory.getLogger(this.getClass)
 
   // TODO: configurable
   private implicit val OperationTimeout = Timeout(30.seconds)
@@ -131,6 +135,7 @@ object SeqUpdatesManager {
 
     val fatMetaData = if (isFat) Some(getFatMetaData(update)) else None
 
+    log.warn(s"pushing update $update to authIds: $authIds")
     persistAndPushUpdatesF(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), fatMetaData)
   }
 
@@ -161,6 +166,7 @@ object SeqUpdatesManager {
     ec: ExecutionContext,
     ext: SeqUpdatesExtension): Future[Seq[SeqState]] =
     Future.sequence(authIds.toSeq map { authId ⇒
+      log.warn(s"puhsing update with header: $header to $authId")
       persistAndPushUpdateF(authId, header, serializedData, refs, pushText, originPeer, fatMetaData)
     })
 
@@ -463,8 +469,10 @@ object SeqUpdatesManager {
     fatData:        Option[FatData]
   )(implicit
     ext: SeqUpdatesExtension,
-    ec: ExecutionContext): Future[SeqState] =
+    ec: ExecutionContext): Future[SeqState] = {
+    log.warn(s"pushing update to $authId, update header: $header")
     ext.region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, refs, pushText, originPeer, fatData))).mapTo[SeqState]
+  }
 
   def getOriginPeer(update: api.Update): Option[Peer] = {
     update match {
