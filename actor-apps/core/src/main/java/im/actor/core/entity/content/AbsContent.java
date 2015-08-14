@@ -6,28 +6,22 @@ package im.actor.core.entity.content;
 
 import java.io.IOException;
 
-import im.actor.core.api.DocumentExPhoto;
-import im.actor.core.api.DocumentExVideo;
-import im.actor.core.api.DocumentMessage;
-import im.actor.core.api.JsonMessage;
+import im.actor.core.api.ApiDocumentExPhoto;
+import im.actor.core.api.ApiDocumentExVideo;
+import im.actor.core.api.ApiDocumentMessage;
+import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ServiceEx;
-import im.actor.core.api.ServiceExChangedAvatar;
-import im.actor.core.api.ServiceExChangedTitle;
-import im.actor.core.api.ServiceExContactRegistered;
-import im.actor.core.api.ServiceExGroupCreated;
-import im.actor.core.api.ServiceExUserInvited;
-import im.actor.core.api.ServiceExUserJoined;
-import im.actor.core.api.ServiceExUserKicked;
-import im.actor.core.api.ServiceExUserLeft;
-import im.actor.core.api.ServiceMessage;
-import im.actor.core.api.TextMessage;
-import im.actor.runtime.bser.BserParser;
-import im.actor.runtime.bser.BserValues;
-import im.actor.runtime.bser.BserWriter;
-import im.actor.runtime.bser.DataInput;
-import im.actor.runtime.bser.DataOutput;
-import im.actor.runtime.json.JSONObject;
+import im.actor.core.api.ApiServiceEx;
+import im.actor.core.api.ApiServiceExChangedAvatar;
+import im.actor.core.api.ApiServiceExChangedTitle;
+import im.actor.core.api.ApiServiceExContactRegistered;
+import im.actor.core.api.ApiServiceExGroupCreated;
+import im.actor.core.api.ApiServiceExUserInvited;
+import im.actor.core.api.ApiServiceExUserJoined;
+import im.actor.core.api.ApiServiceExUserKicked;
+import im.actor.core.api.ApiServiceExUserLeft;
+import im.actor.core.api.ApiServiceMessage;
+import im.actor.core.api.ApiTextMessage;
 import im.actor.core.entity.compat.content.ObsoleteContent;
 import im.actor.core.entity.content.internal.AbsContentContainer;
 import im.actor.core.entity.content.internal.AbsLocalContent;
@@ -36,6 +30,12 @@ import im.actor.core.entity.content.internal.ContentRemoteContainer;
 import im.actor.core.entity.content.internal.LocalDocument;
 import im.actor.core.entity.content.internal.LocalPhoto;
 import im.actor.core.entity.content.internal.LocalVideo;
+import im.actor.runtime.bser.BserParser;
+import im.actor.runtime.bser.BserValues;
+import im.actor.runtime.bser.BserWriter;
+import im.actor.runtime.bser.DataInput;
+import im.actor.runtime.bser.DataOutput;
+import im.actor.runtime.json.JSONObject;
 
 public abstract class AbsContent {
 
@@ -82,40 +82,40 @@ public abstract class AbsContent {
             ContentRemoteContainer remoteContainer = (ContentRemoteContainer) container;
             ApiMessage content = ((ContentRemoteContainer) container).getMessage();
             try {
-                if (content instanceof DocumentMessage) {
-                    DocumentMessage d = (DocumentMessage) content;
-                    if (d.getExt() instanceof DocumentExPhoto) {
+                if (content instanceof ApiDocumentMessage) {
+                    ApiDocumentMessage d = (ApiDocumentMessage) content;
+                    if (d.getExt() instanceof ApiDocumentExPhoto) {
                         return new PhotoContent(remoteContainer);
-                    } else if (d.getExt() instanceof DocumentExVideo) {
+                    } else if (d.getExt() instanceof ApiDocumentExVideo) {
                         return new VideoContent(remoteContainer);
                     } else {
                         return new DocumentContent(remoteContainer);
                     }
-                } else if (content instanceof TextMessage) {
+                } else if (content instanceof ApiTextMessage) {
                     return new TextContent(remoteContainer);
-                } else if (content instanceof ServiceMessage) {
-                    ServiceEx ext = ((ServiceMessage) content).getExt();
-                    if (ext instanceof ServiceExContactRegistered) {
+                } else if (content instanceof ApiServiceMessage) {
+                    ApiServiceEx ext = ((ApiServiceMessage) content).getExt();
+                    if (ext instanceof ApiServiceExContactRegistered) {
                         return new ServiceUserRegistered(remoteContainer);
-                    } else if (ext instanceof ServiceExChangedTitle) {
+                    } else if (ext instanceof ApiServiceExChangedTitle) {
                         return new ServiceGroupTitleChanged(remoteContainer);
-                    } else if (ext instanceof ServiceExChangedAvatar) {
+                    } else if (ext instanceof ApiServiceExChangedAvatar) {
                         return new ServiceGroupAvatarChanged(remoteContainer);
-                    } else if (ext instanceof ServiceExGroupCreated) {
+                    } else if (ext instanceof ApiServiceExGroupCreated) {
                         return new ServiceGroupCreated(remoteContainer);
-                    } else if (ext instanceof ServiceExUserInvited) {
+                    } else if (ext instanceof ApiServiceExUserInvited) {
                         return new ServiceGroupUserInvited(remoteContainer);
-                    } else if (ext instanceof ServiceExUserKicked) {
+                    } else if (ext instanceof ApiServiceExUserKicked) {
                         return new ServiceGroupUserKicked(remoteContainer);
-                    } else if (ext instanceof ServiceExUserLeft) {
+                    } else if (ext instanceof ApiServiceExUserLeft) {
                         return new ServiceGroupUserLeave(remoteContainer);
-                    } else if (ext instanceof ServiceExUserJoined) {
+                    } else if (ext instanceof ApiServiceExUserJoined) {
                         return new ServiceGroupUserJoined(remoteContainer);
                     } else {
                         return new ServiceContent(remoteContainer);
                     }
-                } else if (content instanceof JsonMessage) {
-                    JsonMessage json = (JsonMessage) content;
+                } else if (content instanceof ApiJsonMessage) {
+                    ApiJsonMessage json = (ApiJsonMessage) content;
                     JSONObject object = new JSONObject(json.getRawJson());
                     if (object.getString("dataType").equals("banner")) {
                         return new BannerContent(remoteContainer);

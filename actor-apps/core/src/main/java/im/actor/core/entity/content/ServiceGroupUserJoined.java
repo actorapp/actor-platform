@@ -4,15 +4,15 @@
 
 package im.actor.core.entity.content;
 
-import im.actor.core.api.ServiceExUserJoined;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExUserJoined;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupUserJoined extends ServiceContent {
 
     public static ServiceGroupUserJoined create() {
-        return new ServiceGroupUserJoined(new ContentRemoteContainer(new ServiceMessage("User joined",
-                new ServiceExUserJoined())));
+        return new ServiceGroupUserJoined(new ContentRemoteContainer(new ApiServiceMessage("User joined",
+                new ApiServiceExUserJoined())));
     }
 
     public ServiceGroupUserJoined(ContentRemoteContainer contentContainer) {

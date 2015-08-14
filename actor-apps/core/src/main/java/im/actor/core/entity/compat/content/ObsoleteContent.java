@@ -6,10 +6,10 @@ package im.actor.core.entity.compat.content;
 
 import java.io.IOException;
 
-import im.actor.core.api.ServiceExContactRegistered;
-import im.actor.core.api.ServiceExGroupCreated;
-import im.actor.core.api.ServiceExUserLeft;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExContactRegistered;
+import im.actor.core.api.ApiServiceExGroupCreated;
+import im.actor.core.api.ApiServiceExUserLeft;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.runtime.bser.BserValues;
 import im.actor.core.entity.content.internal.AbsContentContainer;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
@@ -42,10 +42,10 @@ public class ObsoleteContent {
             case SERVICE:
                 return new ContentRemoteContainer(new ObsoleteService(values).toApiMessage());
             case SERVICE_REGISTERED:
-                return new ContentRemoteContainer(new ServiceMessage("User registered",
-                        new ServiceExContactRegistered(0/*Old service message doesn't contain uid*/)));
+                return new ContentRemoteContainer(new ApiServiceMessage("User registered",
+                        new ApiServiceExContactRegistered(0/*Old service message doesn't contain uid*/)));
             case SERVICE_CREATED:
-                return new ContentRemoteContainer(new ServiceMessage("Group created", new ServiceExGroupCreated()));
+                return new ContentRemoteContainer(new ApiServiceMessage("Group created", new ApiServiceExGroupCreated()));
             case SERVICE_TITLE:
                 return new ContentRemoteContainer(new ObsoleteServiceTitle(values).toApiMessage());
             case SERVICE_AVATAR:
@@ -55,7 +55,7 @@ public class ObsoleteContent {
             case SERVICE_KICKED:
                 return new ContentRemoteContainer(new ObsoleteServiceKicked(values).toApiMessage());
             case SERVICE_LEAVE:
-                return new ContentRemoteContainer(new ServiceMessage("User leave", new ServiceExUserLeft()));
+                return new ContentRemoteContainer(new ApiServiceMessage("User leave", new ApiServiceExUserLeft()));
             default:
                 throw new IOException("Unknown type");
         }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
-import im.actor.core.api.Member;
+import im.actor.core.api.ApiMember;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -33,9 +33,9 @@ public class ObsoleteGroup extends BserObject {
     }
 
     public ApiGroup toApiGroup() {
-        List<Member> members = new ArrayList<Member>();
+        List<ApiMember> members = new ArrayList<ApiMember>();
         for (ObsoleteGroupMember member : this.members) {
-            members.add(new Member(member.getUid(), member.getInviterUid(), member.getInviteDate(), null));
+            members.add(new ApiMember(member.getUid(), member.getInviterUid(), member.getInviteDate(), null));
         }
 
         return new ApiGroup(

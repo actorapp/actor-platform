@@ -7,8 +7,8 @@ import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.core.entity.Message;
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.PeerTypeEntity;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 
 import static im.actor.messenger.app.core.Core.myUid;
 
@@ -43,7 +43,7 @@ public abstract class MessageHolder extends BindedViewHolder
         return adapter;
     }
 
-    public PeerEntity getPeer() {
+    public Peer getPeer() {
         return adapter.getMessagesFragment().getPeer();
     }
 
@@ -76,7 +76,7 @@ public abstract class MessageHolder extends BindedViewHolder
             if (message.getSenderId() == myUid()) {
                 container.makeOutboundBubble();
             } else {
-                container.makeInboundBubble(getPeer().getPeerType() == PeerTypeEntity.GROUP, message.getSenderId());
+                container.makeInboundBubble(getPeer().getPeerType() == PeerType.GROUP, message.getSenderId());
             }
         }
 

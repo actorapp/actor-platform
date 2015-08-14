@@ -7,11 +7,11 @@ package im.actor.core.modules.utils;
 import im.actor.core.Configuration;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.OutPeer;
-import im.actor.core.entity.GroupEntity;
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.PeerTypeEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.api.ApiOutPeer;
+import im.actor.core.entity.Group;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
+import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Updates;
 import im.actor.core.network.RpcCallback;
@@ -37,47 +37,47 @@ public class ModuleActor extends Actor {
         this.context = context;
     }
 
-    public OutPeer buidOutPeer(PeerEntity peer) {
-        if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
-            UserEntity user = getUser(peer.getPeerId());
+    public ApiOutPeer buidOutPeer(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            User user = getUser(peer.getPeerId());
             if (user == null) {
                 return null;
             }
-            return new OutPeer(ApiPeerType.PRIVATE, user.getUid(), user.getAccessHash());
-        } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
-            GroupEntity group = getGroup(peer.getPeerId());
+            return new ApiOutPeer(ApiPeerType.PRIVATE, user.getUid(), user.getAccessHash());
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            Group group = getGroup(peer.getPeerId());
             if (group == null) {
                 return null;
             }
-            return new OutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash());
+            return new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash());
         } else {
             throw new RuntimeException("Unknown peer: " + peer);
         }
     }
 
-    public ApiPeer buildApiPeer(PeerEntity peer) {
-        if (peer.getPeerType() == PeerTypeEntity.PRIVATE) {
+    public ApiPeer buildApiPeer(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
             return new ApiPeer(ApiPeerType.PRIVATE, peer.getPeerId());
-        } else if (peer.getPeerType() == PeerTypeEntity.GROUP) {
+        } else if (peer.getPeerType() == PeerType.GROUP) {
             return new ApiPeer(ApiPeerType.GROUP, peer.getPeerId());
         } else {
             return null;
         }
     }
 
-    public KeyValueEngine<UserEntity> users() {
+    public KeyValueEngine<User> users() {
         return context.getUsersModule().getUsersStorage();
     }
 
-    public KeyValueEngine<GroupEntity> groups() {
+    public KeyValueEngine<Group> groups() {
         return context.getGroupsModule().getGroups();
     }
 
-    public GroupEntity getGroup(int gid) {
+    public Group getGroup(int gid) {
         return groups().getValue(gid);
     }
 
-    public UserEntity getUser(int uid) {
+    public User getUser(int uid) {
         return users().getValue(uid);
     }
 

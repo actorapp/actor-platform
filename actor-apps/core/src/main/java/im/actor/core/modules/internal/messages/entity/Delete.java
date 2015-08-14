@@ -10,14 +10,14 @@ import java.util.List;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 
 public class Delete extends BserObject {
 
-    private PeerEntity peer;
+    private Peer peer;
     private List<Long> rids;
 
-    public Delete(PeerEntity peer, List<Long> rids) {
+    public Delete(Peer peer, List<Long> rids) {
         this.peer = peer;
         this.rids = rids;
     }
@@ -26,7 +26,7 @@ public class Delete extends BserObject {
 
     }
 
-    public PeerEntity getPeer() {
+    public Peer getPeer() {
         return peer;
     }
 
@@ -36,7 +36,7 @@ public class Delete extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        peer = PeerEntity.fromBytes(values.getBytes(1));
+        peer = Peer.fromBytes(values.getBytes(1));
         rids = values.getRepeatedLong(2);
     }
 

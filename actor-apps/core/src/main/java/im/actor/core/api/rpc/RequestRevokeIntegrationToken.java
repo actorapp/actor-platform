@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestRevokeIntegrationToken extends Request<ResponseIntegrationToken> {
@@ -19,9 +22,9 @@ public class RequestRevokeIntegrationToken extends Request<ResponseIntegrationTo
         return Bser.parse(new RequestRevokeIntegrationToken(), data);
     }
 
-    private OutPeer groupPeer;
+    private ApiOutPeer groupPeer;
 
-    public RequestRevokeIntegrationToken(@NotNull OutPeer groupPeer) {
+    public RequestRevokeIntegrationToken(@NotNull ApiOutPeer groupPeer) {
         this.groupPeer = groupPeer;
     }
 
@@ -30,13 +33,13 @@ public class RequestRevokeIntegrationToken extends Request<ResponseIntegrationTo
     }
 
     @NotNull
-    public OutPeer getGroupPeer() {
+    public ApiOutPeer getGroupPeer() {
         return this.groupPeer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, new OutPeer());
+        this.groupPeer = values.getObj(1, new ApiOutPeer());
     }
 
     @Override

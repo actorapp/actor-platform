@@ -1,6 +1,7 @@
 #ifndef ActorClient_Core_h
 #define ActorClient_Core_h
 
+#import "im/actor/core/CocoaMessenger.h"
 #import "im/actor/core/Messenger.h"
 #import "im/actor/core/AnalyticsProvider.h"
 #import "im/actor/core/ApiConfiguration.h"
@@ -76,6 +77,6 @@
 
 #import "im/actor/core/network/RpcException.h"
 
-#import "im/actor/core/api/AuthSession.h"
+#import "im/actor/core/api/ApiAuthSession.h"
 
 #endif

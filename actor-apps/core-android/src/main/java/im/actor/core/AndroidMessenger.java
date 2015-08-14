@@ -23,7 +23,7 @@ import java.util.Random;
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.Message;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.network.NetworkState;
@@ -160,11 +160,11 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
     }
 
-    public void sendDocument(PeerEntity peer, String fullFilePath) {
+    public void sendDocument(Peer peer, String fullFilePath) {
         sendDocument(peer, fullFilePath, new File(fullFilePath).getName());
     }
 
-    public void sendDocument(PeerEntity peer, String fullFilePath, String fileName) {
+    public void sendDocument(Peer peer, String fullFilePath, String fileName) {
 
         int dot = fileName.indexOf('.');
         String mimeType = null;
@@ -188,11 +188,11 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
     }
 
-    public void sendPhoto(PeerEntity peer, String fullFilePath) {
+    public void sendPhoto(Peer peer, String fullFilePath) {
         sendPhoto(peer, fullFilePath, new File(fullFilePath).getName());
     }
 
-    public void sendPhoto(PeerEntity peer, String fullFilePath, String fileName) {
+    public void sendPhoto(Peer peer, String fullFilePath, String fileName) {
         try {
             Bitmap bmp = ImageHelper.loadOptimizedHQ(fullFilePath);
             if (bmp == null) {
@@ -215,11 +215,11 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
     }
 
-    public void sendVideo(PeerEntity peer, String fullFilePath) {
+    public void sendVideo(Peer peer, String fullFilePath) {
         sendVideo(peer, fullFilePath, new File(fullFilePath).getName());
     }
 
-    public void sendVideo(PeerEntity peer, String fullFilePath, String fileName) {
+    public void sendVideo(Peer peer, String fullFilePath, String fileName) {
         try {
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(fullFilePath);
@@ -251,7 +251,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         return (BindedDisplayList<Dialog>) modules.getDisplayListsModule().getDialogsSharedList();
     }
 
-    public BindedDisplayList<Message> getMessageDisplayList(PeerEntity peer) {
+    public BindedDisplayList<Message> getMessageDisplayList(Peer peer) {
         return (BindedDisplayList<Message>) modules.getDisplayListsModule().getMessagesSharedList(peer);
     }
 

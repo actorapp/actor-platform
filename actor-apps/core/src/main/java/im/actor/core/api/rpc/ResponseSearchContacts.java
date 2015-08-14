@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,9 +22,9 @@ public class ResponseSearchContacts extends Response {
         return Bser.parse(new ResponseSearchContacts(), data);
     }
 
-    private List<User> users;
+    private List<ApiUser> users;
 
-    public ResponseSearchContacts(@NotNull List<User> users) {
+    public ResponseSearchContacts(@NotNull List<ApiUser> users) {
         this.users = users;
     }
 
@@ -31,15 +33,15 @@ public class ResponseSearchContacts extends Response {
     }
 
     @NotNull
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return this.users;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<User> _users = new ArrayList<User>();
+        List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _users.add(new User());
+            _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(1, _users);
     }

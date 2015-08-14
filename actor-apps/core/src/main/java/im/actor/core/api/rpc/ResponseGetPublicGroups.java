@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,9 +22,9 @@ public class ResponseGetPublicGroups extends Response {
         return Bser.parse(new ResponseGetPublicGroups(), data);
     }
 
-    private List<PublicGroup> groups;
+    private List<ApiPublicGroup> groups;
 
-    public ResponseGetPublicGroups(@NotNull List<PublicGroup> groups) {
+    public ResponseGetPublicGroups(@NotNull List<ApiPublicGroup> groups) {
         this.groups = groups;
     }
 
@@ -31,15 +33,15 @@ public class ResponseGetPublicGroups extends Response {
     }
 
     @NotNull
-    public List<PublicGroup> getGroups() {
+    public List<ApiPublicGroup> getGroups() {
         return this.groups;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<PublicGroup> _groups = new ArrayList<PublicGroup>();
+        List<ApiPublicGroup> _groups = new ArrayList<ApiPublicGroup>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _groups.add(new PublicGroup());
+            _groups.add(new ApiPublicGroup());
         }
         this.groups = values.getRepeatedObj(1, _groups);
     }

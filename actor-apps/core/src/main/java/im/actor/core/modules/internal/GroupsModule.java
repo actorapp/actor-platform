@@ -9,14 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import im.actor.core.api.ApiGroup;
+import im.actor.core.api.ApiGroupOutPeer;
+import im.actor.core.api.ApiMember;
+import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
-import im.actor.core.api.GroupOutPeer;
-import im.actor.core.api.Member;
-import im.actor.core.api.OutPeer;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.ServiceExUserJoined;
-import im.actor.core.api.ServiceMessage;
-import im.actor.core.api.UserOutPeer;
+import im.actor.core.api.ApiPublicGroup;
+import im.actor.core.api.ApiServiceExUserJoined;
+import im.actor.core.api.ApiServiceMessage;
+import im.actor.core.api.ApiUser;
+import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateGroup;
 import im.actor.core.api.rpc.RequestEditGroupTitle;
 import im.actor.core.api.rpc.RequestEnterGroup;
@@ -43,9 +45,9 @@ import im.actor.core.api.updates.UpdateGroupUserKick;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
 import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Avatar;
-import im.actor.core.entity.GroupEntity;
-import im.actor.core.entity.PublicGroupEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.Group;
+import im.actor.core.entity.PublicGroup;
+import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.avatar.GroupAvatarChangeActor;
@@ -68,15 +70,15 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class GroupsModule extends AbsModule {
 
-    private KeyValueEngine<GroupEntity> groups;
-    private MVVMCollection<GroupEntity, GroupVM> collection;
+    private KeyValueEngine<Group> groups;
+    private MVVMCollection<Group, GroupVM> collection;
     private HashMap<Integer, GroupAvatarVM> avatarVMs;
     private ActorRef avatarChangeActor;
 
     public GroupsModule(final ModuleContext context) {
         super(context);
         
-        collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR, GroupEntity.CREATOR);
+        collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR, Group.CREATOR);
         groups = collection.getEngine();
 
         avatarVMs = new HashMap<Integer, GroupAvatarVM>();
@@ -97,11 +99,11 @@ public class GroupsModule extends AbsModule {
         }
     }
 
-    public KeyValueEngine<GroupEntity> getGroups() {
+    public KeyValueEngine<Group> getGroups() {
         return groups;
     }
 
-    public MVVMCollection<GroupEntity, GroupVM> getGroupsCollection() {
+    public MVVMCollection<Group, GroupVM> getGroupsCollection() {
         return collection;
     }
 
@@ -117,20 +119,20 @@ public class GroupsModule extends AbsModule {
         return new Command<Integer>() {
             @Override
             public void start(final CommandCallback<Integer> callback) {
-                ArrayList<UserOutPeer> peers = new ArrayList<UserOutPeer>();
+                ArrayList<ApiUserOutPeer> peers = new ArrayList<ApiUserOutPeer>();
                 for (int u : uids) {
-                    UserEntity user = users().getValue(u);
+                    User user = users().getValue(u);
                     if (user != null) {
-                        peers.add(new UserOutPeer(u, user.getAccessHash()));
+                        peers.add(new ApiUserOutPeer(u, user.getAccessHash()));
                     }
                 }
                 final long rid = RandomUtils.nextRid();
                 request(new RequestCreateGroup(rid, title, peers), new RpcCallback<ResponseCreateGroup>() {
                     @Override
                     public void onResult(ResponseCreateGroup response) {
-                        List<Member> members = new ArrayList<Member>();
+                        List<ApiMember> members = new ArrayList<ApiMember>();
                         for (int u : uids) {
-                            members.add(new Member(u, myUid(), response.getDate(), u == myUid()));
+                            members.add(new ApiMember(u, myUid(), response.getDate(), u == myUid()));
                         }
                         final ApiGroup group = new ApiGroup(
                                 response.getGroupPeer().getGroupId(),
@@ -149,7 +151,7 @@ public class GroupsModule extends AbsModule {
                                         myUid(),
                                         response.getDate()
                                 ),
-                                new ArrayList<im.actor.core.api.User>(),
+                                new ArrayList<ApiUser>(),
                                 groups);
 
                         updates().executeAfter(response.getSeq(), new Runnable() {
@@ -187,7 +189,7 @@ public class GroupsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                GroupEntity group = getGroups().getValue(gid);
+                Group group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -198,7 +200,7 @@ public class GroupsModule extends AbsModule {
                     return;
                 }
                 final long rid = RandomUtils.nextRid();
-                request(new RequestEditGroupTitle(new GroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                request(new RequestEditGroupTitle(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                         rid, name), new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
@@ -244,7 +246,7 @@ public class GroupsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                GroupEntity group = getGroups().getValue(gid);
+                Group group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -255,7 +257,7 @@ public class GroupsModule extends AbsModule {
                     return;
                 }
                 final long rid = RandomUtils.nextRid();
-                request(new RequestLeaveGroup(new GroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                request(new RequestLeaveGroup(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
                         rid), new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
@@ -302,8 +304,8 @@ public class GroupsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                GroupEntity group = getGroups().getValue(gid);
-                UserEntity user = users().getValue(uid);
+                Group group = getGroups().getValue(gid);
+                User user = users().getValue(uid);
                 if (group == null || user == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -314,8 +316,8 @@ public class GroupsModule extends AbsModule {
                     return;
                 }
                 final long rid = RandomUtils.nextRid();
-                request(new RequestInviteUser(new GroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        rid, new UserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
+                request(new RequestInviteUser(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                        rid, new ApiUserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
                         updates().onSeqUpdateReceived(
@@ -359,8 +361,8 @@ public class GroupsModule extends AbsModule {
         return new Command<Boolean>() {
             @Override
             public void start(final CommandCallback<Boolean> callback) {
-                GroupEntity group = getGroups().getValue(gid);
-                UserEntity user = users().getValue(uid);
+                Group group = getGroups().getValue(gid);
+                User user = users().getValue(uid);
                 if (group == null || user == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -371,8 +373,8 @@ public class GroupsModule extends AbsModule {
                     return;
                 }
                 final long rid = RandomUtils.nextRid();
-                request(new RequestKickUser(new GroupOutPeer(group.getGroupId(), group.getAccessHash()),
-                        rid, new UserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
+                request(new RequestKickUser(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                        rid, new ApiUserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
 
@@ -418,7 +420,7 @@ public class GroupsModule extends AbsModule {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
-                final GroupEntity group = getGroups().getValue(gid);
+                final Group group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -428,7 +430,7 @@ public class GroupsModule extends AbsModule {
                     });
                     return;
                 }
-                request(new RequestGetGroupInviteUrl(new GroupOutPeer(group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseInviteUrl>() {
+                request(new RequestGetGroupInviteUrl(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseInviteUrl>() {
                     @Override
                     public void onResult(final ResponseInviteUrl response) {
                         runOnUiThread(new Runnable() {
@@ -457,7 +459,7 @@ public class GroupsModule extends AbsModule {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
-                final GroupEntity group = getGroups().getValue(gid);
+                final Group group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -467,7 +469,7 @@ public class GroupsModule extends AbsModule {
                     });
                     return;
                 }
-                request(new RequestRevokeInviteUrl(new GroupOutPeer(group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseInviteUrl>() {
+                request(new RequestRevokeInviteUrl(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseInviteUrl>() {
                     @Override
                     public void onResult(final ResponseInviteUrl response) {
                         runOnUiThread(new Runnable() {
@@ -512,8 +514,8 @@ public class GroupsModule extends AbsModule {
                                                 myUid(),
                                                 response.getDate(),
                                                 response.getRid(),
-                                                new ServiceMessage("Joined chat",
-                                                        new ServiceExUserJoined())),
+                                                new ApiServiceMessage("Joined chat",
+                                                        new ApiServiceExUserJoined())),
                                         response.getUsers(),
                                         groups);
 
@@ -550,7 +552,7 @@ public class GroupsModule extends AbsModule {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
-                final GroupEntity group = getGroups().getValue(gid);
+                final Group group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -560,7 +562,7 @@ public class GroupsModule extends AbsModule {
                     });
                     return;
                 }
-                request(new RequestGetIntegrationToken(new OutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
+                request(new RequestGetIntegrationToken(new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
                     @Override
                     public void onResult(final ResponseIntegrationToken response) {
                         runOnUiThread(new Runnable() {
@@ -589,7 +591,7 @@ public class GroupsModule extends AbsModule {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
-                final GroupEntity group = getGroups().getValue(gid);
+                final Group group = getGroups().getValue(gid);
                 if (group == null) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -599,7 +601,7 @@ public class GroupsModule extends AbsModule {
                     });
                     return;
                 }
-                request(new RequestRevokeIntegrationToken(new OutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
+                request(new RequestRevokeIntegrationToken(new ApiOutPeer(ApiPeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
                     @Override
                     public void onResult(final ResponseIntegrationToken response) {
                         runOnUiThread(new Runnable() {
@@ -628,7 +630,7 @@ public class GroupsModule extends AbsModule {
         return new Command<Integer>() {
             @Override
             public void start(final CommandCallback<Integer> callback) {
-                request(new RequestEnterGroup(new GroupOutPeer(gid, accessHash)), new RpcCallback<ResponseEnterGroup>() {
+                request(new RequestEnterGroup(new ApiGroupOutPeer(gid, accessHash)), new RpcCallback<ResponseEnterGroup>() {
                     @Override
                     public void onResult(final ResponseEnterGroup response) {
                         ApiGroup group = response.getGroup();
@@ -643,8 +645,8 @@ public class GroupsModule extends AbsModule {
                                         myUid(),
                                         response.getDate(),
                                         response.getRid(),
-                                        new ServiceMessage("Joined chat",
-                                                new ServiceExUserJoined())),
+                                        new ApiServiceMessage("Joined chat",
+                                                new ApiServiceExUserJoined())),
                                 response.getUsers(),
                                 groups);
 
@@ -675,20 +677,20 @@ public class GroupsModule extends AbsModule {
         };
     }
 
-    public Command<List<PublicGroupEntity>> listPublicGroups() {
-        return new Command<List<PublicGroupEntity>>() {
+    public Command<List<PublicGroup>> listPublicGroups() {
+        return new Command<List<PublicGroup>>() {
             @Override
-            public void start(final CommandCallback<List<PublicGroupEntity>> callback) {
+            public void start(final CommandCallback<List<PublicGroup>> callback) {
                 request(new RequestGetPublicGroups(), new RpcCallback<ResponseGetPublicGroups>() {
                     @Override
                     public void onResult(ResponseGetPublicGroups response) {
-                        ArrayList<PublicGroupEntity> groups = new ArrayList<PublicGroupEntity>();
-                        for (im.actor.core.api.PublicGroup g : response.getGroups()) {
+                        ArrayList<PublicGroup> groups = new ArrayList<PublicGroup>();
+                        for (ApiPublicGroup g : response.getGroups()) {
                             Avatar avatar = null;
                             if (g.getAvatar() != null) {
                                 avatar = new Avatar(g.getAvatar());
                             }
-                            groups.add(new PublicGroupEntity(g.getId(), g.getAccessHash(),
+                            groups.add(new PublicGroup(g.getId(), g.getAccessHash(),
                                     g.getTitle(), avatar, g.getDescription(), g.getMembersCount(), g.getFriendsCount()));
                         }
                         callback.onResult(groups);

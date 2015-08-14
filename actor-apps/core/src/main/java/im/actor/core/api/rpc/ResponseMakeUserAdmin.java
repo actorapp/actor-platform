@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,11 +22,11 @@ public class ResponseMakeUserAdmin extends Response {
         return Bser.parse(new ResponseMakeUserAdmin(), data);
     }
 
-    private List<Member> members;
+    private List<ApiMember> members;
     private int seq;
     private byte[] state;
 
-    public ResponseMakeUserAdmin(@NotNull List<Member> members, int seq, @NotNull byte[] state) {
+    public ResponseMakeUserAdmin(@NotNull List<ApiMember> members, int seq, @NotNull byte[] state) {
         this.members = members;
         this.seq = seq;
         this.state = state;
@@ -35,7 +37,7 @@ public class ResponseMakeUserAdmin extends Response {
     }
 
     @NotNull
-    public List<Member> getMembers() {
+    public List<ApiMember> getMembers() {
         return this.members;
     }
 
@@ -50,9 +52,9 @@ public class ResponseMakeUserAdmin extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<Member> _members = new ArrayList<Member>();
+        List<ApiMember> _members = new ArrayList<ApiMember>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _members.add(new Member());
+            _members.add(new ApiMember());
         }
         this.members = values.getRepeatedObj(1, _members);
         this.seq = values.getInt(2);

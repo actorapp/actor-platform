@@ -11,13 +11,13 @@ import java.util.List;
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
-import im.actor.core.api.AppCounters;
-import im.actor.core.api.HistoryMessage;
+import im.actor.core.api.ApiAppCounters;
+import im.actor.core.api.ApiHistoryMessage;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadHistory;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
@@ -44,7 +44,7 @@ public class MessagesProcessor extends AbsModule {
     public void onMessage(ApiPeer _peer, int senderUid, long date, long rid,
                           ApiMessage content) {
 
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
         AbsContent msgContent;
         try {
             msgContent = AbsContent.fromMessage(content);
@@ -75,12 +75,12 @@ public class MessagesProcessor extends AbsModule {
         Message message = new Message(rid, date, date, uid,
                 MessageState.UNKNOWN, ServiceUserRegistered.create());
 
-        conversationActor(PeerEntity.user(uid)).send(message);
+        conversationActor(Peer.user(uid)).send(message);
     }
 
     @Verified
     public void onMessageRead(ApiPeer _peer, long startDate, long readDate) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageRead(startDate));
@@ -88,7 +88,7 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onMessageReceived(ApiPeer _peer, long startDate, long receivedDate) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageReceived(startDate));
@@ -96,7 +96,7 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onMessageReadByMe(ApiPeer _peer, long startDate) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         // Sending event to own read actor
         ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
@@ -104,7 +104,7 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onMessageSent(ApiPeer _peer, long rid, long date) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         // Change message state in conversation
         conversationActor(peer).send(new ConversationActor.MessageSent(rid, date));
@@ -115,7 +115,7 @@ public class MessagesProcessor extends AbsModule {
 
     @Deprecated
     public void onMessageDateChanged(ApiPeer _peer, long rid, long ndate) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         // Change message state in conversation
         conversationActor(peer).send(new ConversationActor.MessageDateChange(rid, ndate));
@@ -124,7 +124,7 @@ public class MessagesProcessor extends AbsModule {
     @Verified
     public void onMessageContentChanged(ApiPeer _peer, long rid,
                                         ApiMessage message) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         AbsContent content;
         try {
@@ -140,7 +140,7 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onMessageDelete(ApiPeer _peer, List<Long> rids) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         // Deleting messages from conversation
         conversationActor(peer).send(new ConversationActor.MessagesDeleted(rids));
@@ -150,7 +150,7 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onChatClear(ApiPeer _peer) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         // Clearing conversation
         conversationActor(peer).send(new ConversationActor.ClearConversation());
@@ -160,7 +160,7 @@ public class MessagesProcessor extends AbsModule {
 
     @Verified
     public void onChatDelete(ApiPeer _peer) {
-        PeerEntity peer = convert(_peer);
+        Peer peer = convert(_peer);
 
         // Deleting conversation
         conversationActor(peer).send(new ConversationActor.DeleteConversation());
@@ -181,7 +181,7 @@ public class MessagesProcessor extends AbsModule {
 
             maxLoadedDate = Math.min(dialog.getSortDate(), maxLoadedDate);
 
-            PeerEntity peer = convert(dialog.getPeer());
+            Peer peer = convert(dialog.getPeer());
 
             AbsContent msgContent = null;
             try {
@@ -211,10 +211,10 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onMessagesLoaded(PeerEntity peer, ResponseLoadHistory historyResponse) {
+    public void onMessagesLoaded(Peer peer, ResponseLoadHistory historyResponse) {
         ArrayList<Message> messages = new ArrayList<Message>();
         long maxLoadedDate = Long.MAX_VALUE;
-        for (HistoryMessage historyMessage : historyResponse.getHistory()) {
+        for (ApiHistoryMessage historyMessage : historyResponse.getHistory()) {
 
             maxLoadedDate = Math.min(historyMessage.getDate(), maxLoadedDate);
 
@@ -244,7 +244,7 @@ public class MessagesProcessor extends AbsModule {
                 maxLoadedDate));
     }
 
-    public void onCountersChanged(AppCounters counters) {
+    public void onCountersChanged(ApiAppCounters counters) {
         context().getAppStateModule().onCountersChanged(counters);
     }
 }

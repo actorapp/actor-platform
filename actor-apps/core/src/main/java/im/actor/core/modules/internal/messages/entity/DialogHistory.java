@@ -5,11 +5,11 @@
 package im.actor.core.modules.internal.messages.entity;
 
 import im.actor.core.entity.MessageState;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
 
 public class DialogHistory {
-    private final PeerEntity peer;
+    private final Peer peer;
     private final int unreadCount;
     private final long sortDate;
 
@@ -19,7 +19,7 @@ public class DialogHistory {
     private final AbsContent content;
     private final MessageState status;
 
-    public DialogHistory(PeerEntity peer, int unreadCount, long sortDate,
+    public DialogHistory(Peer peer, int unreadCount, long sortDate,
                          long rid, long date, int senderId, AbsContent content, MessageState status) {
         this.peer = peer;
         this.unreadCount = unreadCount;
@@ -31,7 +31,7 @@ public class DialogHistory {
         this.status = status;
     }
 
-    public PeerEntity getPeer() {
+    public Peer getPeer() {
         return peer;
     }
 

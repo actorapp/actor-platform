@@ -4,15 +4,15 @@
 
 package im.actor.core.entity.content;
 
-import im.actor.core.api.ServiceExContactRegistered;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExContactRegistered;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceUserRegistered extends ServiceContent {
 
     public static ServiceUserRegistered create() {
-        return new ServiceUserRegistered(new ContentRemoteContainer(new ServiceMessage("Contact registered",
-                new ServiceExContactRegistered())));
+        return new ServiceUserRegistered(new ContentRemoteContainer(new ApiServiceMessage("Contact registered",
+                new ApiServiceExContactRegistered())));
     }
 
     public ServiceUserRegistered(ContentRemoteContainer contentContainer) {

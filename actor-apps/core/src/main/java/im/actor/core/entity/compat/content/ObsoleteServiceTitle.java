@@ -7,8 +7,8 @@ package im.actor.core.entity.compat.content;
 import java.io.IOException;
 
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ServiceExChangedTitle;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExChangedTitle;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -21,8 +21,8 @@ public class ObsoleteServiceTitle extends BserObject {
     }
 
     public ApiMessage toApiMessage() {
-        return new ServiceMessage("Group theme changed",
-                new ServiceExChangedTitle(newTitle));
+        return new ApiServiceMessage("Group theme changed",
+                new ApiServiceExChangedTitle(newTitle));
     }
 
     @Override

@@ -5,19 +5,23 @@ package im.actor.core.api;
 
 import im.actor.runtime.bser.*;
 import im.actor.runtime.collections.*;
-
+import static im.actor.runtime.bser.Utils.*;
+import im.actor.core.network.parser.*;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ApiAvatarImage extends BserObject {
 
-    private FileLocation fileLocation;
+    private ApiFileLocation fileLocation;
     private int width;
     private int height;
     private int fileSize;
 
-    public ApiAvatarImage(@NotNull FileLocation fileLocation, int width, int height, int fileSize) {
+    public ApiAvatarImage(@NotNull ApiFileLocation fileLocation, int width, int height, int fileSize) {
         this.fileLocation = fileLocation;
         this.width = width;
         this.height = height;
@@ -29,7 +33,7 @@ public class ApiAvatarImage extends BserObject {
     }
 
     @NotNull
-    public FileLocation getFileLocation() {
+    public ApiFileLocation getFileLocation() {
         return this.fileLocation;
     }
 
@@ -47,7 +51,7 @@ public class ApiAvatarImage extends BserObject {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.fileLocation = values.getObj(1, new FileLocation());
+        this.fileLocation = values.getObj(1, new ApiFileLocation());
         this.width = values.getInt(2);
         this.height = values.getInt(3);
         this.fileSize = values.getInt(4);

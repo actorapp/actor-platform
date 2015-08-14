@@ -80,7 +80,6 @@ class ContactsBaseViewController: EngineListController {
     }
     
     override func buildDisplayList() -> ARBindedDisplayList {
-        //return MSG.buildContactDisplayList()
-        return ARBindedDisplayList()
+        return MSG.buildContactsDisplayList()
     }
 }

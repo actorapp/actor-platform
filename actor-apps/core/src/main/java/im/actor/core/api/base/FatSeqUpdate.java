@@ -4,12 +4,12 @@ package im.actor.core.api.base;
  */
 
 import im.actor.runtime.bser.*;
-
+import im.actor.runtime.collections.*;
 import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -26,10 +26,10 @@ public class FatSeqUpdate extends RpcScope {
     private byte[] state;
     private int updateHeader;
     private byte[] update;
-    private List<User> users;
+    private List<ApiUser> users;
     private List<ApiGroup> groups;
 
-    public FatSeqUpdate(int seq, @NotNull byte[] state, int updateHeader, @NotNull byte[] update, @NotNull List<User> users, @NotNull List<ApiGroup> groups) {
+    public FatSeqUpdate(int seq, @NotNull byte[] state, int updateHeader, @NotNull byte[] update, @NotNull List<ApiUser> users, @NotNull List<ApiGroup> groups) {
         this.seq = seq;
         this.state = state;
         this.updateHeader = updateHeader;
@@ -61,7 +61,7 @@ public class FatSeqUpdate extends RpcScope {
     }
 
     @NotNull
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return this.users;
     }
 
@@ -76,9 +76,9 @@ public class FatSeqUpdate extends RpcScope {
         this.state = values.getBytes(2);
         this.updateHeader = values.getInt(3);
         this.update = values.getBytes(4);
-        List<User> _users = new ArrayList<User>();
+        List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(5); i ++) {
-            _users.add(new User());
+            _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(5, _users);
         List<ApiGroup> _groups = new ArrayList<ApiGroup>();

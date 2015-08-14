@@ -70,7 +70,7 @@ class UserViewController: AATableViewController {
         if (!user!.isBot().boolValue) {
             contactsSection
                 .addActionCell("ProfileSendMessage", actionClosure: { () -> () in
-                    self.navigateDetail(ConversationViewController(peer: ACPeerEntity.userWithInt(jint(self.uid))))
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
                     self.popover?.dismissPopoverAnimated(true)
                 })
         }
@@ -127,7 +127,7 @@ class UserViewController: AATableViewController {
             .setHeaderHeight(15)
             .setFooterHeight(15)
             .addCommonCell { (cell) -> () in
-                let peer = ACPeerEntity.userWithInt(jint(self.uid))
+                let peer = ACPeer.userWithInt(jint(self.uid))
                 cell.setSwitcherOn(MSG.isNotificationsEnabledWithPeer(peer))
                 cell.switchBlock = { (on: Bool) -> () in
                     if !on && !self.user!.isBot().boolValue {

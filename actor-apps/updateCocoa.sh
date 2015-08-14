@@ -2,4 +2,8 @@
 
 SCRIPT_DIR=`pwd`
 
-./gradlew ":core-cocoa:j2objc"
+./gradlew ":core-cocoa:build" ":runtime-cocoa:build"
+
+cd app-ios
+pod install
+cd ..

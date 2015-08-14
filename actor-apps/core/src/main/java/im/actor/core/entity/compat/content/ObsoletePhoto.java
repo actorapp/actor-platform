@@ -6,8 +6,8 @@ package im.actor.core.entity.compat.content;
 
 import java.io.IOException;
 
-import im.actor.core.api.DocumentExPhoto;
-import im.actor.core.api.DocumentMessage;
+import im.actor.core.api.ApiDocumentExPhoto;
+import im.actor.core.api.ApiDocumentMessage;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 import im.actor.core.entity.content.internal.AbsContentContainer;
@@ -45,14 +45,14 @@ public class ObsoletePhoto extends ObsoleteDocument {
                     h));
         } else if (source instanceof ObsoleteRemoteFileSource) {
             ObsoleteRemoteFileSource fSource = (ObsoleteRemoteFileSource) source;
-            return new ContentRemoteContainer(new DocumentMessage(
+            return new ContentRemoteContainer(new ApiDocumentMessage(
                     fSource.getFileReference().getFileId(),
                     fSource.getFileReference().getAccessHash(),
                     fSource.getFileReference().getFileSize(),
                     name,
                     mimeType,
                     fastThumb != null ? fastThumb.toApiFastThumb() : null,
-                    new DocumentExPhoto(w, h)));
+                    new ApiDocumentExPhoto(w, h)));
         } else {
             throw new RuntimeException("Unknwon source type");
         }

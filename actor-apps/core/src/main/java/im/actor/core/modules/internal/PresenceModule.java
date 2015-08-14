@@ -9,7 +9,7 @@ import im.actor.core.modules.Modules;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.internal.presence.OwnPresenceActor;
 import im.actor.core.modules.internal.presence.PresenceActor;
 
@@ -43,7 +43,7 @@ public class PresenceModule extends AbsModule {
         myPresence.send(new OwnPresenceActor.OnAppHidden());
     }
 
-    public void subscribe(PeerEntity peer) {
+    public void subscribe(Peer peer) {
         presence.send(new PresenceActor.Subscribe(peer));
     }
 

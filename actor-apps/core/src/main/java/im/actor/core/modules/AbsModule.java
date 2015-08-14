@@ -4,9 +4,9 @@
 
 package im.actor.core.modules;
 
-import im.actor.core.entity.GroupEntity;
-import im.actor.core.entity.PeerEntity;
-import im.actor.core.entity.UserEntity;
+import im.actor.core.entity.Group;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.User;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.parser.Request;
@@ -69,11 +69,11 @@ public abstract class AbsModule {
         return context().getMessagesModule().getPlainReceiverActor();
     }
 
-    public ActorRef conversationActor(PeerEntity peer) {
+    public ActorRef conversationActor(Peer peer) {
         return context().getMessagesModule().getConversationActor(peer);
     }
 
-    public ActorRef conversationHistoryActor(PeerEntity peer) {
+    public ActorRef conversationHistoryActor(Peer peer) {
         return context().getMessagesModule().getConversationHistoryActor(peer);
     }
 
@@ -103,11 +103,11 @@ public abstract class AbsModule {
         });
     }
 
-    public KeyValueEngine<UserEntity> users() {
+    public KeyValueEngine<User> users() {
         return context.getUsersModule().getUsersStorage();
     }
 
-    public KeyValueEngine<GroupEntity> groups() {
+    public KeyValueEngine<Group> groups() {
         return context.getGroupsModule().getGroups();
     }
 }

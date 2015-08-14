@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 
 import im.actor.runtime.Log;
@@ -57,7 +58,8 @@ public class AsyncTcpConnection extends AsyncConnection {
                             socket = new Socket();
                             break;
                         case TCP_TLS:
-                            socket = SSLSocketFactory.getDefault().createSocket();
+                            SocketFactory socketFactory = SSLSocketFactory.getDefault();
+                            socket = socketFactory.createSocket();
                             break;
                         default:
                             throw new RuntimeException("Unsupported endpoint type: " + endpoint.getType());
@@ -74,7 +76,7 @@ public class AsyncTcpConnection extends AsyncConnection {
                     socket.getOutputStream();
 
                     onSocketCreated(socket);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                     crashConnection();
                 }

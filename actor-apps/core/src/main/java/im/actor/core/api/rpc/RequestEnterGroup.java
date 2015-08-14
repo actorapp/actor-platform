@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestEnterGroup extends Request<ResponseEnterGroup> {
@@ -19,9 +22,9 @@ public class RequestEnterGroup extends Request<ResponseEnterGroup> {
         return Bser.parse(new RequestEnterGroup(), data);
     }
 
-    private GroupOutPeer peer;
+    private ApiGroupOutPeer peer;
 
-    public RequestEnterGroup(@NotNull GroupOutPeer peer) {
+    public RequestEnterGroup(@NotNull ApiGroupOutPeer peer) {
         this.peer = peer;
     }
 
@@ -30,13 +33,13 @@ public class RequestEnterGroup extends Request<ResponseEnterGroup> {
     }
 
     @NotNull
-    public GroupOutPeer getPeer() {
+    public ApiGroupOutPeer getPeer() {
         return this.peer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new GroupOutPeer());
+        this.peer = values.getObj(1, new ApiGroupOutPeer());
     }
 
     @Override

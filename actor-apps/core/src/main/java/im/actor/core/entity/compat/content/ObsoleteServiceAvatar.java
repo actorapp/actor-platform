@@ -7,8 +7,8 @@ package im.actor.core.entity.compat.content;
 import java.io.IOException;
 
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.ServiceExChangedAvatar;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExChangedAvatar;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -23,7 +23,7 @@ public class ObsoleteServiceAvatar extends BserObject {
     }
 
     public ApiMessage toApiMessage() {
-        return new ServiceMessage("Avatar Changed", new ServiceExChangedAvatar(
+        return new ApiServiceMessage("Avatar Changed", new ApiServiceExChangedAvatar(
                 avatar != null ? avatar.toApiAvatar() : null
         ));
     }

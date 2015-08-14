@@ -10,7 +10,8 @@ import java.util.List;
 
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
-import im.actor.core.api.User;
+import im.actor.core.api.ApiUser;
+import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
@@ -76,7 +77,7 @@ public class UpdateProcessor extends AbsModule {
         this.contactsProcessor = new ContactsProcessor(context);
     }
 
-    public void applyRelated(List<User> users,
+    public void applyRelated(List<ApiUser> users,
                              List<ApiGroup> groups,
                              boolean force) {
         usersProcessor.applyUsers(users, force);
@@ -93,7 +94,7 @@ public class UpdateProcessor extends AbsModule {
             applyRelated(historyLoaded.getLoadHistory().getUsers(), new ArrayList<ApiGroup>(), false);
             messagesProcessor.onMessagesLoaded(historyLoaded.getPeer(), historyLoaded.getLoadHistory());
         } else if (update instanceof LoggedIn) {
-            ArrayList<User> users = new ArrayList<User>();
+            ArrayList<ApiUser> users = new ArrayList<ApiUser>();
             users.add(((LoggedIn) update).getAuth().getUser());
             applyRelated(users, new ArrayList<ApiGroup>(), true);
             runOnUiThread(((LoggedIn) update).getRunnable());
@@ -106,7 +107,7 @@ public class UpdateProcessor extends AbsModule {
             final UsersFounded founded = (UsersFounded) update;
             applyRelated(((UsersFounded) update).getUsers(), new ArrayList<ApiGroup>(), false);
             final ArrayList<UserVM> users = new ArrayList<UserVM>();
-            for (User u : founded.getUsers()) {
+            for (ApiUser u : founded.getUsers()) {
                 users.add(context().getUsersModule().getUsers().get(u.getId()));
             }
             runOnUiThread(new Runnable() {
@@ -129,7 +130,7 @@ public class UpdateProcessor extends AbsModule {
         }
     }
 
-    public void applyDifferenceUpdate(List<User> users, List<ApiGroup> groups, List<Update> updates) {
+    public void applyDifferenceUpdate(List<ApiUser> users, List<ApiGroup> groups, List<Update> updates) {
         applyRelated(users, groups, false);
 
         context().getNotificationsModule().pauseNotifications();

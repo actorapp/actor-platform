@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class ResponseAuth extends Response {
@@ -19,10 +22,10 @@ public class ResponseAuth extends Response {
         return Bser.parse(new ResponseAuth(), data);
     }
 
-    private User user;
-    private Config config;
+    private ApiUser user;
+    private ApiConfig config;
 
-    public ResponseAuth(@NotNull User user, @NotNull Config config) {
+    public ResponseAuth(@NotNull ApiUser user, @NotNull ApiConfig config) {
         this.user = user;
         this.config = config;
     }
@@ -32,19 +35,19 @@ public class ResponseAuth extends Response {
     }
 
     @NotNull
-    public User getUser() {
+    public ApiUser getUser() {
         return this.user;
     }
 
     @NotNull
-    public Config getConfig() {
+    public ApiConfig getConfig() {
         return this.config;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.user = values.getObj(2, new User());
-        this.config = values.getObj(3, new Config());
+        this.user = values.getObj(2, new ApiUser());
+        this.config = values.getObj(3, new ApiConfig());
     }
 
     @Override

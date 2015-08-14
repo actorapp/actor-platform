@@ -4,6 +4,7 @@
 
 package im.actor.core.modules.internal.avatar;
 
+import im.actor.core.api.ApiFileLocation;
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestEditAvatar;
 import im.actor.core.api.rpc.RequestRemoveAvatar;
@@ -44,7 +45,7 @@ public class OwnAvatarChangeActor extends ModuleActor {
         if (rid != currentChangeTask) {
             return;
         }
-        request(new RequestEditAvatar(new im.actor.core.api.FileLocation(fileReference.getFileId(),
+        request(new RequestEditAvatar(new ApiFileLocation(fileReference.getFileId(),
                 fileReference.getAccessHash())), new RpcCallback<ResponseEditAvatar>() {
             @Override
             public void onResult(ResponseEditAvatar response) {

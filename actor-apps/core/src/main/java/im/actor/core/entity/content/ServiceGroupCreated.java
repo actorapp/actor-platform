@@ -4,15 +4,15 @@
 
 package im.actor.core.entity.content;
 
-import im.actor.core.api.ServiceExGroupCreated;
-import im.actor.core.api.ServiceMessage;
+import im.actor.core.api.ApiServiceExGroupCreated;
+import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupCreated extends ServiceContent {
 
     public static ServiceGroupCreated create() {
-        return new ServiceGroupCreated(new ContentRemoteContainer(new ServiceMessage("Group created",
-                new ServiceExGroupCreated())));
+        return new ServiceGroupCreated(new ContentRemoteContainer(new ApiServiceMessage("Group created",
+                new ApiServiceExGroupCreated())));
     }
 
     public ServiceGroupCreated(ContentRemoteContainer contentContainer) {

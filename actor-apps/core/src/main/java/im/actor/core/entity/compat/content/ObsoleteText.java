@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.api.ApiMessage;
-import im.actor.core.api.TextMessage;
+import im.actor.core.api.ApiTextMessage;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -22,7 +22,7 @@ public class ObsoleteText extends BserObject {
     }
 
     public ApiMessage toApiMessage() {
-        return new TextMessage(text, new ArrayList<Integer>(), null);
+        return new ApiTextMessage(text, new ArrayList<Integer>(), null);
     }
 
     @Override

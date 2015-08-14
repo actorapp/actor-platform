@@ -4,12 +4,15 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class RequestSendMessage extends Request<ResponseSeqDate> {
@@ -19,11 +22,11 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
         return Bser.parse(new RequestSendMessage(), data);
     }
 
-    private OutPeer peer;
+    private ApiOutPeer peer;
     private long rid;
     private ApiMessage message;
 
-    public RequestSendMessage(@NotNull OutPeer peer, long rid, @NotNull ApiMessage message) {
+    public RequestSendMessage(@NotNull ApiOutPeer peer, long rid, @NotNull ApiMessage message) {
         this.peer = peer;
         this.rid = rid;
         this.message = message;
@@ -34,7 +37,7 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
     }
 
     @NotNull
-    public OutPeer getPeer() {
+    public ApiOutPeer getPeer() {
         return this.peer;
     }
 
@@ -49,7 +52,7 @@ public class RequestSendMessage extends Request<ResponseSeqDate> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new OutPeer());
+        this.peer = values.getObj(1, new ApiOutPeer());
         this.rid = values.getLong(3);
         this.message = ApiMessage.fromBytes(values.getBytes(4));
     }

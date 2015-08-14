@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,10 +22,10 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
         return Bser.parse(new RequestImportContacts(), data);
     }
 
-    private List<PhoneToImport> phones;
-    private List<EmailToImport> emails;
+    private List<ApiPhoneToImport> phones;
+    private List<ApiEmailToImport> emails;
 
-    public RequestImportContacts(@NotNull List<PhoneToImport> phones, @NotNull List<EmailToImport> emails) {
+    public RequestImportContacts(@NotNull List<ApiPhoneToImport> phones, @NotNull List<ApiEmailToImport> emails) {
         this.phones = phones;
         this.emails = emails;
     }
@@ -33,25 +35,25 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
     }
 
     @NotNull
-    public List<PhoneToImport> getPhones() {
+    public List<ApiPhoneToImport> getPhones() {
         return this.phones;
     }
 
     @NotNull
-    public List<EmailToImport> getEmails() {
+    public List<ApiEmailToImport> getEmails() {
         return this.emails;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<PhoneToImport> _phones = new ArrayList<PhoneToImport>();
+        List<ApiPhoneToImport> _phones = new ArrayList<ApiPhoneToImport>();
         for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _phones.add(new PhoneToImport());
+            _phones.add(new ApiPhoneToImport());
         }
         this.phones = values.getRepeatedObj(1, _phones);
-        List<EmailToImport> _emails = new ArrayList<EmailToImport>();
+        List<ApiEmailToImport> _emails = new ArrayList<ApiEmailToImport>();
         for (int i = 0; i < values.getRepeatedCount(2); i ++) {
-            _emails.add(new EmailToImport());
+            _emails.add(new ApiEmailToImport());
         }
         this.emails = values.getRepeatedObj(2, _emails);
     }

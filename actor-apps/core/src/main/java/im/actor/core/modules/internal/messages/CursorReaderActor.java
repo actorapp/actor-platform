@@ -4,10 +4,10 @@
 
 package im.actor.core.modules.internal.messages;
 
-import im.actor.core.api.OutPeer;
+import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.rpc.RequestMessageRead;
 import im.actor.core.api.rpc.ResponseVoid;
-import im.actor.core.entity.PeerEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
@@ -19,8 +19,8 @@ public class CursorReaderActor extends CursorActor {
     }
 
     @Override
-    protected void perform(final PeerEntity peer, final long date) {
-        OutPeer outPeer = buidOutPeer(peer);
+    protected void perform(final Peer peer, final long date) {
+        ApiOutPeer outPeer = buidOutPeer(peer);
         if (outPeer == null) {
             return;
         }
@@ -51,15 +51,15 @@ public class CursorReaderActor extends CursorActor {
     }
 
     public static class MarkRead {
-        private PeerEntity peer;
+        private Peer peer;
         private long date;
 
-        public MarkRead(PeerEntity peer, long date) {
+        public MarkRead(Peer peer, long date) {
             this.peer = peer;
             this.date = date;
         }
 
-        public PeerEntity getPeer() {
+        public Peer getPeer() {
             return peer;
         }
 

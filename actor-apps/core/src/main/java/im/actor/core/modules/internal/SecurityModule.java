@@ -6,7 +6,7 @@ package im.actor.core.modules.internal;
 
 import java.util.List;
 
-import im.actor.core.api.AuthSession;
+import im.actor.core.api.ApiAuthSession;
 import im.actor.core.api.rpc.RequestGetAuthSessions;
 import im.actor.core.api.rpc.RequestTerminateAllSessions;
 import im.actor.core.api.rpc.RequestTerminateSession;
@@ -25,10 +25,10 @@ public class SecurityModule extends AbsModule {
         super(context);
     }
 
-    public Command<List<AuthSession>> loadSessions() {
-        return new Command<List<AuthSession>>() {
+    public Command<List<ApiAuthSession>> loadSessions() {
+        return new Command<List<ApiAuthSession>>() {
             @Override
-            public void start(final CommandCallback<List<AuthSession>> callback) {
+            public void start(final CommandCallback<List<ApiAuthSession>> callback) {
                 request(new RequestGetAuthSessions(), new RpcCallback<ResponseGetAuthSessions>() {
                     @Override
                     public void onResult(final ResponseGetAuthSessions response) {

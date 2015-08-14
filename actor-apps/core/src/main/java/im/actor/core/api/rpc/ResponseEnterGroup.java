@@ -4,10 +4,12 @@ package im.actor.core.api.rpc;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -21,13 +23,13 @@ public class ResponseEnterGroup extends Response {
     }
 
     private ApiGroup group;
-    private List<User> users;
+    private List<ApiUser> users;
     private long rid;
     private int seq;
     private byte[] state;
     private long date;
 
-    public ResponseEnterGroup(@NotNull ApiGroup group, @NotNull List<User> users, long rid, int seq, @NotNull byte[] state, long date) {
+    public ResponseEnterGroup(@NotNull ApiGroup group, @NotNull List<ApiUser> users, long rid, int seq, @NotNull byte[] state, long date) {
         this.group = group;
         this.users = users;
         this.rid = rid;
@@ -46,7 +48,7 @@ public class ResponseEnterGroup extends Response {
     }
 
     @NotNull
-    public List<User> getUsers() {
+    public List<ApiUser> getUsers() {
         return this.users;
     }
 
@@ -70,9 +72,9 @@ public class ResponseEnterGroup extends Response {
     @Override
     public void parse(BserValues values) throws IOException {
         this.group = values.getObj(1, new ApiGroup());
-        List<User> _users = new ArrayList<User>();
+        List<ApiUser> _users = new ArrayList<ApiUser>();
         for (int i = 0; i < values.getRepeatedCount(2); i ++) {
-            _users.add(new User());
+            _users.add(new ApiUser());
         }
         this.users = values.getRepeatedObj(2, _users);
         this.rid = values.getLong(3);

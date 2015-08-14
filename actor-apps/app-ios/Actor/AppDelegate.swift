@@ -136,7 +136,7 @@ import Foundation
                             if (index == view.firstOtherButtonIndex) {
                                 self.execute(MSG.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
                                     var groupId = val as! JavaLangInteger
-                                    self.openChat(ACPeerEntity.groupWithInt(groupId.intValue))
+                                    self.openChat(ACPeer.groupWithInt(groupId.intValue))
                                 }, failureBlock: { (val) -> Void in
                                     
                                     if let res = val as? ACRpcException {
@@ -248,7 +248,7 @@ import Foundation
         }))
     }
     
-    func openChat(peer: ACPeerEntity) {
+    func openChat(peer: ACPeer) {
         for i in UIApplication.sharedApplication().windows {
             var root = (i as! UIWindow).rootViewController
             if let tab = root as? MainTabViewController {

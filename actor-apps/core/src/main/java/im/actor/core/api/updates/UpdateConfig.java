@@ -4,12 +4,15 @@ package im.actor.core.api.updates;
  */
 
 import im.actor.runtime.bser.*;
+import im.actor.runtime.collections.*;
+import static im.actor.runtime.bser.Utils.*;
 import im.actor.core.network.parser.*;
-
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-
+import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
-
+import java.util.List;
+import java.util.ArrayList;
 import im.actor.core.api.*;
 
 public class UpdateConfig extends Update {
@@ -19,9 +22,9 @@ public class UpdateConfig extends Update {
         return Bser.parse(new UpdateConfig(), data);
     }
 
-    private Config config;
+    private ApiConfig config;
 
-    public UpdateConfig(@NotNull Config config) {
+    public UpdateConfig(@NotNull ApiConfig config) {
         this.config = config;
     }
 
@@ -30,13 +33,13 @@ public class UpdateConfig extends Update {
     }
 
     @NotNull
-    public Config getConfig() {
+    public ApiConfig getConfig() {
         return this.config;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.config = values.getObj(1, new Config());
+        this.config = values.getObj(1, new ApiConfig());
     }
 
     @Override
