@@ -452,6 +452,9 @@ class GroupsServiceSpec
 
           {
             implicit val clientData = ClientData(authId2, createSessionId(), Some(user2.id))
+            val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+            whenReady(messagingService.handleMessageRead(outPeer, System.currentTimeMillis()))(_ ⇒ ())
+
             whenReady(service.handleJoinGroup(url)) { resp ⇒
               inside(resp) {
                 case Error(err) ⇒ err shouldEqual GroupRpcErrors.UserAlreadyInvited
@@ -551,16 +554,10 @@ class GroupsServiceSpec
     val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
     val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
 
-    val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
-
     val groupOutPeer = {
       implicit val clientData = clientData1
       createGroup("Fun group", Set.empty).groupPeer
     }
-
-    val peer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
     val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) { _.toOption.get.url }
 
@@ -570,7 +567,9 @@ class GroupsServiceSpec
       }
     }
 
-    messagingService.jhandleSendMessage(peer, 22324L, TextMessage("hello", Vector.empty, None), clientData1)
+    val peer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+
+    whenReady(messagingService.jhandleSendMessage(peer, 22324L, TextMessage("hello", Vector.empty, None), clientData1)) { _ ⇒ }
 
     whenReady(messagingService.jhandleMessageRead(peer, System.currentTimeMillis, clientData2)) { _ ⇒ }
 

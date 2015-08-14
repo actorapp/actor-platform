@@ -34,6 +34,7 @@ trait GroupDialogHandlers extends UpdateCounters {
     deferStashingReply(LastSenderIdChanged(senderUserId), state) { e ⇒
       withMemberIds(groupId) { (memberIds, _, botId) ⇒
         if ((memberIds contains senderUserId) || senderUserId == botId) {
+          println("=========================== sending message by user " + senderUserId)
           withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
             val date = new DateTime
             for {

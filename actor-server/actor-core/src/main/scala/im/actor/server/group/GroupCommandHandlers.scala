@@ -160,6 +160,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               for {
                 exists ← p.GroupUser.exists(groupId, joiningUserId)
                 _ ← if (exists) DBIO.successful(()) else p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
+                _ = println("====================== in setJoined, user " + joiningUserId)
                 seqstatedate ← DBIO.from(GroupDialogOperations.sendMessage(groupId, joiningUserId, joiningUserAuthId, randomId, GroupServiceMessages.userJoined, isFat = true))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
