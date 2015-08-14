@@ -91,7 +91,7 @@ let onMentionInsert = (action) => {
   text = action.text.substring(0, action.caretPosition - query.length) +
     action.mention +
     action.text.substring(action.caretPosition, action.text.length) +
-    ' ';
+    ': ';
 
   mentions = null;
   instance.emitChange();
