@@ -88,10 +88,15 @@ let onTyping = (action) => {
 let onMentionInsert = (action) => {
   let query = getQuery(action.text, action.caretPosition);
 
+  let mentionEnding = ' ';
+  if (action.caretPosition === 1) {
+    mentionEnding = ': ';
+  }
+
   text = action.text.substring(0, action.caretPosition - query.length) +
     action.mention +
     action.text.substring(action.caretPosition, action.text.length) +
-    ': ';
+    mentionEnding;
 
   mentions = null;
   instance.emitChange();
