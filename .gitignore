@@ -88,4 +88,5 @@ actor-apps/runtime-cocoa/src/gen
 actor-apps/runtime-cocoa/build
 actor-apps/app-ios/Core/Build
 actor-apps/app-ios/Core
-actor-apps/app-ios/ActorCore
+actor-apps/app-ios/ActorCore/Sources
+actor-apps/app-ios/ActorCore/Build
