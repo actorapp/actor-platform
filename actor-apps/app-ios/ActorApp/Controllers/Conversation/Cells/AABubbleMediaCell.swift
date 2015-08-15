@@ -160,12 +160,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     Actor.startDownloadingWithReference(fileSource.getFileReference())
                 }, onDownloading: { (progress) -> () in
                     Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
-                }, onDownloaded: { (reference) -> () in
-                    
-//                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
-//                    var controller = NYTPhotosViewController(photos: [photoInfo])
-//                    controller.delegate = self
-//                    self.controller.presentViewController(controller, animated: true, completion: nil)
+                }, onDownloaded: { (reference) -> () in                    
+                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
+                    var controller = NYTPhotosViewController(photos: [photoInfo])
+                    controller.delegate = self
+                    self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
             var rid = bindedMessage!.getRid()
@@ -175,11 +174,10 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                 }, onUploading: { (progress) -> () in
                     Actor.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
-                   
-//                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-//                    var controller = NYTPhotosViewController(photos: [photoInfo])
-//                    controller.delegate = self
-//                    self.controller.presentViewController(controller, animated: true, completion: nil)
+                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                    var controller = NYTPhotosViewController(photos: [photoInfo])
+                    controller.delegate = self
+                    self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
         }
     }

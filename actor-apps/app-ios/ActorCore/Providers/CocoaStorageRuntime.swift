@@ -4,7 +4,7 @@
 
 import Foundation
 
-@objc class CocoaStorage : NSObject, ARStorageRuntime {
+@objc class CocoaStorageRuntime : NSObject, ARStorageRuntime {
     
     let dbPath: String;
     let preferences = UDPreferencesStorage()
