@@ -1,5 +1,7 @@
 package im.actor.runtime.cocoa;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.runtime.HttpRuntime;
 import im.actor.runtime.http.FileDownloadCallback;
 import im.actor.runtime.http.FileUploadCallback;
@@ -8,6 +10,7 @@ public class CocoaHttpProxyProvider implements HttpRuntime {
 
     private static HttpRuntime runtime;
 
+    @ObjectiveCName("setHttpRuntime:")
     public static void setHttpRuntime(HttpRuntime runtime) {
         CocoaHttpProxyProvider.runtime = runtime;
     }
