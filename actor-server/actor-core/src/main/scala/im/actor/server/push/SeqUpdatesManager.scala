@@ -135,7 +135,6 @@ object SeqUpdatesManager {
 
     val fatMetaData = if (isFat) Some(getFatMetaData(update)) else None
 
-    log.debug(s"pushing update $update to authIds: $authIds")
     persistAndPushUpdatesF(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), fatMetaData)
   }
 
