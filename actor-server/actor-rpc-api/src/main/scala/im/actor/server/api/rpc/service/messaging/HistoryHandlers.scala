@@ -253,7 +253,7 @@ trait HistoryHandlers {
     for {
       groups ← DBIO.from(Future.sequence(groupIds map (GroupOffice.getApiStruct(_, client.userId))))
       groupUserIds = groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
-      users ← getUserStructs(userIds ++ groupUserIds, client.userId, client.authId)
+      users ← DBIO.from(Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (UserOffice.getApiStruct(_, client.userId, client.authId))))
     } yield (users, groups)
   }
 
