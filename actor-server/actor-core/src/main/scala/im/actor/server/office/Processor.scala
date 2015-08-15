@@ -71,7 +71,7 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
       context become working(newState)
       unstashAll()
     case msg ⇒
-      log.debug("Stashing while initializing. Message: {}", msg)
+      log.warning("Stashing while initializing. Message: {}", msg)
       stash()
   }
 

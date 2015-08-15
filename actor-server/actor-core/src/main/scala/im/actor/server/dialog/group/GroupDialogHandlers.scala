@@ -82,7 +82,6 @@ trait GroupDialogHandlers extends UpdateCounters {
   }
 
   protected def messageRead(state: GroupDialogState, readerUserId: Int, readerAuthId: Long, date: Long): Unit = {
-    log.warning(s"got message read, with state: $state, readerUserId: $readerUserId, date: $date, authId: $readerAuthId")
     val replyTo = sender()
     withMemberIds(groupId) { (memberIds, invitedUserIds, _) ⇒
       if (!state.lastSenderId.contains(readerUserId)) {
@@ -105,13 +104,11 @@ trait GroupDialogHandlers extends UpdateCounters {
 
             val now = new DateTime().getMillis
             val restMembers = memberIds.filterNot(_ == readerUserId)
-            log.warning(s"restMembers are $restMembers")
             val authIdsF = Future.sequence(restMembers map UserOffice.getAuthIds) map (_.flatten.toSet)
 
             for {
               authIds ← authIdsF
               _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-              _ = log.warning(s"now is: $now actually reading by user: $readerUserId")
               _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
             } yield MessageReadAck()
 
