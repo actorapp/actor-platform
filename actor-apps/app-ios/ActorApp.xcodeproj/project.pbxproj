@@ -130,6 +130,9 @@
 		06ED29861AB2373800719875 /* CocoaFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ED29851AB2373800719875 /* CocoaFileSystem.swift */; };
 		06F46F0F1B129FE0009E3308 /* AABubbleAdCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F46F0E1B129FE0009E3308 /* AABubbleAdCell.swift */; };
 		06F579821B7E095C00E62315 /* CocoaTcpRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F579811B7E095C00E62315 /* CocoaTcpRuntime.swift */; };
+		06F579841B7E192000E62315 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06F579831B7E192000E62315 /* Security.framework */; };
+		06F579861B7E192700E62315 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06F579851B7E192700E62315 /* CFNetwork.framework */; };
+		06F5799C1B7F6BEC00E62315 /* ActorRuntimeBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F5799B1B7F6BEC00E62315 /* ActorRuntimeBinding.swift */; };
 		06F6B7101AB0CE9600A7DB91 /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */; };
 		06F6B7121AB0F53400A7DB91 /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B7111AB0F53400A7DB91 /* Binder.swift */; };
 		06F6B7141AB0F56300A7DB91 /* Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B7131AB0F56300A7DB91 /* Wrappers.swift */; };
@@ -140,7 +143,7 @@
 		2537F8671A9753DD004A02E9 /* ABPhoneField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2537F8661A9753DD004A02E9 /* ABPhoneField.m */; };
 		2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */ = {isa = PBXBuildFile; fileRef = 2537F86A1A9762F6004A02E9 /* PhoneFormats.dat */; };
 		2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2537F86B1A9762F6004A02E9 /* ABPhoneFieldCodes.txt */; };
-		3953FBAB7FF33E9872029004 /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D04A4CF66F9FEFE30F6DFC3F /* libPods-ActorApp.a */; };
+		9DA35902E8731CB5CC11B37C /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7F72A1FA56E9EF4ADB96B92 /* libPods-ActorApp.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -252,7 +255,6 @@
 		06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaHttpProvider.swift; path = ../Core/Providers/CocoaHttpProvider.swift; sourceTree = "<group>"; };
 		06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBaseFileCell.swift; sourceTree = "<group>"; };
 		06A6FCF81B08ADD1000E11CE /* Views.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
-		06A92FA01AB24B2A0065B2FC /* Core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
 		06AABD501B3D90B100F0931B /* LayoutCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutCache.swift; sourceTree = "<group>"; };
 		06AAC5FE1B3DACAE00F0931B /* BubbleBackgroundProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleBackgroundProcessor.swift; sourceTree = "<group>"; };
 		06AAC6011B3DAF0700F0931B /* BubbleLayouts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleLayouts.swift; sourceTree = "<group>"; };
@@ -286,6 +288,11 @@
 		06ED29851AB2373800719875 /* CocoaFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaFileSystem.swift; path = ../Core/Providers/CocoaFileSystem.swift; sourceTree = "<group>"; };
 		06F46F0E1B129FE0009E3308 /* AABubbleAdCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleAdCell.swift; sourceTree = "<group>"; };
 		06F579811B7E095C00E62315 /* CocoaTcpRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaTcpRuntime.swift; sourceTree = "<group>"; };
+		06F579831B7E192000E62315 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		06F579851B7E192700E62315 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		06F579991B7E82F700E62315 /* ActorRuntime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorRuntime.h; sourceTree = "<group>"; };
+		06F5799A1B7E82F700E62315 /* ActorCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorCore.h; sourceTree = "<group>"; };
+		06F5799B1B7F6BEC00E62315 /* ActorRuntimeBinding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorRuntimeBinding.swift; sourceTree = "<group>"; };
 		06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resouces.swift; sourceTree = "<group>"; };
 		06F6B7111AB0F53400A7DB91 /* Binder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
 		06F6B7131AB0F56300A7DB91 /* Wrappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wrappers.swift; sourceTree = "<group>"; };
@@ -304,7 +311,7 @@
 		2D890431BAB17750EE5196FE /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		83228B1B49BDB7F5D71E8D76 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
 		B30D5B68EC3C911BB612D6EA /* ActorClient-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActorClient-Bridging-Header.h"; sourceTree = "<group>"; };
-		D04A4CF66F9FEFE30F6DFC3F /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F7F72A1FA56E9EF4ADB96B92 /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -312,8 +319,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06F579861B7E192700E62315 /* CFNetwork.framework in Frameworks */,
+				06F579841B7E192000E62315 /* Security.framework in Frameworks */,
 				06B9DC3E1B55F0DA0053182B /* CloudKit.framework in Frameworks */,
-				3953FBAB7FF33E9872029004 /* libPods-ActorApp.a in Frameworks */,
+				9DA35902E8731CB5CC11B37C /* libPods-ActorApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +678,7 @@
 				06ED29851AB2373800719875 /* CocoaFileSystem.swift */,
 				06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */,
 				06F579811B7E095C00E62315 /* CocoaTcpRuntime.swift */,
+				06F5799B1B7F6BEC00E62315 /* ActorRuntimeBinding.swift */,
 			);
 			name = Runtime;
 			sourceTree = "<group>";
@@ -712,6 +722,8 @@
 			isa = PBXGroup;
 			children = (
 				06F579801B7DED9000E62315 /* Runtime */,
+				06F579991B7E82F700E62315 /* ActorRuntime.h */,
+				06F5799A1B7E82F700E62315 /* ActorCore.h */,
 				064153E31B4A09E500238CB0 /* app.json */,
 				2537F8311A966B9D004A02E9 /* Info.plist */,
 				2537F8321A966B9D004A02E9 /* main.m */,
@@ -737,7 +749,6 @@
 			isa = PBXGroup;
 			children = (
 				0649DCE91AE6472200070F7D /* Providers */,
-				06A92FA01AB24B2A0065B2FC /* Core.h */,
 				06147B931AAE76E900931753 /* CocoaMessenger.swift */,
 				06F6B7131AB0F56300A7DB91 /* Wrappers.swift */,
 				06D8D8C11AB4390600A80E40 /* Conversions.swift */,
@@ -762,8 +773,10 @@
 		E2A36FB6A30EED3811CC45C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06F579851B7E192700E62315 /* CFNetwork.framework */,
+				06F579831B7E192000E62315 /* Security.framework */,
 				06B9DC3D1B55F0DA0053182B /* CloudKit.framework */,
-				D04A4CF66F9FEFE30F6DFC3F /* libPods-ActorApp.a */,
+				F7F72A1FA56E9EF4ADB96B92 /* libPods-ActorApp.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -785,6 +798,7 @@
 			buildConfigurationList = 2537F8531A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorApp" */;
 			buildPhases = (
 				6DAFB7212B826813ECA4122E /* Check Pods Manifest.lock */,
+				06F579981B7E81A800E62315 /* ShellScript */,
 				2537F8291A966B9D004A02E9 /* Sources */,
 				2537F82A1A966B9D004A02E9 /* Frameworks */,
 				2537F82B1A966B9D004A02E9 /* Resources */,
@@ -906,6 +920,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		06F579981B7E81A800E62315 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd Core\nmake";
+		};
 		1179632ED0F280786399FB3E /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -995,6 +1022,7 @@
 				06FCF1741AB6042200422FEC /* UDPreferencesStorage.swift in Sources */,
 				050B225D1ACBE5B900A0E904 /* Colors.swift in Sources */,
 				051542E71ACD18050062E3E3 /* Utils.swift in Sources */,
+				06F5799C1B7F6BEC00E62315 /* ActorRuntimeBinding.swift in Sources */,
 				0699D4CF1ADCA1FA0005AB9B /* UIAppearance+Swift.m in Sources */,
 				05B1A4701AD01311005F691D /* AddParticipantViewController.swift in Sources */,
 				06ABC7871AB05C3300C1B932 /* ConversationMessagesViewController.swift in Sources */,
@@ -1208,10 +1236,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
-					"\"${PODS_ROOT}/Headers/Public/J2ObjC\"",
-					"\"${PODS_ROOT}/Headers/Public/RMPhoneFormat\"",
-					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
-					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
+					Core/Sources/,
+					"../build-tools/dist/j2objc-0.9.8/include",
 				);
 				INFOPLIST_FILE = "Actor/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -1220,8 +1246,92 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/External",
+					Core/Build/,
+					"../build-tools/dist/j2objc-0.9.8/lib",
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"AFNetworking\"",
+					"-l\"AsyncDisplayKit\"",
+					"-l\"BlockAlertsAnd-ActionSheets\"",
+					"-l\"CLTokenInputView\"",
+					"-l\"CocoaAsyncSocket\"",
+					"-l\"DZNEmptyDataSet\"",
+					"-l\"DZNPhotoPickerController\"",
+					"-l\"FMDB\"",
+					"-l\"FrameAccessor\"",
+					"-l\"JVFloatLabeledTextField\"",
+					"-l\"LTNavigationBar\"",
+					"-l\"M13ProgressSuite\"",
+					"-l\"MBProgressHUD\"",
+					"-l\"Mixpanel\"",
+					"-l\"NYTPhotoViewer\"",
+					"-l\"PEPhotoCropEditor\"",
+					"-l\"PHFComposeBarView\"",
+					"-l\"PHFDelegateChain\"",
+					"-l\"PSTAlertController\"",
+					"-l\"RMPhoneFormat\"",
+					"-l\"RMUniversalAlert\"",
+					"-l\"RegexKitLite\"",
+					"-l\"SDWebImage\"",
+					"-l\"SVProgressHUD\"",
+					"-l\"SlackTextViewController\"",
+					"-l\"TTTAttributedLabel\"",
+					"-l\"TWMessageBarManager\"",
+					"-l\"UIActionSheet+Blocks\"",
+					"-l\"UIAlertController+Blocks\"",
+					"-l\"UIAlertView+Blocks\"",
+					"-l\"VENTokenField\"",
+					"-l\"c++\"",
+					"-l\"icucore\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AssetsLibrary\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"CoreText\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"HockeySDK\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"QuickLook\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"SplunkMint-iOS\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"WebKit\"",
+					"-weak_framework",
+					"\"Photos\"",
+					"-lactor",
+					"-lz",
+					"-ljre_emul",
+				);
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -1249,10 +1359,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
-					"\"${PODS_ROOT}/Headers/Public/J2ObjC\"",
-					"\"${PODS_ROOT}/Headers/Public/RMPhoneFormat\"",
-					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
-					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
+					Core/Sources/,
+					"../build-tools/dist/j2objc-0.9.8/include",
 				);
 				INFOPLIST_FILE = "Actor/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
@@ -1261,6 +1369,90 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/External",
+					Core/Build/,
+					"../build-tools/dist/j2objc-0.9.8/lib",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"AFNetworking\"",
+					"-l\"AsyncDisplayKit\"",
+					"-l\"BlockAlertsAnd-ActionSheets\"",
+					"-l\"CLTokenInputView\"",
+					"-l\"CocoaAsyncSocket\"",
+					"-l\"DZNEmptyDataSet\"",
+					"-l\"DZNPhotoPickerController\"",
+					"-l\"FMDB\"",
+					"-l\"FrameAccessor\"",
+					"-l\"JVFloatLabeledTextField\"",
+					"-l\"LTNavigationBar\"",
+					"-l\"M13ProgressSuite\"",
+					"-l\"MBProgressHUD\"",
+					"-l\"Mixpanel\"",
+					"-l\"NYTPhotoViewer\"",
+					"-l\"PEPhotoCropEditor\"",
+					"-l\"PHFComposeBarView\"",
+					"-l\"PHFDelegateChain\"",
+					"-l\"PSTAlertController\"",
+					"-l\"RMPhoneFormat\"",
+					"-l\"RMUniversalAlert\"",
+					"-l\"RegexKitLite\"",
+					"-l\"SDWebImage\"",
+					"-l\"SVProgressHUD\"",
+					"-l\"SlackTextViewController\"",
+					"-l\"TTTAttributedLabel\"",
+					"-l\"TWMessageBarManager\"",
+					"-l\"UIActionSheet+Blocks\"",
+					"-l\"UIAlertController+Blocks\"",
+					"-l\"UIAlertView+Blocks\"",
+					"-l\"VENTokenField\"",
+					"-l\"c++\"",
+					"-l\"icucore\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"Accelerate\"",
+					"-framework",
+					"\"AssetsLibrary\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreImage\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"CoreText\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"HockeySDK\"",
+					"-framework",
+					"\"ImageIO\"",
+					"-framework",
+					"\"MobileCoreServices\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"QuickLook\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"SplunkMint-iOS\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"WebKit\"",
+					"-weak_framework",
+					"\"Photos\"",
+					"-lactor",
+					"-lz",
+					"-ljre_emul",
 				);
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
