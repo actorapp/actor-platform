@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service.messaging
 
 import im.actor.api.rpc._
 import im.actor.server.dialog.group.GroupDialogOperations
-import im.actor.server.dialog.privat.PrivateDialogOperations
+import im.actor.server.dialog.privat.{ PrivateDialogErrors, PrivateDialogOperations }
 import im.actor.server.sequence.SeqStateDate
 
 import scala.concurrent._
@@ -52,7 +52,8 @@ private[messaging] trait MessagingHandlers {
     }
 
     db.run(toDBIOAction(authorizedAction)) recover {
-      case GroupErrors.NotAMember ⇒ Error(CommonErrors.forbidden("You are not a group member."))
+      case GroupErrors.NotAMember            ⇒ Error(CommonErrors.forbidden("You are not a group member."))
+      case PrivateDialogErrors.MessageToSelf ⇒ Error(CommonErrors.forbidden("Sending messages to self is not allowed."))
     }
   }
 }

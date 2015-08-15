@@ -9,6 +9,12 @@ import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 
 import scala.concurrent.{ Future, ExecutionContext }
 
+object PrivateDialogErrors {
+
+  final object MessageToSelf extends Exception("Private dialog with self is not allowed")
+
+}
+
 object PrivateDialogOperations {
   def sendMessage(toUser: Int, senderId: Int, senderAuthId: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false)(
     implicit
@@ -41,7 +47,9 @@ object PrivateDialogOperations {
   }
 
   case class Routing(private val a: Int, private val b: Int) {
-    require(a != b, "Private dialog with self is not allowed")
+    if (a == b)
+      throw PrivateDialogErrors.MessageToSelf
+
     val (left, right) = if (a > b) (b, a) else (a, b)
     def origin(uid: Int): Origin = if (uid == left) LEFT else RIGHT
   }

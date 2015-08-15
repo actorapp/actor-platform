@@ -135,7 +135,7 @@ object SeqUpdatesManager {
 
     val fatMetaData = if (isFat) Some(getFatMetaData(update)) else None
 
-    log.warn(s"pushing update $update to authIds: $authIds")
+    log.debug(s"pushing update $update to authIds: $authIds")
     persistAndPushUpdatesF(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), fatMetaData)
   }
 
@@ -166,7 +166,6 @@ object SeqUpdatesManager {
     ec: ExecutionContext,
     ext: SeqUpdatesExtension): Future[Seq[SeqState]] =
     Future.sequence(authIds.toSeq map { authId ⇒
-      log.warn(s"puhsing update with header: $header to $authId")
       persistAndPushUpdateF(authId, header, serializedData, refs, pushText, originPeer, fatMetaData)
     })
 
@@ -470,7 +469,6 @@ object SeqUpdatesManager {
   )(implicit
     ext: SeqUpdatesExtension,
     ec: ExecutionContext): Future[SeqState] = {
-    log.warn(s"pushing update to $authId, update header: $header")
     ext.region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, refs, pushText, originPeer, fatData))).mapTo[SeqState]
   }
 
