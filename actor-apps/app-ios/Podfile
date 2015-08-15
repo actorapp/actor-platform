@@ -6,13 +6,11 @@ target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
 	# Model
-    pod 'FMDB'
+    pod 'FMDB', :git => 'https://github.com/ccgus/fmdb'
     pod 'RegexKitLite', :inhibit_warnings => true
     pod 'CocoaAsyncSocket'
         
 	# UI
-    # pod 'VENTokenField'
-    # pod 'AsyncDisplayKit'
 	pod 'SVProgressHUD'
 	pod 'MBProgressHUD'
 	pod 'PSTAlertController'
@@ -24,7 +22,6 @@ target 'ActorApp' do
     pod 'CLTokenInputView'
     
     pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
-    #pod 'SlackTextViewController'
     
     pod 'NYTPhotoViewer'
     pod 'PEPhotoCropEditor'
