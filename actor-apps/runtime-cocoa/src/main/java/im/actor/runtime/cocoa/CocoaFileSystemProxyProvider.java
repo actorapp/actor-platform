@@ -1,5 +1,7 @@
 package im.actor.runtime.cocoa;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.runtime.FileSystemRuntime;
 import im.actor.runtime.files.FileSystemReference;
 
@@ -7,6 +9,7 @@ public class CocoaFileSystemProxyProvider implements FileSystemRuntime {
 
     private static FileSystemRuntime runtime;
 
+    @ObjectiveCName("setFileSystemRuntime:")
     public static void setFileSystemRuntime(FileSystemRuntime runtime) {
         CocoaFileSystemProxyProvider.runtime = runtime;
     }
