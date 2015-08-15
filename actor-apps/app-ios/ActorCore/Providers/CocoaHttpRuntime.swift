@@ -3,7 +3,7 @@
 //
 
 import Foundation
-class CocoaHttpProvider: NSObject, ARHttpRuntime {
+class CocoaHttpRuntime: NSObject, ARHttpRuntime {
     
     let queue:NSOperationQueue = NSOperationQueue()
     

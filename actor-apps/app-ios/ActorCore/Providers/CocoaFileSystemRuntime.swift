@@ -4,6 +4,7 @@
 
 import Foundation
 
+// Public methods for working with files
 class CocoaFiles {
     class func pathFromDescriptor(path: String) -> String {
         var manager = NSFileManager.defaultManager();
@@ -17,7 +18,9 @@ class CocoaFiles {
     }
 }
 
-@objc class CocoaFileSystem : NSObject, ARFileSystemRuntime {
+// Implementation of FileSystem storage
+
+@objc class CocoaFileSystemRuntime : NSObject, ARFileSystemRuntime {
     
     var appPath: String = ""
     
@@ -35,7 +38,6 @@ class CocoaFiles {
     
     func createTempFile() -> ARFileSystemReference! {
         var fileName = "/tmp/\(NSUUID().UUIDString)"
-        NSLog("CreatingTempFile: \(appPath + fileName)" )
         NSFileManager.defaultManager().createFileAtPath(appPath + fileName, contents: NSData(), attributes: nil);
         return CocoaFile(path: fileName);
     }
@@ -51,8 +53,6 @@ class CocoaFiles {
         }
         
         var resultPath = "/Documents/\(index)_\(baseName)";
-        
-        NSLog("CommitingFile: \(appPath + resultPath)" )
         
         var error : NSError?;
         manager.moveItemAtPath(appPath + sourceFile.getDescriptor()!, toPath: appPath + resultPath, error: &error)

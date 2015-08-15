@@ -41,9 +41,9 @@
 		06DFF8F31B7F9EC400296ECF /* Months.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06DFF8E91B7F9EC400296ECF /* Months.properties */; };
 		06DFF8F41B7F9EC400296ECF /* AppText_Ar.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06DFF8EA1B7F9EC400296ECF /* AppText_Ar.properties */; };
 		06DFF8F51B7F9EC400296ECF /* Months_Ar.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06DFF8EB1B7F9EC400296ECF /* Months_Ar.properties */; };
-		06DFF8F91B7F9F1400296ECF /* CocoaFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8F61B7F9F1400296ECF /* CocoaFileSystem.swift */; };
-		06DFF8FA1B7F9F1400296ECF /* CocoaHttpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8F71B7F9F1400296ECF /* CocoaHttpProvider.swift */; };
-		06DFF8FB1B7F9F1400296ECF /* CocoaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8F81B7F9F1400296ECF /* CocoaStorage.swift */; };
+		06DFF8F91B7F9F1400296ECF /* CocoaFileSystemRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8F61B7F9F1400296ECF /* CocoaFileSystemRuntime.swift */; };
+		06DFF8FA1B7F9F1400296ECF /* CocoaHttpRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8F71B7F9F1400296ECF /* CocoaHttpRuntime.swift */; };
+		06DFF8FB1B7F9F1400296ECF /* CocoaStorageRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8F81B7F9F1400296ECF /* CocoaStorageRuntime.swift */; };
 		06DFF9021B7F9FCC00296ECF /* FMDBIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8FD1B7F9FCC00296ECF /* FMDBIndex.swift */; };
 		06DFF9031B7F9FCC00296ECF /* FMDBKeyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8FE1B7F9FCC00296ECF /* FMDBKeyValue.swift */; };
 		06DFF9041B7F9FCC00296ECF /* FMDBList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFF8FF1B7F9FCC00296ECF /* FMDBList.swift */; };
@@ -189,9 +189,9 @@
 		06DFF8E91B7F9EC400296ECF /* Months.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months.properties; path = ../core/src/main/resources/Months.properties; sourceTree = "<group>"; };
 		06DFF8EA1B7F9EC400296ECF /* AppText_Ar.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AppText_Ar.properties; path = ../core/src/main/resources/AppText_Ar.properties; sourceTree = "<group>"; };
 		06DFF8EB1B7F9EC400296ECF /* Months_Ar.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months_Ar.properties; path = ../core/src/main/resources/Months_Ar.properties; sourceTree = "<group>"; };
-		06DFF8F61B7F9F1400296ECF /* CocoaFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaFileSystem.swift; path = ActorCore/Providers/CocoaFileSystem.swift; sourceTree = SOURCE_ROOT; };
-		06DFF8F71B7F9F1400296ECF /* CocoaHttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaHttpProvider.swift; path = ActorCore/Providers/CocoaHttpProvider.swift; sourceTree = SOURCE_ROOT; };
-		06DFF8F81B7F9F1400296ECF /* CocoaStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaStorage.swift; path = ActorCore/Providers/CocoaStorage.swift; sourceTree = SOURCE_ROOT; };
+		06DFF8F61B7F9F1400296ECF /* CocoaFileSystemRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaFileSystemRuntime.swift; path = ActorCore/Providers/CocoaFileSystemRuntime.swift; sourceTree = SOURCE_ROOT; };
+		06DFF8F71B7F9F1400296ECF /* CocoaHttpRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaHttpRuntime.swift; path = ActorCore/Providers/CocoaHttpRuntime.swift; sourceTree = SOURCE_ROOT; };
+		06DFF8F81B7F9F1400296ECF /* CocoaStorageRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaStorageRuntime.swift; path = ActorCore/Providers/CocoaStorageRuntime.swift; sourceTree = SOURCE_ROOT; };
 		06DFF8FD1B7F9FCC00296ECF /* FMDBIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FMDBIndex.swift; path = ActorCore/Providers/Storage/FMDBIndex.swift; sourceTree = SOURCE_ROOT; };
 		06DFF8FE1B7F9FCC00296ECF /* FMDBKeyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FMDBKeyValue.swift; path = ActorCore/Providers/Storage/FMDBKeyValue.swift; sourceTree = SOURCE_ROOT; };
 		06DFF8FF1B7F9FCC00296ECF /* FMDBList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FMDBList.swift; path = ActorCore/Providers/Storage/FMDBList.swift; sourceTree = SOURCE_ROOT; };
@@ -381,13 +381,13 @@
 			isa = PBXGroup;
 			children = (
 				06DFF8FC1B7F9FC100296ECF /* Storage */,
-				06DFF8F61B7F9F1400296ECF /* CocoaFileSystem.swift */,
-				06DFF8F71B7F9F1400296ECF /* CocoaHttpProvider.swift */,
-				06DFF8F81B7F9F1400296ECF /* CocoaStorage.swift */,
+				06DFF8F61B7F9F1400296ECF /* CocoaFileSystemRuntime.swift */,
+				06DFF8F71B7F9F1400296ECF /* CocoaHttpRuntime.swift */,
+				06DFF8F81B7F9F1400296ECF /* CocoaStorageRuntime.swift */,
+				06DFF9171B7FA65D00296ECF /* CocoaNetworkRuntime.swift */,
 				06DFF8BE1B7F990900296ECF /* iOSNotificationProvider.swift */,
 				06DFF8BF1B7F990900296ECF /* iOSPhoneBookProvider.swift */,
 				06DFF8C01B7F990900296ECF /* MixpanelProvider.swift */,
-				06DFF9171B7FA65D00296ECF /* CocoaNetworkRuntime.swift */,
 			);
 			name = Providers;
 			path = ActorApp;
@@ -864,7 +864,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ActorCore\nmake";
+			shellScript = "cd ActorCore\nmake -j 4";
 		};
 		D44D0E71B1F414180F02BD03 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -957,13 +957,13 @@
 				06DFF9EF1B7FB2FD00296ECF /* AutoCompleteCell.swift in Sources */,
 				06DFF9F31B7FB2FD00296ECF /* MessagesLayout.swift in Sources */,
 				06DFFA021B7FB33D00296ECF /* JoinPublicViewContoller.swift in Sources */,
-				06DFF8F91B7F9F1400296ECF /* CocoaFileSystem.swift in Sources */,
+				06DFF8F91B7F9F1400296ECF /* CocoaFileSystemRuntime.swift in Sources */,
 				06DFF9B01B7FB0DE00296ECF /* EditTextController.swift in Sources */,
 				06DFF8DD1B7F99A400296ECF /* LruCache.swift in Sources */,
 				06DFF9021B7F9FCC00296ECF /* FMDBIndex.swift in Sources */,
 				06DFF9B21B7FB0DE00296ECF /* AAImagePickerController.swift in Sources */,
 				06DFF95B1B7FA95C00296ECF /* UserPhotoCell.swift in Sources */,
-				06DFF8FB1B7F9F1400296ECF /* CocoaStorage.swift in Sources */,
+				06DFF8FB1B7F9F1400296ECF /* CocoaStorageRuntime.swift in Sources */,
 				06DFF9AD1B7FB0DE00296ECF /* Alerts.swift in Sources */,
 				06DFF9EA1B7FB2FD00296ECF /* AABubbleCell.swift in Sources */,
 				06DFF9FC1B7FB32200296ECF /* DialogCell.swift in Sources */,
@@ -979,7 +979,7 @@
 				06DFF9B11B7FB0DE00296ECF /* AAViewController.swift in Sources */,
 				06DFF8D51B7F99A400296ECF /* Strings.swift in Sources */,
 				06DFF8DB1B7F99A400296ECF /* Device.swift in Sources */,
-				06DFF8FA1B7F9F1400296ECF /* CocoaHttpProvider.swift in Sources */,
+				06DFF8FA1B7F9F1400296ECF /* CocoaHttpRuntime.swift in Sources */,
 				06DFF9061B7F9FCC00296ECF /* FMDBExtensions.swift in Sources */,
 				06DFF9D41B7FB2D700296ECF /* ContactCell.swift in Sources */,
 				06DFFA1D1B7FB3B100296ECF /* SettingsPrivacyViewController.swift in Sources */,
@@ -1139,6 +1139,7 @@
 					"../build-tools/dist/j2objc-0.9.8/lib",
 					ActorCore/Build,
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

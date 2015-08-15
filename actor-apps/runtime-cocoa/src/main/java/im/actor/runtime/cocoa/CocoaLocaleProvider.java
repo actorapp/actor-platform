@@ -18,8 +18,10 @@ public class CocoaLocaleProvider implements LocaleRuntime {
     ]-*/;
 
     @Override
-    public String formatTime(long date) {
-        // TODO: Implement
-        return null;
-    }
+    public native String formatTime(long date)/*-[
+        NSDate *dt = [NSDate dateWithTimeIntervalSince1970: date/1000.0];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setTimeStyle:NSDateFormatterShortStyle];
+        return [formatter stringFromDate: dt];
+    ]-*/;
 }
