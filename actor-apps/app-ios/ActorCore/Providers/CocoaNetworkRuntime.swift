@@ -4,7 +4,8 @@
 
 import Foundation
 
-class CocoaNetworkProvider : ARManagedNetworkProvider {
+class CocoaNetworkRuntime : ARManagedNetworkProvider {
+    
     override init() {
         super.init(factory: CocoaTcpConnectionFactory())
     }
