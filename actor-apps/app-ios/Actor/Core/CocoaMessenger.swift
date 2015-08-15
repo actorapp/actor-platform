@@ -12,10 +12,6 @@ get{
         
         var config = Config()
         
-        ARCocoaStorageProxyProvider.setStorageRuntimeWithARStorageRuntime(CocoaStorage())
-        ARCocoaFileSystemProxyProvider.setFileSystemRuntimeWithARFileSystemRuntime(CocoaFileSystem())
-        ARCocoaHttpProxyProvider.setHttpRuntimeWithARHttpRuntime(CocoaHttpProvider())
-        
         // Parameters
         var apiId = 2
         var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"

@@ -18,6 +18,8 @@ import Foundation
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
+        initActorRuntime()
+        
         var config = MSG.config
         
         // Apply crash logging

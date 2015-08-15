@@ -4,7 +4,7 @@
 
 import Foundation
 
-class UDPreferencesStorage: NSObject, ARPreferencesStorage {
+@objc class UDPreferencesStorage: NSObject, ARPreferencesStorage {
     
     let prefs = NSUserDefaults.standardUserDefaults()
     
