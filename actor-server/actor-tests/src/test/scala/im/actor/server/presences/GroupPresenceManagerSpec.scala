@@ -34,6 +34,11 @@ class GroupPresenceManagerSpec extends ActorSuite {
 
   def e1() = {
     whenReady(subscribe(groupId, probe.ref)) { _ ⇒ }
+
+    probe.expectMsgPF() {
+      case GroupPresenceState(100, 0) ⇒
+    }
+
     GroupPresenceManager.notifyGroupUserAdded(groupId, userId)
 
     PresenceManager.presenceSetOnline(userId, 1000)
