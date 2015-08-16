@@ -34,11 +34,8 @@ object SeqUpdatesManager {
   // TODO: configurable
   private implicit val OperationTimeout = Timeout(30.seconds)
 
-  def getSeqState(authId: Long)(implicit ext: SeqUpdatesExtension, ec: ExecutionContext): DBIO[SeqState] = {
-    for {
-      seqstate ← DBIO.from(ext.region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SeqState])
-    } yield seqstate
-  }
+  def getSeqState(authId: Long)(implicit ext: SeqUpdatesExtension, ec: ExecutionContext): Future[SeqState] =
+    ext.region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SeqState]
 
   def persistAndPushUpdate(
     authId:         Long,
