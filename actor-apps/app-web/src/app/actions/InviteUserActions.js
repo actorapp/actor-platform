@@ -1,6 +1,17 @@
-import Reflux from 'reflux';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 export default {
-  modalOpen: Reflux.createAction(),
-  modalClose: Reflux.createAction()
+  show: (group) => {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.INVITE_USER_MODAL_SHOW,
+      group: group
+    });
+  },
+
+  hide: () => {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.INVITE_USER_MODAL_HIDE
+    });
+  }
 };

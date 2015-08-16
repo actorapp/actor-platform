@@ -68,5 +68,5 @@ object SeqUpdate {
     byAuthIdC(authId).result
 
   def findAfter(authId: Long, timestamp: Long) =
-    afterTimestampC.applied((authId, timestamp, DiffStep)).result
+    afterTimestampC((authId, timestamp, DiffStep)).result
 }

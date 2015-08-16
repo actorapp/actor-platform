@@ -25,6 +25,9 @@ object Parameter {
   def find(userId: Int) =
     parameters.filter(_.userId === userId).result
 
+  private def byUserIdAndKey(userId: Rep[Int], key: Rep[String]) = parameters.filter(p ⇒ p.userId === userId && p.key === key).map(_.value)
+  private val byUserIdAndKeyC = Compiled(byUserIdAndKey _)
+
   def findValue(userId: Int, key: String)(implicit ec: ExecutionContext) =
-    parameters.filter(p ⇒ p.userId === userId && p.key === key).map(_.value).result.headOption map (_.flatten)
+    byUserIdAndKeyC(userId → key).result.headOption map (_.flatten)
 }

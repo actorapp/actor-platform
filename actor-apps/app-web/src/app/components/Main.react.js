@@ -11,7 +11,7 @@ import SidebarSection from 'components/SidebarSection.react';
 import ToolbarSection from 'components/ToolbarSection.react';
 import DialogSection from 'components/DialogSection.react';
 import Favicon from 'components/common/Favicon.react';
-
+import Banner from 'components/common/Banner.react';
 //import AppCacheStore from 'stores/AppCacheStore';
 //import AppCacheUpdateModal from 'components/modals/AppCacheUpdate.react';
 
@@ -48,7 +48,7 @@ class Main extends React.Component {
 
   onChange = () => {
     this.setState(getStateFromStores());
-  }
+  };
 
   render() {
     //let appCacheUpdateModal;
@@ -57,17 +57,20 @@ class Main extends React.Component {
     //}
 
     return (
-      <div className="app row">
+      <div className="app">
         <Favicon path={this.state.faviconPath}/>
+        <Banner/>
 
         <SidebarSection/>
 
-        <section className="main col-xs">
+        <section className="main">
           <ToolbarSection/>
-          <DialogSection/>
-        </section>
 
-        <ActivitySection/>
+          <div className="flexrow">
+            <DialogSection/>
+            <ActivitySection/>
+          </div>
+        </section>
 
         {/*appCacheUpdateModal*/}
       </div>

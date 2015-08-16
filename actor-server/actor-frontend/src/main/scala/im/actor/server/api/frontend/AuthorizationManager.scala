@@ -1,5 +1,6 @@
 package im.actor.server.api.frontend
 
+import im.actor.server.db.DbExtension
 import im.actor.server.util.IdUtils
 
 import scala.annotation.tailrec
@@ -24,15 +25,17 @@ object AuthorizationManager {
   @SerialVersionUID(1L)
   case class SessionPackage(p: MTProto)
 
-  def props(db: Database) = Props(classOf[AuthorizationManager], db)
+  def props = Props(classOf[AuthorizationManager])
 }
 
-class AuthorizationManager(db: Database) extends Actor with ActorLogging with ActorPublisher[MTProto] {
+class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[MTProto] {
 
   import akka.stream.actor.ActorPublisherMessage._
   import context.dispatcher
 
   import AuthorizationManager._
+
+  private val db: Database = DbExtension(context.system).db
 
   private[this] var authId: Long = 0L
   private[this] var buf = Vector.empty[MTProto]

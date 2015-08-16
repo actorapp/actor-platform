@@ -19,6 +19,8 @@ class ApplePushCredentialsTable(tag: Tag) extends Table[models.push.ApplePushCre
 object ApplePushCredentials {
   val creds = TableQuery[ApplePushCredentialsTable]
 
+  def byToken(token: Array[Byte]) = creds.filter(_.token === token)
+
   def createOrUpdate(authId: Long, apnsKey: Int, token: Array[Byte])(implicit ec: ExecutionContext) = {
     for {
       _ ← creds.filterNot(_.authId === authId).filter(c ⇒ c.apnsKey === apnsKey && c.token === token).delete
@@ -29,12 +31,18 @@ object ApplePushCredentials {
   def createOrUpdate(c: models.push.ApplePushCredentials) =
     creds.insertOrUpdate(c)
 
+  def byAuthId(authId: Rep[Long]) = creds.filter(_.authId === authId)
+  val byAuthIdC = Compiled(byAuthId _)
+
   def find(authId: Long) =
-    creds.filter(_.authId === authId).result.headOption
+    byAuthIdC(authId).result.headOption
 
   def delete(authId: Long) =
     creds.filter(_.authId === authId).delete
 
+  def findByToken(token: Array[Byte]) =
+    byToken(token).result
+
   def deleteByToken(token: Array[Byte]) =
-    creds.filter(_.token === token).delete
+    byToken(token).delete
 }

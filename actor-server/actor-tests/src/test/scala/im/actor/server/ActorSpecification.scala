@@ -55,5 +55,3 @@ abstract class ActorSuite(system: ActorSystem = { ActorSpecification.createSyste
     system.awaitTermination()
   }
 }
-
-abstract class ActorFlatSuite(system: ActorSystem = { ActorSpecification.createSystem() }) extends ActorSuite(system)

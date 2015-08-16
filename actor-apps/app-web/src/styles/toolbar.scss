@@ -7,7 +7,7 @@
   box-sizing: border-box;
   height: $toolbar-height;
   margin: 0;
-  padding: 0 16px;
+  padding: 0 0 0 16px;
 
   color: $toolbar-text-color;
   box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.08);
@@ -47,12 +47,11 @@
       font-weight: 500;
       line-height: 20px;
 
-      display: block;
+      display: inline-block;
       overflow: hidden;
 
       padding-top: 12px;
 
-      cursor: pointer;
       text-overflow: ellipsis;
     }
     &__presence {
@@ -65,5 +64,33 @@
 
       color: $toolbar-secodary-text-color;
     }
+  }
+
+  &__controls {
+    box-sizing: border-box;
+    width: $activity-width;
+    margin-top: 14px;
+    padding-right: 16px;
+    &__search {
+      position: relative;
+
+      width: 270px;
+      .material-icons {
+        font-size: 18px;
+        line-height: 24px;
+
+        position: absolute;
+        top: 6px;
+        left: 10px;
+
+        pointer-events: none;
+
+        color: rgba(black, .25);
+      }
+      .input {
+        padding-left: 34px;
+      }
+    }
+    //&__buttons {}
   }
 }

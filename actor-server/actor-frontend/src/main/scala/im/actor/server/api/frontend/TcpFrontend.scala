@@ -15,7 +15,6 @@ object TcpFrontend extends Frontend {
   def start(host: String, port: Int, tlsContext: Option[TlsContext])(
     implicit
     sessionRegion: SessionRegion,
-    db:            Database,
     system:        ActorSystem,
     mat:           Materializer
   ): Unit = {

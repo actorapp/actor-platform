@@ -1,27 +1,22 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent._, duration._
-import scalaz.{ -\/, \/- }
-
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
+import im.actor.api.{ rpc ⇒ api }
+import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.oauth.GoogleProvider
+import im.actor.server.{ DummyCodeActivation, models, persist }
+import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
+import im.actor.server.push.WeakUpdatesManagerRegion
+import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
 import org.scalatest.Suite
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.auth.AuthService
-import im.actor.api.{ rpc ⇒ api }
-import im.actor.server.activation.internal.DummyCodeActivation
-import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.models
-import im.actor.server.oauth.GoogleProvider
-import im.actor.server.persist
-import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
-import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
-import im.actor.server.session.{ SessionConfig, SessionRegion, Session }
-import im.actor.server.social.SocialManagerRegion
-import im.actor.server.user.UserProcessorRegion
+import scala.concurrent._
+import scala.concurrent.duration._
+import scalaz.{ -\/, \/- }
 
 trait PersistenceHelpers {
   protected implicit val timeout = Timeout(5.seconds)

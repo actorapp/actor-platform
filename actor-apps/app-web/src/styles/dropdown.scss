@@ -1,0 +1,102 @@
+.dropdown {
+  position: relative;
+  &--opened {
+    .dropdown__button {
+      visibility: visible;
+
+      transition: opacity $default-transition-duration $default-transition-timing, visibility 0s;
+
+      opacity: 1;
+      background-color: rgba(74, 143, 226, .19) !important;
+      box-shadow: 0 2px 2px 0 rgba(81, 145, 219, .35) !important;
+    }
+    .dropdown__menu {
+      visibility: visible;
+
+      transition: opacity $default-transition-duration $default-transition-timing, visibility 0s;
+
+      opacity: 1;
+    }
+  }
+  &__button {
+    display: inline-block;
+  }
+  &__menu {
+    position: absolute;
+    z-index: 5;
+    top: 47px;
+
+    visibility: hidden;
+
+    min-width: $dropdown-min-width;
+    margin: 0;
+    padding: 8px 0;
+
+    list-style: none;
+
+    transition: opacity $default-transition-duration $default-transition-timing, visibility 0s $default-transition-duration;
+
+    opacity: 0;
+    border-radius: 2px;
+    background-color: rgba(white, .99);
+    box-shadow: 0 0 0 1px rgba(black, .05), 0 2px 1px 1px rgba(black, .15);
+
+    &--right {
+      right: 0;
+    }
+    &--left {
+      left: 0;
+    }
+    &__item {
+      font-size: 15px;
+      line-height: 22px;
+
+      padding: 10px 16px 10px 50px;
+
+      cursor: pointer !important;
+
+      color: $greyish-brown;
+      .icon {
+        float: left;
+
+        width: 22px;
+        height: 22px;
+        margin-right: 0;
+        margin-left: -32px;
+      }
+      i {
+        font-size: 22px;
+        line-height: 22px;
+
+        float: left;
+
+        width: 22px;
+        height: 22px;
+        margin-left: -34px;
+
+        color: rgba(0, 0, 0, .25);
+      }
+      &--light {
+        color: rgba(0, 0, 0, .4);
+      }
+      &:hover {
+        color: white;
+        background-color: $dark-sky-blue;
+        .icon,
+        i {
+          color: white;
+
+          fill: white !important;
+        }
+      }
+    }
+    &__separator {
+      height: 8px;
+      &:hover {
+        cursor: default !important;
+
+        background-color: transparent;
+      }
+    }
+  }
+}

@@ -2,31 +2,31 @@ package im.actor.server.http
 
 import java.nio.file.Paths
 
-import scala.concurrent.forkjoin.ThreadLocalRandom
-
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods.GET
 import akka.http.scaladsl.model.StatusCodes.{ BadRequest, NotFound, OK }
 import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
 import akka.stream.scaladsl.Sink
 import akka.util.ByteString
-import org.scalatest.Inside._
-import play.api.libs.json._
-
 import im.actor.api.rpc.ClientData
 import im.actor.server._
 import im.actor.server.api.http.json.{ AvatarUrls, JsonImplicits }
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
-import im.actor.server.group.GroupProcessorRegion
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
-import im.actor.server.user.UserProcessorRegion
 import im.actor.server.util.{ ACLUtils, ImageUtils }
+import org.scalatest.Inside._
+import play.api.libs.json._
 
-class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitGroupRegions {
+import scala.concurrent.forkjoin.ThreadLocalRandom
+
+class HttpApiFrontendSpec
+  extends BaseAppSuite
+  with GroupsServiceHelpers
+  with ImplicitGroupRegions
+  with ImplicitSessionRegionProxy
+  with ImplicitAuthService {
   behavior of "HttpApiFrontend"
 
   "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
@@ -55,16 +55,12 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
 
   it should "serve correct file path" in t.filesCorrect()
 
-  implicit val sessionRegion = buildSessionRegionProxy()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService = buildAuthService()
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   val s3BucketName = fsAdapterS3.bucketName
