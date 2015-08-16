@@ -6,18 +6,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import im.actor.core.entity.Avatar;
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.core.Core;
 import im.actor.messenger.app.fragment.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Avatar;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueDoubleChangedListener;
-import im.actor.model.mvvm.ValueModel;
-import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
 /**
  * Created by ex3ndr on 29.12.14.

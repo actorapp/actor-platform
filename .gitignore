@@ -57,6 +57,9 @@ actor-apps/app-web/dist
 actor-apps/app-web/electron_dist
 actor-apps/app-ios/build
 actor-apps/app-ios/Pods
+actor-apps/app-ios/Core/runtime
+actor-apps/app-ios/Core/j2objc
+actor-apps/app-ios/Core/core
 actor-apps/app-ios/ActorApp.xcworkspace/xcuserdata
 *.class
 actor-api/api-language/solutions/im.actor.api/classes_gen
@@ -75,3 +78,15 @@ actor-apps/core-android-google/build
 actor-apps/core-android/build
 actor-apps/app-ios/ActorApp.xcworkspace
 actor-apps/app-ios/Actor-Build
+actor-apps/runtime-android/build
+actor-apps/runtime/build
+actor-apps/runtime-js/build
+actor-apps/runtime-js/war
+actor-apps/core-cocoa/build
+actor-apps/core-cocoa/src/gen
+actor-apps/runtime-cocoa/src/gen
+actor-apps/runtime-cocoa/build
+actor-apps/app-ios/Core/Build
+actor-apps/app-ios/Core
+actor-apps/app-ios/ActorCore/Sources
+actor-apps/app-ios/ActorCore/Build

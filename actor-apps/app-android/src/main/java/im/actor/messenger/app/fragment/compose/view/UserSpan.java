@@ -10,7 +10,7 @@ import android.text.style.ReplacementSpan;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.util.Screen;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.viewmodel.UserVM;
 
 /**
 * Created by ex3ndr on 26.03.15.

@@ -11,14 +11,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import im.actor.core.entity.Sex;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.model.api.Sex;
-import im.actor.model.modules.Auth;
 
 import static im.actor.messenger.app.core.Core.messenger;
 
@@ -77,8 +76,6 @@ public class SignUpFragment extends BaseAuthFragment {
         sendConfirmCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = messenger().getPreferences().getString(Auth.KEY_EMAIL);
-
                 executeAuth(messenger().signUp(firstNameEditText.getText().toString().trim(), Sex.UNKNOWN, avatarPath), "SignUp");
             }
         });
