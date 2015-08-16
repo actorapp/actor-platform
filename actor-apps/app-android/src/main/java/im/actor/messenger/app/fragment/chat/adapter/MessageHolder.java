@@ -5,10 +5,10 @@ import android.view.View;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
 import im.actor.messenger.app.util.TextUtils;
-import im.actor.android.view.BindedViewHolder;
-import im.actor.model.entity.Message;
-import im.actor.model.entity.Peer;
-import im.actor.model.entity.PeerType;
+import im.actor.runtime.android.view.BindedViewHolder;
+import im.actor.core.entity.Message;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 
 import static im.actor.messenger.app.core.Core.myUid;
 

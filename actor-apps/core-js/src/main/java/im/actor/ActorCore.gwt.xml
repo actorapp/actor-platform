@@ -1,0 +1,32 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
+    "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
+<module rename-to="actor">
+
+    <entry-point class='im.actor.core.js.GwtEntryPoint' />
+
+    <source path='core' />
+
+    <inherits name="com.google.gwt.logging.Logging" />
+    <inherits name="org.bouncycastle.BouncyCastle" />
+    <inherits name="im.actor.ActorRuntime" />
+    <inherits name="org.jetbrains.Annotations" />
+    <inherits name="com.google.j2objc.Annotations" />
+
+    <inherits name="com.google.gwt.storage.Storage" />
+    <inherits name="com.google.gwt.resources.Resources" />
+    <inherits name="com.google.gwt.http.HTTP"/>
+    <inherits name='org.timepedia.exporter.Exporter' />
+
+    <set-property name="ClientBundle.enableInlining" value="true" />
+    <set-property name='gwt.logging.enabled' value='TRUE' />
+    <set-property name='gwt.logging.consoleHandler' value='ENABLED' />
+    <set-property name="export" value="yes" />
+
+    <extend-property name="locale" values="en"/>
+    <extend-property name="locale" values="ru"/>
+    <extend-property name="locale" values="cn"/>
+
+    <!--Uncomment for building single JS library -->
+    <!--<add-linker tableName="sso"/>-->
+    <!--<collapse-all-properties />-->
+</module>

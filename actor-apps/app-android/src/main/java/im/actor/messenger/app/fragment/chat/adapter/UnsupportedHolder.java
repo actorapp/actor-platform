@@ -8,7 +8,7 @@ import android.view.View;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
-import im.actor.model.entity.Message;
+import im.actor.core.entity.Message;
 
 public class UnsupportedHolder extends TextHolder {
 

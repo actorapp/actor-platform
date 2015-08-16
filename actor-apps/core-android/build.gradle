@@ -1,4 +1,8 @@
 buildscript {
+    repositories {
+        mavenCentral()
+    }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
     }
@@ -7,12 +11,29 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.2'
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion 22
+    }
+}
+
+android {
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src/main/java',
+                           '../core/src/main/java',
+                           '../runtime/src/main/java',
+                           '../runtime/src/generic/java',
+                           '../runtime-android/src/main/java']
+            }
+            resources {
+                srcDirs = ['../core/src/main/resources']
+            }
+        }
     }
 
     lintOptions {
@@ -21,21 +42,6 @@ android {
 }
 
 dependencies {
-    compile project(':core')
-    compile project(':core-java')
-    compile project(':core-crypto')
-    compile project(':core-async-ui')
-    compile project(':core-async-tcp')
-
-    // Network
-    compile 'com.squareup.okhttp:okhttp:2.3.0'
-
-    // Analytics
-    compile "com.mixpanel.android:mixpanel-android:4.5.3"
-
-    // Android support
-    compile 'com.android.support:support-v4:22.2.0'
-    compile 'com.android.support:support-v13:22.1.1'
-    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.1.1'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
 }

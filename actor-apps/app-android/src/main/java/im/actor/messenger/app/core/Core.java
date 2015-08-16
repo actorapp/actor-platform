@@ -13,23 +13,20 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import im.actor.android.AndroidConfigurationBuilder;
-import im.actor.android.AndroidMessenger;
-import im.actor.android.AndroidMixpanelAnalytics;
+import im.actor.core.AndroidMessenger;
+import im.actor.core.ApiConfiguration;
+import im.actor.core.AppCategory;
+import im.actor.core.ConfigurationBuilder;
+import im.actor.core.DeviceCategory;
+import im.actor.core.entity.Group;
+import im.actor.core.entity.User;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.BuildConfig;
-import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
-import im.actor.model.ApiConfiguration;
-import im.actor.model.AppCategory;
-import im.actor.model.DeviceCategory;
-import im.actor.model.android.providers.AndroidNotifications;
-import im.actor.model.android.providers.AndroidPhoneBook;
-import im.actor.model.entity.Group;
-import im.actor.model.entity.User;
-import im.actor.model.mvvm.MVVMCollection;
-import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.runtime.android.AndroidContext;
+import im.actor.runtime.mvvm.MVVMCollection;
 
 import static im.actor.messenger.app.util.io.IOUtils.readAll;
 
@@ -69,6 +66,8 @@ public class Core {
 
     private Core(Application application) throws IOException, JSONException {
 
+        AndroidContext.setContext(application);
+
         // Integrations
         //noinspection ConstantConditions
         JSONObject config = new JSONObject(new String(readAll(application.getAssets().open("app.json"))));
@@ -89,34 +88,49 @@ public class Core {
         this.smileProcessor = new SmileProcessor(application);
         this.smileProcessor.loadEmoji();
 
-        AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(
-                application.getResources().getString(R.string.app_locale),
-                application);
-        builder.setPhoneBookProvider(new AndroidPhoneBook());
-        builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
+//        AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(
+//                application.getResources().getString(R.string.app_locale),
+//                application);
+//        builder.setPhoneBookProvider(new AndroidPhoneBook());
+//        builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
+//        JSONArray endpoints = config.getJSONArray("endpoints");
+//        for (int i = 0; i < endpoints.length(); i++) {
+//            builder.addEndpoint(endpoints.getString(i));
+//        }
+//        builder.setEnableContactsLogging(true);
+//        builder.setEnableNetworkLogging(true);
+//        builder.setEnableFilesLogging(true);
+//        //noinspection ConstantConditions
+//        if (config.optString("mixpanel") != null) {
+//            builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), config.getString("mixpanel")));
+//        }
+//        builder.setDeviceCategory(DeviceCategory.MOBILE);
+//        builder.setAppCategory(AppCategory.ANDROID);
+//
+//        builder.setApiConfiguration(new ApiConfiguration(
+//                BuildConfig.VERSION_TITLE,
+//                API_ID,
+//                API_KEY,
+//                getDeviceName(),
+//                AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
+//
+//        builder.setMaxDelay(MAX_DELAY);
+
+        ConfigurationBuilder builder = new ConfigurationBuilder();
         JSONArray endpoints = config.getJSONArray("endpoints");
         for (int i = 0; i < endpoints.length(); i++) {
             builder.addEndpoint(endpoints.getString(i));
         }
-        builder.setEnableContactsLogging(true);
-        builder.setEnableNetworkLogging(true);
-        builder.setEnableFilesLogging(true);
-        //noinspection ConstantConditions
-        if (config.optString("mixpanel") != null) {
-            builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), config.getString("mixpanel")));
-        }
+        builder.setPhoneBookProvider(new AndroidPhoneBook());
+        builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
         builder.setDeviceCategory(DeviceCategory.MOBILE);
         builder.setAppCategory(AppCategory.ANDROID);
-
         builder.setApiConfiguration(new ApiConfiguration(
                 BuildConfig.VERSION_TITLE,
                 API_ID,
                 API_KEY,
                 getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
-
-        builder.setMaxDelay(MAX_DELAY);
-
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
     }
 

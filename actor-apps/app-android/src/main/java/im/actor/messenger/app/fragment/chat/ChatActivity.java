@@ -42,13 +42,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import im.actor.core.Messenger;
+import im.actor.core.entity.GroupMember;
+import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.BaseActivity;
-import im.actor.messenger.app.view.emoji.SmileProcessor;
-import im.actor.messenger.app.view.keyboard.KeyboardStatusListener;
-import im.actor.messenger.app.view.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.io.IOUtils;
@@ -57,24 +60,21 @@ import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.SelectionListenerEdittext;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
-import im.actor.model.Messenger;
-import im.actor.model.entity.GroupMember;
-import im.actor.model.entity.Peer;
-import im.actor.model.entity.PeerType;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueModel;
-import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.messenger.app.view.emoji.SmileProcessor;
+import im.actor.messenger.app.view.keyboard.KeyboardStatusListener;
+import im.actor.messenger.app.view.keyboard.emoji.EmojiKeyboard;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.MentionSpan;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
-import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
 import static im.actor.messenger.app.view.ViewUtils.expandMentions;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
 
 
 public class ChatActivity extends BaseActivity {

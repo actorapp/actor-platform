@@ -18,18 +18,15 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
 
 import static im.actor.messenger.app.core.Core.messenger;
 
-/**
- * Created by korka on 25.05.15.
- */
 public class InviteLinkFragment extends BaseFragment {
 
     private static final String EXTRA_GROUP_ID = "GROUP_ID";
@@ -82,7 +79,7 @@ public class InviteLinkFragment extends BaseFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(link != null && !link.isEmpty()){
+                if (link != null && !link.isEmpty()) {
                     switch (position) {
                         case 0:
                             //Link itself
@@ -147,11 +144,10 @@ public class InviteLinkFragment extends BaseFragment {
         listView.addFooterView(footer, null, false);
 
 
-
-        return  res;
+        return res;
     }
 
-    class InviteLincActionsAdapter extends HolderAdapter<Void>{
+    class InviteLincActionsAdapter extends HolderAdapter<Void> {
 
         protected InviteLincActionsAdapter(Context context) {
             super(context);
@@ -161,14 +157,17 @@ public class InviteLinkFragment extends BaseFragment {
         public Void getItem(int position) {
             return null;
         }
+
         @Override
         public int getCount() {
             return 5;
         }
+
         @Override
         public long getItemId(int position) {
             return position;
         }
+
         @Override
         protected ViewHolder<Void> createHolder(Void obj) {
             return new ActionHolder();
@@ -181,6 +180,7 @@ public class InviteLinkFragment extends BaseFragment {
         View topShadow;
         View botShadow;
         View divider;
+
         @Override
         public View init(Void data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_invite_link_item, viewGroup, false);
@@ -194,7 +194,7 @@ public class InviteLinkFragment extends BaseFragment {
 
         @Override
         public void bind(Void data, int position, Context context) {
-            switch (position){
+            switch (position) {
                 case 0:
                     action.setText(link);
                     break;
@@ -217,14 +217,14 @@ public class InviteLinkFragment extends BaseFragment {
             }
 
             //Hint styling
-            if(position == 1){
+            if (position == 1) {
                 container.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_backyard));
                 topShadow.setVisibility(View.VISIBLE);
                 botShadow.setVisibility(View.VISIBLE);
                 divider.setVisibility(View.INVISIBLE);
                 action.setTextColor(getActivity().getResources().getColor(R.color.text_hint));
                 action.setTextSize(14);
-            }else{
+            } else {
                 container.setBackgroundColor(Color.TRANSPARENT);
                 topShadow.setVisibility(View.INVISIBLE);
                 botShadow.setVisibility(View.INVISIBLE);

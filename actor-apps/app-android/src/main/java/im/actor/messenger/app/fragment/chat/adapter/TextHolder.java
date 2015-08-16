@@ -21,19 +21,19 @@ import android.widget.TextView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import im.actor.core.api.ApiTextExMarkdown;
+import im.actor.core.api.ApiTextMessageEx;
+import im.actor.core.entity.Message;
+import im.actor.core.entity.PeerType;
+import im.actor.core.entity.content.TextContent;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
-import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.model.api.TextExMarkdown;
-import im.actor.model.api.TextMessageEx;
-import im.actor.model.entity.Message;
-import im.actor.model.entity.PeerType;
-import im.actor.model.entity.content.TextContent;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.messenger.app.view.emoji.SmileProcessor;
+import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.MentionSpan;
 
@@ -99,11 +99,11 @@ public class TextHolder extends MessageHolder {
     protected void bindData(final Message message, boolean isUpdated) {
 
         CharSequence spannedText;
-        TextMessageEx ext = ((TextContent) message.getContent()).getTextMessageEx();
-        isMdExt = ext instanceof TextExMarkdown;
+        ApiTextMessageEx ext = ((TextContent) message.getContent()).getTextMessageEx();
+        isMdExt = ext instanceof ApiTextExMarkdown;
         if(isMarkdownEnabled || isMdExt){
 
-            spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(isMdExt ? ((TextExMarkdown) ext).getMarkdown() : ((TextContent) message.getContent()).getText(), false));
+            spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(isMdExt ? ((ApiTextExMarkdown) ext).getMarkdown() : ((TextContent) message.getContent()).getText(), false));
 
             Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
             URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);

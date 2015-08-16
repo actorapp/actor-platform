@@ -2,7 +2,7 @@ package im.actor.messenger.app.fragment.group.view;
 
 import java.util.ArrayList;
 
-import im.actor.model.entity.PublicGroup;
+import im.actor.core.entity.PublicGroup;
 
 /**
  * Created by korka on 30.06.15.
