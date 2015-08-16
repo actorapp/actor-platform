@@ -75,7 +75,7 @@ class ContactsServiceImpl(
         (eUsers, eUserIds) = emailUsersAndIds
 
         seqstate ← fromFuture(
-          if (pUserIds.nonEmpty && eUserIds.nonEmpty) {
+          if ((pUserIds ++ eUserIds).nonEmpty) {
             implicit val c = client
             UserOffice.broadcastClientUpdate(UpdateContactsAdded((pUserIds ++ eUserIds).toVector), None, isFat = true)
           } else {

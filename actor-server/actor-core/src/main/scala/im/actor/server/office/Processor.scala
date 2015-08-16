@@ -51,14 +51,14 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
 
   final def receiveCommand = initializing
 
-  protected final def initializing: Receive = handleInitCommand orElse stashingBehavior()
+  protected final def initializing: Receive = handleInitCommand orElse stashingBehavior
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
     case Work(newState) => context become working(newState)
     case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
   }
 
-  private final def stashingBehavior(): Receive = {
+  private final def stashingBehavior: Receive = {
     case UnstashAndWork(evt, s) =>
       context become working(updatedState(evt, s))
       unstashAll()
@@ -71,11 +71,11 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
       context become working(newState)
       unstashAll()
     case msg ⇒
-      log.warning("Stashing while initializing. Message: {}", msg)
+      log.warning("Stashing: {}", msg)
       stash()
   }
 
-  protected final def stashing(state: State): Receive = handleQuery(state) orElse stashingBehavior()
+  protected final def stashing(state: State): Receive = handleQuery(state) orElse stashingBehavior
 
   final def persistReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
     log.debug("[persistReply] {}", e)
