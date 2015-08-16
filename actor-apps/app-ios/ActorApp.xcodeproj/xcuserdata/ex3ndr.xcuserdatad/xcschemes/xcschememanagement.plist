@@ -4,62 +4,20 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>App.xcscheme_^#shared#^_</key>
+		<key>ActorApp.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>AppAlpha.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>6</integer>
-		</dict>
-		<key>AppDev1.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>3</integer>
-		</dict>
-		<key>AppDev2.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>4</integer>
-		</dict>
-		<key>AppEnterprise.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>AppLlectro.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>5</integer>
-		</dict>
-		<key>AppRelease.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>1</integer>
-		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>2537F82C1A966B9D004A02E9</key>
+		<key>06DFF8781B7F8C0600296ECF</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>2537F8481A966B9D004A02E9</key>
+		<key>06DFF88D1B7F8C0700296ECF</key>
 		<dict>
 			<key>primary</key>
 			<true/>

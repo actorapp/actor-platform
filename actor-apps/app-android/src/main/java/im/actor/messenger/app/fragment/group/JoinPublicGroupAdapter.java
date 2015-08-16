@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.core.entity.PublicGroup;
+import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.TextUtils;
@@ -20,9 +22,7 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.model.entity.PublicGroup;
-import im.actor.model.files.FileSystemReference;
-import im.actor.model.viewmodel.FileVMCallback;
+import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.model.AuthState;
+import im.actor.core.AuthState;
 
 /**
  * Created by korka on 03.07.15.

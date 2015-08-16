@@ -14,19 +14,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import im.actor.core.api.ApiPublicGroup;
+import im.actor.core.api.rpc.RequestGetPublicGroups;
+import im.actor.core.api.rpc.ResponseGetPublicGroups;
+import im.actor.core.entity.PublicGroup;
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.core.viewmodel.GroupVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.PublicGroupCardView;
 import im.actor.messenger.app.fragment.group.view.PublicGroupSet;
 import im.actor.messenger.app.fragment.group.view.PublicGroupSetView;
-import im.actor.model.api.rpc.RequestGetPublicGroups;
-import im.actor.model.api.rpc.ResponseGetPublicGroups;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.PublicGroup;
-import im.actor.model.files.FileSystemReference;
-import im.actor.model.viewmodel.FileVMCallback;
-import im.actor.model.viewmodel.GroupVM;
+import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
@@ -51,7 +52,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
             @Override
             public void onResult(ResponseGetPublicGroups res) {
                 final ArrayList<PublicGroup> groups = new ArrayList<PublicGroup>();
-                for (im.actor.model.api.PublicGroup g : res.getGroups()) {
+                for (ApiPublicGroup g : res.getGroups()) {
                     groups.add(new PublicGroup(g));
                 }
                 getActivity().runOnUiThread(new Runnable() {
