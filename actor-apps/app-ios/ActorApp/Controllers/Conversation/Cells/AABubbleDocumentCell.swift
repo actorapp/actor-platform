@@ -10,7 +10,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: Private vars
     
     private let progressBg = UIImageView()
-    // private let circullarNode = CircullarNode()
+    private let circullarNode = CircullarNode()
     private let fileIcon = UIImageView()
     
     private let titleLabel = UILabel()
@@ -95,13 +95,13 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
             sizeLabel.text = Actor.getFormatter().formatFileSize(document.getSource().getSize())
             
             // Reset progress
-//            circullarNode.hidden = true
-//            circullarNode.setProgress(0, animated: false)
-//            UIView.animateWithDuration(0, animations: { () -> Void in
-//                self.circullarNode.alpha = 0
-//                self.fileIcon.alpha = 0
-//                self.progressBg.alpha = 0
-//            })
+            circullarNode.hidden = true
+            circullarNode.setProgress(0, animated: false)
+            UIView.animateWithDuration(0, animations: { () -> Void in
+                self.circullarNode.alpha = 0
+                self.fileIcon.alpha = 0
+                self.progressBg.alpha = 0
+            })
             
             // Bind file
             fileBind(message, autoDownload: document.getSource().getSize() < 1024 * 1025 * 1024)
@@ -140,31 +140,31 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     }
     
     func documentDidTap() {
-//        var content = bindedMessage!.getContent() as! ACDocumentContent
-//        if let fileSource = content.getSource() as? ACFileRemoteSource {
-//            MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
-//                notDownloaded: { () -> () in
-//                    MSG.startDownloadingWithReference(fileSource.getFileReference())
-//                }, onDownloading: { (progress) -> () in
-//                    MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
-//                }, onDownloaded: { (reference) -> () in
-//                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
-//                    docController.delegate = self
-//                    docController.presentPreviewAnimated(true)
-//            }))
-//        } else if let fileSource = content.getSource() as? ACFileLocalSource {
-//            var rid = bindedMessage!.getRid()
-//            MSG.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
-//                notUploaded: { () -> () in
-//                    MSG.resumeUploadWithRid(rid)
-//                }, onUploading: { (progress) -> () in
-//                    MSG.pauseUploadWithRid(rid)
-//                }, onUploadedClosure: { () -> () in
-//                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-//                    docController.delegate = self
-//                    docController.presentPreviewAnimated(true)
-//            }))
-//        }
+        var content = bindedMessage!.getContent() as! ACDocumentContent
+        if let fileSource = content.getSource() as? ACFileRemoteSource {
+            Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
+                notDownloaded: { () -> () in
+                    Actor.startDownloadingWithReference(fileSource.getFileReference())
+                }, onDownloading: { (progress) -> () in
+                    Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
+                }, onDownloaded: { (reference) -> () in
+                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
+                    docController.delegate = self
+                    docController.presentPreviewAnimated(true)
+            }))
+        } else if let fileSource = content.getSource() as? ACFileLocalSource {
+            var rid = bindedMessage!.getRid()
+            Actor.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
+                notUploaded: { () -> () in
+                    Actor.resumeUploadWithRid(rid)
+                }, onUploading: { (progress) -> () in
+                    Actor.pauseUploadWithRid(rid)
+                }, onUploadedClosure: { () -> () in
+                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                    docController.delegate = self
+                    docController.presentPreviewAnimated(true)
+            }))
+        }
     }
     
     override func fileUploadPaused(reference: String, selfGeneration: Int) {
@@ -240,27 +240,27 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     
     // Progress show/hide
     func bgHideProgress(selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            UIView.animateWithDuration(0.4, animations: { () -> Void in
-//                self.circullarNode.alpha = 0
-//                }, completion: { (val) -> Void in
-//                    if (val) {
-//                        self.circullarNode.hidden = true
-//                    }
-//            })
-//        })
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            UIView.animateWithDuration(0.4, animations: { () -> Void in
+                self.circullarNode.alpha = 0
+                }, completion: { (val) -> Void in
+                    if (val) {
+                        self.circullarNode.hidden = true
+                    }
+            })
+        })
     }
     func bgShowProgress(value: Double, selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            if (self.circullarNode.hidden) {
-//                self.circullarNode.hidden = false
-//                self.circullarNode.alpha = 0
-//            }
-//            self.circullarNode.postProgress(value, animated: true)
-//            UIView.animateWithDuration(0.3, animations: { () -> Void in
-//                self.circullarNode.alpha = 1
-//            })
-//        })
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            if (self.circullarNode.hidden) {
+                self.circullarNode.hidden = false
+                self.circullarNode.alpha = 0
+            }
+            self.circullarNode.postProgress(value, animated: true)
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
+                self.circullarNode.alpha = 1
+            })
+        })
     }
     
     // State show/hide
@@ -320,7 +320,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         var progressRect = CGRectMake(contentLeft + 8, 12, 48, 48)
         self.progressBg.frame = progressRect
         self.fileIcon.frame = CGRectMake(contentLeft + 16, 20, 32, 32)
-        // self.circullarNode.frame = progressRect
+        self.circullarNode.frame = progressRect
         
         // Message state
         if (self.isOut) {

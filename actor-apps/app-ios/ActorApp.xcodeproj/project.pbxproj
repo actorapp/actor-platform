@@ -301,6 +301,7 @@
 		06DFFA1C1B7FB3B100296ECF /* SettingsNotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsNotificationsViewController.swift; path = Controllers/Settings/SettingsNotificationsViewController.swift; sourceTree = "<group>"; };
 		06DFFA211B7FB43200296ECF /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserViewController.swift; path = Controllers/User/UserViewController.swift; sourceTree = "<group>"; };
 		06DFFA231B7FB90D00296ECF /* Resouces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Resouces.swift; path = Resources/Resouces.swift; sourceTree = "<group>"; };
+		06DFFA2D1B7FEA5C00296ECF /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorApp.entitlements; sourceTree = "<group>"; };
 		6DD3598FF465DC55402ECA9F /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C18824A0398DA8521CEE851A /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		D7FB0A8B3A0C073AAD213E09 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -347,6 +348,7 @@
 				06DFF9071B7FA02E00296ECF /* Resources */,
 				06DFF87C1B7F8C0600296ECF /* Supporting Files */,
 				06DFF87E1B7F8C0600296ECF /* AppDelegate.swift */,
+				06DFFA2D1B7FEA5C00296ECF /* ActorApp.entitlements */,
 			);
 			path = ActorApp;
 			sourceTree = "<group>";
@@ -788,6 +790,12 @@
 				TargetAttributes = {
 					06DFF8781B7F8C0600296ECF = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = HVJR44Y5B6;
+						SystemCapabilities = {
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1133,6 +1141,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = ActorApp/ActorApp.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1140,7 +1153,7 @@
 					"../build-tools/dist/j2objc-0.9.8/lib",
 					ActorCore/Build,
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1218,6 +1231,7 @@
 					"-lactor",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8/include";
 			};
@@ -1229,6 +1243,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = ActorApp/ActorApp.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1313,6 +1331,7 @@
 					"-lactor",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8/include";
 			};

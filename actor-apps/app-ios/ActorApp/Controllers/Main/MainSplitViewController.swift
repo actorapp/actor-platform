@@ -39,4 +39,8 @@ class MainSplitViewController: UISplitViewController {
             }
         }
     }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
+    }
 }

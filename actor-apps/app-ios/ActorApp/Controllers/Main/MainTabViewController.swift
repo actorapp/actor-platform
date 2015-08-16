@@ -181,6 +181,9 @@ class MainTabViewController : UITabBarController, UITabBarDelegate {
         return Int(UIInterfaceOrientationMask.Portrait.rawValue)
     }
     
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
+    }
 }
 
 extension MainTabViewController: MFMessageComposeViewControllerDelegate {

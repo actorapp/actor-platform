@@ -1,23 +1,20 @@
 package im.actor.runtime.cocoa;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import im.actor.runtime.LogRuntime;
 
 public class CocoaLogProvider implements LogRuntime {
 
-    private final Logger logger = Logger.getGlobal();
+    @Override
+    public native void w(String tag, String message)/*-[
+        NSLog(@"WARRING %@: %@", tag, message);
+    ]-*/;
 
     @Override
-    public void w(String tag, String message) {
-        logger.warning(tag + ": " + message);
-    }
+    public native void e(String tag, Throwable throwable)/*-[
+        NSLog(@"ERROR %@:", tag);
+        [throwable printStackTrace];
+    ]-*/;
 
-    @Override
-    public void e(String tag, Throwable throwable) {
-        logger.log(Level.SEVERE, tag + ": " + throwable.getMessage(), throwable);
-    }
 
     @Override
     public native void d(String tag, String message)/*-[

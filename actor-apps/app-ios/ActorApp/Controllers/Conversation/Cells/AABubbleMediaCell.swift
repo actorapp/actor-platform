@@ -10,7 +10,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     let preview = UIImageView()
 
     let progressBg = UIImageView()
-    // let circullarNode = CircullarNode()
+    let circullarNode = CircullarNode()
     let fileStatusIcon = UIImageView()
     
     let timeBg = UIImageView()
@@ -46,7 +46,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         
         mainView.addSubview(progressBg)
         mainView.addSubview(fileStatusIcon)
-        // mainView.addSubview(circullarNode.view)
+        mainView.addSubview(circullarNode.view)
         
         mainView.addSubview(timeBg)
         mainView.addSubview(timeLabel)
@@ -103,13 +103,13 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             contentLoaded = false
             
             // Reset progress
-//            circullarNode.hidden = true
-//            circullarNode.setProgress(0, animated: false)
-//            UIView.animateWithDuration(0, animations: { () -> Void in
-//                self.circullarNode.alpha = 0
-//                self.preview.alpha = 0
-//                self.progressBg.alpha = 0
-//            })
+            circullarNode.hidden = true
+            circullarNode.setProgress(0, animated: false)
+            UIView.animateWithDuration(0, animations: { () -> Void in
+                self.circullarNode.alpha = 0
+                self.preview.alpha = 0
+                self.progressBg.alpha = 0
+            })
             
             // Bind file
             fileBind(message, autoDownload: message.getContent() is ACPhotoContent)
@@ -243,40 +243,40 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
         contentLoaded = true
         
-//        var loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(contentViewSize!.width - 2, h: contentViewSize!.height - 2, roundSize: 14)
-//        
-//        if (loadedContent == nil) {
-//            return
-//        }
-//        
-//        runOnUiThread(selfGeneration, closure: { () -> () in
-//            self.setPreviewImage(loadedContent!, fast: false)
-//        })
+        var loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(contentViewSize!.width - 2, h: contentViewSize!.height - 2, roundSize: 14)
+        
+        if (loadedContent == nil) {
+            return
+        }
+        
+        runOnUiThread(selfGeneration, closure: { () -> () in
+            self.setPreviewImage(loadedContent!, fast: false)
+        })
     }
     
     // Progress show/hide
     func bgHideProgress(selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            UIView.animateWithDuration(0.4, animations: { () -> Void in
-//                self.circullarNode.alpha = 0
-//            }, completion: { (val) -> Void in
-//                if (val) {
-//                    self.circullarNode.hidden = true
-//                }
-//            })
-//        })
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            UIView.animateWithDuration(0.4, animations: { () -> Void in
+                self.circullarNode.alpha = 0
+            }, completion: { (val) -> Void in
+                if (val) {
+                    self.circullarNode.hidden = true
+                }
+            })
+        })
     }
     func bgShowProgress(value: Double, selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            if (self.circullarNode.hidden) {
-//                self.circullarNode.hidden = false
-//                self.circullarNode.alpha = 0
-//            }
-//            self.circullarNode.postProgress(value, animated: true)
-//            UIView.animateWithDuration(0.3, animations: { () -> Void in
-//                self.circullarNode.alpha = 1
-//            })
-//        })
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            if (self.circullarNode.hidden) {
+                self.circullarNode.hidden = false
+                self.circullarNode.alpha = 0
+            }
+            self.circullarNode.postProgress(value, animated: true)
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
+                self.circullarNode.alpha = 1
+            })
+        })
     }
     
     // State show/hide
@@ -354,8 +354,8 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         } else {
             preview.frame = CGRectMake(insets.left, insets.top, bubbleWidth, bubbleHeight)
         }
-//        circullarNode.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
-//        progressBg.frame = circullarNode.frame
+        circullarNode.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
+        progressBg.frame = circullarNode.frame
         fileStatusIcon.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 24, preview.frame.origin.y + preview.frame.height/2 - 24, 48, 48)
         
         timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
