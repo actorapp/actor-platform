@@ -136,6 +136,21 @@ object Dialog {
     }
   }
 
+  def updateLastReceivedAt(userIds: Set[Int], peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
+    for {
+      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
+      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
+        .filter(_.userId inSetBind existing)
+        .map(_.lastReceivedAt)
+        .update(lastReceivedAt)
+      _ ← DBIO.sequence(
+        (userIds diff existing)
+          .toSeq
+          .map(userId ⇒ create(models.Dialog(userId, peer, new DateTime(0), lastReceivedAt, new DateTime(0), new DateTime(0), new DateTime(0))))
+      )
+    } yield userIds.size
+  }
+
   def updateOwnerLastReceivedAt(userId: Int, peer: models.Peer, ownerLastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
     byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.ownerLastReceivedAt).update(ownerLastReceivedAt) flatMap {
       case 0 ⇒
@@ -150,6 +165,21 @@ object Dialog {
         create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), lastReadAt, new DateTime(0), new DateTime(0)))
       case x ⇒ DBIO.successful(x)
     }
+  }
+
+  def updateLastReadAt(userIds: Set[Int], peer: models.Peer, lastReadAt: DateTime)(implicit ec: ExecutionContext) = {
+    for {
+      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
+      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
+        .filter(_.userId inSetBind existing)
+        .map(_.lastReadAt)
+        .update(lastReadAt)
+      _ ← DBIO.sequence(
+        (userIds diff existing)
+          .toSeq
+          .map(userId ⇒ create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), lastReadAt, new DateTime(0), new DateTime(0))))
+      )
+    } yield userIds.size
   }
 
   def updateOwnerLastReadAt(userId: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit ec: ExecutionContext) = {
