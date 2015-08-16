@@ -11,6 +11,7 @@ target 'ActorApp' do
     pod 'CocoaAsyncSocket'
         
 	# UI
+    pod 'AsyncDisplayKit'
 	pod 'SVProgressHUD'
 	pod 'MBProgressHUD'
 	pod 'PSTAlertController'
@@ -32,6 +33,7 @@ target 'ActorApp' do
     pod 'PSTAlertController'
     pod 'TTTAttributedLabel'
     pod 'M13ProgressSuite'
+    pod 'MDRadialProgress'
     
     # Tracking
     pod 'SplunkMint-iOS'

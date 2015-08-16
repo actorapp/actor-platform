@@ -20,6 +20,12 @@ public class GenericEnginesProvider implements EnginesRuntime {
         ActorSystem.system().addDispatcher("db", 1);
     }
 
+    private DisplayList.OperationMode operationMode;
+
+    public GenericEnginesProvider(DisplayList.OperationMode operationMode) {
+        this.operationMode = operationMode;
+    }
+
     @Override
     public <T extends BserObject & ListEngineItem> ListEngine<T> createListEngine(ListStorage storage, BserCreator<T> creator) {
         return new AsyncListEngine<T>((ListStorageDisplayEx) storage, creator);
@@ -27,8 +33,6 @@ public class GenericEnginesProvider implements EnginesRuntime {
 
     @Override
     public <T extends BserObject & ListEngineItem> PlatformDisplayList<T> createDisplayList(ListEngine<T> listEngine, boolean isSharedInstance, String clazz) {
-        return new BindedDisplayList<T>((AsyncListEngine<T>) listEngine,
-                isSharedInstance, 20, 20, DisplayList.OperationMode.GENERAL,
-                null);
+        return new BindedDisplayList<T>((AsyncListEngine<T>) listEngine, isSharedInstance, 20, 20, operationMode);
     }
 }
