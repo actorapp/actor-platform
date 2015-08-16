@@ -4,15 +4,17 @@ import java.io.OutputStreamWriter
 import java.net.{ HttpURLConnection, URL }
 
 import com.amazonaws.util.IOUtils
-
 import im.actor.api.rpc._
 import im.actor.api.rpc.files._
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.session.Session
-import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter, ImplicitUserRegions }
+import im.actor.server._
 
-class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter with ImplicitUserRegions {
+class FilesServiceSpec
+  extends BaseAppSuite
+  with ImplicitFileStorageAdapter
+  with ImplicitUserRegions
+  with ImplicitSessionRegionProxy
+  with ImplicitAuthService {
   behavior of "FilesService"
 
   it should "Generate upload url" in e1
@@ -25,13 +27,7 @@ class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter with
 
   it should "Generate valid upload part urls when same request comes twice" in e5
 
-  implicit val sessionRegion = Session.startRegionProxy()
-
   lazy val service = new FilesServiceImpl
-
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService = buildAuthService()
 
   val (user, _, _) = createUser()
   val authId = createAuthId()

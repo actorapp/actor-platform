@@ -11,6 +11,7 @@ import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
+import im.actor.server.db.DbExtension
 import im.actor.server.{ models, persist }
 
 case class PresenceManagerRegion(val ref: ActorRef)
@@ -32,6 +33,8 @@ object Presences {
 
 object PresenceManager {
   import Presences._
+
+  private val InitRetryTimeout = 5.seconds
 
   private sealed trait Message
 
@@ -72,11 +75,11 @@ object PresenceManager {
       shardResolver = shardResolver
     ))
 
-  def startRegion()(implicit system: ActorSystem, db: Database): PresenceManagerRegion = startRegion(Some(props))
+  def startRegion()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(Some(props))
 
-  def startRegionProxy()(implicit system: ActorSystem, db: Database): PresenceManagerRegion = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(None)
 
-  def props(implicit db: Database) = Props(classOf[PresenceManager], db)
+  def props = Props(classOf[PresenceManager])
 
   def subscribe(userId: Int, consumer: ActorRef)(implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(userId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
@@ -86,7 +89,7 @@ object PresenceManager {
     Future.sequence(userIds map (subscribe(_, consumer))) map (_ ⇒ ())
 
   def unsubscribe(userId: Int, consumer: ActorRef)(implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ref.ask(Envelope(userId, Unsubscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
+    region.ref.ask(Envelope(userId, Unsubscribe(consumer))).mapTo[UnsubscribeAck].map(_ ⇒ ())
   }
 
   def presenceSetOnline(userId: Int, timeout: Long)(implicit region: PresenceManagerRegion): Unit = {
@@ -98,11 +101,12 @@ object PresenceManager {
   }
 }
 
-class PresenceManager(implicit db: Database) extends Actor with ActorLogging with Stash {
+class PresenceManager extends Actor with ActorLogging with Stash {
   import Presences._
   import PresenceManager._
 
   implicit val ec: ExecutionContext = context.dispatcher
+  private val db: Database = DbExtension(context.system).db
 
   private val receiveTimeout = 15.minutes // TODO: configurable
   context.setReceiveTimeout(receiveTimeout)
@@ -112,21 +116,28 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
   private[this] var lastChange = UserPresenceChange(Offline, 0)
   private[this] var lastSeenAt: Option[DateTime] = None
 
+  private def initialize(userId: Int): Unit = {
+    db.run(persist.presences.UserPresence.find(userId).map {
+      case Some(userPresence) ⇒
+        self ! Initialized(userPresence.lastSeenAt)
+      case None ⇒
+        db.run(persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, None)))
+        self ! Initialized(None)
+    }) onFailure {
+      case e ⇒
+        log.error(e, "Failed to recover PresenceManager state. Retry in {}", InitRetryTimeout)
+
+        context.system.scheduler.scheduleOnce(InitRetryTimeout) {
+          initialize(userId)
+        }
+    }
+  }
+
   def receive = {
     case Envelope(userId, _) ⇒
       stash()
 
-      db.run(persist.presences.UserPresence.find(userId).map {
-        case Some(userPresence) ⇒
-          self ! Initialized(userPresence.lastSeenAt)
-        case None ⇒
-          persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, None))
-          self ! Initialized(None)
-      }).onFailure {
-        case e ⇒
-          log.error(e, "Failed to recover PresenceManager state")
-          self ! PoisonPill
-      }
+      initialize(userId)
     case Initialized(lastSeenAt: Option[DateTime]) ⇒
       unstashAll()
       this.lastSeenAt = lastSeenAt
@@ -142,7 +153,7 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
       }
 
       sender ! SubscribeAck(consumer)
-      deliverState(userId)
+      deliverState(userId, consumer)
     case Envelope(userId, Unsubscribe(consumer)) ⇒
       consumers -= consumer
       context.unwatch(consumer)
@@ -178,9 +189,9 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
       }
   }
 
-  private def deliverState(userId: Int): Unit = {
-    consumers foreach { consumer ⇒
-      consumer ! PresenceState(userId, this.lastChange.presence, this.lastSeenAt)
-    }
-  }
+  private def deliverState(userId: Int): Unit =
+    consumers foreach (deliverState(userId, _))
+
+  private def deliverState(userId: Int, consumer: ActorRef): Unit =
+    consumer ! PresenceState(userId, this.lastChange.presence, this.lastSeenAt)
 }

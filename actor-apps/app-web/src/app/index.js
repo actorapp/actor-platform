@@ -3,6 +3,13 @@ import crosstab from 'crosstab';
 import React from 'react';
 import Router from 'react-router';
 import Raven from 'utils/Raven'; // eslint-disable-line
+import isMobile from 'utils/isMobile';
+import ReactMixin from 'react-mixin';
+
+import Intl from 'intl'; // eslint-disable-line
+import LocaleData from 'intl/locale-data/jsonp/en-US'; // eslint-disable-line
+import { IntlMixin } from 'react-intl';
+import { english, russian } from 'l18n';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -10,6 +17,7 @@ import Deactivated from 'components/Deactivated.react';
 import Login from 'components/Login.react';
 import Main from 'components/Main.react';
 import JoinGroup from 'components/JoinGroup.react';
+import Install from 'components/Install.react';
 
 import LoginStore from 'stores/LoginStore';
 import LoginActionCreators from 'actions/LoginActionCreators';
@@ -38,6 +46,35 @@ if (crosstab.supported) {
   });
 }
 
+// Check for mobile device, and force users to install native apps.
+if (isMobile() && window.location.hash !== '#/install') {
+  window.location.assign('#/install');
+  document.body.classList.add('overflow');
+} else if (window.location.hash === '#/install') {
+  window.location.assign('/');
+}
+
+@ReactMixin.decorate(IntlMixin)
+class App extends React.Component {
+  render() {
+    return <RouteHandler/>;
+  }
+}
+
+// Internationalisation
+// TODO: Move to preferences
+const language = 'en-US';
+//const language = 'ru-RU';
+let intlData;
+switch (language) {
+  case 'ru-RU':
+    intlData = russian;
+    break;
+  case 'en-US':
+    intlData = english;
+    break;
+}
+
 const initReact = () => {
   if (window.location.hash !== '#/deactivated') {
     if (crosstab.supported) {
@@ -51,25 +88,20 @@ const initReact = () => {
     }
   }
 
-  const App = React.createClass({
-    render() {
-      return <RouteHandler/>;
-    }
-  });
-
   const routes = (
     <Route handler={App} name="app" path="/">
       <Route handler={Main} name="main" path="/"/>
       <Route handler={JoinGroup} name="join" path="/join/:token"/>
       <Route handler={Login} name="login" path="/auth"/>
       <Route handler={Deactivated} name="deactivated" path="/deactivated"/>
+      <Route handler={Install} name="install" path="/install"/>
       <DefaultRoute handler={Main}/>
     </Route>
   );
 
   const router = Router.run(routes, Router.HashLocation, function (Handler) {
     injectTapEventPlugin();
-    React.render(<Handler/>, document.getElementById('actor-web-app'));
+    React.render(<Handler {...intlData}/>, document.getElementById('actor-web-app'));
   });
 
   if (window.location.hash !== '#/deactivated') {

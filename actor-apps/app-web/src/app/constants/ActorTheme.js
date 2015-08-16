@@ -11,8 +11,9 @@ const ActorTheme = {
     return {
       primary1Color: '#4a90e2',
       primary2Color: '#486181',
-      //primary3Color: Colors.cyan100,
-      accent1Color: Colors.white//,
+      primary3Color: '#5191db',
+      accent1Color: Colors.white,
+      textColor: '#4d4d4d'
       //accent2Color: Colors.pinkA400,
       //accent3Color: Colors.pinkA100,
       //textColor: Colors.darkBlack,
@@ -41,10 +42,37 @@ const ActorTheme = {
       },
       tabs: {
         backgroundColor: palette.primary2Color
+      },
+      radioButton: {
+        borderColor: ColorManipulator.fade(Colors.black, .15),
+        checkedColor: palette.primary3Color,
+        requiredColor: palette.primary3Color
+      },
+      dropDownMenu: {
+        accentColor: palette.primary3Color
+      },
+      menuItem: {
+        hoverColor: '#f5f6f7',
+        selectedTextColor: palette.primary3Color
       }
     };
 
     return obj;
+  },
+
+  getSnackbarStyles() {
+    return {
+      left: 'auto',
+      marginLeft: 0,
+      right: 0,
+      height: '40px',
+      lineHeight: '40px',
+      color: 'white',
+      marginRight: 24,
+      pointerEvents: 'none',
+      backgroundColor: '#4a90e2',
+      textShadow: '0 1px 1px rgba(0,0,0,.3)'
+    };
   }
 };
 

@@ -39,7 +39,7 @@ export default {
     preLoaders: [
       {
         test: /\.js$/,
-        loader: 'eslint',
+        loaders: ['eslint', 'source-map'],
         exclude: /node_modules/
       }
     ],

@@ -10,6 +10,7 @@ import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 
+import im.actor.server.db.DbExtension
 import im.actor.server.persist
 
 case class GroupPresenceManagerRegion(ref: ActorRef)
@@ -18,6 +19,8 @@ case class GroupPresenceManagerRegion(ref: ActorRef)
 case class GroupPresenceState(groupId: Int, onlineCount: Int)
 
 object GroupPresenceManager {
+
+  private val SubscribeRetryTimeout = 5.seconds
 
   @SerialVersionUID(1L)
   private case class Envelope(groupId: Int, payload: Message)
@@ -60,11 +63,11 @@ object GroupPresenceManager {
       shardResolver = shardResolver
     ))
 
-  def startRegion()(implicit presenceManagerRegion: PresenceManagerRegion, system: ActorSystem, db: Database): GroupPresenceManagerRegion = startRegion(Some(props))
+  def startRegion()(implicit presenceManagerRegion: PresenceManagerRegion, system: ActorSystem): GroupPresenceManagerRegion = startRegion(Some(props))
 
-  def startRegionProxy()(implicit system: ActorSystem, db: Database): GroupPresenceManagerRegion = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): GroupPresenceManagerRegion = startRegion(None)
 
-  def props(implicit presenceManagerRegion: PresenceManagerRegion, db: Database) = Props(classOf[GroupPresenceManager], presenceManagerRegion, db)
+  def props(implicit presenceManagerRegion: PresenceManagerRegion) = Props(classOf[GroupPresenceManager], presenceManagerRegion)
 
   def subscribe(groupId: Int, consumer: ActorRef)(implicit region: GroupPresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(groupId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
@@ -88,14 +91,15 @@ object GroupPresenceManager {
 
 class GroupPresenceManager(
   implicit
-  presenceManagerRegion: PresenceManagerRegion,
-  db:                    Database
+  presenceManagerRegion: PresenceManagerRegion
 ) extends Actor with ActorLogging with Stash {
   import GroupPresenceManager._
   import Presences._
 
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val timeout = Timeout(5.seconds)
+
+  private val db: Database = DbExtension(context.system).db
 
   private val receiveTimeout = 15.minutes // TODO: configurable
   context.setReceiveTimeout(receiveTimeout)
@@ -132,6 +136,7 @@ class GroupPresenceManager(
       }
 
       sender ! SubscribeAck(consumer)
+      deliverState(groupId, consumer)
     case Envelope(_, Unsubscribe(consumer)) ⇒
       consumers -= consumer
       context.unwatch(consumer)
@@ -163,22 +168,26 @@ class GroupPresenceManager(
   private def subscribeToUserPresences(userIds: Set[Int]): Unit = {
     PresenceManager.subscribe(userIds, self) onFailure {
       case e ⇒
-        log.error("Failed to subscribe to users presences")
-        context.stop(self)
+        log.error(e, "Failed to subscribe to users presences")
+        context.system.scheduler.scheduleOnce(SubscribeRetryTimeout) {
+          subscribeToUserPresences(userIds)
+        }
     }
   }
 
   private def unsubscribeFromUserPresences(userId: Int): Unit = {
     PresenceManager.unsubscribe(userId, self) onFailure {
       case e ⇒
-        log.error("Failed to unsubscribe from user presences")
-        context.stop(self)
+        log.error(e, "Failed to unsubscribe from user presences")
+        context.system.scheduler.scheduleOnce(SubscribeRetryTimeout) {
+          unsubscribeFromUserPresences(userId)
+        }
     }
   }
 
-  private def deliverState(groupId: Int): Unit = {
-    consumers foreach { consumer ⇒
-      consumer ! GroupPresenceState(groupId, onlineUserIds.size)
-    }
-  }
+  private def deliverState(groupId: Int): Unit =
+    consumers foreach (deliverState(groupId, _))
+
+  private def deliverState(groupId: Int, consumer: ActorRef): Unit =
+    consumer ! GroupPresenceState(groupId, onlineUserIds.size)
 }

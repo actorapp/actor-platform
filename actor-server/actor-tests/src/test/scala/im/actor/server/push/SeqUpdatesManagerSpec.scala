@@ -1,8 +1,9 @@
 package im.actor.server.push
 
 import akka.util.Timeout
+import im.actor.server.db.DbExtension
 import im.actor.server.sequence.SeqState
-import im.actor.server.{ ImplicitSeqUpdatesManagerRegion, ActorSpecification, ActorSuite, SqlSpecHelpers }
+import im.actor.server.{ ImplicitSeqUpdatesManagerRegion, ActorSpecification, ActorSuite }
 import org.scalatest.time.{ Span, Seconds }
 
 import scala.concurrent.duration._
@@ -21,7 +22,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
                                 """)
     )
   }
-) with SqlSpecHelpers with ImplicitSeqUpdatesManagerRegion {
+) with ImplicitSeqUpdatesManagerRegion {
   behavior of "SeqUpdatesManager"
 
   it should "increment seq on update push" in e1
@@ -30,27 +31,30 @@ class SeqUpdatesManagerSpec extends ActorSuite(
 
   import SeqUpdatesManagerMessages._
 
-  implicit val (ds, db) = migrateAndInitDb()
   implicit val timeout: Timeout = Timeout(5.seconds)
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(10, Seconds))
 
+  DbExtension(system).clean()
+  DbExtension(system).migrate()
+
   val region = seqUpdExt.region
   val probe = TestProbe()
+  val emptyRefs = (Set.empty[Int], Set.empty[Int])
 
   def e1() = {
     val authId = util.Random.nextLong()
     val update = api.contacts.UpdateContactsAdded(Vector(1, 2, 3))
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, None, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, emptyRefs, None, None, None)))
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SeqState]
       msg.seq should ===(1000)
     }
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, None, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, emptyRefs, None, None, None)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
       msg.seq should ===(1001)
     }
@@ -58,18 +62,18 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     probe.expectNoMsg(3.seconds)
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, None, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, emptyRefs, None, None, None)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
       msg.seq should ===(2002)
     }
 
     for (a ← 1 to 600)
-      probe.send(region.ref, Envelope(authId, PushUpdate(update.header, update.toByteArray, None, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdate(update.header, update.toByteArray, emptyRefs, None, None, None)))
 
     probe.expectNoMsg(4.seconds)
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, None, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, emptyRefs, None, None, None)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
       msg.seq should ===(3603)
     }
@@ -80,7 +84,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     val update = api.contacts.UpdateContactsAdded(Vector(1, 2, 3))
 
     val futures = for (i ← 0 to 100) yield {
-      val f = (region.ref ? Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, None, None, None)))
+      val f = (region.ref ? Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, emptyRefs, None, None, None)))
         .mapTo[SeqState]
 
       (f, 1000 + i)
@@ -93,13 +97,4 @@ class SeqUpdatesManagerSpec extends ActorSuite(
         }
     }
   }
-
-  override def afterAll: Unit = {
-    super.afterAll()
-    system.awaitTermination()
-    closeDb()
-  }
-
-  private def closeDb(): Unit =
-    ds.close()
 }

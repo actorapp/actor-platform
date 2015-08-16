@@ -11,6 +11,7 @@ import slick.profile.SqlAction
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.users._
+import im.actor.server.db.DbExtension
 import im.actor.server.models.UserPhone
 import im.actor.server.{ models, persist }
 

@@ -57,6 +57,9 @@ object GroupUser {
   def find(groupId: Int, userId: Int) =
     byPKC((groupId, userId)).result.headOption
 
+  def exists(groupId: Int, userId: Int) =
+    byPKC.applied((groupId, userId)).exists.result
+
   def isJoined(groupId: Int, userId: Int) =
     byPKC.applied((groupId, userId)).map(_.joinedAt.isDefined).result.headOption
 

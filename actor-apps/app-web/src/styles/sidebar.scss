@@ -1,25 +1,23 @@
 .sidebar {
   position: relative;
 
-  overflow: auto;
+  overflow: visible;
 
   width: $sidebar-width;
   height: 100%;
 
   color: $sidebar-text-color;
-  background-color: $kashmir-blue;
+  background-color: $dusky-blue;
 
   &__header {
+    user-select: none;
     transition: background $default-transition-duration $default-transition-timing;
-
     &__user {
       height: $sidebar-header-height;
-      padding: 2px 16px;
-
-      background-color: $sidebar-header-hover-color;
+      padding: 2px 14px;
 
       .avatar {
-        margin: 14px 8px 14px 0;
+        margin: 16px 10px 16px 0;
       }
 
       &__name {
@@ -36,7 +34,7 @@
 
         color: white;
       }
-      &__expand {
+      .dropdown__button {
         width: 24px;
         height: 24px;
         margin: 18px 0;
@@ -47,59 +45,34 @@
         color: rgba(255,255,255,.65);
       }
     }
-    &__menu {
-      position: absolute;
-      z-index: 5;
-      top: 60px;
-      left: 0;
 
-      display: none;
-
-      box-sizing: border-box;
-      width: 100%;
-      margin: 0;
-      padding: 0 0 6px;
-
-      list-style: none;
-
-      color: whitesmoke;
-      background-color: $sidebar-header-hover-color;
-
-      &__item {
-        line-height: 24px;
-
-        padding: 6px 16px;
-
-        transition: background $default-transition-duration $default-transition-timing;
-        .material-icons {
-          margin: 0 12px 0 4px;
-
-          color: $pigeon-post;
-        }
-        span {
-          font-size: 15px;
-          font-weight: 500;
-
-          display: inline-block;
-        }
-        &:hover {
-          background-color: rgba(0,0,0,.1);
-        }
+    .dropdown--opened {
+      .dropdown__button {
+        background-color: transparent !important;
+        box-shadow: none !important;
       }
     }
+    .dropdown__menu {
+      min-width: 230px;
+      margin-top: 15px;
+      margin-right: -30px;
+    }
 
+    &:hover {
+      //background-color: rgba($baby-blue,.2);
+      background-color: rgba($baby-blue,.12);
+    }
     &--clickable {
       cursor: pointer;
     }
     &--opened {
-      background-color: $sidebar-header-hover-color;
-      .sidebar__header__user__expand {
+      background-color: rgba($baby-blue,.2) !important;
+      .dropdown__button {
         transform: scale(1, -1);
 
+        color: white;
+
         backface-visibility: hidden;
-      }
-      .sidebar__header__menu {
-        display: block;
       }
     }
   }
@@ -107,9 +80,9 @@
   &__tabs {
     position: absolute;
     top: $toolbar-height;
-    left: 0;
     right: 0;
     bottom: 0;
+    left: 0;
     .tabs-menu {
       height: $sidebar-tabs-height;
       margin: 0;
@@ -149,10 +122,6 @@
         }
       }
     }
-    //.tab-panel {
-    //  position: relative;
-    //  height: 100%;
-    //}
 
     &__tab-items {
       & > div {
@@ -163,13 +132,14 @@
       position: absolute;
       top: 48px;
       bottom: 0;
+
       width: 100%;
       & > div {
         position: absolute !important;
         top: 0;
+        right: 0;
         bottom: 0;
         left: 0;
-        right: 0;
       }
     }
   }
@@ -195,12 +165,16 @@
     &__item {
       font-size: 15px;
 
-      padding: 8px 16px;
+      padding: 7px 14px;
 
       cursor: pointer;
+
+      //opacity: .6;
+      //color: rgba(white, .6);
+      color: white;
       //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
-        margin: 0 12px 0 4px;
+        margin: 0 10px 0 0;
 
         vertical-align: top;
       }
@@ -220,31 +194,34 @@
         min-width: 24px;
         height: 24px;
         margin: 0 0 0 2px;
+        padding: 0 4px;
 
         text-align: center;
 
         color: white;
         border-radius: 12px;
-        background-color: $cornflower-blue;
-        padding: 0 4px;
+        background-color: $coral;
       }
       &:hover {
+        opacity: 1;
         color: white;
-        background-color: rgba(0,0,0,.1);
+        background-color: rgba($baby-blue,.12);
         box-shadow: none;
       }
       &--active {
+        opacity: 1;
         color: white;
-        background-color: #6c839d !important;
+        background-color: $dark-sky-blue !important;
       }
       &--unread {
+        opacity: 1;
         color: white;
       }
     }
 
     &--recent {
       position: absolute;
-      top: 0;
+      top: $toolbar-height;
       right: 0;
       bottom: 64px;
       left: 0;
@@ -256,7 +233,6 @@
       bottom: 64px;
       left: 0;
       .title {
-        line-height: 20px;
         line-height: 32px;
       }
     }
@@ -268,7 +244,7 @@
 
     box-sizing: border-box;
     width: 100%;
-    padding: 16px;
+    padding: 14px;
     .button {
       i {
         margin-top: -4px;

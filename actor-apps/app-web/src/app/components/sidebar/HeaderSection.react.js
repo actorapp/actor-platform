@@ -1,55 +1,101 @@
+import _ from 'lodash';
 import React from 'react';
 import mixpanel from 'utils/Mixpanel';
+import ReactMixin from 'react-mixin';
+import { IntlMixin, FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 
 import MyProfileActions from 'actions/MyProfileActions';
 import LoginActionCreators from 'actions/LoginActionCreators';
+import HelpActionCreators from 'actions/HelpActionCreators';
+import AddContactActionCreators from 'actions/AddContactActionCreators';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import MyProfileModal from 'components/modals/MyProfile.react';
 import ActorClient from 'utils/ActorClient';
 
-import classNames from 'classnames';
+import AddContactModal from 'components/modals/AddContact.react';
+
+import PreferencesModal from '../modals/Preferences.react';
+import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 var getStateFromStores = () => {
-  return {dialogInfo: null};
+  return {
+    dialogInfo: null
+  };
 };
 
+@ReactMixin.decorate(IntlMixin)
 class HeaderSection extends React.Component {
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
+    this.state = _.assign({
+      isOpened: false
+    }, getStateFromStores());
+  }
+
+  componentDidMount() {
     ActorClient.bindUser(ActorClient.getUid(), this.setUser);
   }
 
-  constructor() {
-    super();
-
-    this.setUser = this.setUser.bind(this);
-    this.toggleHeaderMenu = this.toggleHeaderMenu.bind(this);
-    this.openMyProfile = this.openMyProfile.bind(this);
-    this.setLogout = this.setLogout.bind(this);
-
-    this.state = getStateFromStores();
+  componentWillUnmount() {
+    ActorClient.unbindUser(ActorClient.getUid(), this.setUser);
   }
 
-  setUser(user) {
+  setUser = (user) => {
     this.setState({user: user});
-  }
+  };
 
-  toggleHeaderMenu() {
-    mixpanel.track('Open sidebar menu');
-    this.setState({isOpened: !this.state.isOpened});
-  }
-
-  setLogout() {
+  setLogout = () => {
     LoginActionCreators.setLoggedOut();
-  }
+  };
+
+  openMyProfile = () => {
+    MyProfileActions.modalOpen();
+    mixpanel.track('My profile open');
+  };
+
+  openHelpDialog = () => {
+    HelpActionCreators.open();
+    mixpanel.track('Click on HELP');
+  };
+
+  openAddContactModal = () => {
+    AddContactActionCreators.openModal();
+  };
+
+  onSettingsOpen = () => {
+    PreferencesActionCreators.show();
+  };
+
+  toggleHeaderMenu = () => {
+    const isOpened = this.state.isOpened;
+
+    if (!isOpened) {
+      this.setState({isOpened: true});
+      mixpanel.track('Open sidebar menu');
+      document.addEventListener('click', this.closeHeaderMenu, false);
+    } else {
+      this.closeHeaderMenu();
+    }
+  };
+
+  closeHeaderMenu = () => {
+    this.setState({isOpened: false});
+    document.removeEventListener('click', this.closeHeaderMenu, false);
+  };
 
   render() {
-    var user = this.state.user;
+    const user = this.state.user;
 
     if (user) {
 
-      var headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
+      let headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
         'sidebar__header--opened': this.state.isOpened
+      });
+      let menuClass = classNames('dropdown', {
+        'dropdown--opened': this.state.isOpened
       });
 
       return (
@@ -57,56 +103,56 @@ class HeaderSection extends React.Component {
           <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
             <AvatarItem image={user.avatar}
                         placeholder={user.placeholder}
-                        size="small"
+                        size="tiny"
                         title={user.name} />
             <span className="sidebar__header__user__name col-xs">{user.name}</span>
-            <span className="sidebar__header__user__expand">
-              <i className="material-icons">keyboard_arrow_down</i>
-            </span>
+            <div className={menuClass}>
+              <span className="dropdown__button">
+                <i className="material-icons">arrow_drop_down</i>
+              </span>
+              <ul className="dropdown__menu dropdown__menu--right">
+                <li className="dropdown__menu__item hide">
+                  <i className="material-icons">photo_camera</i>
+                  <FormattedMessage message={this.getIntlMessage('setProfilePhoto')}/>
+                </li>
+                <li className="dropdown__menu__item" onClick={this.openMyProfile}>
+                  <i className="material-icons">edit</i>
+                  <FormattedMessage message={this.getIntlMessage('editProfile')}/>
+                </li>
+                <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
+                  <i className="material-icons">person_add</i>
+                  Add contact
+                </li>
+                <li className="dropdown__menu__separator"></li>
+                <li className="dropdown__menu__item  hide">
+                  <svg className="icon icon--dropdown"
+                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
+                  <FormattedMessage message={this.getIntlMessage('configureIntegrations')}/>
+                </li>
+                <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
+                  <i className="material-icons">help</i>
+                  <FormattedMessage message={this.getIntlMessage('helpAndFeedback')}/>
+                </li>
+                <li className="dropdown__menu__item hide" onClick={this.onSettingsOpen}>
+                  <i className="material-icons">settings</i>
+                  <FormattedMessage message={this.getIntlMessage('preferences')}/>
+                </li>
+                <li className="dropdown__menu__item dropdown__menu__item--light" onClick={this.setLogout}>
+                  <FormattedMessage message={this.getIntlMessage('signOut')}/>
+                </li>
+              </ul>
+            </div>
           </div>
-          <ul className="sidebar__header__menu">
-            <li className="sidebar__header__menu__item" onClick={this.openMyProfile}>
-              <i className="material-icons">person</i>
-              <span>Profile</span>
-            </li>
-            {/*
-            <li className="sidebar__header__menu__item" onClick={this.openCreateGroup}>
-              <i className="material-icons">group_add</i>
-              <span>Create group</span>
-            </li>
-             */}
-            <li className="sidebar__header__menu__item hide">
-              <i className="material-icons">cached</i>
-              <span>Integrations</span>
-            </li>
-            <li className="sidebar__header__menu__item hide">
-              <i className="material-icons">settings</i>
-              <span>Settings</span>
-            </li>
-            <li className="sidebar__header__menu__item hide">
-              <i className="material-icons">help</i>
-              <span>Help</span>
-            </li>
-            <li className="sidebar__header__menu__item" onClick={this.setLogout}>
-              <i className="material-icons">power_settings_new</i>
-              <span>Log out</span>
-            </li>
-          </ul>
 
           <MyProfileModal/>
+          <AddContactModal/>
+          <PreferencesModal/>
         </header>
       );
     } else {
       return null;
     }
   }
-
-  openMyProfile() {
-    MyProfileActions.modalOpen();
-    mixpanel.track('My profile open');
-    this.setState({isOpened: false});
-  }
-
 }
 
 export default HeaderSection;

@@ -29,8 +29,11 @@ object GooglePushCredentials {
   def createOrUpdate(c: models.push.GooglePushCredentials) =
     creds.insertOrUpdate(c)
 
+  def byAuthId(authId: Rep[Long]) = creds.filter(_.authId === authId)
+  val byAuthIdC = Compiled(byAuthId _)
+
   def find(authId: Long) =
-    creds.filter(_.authId === authId).result.headOption
+    byAuthIdC(authId).result.headOption
 
   def delete(authId: Long) =
     creds.filter(_.authId === authId).delete

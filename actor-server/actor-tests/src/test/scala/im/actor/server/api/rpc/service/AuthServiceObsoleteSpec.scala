@@ -7,7 +7,6 @@ import scalaz._
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.server.activation.internal.DummyCodeActivation
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
