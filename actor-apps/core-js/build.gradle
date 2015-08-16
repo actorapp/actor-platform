@@ -9,11 +9,12 @@ apply plugin: 'gwt'
 
 gwt {
     gwtVersion = '2.7.0'
-    modules 'im.actor.ActorMessenger'
+    modules 'im.actor.ActorCore'
 
     compiler {
         strict = true;
-        style = "OBF"
+        // style = "OBF"
+        style = "PRETTY"
         enableClosureCompiler = false;
         disableClassMetadata = true;
         disableCastChecking = true;
@@ -26,7 +27,7 @@ gwt {
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/java', '../core/src/main/java', '../core-crypto/src/main/java', '../core-annotations/src/main/java']
+            srcDirs = ['src/main/java', '../core/src/main/java', '../runtime/src/main/java', '../runtime-js/src/main/java']
         }
         resources {
             srcDirs = ['../core/src/main/resources']
@@ -44,7 +45,8 @@ dependencies {
 
 task buildPackage(dependsOn: ['war']) {
     doFirst {
-        delete "$buildDir/library"
+        delete "$buildDir/package"
+        delete "$buildDir/library "
 
         copy {
             into "$buildDir/library"
@@ -61,6 +63,11 @@ task buildPackage(dependsOn: ['war']) {
         copy {
             into "$buildDir/package"
             from "$projectDir/src/main/javascript"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/../runtime-js/src/main/javascript"
         }
     }
 }

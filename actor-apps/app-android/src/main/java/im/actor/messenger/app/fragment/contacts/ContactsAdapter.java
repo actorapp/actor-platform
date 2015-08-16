@@ -6,10 +6,10 @@ import android.widget.FrameLayout;
 
 import java.util.HashSet;
 
+import im.actor.core.entity.Contact;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.android.view.BindedListAdapter;
-import im.actor.model.entity.Contact;
-import im.actor.model.mvvm.BindedDisplayList;
+import im.actor.runtime.android.view.BindedListAdapter;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

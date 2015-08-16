@@ -17,8 +17,8 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.model.entity.GroupMember;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.entity.GroupMember;
+import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.core.Core.myUid;
 import static im.actor.messenger.app.core.Core.users;

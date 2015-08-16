@@ -9,17 +9,17 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import im.actor.core.entity.Avatar;
+import im.actor.core.entity.GroupMember;
+import im.actor.core.viewmodel.GroupVM;
+import im.actor.core.viewmodel.UserPresence;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.model.entity.Avatar;
-import im.actor.model.entity.GroupMember;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueDoubleChangedListener;
-import im.actor.model.mvvm.ValueModel;
-import im.actor.model.mvvm.ValueTripleChangedListener;
-import im.actor.model.viewmodel.GroupVM;
-import im.actor.model.viewmodel.UserPresence;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.ValueTripleChangedListener;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
@@ -38,6 +38,7 @@ public class ActorBinder {
                 textView.setText(val);
             }
         });
+
     }
 
     public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<int[]> typing) {

@@ -1,0 +1,379 @@
+//
+//  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
+//
+
+/*
+ * Main Screen
+ */
+
+"TabMessages" = "Сообщения";
+
+"TabPeople" = "Люди";
+
+"TabSettings" = "Настройки";
+
+"TabDiscover" = "Паблики";
+
+/*
+ * Contacts
+ */
+
+"ContactsAddHeader" = "Добавить Контакт";
+
+"ContactsAddHint" = "Укажите номер телефона";
+
+"ContactsActionInvite" = "Пригласить друзей";
+
+"ContactsActionAdd" = "Добавить друга";
+
+/*
+ * Dialogs
+ */
+
+"DialogsHint" = "Проведите для удаления";
+
+/*
+ * Settings
+ */
+
+"SettingsEdit" = "Изменить";
+
+"SettingsSetPhoto" = "Поставить новое фото";
+
+"SettingsChangeName" = "Поменять имя";
+
+"SettingsSecurity" = "Безопасность";
+
+"SettingsEditHeader" = "Измените свое имя";
+
+"SettingsUsernameTitle" = "Измените свой ник";
+
+"SettingsNotifications" = "Оповещения и звуки";
+
+"SettingsAboutNotSet" = "Указать информацию";
+
+"SettingsUsernameNotSet" = "Указать ник";
+
+"SettingsChangeAboutTitle" = "О Себе";
+
+"SettingsAskQuestion" = "Задать вопрос";
+
+"SettingsAbout" = "О Программе";
+
+"SettingsVersion" = "Версия {version}";
+
+/*
+ * Profile
+ */
+
+"ProfileEditHeader" = "Изменить имя";
+
+"ProfileSendMessage" = "Отправить сообщение";
+
+"ProfileNotifications" = "Оповещения";
+
+"ProfileNotificationsWarring" = "Вы уверены, что хотите отключить выключить от этого человека? Это может привести к проблемам в отношениях с ним.";
+
+"ProfileNotificationsWarringAction" = "Выключить";
+
+"ProfileAddToContacts" = "Добавить в контакты";
+
+"ProfileRemoveFromContacts" = "Удалить из контактов";
+
+"ProfileRename" = "Переименовать контакт";
+
+"ProfileRenameMessage" = "Вы можете изменять имя контакта для более удобной организации своей телефонной книги. Все изменения будут видны только Вам.";
+
+"ProfileRenameAction" = "Переименовать";
+
+"ProfileAbout" = "о себе";
+
+"ProfilePhone" = "телефон";
+
+"ProfileUsername" = "ник";
+
+"CallNumber" = "Позвонить";
+
+"ShareNumber" = "Переслать номер";
+
+"CopyNumber" = "Скопировать номер";
+
+"NumberCopied" = "Номер скопирован в буфер обмена";
+
+/*
+ * Publics
+ */
+
+"JoinAlertMessage" = "Вы уверены, что хотите присоединиться к этой группе?";
+
+/*
+ * Group
+ */
+
+"GroupEditHeader" = "Измените тему группы";
+
+"GroupSetPhoto" = "Поменять фото группы";
+
+"GroupSetTitle" = "Изменить тему группы";
+
+"GroupEditConfirm" = "Вы уверены, что хотите поменять тему группы?";
+
+"GroupEditConfirmAction" = "Поменять тему";
+
+"GroupNotifications" = "Оповещения";
+
+"GroupSettings" = "НАСТРОЙКИ";
+
+"GroupIntegrations" = "Интеграции";
+
+"GroupMembers" = "{0} УЧАСТНИКИ";
+
+"GroupMemberInfo" = "Профиль";
+
+"GroupMemberKick" = "Исключить из группы";
+
+"GroupMemberKickMessage" = "Вы уверены, что хотите исключить {name} из группы?";
+
+"GroupMemberKickAction" = "Исключить из группы";
+
+"GroupMemberWrite" = "Написать";
+
+"GroupMemberCall" = "Позвонить";
+
+"GroupMemberCallNoPhones" = "Нет телефонных номеров у этого участника.";
+
+"GroupAddParticipant" = "Добавить в группу...";
+
+"GroupAddParticipantTitle" = "Контакты";
+
+"GroupAddParticipantUrl" = "Пригласить по ссылке";
+
+"GroupLeave" = "Покинуть группу";
+
+"GroupLeaveConfirm" = "Вы уверены, что хотите покинуть группу?";
+
+"GroupLeaveConfirmAction" = "Покинуть группу";
+
+"GroupInviteLinkPageTitle" = "Приглашение";
+
+"GroupInviteLinkTitle" = "ССЫЛКА";
+
+"GroupInviteLinkHint" = "Вы можете пригласить людей в эту группу, отправляя им эту ссылку для приглашения.";
+
+"GroupInviteLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, никто не сможет по ней присоединиться в группу.";
+
+"GroupInviteLinkRevokeAction" = "Сбросить";
+
+"GroupIntegrationPageTitle" = "API Интеграции";
+
+"GroupIntegrationLinkTitle" = "ССЫЛКА";
+
+"GroupIntegrationLinkHint" = "Вы можете использовать эту ссылку для отправки сообщений из любых внешних сервисов.";
+
+"GroupIntegrationDoc" = "Открыть документацию";
+
+"GroupIntegrationLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, Вы больше не сможетк по ней отправлять сообщения в группу.";
+
+"GroupIntegrationLinkRevokeAction" = "Сбросить";
+
+"GroupJoinMessage" = "Вы уверены, что хотите вступить в группу?";
+
+"GroupJoinAction" = "Вступить";
+
+/*
+ * Compose
+ */
+
+"ComposeTitle" = "Новое сообщение";
+
+"CreateGroup" = "Новая группа";
+
+"CreateGroupTitle" = "Новая группа";
+
+"CreateGroupNamePlaceholder" = "Название группы";
+
+"CreateGroupHint" = "Пожалуйста, укажите название группы и при желании ее фото";
+
+"CreateGroupMembersTitle" = "Пригласить участников";
+
+"CreateGroupMembersPlaceholders" = "Введите имена";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Оповещения и звуки";
+
+"NotificationsEffectsTitle" = "Эффекты";
+
+"NotificationsMobileTitle" = "Мобильные оповещения";
+
+"NotificationsInAppTitle" = "Оповещения в приложении";
+
+"NotificationsNotificationHint" = "Вы можете выключить оповещения для конкретных людей или групп на страницах их профилей.";
+
+"NotificationsPrivacyTitle" = "Приватность";
+
+"NotificationsSoundEffects" = "Звуковые эффекты";
+
+"NotificationsEnable" = "Включить";
+
+"NotificationsSound" = "Звук";
+
+"NotificationsVibration" = "Вибрация";
+
+"NotificationsPreview" = "Предпросмотр сообщений";
+
+"NotificationsPreviewHint" = "Убрать текст сообщений из оповещений.";
+
+"NotificationSecretMessage" = "Новое сообщение";
+
+"NotificationsGroups" = "Групповые оповещения";
+
+"NotificationsOnlyMentions" = "Только с упоминанием";
+
+"NotificationsOnlyMentionsHint" = "Вы можете включить оповещения в группе только для сообщений, в которых упоминается ваш ник";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Приватность и безопасность";
+
+"PrivacyTerminate" = "Удалить все другие сессии";
+
+"PrivacyTerminateHint" = "Выход со всех устройств кроме этого.";
+
+/*
+ * Chat
+ */
+
+"ChatPlaceholder" = "Введите текст...";
+
+"ChatSend" = "Отпр.";
+
+"ChatNoGroupAccess" = "Вы не состоите в группе";
+
+/*
+ * Placeholders
+ */
+
+"Placeholder_Empty_Title" = "Пригласите своих друзей";
+
+"Placeholder_Empty_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
+
+"Placeholder_Empty_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
+
+"Placeholder_Empty_Message2" = "или добавьте контакт вручную";
+
+"Placeholder_Empty_Action2" = "ДОБАВИТЬ КОНТАКТ";
+
+"Placeholder_Loading_Title" = "Синхронизируемся";
+
+"Placeholder_Loading_Message" = "Пожалуйста, подождите пока мы инициализируем приложение.";
+
+"Placeholder_Contacts_Title" = "Пригласите своих друзей";
+
+"Placeholder_Contacts_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
+
+"Placeholder_Contacts_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
+
+"Placeholder_Contacts_Message2" = "или добавьте контакт вручную через кнопку плюс справа вверху экрана";
+
+"Placeholder_Dialogs_Title" = "Начать общение";
+
+"Placeholder_Dialogs_Message" = "Выберите контакт из списка контактов или нажмине кнопку \"написать\" для начала общения.";
+
+"Placeholder_Group_Title" = "Не участник группы";
+
+"Placeholder_Group_Message" = "К сожалению, Вы больше не являетесь участником этой группы.";
+
+/*
+ * Auth
+ */
+
+"AuthPhoneTitle" = "Ваш Телефон";
+
+"AuthPhoneNumberHint" = "Ваш номер телефона";
+
+"AuthPhoneHint" = "Пожалуйста, укажите Вашу страну и номер телефона.";
+
+"AuthPhoneTooShort" = "Номер телефона слишком короткий";
+
+"AuthCodeFieldHint" = "Код активации";
+
+"AuthCodeHint" = "Мы отправили Вам SMS с кодом активации.";
+
+"AuthProfileTitle" = "Ваш профиль";
+
+"AuthProfileAddPhoto1" = "добавить";
+
+"AuthProfileAddPhoto2" = "фото";
+
+"AuthProfileNameHint" = "Ваше имя";
+
+"AuthProfileHint" = "Введите свое имя и фото";
+
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "Ru";
+
+"InviteText" = "Привет! Давай продолжим наше общение в Акторе https://actor.im/dl";
+
+"PhotoRemove" = "Удалить фото";
+
+"PhotoRemoveGroupMessage" = "Вы уверены, что хотите удалить фото группы?";
+
+"PhotoCamera" = "Снять фото";
+
+"PhotoLibrary" = "Фотоархив";
+
+"SendDocument" = "Документ";
+
+"NavigationEdit" = "Изменить";
+
+"NavigationDone" = "Готово";
+
+"NavigationCancel" = "Отмена";
+
+"NavigationBack" = "";
+
+"NavigationNext" = "Далее";
+
+"NavigationSave" = "Сохранить";
+
+"AlertCancel" = "Отмена";
+
+"AlertNext" = "Далее";
+
+"AlertSave" = "Сохранить";
+
+"AlertOk" = "OK";
+
+"AlertYes" = "Да";
+
+"AlertNo" = "Нет";
+
+"UnsupportedContent" = "Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.";
+
+"ActionCopyLink" = "Скопировать ссылку";
+
+"ActionRevokeLink" = "Сбросить ссылку";
+
+"ActionShareLink" = "Поделиться ссылкой";
+
+"AlertLinkCopied" = "Ссылка скопирована в буфер обмена.";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Неправильный номер телефона. Пожалуйста, повторите попытку.";
+
+"ErrorCodeExpired" = "Код устарел. Пожалуйста, начните авторизацию с начала.";
+
+"ErrorAlreadyJoined" = "Вы уже участник группы";
+
+"ErrorUnableToJoin" = "Невозможно вступить в группу";

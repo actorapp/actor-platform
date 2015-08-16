@@ -22,6 +22,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import im.actor.core.entity.Dialog;
+import im.actor.core.entity.SearchEntity;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
@@ -39,12 +43,8 @@ import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-import im.actor.model.entity.Dialog;
-import im.actor.model.entity.SearchEntity;
-import im.actor.model.mvvm.BindedDisplayList;
-import im.actor.model.mvvm.DisplayList;
-import im.actor.model.mvvm.ValueDoubleChangedListener;
-import im.actor.model.mvvm.ValueModel;
+import im.actor.runtime.mvvm.ValueDoubleChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
@@ -125,19 +125,21 @@ public class MainPhoneController extends MainBaseController {
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
-                joinGroupUrl = getIntent().getData().toString();
-            } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
-                if ("text/plain".equals(getIntent().getType())) {
-                    sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                } else {
-                    sendUriString = intent.getParcelableExtra(Intent.EXTRA_STREAM).toString();
-                }
-            } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
-                ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-                if (imageUris != null) {
-                    for (Uri u : imageUris) {
-                        sendUriMultiple.add(u.toString());
+            if (intent.getAction() != null) {
+                if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
+                    joinGroupUrl = getIntent().getData().toString();
+                } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
+                    if ("text/plain".equals(getIntent().getType())) {
+                        sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                    } else {
+                        sendUriString = intent.getParcelableExtra(Intent.EXTRA_STREAM).toString();
+                    }
+                } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+                    ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                    if (imageUris != null) {
+                        for (Uri u : imageUris) {
+                            sendUriMultiple.add(u.toString());
+                        }
                     }
                 }
             }
@@ -429,7 +431,7 @@ public class MainPhoneController extends MainBaseController {
         }
         isSearchVisible = true;
 
-        searchDisplay = messenger().buildSearchList();
+        searchDisplay = messenger().buildSearchDisplayList();
         searchAdapter = new SearchAdapter(getActivity(), searchDisplay, new OnItemClickedListener<SearchEntity>() {
             @Override
             public void onClicked(SearchEntity item) {
