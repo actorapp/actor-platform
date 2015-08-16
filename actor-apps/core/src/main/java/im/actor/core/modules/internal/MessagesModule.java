@@ -247,9 +247,11 @@ public class MessagesModule extends AbsModule {
                 reference.getSize(), reference.getDescriptor(), fastThumb));
     }
 
-    public void onMessageShown(Peer peer, long sortDate) {
-        ownReadActor.send(new OwnReadActor.MessageRead(peer, sortDate));
-        conversationActor(peer).send(new ConversationActor.MessageReadByMe(sortDate));
+    public void onMessageShown(Peer peer, int sender, long sortDate) {
+        if (sender != myUid()) {
+            ownReadActor.send(new OwnReadActor.MessageRead(peer, sortDate));
+            conversationActor(peer).send(new ConversationActor.MessageReadByMe(sortDate));
+        }
     }
 
     public void saveReadState(Peer peer, long lastReadDate) {

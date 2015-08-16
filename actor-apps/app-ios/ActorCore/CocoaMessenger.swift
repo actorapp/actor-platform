@@ -32,7 +32,7 @@ var Actor : CocoaMessenger {
         
             // Providers
             builder.setPhoneBookProvider(PhoneBookProvider())
-            // builder.setNotificationProvider(iOSNotificationProvider())
+            builder.setNotificationProvider(iOSNotificationProvider())
             if config.mixpanel != nil {
                 builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
             }

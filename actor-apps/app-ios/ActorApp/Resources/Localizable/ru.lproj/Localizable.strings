@@ -228,6 +228,12 @@
 
 "NotificationSecretMessage" = "Новое сообщение";
 
+"NotificationsGroups" = "Групповые оповещения";
+
+"NotificationsOnlyMentions" = "Только с упоминанием";
+
+"NotificationsOnlyMentionsHint" = "Вы можете включить оповещения в группе только для сообщений, в которых упоминается ваш ник";
+
 /*
  * Privacy
  */

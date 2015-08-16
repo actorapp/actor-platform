@@ -226,6 +226,12 @@
 
 "NotificationSecretMessage" = "New Message";
 
+"NotificationsGroups" = "Group Notifications";
+
+"NotificationsOnlyMentions" = "Only Mentions";
+
+"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
+
 /*
  * Privacy
  */
