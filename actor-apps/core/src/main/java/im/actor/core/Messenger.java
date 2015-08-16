@@ -683,6 +683,16 @@ public class Messenger {
         return modules.getMessagesModule().loadDraft(peer);
     }
 
+    /**
+     * Loading last read messages
+     *
+     * @param peer destination peer
+     * @return rid of last read message
+     */
+    @ObjectiveCName("loadFirstUnread:")
+    public long loadFirstUnread(Peer peer) {
+        return modules.getMessagesModule().loadReadState(peer);
+    }
 
     //////////////////////////////////////
     //         Peer operations
@@ -1368,6 +1378,45 @@ public class Messenger {
         modules.getSettingsModule().changeInAppVibrationEnabled(val);
     }
 
+    /**
+     * Is Group Notifications Enabled
+     *
+     * @return is group notifications enabled
+     */
+    @ObjectiveCName("isGroupNotificationsEnabled")
+    public boolean isGroupNotificationsEnabled() {
+        return modules.getSettingsModule().isGroupNotificationsEnabled();
+    }
+
+    /**
+     * Change group notifications enabled
+     *
+     * @param val is group notifications enabled
+     */
+    @ObjectiveCName("changeGroupNotificationsEnabled:")
+    public void changeGroupNotificationsEnabled(boolean val) {
+        modules.getSettingsModule().changeGroupNotificationsEnabled(val);
+    }
+
+    /**
+     * Is Group Notifications only for mentions enabled
+     *
+     * @return val is group notifications only for mentions
+     */
+    @ObjectiveCName("isGroupNotificationsOnlyMentionsEnabled")
+    public boolean isGroupNotificationsOnlyMentionsEnabled() {
+        return modules.getSettingsModule().isGroupNotificationsOnlyMentionsEnabled();
+    }
+
+    /**
+     * Change group notifications only for mentions enabled
+     *
+     * @param val is group notifications only for mentions
+     */
+    @ObjectiveCName("changeGroupNotificationsOnlyMentionsEnabled:")
+    public void changeGroupNotificationsOnlyMentionsEnabled(boolean val) {
+        modules.getSettingsModule().changeGroupNotificationsOnlyMentionsEnabled(val);
+    }
 
     /**
      * Is Hint about contact rename shown to user and automatically mark as shown if not.

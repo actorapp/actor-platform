@@ -60,7 +60,9 @@ public class CocoaMessenger extends Messenger {
 
                 @Override
                 public void onItemTouched(Message item) {
-                    modules.getMessagesModule().onMessageShown(peer, item.getSortDate());
+                    if (item.isOnServer()) {
+                        modules.getMessagesModule().onMessageShown(peer, item.getSenderId(), item.getSortDate());
+                    }
                 }
             });
             messagesLists.put(peer, list);

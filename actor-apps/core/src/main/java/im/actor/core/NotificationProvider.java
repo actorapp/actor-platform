@@ -9,7 +9,6 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import java.util.List;
 
 import im.actor.core.entity.Notification;
-import im.actor.core.modules.ModuleContext;
 
 /**
  * Provider for notifications support
@@ -20,8 +19,8 @@ public interface NotificationProvider {
      *
      * @param messenger Messenger object
      */
-    @ObjectiveCName("onMessageArriveInAppWithContext:")
-    void onMessageArriveInApp(ModuleContext messenger);
+    @ObjectiveCName("onMessageArriveInAppWithMessenger:")
+    void onMessageArriveInApp(Messenger messenger);
 
     /**
      * On background notification
@@ -30,13 +29,24 @@ public interface NotificationProvider {
      * @param topNotifications   top 10 notifications
      * @param messagesCount      total messages count
      * @param conversationsCount total conversations count
-     * @param silentUpdate       is silent notification update required
      * @param isInApp            is notification performed in application window
      */
-    @ObjectiveCName("onNotificationWithContext:withTopNotifications:withMessagesCount:withConversationsCount:" +
-            "withSilentUpdate:withIsInApp:")
-    void onNotification(ModuleContext messenger, List<Notification> topNotifications, int messagesCount,
-                        int conversationsCount, boolean silentUpdate, boolean isInApp);
+    @ObjectiveCName("onNotificationWithMessenger:withTopNotifications:withMessagesCount:withConversationsCount:" +
+            "withIsInApp:")
+    void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount,
+                        int conversationsCount, boolean isInApp);
+
+    /**
+     * On Notification panel update
+     *
+     * @param messenger          Messenger object
+     * @param topNotifications   top 10 notifications
+     * @param messagesCount      total messages count
+     * @param conversationsCount total conversations count
+     */
+    @ObjectiveCName("onUpdateNotificationWithMessenger:withTopNotifications:withMessagesCount:withConversationsCount:")
+    void onUpdateNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount,
+                              int conversationsCount);
 
     /**
      * Hide all notifications

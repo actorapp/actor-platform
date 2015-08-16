@@ -12,6 +12,7 @@ import java.util.List;
 import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.Notification;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.notifications.entity.PendingNotification;
 import im.actor.core.modules.internal.notifications.entity.PendingStorage;
@@ -34,6 +35,7 @@ public class NotificationsActor extends ModuleActor {
 
     public NotificationsActor(ModuleContext messenger) {
         super(messenger);
+
         this.storage = messenger.getNotificationsModule().getNotificationsStorage();
     }
 
@@ -58,9 +60,19 @@ public class NotificationsActor extends ModuleActor {
                              boolean hasCurrentUserMention) {
 
         boolean isPeerEnabled = context().getSettingsModule().isNotificationsEnabled(peer);
-        boolean isEnabled = (context().getSettingsModule().isNotificationsEnabled() && isPeerEnabled) || hasCurrentUserMention;
+        boolean isEnabled = context().getSettingsModule().isNotificationsEnabled() && isPeerEnabled;
         boolean isInAppEnabled = context().getSettingsModule().isInAppEnabled();
         boolean isConversationTonesEnabled = context().getSettingsModule().isConversationTonesEnabled();
+
+        if (peer.getPeerType() == PeerType.GROUP) {
+            if (!context().getSettingsModule().isGroupNotificationsEnabled()) {
+                isEnabled = false;
+            } else {
+                if (context().getSettingsModule().isGroupNotificationsOnlyMentionsEnabled()) {
+                    isEnabled = hasCurrentUserMention;
+                }
+            }
+        }
 
         if (!isEnabled && (!(isInAppEnabled && peer.equals(visiblePeer)))) {
             return;
@@ -79,11 +91,11 @@ public class NotificationsActor extends ModuleActor {
             if (isAppVisible) {
                 if (visiblePeer != null && visiblePeer.equals(peer)) {
                     if (isConversationTonesEnabled) {
-                        config().getNotificationProvider().onMessageArriveInApp(context());
+                        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
                     }
                 } else if (isDialogsVisible) {
                     if (isConversationTonesEnabled) {
-                        config().getNotificationProvider().onMessageArriveInApp(context());
+                        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
                     }
                 } else if (isInAppEnabled) {
                     performNotification(false);
@@ -121,11 +133,11 @@ public class NotificationsActor extends ModuleActor {
             if (config().getNotificationProvider() != null) {
                 if (visiblePeer != null && notificationsDuringPause.contains(visiblePeer)) {
                     if (context().getSettingsModule().isConversationTonesEnabled()) {
-                        config().getNotificationProvider().onMessageArriveInApp(context());
+                        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
                     }
                 } else if (isDialogsVisible) {
                     if (context().getSettingsModule().isConversationTonesEnabled()) {
-                        config().getNotificationProvider().onMessageArriveInApp(context());
+                        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
                     }
                 } else if (isAppVisible) {
                     if (context().getSettingsModule().isInAppEnabled()) {
@@ -200,8 +212,13 @@ public class NotificationsActor extends ModuleActor {
         }
         int chatsCount = peers.size();
 
-        config().getNotificationProvider().onNotification(context(), res,
-                messagesCount, chatsCount, isSilentUpdate, isAppVisible);
+        if (isSilentUpdate) {
+            config().getNotificationProvider().onUpdateNotification(context().getMessenger(), res,
+                    messagesCount, chatsCount);
+        } else {
+            config().getNotificationProvider().onNotification(context().getMessenger(), res,
+                    messagesCount, chatsCount, isAppVisible);
+        }
     }
 
     private void hideNotification() {

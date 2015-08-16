@@ -8,7 +8,6 @@ import UIKit;
 class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDelegate, ARDisplayList_AppleChangeListener {
 
     private var displayList: ARBindedDisplayList!
-    private var applyingUpdate: ARAndroidListUpdate?
     private var isStarted: Bool = isIPad
     private var isUpdating: Bool = false
     private var isVisible: Bool = false
@@ -138,16 +137,12 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     }
     
     func objectAtIndex(index: Int) -> AnyObject? {
-        if (isUpdating) {
-            return applyingUpdate!.getItemWithInt(jint(index))
-        }
         return displayList.itemWithIndex(jint(index))
     }
     
     func getCount() -> Int {
         if (isUpdating) {
             return self.prevCount
-//            return Int(applyingUpdate!.getSize())
         }
         return Int(displayList.size())
     }
@@ -275,22 +270,22 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             isLoaded = true
             isLoadedAfter = true
             
-//            var readState = MSG.loadLastReadState(peer)
-//            
-//            if readState > 0 {
-//                for i in 0..<getCount() {
-//                    var ind = getCount() - 1 - i
-//                    var item = objectAtIndex(ind)!
-//                
-//                    if item.getSenderId() != MSG.myUid() {
-//                        if readState < item.getSortDate() {
-//                            unreadIndex = ind
-//                            setUnread(item.getRid())
-//                            break
-//                        }
-//                    }
-//                }
-//            }
+            var readState = Actor.loadFirstUnread(peer)
+           
+            if readState > 0 {
+                for i in 0..<getCount() {
+                    var ind = getCount() - 1 - i
+                    var item = objectAtIndex(ind)!
+                
+                    if item.getSenderId() != Actor.myUid() {
+                        if readState < item.getSortDate() {
+                            unreadIndex = ind
+                            setUnread(item.getRid())
+                            break
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -304,6 +299,6 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     }
     
     func setUnread(rid: jlong) {
-        
+        // Implemented in child class
     }
 }
