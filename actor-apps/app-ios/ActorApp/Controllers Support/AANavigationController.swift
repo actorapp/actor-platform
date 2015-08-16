@@ -31,6 +31,10 @@ class AANavigationController: UINavigationController {
         navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
         navigationBar.shadowImage = UIImage()
     }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
+    }
 }
 
 extension UINavigationBar {

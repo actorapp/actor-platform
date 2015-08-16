@@ -261,6 +261,6 @@ class BarAvatarView : AvatarView {
     }
     
     override func alignmentRectInsets() -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 36, bottom: 0, right: 8)
+        return UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 8)
     }
 }

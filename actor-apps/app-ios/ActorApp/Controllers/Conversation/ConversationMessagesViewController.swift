@@ -16,6 +16,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     private var isLoadedAfter: Bool = false
     private var unreadIndex: Int? = nil
     private let layout = MessagesLayout()
+    private var prevCount: Int = 0
     let peer: ACPeer
     
     init(peer: ACPeer) {
@@ -39,6 +40,8 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        println("viewWillAppear")
+        
         self.collectionView.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 200, right: 0)
         
         isVisible = true
@@ -49,6 +52,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         if (isStarted) {
             self.willUpdate()
             self.collectionView.reloadData()
+            prevCount = getCount()
             self.displayList.addAppleListener(self)
             self.didUpdate()
             return
@@ -69,6 +73,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             
             self.willUpdate()
             self.collectionView.reloadData()
+            self.prevCount = self.getCount()
             self.displayList.addAppleListener(self)
             self.didUpdate()
         });
@@ -95,7 +100,10 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return isStarted ? getCount() : 0
+        
+        var res = isStarted ? getCount() : 0
+        println("numberOfItemsInSection \(res)")
+        return res
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -112,6 +120,8 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         super.viewWillDisappear(animated)
         
         isVisible = false
+        
+        println("viewWillDisappear")
         
         // Remove listener on exit
         self.displayList.removeAppleListener(self)
@@ -136,7 +146,8 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     
     func getCount() -> Int {
         if (isUpdating) {
-            return Int(applyingUpdate!.getSize())
+            return self.prevCount
+//            return Int(applyingUpdate!.getSize())
         }
         return Int(displayList.size())
     }
@@ -170,6 +181,9 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     }
     
     func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
+
+        println("collectionChanged \(getCount())")
+        
         if modification.isLoadMore() {
             UIView.setAnimationsEnabled(false)
         }
@@ -179,8 +193,11 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         var changedRows = Set<Int>()
         
         if modification.nonUpdateCount() > 0 {
+            isUpdating = true
+            println("starting update")
             self.collectionView.performBatchUpdates({ () -> Void in
-
+                println("started update")
+                
                 // Removed rows
                 if modification.removedCount() > 0 {
                     var rows: NSMutableArray = []
@@ -206,6 +223,10 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
                         self.collectionView.moveItemAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()), inSection: 0))
                     }
                 }
+                
+                println("ended update")
+                self.isUpdating = false
+                self.prevCount = self.getCount()
             }, completion: nil)
         }
         
