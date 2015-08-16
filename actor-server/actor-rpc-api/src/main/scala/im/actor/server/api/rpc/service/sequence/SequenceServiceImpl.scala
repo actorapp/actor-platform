@@ -42,7 +42,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   override def jhandleGetState(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
-        seqstate ← getSeqState(client.authId)
+        seqstate ← DBIO.from(getSeqState(client.authId))
       } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
