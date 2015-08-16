@@ -35,11 +35,14 @@ GroupStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
   switch (action.type) {
     case ActionTypes.GET_INTEGRATION_TOKEN:
       _integrationToken = action.token;
+      GroupStoreInstance.emitChange();
+      break;
+    case ActionTypes.LEFT_GROUP:
+      GroupStoreInstance.emitChange();
       break;
     default:
       return;
   }
-  GroupStoreInstance.emitChange();
 });
 
 export default GroupStoreInstance;

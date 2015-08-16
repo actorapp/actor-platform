@@ -1,6 +1,6 @@
 package im.actor.server.api.http.webhooks
 
-import im.actor.server.group.{ GroupOffice, GroupProcessorRegion }
+import im.actor.server.group.{ GroupViewRegion, GroupOffice, GroupProcessorRegion }
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ HttpResponse, StatusCode, StatusCodes }
@@ -11,6 +11,7 @@ import akka.util.Timeout
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json._
+import im.actor.server.dialog.group.{ GroupDialogRegion, GroupDialogOperations }
 import im.actor.server.persist
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -22,10 +23,11 @@ import scala.util.{ Failure, Success }
 
 class WebhooksHandler()(
   implicit
-  db:                     Database,
-  ec:                     ExecutionContext,
-  groupPeerManagerRegion: GroupProcessorRegion,
-  val materializer:       Materializer
+  db:                   Database,
+  ec:                   ExecutionContext,
+  groupProcessorRegion: GroupViewRegion,
+  groupDialogRegion:    GroupDialogRegion,
+  val materializer:     Materializer
 ) extends RoutesHandler with ContentUnmarshaler {
 
   implicit val timeout: Timeout = Timeout(5.seconds)
@@ -61,9 +63,13 @@ class WebhooksHandler()(
             case None                          ⇒ DBIO.successful(Left(StatusCodes.NotFound))
             case Some(group) if group.isPublic ⇒ DBIO.successful(Left(StatusCodes.Forbidden))
             case Some(group) ⇒
-              val rng = ThreadLocalRandom.current()
               val sendFuture = for {
-                _ ← GroupOffice.sendMessage(group.id, bot.userId, 0, group.accessHash, rng.nextLong(), message)
+                isChecked ← GroupOffice.checkAccessHash(group.id, group.accessHash)
+                _ ← if (isChecked) {
+                  GroupDialogOperations.sendMessage(group.id, bot.userId, 0, ThreadLocalRandom.current().nextLong(), message) map (_ ⇒ ())
+                } else {
+                  Future.successful(())
+                }
               } yield Right(())
               DBIO.from(sendFuture)
           }

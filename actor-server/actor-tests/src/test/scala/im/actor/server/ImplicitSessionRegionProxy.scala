@@ -4,6 +4,7 @@ import akka.actor.{ ActorSystem, ActorRef }
 
 import im.actor.server.session.{ SessionRegion, Session }
 
+//todo: maybe extend ActorSerializerPrepare
 trait ImplicitSessionRegionProxy {
   protected implicit val system: ActorSystem
 

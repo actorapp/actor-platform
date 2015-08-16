@@ -56,6 +56,7 @@ var _setActivityFromPeer = function () {
       _cleanup = function () {
         ActorClient.unbindUser(peer.id, change);
       };
+
       ActorClient.bindUser(peer.id, change);
     }
       break;

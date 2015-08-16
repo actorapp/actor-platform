@@ -67,6 +67,8 @@ object Dependencies {
 
     val scrImageCore            = "com.sksamuel.scrimage"         %% "scrimage-core"                 % "1.4.2"
 
+    val tyrex                   = "tyrex"                         %  "tyrex"                         % "1.0.1"
+
     val gcmServer               = "com.google.android.gcm"        %  "gcm-server"                    % "1.0.2"
     val pushy                   = "com.relayrides"                %  "pushy"                         % "0.4.3"
 
@@ -93,7 +95,7 @@ object Dependencies {
   import Compile._
   import Testing._
 
-  val shared = Seq(javaCompat, logbackClassic, scalaLogging, configs)
+  val shared = Seq(configs, javaCompat, logbackClassic, scalaLogging, tyrex)
 
   val root = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
@@ -104,6 +106,8 @@ object Dependencies {
   val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceJdbc, akkaKryoSerialization, concmap, jodaConvert, jodaTime, kryoSerializers)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
+
+  val core = shared ++ Seq(akkaActor, akkaContrib, gcmServer, pushy, jodaTime, postgresJdbc, slick)
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
 
@@ -124,8 +128,6 @@ object Dependencies {
   )
 
   val sessionMessages = Seq(akkaActor)
-
-  val cqrs = shared ++ Seq(akkaActor, akkaContrib, gcmServer, pushy, jodaTime, postgresJdbc, slick)
 
   val persist = shared ++ Seq(akkaActor, apacheCommonsCodec, postgresJdbc, slick, slickJoda, slickPg, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 

@@ -12,9 +12,13 @@ import im.actor.api.{ rpc ⇒ api }
 import im.actor.server
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.util.{ ACLUtils, UserUtils }
-import im.actor.server.{ BaseAppSuite, ImplicitUserRegions }
+import im.actor.server._
 
-class ContactsServiceSpec extends BaseAppSuite with ImplicitUserRegions {
+class ContactsServiceSpec
+  extends BaseAppSuite
+  with ImplicitUserRegions
+  with ImplicitSessionRegionProxy
+  with ImplicitAuthService {
   behavior of "Contacts Service"
 
   "GetContacts handler" should "respond with isChanged = true and actual users if hash was emptySHA1" in s.getcontacts.changed
@@ -37,9 +41,6 @@ class ContactsServiceSpec extends BaseAppSuite with ImplicitUserRegions {
     implicit val sessionRegion = buildSessionRegionProxy()
 
     implicit val service = new contacts.ContactsServiceImpl
-    val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val authService = buildAuthService()
 
     def addContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
       Await.result(service.handleAddContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)

@@ -12,11 +12,10 @@ import com.amazonaws.HttpMethod
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.transfer.TransferManager
-import com.amazonaws.services.s3.transfer.internal.TransferManagerUtils
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
 import com.github.kxbmap.configs._
-import com.typesafe.config.{ ConfigFactory, Config }
+import com.typesafe.config.{ Config, ConfigFactory }
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files.FileLocation
@@ -30,7 +29,7 @@ object S3StorageExtension extends ExtensionId[S3StorageExtensionImpl] with Exten
 
   override def createExtension(system: ExtendedActorSystem) = {
     val config = S3StorageAdapterConfig.load(system.settings.config.getConfig("services.aws.s3")).get
-    new S3StorageExtensionImpl(new S3StorageAdapter(config)(system, DbExtension(system).db))
+    new S3StorageExtensionImpl(new S3StorageAdapter(config, system))
   }
 }
 
@@ -51,15 +50,14 @@ object S3StorageAdapterConfig {
   }
 }
 
-class S3StorageAdapter(config: S3StorageAdapterConfig)(
-  implicit
-  system: ActorSystem,
-  db:     Database
-) extends FileStorageAdapter {
+class S3StorageAdapter(config: S3StorageAdapterConfig, _system: ActorSystem) extends FileStorageAdapter {
   val bucketName = config.bucketName
 
-  private val awsCredentials = new BasicAWSCredentials(config.key, config.secret)
+  private implicit val system: ActorSystem = _system
   private implicit val ec: ExecutionContext = system.dispatcher
+
+  private val awsCredentials = new BasicAWSCredentials(config.key, config.secret)
+  private val db = DbExtension(system).db
 
   val s3Client = new AmazonS3ScalaClient(awsCredentials)
   val transferManager = new TransferManager(awsCredentials)

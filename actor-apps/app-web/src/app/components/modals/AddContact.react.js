@@ -2,7 +2,9 @@ import _ from 'lodash';
 
 import React from 'react';
 import Modal from 'react-modal';
-import pureRender from 'pure-render-decorator';
+import addons from 'react/addons';
+import ReactMixin from 'react-mixin';
+
 import { Styles, TextField, FlatButton } from 'material-ui';
 
 import AddContactStore from 'stores/AddContactStore';
@@ -25,7 +27,9 @@ const getStateFromStores = () => {
   };
 };
 
-@pureRender
+const {addons: { PureRenderMixin }} = addons;
+
+@ReactMixin.decorate(PureRenderMixin)
 class AddContact extends React.Component {
   static childContextTypes = {
     muiTheme: React.PropTypes.object
@@ -68,56 +72,61 @@ class AddContact extends React.Component {
       'error-message': true,
       'error-message--shown': this.state.message
     });
+    const isShown = this.state.isShown;
 
-    return (
-      <Modal className="modal-new modal-new--add-contact"
-             closeTimeoutMS={150}
-             isOpen={this.state.isShown}
-             style={{width: 320}}>
+    if (isShown) {
+      return (
+        <Modal className="modal-new modal-new--add-contact"
+               closeTimeoutMS={150}
+               isOpen={isShown}
+               style={{width: 320}}>
 
-        <header className="modal-new__header">
-          <a className="modal-new__header__close material-icons"
-             onClick={this.onClose}>clear</a>
-          <h3 className="modal-new__header__title">Add contact</h3>
-        </header>
+          <header className="modal-new__header">
+            <a className="modal-new__header__close modal-new__header__icon material-icons"
+               onClick={this.onClose}>clear</a>
+            <h3 className="modal-new__header__title">Add contact</h3>
+          </header>
 
-        <div className="modal-new__body">
-          <TextField className="login__form__input"
-                     floatingLabelText="Phone number"
-                     fullWidth
-                     onChange={this.onPhoneChange}
-                     type="tel"
-                     value={this.state.phone}/>
-        </div>
+          <div className="modal-new__body">
+            <TextField className="login__form__input"
+                       floatingLabelText="Phone number"
+                       fullWidth
+                       onChange={this.onPhoneChange}
+                       type="text"
+                       value={this.state.phone}/>
+          </div>
 
-        <span className={messageClassName}>{this.state.message}</span>
+          <span className={messageClassName}>{this.state.message}</span>
 
-        <footer className="modal-new__footer text-right">
-          <FlatButton hoverColor="rgba(74,144,226,.12)"
-                      label="Add"
-                      onClick={this.onAddContact}
-                      secondary={true} />
-        </footer>
+          <footer className="modal-new__footer text-right">
+            <FlatButton hoverColor="rgba(74,144,226,.12)"
+                        label="Add"
+                        onClick={this.onAddContact}
+                        secondary={true} />
+          </footer>
 
-      </Modal>
-    );
+        </Modal>
+      );
+    } else {
+      return null;
+    }
   }
 
   onClose = () => {
     AddContactActionCreators.closeModal();
-  }
+  };
 
   onPhoneChange = event => {
     this.setState({phone: event.target.value});
-  }
+  };
 
   onAddContact = () => {
     AddContactActionCreators.findUsers(this.state.phone);
-  }
+  };
 
   onChange = () => {
     this.setState(getStateFromStores());
-  }
+  };
 
   onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {

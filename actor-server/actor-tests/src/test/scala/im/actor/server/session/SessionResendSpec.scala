@@ -12,7 +12,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.push.SeqUpdatesManager
 
@@ -29,10 +28,10 @@ class SessionResendSpec extends BaseSessionSpec(
 ) {
   behavior of "Session's ReSender"
 
-  it should "Resend messages if no ack received within ack-timeout" in Sessions().e1
-  it should "Resend messages to new client" in Sessions().e2
-  it should "not Resend messages if ack received within ack-timeout" in Sessions().e3
-  it should "Resend updates if no ack received within ack-timeout" in Sessions().e4
+  it should "resend messages if no ack received within ack-timeout" in Sessions().e1
+  it should "resend messages to new client" in Sessions().e2
+  it should "not resend messages if ack received within ack-timeout" in Sessions().e3
+  it should "resend updates if no ack received within ack-timeout" in Sessions().e4
 
   case class Sessions() {
     def e1() = {
@@ -161,7 +160,7 @@ class SessionResendSpec extends BaseSessionSpec(
       expectMessageAck(authId, sessionId, helloMessageId)
 
       val update = UpdateContactRegistered(1, false, 1L, 2L)
-      SeqUpdatesManager.persistAndPushUpdate(authId, update, None, isFat = false)
+      SeqUpdatesManager.persistAndPushUpdateF(authId, update, None, isFat = false)
       expectSeqUpdate(authId, sessionId, None)
 
       // Still no ack

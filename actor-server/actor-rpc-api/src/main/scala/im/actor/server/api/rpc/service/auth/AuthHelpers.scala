@@ -3,31 +3,25 @@ package im.actor.server.api.rpc.service.auth
 import java.time.{ LocalDateTime, ZoneOffset }
 
 import scala.concurrent.Future
-import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz.{ -\/, \/, \/- }
 
 import akka.actor.ActorSystem
 import akka.pattern.ask
-import akka.util.Timeout
-import org.joda.time.DateTime
 import slick.dbio
 import slick.dbio.Effect.Write
 import slick.dbio._
 
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
-import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.users.Sex._
 import im.actor.server.activation.Activation.{ EmailCode, SmsCode }
 import im.actor.server.activation._
 import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.SeqUpdatesManager._
-import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.session._
-import im.actor.server.social.SocialManager._
-import im.actor.server.user.{ UserProcessorRegion, UserOffice }
+import im.actor.server.user.UserOffice
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.PhoneNumberUtils._
 import im.actor.server.util.StringUtils.validName
@@ -137,7 +131,7 @@ trait AuthHelpers extends Helpers {
   protected def refreshAuthSession(deviceHash: Array[Byte], newSession: models.AuthSession): DBIO[Unit] =
     for {
       prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
-      _ ← DBIO.sequence(prevSessions map logout)
+      _ ← DBIO.from(Future.sequence(prevSessions map UserOffice.logout))
       _ ← persist.AuthSession.create(newSession)
     } yield ()
 
@@ -160,18 +154,6 @@ trait AuthHelpers extends Helpers {
       _ ← fromFuture(UserOffice.changeCountryCode(userId, countryCode))
       _ ← fromDBIO(persist.AuthId.setUserData(clientData.authId, userId))
     } yield user
-  }
-
-  protected def logout(session: models.AuthSession)(implicit system: ActorSystem, m: PubSubMediator): dbio.DBIOAction[Unit, NoStream, Write with Write] = {
-    system.log.debug(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
-
-    for {
-      _ ← DBIO.from(UserOffice.removeAuth(session.userId, session.authId))
-      _ ← persist.AuthSession.delete(session.userId, session.id)
-      _ = deletePushCredentials(session.authId)
-    } yield {
-      AuthService.publishAuthIdInvalidated(m.mediator, session.authId)
-    }
   }
 
   protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[String \/ Unit] = {
