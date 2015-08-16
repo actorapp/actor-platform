@@ -60,9 +60,11 @@ trait GroupDialogHandlers extends UpdateCounters {
 
   protected def messageReceived(state: GroupDialogState, receiverUserId: Int, date: Long): Unit = {
     val replyTo = sender()
-    withMemberIds(groupId) { (memberIds, _, _) ⇒
-      if (!state.lastReceiveDate.exists(_ >= date) && !state.lastSenderId.contains(receiverUserId)) {
-        workWith(LastReceiveDateChanged(date), state)
+
+    (if (!state.lastReceiveDate.exists(_ >= date) && !state.lastSenderId.contains(receiverUserId)) {
+      context become working(updatedState(LastReceiveDateChanged(date), state))
+
+      withMemberIds(groupId) { (memberIds, _, _) ⇒
 
         val now = System.currentTimeMillis
         val update = UpdateMessageReceived(groupPeer, date, now)
@@ -73,8 +75,8 @@ trait GroupDialogHandlers extends UpdateCounters {
           authIds ← authIdsF
           _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None, isFat = false))
         } yield MessageReceivedAck()
-      } else Future.successful(MessageReceivedAck())
-    } pipeTo replyTo onFailure {
+      }
+    } else Future.successful(MessageReceivedAck())) pipeTo replyTo onFailure {
       case e ⇒
         replyTo ! Status.Failure(ReceiveFailed)
         log.error(e, "Failed to mark messages received")
@@ -83,8 +85,10 @@ trait GroupDialogHandlers extends UpdateCounters {
 
   protected def messageRead(state: GroupDialogState, readerUserId: Int, readerAuthId: Long, date: Long): Unit = {
     val replyTo = sender()
-    withMemberIds(groupId) { (memberIds, invitedUserIds, _) ⇒
-      if (!state.lastSenderId.contains(readerUserId)) {
+    (if (!state.lastSenderId.contains(readerUserId)) {
+      context become working(updatedState(LastReadDateChanged(date), state))
+
+      withMemberIds(groupId) { (memberIds, invitedUserIds, _) ⇒
         db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))) foreach { _ ⇒
           UserOffice.getAuthIds(readerUserId) map { authIds ⇒
             val authIdsSet = authIds.toSet
@@ -114,8 +118,8 @@ trait GroupDialogHandlers extends UpdateCounters {
 
           } else Future.successful(MessageReadAck())
         } yield result
-      } else Future.successful(MessageReadAck())
-    } pipeTo replyTo onFailure {
+      }
+    } else Future.successful(MessageReadAck())) pipeTo replyTo onFailure {
       case e ⇒
         replyTo ! Status.Failure(ReadFailed)
         log.error(e, "Failed to mark messages read")

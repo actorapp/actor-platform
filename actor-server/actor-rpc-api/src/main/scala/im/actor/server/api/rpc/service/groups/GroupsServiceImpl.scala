@@ -104,7 +104,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
         }
       }
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleLeaveGroup(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
@@ -118,7 +118,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
         }
       }
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
@@ -144,7 +144,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleInviteUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
