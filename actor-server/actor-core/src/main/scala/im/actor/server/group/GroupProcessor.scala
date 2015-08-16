@@ -184,7 +184,7 @@ private[group] final class GroupProcessor
     case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
       if (!hasMember(state, inviteeUserId)) {
         persist(TSEvent(now(), GroupEvents.UserInvited(inviteeUserId, inviterUserId))) { evt ⇒
-          workWith(evt, state)
+          context become working(updatedState(evt, state))
 
           val replyTo = sender()
 
