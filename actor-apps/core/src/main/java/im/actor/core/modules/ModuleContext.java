@@ -1,6 +1,7 @@
 package im.actor.core.modules;
 
 import im.actor.core.Configuration;
+import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AnalyticsModule;
 import im.actor.core.modules.internal.AppStateModule;
@@ -76,4 +77,6 @@ public interface ModuleContext {
     ExternalModule getExternalModule();
 
     DisplayLists getDisplayListsModule();
+
+    Messenger getMessenger();
 }

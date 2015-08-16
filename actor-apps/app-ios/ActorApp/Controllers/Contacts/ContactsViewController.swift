@@ -22,7 +22,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     // MARK: Constructors
     
     init() {
-        super.init(contentSection: 0)
+        super.init(contentSection: 1)
         
         var title = "";
         if (MainAppTheme.tab.showText) {
@@ -152,7 +152,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 0) {
+        if (section == 1) {
             return super.tableView(tableView, numberOfRowsInSection: section)
         } else {
             return 2
@@ -160,7 +160,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if (indexPath.section == 0) {
+        if (indexPath.section == 1) {
             return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         } else {
             if (indexPath.row == 1) {
@@ -168,7 +168,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
                 var res = ContactActionCell(reuseIdentifier: reuseId)
                 res.bind("ic_add_user",
                     actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
-                    isLast: true)
+                    isLast: false)
                 return res
             } else {
                 let reuseId = "cell_add";
@@ -206,7 +206,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        if (tableView == self.tableView && indexPath.section == 1) {
+        if (tableView == self.tableView && indexPath.section == 0) {
             if (indexPath.row == 0) {
                 showSmsInvitation()
             } else {
