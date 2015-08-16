@@ -35,6 +35,9 @@ sourceSets {
 }
 
 dependencies {
+    gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
+
     // Hack for IntelliJ IDEA
     providedCompile 'com.google.gwt:gwt-user:2.7.0'
+    providedCompile 'org.timepedia.exporter:gwtexporter:2.4.0'
 }
