@@ -6,10 +6,10 @@ import im.actor.server
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ FlatSpecLike, Matchers }
 
-import im.actor.server.{ ActorSpecification, SqlSpecHelpers }
+import im.actor.server.ActorSpecification
 
 abstract class BaseRichMessageSpec(_system: ActorSystem = { ActorSpecification.createSystem() })
-  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers {
+  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers {
 
   implicit val materializer = ActorMaterializer()
 

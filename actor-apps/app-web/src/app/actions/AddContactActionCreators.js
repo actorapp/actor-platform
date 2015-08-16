@@ -27,6 +27,7 @@ export default {
           const userPeer = ActorClient.getUserPeer(uid);
 
           if (user.isContact) {
+            DialogActionCreators.selectDialogPeer(userPeer);
             ActorAppDispatcher.dispatch({
               type: ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT
             });

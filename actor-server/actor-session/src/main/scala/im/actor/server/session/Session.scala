@@ -19,13 +19,13 @@ import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.ClientData
-import im.actor.server.api.rpc.service.auth.{ AuthEvents, AuthService }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
-import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManagerRegion, WeakUpdatesManagerRegion }
+import im.actor.server.push.{ SeqUpdatesExtension, WeakUpdatesManagerRegion }
+import im.actor.server.user.{ UserOffice, AuthEvents }
 import im.actor.server.{ models, persist }
 
 case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
@@ -40,8 +40,6 @@ object SessionConfig {
 }
 
 object Session {
-
-  SessionMessage.register()
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
     case env @ SessionEnvelope(authId, sessionId, payload) ⇒ (authId.toString + "-" + sessionId.toString, env)
@@ -117,7 +115,7 @@ class Session(mediator: ActorRef)(
       val replyTo = sender()
       stash()
 
-      val subscribe = DistributedPubSubMediator.Subscribe(AuthService.authIdTopic(authId), self)
+      val subscribe = DistributedPubSubMediator.Subscribe(UserOffice.authIdTopic(authId), self)
       mediator ! subscribe
 
       context.become(waitingForSessionInfo(authId, sessionId, subscribe))
@@ -146,6 +144,7 @@ class Session(mediator: ActorRef)(
         case Some(info) ⇒ self ! info
         case None ⇒
           log.warning("Reporting AuthIdInvalid and dying")
+          //call helper. нет такого auth id
           replyTo ! MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require)
           self ! PoisonPill
       }

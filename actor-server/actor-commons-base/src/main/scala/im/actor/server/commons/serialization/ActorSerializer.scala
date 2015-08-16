@@ -20,12 +20,17 @@ object ActorSerializer {
   }
 
   def register(id: Int, clazz: Class[_]): Unit = {
-    if (map.containsKey(id)) {
-      if (Option(reverseMap.get(clazz)) != Some(id))
-        throw new IllegalArgumentException(s"There is already a mapping with id ${id}: ${map.get(id)}")
-    } else {
-      map.put(id, Class.forName(clazz.getName + '$'))
-      reverseMap.put(clazz, id)
+    get(id) match {
+      case None ⇒
+        get(clazz) match {
+          case Some(regId) ⇒ throw new IllegalArgumentException(s"There is already a mapping for class: ${clazz}, id: ${regId}")
+          case None ⇒
+            map.put(id, Class.forName(clazz.getName + '$'))
+            reverseMap.put(clazz, id)
+        }
+      case Some(registered) ⇒
+        if (!get(clazz).exists(_ == id))
+          throw new IllegalArgumentException(s"There is already a mapping with id ${id}: ${map.get(id)}")
     }
   }
 

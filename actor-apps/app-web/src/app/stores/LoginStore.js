@@ -87,6 +87,8 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
 
       if (action.needSignup) {
         step = AuthSteps.SIGNUP_NAME_WAIT;
+      } else {
+        mixpanel.track('Successful login');
       }
 
       LoginStore.emitChange();
@@ -142,7 +144,6 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
         $phone: user.phones[0],
         $name: user.name
       });
-      mixpanel.track('Successful login');
       LoginStore.emitChange();
       break;
     case ActionTypes.SET_LOGGED_OUT:

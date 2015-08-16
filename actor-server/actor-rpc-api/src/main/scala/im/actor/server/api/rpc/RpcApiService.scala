@@ -1,13 +1,11 @@
 package im.actor.server.api.rpc
 
 import scala.concurrent._
-import scala.util.Try
 import scalaz._
 
 import akka.actor._
 import akka.pattern.pipe
 import scodec.bits._
-import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.codecs._
@@ -20,10 +18,10 @@ object RpcApiService {
   @SerialVersionUID(1L)
   case class RpcResponse(messageId: Long, responseBytes: BitVector)
 
-  def props(services: Seq[Service])(implicit db: Database) = Props(classOf[RpcApiService], services, db)
+  def props(services: Seq[Service]) = Props(classOf[RpcApiService], services)
 }
 
-class RpcApiService(services: Seq[Service])(implicit db: Database) extends Actor with ActorLogging {
+final class RpcApiService(services: Seq[Service]) extends Actor with ActorLogging {
 
   import RpcApiService._
 
@@ -32,7 +30,7 @@ class RpcApiService(services: Seq[Service])(implicit db: Database) extends Actor
   // TODO: configurable
   private val DefaultErrorDelay = 1
 
-  implicit private val ec: ExecutionContext = context.dispatcher
+  private implicit val ec: ExecutionContext = context.dispatcher
 
   def receive: Receive = {
     log.debug("Services list changed: {}", services)
