@@ -78,10 +78,10 @@ class ConversationViewController: ConversationBaseViewController {
         
         // Navigation Title
         
-        navigationView.frame = CGRectMake(0, 0, 190, 44);
+        navigationView.frame = CGRectMake(0, 0, 200, 44);
         navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        titleView.frame = CGRectMake(0, 4, 190, 20)
+        titleView.frame = CGRectMake(0, 4, 200, 20)
         titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 17)!
         titleView.adjustsFontSizeToFitWidth = false;
         titleView.textColor = Resources.PrimaryLightText
@@ -89,9 +89,9 @@ class ConversationViewController: ConversationBaseViewController {
         titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        subtitleView.frame = CGRectMake(0, 22, 190, 20);
+        subtitleView.frame = CGRectMake(0, 22, 200, 20);
         subtitleView.font = UIFont.systemFontOfSize(13);
-        subtitleView.adjustsFontSizeToFitWidth=false;
+        subtitleView.adjustsFontSizeToFitWidth = true;
         subtitleView.textColor = Resources.SecondaryLightText
         subtitleView.textAlignment = NSTextAlignment.Center;
         subtitleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;

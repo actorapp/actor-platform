@@ -34,7 +34,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private final boolean isGlobalList;
     private final int pageSize;
     private final int loadGap;
-    private final BindHook<T> bindHook;
+
+    private BindHook<T> bindHook;
 
     private LinearLayoutCallback linearLayoutCallback;
 
@@ -47,10 +48,9 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private ArrayList<Modification<T>> pendingModifications = new ArrayList<Modification<T>>();
 
     public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
-                             int pageSize, int loadGap, OperationMode operationMode, BindHook<T> bindHook) {
+                             int pageSize, int loadGap, OperationMode operationMode) {
         super(operationMode);
 
-        this.bindHook = bindHook;
         this.isGlobalList = isGlobalList;
         this.pageSize = pageSize;
         this.loadGap = loadGap;
@@ -60,6 +60,16 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         this.stateModel = new ValueModel<State>("display_list.state", State.LOADING_EMPTY);
 
         listEngine.subscribe(engineListener);
+    }
+
+    @ObjectiveCName("getBindHook")
+    public BindHook<T> getBindHook() {
+        return bindHook;
+    }
+
+    @ObjectiveCName("setBindHook:")
+    public void setBindHook(BindHook<T> bindHook) {
+        this.bindHook = bindHook;
     }
 
     @ObjectiveCName("isGlobalList")
