@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import im.actor.core.api.FileLocation;
+import im.actor.core.api.ApiFileLocation;
 import im.actor.core.api.rpc.RequestGetFileUrl;
 import im.actor.core.api.rpc.ResponseGetFileUrl;
 import im.actor.core.js.modules.entity.CachedFileUrl;
@@ -78,7 +78,7 @@ public class JsFilesModule extends AbsModule {
         }
         requestedFiles.add(id);
 
-        request(new RequestGetFileUrl(new FileLocation(id, accessHash)), new RpcCallback<ResponseGetFileUrl>() {
+        request(new RequestGetFileUrl(new ApiFileLocation(id, accessHash)), new RpcCallback<ResponseGetFileUrl>() {
             @Override
             public void onResult(ResponseGetFileUrl response) {
                 requestedFiles.remove(id);

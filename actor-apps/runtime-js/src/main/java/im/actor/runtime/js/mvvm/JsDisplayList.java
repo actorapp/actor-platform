@@ -14,11 +14,11 @@ import im.actor.runtime.Log;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.js.storage.JsListEngine;
 import im.actor.runtime.js.storage.JsListEngineCallback;
-import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.PlatformDisplayList;
 import im.actor.runtime.storage.ListEngineItem;
 
 public class JsDisplayList<T extends JavaScriptObject, V extends BserObject & ListEngineItem> implements JsListEngineCallback<V>,
-        DisplayList<V> {
+        PlatformDisplayList<V> {
 
     private final JsListEngine<V> listEngine;
     private final JsEntityConverter<V, T> entityConverter;
