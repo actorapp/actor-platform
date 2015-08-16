@@ -9,7 +9,7 @@ import im.actor.runtime.js.mvvm.JsDisplayList;
 import im.actor.runtime.js.mvvm.JsEntityConverter;
 import im.actor.runtime.js.storage.JsListEngine;
 import im.actor.runtime.js.storage.JsListStorage;
-import im.actor.runtime.mvvm.DisplayList;
+import im.actor.runtime.mvvm.PlatformDisplayList;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.ListEngineItem;
 import im.actor.runtime.storage.ListStorage;
@@ -28,7 +28,7 @@ public class JsEngineProvider implements EnginesRuntime {
     }
 
     @Override
-    public <T extends BserObject & ListEngineItem> DisplayList<T> createDisplayList(ListEngine<T> listEngine,
+    public <T extends BserObject & ListEngineItem> PlatformDisplayList<T> createDisplayList(ListEngine<T> listEngine,
                                                                                     boolean isSharedInstance,
                                                                                     String clazz) {
         JsEntityConverter converter = converters.get(clazz);
