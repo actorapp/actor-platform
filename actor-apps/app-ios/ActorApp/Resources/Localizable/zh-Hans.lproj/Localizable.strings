@@ -228,6 +228,12 @@
 
 "NotificationSecretMessage" = "新消息";
 
+"NotificationsGroups" = "Group Notifications";
+
+"NotificationsOnlyMentions" = "Only Mentions";
+
+"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
+
 /*
  * Privacy
  */

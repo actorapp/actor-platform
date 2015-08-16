@@ -30,6 +30,10 @@ public class SettingsModule extends AbsModule {
     private final String KEY_NOTIFICATION_IN_APP_VIBRATION;
     private final String KEY_NOTIFICATION_TEXT;
     private final String KEY_NOTIFICATION_CHAT_PREFIX;
+
+    private final String KEY_NOTIFICATION_GROUP_ENABLED;
+    private final String KEY_NOTIFICATION_GROUP_ONLY_MENTIONS;
+
     private final String KEY_MARKDOWN_ENABLED;
 
     private final String KEY_RENAME_HINT_SHOWN;
@@ -85,6 +89,9 @@ public class SettingsModule extends AbsModule {
         KEY_NOTIFICATION_IN_APP_ENABLED = "category." + deviceTypeKey + ".in_app.enabled";
         KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceTypeKey + ".in_app.sound.enabled";
         KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceTypeKey + ".in_app.vibration.enabled";
+
+        KEY_NOTIFICATION_GROUP_ENABLED = "account.notifications.group.enabled";
+        KEY_NOTIFICATION_GROUP_ONLY_MENTIONS = "account.notifications.group.mentions";
 
         // Hints
         KEY_RENAME_HINT_SHOWN = "hint.contact.rename";
@@ -153,6 +160,24 @@ public class SettingsModule extends AbsModule {
 
     public void changeShowNotificationTextEnabled(boolean val) {
         changeValue(KEY_NOTIFICATION_TEXT, val);
+    }
+
+    // Group Notifications
+
+    public boolean isGroupNotificationsEnabled() {
+        return loadValue(KEY_NOTIFICATION_GROUP_ENABLED, true);
+    }
+
+    public void changeGroupNotificationsEnabled(boolean val) {
+        changeValue(KEY_NOTIFICATION_GROUP_ENABLED, val);
+    }
+
+    public boolean isGroupNotificationsOnlyMentionsEnabled() {
+        return loadValue(KEY_NOTIFICATION_GROUP_ONLY_MENTIONS, false);
+    }
+
+    public void changeGroupNotificationsOnlyMentionsEnabled(boolean val) {
+        changeValue(KEY_NOTIFICATION_GROUP_ONLY_MENTIONS, val);
     }
 
     // In-App notifications

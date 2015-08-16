@@ -8,7 +8,7 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
     private var displayList: ARBindedDisplayList!;
     private let searchDisplay: UISearchDisplayController
     
-    init(searchDisplay: UISearchDisplayController){
+    init(searchDisplay: UISearchDisplayController) {
         self.searchDisplay = searchDisplay;
         super.init()
         self.displayList = buildDisplayList()

@@ -50,12 +50,14 @@ public class DialogsActor extends ModuleActor {
         long start = im.actor.runtime.Runtime.getCurrentTime();
         PeerDesc peerDesc = buildPeerDesc(peer);
         if (peerDesc == null) {
+            Log.d("DialogsActor", "unknown peer desk");
             return;
         }
 
         if (message == null) {
             // Ignore empty message if not forcing write
             if (!forceWrite) {
+                Log.d("DialogsActor", "not force");
                 return;
             }
 
@@ -81,6 +83,7 @@ public class DialogsActor extends ModuleActor {
             if (dialog != null) {
                 // Ignore old messages if no force
                 if (!forceWrite && dialog.getSortDate() > message.getSortDate()) {
+                    Log.d("DialogsActor", "too old");
                     return;
                 }
 
@@ -97,6 +100,7 @@ public class DialogsActor extends ModuleActor {
             } else {
                 // Do not create dialogs for silent messages
                 if (contentDescription.isSilent()) {
+                    Log.d("DialogsActor", "is silent in");
                     return;
                 }
 

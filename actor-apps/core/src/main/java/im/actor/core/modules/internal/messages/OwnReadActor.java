@@ -36,6 +36,20 @@ public class OwnReadActor extends ModuleActor {
                 hasUserMention);
     }
 
+    public void onOutMessage(Peer peer, long sortDate) {
+        long readState = context().getMessagesModule().loadReadState(peer);
+        if (sortDate <= readState) {
+            // Already read
+            return;
+        }
+
+        // Update Counters
+        // context().getMessagesModule().getConversationActor(peer).send(new ConversationActor.MessageReadByMe(sortingDate));
+
+        // Saving read state
+        context().getMessagesModule().saveReadState(peer, sortDate);
+    }
+
     public void onMessageRead(Peer peer, long sortingDate) {
         // Detecting if message already read
         long readState = context().getMessagesModule().loadReadState(peer);
@@ -85,6 +99,9 @@ public class OwnReadActor extends ModuleActor {
         } else if (message instanceof InMessage) {
             InMessage inMessage = (InMessage) message;
             onInMessage(inMessage.getPeer(), inMessage.getMessage());
+        } else if (message instanceof OutMessage) {
+            OutMessage outMessage = (OutMessage) message;
+            onOutMessage(outMessage.getPeer(), outMessage.getSortDate());
         } else {
             drop(message);
         }
@@ -141,6 +158,24 @@ public class OwnReadActor extends ModuleActor {
 
         public Message getMessage() {
             return message;
+        }
+    }
+
+    public static class OutMessage {
+        private Peer peer;
+        private long sortDate;
+
+        public OutMessage(Peer peer, long sortDate) {
+            this.peer = peer;
+            this.sortDate = sortDate;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public long getSortDate() {
+            return sortDate;
         }
     }
 }

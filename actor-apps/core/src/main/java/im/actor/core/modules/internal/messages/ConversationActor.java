@@ -13,6 +13,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.annotations.Verified;
@@ -90,6 +91,7 @@ public class ConversationActor extends ModuleActor {
         // Adding message
         messages.addOrUpdateItem(message);
 
+        Log.d("ConversationActor", "isOnServer: " + message.isOnServer());
         // Updating dialog if on server
         if (message.isOnServer()) {
             if (message.getSenderId() == myUid()) {
@@ -99,13 +101,12 @@ public class ConversationActor extends ModuleActor {
                 }
             } else {
                 // Detecting if message already read
-                if (message.getSortDate() <= inReadState) {
-                    return;
+                if (message.getSortDate() > inReadState) {
+                    // Writing to income unread storage
+                    inPendingIndex.put(message.getRid(), message.getDate());
                 }
-
-                // Writing to income unread storage
-                inPendingIndex.put(message.getRid(), message.getDate());
             }
+
             dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
         }
     }
