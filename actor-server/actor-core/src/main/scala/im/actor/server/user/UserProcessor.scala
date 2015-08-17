@@ -71,16 +71,12 @@ private[user] object User {
 
 object UserProcessor {
   def register(): Unit = {
-    ActorSerializer.register(10000, classOf[UserCommands])
     ActorSerializer.register(10001, classOf[UserCommands.NewAuth])
     ActorSerializer.register(10002, classOf[UserCommands.NewAuthAck])
-    ActorSerializer.register(10003, classOf[UserCommands.SendMessage])
-    ActorSerializer.register(10004, classOf[UserCommands.MessageReceived])
     ActorSerializer.register(10005, classOf[UserCommands.BroadcastUpdate])
     ActorSerializer.register(10006, classOf[UserCommands.BroadcastUpdateResponse])
     ActorSerializer.register(10007, classOf[UserCommands.RemoveAuth])
     ActorSerializer.register(10008, classOf[UserCommands.Create])
-    ActorSerializer.register(10009, classOf[UserCommands.MessageRead])
     ActorSerializer.register(10010, classOf[UserCommands.Delete])
     ActorSerializer.register(10012, classOf[UserCommands.ChangeName])
     ActorSerializer.register(10013, classOf[UserCommands.CreateAck])
@@ -98,13 +94,14 @@ object UserProcessor {
     ActorSerializer.register(10025, classOf[UserCommands.ChangeAbout])
     ActorSerializer.register(10026, classOf[UserCommands.UpdateAvatar])
     ActorSerializer.register(10027, classOf[UserCommands.UpdateAvatarAck])
-    ActorSerializer.register(10028, classOf[UserCommands.MessageReceivedAck])
-    ActorSerializer.register(10029, classOf[UserCommands.MessageReadAck])
+    ActorSerializer.register(10028, classOf[UserCommands.DeliverMessageAck])
 
     ActorSerializer.register(11001, classOf[UserQueries.GetAuthIds])
     ActorSerializer.register(11002, classOf[UserQueries.GetAuthIdsResponse])
     ActorSerializer.register(11003, classOf[UserQueries.GetContactRecords])
     ActorSerializer.register(11004, classOf[UserQueries.GetContactRecordsResponse])
+    ActorSerializer.register(11005, classOf[UserQueries.CheckAccessHash])
+    ActorSerializer.register(11006, classOf[UserQueries.CheckAccessHashResponse])
 
     ActorSerializer.register(12001, classOf[UserEvents.AuthAdded])
     ActorSerializer.register(12002, classOf[UserEvents.AuthRemoved])
@@ -149,11 +146,6 @@ private[user] final class UserProcessor
   protected val userId = self.path.name.toInt
 
   override def persistenceId = persistenceIdFor(userId)
-
-  protected var lastMessageDate: Option[Long] = None
-
-  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
-    createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   context.setReceiveTimeout(1.hour)
 
@@ -200,12 +192,6 @@ private[user] final class UserProcessor
       deliverMessage(state, peer, senderUserId, randomId, date, message, isFat)
     case DeliverOwnMessage(_, peer, senderAuthId, randomId, date, message, isFat) ⇒
       deliverOwnMessage(state, peer, senderAuthId, randomId, date, message, isFat)
-    case SendMessage(_, senderUserId, senderAuthId, accessHash, randomId, message, isFat) ⇒
-      sendMessage(state, senderUserId, senderAuthId, accessHash, randomId, message, isFat)
-    case MessageReceived(_, receiverAuthId, peerUserId, date) ⇒
-      messageReceived(state, receiverAuthId, peerUserId, date)
-    case MessageRead(_, readerAuthId, peerUserId, date) ⇒
-      messageRead(state, readerAuthId, peerUserId, date)
     case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
     case ChangeAbout(_, clientAuthId, about)       ⇒ changeAbout(state, clientAuthId, about)
     case UpdateAvatar(_, clientAuthId, avatarOpt)  ⇒ updateAvatar(state, clientAuthId, avatarOpt)
@@ -214,9 +200,10 @@ private[user] final class UserProcessor
   }
 
   override protected def handleQuery(state: User): Receive = {
-    case GetAuthIds(_)                               ⇒ getAuthIds(state)
-    case GetApiStruct(_, clientUserId, clientAuthId) ⇒ getApiStruct(state, clientUserId, clientAuthId)
-    case GetContactRecords(_)                        ⇒ getContactRecords(state)
+    case GetAuthIds(_)                                ⇒ getAuthIds(state)
+    case GetApiStruct(_, clientUserId, clientAuthId)  ⇒ getApiStruct(state, clientUserId, clientAuthId)
+    case GetContactRecords(_)                         ⇒ getContactRecords(state)
+    case CheckAccessHash(_, senderAuthId, accessHash) ⇒ checkAccessHash(state, senderAuthId, accessHash)
   }
 
   protected[this] var userStateMaybe: Option[User] = None

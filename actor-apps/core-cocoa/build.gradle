@@ -1,54 +1,55 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       '../core/src/main/java']
+        }
+    }
+}
+
+dependencies {
+    compile project(':runtime-cocoa')
+}
+
 task j2objc() {
     doFirst {
 
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
-        delete "${projectDir}/src/"
+        delete "${projectDir}/src/gen/objc/"
 
         exec {
 
             executable "${properties.get("j2objcDir")}j2objc"
 
-            args "-use-arc", "--strip-reflection"
+            args "-use-arc"
+            args "--strip-reflection",  "--generate-deprecated", "--doc-comments"
+            args "-g"
 
-            // args "-g"
+            args "-d", "${projectDir}/src/gen/objc/"
 
-            args "-d", "${projectDir}/src/"
+            args "-sourcepath", "${projectDir}/src/main/java/:${projectDir}/../core/src/main/java/:${projectDir}/../runtime/src/main/java/:${projectDir}/../runtime/src/generic/java/:${projectDir}/../runtime-cocoa/src/generic/java/"
 
-            args "-sourcepath", "${projectDir}/../core/src/main/java/:${projectDir}/../core-async/src/main/java/:${projectDir}/../core-async-ui/src/main/java/:${projectDir}/../core-crypto/src/main/java/:${projectDir}/../core-annotations/src/main/java/"
+            args "--prefixes", "${projectDir}/src/main/prefixes.properties"
 
-            args "--prefixes", "${projectDir}/prefixes.properties"
+            args "--prefixes", "${projectDir}/../runtime-cocoa/src/main/prefixes.properties"
 
-            def srcFiles = fileTree("${projectDir}/../core/src/main/java/").matching {
+            def srcFiles = fileTree("${projectDir}/src/main/java/").matching {
                 exclude "**/ObjectiveCName.java"
             }
             srcFiles.each { file ->
                 args file.path
             }
 
-            srcFiles = fileTree("${projectDir}/../core-async/src/main/java/").matching {
-                exclude "**/ObjectiveCName.java"
-            }
-            srcFiles.each { file ->
-                args file.path
-            }
-
-            srcFiles = fileTree("${projectDir}/../core-async-ui/src/main/java/").matching {
-                exclude "**/ObjectiveCName.java"
-            }
-            srcFiles.each { file ->
-                args file.path
-            }
-
-            srcFiles = fileTree("${projectDir}/../core-crypto/src/main/java/").matching {
-                exclude "**/ObjectiveCName.java"
-            }
-            srcFiles.each { file ->
-                args file.path
-            }
-
-            srcFiles = fileTree("${projectDir}/../core-annotations/src/main/java/").matching {
+            srcFiles = fileTree("${projectDir}/../core/src/main/java/").matching {
                 exclude "**/ObjectiveCName.java"
             }
             srcFiles.each { file ->
@@ -58,6 +59,5 @@ task j2objc() {
     }
 }
 
-task build(dependsOn: ['j2objc']) {
-
-}
+j2objc.dependsOn compileJava
+build.dependsOn j2objc

@@ -8,10 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import im.actor.core.entity.Contact;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Contact;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

@@ -54,7 +54,7 @@ final class CallsServiceImpl(voximplant: VoxImplant)(implicit db: Database, acto
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   private def genPassword(salt: String): String = {

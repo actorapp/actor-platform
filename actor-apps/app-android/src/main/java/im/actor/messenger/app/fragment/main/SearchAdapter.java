@@ -3,10 +3,10 @@ package im.actor.messenger.app.fragment.main;
 import android.content.Context;
 import android.view.ViewGroup;
 
-import im.actor.android.view.BindedListAdapter;
+import im.actor.core.entity.SearchEntity;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.model.entity.SearchEntity;
-import im.actor.model.mvvm.BindedDisplayList;
+import im.actor.runtime.android.view.BindedListAdapter;
 
 /**
  * Created by ex3ndr on 05.04.15.

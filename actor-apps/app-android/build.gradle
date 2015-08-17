@@ -7,12 +7,10 @@ repositories {
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:0.12.613'
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 
 def basicVersion = '1.0'
 def customVersionCode = '10240';
@@ -117,22 +115,28 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_6
         targetCompatibility JavaVersion.VERSION_1_6
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 dependencies {
 
-    // Include core libs
-    releaseCompile(project(':core-android-google')) {
-        // Fixing double added nullable attributes
-        exclude module: 'annotations'
-    }
-    debugCompile(project(':core-android-google')) {
-        // Fixing double added nullable attributes
-        exclude module: 'annotations'
-    }
-    freeCompile(project(':core-android-free')) {
-        // Fixing double added nullable attributes
-        exclude module: 'annotations'
-    }
+//    // Include core libs
+//    releaseCompile(project(':core-android-google')) {
+//        // Fixing double added nullable attributes
+//        exclude module: 'annotations'
+//    }
+//    debugCompile(project(':core-android-google')) {
+//        // Fixing double added nullable attributes
+//        exclude module: 'annotations'
+//    }
+//    freeCompile(project(':core-android-free')) {
+//        // Fixing double added nullable attributes
+//        exclude module: 'annotations'
+//    }
+
+    compile project(':core-android')
 
     // UI
     compile 'com.droidkit:progress:0.5'
@@ -160,12 +164,6 @@ dependencies {
     compile 'com.mixpanel.android:mixpanel-android:4.5.3'
     compile 'com.splunk.mint:mint:4.0.8'
     compile files('libs/HockeySDK-3.5.0.jar')
-
-    // Kotlin
-    compile('org.jetbrains.kotlin:kotlin-stdlib:0.12.613') {
-        exclude group:'org.jetbrains', module: 'annotations'
-    }
-    compile 'org.jetbrains.anko:anko:0.6.3-15s'
 }
 
 task dist(dependsOn: ['assembleRelease', 'assembleFree']) {

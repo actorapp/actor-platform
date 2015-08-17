@@ -1,20 +1,14 @@
 package im.actor.server.db
 
-import java.util
-import javax.naming.{ NamingException, Context, InitialContext }
-import javax.naming.spi.{ InitialContextFactory, InitialContextFactoryBuilder, NamingManager }
-import javax.sql.DataSource
-
-import scala.util.Try
-
 import akka.actor._
-import com.typesafe.config.{ ConfigFactory, Config }
 import com.github.kxbmap.configs._
+import com.typesafe.config.{ Config, ConfigFactory }
+import im.actor.server.JNDI
 import org.flywaydb.core.Flyway
 import slick.driver.PostgresDriver.api.Database
-import slick.jdbc.{ JdbcDataSource, HikariCPJdbcDataSource }
+import slick.jdbc.{ HikariCPJdbcDataSource, JdbcDataSource }
 
-import im.actor.server.JNDI
+import scala.util.Try
 
 trait DbExtension extends Extension {
   val ds: JdbcDataSource
