@@ -16,6 +16,7 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.js.JsMessenger;
 import im.actor.core.js.entity.JsContact;
+import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsGroup;
 import im.actor.core.js.entity.JsMessage;
@@ -46,6 +47,9 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     private JsDisplayList<JsDialog, Dialog> dialogsList;
     private JsDisplayList<JsContact, Contact> contactsList;
     private HashMap<Peer, JsDisplayList<JsMessage, Message>> messageLists = new HashMap<Peer, JsDisplayList<JsMessage, Message>>();
+
+    private JsBindedValue<JsCounter> globalCounter;
+    private JsBindedValue<JsCounter> tempGlobalCounter;
 
     public JsBindingModule(JsMessenger messenger, JsFilesModule filesModule, Modules modules) {
         super(modules);
@@ -212,6 +216,34 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
         }
 
         return messageLists.get(peer);
+    }
+
+    public JsBindedValue<JsCounter> getGlobalCounter() {
+        if (globalCounter == null) {
+            ValueModel<Integer> counter = context().getAppStateModule().getAppStateVM().getGlobalCounter();
+            globalCounter = new JsBindedValue<JsCounter>(JsCounter.create(counter.get()));
+            counter.subscribe(new ValueChangedListener<Integer>() {
+                @Override
+                public void onChanged(Integer val, ValueModel<Integer> valueModel) {
+                    globalCounter.changeValue(JsCounter.create(val));
+                }
+            }, false);
+        }
+        return globalCounter;
+    }
+
+    public JsBindedValue<JsCounter> getTempGlobalCounter() {
+        if (tempGlobalCounter == null) {
+            ValueModel<Integer> counter = context().getAppStateModule().getAppStateVM().getGlobalTempCounter();
+            tempGlobalCounter = new JsBindedValue<JsCounter>(JsCounter.create(counter.get()));
+            counter.subscribe(new ValueChangedListener<Integer>() {
+                @Override
+                public void onChanged(Integer val, ValueModel<Integer> valueModel) {
+                    tempGlobalCounter.changeValue(JsCounter.create(val));
+                }
+            }, false);
+        }
+        return tempGlobalCounter;
     }
 
     @Override
