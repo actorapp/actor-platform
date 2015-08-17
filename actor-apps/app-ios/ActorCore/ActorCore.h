@@ -80,8 +80,6 @@
 #import "im/actor/core/viewmodel/FileCallback.h"
 #import "im/actor/core/viewmodel/UploadFileCallback.h"
 #import "im/actor/core/viewmodel/AppStateVM.h"
-#import "im/actor/core/viewmodel/ConversationVM.h"
-#import "im/actor/core/viewmodel/ConversationVMCallback.h"
 #import "im/actor/core/viewmodel/AvatarUploadState.h"
 #import "im/actor/core/viewmodel/GroupAvatarVM.h"
 #import "im/actor/core/viewmodel/OwnAvatarVM.h"
