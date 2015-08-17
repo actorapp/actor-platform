@@ -1,0 +1,38 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       'src/template/java']
+        }
+    }
+
+    generic {
+        java {
+            srcDirs = ['src/generic/java']
+        }
+    }
+}
+
+//project('android') {
+//    apply plugin: 'java'
+//
+//    compileJava {
+//        sourceCompatibility = 1.6
+//        targetCompatibility = 1.6
+//    }
+//    main {
+//        java {
+//            srcDirs = ['../src/main',
+//                       '../src/template',
+//                       '../../annotationsJ2objc',
+//                       '../../annotationsJetbrains']
+//        }
+//    }
+//}

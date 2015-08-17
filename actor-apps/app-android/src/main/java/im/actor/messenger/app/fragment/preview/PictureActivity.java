@@ -30,8 +30,8 @@ import im.actor.messenger.app.util.images.common.ImageLoadException;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MaterialInterpolator;
-import im.actor.model.entity.FileReference;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.entity.FileReference;
+import im.actor.core.viewmodel.UserVM;
 import uk.co.senab.photoview.DefaultOnDoubleTapListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 

@@ -6,10 +6,10 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.ViewUtils;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
 
 public class BaseFragment extends BinderCompatFragment {
 

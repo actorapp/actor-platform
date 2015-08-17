@@ -10,14 +10,14 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import im.actor.android.view.BindedViewHolder;
+import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.SearchHighlight;
-import im.actor.model.entity.Contact;
+import im.actor.core.entity.Contact;
 
 /**
  * Created by ex3ndr on 15.03.15.

@@ -1,20 +1,18 @@
 package im.actor.server.group
 
-import scala.concurrent.{ ExecutionContext, Future }
-
 import akka.pattern.ask
 import akka.util.Timeout
-
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup, Member ⇒ ApiMember }
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
-trait GroupOperations {
+import scala.concurrent.{ ExecutionContext, Future }
 
+trait GroupOperations extends Commands with Queries
+
+private[group] sealed trait Commands {
   import GroupCommands._
-  import GroupQueries._
 
   def create(groupId: Int, title: String, randomId: Long, userIds: Set[Int])(
     implicit
@@ -39,15 +37,6 @@ trait GroupOperations {
     ec:      ExecutionContext
   ): Future[MakePublicAck] =
     (region.ref ? MakePublic(groupId, Some(description))).mapTo[MakePublicAck]
-
-  def sendMessage(groupId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false)(
-    implicit
-    peerManagerRegion: GroupProcessorRegion,
-    timeout:           Timeout,
-    ec:                ExecutionContext
-  ): Future[SeqStateDate] =
-    (peerManagerRegion.ref ? SendMessage(groupId, senderUserId, senderAuthId, accessHash, randomId, message, isFat))
-      .mapTo[SeqStateDate]
 
   def leaveGroup(groupId: Int, randomId: Long)(
     implicit
@@ -75,6 +64,13 @@ trait GroupOperations {
   ): Future[(SeqStateDate, Vector[Int], Long)] =
     (peerManagerRegion.ref ? Join(groupId, joiningUserId, joiningUserAuthId, invitingUserId)).mapTo[(SeqStateDate, Vector[Int], Long)]
 
+  def joinAfterFirstRead(groupId: Int, joiningUserId: Int, joiningUserAuthId: Long)(
+    implicit
+    region:  GroupProcessorRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Unit] = (region.ref ? JoinAfterFirstRead(groupId, joiningUserId, joiningUserAuthId)) map (_ ⇒ ())
+
   def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(
     implicit
     timeout:           Timeout,
@@ -83,24 +79,6 @@ trait GroupOperations {
     client:            AuthorizedClientData
   ): Future[SeqStateDate] =
     (peerManagerRegion.ref ? Invite(groupId, inviteeUserId, client.userId, client.authId, randomId)).mapTo[SeqStateDate]
-
-  def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long)(
-    implicit
-    timeout: Timeout,
-    region:  GroupProcessorRegion,
-    ec:      ExecutionContext
-  ): Future[Unit] = {
-    (region.ref ? MessageReceived(groupId, receiverUserId, receiverAuthId, date)).mapTo[MessageReceivedAck] map (_ ⇒ ())
-  }
-
-  def messageRead(groupId: Int, readerUserId: Int, readerAuthId: Long, date: Long)(
-    implicit
-    timeout: Timeout,
-    region:  GroupProcessorRegion,
-    ec:      ExecutionContext
-  ): Future[Unit] = {
-    (region.ref ? MessageRead(groupId, readerUserId, readerAuthId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
-  }
 
   def updateAvatar(groupId: Int, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long)(
     implicit
@@ -137,6 +115,17 @@ trait GroupOperations {
     ec:      ExecutionContext
   ): Future[(Vector[ApiMember], SeqState)] = (region.ref ? MakeUserAdmin(groupId, clientUserId, clientAuthId, candidateId)).mapTo[(Vector[ApiMember], SeqState)]
 
+  def revokeIntegrationToken(groupId: Int, clientUserId: Int)(
+    implicit
+    region:  GroupProcessorRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[String] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
+}
+
+private[group] sealed trait Queries {
+  import GroupQueries._
+
   def getIntegrationToken(groupId: Int, clientUserId: Int)(
     implicit
     region:  GroupViewRegion,
@@ -144,17 +133,25 @@ trait GroupOperations {
     ec:      ExecutionContext
   ): Future[Option[String]] = (region.ref ? GetIntegrationToken(groupId, clientUserId)).mapTo[GetIntegrationTokenResponse] map (_.token)
 
-  def revokeIntegrationToken(groupId: Int, clientUserId: Int)(
-    implicit
-    region:  GroupProcessorRegion,
-    timeout: Timeout,
-    ec:      ExecutionContext
-  ): Future[String] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
-
   def getApiStruct(groupId: Int, clientUserId: Int)(
     implicit
     region:  GroupViewRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[ApiGroup] = (region.ref ? GetApiStruct(groupId, clientUserId)).mapTo[GetApiStructResponse] map (_.struct)
+
+  def checkAccessHash(groupId: Int, hash: Long)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Boolean] = (region.ref ? CheckAccessHash(groupId, hash)).mapTo[CheckAccessHashResponse] map (_.isCorrect)
+
+  def getMemberIds(groupId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[(Seq[Int], Seq[Int], Int)] = (region.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
+
 }

@@ -5,8 +5,8 @@ import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
-import im.actor.model.entity.Message;
-import im.actor.model.entity.content.ServiceContent;
+import im.actor.core.entity.Message;
+import im.actor.core.entity.content.ServiceContent;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

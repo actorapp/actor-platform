@@ -22,6 +22,19 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 
+import im.actor.core.entity.FileReference;
+import im.actor.core.entity.Message;
+import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.FileLocalSource;
+import im.actor.core.entity.content.FileRemoteSource;
+import im.actor.core.entity.content.PhotoContent;
+import im.actor.core.entity.content.VideoContent;
+import im.actor.core.viewmodel.FileCallback;
+import im.actor.core.viewmodel.FileVM;
+import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.core.viewmodel.UploadFileCallback;
+import im.actor.core.viewmodel.UploadFileVM;
+import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
@@ -29,21 +42,7 @@ import im.actor.messenger.app.fragment.chat.view.FastThumbLoader;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.model.entity.FileReference;
-import im.actor.model.entity.Message;
-import im.actor.model.entity.content.DocumentContent;
-import im.actor.model.entity.content.FileLocalSource;
-import im.actor.model.entity.content.FileRemoteSource;
-import im.actor.model.entity.content.PhotoContent;
-import im.actor.model.entity.content.VideoContent;
-import im.actor.model.files.FileSystemReference;
-import im.actor.model.mvvm.MVVMEngine;
-import im.actor.model.viewmodel.FileCallback;
-import im.actor.model.viewmodel.FileVM;
-import im.actor.model.viewmodel.FileVMCallback;
-import im.actor.model.viewmodel.UploadFileCallback;
-import im.actor.model.viewmodel.UploadFileVM;
-import im.actor.model.viewmodel.UploadFileVMCallback;
+import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;
@@ -270,8 +269,7 @@ public class PhotoHolder extends MessageHolder {
 
                 @Override
                 public void onDownloaded(final FileSystemReference reference) {
-
-                    MVVMEngine.runOnUiThread(new Runnable() {
+                    im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                         @Override
                         public void run() {
                             if (document instanceof PhotoContent) {
