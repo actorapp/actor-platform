@@ -9,11 +9,8 @@ import org.scalatest.Suite
 trait ImplicitGroupRegions extends ImplicitUserRegions with ImplicitFileStorageAdapter with ActorSerializerPrepare {
   this: Suite ⇒
 
-  override protected def beforeAll(): Unit = {
-    super.beforeAll()
-    GroupDialog.register()
-    GroupProcessor.register()
-  }
+  GroupDialog.register()
+  GroupProcessor.register()
 
   protected implicit val system: ActorSystem
 

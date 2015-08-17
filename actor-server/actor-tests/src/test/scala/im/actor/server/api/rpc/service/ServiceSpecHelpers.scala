@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service
 
 import akka.actor.{ ActorRef, ActorSystem }
+import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
@@ -34,7 +35,8 @@ trait UserStructExtensions {
 trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   this: Suite ⇒
 
-  protected val mediator: ActorRef
+  protected val system: ActorSystem
+  protected lazy val mediator: ActorRef = DistributedPubSubExtension(system).mediator
 
   protected val fairy = Fairy.create()
 
