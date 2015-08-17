@@ -18,7 +18,6 @@ export default {
       './src/app/index.js'
     ] : ['./src/app/index.js'],
     styles: DEBUG ? [
-      'webpack-dev-server/client?http://localhost:3000',
       'webpack/hot/dev-server',
       './src/styles'
     ] : ['./src/styles']
