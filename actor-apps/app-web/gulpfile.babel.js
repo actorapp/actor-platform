@@ -1,10 +1,8 @@
 'use strict';
 
-//import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config.js';
-//import del from 'del';
 import { assign } from 'lodash';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
@@ -112,11 +110,7 @@ gulp.task('html', () => {
 
 gulp.task('lib:build', shell.task(['cd ../ && ./gradlew :core-js:buildPackage']));
 gulp.task('lib', ['lib:build'], () => {
-  const stream =
-    gulp.src('../core-js/build/package/*')
-      .pipe(gulp.dest('./dist/actor/'));
-
-  return stream;
+  return gulp.src('../core-js/build/package/*').pipe(gulp.dest('./dist/actor/'));
 });
 
 gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
