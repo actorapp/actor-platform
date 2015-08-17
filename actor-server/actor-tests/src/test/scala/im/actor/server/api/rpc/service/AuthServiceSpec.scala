@@ -112,7 +112,6 @@ final class AuthServiceSpec
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
-    val mediator = DistributedPubSubExtension(system).mediator
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))
     implicit val sessionRegion = Session.startRegionProxy()
