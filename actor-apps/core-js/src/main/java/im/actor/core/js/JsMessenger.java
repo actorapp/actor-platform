@@ -28,6 +28,7 @@ import im.actor.core.js.entity.JsUser;
 import im.actor.core.js.entity.Placeholders;
 import im.actor.core.js.images.JsImageResize;
 import im.actor.core.js.images.JsResizeListener;
+import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.providers.notification.JsChromePush;
 import im.actor.core.js.providers.notification.JsSafariPush;
 import im.actor.core.js.providers.notification.PushSubscribeResult;
@@ -52,12 +53,14 @@ public class JsMessenger extends Messenger {
     private JsBindingModule jsBindingModule;
     private JsFilesModule filesModule;
     private JsFileSystemProvider fileSystemProvider;
+    private boolean isElectron;
 
     public JsMessenger(Configuration configuration) {
         super(configuration);
         fileSystemProvider = (JsFileSystemProvider) Storage.getFileSystemRuntime();
         filesModule = new JsFilesModule(modules);
         jsBindingModule = new JsBindingModule(this, filesModule, modules);
+        isElectron = JsElectronApp.isElectron();
 
         if (JsChromePush.isSupported()) {
             Log.d("JsMessenger", "ChromePush Supported");
@@ -84,6 +87,10 @@ public class JsMessenger extends Messenger {
         }
 
         JsMessenger.instance = this;
+    }
+
+    public boolean isElectron() {
+        return isElectron;
     }
 
     public void onMessageShown(Peer peer, Long sortKey) {
