@@ -36,16 +36,18 @@ public class JsUser extends JavaScriptObject {
             convertedPhones.push(JsPhone.create(p.getPhone() + "", p.getTitle()));
         }
 
-        return create(userVM.getId(), userVM.getName().get(),
+        return create(userVM.getId(), userVM.getName().get(), userVM.getNick().get(),
+                userVM.getAbout().get(),
                 fileUrl, bigFileUrl,
                 Placeholders.getPlaceholder(userVM.getId()),
                 userVM.isContact().get(), userVM.isBot(),
                 presenceString, convertedPhones);
     }
 
-    public static native JsUser create(int id, String name, String avatar, String bigAvatar, String placeholder,
+    public static native JsUser create(int id, String name, String nick, String about,
+                                       String avatar, String bigAvatar, String placeholder,
                                        boolean isContact, boolean isBot, String presence, JsArray<JsPhone> phones)/*-{
-        return {id: id, name: name, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
+        return {id: id, name: name, nick: nick, about: about, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
             isContact: isContact, presence: presence, phones: phones};
     }-*/;
 
