@@ -49,7 +49,7 @@ public class UploadTask extends ModuleActor {
     private ActorRef manager;
     private boolean isCompleted = false;
 
-    private int blockSize = 32 * 1024;
+    private int blockSize = 128 * 1024;
     private int blocksCount;
     private int nextBlock = 0;
     private int uploaded;
