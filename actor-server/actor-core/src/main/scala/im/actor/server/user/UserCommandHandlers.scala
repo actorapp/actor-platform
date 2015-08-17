@@ -119,7 +119,7 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       (for {
         senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
         senderName = senderUser.localName.getOrElse(senderUser.name)
-        pushText = getPushText(message, senderName, userId)
+        pushText ← getPushText(peer, userId, senderName, message)
         counterUpdate ← db.run(getUpdateCountersChanged(userId))
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None, isFat = false)
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat)
