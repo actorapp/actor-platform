@@ -145,6 +145,7 @@
 		06DFFA1F1B7FB3B100296ECF /* SettingsNotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFFA1C1B7FB3B100296ECF /* SettingsNotificationsViewController.swift */; };
 		06DFFA221B7FB43200296ECF /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFFA211B7FB43200296ECF /* UserViewController.swift */; };
 		06DFFA241B7FB90D00296ECF /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFFA231B7FB90D00296ECF /* Resouces.swift */; };
+		06DFFA301B8211D200296ECF /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFFA2F1B8211D200296ECF /* IntroViewController.swift */; };
 		7A39BC989F6B1C3B2ABCCFBF /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD3598FF465DC55402ECA9F /* libPods-ActorApp.a */; };
 /* End PBXBuildFile section */
 
@@ -302,6 +303,7 @@
 		06DFFA211B7FB43200296ECF /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserViewController.swift; path = Controllers/User/UserViewController.swift; sourceTree = "<group>"; };
 		06DFFA231B7FB90D00296ECF /* Resouces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Resouces.swift; path = Resources/Resouces.swift; sourceTree = "<group>"; };
 		06DFFA2D1B7FEA5C00296ECF /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorApp.entitlements; sourceTree = "<group>"; };
+		06DFFA2F1B8211D200296ECF /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 		6DD3598FF465DC55402ECA9F /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C18824A0398DA8521CEE851A /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		D7FB0A8B3A0C073AAD213E09 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -561,6 +563,7 @@
 		06DFF9B41B7FB26D00296ECF /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				06DFFA2E1B82100100296ECF /* Intro */,
 				06DFF9B51B7FB27700296ECF /* Auth */,
 				06DFFA121B7FB38D00296ECF /* Main */,
 				06DFF9F41B7FB30400296ECF /* Dialogs */,
@@ -737,6 +740,14 @@
 				06DFFA211B7FB43200296ECF /* UserViewController.swift */,
 			);
 			name = User;
+			sourceTree = "<group>";
+		};
+		06DFFA2E1B82100100296ECF /* Intro */ = {
+			isa = PBXGroup;
+			children = (
+				06DFFA2F1B8211D200296ECF /* IntroViewController.swift */,
+			);
+			name = Intro;
 			sourceTree = "<group>";
 		};
 		7DAF0D7631B336DA3B3D19EB /* Pods */ = {
@@ -965,6 +976,7 @@
 				06DFF9EF1B7FB2FD00296ECF /* AutoCompleteCell.swift in Sources */,
 				06DFF9F31B7FB2FD00296ECF /* MessagesLayout.swift in Sources */,
 				06DFFA021B7FB33D00296ECF /* JoinPublicViewContoller.swift in Sources */,
+				06DFFA301B8211D200296ECF /* IntroViewController.swift in Sources */,
 				06DFF8F91B7F9F1400296ECF /* CocoaFileSystemRuntime.swift in Sources */,
 				06DFF9B01B7FB0DE00296ECF /* EditTextController.swift in Sources */,
 				06DFF8DD1B7F99A400296ECF /* LruCache.swift in Sources */,

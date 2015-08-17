@@ -14,6 +14,7 @@ import im.actor.core.modules.internal.DisplayLists;
 import im.actor.core.modules.internal.ExternalModule;
 import im.actor.core.modules.internal.FilesModule;
 import im.actor.core.modules.internal.GroupsModule;
+import im.actor.core.modules.internal.MentionsModule;
 import im.actor.core.modules.internal.MessagesModule;
 import im.actor.core.modules.internal.NotificationsModule;
 import im.actor.core.modules.internal.PresenceModule;
@@ -60,6 +61,7 @@ public class Modules implements ModuleContext {
     private volatile SearchModule search;
     private volatile SecurityModule security;
     private volatile DisplayLists displayLists;
+    private volatile MentionsModule mentions;
 
     public Modules(Messenger messenger, Configuration configuration) {
         this.messenger = messenger;
@@ -132,6 +134,8 @@ public class Modules implements ModuleContext {
         settings = new SettingsModule(this);
         timing.section("Profile");
         profile = new ProfileModule(this);
+        timing.section("Mentions");
+        mentions = new MentionsModule(this);
         timing.end();
 
         timing = new Timing("ACCOUNT_RUN");
@@ -281,6 +285,10 @@ public class Modules implements ModuleContext {
 
     public DisplayLists getDisplayListsModule() {
         return displayLists;
+    }
+
+    public MentionsModule getMentions() {
+        return mentions;
     }
 
     public void onAppVisible() {
