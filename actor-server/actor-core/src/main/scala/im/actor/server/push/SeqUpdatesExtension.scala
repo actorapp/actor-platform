@@ -56,8 +56,8 @@ final class SeqUpdatesExtensionImpl(
     implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
 
     getUserId(authId) flatMap { userId ⇒
-      val usersFuture = Future.sequence(fatMetaData.userIds map (UserOffice.getApiStruct(_, userId, authId)))
       val groupsFuture = Future.sequence(fatMetaData.groupIds map (GroupOffice.getApiStruct(_, userId)))
+      val usersFuture = Future.sequence(fatMetaData.userIds map (UserOffice.getApiStruct(_, userId, authId)))
 
       DBIO.from(for {
         users ← usersFuture
