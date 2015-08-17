@@ -82,15 +82,15 @@ class CocoaUploadCallback : NSObject, ACUploadFileCallback {
     }
 }
 
-class CocoaConversationVMCallback: NSObject, ACConversationVMCallback {
-    
-    let closure: ((unreadId: jlong, index: jint)->())?
-    
-    init(loadClosure: ((unreadId: jlong, index: jint)->())) {
-        self.closure = loadClosure
-    }
-    
-    func onLoadedWithLong(unreadId: jlong, withInt index: jint) {
-        
-    }
-}
+//class CocoaConversationVMCallback: NSObject, ACConversationVMCallback {
+//    
+//    let closure: ((unreadId: jlong, index: jint)->())?
+//    
+//    init(loadClosure: ((unreadId: jlong, index: jint)->())) {
+//        self.closure = loadClosure
+//    }
+//    
+//    func onLoadedWithLong(unreadId: jlong, withInt index: jint) {
+//        
+//    }
+//}
