@@ -49,6 +49,7 @@ class ComposeSection extends React.Component {
     this.state = getStateFromStores();
 
     ThemeManager.setTheme(ActorTheme);
+
     GroupStore.addChangeListener(this.onChange);
     ComposeStore.addChangeListener(this.onChange);
     PreferencesStore.addChangeListener(this.onChange);
@@ -56,8 +57,8 @@ class ComposeSection extends React.Component {
 
   componentWillUnmount() {
     GroupStore.removeChangeListener(this.onChange);
-    GroupStore.removeChangeListener(getStateFromStores);
-    PreferencesStore.addChangeListener(this.onChange);
+    ComposeStore.removeChangeListener(this.onChange);
+    PreferencesStore.removeChangeListener(this.onChange);
   }
 
   onChange = () => {
