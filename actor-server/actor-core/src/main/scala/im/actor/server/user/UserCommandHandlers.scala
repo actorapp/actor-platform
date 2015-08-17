@@ -116,14 +116,14 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
     )
 
     val result = if (user.authIds.nonEmpty) {
-      (for {
+      for {
         senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
         senderName = senderUser.localName.getOrElse(senderUser.name)
-        pushText = getPushText(message, senderName, userId)
+        pushText ← getPushText(peer, userId, senderName, message)
         counterUpdate ← db.run(getUpdateCountersChanged(userId))
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None, isFat = false)
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat)
-      } yield DeliverMessageAck())
+      } yield DeliverMessageAck()
     } else {
       Future.successful(DeliverMessageAck())
     }
@@ -194,9 +194,10 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       val serviceMessage = ServiceMessages.contactRegistered(user.id)
       // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
       val actions = contacts map { contact ⇒
+        val localName = contact.name.getOrElse(user.name)
         for {
-          _ ← p.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"), isFat = true))
+          _ ← p.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(localName), user.accessSalt)
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"$localName registered"), isFat = true))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
