@@ -7,7 +7,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 
 final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
   with FlatSpecLike
@@ -18,6 +18,7 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
   with ActorSerializerPrepare {
 
   it should "set and get values" in setAndGet
+  it should "get keys lsit" in keysList
   it should "restore state" in restoreState
 
   override implicit def patienceConfig: PatienceConfig =
@@ -41,6 +42,20 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
 
     whenReady(keyValue.get("key1")) { resp ⇒
       resp shouldBe Some("value")
+    }
+  }
+
+  def keysList() = {
+    val keyValue = ext.startKeyValueString("keysList")
+
+    whenReady(Future.sequence(Seq(
+      keyValue.upsert("key1", "value"),
+      keyValue.upsert("key2", "value"),
+      keyValue.upsert("key3", "value")
+    )))(identity)
+
+    whenReady(keyValue.getKeys()) { keys ⇒
+      keys shouldBe Seq("key1", "key2", "key3")
     }
   }
 
