@@ -217,7 +217,11 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
         this.accessHash = wrapped.getAccessHash();
         this.name = wrapped.getName();
         this.localName = wrapped.getLocalName();
-        this.username = wrapped.getNick();
+        if (wrapped.getNick() != null && wrapped.getNick().length() > 0) {
+            this.username = wrapped.getNick();
+        } else {
+            this.username = null;
+        }
         this.about = wrapped.getAbout();
         this.isBot = false;
         if (wrapped.isBot() != null) {

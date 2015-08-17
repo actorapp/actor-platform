@@ -547,39 +547,45 @@ class ConversationViewController: ConversationBaseViewController {
     
     // Completition
     
-    var filteredMembers = [ACUserVM]()
+    var filteredMembers = [ACMentionFilterResult]()
     
     override func canShowAutoCompletion() -> Bool {
         if UInt(self.peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue {
             if self.foundPrefix == "@" {
-                var group = Actor.getGroups().getWithId(jlong(self.peer.getPeerId()))
-                var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()
-            
+//                var group = Actor.getGroups().getWithId(jlong(self.peer.getPeerId()))
+//                var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()
+//            
                 var oldCount = filteredMembers.count
                 filteredMembers.removeAll(keepCapacity: true)
-                for index in 0..<members.length() {
-                    if let groupMember = members.objectAtIndex(UInt(index)) as? ACGroupMember,
-                        let user = Actor.getUserWithUid(groupMember.getUid()) {
-                            if user.getId() != Actor.myUid() {
-                                var isFiltered = false
-                                if self.foundWord != "" {
-                                    var nick = user.getNickModel().get()
-                                    if nick != nil && nick.hasPrefixInWords(self.foundWord) {
-                                        isFiltered = true
-                                    }
-                                    if !isFiltered {
-                                        isFiltered = user.getNameModel().get().hasPrefixInWords(self.foundWord)
-                                    }
-                                } else {
-                                    isFiltered = true
-                                }
-                            
-                                if isFiltered {
-                                    filteredMembers.append(user)
-                                }
-                            }
-                    }
+                
+                var res = Actor.findMentionsWithGid(self.peer.getPeerId(), withQuery: self.foundWord)
+                for index in 0..<res.size() {
+                    filteredMembers.append(res.getWithInt(index) as! ACMentionFilterResult)
                 }
+                
+//                for index in 0..<members.length() {
+//                    if let groupMember = members.objectAtIndex(UInt(index)) as? ACGroupMember,
+//                        let user = Actor.getUserWithUid(groupMember.getUid()) {
+//                            if user.getId() != Actor.myUid() {
+//                                var isFiltered = false
+//                                if self.foundWord != "" {
+//                                    var nick = user.getNickModel().get()
+//                                    if nick != nil && nick.hasPrefixInWords(self.foundWord) {
+//                                        isFiltered = true
+//                                    }
+//                                    if !isFiltered {
+//                                        isFiltered = user.getNameModel().get().hasPrefixInWords(self.foundWord)
+//                                    }
+//                                } else {
+//                                    isFiltered = true
+//                                }
+//                            
+//                                if isFiltered {
+//                                    filteredMembers.append(user)
+//                                }
+//                            }
+//                    }
+//                }
                 
                 if oldCount == filteredMembers.count {
                     self.autoCompletionView.reloadData()
@@ -612,11 +618,7 @@ class ConversationViewController: ConversationBaseViewController {
             postfix = ": "
         }
         
-        if user.getNickModel().get() == nil {
-            acceptAutoCompletionWithString(user.getServerNameModel().get() + postfix, keepPrefix: false)
-        } else {
-            acceptAutoCompletionWithString(user.getNickModel().get()  + postfix)
-        }
+        acceptAutoCompletionWithString(user.getMentionString() + postfix, keepPrefix: !user.isNickname())
     }
     
     override func heightForAutoCompletionView() -> CGFloat {
