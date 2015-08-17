@@ -2,35 +2,31 @@ package im.actor.server.group
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import im.actor.server.event.TSEvent
-
-import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
-
 import akka.actor.Status
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
 import com.trueaccord.scalapb.GeneratedMessage
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.api.rpc.users.Sex
 import im.actor.server.api.ApiConversions._
+import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
+import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
 import im.actor.server.util.ACLUtils._
-import im.actor.server.util.HistoryUtils._
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.ImageUtils._
 import im.actor.server.util.{ ACLUtils, GroupServiceMessages, HistoryUtils }
 import im.actor.server.{ models, persist ⇒ p }
-import im.actor.utils.cache.CacheHelpers._
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.Future
+import scala.concurrent.forkjoin.ThreadLocalRandom
 
 private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers {
   this: GroupProcessor ⇒
@@ -118,110 +114,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def sendMessage(group: Group, senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqStateDate] = {
-    val groupPeer = groupPeerStruct(groupId)
-    val memberIds = group.members.keySet
-
-    withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
-      this.lastSenderId = Some(senderUserId)
-
-      memberIds foreach { userId ⇒
-        if (userId != senderUserId) {
-          UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
-        }
-      }
-
-      for {
-        SeqState(seq, state) ← if (isBot(group, senderUserId))
-          Future.successful(SeqState(0, ByteString.EMPTY))
-        else
-          UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
-        _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
-      } yield SeqStateDate(seq, state, date.getMillis)
-    }
-  }
-
-  protected def messageReceived(group: Group, receiverUserId: Int, date: Long): Unit = {
-    val receiveFuture: Future[MessageReceivedAck] =
-      if (!this.lastReceiveDate.exists(_ >= date) && !this.lastSenderId.contains(receiverUserId)) {
-        this.lastReceiveDate = Some(date)
-        val now = System.currentTimeMillis
-
-        val update = UpdateMessageReceived(groupPeerStruct(groupId), date, now)
-
-        val memberIds = group.members.keySet
-
-        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map UserOffice.getAuthIds) map (_.flatten.toSet)
-
-        for {
-          _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
-          authIds ← authIdsF
-          _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None, isFat = false))
-        } yield MessageReceivedAck()
-      } else Future.successful(MessageReceivedAck())
-    val replyTo = sender()
-    receiveFuture pipeTo replyTo onFailure {
-      case e ⇒
-        replyTo ! Status.Failure(ReceiveFailed)
-        log.error(e, "Failed to mark messages received")
-    }
-  }
-
-  protected def messageRead(group: Group, readerUserId: Int, readerAuthId: Long, date: Long): Unit = {
-    val readFuture: Future[MessageReadAck] =
-      if (!this.lastSenderId.exists(_ == readerUserId)) {
-        db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))) foreach { _ ⇒
-          UserOffice.getAuthIds(readerUserId) map { authIds ⇒
-            val authIdsSet = authIds.toSet
-            for {
-              counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-              _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None, isFat = false)
-              _ ← persistAndPushUpdatesF(authIdsSet, counterUpdate, None, isFat = false)
-            } yield ()
-          }
-        }
-
-        val newState: Group = if (group.invitedUserIds.contains(readerUserId)) {
-          val joinEvent = TSEvent(now(), GroupEvents.UserJoined(readerUserId, group.creatorUserId))
-          val result = workWith(joinEvent, group)
-          persistAsync(joinEvent) { e ⇒
-            db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
-              val randomId = ThreadLocalRandom.current().nextLong()
-              self ! SendMessage(groupId, readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined)
-            })
-          }
-          result
-        } else {
-          group
-        }
-
-        if (!this.lastReadDate.exists(_ >= date) && !this.lastSenderId.contains(readerUserId)) {
-          this.lastReadDate = Some(date)
-          val now = System.currentTimeMillis()
-
-          val groupPeer = groupPeerStruct(groupId)
-          val memberIds = newState.members.keys.toSeq
-
-          val authIdsF = Future.sequence(memberIds.filterNot(_ == readerUserId) map UserOffice.getAuthIds) map (_.flatten.toSet)
-
-          for {
-            authIds ← authIdsF
-            _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-            _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
-          } yield MessageReadAck()
-        } else Future.successful(MessageReadAck())
-      } else Future.successful(MessageReadAck())
-
-    val replyTo = sender()
-
-    readFuture pipeTo replyTo onFailure {
-      case e ⇒
-        replyTo ! Status.Failure(ReadFailed)
-        log.error(e, "Failed to mark messages read")
-    }
-
-  }
-
   protected def invite(group: Group, userId: Int, inviterUserId: Int, inviterAuthId: Long, randomId: Long, date: DateTime): Future[SeqStateDate] = {
     val dateMillis = date.getMillis
     val memberIds = group.members.keySet
@@ -251,8 +143,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def join(group: Group, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int): Unit = {
-    if (!hasMember(group, joiningUserId)) {
+  protected def setJoined(group: Group, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int): Unit = {
+    if (!hasMember(group, joiningUserId) || isInvited(group, joiningUserId)) {
       val replyTo = sender()
 
       persist(TSEvent(now(), GroupEvents.UserJoined(joiningUserId, invitingUserId))) { evt ⇒
@@ -266,8 +158,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               val date = new DateTime
               val randomId = ThreadLocalRandom.current().nextLong()
               for {
-                _ ← p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
-                seqstatedate ← DBIO.from(sendMessage(newState, joiningUserId, joiningUserAuthId, memberIds, randomId, date, GroupServiceMessages.userJoined, isFat = true))
+                exists ← p.GroupUser.exists(groupId, joiningUserId)
+                _ ← if (exists) DBIO.successful(()) else p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
+                seqstatedate ← DBIO.from(GroupDialogOperations.sendMessage(groupId, joiningUserId, joiningUserAuthId, randomId, GroupServiceMessages.userJoined, isFat = true))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
           } yield updates
@@ -351,7 +244,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   protected def updateAvatar(group: Group, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long): Unit = {
     persistStashingReply(TSEvent(now(), AvatarUpdated(avatarOpt)), group) { evt ⇒
       val date = new DateTime
-      val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong))
+      val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong)
 
       val update = UpdateGroupAvatarChanged(groupId, clientUserId, avatarOpt, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.changedAvatar(avatarOpt)

@@ -153,7 +153,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
       }
 
       sender ! SubscribeAck(consumer)
-      deliverState(userId)
+      deliverState(userId, consumer)
     case Envelope(userId, Unsubscribe(consumer)) ⇒
       consumers -= consumer
       context.unwatch(consumer)
@@ -189,9 +189,9 @@ class PresenceManager extends Actor with ActorLogging with Stash {
       }
   }
 
-  private def deliverState(userId: Int): Unit = {
-    consumers foreach { consumer ⇒
-      consumer ! PresenceState(userId, this.lastChange.presence, this.lastSeenAt)
-    }
-  }
+  private def deliverState(userId: Int): Unit =
+    consumers foreach (deliverState(userId, _))
+
+  private def deliverState(userId: Int, consumer: ActorRef): Unit =
+    consumer ! PresenceState(userId, this.lastChange.presence, this.lastSeenAt)
 }

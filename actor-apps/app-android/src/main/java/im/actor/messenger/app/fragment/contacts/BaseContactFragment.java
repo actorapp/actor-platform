@@ -17,7 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import im.actor.android.view.BindedListAdapter;
+import im.actor.core.entity.Contact;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;
@@ -26,10 +27,9 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.model.entity.Contact;
-import im.actor.model.mvvm.BindedDisplayList;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueModel;
+import im.actor.runtime.android.view.BindedListAdapter;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
 import static im.actor.messenger.app.core.Core.messenger;
 
@@ -55,7 +55,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
     }
 
     protected View onCreateContactsView(int layoutId, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View res = inflate(inflater, container, layoutId, messenger().buildContactDisplayList());
+        View res = inflate(inflater, container, layoutId, messenger().buildContactsDisplayList());
 
         emptyView = res.findViewById(R.id.emptyCollection);
 

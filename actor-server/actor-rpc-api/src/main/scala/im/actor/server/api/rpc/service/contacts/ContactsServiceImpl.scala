@@ -74,10 +74,14 @@ class ContactsServiceImpl(
         emailUsersAndIds ← fromDBIO(importEmails(user, optEmail, emails.filterNot(e ⇒ clientEmails.contains(e.email)))(client))
         (eUsers, eUserIds) = emailUsersAndIds
 
-        seqstate ← fromFuture({
-          implicit val c = client
-          UserOffice.broadcastClientUpdate(UpdateContactsAdded((pUserIds ++ eUserIds).toVector), None, isFat = true)
-        })
+        seqstate ← fromFuture(
+          if ((pUserIds ++ eUserIds).nonEmpty) {
+            implicit val c = client
+            UserOffice.broadcastClientUpdate(UpdateContactsAdded((pUserIds ++ eUserIds).toVector), None, isFat = true)
+          } else {
+            SeqUpdatesManager.getSeqState(client.authId)
+          }
+        )
       } yield ResponseImportContacts((pUsers ++ eUsers).toVector, seqstate.seq, seqstate.state.toByteArray)
 
     db.run(action.run)
@@ -106,7 +110,7 @@ class ContactsServiceImpl(
         }
       }
 
-      action.transactionally
+      action
     }
 
     db.run(toDBIOAction(authorizedAction))

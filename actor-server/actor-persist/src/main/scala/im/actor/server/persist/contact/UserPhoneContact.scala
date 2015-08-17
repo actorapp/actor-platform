@@ -14,7 +14,7 @@ object UserPhoneContact {
   val pcontacts = TableQuery[UserPhoneContactTable]
 
   def createOrRestore(ownerUserId: Int, contactUserId: Int, phoneNumber: Long, name: Option[String], accessSalt: String) = {
-    val contact = models.contact.UserPhoneContact(phoneNumber, ownerUserId, contactUserId, name, accessSalt, false)
+    val contact = models.contact.UserPhoneContact(phoneNumber, ownerUserId, contactUserId, name, accessSalt, isDeleted = false)
     pcontacts.insertOrUpdate(contact)
   }
 

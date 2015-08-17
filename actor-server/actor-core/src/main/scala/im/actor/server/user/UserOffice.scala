@@ -90,22 +90,13 @@ private[user] sealed trait Commands extends AuthCommands {
     (userOfficeRegion.ref ? ChangeName(userId, name)).mapTo[SeqState]
   }
 
-  def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage)(
-    implicit
-    peerManagerRegion: UserProcessorRegion,
-    timeout:           Timeout,
-    ec:                ExecutionContext
-  ): Future[SeqStateDate] = {
-    (peerManagerRegion.ref ? SendMessage(userId, senderUserId, senderAuthId, accessHash, randomId, message)).mapTo[SeqStateDate]
-  }
-
   def deliverMessage(userId: Int, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
     implicit
     region:  UserProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Unit =
-    region.ref ! DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat)
+  ): Future[Unit] =
+    (region.ref ? DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat)) map (_ ⇒ ())
 
   def deliverOwnMessage(userId: Int, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
     implicit
@@ -114,24 +105,6 @@ private[user] sealed trait Commands extends AuthCommands {
     ec:      ExecutionContext
   ): Future[SeqState] =
     (region.ref ? DeliverOwnMessage(userId, peer, senderAuthId, randomId, date, message, isFat)).mapTo[SeqState]
-
-  def messageReceived(userId: Int, receiverAuthId: Long, peerUserId: Int, date: Long)(
-    implicit
-    region:  UserProcessorRegion,
-    timeout: Timeout,
-    ec:      ExecutionContext
-  ): Future[Unit] = {
-    (region.ref ? MessageReceived(userId, receiverAuthId, peerUserId, date)).mapTo[MessageReceivedAck] map (_ ⇒ ())
-  }
-
-  def messageRead(userId: Int, readerAuthId: Long, peerUserId: Int, date: Long)(
-    implicit
-    region:  UserProcessorRegion,
-    timeout: Timeout,
-    ec:      ExecutionContext
-  ): Future[Unit] = {
-    (region.ref ? MessageRead(userId, readerAuthId, peerUserId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
-  }
 
   def changeNickname(userId: Int, clientAuthId: Long, nickname: Option[String])(
     implicit
@@ -332,4 +305,8 @@ private[user] sealed trait Queries {
 
   def getContactRecordsSet(userId: Int)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[(Set[Long], Set[String])] =
     for ((phones, emails) ← getContactRecords(userId)) yield (phones.toSet, emails.toSet)
+
+  def checkAccessHash(userId: Int, senderAuthId: Long, accessHash: Long)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[Boolean] = {
+    (region.ref ? CheckAccessHash(userId, senderAuthId, accessHash)).mapTo[CheckAccessHashResponse] map (_.isCorrect)
+  }
 }
