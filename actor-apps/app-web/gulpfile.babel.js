@@ -39,13 +39,12 @@ gulp.task('webpack:build', (callback) => {
   });
 });
 
-gulp.task('webpack-dev-server', () =>{
+gulp.task('webpack-dev-server', () => {
   // modify some webpack config options
   assign(webpackConfig, {
     plugins: [
       new webpack.ResolverPlugin([
-        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
-        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
+        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
       ]),
       new webpack.optimize.DedupePlugin(),
       new webpack.HotModuleReplacementPlugin(),
@@ -126,7 +125,7 @@ gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
       hash: true,
       network: ['http://*', 'https://*', '*'],
       filename: 'app.appcache',
-      exclude: ['assets/styles.js.map', 'assets/app.js.map']
+      exclude: ['assets/*.map']
     }))
     .pipe(gulp.dest('./dist/'));
 });
