@@ -32,7 +32,7 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
   val ext = ShardakkaExtension(system)
 
   def setAndGet() = {
-    val keyValue = ext.startKeyValueString("setAndGet")
+    val keyValue = ext.simpleKeyValue("setAndGet")
 
     whenReady(keyValue.get("key1")) { resp ⇒
       resp shouldBe empty
@@ -46,7 +46,7 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
   }
 
   def keysList() = {
-    val keyValue = ext.startKeyValueString("keysList")
+    val keyValue = ext.simpleKeyValue("keysList")
 
     whenReady(Future.sequence(Seq(
       keyValue.upsert("key1", "value"),
@@ -55,21 +55,21 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
     )))(identity)
 
     whenReady(keyValue.getKeys()) { keys ⇒
-      keys shouldBe Seq("key1", "key2", "key3")
+      keys.toSet shouldBe Set("key1", "key2", "key3")
     }
   }
 
   def restoreState() = {
     val kvName = "restoreState"
 
-    val keyValue = ext.startKeyValueString(kvName)
+    val keyValue = ext.simpleKeyValue(kvName)
 
     whenReady(keyValue.upsert("key1", "value"))(identity)
 
-    keyValue.shutdown()
+    ext.shutdownKeyValue(kvName)
     Thread.sleep(200)
 
-    val keyValueNew = ext.startKeyValueString(kvName)
+    val keyValueNew = ext.simpleKeyValue(kvName)
 
     whenReady(keyValueNew.get("key1")) { resp ⇒
       resp shouldBe Some("value")
