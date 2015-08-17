@@ -6,6 +6,7 @@ package im.actor.core.modules.internal.notifications;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.notifications.entity.PendingNotification;
 import im.actor.core.modules.internal.notifications.entity.PendingStorage;
+import im.actor.core.modules.internal.notifications.entity.ReadState;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.runtime.storage.SyncKeyValue;
 
@@ -32,6 +34,7 @@ public class NotificationsActor extends ModuleActor {
 
     private boolean isNotificationsPaused = false;
     private HashSet<Peer> notificationsDuringPause = new HashSet<Peer>();
+    private HashMap<Peer, Long> readStates = new HashMap<Peer, Long>();
 
     public NotificationsActor(ModuleContext messenger) {
         super(messenger);
@@ -58,6 +61,11 @@ public class NotificationsActor extends ModuleActor {
 
     public void onNewMessage(Peer peer, int sender, long date, ContentDescription description,
                              boolean hasCurrentUserMention) {
+
+        if (date <= loadLastReadState(peer)) {
+            // Ignore Already read messages
+            return;
+        }
 
         boolean isPeerEnabled = context().getSettingsModule().isNotificationsEnabled(peer);
         boolean isEnabled = context().getSettingsModule().isNotificationsEnabled() && isPeerEnabled;
@@ -107,6 +115,11 @@ public class NotificationsActor extends ModuleActor {
     }
 
     public void onMessagesRead(Peer peer, long fromDate) {
+        if (fromDate < loadLastReadState(peer)) {
+            // Ignore already read messages
+            return;
+        }
+
         boolean isChanged = false;
         List<PendingNotification> notifications = pendingStorage.getNotifications();
         for (PendingNotification p : notifications.toArray(new PendingNotification[notifications.size()])) {
@@ -120,6 +133,8 @@ public class NotificationsActor extends ModuleActor {
             saveStorage();
             performNotification(true);
         }
+
+        writeLastReadState(peer, fromDate);
     }
 
     public void onNotificationsPaused() {
@@ -227,6 +242,27 @@ public class NotificationsActor extends ModuleActor {
 
     private void saveStorage() {
         this.storage.put(0, pendingStorage.toByteArray());
+    }
+
+    private long loadLastReadState(Peer peer) {
+        if (readStates.containsKey(peer)) {
+            return readStates.get(peer);
+        }
+
+        byte[] data = storage.get(peer.getUnuqueId());
+        if (data != null) {
+            try {
+                return ReadState.fromBytes(data).getSortDate();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
+    }
+
+    private void writeLastReadState(Peer peer, long date) {
+        storage.put(peer.getUnuqueId(), new ReadState(date).toByteArray());
+        readStates.put(peer, date);
     }
 
     // Messages
