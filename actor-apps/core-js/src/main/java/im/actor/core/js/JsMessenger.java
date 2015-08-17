@@ -14,6 +14,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.FastThumb;
+import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.modules.JsFilesModule;
 import im.actor.core.js.modules.JsBindingModule;
 import im.actor.core.js.modules.JsBindedValue;
@@ -148,6 +149,14 @@ public class JsMessenger extends Messenger {
 
     public JsBindedValue<String> getOnlineStatus() {
         return jsBindingModule.getOnlineStatus();
+    }
+
+    public JsBindedValue<JsCounter> getGlobalCounter() {
+        return jsBindingModule.getGlobalCounter();
+    }
+
+    public JsBindedValue<JsCounter> getTempGlobalCounter() {
+        return jsBindingModule.getTempGlobalCounter();
     }
 
     public JsPeerInfo buildPeerInfo(Peer peer) {
