@@ -112,6 +112,10 @@ public class JsFacade implements Exportable {
         return messenger.myUid();
     }
 
+    public boolean isElectron() {
+        return messenger.isElectron();
+    }
+
     // Auth
 
     public String getAuthState() {
