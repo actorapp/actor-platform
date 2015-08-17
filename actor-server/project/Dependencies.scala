@@ -14,7 +14,6 @@ object Dependencies {
   object Compile {
     val akkaActor               = "com.typesafe.akka"             %% "akka-actor"                    % V.akka
     val akkaContrib             = "com.typesafe.akka"             %% "akka-contrib"                  % V.akka
-    val akkaKernel              = "com.typesafe.akka"             %% "akka-kernel"                   % V.akka
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
@@ -98,7 +97,7 @@ object Dependencies {
   val shared = Seq(configs, javaCompat, logbackClassic, scalaLogging, tyrex)
 
   val root = shared ++ Seq(
-    akkaSlf4j, akkaActor, akkaKernel, akkaStream
+    akkaSlf4j, akkaActor, akkaStream
   )
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
@@ -124,7 +123,7 @@ object Dependencies {
   val oauth = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
   val session = shared ++ Seq(
-    akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecCore
+    akkaSlf4j, akkaActor, akkaStream, scodecCore
   )
 
   val sessionMessages = Seq(akkaActor)
@@ -144,7 +143,7 @@ object Dependencies {
   val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert, slickPg)
 
   val frontend = shared ++ Seq(
-    akkaSlf4j, akkaActor, akkaKernel, akkaStream,
+    akkaSlf4j, akkaActor, akkaStream,
     scodecBits, scodecCore,
     scalazCore, scalazConcurrent
   )
