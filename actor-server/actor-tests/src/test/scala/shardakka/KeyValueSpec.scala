@@ -7,7 +7,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 
 final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
   with FlatSpecLike
@@ -18,6 +18,7 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
   with ActorSerializerPrepare {
 
   it should "set and get values" in setAndGet
+  it should "get keys lsit" in keysList
   it should "restore state" in restoreState
 
   override implicit def patienceConfig: PatienceConfig =
@@ -31,7 +32,7 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
   val ext = ShardakkaExtension(system)
 
   def setAndGet() = {
-    val keyValue = ext.startKeyValueString("setAndGet")
+    val keyValue = ext.simpleKeyValue("setAndGet")
 
     whenReady(keyValue.get("key1")) { resp ⇒
       resp shouldBe empty
@@ -44,17 +45,31 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
     }
   }
 
+  def keysList() = {
+    val keyValue = ext.simpleKeyValue("keysList")
+
+    whenReady(Future.sequence(Seq(
+      keyValue.upsert("key1", "value"),
+      keyValue.upsert("key2", "value"),
+      keyValue.upsert("key3", "value")
+    )))(identity)
+
+    whenReady(keyValue.getKeys()) { keys ⇒
+      keys.toSet shouldBe Set("key1", "key2", "key3")
+    }
+  }
+
   def restoreState() = {
     val kvName = "restoreState"
 
-    val keyValue = ext.startKeyValueString(kvName)
+    val keyValue = ext.simpleKeyValue(kvName)
 
     whenReady(keyValue.upsert("key1", "value"))(identity)
 
-    keyValue.shutdown()
+    ext.shutdownKeyValue(kvName)
     Thread.sleep(200)
 
-    val keyValueNew = ext.startKeyValueString(kvName)
+    val keyValueNew = ext.simpleKeyValue(kvName)
 
     whenReady(keyValueNew.get("key1")) { resp ⇒
       resp shouldBe Some("value")

@@ -9,6 +9,8 @@ trait RootCommand {
   val key: String
 }
 
+trait RootQuery
+
 trait RootEvent
 
 object SimpleKeyValueRoot {
@@ -19,6 +21,7 @@ object SimpleKeyValueRoot {
 final class SimpleKeyValueRoot(name: String) extends PersistentActor with ActorLogging {
 
   import RootCommands._
+  import RootQueries._
   import RootEvents._
 
   type PendingCommand = (RootCommand, ActorRef)
@@ -30,6 +33,7 @@ final class SimpleKeyValueRoot(name: String) extends PersistentActor with ActorL
 
   override def receiveCommand: Receive = {
     case cmd: RootCommand        ⇒ handleRootCommand(cmd, sender())
+    case query: RootQuery        ⇒ handleRootQuery(query, sender())
     case ValueCommands.Ack(uuid) ⇒ ack(uuid)
     case query: ValueQuery       ⇒ handleQuery(query)
     case End                     ⇒ context stop self
@@ -76,6 +80,12 @@ final class SimpleKeyValueRoot(name: String) extends PersistentActor with ActorL
             }
         }
       case None ⇒ log.error("Got ack to a non-existent command")
+    }
+  }
+
+  private def handleRootQuery(query: RootQuery, sender: ActorRef) = {
+    query match {
+      case GetKeys() ⇒ sender ! GetKeysResponse(keys.toSeq)
     }
   }
 
