@@ -16,6 +16,7 @@ import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
+import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PublicGroup;
 import im.actor.core.entity.Sex;
@@ -692,6 +693,18 @@ public class Messenger {
     @ObjectiveCName("loadFirstUnread:")
     public long loadFirstUnread(Peer peer) {
         return modules.getMessagesModule().loadReadState(peer);
+    }
+
+    /**
+     * Finding suitable mentions
+     *
+     * @param gid   gid of group
+     * @param query query for search
+     * @return matches
+     */
+    @ObjectiveCName("findMentionsWithGid:withQuery:")
+    public List<MentionFilterResult> findMentions(int gid, String query) {
+        return modules.getMentions().findMentions(gid, query);
     }
 
     //////////////////////////////////////

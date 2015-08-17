@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ * Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
  */
 
 package im.actor.core.modules.internal;
