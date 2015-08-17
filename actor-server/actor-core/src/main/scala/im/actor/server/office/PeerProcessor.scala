@@ -25,5 +25,5 @@ trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[
     }
   }
 
-  private def formatAuthored(authorName: String, message: String): String = s"${authorName}: ${message}"
+  private def formatAuthored(authorName: String, message: String): String = s"$authorName: $message"
 }
