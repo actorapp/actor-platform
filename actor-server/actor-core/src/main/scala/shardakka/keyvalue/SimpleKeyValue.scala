@@ -26,6 +26,9 @@ case class SimpleKeyValue[A](
   def get(key: String)(implicit ec: ExecutionContext, timeout: Timeout): Future[Option[A]] =
     (proxy ? ValueQueries.Get(key)).mapTo[ValueQueries.GetResponse] map (_.value.map(codec.fromBytes))
 
+  def getKeys()(implicit ec: ExecutionContext, timeout: Timeout): Future[Seq[String]] =
+    (proxy ? RootQueries.GetKeys()).mapTo[RootQueries.GetKeysResponse] map (_.keys)
+
   def shutdown(): Unit = {
     proxy ! End
     root ! PoisonPill
