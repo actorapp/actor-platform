@@ -417,6 +417,22 @@ public class JsFacade implements Exportable {
         messenger.getOnlineStatus().unsubscribe(callback);
     }
 
+    public void bindGlobalCounter(JsBindedValueCallback callback) {
+        messenger.getGlobalCounter().subscribe(callback);
+    }
+
+    public void unbindGlobalCounter(JsBindedValueCallback callback) {
+        messenger.getGlobalCounter().unsubscribe(callback);
+    }
+
+    public void bindTempGlobalCounter(JsBindedValueCallback callback) {
+        messenger.getTempGlobalCounter().subscribe(callback);
+    }
+
+    public void unbindTempGlobalCounter(JsBindedValueCallback callback) {
+        messenger.getTempGlobalCounter().unsubscribe(callback);
+    }
+
     // Events
 
     public void onAppVisible() {
