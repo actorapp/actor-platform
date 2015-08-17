@@ -23,6 +23,16 @@ message RootCommands {
     message Ack {}
 }
 
+message RootQueries {
+    message GetKeys {
+        option (scalapb.message).extends = "shardakka.keyvalue.RootQuery";
+    }
+
+    message GetKeysResponse {
+        repeated string keys = 1;
+    }
+}
+
 message ValueCommands {
     message Upsert {
         option (scalapb.message).extends = "shardakka.keyvalue.ValueCommand";
