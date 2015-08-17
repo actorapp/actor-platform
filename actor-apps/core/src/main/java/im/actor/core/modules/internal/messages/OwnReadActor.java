@@ -84,6 +84,9 @@ public class OwnReadActor extends ModuleActor {
 
         // Saving read state
         context().getMessagesModule().saveReadState(peer, sortingDate);
+
+        // Clearing notifications
+        context().getNotificationsModule().onOwnRead(peer, sortingDate);
     }
 
     // Messages
