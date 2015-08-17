@@ -118,7 +118,7 @@ public class JsNotificationsProvider implements NotificationProvider {
             }
         }
 
-        if (JsElectronApp.isSupported()) {
+        if (JsElectronApp.isElectron()) {
             JsElectronApp.showNewMessages();
         }
 
@@ -141,7 +141,7 @@ public class JsNotificationsProvider implements NotificationProvider {
 
     @Override
     public void hideAllNotifications() {
-        if (JsElectronApp.isSupported()) {
+        if (JsElectronApp.isElectron()) {
             JsElectronApp.hideNewMessages();
         }
     }
