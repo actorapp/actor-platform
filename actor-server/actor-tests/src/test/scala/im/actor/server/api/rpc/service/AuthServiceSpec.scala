@@ -3,6 +3,8 @@ package im.actor.server.api.rpc.service
 import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
+
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Random
 import scalaz.\/
@@ -13,7 +15,7 @@ import org.scalatest.Inside._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
-import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.contacts.{ ResponseGetContacts, PhoneToImport, UpdateContactRegistered }
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, Sex }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
@@ -65,6 +67,8 @@ final class AuthServiceSpec
   it should "complete sign up process for unregistered user" in s.e9
 
   it should "register unregistered contacts and send updates" in s.e90
+
+  it should "register unregistered contacts with local name" in s.e91
 
   "AuthTransaction and AuthSmsCode" should "be invalidated after sign in process successfully completed" in s.e10
 
@@ -119,6 +123,7 @@ final class AuthServiceSpec
     val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, null)
     implicit val service = new auth.AuthServiceImpl(activationContext, mediator)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
+    implicit val contactService = new ContactsServiceImpl
 
     val correctUri = "https://actor.im/registration"
     val correctAuthCode = "0000"
@@ -437,6 +442,58 @@ final class AuthServiceSpec
           case UserContact(_, _, Some(_), _, false) ⇒
         }
       }
+    }
+
+    def e91() = {
+      val phoneNumber = buildPhone()
+      val userName = "Rock Jam"
+      val userSex = Some(Sex.Male)
+      val authId = createAuthId()
+      val sessionId = createSessionId()
+      val unregClientData = ClientData(authId, sessionId, None)
+
+      val (regUser, regAuthId, _) = createUser()
+      val localName = Some("Bloody wild goat")
+      val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
+
+      {
+        implicit val clientData = regClientData
+        val unregPhones = Vector(PhoneToImport(phoneNumber, localName))
+        whenReady(contactService.handleImportContacts(unregPhones, Vector.empty))(_ ⇒ ())
+      }
+
+      sendSessionHello(authId, sessionId)
+
+      {
+        implicit val clientData = unregClientData
+        val transactionHash =
+          whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
+            resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+            resp.toOption.get.transactionHash
+          }
+        whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
+        whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
+      }
+
+      {
+        implicit val clientData = regClientData
+        expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
+
+        whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) {
+          _ shouldBe empty
+        }
+
+        whenReady(contactService.handleGetContacts("wrongHash")) { resp ⇒
+          inside(resp) {
+            case Ok(ResponseGetContacts(users, false)) ⇒
+              users should have length 1
+              val newUser = users.head
+              newUser.name shouldEqual userName
+              newUser.localName shouldEqual localName
+          }
+        }
+      }
+
     }
 
     def e10() = {

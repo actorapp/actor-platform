@@ -6,14 +6,12 @@ target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
 	# Model
-	pod 'j2objc-local', :git => 'https://github.com/actorapp/j2objc-local', :tag => 'v0.9.7'
-	pod 'RegexKitLite', :inhibit_warnings => true
-	pod 'CocoaAsyncSocket'
-	pod 'FMDB'
-
+    pod 'FMDB', :git => 'https://github.com/ccgus/fmdb'
+    pod 'RegexKitLite', :inhibit_warnings => true
+    pod 'CocoaAsyncSocket'
+        
 	# UI
-	pod 'VENTokenField'
-	pod 'AsyncDisplayKit'
+    pod 'AsyncDisplayKit'
 	pod 'SVProgressHUD'
 	pod 'MBProgressHUD'
 	pod 'PSTAlertController'
@@ -25,7 +23,6 @@ target 'ActorApp' do
     pod 'CLTokenInputView'
     
     pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
-    #pod 'SlackTextViewController'
     
     pod 'NYTPhotoViewer'
     pod 'PEPhotoCropEditor'
@@ -36,6 +33,7 @@ target 'ActorApp' do
     pod 'PSTAlertController'
     pod 'TTTAttributedLabel'
     pod 'M13ProgressSuite'
+    pod 'MDRadialProgress'
     
     # Tracking
     pod 'SplunkMint-iOS'

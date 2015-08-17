@@ -1,0 +1,43 @@
+buildscript {
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+    }
+}
+
+apply plugin: 'war'
+apply plugin: 'gwt'
+
+gwt {
+    gwtVersion = '2.7.0'
+    modules 'im.actor.ActorRuntime'
+
+    compiler {
+        strict = true;
+        style = "OBF"
+        enableClosureCompiler = false;
+        disableClassMetadata = true;
+        disableCastChecking = true;
+    }
+
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', '../runtime/src/main/java']
+        }
+        resources {
+            srcDirs = ['../core/src/main/resources']
+        }
+    }
+}
+
+dependencies {
+    gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
+
+    // Hack for IntelliJ IDEA
+    providedCompile 'com.google.gwt:gwt-user:2.7.0'
+    providedCompile 'org.timepedia.exporter:gwtexporter:2.4.0'
+}

@@ -1,23 +1,23 @@
 package im.actor.server.api.rpc.service.messaging
 
-import im.actor.server.group.GroupErrors.{ ReadFailed, ReceiveFailed }
+import im.actor.api.rpc.DBIOResult._
+import im.actor.api.rpc.PeerHelpers._
+import im.actor.api.rpc._
+import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
+import im.actor.api.rpc.peers.{ OutPeer, PeerType }
+import im.actor.server.dialog.group.GroupDialogOperations
+import im.actor.server.dialog.privat.PrivateDialogOperations
+import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupOffice
 import im.actor.server.user.UserOffice
-
-import scala.concurrent.Future
-
+import im.actor.server.util.{ GroupUtils, HistoryUtils, UserUtils }
+import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.PeerHelpers._
-import im.actor.api.rpc._
-import im.actor.api.rpc.DBIOResult._
-import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ OutPeer, PeerType }
-import im.actor.server.util.{ HistoryUtils, GroupUtils, UserUtils }
-import im.actor.server.{ models, persist }
+import scala.concurrent.Future
 
 object HistoryErrors {
   val ReceiveFailed = RpcError(500, "RECEIVE_FAILED", "", true, None)
@@ -32,18 +32,17 @@ trait HistoryHandlers {
   import HistoryUtils._
   import UserUtils._
   import im.actor.api.rpc.Implicits._
-  import im.actor.server.push.SeqUpdatesManager._
 
   override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       val receivedFuture = peer.`type` match {
         case PeerType.Private ⇒
           for {
-            _ ← UserOffice.messageReceived(client.userId, client.authId, peer.id, date)
+            _ ← PrivateDialogOperations.messageReceived(client.userId, peer.id, date)
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
-            _ ← GroupOffice.messageReceived(peer.id, client.userId, client.authId, date)
+            _ ← GroupDialogOperations.messageReceived(peer.id, client.userId, client.authId, date)
           } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }
@@ -60,11 +59,11 @@ trait HistoryHandlers {
       val readFuture = peer.`type` match {
         case PeerType.Private ⇒
           for {
-            _ ← UserOffice.messageRead(client.userId, client.authId, peer.id, date)
+            _ ← PrivateDialogOperations.messageRead(client.userId, client.authId, peer.id, date)
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
-            _ ← GroupOffice.messageRead(peer.id, client.userId, client.authId, date)
+            _ ← GroupDialogOperations.messageRead(peer.id, client.userId, client.authId, date)
           } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }
@@ -254,7 +253,7 @@ trait HistoryHandlers {
     for {
       groups ← DBIO.from(Future.sequence(groupIds map (GroupOffice.getApiStruct(_, client.userId))))
       groupUserIds = groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
-      users ← getUserStructs(userIds ++ groupUserIds, client.userId, client.authId)
+      users ← DBIO.from(Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (UserOffice.getApiStruct(_, client.userId, client.authId))))
     } yield (users, groups)
   }
 

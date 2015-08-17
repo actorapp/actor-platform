@@ -4,7 +4,6 @@ import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
 import akka.stream.ActorMaterializer
-
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.CommonSerialization
@@ -25,22 +24,27 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.commons.ActorConfig
-import im.actor.server.db.{ DbExtension, FlywayInit }
+import im.actor.server.db.DbExtension
+import im.actor.server.dialog.privat.{ PrivateDialog, PrivateDialogExtension }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
+import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
-import im.actor.server.session.{ SessionMessage, Session, SessionConfig }
+import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialExtension
 import im.actor.server.user._
 
 class Main extends Bootable {
+  SessionMessage.register()
   CommonSerialization.register()
   UserProcessor.register()
   GroupProcessor.register()
+  GroupDialog.register()
+  PrivateDialog.register()
 
   val serverConfig = ActorConfig.load()
 
@@ -65,7 +69,6 @@ class Main extends Bootable {
   def startup() = {
     DbExtension(system).migrate()
 
-    SessionMessage.register()
     UserMigrator.migrateAll()
     GroupMigrator.migrateAll()
 
@@ -77,6 +80,8 @@ class Main extends Bootable {
     implicit val userViewRegion = UserExtension(system).viewRegion
     implicit val groupProcessorRegion = GroupExtension(system).processorRegion
     implicit val groupViewRegion = GroupExtension(system).viewRegion
+    implicit val groupDialogRegion = GroupDialogExtension(system).region //no need to be implicit
+    implicit val privateDialogRegion = PrivateDialogExtension(system).region
 
     val mediator = DistributedPubSubExtension(system).mediator
 

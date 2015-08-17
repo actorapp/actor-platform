@@ -1,14 +1,13 @@
 include ':app-android'
 include ':app-cli'
+
+include ':runtime'
+include ':runtime-android'
+include ':runtime-js'
+include ':runtime-cocoa'
+
 include ':core'
-include ':core-js'
 include ':core-android'
-include ':core-android-free'
-include ':core-android-google'
+
+include ':core-js'
 include ':core-cocoa'
-include ':core-java'
-include ':core-async'
-include ':core-async-tcp'
-include ':core-async-ui'
-include ':core-crypto'
-include ':core-mem'

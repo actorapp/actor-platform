@@ -37,9 +37,9 @@ import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.model.entity.Peer;
-import im.actor.model.viewmodel.UserPhone;
-import im.actor.model.viewmodel.UserVM;
+import im.actor.core.entity.Peer;
+import im.actor.core.viewmodel.UserPhone;
+import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
