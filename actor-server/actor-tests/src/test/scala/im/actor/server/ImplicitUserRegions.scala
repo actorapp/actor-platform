@@ -9,11 +9,8 @@ import org.scalatest.Suite
 trait ImplicitUserRegions extends ImplicitSocialManagerRegion with ImplicitSeqUpdatesManagerRegion with ActorSerializerPrepare {
   this: Suite ⇒
 
-  override protected def beforeAll(): Unit = {
-    super.beforeAll()
-    PrivateDialog.register()
-    UserProcessor.register()
-  }
+  PrivateDialog.register()
+  UserProcessor.register()
 
   protected implicit val system: ActorSystem
 
