@@ -164,7 +164,10 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
                     var controller = NYTPhotosViewController(photos: [photoInfo])
                     controller.delegate = self
-                    self.controller.presentViewController(controller, animated: true, completion: nil)
+                    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
+                    self.controller.presentViewController(controller, animated: true, completion: { () -> Void in
+                        // UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+                    })
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
             var rid = bindedMessage!.getRid()
@@ -177,7 +180,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
                     var controller = NYTPhotosViewController(photos: [photoInfo])
                     controller.delegate = self
-                    self.controller.presentViewController(controller, animated: true, completion: nil)
+                    
+                    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
+                    self.controller.presentViewController(controller, animated: true, completion: { () -> Void in
+                        // UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+                    })
             }))
         }
     }
@@ -375,6 +382,10 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     
     func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
         return self.preview
+    }
+    
+    func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController!) {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
     }
 }
 
