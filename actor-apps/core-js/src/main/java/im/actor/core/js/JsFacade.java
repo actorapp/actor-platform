@@ -10,11 +10,13 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import java.util.List;
+
 import im.actor.core.ApiConfiguration;
 import im.actor.core.AuthState;
 import im.actor.core.ConfigurationBuilder;
+import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
-import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.entity.Enums;
 import im.actor.core.js.entity.JsAuthErrorClosure;
 import im.actor.core.js.entity.JsAuthSuccessClosure;
@@ -22,10 +24,12 @@ import im.actor.core.js.entity.JsClosure;
 import im.actor.core.js.entity.JsContact;
 import im.actor.core.js.entity.JsDialog;
 import im.actor.core.js.entity.JsGroup;
+import im.actor.core.js.entity.JsMentionFilterResult;
 import im.actor.core.js.entity.JsMessage;
 import im.actor.core.js.entity.JsPeer;
 import im.actor.core.js.entity.JsTyping;
 import im.actor.core.js.entity.JsUser;
+import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
 import im.actor.core.js.utils.IdentityUtils;
@@ -370,6 +374,15 @@ public class JsFacade implements Exportable {
 
     public String loadDraft(JsPeer peer) {
         return messenger.loadDraft(peer.convert());
+    }
+
+    public JsArray<JsMentionFilterResult> findMentions(int gid, String query) {
+        List<MentionFilterResult> res = messenger.findMentions(gid, query);
+        JsArray<JsMentionFilterResult> mentions = JsArray.createArray().cast();
+        for (MentionFilterResult m : res) {
+            mentions.push(JsMentionFilterResult.create(m));
+        }
+        return mentions;
     }
 
     // Typing

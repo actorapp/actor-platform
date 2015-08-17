@@ -67,6 +67,7 @@
 #import "im/actor/core/entity/Notification.h"
 #import "im/actor/core/entity/ContentDescription.h"
 #import "im/actor/core/entity/PublicGroup.h"
+#import "im/actor/core/entity/MentionFilterResult.h"
 
 #import "im/actor/core/viewmodel/UserVM.h"
 #import "im/actor/core/viewmodel/UserTypingVM.h"
@@ -99,6 +100,8 @@
 #import "im/actor/core/network/RpcException.h"
 
 #import "im/actor/core/api/ApiAuthSession.h"
+
+#import "im/actor/core/util/StringMatch.h"
 
 // Core Runtime
 
