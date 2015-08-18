@@ -20,6 +20,7 @@ import im.actor.core.modules.internal.notifications.entity.PendingNotification;
 import im.actor.core.modules.internal.notifications.entity.PendingStorage;
 import im.actor.core.modules.internal.notifications.entity.ReadState;
 import im.actor.core.modules.utils.ModuleActor;
+import im.actor.runtime.Log;
 import im.actor.runtime.storage.SyncKeyValue;
 
 public class NotificationsActor extends ModuleActor {
@@ -78,11 +79,15 @@ public class NotificationsActor extends ModuleActor {
             return;
         }
 
+        // Log.d("NotificationsActor", "Notification: " + isAppVisible + ", " + isDialogsVisible + ", " + visiblePeer);
+
         if (isAppVisible) {
             // Is In Current chat
             if (visiblePeer != null && visiblePeer.equals(peer)) {
+                // Log.d("NotificationsActor", "visiblePeer");
                 if (config().getDeviceCategory() == DeviceCategory.DESKTOP ||
                         config().getDeviceCategory() == DeviceCategory.TABLET) {
+                    // Log.d("NotificationsActor", "isDesk");
                     // Don't play sounds in chat on desktop
                 } else {
                     // Play sound effect if available
@@ -91,24 +96,39 @@ public class NotificationsActor extends ModuleActor {
                     }
                 }
             } else {
-                // Don't play any sounds not in chat screen on mobile phone
+                // Log.d("NotificationsActor", "NOTvisiblePeer");
 
-//                if (isDialogsVisible) {
-//                    if (isEnabled) {
-//                        // Play sound effect if dialogs visible
-//                        // and notification chat is not opened
-//                        if (isEffectsEnabled()) {
-//                            playEffect();
+                if (config().getDeviceCategory() == DeviceCategory.DESKTOP ||
+                        config().getDeviceCategory() == DeviceCategory.TABLET) {
+
+                    if (isEnabled) {
+                        // Play sound effect if dialogs visible
+                        // and notification chat is not opened
+                        if (isEffectsEnabled()) {
+                            playEffect();
+                        }
+                    }
+
+//                    if (isDialogsVisible) {
+//                        if (isEnabled) {
+//                            // Play sound effect if dialogs visible
+//                            // and notification chat is not opened
+//                            if (isEffectsEnabled()) {
+//                                playEffect();
+//                            }
 //                        }
+//                    } else {
+//                        // Show in-app notification (detected automatically)
+//                        showNotification();
 //                    }
-//                } else {
-//
-//                    // Show in-app notification (detected automatically)
-//                    showNotification();
-//                }
+                } else {
+                    // Don't play any sounds not in chat screen on mobile phone
+                    // We done this because we have unread badge in chat screen on mobile
+                }
             }
 
         } else {
+            // Log.d("NotificationsActor", "App Not Visible");
             if (isEnabled) {
                 showNotification();
             }
@@ -209,6 +229,7 @@ public class NotificationsActor extends ModuleActor {
     }
 
     private void showNotification() {
+        Log.d("NotificationsActor", "showNotification");
         performNotificationImp(false);
     }
 
@@ -228,6 +249,7 @@ public class NotificationsActor extends ModuleActor {
         }
 
         if (destNotifications.size() == 0) {
+            // Log.d("NotificationsActor", "no notifications");
             hideNotification();
             return;
         }
@@ -248,6 +270,7 @@ public class NotificationsActor extends ModuleActor {
             config().getNotificationProvider().onUpdateNotification(context().getMessenger(), res,
                     messagesCount, chatsCount);
         } else {
+            // Log.d("NotificationsActor", "Show notitification");
             config().getNotificationProvider().onNotification(context().getMessenger(), res,
                     messagesCount, chatsCount, isAppVisible);
         }
