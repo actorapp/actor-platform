@@ -8,7 +8,7 @@ import im.actor.server.dialog.PrivateDialogCommands.Origin.{ LEFT, RIGHT }
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed, AuthIdRandomId, PrivateDialogCommands }
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserOffice

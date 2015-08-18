@@ -1,7 +1,8 @@
-package im.actor.server.push
+package im.actor.server.sequence
 
-import java.util
 import java.util.concurrent.TimeUnit
+
+import akka.serialization.SerializationExtension
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -12,71 +13,22 @@ import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
 
-import im.actor.api.rpc.UpdateBox
-import im.actor.api.rpc.groups.Group
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
 import im.actor.api.rpc.peers.Peer
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate }
-import im.actor.api.rpc.users.User
+import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.HistoryMessage
-import im.actor.server.push.SeqUpdatesManager.UpdateRefs
-import im.actor.server.sequence.SeqState
 import im.actor.server.{ models, persist ⇒ p }
 
-object SeqUpdatesManagerMessages {
-  @SerialVersionUID(1L)
-  case class Envelope(authId: Long, payload: Message)
-
-  sealed trait Message
-
-  @SerialVersionUID(1L)
-  case object GetSequenceState extends Message
-
-  @SerialVersionUID(1L)
-  case class FatMetaData(userIds: Seq[Int], groupIds: Seq[Int])
-
-  @SerialVersionUID(1L)
-  case class FatData(users: Seq[User], groups: Seq[Group])
-
-  @SerialVersionUID(1L)
-  case class PushUpdate(
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[Peer],
-    fatData:        Option[FatData]
-  ) extends Message
-
-  @SerialVersionUID(1L)
-  private[push] case class PushUpdateGetSequenceState(
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[Peer],
-    fatData:        Option[FatData]
-  ) extends Message
-
-  @SerialVersionUID(1L)
-  case class Subscribe(consumer: ActorRef) extends Message
-
-  @SerialVersionUID(1L)
-  case class SubscribeAck(consumer: ActorRef) extends Message
-
-  @SerialVersionUID(1L)
-  case class PushCredentialsUpdated(credsOpt: Option[models.push.PushCredentials]) extends Message
-
-  @SerialVersionUID(1L)
-  case class DeletePushCredentials(credsOpt: Option[models.push.PushCredentials]) extends Message
-
-  @SerialVersionUID(1L)
-  case class UpdateReceived(update: UpdateBox)
+trait SeqUpdatesManagerMessage {
+  val authId: Long
 }
 
-private[push] object SeqUpdatesManagerActor {
+@SerialVersionUID(1L)
+case class FatMetaData(userIds: Seq[Int], groupIds: Seq[Int])
+
+private[sequence] object SeqUpdatesManagerActor {
   @SerialVersionUID(1L)
   private case class Initialized(
     seq:            Int,
@@ -129,17 +81,17 @@ private final class SeqUpdatesManagerActor(
   initialize()
 
   def receiveInitialized: Receive = {
-    case GetSequenceState ⇒
+    case GetSeqState(_) ⇒
       sender() ! sequenceState(seq, SeqUpdatesManager.timestampToBytes(lastTimestamp))
-    case PushUpdate(header, updBytes, refs, pushText, originPeer, fatData) ⇒
-      pushUpdate(authId, header, updBytes, refs, pushText, originPeer, fatData)
-    case PushUpdateGetSequenceState(header, serializedData, refs, pushText, originPeer, fatData) ⇒
+    case PushUpdate(_, deliveryId, header, serializedData, refs, isFat, pushText, originPeer) ⇒
       val replyTo = sender()
 
-      pushUpdate(authId, header, serializedData, refs, pushText, originPeer, fatData, { seqstate: SeqState ⇒
+      pushUpdate(deliveryId, header, serializedData, refs, isFat, pushText, originPeer, { seqstate: SeqState ⇒
         replyTo ! seqstate
       })
-    case Subscribe(consumer: ActorRef) ⇒
+    case msg @ Subscribe(_, consumerStr) ⇒
+      val consumer = SerializationExtension(context.system).system.provider.resolveActorRef(consumerStr)
+
       if (!consumers.contains(consumer)) {
         context.watch(consumer)
       }
@@ -148,33 +100,30 @@ private final class SeqUpdatesManagerActor(
 
       log.debug("Consumer subscribed {}", consumer)
 
-      sender() ! SubscribeAck(consumer)
-    case PushCredentialsUpdated(credsOpt) ⇒
-      credsOpt match {
-        case Some(c: models.push.GooglePushCredentials) ⇒
-          googleCredsOpt = Some(c)
-          db.run(setPushCredentials(c))
-        case Some(c: models.push.ApplePushCredentials) ⇒
-          appleCredsOpt = Some(c)
-          db.run(setPushCredentials(c))
-        case None ⇒
-          googleCredsOpt = None
-          appleCredsOpt = None
-          db.run(deletePushCredentials(authId))
+      sender() ! SubscribeAck(msg)
+    case p @ PushCredentialsUpdated(_, creds) ⇒
+      creds match {
+        case PushCredentialsUpdated.Credentials.Apple(ApplePushCredentials(apnsKey, token)) ⇒
+          val model = models.push.ApplePushCredentials(authId, apnsKey, token.toByteArray)
+          appleCredsOpt = Some(model)
+          db.run(setPushCredentials(model))
+        case PushCredentialsUpdated.Credentials.Google(GooglePushCredentials(projectId, regId)) ⇒
+          val model = models.push.GooglePushCredentials(authId, projectId, regId)
+          googleCredsOpt = Some(model)
+          db.run(setPushCredentials(model))
+        case _ ⇒ // TODO: delete?
       }
-    case DeletePushCredentials(credsOpt) ⇒
-      credsOpt match {
-        case Some(c: models.push.ApplePushCredentials) if appleCredsOpt.exists(ec ⇒ util.Arrays.equals(ec.token, c.token)) ⇒
-          log.warning("Deleting apple push creds")
-          appleCredsOpt = None
-          db.run(deletePushCredentials(authId))
-        case c @ Some(_: models.push.GooglePushCredentials) if c == googleCredsOpt ⇒
-          log.warning("Deleting google push creds")
-          googleCredsOpt = None
-          db.run(deletePushCredentials(authId))
-        case ignored ⇒
-          log.warning("Ignoring, my {} {}", appleCredsOpt, googleCredsOpt)
-        // ignoring, already deleted
+    case PushCredentialsDeleted(_) ⇒
+      if (appleCredsOpt.isDefined) {
+        log.warning("Deleting apple push creds")
+        appleCredsOpt = None
+        db.run(deletePushCredentials(authId))
+      } else if (googleCredsOpt.isDefined) {
+        log.warning("Deleting google push creds")
+        googleCredsOpt = None
+        db.run(deletePushCredentials(authId))
+      } else {
+        log.warning("Ignoring, my {} {}", appleCredsOpt, googleCredsOpt)
       }
     case ReceiveTimeout ⇒
       if (consumers.isEmpty) {
@@ -227,61 +176,43 @@ private final class SeqUpdatesManagerActor(
   }
 
   private def pushUpdate(
-    authId:         Long,
+    deliveryId:     Option[Long],
     header:         Int,
-    serializedData: Array[Byte],
+    serializedData: ByteString,
     refs:           UpdateRefs,
+    isFat:          Boolean,
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    fatData:        Option[FatData]
-  ): Unit = {
-    pushUpdate(authId, header, serializedData, refs, pushText, originPeer, fatData, _ ⇒ ())
-  }
-
-  private def pushUpdate(
-    authId:         Long,
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[Peer],
-    fatData:        Option[FatData],
     cb:             SeqState ⇒ Unit
   ): Unit = {
     // TODO: #perf pinned dispatcher?
     implicit val ec = context.dispatcher
 
     def push(seq: Int, timestamp: Long): Future[Int] = {
-      val (userIds, groupIds) = refs
+      val UpdateRefs(userIds, groupIds) = refs
 
-      val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds.toSet, groupIds.toSet)
+      val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData.toByteArray, userIds.toSet, groupIds.toSet)
 
       db.run(p.sequence.SeqUpdate.create(seqUpdate))
         .map(_ ⇒ seq)
         .andThen {
           case Success(_) ⇒
             if (header != UpdateMessageSent.header) {
-              val updateStruct = fatData match {
-                case Some(FatData(users, groups)) ⇒
-                  FatSeqUpdate(
-                    seqUpdate.seq,
-                    SeqUpdatesManager.timestampToBytes(seqUpdate.timestamp),
-                    seqUpdate.header,
-                    seqUpdate.serializedData,
-                    users.toVector,
-                    groups.toVector
-                  )
-                case _ ⇒
-                  SeqUpdate(
-                    seqUpdate.seq,
-                    SeqUpdatesManager.timestampToBytes(seqUpdate.timestamp),
-                    seqUpdate.header,
-                    seqUpdate.serializedData
-                  )
-              }
+              val updateStruct = SeqUpdate(
+                seqUpdate.seq,
+                SeqUpdatesManager.timestampToBytes(seqUpdate.timestamp),
+                seqUpdate.header,
+                seqUpdate.serializedData
+              )
+
+              val fatRefs =
+                if (isFat)
+                  Some(refs)
+                else
+                  None
 
               consumers foreach { consumer ⇒
-                consumer ! UpdateReceived(updateStruct)
+                consumer ! UpdateReceived(updateStruct, fatRefs)
               }
 
               googleCredsOpt foreach { creds ⇒

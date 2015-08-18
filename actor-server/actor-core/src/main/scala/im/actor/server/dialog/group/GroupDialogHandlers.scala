@@ -9,7 +9,7 @@ import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
-import im.actor.server.push.SeqUpdatesManager._
+import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
 import im.actor.server.util.HistoryUtils._

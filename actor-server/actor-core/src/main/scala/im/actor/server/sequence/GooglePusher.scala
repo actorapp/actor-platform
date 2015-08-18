@@ -1,4 +1,4 @@
-package im.actor.server.push
+package im.actor.server.sequence
 
 import scala.concurrent._
 
@@ -10,7 +10,7 @@ import im.actor.api.rpc.peers.Peer
 import im.actor.server.{ models, persist }
 
 // FIXME: #perf pinned dispatcher
-private[push] class GooglePusher(pushManager: GooglePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
+private[sequence] class GooglePusher(pushManager: GooglePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   implicit val ec: ExecutionContext = system.dispatcher
 
   def deliverGooglePush(creds: models.push.GooglePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer]): Unit = {
