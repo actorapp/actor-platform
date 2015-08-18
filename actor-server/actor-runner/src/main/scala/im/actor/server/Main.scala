@@ -93,11 +93,9 @@ object Main extends App {
     case _                  ⇒ throw new Exception("""Invalid activation.default-service value provided: valid options: "internal", actor-activation""")
   }
 
-  Session.startRegion(
+  implicit val sessionRegion = Session.startRegion(
     Some(Session.props(mediator))
   )
-
-  implicit val sessionRegion = Session.startRegionProxy()
 
   RichMessageWorker.startWorker(richMessageConfig, mediator)
 
