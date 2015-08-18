@@ -72,7 +72,11 @@ public class AndroidNotifications implements NotificationProvider {
 
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.ic_app_notify);
-        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        if (isInApp) {
+            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        } else {
+            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        }
         builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
         int defaults = NotificationCompat.DEFAULT_LIGHTS;

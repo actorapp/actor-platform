@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.core.DeviceCategory;
 import im.actor.core.entity.ContentDescription;
 import im.actor.core.entity.Notification;
 import im.actor.core.entity.Peer;
@@ -55,10 +56,6 @@ public class NotificationsActor extends ModuleActor {
         }
     }
 
-    private List<PendingNotification> getNotifications() {
-        return pendingStorage.getNotifications();
-    }
-
     public void onNewMessage(Peer peer, int sender, long date, ContentDescription description,
                              boolean hasCurrentUserMention) {
 
@@ -67,49 +64,53 @@ public class NotificationsActor extends ModuleActor {
             return;
         }
 
-        boolean isPeerEnabled = context().getSettingsModule().isNotificationsEnabled(peer);
-        boolean isEnabled = context().getSettingsModule().isNotificationsEnabled() && isPeerEnabled;
-        boolean isInAppEnabled = context().getSettingsModule().isInAppEnabled();
-        boolean isConversationTonesEnabled = context().getSettingsModule().isConversationTonesEnabled();
+        boolean isEnabled = isNotificationsEnabled(peer, hasCurrentUserMention);
 
-        if (peer.getPeerType() == PeerType.GROUP) {
-            if (!context().getSettingsModule().isGroupNotificationsEnabled()) {
-                isEnabled = false;
-            } else {
-                if (context().getSettingsModule().isGroupNotificationsOnlyMentionsEnabled()) {
-                    isEnabled = hasCurrentUserMention;
-                }
-            }
+        // Save to pending notifications
+        if (isEnabled) {
+            List<PendingNotification> allPending = getNotifications();
+            allPending.add(new PendingNotification(peer, sender, date, description));
+            saveStorage();
         }
-
-        if (!isEnabled && (!(isInAppEnabled && peer.equals(visiblePeer)))) {
-            return;
-        }
-
-        List<PendingNotification> allPending = getNotifications();
-        allPending.add(new PendingNotification(peer, sender, date, description));
-        saveStorage();
 
         if (isNotificationsPaused) {
             notificationsDuringPause.add(peer);
             return;
         }
 
-        if (config().getNotificationProvider() != null) {
-            if (isAppVisible) {
-                if (visiblePeer != null && visiblePeer.equals(peer)) {
-                    if (isConversationTonesEnabled) {
-                        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
+        if (isAppVisible) {
+            // Is In Current chat
+            if (visiblePeer != null && visiblePeer.equals(peer)) {
+                if (config().getDeviceCategory() == DeviceCategory.DESKTOP ||
+                        config().getDeviceCategory() == DeviceCategory.TABLET) {
+                    // Don't play sounds in chat on desktop
+                } else {
+                    // Play sound effect if available
+                    if (isEffectsEnabled()) {
+                        playEffect();
                     }
-                } else if (isDialogsVisible) {
-                    if (isConversationTonesEnabled) {
-                        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
-                    }
-                } else if (isInAppEnabled) {
-                    performNotification(false);
                 }
             } else {
-                performNotification(false);
+                // Don't play any sounds not in chat screen on mobile phone
+
+//                if (isDialogsVisible) {
+//                    if (isEnabled) {
+//                        // Play sound effect if dialogs visible
+//                        // and notification chat is not opened
+//                        if (isEffectsEnabled()) {
+//                            playEffect();
+//                        }
+//                    }
+//                } else {
+//
+//                    // Show in-app notification (detected automatically)
+//                    showNotification();
+//                }
+            }
+
+        } else {
+            if (isEnabled) {
+                showNotification();
             }
         }
     }
@@ -131,7 +132,7 @@ public class NotificationsActor extends ModuleActor {
 
         if (isChanged) {
             saveStorage();
-            performNotification(true);
+            updateNotification();
         }
 
         writeLastReadState(peer, fromDate);
@@ -145,22 +146,25 @@ public class NotificationsActor extends ModuleActor {
     public void onNotificationsResumed() {
         isNotificationsPaused = false;
         if (notificationsDuringPause.size() > 0) {
-            if (config().getNotificationProvider() != null) {
+            if (isAppVisible) {
                 if (visiblePeer != null && notificationsDuringPause.contains(visiblePeer)) {
-                    if (context().getSettingsModule().isConversationTonesEnabled()) {
-                        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
-                    }
-                } else if (isDialogsVisible) {
-                    if (context().getSettingsModule().isConversationTonesEnabled()) {
-                        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
-                    }
-                } else if (isAppVisible) {
-                    if (context().getSettingsModule().isInAppEnabled()) {
-                        performNotification(false);
+                    if (config().getDeviceCategory() == DeviceCategory.DESKTOP) {
+                        // Don't play sounds in chat on desktop
+                    } else {
+                        // Play sound effect if available
+                        if (isEffectsEnabled()) {
+                            playEffect();
+                        }
                     }
                 } else {
-                    performNotification(false);
+                    if (isDialogsVisible) {
+                        if (isEffectsEnabled()) {
+                            playEffect();
+                        }
+                    }
                 }
+            } else {
+                showNotification();
             }
         }
         notificationsDuringPause.clear();
@@ -168,7 +172,6 @@ public class NotificationsActor extends ModuleActor {
 
     public void onConversationVisible(Peer peer) {
         this.visiblePeer = peer;
-        performNotification(true);
     }
 
     public void onConversationHidden(Peer peer) {
@@ -195,7 +198,21 @@ public class NotificationsActor extends ModuleActor {
         isDialogsVisible = false;
     }
 
-    private void performNotification(boolean isSilentUpdate) {
+    // Notifications
+
+    private void playEffect() {
+        config().getNotificationProvider().onMessageArriveInApp(context().getMessenger());
+    }
+
+    private void updateNotification() {
+        performNotificationImp(true);
+    }
+
+    private void showNotification() {
+        performNotificationImp(false);
+    }
+
+    private void performNotificationImp(boolean isSilentUpdate) {
         List<PendingNotification> allPending = getNotifications();
 
         List<PendingNotification> destNotifications = new ArrayList<PendingNotification>();
@@ -240,6 +257,8 @@ public class NotificationsActor extends ModuleActor {
         config().getNotificationProvider().hideAllNotifications();
     }
 
+    // Tools
+
     private void saveStorage() {
         this.storage.put(0, pendingStorage.toByteArray());
     }
@@ -263,6 +282,34 @@ public class NotificationsActor extends ModuleActor {
     private void writeLastReadState(Peer peer, long date) {
         storage.put(peer.getUnuqueId(), new ReadState(date).toByteArray());
         readStates.put(peer, date);
+    }
+
+    private boolean isEffectsEnabled() {
+        return context().getSettingsModule().isConversationTonesEnabled();
+    }
+
+    private boolean isNotificationsEnabled(Peer peer, boolean hasMention) {
+        boolean res = context().getSettingsModule().isNotificationsEnabled() &&
+                context().getSettingsModule().isNotificationsEnabled(peer);
+        if (!res) {
+            return false;
+        }
+
+        if (peer.getPeerType() == PeerType.GROUP) {
+            if (context().getSettingsModule().isGroupNotificationsEnabled()) {
+                if (context().getSettingsModule().isGroupNotificationsOnlyMentionsEnabled()) {
+                    return hasMention;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return res;
+    }
+
+    private List<PendingNotification> getNotifications() {
+        return pendingStorage.getNotifications();
     }
 
     // Messages
