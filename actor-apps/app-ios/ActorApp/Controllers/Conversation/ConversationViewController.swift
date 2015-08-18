@@ -230,7 +230,7 @@ class ConversationViewController: ConversationBaseViewController {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        Actor.onConversationOpenWithPeer(peer)
+        Actor.onConversationClosedWithPeer(peer)
         
         (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
         

@@ -10,6 +10,7 @@ import AudioToolbox.AudioServices
 
     var internalMessage:SystemSoundID = 0
     var sounds: [String: SystemSoundID] = [:]
+    var lastSoundPlay: Double = 0
     
     override init() {
         super.init()
@@ -18,7 +19,11 @@ import AudioToolbox.AudioServices
     }
     
     func onMessageArriveInAppWithMessenger(messenger: ACMessenger!) {
-        AudioServicesPlaySystemSound(internalMessage)
+        var currentTime = NSDate().timeIntervalSinceReferenceDate
+        if (currentTime - lastSoundPlay > 0.2) {
+            AudioServicesPlaySystemSound(internalMessage)
+            lastSoundPlay = currentTime
+        }
     }
 
     func onNotificationWithMessenger(messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint, withIsInApp isInApp: Bool) {
