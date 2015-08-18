@@ -122,20 +122,6 @@ android {
 }
 dependencies {
 
-//    // Include core libs
-//    releaseCompile(project(':core-android-google')) {
-//        // Fixing double added nullable attributes
-//        exclude module: 'annotations'
-//    }
-//    debugCompile(project(':core-android-google')) {
-//        // Fixing double added nullable attributes
-//        exclude module: 'annotations'
-//    }
-//    freeCompile(project(':core-android-free')) {
-//        // Fixing double added nullable attributes
-//        exclude module: 'annotations'
-//    }
-
     compile project(':core-android')
 
     // UI
