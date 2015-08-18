@@ -2,11 +2,6 @@ package im.actor.server.util
 
 import java.io.File
 
-import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.Try
-
 import akka.actor._
 import com.amazonaws.HttpMethod
 import com.amazonaws.auth.BasicAWSCredentials
@@ -16,13 +11,25 @@ import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
 import com.github.kxbmap.configs._
 import com.typesafe.config.{ Config, ConfigFactory }
+import im.actor.api.rpc.files.{ FileLocation ⇒ ApiFileLocation }
+import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.server.db.DbExtension
+import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
+import im.actor.server.{ models, persist }
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.files.FileLocation
-import im.actor.server.db.DbExtension
-import im.actor.server.{ models, persist }
+import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.Try
 
-class S3StorageExtensionImpl(val s3StorageAdapter: S3StorageAdapter) extends Extension
+class S3StorageExtensionImpl(val s3StorageAdapter: S3StorageAdapter) extends Extension {
+  // TODO: move to a proper place
+
+  ActorSerializer.register(80001, classOf[FileLocation])
+  ActorSerializer.register(80002, classOf[AvatarImage])
+  ActorSerializer.register(80003, classOf[Avatar])
+}
 
 object S3StorageExtension extends ExtensionId[S3StorageExtensionImpl] with ExtensionIdProvider {
   override def lookup = S3StorageExtension
@@ -62,10 +69,10 @@ class S3StorageAdapter(config: S3StorageAdapterConfig, _system: ActorSystem) ext
   val s3Client = new AmazonS3ScalaClient(awsCredentials)
   val transferManager = new TransferManager(awsCredentials)
 
-  override def uploadFile(name: String, file: File): DBIO[FileLocation] =
+  override def uploadFile(name: String, file: File): DBIO[ApiFileLocation] =
     uploadFile(bucketName, name, file)
 
-  override def uploadFileF(name: String, file: File): Future[FileLocation] =
+  override def uploadFileF(name: String, file: File): Future[ApiFileLocation] =
     db.run(uploadFile(name, file))
 
   override def downloadFile(id: Long): DBIO[Option[File]] = {
@@ -102,7 +109,7 @@ class S3StorageAdapter(config: S3StorageAdapterConfig, _system: ActorSystem) ext
     } yield file
   }
 
-  private def uploadFile(bucketName: String, name: String, file: File): DBIO[FileLocation] = {
+  private def uploadFile(bucketName: String, name: String, file: File): DBIO[ApiFileLocation] = {
     val rnd = ThreadLocalRandom.current()
     val id = rnd.nextLong()
     val accessSalt = ACLUtils.nextAccessSalt(rnd)
@@ -112,7 +119,7 @@ class S3StorageAdapter(config: S3StorageAdapterConfig, _system: ActorSystem) ext
       _ ← persist.File.create(id, accessSalt, FileUtils.s3Key(id, name))
       _ ← DBIO.from(s3Upload(bucketName, id, name, file))
       _ ← DBIO.from(sizeF) flatMap (s ⇒ persist.File.setUploaded(id, s, name))
-    } yield FileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
+    } yield ApiFileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
   }
 
   private def s3Upload(bucketName: String, id: Long, name: String, file: File): Future[UploadResult] = {
