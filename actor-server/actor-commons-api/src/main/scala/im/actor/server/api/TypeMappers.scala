@@ -55,8 +55,13 @@ private[api] trait MessageMapper {
     ByteString.copyFrom(group.toByteArray)
   }
 
-  private def applyPeer(buf: ByteString): Peer =
-    Peer.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())).right.get
+  private def applyPeer(bytes: ByteString): Peer = {
+    if (bytes.size() > 0) {
+      Peer.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+    } else {
+      null
+    }
+  }
 
   private def unapplyPeer(peer: Peer): ByteString =
     ByteString.copyFrom(peer.toByteArray)

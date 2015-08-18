@@ -5,6 +5,8 @@ import akka.actor._
 sealed trait GroupExtension extends Extension
 
 final class GroupExtensionImpl(system: ActorSystem) extends GroupExtension {
+  GroupProcessor.register()
+
   lazy val processorRegion: GroupProcessorRegion = GroupProcessorRegion.start()(system)
   lazy val viewRegion: GroupViewRegion = GroupViewRegion(processorRegion.ref)
 }
