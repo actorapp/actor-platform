@@ -10,6 +10,10 @@ import Foundation
     private var binder = Binder()
     private var syncTask: UIBackgroundTaskIdentifier?
     private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
+    private let badgeView = UIImageView()
+    
+    private var badgeCount = 0
+    private var isBadgeVisible = false
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
@@ -63,11 +67,6 @@ import Foundation
             }
         })
 
-        // Bind badge counter
-        binder.bind(Actor.getAppState().getGlobalCounter(), closure: { (value: JavaLangInteger?) -> () in
-            application.applicationIconBadgeNumber = Int((value!).integerValue)
-        })
-        
         // Creating main window
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
         window?.backgroundColor = UIColor.whiteColor()
@@ -83,8 +82,45 @@ import Foundation
             loginNavigation.makeBarTransparent()
             
             window?.rootViewController = loginNavigation
-            window?.makeKeyAndVisible();
         }
+        
+        window?.makeKeyAndVisible();
+        
+        badgeView.image = Imaging.roundedImage(UIColor.RGB(0xfe0000), size: CGSizeMake(16, 16), radius: 8)
+        // badgeView.frame = CGRectMake(16, 22, 32, 16)
+        badgeView.alpha = 0
+        
+        let badgeText = UILabel()
+        badgeText.text = "0"
+        badgeText.textColor = UIColor.whiteColor()
+        // badgeText.frame = CGRectMake(0, 0, 32, 16)
+        badgeText.font = UIFont.systemFontOfSize(12)
+        badgeText.textAlignment = NSTextAlignment.Center
+        badgeView.addSubview(badgeText)
+        
+        window?.addSubview(badgeView)
+        
+        // Bind badge counter
+        binder.bind(Actor.getAppState().getGlobalCounter(), closure: { (value: JavaLangInteger?) -> () in
+            self.badgeCount = Int((value!).integerValue)
+            application.applicationIconBadgeNumber = self.badgeCount
+            badgeText.text = "\(self.badgeCount)"
+            if (self.isBadgeVisible && self.badgeCount > 0) {
+                self.badgeView.showView()
+            } else if (self.badgeCount == 0) {
+                self.badgeView.hideView()
+            }
+            
+            badgeText.frame = CGRectMake(0, 0, 128, 16)
+            badgeText.sizeToFit()
+            
+            if badgeText.frame.width < 8 {
+                self.badgeView.frame = CGRectMake(16, 22, 16, 16)
+            } else {
+                self.badgeView.frame = CGRectMake(16, 22, badgeText.frame.width + 8, 16)
+            }
+            badgeText.frame = self.badgeView.bounds
+        })
         
         return true;
     }
@@ -115,7 +151,6 @@ import Foundation
         }
         
         window?.rootViewController = rootController!
-        window?.makeKeyAndVisible();
     }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
@@ -255,5 +290,17 @@ import Foundation
                 return
             }
         }
+    }
+    
+    func showBadge() {
+        isBadgeVisible = true
+        if badgeCount > 0 {
+            self.badgeView.showView()
+        }
+    }
+    
+    func hideBadge() {
+        isBadgeVisible = false
+        self.badgeView.hideView()
     }
 }

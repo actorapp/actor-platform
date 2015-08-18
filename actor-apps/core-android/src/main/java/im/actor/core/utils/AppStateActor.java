@@ -1,12 +1,12 @@
 package im.actor.core.utils;
 
 import im.actor.core.AndroidMessenger;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
 
-/**
- * Created by ex3ndr on 31.07.15.
- */
 public class AppStateActor extends Actor {
+
+    private static final String TAG = "AppStateActor";
 
     private static final int CLOSE_TIMEOUT = 1000;
 
@@ -21,6 +21,7 @@ public class AppStateActor extends Actor {
     }
 
     private void onActivityOpened() {
+        Log.d(TAG, "onActivityOpened");
         activityCount++;
         if (isScreenVisible) {
             onAppProbablyOpened();
@@ -28,6 +29,7 @@ public class AppStateActor extends Actor {
     }
 
     private void onActivityClosed() {
+        Log.d(TAG, "onActivityClosed");
         activityCount--;
 
         if (activityCount == 0) {
@@ -36,28 +38,36 @@ public class AppStateActor extends Actor {
     }
 
     private void onAppProbablyClosed() {
+        Log.d(TAG, "onAppProbablyClosed");
         if (isAppOpen) {
             self().sendOnce(new MarkAppAsClosed(), CLOSE_TIMEOUT);
         }
     }
 
     private void onAppProbablyOpened() {
-        if (!isAppOpen) {
-            isAppOpen = true;
-            onAppOpened();
-        }
+        Log.d(TAG, "onAppProbablyOpened");
+        onAppOpened();
         self().sendOnce(new MarkAppAsClosed(), 24 * 60 * 60 * 1000); // Far away
     }
 
     private void onAppOpened() {
-        messenger.onAppVisible();
+        Log.d(TAG, "onAppOpened");
+        if (!isAppOpen) {
+            isAppOpen = true;
+            messenger.onAppVisible();
+        }
     }
 
     private void onAppClosed() {
-        messenger.onAppHidden();
+        Log.d(TAG, "onAppClosed");
+        if (isAppOpen) {
+            isAppOpen = false;
+            messenger.onAppHidden();
+        }
     }
 
     private void onScreenOn() {
+        Log.d(TAG, "onScreenOn");
         isScreenVisible = true;
         if (activityCount > 0) {
             onAppProbablyOpened();
@@ -65,6 +75,7 @@ public class AppStateActor extends Actor {
     }
 
     public void onScreenOff() {
+        Log.d(TAG, "onScreenOff");
         isScreenVisible = false;
         onAppProbablyClosed();
     }

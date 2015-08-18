@@ -263,6 +263,12 @@ public class ConfigurationBuilder {
         if (apiConfiguration == null) {
             throw new RuntimeException("Api Configuration not set");
         }
+        if (deviceCategory == null) {
+            throw new RuntimeException("Device Category not set");
+        }
+        if (appCategory == null) {
+            throw new RuntimeException("App Category not set");
+        }
         return new Configuration(endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 phoneBookProvider, notificationProvider,
                 apiConfiguration, enableContactsLogging, enableNetworkLogging,

@@ -59,6 +59,32 @@ public class NotificationsFragment extends BaseFragment {
         enableVibration.setOnClickListener(enableVibrationListener);
         res.findViewById(R.id.vibrationCont).setOnClickListener(enableVibrationListener);
 
+        // Group
+        final CheckBox enableGroup = (CheckBox) res.findViewById(R.id.enableGroup);
+        enableGroup.setChecked(messenger().isGroupNotificationsEnabled());
+        View.OnClickListener enableGroupListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messenger().changeGroupNotificationsEnabled(!messenger().isGroupNotificationsEnabled());
+                enableGroup.setChecked(messenger().isGroupNotificationsEnabled());
+            }
+        };
+        enableGroup.setOnClickListener(enableGroupListener);
+        res.findViewById(R.id.groupCont).setOnClickListener(enableGroupListener);
+
+        // Mentions
+        final CheckBox enableGroupMentions = (CheckBox) res.findViewById(R.id.enableGroupMentions);
+        enableGroupMentions.setChecked(messenger().isGroupNotificationsOnlyMentionsEnabled());
+        View.OnClickListener enableGroupMentionsListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messenger().changeGroupNotificationsOnlyMentionsEnabled(!messenger().isGroupNotificationsOnlyMentionsEnabled());
+                enableGroupMentions.setChecked(messenger().isGroupNotificationsOnlyMentionsEnabled());
+            }
+        };
+        enableGroupMentions.setOnClickListener(enableGroupMentionsListener);
+        res.findViewById(R.id.groupMentionsCont).setOnClickListener(enableGroupMentionsListener);
+
         // Names and messages
 
         final CheckBox enableText = (CheckBox) res.findViewById(R.id.enableTitles);
