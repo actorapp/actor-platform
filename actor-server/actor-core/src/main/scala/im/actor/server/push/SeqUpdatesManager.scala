@@ -2,7 +2,7 @@ package im.actor.server.push
 
 import java.nio.ByteBuffer
 
-import im.actor.server.util.AnyRefLogSource
+import im.actor.server.commons.serialization.ActorSerializer
 
 import scala.annotation.tailrec
 import scala.concurrent._
@@ -18,7 +18,7 @@ import im.actor.api.rpc.peers.{ PeerType, Peer }
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.db.DbExtension
 import im.actor.server.models.sequence
-import im.actor.server.sequence.SeqState
+import im.actor.server.sequence.{ SeqStateDate, SeqState }
 import im.actor.server.user.{ UserOffice, UserViewRegion }
 import im.actor.server.{ models, persist ⇒ p }
 
@@ -33,6 +33,11 @@ object SeqUpdatesManager {
 
   // TODO: configurable
   private implicit val OperationTimeout = Timeout(30.seconds)
+
+  def register(): Unit = {
+    ActorSerializer.register(60001, classOf[SeqState])
+    ActorSerializer.register(60002, classOf[SeqStateDate])
+  }
 
   def getSeqState(authId: Long)(implicit ext: SeqUpdatesExtension, ec: ExecutionContext): Future[SeqState] =
     ext.region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SeqState]
