@@ -104,7 +104,8 @@ class MentionDropdown extends React.Component {
           this.handleScroll(scrollIndex * DROPDOWN_ITEM_HEIGHT);
           this.setState({selectedIndex: index});
           break;
-        case KeyCodes.ARROW_DOWN && KeyCodes.TAB:
+        case KeyCodes.ARROW_DOWN:
+        case KeyCodes.TAB:
           event.stopPropagation();
           event.preventDefault();
 
@@ -172,7 +173,7 @@ class MentionDropdown extends React.Component {
             <header className="mention__header">
               <div className="pull-left"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
               <div className="pull-left"><strong>↵</strong>&nbsp; to select</div>
-              <div className="pull-right"><strong>esc</strong>&nbsp; <i className="material-icons">close</i></div>
+              <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
             </header>
             <ul className="mention__list" ref="mentionList">
               {mentionsElements}
