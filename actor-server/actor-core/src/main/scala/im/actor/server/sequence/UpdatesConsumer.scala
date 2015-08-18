@@ -142,7 +142,9 @@ private[sequence] class UpdatesConsumer(
               case Some(userId) ⇒
                 for {
                   (users, groups) ← getFatData(userId, userIds, groupIds)
-                } yield FatSeqUpdate(updateBox.seq, updateBox.state, updateBox.header, updateBox.update, users.toVector, groups.toVector)
+                } yield {
+                  FatSeqUpdate(updateBox.seq, updateBox.state, updateBox.updateHeader, updateBox.update, users.toVector, groups.toVector)
+                }
               case None ⇒
                 throw new Exception(s"Cannot find userId for authId ${authId}")
             }
