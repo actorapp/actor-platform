@@ -17,21 +17,19 @@ private[user] trait UserQueriesHandlers {
   }
 
   protected def getApiStruct(state: User, clientUserId: Int, clientAuthId: Long): Unit = {
-    db.run(p.contact.UserContact.findName(clientUserId, state.id).headOption map (_.getOrElse(None))).map { localName ⇒
-      GetApiStructResponse(ApiUser(
-        id = state.id,
-        accessHash = ACLUtils.userAccessHash(clientAuthId, state.id, state.accessSalt),
-        name = state.name,
-        localName = UserUtils.normalizeLocalName(localName),
-        sex = Some(state.sex),
-        avatar = state.avatar,
-        phone = state.phones.headOption.orElse(Some(0)),
-        isBot = Some(state.isBot),
-        contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector),
-        nick = state.nickname,
-        about = state.about
-      ))
-    }.pipeTo(sender())
+    sender() ! GetApiStructResponse(ApiUser(
+      id = state.id,
+      accessHash = ACLUtils.userAccessHash(clientAuthId, state.id, state.accessSalt),
+      name = state.name,
+      localName = None,
+      sex = Some(state.sex),
+      avatar = state.avatar,
+      phone = state.phones.headOption.orElse(Some(0)),
+      isBot = Some(state.isBot),
+      contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector),
+      nick = state.nickname,
+      about = state.about
+    ))
   }
 
   protected def getContactRecords(state: User): Unit = {
