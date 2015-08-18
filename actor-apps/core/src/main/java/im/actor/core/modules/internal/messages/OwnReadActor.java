@@ -13,8 +13,28 @@ import im.actor.core.modules.utils.ModuleActor;
 
 public class OwnReadActor extends ModuleActor {
 
+    private boolean isInDifference = false;
+
     public OwnReadActor(ModuleContext context) {
         super(context);
+    }
+
+    public void onDifferenceStart() {
+        if (isInDifference) {
+            return;
+        }
+        isInDifference = true;
+
+        context().getNotificationsModule().pauseNotifications();
+    }
+
+    public void onDifferenceEnd() {
+        if (!isInDifference) {
+            return;
+        }
+        isInDifference = false;
+
+        context().getNotificationsModule().resumeNotifications();
     }
 
     public void onInMessage(Peer peer, Message message) {
@@ -105,6 +125,10 @@ public class OwnReadActor extends ModuleActor {
         } else if (message instanceof OutMessage) {
             OutMessage outMessage = (OutMessage) message;
             onOutMessage(outMessage.getPeer(), outMessage.getSortDate());
+        } else if (message instanceof StartGetDifference) {
+            onDifferenceStart();
+        } else if (message instanceof StopGetDifference) {
+            onDifferenceEnd();
         } else {
             drop(message);
         }
@@ -180,5 +204,13 @@ public class OwnReadActor extends ModuleActor {
         public long getSortDate() {
             return sortDate;
         }
+    }
+
+    public static class StartGetDifference {
+
+    }
+
+    public static class StopGetDifference {
+
     }
 }

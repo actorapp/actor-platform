@@ -15,6 +15,7 @@ import im.actor.core.api.ApiAppCounters;
 import im.actor.core.api.ApiHistoryMessage;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.rpc.ResponseLoadHistory;
+import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
@@ -36,8 +37,58 @@ import im.actor.runtime.annotations.Verified;
 import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
 public class MessagesProcessor extends AbsModule {
+
     public MessagesProcessor(ModuleContext context) {
         super(context);
+    }
+
+    public void onMessages(ApiPeer _peer, List<UpdateMessage> messages) {
+
+        long outMessageSortDate = 0;
+        long intMessageSortDate = 0;
+        Peer peer = convert(_peer);
+
+        ArrayList<Message> nMesages = new ArrayList<Message>();
+        for (UpdateMessage u : messages) {
+
+            AbsContent msgContent;
+            try {
+                msgContent = AbsContent.fromMessage(u.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                continue;
+            }
+
+            boolean isOut = myUid() == u.getSenderUid();
+
+            // Sending message to conversation
+            nMesages.add(new Message(u.getRid(), u.getDate(), u.getDate(), u.getSenderUid(),
+                    isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent));
+
+            if (!isOut) {
+
+                intMessageSortDate = Math.max(intMessageSortDate, u.getDate());
+            } else {
+                outMessageSortDate = Math.max(outMessageSortDate, u.getDate());
+            }
+        }
+
+        conversationActor(peer).send(new ConversationActor.Messages(nMesages));
+
+        if (intMessageSortDate > 0) {
+            plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, intMessageSortDate));
+        }
+
+        if (outMessageSortDate > 0) {
+            ownReadActor().send(new OwnReadActor.OutMessage(peer, outMessageSortDate));
+        }
+
+        // OwnReadActor
+        for (Message m : nMesages) {
+            if (m.getSenderId() != myUid()) {
+                ownReadActor().send(new OwnReadActor.InMessage(peer, m));
+            }
+        }
     }
 
     @Verified
@@ -82,7 +133,7 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onMessageRead(ApiPeer _peer, long startDate, long readDate) {
+    public void onMessageRead(ApiPeer _peer, long startDate) {
         Peer peer = convert(_peer);
 
         // Sending event to conversation actor
@@ -90,7 +141,7 @@ public class MessagesProcessor extends AbsModule {
     }
 
     @Verified
-    public void onMessageReceived(ApiPeer _peer, long startDate, long receivedDate) {
+    public void onMessageReceived(ApiPeer _peer, long startDate) {
         Peer peer = convert(_peer);
 
         // Sending event to conversation actor
@@ -117,14 +168,6 @@ public class MessagesProcessor extends AbsModule {
 
         // Send to own read actor
         ownReadActor().send(new OwnReadActor.OutMessage(peer, date));
-    }
-
-    @Deprecated
-    public void onMessageDateChanged(ApiPeer _peer, long rid, long ndate) {
-        Peer peer = convert(_peer);
-
-        // Change message state in conversation
-        conversationActor(peer).send(new ConversationActor.MessageDateChange(rid, ndate));
     }
 
     @Verified
