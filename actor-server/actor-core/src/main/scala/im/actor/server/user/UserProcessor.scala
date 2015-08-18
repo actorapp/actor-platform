@@ -102,6 +102,8 @@ object UserProcessor {
     ActorSerializer.register(11004, classOf[UserQueries.GetContactRecordsResponse])
     ActorSerializer.register(11005, classOf[UserQueries.CheckAccessHash])
     ActorSerializer.register(11006, classOf[UserQueries.CheckAccessHashResponse])
+    ActorSerializer.register(11007, classOf[UserQueries.GetApiStruct])
+    ActorSerializer.register(11008, classOf[UserQueries.GetApiStructResponse])
 
     ActorSerializer.register(12001, classOf[UserEvents.AuthAdded])
     ActorSerializer.register(12002, classOf[UserEvents.AuthRemoved])

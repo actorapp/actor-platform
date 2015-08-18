@@ -5,9 +5,9 @@ enablePlugins(JavaServerAppPackaging)
 enablePlugins(DebianPlugin)
 
 name in Debian := "actor-server"
-maintainer in Linux := "Andrey Kuznetsov <smith@actor.im>"
-packageSummary in Linux := "An Actor.IM server"
-packageDescription := "Fast and furious communications server"
+maintainer in Linux := "Actor LLC <oss@actor.im>"
+packageSummary in Linux := "Actor messaging platform server"
+packageDescription := "Open source messaging platform for team communications"
 daemonUser in Linux := "actor"
 daemonGroup in Linux := (daemonUser in Linux).value
 
@@ -19,3 +19,8 @@ packageName in Docker := "actor-server"
 version in Docker := version.value
 dockerRepository := Some("actor")
 dockerUpdateLatest := true
+
+mappings in Docker ++= {
+  val conf = sourceDirectory.value / "docker" / "conf"
+  Seq((conf / "server.conf") -> "/opt/docker/conf/server.conf", (conf / "logback.xml") -> "opt/docker/conf/logback.xml")
+}
