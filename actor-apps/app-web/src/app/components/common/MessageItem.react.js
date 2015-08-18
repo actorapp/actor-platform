@@ -83,6 +83,7 @@ class MessageItem extends React.Component {
 
     let actionsDropdownClassName = classnames({
       'dropdown': true,
+      'dropdown--small': true,
       'dropdown--opened': this.state.isActionsShown
     });
 
@@ -161,22 +162,22 @@ class MessageItem extends React.Component {
           {messageContent}
           {visibilitySensor}
         </div>
-        <div className="message__actions">
+        <div className="message__actions hide">
           <div className={actionsDropdownClassName}>
             <span className="dropdown__button" onClick={this.showActions}>
               <i className="material-icons">arrow_drop_down</i>
             </span>
             <ul className="dropdown__menu dropdown__menu--right">
               <li className="dropdown__menu__item">
-                <i className="material-icons">reply</i>
+                <i className="icon material-icons">reply</i>
                 Reply
               </li>
               <li className="dropdown__menu__item hide">
-                <i className="material-icons">forward</i>
+                <i className="icon material-icons">forward</i>
                 Forward
               </li>
               <li className="dropdown__menu__item" onClick={this.onDelete}>
-                <i className="material-icons">close</i>
+                <i className="icon material-icons">close</i>
                 Delete
               </li>
             </ul>
