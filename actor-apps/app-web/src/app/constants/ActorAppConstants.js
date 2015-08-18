@@ -103,6 +103,7 @@ export const MessageContentTypes = {
 };
 
 export const KeyCodes = {
+  TAB: 9,
   ESC: 27,
   ENTER: 13,
   ARROW_UP: 38,

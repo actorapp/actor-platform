@@ -26,14 +26,6 @@ class MentionDropdown extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const { isShown } = this.state;
-
-    if (isShown) {
-      this.setListeners();
-    }
-  }
-
   componentWillUnmount() {
     this.cleanListeners();
   }
@@ -60,6 +52,7 @@ class MentionDropdown extends React.Component {
   }
 
   cleanListeners() {
+    //console.info('cleanListeners');
     document.removeEventListener('keydown', this.onKeyDown, false);
     document.removeEventListener('click', this.closeMentions, false);
   }
@@ -83,8 +76,6 @@ class MentionDropdown extends React.Component {
     const { selectedIndex } = this.state;
     const visibleItems = 6;
     let index = selectedIndex;
-
-    console.warn(mentions.length);
 
     if (index !== null) {
       switch (event.keyCode) {
@@ -111,10 +102,9 @@ class MentionDropdown extends React.Component {
           }
 
           this.handleScroll(scrollIndex * DROPDOWN_ITEM_HEIGHT);
-
           this.setState({selectedIndex: index});
           break;
-        case KeyCodes.ARROW_DOWN:
+        case KeyCodes.ARROW_DOWN && KeyCodes.TAB:
           event.stopPropagation();
           event.preventDefault();
 
@@ -131,7 +121,6 @@ class MentionDropdown extends React.Component {
           }
 
           this.handleScroll(scrollIndex * DROPDOWN_ITEM_HEIGHT);
-
           this.setState({selectedIndex: index});
           break;
         default:
@@ -176,15 +165,15 @@ class MentionDropdown extends React.Component {
       );
     });
 
-
-
-
-
     if (isShown) {
       return (
         <div className={mentionClassName}>
           <div className="mention__wrapper">
-            <header className="mention__header">mention__header</header>
+            <header className="mention__header">
+              <div className="pull-left"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
+              <div className="pull-left"><strong>↵</strong>&nbsp; to select</div>
+              <div className="pull-right"><strong>esc</strong>&nbsp; <i className="material-icons">close</i></div>
+            </header>
             <ul className="mention__list" ref="mentionList">
               {mentionsElements}
             </ul>
