@@ -42,6 +42,10 @@ public class MentionsModule extends AbsModule {
         });
 
         for (GroupMember member : members) {
+            if (member.getUid() == myUid()) {
+                continue;
+            }
+            
             User user = users().getValue(member.getUid());
 
             boolean isNick = user.getNick() != null;
