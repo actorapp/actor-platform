@@ -11,7 +11,7 @@ import im.actor.server.api.ApiConversions._
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.misc.UpdateCounters
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._

@@ -1,4 +1,4 @@
-package im.actor.server.push
+package im.actor.server.sequence
 
 import scala.concurrent.ExecutionContext
 
@@ -9,7 +9,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.{ models, persist }
 
-private[push] class ApplePusher(pushManager: ApplePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
+private[sequence] class ApplePusher(pushManager: ApplePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   private implicit val ec: ExecutionContext = system.dispatcher
 
   def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer], unreadCount: Int): Unit = {

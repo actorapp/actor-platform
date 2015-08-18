@@ -1,4 +1,4 @@
-package im.actor.server.push
+package im.actor.server.sequence
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -11,12 +11,11 @@ import slick.driver.PostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupExtension, GroupOffice, GroupViewRegion }
 import im.actor.server.persist
-import im.actor.server.push.SeqUpdatesManagerMessages.{ FatData, FatMetaData }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 
 sealed trait SeqUpdatesExtension extends Extension {
   val region: SeqUpdatesManagerRegion
-
+  /*
   def getFatData(
     authId:      Long,
     fatMetaData: FatMetaData
@@ -31,7 +30,7 @@ sealed trait SeqUpdatesExtension extends Extension {
   )(
     implicit
     ec: ExecutionContext
-  ): Future[FatData]
+  ): Future[FatData]*/
 }
 
 final class SeqUpdatesExtensionImpl(
@@ -45,7 +44,7 @@ final class SeqUpdatesExtensionImpl(
 
   lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system, gpm, apm)
 
-  def getFatData(
+  /*def getFatData(
     authId:      Long,
     fatMetaData: FatMetaData
   )(
@@ -85,7 +84,7 @@ final class SeqUpdatesExtensionImpl(
         groups ← groupsFuture
       } yield FatData(users, groups)
     }
-  }
+  }*/
 
   def getUserId(authId: Long)(implicit ec: ExecutionContext): DBIO[Int] =
     persist.AuthId.findUserId(authId) map (_.getOrElse(throw new Exception(s"Cannot get userId for a non-authorized authId ${authId}")))
