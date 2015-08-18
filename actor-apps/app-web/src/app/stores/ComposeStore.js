@@ -105,7 +105,7 @@ let onMentionInsert = (action) => {
   }
 
   text = action.text.substring(0, action.caretPosition - query.length) +
-    action.mention +
+    action.mention.title +
     action.text.substring(action.caretPosition, action.text.length) +
     mentionEnding;
 
