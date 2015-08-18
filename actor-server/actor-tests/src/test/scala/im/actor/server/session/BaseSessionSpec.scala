@@ -28,7 +28,7 @@ import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.MTPackage
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.WeakUpdatesManager
+import im.actor.server.sequence.WeakUpdatesManager
 import im.actor.server.session.SessionEnvelope.Payload
 import im.actor.server._
 

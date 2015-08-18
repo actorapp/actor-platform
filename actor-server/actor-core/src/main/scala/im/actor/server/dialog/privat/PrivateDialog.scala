@@ -12,7 +12,7 @@ import im.actor.server.dialog.PrivateDialogCommands.Origin.{ LEFT, RIGHT }
 import im.actor.server.dialog.privat.PrivateDialogEvents.PrivateDialogEvent
 import im.actor.server.dialog.{ StopDialog, AuthIdRandomId, PrivateDialogCommands }
 import im.actor.server.office.{ ProcessorState, Processor }
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.{ UserViewRegion, UserExtension }

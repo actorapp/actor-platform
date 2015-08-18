@@ -14,7 +14,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 import im.actor.server.{ models, persist }
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 
 final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends ConfigsService {
   private implicit val db: Database = DbExtension(actorSystem).db
