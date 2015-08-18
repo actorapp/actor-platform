@@ -36,7 +36,7 @@ class SettingsNotificationsViewController: AATableViewController {
     // MARK: UITableView Data Source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 5
+        return 4
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -47,8 +47,6 @@ class SettingsNotificationsViewController: AATableViewController {
         } else if (section == 1) {
             return Actor.isGroupNotificationsEnabled() ? 2 : 1
         } else if (section == 3) {
-            return Actor.isInAppNotificationsEnabled() ? 3 : 1
-        } else if (section == 4) {
             return 1
         }
         
@@ -63,8 +61,6 @@ class SettingsNotificationsViewController: AATableViewController {
         } else if (section == 1) {
             return NSLocalizedString("NotificationsGroups", comment: "Group Notifications")
         } else if (section == 3) {
-            return NSLocalizedString("NotificationsInAppTitle", comment: "InApp Notifications")
-        } else if (section == 4) {
             return NSLocalizedString("NotificationsPrivacyTitle", comment: "Privacy")
         }
         
@@ -277,21 +273,13 @@ class SettingsNotificationsViewController: AATableViewController {
             } else if (indexPath.row == 1) {
                 return notificationsAlertCell(indexPath)
             }
-        }else if (indexPath.section == 1) {
+        } else if (indexPath.section == 1) {
             if (indexPath.row == 0) {
                 return groupEnabledCell(indexPath)
             } else {
                 return groupEnabledMentionsCell(indexPath)
             }
         } else if (indexPath.section == 3) {
-            if (indexPath.row == 0) {
-                return inAppAlertCell(indexPath)
-            } else if (indexPath.row == 1) {
-                return inAppSoundCell(indexPath)
-            } else if (indexPath.row == 2) {
-                return inAppVibrateCell(indexPath)
-            }
-        } else if (indexPath.section == 4 ) {
             return notificationsPreviewCell(indexPath)
         }
         
