@@ -177,6 +177,11 @@
     border-bottom: 1px solid #ebebeb;
 
     @include clearfix();
+
+    span,
+    strong {
+      display: inline-block;
+    }
     .pull-left {
       margin-right: 18px;
     }

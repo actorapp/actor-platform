@@ -146,7 +146,7 @@ class PreferencesModal extends React.Component {
                                        value="false"/>
                         </RadioButtonGroup>
                       </li>
-                      <li className="language">
+                      <li className="language hide">
                         <i className="icon material-icons">menu</i>
                         Language: <DropDownMenu labelStyle={{color: '#5191db'}}
                                                 menuItemStyle={{height: '40px', lineHeight: '40px'}}
