@@ -5,6 +5,8 @@ import akka.actor._
 sealed trait UserExtension extends Extension
 
 final class UserExtensionImpl(system: ActorSystem) extends UserExtension {
+  UserProcessor.register()
+
   lazy val processorRegion: UserProcessorRegion = UserProcessorRegion.start()(system)
   lazy val viewRegion: UserViewRegion = UserViewRegion(processorRegion.ref)
 }

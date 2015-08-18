@@ -1,7 +1,5 @@
 package im.actor
 
-import akka.sbt.AkkaKernelPlugin
-import akka.sbt.AkkaKernelPlugin.{ Dist, distBootClass, distJvmOptions, outputDirectory }
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
@@ -69,13 +67,9 @@ object Build extends sbt.Build {
     file("."),
     settings =
       defaultSettings ++
-        AkkaKernelPlugin.distSettings ++
         Revolver.settings ++
         Seq(
           libraryDependencies ++= Dependencies.root,
-          distJvmOptions in Dist := "-server -Xms256M -Xmx1024M",
-          distBootClass in Dist := "im.actor.server.Main",
-          outputDirectory in Dist := file("target/dist"),
           Revolver.reStartArgs := Seq("im.actor.server.Main"),
           mainClass in Revolver.reStart := Some("im.actor.server.Main"),
           mainClass in Compile := Some("im.actor.server.Main"),
