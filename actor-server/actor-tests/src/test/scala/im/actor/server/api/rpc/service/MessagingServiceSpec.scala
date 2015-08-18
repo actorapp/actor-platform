@@ -100,7 +100,7 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData2
 
-          expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(UpdateCountersChanged.header, UpdateMessage.header)) {
+          expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(UpdateMessage.header, UpdateCountersChanged.header)) {
             case (UpdateMessage.header, u) ⇒
               val update = parseUpdate[UpdateMessage](u)
               update.peer shouldEqual Peer(PeerType.Private, user1.id)
@@ -148,7 +148,7 @@ class MessagingServiceSpec
             case (UpdateMessage.header, update) ⇒ parseUpdate[UpdateMessage](update)
             case (UpdateCountersChanged.header, update) ⇒
               val counters = parseUpdate[UpdateCountersChanged](update)
-            //counters.counters.globalCounter shouldEqual Some(1) //todo: fix. fails sometimes
+              counters.counters.globalCounter shouldEqual Some(1)
           }
         }
       }

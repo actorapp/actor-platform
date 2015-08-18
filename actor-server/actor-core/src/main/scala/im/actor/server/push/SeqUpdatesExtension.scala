@@ -43,6 +43,8 @@ final class SeqUpdatesExtensionImpl(
   private implicit val system: ActorSystem = _system
   private implicit lazy val db: Database = DbExtension(system).db
 
+  SeqUpdatesManager.register()
+
   lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system, gpm, apm)
 
   def getFatData(
