@@ -8,7 +8,7 @@ import akka.stream.actor._
 
 import im.actor.server.mtproto.protocol.{ ProtoMessage, UpdateBox }
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
-import im.actor.server.push._
+import im.actor.server.sequence._
 
 private[session] object UpdatesHandler {
   def props(authId: Long)(

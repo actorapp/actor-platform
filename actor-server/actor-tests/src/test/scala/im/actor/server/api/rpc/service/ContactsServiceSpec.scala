@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.server.user.UserOffice
+
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.Random
@@ -62,13 +64,13 @@ class ContactsServiceSpec
       }
 
       def changed() = {
-        val expectedUsers = Await.result(db.run(DBIO.sequence(userModels map { user ⇒
-          UserUtils.userStruct(user, None, clientData.authId)
-        })), 3.seconds)
+        val expectedUsers = Await.result(Future.sequence(userModels map { u ⇒
+          UserOffice.getApiStruct(u.id, user.id, authId)
+        }), 3.seconds)
 
         whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp ⇒
           resp should matchPattern {
-            case Ok(api.contacts.ResponseGetContacts(users, false)) if users == expectedUsers.toVector ⇒
+            case Ok(api.contacts.ResponseGetContacts(users, false)) if users.toSet == expectedUsers.toSet ⇒
           }
         }
       }
@@ -115,7 +117,7 @@ class ContactsServiceSpec
         }
 
         val expectedUsers = Vector(Await.result(
-          db.run(server.util.UserUtils.userStruct(user2Model, None, clientData.authId)),
+          UserOffice.getApiStruct(user2.id, user.id, authId),
           3.seconds
         ))
 
