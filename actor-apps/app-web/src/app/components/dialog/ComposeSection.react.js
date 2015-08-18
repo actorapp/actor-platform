@@ -20,7 +20,8 @@ import PreferencesStore from 'stores/PreferencesStore';
 import ComposeStore from 'stores/ComposeStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
-import { Dropdown, DropdownItem } from 'components/common/Dropdown.react';
+//import { Dropdown, DropdownHeader, DropdownList, DropdownListItem } from 'components/common/Dropdown.react';
+import MentionDropdown from 'components/common/MentionDropdown.react';
 
 const ThemeManager = new Styles.ThemeManager();
 
@@ -137,8 +138,8 @@ class ComposeSection extends React.Component {
     }
   };
 
-  onMentionSelect = (value) => {
-    ComposeActionCreators.insertMention(this.props.peer, this.state.text, this.getCaretPosition(), value);
+  onMentionSelect = (mention) => {
+    ComposeActionCreators.insertMention(this.props.peer, this.state.text, this.getCaretPosition(), mention);
     this.refs.area.getDOMNode().focus();
   };
 
@@ -153,37 +154,14 @@ class ComposeSection extends React.Component {
   };
 
   render() {
-    const text = this.state.text;
-    const profile = this.state.profile;
-
-    const mentionsShown = this.state.mentions && this.state.mentions.length > 0;
-
-    let mentionsElements = null;
-
-    if (mentionsShown) {
-      mentionsElements = _.map(this.state.mentions, (mention) => {
-        return (
-          <DropdownItem value={mention.title}>
-            <AvatarItem image={mention.avatar}
-                        placeholder={mention.placeholder}
-                        size="tiny"
-                        title={mention.title}/>
-            {mention.title}
-          </DropdownItem>
-        );
-      });
-    }
+    const { text, profile, mentions } = this.state;
 
     return (
       <section className="compose" onPaste={this.onPaste}>
 
-        <Dropdown className="dropdown--mentions"
-                  onSelect={this.onMentionSelect}
-                  onClose={this.onMentionClose}
-                  isShown={mentionsShown}
-                  ref="mentions">
-          {mentionsElements}
-        </Dropdown>
+        <MentionDropdown mentions={mentions}
+                         onSelect={this.onMentionSelect}
+                         onClose={this.onMentionClose}/>
 
         <AvatarItem className="my-avatar"
                     image={profile.avatar}
@@ -191,12 +169,11 @@ class ComposeSection extends React.Component {
                     title={profile.name}/>
 
 
-          <textarea className="compose__message"
-                    onChange={this.onMessageChange}
-                    onKeyDown={this.onKeyDown}
-                    value={text}
-                    ref="area">
-          </textarea>
+        <textarea className="compose__message"
+                  onChange={this.onMessageChange}
+                  onKeyDown={this.onKeyDown}
+                  value={text}
+                  ref="area"/>
 
         <footer className="compose__footer row">
           <button className="button" onClick={this.onSendFileClick}>
