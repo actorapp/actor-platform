@@ -335,18 +335,34 @@
   }
 
   &:hover {
-    .message__info {
-      .message__timestamp {
-        opacity: 1;
-      }
+    .message__info .message__timestamp,
+    .dropdown__button {
+      opacity: 1;
     }
   }
 
   .dropdown {
+    &__button {
+      line-height: 20px;
+
+      width: 20px;
+      height: 20px;
+
+      opacity: 0;
+      color: rgba(0,0,0,.2);
+    }
     &__menu {
       top: auto;
       right: 24px;
       bottom: 0;
+
+      min-width: 200px;
+    }
+
+    &--opened {
+      .dropdown__button {
+        color: rgba(0,0,0,.7);
+      }
     }
   }
 }
