@@ -10,7 +10,6 @@ import im.actor.api.rpc.users._
 import im.actor.server.api.ApiConversions._
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
-import im.actor.server.misc.UpdateCounters
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.SocialManager._
@@ -27,7 +26,7 @@ private object ServiceMessages {
   def contactRegistered(userId: Int) = ServiceMessage("Contact registered", Some(ServiceExContactRegistered(userId)))
 }
 
-private[user] trait UserCommandHandlers extends UpdateCounters {
+private[user] trait UserCommandHandlers {
   this: UserProcessor ⇒
 
   import ImageUtils._
@@ -120,8 +119,6 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
         senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
         senderName = senderUser.localName.getOrElse(senderUser.name)
         pushText ← getPushText(peer, userId, senderName, message)
-        counterUpdate ← db.run(getUpdateCountersChanged(userId))
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None, isFat = false)
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat)
       } yield DeliverMessageAck()
     } else {
