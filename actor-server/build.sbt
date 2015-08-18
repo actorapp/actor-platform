@@ -19,3 +19,8 @@ packageName in Docker := "actor-server"
 version in Docker := version.value
 dockerRepository := Some("actor")
 dockerUpdateLatest := true
+
+mappings in Docker ++= {
+  val conf = sourceDirectory.value / "docker" / "conf"
+  Seq((conf / "server.conf") -> "/opt/docker/conf/server.conf", (conf / "logback.xml") -> "opt/docker/conf/logback.xml")
+}
