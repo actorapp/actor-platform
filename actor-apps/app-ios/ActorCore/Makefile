@@ -69,6 +69,8 @@ OBJC_FILES = $(addprefix $(SOURCES_DIR)/, $(JAVA_FILES:.java=.m))
 OBJECT_FILES = $(addprefix $(BUILD_DIR)/, $(JAVA_FILES:.java=.o))
 SOURCE_PATHS = $(subst $(space),:,$(SOURCE_ROOTS))
 
+UPDATED_SOURCES = $(BUILD_DIR)/.sources.list
+
 # Build Tasks
 
 # default:
@@ -78,9 +80,7 @@ default: | translate build
 	
 # Translating files
 
-UPDATED_SOURCES = $(BUILD_DIR)/.sources.list
-
-translate: | $(SOURCES_DIR) pre_translate $(OBJC_FILES)
+translate: | $(SOURCES_DIR) $(BUILD_DIR) pre_translate $(OBJC_FILES)
 	@if [ `cat $(UPDATED_SOURCES) | wc -l` -ge 1 ] ; then \
 	$(J2OBJC) $(J2OBJC_ARGS) $(PREFIXES) -sourcepath $(SOURCE_PATHS) -d $(SOURCES_DIR) \
 	`cat $(UPDATED_SOURCES)` ; \
