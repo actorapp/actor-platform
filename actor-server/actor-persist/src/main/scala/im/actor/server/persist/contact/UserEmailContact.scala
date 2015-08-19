@@ -13,11 +13,6 @@ class UserEmailContactTable(tag: Tag) extends UserContactBase[models.contact.Use
 object UserEmailContact {
   val econtacts = TableQuery[UserEmailContactTable]
 
-  def createOrRestore(ownerUserId: Int, contactUserId: Int, email: String, name: Option[String], accessSalt: String) = {
-    val contact = models.contact.UserEmailContact(email, ownerUserId, contactUserId, name, accessSalt, false)
-    econtacts.insertOrUpdate(contact)
-  }
-
   def insertOrUpdate(contact: models.contact.UserEmailContact) =
     econtacts.insertOrUpdate(contact)
 

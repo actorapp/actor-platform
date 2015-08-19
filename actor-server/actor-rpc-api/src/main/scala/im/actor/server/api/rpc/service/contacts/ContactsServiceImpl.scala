@@ -118,7 +118,7 @@ class ContactsServiceImpl(
         case Some(contact) ⇒
           if (accessHash == ACLUtils.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
             for {
-              _ ← persist.contact.UserContact.delete(client.userId, userId)
+              _ ← deleteContact(client.userId, userId)
               _ ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None, isFat = false))
               seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)), None, isFat = false))
             } yield {
@@ -147,7 +147,7 @@ class ContactsServiceImpl(
             persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
               case None ⇒
                 for {
-                  _ ← addContact(user.id, userPhoneNumber, None, user.accessSalt)
+                  _ ← addContact(client.userId, user.id, userPhoneNumber, None, user.accessSalt)
                   seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateContactsAdded(Vector(user.id)), None, isFat = true))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               case Some(contact) ⇒
@@ -260,25 +260,14 @@ class ContactsServiceImpl(
     }
   }
 
-  private def createPhoneContacts(ownerUserId: Int, usersPhonesNames: immutable.Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): dbio.DBIOAction[immutable.Seq[User], NoStream, Read with Write with Read with Read with Read with Read] = {
+  private def createPhoneContacts(ownerUserId: Int, usersPhonesNames: immutable.Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): DBIO[immutable.Seq[User]] = {
     persist.contact.UserContact.findIds(ownerUserId, usersPhonesNames.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
       val actions = usersPhonesNames map {
         case (user, phone, localName) ⇒
-          val userContact = models.contact.UserPhoneContact(
-            ownerUserId = ownerUserId,
-            contactUserId = user.id,
-            phoneNumber = phone,
-            name = localName,
-            accessSalt = user.accessSalt,
-            isDeleted = false
-          )
-
           for {
-            _ ← persist.contact.UserPhoneContact.insertOrUpdate(userContact)
+            _ ← addContact(ownerUserId, user.id, phone, localName, user.accessSalt)
             userStruct ← DBIO.from(UserOffice.getApiStruct(user.id, client.userId, client.authId))
-          } yield {
-            userStruct
-          }
+          } yield userStruct
       }
 
       DBIO.sequence(actions)
@@ -287,16 +276,8 @@ class ContactsServiceImpl(
 
   private def createEmailContacts(ownerUserId: Int, contacts: Set[EmailNameUser])(implicit client: AuthorizedClientData) = {
     val actions = contacts.map { contact ⇒
-      val userContact = models.contact.UserEmailContact(
-        ownerUserId = ownerUserId,
-        contactUserId = contact.userId,
-        email = contact.email,
-        name = contact.name,
-        accessSalt = "",
-        isDeleted = false
-      )
       for {
-        _ ← persist.contact.UserEmailContact.insertOrUpdate(userContact)
+        _ ← addContact(ownerUserId, contact.userId, contact.email, contact.name, "")
         optUser ← persist.User.find(contact.userId).headOption
         userStruct ← optUser.map { user ⇒
           DBIO.from(UserOffice.getApiStruct(user.id, client.userId, client.authId)) map (Some(_))
