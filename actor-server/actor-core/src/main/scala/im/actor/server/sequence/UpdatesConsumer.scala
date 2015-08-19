@@ -1,23 +1,29 @@
-package im.actor.server.push
+package im.actor.server.sequence
+
+import akka.actor._
+import akka.util.Timeout
+import im.actor.api.rpc.codecs.UpdateBoxCodec
+import im.actor.api.rpc.groups.Group
+import im.actor.api.rpc.messaging.UpdateMessageSent
+import im.actor.api.rpc.sequence.{ FatSeqUpdate, WeakUpdate }
+import im.actor.api.rpc.users.User
+import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
+import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
+import im.actor.server.db.DbExtension
+import im.actor.server.group.{ GroupExtension, GroupOffice, GroupViewRegion }
+import im.actor.server.mtproto.protocol.UpdateBox
+import im.actor.server.persist
+import im.actor.server.presences._
+import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
+import org.joda.time.DateTime
 
 import scala.concurrent._
 import scala.concurrent.duration._
 
-import akka.actor._
-import akka.util.Timeout
-import org.joda.time.DateTime
-
-import im.actor.api.rpc.codecs.UpdateBoxCodec
-import im.actor.api.rpc.messaging.UpdateMessageSent
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate, WeakUpdate }
-import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
-import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
-import im.actor.server.mtproto.protocol.UpdateBox
-import im.actor.server.presences._
-
 trait UpdatesConsumerMessage
 
 object UpdatesConsumerMessage {
+
   @SerialVersionUID(1L)
   case object SubscribeToSeq extends UpdatesConsumerMessage
 
@@ -55,7 +61,7 @@ object UpdatesConsumer {
     )
 }
 
-private[push] class UpdatesConsumer(
+private[sequence] class UpdatesConsumer(
   authId:     Long,
   subscriber: ActorRef
 )(
@@ -126,17 +132,24 @@ private[push] class UpdatesConsumer(
             log.error(e, "Failed to unsubscribe from group presences")
         }
       }
-    case SeqUpdatesManagerMessages.UpdateReceived(updateBox) ⇒
-      val ignore = updateBox match {
-        case u: SeqUpdate if u.updateHeader == UpdateMessageSent.header ⇒ true
-        case u: FatSeqUpdate if u.updateHeader == UpdateMessageSent.header ⇒ true
-        case _ ⇒ false
+    case UpdateReceived(updateBox, fatRefsOpt) ⇒
+      if (updateBox.updateHeader != UpdateMessageSent.header) {
+        (fatRefsOpt match {
+          case None ⇒ Future.successful(updateBox)
+          case Some(UpdateRefs(userIds, groupIds)) ⇒
+            // FIXME: #perf cache userId
+            DbExtension(context.system).db.run(persist.AuthId.findUserId(authId)) flatMap {
+              case Some(userId) ⇒
+                for {
+                  (users, groups) ← getFatData(userId, userIds, groupIds)
+                } yield {
+                  FatSeqUpdate(updateBox.seq, updateBox.state, updateBox.updateHeader, updateBox.update, users.toVector, groups.toVector)
+                }
+              case None ⇒
+                throw new Exception(s"Cannot find userId for authId ${authId}")
+            }
+        }) foreach (sendUpdateBox)
       }
-
-      if (!ignore) {
-        sendUpdateBox(updateBox)
-      }
-
     case WeakUpdatesManager.UpdateReceived(updateBox) ⇒
       sendUpdateBox(updateBox)
     case PresenceState(userId, presence, lastSeenAt) ⇒
@@ -168,5 +181,23 @@ private[push] class UpdatesConsumer(
 
   private def sendUpdateBox(updateBox: ProtoUpdateBox): Unit = {
     subscriber ! UpdateBox(UpdateBoxCodec.encode(updateBox).require)
+  }
+
+  private def getFatData(
+    userId:      Int,
+    fatUserIds:  Seq[Int],
+    fatGroupIds: Seq[Int]
+  )(
+    implicit
+    ec: ExecutionContext
+  ): Future[(Seq[User], Seq[Group])] = {
+    implicit lazy val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
+    implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
+
+    for {
+      groups ← Future.sequence(fatGroupIds map (GroupOffice.getApiStruct(_, userId)))
+      groupMemberIds = groups.view.map(_.members.map(_.userId)).flatten
+      users ← Future.sequence((fatUserIds ++ groupMemberIds).distinct map (UserOffice.getApiStruct(_, userId, authId)))
+    } yield (users, groups)
   }
 }
