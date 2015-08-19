@@ -13,8 +13,10 @@ import org.timepedia.exporter.client.Exportable;
 import java.util.List;
 
 import im.actor.core.ApiConfiguration;
+import im.actor.core.AppCategory;
 import im.actor.core.AuthState;
 import im.actor.core.ConfigurationBuilder;
+import im.actor.core.DeviceCategory;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.js.entity.Enums;
@@ -32,6 +34,7 @@ import im.actor.core.js.entity.JsUser;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
+import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
@@ -95,6 +98,18 @@ public class JsFacade implements Exportable {
         configuration.setPhoneBookProvider(new JsPhoneBookProvider());
         configuration.setNotificationProvider(new JsNotificationsProvider());
 
+        // Is Web application
+        if (JsElectronApp.isElectron()) {
+            configuration.setAppCategory(AppCategory.DESKTOP);
+        } else {
+            configuration.setAppCategory(AppCategory.WEB);
+        }
+
+        // Device Category
+        // Only Desktop is supported for JS library
+        configuration.setDeviceCategory(DeviceCategory.DESKTOP);
+
+        // Adding endpoints
         for (String endpoint : endpoints) {
             configuration.addEndpoint(endpoint);
         }
@@ -110,6 +125,10 @@ public class JsFacade implements Exportable {
 
     public int getUid() {
         return messenger.myUid();
+    }
+
+    public boolean isElectron() {
+        return messenger.isElectron();
     }
 
     // Auth
@@ -411,6 +430,22 @@ public class JsFacade implements Exportable {
 
     public void unbindConnectState(JsBindedValueCallback callback) {
         messenger.getOnlineStatus().unsubscribe(callback);
+    }
+
+    public void bindGlobalCounter(JsBindedValueCallback callback) {
+        messenger.getGlobalCounter().subscribe(callback);
+    }
+
+    public void unbindGlobalCounter(JsBindedValueCallback callback) {
+        messenger.getGlobalCounter().unsubscribe(callback);
+    }
+
+    public void bindTempGlobalCounter(JsBindedValueCallback callback) {
+        messenger.getTempGlobalCounter().subscribe(callback);
+    }
+
+    public void unbindTempGlobalCounter(JsBindedValueCallback callback) {
+        messenger.getTempGlobalCounter().unsubscribe(callback);
     }
 
     // Events

@@ -14,7 +14,7 @@ import im.actor.server.file.Avatar
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
 import im.actor.server.dialog.group.GroupDialogOperations
-import im.actor.server.push.SeqUpdatesManager._
+import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
 import im.actor.server.util.ACLUtils._
@@ -90,7 +90,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               serviceMessage.toByteArray
             )
             SeqState(seq, state) ← if (isBot(group, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
-            else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true))
+            else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${randomId}")))
           } yield CreateAck(group.accessHash, seq, state, date.getMillis)
         ) pipeTo sender() onFailure {
             case e ⇒
@@ -125,10 +125,10 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     for {
       _ ← db.run(p.GroupUser.create(groupId, userId, inviterUserId, date, None, isAdmin = false))
-      _ ← UserOffice.broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true)
+      _ ← UserOffice.broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true, deliveryId = Some(s"invite_${randomId}"))
       // TODO: #perf the following broadcasts do update serializing per each user
-      _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(UserOffice.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true))) // use broadcastUsersUpdate maybe?
-      seqstate ← UserOffice.broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true)
+      _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(UserOffice.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true, deliveryId = Some(s"useradded_${randomId}")))) // use broadcastUsersUpdate maybe?
+      seqstate ← UserOffice.broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true, deliveryId = Some(s"useradded_${randomId}"))
       // TODO: Move to a History Writing subsystem
       _ ← db.run(HistoryUtils.writeHistoryMessage(
         models.Peer.privat(inviterUserId),

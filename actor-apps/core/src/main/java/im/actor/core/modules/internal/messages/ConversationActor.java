@@ -13,7 +13,6 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
-import im.actor.runtime.Log;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.annotations.Verified;
@@ -68,6 +67,63 @@ public class ConversationActor extends ModuleActor {
     // Messages receive/update
 
     @Verified
+    private void onInMessages(ArrayList<Message> inMessages) {
+
+        // Prepare messages
+        Message topMessage = null;
+        ArrayList<Message> updated = new ArrayList<Message>();
+        for (Message m : inMessages) {
+            if (m.getSenderId() == myUid()) {
+                // Force set message state if server out message
+                if (m.isOnServer()) {
+                    if (m.getSortDate() <= outReadState) {
+                        m = m.changeState(MessageState.READ);
+                    } else if (m.getSortDate() <= outReceiveState) {
+                        m = m.changeState(MessageState.RECEIVED);
+                    } else {
+                        m = m.changeState(MessageState.SENT);
+                    }
+                }
+            }
+
+            if (m.isOnServer()) {
+                if (topMessage == null) {
+                    topMessage = m;
+                } else {
+                    if (topMessage.getSortDate() < m.getSortDate()) {
+                        topMessage = m;
+                    }
+                }
+            }
+
+            updated.add(m);
+        }
+
+        // Adding message
+        messages.addOrUpdateItems(updated);
+
+        for (Message m : updated) {
+            if (m.getSenderId() == myUid()) {
+                // Adding to unread index if message is unread
+                if (m.isOnServer() && m.getMessageState() != MessageState.READ) {
+                    outPendingIndex.put(m.getRid(), m.getDate());
+                }
+            } else {
+                // Detecting if message already read
+                if (m.getSortDate() > inReadState) {
+                    // Writing to income unread storage
+                    inPendingIndex.put(m.getRid(), m.getDate());
+                }
+            }
+        }
+
+        // Update dialogs
+        if (topMessage != null) {
+            dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
+        }
+    }
+
+    @Verified
     private void onInMessage(Message message) {
         // Ignore if we already have this message
         // Changed behaviour to providing faster implementation
@@ -91,7 +147,6 @@ public class ConversationActor extends ModuleActor {
         // Adding message
         messages.addOrUpdateItem(message);
 
-        Log.d("ConversationActor", "isOnServer: " + message.isOnServer());
         // Updating dialog if on server
         if (message.isOnServer()) {
             if (message.getSenderId() == myUid()) {
@@ -125,19 +180,6 @@ public class ConversationActor extends ModuleActor {
 
         // Updating dialog
         dialogsActor.send(new DialogsActor.MessageContentChanged(peer, rid, content));
-    }
-
-    @Verified
-    @Deprecated
-    private void onMessageDateChange(long rid, long date) {
-        Message msg = messages.getValue(rid);
-        // If we have sent message
-        if (msg != null && msg.isOnServer()) {
-            Message updatedMsg = msg
-                    .changeAllDate(date)
-                    .changeState(MessageState.SENT);
-            messages.addOrUpdateItem(updatedMsg);
-        }
     }
 
     @Verified
@@ -341,6 +383,8 @@ public class ConversationActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof Message) {
             onInMessage((Message) message);
+        } else if (message instanceof Messages) {
+            onInMessages(((Messages) message).getMessages());
         } else if (message instanceof MessageContentUpdated) {
             MessageContentUpdated contentUpdated = (MessageContentUpdated) message;
             onMessageContentUpdated(contentUpdated.getRid(), contentUpdated.getContent());
@@ -362,8 +406,6 @@ public class ConversationActor extends ModuleActor {
             onDeleteConversation();
         } else if (message instanceof MessagesDeleted) {
             onMessagesDeleted(((MessagesDeleted) message).getRids());
-        } else if (message instanceof MessageDateChange) {
-            onMessageDateChange(((MessageDateChange) message).getRid(), ((MessageDateChange) message).getDate());
         } else if (message instanceof MessageReadByMe) {
             onMessageReadByMe(((MessageReadByMe) message).getDate());
         } else {
@@ -455,25 +497,6 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
-    @Deprecated
-    public static class MessageDateChange {
-        private long rid;
-        private long date;
-
-        public MessageDateChange(long rid, long date) {
-            this.rid = rid;
-            this.date = date;
-        }
-
-        public long getDate() {
-            return date;
-        }
-
-        public long getRid() {
-            return rid;
-        }
-    }
-
     public static class MessageError {
         private long rid;
 
@@ -504,5 +527,17 @@ public class ConversationActor extends ModuleActor {
 
     public static class DeleteConversation {
 
+    }
+
+    public static class Messages {
+        private ArrayList<Message> messages;
+
+        public Messages(ArrayList<Message> messages) {
+            this.messages = messages;
+        }
+
+        public ArrayList<Message> getMessages() {
+            return messages;
+        }
     }
 }

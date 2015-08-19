@@ -32,6 +32,7 @@ public class AppContext {
         dest.mkdirs();
 
         File outputFile = new File(dest, prefix + "_" + RandomUtil.randomId() + "." + postfix);
+
         return outputFile.getAbsolutePath();
     }
 

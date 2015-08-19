@@ -1,7 +1,10 @@
 package im.actor.server.api
 
+import akka.actor.ActorRef
+import akka.serialization.Serialization
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
+import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.rpc.users.{ Sex ⇒ S }
 import im.actor.api.rpc.users.Sex.Sex
 import org.joda.time.DateTime
@@ -55,8 +58,13 @@ private[api] trait MessageMapper {
     ByteString.copyFrom(group.toByteArray)
   }
 
-  private def applyPeer(buf: ByteString): Peer =
-    Peer.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())).right.get
+  private def applyPeer(bytes: ByteString): Peer = {
+    if (bytes.size() > 0) {
+      Peer.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+    } else {
+      null
+    }
+  }
 
   private def unapplyPeer(peer: Peer): ByteString =
     ByteString.copyFrom(peer.toByteArray)
@@ -90,6 +98,20 @@ private[api] trait MessageMapper {
   def unapplyAnyRef(msg: AnyRef): ByteString = {
     ByteString.copyFrom(ActorSerializer.toBinary(msg))
   }
+
+  def applySeqUpdate(bytes: ByteString): SeqUpdate = {
+    if (bytes.size() > 0) {
+      SeqUpdate.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+    } else {
+      null
+    }
+  }
+
+  def unapplySeqUpdate(upd: SeqUpdate): ByteString = {
+    ByteString.copyFrom(upd.toByteArray)
+  }
+
+  implicit val seqUpdMapper: TypeMapper[ByteString, SeqUpdate] = TypeMapper(applySeqUpdate)(unapplySeqUpdate)
 
   implicit val anyRefMapper: TypeMapper[ByteString, AnyRef] = TypeMapper(applyAnyRef)(unapplyAnyRef)
 

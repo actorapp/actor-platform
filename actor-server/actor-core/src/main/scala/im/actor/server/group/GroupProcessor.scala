@@ -7,12 +7,13 @@ import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialogRegion }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
 import im.actor.server.dialog.group.GroupDialogExtension
 import im.actor.server.dialog.group.GroupDialogRegion
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
 import im.actor.server.util.{ FileStorageAdapter, S3StorageExtension }
 import org.joda.time.DateTime
@@ -84,6 +85,8 @@ object GroupProcessor {
     ActorSerializer.register(21004, classOf[GroupQueries.CheckAccessHashResponse])
     ActorSerializer.register(21005, classOf[GroupQueries.GetMembers])
     ActorSerializer.register(21006, classOf[GroupQueries.GetMembersResponse])
+    ActorSerializer.register(21007, classOf[GroupQueries.GetApiStruct])
+    ActorSerializer.register(21008, classOf[GroupQueries.GetApiStructResponse])
 
     ActorSerializer.register(22003, classOf[GroupEvents.UserInvited])
     ActorSerializer.register(22004, classOf[GroupEvents.UserJoined])

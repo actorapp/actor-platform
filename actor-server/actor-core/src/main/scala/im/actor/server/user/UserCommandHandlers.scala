@@ -11,7 +11,7 @@ import im.actor.server.api.ApiConversions._
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.misc.UpdateCounters
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
@@ -27,7 +27,7 @@ private object ServiceMessages {
   def contactRegistered(userId: Int) = ServiceMessage("Contact registered", Some(ServiceExContactRegistered(userId)))
 }
 
-private[user] trait UserCommandHandlers extends UpdateCounters {
+private[user] trait UserCommandHandlers {
   this: UserProcessor ⇒
 
   import ImageUtils._
@@ -77,8 +77,8 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       val update = UpdateUserNameChanged(userId, name)
       for {
         relatedUserIds ← getRelations(userId)
-        _ ← UserOffice.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false)
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false)
+        _ ← UserOffice.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false, deliveryId = None)
         seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, pushText = None, isFat = false)
       } yield seqstate
     }
@@ -120,9 +120,7 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
         senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
         senderName = senderUser.localName.getOrElse(senderUser.name)
         pushText ← getPushText(peer, userId, senderName, message)
-        counterUpdate ← db.run(getUpdateCountersChanged(userId))
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None, isFat = false)
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat)
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat, deliveryId = Some(s"msg_${randomId}"))
       } yield DeliverMessageAck()
     } else {
       Future.successful(DeliverMessageAck())
@@ -140,10 +138,10 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       message = message
     )
 
-    SeqUpdatesManager.persistAndPushUpdatesF(user.authIds filterNot (_ == senderAuthId), update, None, isFat)
+    SeqUpdatesManager.persistAndPushUpdatesF(user.authIds filterNot (_ == senderAuthId), update, None, isFat, deliveryId = Some(s"msg_${randomId}"))
 
     val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
-    SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, ownUpdate, None, isFat) pipeTo sender()
+    SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, ownUpdate, None, isFat, deliveryId = Some(s"msgsent_${randomId}")) pipeTo sender()
   }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
@@ -152,7 +150,7 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       for {
         _ ← db.run(p.User.setNickname(userId, nickname))
         relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
+        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield seqstate
     }
   }
@@ -163,7 +161,7 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       for {
         _ ← db.run(p.User.setAbout(userId, about))
         relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
+        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield seqstate
     }
   }
@@ -179,7 +177,7 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
       for {
         _ ← db.run(p.AvatarData.createOrUpdate(avatarData))
         relatedUserIds ← relationsF
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false)
+        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
     }
   }
@@ -197,7 +195,7 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
         val localName = contact.name.getOrElse(user.name)
         for {
           _ ← p.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(localName), user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"$localName registered"), isFat = true))
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"$localName registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
@@ -228,7 +226,7 @@ private[user] trait UserCommandHandlers extends UpdateCounters {
         val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
         for {
           _ ← p.contact.UserEmailContact.createOrRestore(contact.ownerUserId, user.id, email, Some(user.name), user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"), isFat = true))
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
