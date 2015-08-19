@@ -3,6 +3,8 @@ package im.actor.server.sequence
 import java.util.concurrent.TimeUnit
 
 import akka.serialization.SerializationExtension
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -64,9 +66,12 @@ private final class SeqUpdatesManagerActor(
   private val receiveTimeout = context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
   context.setReceiveTimeout(receiveTimeout)
 
-  private[this] val IncrementOnStart: Int = 1000
+  private[this] val IncrementOnStart = 1000
+  private[this] val MaxDeliveryCacheSize = 100L
   require(IncrementOnStart > 1)
   // it is needed to prevent division by zero in pushUpdate
+
+  private val deliveryCache = Caffeine.newBuilder().maximumSize(MaxDeliveryCacheSize).build[String, SeqState]()
 
   private[this] var seq: Int = -1
   private[this] var lastTimestamp: Long = 0
@@ -86,9 +91,17 @@ private final class SeqUpdatesManagerActor(
     case PushUpdate(_, deliveryId, header, serializedData, refs, isFat, pushText, originPeer) ⇒
       val replyTo = sender()
 
-      pushUpdate(deliveryId, header, serializedData, refs, isFat, pushText, originPeer, { seqstate: SeqState ⇒
-        replyTo ! seqstate
-      })
+      deliveryId.flatMap(id ⇒ Option(deliveryCache.getIfPresent(id))) match {
+        case Some(seqstate) ⇒ replyTo ! seqstate
+        case None ⇒
+          pushUpdate(header, serializedData, refs, isFat, pushText, originPeer, { seqstate: SeqState ⇒
+            deliveryId foreach { id ⇒
+              deliveryCache.put(id, seqstate)
+            }
+
+            replyTo ! seqstate
+          })
+      }
     case msg @ Subscribe(_, consumerStr) ⇒
       val consumer = SerializationExtension(context.system).system.provider.resolveActorRef(consumerStr)
 
@@ -176,7 +189,6 @@ private final class SeqUpdatesManagerActor(
   }
 
   private def pushUpdate(
-    deliveryId:     Option[Long],
     header:         Int,
     serializedData: ByteString,
     refs:           UpdateRefs,

@@ -1,36 +1,17 @@
 package im.actor.server.sequence
 
+import akka.actor._
+import akka.util.Timeout
+import im.actor.server.db.DbExtension
+import im.actor.server.persist
+import slick.driver.PostgresDriver.api._
+
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Try
 
-import akka.actor._
-import akka.util.Timeout
-import slick.driver.PostgresDriver.api._
-
-import im.actor.server.db.DbExtension
-import im.actor.server.group.{ GroupExtension, GroupOffice, GroupViewRegion }
-import im.actor.server.persist
-import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
-
 sealed trait SeqUpdatesExtension extends Extension {
   val region: SeqUpdatesManagerRegion
-  /*
-  def getFatData(
-    authId:      Long,
-    fatMetaData: FatMetaData
-  )(
-    implicit
-    ec: ExecutionContext
-  ): DBIO[FatData]
-
-  def getFatDataF(
-    authId:      Long,
-    fatMetaData: FatMetaData
-  )(
-    implicit
-    ec: ExecutionContext
-  ): Future[FatData]*/
 }
 
 final class SeqUpdatesExtensionImpl(
@@ -43,48 +24,6 @@ final class SeqUpdatesExtensionImpl(
   private implicit lazy val db: Database = DbExtension(system).db
 
   lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system, gpm, apm)
-
-  /*def getFatData(
-    authId:      Long,
-    fatMetaData: FatMetaData
-  )(
-    implicit
-    ec: ExecutionContext
-  ): DBIO[FatData] = {
-    implicit lazy val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
-    implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-
-    getUserId(authId) flatMap { userId ⇒
-      val groupsFuture = Future.sequence(fatMetaData.groupIds map (GroupOffice.getApiStruct(_, userId)))
-      val usersFuture = Future.sequence(fatMetaData.userIds map (UserOffice.getApiStruct(_, userId, authId)))
-
-      DBIO.from(for {
-        users ← usersFuture
-        groups ← groupsFuture
-      } yield FatData(users, groups))
-    }
-  }
-
-  def getFatDataF(
-    authId:      Long,
-    fatMetaData: FatMetaData
-  )(
-    implicit
-    ec: ExecutionContext
-  ): Future[FatData] = {
-    implicit lazy val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
-    implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-
-    getUserIdF(authId) flatMap { userId ⇒
-      val usersFuture = Future.sequence(fatMetaData.userIds map (UserOffice.getApiStruct(_, userId, authId)))
-      val groupsFuture = Future.sequence(fatMetaData.groupIds map (GroupOffice.getApiStruct(_, userId)))
-
-      for {
-        users ← usersFuture
-        groups ← groupsFuture
-      } yield FatData(users, groups)
-    }
-  }*/
 
   def getUserId(authId: Long)(implicit ec: ExecutionContext): DBIO[Int] =
     persist.AuthId.findUserId(authId) map (_.getOrElse(throw new Exception(s"Cannot get userId for a non-authorized authId ${authId}")))

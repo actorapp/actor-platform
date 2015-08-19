@@ -95,7 +95,7 @@ trait GroupDialogHandlers extends UpdateCounters {
             for {
               counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
               _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageReadByMe(groupPeer, date), None, isFat = false)
-              _ ← persistAndPushUpdatesF(authIdsSet, counterUpdate, None, isFat = false)
+              _ ← persistAndPushUpdatesF(authIdsSet, counterUpdate, None, isFat = false, deliveryId = None)
             } yield ()
           }
         }
