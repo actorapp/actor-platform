@@ -38,8 +38,8 @@ var Actor : CocoaMessenger {
             }
             
             // Stats
-            builder.setPlatformType(ACPlatformTypeEnum_get_IOS())
-            builder.setDeviceCategory(ACDeviceCategoryEnum_get_MOBILE())
+            builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
+            builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
             
             // Logs
             builder.setEnableFilesLogging(true)
