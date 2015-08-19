@@ -883,7 +883,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ActorCore\nmake -j 4";
+			shellScript = "cd ActorCore\nmake translate\nmake build -j3";
 		};
 		D44D0E71B1F414180F02BD03 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
