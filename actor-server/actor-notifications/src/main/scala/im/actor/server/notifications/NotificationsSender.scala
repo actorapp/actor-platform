@@ -1,17 +1,20 @@
 package im.actor.server.notifications
 
-import scala.concurrent.ExecutionContextExecutor
-
 import akka.actor._
 import akka.contrib.pattern.ClusterSingletonManager
 import akka.event.Logging
-import akka.http.scaladsl.{ HttpExt, Http }
+import akka.http.scaladsl.{ Http, HttpExt }
 import akka.stream.Materializer
+import akka.util.Timeout
 import com.typesafe.config.Config
+import im.actor.server.group.{ GroupExtension, GroupViewRegion }
+import im.actor.server.sms.{ ClickatellSmsEngine, SmsEngine }
+import im.actor.server.user.{ UserExtension, UserViewRegion }
+import im.actor.server.util.AnyRefLogSource
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.sms.{ ClickatellSmsEngine, SmsEngine }
-import im.actor.server.util.AnyRefLogSource
+import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.duration._
 
 object NotificationsSender {
 
@@ -50,6 +53,9 @@ class NotificationsSender(implicit db: Database, config: NotificationsConfig, en
 
   implicit val ec: ExecutionContextExecutor = context.system.dispatcher
   implicit val watcherConfig: UnreadWatcherConfig = config.watcherConfig
+  implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
+  implicit val groupViewRegion: GroupViewRegion = GroupExtension(context.system).viewRegion
+  implicit val timeout = Timeout(5.seconds)
 
   override val log = Logging(context.system, this)
 

@@ -31,6 +31,7 @@ import im.actor.server.dialog.privat.{ PrivateDialog, PrivateDialogExtension }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
+import im.actor.server.migrations.LocalNamesMigrator
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -83,8 +84,9 @@ object Main extends App {
 
   DbExtension(system).migrate()
 
-  UserMigrator.migrateAll()
-  GroupMigrator.migrateAll()
+  UserMigrator.migrate()
+  GroupMigrator.migrate()
+  LocalNamesMigrator.migrate()
 
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()

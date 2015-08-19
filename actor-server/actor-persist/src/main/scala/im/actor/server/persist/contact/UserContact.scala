@@ -58,9 +58,6 @@ object UserContact {
   def findContactIdsActive(ownerUserId: Int) =
     byOwnerUserIdNotDeleted(ownerUserId).map(_.contactUserId).result
 
-  def findContactIdsWithLocalNames(ownerUserId: Int) =
-    byOwnerUserIdNotDeleted(ownerUserId).map(c ⇒ (c.contactUserId, c.name)).result
-
   def updateName(ownerUserId: Int, contactUserId: Int, name: Option[String]): FixedSqlAction[Int, NoStream, Write] = {
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId).map(_.name).update(name)
   }

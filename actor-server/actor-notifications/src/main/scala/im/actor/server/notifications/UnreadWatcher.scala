@@ -1,16 +1,23 @@
 package im.actor.server.notifications
 
-import scala.concurrent.{ Future, ExecutionContext }
-
+import akka.util.Timeout
+import im.actor.server.group.{ GroupOffice, GroupViewRegion }
+import im.actor.server.models.PeerType
+import im.actor.server.user.{ UserOffice, UserViewRegion }
+import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.models.PeerType
-import im.actor.server.util.ContactsUtils
-import im.actor.server.{ models, persist }
+import scala.concurrent.{ ExecutionContext, Future }
 
-class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, ec: ExecutionContext) {
+class UnreadWatcher(implicit
+  db: Database,
+                    config:      UnreadWatcherConfig,
+                    ec:          ExecutionContext,
+                    userRegion:  UserViewRegion,
+                    timeout:     Timeout,
+                    groupRegion: GroupViewRegion) {
 
   private val unreadTimeout = config.unreadTimeout.toMillis
 
@@ -26,7 +33,7 @@ class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, ec: Exec
     }
   }
 
-  private def findUnread(userId: Int, now: DateTime) = {
+  private def findUnread(userId: Int, now: DateTime): DBIO[Seq[(Option[String], Int)]] = {
     val dateToReadBefore = now.minus(unreadTimeout)
     for {
       dialogs ← persist.Dialog.findLastReadBefore(dateToReadBefore, userId)
@@ -34,19 +41,16 @@ class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, ec: Exec
         for {
           exists ← persist.HistoryMessage.haveMessagesBetween(userId, dialog.peer, dialog.ownerLastReadAt, dateToReadBefore)
           unreadCount ← persist.HistoryMessage.getUnreadCount(userId, dialog.peer, dialog.ownerLastReadAt, noServiceMessages = true)
-          senderName ← getNameByPeer(userId, dialog.peer)
+          senderName ← DBIO.from(getNameByPeer(userId, dialog.peer))
         } yield if (exists) Some(senderName → unreadCount) else None
       })
     } yield senderAndCount.flatten
   }
 
-  private def getNameByPeer(userId: Int, peer: models.Peer) = {
-    if (peer.typ == PeerType.Private)
-      persist.User.find(peer.id).headOption.flatMap {
-        case Some(user) ⇒ ContactsUtils.getLocalNameOrDefault(userId, user).map(Some(_))
-        case None       ⇒ DBIO.successful(None)
-      }
-    else persist.Group.findTitle(peer.id)
+  private def getNameByPeer(userId: Int, peer: models.Peer): Future[Option[String]] = {
+    (if (peer.typ == PeerType.Private)
+      UserOffice.getApiStruct(peer.id, userId, 0L) map (u ⇒ u.localName.getOrElse(u.name))
+    else GroupOffice.getApiStruct(peer.id, userId) map (_.title)) map (Some(_))
   }
 
 }
