@@ -1,4 +1,4 @@
-package im.actor.server.push
+package im.actor.server.sequence
 
 import java.util
 
