@@ -65,6 +65,7 @@ object Main extends App {
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
 
   if (system.settings.config.getList("akka.cluster.seed-nodes").isEmpty) {
+    system.log.info("Going to a single-node cluster mode")
     val self = Address(
       "akka.tcp",
       system.name,
