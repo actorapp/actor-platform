@@ -9,7 +9,7 @@ import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging.{ Message, UpdateMessageContentChanged }
 import im.actor.server.models.{ Peer, PeerType }
 import im.actor.server.persist
-import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManagerRegion }
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.{ UserOffice, UserViewRegion }
 
@@ -47,11 +47,11 @@ class PrivateHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(
     DBIO.from(for {
       fromUpdate ← UserOffice.broadcastUserUpdate(
         fromPeer.id,
-        UpdateMessageContentChanged(toPeer.asStruct, randomId, message), None, false
+        UpdateMessageContentChanged(toPeer.asStruct, randomId, message), None, false, deliveryId = Some(s"msgcontent_${randomId}")
       )
       toUpdate ← UserOffice.broadcastUserUpdate(
         toPeer.id,
-        UpdateMessageContentChanged(fromPeer.asStruct, randomId, message), None, false
+        UpdateMessageContentChanged(fromPeer.asStruct, randomId, message), None, false, deliveryId = Some(s"msgcontent_${randomId}")
       )
     } yield Seq(fromUpdate, toUpdate).flatten)
 
@@ -78,7 +78,7 @@ class GroupHandler(groupPeer: Peer, randomId: Long)(
     val update = UpdateMessageContentChanged(groupPeer.asStruct, randomId, message)
     for {
       usersIds ← persist.GroupUser.findUserIds(groupPeer.id)
-      seqstate ← DBIO.from(UserOffice.broadcastUsersUpdate(usersIds.toSet, update, None, false))
+      seqstate ← DBIO.from(UserOffice.broadcastUsersUpdate(usersIds.toSet, update, None, false, deliveryId = Some(s"msgcontent_${randomId}")))
     } yield seqstate
   }
 

@@ -51,7 +51,7 @@ message SeqUpdatesManagerMessages {
         option (scalapb.message).extends = "im.actor.server.sequence.SeqUpdatesManagerMessage";
 
         required int64 auth_id = 1;
-        optional int64 delivery_id = 2;
+        optional string delivery_id = 2;
         required int32 header = 3;
         required bytes serialized_data = 4;
         required UpdateRefs refs = 5;
