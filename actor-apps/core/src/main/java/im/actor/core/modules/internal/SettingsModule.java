@@ -61,6 +61,7 @@ public class SettingsModule extends AbsModule {
         }
         String deviceTypeKey;
         switch (context.getConfiguration().getDeviceCategory()) {
+            case TABLET:
             case DESKTOP:
                 deviceTypeKey = "desktop";
                 break;
@@ -73,13 +74,12 @@ public class SettingsModule extends AbsModule {
                 break;
         }
 
-        // App specific settings
+        // Platform specific settings
         KEY_NOTIFICATION_TONES = "app." + configKey + ".tones_enabled";
         KEY_CHAT_SEND_BY_ENTER = "app." + configKey + ".send_by_enter";
         KEY_MARKDOWN_ENABLED = "app." + configKey + ".use_markdown";
-        KEY_NOTIFICATION_SOUND = "account.notification.sound";
 
-        // Category specific settings
+        // Device-type notification settings
         KEY_NOTIFICATION_ENABLED = "category." + deviceTypeKey + ".notification.enabled";
         KEY_NOTIFICATION_SOUND_ENABLED = "category." + deviceTypeKey + ".notification.sound.enabled";
         KEY_NOTIFICATION_VIBRATION = "category." + deviceTypeKey + ".notification.vibration.enabled";
@@ -90,6 +90,8 @@ public class SettingsModule extends AbsModule {
         KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceTypeKey + ".in_app.sound.enabled";
         KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceTypeKey + ".in_app.vibration.enabled";
 
+        // Account-wide notification settings
+        KEY_NOTIFICATION_SOUND = "account.notification.sound";
         KEY_NOTIFICATION_GROUP_ENABLED = "account.notifications.group.enabled";
         KEY_NOTIFICATION_GROUP_ONLY_MENTIONS = "account.notifications.group.mentions";
 
