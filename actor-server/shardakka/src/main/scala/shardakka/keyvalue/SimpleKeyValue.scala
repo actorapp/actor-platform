@@ -40,22 +40,22 @@ case class SimpleKeyValue[A](
 trait SimpleKeyValueExtension {
   this: ShardakkaExtension ⇒
 
-  ActorSerializer.register(10001, classOf[RootCommands.Upsert])
-  ActorSerializer.register(10002, classOf[RootCommands.Delete])
-  ActorSerializer.register(10003, classOf[RootCommands.Ack])
+  ActorSerializer.register(5001, classOf[RootCommands.Upsert])
+  ActorSerializer.register(5002, classOf[RootCommands.Delete])
+  ActorSerializer.register(5003, classOf[RootCommands.Ack])
 
-  ActorSerializer.register(12001, classOf[RootEvents.KeyCreated])
-  ActorSerializer.register(12002, classOf[RootEvents.KeyDeleted])
+  ActorSerializer.register(5201, classOf[RootEvents.KeyCreated])
+  ActorSerializer.register(5202, classOf[RootEvents.KeyDeleted])
 
-  ActorSerializer.register(13001, classOf[ValueCommands.Upsert])
-  ActorSerializer.register(13002, classOf[ValueCommands.Delete])
-  ActorSerializer.register(13003, classOf[ValueCommands.Ack])
+  ActorSerializer.register(5301, classOf[ValueCommands.Upsert])
+  ActorSerializer.register(5302, classOf[ValueCommands.Delete])
+  ActorSerializer.register(5303, classOf[ValueCommands.Ack])
 
-  ActorSerializer.register(14001, classOf[ValueQueries.Get])
-  ActorSerializer.register(14002, classOf[ValueQueries.GetResponse])
+  ActorSerializer.register(5401, classOf[ValueQueries.Get])
+  ActorSerializer.register(5402, classOf[ValueQueries.GetResponse])
 
-  ActorSerializer.register(15001, classOf[ValueEvents.ValueUpdated])
-  ActorSerializer.register(15002, classOf[ValueEvents.ValueDeleted])
+  ActorSerializer.register(5501, classOf[ValueEvents.ValueUpdated])
+  ActorSerializer.register(5502, classOf[ValueEvents.ValueDeleted])
 
   @volatile
   private var kvs = immutable.Map.empty[String, SimpleKeyValue[_]]

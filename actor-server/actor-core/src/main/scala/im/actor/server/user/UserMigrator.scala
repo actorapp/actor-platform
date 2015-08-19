@@ -2,20 +2,20 @@ package im.actor.server.user
 
 import java.time.ZoneOffset
 
-import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
-import scala.concurrent.duration._
-
-import akka.actor.Actor.emptyBehavior
 import akka.actor.{ ActorLogging, ActorSystem, Props }
 import akka.pattern.pipe
 import akka.persistence.{ PersistentActor, RecoveryCompleted, RecoveryFailure }
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.users.Sex
 import im.actor.server.event.TSEvent
-import im.actor.server.file.{ FileLocation, AvatarImage, Avatar }
+import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
+import im.actor.server.migrations.Migration
 import im.actor.server.{ models, persist ⇒ p }
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future, Promise }
 
 private final case class Migrate(
   accessSalt:  String,
@@ -30,19 +30,17 @@ private final case class Migrate(
   avatarOpt:   Option[models.AvatarData]
 )
 
-object UserMigrator {
-  def migrateAll()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Unit = {
-    system.log.warning("Migrating users")
+object UserMigrator extends Migration {
 
-    Await.result(
-      db.run(p.User.allIds) flatMap (ids ⇒ Future.sequence(ids map (migrate))) map (_ ⇒ ()),
-      1.hour
-    )
+  protected override def migrationName: String = "2015-08-04-UsersMigration"
 
-    system.log.info("Users migrated")
+  protected override def migrationTimeout: Duration = 1.hour
+
+  protected override def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
+    db.run(p.User.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
   }
 
-  private def migrate(userId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
+  private def migrateSingle(userId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
     val promise = Promise[Unit]()
 
     system.actorOf(props(promise, userId), name = s"migrate_user_${userId}")

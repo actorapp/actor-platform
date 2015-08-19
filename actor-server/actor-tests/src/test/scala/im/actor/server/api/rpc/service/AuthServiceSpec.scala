@@ -4,6 +4,9 @@ import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
 
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
+import im.actor.server.commons.KeyValueMappings
+import im.actor.server.util.ContactsUtils
+import shardakka.ShardakkaExtension
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Random
@@ -463,7 +466,7 @@ final class AuthServiceSpec
 
       sendSessionHello(authId, sessionId)
 
-      {
+      val createdUser = {
         implicit val clientData = unregClientData
         val transactionHash =
           whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
@@ -480,6 +483,12 @@ final class AuthServiceSpec
 
         whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) {
           _ shouldBe empty
+        }
+
+        val kv = ShardakkaExtension(system).simpleKeyValue(KeyValueMappings.LocalNames)
+        whenReady(kv.get(ContactsUtils.localNameKey(regUser.id, createdUser.id))) { optLocalName ⇒
+          optLocalName shouldBe defined
+          optLocalName shouldEqual localName
         }
 
         whenReady(contactService.handleGetContacts("wrongHash")) { resp ⇒

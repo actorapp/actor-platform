@@ -1,8 +1,8 @@
 package im.actor.server.group
 
 import java.time.ZoneOffset
-
-import im.actor.server.event.TSEvent
+import im.actor.server.migrations.Migration
+import slick.driver.PostgresDriver
 
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
@@ -15,23 +15,21 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
-import im.actor.server.{ models, persist ⇒ p }
+import im.actor.server.{ persist ⇒ p, models }
 
 private final case class Migrate(group: models.FullGroup, avatarData: Option[models.AvatarData], botUsers: Seq[models.GroupBot], groupUsers: Seq[models.GroupUser])
 
-object GroupMigrator {
-  def migrateAll()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Unit = {
-    system.log.warning("Migrating groups")
+object GroupMigrator extends Migration {
 
-    Await.result(
-      db.run(p.Group.allIds) flatMap (ids ⇒ Future.sequence(ids map (migrate))) map (_ ⇒ ()),
-      1.hour
-    )
+  protected override def migrationName: String = "2015-08-04-GroupsMigration"
 
-    system.log.info("Groups migrated")
+  protected override def migrationTimeout: Duration = 1.hour
+
+  protected override def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
+    db.run(p.Group.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
   }
 
-  private def migrate(groupId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
+  private def migrateSingle(groupId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
     val promise = Promise[Unit]()
 
     system.actorOf(props(promise, groupId), name = s"migrate_group_${groupId}")
