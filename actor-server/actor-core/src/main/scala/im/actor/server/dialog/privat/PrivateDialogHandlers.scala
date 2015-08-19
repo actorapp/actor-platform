@@ -63,7 +63,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
 
       val update = UpdateMessageReceived(privatePeerStruct(userState.userId), date, now)
       for {
-        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false)
+        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
         _ ← db.run(markMessagesReceived(models.Peer.privat(userState.userId), models.Peer.privat(userState.peerId), new DateTime(date)))
       } yield MessageReceivedAck()
     } else {
@@ -88,11 +88,11 @@ trait PrivateDialogHandlers extends UpdateCounters {
       val update = UpdateMessageRead(privatePeerStruct(userState.userId), date, now)
       val readerUpdate = UpdateMessageReadByMe(privatePeerStruct(userState.peerId), date)
       for {
-        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false)
+        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
         _ ← db.run(markMessagesRead(models.Peer.privat(userState.userId), models.Peer.privat(userState.peerId), new DateTime(date)))
         counterUpdate ← db.run(getUpdateCountersChanged(userState.userId))
-        _ ← UserOffice.broadcastUserUpdate(userState.userId, counterUpdate, None, isFat = false)
-        _ ← db.run(SeqUpdatesManager.notifyUserUpdate(userState.userId, readerAuthId, readerUpdate, None, isFat = false))
+        _ ← UserOffice.broadcastUserUpdate(userState.userId, counterUpdate, None, isFat = false, deliveryId = None)
+        _ ← db.run(SeqUpdatesManager.notifyUserUpdate(userState.userId, readerAuthId, readerUpdate, None))
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
