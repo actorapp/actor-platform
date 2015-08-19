@@ -31,7 +31,7 @@ public class ConfigurationBuilder {
 
     private AnalyticsProvider analyticsProvider;
 
-    private AppCategory appCategory = AppCategory.GENERIC;
+    private PlatformType platformType = PlatformType.GENERIC;
 
     private DeviceCategory deviceCategory = DeviceCategory.UNKNOWN;
 
@@ -42,13 +42,13 @@ public class ConfigurationBuilder {
     /**
      * Set App Type
      *
-     * @param appCategory App Type
+     * @param platformType App Type
      * @return this
      */
     @NotNull
-    @ObjectiveCName("setAppCategory:")
-    public ConfigurationBuilder setAppCategory(@NotNull AppCategory appCategory) {
-        this.appCategory = appCategory;
+    @ObjectiveCName("setPlatformType:")
+    public ConfigurationBuilder setPlatformType(@NotNull PlatformType platformType) {
+        this.platformType = platformType;
         return this;
     }
 
@@ -266,13 +266,13 @@ public class ConfigurationBuilder {
         if (deviceCategory == null) {
             throw new RuntimeException("Device Category not set");
         }
-        if (appCategory == null) {
+        if (platformType == null) {
             throw new RuntimeException("App Category not set");
         }
         return new Configuration(endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 phoneBookProvider, notificationProvider,
                 apiConfiguration, enableContactsLogging, enableNetworkLogging,
-                enableFilesLogging, analyticsProvider, deviceCategory, appCategory,
+                enableFilesLogging, analyticsProvider, deviceCategory, platformType,
                 minDelay, maxDelay, maxFailureCount);
     }
 }
