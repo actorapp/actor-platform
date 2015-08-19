@@ -92,7 +92,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
         _ ← db.run(markMessagesRead(models.Peer.privat(userState.userId), models.Peer.privat(userState.peerId), new DateTime(date)))
         counterUpdate ← db.run(getUpdateCountersChanged(userState.userId))
         _ ← UserOffice.broadcastUserUpdate(userState.userId, counterUpdate, None, isFat = false, deliveryId = None)
-        _ ← db.run(SeqUpdatesManager.notifyUserUpdate(userState.userId, readerAuthId, readerUpdate, None))
+        _ ← UserOffice.notifyUserUpdate(userState.userId, readerAuthId, readerUpdate, None)
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
