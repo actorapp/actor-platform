@@ -86,10 +86,10 @@ let onTyping = (action) => {
 let onMentionInsert = (action) => {
   const query = getQuery(action.text, action.caretPosition);
   const mentionEnding = action.caretPosition === 1 && query.atStart ? ': ' : ' ';
-  const startChar = action.mention.isNick ? 1 : 0;
+  //const startChar = action.mention.isNick ? 1 : 0;
 
-  text = action.text.substring(0, action.caretPosition - query.text.length) +
-         action.mention.mentionText.substring(startChar, action.mention.mentionText.length) +
+  text = action.text.substring(0, action.caretPosition - query.text.length - 1) +
+         action.mention.mentionText +
          action.text.substring(action.caretPosition, action.text.length) +
          mentionEnding;
 
