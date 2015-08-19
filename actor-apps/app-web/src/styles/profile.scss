@@ -49,6 +49,7 @@
     }
   }
 }
+
 .user_profile {
   position: absolute;
   top: 0;
@@ -117,8 +118,7 @@
       li {
         padding: 17px 0;
 
-        // Uncommented when nicknames and emails will be implemented
-        //box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.075);
+        box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.075);
         .icon {
           float: left;
 
