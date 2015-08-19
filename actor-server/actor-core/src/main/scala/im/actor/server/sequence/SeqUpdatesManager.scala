@@ -35,23 +35,11 @@ object SeqUpdatesManager {
     ext.region.ref.ask(GetSeqState(authId))(OperationTimeout).mapTo[SeqState]
 
   def persistAndPushUpdate(
-    authId:         Long,
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[Peer],
-    isFat:          Boolean
-  )(implicit
-    ext: SeqUpdatesExtension,
-    ec: ExecutionContext): DBIO[SeqState] =
-    DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, refs, pushText, originPeer, isFat))
-
-  def persistAndPushUpdate(
-    authId:   Long,
-    update:   api.Update,
-    pushText: Option[String],
-    isFat:    Boolean
+    authId:     Long,
+    update:     api.Update,
+    pushText:   Option[String],
+    isFat:      Boolean        = false,
+    deliveryId: Option[String] = None
   )(
     implicit
     ec:  ExecutionContext,
@@ -60,7 +48,38 @@ object SeqUpdatesManager {
     val header = update.header
     val serializedData = update.toByteArray
 
-    persistAndPushUpdate(authId, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat)
+    persistAndPushUpdate(authId, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat, deliveryId)
+  }
+
+  def persistAndPushUpdate(
+    authId:         Long,
+    header:         Int,
+    serializedData: Array[Byte],
+    refs:           UpdateRefs,
+    pushText:       Option[String],
+    originPeer:     Option[Peer],
+    isFat:          Boolean,
+    deliveryId:     Option[String]
+  )(implicit
+    ext: SeqUpdatesExtension,
+    ec: ExecutionContext): DBIO[SeqState] =
+    DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
+
+  def persistAndPushUpdateF(
+    authId:     Long,
+    update:     api.Update,
+    pushText:   Option[String],
+    isFat:      Boolean        = false,
+    deliveryId: Option[String] = None
+  )(
+    implicit
+    ec:  ExecutionContext,
+    ext: SeqUpdatesExtension
+  ): Future[SeqState] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+
+    persistAndPushUpdateF(authId, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat, deliveryId)
   }
 
   def persistAndPushUpdateF(
@@ -70,54 +89,41 @@ object SeqUpdatesManager {
     refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean
+    isFat:          Boolean,
+    deliveryId:     Option[String]
   )(implicit
     ext: SeqUpdatesExtension,
     ec: ExecutionContext): Future[SeqState] =
-    pushUpdateGetSeqState(authId, header, serializedData, refs, pushText, originPeer, isFat)
-
-  def persistAndPushUpdateF(
-    authId:   Long,
-    update:   api.Update,
-    pushText: Option[String],
-    isFat:    Boolean
-  )(
-    implicit
-    ec:  ExecutionContext,
-    ext: SeqUpdatesExtension
-  ): Future[SeqState] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    persistAndPushUpdateF(authId, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat)
-  }
+    pushUpdateGetSeqState(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
 
   def persistAndPushUpdates(
-    authIds:  Set[Long],
-    update:   api.Update,
-    pushText: Option[String],
-    isFat:    Boolean
+    authIds:    Set[Long],
+    update:     api.Update,
+    pushText:   Option[String],
+    isFat:      Boolean        = false,
+    deliveryId: Option[String] = None
   )(implicit
     ec: ExecutionContext,
     ext: SeqUpdatesExtension): DBIO[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
-    persistAndPushUpdates(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat)
+    persistAndPushUpdates(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat, deliveryId)
   }
 
   def persistAndPushUpdatesF(
-    authIds:  Set[Long],
-    update:   api.Update,
-    pushText: Option[String],
-    isFat:    Boolean
+    authIds:    Set[Long],
+    update:     api.Update,
+    pushText:   Option[String],
+    isFat:      Boolean        = false,
+    deliveryId: Option[String] = None
   )(implicit
     ec: ExecutionContext,
     ext: SeqUpdatesExtension): Future[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
-    persistAndPushUpdatesF(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat)
+    persistAndPushUpdatesF(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat, deliveryId)
   }
 
   def persistAndPushUpdates(
@@ -127,12 +133,13 @@ object SeqUpdatesManager {
     refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean
+    isFat:          Boolean,
+    deliveryId:     Option[String]
   )(implicit
     ec: ExecutionContext,
     ext: SeqUpdatesExtension): DBIO[Seq[SeqState]] =
     DBIO.sequence(authIds.toSeq map { authId ⇒
-      persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat)
+      persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     })
 
   def persistAndPushUpdatesF(
@@ -142,24 +149,14 @@ object SeqUpdatesManager {
     refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean
+    isFat:          Boolean,
+    deliveryId:     Option[String]
   )(implicit
     ec: ExecutionContext,
     ext: SeqUpdatesExtension): Future[Seq[SeqState]] =
     Future.sequence(authIds.toSeq map { authId ⇒
-      persistAndPushUpdateF(authId, header, serializedData, refs, pushText, originPeer, isFat)
+      persistAndPushUpdateF(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     })
-
-  def broadcastClientAndUsersUpdate(
-    userIds:  Set[Int],
-    update:   api.Update,
-    pushText: Option[String],
-    isFat:    Boolean
-  )(implicit
-    ec: ExecutionContext,
-    ext:    SeqUpdatesExtension,
-    client: api.AuthorizedClientData): DBIO[(SeqState, Seq[SeqState])] =
-    broadcastClientAndUsersUpdate(client.userId, client.authId, userIds, update, pushText, isFat)
 
   def broadcastClientAndUsersUpdate(
     clientUserId: Int,
@@ -167,7 +164,8 @@ object SeqUpdatesManager {
     userIds:      Set[Int],
     update:       api.Update,
     pushText:     Option[String],
-    isFat:        Boolean
+    isFat:        Boolean        = false,
+    deliveryId:   Option[String] = None
   )(implicit
     ec: ExecutionContext,
     ext: SeqUpdatesExtension): DBIO[(SeqState, Seq[SeqState])] = {
@@ -182,9 +180,9 @@ object SeqUpdatesManager {
       seqstates ← DBIO.sequence(
         authIds.view
           .filterNot(_ == clientAuthId)
-          .map(persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat))
+          .map(persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
       )
-      seqstate ← persistAndPushUpdate(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat)
+      seqstate ← persistAndPushUpdate(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     } yield (seqstate, seqstates)
   }
 
@@ -193,7 +191,8 @@ object SeqUpdatesManager {
     currentAuthId: Long,
     update:        api.Update,
     pushText:      Option[String],
-    isFat:         Boolean
+    isFat:         Boolean        = false,
+    deliveryId:    Option[String] = None
   )(
     implicit
     ec:  ExecutionContext,
@@ -207,8 +206,8 @@ object SeqUpdatesManager {
 
     for {
       otherAuthIds ← p.AuthId.findIdByUserId(userId).map(_.view.filter(_ != currentAuthId))
-      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat)))
-      seqstate ← persistAndPushUpdate(currentAuthId, header, serializedData, refs, pushText, originPeer, isFat)
+      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)))
+      seqstate ← persistAndPushUpdate(currentAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     } yield seqstate
   }
 
@@ -217,7 +216,8 @@ object SeqUpdatesManager {
     exceptAuthId: Long,
     update:       api.Update,
     pushText:     Option[String],
-    isFat:        Boolean
+    isFat:        Boolean        = false,
+    deliveryId:   Option[String] = None
   )(
     implicit
     ec:             ExecutionContext,
@@ -229,7 +229,7 @@ object SeqUpdatesManager {
 
     val originPeer = getOriginPeer(update)
 
-    notifyUserUpdate(userId, exceptAuthId, header, serializedData, updateRefs(update), pushText, originPeer, isFat)
+    notifyUserUpdate(userId, exceptAuthId, header, serializedData, updateRefs(update), pushText, originPeer, isFat, deliveryId)
   }
 
   def notifyUserUpdate(
@@ -240,7 +240,8 @@ object SeqUpdatesManager {
     refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean
+    isFat:          Boolean,
+    deliveryId:     Option[String]
   )(implicit
     ec: ExecutionContext,
     ext:            SeqUpdatesExtension,
@@ -248,15 +249,16 @@ object SeqUpdatesManager {
     for {
       otherAuthIds ← DBIO.from(UserOffice.getAuthIds(userId)) map (_.filter(_ != exceptAuthId))
       seqstates ← DBIO.sequence(otherAuthIds map { authId ⇒
-        persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat)
+        persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
       })
     } yield seqstates
   }
 
   def notifyClientUpdate(
-    update:   api.Update,
-    pushText: Option[String],
-    isFat:    Boolean
+    update:     api.Update,
+    pushText:   Option[String],
+    isFat:      Boolean        = false,
+    deliveryId: Option[String] = None
   )(
     implicit
     ec:             ExecutionContext,
@@ -268,9 +270,8 @@ object SeqUpdatesManager {
     val serializedData = update.toByteArray
 
     val originPeer = getOriginPeer(update)
-    val fatMetaData = if (isFat) Some(getFatMetaData(update)) else None
 
-    notifyClientUpdate(header, serializedData, updateRefs(update), pushText, originPeer, isFat)
+    notifyClientUpdate(header, serializedData, updateRefs(update), pushText, originPeer, isFat, deliveryId)
   }
 
   def notifyClientUpdate(
@@ -279,13 +280,14 @@ object SeqUpdatesManager {
     refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean
+    isFat:          Boolean,
+    deliveryId:     Option[String]
   )(implicit
     ec: ExecutionContext,
     ext:            SeqUpdatesExtension,
     userViewRegion: UserViewRegion,
     client:         api.AuthorizedClientData) = {
-    notifyUserUpdate(client.userId, client.authId, header, serializedData, refs, pushText, originPeer, isFat)
+    notifyUserUpdate(client.userId, client.authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
   }
 
   def setPushCredentials(
@@ -451,13 +453,14 @@ object SeqUpdatesManager {
     refs:           UpdateRefs,
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean
+    isFat:          Boolean,
+    deliveryId:     Option[String]
   )(implicit
     ext: SeqUpdatesExtension,
     ec: ExecutionContext): Future[SeqState] = {
     ext.region.ref.ask(
       PushUpdate(
-        authId, None, header, ByteString.copyFrom(serializedData), refs, isFat, pushText, originPeer
+        authId, deliveryId, header, ByteString.copyFrom(serializedData), refs, isFat, pushText, originPeer
       )
     ).mapTo[SeqState]
   }
