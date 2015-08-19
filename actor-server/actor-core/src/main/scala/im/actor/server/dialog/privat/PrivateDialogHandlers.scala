@@ -8,7 +8,7 @@ import im.actor.server.dialog.PrivateDialogCommands.Origin.{ LEFT, RIGHT }
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed, AuthIdRandomId, PrivateDialogCommands }
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserOffice
@@ -43,7 +43,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
           _ = recordRelation(userState.userId, userState.peerId)
           _ ← db.run(writeHistoryMessage(models.Peer.privat(userState.userId), models.Peer.privat(userState.peerId), date, randomId, message.header, message.toByteArray))
           counterUpdate ← db.run(getUpdateCountersChanged(userState.peerId))
-          _ ← UserOffice.broadcastUserUpdate(userState.peerId, counterUpdate, None, isFat = false)
+          _ ← UserOffice.broadcastUserUpdate(userState.peerId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
         } yield SeqStateDate(seq, state, dateMillis)
       } recover {
         case e ⇒
@@ -65,7 +65,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
 
       val update = UpdateMessageReceived(privatePeerStruct(userState.userId), date, now)
       for {
-        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false)
+        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
         _ ← db.run(markMessagesReceived(models.Peer.privat(userState.userId), models.Peer.privat(userState.peerId), new DateTime(date)))
       } yield MessageReceivedAck()
     } else {
@@ -90,13 +90,13 @@ trait PrivateDialogHandlers extends UpdateCounters {
       val update = UpdateMessageRead(privatePeerStruct(userState.userId), date, now)
       val readerUpdate = UpdateMessageReadByMe(privatePeerStruct(userState.peerId), date)
       for {
-        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false)
+        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
         counterUpdate ← db.run(for {
           _ ← markMessagesRead(models.Peer.privat(userState.userId), models.Peer.privat(userState.peerId), new DateTime(date))
           u ← getUpdateCountersChanged(userState.userId)
         } yield u)
-        _ ← UserOffice.broadcastUserUpdate(userState.userId, counterUpdate, None, isFat = false)
-        _ ← db.run(SeqUpdatesManager.notifyUserUpdate(userState.userId, readerAuthId, readerUpdate, None, isFat = false))
+        _ ← UserOffice.broadcastUserUpdate(userState.userId, counterUpdate, None, isFat = false, deliveryId = None)
+        _ ← UserOffice.notifyUserUpdate(userState.userId, readerAuthId, readerUpdate, None, isFat = false, deliveryId = None)
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())

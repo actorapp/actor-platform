@@ -1,4 +1,4 @@
-package im.actor.server.push
+package im.actor.server.sequence
 
 import scala.concurrent._
 
@@ -17,18 +17,18 @@ case class WeakUpdatesManagerRegion(ref: ActorRef)
 object WeakUpdatesManager {
 
   @SerialVersionUID(1L)
-  private[push] case class Envelope(authId: Long, payload: Message)
+  private[sequence] case class Envelope(authId: Long, payload: Message)
 
-  private[push] sealed trait Message
-
-  @SerialVersionUID(1L)
-  private[push] case class PushUpdate(header: Int, serializedData: Array[Byte]) extends Message
+  private[sequence] sealed trait Message
 
   @SerialVersionUID(1L)
-  private[push] case class Subscribe(consumer: ActorRef) extends Message
+  private[sequence] case class PushUpdate(header: Int, serializedData: Array[Byte]) extends Message
 
   @SerialVersionUID(1L)
-  private[push] case class SubscribeAck(consumer: ActorRef) extends Message
+  private[sequence] case class Subscribe(consumer: ActorRef) extends Message
+
+  @SerialVersionUID(1L)
+  private[sequence] case class SubscribeAck(consumer: ActorRef) extends Message
 
   @SerialVersionUID(1L)
   case class UpdateReceived(update: WeakUpdate)
@@ -65,7 +65,7 @@ object WeakUpdatesManager {
     }
   }
 
-  private[push] def subscribe(authId: Long, consumer: ActorRef)(implicit region: WeakUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+  private[sequence] def subscribe(authId: Long, consumer: ActorRef)(implicit region: WeakUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
   }
 }

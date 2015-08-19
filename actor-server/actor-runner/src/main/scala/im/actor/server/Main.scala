@@ -31,7 +31,7 @@ import im.actor.server.group._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push._
+import im.actor.server.sequence._
 import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialExtension

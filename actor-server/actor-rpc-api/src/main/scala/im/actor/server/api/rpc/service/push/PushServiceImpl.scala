@@ -5,7 +5,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
-import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.{ models, persist }
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._

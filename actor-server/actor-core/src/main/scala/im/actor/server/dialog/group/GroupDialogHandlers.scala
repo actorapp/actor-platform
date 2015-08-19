@@ -9,7 +9,7 @@ import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
-import im.actor.server.push.SeqUpdatesManager._
+import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
 import im.actor.server.util.HistoryUtils._
@@ -42,7 +42,7 @@ trait GroupDialogHandlers extends UpdateCounters {
                 for {
                   _ ← UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
                   counterUpdate ← db.run(getUpdateCountersChanged(userId))
-                  _ ← UserOffice.broadcastUserUpdate(userId, counterUpdate, None, isFat = false)
+                  _ ← UserOffice.broadcastUserUpdate(userId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
                 } yield ()
               })
               SeqState(seq, state) ← if (senderUserId == botId) {
@@ -92,9 +92,9 @@ trait GroupDialogHandlers extends UpdateCounters {
     (if (!state.lastSenderId.contains(readerUserId)) {
       val readerUpdatesF: Future[Unit] = for {
         _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false)
+        _ ← UserOffice.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false, deliveryId = None)
         counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false)
+        _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
       } yield ()
 
       val withMembers = withMemberIds[Unit](groupId) _

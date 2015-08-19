@@ -25,7 +25,7 @@ import im.actor.server.activation.internal.CodeActivation
 import im.actor.server.db.DbExtension
 import im.actor.server.oauth.{ OAuth2ProvidersDomains, GoogleProvider }
 import im.actor.server.persist.auth.AuthTransaction
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.util.PhoneNumberUtils._
