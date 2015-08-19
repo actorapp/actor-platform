@@ -1,13 +1,18 @@
 import React from 'react';
 import classnames from 'classnames';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 
-let scrollIndex = 0;
-const DROPDOWN_ITEM_HEIGHT = 38; // is this right?
+const {addons: { PureRenderMixin }} = addons;
 
+const DROPDOWN_ITEM_HEIGHT = 38; // is this right?
+let scrollIndex = 0;
+
+@ReactMixin.decorate(PureRenderMixin)
 class MentionDropdown extends React.Component {
   static propTypes = {
     mentions: React.PropTypes.array,
@@ -141,27 +146,28 @@ class MentionDropdown extends React.Component {
     const mentionClassName = classnames('mention', {
       'mention--opened': isShown
     }, className);
-
     const mentionsElements = _.map(mentions, (mention, index) => {
       const itemClassName = classnames('mention__list__item', {
         'mention__list__item--active': selectedIndex === index
       });
-      // TODO: fix to use real nicknames
-      const nickname = mention.nickname ? <span className="nickname">{mention.nickname}</span> : null;
+      const title = mention.isNick ?
+        [
+          <span className="nickname">{mention.mentionText}</span>,
+          <span className="name">{mention.secondText}</span>
+        ]
+      :
+        <span className="name">{mention.mentionText}</span>;
 
       return (
         <li className={itemClassName}
             key={index}
             onClick={() => this.onSelect(mention)}
             onMouseOver={() => this.setState({selectedIndex: index})}>
-          <AvatarItem image={mention.avatar}
-                      placeholder={mention.placeholder}
+          <AvatarItem image={mention.peer.avatar}
+                      placeholder={mention.peer.placeholder}
                       size="tiny"
-                      title={mention.title}/>
-          <div className="title">
-            {nickname}
-            <span className="name">{mention.title}</span>
-          </div>
+                      title={mention.peer.title}/>
+          <div className="title">{title}</div>
         </li>
       );
     });

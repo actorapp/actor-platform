@@ -20,7 +20,6 @@ import PreferencesStore from 'stores/PreferencesStore';
 import ComposeStore from 'stores/ComposeStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
-//import { Dropdown, DropdownHeader, DropdownList, DropdownListItem } from 'components/common/Dropdown.react';
 import MentionDropdown from 'components/common/MentionDropdown.react';
 
 const ThemeManager = new Styles.ThemeManager();
