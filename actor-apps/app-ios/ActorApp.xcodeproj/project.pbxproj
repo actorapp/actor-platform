@@ -1161,10 +1161,7 @@
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"../build-tools/dist/j2objc-0.9.8/lib",
-					ActorCore/Build,
-				);
+				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8/lib";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1262,10 +1259,7 @@
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"../build-tools/dist/j2objc-0.9.8/lib",
-					ActorCore/Build,
-				);
+				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8/lib";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
