@@ -242,9 +242,9 @@ public class NotificationsActor extends ModuleActor {
                 break;
             }
             PendingNotification pendingNotification = allPending.get(allPending.size() - 1 - i);
-            if (visiblePeer != null && visiblePeer.equals(pendingNotification.getPeer())) {
-                continue;
-            }
+//            if (isAppVisible && visiblePeer != null && visiblePeer.equals(pendingNotification.getPeer())) {
+//                continue;
+//            }
             destNotifications.add(pendingNotification);
         }
 
@@ -270,7 +270,6 @@ public class NotificationsActor extends ModuleActor {
             config().getNotificationProvider().onUpdateNotification(context().getMessenger(), res,
                     messagesCount, chatsCount);
         } else {
-            // Log.d("NotificationsActor", "Show notitification");
             config().getNotificationProvider().onNotification(context().getMessenger(), res,
                     messagesCount, chatsCount, isAppVisible);
         }
