@@ -5,7 +5,7 @@ import akka.util.Timeout
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.groups.Group
 import im.actor.api.rpc.messaging.UpdateMessageSent
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate, WeakUpdate }
+import im.actor.api.rpc.sequence.{ FatSeqUpdate, WeakUpdate }
 import im.actor.api.rpc.users.User
 import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
@@ -194,12 +194,10 @@ private[sequence] class UpdatesConsumer(
     implicit lazy val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
     implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
 
-    val usersFuture = Future.sequence(fatUserIds map (UserOffice.getApiStruct(_, userId, authId)))
-    val groupsFuture = Future.sequence(fatGroupIds map (GroupOffice.getApiStruct(_, userId)))
-
     for {
-      users ← usersFuture
-      groups ← groupsFuture
+      groups ← Future.sequence(fatGroupIds map (GroupOffice.getApiStruct(_, userId)))
+      groupMemberIds = groups.view.map(_.members.map(_.userId)).flatten
+      users ← Future.sequence((fatUserIds ++ groupMemberIds).distinct map (UserOffice.getApiStruct(_, userId, authId)))
     } yield (users, groups)
   }
 }
