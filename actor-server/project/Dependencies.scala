@@ -129,6 +129,8 @@ object Dependencies {
 
   val presences = shared :+ akkaContrib
 
+  val shardakka = shared ++ Seq(akkaActor, akkaContrib, eaioUuid, protobuf)
+
   val sms = shared ++ Seq(akkaActor, akkaHttp, dispatch)
 
   val social = shared :+ akkaContrib
