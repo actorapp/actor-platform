@@ -26,7 +26,7 @@
 #import "im/actor/core/Messenger.h"
 #import "im/actor/core/AnalyticsProvider.h"
 #import "im/actor/core/ApiConfiguration.h"
-#import "im/actor/core/AppCategory.h"
+#import "im/actor/core/PlatformType.h"
 #import "im/actor/core/AuthState.h"
 #import "im/actor/core/Configuration.h"
 #import "im/actor/core/ConfigurationBuilder.h"
