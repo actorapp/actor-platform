@@ -15,7 +15,7 @@ import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
 import im.actor.server.db.DbExtension
 import im.actor.server.persist
-import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 import im.actor.server.util.{ ContactsUtils, ACLUtils }
 

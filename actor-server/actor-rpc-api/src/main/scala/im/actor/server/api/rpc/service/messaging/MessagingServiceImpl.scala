@@ -16,7 +16,7 @@ import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupProcessorRegion, GroupExtension, GroupViewRegion }
 import im.actor.server.models
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.{ UserProcessorRegion, UserExtension, UserViewRegion }
 

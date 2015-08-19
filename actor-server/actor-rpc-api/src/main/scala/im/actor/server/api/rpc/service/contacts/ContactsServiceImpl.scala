@@ -20,7 +20,7 @@ import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.db.DbExtension
-import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerRegion }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 import im.actor.server.util.{ ACLUtils, ContactsUtils, PhoneNumberUtils, UserUtils }
@@ -94,13 +94,9 @@ class ContactsServiceImpl(
           DBIO.successful(Ok(ResponseGetContacts(Vector.empty[users.User], isNotChanged = true)))
         } else {
           for {
-            userIdsNames ← persist.contact.UserContact.findContactIdsWithLocalNames(client.userId)
-            userIds = userIdsNames.map(_._1).toSet
-            users ← persist.User.findByIds(userIds)
-            namesMap = immutable.Map(userIdsNames: _*)
-            // TODO: #perf optimize (so much requests!)
-            userStructs ← DBIO.sequence(users.map(user ⇒
-              userStruct(user, namesMap.get(user.id).getOrElse(None), clientData.authId)))
+            userIds ← persist.contact.UserContact.findContactIdsActive(client.userId)
+            userStructs ← DBIO.from(Future.sequence(userIds.map(userId ⇒
+              UserOffice.getApiStruct(userId, client.userId, client.authId))))
           } yield {
             Ok(ResponseGetContacts(
               users = userStructs.toVector,
@@ -182,7 +178,7 @@ class ContactsServiceImpl(
           implicit val c = client
           for {
             userPhones ← persist.UserPhone.findByPhoneNumber(phone)
-            users ← getUserStructs(userPhones.map(_.userId).toSet)
+            users ← DBIO.from(Future.sequence(userPhones.map(_.userId).toSet map { userId: Int ⇒ UserOffice.getApiStruct(userId, client.userId, client.authId) }))
           } yield {
             userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
             users.toVector
@@ -279,7 +275,7 @@ class ContactsServiceImpl(
 
           for {
             _ ← persist.contact.UserPhoneContact.insertOrUpdate(userContact)
-            userStruct ← userStruct(user, localName, client.authId)
+            userStruct ← DBIO.from(UserOffice.getApiStruct(user.id, client.userId, client.authId))
           } yield {
             userStruct
           }
@@ -303,7 +299,7 @@ class ContactsServiceImpl(
         _ ← persist.contact.UserEmailContact.insertOrUpdate(userContact)
         optUser ← persist.User.find(contact.userId).headOption
         userStruct ← optUser.map { user ⇒
-          userStruct(user, contact.name, client.authId).map(Some(_))
+          DBIO.from(UserOffice.getApiStruct(user.id, client.userId, client.authId)) map (Some(_))
         }.getOrElse(DBIO.successful(None))
       } yield userStruct.map(_ → contact.userId)
     }

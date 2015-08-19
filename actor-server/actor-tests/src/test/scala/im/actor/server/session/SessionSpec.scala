@@ -18,7 +18,7 @@ import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
-import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.SessionEnvelope.Payload
 import im.actor.server.user.UserOffice
 
