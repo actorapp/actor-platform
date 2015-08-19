@@ -209,5 +209,10 @@ export default {
 
   deleteMessages(peer, rids) {
     return window.messenger.deleteMessages(peer, rids);
+  },
+
+  // Mentions
+  findMentions(gid, query = '') {
+    return window.messenger.findMentions(gid, query)
   }
 };
