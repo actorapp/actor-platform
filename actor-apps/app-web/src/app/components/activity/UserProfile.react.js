@@ -135,10 +135,10 @@ class UserProfile extends React.Component {
 
           <li className="profile__list__item user_profile__contact_info no-p">
             <ul className="user_profile__contact_info__list">
-              <li className="hide">
+              <li>
                 <svg className="icon icon--pink"
                      dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#username"/>'}}/>
-                <span className="title">{nickname}</span>
+                <span className="title">{user.nick}</span>
                 <span className="description">nickname</span>
               </li>
               <li>
