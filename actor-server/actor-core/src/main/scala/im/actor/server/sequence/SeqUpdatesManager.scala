@@ -19,7 +19,6 @@ import im.actor.api.rpc.peers.{ PeerType, Peer }
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.db.DbExtension
 import im.actor.server.models.sequence
-import im.actor.server.user.{ UserOffice, UserViewRegion }
 import im.actor.server.{ models, persist ⇒ p }
 
 object SeqUpdatesManager {
@@ -209,85 +208,6 @@ object SeqUpdatesManager {
       _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)))
       seqstate ← persistAndPushUpdate(currentAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     } yield seqstate
-  }
-
-  def notifyUserUpdate(
-    userId:       Int,
-    exceptAuthId: Long,
-    update:       api.Update,
-    pushText:     Option[String],
-    isFat:        Boolean        = false,
-    deliveryId:   Option[String] = None
-  )(
-    implicit
-    ec:             ExecutionContext,
-    ext:            SeqUpdatesExtension,
-    userViewRegion: UserViewRegion
-  ): DBIO[Seq[SeqState]] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = getOriginPeer(update)
-
-    notifyUserUpdate(userId, exceptAuthId, header, serializedData, updateRefs(update), pushText, originPeer, isFat, deliveryId)
-  }
-
-  def notifyUserUpdate(
-    userId:         Int,
-    exceptAuthId:   Long,
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[Peer],
-    isFat:          Boolean,
-    deliveryId:     Option[String]
-  )(implicit
-    ec: ExecutionContext,
-    ext:            SeqUpdatesExtension,
-    userViewRegion: UserViewRegion) = {
-    for {
-      otherAuthIds ← DBIO.from(UserOffice.getAuthIds(userId)) map (_.filter(_ != exceptAuthId))
-      seqstates ← DBIO.sequence(otherAuthIds map { authId ⇒
-        persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
-      })
-    } yield seqstates
-  }
-
-  def notifyClientUpdate(
-    update:     api.Update,
-    pushText:   Option[String],
-    isFat:      Boolean        = false,
-    deliveryId: Option[String] = None
-  )(
-    implicit
-    ec:             ExecutionContext,
-    ext:            SeqUpdatesExtension,
-    userViewRegion: UserViewRegion,
-    client:         api.AuthorizedClientData
-  ): DBIO[Seq[SeqState]] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = getOriginPeer(update)
-
-    notifyClientUpdate(header, serializedData, updateRefs(update), pushText, originPeer, isFat, deliveryId)
-  }
-
-  def notifyClientUpdate(
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[Peer],
-    isFat:          Boolean,
-    deliveryId:     Option[String]
-  )(implicit
-    ec: ExecutionContext,
-    ext:            SeqUpdatesExtension,
-    userViewRegion: UserViewRegion,
-    client:         api.AuthorizedClientData) = {
-    notifyUserUpdate(client.userId, client.authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
   }
 
   def setPushCredentials(
