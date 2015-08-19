@@ -10,7 +10,7 @@ import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.oauth.GoogleProvider
 import im.actor.server.{ DummyCodeActivation, models, persist }
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
-import im.actor.server.push.WeakUpdatesManagerRegion
+import im.actor.server.sequence.WeakUpdatesManagerRegion
 import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
 import org.scalatest.Suite
 import slick.driver.PostgresDriver.api._
