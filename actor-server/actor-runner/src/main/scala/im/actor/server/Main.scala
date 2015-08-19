@@ -1,6 +1,9 @@
 package im.actor.server
 
+import java.net.InetAddress
+
 import akka.actor._
+import akka.cluster.Cluster
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
@@ -31,7 +34,7 @@ import im.actor.server.group._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push._
+import im.actor.server.sequence._
 import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialExtension
@@ -60,6 +63,19 @@ object Main extends App {
   implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
+
+  if (system.settings.config.getList("akka.cluster.seed-nodes").isEmpty) {
+    system.log.info("Going to a single-node cluster mode")
+    val self = Address(
+      "akka.tcp",
+      system.name,
+      InetAddress.getLocalHost.getHostAddress,
+      2552
+    )
+
+    Cluster(system).joinSeedNodes(List(self))
+  }
+
   implicit val executor = system.dispatcher
   implicit val materializer = ActorMaterializer()
 

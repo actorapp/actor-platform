@@ -1,4 +1,4 @@
-package im.actor.server.push
+package im.actor.server.sequence
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
@@ -7,14 +7,12 @@ case class SeqUpdatesManagerRegion(ref: ActorRef)
 
 object SeqUpdatesManagerRegion {
 
-  import SeqUpdatesManagerMessages._
-
   private val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, payload) ⇒ (authId.toString, payload)
+    case msg: SeqUpdatesManagerMessage ⇒ (msg.authId.toString, msg)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case Envelope(authId, _) ⇒ (authId % 32).toString // TODO: configurable
+    case msg: SeqUpdatesManagerMessage ⇒ (msg.authId % 32).toString // TODO: configurable
   }
 
   private def start(props: Option[Props])(implicit system: ActorSystem): SeqUpdatesManagerRegion =
