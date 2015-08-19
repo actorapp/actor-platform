@@ -9,7 +9,7 @@ import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
-import im.actor.server.push.SeqUpdatesManager._
+import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
 import im.actor.server.util.HistoryUtils._
@@ -42,7 +42,7 @@ trait GroupDialogHandlers extends UpdateCounters {
                 for {
                   _ ← UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
                   counterUpdate ← db.run(getUpdateCountersChanged(userId))
-                  _ ← UserOffice.broadcastUserUpdate(userId, counterUpdate, None, isFat = false)
+                  _ ← UserOffice.broadcastUserUpdate(userId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
                 } yield ()
               })
               SeqState(seq, state) ← if (senderUserId == botId) {
@@ -89,26 +89,36 @@ trait GroupDialogHandlers extends UpdateCounters {
 
   protected def messageRead(state: GroupDialogState, readerUserId: Int, readerAuthId: Long, date: Long): Unit = {
     val replyTo = sender()
-    (if (!state.lastSenderId.contains(readerUserId)) {
-      val readerUpdatesF: Future[Unit] = for {
-        _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false)
-        counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false)
-      } yield ()
+    val withMembers = withMemberIds[Unit](groupId) _
 
-      val withMembers = withMemberIds[Unit](groupId) _
-
-      val joinerF: Future[Unit] = withMembers { (_, invitedUserIds, _) ⇒
-        if (invitedUserIds contains readerUserId) {
-          GroupOffice.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
+    val readerUpdatesF: Future[Unit] =
+      withMembers { (memberIds, _, _) ⇒
+        if (memberIds contains readerUserId) {
+          for {
+            _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+            _ ← UserOffice.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false, deliveryId = None)
+            counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
+            _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
+          } yield ()
         } else Future.successful(())
       }
 
-      val readerAckF: Future[Unit] = if (!state.lastReadDate.exists(_ >= date)) {
-        context become working(updatedState(LastReadDateChanged(date), state))
+    val joinerF: Future[Unit] = withMembers { (_, invitedUserIds, _) ⇒
+      if (invitedUserIds contains readerUserId) {
+        GroupOffice.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
+      } else Future.successful(())
+    }
 
-        withMembers { (memberIds, _, _) ⇒
+    val readerAckF: Future[Unit] = if (!state.lastSenderId.contains(readerUserId) && !state.lastReadDate.exists(_ >= date)) {
+      //state changes before we assure that message read by group member
+      //When kicked user tries to read messages, we change state, but don't mark message read.
+      //When group member tries to read messages, after kicked user tried to read messages, but before new messages arrived we don't let him to read it.
+      // **This behaviour is buggy and should be fixed after we implement subscription on group members**
+      //It's not critical, as leave/kick is not frequent event in group.
+      context become working(updatedState(LastReadDateChanged(date), state))
+
+      withMembers { (memberIds, _, _) ⇒
+        if (memberIds contains readerUserId) {
           val now = new DateTime().getMillis
           val restMembers = memberIds.filterNot(_ == readerUserId)
           val authIdsF = Future.sequence(restMembers map UserOffice.getAuthIds) map (_.flatten.toSet)
@@ -118,15 +128,15 @@ trait GroupDialogHandlers extends UpdateCounters {
             _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
             _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
           } yield ()
-        }
-      } else Future.successful(())
+        } else Future.successful(())
+      }
+    } else Future.successful(())
 
-      for {
-        _ ← readerUpdatesF
-        _ ← joinerF
-        _ ← readerAckF
-      } yield MessageReadAck()
-    } else Future.successful(MessageReadAck())) pipeTo replyTo onFailure {
+    (for {
+      _ ← readerUpdatesF
+      _ ← joinerF
+      _ ← readerAckF
+    } yield MessageReadAck()) pipeTo replyTo onFailure {
       case e ⇒
         replyTo ! Status.Failure(ReadFailed)
         log.error(e, "Failed to mark messages read")

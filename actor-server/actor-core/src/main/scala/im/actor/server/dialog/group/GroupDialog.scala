@@ -13,7 +13,7 @@ import im.actor.server.dialog.group.GroupDialogEvents.GroupDialogEvent
 import im.actor.server.dialog.{ AuthIdRandomId, GroupDialogCommands, StopDialog }
 import im.actor.server.group.{ GroupExtension, GroupProcessorRegion, GroupViewRegion }
 import im.actor.server.office.{ ProcessorState, Processor }
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
 import im.actor.utils.cache.CacheHelpers._
