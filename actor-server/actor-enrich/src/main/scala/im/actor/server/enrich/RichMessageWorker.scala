@@ -18,7 +18,7 @@ import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging._
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.UserViewRegion
 import im.actor.server.util._
 

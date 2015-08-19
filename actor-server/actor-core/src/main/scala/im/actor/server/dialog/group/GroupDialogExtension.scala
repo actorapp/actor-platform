@@ -5,6 +5,8 @@ import akka.actor._
 sealed trait GroupDialogExtension extends Extension
 
 final class GroupDialogExtensionImpl(system: ActorSystem) extends GroupDialogExtension {
+  GroupDialog.register()
+
   lazy val region: GroupDialogRegion = GroupDialogRegion.start()(system)
 }
 

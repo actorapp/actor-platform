@@ -19,6 +19,7 @@ import im.actor.core.js.providers.notification.JsManagedNotification;
 import im.actor.core.js.providers.notification.JsNotification;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.Log;
 
 public class JsNotificationsProvider implements NotificationProvider {
 
@@ -40,6 +41,8 @@ public class JsNotificationsProvider implements NotificationProvider {
 
     @Override
     public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount, boolean isInApp) {
+
+        Log.d("JsNotificationsProvider", "onNotification");
 
         String peerTitle;
         String peerAvatarUrl = null;
@@ -118,20 +121,24 @@ public class JsNotificationsProvider implements NotificationProvider {
             }
         }
 
-        if (JsElectronApp.isSupported()) {
+        if (JsElectronApp.isElectron()) {
             JsElectronApp.showNewMessages();
         }
 
         playSound();
 
         if (!JsNotification.isSupported()) {
+            Log.d("JsNotificationsProvider", "not supported");
             return;
         }
         if (!JsNotification.isGranted()) {
+            Log.d("JsNotificationsProvider", "not granted");
             return;
         }
 
         JsManagedNotification.show(peerTitle, contentMessage, peerAvatarUrl);
+
+        Log.d("JsNotificationsProvider", "Shown");
     }
 
     @Override
@@ -141,7 +148,7 @@ public class JsNotificationsProvider implements NotificationProvider {
 
     @Override
     public void hideAllNotifications() {
-        if (JsElectronApp.isSupported()) {
+        if (JsElectronApp.isElectron()) {
             JsElectronApp.hideNewMessages();
         }
     }

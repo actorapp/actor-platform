@@ -78,6 +78,10 @@ public class Authentication {
         return state;
     }
 
+    public boolean isLoggedIn() {
+        return state == AuthState.LOGGED_IN;
+    }
+
     public long getPhone() {
         return modules.getPreferences().getLong(KEY_PHONE, 0);
     }

@@ -11,7 +11,6 @@ import java.util.List;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
-import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
@@ -40,12 +39,16 @@ import im.actor.core.api.updates.UpdateUserLastSeen;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserOffline;
 import im.actor.core.api.updates.UpdateUserOnline;
+import im.actor.core.entity.Peer;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
+import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.internal.users.UsersProcessor;
+import im.actor.core.modules.updates.internal.CombinedDifference;
 import im.actor.core.modules.updates.internal.ContactsLoaded;
 import im.actor.core.modules.updates.internal.DialogHistoryLoaded;
+import im.actor.core.modules.updates.internal.GetDiffCombiner;
 import im.actor.core.modules.updates.internal.GroupCreated;
 import im.actor.core.modules.updates.internal.InternalUpdate;
 import im.actor.core.modules.updates.internal.LoggedIn;
@@ -68,13 +71,13 @@ public class UpdateProcessor extends AbsModule {
 
     public UpdateProcessor(ModuleContext context) {
         super(context);
+        this.contactsProcessor = new ContactsProcessor(context);
         this.settingsProcessor = new SettingsProcessor(context);
         this.usersProcessor = new UsersProcessor(context);
         this.messagesProcessor = new MessagesProcessor(context);
         this.groupsProcessor = new GroupsProcessor(context);
         this.presenceProcessor = new PresenceProcessor(context);
         this.typingProcessor = new TypingProcessor(context);
-        this.contactsProcessor = new ContactsProcessor(context);
     }
 
     public void applyRelated(List<ApiUser> users,
@@ -131,14 +134,40 @@ public class UpdateProcessor extends AbsModule {
     }
 
     public void applyDifferenceUpdate(List<ApiUser> users, List<ApiGroup> groups, List<Update> updates) {
+
         applyRelated(users, groups, false);
+        context().getMessagesModule().getOwnReadActor().send(new OwnReadActor.StartGetDifference());
 
-        context().getNotificationsModule().pauseNotifications();
-        for (int i = 0; i < updates.size(); i++) {
-            processUpdate(updates.get(i));
+        CombinedDifference combinedDifference = GetDiffCombiner.buildDiff(updates);
+
+        for (Peer peer : combinedDifference.getReceived().keySet()) {
+            long time = combinedDifference.getReceived().get(peer);
+            messagesProcessor.onMessageReceived(buildApiPeer(peer), time);
         }
-        context().getNotificationsModule().resumeNotifications();
 
+        for (Peer peer : combinedDifference.getRead().keySet()) {
+            long time = combinedDifference.getRead().get(peer);
+            messagesProcessor.onMessageRead(buildApiPeer(peer), time);
+        }
+
+        for (Peer peer : combinedDifference.getReadByMe().keySet()) {
+            long time = combinedDifference.getReadByMe().get(peer);
+            messagesProcessor.onMessageReadByMe(buildApiPeer(peer), time);
+        }
+
+        for (Peer peer : combinedDifference.getMessages().keySet()) {
+            messagesProcessor.onMessages(buildApiPeer(peer), combinedDifference.getMessages().get(peer));
+        }
+
+        for (Update u : combinedDifference.getOtherUpdates()) {
+            processUpdate(u);
+        }
+
+        if (combinedDifference.getCounters() != null) {
+            messagesProcessor.onCountersChanged(combinedDifference.getCounters());
+        }
+
+        context().getMessagesModule().getOwnReadActor().send(new OwnReadActor.StopGetDifference());
         applyRelated(users, groups, true);
     }
 
@@ -173,13 +202,13 @@ public class UpdateProcessor extends AbsModule {
             typingProcessor.onMessage(message.getPeer(), message.getSenderUid());
         } else if (update instanceof UpdateMessageRead) {
             UpdateMessageRead messageRead = (UpdateMessageRead) update;
-            messagesProcessor.onMessageRead(messageRead.getPeer(), messageRead.getStartDate(), messageRead.getReadDate());
+            messagesProcessor.onMessageRead(messageRead.getPeer(), messageRead.getStartDate());
         } else if (update instanceof UpdateMessageReadByMe) {
             UpdateMessageReadByMe messageReadByMe = (UpdateMessageReadByMe) update;
             messagesProcessor.onMessageReadByMe(messageReadByMe.getPeer(), messageReadByMe.getStartDate());
         } else if (update instanceof UpdateMessageReceived) {
             UpdateMessageReceived received = (UpdateMessageReceived) update;
-            messagesProcessor.onMessageReceived(received.getPeer(), received.getStartDate(), received.getReceivedDate());
+            messagesProcessor.onMessageReceived(received.getPeer(), received.getStartDate());
         } else if (update instanceof UpdateMessageDelete) {
             UpdateMessageDelete messageDelete = (UpdateMessageDelete) update;
             messagesProcessor.onMessageDelete(messageDelete.getPeer(), messageDelete.getRids());

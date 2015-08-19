@@ -5,7 +5,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited }
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.misc.ResponseVoid
+import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
 import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -32,6 +32,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   it should "mark messages received and send updates" in s.historyPrivate.markReceived
 
   it should "mark messages read and send updates" in s.historyPrivate.markRead
+
+  it should "be correct counter after read" in s.historyPrivate.counterAfterRead
 
   "Group messaging" should "mark messages received and send updates" in s.historyGroup.markReceived
 
@@ -325,12 +327,13 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         {
           implicit val clientData = clientData21
           expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
-            UpdateCountersChanged.header,
             UpdateMessage.header,
             UpdateCountersChanged.header,
             UpdateMessage.header,
             UpdateCountersChanged.header,
             UpdateMessage.header,
+            UpdateCountersChanged.header,
+            //here we got read on other device. so we don't get ReadByMe update
             UpdateCountersChanged.header
           )) {
             case _ ⇒
@@ -341,16 +344,65 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           //UpdateMessageReadByMe sent to user2 second device
           implicit val clientData = clientData22
           expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
-            UpdateCountersChanged.header,
             UpdateMessage.header,
             UpdateCountersChanged.header,
             UpdateMessage.header,
             UpdateCountersChanged.header,
             UpdateMessage.header,
+            UpdateCountersChanged.header,
+
+            //why this order
             UpdateCountersChanged.header,
             UpdateMessageReadByMe.header
           )) {
             case _ ⇒
+          }
+        }
+      }
+
+      def counterAfterRead() = {
+        val (user1, authId1, _) = createUser()
+        val (user2, authId21, _) = createUser()
+        val sessionId = createSessionId()
+
+        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+        val clientData21 = ClientData(authId21, sessionId, Some(user2.id))
+
+        val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
+        val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
+
+        val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
+        val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+
+        val startDate = {
+          implicit val clientData = clientData1
+
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None))) { resp ⇒
+            val seqStateDate = resp.toOption.get
+            seqStateDate.date
+          }
+        }
+
+        {
+          implicit val clientData = clientData21
+
+          Thread.sleep(300)
+
+          val ResponseSeq(seq, state) = {
+            whenReady(sequenceService.handleGetState()) { resp ⇒
+              resp.toOption.get
+            }
+          }
+
+          whenReady(service.handleMessageRead(user1Peer, startDate)) { resp ⇒
+            resp should matchPattern {
+              case Ok(ResponseVoid) ⇒
+            }
+          }
+
+          expectUpdate[UpdateCountersChanged](seq, state, UpdateCountersChanged.header, Some(1)) { upd ⇒
+            val globalCounter = upd.counters.globalCounter
+            globalCounter shouldEqual Some(0)
           }
         }
       }

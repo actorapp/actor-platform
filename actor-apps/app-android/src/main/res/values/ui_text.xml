@@ -362,6 +362,10 @@
     <string name="not_sound_subtitle">Enable notification sounds</string>
     <string name="not_vibration">Vibration</string>
     <string name="not_vibration_subtitle">Enable vibration in notifications</string>
+    <string name="not_group">Group</string>
+    <string name="not_group_subtitle">Enable group notifications</string>
+    <string name="not_group_mentions">Only for mentions</string>
+    <string name="not_group_mentions_subtitle">Enable group notifications only for mentions</string>
     <string name="not_show_text">Show names and messages</string>
     <string name="not_show_text_subtitle">Show message text and sender name in notification panel</string>
 

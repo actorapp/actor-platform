@@ -1,7 +1,8 @@
 package im.actor.core.js.providers.electron;
 
 public class JsElectronApp {
-    public static native boolean isSupported()/*-{
+
+    public static native boolean isElectron()/*-{
         return 'require' in $wnd;
     }-*/;
 

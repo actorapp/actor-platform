@@ -20,7 +20,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.file.FileErrors
 import im.actor.server.group._
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
 import im.actor.server.util.ACLUtils.accessToken
