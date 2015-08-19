@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { EventEmitter } from 'events';
+import ActorClient from 'utils/ActorClient';
 
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 
@@ -13,24 +14,6 @@ import UserStore from './UserStore';
 
 const CHANGE_EVENT = 'change';
 
-let getAll = (peer) => {
-  if (peer.type === PeerTypes.GROUP) {
-    let allMembers = GroupStore.getGroup(peer.id).members;
-    let members = [];
-    const myId = UserStore.getMyId();
-
-    _.map(allMembers, (member) => {
-      if (member.peerInfo.peer.id !== myId) {
-        members.push(member.peerInfo);
-      }
-    });
-
-    return members;
-  } else {
-    return [];
-  }
-};
-
 let getQuery = (text, position) => {
   let run = (runText, query) => {
     if (runText.length === 0) {
@@ -40,7 +23,11 @@ let getQuery = (text, position) => {
       if (lastChar === '@') {
         const charBeforeAt = runText.charAt(runText.length - 2);
         if (charBeforeAt.trim() === '') {
-          return (query || '');
+          const atStart = query === null ? true : query.length + 1 === position;
+          return {
+            text: (query || ''),
+            atStart: atStart
+          };
         } else {
           return null;
         }
@@ -85,31 +72,29 @@ const instance = new ComposeStore();
 
 let onTyping = (action) => {
   text = action.text;
+  const query = getQuery(text, action.caretPosition);
 
-  let all = getAll(action.peer);
-  console.warn(all);
-  let query = getQuery(text, action.caretPosition);
-  mentions = _.filter(all, m => m.title.toLowerCase().indexOf(query) > -1);
-  if (mentions.length === 0) {
+  if (action.peer.type === PeerTypes.GROUP && query !== null) {
+    mentions = ActorClient.findMentions(action.peer.id, query.text);
+  } else {
     mentions = null;
   }
+
   instance.emitChange();
 };
 
 let onMentionInsert = (action) => {
-  let query = getQuery(action.text, action.caretPosition);
+  const query = getQuery(action.text, action.caretPosition);
+  const mentionEnding = action.caretPosition === 1 && query.atStart ? ': ' : ' ';
+  const startChar = action.mention.isNick ? 1 : 0;
 
-  let mentionEnding = ' ';
-  if (action.caretPosition === 1) {
-    mentionEnding = ': ';
-  }
-
-  text = action.text.substring(0, action.caretPosition - query.length) +
-    action.mention.title +
-    action.text.substring(action.caretPosition, action.text.length) +
-    mentionEnding;
+  text = action.text.substring(0, action.caretPosition - query.text.length) +
+         action.mention.mentionText.substring(startChar, action.mention.mentionText.length) +
+         action.text.substring(action.caretPosition, action.text.length) +
+         mentionEnding;
 
   mentions = null;
+
   instance.emitChange();
 };
 
