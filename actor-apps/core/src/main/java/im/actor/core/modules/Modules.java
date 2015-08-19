@@ -295,18 +295,20 @@ public class Modules implements ModuleContext {
         isAppVisible = true;
         actorApi.forceNetworkCheck();
         analytics.trackAppVisible();
-        if (getPresenceModule() != null) {
+        if (authentication.isLoggedIn()) {
             getPresenceModule().onAppVisible();
             getNotificationsModule().onAppVisible();
+            appStateModule.getAppStateVM().onAppVisible();
         }
     }
 
     public void onAppHidden() {
         isAppVisible = false;
         analytics.trackAppHidden();
-        if (getPresenceModule() != null) {
+        if (authentication.isLoggedIn()) {
             getPresenceModule().onAppHidden();
             getNotificationsModule().onAppHidden();
+            appStateModule.getAppStateVM().onAppHidden();
         }
     }
 

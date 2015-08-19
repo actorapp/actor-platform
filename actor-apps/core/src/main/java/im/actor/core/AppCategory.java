@@ -8,5 +8,5 @@ package im.actor.core;
  * Application type
  */
 public enum AppCategory {
-    GENERIC, ANDROID, IOS, WEB
+    GENERIC, ANDROID, IOS, WEB, DESKTOP
 }

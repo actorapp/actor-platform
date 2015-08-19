@@ -28,7 +28,7 @@ import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
 import im.actor.server.sms.AuthSmsEngine
 import im.actor.server._
@@ -112,7 +112,6 @@ final class AuthServiceSpec
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
-    val mediator = DistributedPubSubExtension(system).mediator
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))
     implicit val sessionRegion = Session.startRegionProxy()

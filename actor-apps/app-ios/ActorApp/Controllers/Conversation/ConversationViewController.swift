@@ -17,9 +17,10 @@ class ConversationViewController: ConversationBaseViewController {
     private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
     private let BubbleBannerIdentifier = "BubbleBannerIdentifier"
     
-    private let titleView: UILabel = UILabel();
-    private let subtitleView: UILabel = UILabel();
-    private let navigationView: UIView = UIView();
+    // private let badgeView = UIImageView()
+    private let titleView: UILabel = UILabel()
+    private let subtitleView: UILabel = UILabel()
+    private let navigationView: UIView = UIView()
     
     private let avatarView = BarAvatarView(frameSize: 36, type: .Rounded)
     
@@ -81,7 +82,7 @@ class ConversationViewController: ConversationBaseViewController {
         navigationView.frame = CGRectMake(0, 0, 200, 44);
         navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        titleView.frame = CGRectMake(0, 4, 200, 20)
+        // titleView.frame = CGRectMake((navigationView.frame.width - 200) / 2, 4, 200, 20)
         titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 17)!
         titleView.adjustsFontSizeToFitWidth = false;
         titleView.textColor = Resources.PrimaryLightText
@@ -89,7 +90,7 @@ class ConversationViewController: ConversationBaseViewController {
         titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        subtitleView.frame = CGRectMake(0, 22, 200, 20);
+        // subtitleView.frame = CGRectMake(0, 22, 200, 20);
         subtitleView.font = UIFont.systemFontOfSize(13);
         subtitleView.adjustsFontSizeToFitWidth = true;
         subtitleView.textColor = Resources.SecondaryLightText
@@ -97,10 +98,11 @@ class ConversationViewController: ConversationBaseViewController {
         subtitleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         subtitleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        navigationView.addSubview(titleView);
-        navigationView.addSubview(subtitleView);
+        navigationView.addSubview(titleView)
+        navigationView.addSubview(subtitleView)
         
         self.navigationItem.titleView = navigationView;
+        // self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "back", style: UIBarButtonItemStyle.Done, target: self, action: "back")
         
         // Navigation Avatar
         
@@ -210,21 +212,39 @@ class ConversationViewController: ConversationBaseViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         backgroundView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
+        
+        // println("\(view.bounds.width)")
+        // navigationView.frame = CGRectMake(navigationView.frame.minX, navigationView.frame.minY, 200, 44)
+        titleView.frame = CGRectMake(0, 4, (navigationView.frame.width - 0), 20)
+        subtitleView.frame = CGRectMake(0, 22, (navigationView.frame.width - 0), 20)
+        
+        // badgeView.frame = CGRectMake(290 - view.bounds.width, 4, 16, 16)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // unreadMessageId = MSG.loadLastReadState(peer)
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment: "Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        // navigationItem.backBarButtonItem = UIBarButtonItem(customView: badgeView)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: nil, style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        Actor.onConversationOpenWithPeer(peer)
+        Actor.onConversationClosedWithPeer(peer)
+        
+        (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
+        
+        // badgeView.removeFromSuperview()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
+        // var window = UIApplication.sharedApplication().keyWindow!
+        // badgeView.frame = CGRectMake(22, 14, 22, 22)
+        // badgeView.
+        // window.addSubview(badgeView)
         
         if count(navigationController!.viewControllers) > 2 {
             if let firstController = navigationController!.viewControllers[0] as? UIViewController,

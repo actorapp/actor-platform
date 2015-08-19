@@ -13,7 +13,7 @@ import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCode
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.mtproto.protocol._
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.sequence.SeqUpdatesManager
 
 class SessionResendSpec extends BaseSessionSpec(
   ActorSpecification.createSystem(ConfigFactory.parseString(

@@ -23,7 +23,7 @@ import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push._
+import im.actor.server.sequence._
 import im.actor.server.session.{ Session, SessionConfig }
 
 import scala.concurrent.ExecutionContext

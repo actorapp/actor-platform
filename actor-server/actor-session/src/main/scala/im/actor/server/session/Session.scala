@@ -24,7 +24,7 @@ import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
-import im.actor.server.push.{ SeqUpdatesExtension, WeakUpdatesManagerRegion }
+import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesManagerRegion }
 import im.actor.server.user.{ UserOffice, AuthEvents }
 import im.actor.server.{ models, persist }
 

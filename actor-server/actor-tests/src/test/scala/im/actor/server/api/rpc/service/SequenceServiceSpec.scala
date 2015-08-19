@@ -15,7 +15,7 @@ import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference }
 import im.actor.api.rpc.users.UpdateUserNameChanged
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.presences.PresenceManager
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server._
 
 class SequenceServiceSpec extends BaseAppSuite({
