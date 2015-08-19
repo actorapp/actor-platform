@@ -18,7 +18,7 @@ public class SettingsModule extends AbsModule {
 
     private final String STORAGE_PREFIX = "app.settings.";
 
-    private final String KEY_NOTIFICATION_TONES;
+    private final String KEY_SOUND_EFFECTS;
     private final String KEY_CHAT_SEND_BY_ENTER;
 
     private final String KEY_NOTIFICATION_ENABLED;
@@ -43,52 +43,54 @@ public class SettingsModule extends AbsModule {
     public SettingsModule(ModuleContext context) {
         super(context);
 
-        String configKey;
-        switch (context.getConfiguration().getAppCategory()) {
+        String platformType;
+        switch (context.getConfiguration().getPlatformType()) {
             case ANDROID:
-                configKey = "android";
+                platformType = "android";
                 break;
             case IOS:
-                configKey = "ios";
+                platformType = "ios";
                 break;
             case WEB:
-                configKey = "web";
+                platformType = "web";
                 break;
             default:
             case GENERIC:
-                configKey = "generic";
+                platformType = "generic";
                 break;
         }
-        String deviceTypeKey;
+
+        String deviceType;
         switch (context.getConfiguration().getDeviceCategory()) {
             case TABLET:
+                deviceType = "tablet";
+                break;
             case DESKTOP:
-                deviceTypeKey = "desktop";
+                deviceType = "desktop";
                 break;
             case MOBILE:
-                deviceTypeKey = "mobile";
+                deviceType = "mobile";
                 break;
             default:
-            case UNKNOWN:
-                deviceTypeKey = "generic";
+                deviceType = "generic";
                 break;
         }
 
-        // Platform specific settings
-        KEY_NOTIFICATION_TONES = "app." + configKey + ".tones_enabled";
-        KEY_CHAT_SEND_BY_ENTER = "app." + configKey + ".send_by_enter";
-        KEY_MARKDOWN_ENABLED = "app." + configKey + ".use_markdown";
+        // Platform+Device specific settings
+        KEY_SOUND_EFFECTS = "app." + platformType + "." + deviceType + ".tones_enabled";
+        KEY_CHAT_SEND_BY_ENTER = "app." + platformType + "." + deviceType + ".send_by_enter";
+        KEY_MARKDOWN_ENABLED = "app." + platformType + "." + deviceType + ".use_markdown";
 
         // Device-type notification settings
-        KEY_NOTIFICATION_ENABLED = "category." + deviceTypeKey + ".notification.enabled";
-        KEY_NOTIFICATION_SOUND_ENABLED = "category." + deviceTypeKey + ".notification.sound.enabled";
-        KEY_NOTIFICATION_VIBRATION = "category." + deviceTypeKey + ".notification.vibration.enabled";
-        KEY_NOTIFICATION_TEXT = "category." + deviceTypeKey + ".notification.show_text";
-        KEY_NOTIFICATION_CHAT_PREFIX = "category." + deviceTypeKey + ".notification.chat.";
+        KEY_NOTIFICATION_ENABLED = "category." + deviceType + ".notification.enabled";
+        KEY_NOTIFICATION_SOUND_ENABLED = "category." + deviceType + ".notification.sound.enabled";
+        KEY_NOTIFICATION_VIBRATION = "category." + deviceType + ".notification.vibration.enabled";
+        KEY_NOTIFICATION_TEXT = "category." + deviceType + ".notification.show_text";
+        KEY_NOTIFICATION_CHAT_PREFIX = "category." + deviceType + ".notification.chat.";
 
-        KEY_NOTIFICATION_IN_APP_ENABLED = "category." + deviceTypeKey + ".in_app.enabled";
-        KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceTypeKey + ".in_app.sound.enabled";
-        KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceTypeKey + ".in_app.vibration.enabled";
+        KEY_NOTIFICATION_IN_APP_ENABLED = "category." + deviceType + ".in_app.enabled";
+        KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceType + ".in_app.sound.enabled";
+        KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceType + ".in_app.vibration.enabled";
 
         // Account-wide notification settings
         KEY_NOTIFICATION_SOUND = "account.notification.sound";
@@ -115,11 +117,11 @@ public class SettingsModule extends AbsModule {
     // Sound Effects
 
     public boolean isConversationTonesEnabled() {
-        return loadValue(KEY_NOTIFICATION_TONES, true);
+        return loadValue(KEY_SOUND_EFFECTS, true);
     }
 
     public void changeConversationTonesEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_TONES, val);
+        changeValue(KEY_SOUND_EFFECTS, val);
     }
 
     // Notifications
