@@ -5,6 +5,8 @@ import akka.actor._
 sealed trait PrivateDialogExtension extends Extension
 
 final class PrivateDialogExtensionImpl(system: ActorSystem) extends PrivateDialogExtension {
+  PrivateDialog.register()
+
   lazy val region: PrivateDialogRegion = PrivateDialogRegion.start()(system)
 }
 

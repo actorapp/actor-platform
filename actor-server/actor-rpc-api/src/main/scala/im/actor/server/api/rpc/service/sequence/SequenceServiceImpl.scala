@@ -16,7 +16,7 @@ import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, Sequ
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
 import im.actor.server.models
-import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.session._
 import im.actor.server.user.{ UserViewRegion, UserExtension, UserOffice }
 

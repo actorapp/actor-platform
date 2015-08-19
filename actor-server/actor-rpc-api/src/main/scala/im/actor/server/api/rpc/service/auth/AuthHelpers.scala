@@ -19,7 +19,7 @@ import im.actor.server.activation.Activation.{ EmailCode, SmsCode }
 import im.actor.server.activation._
 import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User }
 import im.actor.server.persist.auth.AuthTransaction
-import im.actor.server.push.SeqUpdatesManager._
+import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.session._
 import im.actor.server.user.UserOffice
 import im.actor.server.util.IdUtils._

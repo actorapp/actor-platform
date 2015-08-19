@@ -12,6 +12,7 @@ import im.actor.runtime.mvvm.ValueModel;
  */
 public class AppStateVM {
     private ModuleContext context;
+    private ValueModel<Boolean> isAppVisible;
     private ValueModel<Boolean> isDialogsEmpty;
     private ValueModel<Boolean> isContactsEmpty;
     private ValueModel<Boolean> isAppEmpty;
@@ -19,6 +20,7 @@ public class AppStateVM {
     private ValueModel<Boolean> isConnecting;
     private ValueModel<Boolean> isSyncing;
     private ValueModel<Integer> globalCounter;
+    private ValueModel<Integer> globalTempCounter;
 
     private boolean isBookImported;
     private boolean isDialogsLoaded;
@@ -35,8 +37,10 @@ public class AppStateVM {
         this.isContactsEmpty = new ValueModel<Boolean>("app.contacts.empty", context.getPreferences().getBool("app.contacts.empty", true));
         this.isAppEmpty = new ValueModel<Boolean>("app.empty", context.getPreferences().getBool("app.empty", true));
         this.globalCounter = new ValueModel<Integer>("app.counter", context.getPreferences().getInt("app.counter", 0));
+        this.globalTempCounter = new ValueModel<Integer>("app.temp_counter", 0);
         this.isConnecting = new ValueModel<Boolean>("app.connecting", false);
         this.isSyncing = new ValueModel<Boolean>("app.syncing", false);
+        this.isAppVisible = new ValueModel<Boolean>("app.visible", false);
 
         this.isBookImported = context.getPreferences().getBool("app.contacts.imported", false);
         this.isDialogsLoaded = context.getPreferences().getBool("app.dialogs.loaded", false);
@@ -60,6 +64,24 @@ public class AppStateVM {
     public synchronized void onGlobalCounterChanged(int value) {
         globalCounter.change(value);
         context.getPreferences().putInt("app.counter", value);
+        if (!isAppVisible.get()) {
+            globalTempCounter.change(value);
+        }
+    }
+
+    /**
+     * Notify when app become visible
+     */
+    public synchronized void onAppVisible() {
+        isAppVisible.change(true);
+        globalTempCounter.change(0);
+    }
+
+    /**
+     * Notify when app become hidden
+     */
+    public synchronized void onAppHidden() {
+        isAppVisible.change(false);
     }
 
     /**
@@ -189,9 +211,27 @@ public class AppStateVM {
     /**
      * Gettting global unread counter
      *
-     * @return View Model of Integers
+     * @return View Model of Integer
      */
     public ValueModel<Integer> getGlobalCounter() {
         return globalCounter;
+    }
+
+    /**
+     * Getting global unread counter that hiddes when app is opened
+     *
+     * @return View Model of Integer
+     */
+    public ValueModel<Integer> getGlobalTempCounter() {
+        return globalTempCounter;
+    }
+
+    /**
+     * Is App visible state
+     *
+     * @return View Model of Boolean
+     */
+    public ValueModel<Boolean> getIsAppVisible() {
+        return isAppVisible;
     }
 }

@@ -11,7 +11,7 @@ import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
 import im.actor.api.rpc.weak.{ TypingType, UpdateTyping, WeakService }
 import im.actor.server.persist
 import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
-import im.actor.server.push.{ WeakUpdatesManager, WeakUpdatesManagerRegion }
+import im.actor.server.sequence.{ WeakUpdatesManager, WeakUpdatesManagerRegion }
 
 class WeakServiceImpl(implicit
   weakUpdManagerRegion: WeakUpdatesManagerRegion,

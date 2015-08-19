@@ -12,7 +12,7 @@ import im.actor.server.dialog.PrivateDialogCommands.Origin.{ LEFT, RIGHT }
 import im.actor.server.dialog.privat.PrivateDialogEvents.PrivateDialogEvent
 import im.actor.server.dialog.{ StopDialog, AuthIdRandomId, PrivateDialogCommands }
 import im.actor.server.office.{ ProcessorState, Processor }
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.{ UserViewRegion, UserExtension }
@@ -46,8 +46,7 @@ object PrivateDialogEvents {
 }
 
 case class PrivateDialogState(private val state: Map[Origin, DialogState]) extends ProcessorState {
-  //def apply to allow syntax like val userState = state(origin)
-  def get(origin: Origin): DialogState = state(origin)
+  def apply(origin: Origin): DialogState = state(origin)
   def updated(origin: Origin, dialogState: DialogState): PrivateDialogState = PrivateDialogState(state.updated(origin, dialogState))
 }
 
@@ -88,7 +87,7 @@ class PrivateDialog extends Processor[PrivateDialogState, PrivateDialogEvent] wi
   protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   protected implicit val userRegion = UserExtension(system).processorRegion
   protected implicit val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
-  protected implicit val socilaRegion = SocialExtension(system).region
+  protected implicit val socialRegion = SocialExtension(system).region
   protected implicit val timeout = Timeout(5.seconds)
 
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
@@ -97,9 +96,9 @@ class PrivateDialog extends Processor[PrivateDialogState, PrivateDialogEvent] wi
   context.setReceiveTimeout(1.hours)
 
   override protected def updatedState(evt: PrivateDialogEvent, state: PrivateDialogState): PrivateDialogState = evt match {
-    case LastMessageDate(date, origin) ⇒ state.updated(origin, state.get(origin).copy(lastMessageDate = Some(date)))
-    case LastReceiveDate(date, origin) ⇒ state.updated(origin, state.get(origin).copy(lastReceiveDate = Some(date)))
-    case LastReadDate(date, origin)    ⇒ state.updated(origin, state.get(origin).copy(lastReadDate = Some(date)))
+    case LastMessageDate(date, origin) ⇒ state.updated(origin, state(origin).copy(lastMessageDate = Some(date)))
+    case LastReceiveDate(date, origin) ⇒ state.updated(origin, state(origin).copy(lastReceiveDate = Some(date)))
+    case LastReadDate(date, origin)    ⇒ state.updated(origin, state(origin).copy(lastReadDate = Some(date)))
   }
 
   override protected def handleQuery(state: PrivateDialogState): Receive = PartialFunction.empty[Any, Unit]
