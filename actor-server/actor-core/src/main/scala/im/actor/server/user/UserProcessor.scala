@@ -17,7 +17,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.office.{ ProcessorState, PeerProcessor, StopOffice }
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.utils.cache.CacheHelpers._

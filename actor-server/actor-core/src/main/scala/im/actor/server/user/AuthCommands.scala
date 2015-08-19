@@ -10,7 +10,7 @@ import akka.util.Timeout
 import im.actor.server.db.ActorPostgresDriver.api._
 
 import im.actor.server.db.DbExtension
-import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.{ models, persist ⇒ p }
 
 trait AuthEvent

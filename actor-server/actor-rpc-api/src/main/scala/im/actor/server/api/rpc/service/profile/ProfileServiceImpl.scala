@@ -17,7 +17,7 @@ import im.actor.server.api.ApiConversions._
 import im.actor.server.db.DbExtension
 import im.actor.server.file.FileErrors
 import im.actor.server.persist
-import im.actor.server.push.SeqUpdatesExtension
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
