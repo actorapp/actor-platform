@@ -10,11 +10,11 @@ import im.actor.api.rpc.users._
 import im.actor.server.api.ApiConversions._
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
-import im.actor.server.misc.UpdateCounters
 import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
+import im.actor.server.util.ContactsUtils.addContact
 import im.actor.server.util.{ ACLUtils, HistoryUtils, ImageUtils }
 import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
@@ -192,10 +192,10 @@ private[user] trait UserCommandHandlers {
       val serviceMessage = ServiceMessages.contactRegistered(user.id)
       // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
       val actions = contacts map { contact ⇒
-        val localName = contact.name.getOrElse(user.name)
+        val localName = contact.name
         for {
-          _ ← p.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(localName), user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"$localName registered"), isFat = true, deliveryId = None))
+          _ ← addContact(contact.ownerUserId, user.id, phoneNumber, localName, user.accessSalt)
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
@@ -224,9 +224,10 @@ private[user] trait UserCommandHandlers {
         val randomId = ThreadLocalRandom.current().nextLong()
         val serviceMessage = ServiceMessages.contactRegistered(user.id)
         val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
+        val localName = contact.name
         for {
-          _ ← p.contact.UserEmailContact.createOrRestore(contact.ownerUserId, user.id, email, Some(user.name), user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
+          _ ← addContact(contact.ownerUserId, user.id, email, localName, user.accessSalt)
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
