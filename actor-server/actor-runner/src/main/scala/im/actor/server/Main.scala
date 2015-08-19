@@ -1,6 +1,9 @@
 package im.actor.server
 
+import java.net.InetAddress
+
 import akka.actor._
+import akka.cluster.Cluster
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
@@ -60,6 +63,18 @@ object Main extends App {
   implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
+
+  if (system.settings.config.getList("akka.cluster.seed-nodes").isEmpty) {
+    val self = Address(
+      "akka.tcp",
+      system.name,
+      InetAddress.getLocalHost.getHostAddress,
+      2552
+    )
+
+    Cluster(system).joinSeedNodes(List(self))
+  }
+
   implicit val executor = system.dispatcher
   implicit val materializer = ActorMaterializer()
 
