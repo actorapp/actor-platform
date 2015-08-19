@@ -177,11 +177,11 @@ public class NotificationsActor extends ModuleActor {
                         }
                     }
                 } else {
-                    if (isDialogsVisible) {
-                        if (isEffectsEnabled()) {
-                            playEffect();
-                        }
-                    }
+//                    if (isDialogsVisible) {
+//                        if (isEffectsEnabled()) {
+//                            playEffect();
+//                        }
+//                    }
                 }
             } else {
                 showNotification();
