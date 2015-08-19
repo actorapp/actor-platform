@@ -101,7 +101,8 @@ object Build extends sbt.Build {
       actorTests,
       actorUtils,
       actorUtilsCache,
-      actorUtilsHttp
+      actorUtilsHttp,
+      shardakka
     )
 
   lazy val actorRunner = Project(
@@ -309,7 +310,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.notifications
     )
   )
-    .dependsOn(actorModels, actorPersist, actorSms, actorUtils)
+    .dependsOn(actorCore, actorModels, actorPersist, actorSms, actorUtils)
 
   lazy val actorUtils = Project(
     id = "actor-utils",
@@ -318,7 +319,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.utils
     )
   )
-    .dependsOn(actorCommonsApi, actorModels, actorPersist)
+    .dependsOn(actorCommonsApi, actorModels, actorPersist, shardakka)
 
   lazy val actorUtilsCache = Project(
     id = "actor-utils-cache",
@@ -366,6 +367,16 @@ object Build extends sbt.Build {
       actorPersist,
       actorRpcApi,
       actorRunner,
-      actorSession
+      actorSession,
+      shardakka
     )
+
+  lazy val shardakka = Project(
+    id = "shardakka",
+    base = file("shardakka"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.shardakka
+    )
+  ).dependsOn(actorCommonsBase)
+
 }
