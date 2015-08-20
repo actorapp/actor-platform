@@ -31,7 +31,7 @@ public class PresenceProcessor extends AbsModule {
     }
 
     @Verified
-    public void onUserLastSeen(int uid, long date, long updateDate) {
+    public void onUserLastSeen(int uid, int date, long updateDate) {
         presenceActor.sendOnce(new PresenceActor.UserLastSeen(uid, date, updateDate));
     }
 
