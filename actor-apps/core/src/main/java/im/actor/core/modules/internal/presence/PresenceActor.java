@@ -48,8 +48,10 @@ public class PresenceActor extends ModuleActor {
                 return new Mailbox(queue) {
                     @Override
                     protected boolean isEqualEnvelope(Envelope a, Envelope b) {
-                        if (a.getMessage().equals(b.getMessage())) {
-                            return true;
+                        if (a.getMessage() instanceof OnlineUserTimeout && b.getMessage() instanceof OnlineUserTimeout) {
+                            if (((OnlineUserTimeout) a.getMessage()).getUid() == ((OnlineUserTimeout) b.getMessage()).getUid()) {
+                                return true;
+                            }
                         }
                         return super.isEqualEnvelope(a, b);
                     }
@@ -59,6 +61,7 @@ public class PresenceActor extends ModuleActor {
     }
 
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;
+    private static final long FOREVER = 24 * 60 * 60 * 1000L;
 
     private static final String TAG = "PresenceActor";
 
@@ -85,9 +88,10 @@ public class PresenceActor extends ModuleActor {
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.ONLINE));
         }
-        self().sendOnce(new UserLastSeen(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
-                        updateDate + ONLINE_TIMEOUT),
-                ONLINE_TIMEOUT);
+
+        // Send
+        self().sendOnce(new OnlineUserTimeout(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
+                updateDate + ONLINE_TIMEOUT), ONLINE_TIMEOUT);
     }
 
     @Verified
@@ -104,10 +108,14 @@ public class PresenceActor extends ModuleActor {
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE));
         }
+
+        // Cancel timeout
+        self().sendOnce(new OnlineUserTimeout(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
+                updateDate + ONLINE_TIMEOUT), FOREVER);
     }
 
     @Verified
-    private void onUserLastSeen(int uid, long date, long updateDate) {
+    private void onUserLastSeen(int uid, int date, long updateDate) {
         Log.d(TAG, "onUserLastSeen  #" + uid + " at " + date + " at " + updateDate);
         if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
             Log.d(TAG, "onUserLastSeen:ignored - too old");
@@ -120,6 +128,27 @@ public class PresenceActor extends ModuleActor {
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE, date));
         }
+
+        // Cancel timeout
+        self().sendOnce(new OnlineUserTimeout(uid, 0, 0), FOREVER);
+    }
+
+    private void onUserGoesOffline(int uid, int date, long updateDate) {
+        Log.d(TAG, "onUserGoesOffline  #" + uid + " at " + date + " at " + updateDate);
+        if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
+            Log.d(TAG, "onUserGoesOffline:ignored - too old");
+            return;
+        }
+        lastUidState.put(uid, updateDate);
+        Log.d(TAG, "onUserGoesOffline:updated");
+
+        UserVM vm = getUserVM(uid);
+        if (vm != null) {
+            vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE, date));
+        }
+
+        // Cancel timeout
+        self().sendOnce(new OnlineUserTimeout(uid, 0, 0), FOREVER);
     }
 
     @Verified
@@ -225,6 +254,9 @@ public class PresenceActor extends ModuleActor {
             subscribe(((Subscribe) message).getPeer());
         } else if (message instanceof SessionCreated) {
             onNewSessionCreated();
+        } else if (message instanceof OnlineUserTimeout) {
+            OnlineUserTimeout timeout = (OnlineUserTimeout) message;
+            onUserGoesOffline(timeout.getUid(), timeout.getDate(), timeout.getUpdateDate());
         } else {
             drop(message);
         }
@@ -247,22 +279,6 @@ public class PresenceActor extends ModuleActor {
             return updateDate;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            UserOnline that = (UserOnline) o;
-
-            if (uid != that.uid) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return uid;
-        }
     }
 
     public static class UserOffline {
@@ -282,22 +298,6 @@ public class PresenceActor extends ModuleActor {
             return updateDate;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            UserOffline that = (UserOffline) o;
-
-            if (uid != that.uid) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return uid;
-        }
     }
 
     public static class UserLastSeen {
@@ -323,25 +323,6 @@ public class PresenceActor extends ModuleActor {
             return updateDate;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            UserLastSeen that = (UserLastSeen) o;
-
-            if (date != that.date) return false;
-            if (uid != that.uid) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = uid;
-            result = 31 * result + (int) (date ^ (date >>> 32));
-            return result;
-        }
     }
 
     public static class GroupOnline {
@@ -366,25 +347,30 @@ public class PresenceActor extends ModuleActor {
         public long getUpdateDate() {
             return updateDate;
         }
+    }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+    private static class OnlineUserTimeout {
 
-            GroupOnline that = (GroupOnline) o;
+        private int uid;
+        private int date;
+        private long updateDate;
 
-            if (count != that.count) return false;
-            if (gid != that.gid) return false;
-
-            return true;
+        public OnlineUserTimeout(int uid, int date, long updateDate) {
+            this.uid = uid;
+            this.date = date;
+            this.updateDate = updateDate;
         }
 
-        @Override
-        public int hashCode() {
-            int result = gid;
-            result = 31 * result + count;
-            return result;
+        public int getUid() {
+            return uid;
+        }
+
+        public int getDate() {
+            return date;
+        }
+
+        public long getUpdateDate() {
+            return updateDate;
         }
     }
 
