@@ -6,7 +6,9 @@ import akka.actor.Status
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
 import com.trueaccord.scalapb.GeneratedMessage
+import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
+import im.actor.api.rpc.messaging.ServiceMessage
 import im.actor.api.rpc.users.Sex
 import im.actor.server.api.ApiConversions._
 import im.actor.server.event.TSEvent
@@ -186,23 +188,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val update = UpdateGroupUserKick(groupId, kickedUserId, kickerUserId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userKicked(kickedUserId)
 
-      val action: DBIO[SeqStateDate] = {
-        for {
-          _ ← p.GroupUser.delete(groupId, kickedUserId)
-          _ ← p.GroupInviteToken.revoke(groupId, kickedUserId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
-          (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(kickerUserId, kickerAuthId, group.members.keySet - kickedUserId, update, Some(PushTexts.Kicked), isFat = false)
-          // TODO: Move to a History Writing subsystem
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(kickerUserId),
-            models.Peer.group(groupId),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
-        } yield SeqStateDate(seq, state, date.getMillis)
-      }
-      db.run(action) pipeTo replyTo onFailure {
+      db.run(removeUser(kickedUserId, group.members.keySet, kickerAuthId, serviceMessage, update, date, randomId)) pipeTo replyTo onFailure {
         case e ⇒ replyTo ! Status.Failure(e)
       }
     }
@@ -217,25 +203,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
       val update = UpdateGroupUserLeave(groupId, userId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userLeft(userId)
-      val memberIds = group.members.keySet
-
-      val action: DBIO[SeqStateDate] = {
-        for {
-          _ ← p.GroupUser.delete(groupId, userId)
-          _ ← p.GroupInviteToken.revoke(groupId, userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
-          (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(userId, authId, memberIds - userId, update, Some(PushTexts.Left), isFat = false)
-          // TODO: Move to a History Writing subsystem
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(userId),
-            models.Peer.group(groupId),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
-        } yield SeqStateDate(seq, state, date.getMillis)
-      }
-      db.run(action) pipeTo replyTo onFailure {
+      db.run(removeUser(userId, group.members.keySet, authId, serviceMessage, update, date, randomId)) pipeTo replyTo onFailure {
         case e ⇒ replyTo ! Status.Failure(e)
       }
     }
@@ -410,6 +378,26 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         } yield RevokeIntegrationTokenAck(newToken))
       }
     }
+  }
+
+  private def removeUser(userId: Int, memberIds: Set[Int], clientAuthId: Long, serviceMessage: ServiceMessage, update: Update, date: DateTime, randomId: Long): DBIO[SeqStateDate] = {
+    val groupPeer = models.Peer.group(groupId)
+    for {
+      _ ← p.GroupUser.delete(groupId, userId)
+      _ ← p.GroupInviteToken.revoke(groupId, userId)
+      (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(userId, clientAuthId, memberIds - userId, update, Some(PushTexts.Left), isFat = false)
+      // TODO: Move to a History Writing subsystem
+      _ ← p.Dialog.updateLastReadAt(userId, groupPeer, date)
+      _ ← p.Dialog.updateOwnerLastReadAt(userId, groupPeer, date)
+      _ ← HistoryUtils.writeHistoryMessage(
+        models.Peer.privat(userId),
+        groupPeer,
+        date,
+        randomId,
+        serviceMessage.header,
+        serviceMessage.toByteArray
+      )
+    } yield SeqStateDate(seq, state, date.getMillis)
   }
 
 }
