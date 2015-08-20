@@ -67,14 +67,18 @@ MyProfileStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
       MyProfileStoreInstance.emitChange();
       break;
     case ActionTypes.MY_PROFILE_SAVE_NAME:
-      _name = action.name;
-      ActorClient.editMyName(_name);
-      MyProfileStoreInstance.emitChange();
+      if (_name !== action.name) {
+        _name = action.name;
+        ActorClient.editMyName(_name);
+        MyProfileStoreInstance.emitChange();
+      }
       break;
     case ActionTypes.MY_PROFILE_SAVE_NICKNAME:
-      _nick = action.nick;
-      ActorClient.editMyNick(_nick);
-      MyProfileStoreInstance.emitChange();
+      if (_nick !== action.nick) {
+        _nick = action.nick;
+        ActorClient.editMyNick(_nick);
+        MyProfileStoreInstance.emitChange();
+      }
       break;
     default:
       return;
