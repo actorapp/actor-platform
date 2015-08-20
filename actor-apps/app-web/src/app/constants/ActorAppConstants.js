@@ -40,8 +40,8 @@ export const ActionTypes = keymirror({
   SEND_MESSAGE_FILE: null,
   SEND_MESSAGE_PHOTO: null,
 
-  SHOW_ACTIVITY: null,
-  HIDE_ACTIVITY: null,
+  ACTIVITY_SHOW: null,
+  ACTIVITY_HIDE: null,
 
   CONTACT_ADD: null,
   CONTACT_REMOVE: null,
@@ -81,7 +81,12 @@ export const ActionTypes = keymirror({
   PREFERENCES_MODAL_HIDE: null,
   PREFERENCES_MODAL_SHOW: null,
 
-  LEFT_GROUP: null
+  LEFT_GROUP: null,
+
+  MY_PROFILE_MODAL_SHOW: null,
+  MY_PROFILE_MODAL_HIDE: null,
+  MY_PROFILE_SAVE_NAME: null,
+  MY_PROFILE_SAVE_NICKNAME: null
 });
 
 export const PeerTypes = {

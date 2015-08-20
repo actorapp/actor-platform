@@ -214,5 +214,11 @@ export default {
   // Mentions
   findMentions(gid, query = '') {
     return window.messenger.findMentions(gid, query)
+  },
+
+  // Nickname
+  editMyNick(string) {
+    window.messenger.editMyNick(string)
   }
+
 };

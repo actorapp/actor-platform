@@ -5,7 +5,7 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 
-import MyProfileActions from 'actions/MyProfileActions';
+import MyProfileActions from '../../actions/MyProfileActionCreators';
 import LoginActionCreators from 'actions/LoginActionCreators';
 import HelpActionCreators from 'actions/HelpActionCreators';
 import AddContactActionCreators from 'actions/AddContactActionCreators';
@@ -52,7 +52,7 @@ class HeaderSection extends React.Component {
   };
 
   openMyProfile = () => {
-    MyProfileActions.modalOpen();
+    MyProfileActions.show();
     mixpanel.track('My profile open');
   };
 
@@ -70,7 +70,7 @@ class HeaderSection extends React.Component {
   };
 
   toggleHeaderMenu = () => {
-    const isOpened = this.state.isOpened;
+    const { isOpened } = this.state;
 
     if (!isOpened) {
       this.setState({isOpened: true});
@@ -87,7 +87,7 @@ class HeaderSection extends React.Component {
   };
 
   render() {
-    const user = this.state.user;
+    const { user } = this.state;
 
     if (user) {
 

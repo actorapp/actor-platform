@@ -23,9 +23,11 @@ let getQuery = (text, position) => {
       if (lastChar === '@') {
         const charBeforeAt = runText.charAt(runText.length - 2);
         if (charBeforeAt.trim() === '') {
-          const atStart = query === null ? true : query.length + 1 === position;
+          const text = (query || '');
+          const atStart = text.length + 1 === position;
+
           return {
-            text: (query || ''),
+            text: text,
             atStart: atStart
           };
         } else {

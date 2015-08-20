@@ -1,10 +1,8 @@
-//import _ from 'lodash';
-
 import React from 'react';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
-import MyProfileActions from 'actions/MyProfileActions';
+import MyProfileActions from 'actions/MyProfileActionCreators';
 import MyProfileStore from 'stores/MyProfileStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
@@ -15,13 +13,12 @@ import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 
-
 const getStateFromStores = () => {
   return {
     profile: MyProfileStore.getProfile(),
     name: MyProfileStore.getName(),
-    isOpen: MyProfileStore.isModalOpen(),
-    isNameEditable: false
+    nick: MyProfileStore.getNick(),
+    isOpen: MyProfileStore.isModalOpen()
   };
 };
 
@@ -41,9 +38,6 @@ class MyProfile extends React.Component {
 
     this.state = getStateFromStores();
 
-    this.unsubscribe = MyProfileStore.listen(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
-
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
       button: {
@@ -57,15 +51,18 @@ class MyProfile extends React.Component {
         disabledTextColor: 'rgba(0,0,0,.4)'
       }
     });
+
+    MyProfileStore.addChangeListener(this.onChange);
+    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    MyProfileStore.removeChangeListener(this.onChange);
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   onClose = () => {
-    MyProfileActions.modalClose();
+    MyProfileActions.hide();
   };
 
   onKeyDown = event => {
@@ -83,14 +80,20 @@ class MyProfile extends React.Component {
     this.setState({name: event.target.value});
   };
 
-  onNameSave = () => {
-    MyProfileActions.setName(this.state.name);
+  onNicknameChange = event => {
+    this.setState({nick: event.target.value});
+  };
+
+  onSave = () => {
+    const { nick, name } = this.state;
+
+    MyProfileActions.saveName(name);
+    MyProfileActions.saveNickname(nick);
     this.onClose();
   };
 
   render() {
-    const isOpen = this.state.isOpen;
-    const profile = this.state.profile;
+    const { isOpen, profile, nick, name } = this.state;
 
     if (profile !== null && isOpen === true) {
       return (
@@ -105,7 +108,7 @@ class MyProfile extends React.Component {
               <FlatButton hoverColor="rgba(74,144,226,.12)"
                           label="Done"
                           labelStyle={{padding: '0 8px'}}
-                          onClick={this.onNameSave}
+                          onClick={this.onSave}
                           secondary={true}
                           style={{marginTop: -6}}/>
             </div>
@@ -119,11 +122,19 @@ class MyProfile extends React.Component {
             <div className="col-xs">
               <div className="name">
                 <TextField className="login__form__input"
-                           floatingLabelText="Username"
+                           floatingLabelText="Full name"
                            fullWidth
                            onChange={this.onNameChange}
                            type="text"
-                           value={this.state.name}/>
+                           value={name}/>
+              </div>
+              <div className="nick">
+                <TextField className="login__form__input"
+                           floatingLabelText="Nickname"
+                           fullWidth
+                           onChange={this.onNicknameChange}
+                           type="text"
+                           value={nick}/>
               </div>
               <div className="phone">
                 <TextField className="login__form__input"
@@ -131,7 +142,7 @@ class MyProfile extends React.Component {
                            floatingLabelText="Phone number"
                            fullWidth
                            type="tel"
-                           value={this.state.profile.phones[0].number}/>
+                           value={profile.phones[0].number}/>
               </div>
             </div>
           </div>
