@@ -26,3 +26,5 @@ addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.4.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.3")
 
 addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.9")
+
+libraryDependencies ++= Seq("com.github.os72" % "protoc-jar" % "2.x.5")
