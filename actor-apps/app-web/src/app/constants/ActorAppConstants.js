@@ -40,8 +40,8 @@ export const ActionTypes = keymirror({
   SEND_MESSAGE_FILE: null,
   SEND_MESSAGE_PHOTO: null,
 
-  SHOW_ACTIVITY: null,
-  HIDE_ACTIVITY: null,
+  ACTIVITY_SHOW: null,
+  ACTIVITY_HIDE: null,
 
   CONTACT_ADD: null,
   CONTACT_REMOVE: null,
