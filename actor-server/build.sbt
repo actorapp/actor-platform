@@ -2,7 +2,7 @@ import dsl._
 import Keys._
 
 enablePlugins(JavaServerAppPackaging)
-enablePlugins(JDebPackaging)
+enablePlugins(DebianPlugin)
 
 name in Debian := "actor-server"
 maintainer in Linux := "Actor LLC <oss@actor.im>"
