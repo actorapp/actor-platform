@@ -51,9 +51,6 @@ object Dependencies {
 
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
 
-    val akkaKryoSerialization   = "com.github.romix.akka"         %% "akka-kryo-serialization"       % "0.3.3"
-    val kryoSerializers         = "de.javakaffee"                 %  "kryo-serializers"              % "0.29"
-
     val protobuf                = "com.google.protobuf"           %  "protobuf-java"                 % "2.6.1"
 
     val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.9"
@@ -102,7 +99,7 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
-  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceJdbc, akkaKryoSerialization, concmap, jodaConvert, jodaTime, kryoSerializers)
+  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceJdbc, concmap, jodaConvert, jodaTime)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
