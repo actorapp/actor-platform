@@ -41,7 +41,7 @@ class GroupPresenceManagerSpec extends ActorSuite {
 
     GroupPresenceManager.notifyGroupUserAdded(groupId, userId)
 
-    PresenceManager.presenceSetOnline(userId, 1000)
+    PresenceManager.presenceSetOnline(userId, 1L, 1000)
 
     probe.expectMsgPF() {
       case GroupPresenceState(100, 1) ⇒
