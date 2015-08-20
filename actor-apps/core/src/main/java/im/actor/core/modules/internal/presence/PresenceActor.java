@@ -85,7 +85,8 @@ public class PresenceActor extends ModuleActor {
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.ONLINE));
         }
-        self().sendOnce(new UserLastSeen(uid, updateDate + ONLINE_TIMEOUT, updateDate + ONLINE_TIMEOUT),
+        self().sendOnce(new UserLastSeen(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
+                        updateDate + ONLINE_TIMEOUT),
                 ONLINE_TIMEOUT);
     }
 
@@ -301,10 +302,10 @@ public class PresenceActor extends ModuleActor {
 
     public static class UserLastSeen {
         private int uid;
-        private long date;
+        private int date;
         private long updateDate;
 
-        public UserLastSeen(int uid, long date, long updateDate) {
+        public UserLastSeen(int uid, int date, long updateDate) {
             this.uid = uid;
             this.date = date;
             this.updateDate = updateDate;
@@ -314,7 +315,7 @@ public class PresenceActor extends ModuleActor {
             return uid;
         }
 
-        public long getDate() {
+        public int getDate() {
             return date;
         }
 
