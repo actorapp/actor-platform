@@ -48,9 +48,6 @@ class AddContact extends React.Component {
       phone: ''
     }, getStateFromStores());
 
-    AddContactStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
-
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
       textField: {
@@ -60,6 +57,9 @@ class AddContact extends React.Component {
         borderColor: '#68a3e7'
       }
     });
+
+    AddContactStore.addChangeListener(this.onChange);
+    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
@@ -68,11 +68,12 @@ class AddContact extends React.Component {
   }
 
   render() {
+    const { isShown, message, phone } = this.state;
+
     const messageClassName = classNames({
       'error-message': true,
-      'error-message--shown': this.state.message
+      'error-message--shown': message
     });
-    const isShown = this.state.isShown;
 
     if (isShown) {
       return (
@@ -93,10 +94,10 @@ class AddContact extends React.Component {
                        fullWidth
                        onChange={this.onPhoneChange}
                        type="text"
-                       value={this.state.phone}/>
+                       value={phone}/>
           </div>
 
-          <span className={messageClassName}>{this.state.message}</span>
+          <span className={messageClassName}>{message}</span>
 
           <footer className="modal-new__footer text-right">
             <FlatButton hoverColor="rgba(74,144,226,.12)"
