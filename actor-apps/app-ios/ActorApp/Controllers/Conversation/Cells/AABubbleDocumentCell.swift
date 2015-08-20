@@ -57,7 +57,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         
         mainView.addSubview(progressBg)
         mainView.addSubview(fileIcon)
-        // mainView.addSubview(circullarNode.view)
+        mainView.addSubview(circullarNode.view)
         
         self.contentInsets = UIEdgeInsetsMake(0, 0, 0, 0)
         
