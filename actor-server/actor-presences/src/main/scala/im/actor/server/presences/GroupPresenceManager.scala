@@ -104,6 +104,7 @@ class GroupPresenceManager(
   private val receiveTimeout = 15.minutes // TODO: configurable
   context.setReceiveTimeout(receiveTimeout)
 
+  private[this] val groupId = self.path.name.toInt
   private[this] var userIds = Set.empty[Int]
   private[this] var onlineUserIds = Set.empty[Int]
   private[this] var consumers = Set.empty[ActorRef]
@@ -121,14 +122,14 @@ class GroupPresenceManager(
         }
     case Initialized(groupId, userIds) ⇒
       this.userIds = userIds
-      context.become(working(groupId))
+      context.become(working)
       unstashAll()
 
       subscribeToUserPresences(userIds)
     case msg ⇒ stash()
   }
 
-  def working(groupId: Int): Receive = {
+  def working: Receive = {
     case Envelope(_, Subscribe(consumer)) ⇒
       if (!consumers.contains(consumer)) {
         context.watch(consumer)
