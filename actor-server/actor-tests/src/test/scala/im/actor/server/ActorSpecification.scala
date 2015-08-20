@@ -29,7 +29,7 @@ object ActorSpecification {
     val minPort = 1025
     val port = scala.util.Random.nextInt(maxPort - minPort + 1) + minPort
 
-    val host = InetAddress.getLocalHost.getHostAddress
+    val host = "127.0.0.1"
 
     initialConfig
       .withFallback(

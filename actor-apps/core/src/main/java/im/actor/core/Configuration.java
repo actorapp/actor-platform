@@ -27,7 +27,7 @@ public class Configuration {
 
     private DeviceCategory deviceCategory;
 
-    private AppCategory appCategory;
+    private PlatformType platformType;
 
     private int minDelay;
 
@@ -44,7 +44,7 @@ public class Configuration {
                   boolean enableFilesLogging,
                   AnalyticsProvider analyticsProvider,
                   DeviceCategory deviceCategory,
-                  AppCategory appCategory,
+                  PlatformType platformType,
                   int minDelay,
                   int maxDelay,
                   int maxFailureCount) {
@@ -57,7 +57,7 @@ public class Configuration {
         this.apiConfiguration = apiConfiguration;
         this.analyticsProvider = analyticsProvider;
         this.deviceCategory = deviceCategory;
-        this.appCategory = appCategory;
+        this.platformType = platformType;
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
@@ -73,12 +73,12 @@ public class Configuration {
     }
 
     /**
-     * Get App Type
+     * Get Platform Type
      *
      * @return App Type
      */
-    public AppCategory getAppCategory() {
-        return appCategory;
+    public PlatformType getPlatformType() {
+        return platformType;
     }
 
     /**
