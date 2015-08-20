@@ -46,9 +46,9 @@ class WeakServiceImpl(implicit
     val authorizedAction = requireAuth(clientData).map { client ⇒
 
       if (isOnline) {
-        PresenceManager.presenceSetOnline(client.userId, timeout)
+        PresenceManager.presenceSetOnline(client.userId, client.authId, timeout)
       } else {
-        PresenceManager.presenceSetOffline(client.userId, timeout)
+        PresenceManager.presenceSetOffline(client.userId, client.authId, timeout)
       }
 
       DBIO.successful(Ok(ResponseVoid))
