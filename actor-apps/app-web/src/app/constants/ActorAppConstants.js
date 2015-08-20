@@ -81,7 +81,12 @@ export const ActionTypes = keymirror({
   PREFERENCES_MODAL_HIDE: null,
   PREFERENCES_MODAL_SHOW: null,
 
-  LEFT_GROUP: null
+  LEFT_GROUP: null,
+
+  MY_PROFILE_MODAL_SHOW: null,
+  MY_PROFILE_MODAL_HIDE: null,
+  MY_PROFILE_SAVE_NAME: null,
+  MY_PROFILE_SAVE_NICKNAME: null
 });
 
 export const PeerTypes = {
