@@ -17,6 +17,7 @@ class PresenceManagerSpec extends ActorSuite {
   it should "send presence on subscription" in e2
   it should "deliver presence changes" in e3
   it should "change presence to Offline after timeout" in e4
+  it should "correctly calculate multi-device presences" in e5
 
   import PresenceManager._
   import Presences._
@@ -43,13 +44,13 @@ class PresenceManagerSpec extends ActorSuite {
   }
 
   def e3() = {
-    presenceSetOnline(userId, 500)
+    presenceSetOnline(userId, 1L, 500)
     val lastSeenAt = probe.expectMsgPF() {
       case PresenceState(1, Online, Some(ls)) ⇒
         ls
     }
 
-    presenceSetOffline(userId, 100)
+    presenceSetOffline(userId, 1L, 100)
     probe.expectMsgPF() {
       case PresenceState(1, Offline, Some(ls)) ⇒
         ls should ===(lastSeenAt)
@@ -57,7 +58,7 @@ class PresenceManagerSpec extends ActorSuite {
   }
 
   def e4() = {
-    presenceSetOnline(userId, 100)
+    presenceSetOnline(userId, 1L, 100)
     val lastSeenAt = probe.expectMsgPF() {
       case PresenceState(1, Online, Some(ls)) ⇒
         ls
@@ -69,5 +70,37 @@ class PresenceManagerSpec extends ActorSuite {
       case PresenceState(1, Offline, Some(ls)) ⇒
         ls should ===(lastSeenAt)
     }
+  }
+
+  def e5() = {
+    presenceSetOnline(userId, 1L, 200)
+    probe.expectMsgPF() {
+      case PresenceState(1, Online, Some(ls)) ⇒ ls
+    }
+
+    presenceSetOnline(userId, 2L, 400)
+
+    probe.expectNoMsg(300.millis)
+
+    probe.expectMsgPF() {
+      case PresenceState(1, Offline, Some(ls)) ⇒ ls
+    }
+
+    probe.expectNoMsg()
+
+    presenceSetOnline(userId, 1L, 200)
+    presenceSetOnline(userId, 2L, 400)
+
+    probe.expectMsgPF() {
+      case PresenceState(1, Online, Some(ls)) ⇒ ls
+    }
+
+    probe.expectNoMsg(300.millis)
+
+    probe.expectMsgPF() {
+      case PresenceState(1, Offline, Some(ls)) ⇒ ls
+    }
+
+    probe.expectNoMsg()
   }
 }
