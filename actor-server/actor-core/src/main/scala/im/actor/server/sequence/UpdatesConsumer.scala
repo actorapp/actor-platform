@@ -80,6 +80,7 @@ private[sequence] class UpdatesConsumer(
   implicit val timeout: Timeout = Timeout(5.seconds) // TODO: configurable
 
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
+  private var lastDateTime = new DateTime
 
   override def preStart(): Unit = {
     self ! SubscribeToSeq
@@ -168,15 +169,27 @@ private[sequence] class UpdatesConsumer(
 
       log.debug("Pushing presence {}", update)
 
-      val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
+      val updateBox = WeakUpdate(nextDateTime().getMillis, update.header, update.toByteArray)
       sendUpdateBox(updateBox)
     case GroupPresenceState(groupId, onlineCount) ⇒
       val update = UpdateGroupOnline(groupId, onlineCount)
 
       log.debug("Pushing presence {}", update)
 
-      val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
+      val updateBox = WeakUpdate(nextDateTime().getMillis, update.header, update.toByteArray)
       sendUpdateBox(updateBox)
+  }
+
+  private def nextDateTime(): DateTime = {
+    val now = new DateTime
+
+    this.lastDateTime =
+      if (now == this.lastDateTime)
+        now.plus(1L)
+      else
+        now
+
+    this.lastDateTime
   }
 
   private def sendUpdateBox(updateBox: ProtoUpdateBox): Unit = {
