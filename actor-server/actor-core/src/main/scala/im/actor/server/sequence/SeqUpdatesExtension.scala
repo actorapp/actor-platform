@@ -3,15 +3,17 @@ package im.actor.server.sequence
 import akka.actor._
 import akka.util.Timeout
 import im.actor.server.db.DbExtension
-import im.actor.server.persist
+import im.actor.server.models
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.Try
+import scala.concurrent.{ Future, Promise }
+import scala.util.{ Failure, Success, Try }
 
 sealed trait SeqUpdatesExtension extends Extension {
   val region: SeqUpdatesManagerRegion
+
+  def persistUpdate(upd: models.sequence.SeqUpdate): Future[Unit]
 }
 
 final class SeqUpdatesExtensionImpl(
@@ -25,11 +27,13 @@ final class SeqUpdatesExtensionImpl(
 
   lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system, gpm, apm)
 
-  def getUserId(authId: Long)(implicit ec: ExecutionContext): DBIO[Int] =
-    persist.AuthId.findUserId(authId) map (_.getOrElse(throw new Exception(s"Cannot get userId for a non-authorized authId ${authId}")))
+  private val writer = system.actorOf(BatchUpdatesWriter.props, "batch-updates-writer")
 
-  def getUserIdF(authId: Long)(implicit ec: ExecutionContext): Future[Int] =
-    db.run(getUserId(authId))
+  override def persistUpdate(update: models.sequence.SeqUpdate): Future[Unit] = {
+    val promise = Promise[Unit]()
+    writer ! BatchUpdatesWriter.Enqueue(update, promise)
+    promise.future
+  }
 }
 
 object SeqUpdatesExtension extends ExtensionId[SeqUpdatesExtension] with ExtensionIdProvider {

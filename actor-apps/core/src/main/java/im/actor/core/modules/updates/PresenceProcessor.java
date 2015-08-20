@@ -22,21 +22,21 @@ public class PresenceProcessor extends AbsModule {
 
     @Verified
     public void onUserOnline(int uid, long updateDate) {
-        presenceActor.sendOnce(new PresenceActor.UserOnline(uid, updateDate));
+        presenceActor.send(new PresenceActor.UserOnline(uid, updateDate));
     }
 
     @Verified
     public void onUserOffline(int uid, long updateDate) {
-        presenceActor.sendOnce(new PresenceActor.UserOffline(uid, updateDate));
+        presenceActor.send(new PresenceActor.UserOffline(uid, updateDate));
     }
 
     @Verified
-    public void onUserLastSeen(int uid, long date, long updateDate) {
-        presenceActor.sendOnce(new PresenceActor.UserLastSeen(uid, date, updateDate));
+    public void onUserLastSeen(int uid, int date, long updateDate) {
+        presenceActor.send(new PresenceActor.UserLastSeen(uid, date, updateDate));
     }
 
     @Verified
     public void onGroupOnline(int gid, int count, long updateDate) {
-        presenceActor.sendOnce(new PresenceActor.GroupOnline(gid, count, updateDate));
+        presenceActor.send(new PresenceActor.GroupOnline(gid, count, updateDate));
     }
 }

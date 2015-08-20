@@ -38,7 +38,7 @@ var Actor : CocoaMessenger {
             }
             
             // Stats
-            builder.setAppCategory(ACAppCategoryEnum.values().objectAtIndex(ACAppCategory.IOS.rawValue) as! ACAppCategoryEnum)
+            builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
             builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
             
             // Logs
