@@ -29,7 +29,6 @@ class MyProfileStore extends EventEmitter {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
-  // Getters
   isModalOpen() {
     return _isModalOpen;
   }
@@ -48,8 +47,6 @@ class MyProfileStore extends EventEmitter {
 }
 
 const setProfile = (profile) => {
-  console.warn(profile);
-
   _profile = profile;
   _name = profile.name;
   _nick = profile.nick;
@@ -58,19 +55,15 @@ const setProfile = (profile) => {
 let MyProfileStoreInstance = new MyProfileStore();
 
 MyProfileStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
-  console.info(action);
-
   switch(action.type) {
     case ActionTypes.MY_PROFILE_MODAL_SHOW:
       ActorClient.bindUser(ActorClient.getUid(), setProfile);
       _isModalOpen = true;
-
       MyProfileStoreInstance.emitChange();
       break;
     case ActionTypes.MY_PROFILE_MODAL_HIDE:
       ActorClient.unbindUser(ActorClient.getUid(), setProfile);
       _isModalOpen = false;
-
       MyProfileStoreInstance.emitChange();
       break;
     case ActionTypes.MY_PROFILE_SAVE_NAME:
@@ -83,8 +76,6 @@ MyProfileStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
       ActorClient.editMyNick(_nick);
       MyProfileStoreInstance.emitChange();
       break;
-
-
     default:
       return;
   }
