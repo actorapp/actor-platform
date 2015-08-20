@@ -46,7 +46,9 @@ object Build extends sbt.Build {
         libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
         PB.includePaths in PB.protobufConfig ++= Seq(
           file("actor-commons-api/src/main/protobuf")
-        )
+        ),
+        PB.runProtoc in PB.protobufConfig := (args =>
+          com.github.os72.protocjar.Protoc.runProtoc("-v261" +: args.toArray))
       ) ++
       Seq(
         initialize ~= { _ =>
