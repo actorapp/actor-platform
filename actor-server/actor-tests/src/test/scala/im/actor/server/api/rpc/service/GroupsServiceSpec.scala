@@ -74,6 +74,10 @@ class GroupsServiceSpec
 
   it should "set topic to empty when None comes" in e24
 
+  "Leave group" should "mark messages read in left user dialog" in e25
+
+  "Kick user" should "mark messages read in kicked user dialog" in e26
+
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
@@ -827,6 +831,102 @@ class GroupsServiceSpec
       group.get.topic shouldEqual None
     }
 
+  }
+
+  def e25() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+
+    val groupOutPeer = {
+      implicit val clientData = clientData1
+      createGroup("Fun group", Set(user2.id)).groupPeer
+    }
+    val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+
+    {
+      implicit val clientData = clientData1
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+    }
+
+    {
+      implicit val clientData = clientData2
+
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+        val dialog = resp.toOption.get.dialogs.head
+        dialog.unreadCount > 6 shouldEqual true
+      }
+
+      whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong())) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+      }
+
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+        val dialog = resp.toOption.get.dialogs.head
+        dialog.unreadCount shouldEqual 0
+      }
+    }
+
+  }
+
+  def e26() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+
+    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = {
+      implicit val clientData = clientData1
+      createGroup("Fun group", Set(user2.id)).groupPeer
+    }
+    val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+
+    {
+      implicit val clientData = clientData1
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+    }
+
+    {
+      implicit val clientData = clientData2
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+        val dialog = resp.toOption.get.dialogs.head
+        dialog.unreadCount > 6 shouldEqual true
+      }
+    }
+
+    {
+      implicit val clientData = clientData1
+      whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+      }
+    }
+
+    {
+      implicit val clientData = clientData2
+      whenReady(messagingService.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒
+        val dialog = resp.toOption.get.dialogs.head
+        dialog.unreadCount shouldEqual 0
+      }
+    }
   }
 
 }
