@@ -13,10 +13,10 @@ import org.timepedia.exporter.client.Exportable;
 import java.util.List;
 
 import im.actor.core.ApiConfiguration;
-import im.actor.core.AppCategory;
 import im.actor.core.AuthState;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
+import im.actor.core.PlatformType;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.js.entity.Enums;
@@ -34,7 +34,6 @@ import im.actor.core.js.entity.JsUser;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
-import im.actor.core.js.providers.electron.JsElectronApp;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
@@ -99,11 +98,7 @@ public class JsFacade implements Exportable {
         configuration.setNotificationProvider(new JsNotificationsProvider());
 
         // Is Web application
-        if (JsElectronApp.isElectron()) {
-            configuration.setAppCategory(AppCategory.DESKTOP);
-        } else {
-            configuration.setAppCategory(AppCategory.WEB);
-        }
+        configuration.setPlatformType(PlatformType.WEB);
 
         // Device Category
         // Only Desktop is supported for JS library
@@ -514,6 +509,50 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise editMyNick(final String newNick) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.editMyNick(newNick).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "editMyNick:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "editMyNick:error");
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise editMyAbout(final String newAbout) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.editMyAbout(newAbout).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "editMyAbout:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "editMyAbout:error");
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
     public JsPromise editName(final int uid, final String newName) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -816,5 +855,29 @@ public class JsFacade implements Exportable {
 
     public void changeSendByEnter(boolean sendByEnter) {
         messenger.changeSendByEnter(sendByEnter);
+    }
+
+    public boolean isGroupsNotificationsEnabled() {
+        return messenger.isGroupNotificationsEnabled();
+    }
+
+    public void changeGroupNotificationsEnabled(boolean enabled) {
+        messenger.changeGroupNotificationsEnabled(enabled);
+    }
+
+    public boolean isOnlyMentionNotifications() {
+        return messenger.isGroupNotificationsOnlyMentionsEnabled();
+    }
+
+    public void changeIsOnlyMentionNotifications(boolean enabled) {
+        messenger.changeGroupNotificationsOnlyMentionsEnabled(enabled);
+    }
+
+    public boolean isSoundEffectsEnabled() {
+        return messenger.isConversationTonesEnabled();
+    }
+
+    public void changeSoundEffectsEnabled(boolean enabled) {
+        messenger.changeConversationTonesEnabled(enabled);
     }
 }

@@ -22,6 +22,7 @@ import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.Log;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorSystem;
@@ -47,8 +48,10 @@ public class PresenceActor extends ModuleActor {
                 return new Mailbox(queue) {
                     @Override
                     protected boolean isEqualEnvelope(Envelope a, Envelope b) {
-                        if (a.getMessage().equals(b.getMessage())) {
-                            return true;
+                        if (a.getMessage() instanceof OnlineUserTimeout && b.getMessage() instanceof OnlineUserTimeout) {
+                            if (((OnlineUserTimeout) a.getMessage()).getUid() == ((OnlineUserTimeout) b.getMessage()).getUid()) {
+                                return true;
+                            }
                         }
                         return super.isEqualEnvelope(a, b);
                     }
@@ -58,6 +61,9 @@ public class PresenceActor extends ModuleActor {
     }
 
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;
+    private static final long FOREVER = 24 * 60 * 60 * 1000L;
+
+    private static final String TAG = "PresenceActor";
 
     private HashMap<Integer, Long> lastUidState = new HashMap<Integer, Long>();
     private HashMap<Integer, Long> lastGidState = new HashMap<Integer, Long>();
@@ -70,51 +76,90 @@ public class PresenceActor extends ModuleActor {
 
     @Verified
     private void onUserOnline(int uid, long updateDate) {
+        Log.d(TAG, "onUserOnline  #" + uid + " at " + updateDate);
         if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
+            Log.d(TAG, "onUserOnline:ignored - too old");
             return;
         }
         lastUidState.put(uid, updateDate);
+        Log.d(TAG, "onUserOnline:updated");
 
         UserVM vm = getUserVM(uid);
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.ONLINE));
         }
-        self().sendOnce(new UserLastSeen(uid, updateDate + ONLINE_TIMEOUT, updateDate + ONLINE_TIMEOUT),
-                ONLINE_TIMEOUT);
+
+        // Send
+        self().sendOnce(new OnlineUserTimeout(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
+                updateDate + ONLINE_TIMEOUT), ONLINE_TIMEOUT);
     }
 
     @Verified
     private void onUserOffline(int uid, long updateDate) {
+        Log.d(TAG, "onUserOffline  #" + uid + " at " + updateDate);
         if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
+            Log.d(TAG, "onUserOffline:ignored - too old");
             return;
         }
         lastUidState.put(uid, updateDate);
+        Log.d(TAG, "onUserOffline:updated");
 
         UserVM vm = getUserVM(uid);
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE));
         }
+
+        // Cancel timeout
+        self().sendOnce(new OnlineUserTimeout(uid, (int) ((updateDate + ONLINE_TIMEOUT) / 1000L),
+                updateDate + ONLINE_TIMEOUT), FOREVER);
     }
 
     @Verified
-    private void onUserLastSeen(int uid, long date, long updateDate) {
+    private void onUserLastSeen(int uid, int date, long updateDate) {
+        Log.d(TAG, "onUserLastSeen  #" + uid + " at " + date + " at " + updateDate);
         if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
+            Log.d(TAG, "onUserLastSeen:ignored - too old");
             return;
         }
         lastUidState.put(uid, updateDate);
+        Log.d(TAG, "onUserLastSeen:updated");
 
         UserVM vm = getUserVM(uid);
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE, date));
         }
+
+        // Cancel timeout
+        self().sendOnce(new OnlineUserTimeout(uid, 0, 0), FOREVER);
+    }
+
+    private void onUserGoesOffline(int uid, int date, long updateDate) {
+        Log.d(TAG, "onUserGoesOffline  #" + uid + " at " + date + " at " + updateDate);
+        if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
+            Log.d(TAG, "onUserGoesOffline:ignored - too old");
+            return;
+        }
+        lastUidState.put(uid, updateDate);
+        Log.d(TAG, "onUserGoesOffline:updated");
+
+        UserVM vm = getUserVM(uid);
+        if (vm != null) {
+            vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE, date));
+        }
+
+        // Cancel timeout
+        self().sendOnce(new OnlineUserTimeout(uid, 0, 0), FOREVER);
     }
 
     @Verified
     private void onGroupOnline(int gid, int count, long updateDate) {
+        Log.d(TAG, "onGroupOnline  #" + gid + " " + count + " at " + updateDate);
         if (lastGidState.containsKey(gid) && lastGidState.get(gid) >= updateDate) {
+            Log.d(TAG, "onGroupOnline:ignored - too old");
             return;
         }
         lastGidState.put(gid, updateDate);
+        Log.d(TAG, "onGroupOnline:updated");
 
         GroupVM vm = getGroupVM(gid);
         if (vm != null) {
@@ -209,6 +254,9 @@ public class PresenceActor extends ModuleActor {
             subscribe(((Subscribe) message).getPeer());
         } else if (message instanceof SessionCreated) {
             onNewSessionCreated();
+        } else if (message instanceof OnlineUserTimeout) {
+            OnlineUserTimeout timeout = (OnlineUserTimeout) message;
+            onUserGoesOffline(timeout.getUid(), timeout.getDate(), timeout.getUpdateDate());
         } else {
             drop(message);
         }
@@ -231,22 +279,6 @@ public class PresenceActor extends ModuleActor {
             return updateDate;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            UserOnline that = (UserOnline) o;
-
-            if (uid != that.uid) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return uid;
-        }
     }
 
     public static class UserOffline {
@@ -266,30 +298,14 @@ public class PresenceActor extends ModuleActor {
             return updateDate;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            UserOffline that = (UserOffline) o;
-
-            if (uid != that.uid) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return uid;
-        }
     }
 
     public static class UserLastSeen {
         private int uid;
-        private long date;
+        private int date;
         private long updateDate;
 
-        public UserLastSeen(int uid, long date, long updateDate) {
+        public UserLastSeen(int uid, int date, long updateDate) {
             this.uid = uid;
             this.date = date;
             this.updateDate = updateDate;
@@ -299,7 +315,7 @@ public class PresenceActor extends ModuleActor {
             return uid;
         }
 
-        public long getDate() {
+        public int getDate() {
             return date;
         }
 
@@ -307,25 +323,6 @@ public class PresenceActor extends ModuleActor {
             return updateDate;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            UserLastSeen that = (UserLastSeen) o;
-
-            if (date != that.date) return false;
-            if (uid != that.uid) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = uid;
-            result = 31 * result + (int) (date ^ (date >>> 32));
-            return result;
-        }
     }
 
     public static class GroupOnline {
@@ -350,25 +347,30 @@ public class PresenceActor extends ModuleActor {
         public long getUpdateDate() {
             return updateDate;
         }
+    }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+    private static class OnlineUserTimeout {
 
-            GroupOnline that = (GroupOnline) o;
+        private int uid;
+        private int date;
+        private long updateDate;
 
-            if (count != that.count) return false;
-            if (gid != that.gid) return false;
-
-            return true;
+        public OnlineUserTimeout(int uid, int date, long updateDate) {
+            this.uid = uid;
+            this.date = date;
+            this.updateDate = updateDate;
         }
 
-        @Override
-        public int hashCode() {
-            int result = gid;
-            result = 31 * result + count;
-            return result;
+        public int getUid() {
+            return uid;
+        }
+
+        public int getDate() {
+            return date;
+        }
+
+        public long getUpdateDate() {
+            return updateDate;
         }
     }
 

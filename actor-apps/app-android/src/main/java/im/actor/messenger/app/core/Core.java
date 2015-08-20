@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import im.actor.core.AndroidMessenger;
 import im.actor.core.ApiConfiguration;
-import im.actor.core.AppCategory;
+import im.actor.core.PlatformType;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.entity.Group;
@@ -124,7 +124,7 @@ public class Core {
         builder.setPhoneBookProvider(new AndroidPhoneBook());
         builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
         builder.setDeviceCategory(DeviceCategory.MOBILE);
-        builder.setAppCategory(AppCategory.ANDROID);
+        builder.setPlatformType(PlatformType.ANDROID);
         builder.setApiConfiguration(new ApiConfiguration(
                 BuildConfig.VERSION_TITLE,
                 API_ID,

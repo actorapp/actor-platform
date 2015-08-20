@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit
 
 import akka.serialization.SerializationExtension
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -70,6 +69,8 @@ private final class SeqUpdatesManagerActor(
   private[this] val MaxDeliveryCacheSize = 100L
   require(IncrementOnStart > 1)
   // it is needed to prevent division by zero in pushUpdate
+
+  private val ext = SeqUpdatesExtension(context.system)
 
   private val deliveryCache = Caffeine.newBuilder().maximumSize(MaxDeliveryCacheSize).build[String, SeqState]()
 
@@ -168,16 +169,16 @@ private final class SeqUpdatesManagerActor(
   }
 
   private def initialize(): Unit = {
-    val initiatedFuture: Future[Initialized] = for {
-      seqUpdOpt ← db.run(p.sequence.SeqUpdate.findLast(authId))
-      googleCredsOpt ← db.run(p.push.GooglePushCredentials.find(authId))
-      appleCredsOpt ← db.run(p.push.ApplePushCredentials.find(authId))
+    val initiatedFuture: Future[Initialized] = db.run(for {
+      seqUpdOpt ← p.sequence.SeqUpdate.findLast(authId)
+      googleCredsOpt ← p.push.GooglePushCredentials.find(authId)
+      appleCredsOpt ← p.push.ApplePushCredentials.find(authId)
     } yield Initialized(
       seqUpdOpt.map(_.seq).getOrElse(-1),
       seqUpdOpt.map(_.timestamp).getOrElse(0),
       googleCredsOpt,
       appleCredsOpt
-    )
+    ))
 
     initiatedFuture.onFailure {
       case e ⇒
@@ -205,7 +206,7 @@ private final class SeqUpdatesManagerActor(
 
       val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData.toByteArray, userIds.toSet, groupIds.toSet)
 
-      db.run(p.sequence.SeqUpdate.create(seqUpdate))
+      ext.persistUpdate(seqUpdate)
         .map(_ ⇒ seq)
         .andThen {
           case Success(_) ⇒

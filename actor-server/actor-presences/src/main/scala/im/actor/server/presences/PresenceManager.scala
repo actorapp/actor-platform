@@ -39,7 +39,7 @@ object PresenceManager {
   private sealed trait Message
 
   @SerialVersionUID(1L)
-  private case class UserPresenceChange(presence: Presence, timeout: Long) extends Message
+  private case class UserPresenceChange(presence: Presence, authId: Long, timeout: Long) extends Message
 
   @SerialVersionUID(1L)
   private case class Subscribe(consumer: ActorRef) extends Message
@@ -92,12 +92,12 @@ object PresenceManager {
     region.ref.ask(Envelope(userId, Unsubscribe(consumer))).mapTo[UnsubscribeAck].map(_ ⇒ ())
   }
 
-  def presenceSetOnline(userId: Int, timeout: Long)(implicit region: PresenceManagerRegion): Unit = {
-    region.ref ! Envelope(userId, UserPresenceChange(Online, timeout))
+  def presenceSetOnline(userId: Int, authId: Long, timeout: Long)(implicit region: PresenceManagerRegion): Unit = {
+    region.ref ! Envelope(userId, UserPresenceChange(Online, authId, timeout))
   }
 
-  def presenceSetOffline(userId: Int, timeout: Long)(implicit region: PresenceManagerRegion): Unit = {
-    region.ref ! Envelope(userId, UserPresenceChange(Offline, timeout))
+  def presenceSetOffline(userId: Int, authId: Long, timeout: Long)(implicit region: PresenceManagerRegion): Unit = {
+    region.ref ! Envelope(userId, UserPresenceChange(Offline, authId, timeout))
   }
 }
 
@@ -111,10 +111,13 @@ class PresenceManager extends Actor with ActorLogging with Stash {
   private val receiveTimeout = 15.minutes // TODO: configurable
   context.setReceiveTimeout(receiveTimeout)
 
-  private[this] var scheduledTimeout: Option[Cancellable] = None
+  private val userId = self.path.name.toInt
+
+  private[this] var scheduledTimeouts = Map.empty[Long, Cancellable]
+  private[this] var devicePresences = Map.empty[Long, Presence]
   private[this] var consumers = Set.empty[ActorRef]
-  private[this] var lastChange = UserPresenceChange(Offline, 0)
-  private[this] var lastSeenAt: Option[DateTime] = None
+  private[this] var state = PresenceState(userId, Offline, None)
+  private[this] var lastChange = UserPresenceChange(Offline, 0, 0)
 
   private def initialize(userId: Int): Unit = {
     db.run(persist.presences.UserPresence.find(userId).map {
@@ -136,11 +139,10 @@ class PresenceManager extends Actor with ActorLogging with Stash {
   def receive = {
     case Envelope(userId, _) ⇒
       stash()
-
       initialize(userId)
     case Initialized(lastSeenAt: Option[DateTime]) ⇒
       unstashAll()
-      this.lastSeenAt = lastSeenAt
+      this.state = this.state.copy(lastSeenAt = lastSeenAt)
       context.become(working)
     case msg ⇒ stash()
   }
@@ -153,45 +155,48 @@ class PresenceManager extends Actor with ActorLogging with Stash {
       }
 
       sender ! SubscribeAck(consumer)
-      deliverState(userId, consumer)
+      deliverState(consumer)
     case Envelope(userId, Unsubscribe(consumer)) ⇒
       consumers -= consumer
       context.unwatch(consumer)
       sender ! UnsubscribeAck(consumer)
     case Terminated(consumer) if consumers.contains(consumer) ⇒
       consumers -= consumer
-    case Envelope(userId, change @ UserPresenceChange(presence, timeout)) ⇒
-      log.debug("userId: {}, change: {}", userId, change)
+    case Envelope(userId, change @ UserPresenceChange(presence, authId, timeout)) ⇒
+      scheduledTimeouts.get(authId) foreach (_.cancel())
 
-      scheduledTimeout map (_.cancel())
+      if (presence != Offline) {
+        this.state = this.state.copy(lastSeenAt = Some(new DateTime))
+        db.run(persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, this.state.lastSeenAt)))
 
-      val needDeliver = this.lastChange.presence != presence
-
-      this.lastChange = change
-
-      if (presence == Online) {
-        this.lastSeenAt = Some(new DateTime)
-
-        // TODO: handle failures
-        db.run(persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, this.lastSeenAt)))
-
-        scheduledTimeout = Some(
-          context.system.scheduler.scheduleOnce(timeout.millis, self, Envelope(userId, UserPresenceChange(Offline, 0)))
-        )
+        this.scheduledTimeouts = this.scheduledTimeouts +
+          (authId → context.system.scheduler.scheduleOnce(timeout.millis, self, Envelope(userId, UserPresenceChange(Offline, authId, 0))))
       }
 
-      if (needDeliver) {
-        deliverState(userId)
-      }
+      this.devicePresences = this.devicePresences + (authId → presence)
+
+      val oldPresence = this.state.presence
+
+      val newPresence =
+        if (this.devicePresences.exists(_._2 != Offline))
+          Online
+        else
+          Offline
+
+      this.state = this.state.copy(presence = newPresence)
+
+      if (newPresence != oldPresence)
+        deliverState()
+
     case ReceiveTimeout ⇒
       if (consumers.isEmpty) {
         context.parent ! Passivate(stopMessage = PoisonPill)
       }
   }
 
-  private def deliverState(userId: Int): Unit =
-    consumers foreach (deliverState(userId, _))
+  private def deliverState(): Unit =
+    consumers foreach deliverState
 
-  private def deliverState(userId: Int, consumer: ActorRef): Unit =
-    consumer ! PresenceState(userId, this.lastChange.presence, this.lastSeenAt)
+  private def deliverState(consumer: ActorRef): Unit =
+    consumer ! this.state
 }

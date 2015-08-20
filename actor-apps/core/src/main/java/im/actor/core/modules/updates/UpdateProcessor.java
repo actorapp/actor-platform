@@ -180,7 +180,7 @@ public class UpdateProcessor extends AbsModule {
             presenceProcessor.onUserOffline(offline.getUid(), date);
         } else if (update instanceof UpdateUserLastSeen) {
             UpdateUserLastSeen lastSeen = (UpdateUserLastSeen) update;
-            presenceProcessor.onUserLastSeen(lastSeen.getUid(), lastSeen.getDate(), date);
+            presenceProcessor.onUserLastSeen(lastSeen.getUid(), (int) lastSeen.getDate(), date);
         } else if (update instanceof UpdateGroupOnline) {
             UpdateGroupOnline groupOnline = (UpdateGroupOnline) update;
             presenceProcessor.onGroupOnline(groupOnline.getGroupId(), groupOnline.getCount(), date);
