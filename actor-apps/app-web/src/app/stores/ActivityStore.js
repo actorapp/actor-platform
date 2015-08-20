@@ -85,11 +85,11 @@ var _setActivityFromPeer = function () {
 
 ActivityStore.dispatchToken = ActorAppDispatcher.register(action => {
   switch (action.type) {
-    case ActionTypes.HIDE_ACTIVITY:
+    case ActionTypes.ACTIVITY_HIDE:
       _isOpen = false;
       ActivityStore.emitChange();
       break;
-    case ActionTypes.SHOW_ACTIVITY:
+    case ActionTypes.ACTIVITY_SHOW:
       _isOpen = true;
       ActivityStore.emitChange();
       break;
