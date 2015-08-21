@@ -7,6 +7,8 @@ import { PeerTypes } from 'constants/ActorAppConstants';
 import MessagesSection from 'components/dialog/MessagesSection.react';
 import TypingSection from 'components/dialog/TypingSection.react';
 import ComposeSection from 'components/dialog/ComposeSection.react';
+import ToolbarSection from 'components/ToolbarSection.react';
+import ActivitySection from 'components/ActivitySection.react';
 import ConnectionState from 'components/common/ConnectionState.react';
 
 import DialogStore from 'stores/DialogStore';
@@ -66,6 +68,8 @@ class DialogSection extends React.Component {
   render() {
     const peer = this.state.peer;
 
+    let mainContent;
+
     if (peer) {
       let isMember = true,
           memberArea;
@@ -90,7 +94,7 @@ class DialogSection extends React.Component {
         );
       }
 
-      return (
+      mainContent = (
         <section className="dialog" onScroll={this.loadMessagesByScroll}>
           <ConnectionState/>
 
@@ -105,13 +109,24 @@ class DialogSection extends React.Component {
         </section>
       );
     } else {
-      return (
+      mainContent = (
         <section className="dialog dialog--empty row center-xs middle-xs">
           <ConnectionState/>
           <h2>Select dialog or start a new one.</h2>
         </section>
       );
     }
+
+    return (
+      <section className="main">
+        <ToolbarSection/>
+
+        <div className="flexrow">
+          {mainContent}
+          <ActivitySection/>
+        </div>
+      </section>
+    );
   }
 
   fixScroll = () => {
