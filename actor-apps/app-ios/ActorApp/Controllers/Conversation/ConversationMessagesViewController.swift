@@ -90,6 +90,10 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         if self.displayList == nil {
             return nil
         }
+        if !isStarted {
+            return nil
+        }
+        
         return self.displayList.getProcessedList() as? PreprocessedList
     }
     
