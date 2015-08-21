@@ -5,17 +5,23 @@
 package im.actor.runtime.generic.mvvm;
 
 import com.google.j2objc.annotations.ObjectiveCName;
+import com.google.j2objc.annotations.Property;
 
 import java.util.ArrayList;
 
 import im.actor.runtime.generic.mvvm.alg.Move;
 
 public class AppleListUpdate {
-    private ArrayList<Integer> removed;
-    private ArrayList<Integer> added;
-    private ArrayList<Move> moved;
-    private ArrayList<Integer> updated;
 
+    @Property
+    private ArrayList<Integer> removed;
+    @Property
+    private ArrayList<Integer> added;
+    @Property
+    private ArrayList<Move> moved;
+    @Property
+    private ArrayList<Integer> updated;
+    @Property
     private boolean isLoadMore;
 
     @ObjectiveCName("initWithRemoved:withAdded:withMoved:withUpdated:withLoadMore:")

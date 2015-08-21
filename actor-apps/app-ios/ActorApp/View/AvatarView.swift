@@ -211,20 +211,21 @@ class AvatarView: UIImageView {
                 image = image!.roundImage(self.frameSize)
             }
             
-            dispatch_async(dispatch_get_main_queue(), {
+            dispatchOnUi {
                 if (callbackRequestId != self.requestId) {
                     return;
                 }
                 
                 self.putToCache(self.frameSize, id: Int64(self.bindedFileId!), image: image!)
-                if (self.enableAnimation) {
-                    UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
-                        self.image = image;
-                    }, completion: nil)
-                } else {
-                    self.image = image;
-                }
-            });
+//                if (self.enableAnimation) {
+//                    UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
+//                        self.image = image;
+//                    }, completion: nil)
+//                } else {
+//                    self.image = image;
+//                }
+                self.image = image;
+            }
         });
         Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
     }

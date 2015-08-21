@@ -121,7 +121,7 @@ class ConversationViewController: ConversationBaseViewController {
 //        self.collectionView.addGestureRecognizer(longPressGesture)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init(coder aDecoder: NSCoder!) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -406,13 +406,13 @@ class ConversationViewController: ConversationBaseViewController {
     override func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
         var message = (item as! ACMessage);
         var cell: AABubbleCell
-        if (message.getContent() is ACTextContent) {
+        if (message.content is ACTextContent) {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
-        } else if (message.getContent() is ACPhotoContent) {
+        } else if (message.content is ACPhotoContent) {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleMediaIdentifier, forIndexPath: indexPath) as! AABubbleMediaCell
-        } else if (message.getContent() is ACDocumentContent) {
+        } else if (message.content is ACDocumentContent) {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleDocumentIdentifier, forIndexPath: indexPath) as! AABubbleDocumentCell
-        } else if (message.getContent() is ACServiceContent){
+        } else if (message.content is ACServiceContent){
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleServiceIdentifier, forIndexPath: indexPath) as! AABubbleServiceCell
         } else {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
@@ -442,7 +442,7 @@ class ConversationViewController: ConversationBaseViewController {
     
     override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64 {
         var message = objectAtIndexPath(indexPath) as! ACMessage
-        return Int64(message.getRid())
+        return Int64(message.rid)
     }
     
     override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity {
@@ -490,7 +490,7 @@ class ConversationViewController: ConversationBaseViewController {
     override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
         var message = (item as! ACMessage);
         if cell is AABubbleTextCell {
-            if (message.getContent() is ACPhotoContent) {
+            if (message.content is ACPhotoContent) {
                 return true
             }
         }
@@ -499,44 +499,44 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     func buildCellSetting(index: Int) -> CellSetting {
-//        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
+        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
         
-        var current = objectAtIndex(index) as! ACMessage
-        var next: ACMessage! = index > 0 ? objectAtIndex(index - 1) as! ACMessage : nil
-        var prev: ACMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! ACMessage : nil
-        
-        var isShowDate = true
-        var isShowDateNext = true
-        var isShowNewMessages = (unreadMessageId == current.getRid())
-        var clenchTop = false
-        var clenchBottom = false
-
-        if (prev != nil) {
-            isShowDate = !areSameDate(current, prev: prev)
-            if !isShowDate {
-                clenchTop = useCompact(current, next: prev)
-            }
-        }
-        
-        if (next != nil) {
-            if areSameDate(next, prev: current) {
-                clenchBottom = useCompact(current, next: next)
-            }
-        }
-        
-        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom, showNewMessages: isShowNewMessages)
+//        var current = objectAtIndex(index) as! ACMessage
+//        var next: ACMessage! = index > 0 ? objectAtIndex(index - 1) as! ACMessage : nil
+//        var prev: ACMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! ACMessage : nil
+//        
+//        var isShowDate = true
+//        var isShowDateNext = true
+//        var isShowNewMessages = (unreadMessageId == current.rid)
+//        var clenchTop = false
+//        var clenchBottom = false
+//
+//        if (prev != nil) {
+//            isShowDate = !areSameDate(current, prev: prev)
+//            if !isShowDate {
+//                clenchTop = useCompact(current, next: prev)
+//            }
+//        }
+//        
+//        if (next != nil) {
+//            if areSameDate(next, prev: current) {
+//                clenchBottom = useCompact(current, next: next)
+//            }
+//        }
+//        
+//        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom, showNewMessages: isShowNewMessages)
     }
     
     func useCompact(source: ACMessage, next: ACMessage) -> Bool {
-        if (source.getContent() is ACServiceContent) {
-            if (next.getContent() is ACServiceContent) {
+        if (source.content is ACServiceContent) {
+            if (next.content is ACServiceContent) {
                 return true
             }
         } else {
-            if (next.getContent() is ACServiceContent) {
+            if (next.content is ACServiceContent) {
                 return false
             }
-            if (source.getSenderId() == next.getSenderId()) {
+            if (source.senderId == next.senderId) {
                 return true
             }
         }
@@ -547,10 +547,10 @@ class ConversationViewController: ConversationBaseViewController {
     func areSameDate(source:ACMessage, prev: ACMessage) -> Bool {
         let calendar = NSCalendar.currentCalendar()
         
-        var currentDate = NSDate(timeIntervalSince1970: Double(source.getDate())/1000.0)
+        var currentDate = NSDate(timeIntervalSince1970: Double(source.date)/1000.0)
         var currentDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: currentDate)
         
-        var nextDate = NSDate(timeIntervalSince1970: Double(prev.getDate())/1000.0)
+        var nextDate = NSDate(timeIntervalSince1970: Double(prev.date)/1000.0)
         var nextDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: nextDate)
 
         return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)

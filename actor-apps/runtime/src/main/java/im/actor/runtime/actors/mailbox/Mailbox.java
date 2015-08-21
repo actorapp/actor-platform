@@ -10,6 +10,7 @@ import im.actor.runtime.actors.mailbox.collections.EnvelopeCollection;
  * Actor mailbox, queue of envelopes.
  */
 public class Mailbox {
+
     private EnvelopeCollection envelopes;
 
     private final EnvelopeCollection.EnvelopeComparator comparator = new EnvelopeCollection.EnvelopeComparator() {

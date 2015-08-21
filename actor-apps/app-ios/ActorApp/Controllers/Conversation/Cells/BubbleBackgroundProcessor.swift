@@ -11,18 +11,20 @@ class BubbleBackgroundProcessor: NSObject, ARBackgroundProcessor {
     func processInBackgroundWithId(item: AnyObject!) {
         var message = item as! ACMessage
         
-        Actor.getUserWithUid(message.getSenderId())
+        Actor.getUserWithUid(message.senderId)
         
-        var cached = layoutCache.pick(message.getRid())
+        var cached = layoutCache.pick(message.rid)
         if (cached != nil) {
             return
         }
         
-        // println("process \(message.getRid())")
+        println("process \(message.rid)")
         var layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
+        self.layoutCache.cache(message.rid, layout: layout)
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.layoutCache.cache(message.getRid(), layout: layout)
-        })
+//        dispatchOnUi { () -> Void in
+//            println("put to cache \(message.getRid())")
+//            self.layoutCache.cache(message.getRid(), layout: layout)
+//        }
     }
 }

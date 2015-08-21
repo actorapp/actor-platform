@@ -82,13 +82,13 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             }
             
             // Build bubble size
-            if (message.getContent() is ACPhotoContent) {
-                var photo = message.getContent() as! ACPhotoContent;
+            if (message.content is ACPhotoContent) {
+                var photo = message.content as! ACPhotoContent;
                 thumb = photo.getFastThumb()
                 contentWidth = Int(photo.getW())
                 contentHeight = Int(photo.getH())
-            } else if (message.getContent() is ACVideoContent) {
-                var video = message.getContent() as! ACVideoContent;
+            } else if (message.content is ACVideoContent) {
+                var video = message.content as! ACVideoContent;
                 thumb = video.getFastThumb()
                 contentWidth = Int(video.getW())
                 contentHeight = Int(video.getH())
@@ -112,7 +112,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             })
             
             // Bind file
-            fileBind(message, autoDownload: message.getContent() is ACPhotoContent)
+            // fileBind(message, autoDownload: message.getContent() is ACPhotoContent)
         }
         
         // Update time
@@ -121,7 +121,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         // Update status
         if (isOut) {
             statusView.hidden = false
-            switch(UInt(message.getMessageState().ordinal())) {
+            switch(UInt(message.messageState.ordinal())) {
             case ACMessageState.PENDING.rawValue:
                 self.statusView.image = Resources.iconClock;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSending
@@ -153,7 +153,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     }
     
     func mediaDidTap() {
-        var content = bindedMessage!.getContent() as! ACDocumentContent
+        var content = bindedMessage!.content as! ACDocumentContent
         if let fileSource = content.getSource() as? ACFileRemoteSource {
             Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
                 notDownloaded: { () -> () in
@@ -170,7 +170,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     })
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
-            var rid = bindedMessage!.getRid()
+            var rid = bindedMessage!.rid
             Actor.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
                 notUploaded: { () -> () in
                     Actor.resumeUploadWithRid(rid)
@@ -332,11 +332,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     }
     
     class func measureMediaHeight(message: ACMessage) -> CGFloat {
-        if (message.getContent() is ACPhotoContent) {
-            var photo = message.getContent() as! ACPhotoContent;
+        if (message.content is ACPhotoContent) {
+            var photo = message.content as! ACPhotoContent;
             return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 2;
-        } else if (message.getContent() is ACVideoContent) {
-            var video = message.getContent() as! ACVideoContent;
+        } else if (message.content is ACVideoContent) {
+            var video = message.content as! ACVideoContent;
             return measureMedia(Int(video.getW()), h: Int(video.getH())).height + 2;
         } else {
             fatalError("Unknown content type")

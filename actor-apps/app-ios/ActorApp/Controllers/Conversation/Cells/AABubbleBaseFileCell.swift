@@ -14,7 +14,7 @@ class AABubbleBaseFileCell: AABubbleCell {
     var bindedUploadCallback: CocoaUploadCallback? = nil
     
     func fileBind(message: ACMessage, autoDownload: Bool) {
-        if let doc = message.getContent() as? ACDocumentContent {
+        if let doc = message.content as? ACDocumentContent {
             
             // Next generation of binding
             bindGeneration++
@@ -49,7 +49,7 @@ class AABubbleBaseFileCell: AABubbleCell {
             } else if let source = doc.getSource() as? ACFileLocalSource {
                 var fileReference = source.getFileDescriptor();
             
-                bindedUploadFile = message.getRid();
+                bindedUploadFile = message.rid;
                 bindedUploadCallback = CocoaUploadCallback(notUploaded: { () -> () in
                     if (self.bindGeneration != selfGeneration) {
                         return
@@ -67,7 +67,7 @@ class AABubbleBaseFileCell: AABubbleCell {
                     self.fileReady(fileReference, selfGeneration: selfGeneration)
                 });
             
-                Actor.bindRawUploadFileWithRid(message.getRid(), withCallback: bindedUploadCallback)
+                Actor.bindRawUploadFileWithRid(message.rid, withCallback: bindedUploadCallback)
             } else {
                 fatalError("Unsupported file source")
             }
@@ -100,13 +100,13 @@ class AABubbleBaseFileCell: AABubbleCell {
         if (selfGeneration != self.bindGeneration) {
             return
         }
-        dispatch_async(dispatch_get_main_queue(), {
+        dispatchOnUi {
             if (selfGeneration != self.bindGeneration) {
                 return
             }
             
             closure()
-        })
+        }
     }
     
     func fileUnbind() {

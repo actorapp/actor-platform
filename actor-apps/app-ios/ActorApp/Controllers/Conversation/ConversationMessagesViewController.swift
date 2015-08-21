@@ -177,21 +177,22 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     
     func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
 
-        println("collectionChanged \(getCount())")
+        var start = CFAbsoluteTimeGetCurrent()
+        // println("collectionChanged \(getCount())")
         
-        if modification.isLoadMore() {
+        if modification.isLoadMore {
             UIView.setAnimationsEnabled(false)
         }
         
         self.willUpdate()
-        self.layout.beginUpdates(modification.isLoadMore())
+        self.layout.beginUpdates(modification.isLoadMore)
         var changedRows = Set<Int>()
         
         if modification.nonUpdateCount() > 0 {
             isUpdating = true
-            println("starting update")
+            // println("starting update")
             self.collectionView.performBatchUpdates({ () -> Void in
-                println("started update")
+                // println("started update")
                 
                 // Removed rows
                 if modification.removedCount() > 0 {
@@ -219,7 +220,9 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
                     }
                 }
                 
-                println("ended update")
+                println("apply end: \(CFAbsoluteTimeGetCurrent() - start)")
+                
+                // println("ended update")
                 self.isUpdating = false
                 self.prevCount = self.getCount()
             }, completion: nil)
@@ -235,9 +238,11 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         
         self.didUpdate()
         
-        if modification.isLoadMore() {
+        if modification.isLoadMore {
             UIView.setAnimationsEnabled(true)
         }
+        
+        println("collectionChanged: \(CFAbsoluteTimeGetCurrent() - start)")
     }
     
     func updateRows(indexes: [Int]) {

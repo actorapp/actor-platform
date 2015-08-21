@@ -78,9 +78,9 @@ class CircullarNode: ASDisplayNode {
     }
 
     func postProgress(value: Double, animated: Bool) {
-        dispatch_async(dispatch_get_main_queue(), {
+        dispatchOnUi {
             self.setProgress(value, animated: animated)
-        })
+        }
     }
     
     func setProgress(value: Double, animated: Bool) {
