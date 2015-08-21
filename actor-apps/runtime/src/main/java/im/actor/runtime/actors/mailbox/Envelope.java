@@ -4,6 +4,8 @@
 
 package im.actor.runtime.actors.mailbox;
 
+import com.google.j2objc.annotations.Property;
+
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.ActorScope;
 import im.actor.runtime.actors.ActorTime;
@@ -12,11 +14,18 @@ import im.actor.runtime.actors.ActorTime;
  * Actor system envelope
  */
 public class Envelope {
+
+    @Property("readonly, nonatomic")
     private final Object message;
+    @Property("readonly, nonatomic")
     private final ActorRef sender;
+    @Property("readonly, nonatomic")
     private final Mailbox mailbox;
-    private ActorScope scope;
-    private long sendTime;
+
+    @Property
+    private final ActorScope scope;
+    @Property
+    private final long sendTime;
 
     /**
      * Creating of envelope

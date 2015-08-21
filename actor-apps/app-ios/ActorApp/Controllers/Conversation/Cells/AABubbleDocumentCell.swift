@@ -73,7 +73,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: Bind
     
     override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
-        let document = message.getContent() as! ACDocumentContent
+        let document = message.content as! ACDocumentContent
         
         self.bubbleInsets = UIEdgeInsets(
             top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
@@ -110,7 +110,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         // Always update date and state
         dateLabel.text = cellLayout.date
         if (isOut) {
-            switch(UInt(message.getMessageState().ordinal())) {
+            switch(UInt(message.messageState.ordinal())) {
             case ACMessageState.PENDING.rawValue:
                 self.statusView.image = Resources.iconClock
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
@@ -140,7 +140,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     }
     
     func documentDidTap() {
-        var content = bindedMessage!.getContent() as! ACDocumentContent
+        var content = bindedMessage!.content as! ACDocumentContent
         if let fileSource = content.getSource() as? ACFileRemoteSource {
             Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
                 notDownloaded: { () -> () in
@@ -153,7 +153,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
                     docController.presentPreviewAnimated(true)
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
-            var rid = bindedMessage!.getRid()
+            var rid = bindedMessage!.rid
             Actor.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
                 notUploaded: { () -> () in
                     Actor.resumeUploadWithRid(rid)

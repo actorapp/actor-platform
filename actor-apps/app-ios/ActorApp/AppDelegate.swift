@@ -17,6 +17,8 @@ import Foundation
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
+        createActor()
+        
         var config = Actor.config
         
         // Apply crash logging
@@ -264,15 +266,15 @@ import Foundation
         window.bringSubviewToFront(hud)
         hud.show(true)
         command.startWithCallback(CocoaCallback(result: { (val:Any?) -> () in
-            dispatch_async(dispatch_get_main_queue(), {
+            dispatchOnUi {
                 hud.hide(true)
                 successBlock?(val: val)
-            })
+            }
             }, error: { (val) -> () in
-                dispatch_async(dispatch_get_main_queue(), {
+                dispatchOnUi {
                     hud.hide(true)
                     failureBlock?(val: val)
-                })
+                }
         }))
     }
     

@@ -4,12 +4,18 @@
 
 package im.actor.runtime.actors.mailbox;
 
+import com.google.j2objc.annotations.Property;
+
 import im.actor.runtime.actors.ActorScope;
 
 public class ActorEndpoint {
-    private String path;
+    @Property("readonly, nonatomic")
+    private final String path;
+    @Property
     private Mailbox mailbox;
+    @Property
     private ActorScope scope;
+    @Property
     private boolean isDisconnected;
 
     public ActorEndpoint(String path) {
