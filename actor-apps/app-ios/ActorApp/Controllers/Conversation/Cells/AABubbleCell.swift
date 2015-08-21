@@ -44,6 +44,8 @@ class AABubbleCell: UICollectionViewCell {
     // Views
     let mainView = UIView()
     let avatarView = AvatarView(frameSize: 39)
+    var avatarAdded: Bool = false
+    
     let bubble = UIImageView()
     let bubbleBorder = UIImageView()
     
@@ -176,20 +178,26 @@ class AABubbleCell: UICollectionViewCell {
         isOut = message.senderId == Actor.myUid();
         bindedMessage = message
         self.isShowNewMessages = setting.showNewMessages
-//        if (!reuse) {
-//            if (!isFullSize) {
-//                if (!isOut && isGroup) {
-//                    if let user = Actor.getUserWithUid(message.getSenderId()) {
-//                        let avatar: ACAvatar? = user.getAvatarModel().get()
-//                        let name = user.getNameModel().get()
-//                        avatarView.bind(name, id: user.getId(), avatar: avatar)
-//                    }
-//                    mainView.addSubview(avatarView)
-//                } else {
-//                    avatarView.removeFromSuperview()
-//                }
-//            }
-//        }
+        if (!reuse) {
+            if (!isFullSize) {
+                if (!isOut && isGroup) {
+                    if let user = Actor.getUserWithUid(message.senderId) {
+                        let avatar: ACAvatar? = user.getAvatarModel().get()
+                        let name = user.getNameModel().get()
+                        avatarView.bind(name, id: user.getId(), avatar: avatar)
+                    }
+                    if !avatarAdded {
+                        mainView.addSubview(avatarView)
+                        avatarAdded = true
+                    }
+                } else {
+                    if avatarAdded {
+                        avatarView.removeFromSuperview()
+                        avatarAdded = false
+                    }
+                }
+            }
+        }
         
         self.isShowDate = setting.showDate
         if (isShowDate) {

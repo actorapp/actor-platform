@@ -165,8 +165,28 @@ class AvatarView: UIImageView {
         self.bindedTitle = title
         
         if (fileLocation == nil) {
+            self.image = nil
+            
             if (self.placeholderImage == nil) {
-                self.image = Placeholders.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == .Rounded);
+                requestId++
+                var callbackRequestId = requestId
+                var placeholderTitle = title
+                var placeholderId = bindedId
+                dispatchBackground {
+                    if (callbackRequestId != self.requestId) {
+                        return;
+                    }
+                    
+                    var image = Placeholders.avatarPlaceholder(placeholderId, size: self.frameSize, title: placeholderTitle.smallValue(), rounded: self.avatarType == .Rounded)
+                    
+                    dispatchOnUi { () -> Void in
+                        if (callbackRequestId != self.requestId) {
+                            return;
+                        }
+                        
+                        self.image = image
+                    }
+                }                
             }
             
             return

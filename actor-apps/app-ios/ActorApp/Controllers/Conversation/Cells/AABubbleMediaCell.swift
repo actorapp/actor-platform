@@ -6,6 +6,8 @@ import Foundation
 
 class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
     
+    static let progressBgImage: UIImage = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
+    
     // Views
     let preview = UIImageView()
 
@@ -40,7 +42,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         
         statusView.contentMode = UIViewContentMode.Center
         fileStatusIcon.contentMode = UIViewContentMode.Center
-        progressBg.image = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
+        progressBg.image = AABubbleMediaCell.progressBgImage
         
         mainView.addSubview(preview)
         
