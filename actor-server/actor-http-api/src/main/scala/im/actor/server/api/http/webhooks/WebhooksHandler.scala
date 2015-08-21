@@ -1,9 +1,8 @@
 package im.actor.server.api.http.webhooks
 
-import im.actor.server.group.{ GroupViewRegion, GroupOffice, GroupProcessorRegion }
-
+import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes._
-import akka.http.scaladsl.model.{ HttpResponse, StatusCode, StatusCodes }
+import akka.http.scaladsl.model.{ StatusCode, StatusCodes }
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
@@ -11,10 +10,10 @@ import akka.util.Timeout
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json._
-import im.actor.server.dialog.group.{ GroupDialogRegion, GroupDialogOperations }
-import im.actor.server.persist
-import slick.dbio.DBIO
-import slick.driver.PostgresDriver.api._
+import im.actor.server.commons.KeyValueMappings
+import im.actor.server.dialog.group.{ GroupDialogOperations, GroupDialogRegion }
+import im.actor.server.group.{ GroupOffice, GroupViewRegion }
+import shardakka.{ IntCodec, ShardakkaExtension }
 
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -23,7 +22,7 @@ import scala.util.{ Failure, Success }
 
 class WebhooksHandler()(
   implicit
-  db:                   Database,
+  system:               ActorSystem,
   ec:                   ExecutionContext,
   groupProcessorRegion: GroupViewRegion,
   groupDialogRegion:    GroupDialogRegion,
@@ -31,6 +30,7 @@ class WebhooksHandler()(
 ) extends RoutesHandler with ContentUnmarshaler {
 
   implicit val timeout: Timeout = Timeout(5.seconds)
+  private val kv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
 
   override def routes: Route = path("webhooks" / Segment) { token ⇒
     post {
@@ -39,9 +39,9 @@ class WebhooksHandler()(
           case Success(result) ⇒
             result match {
               case Left(statusCode) ⇒ complete(statusCode)
-              case Right(_)         ⇒ complete(HttpResponse(OK))
+              case Right(_)         ⇒ complete(OK)
             }
-          case Failure(e) ⇒ complete(HttpResponse(InternalServerError))
+          case Failure(e) ⇒ complete(InternalServerError)
         }
       }
     }
@@ -54,29 +54,22 @@ class WebhooksHandler()(
       case Image(url)    ⇒ throw new NotImplementedError()
     }
 
-    val action: DBIO[Either[ClientError, Unit]] = for {
-      optBot ← persist.GroupBot.findByToken(token)
-      result ← optBot.map { bot ⇒
+    for {
+      optGroupId ← kv.get(token)
+      result ← optGroupId map { groupId ⇒
         for {
-          optGroup ← persist.Group.find(bot.groupId)
-          sent ← optGroup match {
-            case None                          ⇒ DBIO.successful(Left(StatusCodes.NotFound))
-            case Some(group) if group.isPublic ⇒ DBIO.successful(Left(StatusCodes.Forbidden))
-            case Some(group) ⇒
-              val sendFuture = for {
-                isChecked ← GroupOffice.checkAccessHash(group.id, group.accessHash)
-                _ ← if (isChecked) {
-                  GroupDialogOperations.sendMessage(group.id, bot.userId, 0, ThreadLocalRandom.current().nextLong(), message) map (_ ⇒ ())
-                } else {
-                  Future.successful(())
-                }
-              } yield Right(())
-              DBIO.from(sendFuture)
+          isPublic ← GroupOffice.isPublic(groupId)
+          result ← if (isPublic) {
+            Future.successful(Left(StatusCodes.Forbidden))
+          } else {
+            for {
+              (_, _, botId) ← GroupOffice.getMemberIds(groupId)
+              _ ← GroupDialogOperations.sendMessage(groupId, botId, 0, ThreadLocalRandom.current().nextLong(), message)
+            } yield Right(())
           }
-        } yield sent
-      } getOrElse DBIO.successful(Left(StatusCodes.BadRequest))
+        } yield result
+      } getOrElse Future.successful(Left(StatusCodes.BadRequest))
     } yield result
-    db.run(action)
   }
 
 }

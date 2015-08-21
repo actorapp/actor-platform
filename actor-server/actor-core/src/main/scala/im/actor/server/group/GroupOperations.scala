@@ -140,6 +140,13 @@ private[group] sealed trait Queries {
     ec:      ExecutionContext
   ): Future[ApiGroup] = (region.ref ? GetApiStruct(groupId, clientUserId)).mapTo[GetApiStructResponse] map (_.struct)
 
+  def isPublic(groupId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Boolean] = (region.ref ? IsPublic(groupId)).mapTo[IsPublicResponse] map (_.isPublic)
+
   def checkAccessHash(groupId: Int, hash: Long)(
     implicit
     region:  GroupViewRegion,
