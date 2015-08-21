@@ -32,7 +32,7 @@
   &__peer {
     overflow: hidden;
 
-    width: 0;
+    width: 0; // Strange fix for firefox
     &__title {
       font-size: 16px;
       font-weight: 500;
