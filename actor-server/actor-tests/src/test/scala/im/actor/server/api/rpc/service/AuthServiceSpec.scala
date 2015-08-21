@@ -53,6 +53,8 @@ final class AuthServiceSpec
 
   it should "respond with same transactionHash when called multiple times" in s.e33
 
+  it should "associate authorizations from two different devices with different auth transactions" in s.e34
+
   "ValidateCode handler" should "respond with error to invalid transactionHash" in s.e4
 
   it should "respond with error to wrong sms auth code" in s.e5
@@ -85,6 +87,8 @@ final class AuthServiceSpec
   it should "respond with error to malformed email address" in s.e14
 
   it should "respond with same transactionHash when called multiple times" in s.e15
+
+  it should "associate authorizations from two different devices with different auth transactions" in s.e155
 
   "GetOAuth2Params handler" should "respond with error when malformed url is passed" in s.e16
 
@@ -169,18 +173,23 @@ final class AuthServiceSpec
       val phoneNumber = buildPhone()
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
+      val deviceHash = Random.nextLong().toBinaryString.getBytes
+
+      def q() = service.handleStartPhoneAuth(
+        phoneNumber = phoneNumber,
+        appId = 42,
+        apiKey = "apiKey",
+        deviceHash = deviceHash,
+        deviceTitle = "Specs virtual device"
+      )
+
       val transactionHash =
-        whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
+        whenReady(q()) { resp ⇒
           resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
           resp.toOption.get.transactionHash
         }
 
-      val seq = Future.sequence(List(
-        startPhoneAuth(phoneNumber),
-        startPhoneAuth(phoneNumber),
-        startPhoneAuth(phoneNumber),
-        startPhoneAuth(phoneNumber)
-      ))
+      val seq = Future.sequence(List(q(), q(), q(), q()))
 
       whenReady(seq) { resps ⇒
         resps foreach {
@@ -190,6 +199,34 @@ final class AuthServiceSpec
           }
         }
       }
+    }
+
+    def e34() = {
+      val phoneNumber = buildPhone()
+      implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
+
+      val transactionHash1 = whenReady(service.handleStartPhoneAuth(
+        phoneNumber = phoneNumber,
+        appId = 42,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong().toBinaryString.getBytes,
+        deviceTitle = "Specs virtual device"
+      )) { resp ⇒
+        resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+        resp.toOption.get.transactionHash
+      }
+
+      val transactionHash2 = whenReady(service.handleStartPhoneAuth(
+        phoneNumber = phoneNumber,
+        appId = 3,
+        apiKey = "someKey",
+        deviceHash = Random.nextLong().toBinaryString.getBytes,
+        deviceTitle = "Web browser"
+      )) { resp ⇒
+        resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+        resp.toOption.get.transactionHash
+      }
+      transactionHash1 should not equal transactionHash2
     }
 
     def e4() = {
@@ -589,20 +626,22 @@ final class AuthServiceSpec
       val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
+      val deviceHash = Random.nextLong().toBinaryString.getBytes
+      def q() = service.handleStartEmailAuth(
+        email = email,
+        appId = 42,
+        apiKey = "apiKey",
+        deviceHash = deviceHash,
+        deviceTitle = "Specs virtual device"
+      )
+
       val transactionHash =
-        whenReady(startEmailAuth(email)) { resp ⇒
+        whenReady(q()) { resp ⇒
           resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
 
-      val seq = Future.sequence(List(
-        startEmailAuth(email),
-        startEmailAuth(email),
-        startEmailAuth(email),
-        startEmailAuth(email),
-        startEmailAuth(email),
-        startEmailAuth(email)
-      ))
+      val seq = Future.sequence(List(q(), q(), q(), q(), q(), q()))
 
       whenReady(seq) { resps ⇒
         resps foreach {
@@ -612,6 +651,34 @@ final class AuthServiceSpec
           }
         }
       }
+    }
+
+    def e155() = {
+      val email = buildEmail(gmail)
+      implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
+
+      val transactionHash1 = whenReady(service.handleStartEmailAuth(
+        email = email,
+        appId = 42,
+        apiKey = "apiKey",
+        deviceHash = Random.nextLong().toBinaryString.getBytes,
+        deviceTitle = "Specs virtual device"
+      )) { resp ⇒
+        resp should matchPattern { case Ok(ResponseStartEmailAuth(_, false, _)) ⇒ }
+        resp.toOption.get.transactionHash
+      }
+
+      val transactionHash2 = whenReady(service.handleStartEmailAuth(
+        email = email,
+        appId = 3,
+        apiKey = "someKey",
+        deviceHash = Random.nextLong().toBinaryString.getBytes,
+        deviceTitle = "Web browser"
+      )) { resp ⇒
+        resp should matchPattern { case Ok(ResponseStartEmailAuth(_, false, _)) ⇒ }
+        resp.toOption.get.transactionHash
+      }
+      transactionHash1 should not equal transactionHash2
     }
 
     def e16() = {

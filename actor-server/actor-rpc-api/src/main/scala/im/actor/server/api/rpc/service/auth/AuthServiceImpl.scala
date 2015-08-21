@@ -149,7 +149,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   def jhandleStartPhoneAuth(phoneNumber: Long, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, clientData: ClientData): Future[HandlerResult[ResponseStartPhoneAuth]] = {
     val action = for {
       normalizedPhone ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeLong(phoneNumber).headOption)
-      optAuthTransaction ← fromDBIO(persist.auth.AuthPhoneTransaction.findByPhone(normalizedPhone))
+      optAuthTransaction ← fromDBIO(persist.auth.AuthPhoneTransaction.findByPhoneAndDeviceHash(normalizedPhone, deviceHash))
       transactionHash ← optAuthTransaction match {
         case Some(transaction) ⇒ point(transaction.transactionHash)
         case None ⇒
@@ -208,7 +208,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       validEmail ← fromEither(validEmail(email).leftMap(validationFailed("EMAIL_INVALID", _))) //it actually does not change input email
       activationType = if (OAuth2ProvidersDomains.supportsOAuth2(email)) OAUTH2 else CODE
       isRegistered ← fromDBIO(persist.UserEmail.exists(validEmail))
-      optTransaction ← fromDBIO(persist.auth.AuthEmailTransaction.findByEmail(validEmail))
+      optTransaction ← fromDBIO(persist.auth.AuthEmailTransaction.findByEmailAndDeviceHash(validEmail, deviceHash))
       transactionHash ← optTransaction match {
         case Some(trans) ⇒ point(trans.transactionHash)
         case None ⇒
