@@ -58,17 +58,13 @@ class ToolbarSection extends React.Component {
 
     if (info != null) {
       return (
-        <header className="toolbar">
-          <div className="pull-left">
-            <div className="toolbar__peer row">
-              <div className="toolbar__peer__body col-xs">
-                <span className="toolbar__peer__title">{info.name}</span>
-                <span className="toolbar__peer__presence">{info.presence}</span>
-              </div>
-            </div>
+        <header className="toolbar row">
+          <div className="toolbar__peer col-xs">
+            <span className="toolbar__peer__title">{info.name}</span>
+            <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
 
-          <div className="toolbar__controls pull-right">
+          <div className="toolbar__controls">
             <div className="toolbar__controls__search pull-left hide">
               <i className="material-icons">search</i>
               <input className="input input--search" placeholder={this.getIntlMessage('search')} type="search"/>
