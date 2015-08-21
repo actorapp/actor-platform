@@ -40,7 +40,7 @@ class GroupPresenceManagerSpec extends ActorSuite {
     whenReady(subscribe(groupId, probe.ref)) { _ ⇒ }
 
     probe.expectMsgPF() {
-      case GroupPresenceState(100, 0) ⇒
+      case GroupPresenceState(g, 0) if g == groupId ⇒
     }
 
     GroupPresenceManager.notifyGroupUserAdded(groupId, userId)
