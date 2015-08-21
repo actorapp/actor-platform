@@ -49,50 +49,6 @@
     }
   }
 }
-.fold {
-  &__title {
-    padding: 24px 24px 24px 6px;
-
-    cursor: pointer;
-    user-select: none;
-    .icon {
-      margin-right: 16px;
-    }
-    span {
-      display: inline-block;
-
-      vertical-align: middle;
-    }
-  }
-  &__indicator {
-    margin-right: 0 !important;
-
-    transition: transform $default-transition-duration $default-transition-timing;
-  }
-  &__content {
-    //max-height: 0;
-    //opacity: 0;
-    display: none;
-
-    padding-bottom: 24px;
-    //overflow: hidden;
-    //transition: opacity $default-transition-duration/2, max-height $default-transition-duration*1.5;
-    //transition: max-height $default-transition-duration*1.5;
-  }
-  &--open {
-    .fold__indicator {
-      transition: transform $default-transition-duration/2 $default-transition-timing;
-      transform: rotate(-90deg);
-    }
-    .fold__content {
-      display: block;
-      //transition: opacity $default-transition-duration/2, max-height $default-transition-duration*1.5 0s;
-      //transition:  max-height $default-transition-duration*1.5 0s;
-      //opacity: 1;
-      //max-height: 400px;
-    }
-  }
-}
 
 .user_profile {
   position: absolute;
@@ -120,7 +76,12 @@
       font-weight: 500;
       line-height: 38px;
 
+      overflow: hidden;
+
       margin: 0;
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
 
       color: $dorado;
     }
@@ -162,8 +123,7 @@
       li {
         padding: 17px 0;
 
-        // Uncommented when nicknames and emails will be implemented
-        //box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.075);
+        box-shadow: inset 0 -1px 0 0 rgba(0,0,0,.075);
         .icon {
           float: left;
 
@@ -220,7 +180,12 @@
       font-weight: 500;
       line-height: 38px;
 
+      overflow: hidden;
+
       margin: 0;
+
+      white-space: nowrap;
+      text-overflow: ellipsis;
 
       color: $dorado;
     }

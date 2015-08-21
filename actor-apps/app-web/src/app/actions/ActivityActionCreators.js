@@ -1,18 +1,16 @@
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import ActorAppConstants from 'constants/ActorAppConstants';
-
-const ActionTypes = ActorAppConstants.ActionTypes;
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 export default {
   show() {
     ActorAppDispatcher.dispatch({
-      type: ActionTypes.SHOW_ACTIVITY
+      type: ActionTypes.ACTIVITY_SHOW
     });
   },
 
   hide() {
     ActorAppDispatcher.dispatch({
-      type: ActionTypes.HIDE_ACTIVITY
+      type: ActionTypes.ACTIVITY_HIDE
     });
   }
 };

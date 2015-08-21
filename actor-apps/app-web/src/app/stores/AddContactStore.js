@@ -39,25 +39,29 @@ AddContactStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
   switch(action.type) {
     case ActionTypes.CONTACT_ADD_MODAL_SHOW:
       _isModalOpen = true;
+      AddContactStoreInstance.emitChange();
       break;
     case ActionTypes.CONTACT_ADD_MODAL_HIDE:
       _isModalOpen = false;
       _message = null;
+      AddContactStoreInstance.emitChange();
       break;
     case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK:
       _isModalOpen = false;
       _message = null;
+      AddContactStoreInstance.emitChange();
       break;
     case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED:
       _message = 'This phone is not registered in Actor.';
+      AddContactStoreInstance.emitChange();
       break;
     case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT:
       _message = 'You already have this user in contacts.';
+      AddContactStoreInstance.emitChange();
       break;
     default:
       return;
   }
-  AddContactStoreInstance.emitChange();
 });
 
 export default AddContactStoreInstance;
