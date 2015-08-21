@@ -23,8 +23,8 @@ object AuthEmailTransaction {
   def find(transactionHash: String) =
     active.filter(_.transactionHash === transactionHash).result.headOption
 
-  def findByEmail(email: String) =
-    active.filter(_.email === email).result.headOption
+  def findByEmailAndDeviceHash(email: String, deviceHash: Array[Byte]) =
+    active.filter(t ⇒ t.email === email && t.deviceHash === deviceHash).result.headOption
 
   def updateRedirectUri(transactionHash: String, redirectUri: String) =
     emailTransactions.filter(_.transactionHash === transactionHash).map(_.redirectUri).update(Some(redirectUri))

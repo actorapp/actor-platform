@@ -22,6 +22,6 @@ object AuthPhoneTransaction {
   def find(transactionHash: String) =
     active.filter(_.transactionHash === transactionHash).result.headOption
 
-  def findByPhone(phone: Long) =
-    active.filter(_.phoneNumber === phone).result.headOption
+  def findByPhoneAndDeviceHash(phone: Long, deviceHash: Array[Byte]) =
+    active.filter(t ⇒ t.phoneNumber === phone && t.deviceHash === deviceHash).result.headOption
 }
