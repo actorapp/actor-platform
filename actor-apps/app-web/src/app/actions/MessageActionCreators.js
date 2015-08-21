@@ -3,7 +3,7 @@ import _ from 'lodash';
 import ActorClient from 'utils/ActorClient';
 
 import mixpanel from 'utils/Mixpanel';
-
+import Markdown from 'utils/Markdown';
 import emojiCharacters from 'emoji-named-characters';
 
 var variants = _.map(Object.keys(emojiCharacters), function(name) {
@@ -26,7 +26,7 @@ export default {
 
   sendTextMessage: function(peer, text) {
     mixpanel.track('Send Text');
-    ActorClient.sendTextMessage(peer, replaceNames(text));
+    ActorClient.sendTextMessage(peer, replaceNames(Markdown.plainText(text)), replaceNames(text));
   },
 
   sendFileMessage: function(peer, file) {
