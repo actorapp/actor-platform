@@ -55,7 +55,8 @@ const DialogActionCreators = {
   },
 
   deleteMessages(peer, rids) {
-    ActorClient.deleteMessages(peer, rids);
+    console.warn('delete', peer, rids);
+    //ActorClient.deleteMessages(peer, rids);
   },
 
   leaveGroup(groupId) {
