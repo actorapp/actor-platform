@@ -38,8 +38,12 @@ final class ValueActor(name: String) extends PersistentActor {
         sender() ! Ack(uuid)
       }
     case Delete(uuid, _) ⇒
-      persist(ValueDeleted()) { e ⇒
-        value = None
+      if (value.isEmpty) {
+        persist(ValueDeleted()) { e ⇒
+          value = None
+          sender() ! Ack(uuid)
+        }
+      } else {
         sender() ! Ack(uuid)
       }
     case Get(_) ⇒
