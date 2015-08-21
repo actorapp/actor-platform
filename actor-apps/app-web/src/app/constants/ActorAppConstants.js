@@ -31,12 +31,17 @@ export const ActionTypes = keymirror({
   SELECT_DIALOG_PEER: null,
   SELECTED_DIALOG_INFO_CHANGED: null,
 
+  COMPOSE_CLEAN: null,
+  COMPOSE_TYPING: null,
+  COMPOSE_MENTION_INSERT: null,
+  COMPOSE_MENTION_CLOSE: null,
+
   SEND_MESSAGE_TEXT: null,
   SEND_MESSAGE_FILE: null,
   SEND_MESSAGE_PHOTO: null,
 
-  SHOW_ACTIVITY: null,
-  HIDE_ACTIVITY: null,
+  ACTIVITY_SHOW: null,
+  ACTIVITY_HIDE: null,
 
   CONTACT_ADD: null,
   CONTACT_REMOVE: null,
@@ -71,10 +76,17 @@ export const ActionTypes = keymirror({
   INVITE_USER_BY_LINK_MODAL_SHOW: null,
   INVITE_USER_BY_LINK_MODAL_HIDE: null,
 
-  SETTINGS_SHOW: null,
-  SETTINGS_HIDE: null,
+  PREFERENCES_SAVE: null,
+  PREFERENCES_LOAD: null,
+  PREFERENCES_MODAL_HIDE: null,
+  PREFERENCES_MODAL_SHOW: null,
 
-  LEFT_GROUP: null
+  LEFT_GROUP: null,
+
+  MY_PROFILE_MODAL_SHOW: null,
+  MY_PROFILE_MODAL_HIDE: null,
+  MY_PROFILE_SAVE_NAME: null,
+  MY_PROFILE_SAVE_NICKNAME: null
 });
 
 export const PeerTypes = {
@@ -96,8 +108,11 @@ export const MessageContentTypes = {
 };
 
 export const KeyCodes = {
+  TAB: 9,
   ESC: 27,
-  ENTER: 13
+  ENTER: 13,
+  ARROW_UP: 38,
+  ARROW_DOWN: 40
 };
 
 export const version = app.base_version;

@@ -37,11 +37,11 @@
     vertical-align: top;
   }
   &:hover {
-    background-color: rgba(160,160,160,.2);
+    background-color: rgba(160,160,160, .2);
   }
   &:active {
     color: darken($button-text-color, 10);
-    background-color: rgba(160,160,160,.4);
+    background-color: rgba(160,160,160, .4);
   }
   &--primary {
     min-width: 60px;
@@ -49,7 +49,7 @@
     color: white !important;
     background-color: $kashmir-blue;
     &:hover {
-      background-color: lighten($body-base-color,10);
+      background-color: lighten($body-base-color, 10);
     }
   }
   &--danger {
@@ -90,12 +90,12 @@
     &:hover,
     &.zeroclipboard-is-hover {
       background-color: rgba($dark-sky-blue, .17) !important;
-      box-shadow: 0 1px 1px 0 rgba($dark-sky-blue-2,.35) !important;
+      box-shadow: 0 1px 1px 0 rgba($dark-sky-blue2, .35) !important;
     }
     &:active,
     &.zeroclipboard-is-active {
       background-color: rgba($dark-sky-blue, .19) !important;
-      box-shadow: 0 2px 2px 0 rgba($dark-sky-blue-2,.35) !important;
+      box-shadow: 0 2px 2px 0 rgba($dark-sky-blue2, .35) !important;
     }
   }
   &--blue {

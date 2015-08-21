@@ -1,59 +1,88 @@
-import Reflux from 'reflux';
-import mixpanel from 'utils/Mixpanel';
+import { EventEmitter } from 'events';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 import ActorClient from 'utils/ActorClient';
+import mixpanel from 'utils/Mixpanel';
 
-import MyProfileActions from 'actions/MyProfileActions';
+const CHANGE_EVENT = 'change';
 
 let _profile = null,
     _name = null,
+    _nick = null,
     _isModalOpen = false;
 
-export default Reflux.createStore({
-  init() {
-    this.listenTo(MyProfileActions.modalOpen, this.onModalOpen);
-    this.listenTo(MyProfileActions.modalClose, this.onModalClose);
-    this.listenTo(MyProfileActions.setName, this.setName);
-  },
+class MyProfileStore extends EventEmitter {
+  constructor() {
+    super();
+  }
+
+  emitChange() {
+    this.emit(CHANGE_EVENT);
+  }
+
+  addChangeListener(callback) {
+    this.on(CHANGE_EVENT, callback);
+  }
+
+  removeChangeListener(callback) {
+    this.removeListener(CHANGE_EVENT, callback);
+  }
 
   isModalOpen() {
     return _isModalOpen;
-  },
-
-  getProfile() {
-    return _profile;
-  },
+  }
 
   getName() {
     return _name;
-  },
+  }
 
-  setName(name) {
-    mixpanel.track('Change name');
-    mixpanel.people.set({
-      $name: name
-    });
-    ActorClient.editMyName(name);
-  },
+  getNick() {
+    return _nick;
+  }
 
-  setProfile(profile) {
-    _profile = profile;
-    _name = profile.name;
+  getProfile() {
+    return _profile;
+  }
+}
 
-    this.trigger();
-  },
+const setProfile = (profile) => {
+  _profile = profile;
+  _name = profile.name;
+  _nick = profile.nick;
+};
 
-  onModalOpen() {
-    ActorClient.bindUser(ActorClient.getUid(), this.setProfile);
-    _isModalOpen = true;
+let MyProfileStoreInstance = new MyProfileStore();
 
-    this.trigger();
-  },
-
-  onModalClose() {
-    ActorClient.unbindUser(ActorClient.getUid(), this.setProfile);
-    _isModalOpen = false;
-
-    this.trigger();
+MyProfileStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
+  switch(action.type) {
+    case ActionTypes.MY_PROFILE_MODAL_SHOW:
+      ActorClient.bindUser(ActorClient.getUid(), setProfile);
+      _isModalOpen = true;
+      MyProfileStoreInstance.emitChange();
+      break;
+    case ActionTypes.MY_PROFILE_MODAL_HIDE:
+      ActorClient.unbindUser(ActorClient.getUid(), setProfile);
+      _isModalOpen = false;
+      MyProfileStoreInstance.emitChange();
+      break;
+    case ActionTypes.MY_PROFILE_SAVE_NAME:
+      if (_name !== action.name) {
+        _name = action.name;
+        ActorClient.editMyName(_name);
+        MyProfileStoreInstance.emitChange();
+      }
+      break;
+    case ActionTypes.MY_PROFILE_SAVE_NICKNAME:
+      if (_nick !== action.nick) {
+        _nick = action.nick;
+        ActorClient.editMyNick(_nick);
+        MyProfileStoreInstance.emitChange();
+      }
+      break;
+    default:
+      return;
   }
 });
+
+export default MyProfileStoreInstance;

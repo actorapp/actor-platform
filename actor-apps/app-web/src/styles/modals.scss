@@ -5,18 +5,25 @@
 .ReactModal__Overlay {
   position: fixed;
   z-index: 100;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  //top: 0;
+  //right: 0;
+  //bottom: 0;
+  //left: 0;
+  //perspective: 600px;
+
+  display: flex;
+  flex-direction: column;
 
   opacity: 0;
   background-color: $modal-backdrop-color;
 
-  perspective: 600px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+
+
   &--after-open {
     //transition: opacity 150ms ease-out;
-
     opacity: 1;
   }
   &--before-close {
@@ -43,7 +50,7 @@
 
   width: $modal-default-width;
   //min-height: $modal-default-height;
-  margin: 160px auto 0;
+  //margin: 160px auto 0;
 
   color: $modal-text-color;
   border-radius: $modal-default-radius;
@@ -169,7 +176,8 @@
     .avatar {
       margin: 16px 23px 0 16px;
     }
-    .name {
+    .name,
+    .nick {
       font-size: 18px;
 
       margin-right: 16px;
@@ -187,6 +195,13 @@
       margin-right: 16px;
 
       //color: $modal-text-light-color;
+    }
+    .about {
+      padding: 0 16px 16px 0;
+    }
+
+    footer {
+      padding: 0 16px 16px;
     }
   }
   &--create-group {
@@ -342,65 +357,83 @@
   }
   &--preferences {
     .modal-new__body {
-      background-color: $pale-grey;
       padding: 0;
+
+      background-color: $pale-grey;
       .preferences {
-        height: 430px;
         display: flex;
         flex-direction: row;
+
+        height: 430px;
+
         flex: 1;
         &__tabs {
-          width: 187px;
           display: block;
+
+          width: 187px;
           height: 100%;
           &__tab {
-            display: block;
-            padding: 10px 24px;
-            color: $greyish-brown;
-            cursor: pointer;
-            line-height: 20px;
             font-size: 15px;
+            line-height: 20px;
+
+            display: block;
+
+            padding: 10px 24px;
+
+            cursor: pointer;
+
+            color: $greyish-brown;
             &--active {
               color: white;
-              background-color: $dark-sky-blue-2;
+              background-color: $dark-sky-blue2;
             }
           }
         }
         &__body {
           display: flex;
-          flex: 1;
-          background-color: white;
-          padding: 0 27px 0 105px;
           overflow-x: hidden;
           overflow-y: auto;
 
+          padding: 0 27px 0 105px;
+
+          background-color: white;
+
+          flex: 1;
         }
         &__list {
-            width: 100%;
-            //display: block;
+          width: 100%;
+          //display: block;
           &__item {
             ul {
-              list-style: none;
               margin: 0;
               padding: 0;
+
+              list-style: none;
               li {
-                position: relative;
-                padding: 30px 0;
                 font-size: 15px;
                 line-height: 24px;
+
+                position: relative;
+
+                padding: 30px 0;
+
                 border-bottom: 1px solid rgba(black, .12);
                 .icon {
+                  line-height: 24px;
+
                   position: absolute;
                   top: 30px;
-                  line-height: 24px;
                   left: -60px;
+
                   color: rgba(black, .4);
                 }
                 .hint {
-                  margin: 0;
-                  color: rgba(black, .4);
                   font-size: 13px;
                   line-height: 24px;
+
+                  margin: 0;
+
+                  color: rgba(black, .4);
                 }
                 &:last-child {
                   border-bottom: none;
@@ -412,12 +445,12 @@
                 padding: 14px 0 15px;
                 & > span {
                   line-height: 54px;
-                  vertical-align: middle;
+
                   display: inline-block;
+
+                  vertical-align: middle;
                 }
               }
-            }
-            &--notifications {
             }
           }
         }
@@ -480,10 +513,10 @@
   }
   &__body {
     padding: 0;
-    background-color: white;
-
 
     text-align: initial;
+
+    background-color: white;
   }
 
   &--profile {
@@ -648,12 +681,17 @@
   &__tabs {
     background-color: $blue-bayoux;
     &__tab-content {
-      padding: 16px;
-      background-color: white;
       min-height: 300px;
-      h1, h2, h3, h4 {
-        margin-top: 0;
+      padding: 16px;
+
+      background-color: white;
+      h1,
+      h2,
+      h3,
+      h4 {
         font-weight: 300;
+
+        margin-top: 0;
       }
     }
     &__tab-items {
@@ -666,8 +704,10 @@
       background-color: $blue-bayoux;
       h3 {
         display: inline-block;
+
         margin: 0;
         padding: 0;
+
         color: white;
       }
     }
