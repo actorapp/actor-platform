@@ -30,18 +30,9 @@
 
 
   &__peer {
-    //display: inline-block;
-    .avatar {
-      margin: 16px 16px 16px 0;
-    }
-    a > .avatar {
-      cursor: pointer;
-    }
-    &__body {
-      display: inline-block;
+    overflow: hidden;
 
-      vertical-align: middle;
-    }
+    width: 0;
     &__title {
       font-size: 16px;
       font-weight: 500;
