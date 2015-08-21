@@ -60,7 +60,7 @@ object Build extends sbt.Build {
         javaOptions ++= Seq("-Dfile.encoding=UTF-8"),
         javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
         fork in Test := false,
-        updateOptions := updateOptions.value.withCachedResolution(false)
+        updateOptions := updateOptions.value.withCachedResolution(true)
       )
 
 
