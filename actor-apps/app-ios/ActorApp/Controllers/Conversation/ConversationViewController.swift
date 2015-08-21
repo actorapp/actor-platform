@@ -26,7 +26,7 @@ class ConversationViewController: ConversationBaseViewController {
     
     private let backgroundView: UIView = UIView()
     
-    private var layoutCache: LayoutCache!
+    // private var layoutCache: LayoutCache!
 //    private let heightCache = HeightCache()
 //    
 //    // MARK: -
@@ -422,10 +422,11 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UICollectionViewCell) {
-        var message = item as! ACMessage
+        var list = getProcessedList()
+        var message = list!.items[indexPath.row]
+        var setting = list!.cellSettings[indexPath.row]
         var bubbleCell = (cell as! AABubbleCell)
-        var setting = buildCellSetting(indexPath.row)
-        bubbleCell.performBind(message, setting: setting, layoutCache: layoutCache)
+        bubbleCell.performBind(message, setting: setting, layoutCache: list!.layoutCache)
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
@@ -438,24 +439,6 @@ class ConversationViewController: ConversationBaseViewController {
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
         return 0
-    }
-    
-    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64 {
-        var message = objectAtIndexPath(indexPath) as! ACMessage
-        return Int64(message.rid)
-    }
-    
-    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity {
-        return MessageGravity.Center
-    }
-    
-    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        
-        var message = objectAtIndexPath(indexPath) as! ACMessage;
-        var setting = buildCellSetting(indexPath.row)
-        let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
-        var height = MessagesLayouting.measureHeight(message, group: group, setting: setting, layoutCache: layoutCache)
-        return CGSizeMake(self.view.bounds.width, height)
     }
     
     override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) -> Bool {
@@ -498,70 +481,73 @@ class ConversationViewController: ConversationBaseViewController {
         return false
     }
     
-    func buildCellSetting(index: Int) -> CellSetting {
-        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
-        
-//        var current = objectAtIndex(index) as! ACMessage
-//        var next: ACMessage! = index > 0 ? objectAtIndex(index - 1) as! ACMessage : nil
-//        var prev: ACMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! ACMessage : nil
+//    func buildCellSetting(index: Int) -> CellSetting {
+//        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
 //        
-//        var isShowDate = true
-//        var isShowDateNext = true
-//        var isShowNewMessages = (unreadMessageId == current.rid)
-//        var clenchTop = false
-//        var clenchBottom = false
+////        var current = objectAtIndex(index) as! ACMessage
+////        var next: ACMessage! = index > 0 ? objectAtIndex(index - 1) as! ACMessage : nil
+////        var prev: ACMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! ACMessage : nil
+////        
+////        var isShowDate = true
+////        var isShowDateNext = true
+////        var isShowNewMessages = (unreadMessageId == current.rid)
+////        var clenchTop = false
+////        var clenchBottom = false
+////
+////        if (prev != nil) {
+////            isShowDate = !areSameDate(current, prev: prev)
+////            if !isShowDate {
+////                clenchTop = useCompact(current, next: prev)
+////            }
+////        }
+////        
+////        if (next != nil) {
+////            if areSameDate(next, prev: current) {
+////                clenchBottom = useCompact(current, next: next)
+////            }
+////        }
+////        
+////        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom, showNewMessages: isShowNewMessages)
+//    }
+//    
+//    func useCompact(source: ACMessage, next: ACMessage) -> Bool {
+//        if (source.content is ACServiceContent) {
+//            if (next.content is ACServiceContent) {
+//                return true
+//            }
+//        } else {
+//            if (next.content is ACServiceContent) {
+//                return false
+//            }
+//            if (source.senderId == next.senderId) {
+//                return true
+//            }
+//        }
+//        
+//        return false
+//    }
+//    
+//    func areSameDate(source:ACMessage, prev: ACMessage) -> Bool {
+//        let calendar = NSCalendar.currentCalendar()
+//        
+//        var currentDate = NSDate(timeIntervalSince1970: Double(source.date)/1000.0)
+//        var currentDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: currentDate)
+//        
+//        var nextDate = NSDate(timeIntervalSince1970: Double(prev.date)/1000.0)
+//        var nextDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: nextDate)
 //
-//        if (prev != nil) {
-//            isShowDate = !areSameDate(current, prev: prev)
-//            if !isShowDate {
-//                clenchTop = useCompact(current, next: prev)
-//            }
-//        }
-//        
-//        if (next != nil) {
-//            if areSameDate(next, prev: current) {
-//                clenchBottom = useCompact(current, next: next)
-//            }
-//        }
-//        
-//        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom, showNewMessages: isShowNewMessages)
-    }
-    
-    func useCompact(source: ACMessage, next: ACMessage) -> Bool {
-        if (source.content is ACServiceContent) {
-            if (next.content is ACServiceContent) {
-                return true
-            }
-        } else {
-            if (next.content is ACServiceContent) {
-                return false
-            }
-            if (source.senderId == next.senderId) {
-                return true
-            }
-        }
-        
-        return false
-    }
-    
-    func areSameDate(source:ACMessage, prev: ACMessage) -> Bool {
-        let calendar = NSCalendar.currentCalendar()
-        
-        var currentDate = NSDate(timeIntervalSince1970: Double(source.date)/1000.0)
-        var currentDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: currentDate)
-        
-        var nextDate = NSDate(timeIntervalSince1970: Double(prev.date)/1000.0)
-        var nextDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: nextDate)
-
-        return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
-    }
+//        return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
+//    }
 
     override func displayListForController() -> ARBindedDisplayList {
         var res = Actor.getMessageDisplayList(peer)
         if (res.getBackgroundProcessor() == nil) {
-            res.setBackgroundProcessor(BubbleBackgroundProcessor())
+            var processor = BubbleBackgroundProcessor()
+            res.setBackgroundProcessor(processor)
+            let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
+            res.setListProcessor(ListProcessor(layoutCache: processor.layoutCache, isGroup: group))
         }
-        layoutCache = (res.getBackgroundProcessor() as! BubbleBackgroundProcessor).layoutCache
+        // layoutCache = (res.getBackgroundProcessor() as! BubbleBackgroundProcessor).layoutCache
         return res
     }
     

@@ -99,8 +99,10 @@ class AvatarView: UIImageView {
     // MARK: -
     // MARK: Bind
     
-    func bind(title: String, id: jint, fileName: String?) {
+    func bind(var title: String, id: jint, fileName: String?) {
         unbind()
+        
+        title = title.smallValue()
         
         self.bindedTitle = title
         self.bindedId = -1
@@ -112,7 +114,7 @@ class AvatarView: UIImageView {
         
         if (image == nil) {
             if (self.placeholderImage == nil) {
-                self.image = Placeholders.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == .Rounded);
+                self.image = Placeholders.avatarPlaceholder(bindedId, size: frameSize, title: title, rounded: avatarType == .Rounded);
             }
             return
         }
@@ -122,7 +124,9 @@ class AvatarView: UIImageView {
         self.bind(title, id: id, avatar: avatar, clearPrev: true)
     }
     
-    func bind(title: String, id: jint, avatar: ACAvatar!, clearPrev: Bool) {
+    func bind(var title: String, id: jint, avatar: ACAvatar!, clearPrev: Bool) {
+        
+        title = title.smallValue()
         
         var needSmallAvatar: Bool = frameSize < 100
         
@@ -137,7 +141,7 @@ class AvatarView: UIImageView {
             var notChanged = true;
             
             // Is Preview changed
-            notChanged = notChanged && bindedTitle.smallValue() == title.smallValue()
+            notChanged = notChanged && bindedTitle == title
             
             // Is avatar changed
             if (fileLocation == nil) {
@@ -177,7 +181,7 @@ class AvatarView: UIImageView {
                         return;
                     }
                     
-                    var image = Placeholders.avatarPlaceholder(placeholderId, size: self.frameSize, title: placeholderTitle.smallValue(), rounded: self.avatarType == .Rounded)
+                    var image = Placeholders.avatarPlaceholder(placeholderId, size: self.frameSize, title: placeholderTitle, rounded: self.avatarType == .Rounded)
                     
                     dispatchOnUi { () -> Void in
                         if (callbackRequestId != self.requestId) {

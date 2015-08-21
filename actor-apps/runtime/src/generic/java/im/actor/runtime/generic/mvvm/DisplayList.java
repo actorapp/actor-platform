@@ -27,13 +27,16 @@ public class DisplayList<T> {
     private ArrayList<T>[] lists;
     private volatile int currentList;
     private final OperationMode operationMode;
+    private volatile Object processedList;
 
     private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
     private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners =
             new CopyOnWriteArrayList<AndroidChangeListener<T>>();
     private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners =
             new CopyOnWriteArrayList<AppleChangeListener<T>>();
-    private BackgroundProcessor backgroundProcessor = null;
+
+    private BackgroundProcessor<T> backgroundProcessor = null;
+    private ListProcessor<T> listProcessor = null;
 
     @ObjectiveCName("initWithMode:")
     public DisplayList(OperationMode operationMode) {
@@ -99,8 +102,18 @@ public class DisplayList<T> {
     }
 
     @ObjectiveCName("setBackgroundProcessor:")
-    public void setBackgroundProcessor(BackgroundProcessor backgroundProcessor) {
+    public void setBackgroundProcessor(BackgroundProcessor<T> backgroundProcessor) {
         this.backgroundProcessor = backgroundProcessor;
+    }
+
+    @ObjectiveCName("setListProcessor:")
+    public void setListProcessor(ListProcessor<T> listProcessor) {
+        this.listProcessor = listProcessor;
+    }
+
+    @ObjectiveCName("getProcessedList")
+    public Object getProcessedList() {
+        return processedList;
     }
 
     @ObjectiveCName("addListener:")
@@ -231,20 +244,28 @@ public class DisplayList<T> {
                 appleChanges = ChangeBuilder.processAppleModifications(modRes, initialList, dest[0].isLoadMore);
             }
 
-            requestListSwitch(dest, initialList, androidChanges, appleChanges, dest[0].isLoadMore);
+            Object processedList = null;
+            if (displayList.listProcessor != null) {
+                processedList = displayList.listProcessor.process(backgroundList);
+            }
+
+            requestListSwitch(dest, initialList, androidChanges, appleChanges, dest[0].isLoadMore,
+                    processedList);
         }
 
         private void requestListSwitch(final ModificationHolder<T>[] modifications,
                                        final ArrayList<T> initialList,
                                        final ArrayList<ChangeDescription<T>> androidChanges,
                                        final AppleListUpdate appleChanges,
-                                       final boolean isLoadedMore) {
+                                       final boolean isLoadedMore,
+                                       final Object processedList) {
             isLocked = true;
             im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                 @Override
                 public void run() {
 
                     displayList.currentList = (displayList.currentList + 1) % 2;
+                    displayList.processedList = processedList;
 
                     if (androidChanges != null) {
                         for (AndroidChangeListener<T> l : displayList.androidListeners) {
