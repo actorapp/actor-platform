@@ -63,13 +63,13 @@ public class DisplayList<T> {
 
     @ObjectiveCName("size")
     public int getSize() {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
         return lists[currentList].size();
     }
 
     @ObjectiveCName("itemWithIndex:")
     public T getItem(int index) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
         return lists[currentList].get(index);
     }
 
@@ -105,7 +105,7 @@ public class DisplayList<T> {
 
     @ObjectiveCName("addListener:")
     public void addListener(Listener listener) {
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
@@ -113,7 +113,7 @@ public class DisplayList<T> {
 
     @ObjectiveCName("removeListener:")
     public void removeListener(Listener listener) {
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
         listeners.remove(listener);
     }
 
@@ -122,7 +122,7 @@ public class DisplayList<T> {
         if (operationMode != OperationMode.ANDROID && operationMode != OperationMode.GENERAL) {
             throw new RuntimeException("Unable to set Android Listener in iOS mode");
         }
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
 
         if (!androidListeners.contains(listener)) {
             androidListeners.add(listener);
@@ -134,7 +134,7 @@ public class DisplayList<T> {
         if (operationMode != OperationMode.ANDROID && operationMode != OperationMode.GENERAL) {
             throw new RuntimeException("Unable to set Android Listener in iOS mode");
         }
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
 
         androidListeners.remove(listener);
     }
@@ -144,7 +144,7 @@ public class DisplayList<T> {
         if (operationMode != OperationMode.IOS && operationMode != OperationMode.GENERAL) {
             throw new RuntimeException("Unable to set Android Listener in Android mode");
         }
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
 
         if (!appleListeners.contains(listener)) {
             appleListeners.add(listener);
@@ -156,7 +156,7 @@ public class DisplayList<T> {
         if (operationMode != OperationMode.IOS && operationMode != OperationMode.GENERAL) {
             throw new RuntimeException("Unable to set Android Listener in Android mode");
         }
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
 
         appleListeners.remove(listener);
     }

@@ -55,7 +55,8 @@ SOURCE_ROOTS = \
 	$(APPS_ROOT)/core-cocoa/src/main/java
 
 EXCLUDED_CLASSES = \
-	com.google.j2objc.annotations.ObjectiveCName
+	com.google.j2objc.annotations.ObjectiveCName \
+    com.google.j2objc.annotations.Propery
 
 PREFIXES = \
 	--prefixes $(APPS_ROOT)/runtime-cocoa/src/main/prefixes.properties \

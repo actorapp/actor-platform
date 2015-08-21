@@ -79,7 +79,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             return
         }
         
-        if (modification.isLoadMore()) {
+        if (modification.isLoadMore) {
             UIView.setAnimationsEnabled(false)
         }
         
@@ -152,7 +152,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             }
         }
         
-        if (modification.isLoadMore()) {
+        if (modification.isLoadMore) {
             UIView.setAnimationsEnabled(true)
         }
     }

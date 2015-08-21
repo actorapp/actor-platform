@@ -55,7 +55,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
         if action == "copy:" {
-            if (bindedMessage!.getContent() is ACTextContent) {
+            if (bindedMessage!.content is ACTextContent) {
                 return true
             }
         }
@@ -66,7 +66,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     }
     
     override func copy(sender: AnyObject?) {
-        UIPasteboard.generalPasteboard().string = (bindedMessage!.getContent() as! ACTextContent).getText()
+        UIPasteboard.generalPasteboard().string = (bindedMessage!.content as! ACTextContent).text
     }
     
     func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
@@ -85,41 +85,41 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         if (!reuse) {
             needRelayout = true
             
-            messageText.text = self.cellLayout.text
-            
-            if self.cellLayout.isUnsupported {
-                messageText.font = TextCellLayout.bubbleFontUnsupported
-                if (isOut) {
-                    messageText.textColor = MainAppTheme.bubbles.textUnsupportedOut
-                } else {
-                    messageText.textColor = MainAppTheme.bubbles.textUnsupportedIn
-                }
-
-            } else {
-                messageText.font = TextCellLayout.bubbleFont
-                if (isOut) {
-                    messageText.textColor = MainAppTheme.bubbles.textOut
-                } else {
-                    messageText.textColor = MainAppTheme.bubbles.textIn
-                }
-            }
-            
-            
-            if isGroup && !isOut {
-                if let user = Actor.getUserWithUid(message.getSenderId()) {
-                    senderNameLabel.text = user.getNameModel().get()
-                    var color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
-                    senderNameLabel.textColor = color
-                }
-                mainView.addSubview(senderNameLabel)
-            } else {
-                senderNameLabel.removeFromSuperview()
-            }
+//            messageText.text = self.cellLayout.text
+//            
+//            if self.cellLayout.isUnsupported {
+//                messageText.font = TextCellLayout.bubbleFontUnsupported
+//                if (isOut) {
+//                    messageText.textColor = MainAppTheme.bubbles.textUnsupportedOut
+//                } else {
+//                    messageText.textColor = MainAppTheme.bubbles.textUnsupportedIn
+//                }
+//
+//            } else {
+//                messageText.font = TextCellLayout.bubbleFont
+//                if (isOut) {
+//                    messageText.textColor = MainAppTheme.bubbles.textOut
+//                } else {
+//                    messageText.textColor = MainAppTheme.bubbles.textIn
+//                }
+//            }
+//            
+//            
+//            if isGroup && !isOut {
+//                if let user = Actor.getUserWithUid(message.senderId) {
+//                    senderNameLabel.text = user.getNameModel().get()
+//                    var color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
+//                    senderNameLabel.textColor = color
+//                }
+//                mainView.addSubview(senderNameLabel)
+//            } else {
+//                senderNameLabel.removeFromSuperview()
+//            }
         }
         
         // Always update bubble insets
         if (isOut) {
-            bindBubbleType(.TextOut, isCompact: isClanchBottom)
+            // bindBubbleType(.TextOut, isCompact: isClanchBottom)
             dateText.textColor = MainAppTheme.bubbles.textDateOut
             
             bubbleInsets = UIEdgeInsets(
@@ -133,7 +133,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 bottom: AABubbleCell.bubbleContentBottom,
                 right: (isClanchBottom ? 4 : 10))
         } else {
-            bindBubbleType(.TextIn, isCompact: isClanchBottom)
+            // bindBubbleType(.TextIn, isCompact: isClanchBottom)
             dateText.textColor = MainAppTheme.bubbles.textDateIn
             
             bubbleInsets = UIEdgeInsets(
@@ -151,7 +151,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         // Always update date and state
         dateText.text = cellLayout.date
-        messageState = UInt(message.getMessageState().ordinal());
+        messageState = UInt(message.messageState.ordinal());
         
         if (isOut) {
             switch(self.messageState) {
@@ -195,26 +195,26 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         var contentHeight = self.contentView.frame.height
         
         // Measure Text
-        var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
+        // var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
         
-        self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSizeWithPadding.width, self.cellLayout.textSizeWithPadding.height)
-        self.messageText.sizeToFit()
+        // self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSizeWithPadding.width, self.cellLayout.textSizeWithPadding.height)
+        // self.messageText.sizeToFit()
         
         var textWidth = round(self.cellLayout.textSizeWithPadding.width)
         var textHeight = round(self.cellLayout.textSizeWithPadding.height)
         
-        if textWidth < senderNameBounds.width {
-            textWidth = senderNameBounds.width + 5
-        }
+//        if textWidth < senderNameBounds.width {
+//            textWidth = senderNameBounds.width + 5
+//        }
         
         // Layout elements
         if (self.isOut) {
-            self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - insets.right, y: insets.top)
+            // self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - insets.right, y: insets.top)
             self.dateText.frame = CGRectMake(contentWidth - insets.right - 70, textHeight + insets.top - 20, 46, 26)
             self.statusView.frame = CGRectMake(contentWidth - insets.right - 24, textHeight + insets.top - 20, 20, 26)
             self.statusView.hidden = false
         } else {
-            self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top)
+            // self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top)
             self.dateText.frame = CGRectMake(insets.left + textWidth - 47, textHeight + insets.top - 20, 46, 26)
             self.statusView.hidden = true
         }
