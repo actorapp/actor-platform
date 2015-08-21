@@ -87,11 +87,11 @@ class MessagesLayout : UICollectionViewLayout {
         
         for i in 0..<itemsCount {
             var indexPath = NSIndexPath(forRow: i, inSection: 0)
-            // var itemId = del.collectionView(self.collectionView!, layout: self, idForItemAtIndexPath: indexPath)
-            //var itemSize = del.collectionView(self.collectionView!, layout: self, sizeForItemAtIndexPath: indexPath)
-            var itemId = Int64(i)
+            var itemId = del.collectionView(self.collectionView!, layout: self, idForItemAtIndexPath: indexPath)
+            var itemSize = del.collectionView(self.collectionView!, layout: self, sizeForItemAtIndexPath: indexPath)
+            //var itemId = Int64(i)
             
-            var itemSize = CGSizeMake(300, 44)
+            // var itemSize = CGSizeMake(300, 44)
             
 //            var item:LayoutItem! = layoutItemPool.get()
 //            if (item == nil) {
@@ -129,22 +129,12 @@ class MessagesLayout : UICollectionViewLayout {
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
-        var start = CFAbsoluteTimeGetCurrent()
-        
         var res = [AnyObject]()
         for i in 0..<items.count {
             if CGRectIntersectsRect(rect, frames[i]) {
                 res.append(items[i].attrs)
             }
-        }
-//        for itm in items {
-//            if CGRectIntersectsRect(rect, itm.attrs.frame) {
-//                res.append(itm.attrs)
-//            }
-//        }
-        
-        println("layoutAttributesForElementsInRect(super): \(CFAbsoluteTimeGetCurrent() - start)")
-        
+        }        
         return res
     }
     
