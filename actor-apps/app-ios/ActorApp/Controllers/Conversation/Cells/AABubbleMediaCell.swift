@@ -246,6 +246,8 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
                     var controller = NYTPhotosViewController(photos: [photoInfo])
                     controller.delegate = self
+                    
+                    (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
                     UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
                     self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
@@ -261,6 +263,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     var controller = NYTPhotosViewController(photos: [photoInfo])
                     controller.delegate = self
                     
+                    (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
                     UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
                     self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
@@ -309,6 +312,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     }
     
     func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController!) {
+        (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
     }
     
