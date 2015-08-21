@@ -11,6 +11,7 @@ import im.actor.runtime.actors.mailbox.ActorEndpoint;
  * Reference to Actor that allows to send messages to real Actor
  */
 public class ActorRef {
+
     private ActorSystem system;
     private ActorDispatcher dispatcher;
     private String path;

@@ -155,13 +155,13 @@ class AABubbleCell: UICollectionViewCell {
     
     override func delete(sender: AnyObject?) {
         var rids = IOSLongArray(length: 1)
-        rids.replaceLongAtIndex(0, withLong: bindedMessage!.getRid())
+        rids.replaceLongAtIndex(0, withLong: bindedMessage!.rid)
         Actor.deleteMessagesWithPeer(self.peer, withRids: rids)
     }
     
     func avatarDidTap() {
         if bindedMessage != nil {
-            controller.onBubbleAvatarTap(self.avatarView, uid: bindedMessage!.getSenderId())
+            // controller.onBubbleAvatarTap(self.avatarView, uid: bindedMessage!.getSenderId())
         }
     }
     
@@ -170,37 +170,37 @@ class AABubbleCell: UICollectionViewCell {
         self.contentView.clipsToBounds = false
         
         var reuse = false
-        if (bindedMessage != nil && bindedMessage?.getRid() == message.getRid()) {
+        if (bindedMessage != nil && bindedMessage?.rid == message.rid) {
             reuse = true
         }
-        isOut = message.getSenderId() == Actor.myUid();
+        isOut = message.senderId == Actor.myUid();
         bindedMessage = message
         self.isShowNewMessages = setting.showNewMessages
-        if (!reuse) {
-            if (!isFullSize) {
-                if (!isOut && isGroup) {
-                    if let user = Actor.getUserWithUid(message.getSenderId()) {
-                        let avatar: ACAvatar? = user.getAvatarModel().get()
-                        let name = user.getNameModel().get()
-                        avatarView.bind(name, id: user.getId(), avatar: avatar)
-                    }
-                    mainView.addSubview(avatarView)
-                } else {
-                    avatarView.removeFromSuperview()
-                }
-            }
-        }
+//        if (!reuse) {
+//            if (!isFullSize) {
+//                if (!isOut && isGroup) {
+//                    if let user = Actor.getUserWithUid(message.getSenderId()) {
+//                        let avatar: ACAvatar? = user.getAvatarModel().get()
+//                        let name = user.getNameModel().get()
+//                        avatarView.bind(name, id: user.getId(), avatar: avatar)
+//                    }
+//                    mainView.addSubview(avatarView)
+//                } else {
+//                    avatarView.removeFromSuperview()
+//                }
+//            }
+//        }
         
         self.isShowDate = setting.showDate
         if (isShowDate) {
-            self.dateText.text = Actor.getFormatter().formatDate(message.getDate())
+            self.dateText.text = Actor.getFormatter().formatDate(message.date)
         }
         
-        var layout = layoutCache.pick(message.getRid())
+        var layout = layoutCache.pick(message.rid)
             
         if (layout == nil) {
             layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
-            layoutCache.cache(message.getRid(), layout: layout!)
+            layoutCache.cache(message.rid, layout: layout!)
         }
         
         self.bindedSetting = setting

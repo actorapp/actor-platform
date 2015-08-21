@@ -4,6 +4,8 @@
 
 package im.actor.core.entity.content;
 
+import com.google.j2objc.annotations.Property;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,9 +33,12 @@ public class TextContent extends AbsContent {
                                 : new ApiTextExMarkdown(markDownText))));
     }
 
-    private String text;
-    private ArrayList<Integer> mentions;
-    private ApiTextMessageEx textMessageEx;
+    @Property("readonly, nonatomic")
+    private final String text;
+    @Property("readonly, nonatomic")
+    private final ApiTextMessageEx textMessageEx;
+
+    private final ArrayList<Integer> mentions;
 
     public TextContent(ContentRemoteContainer remoteContainer) {
         super(remoteContainer);
