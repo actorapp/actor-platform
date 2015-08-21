@@ -64,6 +64,7 @@ class MessagesLayout : UICollectionViewLayout {
         start = CFAbsoluteTimeGetCurrent()
         
         var del = self.collectionView!.delegate as! MessagesLayoutDelegate
+        var processedList = del.getProcessedList()
         
         // Validate sections
         var sectionsCount = self.collectionView!.numberOfSections()
@@ -75,50 +76,31 @@ class MessagesLayout : UICollectionViewLayout {
         if sectionsCount != 1 {
             fatalError("Unsupported more than 1 section")
         }
-        
-        
-        var itemsCount = self.collectionView!.numberOfItemsInSection(0)
-        var offset: CGFloat = 0
+
         contentHeight = 0.0
-        
-        // layoutItemPool.acquire(items)
         items.removeAll(keepCapacity: true)
         frames.removeAll(keepCapacity: true)
         
-        for i in 0..<itemsCount {
-            var indexPath = NSIndexPath(forRow: i, inSection: 0)
-            var itemId = del.collectionView(self.collectionView!, layout: self, idForItemAtIndexPath: indexPath)
-            var itemSize = del.collectionView(self.collectionView!, layout: self, sizeForItemAtIndexPath: indexPath)
-            //var itemId = Int64(i)
-            
-            // var itemSize = CGSizeMake(300, 44)
-            
-//            var item:LayoutItem! = layoutItemPool.get()
-//            if (item == nil) {
-//                item = LayoutItem(id: itemId)
-//            } else {
-//                item.id = itemId
-//            }
-            var frame = CGRect(origin: CGPointMake(0, offset), size: itemSize)
-            var item = LayoutItem(id: itemId)
-            
-            item.size = itemSize
-            
-            var attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
-            // attrs.size = item.size
-            attrs.frame = CGRect(origin: CGPointMake(0, offset), size: itemSize)
-            // attrs.center = CGPointMake(0, offset + item.size.height / 2.0)
-            //attrs.frame = CGRect(origin: CGPointMake(0, offset), size: attrs.size)
-            //attrs.bounds = CGRect(origin: CGPointZero, size: attrs.size)
-                // attrs.alpha = 0
-            
-            offset += item.size.height
-            item.attrs = attrs
-            
-            items.append(item)
-            frames.append(frame)
-            
-            contentHeight += item.size.height
+        if processedList != nil {
+            for i in 0..<processedList!.items.count {
+                var indexPath = NSIndexPath(forRow: i, inSection: 0)
+                var itemId = processedList!.items[i].rid
+                var itemSize = CGSizeMake(self.collectionView!.bounds.width,  processedList!.heights[i])
+                
+                var frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
+                var item = LayoutItem(id: itemId)
+                
+                item.size = itemSize
+                
+                var attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+                attrs.frame = frame
+                item.attrs = attrs
+                
+                items.append(item)
+                frames.append(frame)
+                
+                contentHeight += item.size.height
+            }
         }
         
         println("prepareLayout: \(CFAbsoluteTimeGetCurrent() - start)")
@@ -223,11 +205,7 @@ struct CachedLayout {
 
 @objc protocol MessagesLayoutDelegate: UICollectionViewDelegate, UIScrollViewDelegate, NSObjectProtocol {
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
-
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity
+    @objc func getProcessedList() -> PreprocessedList?
 }
 
 @objc enum MessageGravity: Int {
