@@ -17,39 +17,18 @@ class ConversationViewController: ConversationBaseViewController {
     private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
     private let BubbleBannerIdentifier = "BubbleBannerIdentifier"
     
-    // private let badgeView = UIImageView()
+    private let binder: Binder = Binder();
+    
     private let titleView: UILabel = UILabel()
     private let subtitleView: UILabel = UILabel()
     private let navigationView: UIView = UIView()
-    
     private let avatarView = BarAvatarView(frameSize: 36, type: .Rounded)
-    
     private let backgroundView: UIView = UIView()
-    
-    // private var layoutCache: LayoutCache!
-//    private let heightCache = HeightCache()
-//    
-//    // MARK: -
-    // MARK: Public vars
-    
-    let binder: Binder = Binder();
-    
-    var unreadMessageId: jlong = 0
-    
-    // MARK: -
-    // MARK: Constructors
     
     override init(peer: ACPeer) {
         super.init(peer: peer);
         
         // Messages
-        
-        self.collectionView.registerClass(AABubbleTextCell.self, forCellWithReuseIdentifier: BubbleTextIdentifier)
-        self.collectionView.registerClass(AABubbleMediaCell.self, forCellWithReuseIdentifier: BubbleMediaIdentifier)
-        self.collectionView.registerClass(AABubbleDocumentCell.self, forCellWithReuseIdentifier: BubbleDocumentIdentifier)
-        self.collectionView.registerClass(AABubbleServiceCell.self, forCellWithReuseIdentifier: BubbleServiceIdentifier)
-        self.collectionView.backgroundColor = UIColor.clearColor()
-        self.collectionView.alwaysBounceVertical = true
         
         backgroundView.clipsToBounds = true
         backgroundView.backgroundColor = UIColor(
@@ -82,7 +61,6 @@ class ConversationViewController: ConversationBaseViewController {
         navigationView.frame = CGRectMake(0, 0, 200, 44);
         navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        // titleView.frame = CGRectMake((navigationView.frame.width - 200) / 2, 4, 200, 20)
         titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 17)!
         titleView.adjustsFontSizeToFitWidth = false;
         titleView.textColor = Resources.PrimaryLightText
@@ -90,7 +68,6 @@ class ConversationViewController: ConversationBaseViewController {
         titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        // subtitleView.frame = CGRectMake(0, 22, 200, 20);
         subtitleView.font = UIFont.systemFontOfSize(13);
         subtitleView.adjustsFontSizeToFitWidth = true;
         subtitleView.textColor = Resources.SecondaryLightText
@@ -102,7 +79,6 @@ class ConversationViewController: ConversationBaseViewController {
         navigationView.addSubview(subtitleView)
         
         self.navigationItem.titleView = navigationView;
-        // self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "back", style: UIBarButtonItemStyle.Done, target: self, action: "back")
         
         // Navigation Avatar
         
@@ -114,11 +90,6 @@ class ConversationViewController: ConversationBaseViewController {
         
         var barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
-        
-//        self.singleTapGesture.cancelsTouchesInView = true
-        
-//        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
-//        self.collectionView.addGestureRecognizer(longPressGesture)
     }
     
     required init(coder aDecoder: NSCoder!) {
@@ -213,18 +184,13 @@ class ConversationViewController: ConversationBaseViewController {
         super.viewWillLayoutSubviews()
         backgroundView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
         
-        // println("\(view.bounds.width)")
-        // navigationView.frame = CGRectMake(navigationView.frame.minX, navigationView.frame.minY, 200, 44)
         titleView.frame = CGRectMake(0, 4, (navigationView.frame.width - 0), 20)
         subtitleView.frame = CGRectMake(0, 22, (navigationView.frame.width - 0), 20)
-        
-        // badgeView.frame = CGRectMake(290 - view.bounds.width, 4, 16, 16)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // unreadMessageId = MSG.loadLastReadState(peer)
-        // navigationItem.backBarButtonItem = UIBarButtonItem(customView: badgeView)
+        
         navigationItem.backBarButtonItem = UIBarButtonItem(title: nil, style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
@@ -233,18 +199,12 @@ class ConversationViewController: ConversationBaseViewController {
         Actor.onConversationClosedWithPeer(peer)
         
         (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
-        
-        // badgeView.removeFromSuperview()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
-        // var window = UIApplication.sharedApplication().keyWindow!
-        // badgeView.frame = CGRectMake(22, 14, 22, 22)
-        // badgeView.
-        // window.addSubview(badgeView)
         
         if count(navigationController!.viewControllers) > 2 {
             if let firstController = navigationController!.viewControllers[0] as? UIViewController,
@@ -252,10 +212,6 @@ class ConversationViewController: ConversationBaseViewController {
                     navigationController!.setViewControllers([firstController, currentController], animated: false)
             }
         }
-    }
-    
-    override func setUnread(rid: jlong) {
-        self.unreadMessageId = rid
     }
     
 //    override func afterLoaded() {
@@ -346,19 +302,6 @@ class ConversationViewController: ConversationBaseViewController {
         }
     }
     
-    func onBubbleAvatarTap(view: UIView, uid: jint) {
-        var controller = UserViewController(uid: Int(uid))
-        if (isIPad) {
-            var navigation = AANavigationController()
-            navigation.viewControllers = [controller]
-            var popover = UIPopoverController(contentViewController:  navigation)
-            controller.popover = popover
-            popover.presentPopoverFromRect(view.bounds, inView: view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
-        } else {
-            navigateNext(controller, removeCurrent: false)
-        }
-    }
-    
     override func textWillUpdate() {
         super.textWillUpdate();
 
@@ -402,73 +345,24 @@ class ConversationViewController: ConversationBaseViewController {
             showActionSheetFast(buttons, cancelButton: "AlertCancel", tapClosure: tapBlock)
         }
     }
+ 
     
-    override func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
-        var message = (item as! ACMessage);
-        var cell: AABubbleCell
-        if (message.content is ACTextContent) {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
-        } else if (message.content is ACPhotoContent) {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleMediaIdentifier, forIndexPath: indexPath) as! AABubbleMediaCell
-        } else if (message.content is ACDocumentContent) {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleDocumentIdentifier, forIndexPath: indexPath) as! AABubbleDocumentCell
-        } else if (message.content is ACServiceContent){
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleServiceIdentifier, forIndexPath: indexPath) as! AABubbleServiceCell
-        } else {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
-        }
-        cell.setConfig(peer, controller: self)
-        return cell
-    }
-    
-    override func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UICollectionViewCell) {
-        var list = getProcessedList()
-        var message = list!.items[indexPath.row]
-        var setting = list!.cellSettings[indexPath.row]
-        var bubbleCell = (cell as! AABubbleCell)
-        bubbleCell.performBind(message, setting: setting, layoutCache: list!.layoutCache)
-    }
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(6, 0, 100, 0)
-    }
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
-        return 0
-    }
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
-        return 0
-    }
-    
-    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) -> Bool {
-        return true
-    }
-    
-    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
-    
-    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) {
-        
-    }
-    
-    override func onItemsAdded(indexes: [Int]) {
-        var toUpdate = [Int]()
-        for ind in indexes {
-            if !indexes.contains(ind + 1) {
-                if ind + 1 < getCount() {
-                    toUpdate.append(ind + 1)
-                }
-            }
-            if !indexes.contains(ind - 1) {
-                if ind > 0 {
-                    toUpdate.append(ind - 1)
-                }
-            }
-        }
-        updateRows(toUpdate)
-    }
+//    override func onItemsAdded(indexes: [Int]) {
+//        var toUpdate = [Int]()
+//        for ind in indexes {
+//            if !indexes.contains(ind + 1) {
+//                if ind + 1 < getCount() {
+//                    toUpdate.append(ind + 1)
+//                }
+//            }
+//            if !indexes.contains(ind - 1) {
+//                if ind > 0 {
+//                    toUpdate.append(ind - 1)
+//                }
+//            }
+//        }
+//        updateRows(toUpdate)
+//    }
     
     override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
         var message = (item as! ACMessage);
@@ -481,76 +375,6 @@ class ConversationViewController: ConversationBaseViewController {
         return false
     }
     
-//    func buildCellSetting(index: Int) -> CellSetting {
-//        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
-//        
-////        var current = objectAtIndex(index) as! ACMessage
-////        var next: ACMessage! = index > 0 ? objectAtIndex(index - 1) as! ACMessage : nil
-////        var prev: ACMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! ACMessage : nil
-////        
-////        var isShowDate = true
-////        var isShowDateNext = true
-////        var isShowNewMessages = (unreadMessageId == current.rid)
-////        var clenchTop = false
-////        var clenchBottom = false
-////
-////        if (prev != nil) {
-////            isShowDate = !areSameDate(current, prev: prev)
-////            if !isShowDate {
-////                clenchTop = useCompact(current, next: prev)
-////            }
-////        }
-////        
-////        if (next != nil) {
-////            if areSameDate(next, prev: current) {
-////                clenchBottom = useCompact(current, next: next)
-////            }
-////        }
-////        
-////        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom, showNewMessages: isShowNewMessages)
-//    }
-//    
-//    func useCompact(source: ACMessage, next: ACMessage) -> Bool {
-//        if (source.content is ACServiceContent) {
-//            if (next.content is ACServiceContent) {
-//                return true
-//            }
-//        } else {
-//            if (next.content is ACServiceContent) {
-//                return false
-//            }
-//            if (source.senderId == next.senderId) {
-//                return true
-//            }
-//        }
-//        
-//        return false
-//    }
-//    
-//    func areSameDate(source:ACMessage, prev: ACMessage) -> Bool {
-//        let calendar = NSCalendar.currentCalendar()
-//        
-//        var currentDate = NSDate(timeIntervalSince1970: Double(source.date)/1000.0)
-//        var currentDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: currentDate)
-//        
-//        var nextDate = NSDate(timeIntervalSince1970: Double(prev.date)/1000.0)
-//        var nextDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: nextDate)
-//
-//        return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
-//    }
-
-    override func displayListForController() -> ARBindedDisplayList {
-        var res = Actor.getMessageDisplayList(peer)
-        if (res.getBackgroundProcessor() == nil) {
-            var processor = BubbleBackgroundProcessor()
-            res.setBackgroundProcessor(processor)
-            let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
-            res.setListProcessor(ListProcessor(layoutCache: processor.layoutCache, isGroup: group))
-        }
-        // layoutCache = (res.getBackgroundProcessor() as! BubbleBackgroundProcessor).layoutCache
-        return res
-    }
-    
     // Completition
     
     var filteredMembers = [ACMentionFilterResult]()
@@ -558,9 +382,7 @@ class ConversationViewController: ConversationBaseViewController {
     override func canShowAutoCompletion() -> Bool {
         if UInt(self.peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue {
             if self.foundPrefix == "@" {
-//                var group = Actor.getGroups().getWithId(jlong(self.peer.getPeerId()))
-//                var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()
-//            
+
                 var oldCount = filteredMembers.count
                 filteredMembers.removeAll(keepCapacity: true)
                 
@@ -568,30 +390,6 @@ class ConversationViewController: ConversationBaseViewController {
                 for index in 0..<res.size() {
                     filteredMembers.append(res.getWithInt(index) as! ACMentionFilterResult)
                 }
-                
-//                for index in 0..<members.length() {
-//                    if let groupMember = members.objectAtIndex(UInt(index)) as? ACGroupMember,
-//                        let user = Actor.getUserWithUid(groupMember.getUid()) {
-//                            if user.getId() != Actor.myUid() {
-//                                var isFiltered = false
-//                                if self.foundWord != "" {
-//                                    var nick = user.getNickModel().get()
-//                                    if nick != nil && nick.hasPrefixInWords(self.foundWord) {
-//                                        isFiltered = true
-//                                    }
-//                                    if !isFiltered {
-//                                        isFiltered = user.getNameModel().get().hasPrefixInWords(self.foundWord)
-//                                    }
-//                                } else {
-//                                    isFiltered = true
-//                                }
-//                            
-//                                if isFiltered {
-//                                    filteredMembers.append(user)
-//                                }
-//                            }
-//                    }
-//                }
                 
                 if oldCount == filteredMembers.count {
                     self.autoCompletionView.reloadData()

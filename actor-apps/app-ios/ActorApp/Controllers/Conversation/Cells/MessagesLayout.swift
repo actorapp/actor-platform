@@ -16,11 +16,8 @@ class MessagesLayout : UICollectionViewLayout {
     var currentItems = [CachedLayout]()
     var isScrolledToEnd: Bool = false
     
-    weak var delegate : MessagesLayoutDelegate? {
-        get{
-            return self.collectionView!.delegate as? MessagesLayoutDelegate
-        }
-    }
+    var list: PreprocessedList?
+    var unread: jlong?
     
     override init() {
         super.init()
@@ -30,16 +27,13 @@ class MessagesLayout : UICollectionViewLayout {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func beginUpdates(disableAutoScroll: Bool) {
-        
-        var start = CFAbsoluteTimeGetCurrent()
-        
+    func beginUpdates(disableAutoScroll: Bool, list: PreprocessedList?, unread: jlong?) {
         self.disableAutoScroll = disableAutoScroll
+        self.list = list
+        self.unread = unread
         
-//        cachedLayoutPool.acquire(currentItems)
-        currentItems.removeAll(keepCapacity: true)
-
         // Saving current visible cells
+        currentItems.removeAll(keepCapacity: true)
         var visibleItems = self.collectionView!.indexPathsForVisibleItems()
         var currentOffset = self.collectionView!.contentOffset.y
         for indexPath in visibleItems {
@@ -50,21 +44,10 @@ class MessagesLayout : UICollectionViewLayout {
         }
         
         isScrolledToEnd = self.collectionView!.contentOffset.y < 8
-        
-        println("beginUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
     }
     
     override func prepareLayout() {
-        
-        var start = CFAbsoluteTimeGetCurrent()
-        
         super.prepareLayout()
-        
-        println("prepareLayout(super): \(CFAbsoluteTimeGetCurrent() - start)")
-        start = CFAbsoluteTimeGetCurrent()
-        
-        var del = self.collectionView!.delegate as! MessagesLayoutDelegate
-        var processedList = del.getProcessedList()
         
         // Validate sections
         var sectionsCount = self.collectionView!.numberOfSections()
@@ -81,14 +64,15 @@ class MessagesLayout : UICollectionViewLayout {
         items.removeAll(keepCapacity: true)
         frames.removeAll(keepCapacity: true)
         
-//        var listItems = processedList!.items
-//        var listHeights = processedList!.heights
-        
-        if processedList != nil {
-            for i in 0..<processedList!.items.count {
+        if list != nil {
+            for i in 0..<list!.items.count {
                 var indexPath = NSIndexPath(forRow: i, inSection: 0)
-                var itemId = processedList!.items[i].rid
-                var itemSize = CGSizeMake(self.collectionView!.bounds.width,  processedList!.heights[i])
+                var itemId = list!.items[i].rid
+                var height = list!.heights[i]
+                if itemId == unread {
+                    height += AABubbleCell.newMessageSize
+                }
+                var itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
                 
                 var frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
                 var item = LayoutItem(id: itemId)
@@ -105,8 +89,6 @@ class MessagesLayout : UICollectionViewLayout {
                 contentHeight += item.size.height
             }
         }
-        
-        println("prepareLayout: \(CFAbsoluteTimeGetCurrent() - start)")
     }
     
     override func collectionViewContentSize() -> CGSize {
@@ -148,12 +130,12 @@ class MessagesLayout : UICollectionViewLayout {
     
     override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
         var res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
-//        if insertedIndexPaths.contains(itemIndexPath) {
-//            res?.alpha = 0
-//            res?.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
-//        } else {
-//            res?.alpha = 1
-//        }
+        if insertedIndexPaths.contains(itemIndexPath) {
+            res?.alpha = 0
+            res?.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
+        } else {
+            res?.alpha = 1
+        }
         return res
     }
     
@@ -162,23 +144,23 @@ class MessagesLayout : UICollectionViewLayout {
         
         var start = CFAbsoluteTimeGetCurrent()
         
-//        if disableAutoScroll {
-//            var size = collectionViewContentSize()
-//            var delta: CGFloat! = nil
-//            for item in items {
-//                for current in currentItems {
-//                    if current.id == item.id {
-//                        var oldOffset = current.offset
-//                        var newOffset = item.attrs!.frame.origin.y - self.collectionView!.contentOffset.y
-//                        delta = oldOffset - newOffset
-//                    }
-//                }
-//            }
-//            
-//            if delta != nil {
-//                self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y - delta)
-//            }
-//        }
+        if disableAutoScroll {
+            var size = collectionViewContentSize()
+            var delta: CGFloat! = nil
+            for item in items {
+                for current in currentItems {
+                    if current.id == item.id {
+                        var oldOffset = current.offset
+                        var newOffset = item.attrs!.frame.origin.y - self.collectionView!.contentOffset.y
+                        delta = oldOffset - newOffset
+                    }
+                }
+            }
+            
+            if delta != nil {
+                self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y - delta)
+            }
+        }
         
         println("finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
     }
@@ -204,11 +186,6 @@ struct CachedLayout {
         self.id = id
         self.offset = offset
     }
-}
-
-@objc protocol MessagesLayoutDelegate: UICollectionViewDelegate, UIScrollViewDelegate, NSObjectProtocol {
-    
-    @objc func getProcessedList() -> PreprocessedList?
 }
 
 @objc enum MessageGravity: Int {
