@@ -100,11 +100,14 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
       val rng = ThreadLocalRandom.current()
 
-      UserOffice.create(botUserId, nextAccessSalt(rng), "Bot", "US", Sex.Unknown, isBot = true)
-        .flatMap(_ ⇒ db.run(p.GroupBot.create(groupId, botUserId, botToken))) onFailure {
-          case e ⇒
-            log.error(e, "Failed to create group bot")
-        }
+      (for {
+        _ ← UserOffice.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), "Bot", "US", Sex.Unknown, isBot = true)
+        _ ← db.run(p.GroupBot.create(groupId, botUserId, botToken))
+        _ ← integrationTokensKv.upsert(botToken, groupId)
+      } yield ()) onFailure {
+        case e ⇒
+          log.error(e, "Failed to create group bot")
+      }
     }
   }
 
@@ -363,11 +366,14 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
   protected def revokeIntegrationToken(group: Group, userId: Int): Unit = {
     withGroupAdmin(group, userId) {
-      val newToken = ACLUtils.accessToken(ThreadLocalRandom.current())
+      val oldToken = group.bot.map(_.token)
+      val newToken = accessToken(ThreadLocalRandom.current())
       persistStashingReply(TSEvent(now(), IntegrationTokenRevoked(newToken)), group) { _ ⇒
-        db.run(for {
-          _ ← p.GroupBot.updateToken(groupId, newToken)
-        } yield RevokeIntegrationTokenAck(newToken))
+        for {
+          _ ← db.run(p.GroupBot.updateToken(groupId, newToken))
+          _ ← integrationTokensKv.delete(oldToken.getOrElse(""))
+          _ ← integrationTokensKv.upsert(newToken, groupId)
+        } yield RevokeIntegrationTokenAck(newToken)
       }
     }
   }

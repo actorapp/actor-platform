@@ -5,9 +5,9 @@ import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
+import im.actor.server.commons.KeyValueMappings
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialogRegion }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
@@ -17,6 +17,7 @@ import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
 import im.actor.server.util.{ FileStorageAdapter, S3StorageExtension }
 import org.joda.time.DateTime
+import shardakka.{ IntCodec, ShardakkaExtension }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
@@ -87,6 +88,8 @@ object GroupProcessor {
     ActorSerializer.register(21006, classOf[GroupQueries.GetMembersResponse])
     ActorSerializer.register(21007, classOf[GroupQueries.GetApiStruct])
     ActorSerializer.register(21008, classOf[GroupQueries.GetApiStructResponse])
+    ActorSerializer.register(21009, classOf[GroupQueries.IsPublic])
+    ActorSerializer.register(21010, classOf[GroupQueries.IsPublicResponse])
 
     ActorSerializer.register(22003, classOf[GroupEvents.UserInvited])
     ActorSerializer.register(22004, classOf[GroupEvents.UserJoined])
@@ -128,7 +131,12 @@ private[group] final class GroupProcessor
   protected implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
-  protected implicit val groupDialogRegion: GroupDialogRegion = GroupDialogExtension(system).region
+  protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
+
+  //Declared lazy because of cyclic dependency between GroupDialogRegion and GroupProcessorRegion.
+  //It lead to problems with initialization of extensions.
+  //Such bugs are hard to catch. One should avoid such behaviour
+  lazy protected implicit val groupDialogRegion: GroupDialogRegion = GroupDialogExtension(system).region
 
   protected val groupId = self.path.name.toInt
 
@@ -176,6 +184,7 @@ private[group] final class GroupProcessor
     case GroupQueries.GetApiStruct(_, userId)        ⇒ getApiStruct(state, userId)
     case GroupQueries.CheckAccessHash(_, accessHash) ⇒ checkAccessHash(state, accessHash)
     case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
+    case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
   }
 
   override def handleInitCommand: Receive = {

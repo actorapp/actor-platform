@@ -8,8 +8,11 @@ import im.actor.server._
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.commons.KeyValueMappings
 import im.actor.server.group.GroupOffice
+import im.actor.server.migrations.IntegrationTokenMigrator
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
+import shardakka.{ ShardakkaExtension, IntCodec }
 
 class WebhookHandlerSpec
   extends BaseAppSuite
@@ -26,6 +29,8 @@ class WebhookHandlerSpec
   it should "create group bot on group creation" in t.createGroupAndBot()
 
   it should "allow bot to send message to it's group" in t.sendInGroup()
+
+  "Integration Token Migrator" should "migrate integration tokens to key value" in t.tokenMigration()
 
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
@@ -66,7 +71,7 @@ class WebhookHandlerSpec
 
       val firstMessage = Text("Alert! All tests are failed!")
       whenReady(handler.send(firstMessage, token)) { _ ⇒
-        expectUpdatesUnordered(failUnmatched)(initSeq, initState, Set(UpdateMessage.header, UpdateCountersChanged.header)) {
+        expectUpdatesUnordered(ignoreUnmatched)(initSeq, initState, Set(UpdateMessage.header, UpdateCountersChanged.header)) {
           case (UpdateMessage.header, u) ⇒
             val update = parseUpdate[UpdateMessage](u)
             update.message shouldEqual TextMessage(firstMessage.text, Vector.empty, None)
@@ -89,6 +94,33 @@ class WebhookHandlerSpec
         }
       }
     }
+
+    def tokenMigration() = {
+      val (user1, authId1, _) = createUser()
+      val (user2, authId2, _) = createUser()
+
+      val sessionId = createSessionId()
+
+      implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+
+      val groups = for (i ← 1 to 300) yield createGroup(s"$i", Set(user2.id)).groupPeer
+
+      IntegrationTokenMigrator.migrate()
+
+      val kv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
+
+      groups foreach { group ⇒
+        val token = whenReady(GroupOffice.getIntegrationToken(group.groupId, user1.id)) { optToken ⇒
+          optToken shouldBe defined
+          optToken.get
+        }
+        whenReady(kv.get(token)) { optGroupId ⇒
+          optGroupId shouldBe defined
+          optGroupId shouldEqual Some(group.groupId)
+        }
+      }
+    }
+
   }
 
 }
