@@ -12,8 +12,9 @@ object Dependencies {
   }
 
   object Compile {
-    val akkaActor               = "com.typesafe.akka"             %% "akka-actor"                    % V.akka
-    val akkaContrib             = "com.typesafe.akka"             %% "akka-contrib"                  % V.akka
+    val akkaActor               = "com.typesafe.akka"             %% "akka-actor"                    % V.akka exclude("com.google.protobuf", "protobuf-java")
+    val akkaPersistence         = "com.typesafe.akka"             %% "akka-persistence-experimental" % V.akka exclude("com.google.protobuf", "protobuf-java")
+    val akkaContrib             = "com.typesafe.akka"             %% "akka-contrib"                  % V.akka exclude("com.google.protobuf", "protobuf-java")
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
@@ -51,7 +52,7 @@ object Dependencies {
 
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
 
-    val protobuf                = "com.google.protobuf"           %  "protobuf-java"                 % "2.6.1"
+    val protobuf                = "com.google.protobuf"           %  "protobuf-java"                 % "3.0.0-alpha-3"
 
     val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.9"
     val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.8.1"
@@ -99,7 +100,7 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
-  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceJdbc, concmap, jodaConvert, jodaTime)
+  val commonsBase = shared ++ Seq(akkaActor, akkaPersistence, akkaPersistenceJdbc, concmap, jodaConvert, jodaTime)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 

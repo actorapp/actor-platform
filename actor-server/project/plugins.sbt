@@ -17,7 +17,7 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
 
 //addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "0.94.6")
 
-addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.6.10")
+addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.6.11")
 
 //addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.9")
 
@@ -27,4 +27,4 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.3")
 
 addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.9")
 
-libraryDependencies ++= Seq("com.github.os72" % "protoc-jar" % "2.x.5")
+libraryDependencies ++= Seq("com.github.os72" % "protoc-jar" % "3.0.0-a3")
