@@ -6,14 +6,10 @@ import VisibilityActionCreators from '../actions/VisibilityActionCreators';
 import FaviconActionCreators from 'actions/FaviconActionCreators';
 import FaviconStore from 'stores/FaviconStore';
 
-import ActivitySection from 'components/ActivitySection.react';
 import SidebarSection from 'components/SidebarSection.react';
-import ToolbarSection from 'components/ToolbarSection.react';
 import DialogSection from 'components/DialogSection.react';
 import Favicon from 'components/common/Favicon.react';
 import Banner from 'components/common/Banner.react';
-//import AppCacheStore from 'stores/AppCacheStore';
-//import AppCacheUpdateModal from 'components/modals/AppCacheUpdate.react';
 
 const visibilitychange = 'visibilitychange';
 
@@ -51,28 +47,13 @@ class Main extends React.Component {
   };
 
   render() {
-    //let appCacheUpdateModal;
-    //if (this.state.isAppUpdateModalOpen) {
-    //  appCacheUpdateModal = <AppCacheUpdateModal/>;
-    //}
-
     return (
       <div className="app">
         <Favicon path={this.state.faviconPath}/>
         <Banner/>
 
         <SidebarSection/>
-
-        <section className="main">
-          <ToolbarSection/>
-
-          <div className="flexrow">
-            <DialogSection/>
-            <ActivitySection/>
-          </div>
-        </section>
-
-        {/*appCacheUpdateModal*/}
+        <DialogSection/>
       </div>
     );
   }
