@@ -87,7 +87,7 @@ const initReact = () => {
 
   const routes = (
     <Route handler={App} name="app" path="/">
-      <Route handler={Main} name="main" path="/"/>
+      <Route handler={Main} name="main"/>
       <Route handler={JoinGroup} name="join" path="/join/:token"/>
       <Route handler={Login} name="login" path="/auth"/>
       <Route handler={Deactivated} name="deactivated" path="/deactivated"/>
