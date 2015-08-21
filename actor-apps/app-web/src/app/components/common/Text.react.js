@@ -55,15 +55,17 @@ class Text extends React.Component {
     let renderedContent;
 
     if (content.markdownText !== null) {
-      renderedContent =
+      renderedContent = (
         <div className={className}
              dangerouslySetInnerHTML={{__html: memoizedProcessText(content.markdownText)}}>
-        </div>;
+        </div>
+      );
     } else {
-      renderedContent =
+      renderedContent = (
         <div className={className}>
           {content.text}
-        </div>;
+        </div>
+      );
     }
 
     return renderedContent;
