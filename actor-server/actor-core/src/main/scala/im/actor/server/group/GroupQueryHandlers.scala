@@ -1,7 +1,9 @@
 package im.actor.server.group
 
+import akka.actor.Status
 import im.actor.server.api.ApiConversions._
 import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup, Member ⇒ ApiMember }
+import im.actor.server.group.GroupErrors.NoBotFound
 
 private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   this: GroupProcessor ⇒
@@ -45,10 +47,17 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
     sender() ! CheckAccessHashResponse(isCorrect = group.accessHash == hash)
 
   def getMembers(group: Group): Unit = {
-    val members = group.members.keySet.toSeq
-    val invited = group.invitedUserIds.toSeq
-    val bot = group.bot.map(_.userId).getOrElse(throw new Exception("Not bot provided for this group"))
-    sender() ! GetMembersResponse(members, invited, bot)
+    group.bot map { bot ⇒
+      val members = group.members.keySet.toSeq
+      val invited = group.invitedUserIds.toSeq
+      sender() ! GetMembersResponse(members, invited, bot.userId)
+    } getOrElse {
+      sender() ! Status.Failure(NoBotFound)
+    }
+  }
+
+  def isPublic(group: Group): Unit = {
+    sender() ! IsPublicResponse(isPublic = group.isPublic)
   }
 
 }

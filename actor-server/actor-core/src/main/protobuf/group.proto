@@ -185,7 +185,7 @@ message GroupQueries {
     }
 
     message GetMembers {
-        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
 
         required int32 group_id = 1;
     }
@@ -194,6 +194,16 @@ message GroupQueries {
         repeated int32 member_ids = 1;
         repeated int32 invited_user_ids = 2;
         required int32 bot_id = 3;
+    }
+
+    message IsPublic {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
+    message IsPublicResponse {
+        required bool is_public = 1;
     }
 }
 
