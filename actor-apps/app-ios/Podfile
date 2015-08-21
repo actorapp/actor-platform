@@ -12,6 +12,8 @@ target 'ActorApp' do
         
 	# UI
     pod 'AsyncDisplayKit'
+    pod 'pop'
+    pod 'VBFPopFlatButton'
 	pod 'SVProgressHUD'
 	pod 'MBProgressHUD'
 	pod 'PSTAlertController'
