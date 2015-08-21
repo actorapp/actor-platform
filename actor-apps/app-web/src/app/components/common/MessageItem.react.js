@@ -15,9 +15,6 @@ import State from './State.react';
 import DialogActionCreators from 'actions/DialogActionCreators';
 import { MessageContentTypes } from 'constants/ActorAppConstants';
 
-let lastMessageSenderId = null,
-    lastMessageContentType = null;
-
 const {addons: { PureRenderMixin }} = addons;
 
 @ReactMixin.decorate(PureRenderMixin)
@@ -25,7 +22,8 @@ class MessageItem extends React.Component {
   static propTypes = {
     peer: React.PropTypes.object.isRequired,
     message: React.PropTypes.object.isRequired,
-    newDay: React.PropTypes.bool,
+    isNewDay: React.PropTypes.bool,
+    isSameSender: React.PropTypes.bool,
     index: React.PropTypes.number,
     onVisibilityChange: React.PropTypes.func
   };
@@ -47,33 +45,27 @@ class MessageItem extends React.Component {
   };
 
   onDelete = () => {
-    DialogActionCreators.deleteMessages(this.props.peer, [this.props.message.rid]);
+    const { peer, message } = this.props;
+    DialogActionCreators.deleteMessages(peer, [message.rid]);
   };
 
-  showActions = () => {
-    this.setState({isActionsShown: true});
-    document.addEventListener('click', this.hideActions, false);
-  };
+  //showActions = () => {
+  //  this.setState({isActionsShown: true});
+  //  document.addEventListener('click', this.hideActions, false);
+  //};
 
-  hideActions = () => {
-    this.setState({isActionsShown: false});
-    document.removeEventListener('click', this.hideActions, false);
-  };
+  //hideActions = () => {
+  //  this.setState({isActionsShown: false});
+  //  document.removeEventListener('click', this.hideActions, false);
+  //};
 
   render() {
-    const { message, newDay } = this.props;
-    const isFirstMessage = this.props.index === 0;
+    const { message, index, isSameSender } = this.props;
 
     let header,
         messageContent,
         visibilitySensor,
         leftBlock;
-
-    let isSameSender = message.sender.peer.id === lastMessageSenderId &&
-                       lastMessageContentType !== MessageContentTypes.SERVICE &&
-                       message.content.content !== MessageContentTypes.SERVICE &&
-                       !isFirstMessage &&
-                       !newDay;
 
     let messageClassName = classnames({
       'message': true,
@@ -81,11 +73,11 @@ class MessageItem extends React.Component {
       'message--same-sender': isSameSender
     });
 
-    let actionsDropdownClassName = classnames({
-      'dropdown': true,
-      'dropdown--small': true,
-      'dropdown--opened': this.state.isActionsShown
-    });
+    //let actionsDropdownClassName = classnames({
+    //  'dropdown': true,
+    //  'dropdown--small': true,
+    //  'dropdown--opened': this.state.isActionsShown
+    //});
 
     if (isSameSender) {
       leftBlock = (
@@ -151,9 +143,6 @@ class MessageItem extends React.Component {
       visibilitySensor = <VisibilitySensor onChange={this.onVisibilityChange}/>;
     }
 
-    lastMessageSenderId = message.sender.peer.id;
-    lastMessageContentType = message.content.content;
-
     return (
       <li className={messageClassName}>
         {leftBlock}
@@ -161,6 +150,10 @@ class MessageItem extends React.Component {
           {header}
           {messageContent}
           {visibilitySensor}
+        </div>
+        {/*
+        <div className="message__actions">
+          <i className="material-icons"  onClick={this.onDelete}>close</i>
         </div>
         <div className="message__actions hide">
           <div className={actionsDropdownClassName}>
@@ -183,6 +176,7 @@ class MessageItem extends React.Component {
             </ul>
           </div>
         </div>
+        */}
       </li>
     );
   }
