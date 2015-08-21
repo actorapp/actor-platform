@@ -50,8 +50,10 @@
       display: inline-block;
       overflow: hidden;
 
+      width: 100%;
       padding-top: 12px;
 
+      white-space: nowrap;
       text-overflow: ellipsis;
     }
     &__presence {
@@ -96,27 +98,33 @@
 
 // Connection state banner
 .connection-state {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  line-height: 16px;
-  text-align: center;
-  z-index: 1000;
-  top: 8px;
-  border-radius: 3px;
-  color: white;
   font-size: 14px;
   font-weight: 500;
-  text-shadow: 0 1px 1px rgba(0,0,0,.1);
-  cursor: default;
+  line-height: 16px;
+
+  position: absolute;
+  z-index: 1000;
+  top: 8px;
+  right: 16px;
+  left: 16px;
+
   padding: 4px 10px;
+
+  cursor: default;
   transition: opacity 500ms 0ms, visibility 0ms 0ms;
+  text-align: center;
+
+  color: white;
+  border-radius: 3px;
+  text-shadow: 0 1px 1px rgba(0,0,0,.1);
 
   &--online {
-    background-color: rgba($apple, .97);
     visibility: hidden;
-    opacity: 0;
+
     transition: opacity 500ms 1500ms, visibility 0ms 2s;
+
+    opacity: 0;
+    background-color: rgba($apple, .97);
   }
   &--connection {
     background-color: rgba($squash, .97);

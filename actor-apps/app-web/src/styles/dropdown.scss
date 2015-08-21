@@ -160,6 +160,8 @@
     bottom: 0;
     left: 1px;
 
+    overflow: hidden;
+
     width: 500px;
 
     border-radius: 2px;
@@ -175,6 +177,7 @@
 
     color: rgba($greyish-brown, .6);
     border-bottom: 1px solid #ebebeb;
+    background-color: white;
 
     @include clearfix();
 
