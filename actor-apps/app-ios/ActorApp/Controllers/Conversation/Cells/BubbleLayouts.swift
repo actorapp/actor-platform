@@ -37,9 +37,9 @@ class MessagesLayouting {
         }
         
         // New message separator
-        if (setting.showNewMessages) {
-            height += AABubbleCell.newMessageSize
-        }
+//        if (setting.showNewMessages) {
+//            height += AABubbleCell.newMessageSize
+//        }
         
         
         return height
@@ -71,16 +71,14 @@ class MessagesLayouting {
 }
 
 class CellSetting {
-    let showNewMessages: Bool
     let showDate: Bool
     let clenchTop: Bool
     let clenchBottom: Bool
     
-    init(showDate: Bool, clenchTop: Bool, clenchBottom: Bool, showNewMessages: Bool) {
+    init(showDate: Bool, clenchTop: Bool, clenchBottom: Bool) {
         self.showDate = showDate
         self.clenchTop = clenchTop
         self.clenchBottom = clenchBottom
-        self.showNewMessages = showNewMessages
     }
 }
 

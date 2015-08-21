@@ -5,8 +5,16 @@
 import Foundation
 import UIKit;
 
-class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDelegate, ARDisplayList_AppleChangeListener {
+class ConversationBaseViewController: SLKTextViewController, ARDisplayList_AppleChangeListener {
 
+    private let BubbleTextIdentifier = "BubbleTextIdentifier"
+    private let BubbleMediaIdentifier = "BubbleMediaIdentifier"
+    private let BubbleDocumentIdentifier = "BubbleDocumentIdentifier"
+    private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
+    private let BubbleBannerIdentifier = "BubbleBannerIdentifier"
+    
+    let peer: ACPeer
+    
     private var displayList: ARBindedDisplayList!
     private var isStarted: Bool = isIPad
     private var isUpdating: Bool = false
@@ -16,12 +24,19 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     private var unreadIndex: Int? = nil
     private let layout = MessagesLayout()
     private var prevCount: Int = 0
-    let peer: ACPeer
+    private var unreadMessageId: jlong = 0
     
     init(peer: ACPeer) {
         self.peer = peer
         
         super.init(collectionViewLayout: layout)
+        
+        self.collectionView.registerClass(AABubbleTextCell.self, forCellWithReuseIdentifier: BubbleTextIdentifier)
+        self.collectionView.registerClass(AABubbleMediaCell.self, forCellWithReuseIdentifier: BubbleMediaIdentifier)
+        self.collectionView.registerClass(AABubbleDocumentCell.self, forCellWithReuseIdentifier: BubbleDocumentIdentifier)
+        self.collectionView.registerClass(AABubbleServiceCell.self, forCellWithReuseIdentifier: BubbleServiceIdentifier)
+        self.collectionView.backgroundColor = UIColor.clearColor()
+        self.collectionView.alwaysBounceVertical = true
     }
     
     required init!(coder decoder: NSCoder!) {
@@ -50,6 +65,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         
         if (isStarted) {
             self.willUpdate()
+            self.layout.beginUpdates(false, list: self.displayList.getProcessedList() as? PreprocessedList, unread: unreadMessageId)
             self.collectionView.reloadData()
             prevCount = getCount()
             self.displayList.addAppleListener(self)
@@ -71,6 +87,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             })
             
             self.willUpdate()
+            self.layout.beginUpdates(false, list: self.displayList.getProcessedList() as? PreprocessedList, unread: self.unreadMessageId)
             self.collectionView.reloadData()
             self.prevCount = self.getCount()
             self.displayList.addAppleListener(self)
@@ -78,12 +95,55 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         });
     }
     
-    func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?)  -> UICollectionViewCell {
-        fatalError("Not implemented")
+    
+    func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
+        var message = (item as! ACMessage);
+        var cell: AABubbleCell
+        if (message.content is ACTextContent) {
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
+        } else if (message.content is ACPhotoContent) {
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleMediaIdentifier, forIndexPath: indexPath) as! AABubbleMediaCell
+        } else if (message.content is ACDocumentContent) {
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleDocumentIdentifier, forIndexPath: indexPath) as! AABubbleDocumentCell
+        } else if (message.content is ACServiceContent){
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleServiceIdentifier, forIndexPath: indexPath) as! AABubbleServiceCell
+        } else {
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
+        }
+        cell.setConfig(peer, controller: self)
+        return cell
     }
     
     func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UICollectionViewCell) {
-        fatalError("Not implemented")
+        var list = getProcessedList()
+        var message = list!.items[indexPath.row]
+        var setting = list!.cellSettings[indexPath.row]
+        var bubbleCell = (cell as! AABubbleCell)
+        bubbleCell.performBind(message, setting: setting, isShowNewMessages: message.rid == unreadMessageId, layoutCache: list!.layoutCache)
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(6, 0, 100, 0)
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return 0
+    }
+    
+    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) -> Bool {
+        return true
+    }
+    
+    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) {
+        
     }
     
     func getProcessedList() -> PreprocessedList? {
@@ -97,23 +157,8 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         return self.displayList.getProcessedList() as? PreprocessedList
     }
     
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity {
-//        fatalError("Not implemented")
-//    }
-//    
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64 {
-//        fatalError("Not implemented")
-//    }
-//    
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-//        fatalError("Not implemented")
-//    }
-    
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        var res = isStarted ? getCount() : 0
-        println("numberOfItemsInSection \(res)")
-        return res
+        return isStarted ? getCount() : 0
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -131,8 +176,6 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         
         isVisible = false
         
-        println("viewWillDisappear")
-        
         // Remove listener on exit
         self.displayList.removeAppleListener(self)
     }
@@ -140,7 +183,14 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     // Model updates
     
     func displayListForController() -> ARBindedDisplayList {
-        fatalError("Not implemented");
+        var res = Actor.getMessageDisplayList(peer)
+        if (res.getBackgroundProcessor() == nil) {
+            var processor = BubbleBackgroundProcessor()
+            res.setBackgroundProcessor(processor)
+            let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
+            res.setListProcessor(ListProcessor(layoutCache: processor.layoutCache, isGroup: group))
+        }
+        return res
     }
     
     func objectAtIndexPath(indexPath: NSIndexPath) -> AnyObject? {
@@ -162,49 +212,22 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         return false
     }
     
-    func onItemsAdded(indexes: [Int]) {
-        
-    }
-    
-    func onItemsRemoved(indexes: [Int]) {
-        
-    }
-    
-    func onItemsUpdated(indexes: [Int]) {
-        
-    }
-    
-    func onItemMoved(fromIndex: Int, toIndex: Int) {
-        
-    }
-    
-    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
-        super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
-
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.collectionView.collectionViewLayout.invalidateLayout()
-        })
-    }
-    
     func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
 
         var start = CFAbsoluteTimeGetCurrent()
-        // println("collectionChanged \(getCount())")
         
         if modification.isLoadMore {
             UIView.setAnimationsEnabled(false)
         }
         
         self.willUpdate()
-        self.layout.beginUpdates(modification.isLoadMore)
+        var list = self.displayList.getProcessedList() as? PreprocessedList
+        self.layout.beginUpdates(modification.isLoadMore, list: list, unread: unreadMessageId)
         var changedRows = Set<Int>()
         
         if modification.nonUpdateCount() > 0 {
             isUpdating = true
-            // println("starting update")
             self.collectionView.performBatchUpdates({ () -> Void in
-                // println("started update")
-                
                 // Removed rows
                 if modification.removedCount() > 0 {
                     var rows: NSMutableArray = []
@@ -231,36 +254,36 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
                     }
                 }
                 
-                println("apply end: \(CFAbsoluteTimeGetCurrent() - start)")
-                
-                // println("ended update")
                 self.isUpdating = false
                 self.prevCount = self.getCount()
             }, completion: nil)
         }
         
+        var updated = [Int]()
+        var updatedForce = [Int]()
+        
         if modification.updatedCount() > 0 {
-            var updated = [Int]()
             for i in 0..<modification.updatedCount() {
                 updated.append(Int(modification.getUpdated(i)))
             }
-            updateRows(updated)
         }
         
-        self.didUpdate()
-        
-        if modification.isLoadMore {
-            UIView.setAnimationsEnabled(true)
+        if list != nil {
+            for i in 0..<list!.forceUpdated.count {
+                if list!.forceUpdated[i] {
+                    updatedForce.append(i)
+                }
+            }
+            for i in 0..<list!.updated.count {
+                if list!.updated[i] {
+                    updated.append(i)
+                }
+            }
         }
         
-        println("collectionChanged: \(CFAbsoluteTimeGetCurrent() - start)")
-    }
-    
-    func updateRows(indexes: [Int]) {
         var forcedRows = [NSIndexPath]()
-        
         var visibleIndexes = self.collectionView.indexPathsForVisibleItems() as! [NSIndexPath]
-        for ind in indexes {
+        for ind in updated {
             var indexPath = NSIndexPath(forRow: ind, inSection: 0)
             if visibleIndexes.contains(indexPath) {
                 var cell = self.collectionView.cellForItemAtIndexPath(indexPath)
@@ -274,10 +297,23 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             forcedRows.append(indexPath)
         }
         
+        for ind in updatedForce {
+            var indexPath = NSIndexPath(forRow: ind, inSection: 0)
+            forcedRows.append(indexPath)
+        }
+        
         if (forcedRows.count > 0) {
-            self.layout.beginUpdates(false)
+            self.layout.beginUpdates(false, list: list, unread: unreadMessageId)
             self.collectionView.reloadItemsAtIndexPaths(forcedRows)
         }
+        
+        self.didUpdate()
+        
+        if modification.isLoadMore {
+            UIView.setAnimationsEnabled(true)
+        }
+        
+        println("collectionChanged: \(CFAbsoluteTimeGetCurrent() - start)")
     }
     
     func willUpdate() {
@@ -315,6 +351,27 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     }
     
     func setUnread(rid: jlong) {
-        // Implemented in child class
+        self.unreadMessageId = rid
+    }
+    
+    func onBubbleAvatarTap(view: UIView, uid: jint) {
+        var controller = UserViewController(uid: Int(uid))
+        if (isIPad) {
+            var navigation = AANavigationController()
+            navigation.viewControllers = [controller]
+            var popover = UIPopoverController(contentViewController:  navigation)
+            controller.popover = popover
+            popover.presentPopoverFromRect(view.bounds, inView: view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
+        } else {
+            navigateNext(controller, removeCurrent: false)
+        }
+    }
+    
+    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        })
     }
 }

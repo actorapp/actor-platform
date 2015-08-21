@@ -246,7 +246,7 @@ public class DisplayList<T> {
 
             Object processedList = null;
             if (displayList.listProcessor != null) {
-                processedList = displayList.listProcessor.process(backgroundList);
+                processedList = displayList.listProcessor.process(backgroundList, displayList.processedList);
             }
 
             requestListSwitch(dest, initialList, androidChanges, appleChanges, dest[0].isLoadMore,

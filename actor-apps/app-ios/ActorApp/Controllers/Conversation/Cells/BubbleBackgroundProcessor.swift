@@ -34,11 +34,13 @@ class ListProcessor: NSObject, ARListProcessor {
         self.isGroup = isGroup
     }
     
-    func processWithJavaUtilList(items: JavaUtilList!) -> AnyObject! {
-    
+    func processWithItems(items: JavaUtilList!, withPrevious previous: AnyObject!) -> AnyObject! {
         var objs = [ACMessage]()
+        var indexes = [jlong: Int]()
         for i in 0..<items.size() {
-            objs.append(items.getWithInt(i) as! ACMessage)
+            var msg = items.getWithInt(i) as! ACMessage
+            indexes.updateValue(Int(i), forKey: msg.rid)
+            objs.append(msg)
         }
         
         var settings = [CellSetting]()
@@ -55,13 +57,50 @@ class ListProcessor: NSObject, ARListProcessor {
         for i in 0..<objs.count {
             heights.append(buildHeight(i, items: objs, settings: settings))
         }
-    
+        
+        var forceUpdates = [Bool]()
+        var updates = [Bool]()
+        if let prevList = previous as? PreprocessedList {
+            for i in 0..<objs.count {
+                var obj = objs[i]
+                var oldIndex = prevList.indexMap[obj.rid]
+                if oldIndex != nil {
+                    var oldSetting = prevList.cellSettings[oldIndex!]
+                    var setting = settings[i]
+                    
+                    if setting.clenchTop != oldSetting.clenchTop || setting.clenchBottom != oldSetting.clenchBottom || setting.showDate != oldSetting.showDate {
+                        if setting.showDate != oldSetting.showDate {
+                            forceUpdates.append(true)
+                            updates.append(false)
+                        } else {
+                            forceUpdates.append(false)
+                            updates.append(true)
+                        }
+                    } else {
+                        forceUpdates.append(false)
+                        updates.append(false)
+                    }
+                } else {
+                    forceUpdates.append(false)
+                    updates.append(false)
+                }
+            }
+        } else {
+            for i in 0..<objs.count {
+                forceUpdates.append(false)
+                updates.append(false)
+            }
+        }
+        
         var res = PreprocessedList()
         res.items = objs
         res.cellSettings = settings
         res.layouts = layouts
         res.layoutCache = layoutCache
         res.heights = heights
+        res.indexMap = indexes
+        res.forceUpdated = forceUpdates
+        res.updated = updates
         return res
     }
     
@@ -73,7 +112,6 @@ class ListProcessor: NSObject, ARListProcessor {
         
         var isShowDate = true
         var isShowDateNext = true
-        var isShowNewMessages = false//(unreadMessageId == current.rid)
         var clenchTop = false
         var clenchBottom = false
         
@@ -90,7 +128,7 @@ class ListProcessor: NSObject, ARListProcessor {
             }
         }
         
-        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom, showNewMessages: isShowNewMessages)
+        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom)
     }
     
     func areSameDate(source:ACMessage, prev: ACMessage) -> Bool {
@@ -135,4 +173,7 @@ class ListProcessor: NSObject, ARListProcessor {
     var layouts: [CellLayout]!
     var layoutCache: LayoutCache!
     var heights: [CGFloat]!
+    var forceUpdated: [Bool]!
+    var updated: [Bool]!
+    var indexMap: [jlong: Int]!
 }
