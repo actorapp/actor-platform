@@ -6,31 +6,27 @@ import Foundation
 
 class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
     
-    static let progressBgImage: UIImage = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
-    
     // Views
-    let preview = UIImageView()
-
-    let progressBg = UIImageView()
-    let circullarNode = CircullarNode()
-    let fileStatusIcon = UIImageView()
     
+    let preview = UIImageView()
+    let progress = CircullarLayerProgress(frame: CGRectZero)
     let timeBg = UIImageView()
     let timeLabel = UILabel()
     let statusView = UIImageView()
     
     // Layout
+    
     var contentWidth = 0
     var contentHeight = 0
     var contentViewSize: CGSize? = nil
     
     // Binded data
+    
     var thumb : ACFastThumb? = nil
     var thumbLoaded = false
     var contentLoaded = false
     
-    // MARK: -
-    // MARK: Constructors
+    // Constructors
     
     init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
@@ -41,14 +37,9 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         timeLabel.textColor = MainAppTheme.bubbles.mediaDate
         
         statusView.contentMode = UIViewContentMode.Center
-        fileStatusIcon.contentMode = UIViewContentMode.Center
-        progressBg.image = AABubbleMediaCell.progressBgImage
         
         mainView.addSubview(preview)
-        
-        mainView.addSubview(progressBg)
-        mainView.addSubview(fileStatusIcon)
-        mainView.addSubview(circullarNode.view)
+        mainView.addSubview(progress)
         
         mainView.addSubview(timeBg)
         mainView.addSubview(timeLabel)
@@ -64,7 +55,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
+    // Binding
     
     override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         
@@ -105,16 +96,14 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             contentLoaded = false
             
             // Reset progress
-            circullarNode.hidden = true
-            circullarNode.setProgress(0, animated: false)
+            self.progress.hideButton()
             UIView.animateWithDuration(0, animations: { () -> Void in
-                self.circullarNode.alpha = 0
+                self.progress.alpha = 0
                 self.preview.alpha = 0
-                self.progressBg.alpha = 0
             })
-            
+
             // Bind file
-            // fileBind(message, autoDownload: message.getContent() is ACPhotoContent)
+            fileBind(message, autoDownload: message.content is ACPhotoContent)
         }
         
         // Update time
@@ -154,81 +143,54 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
     }
     
-    func mediaDidTap() {
-        var content = bindedMessage!.content as! ACDocumentContent
-        if let fileSource = content.getSource() as? ACFileRemoteSource {
-            Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
-                notDownloaded: { () -> () in
-                    Actor.startDownloadingWithReference(fileSource.getFileReference())
-                }, onDownloading: { (progress) -> () in
-                    Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
-                }, onDownloaded: { (reference) -> () in                    
-                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
-                    var controller = NYTPhotosViewController(photos: [photoInfo])
-                    controller.delegate = self
-                    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
-                    self.controller.presentViewController(controller, animated: true, completion: { () -> Void in
-                        // UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
-                    })
-            }))
-        } else if let fileSource = content.getSource() as? ACFileLocalSource {
-            var rid = bindedMessage!.rid
-            Actor.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
-                notUploaded: { () -> () in
-                    Actor.resumeUploadWithRid(rid)
-                }, onUploading: { (progress) -> () in
-                    Actor.pauseUploadWithRid(rid)
-                }, onUploadedClosure: { () -> () in
-                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-                    var controller = NYTPhotosViewController(photos: [photoInfo])
-                    controller.delegate = self
-                    
-                    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
-                    self.controller.presentViewController(controller, animated: true, completion: { () -> Void in
-                        // UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
-                    })
-            }))
-        }
-    }
+    // File state binding
     
     override func fileUploadPaused(reference: String, selfGeneration: Int) {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
-        bgShowState(selfGeneration)
-        bgShowIcon("ic_upload", selfGeneration: selfGeneration)
-        bgHideProgress(selfGeneration)
+        runOnUiThread(selfGeneration) { () -> () in
+            self.progress.showView()
+            self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
+            self.progress.hideProgress()
+        }
     }
     
     override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
-        bgShowState(selfGeneration)
-        bgHideIcon(selfGeneration)
-        bgShowProgress(progress, selfGeneration: selfGeneration)
+        runOnUiThread(selfGeneration) { () -> () in
+            self.progress.showView()
+            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+            self.progress.setProgress(progress)
+        }
     }
     
     override func fileDownloadPaused(selfGeneration: Int) {
         bgLoadThumb(selfGeneration)
-        
-        bgShowState(selfGeneration)
-        bgShowIcon("ic_download", selfGeneration: selfGeneration)
-        bgHideProgress(selfGeneration)
+
+        runOnUiThread(selfGeneration) { () -> () in
+            self.progress.showView()
+            self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
+            self.progress.hideProgress()
+        }
     }
     
     override func fileDownloading(progress: Double, selfGeneration: Int) {
         bgLoadThumb(selfGeneration)
-        
-        bgShowState(selfGeneration)
-        bgHideIcon(selfGeneration)
-        bgShowProgress(progress, selfGeneration: selfGeneration)
+
+        runOnUiThread(selfGeneration) { () -> () in
+            self.progress.showView()
+            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+            self.progress.setProgress(progress)
+        }
     }
     
     override func fileReady(reference: String, selfGeneration: Int) {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
-        bgHideState(selfGeneration)
-        bgHideIcon(selfGeneration)
-        bgHideProgress(selfGeneration)
+        runOnUiThread(selfGeneration) { () -> () in
+            self.progress.hideView()
+        }
     }
     
     func bgLoadThumb(selfGeneration: Int) {
@@ -263,58 +225,6 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         })
     }
     
-    // Progress show/hide
-    func bgHideProgress(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            UIView.animateWithDuration(0.4, animations: { () -> Void in
-                self.circullarNode.alpha = 0
-            }, completion: { (val) -> Void in
-                if (val) {
-                    self.circullarNode.hidden = true
-                }
-            })
-        })
-    }
-    func bgShowProgress(value: Double, selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            if (self.circullarNode.hidden) {
-                self.circullarNode.hidden = false
-                self.circullarNode.alpha = 0
-            }
-            self.circullarNode.postProgress(value, animated: true)
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-                self.circullarNode.alpha = 1
-            })
-        })
-    }
-    
-    // State show/hide
-    func bgHideState(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.progressBg.hideView()
-        })
-    }
-    
-    func bgShowState(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.progressBg.showView()
-        })
-    }
-    
-    // Icon show/hide
-    func bgShowIcon(name: String, selfGeneration: Int) {
-        var img = UIImage(named: name)?.tintImage(UIColor.whiteColor())
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.fileStatusIcon.image = img
-            self.fileStatusIcon.showView()
-        })
-    }
-    func bgHideIcon(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.fileStatusIcon.hideView()
-        })
-    }
-    
     func setPreviewImage(img: UIImage, fast: Bool){
         if ((fast && self.preview.image == nil) || !fast) {
             self.preview.image = img;
@@ -322,8 +232,87 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
     }
     
-    // MARK: -
-    // MARK: Getters
+    // Media Action
+    
+    func mediaDidTap() {
+        var content = bindedMessage!.content as! ACDocumentContent
+        if let fileSource = content.getSource() as? ACFileRemoteSource {
+            Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
+                notDownloaded: { () -> () in
+                    Actor.startDownloadingWithReference(fileSource.getFileReference())
+                }, onDownloading: { (progress) -> () in
+                    Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
+                }, onDownloaded: { (reference) -> () in
+                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
+                    var controller = NYTPhotosViewController(photos: [photoInfo])
+                    controller.delegate = self
+                    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
+                    self.controller.presentViewController(controller, animated: true, completion: nil)
+            }))
+        } else if let fileSource = content.getSource() as? ACFileLocalSource {
+            var rid = bindedMessage!.rid
+            Actor.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
+                notUploaded: { () -> () in
+                    Actor.resumeUploadWithRid(rid)
+                }, onUploading: { (progress) -> () in
+                    Actor.pauseUploadWithRid(rid)
+                }, onUploadedClosure: { () -> () in
+                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                    var controller = NYTPhotosViewController(photos: [photoInfo])
+                    controller.delegate = self
+                    
+                    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
+                    self.controller.presentViewController(controller, animated: true, completion: nil)
+            }))
+        }
+    }
+    
+    // Layouting
+    
+    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+        var insets = fullContentInsets
+        var contentWidth = self.contentView.frame.width
+        var contentHeight = self.contentView.frame.height
+        
+        var bubbleHeight = contentHeight - insets.top - insets.bottom
+        var bubbleWidth = bubbleHeight * CGFloat(self.contentWidth) / CGFloat(self.contentHeight)
+        
+        layoutBubble(bubbleWidth, contentHeight: bubbleHeight)
+        
+        if (isOut) {
+            preview.frame = CGRectMake(contentWidth - insets.left - bubbleWidth, insets.top, bubbleWidth, bubbleHeight)
+        } else {
+            preview.frame = CGRectMake(insets.left, insets.top, bubbleWidth, bubbleHeight)
+        }
+        
+        progress.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
+        
+        timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
+        timeLabel.sizeToFit()
+        
+        var timeWidth = (isOut ? 23 : 0) + timeLabel.bounds.width
+        var timeHeight: CGFloat = 20
+        
+        timeLabel.frame = CGRectMake(preview.frame.maxX - timeWidth - 18, preview.frame.maxY - timeHeight - 6, timeLabel.frame.width, timeHeight)
+        
+        if (isOut) {
+            statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
+        }
+        
+        timeBg.frame = CGRectMake(timeLabel.frame.minX - 3, timeLabel.frame.minY - 1, timeWidth + 6, timeHeight + 2)
+    }
+    
+    // Photo preview
+    
+    func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
+        return self.preview
+    }
+    
+    func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController!) {
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
+    }
+    
+    // Measures
     
     private class func measureMedia(w: Int, h: Int) -> CGSize {
         var screenScale = UIScreen.mainScreen().scale;
@@ -343,51 +332,6 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         } else {
             fatalError("Unknown content type")
         }
-    }
-    
-    // MARK: -
-    // MARK: Layout
-    
-    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
-        var insets = fullContentInsets
-        var contentWidth = self.contentView.frame.width
-        var contentHeight = self.contentView.frame.height
-        
-        var bubbleHeight = contentHeight - insets.top - insets.bottom
-        var bubbleWidth = bubbleHeight * CGFloat(self.contentWidth) / CGFloat(self.contentHeight)
-        
-        layoutBubble(bubbleWidth, contentHeight: bubbleHeight)
-        
-        if (isOut) {
-            preview.frame = CGRectMake(contentWidth - insets.left - bubbleWidth, insets.top, bubbleWidth, bubbleHeight)
-        } else {
-            preview.frame = CGRectMake(insets.left, insets.top, bubbleWidth, bubbleHeight)
-        }
-        circullarNode.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
-        progressBg.frame = circullarNode.frame
-        fileStatusIcon.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 24, preview.frame.origin.y + preview.frame.height/2 - 24, 48, 48)
-        
-        timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
-        timeLabel.sizeToFit()
-        
-        var timeWidth = (isOut ? 23 : 0) + timeLabel.bounds.width
-        var timeHeight: CGFloat = 20
-        
-        timeLabel.frame = CGRectMake(preview.frame.maxX - timeWidth - 18, preview.frame.maxY - timeHeight - 6, timeLabel.frame.width, timeHeight)
-        
-        if (isOut) {
-            statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
-        }
-        
-        timeBg.frame = CGRectMake(timeLabel.frame.minX - 3, timeLabel.frame.minY - 1, timeWidth + 6, timeHeight + 2)
-    }
-    
-    func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
-        return self.preview
-    }
-    
-    func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController!) {
-        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
     }
 }
 
