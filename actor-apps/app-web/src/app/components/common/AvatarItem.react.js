@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 class AvatarItem extends React.Component {
   static propTypes = {
+    className: React.PropTypes.string,
     image: React.PropTypes.string,
     placeholder: React.PropTypes.string.isRequired,
     size: React.PropTypes.string,
@@ -28,7 +29,7 @@ class AvatarItem extends React.Component {
       'avatar--big': size === 'big',
       'avatar--huge': size === 'huge',
       'avatar--square': size === 'square'
-    });
+    }, this.props.className);
 
     placeholder = <span className={placeholderClassName}>{title[0]}</span>;
 

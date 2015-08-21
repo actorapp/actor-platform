@@ -4,6 +4,7 @@
   overflow: visible;
 
   width: $sidebar-width;
+  min-width: $sidebar-width;
   height: 100%;
 
   color: $sidebar-text-color;
@@ -48,6 +49,8 @@
 
     .dropdown--opened {
       .dropdown__button {
+        transition: transform $default-transition-duration $default-transition-timing;
+
         background-color: transparent !important;
         box-shadow: none !important;
       }
@@ -168,19 +171,21 @@
       padding: 7px 14px;
 
       cursor: pointer;
+      transition: color $default-transition-duration $default-transition-timing;
 
-      //opacity: .6;
-      //color: rgba(white, .6);
-      color: white;
-      //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
+      color: rgba(white, .6);
       .avatar {
         margin: 0 10px 0 0;
 
+        transition: filter $default-transition-duration $default-transition-timing;
         vertical-align: top;
+
+        filter: saturate(.4) contrast(.6);
       }
       .title {
         overflow: hidden;
 
+        white-space: nowrap;
         text-overflow: ellipsis;
       }
       .counter {
@@ -203,19 +208,26 @@
         background-color: $coral;
       }
       &:hover {
-        opacity: 1;
         color: white;
         background-color: rgba($baby-blue,.12);
         box-shadow: none;
+        .avatar {
+          filter: none;
+        }
       }
       &--active {
-        opacity: 1;
         color: white;
         background-color: $dark-sky-blue !important;
+        .avatar {
+          filter: none;
+        }
       }
       &--unread {
         opacity: 1;
         color: white;
+        .avatar {
+          filter: none;
+        }
       }
     }
 

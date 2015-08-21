@@ -27,11 +27,10 @@ export default {
     publicPath: 'assets/',
     filename: '[name].js',
     chunkFilename: '[chunkhash].js',
-    sourceMapFilename: '[name].js.map'
+    sourceMapFilename: '[name].map'
   },
   resolve: {
     root: [
-      path.join(__dirname, 'bower_components'),
       path.join(__dirname, 'src/app')
     ]
   },
@@ -45,58 +44,47 @@ export default {
     ],
 
     loaders: [
+      // Styles
       {
-        test: /\.scss|\.css$/,
-        loader:
-          'react-hot' +
-          '!style' +
-          '!css' +
-          '!autoprefixer?browsers=last 3 versions' +
-          '!sass?outputStyle=expanded&indentedSyntax' +
-          'includePaths[]=' +
-          (path.resolve(__dirname, './bower_components')) + '&' +
-          'includePaths[]=' +
-          (path.resolve(__dirname, './node_modules'))
+        test: /\.(scss|css)$/,
+        loaders: [
+          'react-hot',
+          'style',
+          'css',
+          'autoprefixer?browsers=last 3 versions',
+          'sass?outputStyle=expanded&indentedSyntax' +
+            'includePaths[]=' + (path.resolve(__dirname, './node_modules'))
+        ]
       },
-
-      {
-        test: /\.png$/,
-        loaders: ['file', 'url']
-      },
-
-      {
-        test: /\.mp3$/,
-        loaders: ['file', 'url']
-      },
-
-      // Fonts
-      {
-        test: /\.woff|\.woff2$/,
-        loader: 'url?prefix=font/&limit=5000&mimetype=application/font-woff'
-      },
-      {test: /\.ttf$/, loader: 'file?prefix=font/'},
-      {test: /\.eot$/, loader: 'file?prefix=font/'},
-      {test: /\.svg$/, loader: 'file?prefix=font/'},
-
+      // JavaScript
       {
         test: /\.js$/,
         loaders: [
           'react-hot',
-          'babel?optional[]=strict&optional[]=es7.classProperties&optional[]=es7.decorators'
+          'babel?optional[]=strict' +
+            '&optional[]=es7.classProperties' +
+            '&optional[]=es7.decorators'
         ],
-        exclude: /(node_modules|bower_components)/
-      },
-
-      {
+        exclude: /(node_modules)/
+      },{
         test: /\.json$/,
-        loader: 'json'
+        loaders: ['json']
+      },
+      // Assets
+      {
+        test: /\.(png|mp3)$/,
+        loaders: ['file?name=[name].[ext]']
+      },
+      // Fonts
+      {
+        test: /\.(ttf|eot|svg|woff|woff2)$/,
+        loaders: ['file?name=fonts/[name].[ext]']
       }
     ]
   },
   plugins: [
     new webpack.ResolverPlugin([
-      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
-      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
+      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
     ]),
     new webpack.optimize.DedupePlugin()
   ],
