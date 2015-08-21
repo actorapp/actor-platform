@@ -54,6 +54,11 @@ const DialogActionCreators = {
     ActorClient.onChatEnd(peer);
   },
 
+  deleteMessages(peer, rids) {
+    console.warn('delete', peer, rids);
+    //ActorClient.deleteMessages(peer, rids);
+  },
+
   leaveGroup(groupId) {
     ActorClient
       .leaveGroup(groupId)

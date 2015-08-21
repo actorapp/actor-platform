@@ -1,10 +1,8 @@
 'use strict';
 
-//import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config.js';
-//import del from 'del';
 import { assign } from 'lodash';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
@@ -39,13 +37,12 @@ gulp.task('webpack:build', (callback) => {
   });
 });
 
-gulp.task('webpack-dev-server', () =>{
+gulp.task('webpack-dev-server', () => {
   // modify some webpack config options
   assign(webpackConfig, {
     plugins: [
       new webpack.ResolverPlugin([
-        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
-        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
+        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
       ]),
       new webpack.optimize.DedupePlugin(),
       new webpack.HotModuleReplacementPlugin(),
@@ -113,11 +110,7 @@ gulp.task('html', () => {
 
 gulp.task('lib:build', shell.task(['cd ../ && ./gradlew :core-js:buildPackage']));
 gulp.task('lib', ['lib:build'], () => {
-  const stream =
-    gulp.src('../core-js/build/package/*')
-      .pipe(gulp.dest('./dist/actor/'));
-
-  return stream;
+  return gulp.src('../core-js/build/package/*').pipe(gulp.dest('./dist/actor/'));
 });
 
 gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
@@ -126,7 +119,7 @@ gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
       hash: true,
       network: ['http://*', 'https://*', '*'],
       filename: 'app.appcache',
-      exclude: ['assets/styles.js.map', 'assets/app.js.map']
+      exclude: ['assets/*.map']
     }))
     .pipe(gulp.dest('./dist/'));
 });

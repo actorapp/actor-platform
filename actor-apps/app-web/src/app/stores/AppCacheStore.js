@@ -34,14 +34,15 @@ AppCacheStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
   switch(action.type) {
     case ActionTypes.APP_UPDATE_MODAL_SHOW:
       _isModalOpen = true;
+      AppCacheStoreInstance.emitChange();
       break;
     case ActionTypes.APP_UPDATE_MODAL_HIDE:
       _isModalOpen = false;
+      AppCacheStoreInstance.emitChange();
       break;
     default:
       return;
   }
-  AppCacheStoreInstance.emitChange();
 });
 
 export default AppCacheStoreInstance;

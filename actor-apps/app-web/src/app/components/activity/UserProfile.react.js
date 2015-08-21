@@ -79,8 +79,8 @@ class UserProfile extends React.Component {
   };
 
   render() {
-    const user = this.props.user;
-    const isNotificationsEnabled = this.state.isNotificationsEnabled;
+    const { user } = this.props;
+    const { isNotificationsEnabled } = this.state;
 
     let actions;
     if (user.isContact === false) {
@@ -101,9 +101,21 @@ class UserProfile extends React.Component {
       'dropdown--opened': this.state.isActionsDropdownOpen
     });
 
-    // Mock
-    const nickname = '@username';
-    const email = 'username@domain.com';
+    const nickname = user.nick ? (
+      <li>
+        <svg className="icon icon--pink"
+             dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#username"/>'}}/>
+        <span className="title">{user.nick}</span>
+        <span className="description">nickname</span>
+      </li>
+    ) : null;
+    const email = user.email ? (
+      <li className="hide">
+        <i className="material-icons icon icon--blue">mail</i>
+        <span className="title">{user.email}</span>
+        <span className="description">email</span>
+      </li>
+    ) : null;
 
     return (
       <div className="activity__body user_profile">
@@ -135,22 +147,13 @@ class UserProfile extends React.Component {
 
           <li className="profile__list__item user_profile__contact_info no-p">
             <ul className="user_profile__contact_info__list">
-              <li className="hide">
-                <svg className="icon icon--pink"
-                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#username"/>'}}/>
-                <span className="title">{nickname}</span>
-                <span className="description">nickname</span>
-              </li>
+              {nickname}
               <li>
                 <i className="material-icons icon icon--green">call</i>
                 <span className="title">{'+' + user.phones[0].number}</span>
                 <span className="description">mobile</span>
               </li>
-              <li className="hide">
-                <i className="material-icons icon icon--blue">mail</i>
-                <span className="title">{email}</span>
-                <span className="description">email</span>
-              </li>
+              {email}
             </ul>
           </li>
 

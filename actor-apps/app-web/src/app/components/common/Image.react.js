@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 
 import Lightbox from 'jsonlylightbox';
 
@@ -15,7 +16,7 @@ let cache = {};
 class Image extends React.Component {
   static propTypes = {
     content: React.PropTypes.object.isRequired,
-    loadingClassName: React.PropTypes.string,
+    className: React.PropTypes.string,
     loadedClassName: React.PropTypes.string
   };
 
@@ -28,7 +29,7 @@ class Image extends React.Component {
   }
 
   openLightBox() {
-    lightbox.open(this.props.content.fileUrl, "message");
+    lightbox.open(this.props.content.fileUrl, 'message');
   }
 
   onLoad() {
@@ -47,7 +48,8 @@ class Image extends React.Component {
   }
 
   render() {
-    const content = this.props.content;
+    const { content, className, loadedClassName } = this.props;
+    const { isImageLoaded } = this.state;
 
     const k = content.w / 300;
     const styles = {
@@ -55,7 +57,10 @@ class Image extends React.Component {
       height: Math.round(content.h / k)
     };
 
-    let original = null;
+    let original = null,
+        preview = null,
+        preloader = null;
+
 
     if (content.fileUrl) {
       original = (
@@ -68,28 +73,18 @@ class Image extends React.Component {
       );
     }
 
-    let preview = null,
-        preloader = null;
-
     if (!this.isCached()) {
       preview = <img className="photo photo--preview" src={content.preview}/>;
 
-      if (content.isUploading === true || this.state.isImageLoaded === false) {
-        preloader =
-          <div className="preloader">
-            <div/>
-            <div/>
-            <div/>
-            <div/>
-            <div/>
-          </div>;
+      if (content.isUploading === true || isImageLoaded === false) {
+        preloader = <div className="preloader"><div/><div/><div/><div/><div/></div>;
       }
     }
 
-    const className = this.state.isImageLoaded ? this.props.loadedClassName : this.props.loadingClassName;
+    const imageClassName = isImageLoaded ? classnames(className, loadedClassName) : className;
 
     return (
-      <div className={className} style={styles}>
+      <div className={imageClassName} style={styles}>
         {preview}
         {original}
         {preloader}
