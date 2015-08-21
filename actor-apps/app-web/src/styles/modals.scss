@@ -9,11 +9,19 @@
   right: 0;
   bottom: 0;
   left: 0;
+  //perspective: 600px;
+
+  display: flex;
+  flex-direction: column;
 
   opacity: 0;
   background-color: $modal-backdrop-color;
 
-  perspective: 600px;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+
+
   &--after-open {
     //transition: opacity 150ms ease-out;
     opacity: 1;
@@ -42,13 +50,15 @@
 
   width: $modal-default-width;
   //min-height: $modal-default-height;
-  margin: 160px auto 0;
+  //margin: 160px auto 0;
 
   color: $modal-text-color;
   border-radius: $modal-default-radius;
   outline: none;
   background-color: $modal-default-background;
   box-shadow: 0 4px 10px 0 rgba(0,0,0,.25);
+
+  flex: 0;
 
   &__header {
     position: relative;
@@ -187,6 +197,13 @@
       margin-right: 16px;
 
       //color: $modal-text-light-color;
+    }
+    .about {
+      padding: 0 16px 16px 0;
+    }
+
+    footer {
+      padding: 0 16px 16px;
     }
   }
   &--create-group {
