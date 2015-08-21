@@ -26,6 +26,18 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
             image: MainAppTheme.tab.createUnselectedIcon("ic_chats_outline"),
             selectedImage: MainAppTheme.tab.createSelectedIcon("ic_chats_filled"))
         
+        binder.bind(Actor.getAppState().getGlobalCounter(), closure: { (value: JavaLangInteger?) -> () in
+            if value != nil {
+                if value!.integerValue > 0 {
+                    self.tabBarItem.badgeValue = "\(value!.integerValue)"
+                } else {
+                    self.tabBarItem.badgeValue = nil
+                }
+            } else {
+                self.tabBarItem.badgeValue = nil
+            }
+        })
+        
         if (!MainAppTheme.tab.showText) {
             tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
         }
