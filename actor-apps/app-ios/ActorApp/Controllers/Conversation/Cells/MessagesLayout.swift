@@ -16,9 +16,6 @@ class MessagesLayout : UICollectionViewLayout {
     var currentItems = [CachedLayout]()
     var isScrolledToEnd: Bool = false
     
-    private let cachedLayoutPool = ObjectPool<CachedLayout>()
-    private let layoutItemPool = ObjectPool<LayoutItem>()
-    
     weak var delegate : MessagesLayoutDelegate? {
         get{
             return self.collectionView!.delegate as? MessagesLayoutDelegate
@@ -39,7 +36,8 @@ class MessagesLayout : UICollectionViewLayout {
         
         self.disableAutoScroll = disableAutoScroll
         
-        cachedLayoutPool.acquire(currentItems)
+//        cachedLayoutPool.acquire(currentItems)
+        currentItems.removeAll(keepCapacity: true)
 
         // Saving current visible cells
         var visibleItems = self.collectionView!.indexPathsForVisibleItems()
@@ -48,15 +46,7 @@ class MessagesLayout : UICollectionViewLayout {
             var index = (indexPath as! NSIndexPath).item
             var topOffset = items[index].attrs.frame.origin.y - currentOffset
             var id = items[index].id
-            
-            var layout = cachedLayoutPool.get()
-            if (layout == nil) {
-                layout = CachedLayout(id: id, offset: topOffset)
-            } else {
-                layout!.id = id
-                layout!.offset = topOffset
-            }
-            currentItems.append(layout!)
+            currentItems.append(CachedLayout(id: id, offset: topOffset))
         }
         
         isScrolledToEnd = self.collectionView!.contentOffset.y < 8
@@ -219,7 +209,7 @@ class MessagesLayout : UICollectionViewLayout {
     }
 }
 
-class LayoutItem {
+struct LayoutItem {
     
     var id: Int64
     var invalidated: Bool = true
@@ -231,7 +221,7 @@ class LayoutItem {
     }
 }
 
-class CachedLayout {
+struct CachedLayout {
     var id: Int64
     var offset: CGFloat
     
