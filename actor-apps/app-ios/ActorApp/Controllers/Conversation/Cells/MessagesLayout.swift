@@ -81,6 +81,9 @@ class MessagesLayout : UICollectionViewLayout {
         items.removeAll(keepCapacity: true)
         frames.removeAll(keepCapacity: true)
         
+//        var listItems = processedList!.items
+//        var listHeights = processedList!.heights
+        
         if processedList != nil {
             for i in 0..<processedList!.items.count {
                 var indexPath = NSIndexPath(forRow: i, inSection: 0)
@@ -92,7 +95,7 @@ class MessagesLayout : UICollectionViewLayout {
                 
                 item.size = itemSize
                 
-                var attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+                var attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
                 attrs.frame = frame
                 item.attrs = attrs
                 
