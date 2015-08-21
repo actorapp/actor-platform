@@ -119,7 +119,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         // Always update bubble insets
         if (isOut) {
-            // bindBubbleType(.TextOut, isCompact: isClanchBottom)
+            bindBubbleType(.TextOut, isCompact: isClanchBottom)
             dateText.textColor = MainAppTheme.bubbles.textDateOut
             
             bubbleInsets = UIEdgeInsets(
@@ -133,7 +133,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 bottom: AABubbleCell.bubbleContentBottom,
                 right: (isClanchBottom ? 4 : 10))
         } else {
-            // bindBubbleType(.TextIn, isCompact: isClanchBottom)
+            bindBubbleType(.TextIn, isCompact: isClanchBottom)
             dateText.textColor = MainAppTheme.bubbles.textDateIn
             
             bubbleInsets = UIEdgeInsets(

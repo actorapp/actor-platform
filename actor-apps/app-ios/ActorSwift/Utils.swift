@@ -9,7 +9,12 @@ func dispatchOnUi(closure: () -> Void) {
         NSLog("dispatchOnUi")
         closure()
     })
+}
 
+func dispatchBackground(closure: () -> Void) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+        closure()
+    })
 }
 
 class Utils: NSObject {
