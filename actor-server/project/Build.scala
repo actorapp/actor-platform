@@ -48,7 +48,7 @@ object Build extends sbt.Build {
           file("actor-commons-api/src/main/protobuf")
         ),
         PB.runProtoc in PB.protobufConfig := (args =>
-          com.github.os72.protocjar.Protoc.runProtoc("-v261" +: args.toArray))
+          com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))
       ) ++
       Seq(
         initialize ~= { _ =>
@@ -60,7 +60,7 @@ object Build extends sbt.Build {
         javaOptions ++= Seq("-Dfile.encoding=UTF-8"),
         javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
         fork in Test := false,
-        updateOptions := updateOptions.value.withCachedResolution(true)
+        updateOptions := updateOptions.value.withCachedResolution(false)
       )
 
 
