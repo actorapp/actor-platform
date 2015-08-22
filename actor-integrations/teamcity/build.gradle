@@ -1,0 +1,34 @@
+repositories {
+    mavenCentral()
+    maven {
+        url "http://repository.jetbrains.com/all"
+    }
+}
+
+apply plugin: 'java'
+
+configurations { providedCompile }
+
+dependencies {
+    providedCompile "org.jetbrains.teamcity:server-api:9.0"
+    compile "com.squareup.okhttp:okhttp:2.4.0"
+}
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.test.runtimeClasspath += configurations.providedCompile
+
+task copyToLib( type: Zip ) {
+    into "$buildDir/actor-teamcity.zip"
+    from "$projectDir/src/main/teamcity-plugin.xml"
+
+    from ("$buildDir/libs/actor-teamcity.jar") {
+        into "server"
+    }
+
+    from(configurations.runtime) {
+        into "server"
+    }
+}
+
+build { dependsOn copyToLib }
