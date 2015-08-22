@@ -6,11 +6,7 @@ import UIKit
 
 class AABubbleDocumentCell: AABubbleBaseFileCell {
     
-    // MARK: -
-    // MARK: Private vars
-    
-    private let progressBg = UIImageView()
-    private let circullarNode = CircullarNode()
+    private let progress = CircullarLayerProgress(size: CGSizeMake(48, 48))
     private let fileIcon = UIImageView()
     
     private let titleLabel = UILabel()
@@ -20,9 +16,6 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     private let statusView = UIImageView()
     
     private var bindedExt = ""
-    
-    // MARK: -
-    // MARK: Constructors
     
     init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
@@ -47,17 +40,14 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         sizeLabel.text = " "
         sizeLabel.sizeToFit()
         
-        progressBg.image = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
-        
         mainView.addSubview(titleLabel)
         mainView.addSubview(sizeLabel)
         
         mainView.addSubview(dateLabel)
         mainView.addSubview(statusView)
         
-        mainView.addSubview(progressBg)
         mainView.addSubview(fileIcon)
-        mainView.addSubview(circullarNode.view)
+        mainView.addSubview(progress)
         
         self.contentInsets = UIEdgeInsetsMake(0, 0, 0, 0)
         
@@ -95,12 +85,10 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
             sizeLabel.text = Actor.getFormatter().formatFileSize(document.getSource().getSize())
             
             // Reset progress
-            circullarNode.hidden = true
-            circullarNode.setProgress(0, animated: false)
+            self.progress.hideButton()
             UIView.animateWithDuration(0, animations: { () -> Void in
-                self.circullarNode.alpha = 0
+                self.progress.alpha = 0
                 self.fileIcon.alpha = 0
-                self.progressBg.alpha = 0
             })
             
             // Bind file
@@ -168,31 +156,46 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     }
     
     override func fileUploadPaused(reference: String, selfGeneration: Int) {
-        bgShowState(selfGeneration)
-        bgShowIcon(UIImage(named: "ic_upload")!.tintImage(UIColor.whiteColor()), selfGeneration: selfGeneration)
-        bgHideProgress(selfGeneration)
+        self.runOnUiThread(selfGeneration) { () -> () in
+            self.fileIcon.hideView()
+            
+            self.progress.showView()
+            self.progress.hideProgress()
+            self.progress.setButtonType(FlatButtonType.buttonUpBasicType, animated: true)
+        }
     }
     
     override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
-        bgShowState(selfGeneration)
-        bgHideIcon(selfGeneration)
-        bgShowProgress(progress, selfGeneration: selfGeneration)
+        self.runOnUiThread(selfGeneration) { () -> () in
+            self.fileIcon.hideView()
+            
+            self.progress.showView()
+            self.progress.setProgress(progress)
+            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+        }
     }
     
     override func fileDownloadPaused(selfGeneration: Int) {
-        bgShowState(selfGeneration)
-        bgShowIcon(UIImage(named: "ic_download")!.tintImage(UIColor.whiteColor()), selfGeneration: selfGeneration)
-        bgHideProgress(selfGeneration)
+        self.runOnUiThread(selfGeneration) { () -> () in
+            self.fileIcon.hideView()
+            
+            self.progress.showView()
+            self.progress.hideProgress()
+            self.progress.setButtonType(FlatButtonType.buttonDownloadType, animated: true)
+        }
     }
     
     override func fileDownloading(progress: Double, selfGeneration: Int) {
-        bgShowState(selfGeneration)
-        bgHideIcon(selfGeneration)
-        bgShowProgress(progress, selfGeneration: selfGeneration)
+        self.runOnUiThread(selfGeneration) { () -> () in
+            self.fileIcon.hideView()
+            
+            self.progress.showView()
+            self.progress.setProgress(progress)
+            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+        }
     }
     
     override func fileReady(reference: String, selfGeneration: Int) {
-        bgHideState(selfGeneration)
         var fileName = "file_unknown"
         if (FileTypes[bindedExt] != nil) {
             switch(FileTypes[bindedExt]!) {
@@ -234,60 +237,65 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
                 break
             }
         }
-        bgShowIcon(UIImage(named: fileName)!, selfGeneration: selfGeneration)
-        bgHideProgress(selfGeneration)
+        var icon = UIImage(named: fileName)!
+        
+        self.runOnUiThread(selfGeneration) { () -> () in
+            self.fileIcon.image = icon
+            self.fileIcon.showView()
+            
+            self.progress.hideView()
+            self.progress.setProgress(1)
+        }
+//        bgShowIcon(UIImage(named: fileName)!, selfGeneration: selfGeneration)
+//        bgHideProgress(selfGeneration)
     }
     
     // Progress show/hide
-    func bgHideProgress(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            UIView.animateWithDuration(0.4, animations: { () -> Void in
-                self.circullarNode.alpha = 0
-                }, completion: { (val) -> Void in
-                    if (val) {
-                        self.circullarNode.hidden = true
-                    }
-            })
-        })
-    }
-    func bgShowProgress(value: Double, selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            if (self.circullarNode.hidden) {
-                self.circullarNode.hidden = false
-                self.circullarNode.alpha = 0
-            }
-            self.circullarNode.postProgress(value, animated: true)
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-                self.circullarNode.alpha = 1
-            })
-        })
-    }
+//    func bgHideProgress(selfGeneration: Int) {
+//        self.runOnUiThread(selfGeneration, closure: { () -> () in
+//            UIView.animateWithDuration(0.4, animations: { () -> Void in
+//                self.circullarNode.alpha = 0
+//                }, completion: { (val) -> Void in
+//                    if (val) {
+//                        self.circullarNode.hidden = true
+//                    }
+//            })
+//        })
+//    }
+//    func bgShowProgress(value: Double, selfGeneration: Int) {
+//        self.runOnUiThread(selfGeneration) { () -> () in
+//            self.fileIcon.hideView()
+//            self.progress.showView()
+//            self.progress.setProgress(value)
+//            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
+//        }
+//    }
     
     // State show/hide
-    func bgHideState(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.progressBg.hideView()
-        })
-    }
-    
-    func bgShowState(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.progressBg.showView()
-        })
-    }
-    
-    // Icon show/hide
-    func bgShowIcon(image: UIImage, selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.fileIcon.image = image
-            self.fileIcon.showView()
-        })
-    }
-    func bgHideIcon(selfGeneration: Int) {
-        self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.fileIcon.hideView()
-        })
-    }
+//    func bgHideState(selfGeneration: Int) {
+//        self.runOnUiThread(selfGeneration, closure: { () -> () in
+//            self.progressBg.hideView()
+//        })
+//    }
+//    
+//    func bgShowState(selfGeneration: Int) {
+//        self.runOnUiThread(selfGeneration, closure: { () -> () in
+//            self.progressBg.showView()
+//        })
+//    }
+//    
+//    // Icon show/hide
+//    func bgShowIcon(image: UIImage, selfGeneration: Int) {
+//        self.runOnUiThread(selfGeneration, closure: { () -> () in
+//            self.fileIcon.image = image
+//            self.fileIcon.showView()
+//        })
+//    }
+//    func bgHideIcon(selfGeneration: Int) {
+//        self.runOnUiThread(selfGeneration, closure: { () -> () in
+//            self.fileIcon.hideView()
+//        })
+//    }
     
     // MARK: -
     // MARK: Methods
@@ -318,9 +326,8 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         
         // Progress state
         var progressRect = CGRectMake(contentLeft + 8, 12, 48, 48)
-        self.progressBg.frame = progressRect
+        self.progress.frame = progressRect
         self.fileIcon.frame = CGRectMake(contentLeft + 16, 20, 32, 32)
-        self.circullarNode.frame = progressRect
         
         // Message state
         if (self.isOut) {

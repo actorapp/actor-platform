@@ -9,7 +9,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     // Views
     
     let preview = UIImageView()
-    let progress = CircullarLayerProgress(frame: CGRectZero)
+    let progress = CircullarLayerProgress(size: CGSizeMake(64, 64))
     let timeBg = UIImageView()
     let timeLabel = UILabel()
     let statusView = UIImageView()
@@ -189,6 +189,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
+            self.progress.setProgress(1)            
             self.progress.hideView()
         }
     }
