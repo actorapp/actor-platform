@@ -1,8 +1,11 @@
 import React from 'react';
 
 import requireAuth from 'utils/require-auth';
+import ActorClient from 'utils/ActorClient';
+import PeerUtils from 'utils/PeerUtils';
 
-import VisibilityActionCreators from '../actions/VisibilityActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
+import VisibilityActionCreators from 'actions/VisibilityActionCreators';
 import FaviconActionCreators from 'actions/FaviconActionCreators';
 import FaviconStore from 'stores/FaviconStore';
 
@@ -29,6 +32,14 @@ const getStateFromStores = () => {
 };
 
 class Main extends React.Component {
+  static contextTypes = {
+    router: React.PropTypes.func
+  };
+
+  static propTypes = {
+    params: React.PropTypes.object
+  };
+
   constructor(props) {
     super(props);
 
@@ -40,6 +51,12 @@ class Main extends React.Component {
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
     }
+
+    const peer = PeerUtils.stringToPeer(this.props.params.id);
+
+    if (peer) {
+      DialogActionCreators.selectDialogPeer(peer);
+    }
   }
 
   onChange = () => {
@@ -47,13 +64,15 @@ class Main extends React.Component {
   };
 
   render() {
+    const peer = PeerUtils.stringToPeer(this.props.params.id);
+
     return (
       <div className="app">
         <Favicon path={this.state.faviconPath}/>
         <Banner/>
+        <SidebarSection selectedPeer={peer}/>
+        <DialogSection peer={peer}/>
 
-        <SidebarSection/>
-        <DialogSection/>
       </div>
     );
   }
