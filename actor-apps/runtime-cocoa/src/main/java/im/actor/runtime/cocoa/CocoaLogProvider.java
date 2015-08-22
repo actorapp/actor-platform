@@ -25,14 +25,4 @@ public class CocoaLogProvider implements LogRuntime {
     public native void v(String tag, String message)/*-[
         NSLog(@"%@: %@", tag, message);
     ]-*/;
-
-//    @Override
-//    public void d(String tag, String message) {
-//        logger.log(Level.FINE, tag + ": " + message);
-//    }
-
-//    @Override
-//    public void v(String tag, String message) {
-//        logger.log(Level.FINER, tag + ": " + message);
-//    }
 }

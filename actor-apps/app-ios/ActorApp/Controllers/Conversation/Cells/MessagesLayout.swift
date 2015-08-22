@@ -9,17 +9,15 @@ class MessagesLayout : UICollectionViewLayout {
     var deletedIndexPaths = [NSIndexPath]()
     var insertedIndexPaths = [NSIndexPath]()
     var items = [LayoutItem]()
+    var frames = [CGRect]()
     var disableAutoScroll: Bool = false
     
     var contentHeight: CGFloat = 0.0
     var currentItems = [CachedLayout]()
     var isScrolledToEnd: Bool = false
     
-    weak var delegate : MessagesLayoutDelegate? {
-        get{
-            return self.collectionView!.delegate as? MessagesLayoutDelegate
-        }
-    }
+    var list: PreprocessedList?
+    var unread: jlong?
     
     override init() {
         super.init()
@@ -29,8 +27,10 @@ class MessagesLayout : UICollectionViewLayout {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func beginUpdates(disableAutoScroll: Bool) {
+    func beginUpdates(disableAutoScroll: Bool, list: PreprocessedList?, unread: jlong?) {
         self.disableAutoScroll = disableAutoScroll
+        self.list = list
+        self.unread = unread
         
         // Saving current visible cells
         currentItems.removeAll(keepCapacity: true)
@@ -49,8 +49,6 @@ class MessagesLayout : UICollectionViewLayout {
     override func prepareLayout() {
         super.prepareLayout()
         
-        var del = self.collectionView!.delegate as! MessagesLayoutDelegate
-        
         // Validate sections
         var sectionsCount = self.collectionView!.numberOfSections()
         if sectionsCount == 0 {
@@ -61,34 +59,35 @@ class MessagesLayout : UICollectionViewLayout {
         if sectionsCount != 1 {
             fatalError("Unsupported more than 1 section")
         }
-        
-        items.removeAll(keepCapacity: true)
-            
-        var itemsCount = self.collectionView!.numberOfItemsInSection(0)
-        var offset: CGFloat = 0
+
         contentHeight = 0.0
-        for i in 0..<itemsCount {
-            var indexPath = NSIndexPath(forRow: i, inSection: 0)
-            var itemId = del.collectionView(self.collectionView!, layout: self, idForItemAtIndexPath: indexPath)
-            var itemSize = del.collectionView(self.collectionView!, layout: self, sizeForItemAtIndexPath: indexPath)
-            
-            var item = LayoutItem(id: itemId)
-            
-            item.size = itemSize
-            
-            var attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
-            attrs.size = item.size
-            attrs.center = CGPointMake(0, offset + item.size.height / 2.0)
-            attrs.frame = CGRect(origin: CGPointMake(0, offset), size: attrs.size)
-            attrs.bounds = CGRect(origin: CGPointZero, size: attrs.size)
-                // attrs.alpha = 0
-            
-            offset += item.size.height
-            item.attrs = attrs
-            
-            items.append(item)
-            
-            contentHeight += item.size.height
+        items.removeAll(keepCapacity: true)
+        frames.removeAll(keepCapacity: true)
+        
+        if list != nil {
+            for i in 0..<list!.items.count {
+                var indexPath = NSIndexPath(forRow: i, inSection: 0)
+                var itemId = list!.items[i].rid
+                var height = list!.heights[i]
+                if itemId == unread {
+                    height += AABubbleCell.newMessageSize
+                }
+                var itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
+                
+                var frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
+                var item = LayoutItem(id: itemId)
+                
+                item.size = itemSize
+                
+                var attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
+                attrs.frame = frame
+                item.attrs = attrs
+                
+                items.append(item)
+                frames.append(frame)
+                
+                contentHeight += item.size.height
+            }
         }
     }
     
@@ -98,16 +97,17 @@ class MessagesLayout : UICollectionViewLayout {
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
         var res = [AnyObject]()
-        for itm in items {
-            if CGRectIntersectsRect(rect, itm.attrs.frame) {
-                res.append(itm.attrs)
+        for i in 0..<items.count {
+            if CGRectIntersectsRect(rect, frames[i]) {
+                res.append(items[i].attrs)
             }
-        }
-        
+        }        
         return res
     }
     
     override func prepareForCollectionViewUpdates(updateItems: [AnyObject]!) {
+        
+        var start = CFAbsoluteTimeGetCurrent()
         super.prepareForCollectionViewUpdates(updateItems)
         
         insertedIndexPaths.removeAll(keepCapacity: true)
@@ -121,6 +121,7 @@ class MessagesLayout : UICollectionViewLayout {
                 }
             }
         }
+        println("prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
     }
     
     override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
@@ -141,6 +142,8 @@ class MessagesLayout : UICollectionViewLayout {
     override func finalizeCollectionViewUpdates() {
         super.finalizeCollectionViewUpdates()
         
+        var start = CFAbsoluteTimeGetCurrent()
+        
         if disableAutoScroll {
             var size = collectionViewContentSize()
             var delta: CGFloat! = nil
@@ -158,10 +161,12 @@ class MessagesLayout : UICollectionViewLayout {
                 self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y - delta)
             }
         }
+        
+        println("finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
     }
 }
 
-class LayoutItem {
+struct LayoutItem {
     
     var id: Int64
     var invalidated: Bool = true
@@ -173,7 +178,7 @@ class LayoutItem {
     }
 }
 
-class CachedLayout {
+struct CachedLayout {
     var id: Int64
     var offset: CGFloat
     
@@ -181,15 +186,6 @@ class CachedLayout {
         self.id = id
         self.offset = offset
     }
-}
-
-@objc protocol MessagesLayoutDelegate: UICollectionViewDelegate, UIScrollViewDelegate, NSObjectProtocol {
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64
-    
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
-
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity
 }
 
 @objc enum MessageGravity: Int {

@@ -4,6 +4,8 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import java.io.IOException;
 
 import im.actor.runtime.bser.Bser;
@@ -29,11 +31,17 @@ public class Message extends BserObject implements ListEngineItem {
 
     public static final String ENTITY_NAME = "Message";
 
+    @Property("readonly, nonatomic")
     private long rid;
+    @Property("readonly, nonatomic")
     private long sortDate;
+    @Property("readonly, nonatomic")
     private long date;
+    @Property("readonly, nonatomic")
     private int senderId;
+    @Property("readonly, nonatomic")
     private MessageState messageState;
+    @Property("readonly, nonatomic")
     private AbsContent content;
 
     public Message(long rid, long sortDate, long date, int senderId, MessageState messageState, AbsContent content) {

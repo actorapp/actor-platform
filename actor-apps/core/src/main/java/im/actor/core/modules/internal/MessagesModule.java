@@ -35,17 +35,21 @@ import im.actor.core.modules.internal.messages.CursorReceiverActor;
 import im.actor.core.modules.internal.messages.DialogsActor;
 import im.actor.core.modules.internal.messages.DialogsHistoryActor;
 import im.actor.core.modules.internal.messages.MessageDeleteActor;
+import im.actor.core.modules.internal.messages.MessageShownActor;
+import im.actor.core.modules.internal.messages.MessageShownFilter;
 import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.internal.messages.SenderActor;
+import im.actor.core.modules.internal.messages.entity.MessageShownEvent;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.runtime.Storage;
+import im.actor.runtime.*;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.tools.BounceFilterActor;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.SyncKeyValue;
@@ -62,10 +66,12 @@ public class MessagesModule extends AbsModule {
     private ActorRef plainReceiverActor;
     private ActorRef sendMessageActor;
     private ActorRef deletionsActor;
+    private ActorRef messageShownActor;
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
+    private final HashMap<Peer, ActorRef> messageShownFilter = new HashMap<Peer, ActorRef>();
 
     private final SyncKeyValue cursorStorage;
 
@@ -119,6 +125,12 @@ public class MessagesModule extends AbsModule {
                 return new MessageDeleteActor(context());
             }
         }), "actor/deletions");
+        this.messageShownActor = system().actorOf(Props.create(MessageShownActor.class, new ActorCreator<MessageShownActor>() {
+            @Override
+            public MessageShownActor create() {
+                return new MessageShownActor(context());
+            }
+        }), "actor/shown");
     }
 
     public ActorRef getSendMessageActor() {
@@ -212,11 +224,21 @@ public class MessagesModule extends AbsModule {
     }
 
     public void loadMoreDialogs() {
-        dialogsHistoryActor.send(new DialogsHistoryActor.LoadMore());
+        im.actor.runtime.Runtime.dispatch(new Runnable() {
+            @Override
+            public void run() {
+                dialogsHistoryActor.send(new DialogsHistoryActor.LoadMore());
+            }
+        });
     }
 
-    public void loadMoreHistory(Peer peer) {
-        getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
+    public void loadMoreHistory(final Peer peer) {
+        im.actor.runtime.Runtime.dispatch(new Runnable() {
+            @Override
+            public void run() {
+                getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
+            }
+        });
     }
 
     public void sendMessage(@NotNull Peer peer, @NotNull String message, @Nullable String markDownText,
@@ -247,11 +269,25 @@ public class MessagesModule extends AbsModule {
                 reference.getSize(), reference.getDescriptor(), fastThumb));
     }
 
-    public void onMessageShown(Peer peer, int sender, long sortDate) {
-        if (sender != myUid()) {
-            ownReadActor.send(new OwnReadActor.MessageRead(peer, sortDate));
-            conversationActor(peer).send(new ConversationActor.MessageReadByMe(sortDate));
-        }
+    public void onMessageShown(final Peer peer, final int sender, final long sortDate) {
+        im.actor.runtime.Runtime.dispatch(new Runnable() {
+            @Override
+            public void run() {
+                if (sender != myUid()) {
+                    if (!messageShownFilter.containsKey(peer)) {
+                        messageShownFilter.put(peer, system().actorOf(Props.create(MessageShownFilter.class, new ActorCreator<MessageShownFilter>() {
+                            @Override
+                            public MessageShownFilter create() {
+                                return new MessageShownFilter();
+                            }
+                        }), "actor/shown_filter_" + peer.getPeerType() + "_" + peer.getPeerId()));
+                    }
+
+                    messageShownFilter.get(peer).send(new BounceFilterActor.Message(new MessageShownEvent(peer, sortDate),
+                            messageShownActor));
+                }
+            }
+        });
     }
 
     public void saveReadState(Peer peer, long lastReadDate) {

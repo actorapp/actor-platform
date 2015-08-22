@@ -55,7 +55,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
         if action == "copy:" {
-            if (bindedMessage!.getContent() is ACTextContent) {
+            if (bindedMessage!.content is ACTextContent) {
                 return true
             }
         }
@@ -66,7 +66,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     }
     
     override func copy(sender: AnyObject?) {
-        UIPasteboard.generalPasteboard().string = (bindedMessage!.getContent() as! ACTextContent).getText()
+        UIPasteboard.generalPasteboard().string = (bindedMessage!.content as! ACTextContent).text
     }
     
     func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
@@ -103,10 +103,10 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                     messageText.textColor = MainAppTheme.bubbles.textIn
                 }
             }
-            
+
             
             if isGroup && !isOut {
-                if let user = Actor.getUserWithUid(message.getSenderId()) {
+                if let user = Actor.getUserWithUid(message.senderId) {
                     senderNameLabel.text = user.getNameModel().get()
                     var color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
                     senderNameLabel.textColor = color
@@ -151,7 +151,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         // Always update date and state
         dateText.text = cellLayout.date
-        messageState = UInt(message.getMessageState().ordinal());
+        messageState = UInt(message.messageState.ordinal());
         
         if (isOut) {
             switch(self.messageState) {
@@ -181,8 +181,6 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 break;
             }
         }
-        
-        setNeedsLayout()
     }
     
     // MARK: -
@@ -197,8 +195,8 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         // Measure Text
         var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
         
-        self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSizeWithPadding.width, self.cellLayout.textSizeWithPadding.height)
-        self.messageText.sizeToFit()
+         self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSizeWithPadding.width, self.cellLayout.textSizeWithPadding.height)
+         self.messageText.sizeToFit()
         
         var textWidth = round(self.cellLayout.textSizeWithPadding.width)
         var textHeight = round(self.cellLayout.textSizeWithPadding.height)

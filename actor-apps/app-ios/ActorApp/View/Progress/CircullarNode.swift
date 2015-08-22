@@ -75,12 +75,13 @@ class CircullarNode: ASDisplayNode {
         super.init()
         self.backgroundColor = UIColor.clearColor()
         self.opaque = false
+        self.displaysAsynchronously = false
     }
 
     func postProgress(value: Double, animated: Bool) {
-        dispatch_async(dispatch_get_main_queue(), {
+        dispatchOnUi {
             self.setProgress(value, animated: animated)
-        })
+        }
     }
     
     func setProgress(value: Double, animated: Bool) {

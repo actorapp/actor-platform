@@ -146,6 +146,7 @@
 		06DFFA221B7FB43200296ECF /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFFA211B7FB43200296ECF /* UserViewController.swift */; };
 		06DFFA241B7FB90D00296ECF /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFFA231B7FB90D00296ECF /* Resouces.swift */; };
 		06DFFA301B8211D200296ECF /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFFA2F1B8211D200296ECF /* IntroViewController.swift */; };
+		06DFFA341B877F5700296ECF /* CircullarLayerProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06DFFA331B877F5700296ECF /* CircullarLayerProgress.swift */; };
 		7A39BC989F6B1C3B2ABCCFBF /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DD3598FF465DC55402ECA9F /* libPods-ActorApp.a */; };
 /* End PBXBuildFile section */
 
@@ -304,6 +305,7 @@
 		06DFFA231B7FB90D00296ECF /* Resouces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Resouces.swift; path = Resources/Resouces.swift; sourceTree = "<group>"; };
 		06DFFA2D1B7FEA5C00296ECF /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorApp.entitlements; sourceTree = "<group>"; };
 		06DFFA2F1B8211D200296ECF /* IntroViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
+		06DFFA331B877F5700296ECF /* CircullarLayerProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarLayerProgress.swift; sourceTree = "<group>"; };
 		6DD3598FF465DC55402ECA9F /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C18824A0398DA8521CEE851A /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		D7FB0A8B3A0C073AAD213E09 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 			children = (
 				06DFF9681B7FA97200296ECF /* CircullarNode.swift */,
 				06DFF9691B7FA97200296ECF /* CircullarProgress.swift */,
+				06DFFA331B877F5700296ECF /* CircullarLayerProgress.swift */,
 			);
 			name = Progress;
 			sourceTree = "<group>";
@@ -633,8 +636,8 @@
 			isa = PBXGroup;
 			children = (
 				06DFF9DB1B7FB2F100296ECF /* Cells */,
-				06DFF9D71B7FB2ED00296ECF /* ConversationMessagesViewController.swift */,
 				06DFF9D81B7FB2ED00296ECF /* ConversationViewController.swift */,
+				06DFF9D71B7FB2ED00296ECF /* ConversationMessagesViewController.swift */,
 			);
 			name = Conversation;
 			sourceTree = "<group>";
@@ -642,17 +645,17 @@
 		06DFF9DB1B7FB2F100296ECF /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				06DFF9DD1B7FB2FD00296ECF /* AABubbleBaseFileCell.swift */,
 				06DFF9DE1B7FB2FD00296ECF /* AABubbleCell.swift */,
-				06DFF9DF1B7FB2FD00296ECF /* AABubbleDocumentCell.swift */,
-				06DFF9E01B7FB2FD00296ECF /* AABubbleMediaCell.swift */,
-				06DFF9E11B7FB2FD00296ECF /* AABubbleServiceCell.swift */,
 				06DFF9E21B7FB2FD00296ECF /* AABubbleTextCell.swift */,
-				06DFF9E31B7FB2FD00296ECF /* AutoCompleteCell.swift */,
-				06DFF9E41B7FB2FD00296ECF /* BubbleBackgroundProcessor.swift */,
+				06DFF9E11B7FB2FD00296ECF /* AABubbleServiceCell.swift */,
+				06DFF9DD1B7FB2FD00296ECF /* AABubbleBaseFileCell.swift */,
+				06DFF9E01B7FB2FD00296ECF /* AABubbleMediaCell.swift */,
+				06DFF9DF1B7FB2FD00296ECF /* AABubbleDocumentCell.swift */,
 				06DFF9E51B7FB2FD00296ECF /* BubbleLayouts.swift */,
-				06DFF9E61B7FB2FD00296ECF /* LayoutCache.swift */,
+				06DFF9E41B7FB2FD00296ECF /* BubbleBackgroundProcessor.swift */,
 				06DFF9E71B7FB2FD00296ECF /* MessagesLayout.swift */,
+				06DFF9E31B7FB2FD00296ECF /* AutoCompleteCell.swift */,
+				06DFF9E61B7FB2FD00296ECF /* LayoutCache.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -994,6 +997,7 @@
 				06DFF9CE1B7FB2C900296ECF /* ContactsBaseViewController.swift in Sources */,
 				06DFF9D91B7FB2ED00296ECF /* ConversationMessagesViewController.swift in Sources */,
 				06DFF8DE1B7F99A400296ECF /* UIAppearance+Swift.m in Sources */,
+				06DFFA341B877F5700296ECF /* CircullarLayerProgress.swift in Sources */,
 				06DFF9E91B7FB2FD00296ECF /* AABubbleBaseFileCell.swift in Sources */,
 				06DFF96B1B7FA97200296ECF /* CircullarProgress.swift in Sources */,
 				06DFF9B11B7FB0DE00296ECF /* AAViewController.swift in Sources */,
@@ -1214,6 +1218,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8/include";
 			};
 			name = Debug;

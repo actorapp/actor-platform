@@ -60,7 +60,7 @@ import AudioToolbox.AudioServices
             if (messenger.isInAppNotificationVibrationEnabled()) {
                 AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             }
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            dispatchOnUi { () -> Void in
                 TWMessageBarManager.sharedInstance().showMessageWithTitle(sender, description: message, type: TWMessageBarMessageType.Info, callback: { () -> Void in
                     var root = UIApplication.sharedApplication().keyWindow!.rootViewController!
                     if let tab = root as? MainTabViewController {
@@ -72,16 +72,16 @@ import AudioToolbox.AudioServices
                         split.navigateDetail(ConversationViewController(peer: peer))
                     }
                 })
-            })
+            }
         } else {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            dispatchOnUi { () -> Void in
                 var localNotification =  UILocalNotification ()
                 localNotification.alertBody = "\(sender): \(message)"
                 if (messenger.isNotificationSoundEnabled()) {
                     localNotification.soundName = "\(self.getNotificationSound(messenger)).caf"
                 }
                 UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
-            })
+            }
         }
     }
     
