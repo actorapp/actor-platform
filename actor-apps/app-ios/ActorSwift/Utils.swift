@@ -4,6 +4,19 @@
 
 import UIKit
 
+func dispatchOnUi(closure: () -> Void) {
+    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        NSLog("dispatchOnUi")
+        closure()
+    })
+}
+
+func dispatchBackground(closure: () -> Void) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
+        closure()
+    })
+}
+
 class Utils: NSObject {
     
     class func isRetina() -> Bool {
@@ -78,3 +91,32 @@ func dispatch_after(#seconds:Double, queue: dispatch_queue_t = dispatch_get_main
 func cancel_dispatch_after(cancel_closure: cancellable_closure) {
     cancel_closure?()
 }
+
+class ObjectPool<T: AnyObject> {
+    
+    private var objects = NSMutableArray()
+    
+    func put(item: T) {
+        objects.addObject(item)
+    }
+    
+    func get() -> T? {
+        if objects.count > 0 {
+            var res = objects.objectAtIndex(objects.count - 1) as! T
+            objects.removeLastObject()
+            return res
+        }
+        
+        return nil
+    }
+    
+    func acquire(var items: [T]) {
+        for cached in items {
+            put(cached)
+        }
+        items.removeAll(keepCapacity: true)
+    }
+}
+
+
+

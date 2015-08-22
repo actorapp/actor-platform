@@ -4,52 +4,93 @@
 
 import Foundation
 
-private var holder:CocoaMessenger?;
+var Actor : CocoaMessenger!
 
-var Actor : CocoaMessenger {
-    get {
-        if (holder == nil) {
-            
-            ARCocoaStorageProxyProvider.setStorageRuntime(CocoaStorageRuntime())
-            ARCocoaHttpProxyProvider.setHttpRuntime(CocoaHttpRuntime())
-            ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())
-            ARCocoaNetworkProxyProvider.setNetworkRuntime(CocoaNetworkRuntime())
-            
-            var config = Config()
-            
-            var builder = ACConfigurationBuilder();
-            
-            // Api Connections
-            var apiId = 2
-            var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
-            var deviceKey = NSUUID().UUIDString
-            var deviceName = UIDevice.currentDevice().name
-            var appTitle = "Actor iOS"
-            for url in config.endpoints {
-                builder.addEndpoint(url);
-            }
-            builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
-        
-            // Providers
-            builder.setPhoneBookProvider(PhoneBookProvider())
-            builder.setNotificationProvider(iOSNotificationProvider())
-            if config.mixpanel != nil {
-                builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
-            }
-            
-            // Stats
-            builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
-            builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
-            
-            // Logs
-            builder.setEnableFilesLogging(true)
-            
-            // Creating messenger
-            holder = CocoaMessenger(configuration: builder.build(), config: config);
-        }
-        return holder!
+func createActor() {
+    ARCocoaStorageProxyProvider.setStorageRuntime(CocoaStorageRuntime())
+    ARCocoaHttpProxyProvider.setHttpRuntime(CocoaHttpRuntime())
+    ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())
+    ARCocoaNetworkProxyProvider.setNetworkRuntime(CocoaNetworkRuntime())
+    
+    var config = Config()
+    
+    var builder = ACConfigurationBuilder();
+    
+    // Api Connections
+    var apiId = 2
+    var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
+    var deviceKey = NSUUID().UUIDString
+    var deviceName = UIDevice.currentDevice().name
+    var appTitle = "Actor iOS"
+    for url in config.endpoints {
+        builder.addEndpoint(url);
     }
+    builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
+    
+    // Providers
+    builder.setPhoneBookProvider(PhoneBookProvider())
+    builder.setNotificationProvider(iOSNotificationProvider())
+    if config.mixpanel != nil {
+        builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
+    }
+    
+    // Stats
+    builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
+    builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
+    
+    // Logs
+    builder.setEnableFilesLogging(true)
+    
+    // Creating messenger
+    Actor = CocoaMessenger(configuration: builder.build(), config: config);
 }
+
+//private var holder:CocoaMessenger?;
+//
+//var Actor : CocoaMessenger {
+//    get {
+//        if (holder == nil) {
+//
+//            ARCocoaStorageProxyProvider.setStorageRuntime(CocoaStorageRuntime())
+//            ARCocoaHttpProxyProvider.setHttpRuntime(CocoaHttpRuntime())
+//            ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())
+//            ARCocoaNetworkProxyProvider.setNetworkRuntime(CocoaNetworkRuntime())
+//            
+//            var config = Config()
+//            
+//            var builder = ACConfigurationBuilder();
+//            
+//            // Api Connections
+//            var apiId = 2
+//            var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
+//            var deviceKey = NSUUID().UUIDString
+//            var deviceName = UIDevice.currentDevice().name
+//            var appTitle = "Actor iOS"
+//            for url in config.endpoints {
+//                builder.addEndpoint(url);
+//            }
+//            builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
+//        
+//            // Providers
+//            builder.setPhoneBookProvider(PhoneBookProvider())
+//            builder.setNotificationProvider(iOSNotificationProvider())
+//            if config.mixpanel != nil {
+//                builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
+//            }
+//            
+//            // Stats
+//            builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
+//            builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
+//            
+//            // Logs
+//            builder.setEnableFilesLogging(true)
+//            
+//            // Creating messenger
+//            holder = CocoaMessenger(configuration: builder.build(), config: config);
+//        }
+//        return holder!
+//    }
+//}
 
 @objc class CocoaMessenger : ACCocoaMessenger {
     

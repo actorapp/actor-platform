@@ -21,22 +21,25 @@ class AABubbleCell: UICollectionViewCell {
     static let newMessageSize: CGFloat = 30
     
     // Cached bubble images
-    private static var cacnedOutTextBg:UIImage? = nil;
-    private static var cacnedOutTextBgBorder:UIImage? = nil;
-    private static var cacnedInTextBg:UIImage? = nil;
-    private static var cacnedInTextBgBorder:UIImage? = nil;
+    private static var cacnedOutTextBg:UIImage = UIImage(named: "BubbleOutgoingFull")!.tintImage(MainAppTheme.bubbles.textBgOut)
+    private static var cacnedOutTextBgBorder:UIImage = UIImage(named: "BubbleOutgoingFullBorder")!.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+    private static var cacnedInTextBg:UIImage = UIImage(named: "BubbleIncomingFull")!.tintImage(MainAppTheme.bubbles.textBgIn)
+    private static var cacnedInTextBgBorder:UIImage = UIImage(named: "BubbleIncomingFullBorder")!.tintImage(MainAppTheme.bubbles.textBgInBorder)
     
-    private static var cacnedOutTextCompactBg:UIImage? = nil;
-    private static var cacnedOutTextCompactBgBorder:UIImage? = nil;
-    private static var cacnedInTextCompactBg:UIImage? = nil;
-    private static var cacnedInTextCompactBgBorder:UIImage? = nil;
+    private static var cacnedOutTextCompactBg:UIImage = UIImage(named: "BubbleOutgoingPartial")!.tintImage(MainAppTheme.bubbles.textBgOut)
+    private static var cacnedOutTextCompactBgBorder:UIImage = UIImage(named: "BubbleOutgoingPartialBorder")!.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+    private static var cacnedInTextCompactBg:UIImage = UIImage(named: "BubbleIncomingPartial")!.tintImage(MainAppTheme.bubbles.textBgIn)
+    private static var cacnedInTextCompactBgBorder:UIImage = UIImage(named: "BubbleIncomingPartialBorder")!.tintImage(MainAppTheme.bubbles.textBgInBorder)
     
-    private static var cacnedOutMediaBg:UIImage? = nil;
-    private static var cacnedOutMediaBgBorder:UIImage? = nil;
+    private static let cacnedOutMediaBg:UIImage = UIImage(named: "BubbleOutgoingPartial")!.tintImage(MainAppTheme.bubbles.mediaBgOut)
+    private static var cacnedOutMediaBgBorder:UIImage = UIImage(named: "BubbleIncomingPartialBorder")!.tintImage(MainAppTheme.bubbles.mediaBgInBorder)
+
     private static var cacnedInMediaBg:UIImage? = nil;
     private static var cacnedInMediaBgBorder:UIImage? = nil;
     
-    private static var cacnedServiceBg:UIImage? = nil;
+    private static var cacnedServiceBg:UIImage = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
+    
+    private static var dateBgImage = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
     
     // MARK: -
     // MARK: Public vars
@@ -44,6 +47,8 @@ class AABubbleCell: UICollectionViewCell {
     // Views
     let mainView = UIView()
     let avatarView = AvatarView(frameSize: 39)
+    var avatarAdded: Bool = false
+    
     let bubble = UIImageView()
     let bubbleBorder = UIImageView()
     
@@ -74,7 +79,7 @@ class AABubbleCell: UICollectionViewCell {
     
     // Binded data
     var peer: ACPeer!
-    var controller: ConversationViewController!
+    var controller: ConversationBaseViewController!
     var isGroup: Bool = false
     var isFullSize: Bool!
     var bindedSetting: CellSetting?
@@ -93,7 +98,7 @@ class AABubbleCell: UICollectionViewCell {
         
         self.isFullSize = isFullSize
   
-        dateBg.image = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
+        dateBg.image = AABubbleCell.dateBgImage
         dateText.font = UIFont(name: "HelveticaNeue-Medium", size: 12)!
         dateText.textColor = UIColor.whiteColor()
         dateText.contentMode = UIViewContentMode.Center
@@ -134,7 +139,7 @@ class AABubbleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setConfig(peer: ACPeer, controller: ConversationViewController) {
+    func setConfig(peer: ACPeer, controller: ConversationBaseViewController) {
         self.peer = peer
         self.controller = controller
         if (peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue) && !isFullSize) {
@@ -155,52 +160,58 @@ class AABubbleCell: UICollectionViewCell {
     
     override func delete(sender: AnyObject?) {
         var rids = IOSLongArray(length: 1)
-        rids.replaceLongAtIndex(0, withLong: bindedMessage!.getRid())
+        rids.replaceLongAtIndex(0, withLong: bindedMessage!.rid)
         Actor.deleteMessagesWithPeer(self.peer, withRids: rids)
     }
     
     func avatarDidTap() {
         if bindedMessage != nil {
-            controller.onBubbleAvatarTap(self.avatarView, uid: bindedMessage!.getSenderId())
+            controller.onBubbleAvatarTap(self.avatarView, uid: bindedMessage!.senderId)
         }
     }
     
-    func performBind(message: ACMessage, setting: CellSetting, layoutCache: LayoutCache) {
+    func performBind(message: ACMessage, setting: CellSetting, isShowNewMessages: Bool, layoutCache: LayoutCache) {
         self.clipsToBounds = false
         self.contentView.clipsToBounds = false
         
         var reuse = false
-        if (bindedMessage != nil && bindedMessage?.getRid() == message.getRid()) {
+        if (bindedMessage != nil && bindedMessage?.rid == message.rid) {
             reuse = true
         }
-        isOut = message.getSenderId() == Actor.myUid();
+        isOut = message.senderId == Actor.myUid();
         bindedMessage = message
-        self.isShowNewMessages = setting.showNewMessages
+        self.isShowNewMessages = isShowNewMessages
         if (!reuse) {
             if (!isFullSize) {
                 if (!isOut && isGroup) {
-                    if let user = Actor.getUserWithUid(message.getSenderId()) {
+                    if let user = Actor.getUserWithUid(message.senderId) {
                         let avatar: ACAvatar? = user.getAvatarModel().get()
                         let name = user.getNameModel().get()
                         avatarView.bind(name, id: user.getId(), avatar: avatar)
                     }
-                    mainView.addSubview(avatarView)
+                    if !avatarAdded {
+                        mainView.addSubview(avatarView)
+                        avatarAdded = true
+                    }
                 } else {
-                    avatarView.removeFromSuperview()
+                    if avatarAdded {
+                        avatarView.removeFromSuperview()
+                        avatarAdded = false
+                    }
                 }
             }
         }
         
         self.isShowDate = setting.showDate
         if (isShowDate) {
-            self.dateText.text = Actor.getFormatter().formatDate(message.getDate())
+            self.dateText.text = Actor.getFormatter().formatDate(message.date)
         }
         
-        var layout = layoutCache.pick(message.getRid())
+        var layout = layoutCache.pick(message.rid)
             
         if (layout == nil) {
             layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
-            layoutCache.cache(message.getRid(), layout: layout!)
+            layoutCache.cache(message.rid, layout: layout!)
         }
         
         self.bindedSetting = setting
@@ -224,76 +235,31 @@ class AABubbleCell: UICollectionViewCell {
         switch(type) {
             case BubbleType.TextIn:
                 if (isCompact) {
-                    if (AABubbleCell.cacnedInTextCompactBg == nil) {
-                        AABubbleCell.cacnedInTextCompactBg = UIImage(named: "BubbleIncomingPartial")?.tintImage(MainAppTheme.bubbles.textBgIn)
-                    }
-                    if (AABubbleCell.cacnedInTextCompactBgBorder == nil) {
-                        AABubbleCell.cacnedInTextCompactBgBorder = UIImage(named: "BubbleIncomingPartialBorder")?.tintImage(MainAppTheme.bubbles.textBgInBorder)
-                    }
-                    
                     bubble.image = AABubbleCell.cacnedInTextCompactBg
                     bubbleBorder.image = AABubbleCell.cacnedInTextCompactBgBorder
                 } else {
-                    if (AABubbleCell.cacnedInTextBg == nil) {
-                        AABubbleCell.cacnedInTextBg = UIImage(named: "BubbleIncomingFull")?.tintImage(MainAppTheme.bubbles.textBgIn)
-                    }
-                    if (AABubbleCell.cacnedInTextBgBorder == nil) {
-                        AABubbleCell.cacnedInTextBgBorder = UIImage(named: "BubbleIncomingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgInBorder)
-                    }
-                    
                     bubble.image = AABubbleCell.cacnedInTextBg
                     bubbleBorder.image = AABubbleCell.cacnedInTextBgBorder
                 }
             break
             case BubbleType.TextOut:
                 if (isCompact) {
-                    if (AABubbleCell.cacnedOutTextCompactBg == nil) {
-                        AABubbleCell.cacnedOutTextCompactBg = UIImage(named: "BubbleOutgoingPartial")?.tintImage(MainAppTheme.bubbles.textBgOut)
-                    }
-                    if (AABubbleCell.cacnedOutTextCompactBgBorder == nil) {
-                        AABubbleCell.cacnedOutTextCompactBgBorder = UIImage(named: "BubbleOutgoingPartialBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
-                    }
-                    
-                    bubble.image =  AABubbleCell.cacnedOutTextCompactBg!
-                    bubbleBorder.image =  AABubbleCell.cacnedOutTextCompactBgBorder!
+                    bubble.image =  AABubbleCell.cacnedOutTextCompactBg
+                    bubbleBorder.image =  AABubbleCell.cacnedOutTextCompactBgBorder
                 } else {
-                    if (AABubbleCell.cacnedOutTextBg == nil) {
-                        AABubbleCell.cacnedOutTextBg = UIImage(named: "BubbleOutgoingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
-                    }
-                    if (AABubbleCell.cacnedOutTextBgBorder == nil) {
-                        AABubbleCell.cacnedOutTextBgBorder = UIImage(named: "BubbleOutgoingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
-                    }
-                    
-                    bubble.image =  AABubbleCell.cacnedOutTextBg!
-                    bubbleBorder.image =  AABubbleCell.cacnedOutTextBgBorder!
+                    bubble.image =  AABubbleCell.cacnedOutTextBg
+                    bubbleBorder.image =  AABubbleCell.cacnedOutTextBgBorder
                 }
             break
             case BubbleType.MediaIn:
-                if (AABubbleCell.cacnedOutMediaBg == nil) {
-                    AABubbleCell.cacnedOutMediaBg = UIImage(named: "BubbleIncomingPartial")?.tintImage(MainAppTheme.bubbles.mediaBgIn)
-                }
-                if (AABubbleCell.cacnedOutMediaBgBorder == nil) {
-                    AABubbleCell.cacnedOutMediaBgBorder = UIImage(named: "BubbleIncomingPartialBorder")?.tintImage(MainAppTheme.bubbles.mediaBgInBorder)
-                }
-                
-                bubble.image =  AABubbleCell.cacnedOutMediaBg!
-                bubbleBorder.image =  AABubbleCell.cacnedOutMediaBgBorder!
+                bubble.image =  AABubbleCell.cacnedOutMediaBg
+                bubbleBorder.image =  AABubbleCell.cacnedOutMediaBgBorder
             break
             case BubbleType.MediaOut:
-                if (AABubbleCell.cacnedOutMediaBg == nil) {
-                    AABubbleCell.cacnedOutMediaBg = UIImage(named: "BubbleOutgoingPartial")?.tintImage(MainAppTheme.bubbles.mediaBgOut)
-                }
-                if (AABubbleCell.cacnedOutMediaBgBorder == nil) {
-                    AABubbleCell.cacnedOutMediaBgBorder = UIImage(named: "BubbleOutgoingPartialBorder")?.tintImage(MainAppTheme.bubbles.mediaBgOutBorder)
-                }
-                
-                bubble.image =  AABubbleCell.cacnedOutMediaBg!
-                bubbleBorder.image =  AABubbleCell.cacnedOutMediaBgBorder!
+                bubble.image =  AABubbleCell.cacnedOutMediaBg
+                bubbleBorder.image =  AABubbleCell.cacnedOutMediaBgBorder
             break
             case BubbleType.Service:
-                if (AABubbleCell.cacnedServiceBg == nil) {
-                    AABubbleCell.cacnedServiceBg = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
-                }
                 bubble.image = AABubbleCell.cacnedServiceBg
                 bubbleBorder.image = nil
             break

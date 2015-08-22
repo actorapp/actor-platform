@@ -33,12 +33,12 @@ class CircullarProgress : UIView {
     }
     
     func setProgress(value: Double) {
-        dispatch_async(dispatch_get_main_queue(), {
+        dispatchOnUi{
             self.lastValueChange = Double(CFAbsoluteTimeGetCurrent())
             self.startRawValue = self.rawValue
             self.endRawValue = value
             self.setNeedsDisplay()
-        });
+        }
     }
     
     override func drawRect(rect: CGRect) {

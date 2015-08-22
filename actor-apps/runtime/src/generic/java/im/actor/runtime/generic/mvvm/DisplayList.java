@@ -27,13 +27,16 @@ public class DisplayList<T> {
     private ArrayList<T>[] lists;
     private volatile int currentList;
     private final OperationMode operationMode;
+    private volatile Object processedList;
 
     private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
     private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners =
             new CopyOnWriteArrayList<AndroidChangeListener<T>>();
     private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners =
             new CopyOnWriteArrayList<AppleChangeListener<T>>();
-    private BackgroundProcessor backgroundProcessor = null;
+
+    private BackgroundProcessor<T> backgroundProcessor = null;
+    private ListProcessor<T> listProcessor = null;
 
     @ObjectiveCName("initWithMode:")
     public DisplayList(OperationMode operationMode) {
@@ -63,13 +66,13 @@ public class DisplayList<T> {
 
     @ObjectiveCName("size")
     public int getSize() {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
         return lists[currentList].size();
     }
 
     @ObjectiveCName("itemWithIndex:")
     public T getItem(int index) {
-        im.actor.runtime.Runtime.checkMainThread();
+        // im.actor.runtime.Runtime.checkMainThread();
         return lists[currentList].get(index);
     }
 
@@ -99,13 +102,23 @@ public class DisplayList<T> {
     }
 
     @ObjectiveCName("setBackgroundProcessor:")
-    public void setBackgroundProcessor(BackgroundProcessor backgroundProcessor) {
+    public void setBackgroundProcessor(BackgroundProcessor<T> backgroundProcessor) {
         this.backgroundProcessor = backgroundProcessor;
+    }
+
+    @ObjectiveCName("setListProcessor:")
+    public void setListProcessor(ListProcessor<T> listProcessor) {
+        this.listProcessor = listProcessor;
+    }
+
+    @ObjectiveCName("getProcessedList")
+    public Object getProcessedList() {
+        return processedList;
     }
 
     @ObjectiveCName("addListener:")
     public void addListener(Listener listener) {
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
@@ -113,7 +126,7 @@ public class DisplayList<T> {
 
     @ObjectiveCName("removeListener:")
     public void removeListener(Listener listener) {
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
         listeners.remove(listener);
     }
 
@@ -122,7 +135,7 @@ public class DisplayList<T> {
         if (operationMode != OperationMode.ANDROID && operationMode != OperationMode.GENERAL) {
             throw new RuntimeException("Unable to set Android Listener in iOS mode");
         }
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
 
         if (!androidListeners.contains(listener)) {
             androidListeners.add(listener);
@@ -134,7 +147,7 @@ public class DisplayList<T> {
         if (operationMode != OperationMode.ANDROID && operationMode != OperationMode.GENERAL) {
             throw new RuntimeException("Unable to set Android Listener in iOS mode");
         }
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
 
         androidListeners.remove(listener);
     }
@@ -144,7 +157,7 @@ public class DisplayList<T> {
         if (operationMode != OperationMode.IOS && operationMode != OperationMode.GENERAL) {
             throw new RuntimeException("Unable to set Android Listener in Android mode");
         }
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
 
         if (!appleListeners.contains(listener)) {
             appleListeners.add(listener);
@@ -156,7 +169,7 @@ public class DisplayList<T> {
         if (operationMode != OperationMode.IOS && operationMode != OperationMode.GENERAL) {
             throw new RuntimeException("Unable to set Android Listener in Android mode");
         }
-        im.actor.runtime.Runtime.checkMainThread();
+        //im.actor.runtime.Runtime.checkMainThread();
 
         appleListeners.remove(listener);
     }
@@ -231,20 +244,28 @@ public class DisplayList<T> {
                 appleChanges = ChangeBuilder.processAppleModifications(modRes, initialList, dest[0].isLoadMore);
             }
 
-            requestListSwitch(dest, initialList, androidChanges, appleChanges, dest[0].isLoadMore);
+            Object processedList = null;
+            if (displayList.listProcessor != null) {
+                processedList = displayList.listProcessor.process(backgroundList, displayList.processedList);
+            }
+
+            requestListSwitch(dest, initialList, androidChanges, appleChanges, dest[0].isLoadMore,
+                    processedList);
         }
 
         private void requestListSwitch(final ModificationHolder<T>[] modifications,
                                        final ArrayList<T> initialList,
                                        final ArrayList<ChangeDescription<T>> androidChanges,
                                        final AppleListUpdate appleChanges,
-                                       final boolean isLoadedMore) {
+                                       final boolean isLoadedMore,
+                                       final Object processedList) {
             isLocked = true;
             im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                 @Override
                 public void run() {
 
                     displayList.currentList = (displayList.currentList + 1) % 2;
+                    displayList.processedList = processedList;
 
                     if (androidChanges != null) {
                         for (AndroidChangeListener<T> l : displayList.androidListeners) {
