@@ -181,8 +181,6 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 break;
             }
         }
-        
-        setNeedsLayout()
     }
     
     // MARK: -
