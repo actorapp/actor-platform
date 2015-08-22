@@ -1,4 +1,6 @@
 import polyfills from 'utils/polyfills'; // eslint-disable-line
+import RouterContainer from 'utils/RouterContainer';
+
 import crosstab from 'crosstab';
 
 import React from 'react';
@@ -70,8 +72,6 @@ PreferencesStore.addChangeListener(() => {
 });
 PreferencesActionCreators.load();
 
-
-
 const initReact = () => {
   if (window.location.hash !== '#/deactivated') {
     if (crosstab.supported) {
@@ -87,7 +87,7 @@ const initReact = () => {
 
   const routes = (
     <Route handler={App} name="app" path="/">
-      <Route handler={Main} name="main"/>
+      <Route handler={Main} name="main" path="/im/:id"/>
       <Route handler={JoinGroup} name="join" path="/join/:token"/>
       <Route handler={Login} name="login" path="/auth"/>
       <Route handler={Deactivated} name="deactivated" path="/deactivated"/>
@@ -96,7 +96,11 @@ const initReact = () => {
     </Route>
   );
 
-  const router = Router.run(routes, Router.HashLocation, (Root) => {
+  const router = Router.create(routes, Router.HashLocation);
+
+  RouterContainer.set(router);
+
+  router.run((Root) => {
     injectTapEventPlugin();
     React.render(<Root {...intlData}/>, document.getElementById('actor-web-app'));
   });
