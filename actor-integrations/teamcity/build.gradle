@@ -18,17 +18,16 @@ sourceSets.main.compileClasspath += configurations.providedCompile
 sourceSets.test.compileClasspath += configurations.providedCompile
 sourceSets.test.runtimeClasspath += configurations.providedCompile
 
-task copyToLib( type: Zip ) {
-    into "$buildDir/actor-teamcity.zip"
-    from "$projectDir/src/main/teamcity-plugin.xml"
+task buildPlugin( type: Zip ) {
 
-    from ("$buildDir/libs/actor-teamcity.jar") {
-        into "server"
+    into("server") {
+        from "$buildDir/libs/actor-teamcity.jar"
+        from configurations.runtime
     }
 
-    from(configurations.runtime) {
-        into "server"
+    into(".") {
+        from "$projectDir/src/main/teamcity-plugin.xml"
     }
 }
 
-build { dependsOn copyToLib }
+build { dependsOn buildPlugin }
