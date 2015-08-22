@@ -7,13 +7,13 @@ import Foundation
 class MessagesLayouting {
     
     class func measureHeight(message: ACMessage, group: Bool, setting: CellSetting, layoutCache: LayoutCache) -> CGFloat {
-        var content = message.getContent()!
+        var content = message.content!
         
-        var layout = layoutCache.pick(message.getRid())
+        var layout = layoutCache.pick(message.rid)
         if (layout == nil) {
             // Usually never happens
             layout = buildLayout(message, layoutCache: layoutCache)
-            layoutCache.cache(message.getRid(), layout: layout!)
+            layoutCache.cache(message.rid, layout: layout!)
         }
 
         var height = layout!.height
@@ -26,7 +26,7 @@ class MessagesLayouting {
         }
         
         // Sender name
-        let isIn = message.getSenderId() != Actor.myUid()
+        let isIn = message.senderId != Actor.myUid()
         if group && isIn && !(content is ACServiceContent) && !(content is ACPhotoContent) && !(content is ACDocumentContent) {
             height += CGFloat(20.0)
         }
@@ -37,9 +37,9 @@ class MessagesLayouting {
         }
         
         // New message separator
-        if (setting.showNewMessages) {
-            height += AABubbleCell.newMessageSize
-        }
+//        if (setting.showNewMessages) {
+//            height += AABubbleCell.newMessageSize
+//        }
         
         
         return height
@@ -47,7 +47,7 @@ class MessagesLayouting {
     
     class func buildLayout(message: ACMessage, layoutCache: LayoutCache) -> CellLayout {
 
-        var content = message.getContent()!
+        var content = message.content!
         
         var res: CellLayout
         if (content is ACTextContent) {
@@ -71,25 +71,23 @@ class MessagesLayouting {
 }
 
 class CellSetting {
-    let showNewMessages: Bool
     let showDate: Bool
     let clenchTop: Bool
     let clenchBottom: Bool
     
-    init(showDate: Bool, clenchTop: Bool, clenchBottom: Bool, showNewMessages: Bool) {
+    init(showDate: Bool, clenchTop: Bool, clenchBottom: Bool) {
         self.showDate = showDate
         self.clenchTop = clenchTop
         self.clenchBottom = clenchBottom
-        self.showNewMessages = showNewMessages
     }
 }
 
-class CellLayout: NSObject {
+class CellLayout {
     var height: CGFloat = 0
     var date: String
     
     init(message: ACMessage) {
-        self.date = CellLayout.formatDate(Int64(message.getDate()))
+        self.date = CellLayout.formatDate(Int64(message.date))
     }
     
     class func formatDate(date: Int64) -> String {
@@ -115,8 +113,8 @@ class TextCellLayout: CellLayout {
     
     override init(message: ACMessage) {
         
-        if let content = message.getContent() as? ACTextContent {
-            text = content.getText()
+        if let content = message.content as? ACTextContent {
+            text = content.text
             isUnsupported = false
         } else {
             text = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
@@ -124,7 +122,7 @@ class TextCellLayout: CellLayout {
         }
 
         // Measure text
-        var measureText = (text + (message.getSenderId() == Actor.myUid() ? TextCellLayout.stringOutPadding : TextCellLayout.stringInPadding)) as NSString;
+        var measureText = (text + (message.senderId == Actor.myUid() ? TextCellLayout.stringOutPadding : TextCellLayout.stringInPadding)) as NSString;
         
         var size = CGSize(width: TextCellLayout.maxTextWidth, height: 0);
         
