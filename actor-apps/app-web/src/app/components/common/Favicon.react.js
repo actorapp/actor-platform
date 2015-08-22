@@ -3,11 +3,12 @@ import React from 'react';
 export default class Fav extends React.Component {
   static propTypes = {
     path: React.PropTypes.string
-  }
+  };
 
   constructor(props) {
     super(props);
 
+    this.update();
     //// Create link element and it's attributes
     //let favicon = document.createElement('link');
     //let rel = document.createAttribute('rel');
@@ -31,18 +32,24 @@ export default class Fav extends React.Component {
     //document.head.appendChild(favicon);
   }
 
-  componentDidUpdate() {
-    // Clone created element and create href attribute
-    let updatedFavicon = document.getElementById('favicon').cloneNode(true);
-    let href = document.createAttribute('href');
+  componentWillReceiveProps(n, o) {
+    this.update();
+  }
 
-    // Set new href attribute
-    href.value = this.props.path;
-    updatedFavicon.setAttributeNode(href);
+  update() {
+    setTimeout(() => {
+      // Clone created element and create href attribute
+      let updatedFavicon = document.getElementById('favicon').cloneNode(true);
+      let href = document.createAttribute('href');
 
-    // Remove old and add new favicon
-    document.getElementById('favicon').remove();
-    document.head.appendChild(updatedFavicon);
+      // Set new href attribute
+      href.value = this.props.path;
+      updatedFavicon.setAttributeNode(href);
+
+      // Remove old and add new favicon
+      document.getElementById('favicon').remove();
+      document.head.appendChild(updatedFavicon);
+    }, 0);
   }
 
   render() {

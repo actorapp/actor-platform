@@ -4,6 +4,8 @@ import React from 'react';
 
 import { PeerTypes } from 'constants/ActorAppConstants';
 
+import PeerUtils from 'utils/PeerUtils';
+
 import MessagesSection from 'components/dialog/MessagesSection.react';
 import TypingSection from 'components/dialog/TypingSection.react';
 import ComposeSection from 'components/dialog/ComposeSection.react';
@@ -31,6 +33,7 @@ let lastScrolledFromBottom = 0;
 const getStateFromStores = () => {
   const messages = MessageStore.getAll();
   let messagesToRender;
+
 
   if (messages.length > renderMessagesCount) {
     messagesToRender = messages.slice(messages.length - renderMessagesCount);
@@ -83,7 +86,7 @@ class DialogSection extends React.Component {
         memberArea = (
           <div>
             <TypingSection/>
-            <ComposeSection peer={this.state.peer}/>
+            <ComposeSection peer={peer}/>
           </div>
         );
       } else {
@@ -100,7 +103,7 @@ class DialogSection extends React.Component {
 
           <div className="messages">
             <MessagesSection messages={this.state.messagesToRender}
-                             peer={this.state.peer}
+                             peer={peer}
                              ref="MessagesSection"/>
 
           </div>
@@ -130,7 +133,7 @@ class DialogSection extends React.Component {
   }
 
   fixScroll = () => {
-    if (lastPeer !== null ) {
+    if (lastPeer !== null) {
       let node = React.findDOMNode(this.refs.MessagesSection);
       node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
     }

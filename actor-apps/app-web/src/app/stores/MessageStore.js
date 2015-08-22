@@ -47,7 +47,9 @@ MessageStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
 
       _boundPeer = action.peer;
-      ActorClient.bindChat(action.peer, _bindMessages);
+      setTimeout(() => {
+        ActorClient.bindChat(action.peer, _bindMessages);
+      }, 0);
 
       break;
     default:
