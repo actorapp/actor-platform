@@ -13,6 +13,7 @@ import java.util.Set;
 
 import jetbrains.buildServer.notification.NotificatorAdapter;
 import jetbrains.buildServer.notification.NotificatorRegistry;
+import jetbrains.buildServer.serverSide.Branch;
 import jetbrains.buildServer.serverSide.SRunningBuild;
 import jetbrains.buildServer.serverSide.UserPropertyInfo;
 import jetbrains.buildServer.users.NotificatorPropertyKey;
@@ -38,31 +39,31 @@ public class ActorNotifier extends NotificatorAdapter {
 
     @Override
     public void notifyBuildSuccessful(@NotNull SRunningBuild build, @NotNull Set<SUser> users) {
-        String message = "**#" + build.getBuildNumber() + " " + build.getFullName() + " (`" + build.getBranch() + "`) Successful**";
+        String message = "**#" + build.getBuildNumber() + " " + build.getFullName() + " (`" + getBranchName(build.getBranch()) + "`) Successful**";
         doNotify(message, users);
     }
 
     @Override
     public void notifyBuildStarted(@NotNull SRunningBuild build, @NotNull Set<SUser> users) {
-        String message = " #" + build.getBuildNumber() + " " + build.getFullName() + " (`" + build.getBranch() + "`) Started";
+        String message = " #" + build.getBuildNumber() + " " + build.getFullName() + " (`" + getBranchName(build.getBranch()) + "`) Started";
         doNotify(message, users);
     }
 
     @Override
     public void notifyBuildFailed(@NotNull SRunningBuild build, @NotNull Set<SUser> users) {
-        String message = "**#" + build.getBuildNumber() + " " + build.getFullName() + " (`" + build.getBranch() + "`) Failed**";
+        String message = "**#" + build.getBuildNumber() + " " + build.getFullName() + " (`" + getBranchName(build.getBranch()) + "`) Failed**";
         doNotify(message, users);
     }
 
     @Override
     public void notifyBuildFailing(@NotNull SRunningBuild build, @NotNull Set<SUser> users) {
-        String message = "**#" + build.getBuildNumber() + " " + build.getFullName() + " (`" + build.getBranch() + "`) Failing**";
+        String message = "**#" + build.getBuildNumber() + " " + build.getFullName() + " (`" + getBranchName(build.getBranch()) + "`) Failing**";
         doNotify(message, users);
     }
 
     @Override
     public void notifyBuildFailedToStart(@NotNull SRunningBuild build, @NotNull Set<SUser> users) {
-        String message = "**#" + build.getBuildNumber() + " " + build.getFullName() + " (`" + build.getBranch() + "`) Failed To Start**";
+        String message = "**#" + build.getBuildNumber() + " " + build.getFullName() + " (`" + getBranchName(build.getBranch()) + "`) Failed To Start**";
         doNotify(message, users);
     }
 
@@ -96,5 +97,9 @@ public class ActorNotifier extends NotificatorAdapter {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String getBranchName(Branch branch) {
+        return branch == null ? "<default>" : branch.getDisplayName();
     }
 }
