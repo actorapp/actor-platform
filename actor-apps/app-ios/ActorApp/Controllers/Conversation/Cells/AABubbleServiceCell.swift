@@ -53,7 +53,7 @@ class AABubbleServiceCell : AABubbleCell {
 
     override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         if (!reuse) {
-            serviceText.text = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.getSenderId(), withContent: message.getContent() as! ACServiceContent)
+            serviceText.text = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
         }
     }
     
@@ -61,7 +61,7 @@ class AABubbleServiceCell : AABubbleCell {
     // MARK: Getters
     
     class func measureServiceHeight(message: ACMessage) -> CGFloat {
-        var text = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.getSenderId(), withContent: message.getContent() as! ACServiceContent)
+        var text = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
         return measureText(text).height + 3 + 3 + 3 + 3
     }
     
