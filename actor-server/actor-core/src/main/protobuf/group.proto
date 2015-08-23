@@ -25,8 +25,7 @@ message GroupCommands {
 
     message CreateAck {
         required int64 access_hash = 1;
-        required int32 seq = 2;
-        required bytes state = 3;
+        required SeqState seqstate = 2;
         required int64 date = 4;
     }
 
