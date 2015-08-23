@@ -30,8 +30,8 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
         }
         
         tabBarItem = UITabBarItem(title: title,
-            image: MainAppTheme.tab.createUnselectedIcon("ic_people_outline"),
-            selectedImage: MainAppTheme.tab.createSelectedIcon("ic_people_filled"));
+            image: MainAppTheme.tab.createUnselectedIcon("TabIconContacts"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconContactsHighlighted"));
         
         if (!MainAppTheme.tab.showText) {
             tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
