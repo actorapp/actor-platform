@@ -132,8 +132,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           val f = for (res ← GroupOffice.create(groupId, title, randomId, userIds)) yield {
             Ok(ResponseCreateGroup(
               groupPeer = GroupOutPeer(groupId, res.accessHash),
-              seq = res.seq,
-              state = res.state.toByteArray,
+              seq = res.seqstate.seq,
+              state = res.seqstate.state.toByteArray,
               users = groupUserIds.toVector,
               date = res.date
             ))
