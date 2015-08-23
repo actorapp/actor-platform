@@ -37,82 +37,74 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   import GroupEvents._
 
   protected def create(groupId: Int, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
-    val date = new DateTime
-
     val rng = ThreadLocalRandom.current()
 
     val accessHash = rng.nextLong()
-    val botUserId = nextIntId(rng)
-    val botToken = accessToken(rng)
-
-    val events = Vector(
-      TSEvent(now(), GroupEvents.Created(groupId, creatorUserId, accessHash, title)),
-      TSEvent(now(), GroupEvents.BotAdded(botUserId, botToken))
-    )
 
     userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
       val randomId = rng.nextLong()
       context.parent ! Invite(groupId, userId, creatorUserId, creatorAuthId, randomId)
     }
 
-    var stateMaybe: Option[Group] = None
+    val date = now()
 
-    persist[GeneratedMessage](events) {
-      case TSEvent(ts, evt: GroupEvents.Created) ⇒
-        val group = initState(ts, evt)
+    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title)
+    val state = initState(date, created)
 
-        stateMaybe = Some(group)
+    persist(TSEvent(date, created)) { _ ⇒
+      context become working(state)
 
-        val serviceMessage = GroupServiceMessages.groupCreated
+      val serviceMessage = GroupServiceMessages.groupCreated
 
-        val update = UpdateGroupInvite(groupId = groupId, inviteUserId = creatorUserId, date = date.getMillis, randomId = randomId)
+      val update = UpdateGroupInvite(groupId = groupId, inviteUserId = creatorUserId, date = date.getMillis, randomId = randomId)
 
-        db.run(
-          for {
-            _ ← p.Group.create(
-              models.Group(
-                id = groupId,
-                creatorUserId = group.creatorUserId,
-                accessHash = group.accessHash,
-                title = group.title,
-                isPublic = group.isPublic,
-                createdAt = group.createdAt,
-                about = None,
-                topic = None
-              ),
-              randomId
-            )
-            _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
-            _ ← HistoryUtils.writeHistoryMessage(
-              models.Peer.privat(creatorUserId),
-              models.Peer.group(group.id),
-              date,
-              randomId,
-              serviceMessage.header,
-              serviceMessage.toByteArray
-            )
-            SeqState(seq, state) ← if (isBot(group, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
-            else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${randomId}")))
-          } yield CreateAck(group.accessHash, seq, state, date.getMillis)
-        ) pipeTo sender() onFailure {
-            case e ⇒
-              log.error(e, "Failed to create a group")
-          }
-
-      case evt @ TSEvent(_, GroupEvents.BotAdded(userId, token)) ⇒
-        stateMaybe = stateMaybe map { state ⇒
-          val newState = updatedState(evt, state)
-          context become working(newState)
-          newState
+      db.run(
+        for {
+          _ ← p.Group.create(
+            models.Group(
+              id = groupId,
+              creatorUserId = state.creatorUserId,
+              accessHash = state.accessHash,
+              title = state.title,
+              isPublic = state.isPublic,
+              createdAt = state.createdAt,
+              about = None,
+              topic = None
+            ),
+            randomId
+          )
+          _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
+          _ ← HistoryUtils.writeHistoryMessage(
+            models.Peer.privat(creatorUserId),
+            models.Peer.group(state.id),
+            date,
+            randomId,
+            serviceMessage.header,
+            serviceMessage.toByteArray
+          )
+          seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
+          else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${randomId}")))
+        } yield CreateAck(state.accessHash, seqstate, date.getMillis)
+      ) pipeTo sender() onFailure {
+          case e ⇒
+            log.error(e, "Failed to create a group")
         }
+    }
 
-        val rng = ThreadLocalRandom.current()
+    val botUserId = nextIntId(rng)
+    val botToken = accessToken(rng)
+    val botAdded = GroupEvents.BotAdded(botUserId, botToken)
 
-        UserOffice.create(userId, nextAccessSalt(rng), "Bot", "US", Sex.Unknown, isBot = true)
-          .flatMap(_ ⇒ db.run(p.GroupBot.create(groupId, userId, token))) onFailure {
-            case e ⇒
-              log.error(e, "Failed to create group bot")
-          }
+    persist(TSEvent(now(), botAdded)) { tsEvt ⇒
+      context become working(updatedState(tsEvt, state))
+
+      val rng = ThreadLocalRandom.current()
+
+      UserOffice.create(botUserId, nextAccessSalt(rng), "Bot", "US", Sex.Unknown, isBot = true)
+        .flatMap(_ ⇒ db.run(p.GroupBot.create(groupId, botUserId, botToken))) onFailure {
+          case e ⇒
+            log.error(e, "Failed to create group bot")
+        }
     }
   }
 
