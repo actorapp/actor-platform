@@ -23,8 +23,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         }
         
         tabBarItem = UITabBarItem(title: title,
-            image: MainAppTheme.tab.createUnselectedIcon("ic_chats_outline"),
-            selectedImage: MainAppTheme.tab.createSelectedIcon("ic_chats_filled"))
+            image: MainAppTheme.tab.createUnselectedIcon("TabIconChats"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconChatsHighlighted"))
         
         binder.bind(Actor.getAppState().getGlobalCounter(), closure: { (value: JavaLangInteger?) -> () in
             if value != nil {
