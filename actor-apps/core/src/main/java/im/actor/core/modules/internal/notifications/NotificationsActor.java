@@ -311,23 +311,30 @@ public class NotificationsActor extends ModuleActor {
     }
 
     private boolean isNotificationsEnabled(Peer peer, boolean hasMention) {
-        boolean res = context().getSettingsModule().isNotificationsEnabled() &&
-                context().getSettingsModule().isNotificationsEnabled(peer);
-        if (!res) {
+        if (context().getSettingsModule().isNotificationsEnabled()) {
             return false;
         }
 
         if (peer.getPeerType() == PeerType.GROUP) {
             if (context().getSettingsModule().isGroupNotificationsEnabled()) {
-                if (context().getSettingsModule().isGroupNotificationsOnlyMentionsEnabled()) {
+                if (context().getSettingsModule().isNotificationsEnabled(peer)) {
+                    // If enabled in group: use only mentions rule
+                    if (context().getSettingsModule().isGroupNotificationsOnlyMentionsEnabled()) {
+                        return hasMention;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    // If Not Enabled in group: play only for mentions
                     return hasMention;
                 }
             } else {
+                // All group notifications are disabled
                 return false;
             }
+        } else {
+            return context().getSettingsModule().isNotificationsEnabled(peer);
         }
-
-        return res;
     }
 
     private List<PendingNotification> getNotifications() {

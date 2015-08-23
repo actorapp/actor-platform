@@ -184,11 +184,9 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     
     func displayListForController() -> ARBindedDisplayList {
         var res = Actor.getMessageDisplayList(peer)
-        if (res.getBackgroundProcessor() == nil) {
-            var processor = BubbleBackgroundProcessor()
-            res.setBackgroundProcessor(processor)
+        if (res.getListProcessor() == nil) {
             let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
-            res.setListProcessor(ListProcessor(layoutCache: processor.layoutCache, isGroup: group))
+            res.setListProcessor(ListProcessor(isGroup: group))
         }
         return res
     }

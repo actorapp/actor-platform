@@ -143,7 +143,6 @@
 #import "im/actor/runtime/mvvm/ValueModelCreator.h"
 #import "im/actor/runtime/mvvm/ValueTripleChangedListener.h"
 
-#import "im/actor/runtime/generic/mvvm/BackgroundProcessor.h"
 #import "im/actor/runtime/generic/mvvm/ListProcessor.h"
 #import "im/actor/runtime/generic/mvvm/BindedDisplayList.h"
 #import "im/actor/runtime/generic/mvvm/ChangeDescription.h"

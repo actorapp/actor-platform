@@ -35,8 +35,8 @@ class SettingsViewController: AATableViewController {
         }
         
         tabBarItem = UITabBarItem(title: title,
-            image: MainAppTheme.tab.createUnselectedIcon("ic_settings_outline"),
-            selectedImage: MainAppTheme.tab.createSelectedIcon("ic_settings_filled"))
+            image: MainAppTheme.tab.createUnselectedIcon("TabIconSettings"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconSettingsHighlighted"))
         
         if (!MainAppTheme.tab.showText) {
             tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
