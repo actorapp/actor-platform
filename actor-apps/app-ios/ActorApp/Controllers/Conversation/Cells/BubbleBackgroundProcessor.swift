@@ -4,13 +4,36 @@
 
 import Foundation
 
-class BubbleBackgroundProcessor: NSObject, ARBackgroundProcessor {
+//class BubbleBackgroundProcessor: NSObject, ARBackgroundProcessor {
+//    
+//    let layoutCache: LayoutCache = LayoutCache()
+//    
+//    func processInBackgroundWithId(item: AnyObject!) {
+//        var message = item as! ACMessage
+//        
+//        Actor.getUserWithUid(message.senderId)
+//        
+//        var cached = layoutCache.pick(message.rid)
+//        if (cached != nil) {
+//            return
+//        }
+//        
+//        println("process \(message.rid)")
+//        var layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
+//        self.layoutCache.cache(message.rid, layout: layout)
+//    }
+//}
+
+class ListProcessor: NSObject, ARListProcessor {
     
     let layoutCache: LayoutCache = LayoutCache()
+    let isGroup: Bool
     
-    func processInBackgroundWithId(item: AnyObject!) {
-        var message = item as! ACMessage
-        
+    init(isGroup: Bool) {
+        self.isGroup = isGroup
+    }
+    
+    func buildLayout(message: ACMessage) {
         Actor.getUserWithUid(message.senderId)
         
         var cached = layoutCache.pick(message.rid)
@@ -18,20 +41,8 @@ class BubbleBackgroundProcessor: NSObject, ARBackgroundProcessor {
             return
         }
         
-        println("process \(message.rid)")
         var layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
         self.layoutCache.cache(message.rid, layout: layout)
-    }
-}
-
-class ListProcessor: NSObject, ARListProcessor {
-    
-    let layoutCache: LayoutCache
-    let isGroup: Bool
-    
-    init(layoutCache: LayoutCache, isGroup: Bool) {
-        self.layoutCache = layoutCache
-        self.isGroup = isGroup
     }
     
     func processWithItems(items: JavaUtilList!, withPrevious previous: AnyObject!) -> AnyObject! {
@@ -51,11 +62,6 @@ class ListProcessor: NSObject, ARListProcessor {
         var layouts = [CellLayout]()
         for i in 0..<objs.count {
             layouts.append(MessagesLayouting.buildLayout(objs[i], layoutCache: layoutCache))
-        }
-        
-        var heights = [CGFloat]()
-        for i in 0..<objs.count {
-            heights.append(buildHeight(i, items: objs, settings: settings))
         }
         
         var forceUpdates = [Bool]()
@@ -90,6 +96,11 @@ class ListProcessor: NSObject, ARListProcessor {
                 forceUpdates.append(false)
                 updates.append(false)
             }
+        }
+        
+        var heights = [CGFloat]()
+        for i in 0..<objs.count {
+            heights.append(buildHeight(i, items: objs, settings: settings))
         }
         
         var res = PreprocessedList()
