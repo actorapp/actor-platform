@@ -62,6 +62,10 @@ class DialogSection extends React.Component {
     MessageStore.removeChangeListener(this.onMessagesChange);
   }
 
+  componentDidMount() {
+    this.componentDidUpdate();
+  }
+
   componentDidUpdate() {
     this.fixScroll();
     this.loadMessagesByScroll();
@@ -74,7 +78,7 @@ class DialogSection extends React.Component {
 
     if (peer) {
       let isMember = true,
-          memberArea;
+        memberArea;
 
       if (peer.type === PeerTypes.GROUP) {
         const group = GroupStore.getGroup(peer.id);
@@ -132,10 +136,8 @@ class DialogSection extends React.Component {
   }
 
   fixScroll = () => {
-    if (lastPeer !== null) {
-      let node = React.findDOMNode(this.refs.MessagesSection);
-      node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
-    }
+    let node = React.findDOMNode(this.refs.MessagesSection);
+    node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
   };
 
   onSelectedDialogChange = () => {
@@ -154,23 +156,21 @@ class DialogSection extends React.Component {
   }, 10, {maxWait: 50, leading: true});
 
   loadMessagesByScroll = _.debounce(() => {
-    if (lastPeer !== null ) {
-      let node = React.findDOMNode(this.refs.MessagesSection);
-      let scrollTop = node.scrollTop;
-      lastScrolledFromBottom = node.scrollHeight - scrollTop;
+    let node = React.findDOMNode(this.refs.MessagesSection);
+    let scrollTop = node.scrollTop;
+    lastScrolledFromBottom = node.scrollHeight - scrollTop;
 
-      if (node.scrollTop < LoadMessagesScrollTop) {
-        DialogActionCreators.onChatEnd(this.state.peer);
+    if (node.scrollTop < LoadMessagesScrollTop) {
+      DialogActionCreators.onChatEnd(this.state.peer);
 
-        if (this.state.messages.length > this.state.messagesToRender.length) {
-          renderMessagesCount += renderMessagesStep;
+      if (this.state.messages.length > this.state.messagesToRender.length) {
+        renderMessagesCount += renderMessagesStep;
 
-          if (renderMessagesCount > this.state.messages.length) {
-            renderMessagesCount = this.state.messages.length;
-          }
-
-          this.setState(getStateFromStores());
+        if (renderMessagesCount > this.state.messages.length) {
+          renderMessagesCount = this.state.messages.length;
         }
+
+        this.setState(getStateFromStores());
       }
     }
   }, 5, {maxWait: 30});
