@@ -125,7 +125,7 @@ public class PhotoHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isNewMessage) {
+    protected void bindData(Message message, boolean isNewMessage, PreprocessedData preprocessedData) {
         // Update model
         DocumentContent fileMessage = (DocumentContent) message.getContent();
 

@@ -76,7 +76,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
             throw new RuntimeException(e);
         }
 
-        View res = inflate(inflater, container, R.layout.fragment_messages, messenger().getMessageDisplayList(peer));
+        View res = inflate(inflater, container, R.layout.fragment_messages, onCreateDisplayList());
 
         View footer = new View(getActivity());
         footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(8)));
@@ -90,6 +90,14 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
 
         scrollToUnread();
 
+        return res;
+    }
+
+    private BindedDisplayList<Message> onCreateDisplayList() {
+        BindedDisplayList<Message> res = messenger().getMessageDisplayList(peer);
+        if (res.getListProcessor() == null) {
+            res.setListProcessor(new ChatListProcessor(this));
+        }
         return res;
     }
 

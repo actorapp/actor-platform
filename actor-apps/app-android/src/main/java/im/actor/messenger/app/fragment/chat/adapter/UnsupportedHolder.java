@@ -15,13 +15,13 @@ public class UnsupportedHolder extends TextHolder {
     private String text;
 
     public UnsupportedHolder(MessagesAdapter fragment, View itemView) {
-        super(fragment, itemView, false);
+        super(fragment, itemView);
 
         text = fragment.getMessagesFragment().getResources().getString(R.string.chat_unsupported);
     }
 
     @Override
-    protected void bindData(Message message, boolean isUpdated) {
+    protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
         bindRawText(text, message, true);
     }
 }
