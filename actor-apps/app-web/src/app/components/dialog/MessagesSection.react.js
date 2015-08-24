@@ -1,4 +1,7 @@
 import React from 'react';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
+const {addons: { PureRenderMixin }} = addons;
 
 import _ from 'lodash';
 
@@ -25,7 +28,7 @@ let lastMessageDate = null,
     lastMessageSenderId = null,
     lastMessageContentType = null;
 
-
+@ReactMixin.decorate(PureRenderMixin)
 class MessagesSection extends React.Component {
   static propTypes = {
     messages: React.PropTypes.array.isRequired,
@@ -104,8 +107,6 @@ class MessagesSection extends React.Component {
   };
 
   render() {
-    console.info('render messages section');
-
     let messages = _.map(this.props.messages, this.getMessagesListItem);
 
     return (
