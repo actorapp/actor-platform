@@ -119,7 +119,7 @@ public class DocHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isUpdated) {
+    protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
         document = (DocumentContent) message.getContent();
 
         // Content data

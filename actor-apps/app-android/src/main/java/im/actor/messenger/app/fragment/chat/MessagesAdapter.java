@@ -14,6 +14,7 @@ import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.messenger.app.fragment.chat.adapter.PreprocessedList;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.adapter.DocHolder;
@@ -105,7 +106,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     public MessageHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case 0:
-                return new TextHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup), isMarkDownEnabled);
+                return new TextHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup));
             case 1:
                 return new ServiceHolder(this, inflate(R.layout.adapter_dialog_service, viewGroup));
             case 2:
@@ -127,7 +128,8 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
         if (index < getItemCount() - 1) {
             prev = getItem(index + 1);
         }
-        dialogHolder.bindData(item, prev, next);
+        PreprocessedList list = ((PreprocessedList) getPreprocessedList());
+        dialogHolder.bindData(item, prev, next, list.getPreprocessedData()[index]);
     }
 
     @Override
