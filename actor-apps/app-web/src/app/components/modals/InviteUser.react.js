@@ -77,7 +77,8 @@ class InviteUser extends React.Component {
   };
 
   onContactSelect = (contact) => {
-    ActorClient.inviteMember(this.state.group.id, contact.uid);
+    const { group } = this.state;
+    InviteUserActions.inviteUser(group.id, contact.uid);
   };
 
   onInviteUrlByClick = () => {
