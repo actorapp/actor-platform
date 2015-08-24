@@ -7,6 +7,7 @@ package im.actor.core.js.entity;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsDate;
 
+import im.actor.core.api.ApiTextExMarkdown;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.DocumentContent;
@@ -24,7 +25,6 @@ public class JsMessage extends JavaScriptObject {
     public static final JsEntityConverter<Message, JsMessage> CONVERTER = new JsEntityConverter<Message, JsMessage>() {
         @Override
         public JsMessage convert(Message value) {
-
             JsMessenger messenger = JsMessenger.getInstance();
 
             String rid = value.getRid() + "";
@@ -38,8 +38,16 @@ public class JsMessage extends JavaScriptObject {
 
             JsContent content;
             if (value.getContent() instanceof TextContent) {
+                TextContent textContent = (TextContent) value.getContent();
+
                 String text = ((TextContent) value.getContent()).getText();
-                content = JsContentText.create(text);
+
+                String markdownText = null;
+                if (textContent.getTextMessageEx() instanceof ApiTextExMarkdown) {
+                    markdownText = ((ApiTextExMarkdown) textContent.getTextMessageEx()).getMarkdown();
+                }
+
+                content = JsContentText.create(text, markdownText);
             } else if (value.getContent() instanceof ServiceContent) {
                 content = JsContentService.create(messenger.getFormatter().formatFullServiceMessage(value.getSenderId(), (ServiceContent) value.getContent()));
             } else if (value.getContent() instanceof DocumentContent) {
