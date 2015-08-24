@@ -171,13 +171,13 @@
       padding: 7px 14px;
 
       cursor: pointer;
-      transition: color $default-transition-duration $default-transition-timing;
+      //transition: color $default-transition-duration $default-transition-timing;
 
       color: rgba(white, .6);
       .avatar {
         margin: 0 10px 0 0;
 
-        transition: filter $default-transition-duration $default-transition-timing;
+        //transition: filter $default-transition-duration $default-transition-timing;
         vertical-align: top;
 
         filter: saturate(.4) contrast(.6);
