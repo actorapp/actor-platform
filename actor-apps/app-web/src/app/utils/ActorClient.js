@@ -219,6 +219,14 @@ export default {
   // Nickname
   editMyNick(string) {
     window.messenger.editMyNick(string);
+  },
+
+  bindGlobalCounter(callback) {
+    return window.messenger.bindGlobalCounter(callback);
+  },
+
+  bindTempGlobalCounter(callback) {
+    return window.messenger.bindTempGlobalCounter(callback);
   }
 
 };

@@ -1,39 +1,16 @@
 import React from 'react';
 
-export default class Fav extends React.Component {
-  static propTypes = {
-    path: React.PropTypes.string
-  };
+import FaviconStore from 'stores/FaviconStore';
 
+export default class Fav extends React.Component {
   constructor(props) {
     super(props);
 
-    this.update();
-    //// Create link element and it's attributes
-    //let favicon = document.createElement('link');
-    //let rel = document.createAttribute('rel');
-    //let type = document.createAttribute('type');
-    //let href = document.createAttribute('href');
-    //let id = document.createAttribute('id');
-    //
-    //// Set attributes values
-    //rel.value = 'icon';
-    //type.value = 'image/png';
-    //href.value = props.path;
-    //id.value = 'favicon';
-    //
-    //// Set attributes to favicon element
-    //favicon.setAttributeNode(rel);
-    //favicon.setAttributeNode(type);
-    //favicon.setAttributeNode(href);
-    //favicon.setAttributeNode(id);
-    //
-    //// Append favicon to head
-    //document.head.appendChild(favicon);
+    FaviconStore.addChangeListener(this.update)
   }
 
-  componentWillReceiveProps(n, o) {
-    this.update();
+  componentWillUnmount() {
+    FaviconStore.removeChangeListener(this.update);
   }
 
   update() {
@@ -43,7 +20,7 @@ export default class Fav extends React.Component {
       let href = document.createAttribute('href');
 
       // Set new href attribute
-      href.value = this.props.path;
+      href.value = FaviconStore.getFaviconPath();
       updatedFavicon.setAttributeNode(href);
 
       // Remove old and add new favicon
