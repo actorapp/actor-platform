@@ -141,6 +141,7 @@ class DialogSection extends React.Component {
   };
 
   onSelectedDialogChange = () => {
+    lastScrolledFromBottom = 0;
     renderMessagesCount = initialRenderMessagesCount;
 
     if (lastPeer != null) {
