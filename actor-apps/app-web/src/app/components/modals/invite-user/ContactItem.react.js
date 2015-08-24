@@ -24,17 +24,15 @@ class ContactItem extends React.Component {
   };
 
   render() {
-    const contact = this.props.contact;
+    const { contact, member } = this.props;
+
     const contactClassName = classnames('contacts__list__item row', {
-      'contacts__list__item--member': this.props.member
+      'contacts__list__item--member': member
     });
 
-    let controls;
-    if (!this.props.member) {
-      controls = <a className="material-icons" onClick={this.onSelect}>person_add</a>;
-    } else {
-      controls = <i className="material-icons">check</i>;
-    }
+    const controls = !member
+      ? <a className="material-icons" onClick={this.onSelect}>person_add</a>
+      : <i className="material-icons">check</i>;
 
     return (
       <li className={contactClassName}>
