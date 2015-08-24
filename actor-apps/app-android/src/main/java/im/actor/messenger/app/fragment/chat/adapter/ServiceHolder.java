@@ -24,7 +24,7 @@ public class ServiceHolder extends MessageHolder {
     }
 
     @Override
-    protected void bindData(Message message, boolean isUpdated) {
+    protected void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData) {
         messageText.setText(messenger().getFormatter().formatFullServiceMessage(message.getSenderId(),
                 (ServiceContent) message.getContent()));
     }
