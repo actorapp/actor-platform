@@ -567,6 +567,17 @@ public class Messenger {
     }
 
     /**
+     * Send Text Message
+     *
+     * @param peer destination peer
+     * @param text message text
+     */
+    @ObjectiveCName("sendMessageWithMentionsDetect:withText:withMarkdownText:")
+    public void sendMessageWithMentionsDetect(@NotNull Peer peer, @NotNull String text, @NotNull String markdownText) {
+        sendMessage(peer, text, markdownText, null, true);
+    }
+
+    /**
      * Send Photo message
      *
      * @param peer       destination peer

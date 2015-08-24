@@ -2,6 +2,8 @@ import { EventEmitter } from 'events';
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 
+import ActorClient from 'utils/ActorClient';
+
 const CHANGE_EVENT = 'change';
 
 const FaviconPath = {
@@ -31,8 +33,24 @@ class FaviconStore extends EventEmitter {
 
 let FaviconStoreInstance = new FaviconStore();
 
+let lastCounter = 0;
+
+const onSetLoggedIn = () => {
+  ActorClient.bindTempGlobalCounter((c) => {
+    if (c.counter == 0) {
+      _iconPath = FaviconPath.DEFAULT;
+    } else {
+      _iconPath = FaviconPath.NOTIFICATION;
+    }
+
+    FaviconStoreInstance.emitChange();
+  });
+};
+
 FaviconStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
   switch(action.type) {
+    case ActionTypes.SET_LOGGED_IN:
+      onSetLoggedIn();
     case ActionTypes.FAVICON_SET_DEFAULT:
       _iconPath = FaviconPath.DEFAULT;
       FaviconStoreInstance.emitChange();
