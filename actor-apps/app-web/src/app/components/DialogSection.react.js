@@ -63,7 +63,13 @@ class DialogSection extends React.Component {
   }
 
   componentDidMount() {
-    this.componentDidUpdate();
+    const peer = DialogStore.getSelectedDialogPeer();
+
+    if (peer) {
+      DialogActionCreators.onConversationOpen(peer);
+      this.fixScroll();
+      this.loadMessagesByScroll();
+    }
   }
 
   componentDidUpdate() {
