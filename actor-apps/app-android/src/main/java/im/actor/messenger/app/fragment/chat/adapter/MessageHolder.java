@@ -12,9 +12,6 @@ import im.actor.core.entity.PeerType;
 
 import static im.actor.messenger.app.core.Core.myUid;
 
-/**
- * Created by ex3ndr on 26.02.15.
- */
 public abstract class MessageHolder extends BindedViewHolder
         implements BubbleContainer.OnAvatarClickListener, BubbleContainer.OnAvatarLongClickListener, View.OnClickListener, View.OnLongClickListener {
 
@@ -34,7 +31,7 @@ public abstract class MessageHolder extends BindedViewHolder
         } else {
             container.setOnClickListener((View.OnClickListener) this);
             container.setOnClickListener((BubbleContainer.OnAvatarClickListener) this);
-            container.setOnLongClickListener((View.OnLongClickListener)this);
+            container.setOnLongClickListener((View.OnLongClickListener) this);
             container.setOnLongClickListener((BubbleContainer.OnAvatarLongClickListener) this);
         }
     }
@@ -47,7 +44,7 @@ public abstract class MessageHolder extends BindedViewHolder
         return adapter.getMessagesFragment().getPeer();
     }
 
-    public final void bindData(Message message, Message prev, Message next) {
+    public final void bindData(Message message, Message prev, Message next, PreprocessedData preprocessedData) {
         boolean isUpdated = currentMessage == null || currentMessage.getRid() != message.getRid();
         currentMessage = message;
 
@@ -84,10 +81,10 @@ public abstract class MessageHolder extends BindedViewHolder
         container.setBubbleSelected(adapter.isSelected(currentMessage));
 
         // Bind content
-        bindData(message, isUpdated);
+        bindData(message, isUpdated, preprocessedData);
     }
 
-    protected abstract void bindData(Message message, boolean isUpdated);
+    protected abstract void bindData(Message message, boolean isUpdated, PreprocessedData preprocessedData);
 
     @Override
     public void onAvatarClick(int uid) {
