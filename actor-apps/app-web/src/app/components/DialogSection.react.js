@@ -34,7 +34,6 @@ const getStateFromStores = () => {
   const messages = MessageStore.getAll();
   let messagesToRender;
 
-
   if (messages.length > renderMessagesCount) {
     messagesToRender = messages.slice(messages.length - renderMessagesCount);
   } else {
