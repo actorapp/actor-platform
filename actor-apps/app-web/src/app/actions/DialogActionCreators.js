@@ -1,4 +1,6 @@
 import ActorClient from 'utils/ActorClient';
+import PeerUtils from 'utils/PeerUtils';
+import RouterContainer from 'utils/RouterContainer';
 
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import ActorAppConstants from 'constants/ActorAppConstants';
@@ -14,6 +16,8 @@ const DialogActionCreators = {
   },
 
   selectDialogPeer(peer) {
+    RouterContainer.get().transitionTo('main', {id: PeerUtils.peerToString(peer)});
+
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SELECT_DIALOG_PEER,
       peer: peer

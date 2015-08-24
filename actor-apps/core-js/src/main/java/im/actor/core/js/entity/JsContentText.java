@@ -5,8 +5,8 @@
 package im.actor.core.js.entity;
 
 public class JsContentText extends JsContent {
-    public native static JsContentText create(String text)/*-{
-        return {content: "text", text: text};
+    public native static JsContentText create(String text, String markdownText)/*-{
+        return {content: "text", text: text, markdownText: markdownText};
     }-*/;
 
     protected JsContentText(){
