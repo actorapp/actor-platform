@@ -27,7 +27,7 @@ class RecentSectionItem extends React.Component {
     const selectedPeer = DialogStore.getSelectedDialogPeer();
     const dialog = this.props.dialog;
 
-    const isActive = PeerUtils.equals(dialog.peer.peer, selectedPeer);
+    const isActive = selectedPeer && PeerUtils.equals(dialog.peer.peer, selectedPeer);
 
     let title;
 
