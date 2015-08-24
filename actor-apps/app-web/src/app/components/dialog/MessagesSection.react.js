@@ -104,9 +104,7 @@ class MessagesSection extends React.Component {
   };
 
   render() {
-    console.info('render messages section');
-
-    let messages = _.map(this.props.messages, this.getMessagesListItem);
+    const messages = _.map(this.props.messages, this.getMessagesListItem);
 
     return (
       <ul className="messages__list">
