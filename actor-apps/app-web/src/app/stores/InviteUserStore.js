@@ -46,6 +46,10 @@ let InviteUserStoreInstance = new InviteUserStore();
 
 InviteUserStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
   switch(action.type) {
+    case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
+      _group = action.info;
+      InviteUserStoreInstance.emitChange();
+      break;
     case ActionTypes.INVITE_USER_MODAL_SHOW:
       _isInviteModalOpen = true;
       _group = action.group;
@@ -54,10 +58,6 @@ InviteUserStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
     case ActionTypes.INVITE_USER_MODAL_HIDE:
       _isInviteModalOpen = false;
       //_group = null;
-      InviteUserStoreInstance.emitChange();
-      break;
-    case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
-      _group = action.info;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
@@ -72,6 +72,11 @@ InviteUserStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
       break;
     case ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE:
       _isInviteByLinkModalOpen = false;
+      InviteUserStoreInstance.emitChange();
+      break;
+    case ActionTypes.INVITE_USER:
+    case ActionTypes.INVITE_USER_SUCCESS:
+    case ActionTypes.INVITE_USER_ERROR:
       InviteUserStoreInstance.emitChange();
       break;
     default:
