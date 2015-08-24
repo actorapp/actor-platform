@@ -2,6 +2,8 @@ import React from 'react';
 
 import classNames from 'classnames';
 
+import PeerUtils from 'utils/PeerUtils';
+
 import DialogActionCreators from 'actions/DialogActionCreators';
 
 import DialogStore from 'stores/DialogStore';
@@ -15,22 +17,19 @@ class RecentSectionItem extends React.Component {
 
   constructor(props) {
     super(props);
-
   }
 
   onClick = () => {
     DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
-  }
+  };
 
   render() {
-    const dialog = this.props.dialog,
-          selectedDialogPeer = DialogStore.getSelectedDialogPeer();
-    let isActive = false,
-        title;
+    const selectedPeer = DialogStore.getSelectedDialogPeer();
+    const dialog = this.props.dialog;
 
-    if (selectedDialogPeer) {
-      isActive = (dialog.peer.peer.id === selectedDialogPeer.id);
-    }
+    const isActive = selectedPeer && PeerUtils.equals(dialog.peer.peer, selectedPeer);
+
+    let title;
 
     if (dialog.counter > 0) {
       const counter = <span className="counter">{dialog.counter}</span>;

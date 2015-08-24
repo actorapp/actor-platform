@@ -167,7 +167,6 @@ class ComposeSection extends React.Component {
                     placeholder={profile.placeholder}
                     title={profile.name}/>
 
-
         <textarea className="compose__message"
                   onChange={this.onMessageChange}
                   onKeyDown={this.onKeyDown}

@@ -87,8 +87,8 @@ export default {
     return window.messenger.getInviteLink(groupId);
   },
 
-  sendTextMessage(peer, text) {
-    window.messenger.sendMessage(peer, text);
+  sendTextMessage(peer, text, markdownText) {
+    window.messenger.sendMarkdownMessage(peer, text, markdownText);
   },
 
   sendFileMessage(peer, file) {
@@ -213,12 +213,20 @@ export default {
 
   // Mentions
   findMentions(gid, query = '') {
-    return window.messenger.findMentions(gid, query)
+    return window.messenger.findMentions(gid, query);
   },
 
   // Nickname
   editMyNick(string) {
-    window.messenger.editMyNick(string)
+    window.messenger.editMyNick(string);
+  },
+
+  bindGlobalCounter(callback) {
+    return window.messenger.bindGlobalCounter(callback);
+  },
+
+  bindTempGlobalCounter(callback) {
+    return window.messenger.bindTempGlobalCounter(callback);
   }
 
 };
