@@ -6,9 +6,6 @@ import android.os.Build;
 
 import im.actor.core.entity.Peer;
 
-/**
- * Created by ex3ndr on 01.09.14.
- */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MessagesFragment extends BaseMessagesFragment {
 

@@ -7,23 +7,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.view.ActionMode;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.URLSpan;
 import android.view.ContextThemeWrapper;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -42,18 +41,13 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.MentionSpan;
 import im.actor.messenger.app.view.SelectionListenerEditText;
-import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
-import im.actor.messenger.app.view.keyboard.KeyboardStatusListener;
-import im.actor.messenger.app.view.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.view.markdown.AndroidMarkdown;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
@@ -66,7 +60,7 @@ import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
 
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends ActorEditTextActivity {
 
     public static Intent build(Peer peer, boolean compose, Context context) {
         final Intent intent = new Intent(context, ChatActivity.class);
@@ -99,6 +93,13 @@ public class ChatActivity extends BaseActivity {
     private static final String MENTION_BOUNDS_STR = MENTION_BOUNDS_CHR.toString();
 
     //////////////////////////////////
+    // Model
+    //////////////////////////////////
+
+    // Peer of current chat
+    private Peer peer;
+
+    //////////////////////////////////
     // Toolbar views
     //////////////////////////////////
 
@@ -120,26 +121,6 @@ public class ChatActivity extends BaseActivity {
     private ImageView barTypingIcon;
     // Toolbar typing text
     private TextView barTyping;
-
-    //////////////////////////////////
-    // Input panel
-    //////////////////////////////////
-
-    // Message edit text
-    private SelectionListenerEditText messageEditText;
-    // Send message button
-    private TintImageView sendButton;
-    // Attach button
-    private ImageButton attachButton;
-    // Removed from group panel
-    private View removedFromGroup;
-
-    //////////////////////////////////
-    // Model
-    //////////////////////////////////
-
-    // Peer of current chat
-    private Peer peer;
 
     //////////////////////////////////
     // Mentions
@@ -182,22 +163,14 @@ public class ChatActivity extends BaseActivity {
     // Camera photo destination name
     private String pending_fileName;
 
-    // Helper for hide/show keyboard
-    private KeyboardHelper keyboardUtils;
-
     // Lock typing during messageEditText change
     private boolean isTypingDisabled = false;
 
     // Is Activity opened from Compose
     private boolean isCompose = false;
 
-    // Emoji keyboard
-    private EmojiKeyboard emojiKeyboard;
-
     @Override
     public void onCreate(Bundle saveInstance) {
-        super.onCreate(saveInstance);
-
         // Reading peer of chat
         peer = Peer.fromUniqueId(getIntent().getExtras().getLong(EXTRA_CHAT_PEER));
 
@@ -209,57 +182,8 @@ public class ChatActivity extends BaseActivity {
             pending_fileName = saveInstance.getString(STATE_FILE_NAME, null);
         }
 
-        // Init action bar
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayUseLogoEnabled(false);
+        super.onCreate(saveInstance);
 
-        // Window settings
-        // Used for keyboard open speed improvements
-        getWindow().setBackgroundDrawable(null);
-
-        // Loading Toolbar header views
-        // Binding to real data is performed in onResume method
-        barView = LayoutInflater.from(this).inflate(R.layout.bar_conversation, null);
-        barTitle = (TextView) barView.findViewById(R.id.title);
-        barSubtitleContainer = barView.findViewById(R.id.subtitleContainer);
-        barTypingIcon = (ImageView) barView.findViewById(R.id.typingImage);
-        barTypingIcon.setImageDrawable(new TypingDrawable());
-        barTyping = (TextView) barView.findViewById(R.id.typing);
-        barSubtitle = (TextView) barView.findViewById(R.id.subtitle);
-        barTypingContainer = barView.findViewById(R.id.typingContainer);
-        barTypingContainer.setVisibility(View.INVISIBLE);
-        barAvatar = (AvatarView) barView.findViewById(R.id.avatarPreview);
-        barAvatar.init(Screen.dp(32), 18);
-        ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-        getSupportActionBar().setCustomView(barView, layout);
-        barView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (peer.getPeerType() == PeerType.PRIVATE) {
-                    startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
-                } else if (peer.getPeerType() == PeerType.GROUP) {
-                    startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
-                } else {
-                    // Nothing to do
-                }
-            }
-        });
-
-        // Activity view
-        setContentView(R.layout.activity_dialog);
-
-        // Messages Fragment
-        if (saveInstance == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.messagesFragment, MessagesFragment.create(peer))
-                    .commit();
-        }
-
-        // Message Body
-        messageEditText = (SelectionListenerEditText) findViewById(R.id.et_message);
         messageEditText.addTextChangedListener(new TextWatcherImp());
 
         // Handling selection changed
@@ -277,90 +201,6 @@ public class ChatActivity extends BaseActivity {
                 }
             }
         });
-
-        // Hardware keyboard events
-        messageEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keycode, KeyEvent keyEvent) {
-                if (messenger().isSendByEnterEnabled()) {
-                    if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER) {
-                        sendMessage();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        // Software keyboard events
-        messageEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_SEND) {
-                    sendMessage();
-                    return true;
-                }
-                if (i == EditorInfo.IME_ACTION_DONE) {
-                    sendMessage();
-                    return true;
-                }
-                if (messenger().isSendByEnterEnabled()) {
-                    if (keyEvent != null && i == EditorInfo.IME_NULL && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                        sendMessage();
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        // Kick panel
-        removedFromGroup = findViewById(R.id.kickedFromChat);
-
-        // Send Button
-        sendButton = (TintImageView) findViewById(R.id.ib_send);
-        sendButton.setResource(R.drawable.conv_send);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage();
-            }
-        });
-
-        // Attach Button
-        attachButton = (ImageButton) findViewById(R.id.ib_attach);
-        attachButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onAttachButtonClicked();
-            }
-        });
-
-        // Emoji keyboard
-        final ImageView emojiButton = (ImageView) findViewById(R.id.ib_emoji);
-        emojiKeyboard = new EmojiKeyboard(this);
-        emojiKeyboard.setKeyboardStatusListener(new KeyboardStatusListener() {
-
-            @Override
-            public void onDismiss() {
-                emojiButton.setImageResource(R.drawable.ic_emoji);
-            }
-
-            @Override
-            public void onShow() {
-                emojiButton.setImageResource(R.drawable.ic_keyboard);
-            }
-
-        });
-        emojiButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                emojiKeyboard.toggle(messageEditText);
-            }
-        });
-
-        // Keyboard helper for show/hide keyboard
-        keyboardUtils = new KeyboardHelper(this);
 
         // Mentions
         mentionsList = (ListView) findViewById(R.id.mentionsList);
@@ -390,13 +230,122 @@ public class ChatActivity extends BaseActivity {
 //        forwardDocIsDoc = getIntent().getBooleanExtra("forward_doc_is_doc", true);
     }
 
+    @Override
+    protected Fragment onCreateFragment() {
+        return MessagesFragment.create(peer);
+    }
+
+    @Override
+    protected void onCreateToolbar() {
+        // Loading Toolbar header views
+        // Binding to real data is performed in onResume method
+        barView = LayoutInflater.from(this).inflate(R.layout.bar_conversation, null);
+        ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
+        setToolbar(barView, layout);
+
+        barTitle = (TextView) barView.findViewById(R.id.title);
+        barSubtitleContainer = barView.findViewById(R.id.subtitleContainer);
+        barTypingIcon = (ImageView) barView.findViewById(R.id.typingImage);
+        barTypingIcon.setImageDrawable(new TypingDrawable());
+        barTyping = (TextView) barView.findViewById(R.id.typing);
+        barSubtitle = (TextView) barView.findViewById(R.id.subtitle);
+        barTypingContainer = barView.findViewById(R.id.typingContainer);
+        barTypingContainer.setVisibility(View.INVISIBLE);
+        barAvatar = (AvatarView) barView.findViewById(R.id.avatarPreview);
+        barAvatar.init(Screen.dp(32), 18);
+        barView.findViewById(R.id.titleContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (peer.getPeerType() == PeerType.PRIVATE) {
+                    startActivity(Intents.openProfile(peer.getPeerId(), ChatActivity.this));
+                } else if (peer.getPeerType() == PeerType.GROUP) {
+                    startActivity(Intents.openGroup(peer.getPeerId(), ChatActivity.this));
+                } else {
+                    // Nothing to do
+                }
+            }
+        });
+    }
+
     // Activity lifecycle
 
     @Override
     public void onResume() {
         super.onResume();
 
-        // Performing all required databinding here
+        // Force keyboard open if activity started with Compose flag
+        if (isCompose) {
+            messageEditText.requestFocus();
+            keyboardUtils.setImeVisibility(messageEditText, true);
+        }
+        isCompose = false;
+
+        // Loading drafts
+        isTypingDisabled = true;
+        String text = messenger().loadDraft(peer);
+        if (text != null) {
+            // Using only links parsing to avoid non-mentions formatting
+            Spannable spantext = AndroidMarkdown.processOnlyLinks(text);
+            spantext = emoji().processEmojiCompatMutable(spantext, SmileProcessor.CONFIGURATION_BUBBLES);
+            messageEditText.setText(spantext);
+        } else {
+            messageEditText.setText("");
+        }
+        messageEditText.setSelection(messageEditText.getText().length());
+        isTypingDisabled = false;
+
+        // TODO: Remove from ChatActivity
+//        // Performing actions
+//
+//        if (sendUri != null && !sendUri.isEmpty()) {
+//            sendUri(Uri.parse(sendUri), true);
+//            sendUri = "";
+//        }
+//
+//        if (sendUriMultiple != null && sendUriMultiple.size() > 0) {
+//            for (String sendUri : sendUriMultiple) {
+//                sendUri(Uri.parse(sendUri), false);
+//            }
+//            sendUriMultiple.clear();
+//        }
+//
+//        if (sendText != null && !sendText.isEmpty()) {
+//            messageEditText.setText(sendText);
+//            sendText = "";
+//        }
+//
+//        if (shareUser != 0) {
+//            String userName = users().get(shareUser).getName().get();
+//            String mentionTitle = "@".concat(userName);
+//            ArrayList<Integer> mention = new ArrayList<Integer>();
+//            mention.add(shareUser);
+//            messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareUser)).concat(")")), mention);
+//            messenger().trackTextSend(peer);
+//            shareUser = 0;
+//        }
+//
+//        if (forwardTextRaw != null && !forwardTextRaw.isEmpty()) {
+//            addQuote(forwardText, forwardTextRaw);
+//            forwardText = "";
+//            forwardTextRaw = "";
+//        }
+//
+//        if (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) {
+//            if (forwardDocIsDoc) {
+//                messenger().sendDocument(peer, forwardDocDescriptor);
+//                messenger().trackDocumentSend(peer);
+//            } else {
+//                sendUri(Uri.fromFile(new File(forwardDocDescriptor)), false);
+//            }
+//            forwardDocDescriptor = "";
+//        }
+    }
+
+    @Override
+    protected void onPerformBind() {
+        super.onPerformBind();
+
+        // Performing all required Data Binding here
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
 
@@ -454,96 +403,28 @@ public class ChatActivity extends BaseActivity {
                 }
             });
         }
-
-        // Force keyboard open if activity started with Compose flag
-        if (isCompose) {
-            messageEditText.requestFocus();
-            keyboardUtils.setImeVisibility(messageEditText, true);
-        }
-        isCompose = false;
-
-        // Loading drafts
-        isTypingDisabled = true;
-        String text = messenger().loadDraft(peer);
-        if (text != null) {
-            // TODO: Add markdown processing for keeping mentions in drafts
-            messageEditText.setText((emoji().processEmojiCompatMutable(AndroidMarkdown.processText(text), SmileProcessor.CONFIGURATION_BUBBLES)));
-        } else {
-            messageEditText.setText("");
-        }
-        messageEditText.setSelection(messageEditText.getText().length());
-        isTypingDisabled = false;
-
-        // TODO: Remove from ChatActivity
-//        // Performing actions
-//
-//        if (sendUri != null && !sendUri.isEmpty()) {
-//            sendUri(Uri.parse(sendUri), true);
-//            sendUri = "";
-//        }
-//
-//        if (sendUriMultiple != null && sendUriMultiple.size() > 0) {
-//            for (String sendUri : sendUriMultiple) {
-//                sendUri(Uri.parse(sendUri), false);
-//            }
-//            sendUriMultiple.clear();
-//        }
-//
-//        if (sendText != null && !sendText.isEmpty()) {
-//            messageEditText.setText(sendText);
-//            sendText = "";
-//        }
-//
-//        if (shareUser != 0) {
-//            String userName = users().get(shareUser).getName().get();
-//            String mentionTitle = "@".concat(userName);
-//            ArrayList<Integer> mention = new ArrayList<Integer>();
-//            mention.add(shareUser);
-//            messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareUser)).concat(")")), mention);
-//            messenger().trackTextSend(peer);
-//            shareUser = 0;
-//        }
-//
-//        if (forwardTextRaw != null && !forwardTextRaw.isEmpty()) {
-//            addQuote(forwardText, forwardTextRaw);
-//            forwardText = "";
-//            forwardTextRaw = "";
-//        }
-//
-//        if (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) {
-//            if (forwardDocIsDoc) {
-//                messenger().sendDocument(peer, forwardDocDescriptor);
-//                messenger().trackDocumentSend(peer);
-//            } else {
-//                sendUri(Uri.fromFile(new File(forwardDocDescriptor)), false);
-//            }
-//            forwardDocDescriptor = "";
-//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        // TODO: Add markdown processing for keeping mentions in drafts
+        // TODO: Rewrite to correct conversion from spannable to markdown
+
+        // Converting messageEditText content to markdown
         Editable text = (Editable) messageEditText.getText().subSequence(0, messageEditText.getText().length());
+
+        // Converting spans to markdown
         convertUrlSpansToMarkdownLinks(text);
+
+        // Saving draft
         messenger().saveDraft(peer, text.toString());
     }
 
+    // Message send
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // Destroy emoji keyboard
-        // TODO: Is it right place to do it here? it was in onPause method
-        emojiKeyboard.destroy();
-    }
-
-    // Text Message send
-
-    private void sendMessage() {
-
+    protected void onSendButtonPressed() {
         boolean useMD = false;
 
         Editable mdText = messageEditText.getText();
@@ -579,9 +460,7 @@ public class ChatActivity extends BaseActivity {
         messenger().trackTextSend(peer);
     }
 
-    // Media Message send
-
-    private void onAttachButtonClicked() {
+    protected void onAttachButtonClicked() {
         Context wrapper = new ContextThemeWrapper(ChatActivity.this, R.style.AttachPopupTheme);
         PopupMenu popup = new PopupMenu(wrapper, findViewById(R.id.attachAnchor));
 
@@ -1012,8 +891,6 @@ public class ChatActivity extends BaseActivity {
                     mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
                 }
             }
-
-
         }
 
         @Override
