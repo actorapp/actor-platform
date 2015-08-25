@@ -1,23 +1,34 @@
 package im.actor.server.http
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.unmarshalling.{ Unmarshaller, Unmarshal, FromRequestUnmarshaller }
+import akka.stream.Materializer
+import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.counters.UpdateCountersChanged
-import im.actor.api.rpc.messaging.{ TextMessage, UpdateMessage }
+import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server._
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.api.rpc.service.messaging.ReverseHooksListener
+import im.actor.server.api.rpc.service.messaging
 import im.actor.server.commons.KeyValueMappings
 import im.actor.server.group.GroupOffice
 import im.actor.server.migrations.IntegrationTokenMigrator
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import shardakka.{ ShardakkaExtension, IntCodec }
+import im.actor.server.util.GroupServiceMessages
+import play.api.libs.json.Json
+import shardakka.{ IntCodec, ShardakkaExtension }
+
+import scala.concurrent.ExecutionContext
 
 class WebhookHandlerSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with MessageParsing
+  with PeersImplicits
   with ImplicitGroupRegions
   with ImplicitSequenceService
   with ImplicitSessionRegionProxy
@@ -32,11 +43,14 @@ class WebhookHandlerSpec
 
   "Integration Token Migrator" should "migrate integration tokens to key value" in t.tokenMigration()
 
+  "Reverse hooks listener" should "forward text messages in group to registered webhook" in t.reverseHooks()
+
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
+  implicit val messagingService = messaging.MessagingServiceImpl(mediator)
 
   object t {
     val (user1, authId1, _) = createUser()
@@ -96,13 +110,6 @@ class WebhookHandlerSpec
     }
 
     def tokenMigration() = {
-      val (user1, authId1, _) = createUser()
-      val (user2, authId2, _) = createUser()
-
-      val sessionId = createSessionId()
-
-      implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
-
       val groups = for (i ← 1 to 300) yield createGroup(s"$i", Set(user2.id)).groupPeer
 
       IntegrationTokenMigrator.migrate()
@@ -121,6 +128,84 @@ class WebhookHandlerSpec
       }
     }
 
+    def reverseHooks() = {
+      val handler = new WebhooksHandler()
+
+      val hook3000 = new DummyHookListener(3000)
+      val hook4000 = new DummyHookListener(4000)
+
+      val group = createGroup(s"Reverse hooks group", Set(user2.id)).groupPeer
+
+      ReverseHooksListener.startSingleton(mediator)
+
+      val token = whenReady(GroupOffice.getIntegrationToken(group.groupId)) { optToken ⇒
+        optToken shouldBe defined
+        optToken.get
+      }
+
+      whenReady(handler.register(token, "http://localhost:3000"))(_.isRight shouldBe true)
+      whenReady(handler.register(token, "http://localhost:4000"))(_.isRight shouldBe true)
+
+      Thread.sleep(2000)
+
+      val commands = List("jump", "eat", "sleep", "die")
+
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, TextMessage(commands(0), Vector.empty, None)))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 2L, GroupServiceMessages.changedTitle("xx")))(_ ⇒ ())
+
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 3L, TextMessage(commands(1), Vector.empty, None)))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 4L, JsonMessage("Some info")))(_ ⇒ ())
+
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 5L, TextMessage(commands(2), Vector.empty, None)))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 6L, DocumentMessage(1L, 2L, 1, "", "", None, None)))(_ ⇒ ())
+
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 7L, TextMessage(commands(3), Vector.empty, None)))(_ ⇒ ())
+
+      Thread.sleep(2000)
+
+      val messages3000 = hook3000.getMessages
+      messages3000 should have size 4
+      messages3000.map(_.text) should contain theSameElementsAs commands
+
+      val messages4000 = hook4000.getMessages
+      messages4000 should have size 4
+      messages4000.map(_.text) should contain theSameElementsAs commands
+    }
+  }
+
+  class DummyHookListener(port: Int)(implicit system: ActorSystem, materializer: Materializer) {
+
+    import akka.http.scaladsl.Http
+    import akka.http.scaladsl.server.Directives._
+    import akka.http.scaladsl.server.Route
+    import im.actor.server.api.rpc.service.messaging.ReverseHooksWorker._
+    import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
+
+    implicit val ec: ExecutionContext = system.dispatcher
+    implicit val toMessage: FromRequestUnmarshaller[MessageToWebhook] = Unmarshaller { implicit ec ⇒ req ⇒
+      Unmarshal(req.entity).to[String].map { body ⇒
+        Json.parse(body).as[MessageToWebhook]
+      }
+    }
+
+    private var messages: Set[MessageToWebhook] = Set.empty[MessageToWebhook]
+
+    def getMessages: Set[MessageToWebhook] = messages
+
+    def clean() = messages = Set.empty[MessageToWebhook]
+
+    private def routes: Route =
+      post {
+        entity(as[MessageToWebhook]) { message ⇒
+          println("==================== got message  " + message)
+          messages = messages + message
+          complete("{}")
+        }
+      }
+
+    Http().bind("0.0.0.0", port).runForeach { connection ⇒
+      connection handleWith Route.handlerFlow(routes)
+    }
   }
 
 }

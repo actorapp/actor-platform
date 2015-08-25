@@ -63,14 +63,17 @@ object HttpApiFrontend {
     val status = new StatusHandler
     val files = new AppFilesHandler(config.staticFiles)
 
-    def routes: Route = files.routes ~
+    // format: OFF
+    def routes: Route =
+      files.routes ~
       pathPrefix("v1") {
         respondWithDefaultHeaders(corsHeaders) {
           status.routes ~
-            groups.routes ~
-            webhooks.routes
+          groups.routes ~
+          webhooks.routes
         }
       }
+    // format: ON
 
     Http().bind(config.interface, config.port, httpsContext = tlsContext map (_.asHttpsContext)).runForeach { connection ⇒
       connection handleWith Route.handlerFlow(routes)

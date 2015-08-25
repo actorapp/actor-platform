@@ -9,6 +9,7 @@ object Dependencies {
     val scalaz = "7.1.1"
     val slick = "3.0.0"
     val scalatest = "2.2.4"
+    val catsVersion    = "0.1.2"
   }
 
   object Compile {
@@ -18,6 +19,7 @@ object Dependencies {
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
+    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "0.9.1"
     val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
@@ -27,6 +29,9 @@ object Dependencies {
     val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
+
+    val cats                    = "org.spire-math"                %% "cats-core"                     % V.catsVersion
+    val catsStd                 = "org.spire-math"                %% "cats-std"                      % V.catsVersion
 
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
 
@@ -112,7 +117,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless
   )
 
-  val httpApi = shared ++ Seq(akkaActor, jodaTime, akkaHttp, playJson)
+  val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, jodaTime, playJson)
 
   val email = shared ++ Seq(akkaActor, apacheEmail)
 
@@ -152,7 +157,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaContrib, slick)
 
-  val utils = shared ++ Seq(akkaActor, akkaHttp, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
+  val utils = shared ++ Seq(akkaActor, akkaHttp, amazonaws, awsWrap, cats, catsStd, libPhoneNumber, scrImageCore, slick)
 
   val utilsCache = shared :+ caffeine
 
