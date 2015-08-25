@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 export default {
   requestSms(phone, success, failure) {
     window.messenger.requestSms(phone, success, failure);
@@ -218,7 +222,7 @@ export default {
 
   // Nickname
   editMyNick(string) {
-    window.messenger.editMyNick(string);
+    window.messenger.editMyNick(string)
   },
 
   bindGlobalCounter(callback) {
@@ -247,5 +251,37 @@ export default {
 
   renderMarkdown(markdownText) {
     return window.messenger.renderMarkdown(markdownText);
+  },
+
+  // Settings
+  changeNotificationsEnabled(peer, isEnabled) {
+    window.messenger.changeNotificationsEnabled(peer, isEnabled);
+  },
+  isNotificationsEnabled(peer) {
+    return window.messenger.isNotificationsEnabled(peer);
+  },
+  isSendByEnterEnabled() {
+    return window.messenger.isSendByEnterEnabled();
+  },
+  changeSendByEnter(isEnabled) {
+    window.messenger.changeSendByEnter(isEnabled);
+  },
+  isGroupsNotificationsEnabled() {
+    return window.messenger.isGroupsNotificationsEnabled();
+  },
+  changeGroupNotificationsEnabled(isEnabled) {
+    window.messenger.changeGroupNotificationsEnabled(isEnabled);
+  },
+  isOnlyMentionNotifications() {
+    return window.messenger.isOnlyMentionNotifications();
+  },
+  changeIsOnlyMentionNotifications(isEnabled) {
+    window.messenger.changeIsOnlyMentionNotifications(isEnabled);
+  },
+  isSoundEffectsEnabled() {
+    return window.messenger.isGroupsNotificationsEnabled();
+  },
+  changeSoundEffectsEnabled(isEnabled) {
+    window.messenger.isGroupsNotificationsEnabled(isEnabled);
   }
 };
