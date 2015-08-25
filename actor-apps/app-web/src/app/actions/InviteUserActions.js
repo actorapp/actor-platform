@@ -16,6 +16,6 @@ export default {
       request: ActionTypes.INVITE_USER,
       success: ActionTypes.INVITE_USER_SUCCESS,
       failure: ActionTypes.INVITE_USER_ERROR
-    });
+    }, { gid, uid });
   }
 };
