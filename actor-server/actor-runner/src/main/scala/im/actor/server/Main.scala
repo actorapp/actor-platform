@@ -17,7 +17,7 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.api.rpc.service.messaging.{ ReverseHooksListener, MessagingServiceImpl }
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
@@ -117,6 +117,7 @@ object Main extends App {
   )
 
   RichMessageWorker.startWorker(richMessageConfig, mediator)
+  ReverseHooksListener.startSingleton(mediator)
 
   implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
 

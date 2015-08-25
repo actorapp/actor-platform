@@ -184,7 +184,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.httpApi
     )
-  ).dependsOn(actorCore, actorPersist, actorTls)
+  ).dependsOn(actorCore, actorPersist, actorTls, actorUtils)
 
   lazy val actorOAuth = Project(
     id = "actor-oauth",

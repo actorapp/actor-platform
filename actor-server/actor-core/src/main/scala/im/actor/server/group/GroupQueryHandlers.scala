@@ -12,8 +12,12 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
 
   def getIntegrationToken(group: Group, userId: Int): Unit =
     withGroupMember(group, userId) { _ ⇒
-      sender() ! GetIntegrationTokenResponse(group.bot.map(_.token))
+      getIntegrationToken(group)
     }
+
+  def getIntegrationToken(group: Group): Unit = {
+    sender() ! GetIntegrationTokenResponse(group.bot.map(_.token))
+  }
 
   def getApiStruct(group: Group, clientUserId: Int): Unit = {
     val apiMembers = group.members.toVector map {
