@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { register } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, ChangeState } from 'constants/ActorAppConstants';
-//import DialogStore from './DialogStore';
 
 import ActorClient from 'utils/ActorClient';
 
@@ -60,7 +59,7 @@ class InviteUserStore extends EventEmitter {
 
 let InviteUserStoreInstance = new InviteUserStore();
 
-InviteUserStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
+InviteUserStoreInstance.dispatchToken = register(action => {
   switch(action.type) {
     case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
       _group = action.info;
