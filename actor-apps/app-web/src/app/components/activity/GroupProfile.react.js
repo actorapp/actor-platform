@@ -97,7 +97,7 @@ class GroupProfile extends React.Component {
   };
 
   toggleMoreDropdown = () => {
-    const isMoreDropdownOpen = this.state.isMoreDropdownOpen;
+    const { isMoreDropdownOpen } = this.state;
 
     if (!isMoreDropdownOpen) {
       this.setState({isMoreDropdownOpen: true});
@@ -113,10 +113,9 @@ class GroupProfile extends React.Component {
   };
 
   render() {
-    const group = this.props.group;
+    const { group } = this.props;
+    const { isNotificationsEnabled, integrationToken } = this.state;
     const myId = LoginStore.getMyId();
-    const isNotificationsEnabled = this.state.isNotificationsEnabled;
-    const integrationToken = this.state.integrationToken;
     const admin = GroupProfileActionCreators.getUser(group.adminId);
     const isMember = DialogStore.isGroupMember(group);
     const snackbarStyles = ActorTheme.getSnackbarStyles();
@@ -148,7 +147,7 @@ class GroupProfile extends React.Component {
 
     let members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
 
-    let dropdownClassNames = classnames('dropdown pull-right', {
+    let dropdownClassNames = classnames('dropdown', {
       'dropdown--opened': this.state.isMoreDropdownOpen
     });
 
@@ -182,24 +181,29 @@ class GroupProfile extends React.Component {
           <ul className="profile__list">
             <li className="profile__list__item group_profile__meta">
               {groupMeta}
-              <footer>
-                <button className="button button--light-blue pull-left"
-                        onClick={this.onAddMemberClick.bind(this, group)}>
-                  <i className="material-icons">person_add</i>
-                  <FormattedMessage message={this.getIntlMessage('addPeople')}/>
-                </button>
-                <div className={dropdownClassNames}>
-                  <button className="dropdown__button button button--light-blue" onClick={this.toggleMoreDropdown}>
-                    <i className="material-icons">more_horiz</i>
-                    <FormattedMessage message={this.getIntlMessage('more')}/>
+              <footer className="row">
+                <div className="col-xs">
+                  <button className="button button--light-blue"
+                          onClick={this.onAddMemberClick.bind(this, group)}>
+                    <i className="material-icons">person_add</i>
+                    <FormattedMessage message={this.getIntlMessage('addPeople')}/>
                   </button>
-                  <ul className="dropdown__menu dropdown__menu--right">
-                    {adminControls}
-                    <li className="dropdown__menu__item dropdown__menu__item--light"
-                        onClick={this.onLeaveGroupClick.bind(this, group.id)}>
-                      <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
-                    </li>
-                  </ul>
+                </div>
+                <div style={{width: 10}}></div>
+                <div className="col-xs">
+                  <div className={dropdownClassNames}>
+                    <button className="dropdown__button button button--light-blue" onClick={this.toggleMoreDropdown}>
+                      <i className="material-icons">more_horiz</i>
+                      <FormattedMessage message={this.getIntlMessage('more')}/>
+                    </button>
+                    <ul className="dropdown__menu dropdown__menu--right">
+                      {adminControls}
+                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                          onClick={this.onLeaveGroupClick.bind(this, group.id)}>
+                        <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </footer>
             </li>
