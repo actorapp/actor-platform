@@ -31,13 +31,13 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     private Context context;
     private long firstUnread = -1;
     private HashMap<Long, Message> selected = new HashMap<Long, Message>();
-    private boolean isMarkDownEnabled;
 
-    public MessagesAdapter(BindedDisplayList<Message> displayList, BaseMessagesFragment messagesFragment, Context context, boolean isMarkDownEnabled) {
+    public MessagesAdapter(BindedDisplayList<Message> displayList,
+                           BaseMessagesFragment messagesFragment, Context context) {
         super(displayList);
+
         this.messagesFragment = messagesFragment;
         this.context = context;
-        this.isMarkDownEnabled = isMarkDownEnabled;
     }
 
     public Message[] getSelected() {

@@ -2,16 +2,17 @@ package im.actor.runtime.markdown;
 
 import java.util.ArrayList;
 
-public class MarkdownProcessor {
+public class MarkdownParser {
 
     public static final int MODE_FULL = 0;
     public static final int MODE_LITE = 1;
+    public static final int MODE_ONLY_LINKS = 2;
 
     private static final String CODE_BLOCK = "```";
 
     private final int mode;
 
-    public MarkdownProcessor(int mode) {
+    public MarkdownParser(int mode) {
         this.mode = mode;
     }
 
@@ -36,19 +37,21 @@ public class MarkdownProcessor {
      * @return is code block found
      */
     private boolean handleCodeBlock(TextCursor cursor, ArrayList<MDSection> paragraphs) {
-        int blockStart = findCodeBlockStart(cursor);
-        if (blockStart >= 0) {
-            int blockEnd = findCodeBlockEnd(cursor, blockStart);
-            if (blockEnd >= 0) {
-                // Adding Text Block if there are some elements before code block
-                if (cursor.currentOffset < blockStart) {
-                    handleTextBlock(cursor, blockStart, paragraphs);
-                }
+        if (mode != MODE_ONLY_LINKS) {
+            int blockStart = findCodeBlockStart(cursor);
+            if (blockStart >= 0) {
+                int blockEnd = findCodeBlockEnd(cursor, blockStart);
+                if (blockEnd >= 0) {
+                    // Adding Text Block if there are some elements before code block
+                    if (cursor.currentOffset < blockStart) {
+                        handleTextBlock(cursor, blockStart, paragraphs);
+                    }
 
-                String codeContent = cursor.text.substring(cursor.currentOffset + 3, blockEnd - 3);
-                cursor.currentOffset = blockEnd;
-                paragraphs.add(new MDSection(new MDCode(codeContent)));
-                return true;
+                    String codeContent = cursor.text.substring(cursor.currentOffset + 3, blockEnd - 3);
+                    cursor.currentOffset = blockEnd;
+                    paragraphs.add(new MDSection(new MDCode(codeContent)));
+                    return true;
+                }
             }
         }
 
@@ -94,23 +97,25 @@ public class MarkdownProcessor {
      * @return is
      */
     private boolean handleSpan(TextCursor cursor, int blockEnd, ArrayList<MDText> elements) {
-        int spanStart = findSpanStart(cursor, blockEnd);
-        if (spanStart >= 0) {
-            char span = cursor.text.charAt(spanStart);
-            int spanEnd = findSpanEnd(cursor, spanStart, blockEnd, span);
-            if (spanEnd >= 0) {
-                handleUrls(cursor, spanStart, elements);
+        if (mode != MODE_ONLY_LINKS) {
+            int spanStart = findSpanStart(cursor, blockEnd);
+            if (spanStart >= 0) {
+                char span = cursor.text.charAt(spanStart);
+                int spanEnd = findSpanEnd(cursor, spanStart, blockEnd, span);
+                if (spanEnd >= 0) {
+                    handleUrls(cursor, spanStart, elements);
 
-                MDText[] spanElements = handleSpans(cursor, spanEnd - 1);
-                cursor.currentOffset = spanEnd;
+                    MDText[] spanElements = handleSpans(cursor, spanEnd - 1);
+                    cursor.currentOffset = spanEnd;
 
-                MDSpan spanElement = new MDSpan(
-                        span == '*' ? MDSpan.TYPE_BOLD : MDSpan.TYPE_ITALIC,
-                        spanElements);
+                    MDSpan spanElement = new MDSpan(
+                            span == '*' ? MDSpan.TYPE_BOLD : MDSpan.TYPE_ITALIC,
+                            spanElements);
 
-                elements.add(spanElement);
+                    elements.add(spanElement);
 
-                return true;
+                    return true;
+                }
             }
         }
 

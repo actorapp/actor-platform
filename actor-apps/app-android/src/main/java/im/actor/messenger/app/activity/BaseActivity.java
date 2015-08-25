@@ -2,6 +2,7 @@ package im.actor.messenger.app.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -19,9 +20,6 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 
-/**
- * Created by ex3ndr on 29.12.14.
- */
 public class BaseActivity extends AppCompatActivity {
     private final ActorBinder BINDER = new ActorBinder();
 
@@ -30,13 +28,23 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onCreateToolbar();
         notifyOnResume();
+    }
+
+    protected void onCreateToolbar() {
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        onPerformBind();
         notifyOnResume();
+    }
+
+    protected void onPerformBind() {
+
     }
 
     public void bind(final TextView textView, ValueModel<String> value) {
@@ -96,6 +104,36 @@ public class BaseActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         notifyOnPause();
+    }
+
+    protected void setToolbar(int text, boolean enableBack) {
+        getSupportActionBar().setDisplayShowCustomEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (enableBack) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(false);
+        getSupportActionBar().setTitle(text);
+    }
+
+    protected void setToolbar(int text) {
+        setToolbar(text, true);
+    }
+
+    protected void setToolbar(View view, ActionBar.LayoutParams params, boolean enableBack) {
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (enableBack) {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayUseLogoEnabled(false);
+        getSupportActionBar().setCustomView(view, params);
+    }
+
+    protected void setToolbar(View view, ActionBar.LayoutParams params) {
+        setToolbar(view, params, true);
     }
 
     private void notifyOnResume() {
