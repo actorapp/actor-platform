@@ -3,10 +3,7 @@ package im.actor.runtime.markdown;
 public class MarkdownElement {
     public static final int TYPE_TEXT = 1;
     public static final int TYPE_BOLD = 2;
-    public static final int TYPE_UNDERLINE = 3;
-    public static final int TYPE_QUOTE = 4;
-    public static final int TYPE_CODE_SPAN = 5;
-    public static final int TYPE_CODE_BLOCK = 6;
+    public static final int TYPE_ITALIC = 3;
 
     private int type;
     private String text;
