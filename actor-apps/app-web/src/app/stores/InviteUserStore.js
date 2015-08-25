@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { register } from 'dispatcher/ActorAppDispatcher';
-import { ActionTypes, ChangeState } from 'constants/ActorAppConstants';
+import { ActionTypes, AsyncActionStates } from 'constants/ActorAppConstants';
 
 import ActorClient from 'utils/ActorClient';
 
@@ -10,7 +10,7 @@ let _isInviteModalOpen = false,
     _isInviteByLinkModalOpen = false,
     _group = null,
     _inviteUrl = null,
-    _changeState = [];
+    _inviteUserState = [];
 
 class InviteUserStore extends EventEmitter {
   emitChange() {
@@ -41,19 +41,19 @@ class InviteUserStore extends EventEmitter {
     return _inviteUrl;
   }
 
-  getChangeState(gid, uid) {
-    if (typeof _changeState[gid] === 'undefined') {
-      _changeState[gid] = [];
+  getInviteUserState(gid, uid) {
+    if (typeof _inviteUserState[gid] === 'undefined') {
+      _inviteUserState[gid] = [];
     }
-    if (typeof _changeState[gid][uid] === 'undefined') {
-      _changeState[gid][uid] = ChangeState.INIT;
+    if (typeof _inviteUserState[gid][uid] === 'undefined') {
+      _inviteUserState[gid][uid] = AsyncActionStates.PENDING;
     }
 
-    return _changeState[gid][uid];
+    return _inviteUserState[gid][uid];
   }
 
-  resetChangeState(gid, uid) {
-    _changeState[gid][uid] = ChangeState.INIT;
+  resetInviteUserState(gid, uid) {
+    _inviteUserState[gid][uid] = AsyncActionStates.PENDING;
   }
 }
 
@@ -90,15 +90,15 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER:
-      _changeState[action.gid][action.uid] = ChangeState.IN_PROCESS;
+      _inviteUserState[action.gid][action.uid] = AsyncActionStates.PROCESSING;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_SUCCESS:
-      _changeState[action.gid][action.uid] = ChangeState.SUCCESS;
+      _inviteUserState[action.gid][action.uid] = AsyncActionStates.SUCCESS;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_ERROR:
-      _changeState[action.gid][action.uid] = ChangeState.FAILURE;
+      _inviteUserState[action.gid][action.uid] = AsyncActionStates.FAILURE;
       InviteUserStoreInstance.emitChange();
       break;
     default:

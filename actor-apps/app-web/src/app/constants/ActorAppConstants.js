@@ -118,9 +118,9 @@ export const KeyCodes = {
   ARROW_DOWN: 40
 };
 
-export const ChangeState = {
-  INIT: 0,
-  IN_PROCESS: 1,
+export const AsyncActionStates = {
+  PENDING: 0,
+  PROCESSING: 1,
   SUCCESS: 2,
   FAILURE: 3
 };
@@ -147,7 +147,7 @@ export default {
 
   KeyCodes: KeyCodes,
 
-  ChangeState: ChangeState,
+  ChangeState: AsyncActionStates,
 
   Mixpanel: Mixpanel,
 
