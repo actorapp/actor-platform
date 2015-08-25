@@ -1,4 +1,4 @@
-package im.actor.messenger.app.util.io;
+package im.actor.core.utils;
 
 import android.content.Context;
 import android.net.Uri;
@@ -102,7 +102,7 @@ public class IOUtils {
                     listener.onProgress(readed);
                 }
             }
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
         }
         return os.toByteArray();
     }

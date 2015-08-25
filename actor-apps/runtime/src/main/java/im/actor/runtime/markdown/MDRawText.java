@@ -10,4 +10,9 @@ public class MDRawText extends MDText {
     public String getRawText() {
         return rawText;
     }
+
+    @Override
+    public String toMarkdown() {
+        return rawText;
+    }
 }
