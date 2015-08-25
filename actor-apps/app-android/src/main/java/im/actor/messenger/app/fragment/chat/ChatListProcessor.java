@@ -108,12 +108,6 @@ public class ChatListProcessor implements ListProcessor<Message> {
                         hasSpannable = true;
                     }
 
-//                    if (text.getTextMessageEx() instanceof ApiTextExMarkdown) {
-//                        spannableString = new SpannableString(bypass.markdownToSpannable(((ApiTextExMarkdown) text.getTextMessageEx()).getMarkdown(),
-//                                false));
-//                        hasSpannable = true;
-//                    }
-
                     // Process links
                     if (Linkify.addLinks(spannableString, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS)) {
                         hasSpannable = true;
