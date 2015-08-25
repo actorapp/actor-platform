@@ -1,6 +1,6 @@
 import React from 'react';
-//import ReactMixin from 'react-mixin';
-//import addons from 'react/addons';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
 import classnames from 'classnames';
 
 import InviteUserStore from 'stores/InviteUserStore';
@@ -9,7 +9,7 @@ import { ChangeState } from 'constants/ActorAppConstants';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 
-//const {addons: { PureRenderMixin }} = addons;
+const {addons: { PureRenderMixin }} = addons;
 
 const getStateFromStore = (props) => {
   const { contact } = props;
@@ -20,7 +20,7 @@ const getStateFromStore = (props) => {
   }
 };
 
-//@ReactMixin.decorate(PureRenderMixin)
+@ReactMixin.decorate(PureRenderMixin)
 class ContactItem extends React.Component {
   static propTypes = {
     contact: React.PropTypes.object,
@@ -41,18 +41,25 @@ class ContactItem extends React.Component {
   }
 
   onSelect = () => {
-    this.props.onSelect(this.props.contact);
+    const { contact, onSelect } = this.props;
+
+    onSelect(contact);
+
     InviteUserStore.addChangeListener(this.onChange);
+    this.setState({changingState: ChangeState.IN_PROCESS});
   };
 
   onChange = () => {
     this.setState(getStateFromStore(this.props));
 
-    const { changingState } = this.state;
+    setTimeout(() => {
+      const { changingState } = this.state;
+      if (changingState === ChangeState.SUCCESS || changingState === ChangeState.FAILURE) {
+        InviteUserStore.removeChangeListener(this.onChange);
+      }
+    }, 0);
 
-    if (changingState === ChangeState.SUCCESS && changingState === ChangeState.FAILURE) {
-      InviteUserStore.removeChangeListener(this.onChange);
-    }
+
   };
 
   render() {
@@ -61,14 +68,14 @@ class ContactItem extends React.Component {
 
     let controls;
     switch (changingState) {
-      case ChangeState.SUCCESS:
       case ChangeState.INIT:
+      case ChangeState.SUCCESS:
         controls = !member
           ? <a className="material-icons" onClick={this.onSelect}>person_add</a>
           : <i className="material-icons">check</i>;
         break;
       case ChangeState.IN_PROCESS:
-        controls = <i className="material-icons">refresh</i>;
+        controls = <i className="material-icons spin">autorenew</i>;
         break;
       case ChangeState.FAILURE:
         controls = <i className="material-icons">warning</i>;
@@ -76,7 +83,7 @@ class ContactItem extends React.Component {
     }
 
     const contactClassName = classnames('contacts__list__item row', {
-      'contacts__list__item--member': member
+      'contacts__list__item--member': changingState === ChangeState.SUCCESS || member
     });
 
     return (
