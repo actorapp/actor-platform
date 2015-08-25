@@ -118,6 +118,13 @@ export const KeyCodes = {
   ARROW_DOWN: 40
 };
 
+export const ChangeState = {
+  INIT: 0,
+  IN_PROCESS: 1,
+  SUCCESS: 2,
+  FAILURE: 3
+};
+
 export const version = app.base_version;
 
 export const Mixpanel = app.mixpanel;
@@ -139,6 +146,8 @@ export default {
   MessageContentTypes: MessageContentTypes,
 
   KeyCodes: KeyCodes,
+
+  ChangeState: ChangeState,
 
   Mixpanel: Mixpanel,
 
