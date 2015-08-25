@@ -14,7 +14,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.api.http.RoutesHandler
-import im.actor.server.api.http.json.JsonImplicits.{ errorsFormat, groupInviteInfoFormat }
+import im.actor.server.api.http.json.JsonFormatters.{ errorsFormat, groupInviteInfoFormat }
 import im.actor.server.api.http.json.{ AvatarUrls, Errors, Group, GroupInviteInfo, User }
 import im.actor.server.util.FileStorageAdapter
 import im.actor.server.util.ImageUtils.getAvatar
