@@ -20,4 +20,29 @@ public class MDSpan extends MDText {
     public MDText[] getChild() {
         return child;
     }
+
+    @Override
+    public String toMarkdown() {
+        String res = "";
+        if (spanType == TYPE_BOLD) {
+            res += "*";
+        } else if (spanType == TYPE_ITALIC) {
+            res += "_";
+        } else {
+            throw new RuntimeException("Unknown type");
+        }
+
+        for (MDText t : child) {
+            res += t.toMarkdown();
+        }
+
+        if (spanType == TYPE_BOLD) {
+            res += "*";
+        } else if (spanType == TYPE_ITALIC) {
+            res += "_";
+        } else {
+            throw new RuntimeException("Unknown type");
+        }
+        return res;
+    }
 }

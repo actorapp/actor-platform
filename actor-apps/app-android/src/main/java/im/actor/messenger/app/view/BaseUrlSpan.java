@@ -1,4 +1,4 @@
-package in.uncod.android.bypass;
+package im.actor.messenger.app.view;
 
 import android.content.Context;
 import android.content.Intent;

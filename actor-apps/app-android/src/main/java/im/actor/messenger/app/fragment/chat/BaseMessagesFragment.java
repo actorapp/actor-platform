@@ -41,12 +41,10 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
 
-/**
- * Created by ex3ndr on 25.03.15.
- */
 public abstract class BaseMessagesFragment extends DisplayListFragment<Message, MessageHolder> {
 
     private Peer peer;
+
     private ChatLinearLayoutManager linearLayoutManager;
     private MessagesAdapter messagesAdapter;
     // private ConversationVM conversationVM;
@@ -158,7 +156,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     }
 
     public void onAvatarLongClick(int uid) {
-        ((ChatActivity) getActivity()).onAvatarLongClick(uid);
+        ((ChatActivity) getActivity()).insertMention(uid);
     }
 
     public boolean onClick(Message message) {

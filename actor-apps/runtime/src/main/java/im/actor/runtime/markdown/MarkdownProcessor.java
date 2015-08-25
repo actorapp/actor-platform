@@ -4,9 +4,24 @@ import java.util.ArrayList;
 
 public class MarkdownProcessor {
 
-    public static final String CODE_BLOCK = "```";
+    public static final int MODE_FULL = 0;
+    public static final int MODE_LITE = 1;
 
-    public static MDDocument processDocument(String text) {
+    private static final String CODE_BLOCK = "```";
+
+    private final int mode;
+
+    public MarkdownProcessor(int mode) {
+        this.mode = mode;
+    }
+
+    /**
+     * Parsing markdown document
+     *
+     * @param text markdown text
+     * @return parsed document
+     */
+    public MDDocument processDocument(String text) {
         TextCursor cursor = new TextCursor(text);
         ArrayList<MDSection> sections = new ArrayList<MDSection>();
         while (handleCodeBlock(cursor, sections)) ;
@@ -20,7 +35,7 @@ public class MarkdownProcessor {
      * @param paragraphs current paragraphs
      * @return is code block found
      */
-    private static boolean handleCodeBlock(TextCursor cursor, ArrayList<MDSection> paragraphs) {
+    private boolean handleCodeBlock(TextCursor cursor, ArrayList<MDSection> paragraphs) {
         int blockStart = findCodeBlockStart(cursor);
         if (blockStart >= 0) {
             int blockEnd = findCodeBlockEnd(cursor, blockStart);
@@ -41,7 +56,6 @@ public class MarkdownProcessor {
         if (cursor.currentOffset < cursor.text.length()) {
             handleTextBlock(cursor, cursor.text.length(), paragraphs);
         }
-
         return false;
     }
 
@@ -52,7 +66,7 @@ public class MarkdownProcessor {
      * @param blockEnd   text block end
      * @param paragraphs current paragraphs
      */
-    private static void handleTextBlock(TextCursor cursor, int blockEnd, ArrayList<MDSection> paragraphs) {
+    private void handleTextBlock(TextCursor cursor, int blockEnd, ArrayList<MDSection> paragraphs) {
         MDText[] spans = handleSpans(cursor, blockEnd);
         paragraphs.add(new MDSection(spans));
         cursor.currentOffset = blockEnd;
@@ -63,9 +77,9 @@ public class MarkdownProcessor {
      *
      * @param cursor   text cursor
      * @param blockEnd code span search limit
-     * @return builded tree
+     * @return built text segments
      */
-    private static MDText[] handleSpans(TextCursor cursor, int blockEnd) {
+    private MDText[] handleSpans(TextCursor cursor, int blockEnd) {
         ArrayList<MDText> elements = new ArrayList<MDText>();
         while (handleSpan(cursor, blockEnd, elements)) ;
         return elements.toArray(new MDText[elements.size()]);
@@ -74,22 +88,19 @@ public class MarkdownProcessor {
     /**
      * Handling span
      *
-     * @param cursor
-     * @param blockEnd
-     * @param elements
-     * @return
+     * @param cursor   text cursor
+     * @param blockEnd span search limit
+     * @param elements current elements
+     * @return is
      */
-    private static boolean handleSpan(TextCursor cursor, int blockEnd, ArrayList<MDText> elements) {
+    private boolean handleSpan(TextCursor cursor, int blockEnd, ArrayList<MDText> elements) {
         int spanStart = findSpanStart(cursor, blockEnd);
         if (spanStart >= 0) {
             char span = cursor.text.charAt(spanStart);
             int spanEnd = findSpanEnd(cursor, spanStart, blockEnd, span);
             if (spanEnd >= 0) {
-                if (cursor.currentOffset < spanStart) {
-                    elements.add(new MDRawText(cursor.text.substring(cursor.currentOffset, spanStart)));
-                }
+                handleUrls(cursor, spanStart, elements);
 
-                cursor.currentOffset = spanStart + 1;
                 MDText[] spanElements = handleSpans(cursor, spanEnd - 1);
                 cursor.currentOffset = spanEnd;
 
@@ -98,20 +109,56 @@ public class MarkdownProcessor {
                         spanElements);
 
                 elements.add(spanElement);
+
+                return true;
             }
         }
 
-        if (cursor.currentOffset < blockEnd) {
-            elements.add(new MDRawText(cursor.text.substring(cursor.currentOffset, blockEnd)));
-        }
+        handleUrls(cursor, blockEnd, elements);
 
         return false;
     }
 
-    // Searching method
+    private void handleUrls(TextCursor cursor, int limit, ArrayList<MDText> elements) {
+        while (handleUrl(cursor, limit, elements)) ;
+    }
 
+    private boolean handleUrl(TextCursor cursor, int limit, ArrayList<MDText> elements) {
+        Url url = findUrl(cursor, limit);
+        if (url != null) {
+            handleText(cursor, url.getStart(), elements);
+            String title = cursor.text.substring(url.getStart() + 1, url.getMiddle());
+            String urlVal = cursor.text.substring(url.getMiddle() + 2, url.getEnd());
+            elements.add(new MDUrl(title, urlVal));
+            cursor.currentOffset = url.getEnd() + 1;
+            return true;
+        }
 
-    private static int findCodeBlockStart(TextCursor cursor) {
+        handleText(cursor, limit, elements);
+        return false;
+    }
+
+    /**
+     * Handling raw text block
+     *
+     * @param cursor   text cursor
+     * @param limit    text end
+     * @param elements current elements
+     */
+    private void handleText(TextCursor cursor, int limit, ArrayList<MDText> elements) {
+        if (cursor.currentOffset < limit) {
+            elements.add(new MDRawText(cursor.text.substring(cursor.currentOffset, limit)));
+            cursor.currentOffset = limit + 1;
+        }
+    }
+
+    /**
+     * Searching for valid code block begin
+     *
+     * @param cursor text cursor
+     * @return code block start, -1 if not found
+     */
+    private int findCodeBlockStart(TextCursor cursor) {
         int offset = cursor.currentOffset;
         int index;
         while ((index = cursor.text.indexOf(CODE_BLOCK, offset)) >= 0) {
@@ -123,7 +170,14 @@ public class MarkdownProcessor {
         return -1;
     }
 
-    private static int findCodeBlockEnd(TextCursor cursor, int blockStart) {
+    /**
+     * Searching for valid code block end
+     *
+     * @param cursor     text cursor
+     * @param blockStart start of expected code block
+     * @return code block end, -1 if not found
+     */
+    private int findCodeBlockEnd(TextCursor cursor, int blockStart) {
         int offset = blockStart + 3;
         int index;
         while ((index = cursor.text.indexOf(CODE_BLOCK, offset)) >= 0) {
@@ -135,7 +189,14 @@ public class MarkdownProcessor {
         return -1;
     }
 
-    private static int findSpanStart(TextCursor cursor, int limit) {
+    /**
+     * Searching for valid formatting span start
+     *
+     * @param cursor text cursor
+     * @param limit  maximum index in cursor
+     * @return span start, -1 if not found
+     */
+    private int findSpanStart(TextCursor cursor, int limit) {
         for (int i = cursor.currentOffset; i < limit; i++) {
             char c = cursor.text.charAt(i);
             if (c == '*' || c == '_') {
@@ -148,7 +209,16 @@ public class MarkdownProcessor {
         return -1;
     }
 
-    private static int findSpanEnd(TextCursor cursor, int spanStart, int limit, char span) {
+    /**
+     * Searching for valid formatting span end
+     *
+     * @param cursor    text cursor
+     * @param spanStart expected span start
+     * @param limit     maximum index in cursor
+     * @param span      span control character
+     * @return span end, -1 if not found
+     */
+    private int findSpanEnd(TextCursor cursor, int spanStart, int limit, char span) {
         for (int i = spanStart + 1; i < limit; i++) {
             char c = cursor.text.charAt(i);
             if (c == span) {
@@ -162,13 +232,52 @@ public class MarkdownProcessor {
     }
 
     /**
+     * Searching for valid formatted url
+     *
+     * @param cursor current cursor
+     * @param limit  search limit
+     * @return found url, null if not found
+     */
+    private Url findUrl(TextCursor cursor, int limit) {
+
+        start_loop:
+        for (int start = cursor.currentOffset; start < limit; start++) {
+            if (cursor.text.charAt(start) == '[') {
+                if (!isGoodAnchor(cursor.text, start - 1)) {
+                    continue start_loop;
+                }
+            } else {
+                continue start_loop;
+            }
+
+            middle_loop:
+            for (int middle = start + 1; middle < limit - 1; middle++) {
+                if (cursor.text.charAt(middle) != ']' || cursor.text.charAt(middle + 1) != '(') {
+                    continue middle_loop;
+                }
+
+                end_loop:
+                for (int end = middle + 2; end < limit; end++) {
+                    if (cursor.text.charAt(end) != ')') {
+                        continue end_loop;
+                    }
+
+                    return new Url(start, middle, end);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Test if symbol at index is space or out of string bounds
      *
      * @param text  text
      * @param index char to test
      * @return is good anchor
      */
-    private static boolean isGoodAnchor(String text, int index) {
+    private boolean isGoodAnchor(String text, int index) {
         // Check if there is space after block
         if (index >= 0 && index < text.length()) {
             char postfix = text.charAt(index);
@@ -188,7 +297,7 @@ public class MarkdownProcessor {
      * @param c
      * @return
      */
-    private static boolean isNotSymbol(String text, int index, char c) {
+    private boolean isNotSymbol(String text, int index, char c) {
         if (index >= 0 && index < text.length()) {
             return text.charAt(index) != c;
         }
@@ -196,22 +305,30 @@ public class MarkdownProcessor {
         return true;
     }
 
-    private static String debugElements(MarkdownElement[] elements) {
-        String res = "";
-        for (MarkdownElement e : elements) {
-            if (e.getText() != null) {
-                if (e.getType() == MarkdownElement.TYPE_BOLD) {
-                    res += "[bold]" + debugElements(e.getChild()) + "[/bold]";
-                } else if (e.getType() == MarkdownElement.TYPE_ITALIC) {
-                    res += "[italic]" + debugElements(e.getChild()) + "[/italic]";
-                } else {
-                    res += "[text]" + e.getText() + "[/text]";
-                }
-            }
-        }
-        return res;
-    }
+    private static class Url {
 
+        private int start;
+        private int middle;
+        private int end;
+
+        public Url(int start, int middle, int end) {
+            this.start = start;
+            this.middle = middle;
+            this.end = end;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public int getMiddle() {
+            return middle;
+        }
+
+        public int getEnd() {
+            return end;
+        }
+    }
 
     private static class TextCursor {
 
