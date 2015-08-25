@@ -1,7 +1,5 @@
-package in.uncod.android.bypass;
+package im.actor.messenger.app.view;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.text.TextPaint;
 import android.view.View;
@@ -15,6 +13,7 @@ public class MentionSpan extends BaseUrlSpan {
 
     public MentionSpan(String url, boolean hideUrlStyle) {
         super(url, hideUrlStyle);
+
         colors = new int[]{
                 AppContext.getContext().getResources().getColor(R.color.placeholder_0),
                 AppContext.getContext().getResources().getColor(R.color.placeholder_1),
@@ -24,7 +23,6 @@ public class MentionSpan extends BaseUrlSpan {
                 AppContext.getContext().getResources().getColor(R.color.placeholder_5),
                 AppContext.getContext().getResources().getColor(R.color.placeholder_6),
         };
-
     }
 
     @Override
