@@ -2,6 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import _ from 'lodash';
 import React from 'react';
 import { AsyncActionStates } from 'constants/ActorAppConstants';
 
@@ -19,22 +20,26 @@ export class Root extends React.Component {
   render() {
     const { currentState, className, children } = this.props;
 
-    const currentStateChild = React.Children.map(children, (child) => {
-      if (currentState === AsyncActionStates.PENDING && child.type === Pending) return child;
-      if (currentState === AsyncActionStates.PROCESSING && child.type === Processing) return child;
-      if (currentState === AsyncActionStates.SUCCESS && child.type === Success) return child;
-      if (currentState === AsyncActionStates.FAILURE && child.type === Failure) return child;
+    const equalsState = (state, type) => {
+      return (state === AsyncActionStates.PENDING && type === Pending) ||
+             (state === AsyncActionStates.PROCESSING && type === Processing) ||
+             (state === AsyncActionStates.SUCCESS && type === Success) ||
+             (state === AsyncActionStates.FAILURE && type === Failure)
+    };
+
+    const currentStateChild = _.find(children, (child) => {
+      if (equalsState(currentState, child.type)) return child;
     });
 
     return (
       <div className={className}>{currentStateChild}</div>
-    );
+    )
   }
 }
 
 export class Pending extends React.Component {
   static propTypes = {
-    children: React.PropTypes.array
+    children: React.PropTypes.node
   };
 
   render() {
@@ -44,7 +49,7 @@ export class Pending extends React.Component {
 
 export class Processing extends React.Component {
   static propTypes = {
-    children: React.PropTypes.array
+    children: React.PropTypes.node
   };
 
   render() {
@@ -54,7 +59,7 @@ export class Processing extends React.Component {
 
 export class Success extends React.Component {
   static propTypes = {
-    children: React.PropTypes.array
+    children: React.PropTypes.node
   };
 
   render() {
@@ -64,7 +69,7 @@ export class Success extends React.Component {
 
 export class Failure extends React.Component {
   static propTypes = {
-    children: React.PropTypes.array
+    children: React.PropTypes.node
   };
 
   render() {
