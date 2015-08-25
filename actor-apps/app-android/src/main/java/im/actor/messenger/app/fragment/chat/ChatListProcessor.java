@@ -5,6 +5,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import im.actor.core.entity.Message;
@@ -23,6 +25,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.adapter.PreprocessedData;
 import im.actor.messenger.app.fragment.chat.adapter.PreprocessedList;
 import im.actor.messenger.app.fragment.chat.adapter.PreprocessedTextData;
+import im.actor.messenger.app.view.MentionSpan;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.markdown.AndroidMarkdown;
 import im.actor.runtime.generic.mvvm.ListProcessor;
@@ -153,13 +156,13 @@ public class ChatListProcessor implements ListProcessor<Message> {
     }
 
     private boolean fixLinkifyCustomLinks(Spannable spannable, Pattern p, boolean isMention) {
-//        Matcher m = p.matcher(spannable.toString());
+        Matcher m = p.matcher(spannable.toString());
         boolean res = false;
-//        while (m.find()) {
-//            URLSpan span = isMention ? new MentionSpan(m.group(), false) : new URLSpan(m.group());
-//            spannable.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            res = true;
-//        }
+        while (m.find()) {
+            URLSpan span = isMention ? new MentionSpan(m.group(), false) : new URLSpan(m.group());
+            spannable.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            res = true;
+        }
         return res;
     }
 }

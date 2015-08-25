@@ -21,14 +21,20 @@ import im.actor.runtime.markdown.MDSection;
 import im.actor.runtime.markdown.MDSpan;
 import im.actor.runtime.markdown.MDText;
 import im.actor.runtime.markdown.MDUrl;
-import im.actor.runtime.markdown.MarkdownProcessor;
+import im.actor.runtime.markdown.MarkdownParser;
 
 public class AndroidMarkdown {
 
-    public static Spannable processText(String markdown) {
+    public static Spannable processOnlyLinks(String markdown) {
+        return processtext(markdown, MarkdownParser.MODE_ONLY_LINKS);
+    }
 
-        MDDocument doc = new MarkdownProcessor(MarkdownProcessor.MODE_FULL)
-                .processDocument(markdown);
+    public static Spannable processText(String markdown) {
+        return processtext(markdown, MarkdownParser.MODE_FULL);
+    }
+
+    private static Spannable processtext(String markdown, int mode) {
+        MDDocument doc = new MarkdownParser(mode).processDocument(markdown);
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         boolean isFirst = true;
