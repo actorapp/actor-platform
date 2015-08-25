@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { assign } from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import ReactZeroClipboard from 'react-zeroclipboard';
@@ -53,8 +53,9 @@ class GroupProfile extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = _.assign({
-      isMoreDropdownOpen: false
+    this.state = assign({
+      isMoreDropdownOpen: false,
+      isCopyButtonEnabled: false
     }, getStateFromStores(props.group.id));
 
     ThemeManager.setTheme(ActorTheme);
@@ -112,9 +113,13 @@ class GroupProfile extends React.Component {
     document.removeEventListener('click', this.closeMoreDropdown, false);
   };
 
+  onZeroclipboardReady = () => {
+    this.setState({isCopyButtonEnabled: true});
+  };
+
   render() {
     const { group } = this.props;
-    const { isNotificationsEnabled, integrationToken } = this.state;
+    const { isNotificationsEnabled, integrationToken, isCopyButtonEnabled } = this.state;
     const myId = LoginStore.getMyId();
     const admin = GroupProfileActionCreators.getUser(group.adminId);
     const isMember = DialogStore.isGroupMember(group);
@@ -145,9 +150,9 @@ class GroupProfile extends React.Component {
       ];
     }
 
-    let members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
+    const members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
 
-    let dropdownClassNames = classnames('dropdown', {
+    const dropdownClassNames = classnames('dropdown', {
       'dropdown--opened': this.state.isMoreDropdownOpen
     });
 
@@ -175,6 +180,10 @@ class GroupProfile extends React.Component {
       </div>
     ];
 
+    const copyButtonClassname = classnames({
+      'hide': !isCopyButtonEnabled
+    });
+
     if (isMember) {
       return (
         <div className="activity__body group_profile">
@@ -184,7 +193,7 @@ class GroupProfile extends React.Component {
               <footer className="row">
                 <div className="col-xs">
                   <button className="button button--light-blue"
-                          onClick={this.onAddMemberClick.bind(this, group)}>
+                          onClick={() => this.onAddMemberClick(group)}>
                     <i className="material-icons">person_add</i>
                     <FormattedMessage message={this.getIntlMessage('addPeople')}/>
                   </button>
@@ -248,8 +257,9 @@ class GroupProfile extends React.Component {
                   with your own systems.
                   <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
                   <ReactZeroClipboard onCopy={this.onIntegrationTokenCopied}
+                                      onReady={this.onZeroclipboardReady}
                                       text={integrationToken}>
-                    <a>Copy integration link</a>
+                    <a className={copyButtonClassname}>Copy integration link</a>
                   </ReactZeroClipboard>
                 </div>
                 <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>

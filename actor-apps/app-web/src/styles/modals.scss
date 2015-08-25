@@ -347,11 +347,12 @@
       }
     }
     .modal-new__footer {
-      padding: 0 18px 18px;
+      padding: 0 18px;
 
       @include clearfix();
       .button {
         width: 176px;
+        margin-bottom: 18px;
       }
     }
   }
