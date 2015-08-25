@@ -133,6 +133,14 @@ private[group] sealed trait Queries {
     ec:      ExecutionContext
   ): Future[Option[String]] = (region.ref ? GetIntegrationToken(groupId, clientUserId)).mapTo[GetIntegrationTokenResponse] map (_.token)
 
+  //for use in inner services only
+  def getIntegrationToken(groupId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Option[String]] = (region.ref ? GetIntegrationTokenInternal(groupId)).mapTo[GetIntegrationTokenResponse] map (_.token) //FIXME
+
   def getApiStruct(groupId: Int, clientUserId: Int)(
     implicit
     region:  GroupViewRegion,

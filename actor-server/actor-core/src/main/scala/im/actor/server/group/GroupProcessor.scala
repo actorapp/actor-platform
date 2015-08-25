@@ -90,6 +90,7 @@ object GroupProcessor {
     ActorSerializer.register(21008, classOf[GroupQueries.GetApiStructResponse])
     ActorSerializer.register(21009, classOf[GroupQueries.IsPublic])
     ActorSerializer.register(21010, classOf[GroupQueries.IsPublicResponse])
+    ActorSerializer.register(21011, classOf[GroupQueries.GetIntegrationTokenInternal])
 
     ActorSerializer.register(22003, classOf[GroupEvents.UserInvited])
     ActorSerializer.register(22004, classOf[GroupEvents.UserJoined])
@@ -181,6 +182,7 @@ private[group] final class GroupProcessor
 
   override def handleQuery(state: Group): Receive = {
     case GroupQueries.GetIntegrationToken(_, userId) ⇒ getIntegrationToken(state, userId)
+    case GroupQueries.GetIntegrationTokenInternal(_) ⇒ getIntegrationToken(state)
     case GroupQueries.GetApiStruct(_, userId)        ⇒ getApiStruct(state, userId)
     case GroupQueries.CheckAccessHash(_, accessHash) ⇒ checkAccessHash(state, accessHash)
     case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
