@@ -10,4 +10,15 @@ public class MDDocument {
     public MDSection[] getSections() {
         return sections;
     }
+
+    public String toMarkdown() {
+        String res = "";
+        for (MDSection section : sections) {
+            if (res.length() > 0) {
+                res += "\n";
+            }
+            res += section.toMarkdown();
+        }
+        return res;
+    }
 }

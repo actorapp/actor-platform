@@ -3,6 +3,7 @@ package im.actor.messenger.app.view.markdown;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -19,15 +20,15 @@ import im.actor.runtime.markdown.MDRawText;
 import im.actor.runtime.markdown.MDSection;
 import im.actor.runtime.markdown.MDSpan;
 import im.actor.runtime.markdown.MDText;
+import im.actor.runtime.markdown.MDUrl;
+import im.actor.runtime.markdown.MarkdownProcessor;
 
-public class MarkdownProcessor {
+public class AndroidMarkdown {
 
-    public MarkdownProcessor() {
+    public static Spannable processText(String markdown) {
 
-    }
-
-    public Spannable processText(String markdown) {
-        MDDocument doc = im.actor.runtime.markdown.MarkdownProcessor.processDocument(markdown);
+        MDDocument doc = new MarkdownProcessor(MarkdownProcessor.MODE_FULL)
+                .processDocument(markdown);
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         boolean isFirst = true;
@@ -54,14 +55,16 @@ public class MarkdownProcessor {
                                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 }, start, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            } else {
+            } else if (s.getType() == MDSection.TYPE_TEXT) {
                 writeText(s.getText(), builder);
+            } else {
+                throw new RuntimeException("Unknown section type: " + s.getType());
             }
         }
         return builder;
     }
 
-    private void writeText(MDText[] texts, SpannableStringBuilder builder) {
+    private static void writeText(MDText[] texts, SpannableStringBuilder builder) {
         for (MDText text : texts) {
             if (text instanceof MDRawText) {
                 builder.append(((MDRawText) text).getRawText());
@@ -76,6 +79,21 @@ public class MarkdownProcessor {
                     spanObj = new StyleSpan(Typeface.ITALIC);
                 }
                 builder.setSpan(spanObj, start, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else if (text instanceof MDUrl) {
+                final MDUrl url = (MDUrl) text;
+                int start = builder.length();
+                builder.append(url.getUrlTitle());
+                builder.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(View view) {
+                        AppContext.getContext().startActivity(
+                                new Intent(Intent.ACTION_VIEW)
+                                        .setData(Uri.parse(url.getUrl()))
+                                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    }
+                }, start, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                throw new RuntimeException("Unknown text type: " + text);
             }
         }
     }

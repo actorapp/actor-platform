@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import im.actor.core.utils.IOUtils;
+import im.actor.messenger.app.util.Logger;
 import im.actor.messenger.app.util.images.common.ImageMetadata;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.messenger.app.util.images.sources.FileSource;
@@ -35,8 +37,6 @@ import im.actor.messenger.app.view.emoji.smiles.SmilesRecentListener;
 import im.actor.messenger.app.view.emoji.smiles.SmilesRecentsController;
 import im.actor.messenger.app.view.emoji.smiles.SmileysPack;
 import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
-import im.actor.messenger.app.util.Logger;
-import im.actor.messenger.app.util.io.IOUtils;
 
 
 public class SmileProcessor {

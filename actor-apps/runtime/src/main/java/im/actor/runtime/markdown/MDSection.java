@@ -30,4 +30,20 @@ public class MDSection {
     public MDText[] getText() {
         return text;
     }
+
+    public String toMarkdown() {
+        if (type == TYPE_TEXT) {
+            String res = "";
+            for (MDText t : text) {
+                res += t.toMarkdown();
+            }
+            return res;
+        } else if (type == TYPE_CODE) {
+            return "```\n" +
+                    code.getCode() +
+                    "\n```";
+        } else {
+            throw new RuntimeException("Unknown type");
+        }
+    }
 }

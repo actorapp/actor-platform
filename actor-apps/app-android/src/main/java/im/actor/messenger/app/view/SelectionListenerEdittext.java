@@ -1,38 +1,35 @@
 package im.actor.messenger.app.view;
 
 import android.content.Context;
-import android.text.Editable;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+public class SelectionListenerEditText extends EditText {
 
-/**
- * Created by korka on 26.05.15.
- */
-public class SelectionListenerEdittext extends EditText {
-    OnSelectedListener selectionCallback;
+    private OnSelectedListener selectionCallback;
 
-    public SelectionListenerEdittext(Context context, AttributeSet attrs) {
+    public SelectionListenerEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SelectionListenerEdittext(Context context){
+    public SelectionListenerEditText(Context context) {
         super(context);
     }
 
-    public SelectionListenerEdittext(Context context, AttributeSet attrs, int i){
+    public SelectionListenerEditText(Context context, AttributeSet attrs, int i) {
         super(context, attrs, i);
     }
 
-
-    public void setOnSelectionListener(OnSelectedListener callback){
+    public void setOnSelectionListener(OnSelectedListener callback) {
         selectionCallback = callback;
     }
 
     @Override
     protected void onSelectionChanged(int selStart, int selEnd) {
         super.onSelectionChanged(selStart, selEnd);
-        if(selectionCallback!=null)selectionCallback.onSelected(selStart, selEnd);
+        if (selectionCallback != null) {
+            selectionCallback.onSelected(selStart, selEnd);
+        }
     }
 
     public interface OnSelectedListener {

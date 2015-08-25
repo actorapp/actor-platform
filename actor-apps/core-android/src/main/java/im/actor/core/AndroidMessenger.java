@@ -5,20 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.hardware.display.DisplayManager;
 import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.view.Display;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import im.actor.core.entity.Contact;
 import im.actor.core.entity.Dialog;
@@ -28,7 +33,10 @@ import im.actor.core.entity.SearchEntity;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.network.NetworkState;
 import im.actor.core.utils.AppStateActor;
+import im.actor.core.utils.IOUtils;
 import im.actor.core.utils.ImageHelper;
+import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
@@ -41,6 +49,8 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 import static im.actor.runtime.actors.ActorSystem.system;
 
 public class AndroidMessenger extends im.actor.core.Messenger {
+
+    private final Executor fileDownloader = Executors.newSingleThreadExecutor();
 
     private Context context;
     private final Random random = new Random();
@@ -249,6 +259,81 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
     }
 
+    public Command<Boolean> sendUri(final Peer peer, final Uri uri) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(CommandCallback<Boolean> callback) {
+                fileDownloader.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Video.Media.MIME_TYPE,
+                                MediaStore.Video.Media.TITLE};
+                        String picturePath;
+                        String mimeType;
+                        String fileName;
+
+
+                        Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
+                        if (cursor != null) {
+                            cursor.moveToFirst();
+                            picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
+                            mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
+                            fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
+                            if (mimeType == null) {
+                                mimeType = "?/?";
+                            }
+                            cursor.close();
+                        } else {
+                            picturePath = uri.getPath();
+                            fileName = new File(uri.getPath()).getName();
+                            int index = fileName.lastIndexOf(".");
+                            if (index > 0) {
+                                mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substring(index + 1));
+                            } else {
+                                mimeType = "?/?";
+                            }
+                        }
+
+                        if (picturePath == null || !uri.getScheme().equals("file")) {
+                            File externalFile = context.getExternalFilesDir(null);
+                            if (externalFile == null) {
+                                return;
+                            }
+                            String externalPath = externalFile.getAbsolutePath();
+
+                            File dest = new File(externalPath + "/Actor/");
+                            dest.mkdirs();
+
+                            File outputFile = new File(dest, "upload_" + random.nextLong() + ".jpg");
+                            picturePath = outputFile.getAbsolutePath();
+
+                            try {
+                                IOUtils.copy(context.getContentResolver().openInputStream(uri), new File(picturePath));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                return;
+                            }
+                        }
+
+                        if (fileName == null) {
+                            fileName = picturePath;
+                        }
+
+                        if (mimeType.startsWith("video/")) {
+                            sendVideo(peer, picturePath, fileName);
+                            trackVideoSend(peer);
+                        } else if (mimeType.startsWith("image/")) {
+                            sendPhoto(peer, picturePath, new File(fileName).getName());
+                            trackPhotoSend(peer);
+                        } else {
+                            sendDocument(peer, picturePath, new File(fileName).getName());
+                            trackDocumentSend(peer);
+                        }
+                    }
+                });
+            }
+        };
+    }
 
     public void onActivityOpen() {
         appStateActor.send(new AppStateActor.OnActivityOpened());

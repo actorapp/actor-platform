@@ -13,6 +13,9 @@ import android.webkit.MimeTypeMap;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import im.actor.core.entity.FileReference;
+import im.actor.core.entity.Peer;
+import im.actor.core.utils.IOUtils;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.activity.TakePhotoActivity;
 import im.actor.messenger.app.fragment.chat.ChatActivity;
@@ -22,9 +25,6 @@ import im.actor.messenger.app.fragment.group.InviteLinkActivity;
 import im.actor.messenger.app.fragment.preview.PictureActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
-import im.actor.messenger.app.util.io.IOUtils;
-import im.actor.core.entity.FileReference;
-import im.actor.core.entity.Peer;
 
 /**
  * Created by ex3ndr on 07.10.14.

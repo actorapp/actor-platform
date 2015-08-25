@@ -14,7 +14,6 @@ import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
-import in.uncod.android.bypass.QuoteSpan;
 
 import static im.actor.messenger.app.core.Core.myUid;
 
@@ -82,15 +81,15 @@ public class TextHolder extends MessageHolder {
         text.setMovementMethod(new CustomLinkMovementMethod());
 
         // Fixing span offsets
-        if (rawText instanceof Spannable) {
-            Spannable s = (Spannable) rawText;
-            QuoteSpan[] qSpans = s.getSpans(0, s.length(), QuoteSpan.class);
-            text.setMinimumWidth(0);
-            if (qSpans.length > 0) {
-                text.measure(0, 0);
-                text.setMinimumWidth(text.getMeasuredWidth() + qSpans[0].getLeadingMargin(true));
-            }
-        }
+//        if (rawText instanceof Spannable) {
+//            Spannable s = (Spannable) rawText;
+//            QuoteSpan[] qSpans = s.getSpans(0, s.length(), QuoteSpan.class);
+//            text.setMinimumWidth(0);
+//            if (qSpans.length > 0) {
+//                text.measure(0, 0);
+//                text.setMinimumWidth(text.getMeasuredWidth() + qSpans[0].getLeadingMargin(true));
+//            }
+//        }
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);
