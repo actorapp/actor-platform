@@ -4,6 +4,7 @@ html {
 
   background-color: $body-background-color;
 }
+
 body {
   font-family: 'RobotoDraft', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
@@ -38,6 +39,7 @@ body {
 
   transition: padding $default-transition-duration, opacity 350ms ease-out;
 }
+
 .main {
   position: relative;
   z-index: 1;
@@ -66,7 +68,6 @@ body {
   }
 }
 
-
 // splash screen
 .splash-screen {
   position: fixed;
@@ -87,6 +88,7 @@ body {
 .row {
   margin: 0;
 }
+
 [class*='col'] {
   padding: 0;
 }
@@ -101,6 +103,7 @@ body {
   display: none !important;
   visibility: hidden !important;
 }
+
 .fill {
   width: 100%;
   height: 100%;
@@ -109,6 +112,7 @@ body {
 .pull-left {
   float: left;
 }
+
 .pull-right {
   float: right;
 }
@@ -116,9 +120,11 @@ body {
 .text-left {
   text-align: left;
 }
+
 .text-right {
   text-align: right;
 }
+
 .text-center {
   text-align: center;
 }
@@ -126,6 +132,7 @@ body {
 .no-p {
   padding: 0 !important;
 }
+
 .no-m {
   margin: 0 !important;
 }
@@ -157,7 +164,6 @@ body {
     color: $color-green;
   }
 }
-
 
 // Links
 .link {
@@ -215,5 +221,18 @@ body {
     margin: 0 10px;
 
     color: white;
+  }
+}
+
+// Rotating icons
+.material-icons {
+  &.spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
   }
 }
