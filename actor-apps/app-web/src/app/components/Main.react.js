@@ -1,8 +1,11 @@
 import React from 'react';
 
+import {PeerTypes} from 'constants/ActorAppConstants';
+
 import requireAuth from 'utils/require-auth';
 import ActorClient from 'utils/ActorClient';
 import PeerUtils from 'utils/PeerUtils';
+import RouterContainer from 'utils/RouterContainer';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import VisibilityActionCreators from 'actions/VisibilityActionCreators';
@@ -43,7 +46,19 @@ class Main extends React.Component {
     const peer = PeerUtils.stringToPeer(this.props.params.id);
 
     if (peer) {
-      DialogActionCreators.selectDialogPeer(peer);
+      let peerInfo = undefined;
+
+      if (peer.type == PeerTypes.GROUP) {
+        peerInfo = ActorClient.getGroup(peer.id)
+      } else {
+        peerInfo = ActorClient.getUser(peer.id)
+      }
+
+      if (peerInfo) {
+        DialogActionCreators.selectDialogPeer(peer);
+      } else {
+        RouterContainer.get().transitionTo('/');
+      }
     }
   }
 
