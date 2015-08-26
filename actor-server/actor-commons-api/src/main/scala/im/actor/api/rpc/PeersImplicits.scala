@@ -1,4 +1,4 @@
-package im.actor.api
+package im.actor.api.rpc
 
 import im.actor.api.rpc.peers._
 import im.actor.server.models

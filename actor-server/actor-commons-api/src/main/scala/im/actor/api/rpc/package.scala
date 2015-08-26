@@ -1,12 +1,12 @@
 package im.actor.api
 
-import scala.concurrent.{ ExecutionContext, Future }
+import slick.dbio.{DBIO, DBIOAction}
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
 import scalaz.Scalaz._
 import scalaz._
-
-import slick.dbio.{ DBIO, DBIOAction }
-import slick.driver.PostgresDriver.api._
 
 package object rpc extends {
 

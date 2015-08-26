@@ -3,7 +3,6 @@ package im.actor.server
 import akka.actor.ActorSystem
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
-import im.actor.server.api.rpc.service.ServiceSpecHelpers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
