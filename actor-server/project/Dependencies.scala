@@ -80,13 +80,13 @@ object Dependencies {
   }
 
   object Testing {
-    val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test"
+    val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka
 
-    val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
-    val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
+    val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2"
+    val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest
 //    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
 
-    val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
+    val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1"
   }
 
   import Compile._
@@ -161,6 +161,7 @@ object Dependencies {
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
   val tests = shared ++ Seq(
+    akkaContrib,
     jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit //, scalaTestPlay
   )
 }
