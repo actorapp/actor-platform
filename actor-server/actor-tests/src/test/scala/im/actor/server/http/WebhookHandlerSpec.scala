@@ -197,7 +197,6 @@ class WebhookHandlerSpec
     private def routes: Route =
       post {
         entity(as[MessageToWebhook]) { message ⇒
-          println("==================== got message  " + message)
           messages = messages + message
           complete("{}")
         }

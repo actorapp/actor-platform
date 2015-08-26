@@ -71,6 +71,11 @@ class ReverseHooksWorker(groupId: Int, token: String, mediator: ActorRef, http: 
             _ ← Future.sequence(urls map { url ⇒
               for {
                 resp ← http.singleRequest(HttpRequest(HttpMethods.POST, url, entity = Json.stringify(Json.toJson(MessageToWebhook(text)))))
+                _ = if (resp.status.isSuccess()) {
+                  log.debug("Successfully forwarded message from group {} to url: {}, status: {}", groupId, url, resp.status.toString())
+                } else {
+                  log.debug("Failed to forwarded message from group {} to url: {}, status: {}", groupId, url, resp.status.toString())
+                }
                 _ ← resp.entity.dataBytes.runWith(Sink.ignore)
               } yield ()
             })
