@@ -46,6 +46,7 @@ class Main extends React.Component {
     const peer = PeerUtils.stringToPeer(this.props.params.id);
 
     if (peer) {
+      // It is needed to prevent failure on opening dialog while library didn't load dialogs (right after auth)
       let peerInfo = undefined;
 
       if (peer.type == PeerTypes.GROUP) {
