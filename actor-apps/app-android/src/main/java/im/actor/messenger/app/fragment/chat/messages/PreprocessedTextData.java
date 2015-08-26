@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.adapter;
+package im.actor.messenger.app.fragment.chat.messages;
 
 import android.text.Spannable;
 

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.adapter;
+package im.actor.messenger.app.fragment.chat.messages;
 
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import im.actor.core.entity.Message;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
