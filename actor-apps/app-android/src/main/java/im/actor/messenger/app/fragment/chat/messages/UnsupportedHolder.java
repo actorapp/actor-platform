@@ -2,12 +2,11 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.messenger.app.fragment.chat.adapter;
+package im.actor.messenger.app.fragment.chat.messages;
 
 import android.view.View;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.core.entity.Message;
 
 public class UnsupportedHolder extends TextHolder {

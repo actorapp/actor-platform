@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.adapter;
+package im.actor.messenger.app.fragment.chat.messages;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -23,7 +23,6 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.util.FileTypes;
 import im.actor.messenger.app.util.images.common.ImageLoadException;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
