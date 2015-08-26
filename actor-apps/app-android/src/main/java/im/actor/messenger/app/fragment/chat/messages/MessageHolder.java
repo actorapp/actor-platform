@@ -1,8 +1,7 @@
-package im.actor.messenger.app.fragment.chat.adapter;
+package im.actor.messenger.app.fragment.chat.messages;
 
 import android.view.View;
 
-import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.runtime.android.view.BindedViewHolder;

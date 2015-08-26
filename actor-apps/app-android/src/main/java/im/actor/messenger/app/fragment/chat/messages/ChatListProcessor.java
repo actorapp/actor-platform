@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat;
+package im.actor.messenger.app.fragment.chat.messages;
 
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -22,9 +22,6 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.adapter.PreprocessedData;
-import im.actor.messenger.app.fragment.chat.adapter.PreprocessedList;
-import im.actor.messenger.app.fragment.chat.adapter.PreprocessedTextData;
 import im.actor.messenger.app.view.MentionSpan;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.markdown.AndroidMarkdown;
@@ -39,7 +36,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
 
     private HashMap<Long, PreprocessedTextData> preprocessedTexts = new HashMap<Long, PreprocessedTextData>();
 
-    private BaseMessagesFragment fragment;
+    private MessagesFragment fragment;
     private boolean isGroup;
     private int[] colors;
 
@@ -47,7 +44,7 @@ public class ChatListProcessor implements ListProcessor<Message> {
     private Pattern mobileInvitePattern;
     private Pattern invitePattern;
 
-    public ChatListProcessor(BaseMessagesFragment fragment) {
+    public ChatListProcessor(MessagesFragment fragment) {
         this.fragment = fragment;
 
         isGroup = fragment.getPeer().getPeerType() == PeerType.GROUP;

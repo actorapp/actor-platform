@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.adapter;
+package im.actor.messenger.app.fragment.chat.messages;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,7 +37,6 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.fragment.chat.view.FastThumbLoader;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.TextUtils;
