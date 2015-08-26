@@ -6,136 +6,105 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
-import im.actor.core.entity.GroupMember;
+import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
 
-import static im.actor.messenger.app.core.Core.myUid;
+import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
 
-public class MentionsAdapter extends HolderAdapter<GroupMember> {
+public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
 
-    private GroupMember[] membersToShow;
-    private GroupMember[] allMembers;
-    private HashMap<String, GroupMember> searchMap;
+    private List<MentionFilterResult> membersToShow = new ArrayList<MentionFilterResult>();
     private String query;
     private MentionsUpdatedCallback updatedCallback;
     private int highlightColor;
 
-    public MentionsAdapter(Collection<GroupMember> members, Context context, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
+    int gid;
+    int oldRowsCount = 0;
+
+    public MentionsAdapter(int gid, Context context, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
         super(context);
         highlightColor = context.getResources().getColor(R.color.primary);
-        GroupMember currentUser = null;
-        for (GroupMember m : members) {
-            if (m.getUid() == myUid()) currentUser = m;
-        }
-        if (currentUser != null) {
-            members.remove(currentUser);
-        }
-        this.allMembers = members.toArray(new GroupMember[0]);
-        this.membersToShow = initEmpty ? new GroupMember[]{} : allMembers;
-        searchMap = new HashMap<String, GroupMember>();
+
+        this.gid = gid;
         this.updatedCallback = updatedCallback;
-        String userName;
-        for (GroupMember m : members) {
-            userName = users().get(m.getUid()).getName().get();
-            String[] userNameSplit = userName.split("\\s+");
-            String initials = "";
-            for (int i = 0; i < userNameSplit.length; i++) {
-                initials += userNameSplit[i].charAt(0);
-            }
-            searchMap.put(initials.toLowerCase(), m);
-            searchMap.put(userName.toLowerCase(), m);
 
-            searchMap.put(TextUtils.transliterate(initials.toLowerCase()), m);
-            searchMap.put(TextUtils.transliterate(userName.toLowerCase()), m);
-        }
-    }
-
-
-    public void updateUid(Collection<GroupMember> members) {
-        this.membersToShow = members.toArray(new GroupMember[0]);
-        notifyDataSetChanged();
     }
 
     public void setQuery(String q) {
         query = q;
-        int oldRowsCount = new Integer(membersToShow.length);
-        if (q.isEmpty()) {
-            if (this.membersToShow.equals(allMembers)) {
-                return;
-            }
-            this.membersToShow = allMembers;
-        } else {
-            HashSet<GroupMember> foundMembers = new HashSet<GroupMember>();
-            for (String s : searchMap.keySet()) {
-                if (s.startsWith(q))
-                    foundMembers.add(searchMap.get(s));
-            }
-            this.membersToShow = foundMembers.toArray(new GroupMember[0]);
-        }
-        int newRowsCount = new Integer(membersToShow.length);
+        membersToShow = messenger().findMentions(gid, q);
+        int newRowsCount = new Integer(membersToShow.size());
         updatedCallback.onMentionsUpdated(oldRowsCount, newRowsCount);
+        oldRowsCount = newRowsCount;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return membersToShow.length;
+        return membersToShow.size();
     }
 
     @Override
-    public GroupMember getItem(int position) {
-        return membersToShow[position];
+    public MentionFilterResult getItem(int position) {
+        return membersToShow.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return membersToShow[position].getUid();
+        return membersToShow.get(position).getUid();
     }
 
     @Override
-    protected ViewHolder<GroupMember> createHolder(GroupMember obj) {
+    protected ViewHolder<MentionFilterResult> createHolder(MentionFilterResult obj) {
         return new GroupViewHolder();
     }
 
-    private class GroupViewHolder extends ViewHolder<GroupMember> {
+    private class GroupViewHolder extends ViewHolder<MentionFilterResult> {
 
         private TextView userName;
+        private TextView mentionHint;
         private AvatarView avatarView;
-        GroupMember groupMember;
+        MentionFilterResult data;
 
         @Override
-        public View init(final GroupMember data, ViewGroup viewGroup, Context context) {
+        public View init(final MentionFilterResult data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
             userName = (TextView) res.findViewById(R.id.name);
+            mentionHint = (TextView) res.findViewById(R.id.mentionHint);
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
             avatarView.init(Screen.dp(35), 18);
-            groupMember = data;
+            this.data = data;
 
             return res;
         }
 
         @Override
-        public void bind(GroupMember data, int position, Context context) {
+        public void bind(MentionFilterResult data, int position, Context context) {
             UserVM user = users().get(data.getUid());
-            groupMember = data;
+            this.data = data;
             avatarView.bind(user);
-            CharSequence name = user.getName().get();
-            if (query != null && !query.isEmpty()) {
-                name = SearchHighlight.highlightMentionsQuery((String) name, query, highlightColor);
+            CharSequence name = data.getMentionString();
+            if (name != null && name.length() > 0 && data.getMentionMatches() != null) {
+                name = SearchHighlight.highlightMentionsQuery((String) name, data.getMentionMatches(), highlightColor);
             }
             userName.setText(name);
+
+            CharSequence hint = data.getOriginalString();
+            if (hint != null && hint.length() > 0 && data.getOriginalMatches() != null) {
+                hint = SearchHighlight.highlightMentionsQuery((String) hint, data.getOriginalMatches(), highlightColor);
+            }
+
+            mentionHint.setText(hint);
         }
 
 
