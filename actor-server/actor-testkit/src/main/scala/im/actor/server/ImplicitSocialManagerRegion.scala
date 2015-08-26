@@ -1,7 +1,6 @@
 package im.actor.server
 
 import akka.actor.ActorSystem
-
 import im.actor.server.db.DbExtension
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 

@@ -18,7 +18,7 @@ case object StopOffice
 
 trait ProcessorState
 
-trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActor with ActorLogging {
+trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLogging {
 
   case class UnstashAndWork(evt: Event, state: State)
 

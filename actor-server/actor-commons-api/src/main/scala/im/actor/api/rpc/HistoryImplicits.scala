@@ -1,10 +1,9 @@
-package im.actor.api
+package im.actor.api.rpc
 
 import com.google.protobuf.CodedInputStream
-import org.joda.time.DateTime
-
-import im.actor.api.rpc.messaging.{ HistoryMessage, MessageState, Message }
+import im.actor.api.rpc.messaging.{ HistoryMessage, Message, MessageState }
 import im.actor.server.models
+import org.joda.time.DateTime
 
 trait HistoryImplicits {
 

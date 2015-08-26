@@ -102,4 +102,3 @@ final class SimpleKeyValueRoot(name: String) extends PersistentActor with ActorL
     context.child(key).getOrElse(context.actorOf(ValueActor.props(name), key))
   }
 }
-

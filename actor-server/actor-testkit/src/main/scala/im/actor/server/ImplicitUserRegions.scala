@@ -1,8 +1,7 @@
 package im.actor.server
 
 import akka.actor.ActorSystem
-import im.actor.server.dialog.privat.{ PrivateDialogExtension, PrivateDialogRegion, PrivateDialog }
-
+import im.actor.server.dialog.privat.{ PrivateDialog, PrivateDialogExtension, PrivateDialogRegion }
 import im.actor.server.user.{ UserExtension, UserProcessor, UserProcessorRegion, UserViewRegion }
 import org.scalatest.Suite
 
