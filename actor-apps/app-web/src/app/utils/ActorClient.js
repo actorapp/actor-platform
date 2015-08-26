@@ -165,12 +165,12 @@ export default {
     return window.messenger.createGroup(title, avatar, userIds);
   },
 
-  kickMember(memberId, groupId) {
-    window.messenger.kickMember(memberId, groupId);
+  kickMember(gid, uid) {
+    return window.messenger.kickMember(gid, uid);
   },
 
-  inviteMember(groupId, userId) {
-    return window.messenger.inviteMember(groupId, userId);
+  inviteMember(gid, uid) {
+    return window.messenger.inviteMember(gid, uid);
   },
 
   getIntegrationToken(gid) {
