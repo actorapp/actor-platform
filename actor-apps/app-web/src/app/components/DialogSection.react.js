@@ -13,6 +13,7 @@ import ToolbarSection from 'components/ToolbarSection.react';
 import ActivitySection from 'components/ActivitySection.react';
 import ConnectionState from 'components/common/ConnectionState.react';
 
+import ActivityStore from 'stores/ActivityStore';
 import DialogStore from 'stores/DialogStore';
 import MessageStore from 'stores/MessageStore';
 import GroupStore from 'stores/GroupStore';
@@ -53,11 +54,13 @@ class DialogSection extends React.Component {
 
     this.state = getStateFromStores();
 
+    ActivityStore.addChangeListener(this.fixScrollTimeout.bind(this));
     DialogStore.addSelectListener(this.onSelectedDialogChange);
     MessageStore.addChangeListener(this.onMessagesChange);
   }
 
   componentWillUnmount() {
+    ActivityStore.removeChangeListener(this.fixScrollTimeout.bind(this));
     DialogStore.removeSelectListener(this.onSelectedDialogChange);
     MessageStore.removeChangeListener(this.onMessagesChange);
   }
@@ -141,9 +144,15 @@ class DialogSection extends React.Component {
     );
   }
 
+  fixScrollTimeout = () => {
+    setTimeout(this.fixScroll, 50);
+  };
+
   fixScroll = () => {
-    let node = React.findDOMNode(this.refs.MessagesSection);
-    node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
+    const node = React.findDOMNode(this.refs.MessagesSection);
+    if (node) {
+      node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
+    }
   };
 
   onSelectedDialogChange = () => {
@@ -165,7 +174,7 @@ class DialogSection extends React.Component {
   loadMessagesByScroll = _.debounce(() => {
     let node = React.findDOMNode(this.refs.MessagesSection);
     let scrollTop = node.scrollTop;
-    lastScrolledFromBottom = node.scrollHeight - scrollTop;
+    lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
 
     if (node.scrollTop < LoadMessagesScrollTop) {
       DialogActionCreators.onChatEnd(this.state.peer);
