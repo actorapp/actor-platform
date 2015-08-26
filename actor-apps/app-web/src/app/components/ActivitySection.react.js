@@ -2,8 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 import { ActivityTypes } from 'constants/ActorAppConstants';
 
-//import ActivityActionCreators from 'actions/ActivityActionCreators';
-
 import ActivityStore from 'stores/ActivityStore';
 
 import UserProfile from 'components/activity/UserProfile.react';
@@ -30,11 +28,11 @@ class ActivitySection extends React.Component {
   }
 
   render() {
-    const activity = this.state.activity;
+    const { activity, isOpen } = this.state;
 
     if (activity !== null) {
       const activityClassName = classNames('activity', {
-        'activity--shown': this.state.isOpen
+        'activity--shown': isOpen
       });
       let activityBody;
 
