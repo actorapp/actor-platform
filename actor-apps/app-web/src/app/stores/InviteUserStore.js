@@ -42,18 +42,15 @@ class InviteUserStore extends EventEmitter {
   }
 
   getInviteUserState(gid, uid) {
-    if (typeof _inviteUserState[gid] === 'undefined') {
-      _inviteUserState[gid] = [];
-    }
-    if (typeof _inviteUserState[gid][uid] === 'undefined') {
-      _inviteUserState[gid][uid] = AsyncActionStates.PENDING;
+    if (typeof _inviteUserState[`${gid}_${uid}`] === 'undefined') {
+      _inviteUserState[`${gid}_${uid}`] = AsyncActionStates.PENDING;
     }
 
-    return _inviteUserState[gid][uid];
+    return _inviteUserState[`${gid}_${uid}`];
   }
 
   resetInviteUserState(gid, uid) {
-    _inviteUserState[gid][uid] = AsyncActionStates.PENDING;
+    delete _inviteUserState[`${gid}_${uid}`];
   }
 }
 
@@ -72,7 +69,6 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       break;
     case ActionTypes.INVITE_USER_MODAL_HIDE:
       _isInviteModalOpen = false;
-      //_group = null;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
@@ -90,15 +86,15 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER:
-      _inviteUserState[action.gid][action.uid] = AsyncActionStates.PROCESSING;
+      _inviteUserState[`${action.gid}_${action.uid}`] = AsyncActionStates.PROCESSING;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_SUCCESS:
-      _inviteUserState[action.gid][action.uid] = AsyncActionStates.SUCCESS;
+      _inviteUserState[`${action.gid}_${action.uid}`] = AsyncActionStates.SUCCESS;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_ERROR:
-      _inviteUserState[action.gid][action.uid] = AsyncActionStates.FAILURE;
+      _inviteUserState[`${action.gid}_${action.uid}`] = AsyncActionStates.FAILURE;
       InviteUserStoreInstance.emitChange();
       break;
     default:
