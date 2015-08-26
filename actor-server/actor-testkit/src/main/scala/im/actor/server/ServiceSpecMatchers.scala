@@ -1,11 +1,10 @@
 package im.actor.server
 
-import scalaz.{ -\/, \/ }
-
+import im.actor.api.rpc.RpcError
 import org.scalatest.Matchers
 import org.scalatest.matchers.Matcher
 
-import im.actor.api.rpc.RpcError
+import scalaz.{ \/, -\/ }
 
 trait ServiceSpecMatchers extends Matchers {
   def matchNotAuthorized[T]: Matcher[\/[RpcError, T]] = matchPattern {

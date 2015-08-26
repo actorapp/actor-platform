@@ -6,12 +6,10 @@ import scala.concurrent.{ ExecutionContext, Future }
 import akka.actor.ActorSystem
 import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
-
-import im.actor.api.PeersImplicits
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc.integrtions.{ IntegrtionsService, ResponseIntegrationToken }
 import im.actor.api.rpc.peers.OutPeer
-import im.actor.api.rpc.{ ClientData, _ }
+import im.actor.api.rpc._
 import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
 import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin }

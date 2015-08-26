@@ -1,8 +1,7 @@
 package im.actor.server
 
-import akka.actor.{ ActorSystem, ActorRef }
-
-import im.actor.server.session.{ SessionRegion, Session }
+import akka.actor.{ ActorRef, ActorSystem }
+import im.actor.server.session.{ Session, SessionRegion }
 
 //todo: maybe extend ActorSerializerPrepare
 trait ImplicitSessionRegionProxy {
