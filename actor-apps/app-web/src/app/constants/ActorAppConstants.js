@@ -67,6 +67,8 @@ export const ActionTypes = keymirror({
   APP_UPDATE_CONFIRM: null,
 
   GET_INTEGRATION_TOKEN: null,
+  GET_INTEGRATION_TOKEN_SUCCESS: null,
+  GET_INTEGRATION_TOKEN_ERROR: null,
 
   FAVICON_SET_DEFAULT: null,
   FAVICON_SET_NOTIFICATION: null,
@@ -89,7 +91,11 @@ export const ActionTypes = keymirror({
   MY_PROFILE_MODAL_SHOW: null,
   MY_PROFILE_MODAL_HIDE: null,
   MY_PROFILE_SAVE_NAME: null,
-  MY_PROFILE_SAVE_NICKNAME: null
+  MY_PROFILE_SAVE_NICKNAME: null,
+
+  KICK_USER: null,
+  KICK_USER_SUCCESS: null,
+  KICK_USER_ERROR: null
 });
 
 export const PeerTypes = {
