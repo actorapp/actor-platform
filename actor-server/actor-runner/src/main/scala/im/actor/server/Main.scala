@@ -87,7 +87,6 @@ object Main extends App {
   UserMigrator.migrate()
   GroupMigrator.migrate()
   LocalNamesMigrator.migrate()
-  IntegrationTokenMigrator.migrate()
 
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
@@ -99,6 +98,8 @@ object Main extends App {
   implicit val groupViewRegion = GroupExtension(system).viewRegion
   implicit val groupDialogRegion = GroupDialogExtension(system).region //no need to be implicit
   implicit val privateDialogRegion = PrivateDialogExtension(system).region
+
+  IntegrationTokenMigrator.migrate()
 
   val mediator = DistributedPubSubExtension(system).mediator
 
