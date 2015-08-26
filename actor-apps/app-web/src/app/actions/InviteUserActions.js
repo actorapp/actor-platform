@@ -1,10 +1,16 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 
 export default {
   show: (group) => {
-    dispatch(ActionTypes.INVITE_USER_MODAL_SHOW, {group: group});
+    dispatch(ActionTypes.INVITE_USER_MODAL_SHOW, {
+      group
+    });
   },
 
   hide: () => {

@@ -1,8 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from 'constants/ActorAppConstants';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
-import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
+//import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
@@ -142,10 +146,10 @@ var bindDialogInfo = function(peer) {
 var unbindCurrentDialogInfo = function() {
   if (_currentPeer != null) {
     switch (_currentPeer.type) {
-      case 'user':
+      case PeerTypes.USER:
         ActorClient.unbindUser(_currentPeer.id, onCurrentDialogInfoChange);
         break;
-      case 'group':
+      case PeerTypes.GROUP:
         ActorClient.unbindGroup(_currentPeer.id, onCurrentDialogInfoChange);
         break;
       default:
@@ -189,7 +193,7 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       // TODO: need method for membership check
       if (action.peer.type === PeerTypes.GROUP) {
         const group = ActorClient.getGroup(action.peer.id);
-        GroupProfileActionCreators.getIntegrationToken(action.peer.id);
+        //GroupProfileActionCreators.getIntegrationToken(action.peer.id);
         setTimeout(function() {
           if (DialogStore.isGroupMember(group)) {
             bindDialogTyping(action.peer);
