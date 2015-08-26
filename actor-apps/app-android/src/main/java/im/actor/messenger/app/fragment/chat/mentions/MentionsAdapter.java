@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat;
+package im.actor.messenger.app.fragment.chat.mentions;
 
 import android.app.Activity;
 import android.content.Context;

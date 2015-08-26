@@ -1,10 +1,12 @@
-package im.actor.messenger.app.fragment.chat;
+package im.actor.messenger.app.fragment.chat.messages;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +35,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;
-import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
+import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
@@ -41,7 +43,12 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
 
-public abstract class BaseMessagesFragment extends DisplayListFragment<Message, MessageHolder> {
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+public class MessagesFragment extends DisplayListFragment<Message, MessageHolder> {
+
+    public static MessagesFragment create(Peer peer) {
+        return new MessagesFragment(peer);
+    }
 
     private Peer peer;
 
@@ -51,14 +58,14 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     private ActionMode actionMode;
     private int onPauseSize = 0;
 
-    protected BaseMessagesFragment(Peer peer) {
+    public MessagesFragment(Peer peer) {
         this.peer = peer;
         Bundle bundle = new Bundle();
         bundle.putByteArray("EXTRA_PEER", peer.toByteArray());
         setArguments(bundle);
     }
 
-    protected BaseMessagesFragment() {
+    public MessagesFragment() {
 
     }
 
@@ -312,7 +319,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
 
                 @Override
                 public void onDestroyActionMode(ActionMode actionMode) {
-                    BaseMessagesFragment.this.actionMode = null;
+                    MessagesFragment.this.actionMode = null;
                     messagesAdapter.clearSelection();
                 }
             });

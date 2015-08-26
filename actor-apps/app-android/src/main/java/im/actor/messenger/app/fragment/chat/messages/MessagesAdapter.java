@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat;
+package im.actor.messenger.app.fragment.chat.messages;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,26 +14,19 @@ import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
-import im.actor.messenger.app.fragment.chat.adapter.PreprocessedList;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.chat.adapter.DocHolder;
-import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
-import im.actor.messenger.app.fragment.chat.adapter.PhotoHolder;
-import im.actor.messenger.app.fragment.chat.adapter.ServiceHolder;
-import im.actor.messenger.app.fragment.chat.adapter.TextHolder;
-import im.actor.messenger.app.fragment.chat.adapter.UnsupportedHolder;
 import im.actor.runtime.android.view.BindedListAdapter;
 
 public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
 
-    private BaseMessagesFragment messagesFragment;
+    private MessagesFragment messagesFragment;
     private Context context;
     private long firstUnread = -1;
     private HashMap<Long, Message> selected = new HashMap<Long, Message>();
 
     public MessagesAdapter(BindedDisplayList<Message> displayList,
-                           BaseMessagesFragment messagesFragment, Context context) {
+                           MessagesFragment messagesFragment, Context context) {
         super(displayList);
 
         this.messagesFragment = messagesFragment;
@@ -66,7 +59,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
         notifyDataSetChanged();
     }
 
-    public BaseMessagesFragment getMessagesFragment() {
+    public MessagesFragment getMessagesFragment() {
         return messagesFragment;
     }
 

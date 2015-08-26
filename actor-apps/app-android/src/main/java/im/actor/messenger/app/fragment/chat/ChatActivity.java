@@ -41,6 +41,8 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.fragment.chat.mentions.MentionsAdapter;
+import im.actor.messenger.app.fragment.chat.messages.MessagesFragment;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
@@ -460,6 +462,7 @@ public class ChatActivity extends ActorEditTextActivity {
         messenger().trackTextSend(peer);
     }
 
+    @Override
     protected void onAttachButtonClicked() {
         Context wrapper = new ContextThemeWrapper(ChatActivity.this, R.style.AttachPopupTheme);
         PopupMenu popup = new PopupMenu(wrapper, findViewById(R.id.attachAnchor));
