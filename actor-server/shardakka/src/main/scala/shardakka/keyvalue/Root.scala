@@ -60,7 +60,7 @@ abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: Class
         value ! cmd
 
         def receive = {
-          case ack: DeleteCommand =>
+          case ack: DeleteCommandAck =>
             context.parent ! DeleteAck(cmd.key, ack, replyTo)
             context stop self
           case Failure(e) =>
