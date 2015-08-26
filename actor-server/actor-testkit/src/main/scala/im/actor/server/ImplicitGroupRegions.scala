@@ -1,9 +1,8 @@
 package im.actor.server
 
 import akka.actor.ActorSystem
-
+import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension, GroupDialogRegion }
 import im.actor.server.group.{ GroupExtension, GroupProcessor, GroupProcessorRegion, GroupViewRegion }
-import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialog, GroupDialogRegion }
 import org.scalatest.Suite
 
 trait ImplicitGroupRegions extends ImplicitUserRegions with ImplicitFileStorageAdapter with ActorSerializerPrepare {

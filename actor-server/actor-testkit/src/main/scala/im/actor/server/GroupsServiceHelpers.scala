@@ -1,19 +1,17 @@
-package im.actor.server.api.rpc.service
-
-import scala.concurrent.{ ExecutionContext, Await }
-import scala.concurrent.duration._
-import scala.util.Random
+package im.actor.server
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.groups.{ GroupsService, ResponseCreateGroup }
 import im.actor.api.rpc.peers.UserOutPeer
-import im.actor.server.group.{ GroupProcessorRegion, GroupOffice }
-import im.actor.server.persist
+import im.actor.server.group.{ GroupOffice, GroupProcessorRegion }
 import im.actor.server.util.ACLUtils
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, ExecutionContext }
+import scala.util.Random
 
 trait GroupsServiceHelpers {
   protected def createGroup(title: String, userIds: Set[Int])(

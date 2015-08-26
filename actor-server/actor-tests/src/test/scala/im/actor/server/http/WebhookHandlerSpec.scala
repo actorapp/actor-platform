@@ -7,7 +7,6 @@ import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server._
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
-import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.group.GroupOffice
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }

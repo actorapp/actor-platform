@@ -13,7 +13,7 @@ import im.actor.server._
 import im.actor.server.api.http.json.{ AvatarUrls, JsonImplicits }
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
+import im.actor.server.api.rpc.service.messaging
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.util.{ ACLUtils, ImageUtils }
 import org.scalatest.Inside._
