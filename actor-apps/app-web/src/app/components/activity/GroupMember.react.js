@@ -34,8 +34,6 @@ export default class GroupMember extends React.Component {
     super(props);
 
     this.state = getStateFromStore(props.peerInfo.peer.id);
-
-    KickUserStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
@@ -48,7 +46,6 @@ export default class GroupMember extends React.Component {
   render() {
     const { peerInfo, canKick, gid } = this.props;
     const { kickUserState } = this.state;
-    //console.debug('render kickUserState', peerInfo.peer.id, kickUserState);
 
     let controls;
     if (canKick) {
@@ -99,7 +96,7 @@ export default class GroupMember extends React.Component {
   onClick = (id) => DialogActionCreators.selectDialogPeerUser(id);
 
   onKick = (gid, uid) => {
+    KickUserStore.addChangeListener(this.onChange);
     KickUserActionCreators.kickMember(gid, uid);
-    //this.setState({kickUserState: AsyncActionStates.PROCESSING}); // Used for immediately set processing state
   };
 }

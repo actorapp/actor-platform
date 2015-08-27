@@ -7,7 +7,6 @@ import { register } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes, AsyncActionStates } from 'constants/ActorAppConstants';
 
 import ActorClient from 'utils/ActorClient';
-import { hasMember } from 'utils/GroupUtils';
 
 const CHANGE_EVENT = 'change';
 
