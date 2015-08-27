@@ -311,7 +311,7 @@ public class NotificationsActor extends ModuleActor {
     }
 
     private boolean isNotificationsEnabled(Peer peer, boolean hasMention) {
-        if (context().getSettingsModule().isNotificationsEnabled()) {
+        if (!context().getSettingsModule().isNotificationsEnabled()) {
             return false;
         }
 
