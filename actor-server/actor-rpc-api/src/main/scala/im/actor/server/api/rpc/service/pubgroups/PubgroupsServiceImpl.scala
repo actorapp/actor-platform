@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.pubgroups
 
+import im.actor.server.group.GroupUtils
+
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
@@ -8,7 +10,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc._
 import im.actor.api.rpc.pubgroups.{ PubgroupsService, ResponseGetPublicGroups }
 import im.actor.server.persist
-import im.actor.server.util.GroupUtils.getPubgroupStructUnsafe
+import GroupUtils.getPubgroupStructUnsafe
 
 class PubgroupsServiceImpl(
   implicit

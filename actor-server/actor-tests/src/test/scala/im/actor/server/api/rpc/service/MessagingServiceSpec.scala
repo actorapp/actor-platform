@@ -11,11 +11,11 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
 import im.actor.server._
+import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.util.ACLUtils
 
 import scala.concurrent.Future
 import scala.util.Random

@@ -1,19 +1,16 @@
-package im.actor.server.util
+package im.actor.server.file
+
+import akka.actor.ActorSystem
+import com.sksamuel.scrimage.{ AsyncImage, Format, Position }
+import im.actor.api.rpc.files.{ AvatarImage ⇒ ApiAvatarImage, FileLocation ⇒ ApiFileLocation, Avatar ⇒ ApiAvatar }
+import im.actor.server.acl.ACLUtils
+import im.actor.server.{ models, persist }
+import slick.dbio.DBIO
+import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
-
-import akka.actor.ActorSystem
-import com.amazonaws.services.s3.transfer.TransferManager
-import com.sksamuel.scrimage.{ AsyncImage, Format, Position }
-import slick.dbio.DBIO
-import slick.driver.PostgresDriver.api._
-
-import im.actor.api.rpc.files
-import im.actor.api.rpc.files.{ Avatar, AvatarImage, FileLocation }
-import im.actor.server.models.AvatarData
-import im.actor.server.{ models, persist }
 
 object ImageUtils {
   val AvatarSizeLimit = 1024 * 1024 // TODO: configurable
@@ -24,19 +21,19 @@ object ImageUtils {
     (ad.smallOpt, ad.largeOpt, ad.fullOpt) match {
       case (None, None, None) ⇒ None
       case (smallOpt, largeOpt, fullOpt) ⇒
-        Some(files.Avatar(
+        Some(ApiAvatar(
           avatarImage(smallOpt, SmallSize, SmallSize),
           avatarImage(largeOpt, LargeSize, LargeSize),
           avatarImage(fullOpt)
         ))
     }
 
-  def avatarImage(idhashsize: Option[(Long, Long, Int)], width: Int, height: Int): Option[files.AvatarImage] =
+  def avatarImage(idhashsize: Option[(Long, Long, Int)], width: Int, height: Int): Option[ApiAvatarImage] =
     idhashsize map {
-      case (id, hash, size) ⇒ files.AvatarImage(files.FileLocation(id, hash), width, height, size)
+      case (id, hash, size) ⇒ ApiAvatarImage(ApiFileLocation(id, hash), width, height, size)
     }
 
-  def avatarImage(idhashsizewh: Option[(Long, Long, Int, Int, Int)]): Option[files.AvatarImage] =
+  def avatarImage(idhashsizewh: Option[(Long, Long, Int, Int, Int)]): Option[ApiAvatarImage] =
     idhashsizewh flatMap {
       case (id, hash, size, w, h) ⇒ avatarImage(Some((id, hash, size)), w, h)
     }
@@ -95,28 +92,28 @@ object ImageUtils {
             } yield {
               // TODO: #perf calculate file sizes efficiently
 
-              val smallImage = AvatarImage(
+              val smallImage = ApiAvatarImage(
                 smallFileLocation,
                 smallAimg.width,
                 smallAimg.height,
                 smallFile.length().toInt
               )
 
-              val largeImage = AvatarImage(
+              val largeImage = ApiAvatarImage(
                 largeFileLocation,
                 largeAimg.width,
                 largeAimg.height,
                 largeFile.length().toInt
               )
 
-              val fullImage = AvatarImage(
-                FileLocation(fullFileId, ACLUtils.fileAccessHash(fullFileId, fullFileModel.accessSalt)),
+              val fullImage = ApiAvatarImage(
+                ApiFileLocation(fullFileId, ACLUtils.fileAccessHash(fullFileId, fullFileModel.accessSalt)),
                 fullAimg.width,
                 fullAimg.height,
                 fullFile.length().toInt
               )
 
-              Avatar(Some(smallImage), Some(largeImage), Some(fullImage))
+              ApiAvatar(Some(smallImage), Some(largeImage), Some(fullImage))
             }
 
             action.asTry map {
@@ -130,23 +127,23 @@ object ImageUtils {
     }
   }
 
-  def getAvatar(avatarModel: models.AvatarData): Avatar = {
+  def getAvatar(avatarModel: models.AvatarData): ApiAvatar = {
     val smallImageOpt = avatarModel.smallOpt map {
-      case (fileId, fileHash, fileSize) ⇒ AvatarImage(FileLocation(fileId, fileHash), SmallSize, SmallSize, fileSize)
+      case (fileId, fileHash, fileSize) ⇒ ApiAvatarImage(ApiFileLocation(fileId, fileHash), SmallSize, SmallSize, fileSize)
     }
 
     val largeImageOpt = avatarModel.largeOpt map {
-      case (fileId, fileHash, fileSize) ⇒ AvatarImage(FileLocation(fileId, fileHash), LargeSize, LargeSize, fileSize)
+      case (fileId, fileHash, fileSize) ⇒ ApiAvatarImage(ApiFileLocation(fileId, fileHash), LargeSize, LargeSize, fileSize)
     }
 
     val fullImageOpt = avatarModel.fullOpt map {
-      case (fileId, fileHash, fileSize, w, h) ⇒ AvatarImage(FileLocation(fileId, fileHash), w, h, fileSize)
+      case (fileId, fileHash, fileSize, w, h) ⇒ ApiAvatarImage(ApiFileLocation(fileId, fileHash), w, h, fileSize)
     }
 
-    Avatar(smallImageOpt, largeImageOpt, fullImageOpt)
+    ApiAvatar(smallImageOpt, largeImageOpt, fullImageOpt)
   }
 
-  def getAvatarData(entityType: models.AvatarData.TypeVal, entityId: Int, avatar: Avatar): AvatarData = {
+  def getAvatarData(entityType: models.AvatarData.TypeVal, entityId: Int, avatar: ApiAvatar): models.AvatarData = {
     models.AvatarData(
       entityType = entityType,
       entityId = entityId.toLong,

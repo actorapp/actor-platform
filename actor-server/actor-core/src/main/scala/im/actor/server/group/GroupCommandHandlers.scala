@@ -11,18 +11,20 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ServiceMessage
 import im.actor.api.rpc.users.Sex
 import im.actor.server.api.ApiConversions._
+import im.actor.server.acl.ACLUtils
+import im.actor.server.history.HistoryUtils
+import im.actor.server.{ persist ⇒ p, models }
 import im.actor.server.event.TSEvent
-import im.actor.server.file.Avatar
+import im.actor.server.file.{ ImageUtils, Avatar }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
 import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
-import im.actor.server.util.ACLUtils._
+import ACLUtils._
 import im.actor.server.util.IdUtils._
-import im.actor.server.util.ImageUtils._
-import im.actor.server.util.{ ACLUtils, GroupServiceMessages, HistoryUtils }
+import ImageUtils._
 import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._

@@ -15,16 +15,15 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
+import im.actor.server.acl.ACLUtils
 import im.actor.server.api.ApiConversions._
 import im.actor.server.db.DbExtension
-import im.actor.server.file.FileErrors
-import im.actor.server.group._
+import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, ImageUtils, FileErrors }
+import im.actor.server.group.{ GroupCommands, GroupErrors, GroupExtension, GroupOffice, GroupProcessorRegion, GroupViewRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
-import im.actor.server.sequence.SeqUpdatesExtension
-import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
-import im.actor.server.util.ACLUtils.accessToken
-import im.actor.server.util.UserUtils._
+import im.actor.server.sequence.{ SeqState, SeqStateDate, SeqUpdatesExtension }
+import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
+import ACLUtils.accessToken
 import im.actor.server.util._
 import im.actor.server.{ models, persist }
 

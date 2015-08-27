@@ -13,14 +13,16 @@ import akka.util.ByteString
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.ClientData
 import im.actor.server._
+import im.actor.server.acl.ACLUtils
+import im.actor.server.api.http.json.AvatarUrls
 import im.actor.server.api.http.json._
 import im.actor.server.api.http.webhooks.OutgoingHooksErrors
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
+import im.actor.server.file.ImageUtils
 import im.actor.server.group.GroupOffice
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.util.{ ACLUtils, ImageUtils }
 import org.scalatest.Inside._
 import play.api.libs.json._
 import JsonFormatters._
