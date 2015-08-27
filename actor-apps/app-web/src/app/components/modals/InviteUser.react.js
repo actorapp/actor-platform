@@ -112,7 +112,7 @@ class InviteUser extends React.Component {
             );
           } else {
             contactList.push(
-              <ContactItem contact={contact} key={i} member/>
+              <ContactItem contact={contact} key={i} isMember/>
             );
           }
         }
