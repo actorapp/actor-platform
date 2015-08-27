@@ -57,7 +57,6 @@ class GroupProfile extends React.Component {
       isMoreDropdownOpen: false,
       isCopyButtonEnabled: false
     }, getStateFromStores(props.group.id));
-    GroupProfileActionCreators.getIntegrationToken(props.group.id);
 
     ThemeManager.setTheme(ActorTheme);
 
@@ -71,7 +70,6 @@ class GroupProfile extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
     this.setState(getStateFromStores(newProps.group.id));
   }
 
