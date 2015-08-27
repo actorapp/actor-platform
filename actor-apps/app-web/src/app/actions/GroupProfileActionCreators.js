@@ -14,15 +14,6 @@ const GroupProfileActionCreators = {
       success: ActionTypes.GET_INTEGRATION_TOKEN_SUCCESS,
       failure: ActionTypes.GET_INTEGRATION_TOKEN_ERROR
     }, { gid });
-  },
-
-
-  kickMember(gid, uid) {
-    dispatchAsync(ActorClient.kickMember(gid, uid), {
-      request: ActionTypes.KICK_USER,
-      success: ActionTypes.KICK_USER_SUCCESS,
-      failure: ActionTypes.KICK_USER_ERROR
-    }, { gid, uid });
   }
 };
 
