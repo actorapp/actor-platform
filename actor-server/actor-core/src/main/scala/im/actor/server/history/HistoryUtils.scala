@@ -1,13 +1,13 @@
-package im.actor.server.util
+package im.actor.server.history
 
-import scala.concurrent.ExecutionContext
-import scala.util.control.NoStackTrace
-
+import im.actor.api.rpc.AuthorizedClientData
+import im.actor.server.group.GroupUtils
+import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 
-import im.actor.api.rpc.AuthorizedClientData
-import im.actor.server.{ models, persist }
+import scala.concurrent.ExecutionContext
+import scala.util.control.NoStackTrace
 
 object HistoryUtils {
 

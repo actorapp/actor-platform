@@ -1,14 +1,19 @@
-package im.actor.server.util
+package im.actor.server.acl
 
 import java.nio.ByteBuffer
 import java.security.MessageDigest
 
-import scala.concurrent.forkjoin.ThreadLocalRandom
-
 import akka.actor.ActorSystem
+import akka.util.Timeout
+import im.actor.api.rpc.peers.{ PeerType, OutPeer }
+import im.actor.server.group.{ GroupExtension, GroupViewRegion, GroupOffice }
+import im.actor.server.models
+import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
 import org.apache.commons.codec.digest.DigestUtils
 
-import im.actor.server.models
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.concurrent.duration._
 
 object ACLUtils {
   def secretKey()(implicit s: ActorSystem) =
@@ -48,4 +53,18 @@ object ACLUtils {
   }
 
   def accessToken(rng: ThreadLocalRandom): String = DigestUtils.sha256Hex(rng.nextLong().toString)
+
+  def checkOutPeer(outPeer: OutPeer, clientAuthId: Long)(implicit s: ActorSystem): Future[Boolean] = {
+    implicit val ec: ExecutionContext = s.dispatcher
+    implicit val timeout: Timeout = Timeout(20.seconds)
+
+    outPeer.`type` match {
+      case PeerType.Group ⇒
+        implicit val groupViewRegion: GroupViewRegion = GroupExtension(s).viewRegion
+        GroupOffice.checkAccessHash(outPeer.id, outPeer.accessHash)
+      case PeerType.Private ⇒
+        implicit val userViewRegion: UserViewRegion = UserExtension(s).viewRegion
+        UserOffice.checkAccessHash(outPeer.id, clientAuthId, outPeer.accessHash)
+    }
+  }
 }

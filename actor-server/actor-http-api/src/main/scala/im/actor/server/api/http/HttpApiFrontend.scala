@@ -1,6 +1,7 @@
 package im.actor.server.api.http
 
 import im.actor.server.db.DbExtension
+import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension }
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupProcessorRegion }
 import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialogRegion }
 
@@ -22,7 +23,6 @@ import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.tls.TlsContext
-import im.actor.server.util.{ S3StorageExtension, FileStorageAdapter }
 
 object HttpApiFrontend {
   private val corsHeaders = List(

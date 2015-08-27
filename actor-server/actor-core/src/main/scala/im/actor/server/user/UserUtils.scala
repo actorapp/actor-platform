@@ -1,4 +1,4 @@
-package im.actor.server.util
+package im.actor.server.user
 
 import im.actor.api.rpc.users._
 import im.actor.server.models

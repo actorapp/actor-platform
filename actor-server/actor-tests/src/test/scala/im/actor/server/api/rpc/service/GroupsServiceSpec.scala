@@ -7,9 +7,10 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
 import im.actor.server._
+import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
+import im.actor.server.group.GroupServiceMessages
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.util.{ ACLUtils, GroupServiceMessages }
 import org.scalatest.Inside._
 import slick.dbio.DBIO
 

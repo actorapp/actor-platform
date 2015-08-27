@@ -9,9 +9,9 @@ import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.dialog.privat.PrivateDialogOperations
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
-import im.actor.server.util.{ GroupUtils, HistoryUtils, UserUtils }
+import im.actor.server.group.{ GroupUtils, GroupOffice }
+import im.actor.server.history.HistoryUtils
+import im.actor.server.user.{ UserUtils, UserOffice }
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio

@@ -1,15 +1,15 @@
-package im.actor.server.util
+package im.actor.server.file
 
 import java.io.File
 import java.nio.file.{ Files, Path }
-
-import scala.concurrent.{ ExecutionContext, Future, blocking }
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.stream.io.SynchronousFileSink
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
+
+import scala.concurrent.{ ExecutionContext, Future, blocking }
 
 object FileUtils {
 

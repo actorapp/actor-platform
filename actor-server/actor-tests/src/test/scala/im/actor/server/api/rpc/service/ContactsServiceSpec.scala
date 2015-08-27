@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server.user.UserOffice
+import im.actor.server.acl.ACLUtils
+import im.actor.server.user.{ UserUtils, UserOffice }
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -13,7 +14,6 @@ import im.actor.api.rpc.contacts.PhoneToImport
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.util.{ ACLUtils, UserUtils }
 import im.actor.server._
 
 class ContactsServiceSpec

@@ -1,5 +1,7 @@
 package im.actor.server.dashboard.controllers.utils.json
 
+import im.actor.server.acl.ACLUtils
+
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import play.api.data.validation.ValidationError
@@ -10,7 +12,7 @@ import play.api.libs.json._
 import im.actor.server.dashboard.controllers.utils.json.Common._
 import im.actor.server.models
 import im.actor.server.util.IdUtils._
-import im.actor.server.util.{ ACLUtils, PhoneNumberUtils }
+import im.actor.server.util.PhoneNumberUtils
 
 object UsersJsonImplicits {
 
