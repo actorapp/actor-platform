@@ -14,10 +14,9 @@ const {addons: { PureRenderMixin }} = addons;
 
 const getStateFromStore = (props) => {
   const { contact } = props;
-  const group = InviteUserStore.getGroup();
 
   return {
-    inviteUserState: InviteUserStore.getInviteUserState(group.id, contact.uid)
+    inviteUserState: InviteUserStore.getInviteUserState(contact.uid)
   }
 };
 
@@ -26,7 +25,7 @@ class ContactItem extends React.Component {
   static propTypes = {
     contact: React.PropTypes.object,
     onSelect: React.PropTypes.func,
-    member: React.PropTypes.bool
+    isMember: React.PropTypes.bool
   };
 
   constructor(props) {
@@ -37,16 +36,14 @@ class ContactItem extends React.Component {
 
   componentWillUnmount() {
     const { contact } = this.props;
-    const group = InviteUserStore.getGroup();
-    InviteUserStore.resetInviteUserState(group.id, contact.uid);
+    InviteUserStore.resetInviteUserState(contact.uid);
   }
 
   onSelect = () => {
     const { contact } = this.props;
 
-    this.props.onSelect(contact);
-
     InviteUserStore.addChangeListener(this.onChange);
+    this.props.onSelect(contact);
   };
 
   onChange = () => {
@@ -61,14 +58,14 @@ class ContactItem extends React.Component {
   };
 
   render() {
-    const { contact, member } = this.props;
+    const { contact, isMember } = this.props;
     const { inviteUserState } = this.state;
 
     const contactClassName = classnames('contacts__list__item row', {
-      'contacts__list__item--member': inviteUserState === AsyncActionStates.SUCCESS || member
+      'contacts__list__item--member': isMember
     });
 
-    const controls = member
+    const controls = isMember
       ? <i className="material-icons">check</i>
       : <Stateful.Root currentState={inviteUserState}>
           <Stateful.Pending>
