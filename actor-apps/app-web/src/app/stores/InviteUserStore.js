@@ -47,10 +47,7 @@ class InviteUserStore extends EventEmitter {
   }
 
   getInviteUserState(uid) {
-    return hasMember(_group.id, uid)
-      ? (_inviteUserState[uid] || AsyncActionStates.PENDING)
-      : AsyncActionStates.PENDING;
-    //return (_inviteUserState[uid] || AsyncActionStates.PENDING)
+    return (_inviteUserState[uid] || AsyncActionStates.PENDING);
   }
 
   resetInviteUserState(uid) {
@@ -95,15 +92,15 @@ InviteUserStoreInstance.dispatchToken = register(action => {
 
     // Invite user
     case ActionTypes.INVITE_USER:
-      _inviteUserState[action.uid]  = AsyncActionStates.PROCESSING;
+      _inviteUserState[action.uid] = AsyncActionStates.PROCESSING;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_SUCCESS:
-      _inviteUserState[action.uid]  = AsyncActionStates.SUCCESS;
+      _inviteUserState[action.uid] = AsyncActionStates.SUCCESS;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_ERROR:
-      _inviteUserState[action.uid]  = AsyncActionStates.FAILURE;
+      _inviteUserState[action.uid] = AsyncActionStates.FAILURE;
       InviteUserStoreInstance.emitChange();
       break;
   }

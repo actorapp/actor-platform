@@ -28,10 +28,7 @@ class KickUserStore extends EventEmitter {
   }
 
   getKickUserState(uid) {
-    return hasMember(_group.id, uid)
-      ? (_kickUserState[uid] || AsyncActionStates.PENDING)
-      : AsyncActionStates.PENDING;
-    //return (_kickUserState[uid] || AsyncActionStates.PENDING)
+    return (_kickUserState[uid] || AsyncActionStates.PENDING);
   }
 
   resetKickUserState(uid) {
