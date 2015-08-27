@@ -1,8 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import { EventEmitter } from 'events';
 import { register } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from 'constants/ActorAppConstants';
 
 import ActorClient from 'utils/ActorClient';
+import { hasMember } from 'utils/GroupUtils';
 
 const CHANGE_EVENT = 'change';
 
@@ -41,16 +46,15 @@ class InviteUserStore extends EventEmitter {
     return _inviteUrl;
   }
 
-  getInviteUserState(gid, uid) {
-    if (typeof _inviteUserState[`${gid}_${uid}`] === 'undefined') {
-      _inviteUserState[`${gid}_${uid}`] = AsyncActionStates.PENDING;
-    }
-
-    return _inviteUserState[`${gid}_${uid}`];
+  getInviteUserState(uid) {
+    return hasMember(_group.id, uid)
+      ? (_inviteUserState[uid] || AsyncActionStates.PENDING)
+      : AsyncActionStates.PENDING;
+    //return (_inviteUserState[uid] || AsyncActionStates.PENDING)
   }
 
-  resetInviteUserState(gid, uid) {
-    delete _inviteUserState[`${gid}_${uid}`];
+  resetInviteUserState(uid) {
+    delete _inviteUserState[uid];
   }
 }
 
@@ -62,6 +66,7 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       _group = action.info;
       InviteUserStoreInstance.emitChange();
       break;
+
     case ActionTypes.INVITE_USER_MODAL_SHOW:
       _isInviteModalOpen = true;
       _group = action.group;
@@ -71,6 +76,7 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       _isInviteModalOpen = false;
       InviteUserStoreInstance.emitChange();
       break;
+
     case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
       _isInviteByLinkModalOpen = true;
       _group = action.group;
@@ -86,16 +92,17 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       InviteUserStoreInstance.emitChange();
       break;
 
+    // Invite user
     case ActionTypes.INVITE_USER:
-      _inviteUserState[`${action.gid}_${action.uid}`] = AsyncActionStates.PROCESSING;
+      _inviteUserState[action.uid]  = AsyncActionStates.PROCESSING;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_SUCCESS:
-      _inviteUserState[`${action.gid}_${action.uid}`] = AsyncActionStates.SUCCESS;
+      _inviteUserState[action.uid]  = AsyncActionStates.SUCCESS;
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_ERROR:
-      _inviteUserState[`${action.gid}_${action.uid}`] = AsyncActionStates.FAILURE;
+      _inviteUserState[action.uid]  = AsyncActionStates.FAILURE;
       InviteUserStoreInstance.emitChange();
       break;
   }
