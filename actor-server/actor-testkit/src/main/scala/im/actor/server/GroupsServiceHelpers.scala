@@ -5,8 +5,8 @@ import akka.util.Timeout
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.groups.{ GroupsService, ResponseCreateGroup }
 import im.actor.api.rpc.peers.UserOutPeer
+import im.actor.server.acl.ACLUtils
 import im.actor.server.group.{ GroupOffice, GroupProcessorRegion }
-import im.actor.server.util.ACLUtils
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._

@@ -9,13 +9,12 @@ import im.actor.server.commons.KeyValueMappings
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
-import im.actor.server.file.Avatar
+import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, Avatar }
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
 import im.actor.server.dialog.group.GroupDialogExtension
 import im.actor.server.dialog.group.GroupDialogRegion
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
-import im.actor.server.util.{ FileStorageAdapter, S3StorageExtension }
 import org.joda.time.DateTime
 import shardakka.{ IntCodec, ShardakkaExtension }
 import slick.driver.PostgresDriver.api._

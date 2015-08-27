@@ -1,5 +1,14 @@
 package im.actor.server.enrich
 
+import im.actor.server.acl.ACLUtils
+import im.actor.server.group.{ GroupProcessorRegion, GroupOffice }
+import im.actor.server.user.{ UserProcessorRegion, UserOffice }
+
+import scala.util.Random
+
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
+import slick.dbio.{ DBIO, DBIOAction, Effect, NoStream }
+
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage, UpdateMessageContentChanged }
@@ -10,7 +19,6 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.ACLUtils
 
 import scala.util.Random
 

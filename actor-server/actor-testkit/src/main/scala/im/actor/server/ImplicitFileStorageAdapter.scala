@@ -2,7 +2,7 @@ package im.actor.server
 
 import akka.actor.ActorSystem
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import im.actor.server.util.{ FileStorageAdapter, S3StorageAdapter, S3StorageAdapterConfig }
+import im.actor.server.file.{ FileStorageAdapter, S3StorageAdapterConfig, S3StorageAdapter }
 
 trait ImplicitFileStorageAdapter {
   protected implicit val system: ActorSystem

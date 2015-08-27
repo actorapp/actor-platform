@@ -1,5 +1,7 @@
 package im.actor.server.enrich
 
+import im.actor.server.file.{ FileUtils, FileStorageAdapter, S3StorageExtension, ImageUtils }
+
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }

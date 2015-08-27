@@ -1,13 +1,13 @@
-package im.actor.server.util
-
-import scala.concurrent.ExecutionContext
-
-import slick.dbio.Effect.Read
-import slick.dbio.{ DBIO, DBIOAction, NoStream }
+package im.actor.server.group
 
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.pubgroups.PublicGroup
+import im.actor.server.file.ImageUtils
 import im.actor.server.{ models, persist }
+import slick.dbio.Effect.Read
+import slick.dbio.{ DBIO, DBIOAction, NoStream }
+
+import scala.concurrent.ExecutionContext
 
 object GroupUtils {
 

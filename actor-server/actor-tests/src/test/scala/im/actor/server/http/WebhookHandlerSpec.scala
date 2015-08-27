@@ -16,10 +16,9 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.messaging.ReverseHooksListener
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.commons.KeyValueMappings
-import im.actor.server.group.GroupOffice
+import im.actor.server.group.{ GroupOffice, GroupServiceMessages }
 import im.actor.server.migrations.IntegrationTokenMigrator
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.util.GroupServiceMessages
 import play.api.libs.json.Json
 import shardakka.{ IntCodec, ShardakkaExtension }
 
