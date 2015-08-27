@@ -764,11 +764,11 @@ public class ChatActivity extends ActorEditTextActivity {
 
             if (peer.getPeerType() == PeerType.GROUP) {
                 //Open mentions
-                if (count == 1 && s.charAt(start) == '@') {
+                if (count == 1 && s.charAt(start) == '@' && !str.endsWith(" ")) {
                     showMentions(false);
                     mentionSearchString = "";
 
-                } else if (currentWord.startsWith("@")) {
+                } else if (currentWord.startsWith("@") && !str.endsWith(" ")) {
                     showMentions(true);
                 } else {
                     hideMentions();
