@@ -19,8 +19,7 @@ object Dependencies {
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
-    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "0.9.1"
-    val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
+    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.0.0"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
     val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.7"
@@ -40,7 +39,7 @@ object Dependencies {
 
     @deprecated("use `playJson` instead")
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
-    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.1"
+    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
