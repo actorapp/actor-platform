@@ -5,18 +5,21 @@
 import React from 'react';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
-import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
+import KickUserActionCreators from 'actions/KickUserActionCreators';
 
-import GroupStore from 'stores/GroupStore'
+import KickUserStore from 'stores/KickUserStore'
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import * as Stateful from 'components/common/Stateful.react';
 
 import { AsyncActionStates } from 'constants/ActorAppConstants';
 
-const getStateFromStore = (gid, uid) => {
+const getStateFromStore = (uid) => {
+  const kickUserState = KickUserStore.getKickUserState(uid);
+  //console.debug('getStateFromStore kickUserState', uid, kickUserState);
+
   return {
-    kickUserState: GroupStore.getKickUserState(gid, uid)
+    kickUserState: kickUserState
   }
 };
 
@@ -30,22 +33,25 @@ export default class GroupMember extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStore(props.gid, props.peerInfo.peer.id);
+    this.state = getStateFromStore(props.peerInfo.peer.id);
+
+    KickUserStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
-    const {peerInfo, gid} = this.props;
+    const { peerInfo } = this.props;
 
-    GroupStore.resetKickUserState(gid, peerInfo.peer.id);
-    GroupStore.removeChangeListener(this.onChange);
+    KickUserStore.resetKickUserState(peerInfo.peer.id);
+    KickUserStore.removeChangeListener(this.onChange);
   };
 
   render() {
     const { peerInfo, canKick, gid } = this.props;
+    const { kickUserState } = this.state;
+    //console.debug('render kickUserState', peerInfo.peer.id, kickUserState);
 
     let controls;
     if (canKick) {
-      const { kickUserState } = this.state;
       controls = (
         <div className="controls pull-right">
           <Stateful.Root currentState={kickUserState}>
@@ -86,15 +92,14 @@ export default class GroupMember extends React.Component {
   }
 
   onChange = () => {
-    const {peerInfo, gid} = this.props;
-    this.setState(getStateFromStore(gid, peerInfo.peer.id));
+    const { peerInfo } = this.props;
+    this.setState(getStateFromStore(peerInfo.peer.id));
   };
 
   onClick = (id) => DialogActionCreators.selectDialogPeerUser(id);
 
   onKick = (gid, uid) => {
-    GroupProfileActionCreators.kickMember(gid, uid);
-    GroupStore.addChangeListener(this.onChange);
-    this.setState({kickUserState: AsyncActionStates.PROCESSING}); // Used for immediately set processing state
+    KickUserActionCreators.kickMember(gid, uid);
+    //this.setState({kickUserState: AsyncActionStates.PROCESSING}); // Used for immediately set processing state
   };
 }
