@@ -5,6 +5,7 @@
 import { EventEmitter } from 'events';
 import { register } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes, AsyncActionStates } from 'constants/ActorAppConstants';
+
 import ActorClient from 'utils/ActorClient';
 import { hasMember } from 'utils/GroupUtils';
 
@@ -14,17 +15,6 @@ let _group = null,
     _kickUserState = [];
 
 class KickUserStore extends EventEmitter {
-  getKickUserState(uid) {
-    return hasMember(_group.id, uid)
-      ? (_kickUserState[uid] || AsyncActionStates.PENDING)
-      : AsyncActionStates.PENDING;
-    //return (_kickUserState[uid] || AsyncActionStates.PENDING)
-  }
-
-  resetKickUserState(uid) {
-    delete _kickUserState[uid];
-  }
-
   emitChange() {
     this.emit(CHANGE_EVENT);
   }
@@ -35,6 +25,17 @@ class KickUserStore extends EventEmitter {
 
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
+  }
+
+  getKickUserState(uid) {
+    return hasMember(_group.id, uid)
+      ? (_kickUserState[uid] || AsyncActionStates.PENDING)
+      : AsyncActionStates.PENDING;
+    //return (_kickUserState[uid] || AsyncActionStates.PENDING)
+  }
+
+  resetKickUserState(uid) {
+    delete _kickUserState[uid];
   }
 }
 
@@ -48,6 +49,7 @@ KickUserStoreInstance.dispatchToken = register(action => {
         KickUserStoreInstance.emitChange();
       }
       break;
+
     case ActionTypes.KICK_USER:
       _kickUserState[action.uid] = AsyncActionStates.PROCESSING;
       KickUserStoreInstance.emitChange();
