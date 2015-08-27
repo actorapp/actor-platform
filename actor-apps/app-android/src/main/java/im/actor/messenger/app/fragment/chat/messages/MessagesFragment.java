@@ -39,7 +39,9 @@ import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.runtime.android.view.BindedListAdapter;
+import im.actor.runtime.generic.mvvm.AndroidListUpdate;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.runtime.generic.mvvm.DisplayList;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
@@ -94,7 +96,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         // Add Header as Footer because of reverse layout
         addFooterView(header);
 
-        scrollToUnread();
+        bindDisplayListLoad();
 
         return res;
     }
@@ -104,32 +106,84 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         if (res.getListProcessor() == null) {
             res.setListProcessor(new ChatListProcessor(this));
         }
+
         return res;
     }
 
-    private void scrollToUnread() {
-        // TODO: Implement
-//        conversationVM = messenger().buildConversationVM(peer, getDisplayList(),
-//                new ConversationVMCallback() {
-//                    @Override
-//                    public void onLoaded(long unreadId, final int index) {
-//
-//                        if (messagesAdapter != null) {
-//                            messagesAdapter.setFirstUnread(unreadId);
-//                        }
-//
-//                        if (index > 0) {
-//                            linearLayoutManager.setStackFromEnd(false);
-//                            linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
-//                            // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
-//                            // linearLayoutManager.scrollToPosition(index + 1);
-//                            // getCollection().scrollToPosition(index + 1);
-//                        } else {
-//                            // linearLayoutManager.scrollToPosition(0);
-//                            getCollection().scrollToPosition(0);
-//                        }
-//                    }
-//                });
+    private boolean isLoaded = false;
+
+    private void bindDisplayListLoad() {
+        final BindedDisplayList<Message> list = getDisplayList();
+        DisplayList.AndroidChangeListener<Message> listener = new DisplayList.AndroidChangeListener<Message>() {
+
+
+            @Override
+            public void onCollectionChanged(AndroidListUpdate<Message> modification) {
+                ondisplayListLoaded();
+            }
+
+
+        };
+        list.addAndroidListener(listener);
+        ondisplayListLoaded();
+    }
+
+    private void ondisplayListLoaded() {
+        final BindedDisplayList<Message> list = getDisplayList();
+        if (isLoaded) {
+            return;
+        }
+
+        if (list.getSize() == 0) {
+            return;
+        }
+
+        isLoaded = true;
+        //long lastRead = modules.getMessagesModule().loadReadState(peer);
+        long firstUnread = messenger().loadFirstUnread(peer);
+
+        if (firstUnread == 0) {
+            // Already scrolled to bottom
+            return;
+        }
+
+        int index = -1;
+        long unread = -1;
+        for (int i = list.getSize() - 1; i >= 0; i--) {
+            Message message = list.getItem(i);
+            if (message.getSenderId() == messenger().myUid()) {
+                continue;
+            }
+            if (message.getSortDate() > firstUnread) {
+                index = i;
+                unread = message.getRid();
+                break;
+            }
+        }
+
+        if (index >= 0) {
+            scrollToUnread(unread, index);
+        } else {
+            scrollToUnread(0, 0);
+        }
+    }
+
+    private void scrollToUnread(long unreadId, final int index) {
+
+        if (messagesAdapter != null) {
+            messagesAdapter.setFirstUnread(unreadId);
+        }
+
+        if (index > 0) {
+            linearLayoutManager.setStackFromEnd(false);
+            linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
+            // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
+            // linearLayoutManager.scrollToPosition(index + 1);
+            // getCollection().scrollToPosition(index + 1);
+        } else {
+            // linearLayoutManager.scrollToPosition(0);
+            getCollection().scrollToPosition(0);
+        }
     }
 
     @Override
@@ -155,7 +209,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     @Override
     public void onResume() {
         super.onResume();
-        if (onPauseSize != 0 && getDisplayList().getSize() != onPauseSize) scrollToUnread();
+        if (onPauseSize != 0 && getDisplayList().getSize() != onPauseSize) bindDisplayListLoad();
         messenger().onConversationOpen(peer);
     }
 
