@@ -50,17 +50,14 @@ KickUserStoreInstance.dispatchToken = register(action => {
       break;
     case ActionTypes.KICK_USER:
       _kickUserState[action.uid] = AsyncActionStates.PROCESSING;
-      //console.debug('KICK_USER _kickUserState', action.uid, _kickUserState[action.uid]);
       KickUserStoreInstance.emitChange();
       break;
     case ActionTypes.KICK_USER_SUCCESS:
-      _kickUserState[action.uid] = AsyncActionStates.SUCCESS;
-      //console.debug('KICK_USER_SUCCESS _kickUserState', action.uid, _kickUserState[action.uid]);
+      delete _kickUserState[action.uid];
       KickUserStoreInstance.emitChange();
       break;
     case ActionTypes.KICK_USER_ERROR:
       _kickUserState[action.uid] = AsyncActionStates.FAILURE;
-      //console.debug('KICK_USER_ERROR _kickUserState', action.uid, _kickUserState[action.uid]);
       KickUserStoreInstance.emitChange();
       break;
   }
