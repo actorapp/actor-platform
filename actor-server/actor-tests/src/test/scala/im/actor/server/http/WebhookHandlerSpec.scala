@@ -146,7 +146,7 @@ class WebhookHandlerSpec
       whenReady(handler.register(token, "http://localhost:3000"))(_.isRight shouldBe true)
       whenReady(handler.register(token, "http://localhost:4000"))(_.isRight shouldBe true)
 
-      Thread.sleep(2000)
+      Thread.sleep(5000)
 
       val commands = List("jump", "eat", "sleep", "die")
 
@@ -161,7 +161,7 @@ class WebhookHandlerSpec
 
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 7L, TextMessage(commands(3), Vector.empty, None)))(_ ⇒ ())
 
-      Thread.sleep(2000)
+      Thread.sleep(5000)
 
       val messages3000 = hook3000.getMessages
       messages3000 should have size 4
