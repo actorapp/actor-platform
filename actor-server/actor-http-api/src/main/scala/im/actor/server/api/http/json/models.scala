@@ -13,3 +13,6 @@ case class AvatarUrls(small: Option[String], large: Option[String], full: Option
 case class Errors(message: String)
 
 case class ReverseHook(url: String)
+
+case class Status(status: String)
+case class ReverseHookResponse(id: Int, url: Option[String])
