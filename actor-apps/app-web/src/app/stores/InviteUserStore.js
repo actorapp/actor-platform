@@ -85,6 +85,7 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       _isInviteByLinkModalOpen = false;
       InviteUserStoreInstance.emitChange();
       break;
+
     case ActionTypes.INVITE_USER:
       _inviteUserState[`${action.gid}_${action.uid}`] = AsyncActionStates.PROCESSING;
       InviteUserStoreInstance.emitChange();
@@ -97,8 +98,6 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       _inviteUserState[`${action.gid}_${action.uid}`] = AsyncActionStates.FAILURE;
       InviteUserStoreInstance.emitChange();
       break;
-    default:
-      return;
   }
 });
 
