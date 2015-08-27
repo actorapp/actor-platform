@@ -37,8 +37,6 @@ object Dependencies {
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
 
-    @deprecated("use `playJson` instead")
-    val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
@@ -88,7 +86,6 @@ object Dependencies {
 
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest
-//    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
 
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1"
   }
@@ -144,7 +141,7 @@ object Dependencies {
 
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   
-  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert, slickPg)
+  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
 
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream,
@@ -164,8 +161,5 @@ object Dependencies {
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
-  val tests = shared ++ Seq(
-    akkaContrib,
-    jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit //, scalaTestPlay
-  )
+  val tests = shared ++ Seq(akkaContrib, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
 }
