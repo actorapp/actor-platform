@@ -47,7 +47,6 @@ class ContactItem extends React.Component {
     this.props.onSelect(contact);
 
     InviteUserStore.addChangeListener(this.onChange);
-    this.setState({inviteUserState: AsyncActionStates.PROCESSING}); // Used for immediately set processing state
   };
 
   onChange = () => {

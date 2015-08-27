@@ -73,6 +73,7 @@ InviteUserStoreInstance.dispatchToken = register(action => {
       InviteUserStoreInstance.emitChange();
       break;
     case ActionTypes.INVITE_USER_MODAL_HIDE:
+      _inviteUserState = [];
       _isInviteModalOpen = false;
       InviteUserStoreInstance.emitChange();
       break;
