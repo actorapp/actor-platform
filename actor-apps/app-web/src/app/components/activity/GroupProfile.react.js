@@ -57,6 +57,7 @@ class GroupProfile extends React.Component {
       isMoreDropdownOpen: false,
       isCopyButtonEnabled: false
     }, getStateFromStores(props.group.id));
+    GroupProfileActionCreators.getIntegrationToken(props.group.id);
 
     ThemeManager.setTheme(ActorTheme);
 
@@ -71,6 +72,7 @@ class GroupProfile extends React.Component {
 
   componentWillReceiveProps(newProps) {
     this.setState(getStateFromStores(newProps.group.id));
+    GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
   }
 
   onAddMemberClick = group => {
@@ -119,7 +121,7 @@ class GroupProfile extends React.Component {
 
   render() {
     const { group } = this.props;
-    const { isNotificationsEnabled, integrationToken, isCopyButtonEnabled } = this.state;
+    const { isNotificationsEnabled, integrationToken, isCopyButtonEnabled, isMoreDropdownOpen } = this.state;
     const myId = LoginStore.getMyId();
     const admin = GroupProfileActionCreators.getUser(group.adminId);
     const isMember = DialogStore.isGroupMember(group);
@@ -153,7 +155,7 @@ class GroupProfile extends React.Component {
     const members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
 
     const dropdownClassNames = classnames('dropdown', {
-      'dropdown--opened': this.state.isMoreDropdownOpen
+      'dropdown--opened': isMoreDropdownOpen
     });
 
     const iconElement = (
