@@ -17,5 +17,7 @@ object JsonFormatters {
   implicit val errorsFormat: Format[Errors] = Json.format[Errors]
 
   implicit val reverseHookFormat: Format[ReverseHook] = Json.format[ReverseHook]
+  implicit val reverseHookResponseFormat: Format[ReverseHookResponse] = Json.format[ReverseHookResponse]
+  implicit val statusFormat: Format[Status] = Json.format[Status]
 
 }
