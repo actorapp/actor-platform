@@ -10,6 +10,7 @@ object Dependencies {
     val slick = "3.0.0"
     val scalatest = "2.2.4"
     val catsVersion    = "0.1.2"
+
   }
 
   object Compile {
@@ -105,7 +106,7 @@ object Dependencies {
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
-  val core = shared ++ Seq(akkaActor, akkaContrib, gcmServer, pushy, jodaTime, postgresJdbc, slick)
+  val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
 
@@ -153,7 +154,8 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaContrib, slick)
 
-  val utils = shared ++ Seq(akkaActor, akkaHttp, amazonaws, awsWrap, cats, catsStd, libPhoneNumber, scrImageCore, slick)
+  val utils = shared ++ Seq(akkaActor, cats, libPhoneNumber, scalazCore)
+  // val utils = shared ++ Seq(akkaActor, akkaHttp, amazonaws, awsWrap, cats, libPhoneNumber, scrImageCore, slick)
 
   val utilsCache = shared :+ caffeine
 
