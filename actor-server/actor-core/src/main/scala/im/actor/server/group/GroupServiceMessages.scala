@@ -1,4 +1,4 @@
-package im.actor.server.util
+package im.actor.server.group
 
 import im.actor.api.rpc.files
 import im.actor.api.rpc.messaging._

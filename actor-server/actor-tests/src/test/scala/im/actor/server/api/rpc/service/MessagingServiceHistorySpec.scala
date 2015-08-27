@@ -8,10 +8,10 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
 import im.actor.server._
+import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.group.GroupOffice
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.util.ACLUtils
 
 import scala.concurrent.Future
 import scala.util.Random

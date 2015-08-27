@@ -1,4 +1,4 @@
-package im.actor.server.util
+package im.actor.server.user
 
 import akka.actor.ActorSystem
 import akka.util.Timeout

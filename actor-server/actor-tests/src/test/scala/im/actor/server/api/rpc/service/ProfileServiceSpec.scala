@@ -2,6 +2,8 @@ package im.actor.server.api.rpc.service
 
 import java.nio.file.{ Files, Paths }
 
+import im.actor.server.file.ImageUtils
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scalaz.-\/
@@ -16,7 +18,6 @@ import im.actor.server._
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceImpl }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.util.ImageUtils
 
 class ProfileServiceSpec
   extends BaseAppSuite
