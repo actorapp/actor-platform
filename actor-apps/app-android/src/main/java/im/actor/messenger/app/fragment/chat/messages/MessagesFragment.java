@@ -31,6 +31,7 @@ import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;
@@ -256,14 +257,15 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                         int i = 0;
                         for (Message m : messagesAdapter.getSelected()) {
                             if (m.getContent() instanceof TextContent) {
-                                String name = users().get(m.getSenderId()).getName().get();
+                                UserVM user = users().get(m.getSenderId());
+                                String name = (user.getNick().get() != null && !user.getNick().get().isEmpty()) ? user.getNick().get() : user.getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
-                                quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n"))));
-                                rawQuote = rawQuote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n").concat("\n\n"))));
+                                quote = quote.concat(name).concat(": ").concat(text);
+                                rawQuote = rawQuote.concat(name).concat(": ").concat(text).concat("\n");
                                 if (i++ != messagesAdapter.getSelectedCount() - 1) {
-                                    quote += ";\n\n";
+                                    quote += ";\n";
                                 } else {
-                                    quote += "\n\n";
+                                    quote += "\n";
                                 }
                             }
                         }
@@ -273,12 +275,13 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
                     } else if (menuItem.getItemId() == R.id.forward) {
                         Intent i = new Intent(getActivity(), MainActivity.class);
-                        if (messagesAdapter.getItemCount() == 1) {
+                        if (messagesAdapter.getSelected().length == 1) {
                             Message m = messagesAdapter.getSelected()[0];
                             if (m.getContent() instanceof TextContent) {
-                                String name = users().get(m.getSenderId()).getName().get();
+                                UserVM user = users().get(m.getSenderId());
+                                String name = (user.getNick().get() != null && !user.getNick().get().isEmpty()) ? user.getNick().get() : user.getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
-                                i.putExtra("forward_text_raw", "[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                                i.putExtra("forward_text_raw", name.concat(": ").concat(text).concat("\n"));
                             } else if (m.getContent() instanceof DocumentContent) {
                                 boolean isDoc = !(m.getContent() instanceof PhotoContent || m.getContent() instanceof VideoContent);
                                 DocumentContent fileMessage = (DocumentContent) m.getContent();
@@ -296,14 +299,15 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                             int j = 0;
                             for (Message m : messagesAdapter.getSelected()) {
                                 if (m.getContent() instanceof TextContent) {
-                                    String name = users().get(m.getSenderId()).getName().get();
+                                    UserVM user = users().get(m.getSenderId());
+                                    String name = (user.getNick().get() != null && !user.getNick().get().isEmpty()) ? user.getNick().get() : user.getName().get();
                                     String text = ((TextContent) m.getContent()).getText();
-                                    quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n"))));
-                                    rawQuote = rawQuote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n").concat("\n\n"))));
+                                    quote = quote.concat(name).concat(": ").concat(text);
+                                    rawQuote = rawQuote.concat(name).concat(": ").concat(text).concat("\n");
                                     if (j++ != messagesAdapter.getSelectedCount() - 1) {
-                                        quote += ";\n\n";
+                                        quote += ";\n";
                                     } else {
-                                        quote += "\n\n";
+                                        quote += "\n";
                                     }
                                 }
                             }

@@ -144,14 +144,14 @@ public class ChatActivity extends ActorEditTextActivity {
     // Forwarding
     //////////////////////////////////
 
-//    private String sendUri;
-//    private ArrayList<String> sendUriMultiple;
-//    private int shareUser;
-//    private String forwardDocDescriptor;
-//    private boolean forwardDocIsDoc = true;
-//    private String forwardText;
-//    private String forwardTextRaw;
-//    private String sendText;
+    private String sendUri;
+    private ArrayList<String> sendUriMultiple;
+    private int shareUser;
+    private String forwardDocDescriptor;
+    private boolean forwardDocIsDoc = true;
+    private String forwardText;
+    private String forwardTextRaw;
+    private String sendText;
 
     //////////////////////////////////
     // Utility variables
@@ -199,17 +199,17 @@ public class ChatActivity extends ActorEditTextActivity {
             }
         });
 
-//        // Sharing
-//        sendUri = getIntent().getStringExtra("send_uri");
-//        sendUriMultiple = getIntent().getStringArrayListExtra("send_uri_multiple");
-//        shareUser = getIntent().getIntExtra("share_user", 0);
-//
-//        //Forwarding
-//        forwardText = getIntent().getStringExtra("forward_text");
-//        forwardTextRaw = getIntent().getStringExtra("forward_text_raw");
-//        sendText = getIntent().getStringExtra("send_text");
-//        forwardDocDescriptor = getIntent().getStringExtra("forward_doc_descriptor");
-//        forwardDocIsDoc = getIntent().getBooleanExtra("forward_doc_is_doc", true);
+        // Sharing
+        sendUri = getIntent().getStringExtra("send_uri");
+        sendUriMultiple = getIntent().getStringArrayListExtra("send_uri_multiple");
+        shareUser = getIntent().getIntExtra("share_user", 0);
+
+        //Forwarding
+        forwardText = getIntent().getStringExtra("forward_text");
+        forwardTextRaw = getIntent().getStringExtra("forward_text_raw");
+        sendText = getIntent().getStringExtra("send_text");
+        forwardDocDescriptor = getIntent().getStringExtra("forward_doc_descriptor");
+        forwardDocIsDoc = getIntent().getBooleanExtra("forward_doc_is_doc", true);
     }
 
     @Override
@@ -277,50 +277,50 @@ public class ChatActivity extends ActorEditTextActivity {
         isTypingDisabled = false;
 
         // TODO: Remove from ChatActivity
-//        // Performing actions
-//
-//        if (sendUri != null && !sendUri.isEmpty()) {
-//            sendUri(Uri.parse(sendUri), true);
-//            sendUri = "";
-//        }
-//
-//        if (sendUriMultiple != null && sendUriMultiple.size() > 0) {
-//            for (String sendUri : sendUriMultiple) {
-//                sendUri(Uri.parse(sendUri), false);
-//            }
-//            sendUriMultiple.clear();
-//        }
-//
-//        if (sendText != null && !sendText.isEmpty()) {
-//            messageEditText.setText(sendText);
-//            sendText = "";
-//        }
-//
-//        if (shareUser != 0) {
-//            String userName = users().get(shareUser).getName().get();
-//            String mentionTitle = "@".concat(userName);
-//            ArrayList<Integer> mention = new ArrayList<Integer>();
-//            mention.add(shareUser);
-//            messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareUser)).concat(")")), mention);
-//            messenger().trackTextSend(peer);
-//            shareUser = 0;
-//        }
-//
-//        if (forwardTextRaw != null && !forwardTextRaw.isEmpty()) {
-//            addQuote(forwardText, forwardTextRaw);
-//            forwardText = "";
-//            forwardTextRaw = "";
-//        }
-//
-//        if (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) {
-//            if (forwardDocIsDoc) {
-//                messenger().sendDocument(peer, forwardDocDescriptor);
-//                messenger().trackDocumentSend(peer);
-//            } else {
-//                sendUri(Uri.fromFile(new File(forwardDocDescriptor)), false);
-//            }
-//            forwardDocDescriptor = "";
-//        }
+        // Performing actions
+
+        if (sendUri != null && !sendUri.isEmpty()) {
+            execute(messenger().sendUri(peer, Uri.parse(sendUri)));
+            sendUri = "";
+        }
+
+        if (sendUriMultiple != null && sendUriMultiple.size() > 0) {
+            for (String sendUri : sendUriMultiple) {
+                execute(messenger().sendUri(peer, Uri.parse(sendUri)));
+            }
+            sendUriMultiple.clear();
+        }
+
+        if (sendText != null && !sendText.isEmpty()) {
+            messageEditText.setText(sendText);
+            sendText = "";
+        }
+
+        if (shareUser != 0) {
+            String userName = users().get(shareUser).getName().get();
+            String mentionTitle = "@".concat(userName);
+            ArrayList<Integer> mention = new ArrayList<Integer>();
+            mention.add(shareUser);
+            messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareUser)).concat(")")), mention);
+            messenger().trackTextSend(peer);
+            shareUser = 0;
+        }
+
+        if (forwardTextRaw != null && !forwardTextRaw.isEmpty()) {
+            addQuote(forwardText, forwardTextRaw);
+            forwardText = "";
+            forwardTextRaw = "";
+        }
+
+        if (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) {
+            if (forwardDocIsDoc) {
+                messenger().sendDocument(peer, forwardDocDescriptor);
+                messenger().trackDocumentSend(peer);
+            } else {
+                execute(messenger().sendUri(peer, Uri.fromFile(new File(forwardDocDescriptor))));
+            }
+            forwardDocDescriptor = "";
+        }
     }
 
     @Override
@@ -403,7 +403,7 @@ public class ChatActivity extends ActorEditTextActivity {
         String rawText = messageEditText.getText().toString();
 
         if (currentQuote != null && !currentQuote.isEmpty()) {
-            rawText = quoteText.getText().toString().concat(rawText);
+            rawText = currentQuote.concat(rawText);
             goneView(quoteContainer);
             currentQuote = "";
         }
@@ -608,11 +608,11 @@ public class ChatActivity extends ActorEditTextActivity {
     // Quotes
 
     public void addQuote(String quote, String rawQuote) {
-//        if (quote != null && !quote.isEmpty()) {
-//            quoteText.setText(bypass.markdownToSpannable(quote, true));
-//        } else {
-//            quoteText.setText(bypass.markdownToSpannable(rawQuote, true));
-//        }
+        if (quote != null && !quote.isEmpty()) {
+            quoteText.setText(quote);
+        } else {
+            quoteText.setText(rawQuote);
+        }
         currentQuote = rawQuote;
         showView(quoteContainer);
     }
