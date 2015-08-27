@@ -5,7 +5,7 @@ import java.nio.file.Paths
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods.{ POST, GET }
 import akka.http.scaladsl.model.StatusCodes.{ NotAcceptable, BadRequest, NotFound, OK }
-import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
 import akka.stream.scaladsl.Sink
@@ -92,7 +92,7 @@ class HttpApiFrontendSpec
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
     val publicGroup = createPubGroup("public group", "PG", Set(user2.id)).groupPeer
 
-    val resourcesPath = Paths.get(getClass.getResource("/").toURI).toFile.getCanonicalPath
+    val resourcesPath = Paths.get(getClass.getResource("/files").toURI).toFile.getCanonicalPath
     val config = HttpApiConfig("127.0.0.1", 9000, "http", "localhost", resourcesPath, None)
     HttpApiFrontend.start(config, None)
 
@@ -402,23 +402,18 @@ class HttpApiFrontendSpec
     }
 
     def filesCorrect() = {
-      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/reference.conf")
+      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/index.html", entity = HttpEntity.empty(ContentTypes.`text/plain`))
       whenReady(http.singleRequest(r1)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/logback.xml")
+      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/test.conf", entity = HttpEntity.empty(ContentTypes.`text/plain`))
       whenReady(http.singleRequest(r2)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/valid-avatar.jpg")
+      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/scripts/test.js", entity = HttpEntity.empty(ContentTypes.`text/plain`))
       whenReady(http.singleRequest(r3)) { resp ⇒
-        resp.status shouldEqual OK
-        resp.entity.dataBytes.runWith(Sink.ignore)
-      }
-      val r4 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/application.conf.example")
-      whenReady(http.singleRequest(r4)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }

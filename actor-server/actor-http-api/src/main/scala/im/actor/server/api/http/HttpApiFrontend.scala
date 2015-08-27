@@ -61,11 +61,11 @@ object HttpApiFrontend {
     val webhooks = new WebhooksHandler
     val groups = new GroupsHandler
     val status = new StatusHandler
-    val files = new AppFilesHandler(config.staticFiles)
+    val app = new AppFilesHandler(config.staticFiles)
 
     // format: OFF
     def routes: Route =
-      files.routes ~
+      app.routes ~
       pathPrefix("v1") {
         respondWithDefaultHeaders(corsHeaders) {
           status.routes ~
