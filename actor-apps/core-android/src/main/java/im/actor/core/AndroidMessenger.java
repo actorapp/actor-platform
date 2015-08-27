@@ -262,7 +262,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     public Command<Boolean> sendUri(final Peer peer, final Uri uri) {
         return new Command<Boolean>() {
             @Override
-            public void start(CommandCallback<Boolean> callback) {
+            public void start(final CommandCallback<Boolean> callback) {
                 fileDownloader.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -297,6 +297,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                         if (picturePath == null || !uri.getScheme().equals("file")) {
                             File externalFile = context.getExternalFilesDir(null);
                             if (externalFile == null) {
+                                callback.onError(new NullPointerException());
                                 return;
                             }
                             String externalPath = externalFile.getAbsolutePath();
@@ -311,6 +312,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                                 IOUtils.copy(context.getContentResolver().openInputStream(uri), new File(picturePath));
                             } catch (IOException e) {
                                 e.printStackTrace();
+                                callback.onError(e);
                                 return;
                             }
                         }
@@ -329,6 +331,8 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                             sendDocument(peer, picturePath, new File(fileName).getName());
                             trackDocumentSend(peer);
                         }
+
+                        callback.onResult(true);
                     }
                 });
             }
