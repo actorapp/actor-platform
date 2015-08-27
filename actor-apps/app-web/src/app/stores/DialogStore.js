@@ -6,7 +6,7 @@ import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from 'constants/ActorAppConstants';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
-//import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
+import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
@@ -14,18 +14,18 @@ import assign from 'object-assign';
 import ActorClient from 'utils/ActorClient';
 import LoginStore from 'stores/LoginStore';
 
-var CHANGE_EVENT = 'change';
-var SELECT_EVENT = 'select';
-var SELECTED_CHANGE_EVENT = 'selected_change';
-var TYPING_EVENT = 'typing';
-var NOTIFICATION_CHANGE_EVENT = 'notification_change';
+const CHANGE_EVENT = 'change',
+      SELECT_EVENT = 'select',
+      SELECTED_CHANGE_EVENT = 'selected_change',
+      TYPING_EVENT = 'typing',
+      NOTIFICATION_CHANGE_EVENT = 'notification_change';
 
-var _dialogs = [];
-var _selectedDialogPeer = null;
-var _selectedDialogInfo = null;
-var _selectedDialogTyping = null;
-var _currentPeer = null;
-var _lastPeer = null;
+let _dialogs = [],
+    _selectedDialogPeer = null,
+    _selectedDialogInfo = null,
+    _selectedDialogTyping = null,
+    _currentPeer = null,
+    _lastPeer = null;
 
 var DialogStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
@@ -193,7 +193,6 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       // TODO: need method for membership check
       if (action.peer.type === PeerTypes.GROUP) {
         const group = ActorClient.getGroup(action.peer.id);
-        //GroupProfileActionCreators.getIntegrationToken(action.peer.id);
         setTimeout(function() {
           if (DialogStore.isGroupMember(group)) {
             bindDialogTyping(action.peer);
