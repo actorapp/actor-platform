@@ -1,5 +1,6 @@
 package im.actor.api
 
+import im.actor.server.util.FutureResult
 import slick.dbio.{DBIO, DBIOAction}
 import slick.driver.PostgresDriver.api._
 

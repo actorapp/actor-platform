@@ -129,7 +129,7 @@ object Build extends sbt.Build {
         libraryDependencies ++= Dependencies.activation,
         scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
       )
-  ).dependsOn(actorEmail, actorSms)
+  ).dependsOn(actorEmail, actorSms, actorPersist)
 
   lazy val actorCommonsApi = Project(
     id = "actor-commons-api",
@@ -141,7 +141,7 @@ object Build extends sbt.Build {
           libraryDependencies ++= Dependencies.commonsApi,
           scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
         )
-  ).dependsOn(actorCommonsBase, actorPersist, actorCodecs)
+  ).dependsOn(actorCommonsBase, actorPersist, actorCodecs, actorUtils)
 
   lazy val actorCommonsBase = Project(
     id = "actor-commons-base",
@@ -159,7 +159,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.core
     )
-  ).dependsOn(actorCommonsApi, actorModels, actorPresences, actorSocial, actorUtils, actorUtilsCache)
+  ).dependsOn(actorCommonsApi, actorModels, actorPresences, actorSocial, actorUtils, actorUtilsCache, shardakka)
 
   lazy val actorEmail = Project(
     id = "actor-email",
@@ -333,7 +333,6 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.utils
     )
   )
-    .dependsOn(actorCommonsApi, actorModels, actorPersist, shardakka)
 
   lazy val actorUtilsCache = Project(
     id = "actor-utils-cache",
