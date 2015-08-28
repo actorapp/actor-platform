@@ -6,11 +6,13 @@ repositories {
 
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:1.3.0'
+        // classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
     }
 }
 
 apply plugin: 'com.android.application'
+// apply plugin: 'com.neenbedankt.android-apt'
 
 def basicVersion = '1.0'
 def customVersionCode = '10240';
@@ -120,6 +122,21 @@ android {
         abortOnError false
     }
 }
+//
+//apt {
+//    arguments {
+//        androidManifestFile variant.outputs[0].processResources.manifestFile
+//        // if you have multiple outputs (when using splits), you may want to have other index than 0
+//
+//        // you should set your package name here if you are using different application IDs
+//        // resourcePackageName "your.package.name"
+//
+//        // You can set optional annotation processing options here, like these commented options:
+//        // logLevel 'INFO'
+//        // logFile '/var/log/aa.log'
+//    }
+//}
+
 dependencies {
 
     compile project(':core-android')
@@ -140,9 +157,9 @@ dependencies {
     compile files('libs/libphonenumber-5.9.jar')
 
     // Android Support
-    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:support-v13:22.1.1'
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:palette-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
 
@@ -150,6 +167,10 @@ dependencies {
     compile 'com.mixpanel.android:mixpanel-android:4.5.3'
     compile 'com.splunk.mint:mint:4.0.8'
     compile files('libs/HockeySDK-3.5.0.jar')
+
+//    // Annotation processing
+//    apt "org.androidannotations:androidannotations:3.3.2"
+//    compile "org.androidannotations:androidannotations-api:3.3.2"
 }
 
 task dist(dependsOn: ['assembleRelease', 'assembleFree']) {
