@@ -34,6 +34,9 @@ object ActorSerializer {
     }
   }
 
+  def register(items: (Int, Class[_])*): Unit =
+    items foreach { case (id, clazz) ⇒ register(id, clazz) }
+
   def get(id: Int): Option[Class[_]] = Option(map.get(id))
 
   def get(clazz: Class[_]) = Option(reverseMap.get(clazz))
