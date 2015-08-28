@@ -61,52 +61,53 @@ trait GroupQuery {
 
 object GroupProcessor {
 
-  def register(): Unit = {
-    ActorSerializer.register(20001, classOf[GroupCommands.Create])
-    ActorSerializer.register(20002, classOf[GroupCommands.CreateAck])
-    ActorSerializer.register(20003, classOf[GroupCommands.Invite])
-    ActorSerializer.register(20004, classOf[GroupCommands.Join])
-    ActorSerializer.register(20005, classOf[GroupCommands.Kick])
-    ActorSerializer.register(20006, classOf[GroupCommands.Leave])
-    ActorSerializer.register(20010, classOf[GroupCommands.UpdateAvatar])
-    ActorSerializer.register(20011, classOf[GroupCommands.MakePublic])
-    ActorSerializer.register(20012, classOf[GroupCommands.MakePublicAck])
-    ActorSerializer.register(20013, classOf[GroupCommands.UpdateTitle])
-    ActorSerializer.register(20015, classOf[GroupCommands.ChangeTopic])
-    ActorSerializer.register(20016, classOf[GroupCommands.ChangeAbout])
-    ActorSerializer.register(20017, classOf[GroupCommands.MakeUserAdmin])
-    ActorSerializer.register(20018, classOf[GroupCommands.RevokeIntegrationToken])
-    ActorSerializer.register(20020, classOf[GroupCommands.RevokeIntegrationTokenAck])
-    ActorSerializer.register(20023, classOf[GroupCommands.JoinAfterFirstRead])
-    ActorSerializer.register(20024, classOf[GroupCommands.CreateInternal])
-    ActorSerializer.register(20025, classOf[GroupCommands.CreateInternalAck])
+  def register(): Unit =
+    ActorSerializer.register(
+      20001 → classOf[GroupCommands.Create],
+      20002 → classOf[GroupCommands.CreateAck],
+      20003 → classOf[GroupCommands.Invite],
+      20004 → classOf[GroupCommands.Join],
+      20005 → classOf[GroupCommands.Kick],
+      20006 → classOf[GroupCommands.Leave],
+      20010 → classOf[GroupCommands.UpdateAvatar],
+      20011 → classOf[GroupCommands.MakePublic],
+      20012 → classOf[GroupCommands.MakePublicAck],
+      20013 → classOf[GroupCommands.UpdateTitle],
+      20015 → classOf[GroupCommands.ChangeTopic],
+      20016 → classOf[GroupCommands.ChangeAbout],
+      20017 → classOf[GroupCommands.MakeUserAdmin],
+      20018 → classOf[GroupCommands.RevokeIntegrationToken],
+      20020 → classOf[GroupCommands.RevokeIntegrationTokenAck],
+      20023 → classOf[GroupCommands.JoinAfterFirstRead],
+      20024 → classOf[GroupCommands.CreateInternal],
+      20025 → classOf[GroupCommands.CreateInternalAck],
 
-    ActorSerializer.register(21001, classOf[GroupQueries.GetIntegrationToken])
-    ActorSerializer.register(21002, classOf[GroupQueries.GetIntegrationTokenResponse])
-    ActorSerializer.register(21003, classOf[GroupQueries.CheckAccessHash])
-    ActorSerializer.register(21004, classOf[GroupQueries.CheckAccessHashResponse])
-    ActorSerializer.register(21005, classOf[GroupQueries.GetMembers])
-    ActorSerializer.register(21006, classOf[GroupQueries.GetMembersResponse])
-    ActorSerializer.register(21007, classOf[GroupQueries.GetApiStruct])
-    ActorSerializer.register(21008, classOf[GroupQueries.GetApiStructResponse])
-    ActorSerializer.register(21009, classOf[GroupQueries.IsPublic])
-    ActorSerializer.register(21010, classOf[GroupQueries.IsPublicResponse])
-    ActorSerializer.register(21011, classOf[GroupQueries.GetIntegrationTokenInternal])
+      21001 → classOf[GroupQueries.GetIntegrationToken],
+      21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
+      21003 → classOf[GroupQueries.CheckAccessHash],
+      21004 → classOf[GroupQueries.CheckAccessHashResponse],
+      21005 → classOf[GroupQueries.GetMembers],
+      21006 → classOf[GroupQueries.GetMembersResponse],
+      21007 → classOf[GroupQueries.GetApiStruct],
+      21008 → classOf[GroupQueries.GetApiStructResponse],
+      21009 → classOf[GroupQueries.IsPublic],
+      21010 → classOf[GroupQueries.IsPublicResponse],
+      21011 → classOf[GroupQueries.GetIntegrationTokenInternal],
 
-    ActorSerializer.register(22003, classOf[GroupEvents.UserInvited])
-    ActorSerializer.register(22004, classOf[GroupEvents.UserJoined])
-    ActorSerializer.register(22005, classOf[GroupEvents.Created])
-    ActorSerializer.register(22006, classOf[GroupEvents.BotAdded])
-    ActorSerializer.register(22007, classOf[GroupEvents.UserKicked])
-    ActorSerializer.register(22008, classOf[GroupEvents.UserLeft])
-    ActorSerializer.register(22009, classOf[GroupEvents.AvatarUpdated])
-    ActorSerializer.register(22010, classOf[GroupEvents.BecamePublic])
-    ActorSerializer.register(22011, classOf[GroupEvents.AboutUpdated])
-    ActorSerializer.register(22012, classOf[GroupEvents.TitleUpdated])
-    ActorSerializer.register(22013, classOf[GroupEvents.TopicUpdated])
-    ActorSerializer.register(22015, classOf[GroupEvents.UserBecameAdmin])
-    ActorSerializer.register(22016, classOf[GroupEvents.IntegrationTokenRevoked])
-  }
+      22003 → classOf[GroupEvents.UserInvited],
+      22004 → classOf[GroupEvents.UserJoined],
+      22005 → classOf[GroupEvents.Created],
+      22006 → classOf[GroupEvents.BotAdded],
+      22007 → classOf[GroupEvents.UserKicked],
+      22008 → classOf[GroupEvents.UserLeft],
+      22009 → classOf[GroupEvents.AvatarUpdated],
+      22010 → classOf[GroupEvents.BecamePublic],
+      22011 → classOf[GroupEvents.AboutUpdated],
+      22012 → classOf[GroupEvents.TitleUpdated],
+      22013 → classOf[GroupEvents.TopicUpdated],
+      22015 → classOf[GroupEvents.UserBecameAdmin],
+      22016 → classOf[GroupEvents.IntegrationTokenRevoked]
+    )
 
   def props: Props = Props(classOf[GroupProcessor])
 }
