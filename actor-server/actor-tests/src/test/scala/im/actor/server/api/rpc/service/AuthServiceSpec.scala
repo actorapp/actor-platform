@@ -5,7 +5,7 @@ import java.time.{ LocalDateTime, ZoneOffset }
 
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.commons.KeyValueMappings
-import im.actor.server.util.ContactsUtils
+import im.actor.server.user.ContactsUtils
 import shardakka.ShardakkaExtension
 
 import scala.concurrent.{ ExecutionContext, Future }

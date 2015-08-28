@@ -17,7 +17,7 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.api.rpc.service.messaging.{ ReverseHooksListener, MessagingServiceImpl }
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
@@ -31,7 +31,7 @@ import im.actor.server.dialog.privat.{ PrivateDialog, PrivateDialogExtension }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
-import im.actor.server.migrations.LocalNamesMigrator
+import im.actor.server.migrations.{ GroupCreatorMemberMigrator, IntegrationTokenMigrator, LocalNamesMigrator }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -87,6 +87,7 @@ object Main extends App {
   UserMigrator.migrate()
   GroupMigrator.migrate()
   LocalNamesMigrator.migrate()
+  GroupCreatorMemberMigrator.migrate()
 
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
@@ -98,6 +99,8 @@ object Main extends App {
   implicit val groupViewRegion = GroupExtension(system).viewRegion
   implicit val groupDialogRegion = GroupDialogExtension(system).region //no need to be implicit
   implicit val privateDialogRegion = PrivateDialogExtension(system).region
+
+  IntegrationTokenMigrator.migrate()
 
   val mediator = DistributedPubSubExtension(system).mediator
 
@@ -116,6 +119,7 @@ object Main extends App {
   )
 
   RichMessageWorker.startWorker(richMessageConfig, mediator)
+  ReverseHooksListener.startSingleton(mediator)
 
   implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
 
