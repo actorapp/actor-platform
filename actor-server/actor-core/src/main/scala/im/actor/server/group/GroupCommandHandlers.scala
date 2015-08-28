@@ -69,7 +69,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     val date = now()
 
-    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title)
+    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title, Seq(creatorUserId))
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒
