@@ -48,22 +48,14 @@ object IntegrationTokenMigrator extends Migration {
   ): Future[Unit] = {
     implicit val timeout = Timeout(40.seconds)
     for {
-      optRandomMember ← GroupOffice.getMemberIds(groupId).map(_._1.headOption)
-      _ ← optRandomMember map { member ⇒
-        for {
-          optToken ← GroupOffice.getIntegrationToken(groupId, member)
-          _ ← optToken map { token ⇒ kv.upsert(token, groupId) } getOrElse {
-            system.log.warning("Could not find integration token in group {}", groupId)
-            Future.successful(())
-          }
-        } yield {
-          system.log.info("Integration token migrated for group {}", groupId)
-          ()
-        }
-      } getOrElse {
-        system.log.warning("Could not find member in group {}", groupId)
+      optToken ← GroupOffice.getIntegrationToken(groupId)
+      _ ← optToken map { token ⇒ kv.upsert(token, groupId) } getOrElse {
+        system.log.warning("Could not find integration token in group {}", groupId)
         Future.successful(())
       }
-    } yield ()
+    } yield {
+      system.log.info("Integration token migrated for group {}", groupId)
+      ()
+    }
   }
 }

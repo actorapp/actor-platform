@@ -48,8 +48,10 @@ trait IngoingHooks extends ContentUnmarshaller {
             Future.successful(Left(StatusCodes.Forbidden))
           } else {
             for {
-              (_, _, botId) ← GroupOffice.getMemberIds(groupId)
-              _ ← GroupDialogOperations.sendMessage(groupId, botId, 0, ThreadLocalRandom.current().nextLong(), message)
+              (_, _, optBot) ← GroupOffice.getMemberIds(groupId)
+              _ ← optBot map { botId ⇒
+                GroupDialogOperations.sendMessage(groupId, botId, 0, ThreadLocalRandom.current().nextLong(), message)
+              } getOrElse Future.successful(Left(StatusCodes.NotAcceptable))
             } yield Right(())
           }
         } yield result
