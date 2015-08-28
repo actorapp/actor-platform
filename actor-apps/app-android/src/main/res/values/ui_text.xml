@@ -28,6 +28,7 @@
     <string name="toast_already_member">User is already member of group</string>
     <string name="toast_empty_name">Name can\'t be empty</string>
     <string name="toast_unable_change">Unable to change name</string>
+    <string name="toast_empty_about">About can\'t be empty</string>
 
     <string name="menu_share">Share</string>
     <string name="menu_save">Save to Phone</string>
@@ -147,6 +148,11 @@
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
     <string name="settings_security">Security</string>
+    <string name="nickname_empty">Set nickname</string>
+    <string name="nickname_change">Change nickname</string>
+    <string name="nickname">Nickname</string>
+    <string name="about_user_me">About me</string>
+    <string name="about_user">About user</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Call {0}</string>
@@ -263,6 +269,8 @@
     <string name="group_add_member">Add a member</string>
 
     <string name="group_not_member">You is not member of this group</string>
+
+    <string name="about_group">About group</string>
 
     <!-- Avatar -->
     <string name="avatar_title_your">Your photo</string>

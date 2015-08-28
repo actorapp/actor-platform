@@ -13,6 +13,9 @@ import android.webkit.MimeTypeMap;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import im.actor.core.entity.FileReference;
+import im.actor.core.entity.Peer;
+import im.actor.core.utils.IOUtils;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.activity.TakePhotoActivity;
 import im.actor.messenger.app.fragment.chat.ChatActivity;
@@ -21,10 +24,8 @@ import im.actor.messenger.app.fragment.group.IntegrationTokenActivity;
 import im.actor.messenger.app.fragment.group.InviteLinkActivity;
 import im.actor.messenger.app.fragment.preview.PictureActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
+import im.actor.messenger.app.fragment.settings.EditAboutActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
-import im.actor.messenger.app.util.io.IOUtils;
-import im.actor.core.entity.FileReference;
-import im.actor.core.entity.Peer;
 
 /**
  * Created by ex3ndr on 07.10.14.
@@ -68,6 +69,18 @@ public class Intents {
     public static Intent editGroupTitle(int groupId, Context context) {
         return new Intent(context, EditNameActivity.class)
                 .putExtra(EXTRA_EDIT_TYPE, EditNameActivity.TYPE_GROUP)
+                .putExtra(EXTRA_EDIT_ID, groupId);
+    }
+
+    public static Intent editUserAbout(Context context) {
+        return new Intent(context, EditAboutActivity.class)
+                .putExtra(EXTRA_EDIT_TYPE, EditAboutActivity.TYPE_ME)
+                .putExtra(EXTRA_EDIT_ID, 0);
+    }
+
+    public static Intent editGroupAbout(int groupId, Context context) {
+        return new Intent(context, EditAboutActivity.class)
+                .putExtra(EXTRA_EDIT_TYPE, EditAboutActivity.TYPE_GROUP)
                 .putExtra(EXTRA_EDIT_ID, groupId);
     }
 
