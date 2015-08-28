@@ -43,6 +43,7 @@ public class MentionSpan extends BaseUrlSpan {
 
         ds.setColor(colors[Math.abs(userId) % colors.length]);
         ds.setTypeface(tf);
+        ds.setUnderlineText(false);
     }
 
     private String url;

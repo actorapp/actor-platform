@@ -188,6 +188,10 @@ public class ChatListProcessor implements ListProcessor<Message> {
                 }
             }
 
+            if (isMention && !found) {
+                return false;
+            }
+
             URLSpan span = (isMention && isGroup && found) ? new MentionSpan(nick, userId, false) : new URLSpan(m.group());
 
 

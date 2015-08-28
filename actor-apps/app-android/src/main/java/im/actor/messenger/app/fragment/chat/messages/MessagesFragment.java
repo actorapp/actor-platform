@@ -337,7 +337,9 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                                 String nick = user.getNick().get();
                                 String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
-                                i.putExtra("forward_text_raw", name.concat(": ").concat(text).concat("\n"));
+                                String forward = name.concat(": ").concat(text).concat("\n");
+                                i.putExtra("forward_text", forward);
+                                i.putExtra("forward_text_raw", forward);
                             } else if (m.getContent() instanceof DocumentContent) {
                                 boolean isDoc = !(m.getContent() instanceof PhotoContent || m.getContent() instanceof VideoContent);
                                 DocumentContent fileMessage = (DocumentContent) m.getContent();
