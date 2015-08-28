@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageContentTypes } from 'constants/ActorAppConstants';
+import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
 class State extends React.Component {
   static propTypes = {

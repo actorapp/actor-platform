@@ -6,7 +6,7 @@ import memoize from 'memoizee';
 import emojify from 'emojify.js';
 import emojiCharacters from 'emoji-named-characters';
 
-import Markdown from 'utils/Markdown';
+import Markdown from '../../../utils/Markdown';
 
 const inversedEmojiCharacters = _.invert(_.mapValues(emojiCharacters, (e) => e.character));
 

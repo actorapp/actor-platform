@@ -98,9 +98,8 @@
     line-height: $message-line-height;
     &--service {
       font-size: 14px;
-      //margin: 10px 0;
 
-      text-align: center;
+      font-style: italic;
 
       color: $message-service-text-color;
     }
