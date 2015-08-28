@@ -28,7 +28,7 @@ class WebhooksHandler()(
   protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
 
   override def routes: Route = pathPrefix("webhooks") {
-    outgoingRoutes ~ ingoingRoutes
+    outgoing ~ ingoing
   }
 
 }
