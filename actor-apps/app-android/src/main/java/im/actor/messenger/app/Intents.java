@@ -24,6 +24,7 @@ import im.actor.messenger.app.fragment.group.IntegrationTokenActivity;
 import im.actor.messenger.app.fragment.group.InviteLinkActivity;
 import im.actor.messenger.app.fragment.preview.PictureActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
+import im.actor.messenger.app.fragment.settings.EditAboutActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
 
 /**
@@ -68,6 +69,18 @@ public class Intents {
     public static Intent editGroupTitle(int groupId, Context context) {
         return new Intent(context, EditNameActivity.class)
                 .putExtra(EXTRA_EDIT_TYPE, EditNameActivity.TYPE_GROUP)
+                .putExtra(EXTRA_EDIT_ID, groupId);
+    }
+
+    public static Intent editUserAbout(Context context) {
+        return new Intent(context, EditAboutActivity.class)
+                .putExtra(EXTRA_EDIT_TYPE, EditAboutActivity.TYPE_ME)
+                .putExtra(EXTRA_EDIT_ID, 0);
+    }
+
+    public static Intent editGroupAbout(int groupId, Context context) {
+        return new Intent(context, EditAboutActivity.class)
+                .putExtra(EXTRA_EDIT_TYPE, EditAboutActivity.TYPE_GROUP)
                 .putExtra(EXTRA_EDIT_ID, groupId);
     }
 
