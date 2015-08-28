@@ -35,6 +35,7 @@ trait Migration {
     } recover {
       case e ⇒
         system.log.error(e, s"Migration $migrationName failed!!!")
+        throw e
     }, migrationTimeout)
   }
 

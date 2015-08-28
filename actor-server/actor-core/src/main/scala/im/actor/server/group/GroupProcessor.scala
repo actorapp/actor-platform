@@ -78,6 +78,8 @@ object GroupProcessor {
     ActorSerializer.register(20018, classOf[GroupCommands.RevokeIntegrationToken])
     ActorSerializer.register(20020, classOf[GroupCommands.RevokeIntegrationTokenAck])
     ActorSerializer.register(20023, classOf[GroupCommands.JoinAfterFirstRead])
+    ActorSerializer.register(20024, classOf[GroupCommands.CreateInternal])
+    ActorSerializer.register(20025, classOf[GroupCommands.CreateInternalAck])
 
     ActorSerializer.register(21001, classOf[GroupQueries.GetIntegrationToken])
     ActorSerializer.register(21002, classOf[GroupQueries.GetIntegrationTokenResponse])
@@ -191,6 +193,8 @@ private[group] final class GroupProcessor
   override def handleInitCommand: Receive = {
     case Create(_, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
       create(groupId, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
+    case CreateInternal(_, creatorUserId, title, userIds) ⇒
+      createInternal(creatorUserId, title, userIds)
   }
 
   override def handleCommand(state: Group): Receive = {
@@ -261,10 +265,10 @@ private[group] final class GroupProcessor
       about = None,
       creatorUserId = evt.creatorUserId,
       createdAt = ts,
-      members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, ts, isAdmin = true)),
+      members = (evt.userIds map (userId ⇒ (userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId))))).toMap,
       isPublic = false,
       bot = None,
-      invitedUserIds = Set.empty,
+      invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,
       topic = None
     )
