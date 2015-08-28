@@ -1,14 +1,14 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import addons from 'react/addons';
 
-import DialogActionCreators from 'actions/DialogActionCreators';
-
-import LoginStore from 'stores/LoginStore';
-
-import AvatarItem from 'components/common/AvatarItem.react';
+import GroupMember from 'components/activity/GroupMember.react';
 
 const {addons: { PureRenderMixin }} = addons;
 
@@ -23,46 +23,11 @@ class GroupProfileMembers extends React.Component {
     super(props);
   }
 
-  onClick(id) {
-    DialogActionCreators.selectDialogPeerUser(id);
-  }
-
-  onKickMemberClick(groupId, userId) {
-    DialogActionCreators.kickMember(groupId, userId);
-  }
-
   render() {
-    const groupId = this.props.groupId;
-    const members = this.props.members;
-    const myId = LoginStore.getMyId();
+    const { groupId, members } = this.props;
 
-    let membersList = _.map(members, (member, index) => {
-      let controls;
-      let canKick = member.canKick;
-
-      if (canKick === true && member.peerInfo.peer.id !== myId) {
-        controls = (
-          <div className="controls pull-right">
-            <a onClick={this.onKickMemberClick.bind(this, groupId, member.peerInfo.peer.id)}>Kick</a>
-          </div>
-        );
-      }
-
-      return (
-        <li className="group_profile__members__list__item" key={index}>
-          <a onClick={this.onClick.bind(this, member.peerInfo.peer.id)}>
-            <AvatarItem image={member.peerInfo.avatar}
-                        placeholder={member.peerInfo.placeholder}
-                        title={member.peerInfo.title}/>
-          </a>
-
-          <a onClick={this.onClick.bind(this, member.peerInfo.peer.id)}>
-            {member.peerInfo.title}
-          </a>
-
-          {controls}
-        </li>
-      );
+    const membersList = _.map(members, (member, index) => {
+      return <GroupMember {...member} gid={groupId} key={index}/>;
     }, this);
 
     return (
