@@ -77,7 +77,8 @@ class InviteUser extends React.Component {
   };
 
   onContactSelect = (contact) => {
-    ActorClient.inviteMember(this.state.group.id, contact.uid);
+    const { group } = this.state;
+    InviteUserActions.inviteUser(group.id, contact.uid);
   };
 
   onInviteUrlByClick = () => {
@@ -97,22 +98,21 @@ class InviteUser extends React.Component {
   };
 
   render() {
-    const contacts = this.state.contacts;
-    const isOpen = this.state.isOpen;
+    const { contacts, group, search, isOpen } = this.state;
 
     let contactList = [];
     if (isOpen) {
 
       _.forEach(contacts, (contact, i) => {
         const name = contact.name.toLowerCase();
-        if (name.includes(this.state.search.toLowerCase())) {
-          if (!hasMember(this.state.group, contact.uid)) {
+        if (name.includes(search.toLowerCase())) {
+          if (!hasMember(group, contact.uid)) {
             contactList.push(
               <ContactItem contact={contact} key={i} onSelect={this.onContactSelect}/>
             );
           } else {
             contactList.push(
-              <ContactItem contact={contact} key={i} member/>
+              <ContactItem contact={contact} key={i} isMember/>
             );
           }
         }
