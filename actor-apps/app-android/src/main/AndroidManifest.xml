@@ -236,6 +236,12 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
+            android:name=".app.fragment.settings.EditAboutActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+
+        <activity
             android:name="im.actor.messenger.app.activity.AddContactActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
