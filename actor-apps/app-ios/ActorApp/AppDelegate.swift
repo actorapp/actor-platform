@@ -79,7 +79,7 @@ import Foundation
             // Create root layout for login
             
             let phoneController = AuthPhoneViewController()
-            var loginNavigation = AANavigationController(rootViewController: phoneController)
+            var loginNavigation =   AANavigationController(rootViewController: phoneController)
             loginNavigation.navigationBar.tintColor = MainAppTheme.navigation.barColor
             loginNavigation.makeBarTransparent()
             
@@ -191,12 +191,16 @@ import Foundation
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
+        createActor()
+        
         Actor.onAppVisible();
         // Hack for resync phone book
         Actor.onPhoneBookChanged()
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
+        createActor()
+        
         Actor.onAppHidden();
         
         if Actor.isLoggedIn() {
@@ -237,6 +241,7 @@ import Foundation
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        createActor()
         
         if !Actor.isLoggedIn() {
             completionHandler(UIBackgroundFetchResult.NoData)
@@ -246,6 +251,8 @@ import Foundation
     }
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        createActor()
+        
         if !Actor.isLoggedIn() {
             completionHandler(UIBackgroundFetchResult.NoData)
             return
