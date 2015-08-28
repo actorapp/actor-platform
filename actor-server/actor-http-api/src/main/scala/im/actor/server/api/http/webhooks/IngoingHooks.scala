@@ -17,7 +17,7 @@ import scala.util.{ Failure, Success }
 trait IngoingHooks extends ContentUnmarshaller {
   self: WebhooksHandler ⇒
 
-  def ingoingRoutes: Route = path(Segment) { token ⇒
+  def ingoing: Route = path(Segment) { token ⇒
     post {
       entity(as[Content]) { content ⇒
         onComplete(send(content, token)) {
