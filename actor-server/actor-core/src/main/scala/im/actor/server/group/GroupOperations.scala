@@ -30,6 +30,14 @@ private[group] sealed trait Commands {
   ): Future[CreateAck] =
     (peerManagerRegion.ref ? Create(groupId, clientUserId, clientAuthId, title, randomId, userIds.toSeq)).mapTo[CreateAck]
 
+  def createInternal(groupId: Int, creatorUserId: Int, title: String, userIds: Set[Int])(
+    implicit
+    region:  GroupProcessorRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[CreateInternalAck] =
+    (region.ref ? CreateInternal(groupId, creatorUserId, title, userIds.toSeq)).mapTo[CreateInternalAck]
+
   def makePublic(groupId: Int, description: String)(
     implicit
     region:  GroupProcessorRegion,
