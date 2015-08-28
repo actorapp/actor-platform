@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.SelectionListenerEdittext;
+import im.actor.messenger.app.view.SelectionListenerEditText;
 import im.actor.runtime.Log;
 
 public class BaseKeyboard implements
@@ -27,7 +27,7 @@ public class BaseKeyboard implements
     private boolean emojiKeyboardIsOpening;
     private InputMethodManager inputMethodManager;
     private View emojiKeyboardView;
-    protected SelectionListenerEdittext messageBody;
+    protected SelectionListenerEditText messageBody;
 
     Boolean pendingOpen = false;
 
@@ -62,7 +62,7 @@ public class BaseKeyboard implements
     }
 
 
-    public void show(SelectionListenerEdittext messageBody) {
+    public void show(SelectionListenerEditText messageBody) {
         this.messageBody = messageBody;
 
         showing = true;
@@ -181,7 +181,7 @@ public class BaseKeyboard implements
     }
 
 
-    public void toggle(SelectionListenerEdittext messageBody) {
+    public void toggle(SelectionListenerEditText messageBody) {
         if (isShowing()) {
             dismiss();
         } else {

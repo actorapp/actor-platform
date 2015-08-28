@@ -84,10 +84,17 @@
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:scheme="https" android:host="actor.cc" android:pathPrefix="/join/"/>
-                <data android:scheme="https" android:host="quit.email" android:pathPrefix="/join/"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="actor.cc"
+                    android:pathPrefix="/join/"
+                    android:scheme="https" />
+                <data
+                    android:host="quit.email"
+                    android:pathPrefix="/join/"
+                    android:scheme="https" />
                 <data android:scheme="actor" />
             </intent-filter>
 
@@ -101,14 +108,15 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
-                    android:scheme="https"
-                    android:host="app.actor.im" />
+                    android:host="app.actor.im"
+                    android:scheme="https" />
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
+                <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
             </intent-filter>
 
@@ -126,7 +134,7 @@
             android:name=".app.fragment.profile.ProfileActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" >
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden">
 
         </activity>
 
@@ -214,9 +222,21 @@
             android:theme="@style/PictureFullscreenTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".app.fragment.preview.CodePreviewActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Actions -->
         <activity
             android:name=".app.fragment.settings.EditNameActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+
+        <activity
+            android:name=".app.fragment.settings.EditAboutActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />

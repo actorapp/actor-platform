@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import im.actor.core.utils.IOUtils;
+import im.actor.messenger.app.util.Logger;
 import im.actor.messenger.app.util.images.common.ImageMetadata;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.messenger.app.util.images.sources.FileSource;
@@ -35,8 +37,6 @@ import im.actor.messenger.app.view.emoji.smiles.SmilesRecentListener;
 import im.actor.messenger.app.view.emoji.smiles.SmilesRecentsController;
 import im.actor.messenger.app.view.emoji.smiles.SmileysPack;
 import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
-import im.actor.messenger.app.util.Logger;
-import im.actor.messenger.app.util.io.IOUtils;
 
 
 public class SmileProcessor {
@@ -125,7 +125,7 @@ public class SmileProcessor {
     private SmilesRecentListener smilesRecentListener;
     private SmilesRecentsController recentController;
 
-    public static final SmileProcessor emoji(){
+    public static final SmileProcessor emoji() {
         return processor;
     }
 
@@ -254,6 +254,7 @@ public class SmileProcessor {
     public void unregisterListener(SmilesListener listener) {
         listeners.remove(listener);
     }
+
     public void loadEmoji() {
         if (isLoaded) {
             return;
@@ -404,6 +405,28 @@ public class SmileProcessor {
         });
     }
 
+    public void waitForEmoji() {
+        if (isLoaded) {
+            return;
+        }
+
+        final Object lock = new Object();
+        synchronized (lock) {
+            listeners.add(new SmilesListener() {
+                @Override
+                public void onSmilesUpdated(boolean completed) {
+                    lock.notify();
+                }
+            });
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+    }
+
     private long getId(String val) {
         long id = 0;
         if (val.length() == 1) {
@@ -416,13 +439,13 @@ public class SmileProcessor {
     }
 
 
-    public Bitmap getBitmap(String emojiString){
+    public Bitmap getBitmap(String emojiString) {
         return getSection(emojiString.charAt(0));
     }
 
     public void upRecent(long smileId) {
         SmilesPack.upRecent(smileId);
-        if(smilesRecentListener!=null){
+        if (smilesRecentListener != null) {
             smilesRecentListener.onSmilesUpdated();
         }
 
@@ -687,7 +710,7 @@ public class SmileProcessor {
     }
 
     public Spannable processEmojiCompatMutable(CharSequence s, int mode) {
-            return processEmojiMutable(s, mode);
+        return processEmojiMutable(s, mode);
     }
 
     public static long[] findFirstUniqEmoji(String s, int count) {
