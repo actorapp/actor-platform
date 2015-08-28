@@ -61,7 +61,7 @@ class ReverseHooksWorker(groupId: Int, token: String, mediator: ActorRef)
 
   def init: Receive = {
     case Resubscribe ⇒
-      mediator ! Subscribe(MessagingService.messagesTopic(Peer(PeerType.Group, groupId)), Some(interceptorGroupId(groupId)), self)
+      mediator ! Subscribe(MessagingService.messagesTopic(Peer(PeerType.Group, groupId)), None, self)
     case SubscribeAck(Subscribe(topic, _, _)) ⇒
       log.debug("Watching for group's {} reverse hooks", groupId)
       scheduledResubscribe.cancel()
