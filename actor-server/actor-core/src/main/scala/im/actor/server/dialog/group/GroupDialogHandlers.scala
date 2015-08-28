@@ -34,8 +34,8 @@ trait GroupDialogHandlers extends UpdateCounters {
     isFat:        Boolean
   ): Unit = {
     deferStashingReply(LastSenderIdChanged(senderUserId), state) { e ⇒
-      withMemberIds(groupId) { (memberIds, _, botId) ⇒
-        if ((memberIds contains senderUserId) || senderUserId == botId) {
+      withMemberIds(groupId) { (memberIds, _, optBot) ⇒
+        if ((memberIds contains senderUserId) || optBot.contains(senderUserId)) {
           withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
             val date = new DateTime
             for {
@@ -46,7 +46,7 @@ trait GroupDialogHandlers extends UpdateCounters {
                   _ ← UserOffice.broadcastUserUpdate(userId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
                 } yield ()
               })
-              SeqState(seq, state) ← if (senderUserId == botId) {
+              SeqState(seq, state) ← if (optBot.contains(senderUserId)) {
                 Future.successful(SeqState(0, ByteString.EMPTY))
               } else {
                 UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
@@ -146,8 +146,8 @@ trait GroupDialogHandlers extends UpdateCounters {
 
   protected def withMemberIds[T](groupId: Int)(f: (Set[Int], Set[Int], Option[Int]) ⇒ Future[T]): Future[T] = {
     GroupOffice.getMemberIds(groupId) flatMap {
-      case (memberIds, invitedUserIds, botId) ⇒
-        f(memberIds.toSet, invitedUserIds.toSet, botId)
+      case (memberIds, invitedUserIds, optBot) ⇒
+        f(memberIds.toSet, invitedUserIds.toSet, optBot)
     }
   }
 

@@ -32,16 +32,17 @@ object ReverseHooksWorker {
 
   private[messaging] def interceptorGroupId(groupId: Int): String = s"group-$groupId"
 
-  case class MessageToWebhook(text: String, nick: Option[String])
+  case class MessageToWebhook(command: String, text: Option[String], nick: Option[String])
 
   implicit val format: Format[MessageToWebhook] = Json.format[MessageToWebhook]
 }
 
-class ReverseHooksWorker(groupId: Int, token: String, mediator: ActorRef)
+private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, mediator: ActorRef)
   extends Actor
   with ActorLogging
   with AnyRefLogSource
-  with PlayJsonSupport {
+  with PlayJsonSupport
+  with CommandParser {
 
   import ReverseHooksWorker._
 
@@ -81,37 +82,41 @@ class ReverseHooksWorker(groupId: Int, token: String, mediator: ActorRef)
       parsed.left foreach (_ ⇒ log.debug("Failed to parse message for groupId: {}", groupId))
 
       parsed.right map {
-        case TextMessage(text, _, _) ⇒
-          for {
-            keys ← reverseHooksKv.getKeys()
+        case TextMessage(content, _, _) ⇒
+          parseCommand(content) map {
+            case (command, text) ⇒
+              for {
+                keys ← reverseHooksKv.getKeys()
 
-            nick ← optNickname
-            entity ← Marshal(List(MessageToWebhook(text, nick))).to[RequestEntity]
+                nick ← optNickname
+                message = MessageToWebhook(command, text, nick)
+                entity ← Marshal(List(message)).to[RequestEntity]
 
-            idUrls ← Future.sequence(keys map (k ⇒ reverseHooksKv.get(k) map (_ map (k → _)))) map (_.flatten)
-            _ = log.debug("Will forward message from group {} to urls {}", groupId, idUrls.map(_._2))
-            _ ← Future.sequence(idUrls map {
-              case (key, url) ⇒
-                log.debug("Forwarding message from group {} to url {}", groupId, url)
-                val request = HttpRequest(HttpMethods.POST, url, entity = entity)
-                val sendFuture = for {
-                  resp ← http.singleRequest(request)
-                  _ ← if (resp.status == StatusCodes.Gone) { reverseHooksKv.delete(key) } else { Future.successful(()) }
-                  _ ← resp.entity.dataBytes.runWith(Sink.ignore)
-                } yield resp
-                sendFuture onComplete {
-                  case Success(resp) ⇒
-                    if (resp.status.isSuccess()) {
-                      log.debug("Successfully forwarded message from group {} to url: {}, status: {}", groupId, url, resp.status)
-                    } else {
-                      log.debug("Failed to forward message from group {} to url: {}, status: {}", groupId, url, resp.status)
+                idUrls ← Future.sequence(keys map (k ⇒ reverseHooksKv.get(k) map (_ map (k → _)))) map (_.flatten)
+                _ = log.debug("Will forward message {} from group {} to urls {}", message, groupId, idUrls.map(_._2))
+                _ ← Future.sequence(idUrls map {
+                  case (key, url) ⇒
+                    log.debug("Forwarding message {} from group {} to url {}", message, groupId, url)
+                    val request = HttpRequest(HttpMethods.POST, url, entity = entity)
+                    val sendFuture = for {
+                      resp ← http.singleRequest(request)
+                      _ ← if (resp.status == StatusCodes.Gone) { reverseHooksKv.delete(key) } else { Future.successful(()) }
+                      _ ← resp.entity.dataBytes.runWith(Sink.ignore)
+                    } yield resp
+                    sendFuture onComplete {
+                      case Success(resp) ⇒
+                        if (resp.status.isSuccess()) {
+                          log.debug("Successfully forwarded message {} from group {} to url: {}, status: {}", message, groupId, url, resp.status)
+                        } else {
+                          log.debug("Failed to forward message {} from group {} to url: {}, status: {}", message, groupId, url, resp.status)
+                        }
+                      case Failure(e) ⇒
+                        log.debug("Error while forwarding message {} from group {} to url: {}, error: {}", message, groupId, url, e)
                     }
-                  case Failure(e) ⇒
-                    log.debug("Error while forwarding message from group {} to url: {}, error: {}", groupId, url, e)
-                }
-                sendFuture
-            })
-          } yield ()
+                    sendFuture
+                })
+              } yield ()
+          }
         case _ ⇒ log.debug("Does not support non text messages in reverse hooks")
       }
   }

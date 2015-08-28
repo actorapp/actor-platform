@@ -5,6 +5,7 @@ import akka.http.scaladsl.model.{ StatusCode, StatusCodes }
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.http.scaladsl.server.Route
+import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
 import im.actor.server.api.http.json._
 import im.actor.server.dialog.group.GroupDialogOperations
@@ -14,8 +15,10 @@ import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.{ Failure, Success }
 
-trait IngoingHooks extends ContentUnmarshaller {
+trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
   self: WebhooksHandler ⇒
+
+  import JsonFormatters._
 
   def ingoing: Route = path(Segment) { token ⇒
     post {
@@ -23,8 +26,8 @@ trait IngoingHooks extends ContentUnmarshaller {
         onComplete(send(content, token)) {
           case Success(result) ⇒
             result match {
-              case Left(statusCode) ⇒ complete(statusCode)
-              case Right(_)         ⇒ complete(OK)
+              case Left(statusCode) ⇒ complete(statusCode → Status("failure"))
+              case Right(_)         ⇒ complete(OK → Status("Ok"))
             }
           case Failure(e) ⇒ complete(InternalServerError)
         }
