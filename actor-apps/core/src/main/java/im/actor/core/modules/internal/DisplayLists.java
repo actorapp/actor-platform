@@ -111,20 +111,6 @@ public class DisplayLists extends AbsModule {
         PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationEngine(peer),
                 isShared, Message.ENTITY_NAME);
 
-        ((BindedDisplayList<Message>) res).setBindHook(new BindedDisplayList.BindHook<Message>() {
-            @Override
-            public void onScrolledToEnd() {
-                context().getMessagesModule().loadMoreHistory(peer);
-            }
-
-            @Override
-            public void onItemTouched(Message item) {
-                if (item.isOnServer()) {
-                    context().getMessagesModule().onMessageShown(peer, item.getSenderId(), item.getSortDate());
-                }
-            }
-        });
-
         long lastRead = context().getMessagesModule().loadReadState(peer);
 
         if (lastRead != 0) {
