@@ -147,6 +147,9 @@
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
     <string name="settings_security">Security</string>
+    <string name="nickname_empty">Set nickname</string>
+    <string name="nickname_change">Change nickname</string>
+    <string name="nickname">Nickname</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Call {0}</string>
