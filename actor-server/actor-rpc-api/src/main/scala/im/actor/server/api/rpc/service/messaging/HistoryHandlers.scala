@@ -220,7 +220,7 @@ trait HistoryHandlers {
     withHistoryOwner(dialogModel.peer) { historyOwner ⇒
       for {
         messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
-        unreadCount ← persist.HistoryMessage.getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
+        unreadCount ← getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield {
         val emptyMessageContent = TextMessage(text = "", mentions = Vector.empty, ext = None)
         val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
@@ -237,6 +237,17 @@ trait HistoryHandlers {
           state = message.state
         )
       }
+    }
+  }
+
+  private def getUnreadCount(historyOwner: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit client: AuthorizedClientData): DBIO[Int] = {
+    if (isSharedUser(historyOwner)) {
+      for {
+        isMember ← DBIO.from(GroupOffice.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains client.userId })
+        result ← if (isMember) persist.HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
+      } yield result
+    } else {
+      persist.HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt)
     }
   }
 
