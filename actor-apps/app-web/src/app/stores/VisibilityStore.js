@@ -2,28 +2,27 @@ import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import ActorAppConstants from 'constants/ActorAppConstants';
-var ActionTypes = ActorAppConstants.ActionTypes;
+import { ActionTypes } from 'constants/ActorAppConstants';
 
-var CHANGE_EVENT = 'change';
+const CHANGE_EVENT = 'change';
 
-var VisibilityStore = assign({}, EventEmitter.prototype, {
+const VisibilityStore = assign({}, EventEmitter.prototype, {
   isVisible: false,
 
-  emitChange: function() {
+  emitChange() {
     this.emit(CHANGE_EVENT);
   },
 
-  addChangeListener: function(callback) {
+  addChangeListener(callback) {
     this.on(CHANGE_EVENT, callback);
   },
 
-  removeChangeListener: function(callback) {
+  removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
   }
 });
 
-VisibilityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
+VisibilityStore.dispatchToken = ActorAppDispatcher.register(action => {
   switch(action.type) {
     case ActionTypes.APP_VISIBLE:
       VisibilityStore.isVisible = true;
