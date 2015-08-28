@@ -19,8 +19,11 @@ import android.provider.MediaStore;
 import android.view.Display;
 import android.webkit.MimeTypeMap;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -55,6 +58,8 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     private Context context;
     private final Random random = new Random();
     private ActorRef appStateActor;
+    private BindedDisplayList<Dialog> dialogList;
+    private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<Peer, BindedDisplayList<Message>>();
 
     public AndroidMessenger(Context context, im.actor.core.Configuration configuration) {
         super(configuration);
@@ -347,14 +352,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         appStateActor.send(new AppStateActor.OnActivityClosed());
     }
 
-    public BindedDisplayList<Dialog> getDialogsDisplayList() {
-        return (BindedDisplayList<Dialog>) modules.getDisplayListsModule().getDialogsSharedList();
-    }
-
-    public BindedDisplayList<Message> getMessageDisplayList(Peer peer) {
-        return (BindedDisplayList<Message>) modules.getDisplayListsModule().getMessagesSharedList(peer);
-    }
-
     public BindedDisplayList<SearchEntity> buildSearchDisplayList() {
         return (BindedDisplayList<SearchEntity>) modules.getDisplayListsModule().buildSearchList(false);
     }
@@ -406,5 +403,48 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
         File outputFile = new File(dest, prefix + "_" + random.nextLong() + "." + postfix);
         return outputFile.getAbsolutePath();
+    }
+
+    @ObjectiveCName("getDialogsDisplayList")
+    public BindedDisplayList<Dialog> getDialogsDisplayList() {
+        if (dialogList == null) {
+            dialogList = (BindedDisplayList<Dialog>) modules.getDisplayListsModule().getDialogsSharedList();
+            dialogList.setBindHook(new BindedDisplayList.BindHook<Dialog>() {
+                @Override
+                public void onScrolledToEnd() {
+                    modules.getMessagesModule().loadMoreDialogs();
+                }
+
+                @Override
+                public void onItemTouched(Dialog item) {
+
+                }
+            });
+        }
+
+        return dialogList;
+    }
+
+    @ObjectiveCName("getMessageDisplayList:")
+    public BindedDisplayList<Message> getMessageDisplayList(final Peer peer) {
+        if (!messagesLists.containsKey(peer)) {
+            BindedDisplayList<Message> list = (BindedDisplayList<Message>) modules.getDisplayListsModule().getMessagesSharedList(peer);
+            list.setBindHook(new BindedDisplayList.BindHook<Message>() {
+                @Override
+                public void onScrolledToEnd() {
+                    modules.getMessagesModule().loadMoreHistory(peer);
+                }
+
+                @Override
+                public void onItemTouched(Message item) {
+                    if (item.isOnServer()) {
+                        modules.getMessagesModule().onMessageShown(peer, item.getSenderId(), item.getSortDate());
+                    }
+                }
+            });
+            messagesLists.put(peer, list);
+        }
+
+        return messagesLists.get(peer);
     }
 }
