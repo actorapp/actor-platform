@@ -28,7 +28,7 @@ final class RpcApiService(services: Seq[Service]) extends Actor with ActorLoggin
   private type Chain = PartialFunction[RpcRequest, ClientData ⇒ Future[RpcError \/ RpcOk]]
 
   // TODO: configurable
-  private val DefaultErrorDelay = 1
+  private val DefaultErrorDelay = 5
 
   private implicit val ec: ExecutionContext = context.dispatcher
 
