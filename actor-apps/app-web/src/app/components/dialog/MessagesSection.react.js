@@ -1,16 +1,21 @@
-import React from 'react';
-import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
-const {addons: { PureRenderMixin }} = addons;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
 import _ from 'lodash';
 
-import VisibilityStore from 'stores/VisibilityStore';
+import React from 'react';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
+import { MessageContentTypes } from 'constants/ActorAppConstants';
 
 import MessageActionCreators from 'actions/MessageActionCreators';
 
-import MessageItem from 'components/common/MessageItem.react';
-import { MessageContentTypes } from 'constants/ActorAppConstants';
+import VisibilityStore from 'stores/VisibilityStore';
+
+import MessageItem from './messages/MessageItem.react';
+
+const {addons: { PureRenderMixin }} = addons;
 
 let _delayed = [];
 
@@ -25,8 +30,7 @@ let flushDelayed = () => {
 let flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
 
 let lastMessageDate = null,
-    lastMessageSenderId = null,
-    lastMessageContentType = null;
+    lastMessageSenderId = null;
 
 @ReactMixin.decorate(PureRenderMixin)
 class MessagesSection extends React.Component {
@@ -35,19 +39,18 @@ class MessagesSection extends React.Component {
     peer: React.PropTypes.object.isRequired
   };
 
-  componentWillUnmount() {
-    VisibilityStore.removeChangeListener(this.onAppVisibilityChange);
-  }
-
   constructor(props) {
     super(props);
 
     VisibilityStore.addChangeListener(this.onAppVisibilityChange);
   }
 
+  componentWillUnmount() {
+    VisibilityStore.removeChangeListener(this.onAppVisibilityChange);
+  }
+
   getMessagesListItem = (message, index) => {
-    let date = new Date(message.fullDate),
-        dateDivider = null;
+    let date = new Date(message.fullDate);
 
     const month = [
       'January', 'February', 'March', 'April', 'May', 'June',
@@ -61,21 +64,11 @@ class MessagesSection extends React.Component {
     const isFirstMessage = index === 0;
     const isNewDay = date.getDate() !== lastMessageDate.getDate();
 
-    if (isNewDay) {
-      dateDivider = (
-        <li className="date-divider">{month[date.getMonth()]} {date.getDate()}</li>
-      );
-    }
-
-    let isSameSender = message.sender.peer.id === lastMessageSenderId &&
-                      lastMessageContentType !== MessageContentTypes.SERVICE &&
-                      message.content.content !== MessageContentTypes.SERVICE &&
-                      !isFirstMessage &&
-                      !isNewDay;
+    const dateDivider = isNewDay ? <li className="date-divider">{month[date.getMonth()]} {date.getDate()}</li> : null;
+    const isSameSender = message.sender.peer.id === lastMessageSenderId && !isFirstMessage && !isNewDay;
 
     const messageItem = (
-      <MessageItem index={index}
-                   key={message.sortKey}
+      <MessageItem key={message.sortKey}
                    message={message}
                    isNewDay={isNewDay}
                    isSameSender={isSameSender}
@@ -84,7 +77,6 @@ class MessagesSection extends React.Component {
     );
 
     lastMessageDate = new Date(message.fullDate);
-    lastMessageContentType = message.content.content;
     lastMessageSenderId = message.sender.peer.id;
 
     return [dateDivider, messageItem];

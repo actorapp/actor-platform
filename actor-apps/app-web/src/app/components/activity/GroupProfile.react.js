@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import { assign } from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
@@ -122,6 +126,7 @@ class GroupProfile extends React.Component {
   render() {
     const { group } = this.props;
     const { isNotificationsEnabled, integrationToken, isCopyButtonEnabled, isMoreDropdownOpen } = this.state;
+
     const myId = LoginStore.getMyId();
     const admin = GroupProfileActionCreators.getUser(group.adminId);
     const isMember = DialogStore.isGroupMember(group);
