@@ -1,6 +1,7 @@
 package im.actor.messenger.app.view;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.view.View;
 
@@ -10,10 +11,13 @@ import im.actor.messenger.app.Intents;
 
 public class MentionSpan extends BaseUrlSpan {
     int[] colors;
+    int userId;
 
-    public MentionSpan(String url, boolean hideUrlStyle) {
-        super(url, hideUrlStyle);
+    public static Typeface tf;
 
+    public MentionSpan(String nick, int userId, boolean hideUrlStyle) {
+        super(nick, hideUrlStyle);
+        this.userId = userId;
         colors = new int[]{
                 AppContext.getContext().getResources().getColor(R.color.placeholder_0),
                 AppContext.getContext().getResources().getColor(R.color.placeholder_1),
@@ -28,30 +32,32 @@ public class MentionSpan extends BaseUrlSpan {
     @Override
     public void updateDrawState(TextPaint ds) {
         super.updateDrawState(ds);
-        if(hideUrlStyle){
+        if (hideUrlStyle) {
             ds.setUnderlineText(false);
             ds.setColor(Color.BLACK);
         }
-        if(getURL().startsWith("people://")){
-            int userId = Integer.parseInt(getURL().replace("people://", ""));
-            ds.setColor(colors[Math.abs(userId) % colors.length]);
+
+        if (tf == null) {
+            tf = Typeface.createFromAsset(AppContext.getContext().getAssets(), "Roboto-Medium.ttf");
         }
+
+        ds.setColor(colors[Math.abs(userId) % colors.length]);
+        ds.setTypeface(tf);
     }
 
     private String url;
 
-    public void setUrl(String s){
+    public void setUrl(String s) {
         this.url = s;
     }
 
     @Override
     public void onClick(View widget) {
-        if(hideUrlStyle){
+        if (hideUrlStyle) {
             //Do nothing
-        }else{
-//            super.onClick(widget);
-            int id = Integer.parseInt(getURL().split("://")[1]);
-            widget.getContext().startActivity(Intents.openProfile(id, widget.getContext()));
+        } else {
+
+            widget.getContext().startActivity(Intents.openProfile(userId, widget.getContext()));
         }
     }
 }
