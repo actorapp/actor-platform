@@ -29,7 +29,6 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
 
   private val log = Logging(system, this)
 
-  //todo: remove. use single set maybe
   def expectUpdate[T: ClassTag](seq: Int, state: Array[Byte], updateHeader: Int, requiredSize: Option[Int] = None)(check: T ⇒ Any)(implicit client: ClientData): Unit = {
     matchUpdates(seq, state) { serviceUpdates ⇒
       withClue(
@@ -45,6 +44,17 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
         optUpdate shouldBe defined
       }
       check(parseUpdate[T](optUpdate.get))
+    }
+  }
+
+  //todo: make timeout configurable
+  def expectNoUpdate(seq: Int, state: Array[Byte], updateHeader: Int)(implicit client: ClientData): Unit = {
+    Thread.sleep(4000)
+    whenReady(sequenceService.handleGetDifference(seq, state)) { diff ⇒
+      inside(diff) {
+        case \/-(ResponseGetDifference(_, _, _, updates, _, _)) ⇒ if (updates.map(_.updateHeader).contains(updateHeader)) fail(s"There should be no update with header $updateHeader")
+        case -\/(_) ⇒ fail("failed to parse response from sequence service")
+      }
     }
   }
 
@@ -109,17 +119,18 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
   def parseUpdate[T: ClassTag](diffUpdate: DifferenceUpdate): T = {
     val is = CodedInputStream.newInstance(diffUpdate.update)
     val result = diffUpdate.updateHeader match {
-      case UpdateMessageSent.header       ⇒ UpdateMessageSent.parseFrom(is)
-      case UpdateCountersChanged.header   ⇒ UpdateCountersChanged.parseFrom(is)
-      case UpdateMessage.header           ⇒ UpdateMessage.parseFrom(is)
-      case UpdateContactRegistered.header ⇒ UpdateContactRegistered.parseFrom(is)
-      case UpdateMessageReceived.header   ⇒ UpdateMessageReceived.parseFrom(is)
-      case UpdateMessageReadByMe.header   ⇒ UpdateMessageReadByMe.parseFrom(is)
-      case UpdateMessageRead.header       ⇒ UpdateMessageRead.parseFrom(is)
-      case UpdateGroupUserInvited.header  ⇒ UpdateGroupUserInvited.parseFrom(is)
-      case UpdateGroupInvite.header       ⇒ UpdateGroupInvite.parseFrom(is)
-      case UpdateGroupTitleChanged.header ⇒ UpdateGroupTitleChanged.parseFrom(is)
-      case _                              ⇒ fail(s"Failed to parse update of given type. Provide header -> update mapping in im.actor.server.SequenceMatchers.parseUpdate")
+      case UpdateMessageSent.header           ⇒ UpdateMessageSent.parseFrom(is)
+      case UpdateCountersChanged.header       ⇒ UpdateCountersChanged.parseFrom(is)
+      case UpdateMessage.header               ⇒ UpdateMessage.parseFrom(is)
+      case UpdateContactRegistered.header     ⇒ UpdateContactRegistered.parseFrom(is)
+      case UpdateMessageReceived.header       ⇒ UpdateMessageReceived.parseFrom(is)
+      case UpdateMessageReadByMe.header       ⇒ UpdateMessageReadByMe.parseFrom(is)
+      case UpdateMessageRead.header           ⇒ UpdateMessageRead.parseFrom(is)
+      case UpdateGroupUserInvited.header      ⇒ UpdateGroupUserInvited.parseFrom(is)
+      case UpdateGroupInvite.header           ⇒ UpdateGroupInvite.parseFrom(is)
+      case UpdateGroupTitleChanged.header     ⇒ UpdateGroupTitleChanged.parseFrom(is)
+      case UpdateMessageContentChanged.header ⇒ UpdateMessageContentChanged.parseFrom(is)
+      case _                                  ⇒ fail(s"Failed to parse update of given type. You MUST provide (header -> update) mapping in im.actor.server.SequenceMatchers.parseUpdate")
     }
     inside(result) {
       case Right(x) ⇒ x shouldBe ofType[T]

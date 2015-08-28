@@ -42,14 +42,14 @@ object Build extends sbt.Build {
   lazy val defaultSettings =
     buildSettings ++ Formatting.formatSettings ++
       PB.protobufSettings ++ Seq(
-        //PB.javaConversions in PB.protobufConfig := true,
-        libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
-        PB.includePaths in PB.protobufConfig ++= Seq(
-          file("actor-commons-api/src/main/protobuf")
-        ),
-        PB.runProtoc in PB.protobufConfig := (args =>
-          com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))
-      ) ++
+      //PB.javaConversions in PB.protobufConfig := true,
+      libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
+      PB.includePaths in PB.protobufConfig ++= Seq(
+        file("actor-commons-api/src/main/protobuf")
+      ),
+      PB.runProtoc in PB.protobufConfig := (args =>
+        com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))
+    ) ++
       Seq(
         initialize ~= { _ =>
           if (sys.props("java.specification.version") != "1.8")
@@ -87,7 +87,7 @@ object Build extends sbt.Build {
     .aggregate(
       actorCommonsApi,
       actorCommonsBase,
-//      actorDashboard,
+      //      actorDashboard,
       actorEmail,
       actorEnrich,
       actorFrontend,
@@ -110,16 +110,16 @@ object Build extends sbt.Build {
     base = file("actor-runner"),
     settings = defaultSettings
   ).dependsOn(
-      actorActivation,
-      actorCommonsBase,
-      actorEnrich,
-      actorEmail,
-      actorFrontend,
-      actorHttpApi,
-      actorRpcApi,
-      actorNotifications,
-      actorOAuth
-    )
+    actorActivation,
+    actorCommonsBase,
+    actorEnrich,
+    actorEmail,
+    actorFrontend,
+    actorHttpApi,
+    actorRpcApi,
+    actorNotifications,
+    actorOAuth
+  )
 
   lazy val actorActivation = Project(
     id = "actor-activation",
@@ -129,7 +129,7 @@ object Build extends sbt.Build {
         libraryDependencies ++= Dependencies.activation,
         scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
       )
-  ).dependsOn(actorEmail, actorSms)
+  ).dependsOn(actorEmail, actorSms, actorPersist)
 
   lazy val actorCommonsApi = Project(
     id = "actor-commons-api",
@@ -141,7 +141,7 @@ object Build extends sbt.Build {
           libraryDependencies ++= Dependencies.commonsApi,
           scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
         )
-  ).dependsOn(actorCommonsBase, actorPersist, actorCodecs)
+  ).dependsOn(actorCommonsBase, actorPersist, actorCodecs, actorUtils)
 
   lazy val actorCommonsBase = Project(
     id = "actor-commons-base",
@@ -159,7 +159,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.core
     )
-  ).dependsOn(actorCommonsApi, actorModels, actorPresences, actorSocial, actorUtils, actorUtilsCache)
+  ).dependsOn(actorCommonsApi, actorModels, actorPresences, actorSocial, actorUtils, actorUtilsCache, shardakka)
 
   lazy val actorEmail = Project(
     id = "actor-email",
@@ -184,7 +184,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.httpApi
     )
-  ).dependsOn(actorCore, actorPersist, actorTls)
+  ).dependsOn(actorCore, actorPersist, actorTls, actorUtils)
 
   lazy val actorOAuth = Project(
     id = "actor-oauth",
@@ -222,20 +222,19 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.rpcApi
     )
   ).dependsOn(
-      actorActivation,
-      actorCodecs,
-      actorCommonsApi,
-      actorCore,
-      actorHttpApi, // FIXME: remove this dependency
-      actorOAuth,
-      actorPersist,
-      actorPresences,
-      actorSessionMessages,
-      actorSms,
-      actorSocial,
-      actorUtils,
-      actorUtilsHttp,
-      actorVoximplant)
+    actorActivation,
+    actorCodecs,
+    actorCommonsApi,
+    actorCore,
+    actorHttpApi, // FIXME: remove this dependency
+    actorOAuth,
+    actorPersist,
+    actorPresences,
+    actorSessionMessages,
+    actorSms,
+    actorSocial,
+    actorUtils,
+    actorUtilsHttp)
 
   lazy val actorSms = Project(
     id = "actor-sms",
@@ -291,17 +290,32 @@ object Build extends sbt.Build {
     )
   ).dependsOn(actorModels)
 
-//  lazy val actorDashboard = Project(
-//    id = "actor-dashboard",
-//    base = file("actor-dashboard"),
-//    settings = defaultSettings ++ Seq(
-//      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import"),
-//      javaOptions := javaOptions.value.filterNot(_.startsWith("-Dscalac.patmat.analysisBudget")),
-//      libraryDependencies ++= Dependencies.dashboard
-//    )
-//  )
-//    .enablePlugins(PlayScala)
-//    .dependsOn(actorPersist, actorUtils)
+  //  lazy val actorDashboard = Project(
+  //    id = "actor-dashboard",
+  //    base = file("actor-dashboard"),
+  //    settings = defaultSettings ++ Seq(
+  //      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import"),
+  //      javaOptions := javaOptions.value.filterNot(_.startsWith("-Dscalac.patmat.analysisBudget")),
+  //      libraryDependencies ++= Dependencies.dashboard
+  //    )
+  //  )
+  //    .enablePlugins(PlayScala)
+  //    .dependsOn(actorPersist, actorUtils)
+
+  lazy val actorTestkit = Project(
+    id = "actor-testkit",
+    base = file("actor-testkit"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.tests
+    )
+  ).configs(Configs.all: _*)
+    .dependsOn(
+      actorCommonsApi,
+      actorCommonsBase,
+      actorRpcApi,
+      actorSession,
+      actorPresences
+    )
 
   lazy val actorNotifications = Project(
     id = "actor-notifications",
@@ -319,7 +333,6 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.utils
     )
   )
-    .dependsOn(actorCommonsApi, actorModels, actorPersist, shardakka)
 
   lazy val actorUtilsCache = Project(
     id = "actor-utils-cache",
@@ -337,14 +350,6 @@ object Build extends sbt.Build {
     )
   )
 
-  lazy val actorVoximplant = Project(
-    id = "actor-voximplant",
-    base = file("actor-voximplant"),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.voximplant
-    )
-  )
-
   lazy val actorTests = Project(
     id = "actor-tests",
     base = file("actor-tests"),
@@ -353,11 +358,12 @@ object Build extends sbt.Build {
     ))
     .configs(Configs.all: _*)
     .dependsOn(
+      actorTestkit % "test",
       actorActivation,
       actorCodecs,
       actorCommonsApi,
       actorCommonsBase,
-//      actorDashboard,
+      //      actorDashboard,
       actorEmail,
       actorEnrich,
       actorFrontend,
@@ -366,7 +372,6 @@ object Build extends sbt.Build {
       actorOAuth,
       actorPersist,
       actorRpcApi,
-      actorRunner,
       actorSession,
       shardakka
     )

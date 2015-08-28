@@ -3,6 +3,9 @@ package im.actor.server.api.rpc.service.files
 import java.io.{ File, FileOutputStream }
 import java.nio.file.Files
 
+import im.actor.server.acl.ACLUtils
+import im.actor.server.file.{ FileUtils, S3StorageExtension, S3StorageAdapter }
+
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom

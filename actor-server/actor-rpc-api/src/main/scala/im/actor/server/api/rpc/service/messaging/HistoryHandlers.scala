@@ -9,9 +9,9 @@ import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.dialog.privat.PrivateDialogOperations
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
-import im.actor.server.util.{ GroupUtils, HistoryUtils, UserUtils }
+import im.actor.server.group.{ GroupUtils, GroupOffice }
+import im.actor.server.history.HistoryUtils
+import im.actor.server.user.{ UserUtils, UserOffice }
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio
@@ -220,7 +220,7 @@ trait HistoryHandlers {
     withHistoryOwner(dialogModel.peer) { historyOwner ⇒
       for {
         messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
-        unreadCount ← persist.HistoryMessage.getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
+        unreadCount ← getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield {
         val emptyMessageContent = TextMessage(text = "", mentions = Vector.empty, ext = None)
         val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
@@ -237,6 +237,17 @@ trait HistoryHandlers {
           state = message.state
         )
       }
+    }
+  }
+
+  private def getUnreadCount(historyOwner: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit client: AuthorizedClientData): DBIO[Int] = {
+    if (isSharedUser(historyOwner)) {
+      for {
+        isMember ← DBIO.from(GroupOffice.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains client.userId })
+        result ← if (isMember) persist.HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
+      } yield result
+    } else {
+      persist.HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt)
     }
   }
 

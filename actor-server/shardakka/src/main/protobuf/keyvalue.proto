@@ -8,21 +8,6 @@ option (scalapb.options) = {
 
 import "scalapb/scalapb.proto";
 
-message RootCommands {
-    message Upsert {
-        option (scalapb.message).extends = "shardakka.keyvalue.RootCommand";
-        required string key = 1;
-        required bytes value = 2;
-    }
-
-    message Delete {
-        option (scalapb.message).extends = "shardakka.keyvalue.RootCommand";
-        required string key = 1;
-    }
-
-    message Ack {}
-}
-
 message RootQueries {
     message GetKeys {
         option (scalapb.message).extends = "shardakka.keyvalue.RootQuery";
@@ -37,21 +22,17 @@ message ValueCommands {
     message Upsert {
         option (scalapb.message).extends = "shardakka.keyvalue.ValueCommand";
 
-        required bytes uuid = 1 [(scalapb.field).type = "com.eaio.uuid.UUID"];
-        required string key = 2;
-        required bytes value = 3;
+        required string key = 1;
+        required bytes value = 2;
     }
 
     message Delete {
         option (scalapb.message).extends = "shardakka.keyvalue.ValueCommand";
 
-        required bytes uuid = 1 [(scalapb.field).type = "com.eaio.uuid.UUID"];
-        required string key = 2;
+        required string key = 1;
     }
 
-    message Ack {
-        required bytes uuid = 1 [(scalapb.field).type = "com.eaio.uuid.UUID"];
-    }
+    message Ack {}
 }
 
 message ValueQueries {

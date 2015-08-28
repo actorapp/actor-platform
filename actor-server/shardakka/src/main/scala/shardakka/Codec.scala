@@ -3,7 +3,7 @@ package shardakka
 import java.nio.ByteBuffer
 import java.time.Instant
 
-import com.google.common.primitives.Longs
+import com.google.common.primitives.{ Ints, Longs }
 import com.google.protobuf.ByteString
 
 abstract class Codec[A] extends Encoder[A] with Decoder[A]
@@ -34,4 +34,12 @@ object InstantCodec extends Codec[Instant] {
 
   override def fromBytes(bytes: ByteString): Instant =
     Instant.ofEpochMilli(ByteBuffer.wrap(bytes.toByteArray).getLong)
+}
+
+object IntCodec extends Codec[Int] {
+  override def toString(bytes: ByteString): String = fromBytes(bytes).toString
+
+  override def toBytes(value: Int): ByteString = ByteString.copyFrom(Ints.toByteArray(value))
+
+  override def fromBytes(bytes: ByteString): Int = ByteBuffer.wrap(bytes.toByteArray).getInt
 }

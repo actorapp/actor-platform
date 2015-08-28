@@ -19,10 +19,10 @@ case class SimpleKeyValue[A](
   private val codec: Codec[A]
 ) {
   def upsert(key: String, value: A)(implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] =
-    (proxy ? RootCommands.Upsert(key, codec.toBytes(value))) map (_ ⇒ ())
+    (proxy ? ValueCommands.Upsert(key, codec.toBytes(value))) map (_ ⇒ ())
 
   def delete(key: String)(implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] =
-    (proxy ? RootCommands.Delete(key)) map (_ ⇒ ())
+    (proxy ? ValueCommands.Delete(key)) map (_ ⇒ ())
 
   def get(key: String)(implicit ec: ExecutionContext, timeout: Timeout): Future[Option[A]] =
     (proxy ? ValueQueries.Get(key)).mapTo[ValueQueries.GetResponse] map (_.value.map(codec.fromBytes))
@@ -39,11 +39,6 @@ case class SimpleKeyValue[A](
 
 trait SimpleKeyValueExtension {
   this: ShardakkaExtension ⇒
-
-  ActorSerializer.register(5001, classOf[RootCommands.Upsert])
-  ActorSerializer.register(5002, classOf[RootCommands.Delete])
-  ActorSerializer.register(5003, classOf[RootCommands.Ack])
-
   ActorSerializer.register(5201, classOf[RootEvents.KeyCreated])
   ActorSerializer.register(5202, classOf[RootEvents.KeyDeleted])
 

@@ -7,12 +7,13 @@ import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, U
 import im.actor.server.dialog.{ AuthIdRandomId, GroupDialogCommands, ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
+import im.actor.server.history.HistoryUtils
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
-import im.actor.server.util.HistoryUtils._
+import HistoryUtils._
 import im.actor.utils.cache.CacheHelpers._
 import org.joda.time.DateTime
 
