@@ -144,7 +144,7 @@ trait GroupDialogHandlers extends UpdateCounters {
     }
   }
 
-  protected def withMemberIds[T](groupId: Int)(f: (Set[Int], Set[Int], Int) ⇒ Future[T]): Future[T] = {
+  protected def withMemberIds[T](groupId: Int)(f: (Set[Int], Set[Int], Option[Int]) ⇒ Future[T]): Future[T] = {
     GroupOffice.getMemberIds(groupId) flatMap {
       case (memberIds, invitedUserIds, botId) ⇒
         f(memberIds.toSet, invitedUserIds.toSet, botId)
