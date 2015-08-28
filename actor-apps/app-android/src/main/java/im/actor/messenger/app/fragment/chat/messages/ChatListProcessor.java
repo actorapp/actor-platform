@@ -17,9 +17,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.TextContent;
+import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.MentionSpan;
@@ -27,6 +29,7 @@ import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.markdown.AndroidMarkdown;
 import im.actor.runtime.generic.mvvm.ListProcessor;
 
+import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;
 import static im.actor.messenger.app.core.Core.users;
@@ -43,12 +46,16 @@ public class ChatListProcessor implements ListProcessor<Message> {
     private Pattern peoplePattern;
     private Pattern mobileInvitePattern;
     private Pattern invitePattern;
+    private Pattern mentionPattern;
+    private GroupVM group;
 
     public ChatListProcessor(MessagesFragment fragment) {
         this.fragment = fragment;
 
         isGroup = fragment.getPeer().getPeerType() == PeerType.GROUP;
-
+        if (isGroup) {
+            group = groups().get(fragment.getPeer().getPeerId());
+        }
         colors = new int[]{
                 fragment.getResources().getColor(R.color.placeholder_0),
                 fragment.getResources().getColor(R.color.placeholder_1),
@@ -73,6 +80,9 @@ public class ChatListProcessor implements ListProcessor<Message> {
         }
         if (peoplePattern == null) {
             peoplePattern = Pattern.compile("(people:\\\\/\\\\/)([0-9]{1,20})");
+        }
+        if (mentionPattern == null) {
+            mentionPattern = Pattern.compile("(@)([0-9a-zA-Z_]{5,32})");
         }
 
         ArrayList<PreprocessedData> preprocessedDatas = new ArrayList<PreprocessedData>();
@@ -111,6 +121,9 @@ public class ChatListProcessor implements ListProcessor<Message> {
                         hasSpannable = true;
                     }
                     if (fixLinkifyCustomLinks(spannableString, peoplePattern, true)) {
+                        hasSpannable = true;
+                    }
+                    if (fixLinkifyCustomLinks(spannableString, mentionPattern, true)) {
                         hasSpannable = true;
                     }
 
@@ -156,7 +169,28 @@ public class ChatListProcessor implements ListProcessor<Message> {
         Matcher m = p.matcher(spannable.toString());
         boolean res = false;
         while (m.find()) {
-            URLSpan span = isMention ? new MentionSpan(m.group(), false) : new URLSpan(m.group());
+
+
+            boolean found = false;
+            String nick = "";
+            UserVM user;
+            int userId = 0;
+
+            if (isGroup) {
+                for (GroupMember member : group.getMembers().get()) {
+                    user = users().get(member.getUid());
+                    nick = user.getNick().get();
+                    if (nick != null && !nick.isEmpty() && nick.equals(m.group().substring(1, m.group().length()))) {
+                        userId = user.getId();
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            URLSpan span = (isMention && isGroup && found) ? new MentionSpan(nick, userId, false) : new URLSpan(m.group());
+
+
             spannable.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             res = true;
         }
