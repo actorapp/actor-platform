@@ -1,5 +1,7 @@
 package im.actor.server.api.http.groups
 
+import im.actor.server.file.{ FileStorageAdapter, ImageUtils }
+
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
@@ -14,10 +16,9 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.api.http.RoutesHandler
-import im.actor.server.api.http.json.JsonImplicits.{ errorsFormat, groupInviteInfoFormat }
+import im.actor.server.api.http.json.JsonFormatters.{ errorsFormat, groupInviteInfoFormat }
 import im.actor.server.api.http.json.{ AvatarUrls, Errors, Group, GroupInviteInfo, User }
-import im.actor.server.util.FileStorageAdapter
-import im.actor.server.util.ImageUtils.getAvatar
+import ImageUtils.getAvatar
 import im.actor.server.{ models, persist }
 
 class GroupsHandler()(

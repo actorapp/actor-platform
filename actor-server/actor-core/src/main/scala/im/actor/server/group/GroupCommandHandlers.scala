@@ -11,18 +11,20 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ServiceMessage
 import im.actor.api.rpc.users.Sex
 import im.actor.server.api.ApiConversions._
+import im.actor.server.acl.ACLUtils
+import im.actor.server.history.HistoryUtils
+import im.actor.server.{ persist ⇒ p, models }
 import im.actor.server.event.TSEvent
-import im.actor.server.file.Avatar
+import im.actor.server.file.{ ImageUtils, Avatar }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
 import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
-import im.actor.server.util.ACLUtils._
+import ACLUtils._
 import im.actor.server.util.IdUtils._
-import im.actor.server.util.ImageUtils._
-import im.actor.server.util.{ ACLUtils, GroupServiceMessages, HistoryUtils }
+import ImageUtils._
 import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -36,83 +38,97 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   import GroupCommands._
   import GroupEvents._
 
+  protected def createInternal(creatorUserId: Int, title: String, userIds: Seq[Int]): Unit = {
+    val accessHash = genAccessHash()
+
+    val date = now()
+    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title, userIds)
+    val state = initState(date, created)
+
+    persist(TSEvent(date, created)) { _ ⇒
+      context become working(state)
+
+      val rng = ThreadLocalRandom.current()
+      db.run(for {
+        _ ← createInDb(state, rng.nextLong())
+      } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
+        case e ⇒
+          log.error(e, "Failed to create group internally")
+      }
+    }
+  }
+
   protected def create(groupId: Int, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
-    val date = new DateTime
+    val accessHash = genAccessHash()
 
     val rng = ThreadLocalRandom.current()
-
-    val accessHash = rng.nextLong()
-    val botUserId = nextIntId(rng)
-    val botToken = accessToken(rng)
-
-    val events = Vector(
-      TSEvent(now(), GroupEvents.Created(groupId, creatorUserId, accessHash, title)),
-      TSEvent(now(), GroupEvents.BotAdded(botUserId, botToken))
-    )
-
     userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
       val randomId = rng.nextLong()
       context.parent ! Invite(groupId, userId, creatorUserId, creatorAuthId, randomId)
     }
 
-    var stateMaybe: Option[Group] = None
+    val date = now()
 
-    persist[GeneratedMessage](events) {
-      case TSEvent(ts, evt: GroupEvents.Created) ⇒
-        val group = initState(ts, evt)
+    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title, Seq(creatorUserId))
+    val state = initState(date, created)
 
-        stateMaybe = Some(group)
+    persist(TSEvent(date, created)) { _ ⇒
+      context become working(state)
 
-        val serviceMessage = GroupServiceMessages.groupCreated
+      val serviceMessage = GroupServiceMessages.groupCreated
 
-        val update = UpdateGroupInvite(groupId = groupId, inviteUserId = creatorUserId, date = date.getMillis, randomId = randomId)
+      val update = UpdateGroupInvite(groupId = groupId, inviteUserId = creatorUserId, date = date.getMillis, randomId = randomId)
 
-        db.run(
-          for {
-            _ ← p.Group.create(
-              models.Group(
-                id = groupId,
-                creatorUserId = group.creatorUserId,
-                accessHash = group.accessHash,
-                title = group.title,
-                isPublic = group.isPublic,
-                createdAt = group.createdAt,
-                about = None,
-                topic = None
-              ),
-              randomId
-            )
-            _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
-            _ ← HistoryUtils.writeHistoryMessage(
-              models.Peer.privat(creatorUserId),
-              models.Peer.group(group.id),
-              date,
-              randomId,
-              serviceMessage.header,
-              serviceMessage.toByteArray
-            )
-            SeqState(seq, state) ← if (isBot(group, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
-            else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${randomId}")))
-          } yield CreateAck(group.accessHash, seq, state, date.getMillis)
-        ) pipeTo sender() onFailure {
-            case e ⇒
-              log.error(e, "Failed to create a group")
-          }
-
-      case evt @ TSEvent(_, GroupEvents.BotAdded(userId, token)) ⇒
-        stateMaybe = stateMaybe map { state ⇒
-          val newState = updatedState(evt, state)
-          context become working(newState)
-          newState
+      db.run(
+        for {
+          _ ← p.Group.create(
+            models.Group(
+              id = groupId,
+              creatorUserId = state.creatorUserId,
+              accessHash = state.accessHash,
+              title = state.title,
+              isPublic = state.isPublic,
+              createdAt = state.createdAt,
+              about = None,
+              topic = None
+            ),
+            randomId
+          )
+          _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
+          _ ← HistoryUtils.writeHistoryMessage(
+            models.Peer.privat(creatorUserId),
+            models.Peer.group(state.id),
+            date,
+            randomId,
+            serviceMessage.header,
+            serviceMessage.toByteArray
+          )
+          seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
+          else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${randomId}")))
+        } yield CreateAck(state.accessHash, seqstate, date.getMillis)
+      ) pipeTo sender() onFailure {
+          case e ⇒
+            log.error(e, "Failed to create a group")
         }
+    }
 
-        val rng = ThreadLocalRandom.current()
+    val botUserId = nextIntId(rng)
+    val botToken = accessToken(rng)
+    val botAdded = GroupEvents.BotAdded(botUserId, botToken)
 
-        UserOffice.create(userId, nextAccessSalt(rng), "Bot", "US", Sex.Unknown, isBot = true)
-          .flatMap(_ ⇒ db.run(p.GroupBot.create(groupId, userId, token))) onFailure {
-            case e ⇒
-              log.error(e, "Failed to create group bot")
-          }
+    persist(TSEvent(now(), botAdded)) { tsEvt ⇒
+      context become working(updatedState(tsEvt, state))
+
+      val rng = ThreadLocalRandom.current()
+
+      (for {
+        _ ← UserOffice.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), "Bot", "US", Sex.Unknown, isBot = true)
+        _ ← db.run(p.GroupBot.create(groupId, botUserId, botToken))
+        _ ← integrationTokensKv.upsert(botToken, groupId)
+      } yield ()) onFailure {
+        case e ⇒
+          log.error(e, "Failed to create group bot")
+      }
     }
   }
 
@@ -371,11 +387,14 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
   protected def revokeIntegrationToken(group: Group, userId: Int): Unit = {
     withGroupAdmin(group, userId) {
-      val newToken = ACLUtils.accessToken(ThreadLocalRandom.current())
+      val oldToken = group.bot.map(_.token)
+      val newToken = accessToken(ThreadLocalRandom.current())
       persistStashingReply(TSEvent(now(), IntegrationTokenRevoked(newToken)), group) { _ ⇒
-        db.run(for {
-          _ ← p.GroupBot.updateToken(groupId, newToken)
-        } yield RevokeIntegrationTokenAck(newToken))
+        for {
+          _ ← db.run(p.GroupBot.updateToken(groupId, newToken))
+          _ ← integrationTokensKv.delete(oldToken.getOrElse(""))
+          _ ← integrationTokensKv.upsert(newToken, groupId)
+        } yield RevokeIntegrationTokenAck(newToken)
       }
     }
   }
@@ -400,4 +419,21 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     } yield SeqStateDate(seq, state, date.getMillis)
   }
 
+  private def genAccessHash(): Long =
+    ThreadLocalRandom.current().nextLong()
+
+  private def createInDb(state: Group, randomId: Long) =
+    p.Group.create(
+      models.Group(
+        id = groupId,
+        creatorUserId = state.creatorUserId,
+        accessHash = state.accessHash,
+        title = state.title,
+        isPublic = state.isPublic,
+        createdAt = state.createdAt,
+        about = None,
+        topic = None
+      ),
+      randomId
+    )
 }

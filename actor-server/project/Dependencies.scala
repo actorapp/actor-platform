@@ -9,6 +9,8 @@ object Dependencies {
     val scalaz = "7.1.1"
     val slick = "3.0.0"
     val scalatest = "2.2.4"
+    val catsVersion    = "0.1.2"
+
   }
 
   object Compile {
@@ -18,7 +20,7 @@ object Dependencies {
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
-    val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
+    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.0.0"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
     val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.7"
@@ -28,14 +30,15 @@ object Dependencies {
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
+    val cats                    = "org.spire-math"                %% "cats-core"                     % V.catsVersion
+    val catsStd                 = "org.spire-math"                %% "cats-std"                      % V.catsVersion
+
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
 
-    @deprecated("use `playJson` instead")
-    val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
-    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.1"
+    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
@@ -80,13 +83,12 @@ object Dependencies {
   }
 
   object Testing {
-    val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test"
+    val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka
 
-    val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
-    val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
-//    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
+    val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2"
+    val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest
 
-    val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
+    val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1"
   }
 
   import Compile._
@@ -104,7 +106,7 @@ object Dependencies {
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
-  val core = shared ++ Seq(akkaActor, akkaContrib, gcmServer, pushy, jodaTime, postgresJdbc, slick)
+  val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
 
@@ -112,7 +114,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless
   )
 
-  val httpApi = shared ++ Seq(akkaActor, jodaTime, akkaHttp, playJson)
+  val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, jodaTime, playJson)
 
   val email = shared ++ Seq(akkaActor, apacheEmail)
 
@@ -140,7 +142,7 @@ object Dependencies {
 
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   
-  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert, slickPg)
+  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
 
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream,
@@ -152,7 +154,8 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaContrib, slick)
 
-  val utils = shared ++ Seq(akkaActor, akkaHttp, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
+  val utils = shared ++ Seq(akkaActor, cats, libPhoneNumber, scalazCore)
+  // val utils = shared ++ Seq(akkaActor, akkaHttp, amazonaws, awsWrap, cats, libPhoneNumber, scrImageCore, slick)
 
   val utilsCache = shared :+ caffeine
 
@@ -160,7 +163,5 @@ object Dependencies {
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
-  val tests = shared ++ Seq(
-    jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit //, scalaTestPlay
-  )
+  val tests = shared ++ Seq(akkaContrib, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
 }
