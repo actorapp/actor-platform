@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -77,6 +78,7 @@ public class ProfileFragment extends BaseFragment {
         final int uid = getArguments().getInt(EXTRA_UID);
         final UserVM user = users().get(uid);
         final String nick = user.getNick().get();
+        final String aboutText = user.getAbout().get();
         baseColor = getResources().getColor(R.color.primary);
 
         View res = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -85,6 +87,41 @@ public class ProfileFragment extends BaseFragment {
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
         bind(lastSeen, lastSeen, user);
+
+        final FrameLayout about = (FrameLayout) res.findViewById(R.id.about);
+        if (aboutText != null && !aboutText.isEmpty()) {
+            about.findViewById(R.id.title).setVisibility(View.GONE);
+            about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
+            ((TextView) about.findViewById(R.id.value)).setText(getString(R.string.about_user));
+            about.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    new MaterialDialog.Builder(getActivity())
+                            .title(getString(R.string.about_user))
+                            .content(aboutText).show();
+
+                }
+            });
+        } else {
+            about.setVisibility(View.GONE);
+        }
+
+
+        final LinearLayout nickContainer = (LinearLayout) res.findViewById(R.id.nickContainer);
+        if (nick != null && !nick.isEmpty()) {
+            final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
+            TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+            tintImageView.setVisibility(View.INVISIBLE);
+            String value = nick;
+            String title = getString(R.string.nickname);
+
+            ((TextView) recordView.findViewById(R.id.value)).setText(value);
+            ((TextView) recordView.findViewById(R.id.title)).setText(title);
+            nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    Screen.dp(72)));
+
+        }
 
         LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.phoneContainer);
         View phonesDivider = res.findViewById(R.id.phoneDivider);
@@ -105,7 +142,7 @@ public class ProfileFragment extends BaseFragment {
                 } else {
                     tintImageView.setVisibility(View.INVISIBLE);
                 }
-                if (i != phones.size() - 1 || (nick != null && !nick.isEmpty())) {
+                if (i != phones.size() - 1) {
                     recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
                 } else {
                     recordView.findViewById(R.id.divider).setVisibility(View.GONE);
@@ -177,23 +214,6 @@ public class ProfileFragment extends BaseFragment {
                     }
                 });
             }
-        }
-
-        final LinearLayout nickContainer = (LinearLayout) res.findViewById(R.id.nickContainer);
-
-        if (nick != null && !nick.isEmpty()) {
-            final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
-            TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
-            tintImageView.setVisibility(View.INVISIBLE);
-            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
-            String value = nick;
-            String title = getString(R.string.nickname);
-
-            ((TextView) recordView.findViewById(R.id.value)).setText(value);
-            ((TextView) recordView.findViewById(R.id.title)).setText(title);
-            nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    Screen.dp(72)));
-
         }
 
 

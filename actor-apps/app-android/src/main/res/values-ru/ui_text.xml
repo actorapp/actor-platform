@@ -28,6 +28,7 @@
     <string name="toast_empty_name">Имя не может быть пустым</string>
     <string name="toast_unable_change">Невозможно поменять имя</string>
     <string name="toast_already_member">Пользователь уже участник группы</string>
+    <string name="toast_empty_about">О себе не может быть пустым</string>
 
     <string name="menu_share">Поделиться</string>
     <string name="menu_save">Сохранить на телефон</string>
@@ -148,6 +149,8 @@
     <string name="nickname_empty">Добавить ник</string>
     <string name="nickname">Ник</string>
     <string name="nickname_change">Изменить ник</string>
+    <string name="about_user_me">Обо мне</string>
+    <string name="about_user">О пользователе</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Позвонить {0}</string>
@@ -266,6 +269,8 @@
     <string name="group_add_member">Добавить в группу</string>
 
     <string name="group_not_member">Вы не участник данной группы</string>
+
+    <string name="about_group">О группе</string>
 
     <!-- Avatar -->
     <string name="avatar_title_your">Ваше фото</string>
