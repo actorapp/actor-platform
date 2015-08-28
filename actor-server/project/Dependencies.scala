@@ -19,8 +19,7 @@ object Dependencies {
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
-    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "0.9.1"
-    val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
+    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.0.0"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
     val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.7"
@@ -38,9 +37,7 @@ object Dependencies {
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
 
-    @deprecated("use `playJson` instead")
-    val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
-    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.1"
+    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
@@ -89,7 +86,6 @@ object Dependencies {
 
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest
-//    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
 
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1"
   }
@@ -145,7 +141,7 @@ object Dependencies {
 
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   
-  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert, slickPg)
+  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
 
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream,
@@ -165,8 +161,5 @@ object Dependencies {
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
-  val tests = shared ++ Seq(
-    akkaContrib,
-    jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit //, scalaTestPlay
-  )
+  val tests = shared ++ Seq(akkaContrib, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
 }
