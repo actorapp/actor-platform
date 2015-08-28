@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,16 +19,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import im.actor.core.api.rpc.RequestCheckNickName;
+import im.actor.core.api.rpc.RequestEditNickName;
+import im.actor.core.api.rpc.ResponseBool;
+import im.actor.core.api.rpc.ResponseSeq;
+import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
@@ -103,11 +112,8 @@ public class MyProfileFragment extends BaseFragment {
                         } else {
                             tintImageView.setVisibility(View.INVISIBLE);
                         }
-                        if (i != val.size() - 1) {
-                            recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
-                        } else {
-                            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
-                        }
+
+                        recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
 
                         String _phoneNumber;
                         try {
@@ -176,6 +182,67 @@ public class MyProfileFragment extends BaseFragment {
                 }
             }
         });
+
+        final LinearLayout nickContainer = (LinearLayout) view.findViewById(R.id.nickContainer);
+
+        bind(userModel.getNick(), new ValueChangedListener<String>() {
+            @Override
+            public void onChanged(final String val, ValueModel<String> valueModel) {
+                final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
+                TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                tintImageView.setVisibility(View.INVISIBLE);
+                recordView.findViewById(R.id.divider).setVisibility(View.GONE);
+                String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
+                String title = getString(R.string.nickname);
+
+                ((TextView) recordView.findViewById(R.id.value)).setText(value);
+                ((TextView) recordView.findViewById(R.id.title)).setText(title);
+                nickContainer.removeAllViews();
+                nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        Screen.dp(72)));
+
+                recordView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                        LinearLayout fl = new LinearLayout(getActivity());
+                        fl.setOrientation(LinearLayout.VERTICAL);
+
+                        builder.input(getString(R.string.nickname), val, false, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(final MaterialDialog materialDialog, final CharSequence charSequence) {
+                                execute(messenger().executeExternalCommand(new RequestEditNickName(charSequence.toString())), R.string.progress_common, new CommandCallback<ResponseSeq>() {
+                                    @Override
+                                    public void onResult(ResponseSeq res) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ((TextView) recordView.findViewById(R.id.value)).setText(charSequence.toString());
+                                                materialDialog.dismiss();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(final Exception e) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
+                        builder.show();
+                    }
+                });
+            }
+        });
+
+
 
         view.findViewById(R.id.chatSettings).setOnClickListener(new View.OnClickListener() {
             @Override
