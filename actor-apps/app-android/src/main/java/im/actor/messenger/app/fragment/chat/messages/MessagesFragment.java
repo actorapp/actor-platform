@@ -312,7 +312,8 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                         for (Message m : messagesAdapter.getSelected()) {
                             if (m.getContent() instanceof TextContent) {
                                 UserVM user = users().get(m.getSenderId());
-                                String name = (user.getNick().get() != null && !user.getNick().get().isEmpty()) ? user.getNick().get() : user.getName().get();
+                                String nick = user.getNick().get();
+                                String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
                                 quote = quote.concat(name).concat(": ").concat(text);
                                 rawQuote = rawQuote.concat(name).concat(": ").concat(text).concat("\n");
@@ -333,7 +334,8 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                             Message m = messagesAdapter.getSelected()[0];
                             if (m.getContent() instanceof TextContent) {
                                 UserVM user = users().get(m.getSenderId());
-                                String name = (user.getNick().get() != null && !user.getNick().get().isEmpty()) ? user.getNick().get() : user.getName().get();
+                                String nick = user.getNick().get();
+                                String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
                                 i.putExtra("forward_text_raw", name.concat(": ").concat(text).concat("\n"));
                             } else if (m.getContent() instanceof DocumentContent) {
@@ -354,7 +356,8 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                             for (Message m : messagesAdapter.getSelected()) {
                                 if (m.getContent() instanceof TextContent) {
                                     UserVM user = users().get(m.getSenderId());
-                                    String name = (user.getNick().get() != null && !user.getNick().get().isEmpty()) ? user.getNick().get() : user.getName().get();
+                                    String nick = user.getNick().get();
+                                    String name = (nick != null && !nick.isEmpty()) ? "@".concat(nick) : user.getName().get();
                                     String text = ((TextContent) m.getContent()).getText();
                                     quote = quote.concat(name).concat(": ").concat(text);
                                     rawQuote = rawQuote.concat(name).concat(": ").concat(text).concat("\n");

@@ -10,10 +10,11 @@ import im.actor.messenger.app.Intents;
 
 public class MentionSpan extends BaseUrlSpan {
     int[] colors;
+    int userId;
 
-    public MentionSpan(String url, boolean hideUrlStyle) {
-        super(url, hideUrlStyle);
-
+    public MentionSpan(String nick, int userId, boolean hideUrlStyle) {
+        super(nick, hideUrlStyle);
+        this.userId = userId;
         colors = new int[]{
                 AppContext.getContext().getResources().getColor(R.color.placeholder_0),
                 AppContext.getContext().getResources().getColor(R.color.placeholder_1),
@@ -32,10 +33,8 @@ public class MentionSpan extends BaseUrlSpan {
             ds.setUnderlineText(false);
             ds.setColor(Color.BLACK);
         }
-        if(getURL().startsWith("people://")){
-            int userId = Integer.parseInt(getURL().replace("people://", ""));
-            ds.setColor(colors[Math.abs(userId) % colors.length]);
-        }
+
+        ds.setColor(colors[Math.abs(userId) % colors.length]);
     }
 
     private String url;
@@ -49,9 +48,8 @@ public class MentionSpan extends BaseUrlSpan {
         if(hideUrlStyle){
             //Do nothing
         }else{
-//            super.onClick(widget);
-            int id = Integer.parseInt(getURL().split("://")[1]);
-            widget.getContext().startActivity(Intents.openProfile(id, widget.getContext()));
+
+            widget.getContext().startActivity(Intents.openProfile(userId, widget.getContext()));
         }
     }
 }
