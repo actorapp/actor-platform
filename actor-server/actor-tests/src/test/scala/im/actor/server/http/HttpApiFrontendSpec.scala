@@ -213,7 +213,7 @@ class HttpApiFrontendSpec
       val request = HttpRequest(
         method = POST,
         uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
-        entity = s"""{"url":"$hookUrl"}"""
+        entity = s"""{"target_url":"$hookUrl", "other_url":"http://foo.bar"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
         resp.status shouldEqual Created
