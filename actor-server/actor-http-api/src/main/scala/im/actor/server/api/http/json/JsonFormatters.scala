@@ -1,6 +1,6 @@
 package im.actor.server.api.http.json
 
-import play.api.libs.json.{ Json, Format, JsPath, Reads }
+import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 object JsonFormatters {
@@ -16,7 +16,10 @@ object JsonFormatters {
   implicit val groupInviteInfoFormat: Format[GroupInviteInfo] = Json.format[GroupInviteInfo]
   implicit val errorsFormat: Format[Errors] = Json.format[Errors]
 
-  implicit val reverseHookFormat: Format[ReverseHook] = Json.format[ReverseHook]
+  implicit val reverseHookReads: Reads[ReverseHook] =
+    (JsPath \ "target_url").read[String].map { ReverseHook } |
+      (JsPath \ "url").read[String].map { ReverseHook }
+
   implicit val reverseHookResponseFormat: Format[ReverseHookResponse] = Json.format[ReverseHookResponse]
   implicit val statusFormat: Format[Status] = Json.format[Status]
 

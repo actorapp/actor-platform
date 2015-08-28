@@ -19,7 +19,7 @@ trait ContentUnmarshaller {
 }
 
 trait ReverseHookUnmarshaler {
-  import im.actor.server.api.http.json.JsonFormatters.reverseHookFormat
+  import im.actor.server.api.http.json.JsonFormatters.reverseHookReads
 
   implicit val materializer: Materializer
 
