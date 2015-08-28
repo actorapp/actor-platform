@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import addons from 'react/addons';
@@ -6,14 +10,14 @@ import classnames from 'classnames';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
+import DialogActionCreators from 'actions/DialogActionCreators';
+import { MessageContentTypes } from 'constants/ActorAppConstants';
+
 import AvatarItem from 'components/common/AvatarItem.react';
 import Text from './Text.react';
 import Image from './Image.react';
 import Document from './Document.react';
 import State from './State.react';
-
-import DialogActionCreators from 'actions/DialogActionCreators';
-import { MessageContentTypes } from 'constants/ActorAppConstants';
 
 const {addons: { PureRenderMixin }} = addons;
 
@@ -24,24 +28,25 @@ class MessageItem extends React.Component {
     message: React.PropTypes.object.isRequired,
     isNewDay: React.PropTypes.bool,
     isSameSender: React.PropTypes.bool,
-    index: React.PropTypes.number,
     onVisibilityChange: React.PropTypes.func
   };
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      isActionsShown: false
-    };
+    //this.state = {
+    //  isActionsShown: false
+    //};
   }
 
   onClick = () => {
-    DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
+    const { message } = this.props;
+    DialogActionCreators.selectDialogPeerUser(message.sender.peer.id);
   };
 
   onVisibilityChange = (isVisible) => {
-    this.props.onVisibilityChange(this.props.message, isVisible);
+    const { message } = this.props;
+    this.props.onVisibilityChange(message, isVisible);
   };
 
   onDelete = () => {
@@ -60,16 +65,14 @@ class MessageItem extends React.Component {
   //};
 
   render() {
-    const { message, index, isSameSender } = this.props;
+    const { message, isSameSender, onVisibilityChange } = this.props;
 
-    let header,
-        messageContent,
-        visibilitySensor,
-        leftBlock;
+    let header = null,
+        messageContent = null,
+        visibilitySensor = null,
+        leftBlock = null;
 
-    let messageClassName = classnames({
-      'message': true,
-      'row': true,
+    const messageClassName = classnames('message row', {
       'message--same-sender': isSameSender
     });
 
@@ -107,11 +110,6 @@ class MessageItem extends React.Component {
       );
     }
 
-    if (message.content.content === MessageContentTypes.SERVICE) {
-      leftBlock = null;
-      header = null;
-    }
-
     switch (message.content.content) {
       case MessageContentTypes.SERVICE:
         messageContent = <div className="message__content message__content--service">{message.content.text}</div>;
@@ -139,7 +137,7 @@ class MessageItem extends React.Component {
         return null;
     }
 
-    if (this.props.onVisibilityChange) {
+    if (onVisibilityChange) {
       visibilitySensor = <VisibilitySensor onChange={this.onVisibilityChange}/>;
     }
 
@@ -152,31 +150,31 @@ class MessageItem extends React.Component {
           {visibilitySensor}
         </div>
         {/*
-        <div className="message__actions">
-          <i className="material-icons"  onClick={this.onDelete}>close</i>
-        </div>
-        <div className="message__actions hide">
-          <div className={actionsDropdownClassName}>
-            <span className="dropdown__button" onClick={this.showActions}>
-              <i className="material-icons">arrow_drop_down</i>
-            </span>
-            <ul className="dropdown__menu dropdown__menu--right">
-              <li className="dropdown__menu__item">
-                <i className="icon material-icons">reply</i>
-                Reply
-              </li>
-              <li className="dropdown__menu__item hide">
-                <i className="icon material-icons">forward</i>
-                Forward
-              </li>
-              <li className="dropdown__menu__item" onClick={this.onDelete}>
-                <i className="icon material-icons">close</i>
-                Delete
-              </li>
-            </ul>
-          </div>
-        </div>
-        */}
+         <div className="message__actions">
+         <i className="material-icons"  onClick={this.onDelete}>close</i>
+         </div>
+         <div className="message__actions hide">
+         <div className={actionsDropdownClassName}>
+         <span className="dropdown__button" onClick={this.showActions}>
+         <i className="material-icons">arrow_drop_down</i>
+         </span>
+         <ul className="dropdown__menu dropdown__menu--right">
+         <li className="dropdown__menu__item">
+         <i className="icon material-icons">reply</i>
+         Reply
+         </li>
+         <li className="dropdown__menu__item hide">
+         <i className="icon material-icons">forward</i>
+         Forward
+         </li>
+         <li className="dropdown__menu__item" onClick={this.onDelete}>
+         <i className="icon material-icons">close</i>
+         Delete
+         </li>
+         </ul>
+         </div>
+         </div>
+         */}
       </li>
     );
   }
