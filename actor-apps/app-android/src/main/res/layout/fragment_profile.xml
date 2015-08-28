@@ -81,15 +81,19 @@
                     </FrameLayout>
 
                     <LinearLayout
-                        android:id="@+id/phoneContainer"
+                        android:id="@+id/nickContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                     </LinearLayout>
 
+                    <include
+                        layout="@layout/contact_record"
+                        android:id="@+id/about" />
+
                     <LinearLayout
-                        android:id="@+id/nickContainer"
+                        android:id="@+id/phoneContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">

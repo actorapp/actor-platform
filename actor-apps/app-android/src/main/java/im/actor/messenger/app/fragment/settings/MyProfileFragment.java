@@ -92,9 +92,78 @@ public class MyProfileFragment extends BaseFragment {
             }
         });
 
+        final LinearLayout nickContainer = (LinearLayout) view.findViewById(R.id.nickContainer);
         final LinearLayout contactsContainer = (LinearLayout) view.findViewById(R.id.phoneContainer);
+        final FrameLayout about = (FrameLayout) view.findViewById(R.id.about);
 
         // TODO: Move bindings to onResume
+
+        bind(userModel.getNick(), new ValueChangedListener<String>() {
+            @Override
+            public void onChanged(final String val, ValueModel<String> valueModel) {
+                final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
+                TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                tintImageView.setVisibility(View.INVISIBLE);
+                String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
+                String title = getString(R.string.nickname);
+
+                ((TextView) recordView.findViewById(R.id.value)).setText(value);
+                ((TextView) recordView.findViewById(R.id.title)).setText(title);
+                nickContainer.removeAllViews();
+                nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        Screen.dp(72)));
+
+                recordView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                        LinearLayout fl = new LinearLayout(getActivity());
+                        fl.setOrientation(LinearLayout.VERTICAL);
+
+                        builder.input(getString(R.string.nickname), val, false, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(final MaterialDialog materialDialog, final CharSequence charSequence) {
+                                execute(messenger().executeExternalCommand(new RequestEditNickName(charSequence.toString())), R.string.progress_common, new CommandCallback<ResponseSeq>() {
+                                    @Override
+                                    public void onResult(ResponseSeq res) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ((TextView) recordView.findViewById(R.id.value)).setText(charSequence.toString());
+                                                materialDialog.dismiss();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(final Exception e) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+
+                        builder.show();
+                    }
+                });
+            }
+        });
+
+        about.findViewById(R.id.title).setVisibility(View.GONE);
+        about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
+        ((TextView) about.findViewById(R.id.value)).setText(getString(R.string.about_user_me));
+        about.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().startActivity(Intents.editUserAbout(getActivity()));
+            }
+        });
+
         bind(userModel.getPhones(), new ValueChangedListener<ArrayListUserPhone>() {
             @Override
             public void onChanged(ArrayListUserPhone val, ValueModel<ArrayListUserPhone> valueModel) {
@@ -113,7 +182,11 @@ public class MyProfileFragment extends BaseFragment {
                             tintImageView.setVisibility(View.INVISIBLE);
                         }
 
-                        recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+                        if (i != val.size() - 1) {
+                            recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+                        } else {
+                            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
+                        }
 
                         String _phoneNumber;
                         try {
@@ -182,67 +255,6 @@ public class MyProfileFragment extends BaseFragment {
                 }
             }
         });
-
-        final LinearLayout nickContainer = (LinearLayout) view.findViewById(R.id.nickContainer);
-
-        bind(userModel.getNick(), new ValueChangedListener<String>() {
-            @Override
-            public void onChanged(final String val, ValueModel<String> valueModel) {
-                final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
-                TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
-                tintImageView.setVisibility(View.INVISIBLE);
-                recordView.findViewById(R.id.divider).setVisibility(View.GONE);
-                String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
-                String title = getString(R.string.nickname);
-
-                ((TextView) recordView.findViewById(R.id.value)).setText(value);
-                ((TextView) recordView.findViewById(R.id.title)).setText(title);
-                nickContainer.removeAllViews();
-                nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        Screen.dp(72)));
-
-                recordView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                        LinearLayout fl = new LinearLayout(getActivity());
-                        fl.setOrientation(LinearLayout.VERTICAL);
-
-                        builder.input(getString(R.string.nickname), val, false, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(final MaterialDialog materialDialog, final CharSequence charSequence) {
-                                execute(messenger().executeExternalCommand(new RequestEditNickName(charSequence.toString())), R.string.progress_common, new CommandCallback<ResponseSeq>() {
-                                    @Override
-                                    public void onResult(ResponseSeq res) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                ((TextView) recordView.findViewById(R.id.value)).setText(charSequence.toString());
-                                                materialDialog.dismiss();
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onError(final Exception e) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
-
-                        builder.show();
-                    }
-                });
-            }
-        });
-
-
 
         view.findViewById(R.id.chatSettings).setOnClickListener(new View.OnClickListener() {
             @Override
