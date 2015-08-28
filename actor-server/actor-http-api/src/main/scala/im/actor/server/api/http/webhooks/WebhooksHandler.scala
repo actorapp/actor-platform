@@ -21,14 +21,14 @@ class WebhooksHandler()(
   val groupProcessorRegion: GroupViewRegion,
   val groupDialogRegion:    GroupDialogRegion,
   val materializer:         Materializer
-) extends RoutesHandler with OutgoingHooks with IngoingHooks {
+) extends RoutesHandler with OutgoingHooks with IngoingHooks with TokenStatus {
 
   implicit val timeout: Timeout = Timeout(5.seconds)
 
   protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
 
   override def routes: Route = pathPrefix("webhooks") {
-    outgoing ~ ingoing
+    outgoing ~ ingoing ~ status
   }
 
 }
