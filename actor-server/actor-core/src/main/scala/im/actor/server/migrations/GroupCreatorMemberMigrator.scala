@@ -4,6 +4,7 @@ import akka.actor.{ ActorLogging, Actor, Props, ActorSystem }
 import akka.persistence.{ RecoveryFailure, RecoveryCompleted, PersistentActor }
 import im.actor.server.event.TSEvent
 import im.actor.server.group.{ GroupEvents, GroupOffice }
+import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 import im.actor.server.persist
 
@@ -13,7 +14,7 @@ import scala.concurrent.duration._
 object GroupCreatorMemberMigrator extends Migration {
   private case object Migrate
 
-  protected override def migrationName = "2015-08-28-GroupCreatorMemberMigration"
+  protected override def migrationName = "2015-08-29-GroupCreatorMemberMigration"
 
   protected override def migrationTimeout = 1.hour
 
@@ -74,8 +75,8 @@ private final class GroupCreatorMemberMigrator(promise: Promise[Unit], groupId: 
     creatorUserIdOpt match {
       case Some(creatorUserId) ⇒
         log.warning("Adding member {}", creatorUserId)
-        persist(UserInvited(creatorUserId, creatorUserId))(identity)
-        persist(UserJoined(creatorUserId, creatorUserId)) { _ ⇒
+        persist(TSEvent(new DateTime(), UserInvited(creatorUserId, creatorUserId)))(identity)
+        persist(TSEvent(new DateTime(), UserJoined(creatorUserId, creatorUserId))) { _ ⇒
           log.warning("Migrated")
           promise.success(())
           context stop self
