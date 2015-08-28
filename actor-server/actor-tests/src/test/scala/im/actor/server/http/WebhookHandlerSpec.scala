@@ -13,7 +13,7 @@ import im.actor.server._
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.ReverseHooksListener
+import im.actor.server.api.rpc.service.messaging.{ CommandParser, ReverseHooksListener }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.commons.KeyValueMappings
 import im.actor.server.group.{ GroupOffice, GroupServiceMessages }
@@ -146,30 +146,32 @@ class WebhookHandlerSpec
       whenReady(handler.register(token, "http://localhost:3000"))(_.isRight shouldBe true)
       whenReady(handler.register(token, "http://localhost:4000"))(_.isRight shouldBe true)
 
-      Thread.sleep(5000)
+      Thread.sleep(4000)
 
-      val commands = List("jump", "eat", "sleep", "die")
+      val sendText = List("/task jump", "/task eat", "/command sleep", "/command die")
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, TextMessage(commands(0), Vector.empty, None)))(_ ⇒ ())
+      object Parser extends CommandParser
+      val commands = (sendText map Parser.parseCommand)
+
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, TextMessage(sendText(0), Vector.empty, None)))(_ ⇒ ())
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 2L, GroupServiceMessages.changedTitle("xx")))(_ ⇒ ())
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 3L, TextMessage(commands(1), Vector.empty, None)))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 3L, TextMessage(sendText(1), Vector.empty, None)))(_ ⇒ ())
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 4L, JsonMessage("Some info")))(_ ⇒ ())
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 5L, TextMessage(commands(2), Vector.empty, None)))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 5L, TextMessage(sendText(2), Vector.empty, None)))(_ ⇒ ())
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 6L, DocumentMessage(1L, 2L, 1, "", "", None, None)))(_ ⇒ ())
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 7L, TextMessage(commands(3), Vector.empty, None)))(_ ⇒ ())
-
-      Thread.sleep(10000)
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 7L, TextMessage(sendText(3), Vector.empty, None)))(_ ⇒ ())
+      Thread.sleep(4000)
 
       val messages3000 = hook3000.getMessages
       messages3000 should have size 4
-      messages3000.map(_.text) should contain theSameElementsAs commands
+      messages3000.map(m ⇒ Some(m.command → m.text)) should contain theSameElementsAs commands
 
       val messages4000 = hook4000.getMessages
       messages4000 should have size 4
-      messages4000.map(_.text) should contain theSameElementsAs commands
+      messages4000.map(m ⇒ Some(m.command → m.text)) should contain theSameElementsAs commands
     }
   }
 
@@ -188,17 +190,17 @@ class WebhookHandlerSpec
       }
     }
 
-    private var messages: Set[MessageToWebhook] = Set.empty[MessageToWebhook]
+    private var messages = scala.collection.mutable.Set.empty[MessageToWebhook]
 
-    def getMessages: Set[MessageToWebhook] = messages
+    def getMessages = messages
 
-    def clean() = messages = Set.empty[MessageToWebhook]
+    def clean() = messages = scala.collection.mutable.Set.empty[MessageToWebhook]
 
     private def routes: Route =
       post {
         entity(as[List[MessageToWebhook]]) { received ⇒
           received should have length 1
-          messages = messages + received.head
+          messages += received.head
           complete("{}")
         }
       }
