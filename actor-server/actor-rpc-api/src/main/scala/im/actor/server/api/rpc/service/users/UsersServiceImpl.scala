@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.users
 import akka.util.Timeout
 
 import im.actor.api.rpc.contacts.UpdateContactsAdded
+import im.actor.server.acl.ACLUtils
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
@@ -16,8 +17,8 @@ import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
 import im.actor.server.db.DbExtension
 import im.actor.server.persist
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
-import im.actor.server.util.{ StringUtils, ContactsUtils, ACLUtils }
+import im.actor.server.user.{ ContactsUtils, UserExtension, UserOffice, UserViewRegion }
+import im.actor.server.util.StringUtils
 
 import scalaz.{ -\/, \/- }
 

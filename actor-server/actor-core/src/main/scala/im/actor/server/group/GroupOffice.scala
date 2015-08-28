@@ -17,6 +17,8 @@ object GroupErrors {
   case object AboutTooLong extends Exception with NoStackTrace
 
   case object TopicTooLong extends Exception with NoStackTrace
+
+  case object NoBotFound extends Exception with NoStackTrace
 }
 
 object GroupOffice extends GroupOperations {
