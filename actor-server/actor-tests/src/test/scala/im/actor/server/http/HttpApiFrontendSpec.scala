@@ -3,17 +3,17 @@ package im.actor.server.http
 import java.nio.file.Paths
 
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpMethods.{ POST, GET }
-import akka.http.scaladsl.model.StatusCodes.{ NotAcceptable, BadRequest, NotFound, OK }
+import akka.http.scaladsl.model.HttpMethods.{ DELETE, POST, GET }
+import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.http.scaladsl.unmarshalling._
 import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
 import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.ClientData
 import im.actor.server._
-import im.actor.server.api.http.json.{ ReverseHook, AvatarUrls, JsonFormatters }
+import im.actor.server.api.http.json._
 import im.actor.server.api.http.webhooks.OutgoingHooksErrors
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -23,6 +23,7 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.util.{ ACLUtils, ImageUtils }
 import org.scalatest.Inside._
 import play.api.libs.json._
+import JsonFormatters._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
@@ -31,7 +32,8 @@ class HttpApiFrontendSpec
   with GroupsServiceHelpers
   with ImplicitGroupRegions
   with ImplicitSessionRegionProxy
-  with ImplicitAuthService {
+  with ImplicitAuthService
+  with PlayJsonSupport {
   behavior of "HttpApiFrontend"
 
   "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
@@ -56,6 +58,8 @@ class HttpApiFrontendSpec
 
   it should "list registered hooks" in t.listHooks()
 
+  it should "register hook with id, get hook's status by id and remove hook by id" in t.hookStatus()
+
   "Groups handler" should "respond with JSON message to group invite info with correct invite token" in t.groupInvitesOk()
 
   it should "respond with JSON message with avatar full links to group invite info with correct invite token" in t.groupInvitesAvatars1()
@@ -79,6 +83,18 @@ class HttpApiFrontendSpec
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
+
+  implicit val reverseHookResponseUnmarshaller: FromEntityUnmarshaller[ReverseHookResponse] = Unmarshaller { implicit ec ⇒ entity ⇒
+    Unmarshal(entity).to[String].map { body ⇒
+      Json.parse(body).as[ReverseHookResponse]
+    }
+  }
+
+  implicit val statusUnmarshaller: FromEntityUnmarshaller[Status] = Unmarshaller { implicit ec ⇒ entity ⇒
+    Unmarshal(entity).to[String].map { body ⇒
+      Json.parse(body).as[Status]
+    }
+  }
 
   val s3BucketName = fsAdapterS3.bucketName
 
@@ -163,13 +179,13 @@ class HttpApiFrontendSpec
       val token = extractToken(groupOutPeer.groupId)
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/reverse/$token",
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
         entity = """{"url":"This is wrong url"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
         resp.status shouldEqual BadRequest
-        whenReady(Unmarshal(resp.entity).to[String]) { text ⇒
-          text shouldEqual OutgoingHooksErrors.MalformedUri
+        whenReady(Unmarshal(resp.entity).to[Errors]) { errors ⇒
+          errors.message shouldEqual OutgoingHooksErrors.MalformedUri
         }
       }
     }
@@ -178,13 +194,13 @@ class HttpApiFrontendSpec
       val wrongToken = "xxx"
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/reverse/$wrongToken",
-        entity = """{"url":"This is wrong url"}"""
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$wrongToken/reverse",
+        entity = """{"url":"http://zapier.com/11"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
-        resp.status shouldEqual BadRequest
-        whenReady(Unmarshal(resp.entity).to[String]) { text ⇒
-          text shouldEqual OutgoingHooksErrors.WrongIntegrationToken
+        resp.status shouldEqual NotFound
+        whenReady(Unmarshal(resp.entity).to[Errors]) { errors ⇒
+          errors.message shouldEqual OutgoingHooksErrors.WrongIntegrationToken
         }
       }
     }
@@ -194,13 +210,14 @@ class HttpApiFrontendSpec
       val hookUrl = "https://zapier.com/0"
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/reverse/$token",
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
         entity = s"""{"url":"$hookUrl"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
-        resp.status shouldEqual OK
-        whenReady(Unmarshal(resp.entity).to[String]) { text ⇒
-          text shouldEqual s"Successfully registered reverse hook on $hookUrl"
+        resp.status shouldEqual Created
+        whenReady(Unmarshal(resp.entity).to[ReverseHookResponse]) { response ⇒
+          response.id > 0 shouldBe true
+          response.url shouldEqual None
         }
       }
     }
@@ -210,43 +227,75 @@ class HttpApiFrontendSpec
       val duplicatedUrl = "https://zapier.com/0"
       val request = HttpRequest(
         method = POST,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/reverse/$token",
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
         entity = s"""{"url":"$duplicatedUrl"}"""
       )
       whenReady(http.singleRequest(request)) { resp ⇒
-        resp.status shouldEqual NotAcceptable
-        whenReady(Unmarshal(resp.entity).to[String]) { text ⇒
-          text shouldEqual OutgoingHooksErrors.AlreadyRegistered
+        resp.status shouldEqual Conflict
+        whenReady(Unmarshal(resp.entity).to[Errors]) { errors ⇒
+          errors.message shouldEqual OutgoingHooksErrors.AlreadyRegistered
         }
       }
     }
 
     def registerManyHooks() = {
       val token = extractToken(groupOutPeer.groupId)
-      val httpApiUrl = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/reverse/$token"
+      val httpApiUrl = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
 
       for (i ← 1 to 5) {
         whenReady(http.singleRequest(HttpRequest(POST, httpApiUrl, entity = s"""{"url":"https://zapier.com/$i"}"""))) { resp ⇒
-          resp.status shouldEqual OK
+          resp.status shouldEqual Created
           resp.entity.dataBytes.runWith(Sink.ignore)
         }
       }
     }
 
     def listHooks() = {
-      import JsonFormatters._
-      import PlayJsonSupport._
-
       val token = extractToken(groupOutPeer.groupId)
       val request = HttpRequest(
         method = GET,
-        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/reverse/$token"
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
       )
       whenReady(http.singleRequest(request)) { resp ⇒
         resp.status shouldEqual OK
-        whenReady(Unmarshal(resp.entity).to[List[ReverseHook]]) { hooks ⇒
+        whenReady(Unmarshal(resp.entity).to[List[ReverseHookResponse]]) { hooks ⇒
           val expected = 0 to 5 map (i ⇒ s"https://zapier.com/$i")
-          hooks.map(_.url) should contain theSameElementsAs expected
+          hooks.map(_.url).flatten should contain theSameElementsAs expected
+          hooks.map(_.id) foreach (_ > 0 shouldBe true)
+        }
+      }
+    }
+
+    def hookStatus() = {
+      val token = extractToken(groupOutPeer.groupId)
+      val hookUrl = "https://zapier.com/77"
+      val baseUri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
+      val request = HttpRequest(POST, baseUri, entity = s"""{"url":"$hookUrl"}""")
+
+      val hookId = whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual Created
+        whenReady(Unmarshal(resp.entity).to[ReverseHookResponse])(_.id)
+      }
+
+      val hookUri = s"$baseUri/$hookId"
+      whenReady(http.singleRequest(HttpRequest(GET, hookUri))) { resp ⇒
+        resp.status shouldEqual OK
+        whenReady(Unmarshal(resp.entity).to[Status]) { status ⇒
+          status.status shouldEqual "Ok"
+        }
+      }
+
+      whenReady(http.singleRequest(HttpRequest(DELETE, hookUri))) { resp ⇒
+        resp.status shouldEqual StatusCodes.Accepted
+        whenReady(Unmarshal(resp.entity).to[Status]) { status ⇒
+          status.status shouldEqual "Ok"
+        }
+      }
+
+      whenReady(http.singleRequest(HttpRequest(GET, hookUri))) { resp ⇒
+        resp.status shouldEqual Gone
+        whenReady(Unmarshal(resp.entity).to[Status]) { status ⇒
+          status.status shouldEqual OutgoingHooksErrors.WebhookGone
         }
       }
     }

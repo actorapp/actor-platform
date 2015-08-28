@@ -3,6 +3,7 @@ package im.actor.server.http
 import akka.actor.ActorSystem
 import akka.http.scaladsl.unmarshalling.{ Unmarshaller, Unmarshal, FromRequestUnmarshaller }
 import akka.stream.Materializer
+import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.counters.UpdateCountersChanged
@@ -173,7 +174,7 @@ class WebhookHandlerSpec
     }
   }
 
-  class DummyHookListener(port: Int)(implicit system: ActorSystem, materializer: Materializer) {
+  class DummyHookListener(port: Int)(implicit system: ActorSystem, materializer: Materializer) extends PlayJsonSupport {
 
     import akka.http.scaladsl.Http
     import akka.http.scaladsl.server.Directives._
@@ -196,8 +197,9 @@ class WebhookHandlerSpec
 
     private def routes: Route =
       post {
-        entity(as[MessageToWebhook]) { message ⇒
-          messages = messages + message
+        entity(as[List[MessageToWebhook]]) { received ⇒
+          received should have length 1
+          messages = messages + received.head
           complete("{}")
         }
       }
