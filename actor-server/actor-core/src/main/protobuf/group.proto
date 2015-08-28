@@ -213,7 +213,7 @@ message GroupQueries {
     message GetMembersResponse {
         repeated int32 member_ids = 1;
         repeated int32 invited_user_ids = 2;
-        required int32 bot_id = 3;
+        optional int32 bot_id = 3;
     }
 
     message IsPublic {

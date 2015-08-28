@@ -175,6 +175,6 @@ private[group] sealed trait Queries {
     region:  GroupViewRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Future[(Seq[Int], Seq[Int], Int)] = (region.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
+  ): Future[(Seq[Int], Seq[Int], Option[Int])] = (region.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
 
 }
