@@ -29,6 +29,20 @@ message GroupCommands {
         required int64 date = 4;
     }
 
+    message CreateInternal {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+
+        required int32 creator_user_id = 3;
+        required string title = 4;
+        repeated int32 user_ids = 5;
+    }
+
+    message CreateInternalAck {
+        required int64 access_hash = 1;
+    }
+
     message Join {
         option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
 
@@ -221,6 +235,7 @@ message GroupEvents {
         required int32 creator_user_id = 2;
         required int64 access_hash = 3;
         required string title = 4;
+        repeated int32 user_ids = 6;
     }
 
     message UserInvited {

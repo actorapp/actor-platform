@@ -38,11 +38,30 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   import GroupCommands._
   import GroupEvents._
 
+  protected def createInternal(creatorUserId: Int, title: String, userIds: Seq[Int]): Unit = {
+    val accessHash = genAccessHash()
+
+    val date = now()
+    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title, userIds)
+    val state = initState(date, created)
+
+    persist(TSEvent(date, created)) { _ ⇒
+      context become working(state)
+
+      val rng = ThreadLocalRandom.current()
+      db.run(for {
+        _ ← createInDb(state, rng.nextLong())
+      } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
+        case e ⇒
+          log.error(e, "Failed to create group internally")
+      }
+    }
+  }
+
   protected def create(groupId: Int, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
+    val accessHash = genAccessHash()
+
     val rng = ThreadLocalRandom.current()
-
-    val accessHash = rng.nextLong()
-
     userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
       val randomId = rng.nextLong()
       context.parent ! Invite(groupId, userId, creatorUserId, creatorAuthId, randomId)
@@ -400,4 +419,21 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     } yield SeqStateDate(seq, state, date.getMillis)
   }
 
+  private def genAccessHash(): Long =
+    ThreadLocalRandom.current().nextLong()
+
+  private def createInDb(state: Group, randomId: Long) =
+    p.Group.create(
+      models.Group(
+        id = groupId,
+        creatorUserId = state.creatorUserId,
+        accessHash = state.accessHash,
+        title = state.title,
+        isPublic = state.isPublic,
+        createdAt = state.createdAt,
+        about = None,
+        topic = None
+      ),
+      randomId
+    )
 }
