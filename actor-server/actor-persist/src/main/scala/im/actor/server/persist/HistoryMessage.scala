@@ -117,6 +117,7 @@ object HistoryMessage {
       .length
       .result
 
+  //возможно тут не учитываются
   private def unreadTotal(userId: Rep[Int]) =
     (for {
       d ← Dialog.dialogs.filter(d ⇒ d.userId === userId)
