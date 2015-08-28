@@ -1,26 +1,24 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes, PeerTypes } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 import PeerUtils from 'utils/PeerUtils';
 import RouterContainer from 'utils/RouterContainer';
 
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import ActorAppConstants from 'constants/ActorAppConstants';
-
-const ActionTypes = ActorAppConstants.ActionTypes;
-
 const DialogActionCreators = {
   setDialogs(dialogs) {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.DIALOGS_CHANGED,
-      dialogs: dialogs
+    dispatch(ActionTypes.DIALOGS_CHANGED, {
+      dialogs
     });
   },
 
   selectDialogPeer(peer) {
     RouterContainer.get().transitionTo('main', {id: PeerUtils.peerToString(peer)});
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.SELECT_DIALOG_PEER,
-      peer: peer
+    dispatch(ActionTypes.SELECT_DIALOG_PEER, {
+      peer
     });
   },
 
@@ -29,16 +27,15 @@ const DialogActionCreators = {
       console.warn('You can\'t chat with yourself');
     } else {
       this.selectDialogPeer({
-        type: ActorAppConstants.PeerTypes.USER,
+        type: PeerTypes.USER,
         id: userId
       });
     }
   },
 
   createSelectedDialogInfoChanged(info) {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.SELECTED_DIALOG_INFO_CHANGED,
-      info: info
+    dispatch(ActionTypes.SELECTED_DIALOG_INFO_CHANGED, {
+      info
     });
   },
 
@@ -63,26 +60,19 @@ const DialogActionCreators = {
     //ActorClient.deleteMessages(peer, rids);
   },
 
-  leaveGroup(groupId) {
+  leaveGroup(gid) {
     ActorClient
-      .leaveGroup(groupId)
+      .leaveGroup(gid)
       .then(() => {
-        ActorAppDispatcher.dispatch({
-          type: ActionTypes.LEFT_GROUP,
-          groupId: groupId
+        dispatch(ActionTypes.LEFT_GROUP, {
+          gid
         });
       });
   },
 
-  kickMember(userId, groupId) {
-    ActorClient.kickMember(userId, groupId);
-  },
-
   changeNotificationsEnabled(peer, isEnabled) {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.NOTIFICATION_CHANGE,
-      peer: peer,
-      isEnabled: isEnabled
+    dispatch(ActionTypes.NOTIFICATION_CHANGE, {
+      peer, isEnabled
     });
 
   }
