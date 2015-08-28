@@ -66,7 +66,7 @@ final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   import DistributedPubSubMediator.Subscribe
 
   mediator ! Subscribe(privateMessagesTopic, groupId, self)
-  mediator ! Subscribe(groupMessagesTopic, groupId, self)
+  mediator ! Subscribe(groupMessagesTopic, None, self)
 
   def receive: Receive = subscribing(privateAckReceived = false, groupAckReceived = false)
 
@@ -76,7 +76,7 @@ final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
         context.become(ready)
       else
         context.become(subscribing(true, groupAckReceived))
-    case SubscribeAck(Subscribe(`groupMessagesTopic`, `groupId`, `self`)) ⇒
+    case SubscribeAck(Subscribe(`groupMessagesTopic`, _, `self`)) ⇒
       if (privateAckReceived)
         context.become(ready)
       else
