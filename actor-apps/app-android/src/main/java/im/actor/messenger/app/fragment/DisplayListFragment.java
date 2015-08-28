@@ -15,9 +15,6 @@ import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.storage.ListEngineItem;
 
-/**
- * Created by ex3ndr on 15.03.15.
- */
 public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         V extends RecyclerView.ViewHolder> extends BaseFragment implements DisplayList.Listener {
 
@@ -29,7 +26,12 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     protected View inflate(LayoutInflater inflater, ViewGroup container, int resource, BindedDisplayList<T> displayList) {
         View res = inflater.inflate(resource, container, false);
-        collection = (RecyclerView) res.findViewById(R.id.collection);
+        afterViewInflate(res, displayList);
+        return res;
+    }
+
+    protected void afterViewInflate(View view, BindedDisplayList<T> displayList) {
+        collection = (RecyclerView) view.findViewById(R.id.collection);
         if (displayList.getSize() == 0) {
             collection.setVisibility(View.INVISIBLE);
         } else {
@@ -49,8 +51,6 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 //        if (emptyCollection != null) {
 //            emptyCollection.setVisibility(View.GONE);
 //        }
-
-        return res;
     }
 
     public void setAnimationsEnabled(boolean isEnabled) {

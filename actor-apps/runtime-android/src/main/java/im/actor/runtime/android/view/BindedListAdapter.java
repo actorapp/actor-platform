@@ -66,6 +66,10 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
         return displayList.isGlobalList();
     }
 
+    public Object getPreprocessedList() {
+        return displayList.getProcessedList();
+    }
+
     @Override
     public int getItemCount() {
         if (currentUpdate != null) {

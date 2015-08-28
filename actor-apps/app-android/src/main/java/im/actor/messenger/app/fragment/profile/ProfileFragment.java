@@ -17,18 +17,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 
+import im.actor.core.api.rpc.RequestEditNickName;
+import im.actor.core.api.rpc.ResponseSeq;
+import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
@@ -40,6 +45,8 @@ import im.actor.messenger.app.view.TintImageView;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.mvvm.ValueChangedListener;
+import im.actor.runtime.mvvm.ValueModel;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
@@ -70,7 +77,8 @@ public class ProfileFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final int uid = getArguments().getInt(EXTRA_UID);
         final UserVM user = users().get(uid);
-
+        final String nick = user.getNick().get();
+        final String aboutText = user.getAbout().get();
         baseColor = getResources().getColor(R.color.primary);
 
         View res = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -79,6 +87,41 @@ public class ProfileFragment extends BaseFragment {
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
         bind(lastSeen, lastSeen, user);
+
+        final FrameLayout about = (FrameLayout) res.findViewById(R.id.about);
+        if (aboutText != null && !aboutText.isEmpty()) {
+            about.findViewById(R.id.title).setVisibility(View.GONE);
+            about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
+            ((TextView) about.findViewById(R.id.value)).setText(getString(R.string.about_user));
+            about.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    new MaterialDialog.Builder(getActivity())
+                            .title(getString(R.string.about_user))
+                            .content(aboutText).show();
+
+                }
+            });
+        } else {
+            about.setVisibility(View.GONE);
+        }
+
+
+        final LinearLayout nickContainer = (LinearLayout) res.findViewById(R.id.nickContainer);
+        if (nick != null && !nick.isEmpty()) {
+            final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
+            TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+            tintImageView.setVisibility(View.INVISIBLE);
+            String value = nick;
+            String title = getString(R.string.nickname);
+
+            ((TextView) recordView.findViewById(R.id.value)).setText(value);
+            ((TextView) recordView.findViewById(R.id.title)).setText(title);
+            nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    Screen.dp(72)));
+
+        }
 
         LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.phoneContainer);
         View phonesDivider = res.findViewById(R.id.phoneDivider);
@@ -172,6 +215,7 @@ public class ProfileFragment extends BaseFragment {
                 });
             }
         }
+
 
         if (user.isBot()) {
             res.findViewById(R.id.profileAction).setVisibility(View.GONE);
