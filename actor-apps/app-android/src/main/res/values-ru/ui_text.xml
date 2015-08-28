@@ -145,6 +145,9 @@
     <string name="settings_notifications">Оповещения</string>
     <string name="settings_chat">Настройки чата</string>
     <string name="settings_security">Безопасность</string>
+    <string name="nickname_empty">Добавить ник</string>
+    <string name="nickname">Ник</string>
+    <string name="nickname_change">Изменить ник</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Позвонить {0}</string>
