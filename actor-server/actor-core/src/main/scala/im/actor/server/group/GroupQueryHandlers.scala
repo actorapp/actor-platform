@@ -51,13 +51,10 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
     sender() ! CheckAccessHashResponse(isCorrect = group.accessHash == hash)
 
   def getMembers(group: Group): Unit = {
-    group.bot map { bot ⇒
-      val members = group.members.keySet.toSeq
-      val invited = group.invitedUserIds.toSeq
-      sender() ! GetMembersResponse(members, invited, bot.userId)
-    } getOrElse {
-      sender() ! Status.Failure(NoBotFound)
-    }
+    val members = group.members.keySet.toSeq
+    val invited = group.invitedUserIds.toSeq
+    val bot = group.bot.map(_.userId)
+    sender() ! GetMembersResponse(members, invited, bot)
   }
 
   def isPublic(group: Group): Unit = {
