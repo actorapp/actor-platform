@@ -3,7 +3,6 @@ package im.actor.server.api.rpc.service.messaging
 import akka.actor._
 import akka.contrib.pattern.ClusterSingletonManager
 import akka.event.Logging
-import akka.http.scaladsl.Http
 import akka.util.Timeout
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
@@ -46,8 +45,6 @@ private[messaging] final class ReverseHooksListener(mediator: ActorRef) extends 
   private[this] implicit val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
   private[this] implicit val timeout: Timeout = Timeout(5.seconds)
 
-  private[this] val http = Http()
-
   private[this] val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute, self, RefetchGroups)
   private[this] val db = DbExtension(system).db
 
@@ -89,7 +86,7 @@ private[messaging] final class ReverseHooksListener(mediator: ActorRef) extends 
     } yield {
       optToken.map { token ⇒
         context.actorOf(
-          ReverseHooksWorker.props(groupId, token, mediator, http),
+          ReverseHooksWorker.props(groupId, token, mediator),
           interceptorGroupId(groupId)
         )
         ()
