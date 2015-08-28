@@ -19,8 +19,6 @@ import android.provider.MediaStore;
 import android.view.Display;
 import android.webkit.MimeTypeMap;
 
-import com.google.j2objc.annotations.ObjectiveCName;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -405,7 +403,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         return outputFile.getAbsolutePath();
     }
 
-    @ObjectiveCName("getDialogsDisplayList")
     public BindedDisplayList<Dialog> getDialogsDisplayList() {
         if (dialogList == null) {
             dialogList = (BindedDisplayList<Dialog>) modules.getDisplayListsModule().getDialogsSharedList();
@@ -425,7 +422,6 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         return dialogList;
     }
 
-    @ObjectiveCName("getMessageDisplayList:")
     public BindedDisplayList<Message> getMessageDisplayList(final Peer peer) {
         if (!messagesLists.containsKey(peer)) {
             BindedDisplayList<Message> list = (BindedDisplayList<Message>) modules.getDisplayListsModule().getMessagesSharedList(peer);
