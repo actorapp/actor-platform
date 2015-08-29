@@ -11,8 +11,6 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server._
 import org.scalatest.Inside._
 
-import scala.concurrent.Future
-
 class IntegrationsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
@@ -23,11 +21,13 @@ class IntegrationsServiceSpec
 
   it should "not allow non group members to get integration token" in t.e1
 
-  it should "allow group members to get integration token" in t.e2
+  it should "respond with empty token to ordinary group member" in t.e2
 
   it should "not allow ordinary group member to revoke integration token" in t.e3
 
-  it should "allow group admin to revoke integration token" in t.e4
+  it should "allow group admin to get integration token" in t.e4
+
+  it should "allow group admin to revoke integration token" in t.e5
 
   object t {
 
@@ -71,19 +71,12 @@ class IntegrationsServiceSpec
 
       val groupToken = whenReady(db.run(persist.GroupBot.findByGroup(outPeer.id)))(result ⇒ result.map(_.token).getOrElse(fail()))
 
-      val getTokens = Future.sequence(List(
-        service.jhandleGetIntegrationToken(outPeer, clientData2),
-        service.jhandleGetIntegrationToken(outPeer, clientData1)
-      ))
-
-      whenReady(getTokens) { resps ⇒
-        resps foreach { resp ⇒
-          resp should matchPattern { case Ok(_) ⇒ }
-          inside(resp) {
-            case Ok(ResponseIntegrationToken(token, url)) ⇒
-              token shouldEqual groupToken
-              url shouldEqual makeUrl(config, token)
-          }
+      whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+        inside(resp) {
+          case Ok(ResponseIntegrationToken(token, url)) ⇒
+            token shouldEqual ""
+            url shouldEqual ""
         }
       }
     }
@@ -102,27 +95,47 @@ class IntegrationsServiceSpec
       whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2)) { resp ⇒
         inside(resp) {
           case Ok(ResponseIntegrationToken(token, url)) ⇒
-            url shouldEqual makeUrl(config, token)
+            token shouldEqual ""
+            url shouldEqual ""
         }
       }
     }
 
     def e4(): Unit = {
+      implicit val clientData = clientData1
       val outPeer = {
-        implicit val clientData = clientData1
+        val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+        OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+      }
+
+      val groupToken = whenReady(db.run(persist.GroupBot.findByGroup(outPeer.id)))(result ⇒ result.map(_.token).getOrElse(fail()))
+
+      whenReady(service.handleGetIntegrationToken(outPeer)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+        inside(resp) {
+          case Ok(ResponseIntegrationToken(token, url)) ⇒
+            token shouldEqual groupToken
+            url shouldEqual makeUrl(config, groupToken)
+        }
+      }
+    }
+
+    def e5(): Unit = {
+      implicit val clientData = clientData1
+      val outPeer = {
         val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
         OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
       val newTokenResponse =
-        whenReady(service.jhandleRevokeIntegrationToken(outPeer, clientData1)) { resp ⇒
+        whenReady(service.handleRevokeIntegrationToken(outPeer)) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseIntegrationToken(token, url)) ⇒
           }
           resp.toOption.get
         }
 
-      whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2)) { resp ⇒
+      whenReady(service.handleGetIntegrationToken(outPeer)) { resp ⇒
         inside(resp) {
           case Ok(ResponseIntegrationToken(token, url)) ⇒
             token shouldEqual newTokenResponse.token
