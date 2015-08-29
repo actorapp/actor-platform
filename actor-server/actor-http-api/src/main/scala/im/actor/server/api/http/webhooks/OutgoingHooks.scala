@@ -8,7 +8,6 @@ import cats.data.Xor
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.server.api.http.json._
 import im.actor.server.commons.KeyValueMappings
-import im.actor.server.group.GroupOffice
 import im.actor.server.util.{ FutureResult, IdUtils }
 import shardakka.ShardakkaExtension
 import shardakka.keyvalue.SimpleKeyValue
@@ -21,7 +20,6 @@ object FutureResultHttp extends FutureResult[(StatusCode, String)]
 
 object OutgoingHooksErrors {
   val WrongIntegrationToken = "Wrong integration token"
-  val NotAllowedForPublic = "Reverse hooks are not allowed in public group"
   val MalformedUri = "Malformed outgoing hook uri"
   val AlreadyRegistered = "Webhooks with provided uri is already registered"
   val WebhookGone = "Webhook with given id not found"
@@ -79,36 +77,25 @@ trait OutgoingHooks extends ReverseHookUnmarshaler with PlayJsonSupport {
       uri ← fromXor(e ⇒ BadRequest → OutgoingHooksErrors.MalformedUri)(Xor.fromTry(Try(Uri(uri))))
       strUri = uri.toString()
 
-      reverseHooksKv = getTokenKv(token)
-
-      _ ← fromFutureBoolean(Forbidden → OutgoingHooksErrors.NotAllowedForPublic)(GroupOffice.isPublic(groupId) map (!_))
-
       registeredUrs ← fromFuture(getHooks(token))
       _ ← fromBoolean(Conflict → OutgoingHooksErrors.AlreadyRegistered)(!registeredUrs.map(_._2).contains(strUri))
 
       id = IdUtils.nextIntId(ThreadLocalRandom.current())
-      _ ← fromFuture(reverseHooksKv.upsert(id.toString, strUri))
+      _ ← fromFuture(getTokenKv(token).upsert(id.toString, strUri))
     } yield id).value
   }
 
   def unregister(token: String, id: Int): Future[(StatusCode, String) Xor Unit] = {
     (for {
       groupId ← fromFutureOption(NotFound → OutgoingHooksErrors.WrongIntegrationToken)(integrationTokensKv.get(token))
-      _ ← fromFutureBoolean(Forbidden → OutgoingHooksErrors.NotAllowedForPublic)(GroupOffice.isPublic(groupId) map (!_))
-
       _ ← fromFutureOption(Gone → OutgoingHooksErrors.WebhookGone)(findHook(token, id))
-      reverseHooksKv = getTokenKv(token)
-
-      _ ← fromFuture(reverseHooksKv.delete(id.toString))
+      _ ← fromFuture(getTokenKv(token).delete(id.toString))
     } yield ()).value
   }
 
   def list(token: String): Future[(StatusCode, String) Xor Seq[ReverseHookResponse]] = {
     (for {
       groupId ← fromFutureOption(NotFound → OutgoingHooksErrors.WrongIntegrationToken)(integrationTokensKv.get(token))
-
-      _ ← fromFutureBoolean(Forbidden → OutgoingHooksErrors.NotAllowedForPublic)(GroupOffice.isPublic(groupId) map (!_))
-
       hooks ← fromFuture(getHooks(token))
       result = hooks.map(h ⇒ ReverseHookResponse(h._1, Some(h._2)))
     } yield result).value
