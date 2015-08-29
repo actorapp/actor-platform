@@ -31,7 +31,10 @@ class IntegrationsServiceImpl(config: HttpApiConfig)(
       withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
           optToken ← DBIO.from(GroupOffice.getIntegrationToken(groupOutPeer.groupId, client.userId))
-        } yield optToken.map(token ⇒ Ok(ResponseIntegrationToken(token, makeUrl(config, token)))).getOrElse(Error(TokenNotFound))
+        } yield {
+          val (token, url) = optToken map (t ⇒ t → makeUrl(config, t)) getOrElse ("" → "")
+          Ok(ResponseIntegrationToken(token, url))
+        }
       }
     }
     db.run(toDBIOAction(authorizedAction)) recover {

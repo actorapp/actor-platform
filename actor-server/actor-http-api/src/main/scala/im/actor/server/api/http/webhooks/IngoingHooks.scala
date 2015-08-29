@@ -46,18 +46,11 @@ trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
       optGroupId ← integrationTokensKv.get(token)
       result ← optGroupId map { groupId ⇒
         for {
-          isPublic ← GroupOffice.isPublic(groupId)
-          result ← if (isPublic) {
-            Future.successful(Left(StatusCodes.Forbidden))
-          } else {
-            for {
-              (_, _, optBot) ← GroupOffice.getMemberIds(groupId)
-              _ ← optBot map { botId ⇒
-                GroupDialogOperations.sendMessage(groupId, botId, 0, ThreadLocalRandom.current().nextLong(), message)
-              } getOrElse Future.successful(Left(StatusCodes.NotAcceptable))
-            } yield Right(())
-          }
-        } yield result
+          (_, _, optBot) ← GroupOffice.getMemberIds(groupId)
+          _ ← optBot map { botId ⇒
+            GroupDialogOperations.sendMessage(groupId, botId, 0, ThreadLocalRandom.current().nextLong(), message)
+          } getOrElse Future.successful(Left(StatusCodes.NotAcceptable))
+        } yield Right(())
       } getOrElse Future.successful(Left(StatusCodes.BadRequest))
     } yield result
   }

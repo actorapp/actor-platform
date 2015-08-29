@@ -1,9 +1,7 @@
 package im.actor.server.group
 
-import akka.actor.Status
 import im.actor.server.api.ApiConversions._
 import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup, Member ⇒ ApiMember }
-import im.actor.server.group.GroupErrors.NoBotFound
 
 private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   this: GroupProcessor ⇒
@@ -11,8 +9,9 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   import GroupQueries._
 
   def getIntegrationToken(group: Group, userId: Int): Unit =
-    withGroupMember(group, userId) { _ ⇒
-      getIntegrationToken(group)
+    withGroupMember(group, userId) { member ⇒
+      val optToken = if (member.isAdmin) group.bot.map(_.token) else None
+      sender() ! GetIntegrationTokenResponse(optToken)
     }
 
   def getIntegrationToken(group: Group): Unit = {
