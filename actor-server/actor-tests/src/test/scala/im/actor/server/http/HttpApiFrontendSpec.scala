@@ -471,11 +471,4 @@ class HttpApiFrontendSpec
     }
   }
 
-  private def extractToken(groupId: Int): String = {
-    whenReady(GroupOffice.getIntegrationToken(groupId)) { optToken ⇒
-      optToken shouldBe defined
-      optToken.get
-    }
-  }
-
 }

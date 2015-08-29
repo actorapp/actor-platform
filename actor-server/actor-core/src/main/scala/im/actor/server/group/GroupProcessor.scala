@@ -153,12 +153,12 @@ private[group] final class GroupProcessor
         state.copy(bot = Some(Bot(userId, token)))
       case TSEvent(ts, GroupEvents.UserInvited(userId, inviterUserId)) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
           invitedUserIds = state.invitedUserIds + userId
         )
       case TSEvent(ts, GroupEvents.UserJoined(userId, inviterUserId)) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
           invitedUserIds = state.invitedUserIds - userId
         )
       case TSEvent(_, GroupEvents.UserKicked(userId, kickerUserId, _)) ⇒
