@@ -6,7 +6,7 @@ import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.groups.{ GroupsService, ResponseCreateGroup }
 import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.acl.ACLUtils
-import im.actor.server.group.{ GroupOffice, GroupProcessorRegion }
+import im.actor.server.group.{ GroupOffice, GroupProcessorRegion, GroupViewRegion }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -41,4 +41,10 @@ trait GroupsServiceHelpers {
     Await.result(GroupOffice.makePublic(resp.groupPeer.groupId, description), 5.seconds)
     resp
   }
+
+  protected def extractToken(groupId: Int)(implicit viewRegion: GroupViewRegion, ec: ExecutionContext): String = {
+    implicit val timeout: Timeout = Timeout(5.seconds)
+    Await.result(GroupOffice.getIntegrationToken(groupId), 5.seconds).get
+  }
+
 }

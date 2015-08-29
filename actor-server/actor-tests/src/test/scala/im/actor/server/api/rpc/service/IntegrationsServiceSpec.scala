@@ -2,7 +2,8 @@ package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.integrtions.ResponseIntegrationToken
-import im.actor.api.rpc.peers.{ OutPeer, PeerType }
+import im.actor.api.rpc.peers.{ UserOutPeer, OutPeer, PeerType }
+import im.actor.server.acl.ACLUtils
 import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
@@ -29,6 +30,8 @@ class IntegrationsServiceSpec
 
   it should "allow group admin to revoke integration token" in t.e5
 
+  it should "allow multiple group admins to get integration token" in t.e6
+
   object t {
 
     implicit val ec = system.dispatcher
@@ -53,6 +56,10 @@ class IntegrationsServiceSpec
     val clientData1 = ClientData(user1AuthId1, sessionId, Some(user1.id))
     val clientData2 = ClientData(user1AuthId2, sessionId, Some(user2.id))
 
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
     def e1(): Unit = {
       val outPeer = {
         implicit val clientData = clientData1
@@ -69,7 +76,7 @@ class IntegrationsServiceSpec
         OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
-      val groupToken = whenReady(db.run(persist.GroupBot.findByGroup(outPeer.id)))(result ⇒ result.map(_.token).getOrElse(fail()))
+      val groupToken = extractToken(outPeer.id)
 
       whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2)) { resp ⇒
         resp should matchPattern { case Ok(_) ⇒ }
@@ -108,7 +115,7 @@ class IntegrationsServiceSpec
         OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
-      val groupToken = whenReady(db.run(persist.GroupBot.findByGroup(outPeer.id)))(result ⇒ result.map(_.token).getOrElse(fail()))
+      val groupToken = extractToken(outPeer.id)
 
       whenReady(service.handleGetIntegrationToken(outPeer)) { resp ⇒
         resp should matchPattern { case Ok(_) ⇒ }
@@ -140,6 +147,39 @@ class IntegrationsServiceSpec
           case Ok(ResponseIntegrationToken(token, url)) ⇒
             token shouldEqual newTokenResponse.token
             url shouldEqual newTokenResponse.url
+        }
+      }
+    }
+
+    def e6(): Unit = {
+      implicit val clientData = clientData1
+      val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+      val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+
+      whenReady(groupsService.handleMakeUserAdmin(groupOutPeer, user2OutPeer)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+      }
+
+      val groupToken = extractToken(outPeer.id)
+
+      whenReady(service.handleGetIntegrationToken(outPeer)) { resp ⇒
+        resp should matchPattern { case Ok(_) ⇒ }
+        inside(resp) {
+          case Ok(ResponseIntegrationToken(token, url)) ⇒
+            token shouldEqual groupToken
+            url shouldEqual makeUrl(config, groupToken)
+        }
+      }
+
+      {
+        implicit val clientData = clientData2
+        whenReady(service.handleGetIntegrationToken(outPeer)) { resp ⇒
+          resp should matchPattern { case Ok(_) ⇒ }
+          inside(resp) {
+            case Ok(ResponseIntegrationToken(token, url)) ⇒
+              token shouldEqual groupToken
+              url shouldEqual makeUrl(config, groupToken)
+          }
         }
       }
     }
