@@ -9,7 +9,7 @@ Read more in our [new documentation](http://actor.readme.io/docs/server-docker)
 ## Building the server (optional)
 * Install ```java``` and ```sbt``` on your machine.
 * Build server by calling ```sbt dist``` (first build may take up to 10 min).
-* Grab your server in ```actor-server/target/dist```.
+* Grab your server in ```actor-server/target/universal/actor-server-{version}```.
 
 ## Configuring the server
 
@@ -25,7 +25,7 @@ Before starting the server, you need an application.conf file from in the ```con
 
 ## Starting the server
 
-To start the server, run ```bin/start```.
+To start the server, run ```bin/actor-server```.
 
 ## Mobile Apps configuration
 
