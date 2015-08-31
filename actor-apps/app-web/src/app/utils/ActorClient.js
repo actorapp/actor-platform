@@ -87,8 +87,8 @@ export default {
     return window.messenger.getInviteLink(groupId);
   },
 
-  sendTextMessage(peer, text, markdownText) {
-    window.messenger.sendMarkdownMessage(peer, text, markdownText);
+  sendTextMessage(peer, text) {
+    window.messenger.sendMessage(peer, text);
   },
 
   sendFileMessage(peer, file) {
