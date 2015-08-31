@@ -1,8 +1,7 @@
 package shardakka
 
-import im.actor.server.api.rpc.service.ServiceSpecHelpers
 import im.actor.server.db.DbExtension
-import im.actor.server.{ ActorSerializerPrepare, ActorSpecification, ActorSuite, ServiceSpecMatchers }
+import im.actor.server._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }

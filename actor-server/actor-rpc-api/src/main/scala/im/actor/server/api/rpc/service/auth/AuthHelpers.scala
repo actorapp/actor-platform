@@ -2,6 +2,8 @@ package im.actor.server.api.rpc.service.auth
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.server.acl.ACLUtils
+
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz.{ -\/, \/, \/- }

@@ -20,19 +20,6 @@ sourceSets {
     }
 }
 
-//project('android') {
-//    apply plugin: 'java'
-//
-//    compileJava {
-//        sourceCompatibility = 1.6
-//        targetCompatibility = 1.6
-//    }
-//    main {
-//        java {
-//            srcDirs = ['../src/main',
-//                       '../src/template',
-//                       '../../annotationsJ2objc',
-//                       '../../annotationsJetbrains']
-//        }
-//    }
-//}
+dependencies {
+    testCompile "junit:junit:4.11"
+}

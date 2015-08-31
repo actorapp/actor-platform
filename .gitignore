@@ -2,6 +2,8 @@ target/
 .ensime_cache
 actor-server/src/main/resources/application.conf
 actor-server/actor-tests/src/test/resources/application.conf
+actor-server/actor-testkit/src/test/resources/application.conf
+actor-server/actor-testkit/src/main/resources/application.conf
 actor-tests/journal
 actor-tests/snapshots
 actor-dashboard/logs

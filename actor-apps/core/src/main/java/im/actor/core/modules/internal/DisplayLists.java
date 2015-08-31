@@ -14,6 +14,7 @@ import im.actor.core.entity.SearchEntity;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.runtime.Storage;
+import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.mvvm.PlatformDisplayList;
 
 public class DisplayLists extends AbsModule {

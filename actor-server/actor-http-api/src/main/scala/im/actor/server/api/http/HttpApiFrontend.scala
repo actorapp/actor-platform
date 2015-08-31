@@ -1,6 +1,7 @@
 package im.actor.server.api.http
 
 import im.actor.server.db.DbExtension
+import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension }
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupProcessorRegion }
 import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialogRegion }
 
@@ -22,7 +23,6 @@ import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.tls.TlsContext
-import im.actor.server.util.{ S3StorageExtension, FileStorageAdapter }
 
 object HttpApiFrontend {
   private val corsHeaders = List(
@@ -61,16 +61,19 @@ object HttpApiFrontend {
     val webhooks = new WebhooksHandler
     val groups = new GroupsHandler
     val status = new StatusHandler
-    val files = new AppFilesHandler(config.staticFiles)
+    val app = new AppFilesHandler(config.staticFiles)
 
-    def routes: Route = files.routes ~
+    // format: OFF
+    def routes: Route =
+      app.routes ~
       pathPrefix("v1") {
         respondWithDefaultHeaders(corsHeaders) {
           status.routes ~
-            groups.routes ~
-            webhooks.routes
+          groups.routes ~
+          webhooks.routes
         }
       }
+    // format: ON
 
     Http().bind(config.interface, config.port, httpsContext = tlsContext map (_.asHttpsContext)).runForeach { connection ⇒
       connection handleWith Route.handlerFlow(routes)
