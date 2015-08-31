@@ -26,7 +26,7 @@ export default {
 
   sendTextMessage: function(peer, text) {
     mixpanel.track('Send Text');
-    ActorClient.sendTextMessage(peer, replaceNames(Markdown.plainText(text)), replaceNames(text));
+    ActorClient.sendTextMessage(peer, replaceNames(text));
   },
 
   sendFileMessage: function(peer, file) {
