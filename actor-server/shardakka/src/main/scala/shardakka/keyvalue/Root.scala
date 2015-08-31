@@ -36,6 +36,8 @@ abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: Class
     case e: RootEvent ⇒ updateState(e)
   }
 
+  protected def getKeys = keys
+
   private def handleRootCommand: Receive = {
     case cmd: CreateCommand =>
       val replyTo = sender()
