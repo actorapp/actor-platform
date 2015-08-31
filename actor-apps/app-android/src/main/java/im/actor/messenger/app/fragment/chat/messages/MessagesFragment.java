@@ -175,11 +175,14 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         }
 
         if (index > 0) {
-            linearLayoutManager.setStackFromEnd(false);
-            linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
-            // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
-            // linearLayoutManager.scrollToPosition(index + 1);
-            // getCollection().scrollToPosition(index + 1);
+            if (linearLayoutManager != null) {
+                linearLayoutManager.setStackFromEnd(false);
+                linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
+                // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
+                // linearLayoutManager.scrollToPosition(index + 1);
+                // getCollection().scrollToPosition(index + 1);
+            }
+
         } else {
             // linearLayoutManager.scrollToPosition(0);
             getCollection().scrollToPosition(0);

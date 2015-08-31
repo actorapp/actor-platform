@@ -188,6 +188,54 @@ public class GroupsProcessor extends AbsModule {
     }
 
     @Verified
+    public void onTopicChanged(int groupId, String topic) {
+        Group group = groups().getValue(groupId);
+        if (group != null) {
+
+            // We can't just ignore not changed avatar
+            // because we need to make message in conversation
+            // about avatar change
+
+            if (group.getTheme() == null || !group.getTheme().equals(topic)) {
+                // Change group title
+                Group upd = group.editTheme(topic);
+
+                // Update group
+                groups().addOrUpdateItem(upd);
+
+                // Notify about group change
+                onGroupDescChanged(upd);
+            }
+
+
+        }
+    }
+
+    @Verified
+    public void onAboutChanged(int groupId, String about) {
+        Group group = groups().getValue(groupId);
+        if (group != null) {
+
+            // We can't just ignore not changed avatar
+            // because we need to make message in conversation
+            // about avatar change
+
+            if (group.getAbout() == null || !group.getAbout().equals(about)) {
+                // Change group title
+                Group upd = group.editAbout(about);
+
+                // Update group
+                groups().addOrUpdateItem(upd);
+
+                // Notify about group change
+                onGroupDescChanged(upd);
+            }
+
+
+        }
+    }
+
+    @Verified
     public void onAvatarChanged(int groupId, long rid, int uid, @Nullable ApiAvatar avatar, long date,
                                 boolean isSilent) {
         Group group = groups().getValue(groupId);
@@ -221,6 +269,7 @@ public class GroupsProcessor extends AbsModule {
             }
         }
     }
+
 
     @Verified
     public void onMembersUpdated(int groupId, List<ApiMember> members) {
