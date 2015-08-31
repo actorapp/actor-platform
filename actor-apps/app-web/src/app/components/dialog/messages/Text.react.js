@@ -52,21 +52,11 @@ class Text extends React.Component {
   render() {
     const { content, className } = this.props;
 
-    let renderedContent;
-
-    if (content.markdownText !== null) {
-      renderedContent = (
+    const renderedContent = (
         <div className={className}
-             dangerouslySetInnerHTML={{__html: memoizedProcessText(content.markdownText)}}>
+             dangerouslySetInnerHTML={{__html: memoizedProcessText(content.text)}}>
         </div>
       );
-    } else {
-      renderedContent = (
-        <div className={className}>
-          {content.text}
-        </div>
-      );
-    }
 
     return renderedContent;
   }
