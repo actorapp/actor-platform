@@ -2,6 +2,8 @@ package im.actor.server.api.rpc.service.auth
 
 import java.time.{ ZoneOffset, LocalDateTime }
 
+import im.actor.server.acl.ACLUtils
+
 import scala.concurrent._, duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.language.postfixOps

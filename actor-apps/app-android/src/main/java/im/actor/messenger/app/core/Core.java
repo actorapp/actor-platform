@@ -28,7 +28,7 @@ import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.mvvm.MVVMCollection;
 
-import static im.actor.messenger.app.util.io.IOUtils.readAll;
+import static im.actor.core.utils.IOUtils.readAll;
 
 /**
  * Created by ex3ndr on 30.08.14.

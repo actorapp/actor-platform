@@ -2,8 +2,8 @@ package im.actor.server.migrations
 
 import akka.actor._
 import akka.util.Timeout
-import im.actor.server.util.ContactsUtils
 import im.actor.server.persist
+import im.actor.server.user.ContactsUtils
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._

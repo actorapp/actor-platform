@@ -2,14 +2,10 @@ package shardakka.keyvalue
 
 import akka.actor.{ Props, ReceiveTimeout }
 import akka.persistence.PersistentActor
-import com.eaio.uuid.UUID
 import com.google.protobuf.ByteString
 import shardakka.ShardakkaExtension
 
-trait ValueCommand {
-  val uuid: UUID
-  val key: String
-}
+trait ValueCommand extends Command
 
 trait ValueQuery {
   val key: String
@@ -32,19 +28,19 @@ final class ValueActor(name: String) extends PersistentActor {
   private var value: Option[ByteString] = None
 
   override def receiveCommand: Receive = {
-    case Upsert(uuid, _, newValue) ⇒
+    case Upsert(_, newValue) ⇒
       persist(ValueUpdated(newValue)) { e ⇒
         value = Some(newValue)
-        sender() ! Ack(uuid)
+        sender() ! Ack()
       }
-    case Delete(uuid, _) ⇒
+    case Delete(_) ⇒
       if (value.isEmpty) {
         persist(ValueDeleted()) { e ⇒
           value = None
-          sender() ! Ack(uuid)
+          sender() ! Ack()
         }
       } else {
-        sender() ! Ack(uuid)
+        sender() ! Ack()
       }
     case Get(_) ⇒
       sender() ! GetResponse(value)

@@ -29,6 +29,20 @@ message GroupCommands {
         required int64 date = 4;
     }
 
+    message CreateInternal {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+
+        required int32 creator_user_id = 3;
+        required string title = 4;
+        repeated int32 user_ids = 5;
+    }
+
+    message CreateInternalAck {
+        required int64 access_hash = 1;
+    }
+
     message Join {
         option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
 
@@ -158,6 +172,12 @@ message GroupQueries {
         required int32 client_user_id = 2;
     }
 
+    message GetIntegrationTokenInternal {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
     message GetIntegrationTokenResponse {
         optional string token = 1;
     }
@@ -185,7 +205,7 @@ message GroupQueries {
     }
 
     message GetMembers {
-        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
 
         required int32 group_id = 1;
     }
@@ -193,7 +213,17 @@ message GroupQueries {
     message GetMembersResponse {
         repeated int32 member_ids = 1;
         repeated int32 invited_user_ids = 2;
-        required int32 bot_id = 3;
+        optional int32 bot_id = 3;
+    }
+
+    message IsPublic {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
+    message IsPublicResponse {
+        required bool is_public = 1;
     }
 }
 
@@ -205,6 +235,7 @@ message GroupEvents {
         required int32 creator_user_id = 2;
         required int64 access_hash = 3;
         required string title = 4;
+        repeated int32 user_ids = 6;
     }
 
     message UserInvited {

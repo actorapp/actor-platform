@@ -1,6 +1,5 @@
 package im.actor.messenger.app.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.ResultReceiver;
 import android.view.View;
@@ -9,9 +8,6 @@ import android.view.inputmethod.InputMethodManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Created by ex3ndr on 19.10.14.
- */
 public class KeyboardHelper {
 
     private Context context;
