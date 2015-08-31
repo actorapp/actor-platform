@@ -2,7 +2,7 @@ package shardakka.keyvalue
 
 import akka.actor.Actor.emptyBehavior
 import akka.actor.Status.Failure
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor._
 import akka.persistence.PersistentActor
 
 import scala.reflect.ClassTag
@@ -29,11 +29,20 @@ abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: Class
   private[this] var keys = Set.empty[String]
 
   protected def handleCustom: Receive = emptyBehavior
+  protected def handleCustomRecover: Receive = emptyBehavior
+  protected def onKeyCreate(key: String): Unit = ()
+  protected def onKeyDelete(key: String): Unit = ()
 
   override final def receiveCommand: Receive = handleRootCommand.orElse(handleRootQuery).orElse(handleInternal).orElse(handleCustom)
 
-  override final def receiveRecover: Receive = {
+  override final def receiveRecover: Receive = handleCustomRecover orElse {
     case e: RootEvent ⇒ updateState(e)
+  }
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    super.preRestart(reason, message)
+    log.error(reason, "Failure while processing {} from {}", message, sender())
+    sender() ! Status.Failure(reason)
   }
 
   protected def getKeys = keys
@@ -98,8 +107,12 @@ abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: Class
   }
 
   private def updateState(e: RootEvent): Unit = e match {
-    case KeyCreated(key) ⇒ keys += key
-    case KeyDeleted(key) ⇒ keys -= key
+    case KeyCreated(key) ⇒
+      keys += key
+      onKeyCreate(key)
+    case KeyDeleted(key) ⇒
+      keys -= key
+      onKeyDelete(key)
   }
 
   private def keyExists(key: String): Boolean = keys.contains(key)
