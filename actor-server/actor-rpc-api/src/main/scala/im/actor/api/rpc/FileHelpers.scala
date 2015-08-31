@@ -1,5 +1,7 @@
 package im.actor.api.rpc
 
+import im.actor.server.acl.ACLUtils
+
 import scala.concurrent.ExecutionContext
 import scalaz.\/
 
@@ -8,7 +10,6 @@ import slick.dbio.DBIO
 
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.persist
-import im.actor.server.util.ACLUtils
 
 object FileHelpers {
 

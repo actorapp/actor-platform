@@ -7,12 +7,13 @@ import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, U
 import im.actor.server.dialog.{ AuthIdRandomId, GroupDialogCommands, ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
+import im.actor.server.history.HistoryUtils
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
-import im.actor.server.util.HistoryUtils._
+import HistoryUtils._
 import im.actor.utils.cache.CacheHelpers._
 import org.joda.time.DateTime
 
@@ -33,8 +34,8 @@ trait GroupDialogHandlers extends UpdateCounters {
     isFat:        Boolean
   ): Unit = {
     deferStashingReply(LastSenderIdChanged(senderUserId), state) { e ⇒
-      withMemberIds(groupId) { (memberIds, _, botId) ⇒
-        if ((memberIds contains senderUserId) || senderUserId == botId) {
+      withMemberIds(groupId) { (memberIds, _, optBot) ⇒
+        if ((memberIds contains senderUserId) || optBot.contains(senderUserId)) {
           withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
             val date = new DateTime
             for {
@@ -45,7 +46,7 @@ trait GroupDialogHandlers extends UpdateCounters {
                   _ ← UserOffice.broadcastUserUpdate(userId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
                 } yield ()
               })
-              SeqState(seq, state) ← if (senderUserId == botId) {
+              SeqState(seq, state) ← if (optBot.contains(senderUserId)) {
                 Future.successful(SeqState(0, ByteString.EMPTY))
               } else {
                 UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
@@ -143,10 +144,10 @@ trait GroupDialogHandlers extends UpdateCounters {
     }
   }
 
-  protected def withMemberIds[T](groupId: Int)(f: (Set[Int], Set[Int], Int) ⇒ Future[T]): Future[T] = {
+  protected def withMemberIds[T](groupId: Int)(f: (Set[Int], Set[Int], Option[Int]) ⇒ Future[T]): Future[T] = {
     GroupOffice.getMemberIds(groupId) flatMap {
-      case (memberIds, invitedUserIds, botId) ⇒
-        f(memberIds.toSet, invitedUserIds.toSet, botId)
+      case (memberIds, invitedUserIds, optBot) ⇒
+        f(memberIds.toSet, invitedUserIds.toSet, optBot)
     }
   }
 

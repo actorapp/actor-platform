@@ -70,53 +70,54 @@ private[user] object User {
 }
 
 object UserProcessor {
-  def register(): Unit = {
-    ActorSerializer.register(10001, classOf[UserCommands.NewAuth])
-    ActorSerializer.register(10002, classOf[UserCommands.NewAuthAck])
-    ActorSerializer.register(10005, classOf[UserCommands.BroadcastUpdate])
-    ActorSerializer.register(10006, classOf[UserCommands.BroadcastUpdateResponse])
-    ActorSerializer.register(10007, classOf[UserCommands.RemoveAuth])
-    ActorSerializer.register(10008, classOf[UserCommands.Create])
-    ActorSerializer.register(10010, classOf[UserCommands.Delete])
-    ActorSerializer.register(10012, classOf[UserCommands.ChangeName])
-    ActorSerializer.register(10013, classOf[UserCommands.CreateAck])
-    ActorSerializer.register(10014, classOf[UserCommands.ChangeCountryCode])
-    ActorSerializer.register(10015, classOf[UserCommands.DeliverMessage])
-    ActorSerializer.register(10016, classOf[UserCommands.DeliverOwnMessage])
-    ActorSerializer.register(10017, classOf[UserCommands.RemoveAuthAck])
-    ActorSerializer.register(10018, classOf[UserCommands.DeleteAck])
-    ActorSerializer.register(10019, classOf[UserCommands.AddPhone])
-    ActorSerializer.register(10020, classOf[UserCommands.AddPhoneAck])
-    ActorSerializer.register(10021, classOf[UserCommands.AddEmail])
-    ActorSerializer.register(10022, classOf[UserCommands.AddEmailAck])
-    ActorSerializer.register(10023, classOf[UserCommands.ChangeCountryCodeAck])
-    ActorSerializer.register(10024, classOf[UserCommands.ChangeNickname])
-    ActorSerializer.register(10025, classOf[UserCommands.ChangeAbout])
-    ActorSerializer.register(10026, classOf[UserCommands.UpdateAvatar])
-    ActorSerializer.register(10027, classOf[UserCommands.UpdateAvatarAck])
-    ActorSerializer.register(10028, classOf[UserCommands.DeliverMessageAck])
+  def register(): Unit =
+    ActorSerializer.register(
+      10001 → classOf[UserCommands.NewAuth],
+      10002 → classOf[UserCommands.NewAuthAck],
+      10005 → classOf[UserCommands.BroadcastUpdate],
+      10006 → classOf[UserCommands.BroadcastUpdateResponse],
+      10007 → classOf[UserCommands.RemoveAuth],
+      10008 → classOf[UserCommands.Create],
+      10010 → classOf[UserCommands.Delete],
+      10012 → classOf[UserCommands.ChangeName],
+      10013 → classOf[UserCommands.CreateAck],
+      10014 → classOf[UserCommands.ChangeCountryCode],
+      10015 → classOf[UserCommands.DeliverMessage],
+      10016 → classOf[UserCommands.DeliverOwnMessage],
+      10017 → classOf[UserCommands.RemoveAuthAck],
+      10018 → classOf[UserCommands.DeleteAck],
+      10019 → classOf[UserCommands.AddPhone],
+      10020 → classOf[UserCommands.AddPhoneAck],
+      10021 → classOf[UserCommands.AddEmail],
+      10022 → classOf[UserCommands.AddEmailAck],
+      10023 → classOf[UserCommands.ChangeCountryCodeAck],
+      10024 → classOf[UserCommands.ChangeNickname],
+      10025 → classOf[UserCommands.ChangeAbout],
+      10026 → classOf[UserCommands.UpdateAvatar],
+      10027 → classOf[UserCommands.UpdateAvatarAck],
+      10028 → classOf[UserCommands.DeliverMessageAck],
 
-    ActorSerializer.register(11001, classOf[UserQueries.GetAuthIds])
-    ActorSerializer.register(11002, classOf[UserQueries.GetAuthIdsResponse])
-    ActorSerializer.register(11003, classOf[UserQueries.GetContactRecords])
-    ActorSerializer.register(11004, classOf[UserQueries.GetContactRecordsResponse])
-    ActorSerializer.register(11005, classOf[UserQueries.CheckAccessHash])
-    ActorSerializer.register(11006, classOf[UserQueries.CheckAccessHashResponse])
-    ActorSerializer.register(11007, classOf[UserQueries.GetApiStruct])
-    ActorSerializer.register(11008, classOf[UserQueries.GetApiStructResponse])
+      11001 → classOf[UserQueries.GetAuthIds],
+      11002 → classOf[UserQueries.GetAuthIdsResponse],
+      11003 → classOf[UserQueries.GetContactRecords],
+      11004 → classOf[UserQueries.GetContactRecordsResponse],
+      11005 → classOf[UserQueries.CheckAccessHash],
+      11006 → classOf[UserQueries.CheckAccessHashResponse],
+      11007 → classOf[UserQueries.GetApiStruct],
+      11008 → classOf[UserQueries.GetApiStructResponse],
 
-    ActorSerializer.register(12001, classOf[UserEvents.AuthAdded])
-    ActorSerializer.register(12002, classOf[UserEvents.AuthRemoved])
-    ActorSerializer.register(12003, classOf[UserEvents.Created])
-    ActorSerializer.register(12006, classOf[UserEvents.Deleted])
-    ActorSerializer.register(12007, classOf[UserEvents.NameChanged])
-    ActorSerializer.register(12008, classOf[UserEvents.CountryCodeChanged])
-    ActorSerializer.register(12009, classOf[UserEvents.PhoneAdded])
-    ActorSerializer.register(12010, classOf[UserEvents.EmailAdded])
-    ActorSerializer.register(12011, classOf[UserEvents.NicknameChanged])
-    ActorSerializer.register(12012, classOf[UserEvents.AboutChanged])
-    ActorSerializer.register(12013, classOf[UserEvents.AvatarUpdated])
-  }
+      12001 → classOf[UserEvents.AuthAdded],
+      12002 → classOf[UserEvents.AuthRemoved],
+      12003 → classOf[UserEvents.Created],
+      12006 → classOf[UserEvents.Deleted],
+      12007 → classOf[UserEvents.NameChanged],
+      12008 → classOf[UserEvents.CountryCodeChanged],
+      12009 → classOf[UserEvents.PhoneAdded],
+      12010 → classOf[UserEvents.EmailAdded],
+      12011 → classOf[UserEvents.NicknameChanged],
+      12012 → classOf[UserEvents.AboutChanged],
+      12013 → classOf[UserEvents.AvatarUpdated]
+    )
 
   def props: Props =
     Props(classOf[UserProcessor])

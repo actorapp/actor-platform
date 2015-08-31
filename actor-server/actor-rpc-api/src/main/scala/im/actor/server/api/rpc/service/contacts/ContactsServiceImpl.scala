@@ -2,6 +2,8 @@ package im.actor.server.api.rpc.service.contacts
 
 import java.security.MessageDigest
 
+import im.actor.server.acl.ACLUtils
+
 import scala.collection.immutable
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -22,8 +24,8 @@ import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.db.DbExtension
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerRegion }
-import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
-import im.actor.server.util.{ ACLUtils, ContactsUtils, PhoneNumberUtils, UserUtils }
+import im.actor.server.user._
+import im.actor.server.util.PhoneNumberUtils
 import im.actor.server.{ models, persist }
 
 class ContactsServiceImpl(

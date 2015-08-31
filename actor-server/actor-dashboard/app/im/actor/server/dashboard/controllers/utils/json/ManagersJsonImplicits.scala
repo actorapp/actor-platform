@@ -1,5 +1,7 @@
 package im.actor.server.dashboard.controllers.utils.json
 
+import im.actor.server.acl.ACLUtils
+
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import play.api.libs.functional.syntax._
@@ -8,7 +10,6 @@ import play.api.libs.json.{ JsPath, Reads }
 
 import im.actor.server.dashboard.controllers.utils.json.Common._
 import im.actor.server.models
-import im.actor.server.util.ACLUtils
 import im.actor.server.util.IdUtils._
 
 object ManagersJsonImplicits {

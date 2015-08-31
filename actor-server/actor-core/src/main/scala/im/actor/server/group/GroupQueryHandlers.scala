@@ -9,9 +9,14 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   import GroupQueries._
 
   def getIntegrationToken(group: Group, userId: Int): Unit =
-    withGroupMember(group, userId) { _ ⇒
-      sender() ! GetIntegrationTokenResponse(group.bot.map(_.token))
+    withGroupMember(group, userId) { member ⇒
+      val optToken = if (member.isAdmin) group.bot.map(_.token) else None
+      sender() ! GetIntegrationTokenResponse(optToken)
     }
+
+  def getIntegrationToken(group: Group): Unit = {
+    sender() ! GetIntegrationTokenResponse(group.bot.map(_.token))
+  }
 
   def getApiStruct(group: Group, clientUserId: Int): Unit = {
     val apiMembers = group.members.toVector map {
@@ -47,8 +52,12 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   def getMembers(group: Group): Unit = {
     val members = group.members.keySet.toSeq
     val invited = group.invitedUserIds.toSeq
-    val bot = group.bot.map(_.userId).getOrElse(throw new Exception("Not bot provided for this group"))
+    val bot = group.bot.map(_.userId)
     sender() ! GetMembersResponse(members, invited, bot)
+  }
+
+  def isPublic(group: Group): Unit = {
+    sender() ! IsPublicResponse(isPublic = group.isPublic)
   }
 
 }

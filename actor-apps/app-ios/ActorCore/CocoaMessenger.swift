@@ -7,6 +7,10 @@ import Foundation
 var Actor : CocoaMessenger!
 
 func createActor() {
+    if Actor != nil {
+        return
+    }
+    
     ARCocoaStorageProxyProvider.setStorageRuntime(CocoaStorageRuntime())
     ARCocoaHttpProxyProvider.setHttpRuntime(CocoaHttpRuntime())
     ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())

@@ -3,21 +3,29 @@ package im.actor.server.http
 import java.nio.file.Paths
 
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpMethods.GET
-import akka.http.scaladsl.model.StatusCodes.{ BadRequest, NotFound, OK }
-import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
+import akka.http.scaladsl.model.HttpMethods.{ DELETE, POST, GET }
+import akka.http.scaladsl.model.StatusCodes._
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.unmarshalling._
+import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
 import akka.stream.scaladsl.Sink
 import akka.util.ByteString
+import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.ClientData
 import im.actor.server._
-import im.actor.server.api.http.json.{ AvatarUrls, JsonImplicits }
+import im.actor.server.acl.ACLUtils
+import im.actor.server.api.http.json.AvatarUrls
+import im.actor.server.api.http.json._
+import im.actor.server.api.http.webhooks.OutgoingHooksErrors
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
+import im.actor.server.api.rpc.service.messaging
+import im.actor.server.file.ImageUtils
+import im.actor.server.group.GroupOffice
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.util.{ ACLUtils, ImageUtils }
 import org.scalatest.Inside._
 import play.api.libs.json._
+import JsonFormatters._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
@@ -26,18 +34,33 @@ class HttpApiFrontendSpec
   with GroupsServiceHelpers
   with ImplicitGroupRegions
   with ImplicitSessionRegionProxy
-  with ImplicitAuthService {
+  with ImplicitAuthService
+  with PlayJsonSupport {
   behavior of "HttpApiFrontend"
 
   "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
 
-  it should "respond with Forbidden in public groups" in t.publicGroups()
+  //  it should "respond with Forbidden in public groups" in t.publicGroups()
 
   it should "respond with BadRequest to non existing groups" in t.nonExistingBot()
 
   //  it should "respond with OK to webhooks document message" in t.documentMessage()//TODO: not implemented yet
 
   //  it should "respond with OK to webhooks image message" in t.imageMessage()//TODO: not implemented yet
+
+  "Reverse hooks handler" should "not register outgoing hook with wrong url" in t.registerWrongUrl()
+
+  it should "not register outgoing hook with wrong token" in t.registerWrongToken()
+
+  it should "register outgoing hook with correct url" in t.registerCorrectUrl()
+
+  it should "not register duplicated hooks" in t.registerDuplicated()
+
+  it should "register many hooks for one group" in t.registerManyHooks()
+
+  it should "list registered hooks" in t.listHooks()
+
+  it should "register hook with id, get hook's status by id and remove hook by id" in t.hookStatus()
 
   "Groups handler" should "respond with JSON message to group invite info with correct invite token" in t.groupInvitesOk()
 
@@ -63,6 +86,18 @@ class HttpApiFrontendSpec
   implicit val service = messaging.MessagingServiceImpl(mediator)
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
+  implicit val reverseHookResponseUnmarshaller: FromEntityUnmarshaller[ReverseHookResponse] = Unmarshaller { implicit ec ⇒ entity ⇒
+    Unmarshal(entity).to[String].map { body ⇒
+      Json.parse(body).as[ReverseHookResponse]
+    }
+  }
+
+  implicit val statusUnmarshaller: FromEntityUnmarshaller[Status] = Unmarshaller { implicit ec ⇒ entity ⇒
+    Unmarshal(entity).to[String].map { body ⇒
+      Json.parse(body).as[Status]
+    }
+  }
+
   val s3BucketName = fsAdapterS3.bucketName
 
   object t {
@@ -75,46 +110,40 @@ class HttpApiFrontendSpec
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
     val publicGroup = createPubGroup("public group", "PG", Set(user2.id)).groupPeer
 
-    val resourcesPath = Paths.get(getClass.getResource("/").toURI).toFile.getCanonicalPath
+    val resourcesPath = Paths.get(getClass.getResource("/files").toURI).toFile.getCanonicalPath
     val config = HttpApiConfig("127.0.0.1", 9000, "http", "localhost", resourcesPath, None)
     HttpApiFrontend.start(config, None)
 
     val http = Http()
 
     def textMessage() = {
-      whenReady(db.run(persist.GroupBot.findByGroup(groupOutPeer.groupId))) { bot ⇒
-        bot shouldBe defined
-        val botToken = bot.get.token
-        val request = HttpRequest(
-          method = HttpMethods.POST,
-          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
-          entity = """{"text":"Good morning everyone!"}"""
-        )
-        whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual OK
-        }
+      val token = extractToken(groupOutPeer.groupId)
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        entity = """{"text":"Good morning everyone!"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual OK
       }
     }
 
     def publicGroups() = {
-      whenReady(db.run(persist.GroupBot.findByGroup(publicGroup.groupId))) { bot ⇒
-        bot shouldBe defined
-        val botToken = bot.get.token
-        val request = HttpRequest(
-          method = HttpMethods.POST,
-          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
-          entity = """{"text":"FLOOD FLOOD FLOOD"}"""
-        )
-        whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual StatusCodes.Forbidden
-        }
+      val token = extractToken(publicGroup.groupId)
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        entity = """{"text":"FLOOD FLOOD FLOOD"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual StatusCodes.Forbidden
       }
     }
 
     def nonExistingBot() = {
       val wrongToken = "xxx"
       val request = HttpRequest(
-        method = HttpMethods.POST,
+        method = POST,
         uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$wrongToken",
         entity = """{"text":"Bla bla bla"}"""
       )
@@ -125,47 +154,163 @@ class HttpApiFrontendSpec
     }
 
     def documentMessage() = {
-      whenReady(db.run(persist.GroupBot.findByGroup(groupOutPeer.groupId))) { bot ⇒
-        bot shouldBe defined
-        val botToken = bot.get.token
-        val request = HttpRequest(
-          method = HttpMethods.POST,
-          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
-          entity = """{"document_url":"http://www.scala-lang.org/docu/files/ScalaReference.pdf"}"""
-        )
-        whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual OK
-        }
+      val token = extractToken(groupOutPeer.groupId)
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        entity = """{"document_url":"http://www.scala-lang.org/docu/files/ScalaReference.pdf"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual OK
       }
     }
 
     def imageMessage() = {
-      whenReady(db.run(persist.GroupBot.findByGroup(groupOutPeer.groupId))) { bot ⇒
-        bot shouldBe defined
-        val botToken = bot.get.token
-        val request = HttpRequest(
-          method = HttpMethods.POST,
-          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
-          entity = """{"image_url":"http://www.scala-lang.org/resources/img/smooth-spiral.png"}"""
-        )
-        whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual OK
+      val token = extractToken(groupOutPeer.groupId)
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        entity = """{"image_url":"http://www.scala-lang.org/resources/img/smooth-spiral.png"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual OK
+      }
+    }
+
+    def registerWrongUrl() = {
+      val token = extractToken(groupOutPeer.groupId)
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
+        entity = """{"url":"This is wrong url"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual BadRequest
+        whenReady(Unmarshal(resp.entity).to[Errors]) { errors ⇒
+          errors.message shouldEqual OutgoingHooksErrors.MalformedUri
+        }
+      }
+    }
+
+    def registerWrongToken() = {
+      val wrongToken = "xxx"
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$wrongToken/reverse",
+        entity = """{"url":"http://zapier.com/11"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual NotFound
+        whenReady(Unmarshal(resp.entity).to[Errors]) { errors ⇒
+          errors.message shouldEqual OutgoingHooksErrors.WrongIntegrationToken
+        }
+      }
+    }
+
+    def registerCorrectUrl() = {
+      val token = extractToken(groupOutPeer.groupId)
+      val hookUrl = "https://zapier.com/0"
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
+        entity = s"""{"target_url":"$hookUrl", "other_url":"http://foo.bar"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual Created
+        whenReady(Unmarshal(resp.entity).to[ReverseHookResponse]) { response ⇒
+          response.id > 0 shouldBe true
+          response.url shouldEqual None
+        }
+      }
+    }
+
+    def registerDuplicated() = {
+      val token = extractToken(groupOutPeer.groupId)
+      val duplicatedUrl = "https://zapier.com/0"
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse",
+        entity = s"""{"url":"$duplicatedUrl"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual Conflict
+        whenReady(Unmarshal(resp.entity).to[Errors]) { errors ⇒
+          errors.message shouldEqual OutgoingHooksErrors.AlreadyRegistered
+        }
+      }
+    }
+
+    def registerManyHooks() = {
+      val token = extractToken(groupOutPeer.groupId)
+      val httpApiUrl = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
+
+      for (i ← 1 to 5) {
+        whenReady(http.singleRequest(HttpRequest(POST, httpApiUrl, entity = s"""{"url":"https://zapier.com/$i"}"""))) { resp ⇒
+          resp.status shouldEqual Created
+          resp.entity.dataBytes.runWith(Sink.ignore)
+        }
+      }
+    }
+
+    def listHooks() = {
+      val token = extractToken(groupOutPeer.groupId)
+      val request = HttpRequest(
+        method = GET,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual OK
+        whenReady(Unmarshal(resp.entity).to[List[ReverseHookResponse]]) { hooks ⇒
+          val expected = 0 to 5 map (i ⇒ s"https://zapier.com/$i")
+          hooks.map(_.url).flatten should contain theSameElementsAs expected
+          hooks.map(_.id) foreach (_ > 0 shouldBe true)
+        }
+      }
+    }
+
+    def hookStatus() = {
+      val token = extractToken(groupOutPeer.groupId)
+      val hookUrl = "https://zapier.com/77"
+      val baseUri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token/reverse"
+      val request = HttpRequest(POST, baseUri, entity = s"""{"url":"$hookUrl"}""")
+
+      val hookId = whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual Created
+        whenReady(Unmarshal(resp.entity).to[ReverseHookResponse])(_.id)
+      }
+
+      val hookUri = s"$baseUri/$hookId"
+      whenReady(http.singleRequest(HttpRequest(GET, hookUri))) { resp ⇒
+        resp.status shouldEqual OK
+        whenReady(Unmarshal(resp.entity).to[Status]) { status ⇒
+          status.status shouldEqual "Ok"
+        }
+      }
+
+      whenReady(http.singleRequest(HttpRequest(DELETE, hookUri))) { resp ⇒
+        resp.status shouldEqual StatusCodes.Accepted
+        whenReady(Unmarshal(resp.entity).to[Status]) { status ⇒
+          status.status shouldEqual "Ok"
+        }
+      }
+
+      whenReady(http.singleRequest(HttpRequest(GET, hookUri))) { resp ⇒
+        resp.status shouldEqual Gone
+        whenReady(Unmarshal(resp.entity).to[Status]) { status ⇒
+          status.status shouldEqual OutgoingHooksErrors.WebhookGone
         }
       }
     }
 
     def malformedMessage() = {
-      whenReady(db.run(persist.GroupBot.findByGroup(groupOutPeer.groupId))) { bot ⇒
-        bot shouldBe defined
-        val botToken = bot.get.token
-        val request = HttpRequest(
-          method = HttpMethods.POST,
-          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
-          entity = """{"WRONG":"Should not be parsed"}"""
-        )
-        whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual BadRequest
-        }
+      val token = extractToken(groupOutPeer.groupId)
+      val request = HttpRequest(
+        method = POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$token",
+        entity = """{"WRONG":"Should not be parsed"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual BadRequest
       }
     }
 
@@ -210,7 +355,7 @@ class HttpApiFrontendSpec
         resp.status shouldEqual OK
 
         whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
-          import JsonImplicits.avatarUrlsFormat
+          import JsonFormatters.avatarUrlsFormat
 
           val response = Json.parse(body)
           (response \ "group" \ "title").as[String] shouldEqual groupName
@@ -249,7 +394,7 @@ class HttpApiFrontendSpec
         val resp = whenReady(http.singleRequest(request))(identity)
         resp.status shouldEqual OK
         whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
-          import JsonImplicits.avatarUrlsFormat
+          import JsonFormatters.avatarUrlsFormat
 
           val response = Json.parse(body)
           (response \ "group" \ "title").as[String] shouldEqual groupName
@@ -273,7 +418,8 @@ class HttpApiFrontendSpec
         uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$invalidToken"
       )
       val resp = whenReady(http.singleRequest(request))(identity)
-      resp.status shouldEqual StatusCodes.NotAcceptable
+      resp.status shouldEqual NotAcceptable
+      resp.entity.dataBytes.runWith(Sink.ignore)
     }
 
     def notFound() = {
@@ -307,23 +453,18 @@ class HttpApiFrontendSpec
     }
 
     def filesCorrect() = {
-      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/reference.conf")
+      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/index.html", entity = HttpEntity.empty(ContentTypes.`text/plain`))
       whenReady(http.singleRequest(r1)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/logback.xml")
+      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/test.conf", entity = HttpEntity.empty(ContentTypes.`text/plain`))
       whenReady(http.singleRequest(r2)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/valid-avatar.jpg")
+      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/scripts/test.js", entity = HttpEntity.empty(ContentTypes.`text/plain`))
       whenReady(http.singleRequest(r3)) { resp ⇒
-        resp.status shouldEqual OK
-        resp.entity.dataBytes.runWith(Sink.ignore)
-      }
-      val r4 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/application.conf.example")
-      whenReady(http.singleRequest(r4)) { resp ⇒
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }

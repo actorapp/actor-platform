@@ -1,5 +1,6 @@
 package im.actor.server.enrich
 
+import im.actor.server.acl.ACLUtils
 import im.actor.server.group.{ GroupProcessorRegion, GroupOffice }
 import im.actor.server.user.{ UserProcessorRegion, UserOffice }
 
@@ -10,16 +11,16 @@ import slick.dbio.{ DBIO, DBIOAction, Effect, NoStream }
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.files.FastThumb
-import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage }
+import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage, UpdateMessageContentChanged }
 import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
 import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
+import im.actor.server.api.rpc.service.messaging
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.ACLUtils
+
+import scala.util.Random
 
 class RichMessageWorkerSpec
   extends BaseAppSuite
@@ -27,6 +28,8 @@ class RichMessageWorkerSpec
   with MessageParsing
   with ImplicitGroupRegions
   with ImplicitSessionRegionProxy
+  with ImplicitSequenceService
+  with SequenceMatchers
   with ImplicitAuthService {
 
   behavior of "Rich message updater"
@@ -56,10 +59,6 @@ class RichMessageWorkerSpec
 
     RichMessageWorker.startWorker(RichMessageConfig(5 * 1024 * 1024), mediator)
 
-    def sleepSome = futureSleep(4000)
-
-    def withCleanup(cleanupAction: DBIOAction[Unit, NoStream, Effect.Write])(block: ⇒ Unit) = whenReady(db.run(cleanupAction))(_ ⇒ block)
-
     object privat {
       val (user1, authId, _) = createUser()
       val sessionId = createSessionId()
@@ -70,108 +69,55 @@ class RichMessageWorkerSpec
       val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
       val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
-      val selectMessages =
-        for {
-          messages ← DBIO.sequence(List(
-            persist.HistoryMessage.find(user1.id, models.Peer.privat(user2.id)),
-            persist.HistoryMessage.find(user2.id, models.Peer.privat(user1.id))
-          ))
-        } yield messages.flatMap(identity)
-
-      val deleteMessages =
-        for {
-          _ ← DBIO.sequence(List(
-            persist.HistoryMessage.deleteAll(user1.id, models.Peer.privat(user2.id)),
-            persist.HistoryMessage.deleteAll(user2.id, models.Peer.privat(user1.id))
-          ))
-        } yield ()
-
       def dontChangePrivate() = {
 
-        withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.mixedText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+        val resp1 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.mixedText, Vector.empty, None)))(_.toOption.get)
+        expectNoUpdate(resp1.seq, resp1.state, UpdateMessageContentChanged.header)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 2
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(TextMessage(NonImages.mixedText, _, _)) ⇒
-              })
-          }
-        }
+        val resp2 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.plainText, Vector.empty, None)))(_.toOption.get)
+        expectNoUpdate(resp2.seq, resp2.state, UpdateMessageContentChanged.header)
 
-        withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.plainText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+        val resp3 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.nonImageUrl, Vector.empty, None)))(_.toOption.get)
+        expectNoUpdate(resp2.seq, resp2.state, UpdateMessageContentChanged.header)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 2
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(TextMessage(NonImages.plainText, _, _)) ⇒
-              })
-          }
-        }
-
-        withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.nonImageUrl, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
-
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 2
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(TextMessage(NonImages.nonImageUrl, _, _)) ⇒
-              })
-          }
-        }
       }
 
       def changeMessagePrivate() = {
-        withCleanup(deleteMessages) {
+
+        {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 2
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
-              })
+          expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
+            update.message should matchPattern {
+              case DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+            }
           }
         }
 
-        withCleanup(deleteMessages) {
+        {
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 2
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
-              })
+          expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
+            update.message should matchPattern {
+              case DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+            }
           }
         }
 
-        withCleanup(deleteMessages) {
+        {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 2
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
-              })
+          expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
+            update.message should matchPattern {
+              case DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+            }
           }
         }
       }
@@ -187,109 +133,54 @@ class RichMessageWorkerSpec
 
       val groupOutPeer = createGroup("Test group", Set(user2.id, user3.id)).groupPeer
 
-      val selectMessages =
-        for {
-          messages ← DBIO.sequence(List(
-            persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)),
-            persist.HistoryMessage.find(user2.id, models.Peer.group(groupOutPeer.groupId)),
-            persist.HistoryMessage.find(user3.id, models.Peer.group(groupOutPeer.groupId))
-          ))
-        } yield messages.flatMap(identity)
-
-      val deleteMessages =
-        for {
-          _ ← DBIO.sequence(List(
-            persist.HistoryMessage.deleteAll(user1.id, models.Peer.group(groupOutPeer.groupId)),
-            persist.HistoryMessage.deleteAll(user2.id, models.Peer.group(groupOutPeer.groupId)),
-            persist.HistoryMessage.deleteAll(user3.id, models.Peer.group(groupOutPeer.groupId))
-          ))
-        } yield ()
-
       def dontChangeGroup() = {
-        withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.mixedText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 3
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(TextMessage(NonImages.mixedText, _, _)) ⇒
-              })
-          }
-        }
+        val resp1 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.mixedText, Vector.empty, None)))(_.toOption.get)
+        expectNoUpdate(resp1.seq, resp1.state, UpdateMessageContentChanged.header)
 
-        withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.plainText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+        val resp2 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.plainText, Vector.empty, None)))(_.toOption.get)
+        expectNoUpdate(resp2.seq, resp2.state, UpdateMessageContentChanged.header)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 3
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(TextMessage(NonImages.plainText, _, _)) ⇒
-              })
-          }
-        }
-
-        withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.nonImageUrl, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
-
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 3
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(TextMessage(NonImages.nonImageUrl, _, _)) ⇒
-              })
-          }
-        }
+        val resp3 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.nonImageUrl, Vector.empty, None)))(_.toOption.get)
+        expectNoUpdate(resp3.seq, resp3.state, UpdateMessageContentChanged.header)
       }
 
       def changeMessageGroup() = {
-        withCleanup(deleteMessages) {
+
+        {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 3
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
-              })
+          expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
+            update.message should matchPattern {
+              case DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+            }
           }
         }
 
-        withCleanup(deleteMessages) {
+        {
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 3
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
-              })
+          expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
+            update.message should matchPattern {
+              case DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+            }
           }
         }
 
-        withCleanup(deleteMessages) {
+        {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
-          whenReady(db.run(selectMessages)) { messages ⇒
-            messages should have length 3
-            messages
-              .map(e ⇒ parseMessage(e.messageContentData))
-              .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
-              })
+          expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
+            update.message should matchPattern {
+              case DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+            }
           }
         }
       }
