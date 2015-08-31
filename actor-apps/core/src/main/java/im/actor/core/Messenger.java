@@ -792,6 +792,32 @@ public class Messenger {
     }
 
     /**
+     * Edit group's theme
+     *
+     * @param gid   group's id
+     * @param theme new group theme
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("editGroupThemeCommandWithGid:withTheme:")
+    public Command<Boolean> editGroupTheme(final int gid, final String theme) {
+        return modules.getGroupsModule().editTheme(gid, theme);
+    }
+
+    /**
+     * Edit group's about
+     *
+     * @param gid   group's id
+     * @param about new group about
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("editGroupAboutCommandWithGid:withAbout:")
+    public Command<Boolean> editGroupAbout(final int gid, final String about) {
+        return modules.getGroupsModule().editAbout(gid, about);
+    }
+
+    /**
      * Change group avatar
      *
      * @param gid        group's id

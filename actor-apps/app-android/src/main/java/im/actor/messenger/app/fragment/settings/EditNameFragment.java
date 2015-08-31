@@ -54,6 +54,9 @@ public class EditNameFragment extends BaseFragment {
         } else if (type == EditNameActivity.TYPE_GROUP) {
             GroupVM group = groups().get(id);
             nameEdit.setText(group.getName().get());
+        } else if (type == EditNameActivity.TYPE_GROUP_THEME) {
+            GroupVM group = groups().get(id);
+            nameEdit.setText(group.getTheme().get());
         }
         res.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +99,18 @@ public class EditNameFragment extends BaseFragment {
                     });
                 } else if (type == EditNameActivity.TYPE_GROUP) {
                     execute(messenger().editGroupTitle(id, name), R.string.edit_name_process, new CommandCallback<Boolean>() {
+                        @Override
+                        public void onResult(Boolean res) {
+                            getActivity().finish();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else if (type == EditNameActivity.TYPE_GROUP_THEME) {
+                    execute(messenger().editGroupTheme(id, name), R.string.edit_theme_process, new CommandCallback<Boolean>() {
                         @Override
                         public void onResult(Boolean res) {
                             getActivity().finish();

@@ -18,11 +18,13 @@ import im.actor.core.api.updates.UpdateContactRegistered;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
 import im.actor.core.api.updates.UpdateCountersChanged;
+import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupAvatarChanged;
 import im.actor.core.api.updates.UpdateGroupInvite;
 import im.actor.core.api.updates.UpdateGroupMembersUpdate;
 import im.actor.core.api.updates.UpdateGroupOnline;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
+import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.api.updates.UpdateGroupUserInvited;
 import im.actor.core.api.updates.UpdateGroupUserKick;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
@@ -235,6 +237,12 @@ public class UpdateProcessor extends AbsModule {
             groupsProcessor.onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
                     titleChanged.getUid(), titleChanged.getTitle(), titleChanged.getDate(),
                     false);
+        } else if (update instanceof UpdateGroupTopicChanged) {
+            UpdateGroupTopicChanged topicChanged = (UpdateGroupTopicChanged) update;
+            groupsProcessor.onTopicChanged(topicChanged.getGroupId(), topicChanged.getTopic());
+        } else if (update instanceof UpdateGroupAboutChanged) {
+            UpdateGroupAboutChanged aboutChanged = (UpdateGroupAboutChanged) update;
+            groupsProcessor.onAboutChanged(aboutChanged.getGroupId(), aboutChanged.getAbout());
         } else if (update instanceof UpdateGroupAvatarChanged) {
             UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
             groupsProcessor.onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
