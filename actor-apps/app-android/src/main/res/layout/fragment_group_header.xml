@@ -101,7 +101,7 @@
         </LinearLayout>
 
         <View
-            android:paddingLeft="72dp"
+            android:layout_marginLeft="72dp"
             android:id="@+id/themeDivider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/div_size"
