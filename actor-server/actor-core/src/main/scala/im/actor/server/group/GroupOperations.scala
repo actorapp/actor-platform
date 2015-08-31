@@ -30,6 +30,14 @@ private[group] sealed trait Commands {
   ): Future[CreateAck] =
     (peerManagerRegion.ref ? Create(groupId, clientUserId, clientAuthId, title, randomId, userIds.toSeq)).mapTo[CreateAck]
 
+  def createInternal(groupId: Int, creatorUserId: Int, title: String, userIds: Set[Int])(
+    implicit
+    region:  GroupProcessorRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[CreateInternalAck] =
+    (region.ref ? CreateInternal(groupId, creatorUserId, title, userIds.toSeq)).mapTo[CreateInternalAck]
+
   def makePublic(groupId: Int, description: String)(
     implicit
     region:  GroupProcessorRegion,
@@ -133,12 +141,27 @@ private[group] sealed trait Queries {
     ec:      ExecutionContext
   ): Future[Option[String]] = (region.ref ? GetIntegrationToken(groupId, clientUserId)).mapTo[GetIntegrationTokenResponse] map (_.token)
 
+  //for use in inner services only
+  def getIntegrationToken(groupId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Option[String]] = (region.ref ? GetIntegrationTokenInternal(groupId)).mapTo[GetIntegrationTokenResponse] map (_.token) //FIXME
+
   def getApiStruct(groupId: Int, clientUserId: Int)(
     implicit
     region:  GroupViewRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[ApiGroup] = (region.ref ? GetApiStruct(groupId, clientUserId)).mapTo[GetApiStructResponse] map (_.struct)
+
+  def isPublic(groupId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Boolean] = (region.ref ? IsPublic(groupId)).mapTo[IsPublicResponse] map (_.isPublic)
 
   def checkAccessHash(groupId: Int, hash: Long)(
     implicit
@@ -152,6 +175,6 @@ private[group] sealed trait Queries {
     region:  GroupViewRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Future[(Seq[Int], Seq[Int], Int)] = (region.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
+  ): Future[(Seq[Int], Seq[Int], Option[Int])] = (region.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
 
 }

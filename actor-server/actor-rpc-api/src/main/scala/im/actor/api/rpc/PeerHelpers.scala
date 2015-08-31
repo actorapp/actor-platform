@@ -1,5 +1,7 @@
 package im.actor.api.rpc
 
+import im.actor.server.acl.ACLUtils
+
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scalaz._
@@ -9,7 +11,7 @@ import slick.dbio.DBIO
 
 import im.actor.api.rpc.peers._
 import im.actor.server.api.rpc.service.groups.GroupRpcErrors
-import im.actor.server.util.{ ACLUtils, StringUtils }
+import im.actor.server.util.StringUtils
 import im.actor.server.{ models, persist }
 
 object PeerHelpers {

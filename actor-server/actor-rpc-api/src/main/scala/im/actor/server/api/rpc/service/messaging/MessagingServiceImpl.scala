@@ -56,8 +56,8 @@ object MessagingService {
       case models.PeerType.Group ⇒
         val topic = messagesTopic(message.toPeer)
 
-        mediator ! DistributedPubSubMediator.Publish(groupMessagesTopic, message, sendOneMessageToEachGroup = true)
-        mediator ! DistributedPubSubMediator.Publish(topic, message, sendOneMessageToEachGroup = true)
+        mediator ! DistributedPubSubMediator.Publish(groupMessagesTopic, message, sendOneMessageToEachGroup = false)
+        mediator ! DistributedPubSubMediator.Publish(topic, message, sendOneMessageToEachGroup = false)
     }
   }
 }

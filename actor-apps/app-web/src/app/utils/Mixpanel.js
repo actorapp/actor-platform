@@ -38,6 +38,25 @@ import { Mixpanel } from 'constants/ActorAppConstants';
   }
 })(document, window.mixpanel || []);
 
-mixpanel.init(Mixpanel);
+try {
+  mixpanel.init(Mixpanel);
+} catch(e) {
+  const noop = function() {};
+
+  mixpanel = {
+    track: noop,
+    alias: noop,
+    identify: noop,
+    cookie: {
+      clear: noop
+    },
+    people: {
+      set: noop,
+      set_once: noop
+    }
+  };
+  window.mixpanel = mixpanel;
+  console.error('Failed to init mixpanel', e);
+}
 
 export default mixpanel;

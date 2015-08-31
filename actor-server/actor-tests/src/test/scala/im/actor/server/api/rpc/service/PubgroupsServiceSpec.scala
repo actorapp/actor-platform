@@ -3,12 +3,13 @@ package im.actor.server.api.rpc.service
 import im.actor.api.rpc._
 import im.actor.api.rpc.pubgroups.ResponseGetPublicGroups
 import im.actor.server._
+import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.util.ACLUtils.userAccessHash
+import ACLUtils.userAccessHash
 import org.scalatest.Inside._
 
 class PubgroupsServiceSpec

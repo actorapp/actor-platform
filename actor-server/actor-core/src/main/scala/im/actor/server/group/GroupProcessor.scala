@@ -5,18 +5,18 @@ import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
+import im.actor.server.commons.KeyValueMappings
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialogRegion }
 import im.actor.server.event.TSEvent
-import im.actor.server.file.Avatar
+import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, Avatar }
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
 import im.actor.server.dialog.group.GroupDialogExtension
 import im.actor.server.dialog.group.GroupDialogRegion
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
-import im.actor.server.util.{ FileStorageAdapter, S3StorageExtension }
 import org.joda.time.DateTime
+import shardakka.{ IntCodec, ShardakkaExtension }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
@@ -61,47 +61,53 @@ trait GroupQuery {
 
 object GroupProcessor {
 
-  def register(): Unit = {
-    ActorSerializer.register(20001, classOf[GroupCommands.Create])
-    ActorSerializer.register(20002, classOf[GroupCommands.CreateAck])
-    ActorSerializer.register(20003, classOf[GroupCommands.Invite])
-    ActorSerializer.register(20004, classOf[GroupCommands.Join])
-    ActorSerializer.register(20005, classOf[GroupCommands.Kick])
-    ActorSerializer.register(20006, classOf[GroupCommands.Leave])
-    ActorSerializer.register(20010, classOf[GroupCommands.UpdateAvatar])
-    ActorSerializer.register(20011, classOf[GroupCommands.MakePublic])
-    ActorSerializer.register(20012, classOf[GroupCommands.MakePublicAck])
-    ActorSerializer.register(20013, classOf[GroupCommands.UpdateTitle])
-    ActorSerializer.register(20015, classOf[GroupCommands.ChangeTopic])
-    ActorSerializer.register(20016, classOf[GroupCommands.ChangeAbout])
-    ActorSerializer.register(20017, classOf[GroupCommands.MakeUserAdmin])
-    ActorSerializer.register(20018, classOf[GroupCommands.RevokeIntegrationToken])
-    ActorSerializer.register(20020, classOf[GroupCommands.RevokeIntegrationTokenAck])
-    ActorSerializer.register(20023, classOf[GroupCommands.JoinAfterFirstRead])
+  def register(): Unit =
+    ActorSerializer.register(
+      20001 → classOf[GroupCommands.Create],
+      20002 → classOf[GroupCommands.CreateAck],
+      20003 → classOf[GroupCommands.Invite],
+      20004 → classOf[GroupCommands.Join],
+      20005 → classOf[GroupCommands.Kick],
+      20006 → classOf[GroupCommands.Leave],
+      20010 → classOf[GroupCommands.UpdateAvatar],
+      20011 → classOf[GroupCommands.MakePublic],
+      20012 → classOf[GroupCommands.MakePublicAck],
+      20013 → classOf[GroupCommands.UpdateTitle],
+      20015 → classOf[GroupCommands.ChangeTopic],
+      20016 → classOf[GroupCommands.ChangeAbout],
+      20017 → classOf[GroupCommands.MakeUserAdmin],
+      20018 → classOf[GroupCommands.RevokeIntegrationToken],
+      20020 → classOf[GroupCommands.RevokeIntegrationTokenAck],
+      20023 → classOf[GroupCommands.JoinAfterFirstRead],
+      20024 → classOf[GroupCommands.CreateInternal],
+      20025 → classOf[GroupCommands.CreateInternalAck],
 
-    ActorSerializer.register(21001, classOf[GroupQueries.GetIntegrationToken])
-    ActorSerializer.register(21002, classOf[GroupQueries.GetIntegrationTokenResponse])
-    ActorSerializer.register(21003, classOf[GroupQueries.CheckAccessHash])
-    ActorSerializer.register(21004, classOf[GroupQueries.CheckAccessHashResponse])
-    ActorSerializer.register(21005, classOf[GroupQueries.GetMembers])
-    ActorSerializer.register(21006, classOf[GroupQueries.GetMembersResponse])
-    ActorSerializer.register(21007, classOf[GroupQueries.GetApiStruct])
-    ActorSerializer.register(21008, classOf[GroupQueries.GetApiStructResponse])
+      21001 → classOf[GroupQueries.GetIntegrationToken],
+      21002 → classOf[GroupQueries.GetIntegrationTokenResponse],
+      21003 → classOf[GroupQueries.CheckAccessHash],
+      21004 → classOf[GroupQueries.CheckAccessHashResponse],
+      21005 → classOf[GroupQueries.GetMembers],
+      21006 → classOf[GroupQueries.GetMembersResponse],
+      21007 → classOf[GroupQueries.GetApiStruct],
+      21008 → classOf[GroupQueries.GetApiStructResponse],
+      21009 → classOf[GroupQueries.IsPublic],
+      21010 → classOf[GroupQueries.IsPublicResponse],
+      21011 → classOf[GroupQueries.GetIntegrationTokenInternal],
 
-    ActorSerializer.register(22003, classOf[GroupEvents.UserInvited])
-    ActorSerializer.register(22004, classOf[GroupEvents.UserJoined])
-    ActorSerializer.register(22005, classOf[GroupEvents.Created])
-    ActorSerializer.register(22006, classOf[GroupEvents.BotAdded])
-    ActorSerializer.register(22007, classOf[GroupEvents.UserKicked])
-    ActorSerializer.register(22008, classOf[GroupEvents.UserLeft])
-    ActorSerializer.register(22009, classOf[GroupEvents.AvatarUpdated])
-    ActorSerializer.register(22010, classOf[GroupEvents.BecamePublic])
-    ActorSerializer.register(22011, classOf[GroupEvents.AboutUpdated])
-    ActorSerializer.register(22012, classOf[GroupEvents.TitleUpdated])
-    ActorSerializer.register(22013, classOf[GroupEvents.TopicUpdated])
-    ActorSerializer.register(22015, classOf[GroupEvents.UserBecameAdmin])
-    ActorSerializer.register(22016, classOf[GroupEvents.IntegrationTokenRevoked])
-  }
+      22003 → classOf[GroupEvents.UserInvited],
+      22004 → classOf[GroupEvents.UserJoined],
+      22005 → classOf[GroupEvents.Created],
+      22006 → classOf[GroupEvents.BotAdded],
+      22007 → classOf[GroupEvents.UserKicked],
+      22008 → classOf[GroupEvents.UserLeft],
+      22009 → classOf[GroupEvents.AvatarUpdated],
+      22010 → classOf[GroupEvents.BecamePublic],
+      22011 → classOf[GroupEvents.AboutUpdated],
+      22012 → classOf[GroupEvents.TitleUpdated],
+      22013 → classOf[GroupEvents.TopicUpdated],
+      22015 → classOf[GroupEvents.UserBecameAdmin],
+      22016 → classOf[GroupEvents.IntegrationTokenRevoked]
+    )
 
   def props: Props = Props(classOf[GroupProcessor])
 }
@@ -128,7 +134,12 @@ private[group] final class GroupProcessor
   protected implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
-  protected implicit val groupDialogRegion: GroupDialogRegion = GroupDialogExtension(system).region
+  protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
+
+  //Declared lazy because of cyclic dependency between GroupDialogRegion and GroupProcessorRegion.
+  //It lead to problems with initialization of extensions.
+  //Such bugs are hard to catch. One should avoid such behaviour
+  lazy protected implicit val groupDialogRegion: GroupDialogRegion = GroupDialogExtension(system).region
 
   protected val groupId = self.path.name.toInt
 
@@ -142,12 +153,12 @@ private[group] final class GroupProcessor
         state.copy(bot = Some(Bot(userId, token)))
       case TSEvent(ts, GroupEvents.UserInvited(userId, inviterUserId)) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
           invitedUserIds = state.invitedUserIds + userId
         )
       case TSEvent(ts, GroupEvents.UserJoined(userId, inviterUserId)) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
           invitedUserIds = state.invitedUserIds - userId
         )
       case TSEvent(_, GroupEvents.UserKicked(userId, kickerUserId, _)) ⇒
@@ -173,14 +184,18 @@ private[group] final class GroupProcessor
 
   override def handleQuery(state: Group): Receive = {
     case GroupQueries.GetIntegrationToken(_, userId) ⇒ getIntegrationToken(state, userId)
+    case GroupQueries.GetIntegrationTokenInternal(_) ⇒ getIntegrationToken(state)
     case GroupQueries.GetApiStruct(_, userId)        ⇒ getApiStruct(state, userId)
     case GroupQueries.CheckAccessHash(_, accessHash) ⇒ checkAccessHash(state, accessHash)
     case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
+    case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
   }
 
   override def handleInitCommand: Receive = {
     case Create(_, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
       create(groupId, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
+    case CreateInternal(_, creatorUserId, title, userIds) ⇒
+      createInternal(creatorUserId, title, userIds)
   }
 
   override def handleCommand(state: Group): Receive = {
@@ -251,10 +266,10 @@ private[group] final class GroupProcessor
       about = None,
       creatorUserId = evt.creatorUserId,
       createdAt = ts,
-      members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, ts, isAdmin = true)),
+      members = (evt.userIds map (userId ⇒ (userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId))))).toMap,
       isPublic = false,
       bot = None,
-      invitedUserIds = Set.empty,
+      invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,
       topic = None
     )

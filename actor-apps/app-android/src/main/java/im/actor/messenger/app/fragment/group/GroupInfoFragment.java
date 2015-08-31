@@ -99,7 +99,7 @@ public class GroupInfoFragment extends BaseFragment {
 
         // Avatar
         avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
-        avatarView.setBkgrnd((ImageView) res.findViewById(R.id.avatar_bgrnd));
+        avatarView.setBkgrnd((ImageView) header.findViewById(R.id.avatar_bgrnd));
         bind(avatarView, groupInfo.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
