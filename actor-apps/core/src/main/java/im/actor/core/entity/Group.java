@@ -40,6 +40,10 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
     private Avatar avatar;
     private int adminId;
     private boolean isMember;
+    @Nullable
+    private String theme;
+    @Nullable
+    private String about;
     @NotNull
     @SuppressWarnings("NullableProblems")
     private List<GroupMember> members;
@@ -81,6 +85,16 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
     @NotNull
     public List<GroupMember> getMembers() {
         return members;
+    }
+
+    @Nullable
+    public String getTheme() {
+        return theme;
+    }
+
+    @Nullable
+    public String getAbout() {
+        return about;
     }
 
     public int getAdminId() {
@@ -242,6 +256,52 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
         return new Group(res);
     }
 
+    public Group editTheme(String theme) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.isMember(),
+                w.getCreatorUid(),
+                w.getMembers(),
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin(),
+                theme,
+                w.getAbout());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
+    }
+
+    public Group editAbout(String about) {
+        ApiGroup w = getWrapped();
+        ApiGroup res = new ApiGroup(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.isMember(),
+                w.getCreatorUid(),
+                w.getMembers(),
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin(),
+                w.getTheme(),
+                about);
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
+    }
+
     public Group editAvatar(ApiAvatar avatar) {
         ApiGroup w = getWrapped();
         ApiGroup res = new ApiGroup(
@@ -277,6 +337,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
             this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == this.adminId));
         }
         this.isMember = wrapped.isMember();
+        this.about = wrapped.getAbout();
+        this.theme = wrapped.getTheme();
     }
 
     @Override
