@@ -50,8 +50,7 @@ public class EditAboutFragment extends BaseFragment {
             aboutEdit.setText(userModel.getAbout().get());
         } else if (type == EditAboutActivity.TYPE_GROUP) {
             GroupVM group = groups().get(id);
-            //TODO: get group about (add to group model)
-            /*aboutEdit.setText(group.getAbout().get());*/
+            aboutEdit.setText(group.getAbout().get());
         }
         res.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +80,7 @@ public class EditAboutFragment extends BaseFragment {
                         }
                     });
                     //TODO: set group about
-                } /*else if (type == EditAboutActivity.TYPE_GROUP) {
+                } else if (type == EditAboutActivity.TYPE_GROUP) {
                     execute(messenger().editGroupAbout(id, about), R.string.edit_about_process, new CommandCallback<Boolean>() {
                         @Override
                         public void onResult(Boolean res) {
@@ -93,7 +92,7 @@ public class EditAboutFragment extends BaseFragment {
                             Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
                         }
                     });
-                }*/
+                }
             }
         });
         return res;

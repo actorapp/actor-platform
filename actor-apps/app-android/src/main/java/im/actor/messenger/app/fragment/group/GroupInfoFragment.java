@@ -38,6 +38,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.BaseActivity;
+import im.actor.messenger.app.fragment.ActorBinder;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.MembersAdapter;
 import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
@@ -95,7 +96,7 @@ public class GroupInfoFragment extends BaseFragment {
 
         listView = (ListView) res.findViewById(R.id.groupList);
 
-        View header = inflater.inflate(R.layout.fragment_group_header, listView, false);
+        final View header = inflater.inflate(R.layout.fragment_group_header, listView, false);
 
         // Avatar
         avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
@@ -112,9 +113,11 @@ public class GroupInfoFragment extends BaseFragment {
         bind((TextView) header.findViewById(R.id.title), groupInfo.getName());
 
         // Created by
+        boolean isAdmin = false;
         final TextView createdBy = (TextView) header.findViewById(R.id.createdBy);
         if (groupInfo.getCreatorId() == myUid()) {
             createdBy.setText(R.string.group_created_by_you);
+            isAdmin = true;
         } else {
             UserVM admin = users().get(groupInfo.getCreatorId());
             bind(admin.getName(), new ValueChangedListener<String>() {
@@ -125,6 +128,58 @@ public class GroupInfoFragment extends BaseFragment {
             });
         }
 
+        //Description
+        final String[] theme = new String[1];
+        final String[] about = new String[1];
+        TextView themeTV = (TextView) header.findViewById(R.id.theme);
+        TextView aboutTV = (TextView) header.findViewById(R.id.about);
+
+        final boolean finalIsAdmin = isAdmin;
+        bind(themeTV, header.findViewById(R.id.themeContainer), groupInfo.getTheme(), new ActorBinder.OnChangedListener() {
+            @Override
+            public void onChanged(String s) {
+                theme[0] = s;
+                if ((s != null && !s.isEmpty()) || (about[0] != null && !about[0].isEmpty()) || finalIsAdmin) {
+                    header.findViewById(R.id.descriptionContainer).setVisibility(View.VISIBLE);
+                } else {
+                    header.findViewById(R.id.descriptionContainer).setVisibility(View.GONE);
+                }
+            }
+        }, !isAdmin, getString(R.string.theme_group_empty));
+
+        bind(aboutTV, header.findViewById(R.id.aboutContainer), groupInfo.getAbout(), new ActorBinder.OnChangedListener() {
+            @Override
+            public void onChanged(String s) {
+                about[0] = s;
+                if ((s != null && !s.isEmpty()) || (theme[0] != null && !theme[0].isEmpty()) || finalIsAdmin) {
+                    header.findViewById(R.id.descriptionContainer).setVisibility(View.VISIBLE);
+                } else {
+                    header.findViewById(R.id.descriptionContainer).setVisibility(View.GONE);
+                }
+
+                if (s != null && !s.isEmpty()) {
+                    header.findViewById(R.id.themeDivider).setVisibility(View.VISIBLE);
+                } else {
+                    header.findViewById(R.id.themeDivider).setVisibility(View.GONE);
+                }
+            }
+        }, !isAdmin, getString(R.string.about_group_empty));
+
+        if (isAdmin) {
+            header.findViewById(R.id.themeContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.editGroupTheme(groupInfo.getId(), getActivity()));
+                }
+            });
+
+            header.findViewById(R.id.aboutContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.editGroupAbout(groupInfo.getId(), getActivity()));
+                }
+            });
+        }
         // Settings
 
         final SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
