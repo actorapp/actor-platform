@@ -69,6 +69,7 @@ public class MessagesModule extends AbsModule {
     private ActorRef messageShownActor;
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
+    private final HashMap<Peer, ListEngine<Message>> conversationDocsEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> messageShownFilter = new HashMap<Peer, ActorRef>();
@@ -198,6 +199,16 @@ public class MessagesModule extends AbsModule {
                         Storage.createList(STORAGE_CHAT_PREFIX + peer.getUnuqueId(), Message.CREATOR));
             }
             return conversationEngines.get(peer);
+        }
+    }
+
+    public ListEngine<Message> getConversationDocsEngine(Peer peer) {
+        synchronized (conversationDocsEngines) {
+            if (!conversationDocsEngines.containsKey(peer)) {
+                conversationDocsEngines.put(peer,
+                        Storage.createList(STORAGE_CHAT_DOCS_PREFIX + peer.getUnuqueId(), Message.CREATOR));
+            }
+            return conversationDocsEngines.get(peer);
         }
     }
 
