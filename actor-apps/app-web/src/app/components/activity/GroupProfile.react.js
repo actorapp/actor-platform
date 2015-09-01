@@ -194,6 +194,31 @@ class GroupProfile extends React.Component {
       'hide': !isCopyButtonEnabled
     });
 
+    const token = (group.adminId === myId) ? (
+      <li className="profile__list__item group_profile__integration no-p">
+        <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
+          <div className="info info--light">
+            If you have programming chops, or know someone who does,
+            this integration token allow the most flexibility and communication
+            with your own systems.
+            <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
+            <ReactZeroClipboard onCopy={this.onIntegrationTokenCopied}
+                                onReady={this.onZeroclipboardReady}
+                                text={integrationToken}>
+              <a className={copyButtonClassname}>Copy integration link</a>
+            </ReactZeroClipboard>
+          </div>
+          <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
+        </Fold>
+        <Snackbar autoHideDuration={3000}
+                  message={this.getIntlMessage('integrationTokenCopied')}
+                  ref="integrationTokenCopied"
+                  style={snackbarStyles}/>
+
+      </li>
+    ) : null;
+
+
     if (isMember) {
       return (
         <div className="activity__body group_profile">
@@ -259,31 +284,11 @@ class GroupProfile extends React.Component {
               </Fold>
             </li>
 
-            <li className="profile__list__item group_profile__integration no-p">
-              <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
-                <div className="info info--light">
-                  If you have programming chops, or know someone who does,
-                  this integration token allow the most flexibility and communication
-                  with your own systems.
-                  <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
-                  <ReactZeroClipboard onCopy={this.onIntegrationTokenCopied}
-                                      onReady={this.onZeroclipboardReady}
-                                      text={integrationToken}>
-                    <a className={copyButtonClassname}>Copy integration link</a>
-                  </ReactZeroClipboard>
-                </div>
-                <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
-              </Fold>
-            </li>
+            {token}
           </ul>
 
           <InviteUser/>
           <InviteByLink/>
-
-          <Snackbar autoHideDuration={3000}
-                    message={this.getIntlMessage('integrationTokenCopied')}
-                    ref="integrationTokenCopied"
-                    style={snackbarStyles}/>
         </div>
       );
     } else {
