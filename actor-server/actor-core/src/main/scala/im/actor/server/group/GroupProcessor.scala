@@ -36,6 +36,7 @@ private[group] case class Bot(
 
 private[group] case class Group(
   id:             Int,
+  typ:            GroupType,
   accessHash:     Long,
   creatorUserId:  Int,
   createdAt:      DateTime,
@@ -43,7 +44,6 @@ private[group] case class Group(
   invitedUserIds: Set[Int],
   title:          String,
   about:          Option[String],
-  isPublic:       Boolean,
   bot:            Option[Bot],
   avatar:         Option[Avatar],
   topic:          Option[String]
@@ -172,7 +172,7 @@ private[group] final class GroupProcessor
       case TSEvent(_, GroupEvents.TitleUpdated(title)) ⇒
         state.copy(title = title)
       case TSEvent(_, GroupEvents.BecamePublic()) ⇒
-        state.copy(isPublic = true)
+        state.copy(typ = GroupType.Public)
       case TSEvent(_, GroupEvents.AboutUpdated(about)) ⇒
         state.copy(about = about)
       case TSEvent(_, GroupEvents.TopicUpdated(topic)) ⇒
@@ -195,10 +195,10 @@ private[group] final class GroupProcessor
   }
 
   override def handleInitCommand: Receive = {
-    case Create(_, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
-      create(groupId, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
-    case CreateInternal(_, creatorUserId, title, userIds) ⇒
-      createInternal(creatorUserId, title, userIds)
+    case Create(_, typ, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
+      create(groupId, typ, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
+    case CreateInternal(_, typ, creatorUserId, title, userIds) ⇒
+      createInternal(typ, creatorUserId, title, userIds)
   }
 
   override def handleCommand(state: Group): Receive = {
@@ -264,13 +264,13 @@ private[group] final class GroupProcessor
   protected def initState(ts: DateTime, evt: GroupEvents.Created): Group = {
     Group(
       id = groupId,
+      typ = evt.typ.getOrElse(GroupType.General),
       accessHash = evt.accessHash,
       title = evt.title,
       about = None,
       creatorUserId = evt.creatorUserId,
       createdAt = ts,
       members = (evt.userIds map (userId ⇒ (userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId))))).toMap,
-      isPublic = false,
       bot = None,
       invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,

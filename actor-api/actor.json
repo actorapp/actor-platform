@@ -4157,6 +4157,22 @@
       "package": "groups",
       "items": [
         {
+          "type": "enum",
+          "content": {
+            "name": "GroupType",
+            "values": [
+              {
+                "name": "General",
+                "id": 1
+              },
+              {
+                "name": "Public",
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
           "type": "struct",
           "content": {
             "name": "Group",
@@ -4361,6 +4377,17 @@
                 },
                 "id": 18,
                 "name": "about"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "GroupType"
+                  }
+                },
+                "id": 19,
+                "name": "groupType"
               }
             ]
           }
@@ -4536,6 +4563,12 @@
                 "argument": "users",
                 "category": "full",
                 "description": "Members of new group"
+              },
+              {
+                "type": "reference",
+                "argument": "groupType",
+                "category": "full",
+                "description": "Group type"
               }
             ],
             "attributes": [
@@ -4562,6 +4595,17 @@
                 },
                 "id": 3,
                 "name": "users"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "GroupType"
+                  }
+                },
+                "id": 4,
+                "name": "groupType"
               }
             ]
           }
