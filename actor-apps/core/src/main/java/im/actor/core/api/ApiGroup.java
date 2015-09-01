@@ -32,8 +32,9 @@ public class ApiGroup extends BserObject {
     private Boolean isAdmin;
     private String theme;
     private String about;
+    private ApiGroupType groupType;
 
-    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, boolean isMember, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, boolean isMember, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about, @Nullable ApiGroupType groupType) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -50,6 +51,7 @@ public class ApiGroup extends BserObject {
         this.isAdmin = isAdmin;
         this.theme = theme;
         this.about = about;
+        this.groupType = groupType;
     }
 
     public ApiGroup() {
@@ -131,6 +133,11 @@ public class ApiGroup extends BserObject {
         return this.about;
     }
 
+    @Nullable
+    public ApiGroupType getGroupType() {
+        return this.groupType;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
@@ -153,6 +160,10 @@ public class ApiGroup extends BserObject {
         this.isAdmin = values.optBool(16);
         this.theme = values.optString(17);
         this.about = values.optString(18);
+        int val_groupType = values.getInt(19, 0);
+        if (val_groupType != 0) {
+            this.groupType = ApiGroupType.parse(val_groupType);
+        }
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -196,6 +207,9 @@ public class ApiGroup extends BserObject {
         }
         if (this.about != null) {
             writer.writeString(18, this.about);
+        }
+        if (this.groupType != null) {
+            writer.writeInt(19, this.groupType.getValue());
         }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
