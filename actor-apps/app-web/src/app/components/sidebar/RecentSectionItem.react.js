@@ -1,5 +1,8 @@
-import React from 'react';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
+import React from 'react';
 import classNames from 'classnames';
 
 import PeerUtils from 'utils/PeerUtils';
@@ -20,29 +23,27 @@ class RecentSectionItem extends React.Component {
   }
 
   onClick = () => {
-    DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
-  };
+    const { dialog } = this.props;
+
+    DialogActionCreators.selectDialogPeer(dialog.peer.peer);
+  }
+
+  onDelete = (event) => {
+    event.stopPropagation();
+    console.debug('onDelete');
+  }
 
   render() {
+    const { dialog } = this.props;
     const selectedPeer = DialogStore.getSelectedDialogPeer();
-    const dialog = this.props.dialog;
 
     const isActive = selectedPeer && PeerUtils.equals(dialog.peer.peer, selectedPeer);
 
-    let title;
-
-    if (dialog.counter > 0) {
-      const counter = <span className="counter">{dialog.counter}</span>;
-      const name = <span className="col-xs title">{dialog.peer.title}</span>;
-      title = [name, counter];
-    } else {
-      title = <span className="col-xs title">{dialog.peer.title}</span>;
-    }
-
-    let recentClassName = classNames('sidebar__list__item', 'row', {
+    const recentClassName = classNames('sidebar__list__item', 'row', {
       'sidebar__list__item--active': isActive,
       'sidebar__list__item--unread': dialog.counter > 0
     });
+    const counter = dialog.counter > 0 ? <span className="counter">{dialog.counter}</span> : null;
 
     return (
       <li className={recentClassName} onClick={this.onClick}>
@@ -50,7 +51,9 @@ class RecentSectionItem extends React.Component {
                     placeholder={dialog.peer.placeholder}
                     size="tiny"
                     title={dialog.peer.title}/>
-        {title}
+        <span className="col-xs title">{dialog.peer.title}</span>
+        {counter}
+        <i className="material-icons delete" onClick={this.onDelete}>clear</i>
       </li>
     );
   }
