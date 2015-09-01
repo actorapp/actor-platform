@@ -602,7 +602,7 @@ class GroupsServiceSpec
 
     implicit val clientData = ClientData(authId1, createSessionId(), Some(user1.id))
 
-    whenReady(service.handleCreateGroup(1L, "", Vector.empty)) { resp ⇒
+    whenReady(service.handleCreateGroup(1L, "", Vector.empty, Some(GroupType.General))) { resp ⇒
       inside(resp) {
         case Error(GroupRpcErrors.WrongGroupTitle) ⇒
       }

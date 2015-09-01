@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.profile
 
+import im.actor.server.{ ApiConversions, persist }
+
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
@@ -13,7 +15,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
-import im.actor.server.api.ApiConversions._
+import ApiConversions._
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, ImageUtils, FileErrors }
 import im.actor.server.persist

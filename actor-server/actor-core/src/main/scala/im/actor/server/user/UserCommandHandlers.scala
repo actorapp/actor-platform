@@ -9,7 +9,8 @@ import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.users._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.history.HistoryUtils
-import im.actor.server.api.ApiConversions._
+import im.actor.server.{ persist ⇒ p, ApiConversions, models }
+import ApiConversions._
 import im.actor.server.{ persist ⇒ p, models }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ ImageUtils, Avatar }
@@ -18,7 +19,6 @@ import im.actor.server.sequence.SeqState
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
 import ContactsUtils.addContact
-import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
