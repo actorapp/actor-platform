@@ -7,7 +7,7 @@ import ActorClient from 'utils/ActorClient';
 
 import DialogStore from 'stores/DialogStore'
 
-import { register } from 'dispatcher/ActorAppDispatcher';
+import { register, waitFor } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from 'constants/ActorAppConstants';
 
 const CHANGE_EVENT = 'change';
@@ -45,6 +45,7 @@ GroupStoreInstance.dispatchToken = register(action => {
       break;
 
     case ActionTypes.GET_INTEGRATION_TOKEN:
+      waitFor([DialogStore.dispatchToken]);
       GroupStoreInstance.emitChange();
       break;
     case ActionTypes.GET_INTEGRATION_TOKEN_SUCCESS:

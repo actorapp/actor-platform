@@ -75,8 +75,11 @@ class GroupProfile extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    this.setState(getStateFromStores(newProps.group.id));
-    GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
+    // FIXME!!!
+    setTimeout(() => {
+      this.setState(getStateFromStores(newProps.group.id));
+      GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
+    }, 0);
   }
 
   onAddMemberClick = group => {
