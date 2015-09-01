@@ -79,23 +79,55 @@ abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: Class
         }
       }))
     case CreateAck(key, ack, replyTo) =>
-      if (keyExists(key)) {
+      createKey(key) {
         replyTo ! ack
-      } else {
-        persist(KeyCreated(key)) { e =>
-          updateState(e)
-          replyTo ! ack
-        }
       }
     case DeleteAck(key, ack, replyTo) =>
-      if (!keyExists(key)) {
+      deleteKey(key) {
         replyTo ! ack
-      } else {
-        persist(KeyDeleted(key)) { e =>
-          updateState(e)
-          replyTo ! ack
-        }
       }
+  }
+
+  protected def createKey(key: String)(f: => Unit): Unit = {
+    if (keyExists(key)) {
+      log.error("Key {} already exists", key)
+      f
+    } else {
+      persist(KeyCreated(key)) { e =>
+        updateState(e)
+        f
+      }
+    }
+  }
+
+  protected def deleteKey(key: String)(f: => Unit): Unit = {
+    if (keyExists(key)) {
+      persist(KeyDeleted(key)) { e =>
+        updateState(e)
+        f
+      }
+    } else {
+      log.error("Key {} is already deleted", key)
+      f
+    }
+  }
+
+  protected def transactional(key: String, cmd: Any)(f: Receive): Unit = {
+    val replyTo = sender()
+    val valueActor = valueActorOf(key)
+    context watch valueActor
+    valueActor ! cmd
+    context become (f orElse {
+      case Terminated(`valueActor`) =>
+        replyTo ! Status.Failure(new Exception(s"Value actor ${key} is terminated"))
+        end()
+      case _ => stash()
+    }, discardOld = false)
+  }
+
+  protected def end(): Unit = {
+    unstashAll()
+    context.unbecome()
   }
 
   private def handleRootQuery: Receive = {
