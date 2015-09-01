@@ -41,6 +41,7 @@ import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.fragment.ActorBinder;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.MembersAdapter;
+import im.actor.messenger.app.fragment.media.DocumentsActivity;
 import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
@@ -198,7 +199,14 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
 
-        header.findViewById(R.id.docsContainer).setVisibility(View.GONE);
+        header.findViewById(R.id.docsContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(DocumentsActivity.build(Peer.group(chatId), getActivity()));
+            }
+        });
+
+
         header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
 
         //Members
