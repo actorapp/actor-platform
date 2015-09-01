@@ -34,6 +34,7 @@ var MessageStore = assign({}, EventEmitter.prototype, {
 
 var _bindMessages = function(messages) {
   _messages = messages;
+  console.debug(messages[messages.length - 1]);
   MessageStore.emitChange();
 };
 
