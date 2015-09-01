@@ -10,7 +10,8 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ServiceMessage
 import im.actor.api.rpc.users.Sex
-import im.actor.server.api.ApiConversions._
+import im.actor.server.{ persist ⇒ p, ApiConversions, models }
+import ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.history.HistoryUtils
 import im.actor.server.{ persist ⇒ p, models }
@@ -25,7 +26,6 @@ import im.actor.server.user.UserOffice
 import ACLUtils._
 import im.actor.server.util.IdUtils._
 import ImageUtils._
-import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -38,11 +38,11 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   import GroupCommands._
   import GroupEvents._
 
-  protected def createInternal(creatorUserId: Int, title: String, userIds: Seq[Int]): Unit = {
+  protected def createInternal(typ: GroupType, creatorUserId: Int, title: String, userIds: Seq[Int]): Unit = {
     val accessHash = genAccessHash()
 
     val date = now()
-    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title, userIds)
+    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, userIds)
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒
@@ -58,7 +58,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def create(groupId: Int, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
+  protected def create(groupId: Int, typ: GroupType, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
     val accessHash = genAccessHash()
 
     val rng = ThreadLocalRandom.current()
@@ -69,7 +69,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     val date = now()
 
-    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title, Seq(creatorUserId))
+    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, Seq(creatorUserId))
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒
@@ -87,7 +87,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               creatorUserId = state.creatorUserId,
               accessHash = state.accessHash,
               title = state.title,
-              isPublic = state.isPublic,
+              isPublic = (state.typ == GroupType.Public),
               createdAt = state.createdAt,
               about = None,
               topic = None
@@ -429,7 +429,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         creatorUserId = state.creatorUserId,
         accessHash = state.accessHash,
         title = state.title,
-        isPublic = state.isPublic,
+        isPublic = (state.typ == GroupType.Public),
         createdAt = state.createdAt,
         about = None,
         topic = None

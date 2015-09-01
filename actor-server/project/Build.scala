@@ -45,7 +45,9 @@ object Build extends sbt.Build {
       //PB.javaConversions in PB.protobufConfig := true,
       libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
       PB.includePaths in PB.protobufConfig ++= Seq(
-        file("actor-commons-api/src/main/protobuf")
+        file("actor-commons-api/src/main/protobuf"),
+        file("actor-core/src/main/protobuf"),
+        file("shardakka/src/main/protobuf")
       ),
       PB.runProtoc in PB.protobufConfig := (args =>
         com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))

@@ -1,9 +1,11 @@
-package im.actor.server.api
-
-import scala.language.implicitConversions
+package im.actor.server
 
 import im.actor.api.rpc.files.{ Avatar ⇒ ApiAvatar, AvatarImage ⇒ ApiAvatarImage, FileLocation ⇒ ApiFileLocation }
-import im.actor.server.file.{ FileLocation, AvatarImage, Avatar }
+import im.actor.api.rpc.groups.{ GroupType ⇒ ApiGroupType }
+import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
+import im.actor.server.group.GroupType
+
+import scala.language.implicitConversions
 
 object ApiConversions {
 
@@ -36,4 +38,10 @@ object ApiConversions {
 
   implicit def avatarOptToApi(avatarOpt: Option[Avatar]): Option[ApiAvatar] =
     avatarOpt map avatarToApi
+
+  implicit def groupTypeToApi(groupType: GroupType.ValueType): ApiGroupType.Value =
+    ApiGroupType.apply(groupType.value)
+
+  implicit def apiToGroupType(groupType: ApiGroupType.Value): GroupType.ValueType =
+    GroupType.fromValue(groupType.id)
 }

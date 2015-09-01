@@ -106,7 +106,7 @@ object UserProcessor {
       11007 → classOf[UserQueries.GetApiStruct],
       11008 → classOf[UserQueries.GetApiStructResponse],
       11009 → classOf[UserQueries.GetAccessHash],
-      11009 → classOf[UserQueries.GetAccessHashResponse],
+      11010 → classOf[UserQueries.GetAccessHashResponse],
 
       12001 → classOf[UserEvents.AuthAdded],
       12002 → classOf[UserEvents.AuthRemoved],
