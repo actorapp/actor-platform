@@ -25,13 +25,11 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
     private long rid;
     private String title;
     private List<ApiUserOutPeer> users;
-    private ApiGroupType groupType;
 
-    public RequestCreateGroup(long rid, @NotNull String title, @NotNull List<ApiUserOutPeer> users, @Nullable ApiGroupType groupType) {
+    public RequestCreateGroup(long rid, @NotNull String title, @NotNull List<ApiUserOutPeer> users) {
         this.rid = rid;
         this.title = title;
         this.users = users;
-        this.groupType = groupType;
     }
 
     public RequestCreateGroup() {
@@ -52,11 +50,6 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
         return this.users;
     }
 
-    @Nullable
-    public ApiGroupType getGroupType() {
-        return this.groupType;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         this.rid = values.getLong(1);
@@ -66,10 +59,6 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
             _users.add(new ApiUserOutPeer());
         }
         this.users = values.getRepeatedObj(3, _users);
-        int val_groupType = values.getInt(4, 0);
-        if (val_groupType != 0) {
-            this.groupType = ApiGroupType.parse(val_groupType);
-        }
     }
 
     @Override
@@ -80,9 +69,6 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
         }
         writer.writeString(2, this.title);
         writer.writeRepeatedObj(3, this.users);
-        if (this.groupType != null) {
-            writer.writeInt(4, this.groupType.getValue());
-        }
     }
 
     @Override
@@ -91,7 +77,6 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
         res += "rid=" + this.rid;
         res += ", title=" + this.title;
         res += ", users=" + this.users.size();
-        res += ", groupType=" + this.groupType;
         res += "}";
         return res;
     }
