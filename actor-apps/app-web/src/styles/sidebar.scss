@@ -207,12 +207,30 @@
         border-radius: 12px;
         background-color: $coral;
       }
+      .delete {
+        font-size: 18px;
+        line-height: 24px;
+        margin-right: 3px;
+        margin-left: 6px;
+        display: none;
+        color: rgba(white, .6);
+        &:hover {
+          color: white;
+        }
+      }
+
       &:hover {
         color: white;
         background-color: rgba($baby-blue,.12);
         box-shadow: none;
         .avatar {
           filter: none;
+        }
+        .counter {
+          display: none;
+        }
+        .delete {
+          display: block;
         }
       }
       &--active {
