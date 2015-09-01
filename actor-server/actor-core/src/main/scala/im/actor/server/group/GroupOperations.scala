@@ -177,4 +177,10 @@ private[group] sealed trait Queries {
     ec:      ExecutionContext
   ): Future[(Seq[Int], Seq[Int], Option[Int])] = (region.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
 
+  def getAccessHash(groupId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Long] = (region.ref ? GetAccessHash(groupId)).mapTo[GetAccessHashResponse] map (_.accessHash)
 }

@@ -5,7 +5,7 @@ import java.security.MessageDigest
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.api.rpc.peers.{ PeerType, OutPeer }
+import im.actor.api.rpc.peers.{ Peer, PeerType, OutPeer }
 import im.actor.server.group.{ GroupExtension, GroupViewRegion, GroupOffice }
 import im.actor.server.models
 import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
@@ -65,6 +65,20 @@ object ACLUtils {
       case PeerType.Private ⇒
         implicit val userViewRegion: UserViewRegion = UserExtension(s).viewRegion
         UserOffice.checkAccessHash(outPeer.id, clientAuthId, outPeer.accessHash)
+    }
+  }
+
+  def getOutPeer(peer: Peer, clientAuthId: Long)(implicit s: ActorSystem): Future[OutPeer] = {
+    implicit val ec: ExecutionContext = s.dispatcher
+    implicit val timeout: Timeout = Timeout(20.seconds)
+
+    peer.`type` match {
+      case PeerType.Group ⇒
+        implicit val groupViewRegion: GroupViewRegion = GroupExtension(s).viewRegion
+        GroupOffice.getAccessHash(peer.id) map (OutPeer(PeerType.Group, peer.id, _))
+      case PeerType.Private ⇒
+        implicit val userViewRegion: UserViewRegion = UserExtension(s).viewRegion
+        UserOffice.getAccessHash(peer.id, clientAuthId) map (OutPeer(PeerType.Private, peer.id, _))
     }
   }
 }
