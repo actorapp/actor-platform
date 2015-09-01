@@ -211,7 +211,7 @@
 
     <LinearLayout
         android:id="@+id/sharedContainer"
-        android:visibility="gone"
+        android:visibility="visible"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -224,6 +224,7 @@
             android:textColor="@color/settings_main_title"
             android:textSize="16sp" />
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/mediaContainer"
             android:layout_width="match_parent"
             android:layout_height="48dp"

@@ -11,6 +11,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.runtime.Storage;
@@ -36,6 +37,7 @@ public class ConversationActor extends ModuleActor {
 
     private Peer peer;
     private ListEngine<Message> messages;
+    private ListEngine<Message> docs;
     private IndexStorage outPendingIndex;
     private IndexStorage inPendingIndex;
     private ActorRef dialogsActor;
@@ -54,6 +56,7 @@ public class ConversationActor extends ModuleActor {
     @Override
     public void preStart() {
         messages = context().getMessagesModule().getConversationEngine(peer);
+        docs = context().getMessagesModule().getConversationDocsEngine(peer);
 
         dialogsActor = context().getMessagesModule().getDialogsActor();
         outPendingIndex = Storage.createIndex("out_pending_" + peer.getPeerType() + "_" + peer.getPeerId());
@@ -72,6 +75,7 @@ public class ConversationActor extends ModuleActor {
         // Prepare messages
         Message topMessage = null;
         ArrayList<Message> updated = new ArrayList<Message>();
+        ArrayList<Message> updatedDocs = new ArrayList<Message>();
         for (Message m : inMessages) {
             if (m.getSenderId() == myUid()) {
                 // Force set message state if server out message
@@ -97,10 +101,14 @@ public class ConversationActor extends ModuleActor {
             }
 
             updated.add(m);
+            if (m.getContent() instanceof DocumentContent) {
+                updatedDocs.add(m);
+            }
         }
 
         // Adding message
         messages.addOrUpdateItems(updated);
+        docs.addOrUpdateItems(updatedDocs);
 
         for (Message m : updated) {
             if (m.getSenderId() == myUid()) {
@@ -146,6 +154,9 @@ public class ConversationActor extends ModuleActor {
 
         // Adding message
         messages.addOrUpdateItem(message);
+        if (message.getContent() instanceof DocumentContent) {
+            docs.addOrUpdateItem(message);
+        }
 
         // Updating dialog if on server
         if (message.isOnServer()) {
@@ -177,6 +188,11 @@ public class ConversationActor extends ModuleActor {
         // Updating message
         Message updatedMsg = message.changeContent(content);
         messages.addOrUpdateItem(updatedMsg);
+        if (updatedMsg.getContent() instanceof DocumentContent) {
+            docs.addOrUpdateItem(updatedMsg);
+        } else {
+            docs.removeItem(rid);
+        }
 
         // Updating dialog
         dialogsActor.send(new DialogsActor.MessageContentChanged(peer, rid, content));
@@ -202,6 +218,9 @@ public class ConversationActor extends ModuleActor {
                     .changeAllDate(date)
                     .changeState(state);
             messages.addOrUpdateItem(updatedMsg);
+            if (updatedMsg.getContent() instanceof DocumentContent) {
+                docs.addOrUpdateItem(updatedMsg);
+            }
 
             // Updating dialog
             dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inPendingIndex.getCount()));
@@ -223,6 +242,10 @@ public class ConversationActor extends ModuleActor {
             Message updatedMsg = msg
                     .changeState(MessageState.ERROR);
             messages.addOrUpdateItem(updatedMsg);
+
+            if (updatedMsg.getContent() instanceof DocumentContent) {
+                docs.addOrUpdateItem(updatedMsg);
+            }
 
             // Updating dialog
             dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
@@ -328,6 +351,7 @@ public class ConversationActor extends ModuleActor {
             rids2[i] = rids.get(i);
         }
         messages.removeItems(rids2);
+        docs.removeItems(rids2);
 
         inPendingIndex.remove(rids);
         outPendingIndex.remove(rids);
@@ -339,6 +363,7 @@ public class ConversationActor extends ModuleActor {
     @Verified
     private void onClearConversation() {
         messages.clear();
+        docs.clear();
         inPendingIndex.clear();
         outPendingIndex.clear();
         dialogsActor.send(new DialogsActor.ChatClear(peer));
@@ -347,6 +372,7 @@ public class ConversationActor extends ModuleActor {
     @Verified
     private void onDeleteConversation() {
         messages.clear();
+        docs.clear();
         inPendingIndex.clear();
         outPendingIndex.clear();
         dialogsActor.send(new DialogsActor.ChatDelete(peer));
@@ -358,6 +384,7 @@ public class ConversationActor extends ModuleActor {
     private void onHistoryLoaded(List<Message> history) {
 
         ArrayList<Message> updated = new ArrayList<Message>();
+        ArrayList<Message> updatedDocs = new ArrayList<Message>();
 
         // Processing all new messages
         for (Message historyMessage : history) {
@@ -367,11 +394,18 @@ public class ConversationActor extends ModuleActor {
             }
 
             updated.add(historyMessage);
+            if (historyMessage.getContent() instanceof DocumentContent) {
+                updatedDocs.add(historyMessage);
+            }
         }
 
         // Updating messages
         if (updated.size() > 0) {
             messages.addOrUpdateItems(updated);
+        }
+
+        if (updatedDocs.size() > 0) {
+            docs.addOrUpdateItems(updatedDocs);
         }
 
         // No need to update dialogs: all history messages are always too old
