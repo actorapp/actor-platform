@@ -465,7 +465,7 @@
 
   overflow: hidden;
 
-  width: $modalDefaultWidth;
+  width: $modal-default-width;
   //min-height: $modalDefaultHeight;
   margin: 160px auto 0;
 
@@ -476,7 +476,7 @@
 
   &__header {
     box-sizing: border-box;
-    height: $modalHeaderHeight;
+    height: $modal-header-height;
     padding: 12px 16px;
 
     text-align: initial;
