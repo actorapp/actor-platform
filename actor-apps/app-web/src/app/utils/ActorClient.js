@@ -227,6 +227,13 @@ export default {
 
   bindTempGlobalCounter(callback) {
     return window.messenger.bindTempGlobalCounter(callback);
-  }
+  },
 
+  deleteChat(peer) {
+    return window.messenger.deleteChat(peer);
+  },
+
+  clearChat(peer) {
+    return window.messenger.clearChat(peer);
+  }
 };
