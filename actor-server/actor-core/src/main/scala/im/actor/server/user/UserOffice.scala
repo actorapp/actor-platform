@@ -349,4 +349,7 @@ private[user] sealed trait Queries {
   def checkAccessHash(userId: Int, senderAuthId: Long, accessHash: Long)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[Boolean] = {
     (region.ref ? CheckAccessHash(userId, senderAuthId, accessHash)).mapTo[CheckAccessHashResponse] map (_.isCorrect)
   }
+
+  def getAccessHash(userId: Int, clientAuthId: Long)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[Long] =
+    (region.ref ? GetAccessHash(userId, clientAuthId)).mapTo[GetAccessHashResponse] map (_.accessHash)
 }

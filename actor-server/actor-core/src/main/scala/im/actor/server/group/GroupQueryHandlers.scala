@@ -60,4 +60,7 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
     sender() ! IsPublicResponse(isPublic = group.isPublic)
   }
 
+  def getAccessHash(group: Group): Unit =
+    sender() ! GetAccessHashResponse(group.accessHash)
+
 }
