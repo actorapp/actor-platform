@@ -225,6 +225,16 @@ message GroupQueries {
     message IsPublicResponse {
         required bool is_public = 1;
     }
+
+    message GetAccessHash {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
+    message GetAccessHashResponse {
+        required int64 access_hash = 1;
+    }
 }
 
 message GroupEvents {

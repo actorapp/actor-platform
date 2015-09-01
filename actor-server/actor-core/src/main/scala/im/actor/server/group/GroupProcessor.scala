@@ -93,6 +93,8 @@ object GroupProcessor {
       21009 → classOf[GroupQueries.IsPublic],
       21010 → classOf[GroupQueries.IsPublicResponse],
       21011 → classOf[GroupQueries.GetIntegrationTokenInternal],
+      21012 -> classOf[GroupQueries.GetAccessHash],
+      21013 -> classOf[GroupQueries.GetAccessHashResponse],
 
       22003 → classOf[GroupEvents.UserInvited],
       22004 → classOf[GroupEvents.UserJoined],
@@ -189,6 +191,7 @@ private[group] final class GroupProcessor
     case GroupQueries.CheckAccessHash(_, accessHash) ⇒ checkAccessHash(state, accessHash)
     case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
     case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
+    case GroupQueries.GetAccessHash(_)               ⇒ getAccessHash(state)
   }
 
   override def handleInitCommand: Receive = {
