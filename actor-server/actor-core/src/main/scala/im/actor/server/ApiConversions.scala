@@ -2,8 +2,6 @@ package im.actor.server
 
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.files.{ Avatar ⇒ ApiAvatar, AvatarImage ⇒ ApiAvatarImage, FileLocation ⇒ ApiFileLocation }
-import im.actor.api.rpc.misc.{ Extension ⇒ ApiExtension }
-import im.actor.server.common.Extension
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
 
 import scala.language.implicitConversions
@@ -39,10 +37,4 @@ object ApiConversions {
 
   implicit def avatarOptToApi(avatarOpt: Option[Avatar]): Option[ApiAvatar] =
     avatarOpt map avatarToApi
-
-  implicit def extensionToApi(ext: Extension): ApiExtension =
-    ApiExtension(ext.id, ext.data.toByteArray)
-
-  implicit def apiToExtension(ext: ApiExtension): Extension =
-    Extension(ext.id, ByteString.copyFrom(ext.data))
 }
