@@ -24,6 +24,8 @@ const english = {
     'editGroup': 'Edit Group',
     'clearGroup': 'Clear Group',
     'deleteGroup': 'Delete Group',
+    'clearConversation': 'Clear Conversation',
+    'deleteConversation': 'Delete Conversation',
     'leaveGroup': 'Leave Group',
     'sharedMedia': 'Shared Media',
     'notifications': 'Notifications',
