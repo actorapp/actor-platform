@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import keymirror from 'keymirror';
 import app from '../../app.json';
 
@@ -86,8 +90,6 @@ export const ActionTypes = keymirror({
   PREFERENCES_MODAL_HIDE: null,
   PREFERENCES_MODAL_SHOW: null,
 
-  LEFT_GROUP: null,
-
   MY_PROFILE_MODAL_SHOW: null,
   MY_PROFILE_MODAL_HIDE: null,
   MY_PROFILE_SAVE_NAME: null,
@@ -95,7 +97,18 @@ export const ActionTypes = keymirror({
 
   KICK_USER: null,
   KICK_USER_SUCCESS: null,
-  KICK_USER_ERROR: null
+  KICK_USER_ERROR: null,
+
+  CHAT_LEAVE: null,
+  CHAT_LEAVE_SUCCESS: null,
+  CHAT_LEAVE_ERROR: null,
+  CHAT_DELETE: null,
+  CHAT_DELETE_SUCCESS: null,
+  CHAT_DELETE_ERROR: null,
+  CHAT_CLEAR: null,
+  CHAT_CLEAR_SUCCESS: null,
+  CHAT_CLEAR_ERROR: null
+
 });
 
 export const PeerTypes = {
