@@ -143,7 +143,6 @@ class GroupProfile extends React.Component {
   render() {
     const { group } = this.props;
     const { isNotificationsEnabled, integrationToken, isCopyButtonEnabled, isMoreDropdownOpen } = this.state;
-    console.debug('group', group);
 
     const myId = LoginStore.getMyId();
     const admin = GroupProfileActionCreators.getUser(group.adminId);
@@ -244,7 +243,7 @@ class GroupProfile extends React.Component {
                     <FormattedMessage message={this.getIntlMessage('addPeople')}/>
                   </button>
                 </div>
-                <div style={{width: 10}}></div>
+                <div style={{width: 10}}/>
                 <div className="col-xs">
                   <div className={dropdownClassNames}>
                     <button className="dropdown__button button button--light-blue" onClick={this.toggleMoreDropdown}>
