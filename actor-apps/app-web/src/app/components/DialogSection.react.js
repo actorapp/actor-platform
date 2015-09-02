@@ -81,7 +81,7 @@ class DialogSection extends React.Component {
   }
 
   render() {
-    const peer = this.state.peer;
+    const { peer } = this.state;
 
     let mainContent;
 

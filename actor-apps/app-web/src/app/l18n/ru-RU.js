@@ -24,6 +24,8 @@ const russian = {
     'editGroup': 'Редактировать группу',
     'clearGroup': 'Очистить группу',
     'deleteGroup': 'Удалить группу',
+    'clearConversation': 'Очистить диалог',
+    'deleteConversation': 'Удалить диалог',
     'leaveGroup': 'Покинуть группу',
     'sharedMedia': 'Вложения',
     'notifications': 'Уведомления',
