@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 
 import React from 'react';
@@ -72,7 +76,7 @@ class ComposeSection extends React.Component {
   }
 
   onMessageChange = event => {
-    let text = event.target.value;
+    const text = event.target.value;
 
     ComposeActionCreators.onTyping(this.props.peer, text, this.getCaretPosition());
   };
@@ -94,9 +98,11 @@ class ComposeSection extends React.Component {
   };
 
   sendTextMessage = () => {
-    const text = this.state.text;
+    const { text } = this.state;
+    const { peer } = this.props;
+
     if (text) {
-      MessageActionCreators.sendTextMessage(this.props.peer, text);
+      MessageActionCreators.sendTextMessage(peer, text);
     }
     ComposeActionCreators.cleanText();
   };

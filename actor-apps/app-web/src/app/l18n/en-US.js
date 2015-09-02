@@ -22,6 +22,7 @@ const english = {
     'setGroupPhoto': 'Set Group Photo',
     'addIntegration': 'Add a Service Integration',
     'editGroup': 'Edit Group',
+    'clearGroup': 'Clear Group',
     'deleteGroup': 'Delete Group',
     'leaveGroup': 'Leave Group',
     'sharedMedia': 'Shared Media',
