@@ -28,11 +28,11 @@ class RecentSectionItem extends React.Component {
     DialogActionCreators.selectDialogPeer(dialog.peer.peer);
   };
 
-  onDelete = (event) => {
-    event.stopPropagation();
-    const { dialog } = this.props;
-    DialogActionCreators.deleteChat(dialog.peer.peer);
-  };
+  //onDelete = (event) => {
+  //  event.stopPropagation();
+  //  const { dialog } = this.props;
+  //  DialogActionCreators.deleteChat(dialog.peer.peer);
+  //};
 
   render() {
     const { dialog } = this.props;
@@ -54,7 +54,7 @@ class RecentSectionItem extends React.Component {
                     title={dialog.peer.title}/>
         <span className="col-xs title">{dialog.peer.title}</span>
         {counter}
-        <i className="material-icons delete" onClick={this.onDelete}>clear</i>
+        {/* <i className="material-icons delete" onClick={this.onDelete}>clear</i> */}
       </li>
     );
   }
