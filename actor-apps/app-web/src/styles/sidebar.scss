@@ -210,9 +210,12 @@
       .delete {
         font-size: 18px;
         line-height: 24px;
+
+        display: none;
+
         margin-right: 3px;
         margin-left: 6px;
-        display: none;
+
         color: rgba(white, .6);
         &:hover {
           color: white;
@@ -226,12 +229,12 @@
         .avatar {
           filter: none;
         }
-        .counter {
-          display: none;
-        }
-        .delete {
-          display: block;
-        }
+        //.counter {
+        //  display: none;
+        //}
+        //.delete {
+        //  display: block;
+        //}
       }
       &--active {
         color: white;
