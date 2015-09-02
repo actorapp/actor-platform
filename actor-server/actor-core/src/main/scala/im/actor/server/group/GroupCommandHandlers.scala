@@ -42,15 +42,22 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     val accessHash = genAccessHash()
 
     val date = now()
-    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, userIds, extensions)
+    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, (userIds.toSet + creatorUserId).toSeq, extensions)
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒
       context become working(state)
 
       val rng = ThreadLocalRandom.current()
+
+      // FIXME: invite other members
+
+      val update = UpdateGroupInvite(groupId, creatorUserId, date.getMillis, rng.nextLong())
+
       db.run(for {
         _ ← createInDb(state, rng.nextLong())
+        _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
+        _ ← DBIO.from(UserOffice.broadcastUserUpdate(creatorUserId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${update.randomId}")))
       } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
         case e ⇒
           log.error(e, "Failed to create group internally")
@@ -118,8 +125,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     persist(TSEvent(now(), botAdded)) { tsEvt ⇒
       context become working(updatedState(tsEvt, state))
-
-      val rng = ThreadLocalRandom.current()
 
       (for {
         _ ← UserOffice.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), "Bot", "US", Sex.Unknown, isBot = true)
