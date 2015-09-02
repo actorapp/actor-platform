@@ -47,7 +47,7 @@ class ToolbarSection extends React.Component {
   onChange = () => {
     this.setState(getStateFromStores());
   };
-  
+
   render() {
     const { dialogInfo, isActivityOpen } = this.state;
 
@@ -59,8 +59,8 @@ class ToolbarSection extends React.Component {
       return (
         <header className="toolbar row">
           <div className="toolbar__peer col-xs">
-            <span className="toolbar__peer__title">{info.name}</span>
-            <span className="toolbar__peer__presence">{info.presence}</span>
+            <span className="toolbar__peer__title">{dialogInfo.name}</span>
+            <span className="toolbar__peer__presence">{dialogInfo.presence}</span>
           </div>
 
           <div className="toolbar__controls">
