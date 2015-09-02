@@ -47,16 +47,15 @@ class ToolbarSection extends React.Component {
   onChange = () => {
     this.setState(getStateFromStores());
   };
-
+  
   render() {
-    const info = this.state.dialogInfo;
-    const isActivityOpen = this.state.isActivityOpen;
+    const { dialogInfo, isActivityOpen } = this.state;
 
-    let infoButtonClassName = classnames('button button--icon', {
+    const infoButtonClassName = classnames('button button--icon', {
       'button--active': isActivityOpen
     });
 
-    if (info != null) {
+    if (dialogInfo !== null) {
       return (
         <header className="toolbar row">
           <div className="toolbar__peer col-xs">
