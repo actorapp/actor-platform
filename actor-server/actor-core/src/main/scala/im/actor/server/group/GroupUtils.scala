@@ -1,13 +1,17 @@
 package im.actor.server.group
 
+import akka.util.Timeout
 import im.actor.api.rpc.AuthorizedClientData
+import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup }
 import im.actor.api.rpc.pubgroups.PublicGroup
+import im.actor.api.rpc.users.{ User ⇒ ApiUser }
 import im.actor.server.file.ImageUtils
+import im.actor.server.user.{ UserViewRegion, UserOffice }
 import im.actor.server.{ models, persist }
 import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 
 object GroupUtils {
 
@@ -37,5 +41,22 @@ object GroupUtils {
 
   def withGroupUserIds[A](groupId: Int)(f: Seq[Int] ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
     persist.GroupUser.findUserIds(groupId) flatMap f
+  }
+
+  def getUserIds(groups: Seq[ApiGroup]): Seq[Int] =
+    groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
+
+  def getGroupsUsers(groupIds: Seq[Int], userIds: Seq[Int], clientUserId: Int, clientAuthId: Long)(
+    implicit
+    ec:              ExecutionContext,
+    timeout:         Timeout,
+    userViewRegion:  UserViewRegion,
+    groupViewRegion: GroupViewRegion
+  ): Future[(Seq[ApiGroup], Seq[ApiUser])] = {
+    for {
+      groups ← Future.sequence(groupIds map (GroupOffice.getApiStruct(_, clientUserId)))
+      memberIds = getUserIds(groups)
+      users ← Future.sequence((userIds.toSet ++ memberIds.toSet) map (UserOffice.getApiStruct(_, clientUserId, clientAuthId)))
+    } yield (groups, users.toSeq)
   }
 }
