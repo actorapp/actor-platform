@@ -31,20 +31,20 @@ export default {
     window.messenger.unbindChat(peer, callback);
   },
 
-  bindGroup(groupId, callback) {
-    window.messenger.bindGroup(groupId, callback);
+  bindGroup(gid, callback) {
+    window.messenger.bindGroup(gid, callback);
   },
 
-  unbindGroup(groupId, callback) {
-    window.messenger.unbindGroup(groupId, callback);
+  unbindGroup(gid, callback) {
+    window.messenger.unbindGroup(gid, callback);
   },
 
-  bindUser(userId, callback) {
-    window.messenger.bindUser(userId, callback);
+  bindUser(uid, callback) {
+    window.messenger.bindUser(uid, callback);
   },
 
-  unbindUser(userId, callback) {
-    window.messenger.unbindUser(userId, callback);
+  unbindUser(uid, callback) {
+    window.messenger.unbindUser(uid, callback);
   },
 
   bindTyping(peer, callback) {
@@ -71,20 +71,20 @@ export default {
     window.messenger.unbindConnectState(callback);
   },
 
-  getUser(userId) {
-    return window.messenger.getUser(userId);
+  getUser(uid) {
+    return window.messenger.getUser(uid);
   },
 
   getUid() {
     return window.messenger.getUid();
   },
 
-  getGroup(groupId) {
-    return window.messenger.getGroup(groupId);
+  getGroup(gid) {
+    return window.messenger.getGroup(gid);
   },
 
-  getInviteUrl(groupId) {
-    return window.messenger.getInviteLink(groupId);
+  getInviteUrl(gid) {
+    return window.messenger.getInviteLink(gid);
   },
 
   sendTextMessage(peer, text) {
@@ -156,8 +156,8 @@ export default {
     return p;
   },
 
-  leaveGroup(groupId) {
-    return window.messenger.leaveGroup(groupId);
+  leaveGroup(gid) {
+    return window.messenger.leaveGroup(gid);
   },
 
   createGroup(title, avatar, userIds) {
