@@ -13,6 +13,7 @@ import DialogStore from 'stores/DialogStore';
 import AvatarItem from 'components/common/AvatarItem.react';
 //import UserProfileContactInfo from 'components/activity/UserProfileContactInfo.react';
 import Fold from 'components/common/Fold.React';
+import ActorClient from 'utils/ActorClient';
 
 const getStateFromStores = (userId) => {
   const thisPeer = PeerStore.getUserPeer(userId);
@@ -78,6 +79,17 @@ class UserProfile extends React.Component {
     document.removeEventListener('click', this.closeActionsDropdown, false);
   };
 
+  clearChat = (uid) => {
+    const peer = ActorClient.getUserPeer(uid);
+    DialogActionCreators.clearChat(peer);
+  };
+
+  deleteChat = (uid) => {
+    const peer = ActorClient.getUserPeer(uid);
+    DialogActionCreators.deleteChat(peer);
+  };
+
+
   render() {
     const { user } = this.props;
     const { isNotificationsEnabled } = this.state;
@@ -140,6 +152,12 @@ class UserProfile extends React.Component {
                 </button>
                 <ul className="dropdown__menu dropdown__menu--left">
                   {actions}
+                  <li className="dropdown__menu__item dropdown__menu__item--light" onClick={() => this.clearChat(user.id)}>
+                    <FormattedMessage message={this.getIntlMessage('clearConversation')}/>
+                  </li>
+                  <li className="dropdown__menu__item dropdown__menu__item--light" onClick={() => this.deleteChat(user.id)}>
+                    <FormattedMessage message={this.getIntlMessage('deleteConversation')}/>
+                  </li>
                 </ul>
               </div>
             </footer>
