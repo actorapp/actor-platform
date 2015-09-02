@@ -5,6 +5,7 @@ import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
+import im.actor.api.rpc.misc.Extension
 import im.actor.server.commons.KeyValueMappings
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
@@ -46,7 +47,8 @@ private[group] case class Group(
   about:          Option[String],
   bot:            Option[Bot],
   avatar:         Option[Avatar],
-  topic:          Option[String]
+  topic:          Option[String],
+  extensions:     Seq[Extension]
 ) extends ProcessorState
 
 trait GroupCommand {
@@ -197,8 +199,8 @@ private[group] final class GroupProcessor
   override def handleInitCommand: Receive = {
     case Create(_, typ, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
       create(groupId, typ, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
-    case CreateInternal(_, typ, creatorUserId, title, userIds) ⇒
-      createInternal(typ, creatorUserId, title, userIds)
+    case CreateInternal(_, typ, creatorUserId, title, userIds, extensions) ⇒
+      createInternal(typ, creatorUserId, title, userIds, extensions)
   }
 
   override def handleCommand(state: Group): Receive = {
@@ -274,7 +276,8 @@ private[group] final class GroupProcessor
       bot = None,
       invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,
-      topic = None
+      topic = None,
+      extensions = evt.extensions
     )
   }
 

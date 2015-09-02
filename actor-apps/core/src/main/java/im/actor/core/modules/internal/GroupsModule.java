@@ -138,7 +138,7 @@ public class GroupsModule extends AbsModule {
                                 response.getGroupPeer().getGroupId(),
                                 response.getGroupPeer().getAccessHash(),
                                 title, null, true, myUid(), members,
-                                response.getDate(), null, null, null, null, null, true, null, null);
+                                response.getDate(), null, null, null, null, null, true, null, null, null);
                         ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
                         groups.add(group);
 

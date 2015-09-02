@@ -4157,22 +4157,6 @@
       "package": "groups",
       "items": [
         {
-          "type": "enum",
-          "content": {
-            "name": "GroupType",
-            "values": [
-              {
-                "name": "General",
-                "id": 1
-              },
-              {
-                "name": "Public",
-                "id": 2
-              }
-            ]
-          }
-        },
-        {
           "type": "struct",
           "content": {
             "name": "Group",
@@ -4255,6 +4239,12 @@
                 "argument": "disableIntegrationView",
                 "category": "full",
                 "description": "  Disabling allowing to get integration token to non-admins"
+              },
+              {
+                "type": "reference",
+                "argument": "extensions",
+                "category": "full",
+                "description": "  Group extensions"
               }
             ],
             "expandable": "true",
@@ -4380,14 +4370,14 @@
               },
               {
                 "type": {
-                  "type": "opt",
+                  "type": "list",
                   "childType": {
-                    "type": "enum",
-                    "childType": "GroupType"
+                    "type": "struct",
+                    "childType": "Extension"
                   }
                 },
-                "id": 19,
-                "name": "groupType"
+                "id": 20,
+                "name": "extensions"
               }
             ]
           }
@@ -4563,12 +4553,6 @@
                 "argument": "users",
                 "category": "full",
                 "description": "Members of new group"
-              },
-              {
-                "type": "reference",
-                "argument": "groupType",
-                "category": "full",
-                "description": "Group type"
               }
             ],
             "attributes": [
@@ -4595,17 +4579,6 @@
                 },
                 "id": 3,
                 "name": "users"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "enum",
-                    "childType": "GroupType"
-                  }
-                },
-                "id": 4,
-                "name": "groupType"
               }
             ]
           }
@@ -8660,6 +8633,39 @@
                 "type": "int32",
                 "id": 1,
                 "name": "maxGroupSize"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Extension",
+            "doc": [
+              "Extention",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Extension id"
+              },
+              {
+                "type": "reference",
+                "argument": "data",
+                "category": "full",
+                "description": "  Extension data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "data"
               }
             ]
           }

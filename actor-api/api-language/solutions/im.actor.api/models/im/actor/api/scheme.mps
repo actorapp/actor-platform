@@ -3858,17 +3858,6 @@
     <node concept="2m5mJO" id="GBscvBB6mJ" role="2m5lHt">
       <property role="TrG5h" value="Groups" />
       <property role="3XOG$Z" value="groups" />
-      <node concept="2m488m" id="57dXDuARYTH" role="2m5mJr">
-        <property role="TrG5h" value="GroupType" />
-        <node concept="2m7y0F" id="57dXDuARYTJ" role="2m7ymf">
-          <property role="TrG5h" value="General" />
-          <property role="2m7y0m" value="1" />
-        </node>
-        <node concept="2m7y0F" id="57dXDuARZ0T" role="2m7ymf">
-          <property role="TrG5h" value="Public" />
-          <property role="2m7y0m" value="2" />
-        </node>
-      </node>
       <node concept="2m5naR" id="GBscvBB6pR" role="2m5mJr">
         <property role="TrG5h" value="Group" />
         <property role="tsOgz" value="true" />
@@ -3935,6 +3924,11 @@
           <property role="NX6R2" value="Disabling allowing to get integration token to non-admins" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3zYHvadTSQ$" resolve="disableIntegrationView" />
+        </node>
+        <node concept="NX1gA" id="3pJJa69XH0D" role="NXodf">
+          <property role="NX6R2" value="Group extensions" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3pJJa69XGZy" resolve="extensions" />
         </node>
         <node concept="2m7Kf5" id="GBscvBB6pT" role="2m0hLx">
           <property role="2m7DUN" value="1" />
@@ -4042,12 +4036,12 @@
             <node concept="2m5ndX" id="6WYZhOUZ46I" role="3GH5xg" />
           </node>
         </node>
-        <node concept="2m7Kf5" id="57dXDuARZ0W" role="2m0hLx">
-          <property role="2m7DUN" value="19" />
-          <property role="TrG5h" value="groupType" />
-          <node concept="2m5nlT" id="57dXDuARZ1E" role="2m7DVh">
-            <node concept="3GJkcs" id="57dXDuARZ1K" role="3GH5xg">
-              <ref role="3GJkik" node="57dXDuARYTH" resolve="GroupType" />
+        <node concept="2m7Kf5" id="3pJJa69XGZy" role="2m0hLx">
+          <property role="2m7DUN" value="20" />
+          <property role="TrG5h" value="extensions" />
+          <node concept="2m5nlk" id="3pJJa69XH0g" role="2m7DVh">
+            <node concept="2m5mGg" id="3pJJa69XH0m" role="3GJlyp">
+              <ref role="2m5mJy" node="3pJJa69XFS8" resolve="Extension" />
             </node>
           </node>
         </node>
@@ -4121,15 +4115,6 @@
           <node concept="2m5nlk" id="GBscvBBscb" role="2m7DVh">
             <node concept="2m5mGg" id="GBscvBBsch" role="3GJlyp">
               <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
-            </node>
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="57dXDuAS07F" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="groupType" />
-          <node concept="2m5nlT" id="57dXDuAS07U" role="2m7DVh">
-            <node concept="3GJkcs" id="57dXDuAS080" role="3GH5xg">
-              <ref role="3GJkik" node="57dXDuARYTH" resolve="GroupType" />
             </node>
           </node>
         </node>
@@ -4229,11 +4214,6 @@
           <property role="NX6R2" value="Members of new group" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBsc3" resolve="users" />
-        </node>
-        <node concept="NX1gA" id="57dXDuAS08b" role="1GBnQ6">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Group type" />
-          <ref role="NX6Kv" node="57dXDuAS07F" resolve="groupType" />
         </node>
       </node>
       <node concept="2m6fVq" id="3aztRmLKfon" role="2m5mJr">
@@ -7625,6 +7605,32 @@
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="maxGroupSize" />
           <node concept="2m5ndE" id="GBscvBB6CC" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="3pJJa69XFS8" role="2m5mJr">
+        <property role="TrG5h" value="Extension" />
+        <node concept="2m7Kf5" id="3pJJa69XFSO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="3pJJa69XFSS" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3pJJa69XFSV" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="data" />
+          <node concept="2m61tm" id="3pJJa69XFT1" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="3pJJa69XFT4" role="NXodf">
+          <property role="NXePf" value="Extention" />
+        </node>
+        <node concept="NX1gA" id="3pJJa69XFTh" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Extension id" />
+          <ref role="NX6Kv" node="3pJJa69XFSO" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="3pJJa69XFTp" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Extension data" />
+          <ref role="NX6Kv" node="3pJJa69XFSV" resolve="data" />
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBBjCE" role="2m5mJr">
