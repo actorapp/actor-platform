@@ -4370,13 +4370,21 @@
               },
               {
                 "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 20,
+                "name": "isHidden"
+              },
+              {
+                "type": {
                   "type": "list",
                   "childType": {
                     "type": "struct",
                     "childType": "Extension"
                   }
                 },
-                "id": 20,
+                "id": 21,
                 "name": "extensions"
               }
             ]

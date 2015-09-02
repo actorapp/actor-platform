@@ -47,7 +47,7 @@ public class ObsoleteGroup extends BserObject {
                 creatorId,
                 members,
                 0/*In old Layout doesn't contain group creation date*/,
-                null, null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, null, null, null);
     }
 
     public int getGroupId() {
