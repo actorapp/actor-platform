@@ -122,7 +122,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[UserOutPeer], typ: Option[GroupType.GroupType], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
+  override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withUserOutPeers(users) {
         withValidGroupTitle(title) { validTitle ⇒

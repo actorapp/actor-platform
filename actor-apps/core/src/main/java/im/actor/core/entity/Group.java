@@ -109,7 +109,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 w.getTheme(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -132,7 +133,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 w.getTheme(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -161,7 +163,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 w.getTheme(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -191,7 +194,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 w.getTheme(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -214,7 +218,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 w.getTheme(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -237,7 +242,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 w.getTheme(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -260,7 +266,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 w.getTheme(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }

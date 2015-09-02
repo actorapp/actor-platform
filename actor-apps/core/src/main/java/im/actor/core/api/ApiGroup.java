@@ -32,8 +32,9 @@ public class ApiGroup extends BserObject {
     private Boolean isAdmin;
     private String theme;
     private String about;
+    private List<ApiExtension> extensions;
 
-    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, boolean isMember, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, boolean isMember, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about, @NotNull List<ApiExtension> extensions) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -50,6 +51,7 @@ public class ApiGroup extends BserObject {
         this.isAdmin = isAdmin;
         this.theme = theme;
         this.about = about;
+        this.extensions = extensions;
     }
 
     public ApiGroup() {
@@ -131,6 +133,11 @@ public class ApiGroup extends BserObject {
         return this.about;
     }
 
+    @NotNull
+    public List<ApiExtension> getExtensions() {
+        return this.extensions;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
@@ -153,6 +160,11 @@ public class ApiGroup extends BserObject {
         this.isAdmin = values.optBool(16);
         this.theme = values.optString(17);
         this.about = values.optString(18);
+        List<ApiExtension> _extensions = new ArrayList<ApiExtension>();
+        for (int i = 0; i < values.getRepeatedCount(20); i ++) {
+            _extensions.add(new ApiExtension());
+        }
+        this.extensions = values.getRepeatedObj(20, _extensions);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -197,6 +209,7 @@ public class ApiGroup extends BserObject {
         if (this.about != null) {
             writer.writeString(18, this.about);
         }
+        writer.writeRepeatedObj(20, this.extensions);
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -217,6 +230,7 @@ public class ApiGroup extends BserObject {
         res += ", disableEdit=" + this.disableEdit;
         res += ", disableInviteView=" + this.disableInviteView;
         res += ", disableIntegrationView=" + this.disableIntegrationView;
+        res += ", extensions=" + this.extensions;
         res += "}";
         return res;
     }
