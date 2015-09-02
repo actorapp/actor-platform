@@ -26,12 +26,13 @@ class RecentSectionItem extends React.Component {
     const { dialog } = this.props;
 
     DialogActionCreators.selectDialogPeer(dialog.peer.peer);
-  }
+  };
 
   onDelete = (event) => {
     event.stopPropagation();
-    console.debug('onDelete');
-  }
+    const { dialog } = this.props;
+    DialogActionCreators.deleteChat(dialog.peer.peer);
+  };
 
   render() {
     const { dialog } = this.props;

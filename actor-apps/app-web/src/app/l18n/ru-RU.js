@@ -22,6 +22,7 @@ const russian = {
     'setGroupPhoto': 'Установить фото группы',
     'addIntegration': 'Добавить интеграцию',
     'editGroup': 'Редактировать группу',
+    'clearGroup': 'Очистить группу',
     'deleteGroup': 'Удалить группу',
     'leaveGroup': 'Покинуть группу',
     'sharedMedia': 'Вложения',
