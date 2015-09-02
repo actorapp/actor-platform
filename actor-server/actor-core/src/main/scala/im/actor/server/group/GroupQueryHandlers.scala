@@ -42,6 +42,7 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
       isAdmin = Some(isAdmin(group, clientUserId)),
       theme = group.topic,
       about = group.about,
+      isHidden = Some(false),
       extensions = group.extensions.toVector
     )
 
