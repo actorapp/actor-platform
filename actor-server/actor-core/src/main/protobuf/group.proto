@@ -43,6 +43,7 @@ message GroupCommands {
         required int32 creator_user_id = 3;
         required string title = 4;
         repeated int32 user_ids = 5;
+        repeated bytes extensions = 6 [(scalapb.field).type = "im.actor.api.rpc.misc.Extension"];
     }
 
     message CreateInternalAck {
@@ -253,6 +254,7 @@ message GroupEvents {
         required int64 access_hash = 3;
         required string title = 4;
         repeated int32 user_ids = 6;
+        repeated bytes extensions = 7  [(scalapb.field).type = "im.actor.api.rpc.misc.Extension"];
     }
 
     message UserInvited {
