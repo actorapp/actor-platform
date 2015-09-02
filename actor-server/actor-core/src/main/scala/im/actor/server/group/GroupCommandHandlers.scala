@@ -5,13 +5,13 @@ import java.time.{ LocalDateTime, ZoneOffset }
 import akka.actor.Status
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
-import com.trueaccord.scalapb.GeneratedMessage
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ServiceMessage
+import im.actor.api.rpc.misc.Extension
 import im.actor.api.rpc.users.Sex
-import im.actor.server.{ persist ⇒ p, ApiConversions, models }
-import ApiConversions._
+import im.actor.server.{ persist ⇒ p, models }
+import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.history.HistoryUtils
 import im.actor.server.{ persist ⇒ p, models }
@@ -38,11 +38,11 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   import GroupCommands._
   import GroupEvents._
 
-  protected def createInternal(typ: GroupType, creatorUserId: Int, title: String, userIds: Seq[Int]): Unit = {
+  protected def createInternal(typ: GroupType, creatorUserId: Int, title: String, userIds: Seq[Int], extensions: Seq[Extension] = Seq.empty): Unit = {
     val accessHash = genAccessHash()
 
     val date = now()
-    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, userIds)
+    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, userIds, extensions)
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒

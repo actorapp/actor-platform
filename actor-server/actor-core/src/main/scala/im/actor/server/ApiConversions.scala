@@ -1,9 +1,10 @@
 package im.actor.server
 
+import com.google.protobuf.ByteString
 import im.actor.api.rpc.files.{ Avatar ⇒ ApiAvatar, AvatarImage ⇒ ApiAvatarImage, FileLocation ⇒ ApiFileLocation }
-import im.actor.api.rpc.groups.{ GroupType ⇒ ApiGroupType }
+import im.actor.api.rpc.misc.{ Extension ⇒ ApiExtension }
+import im.actor.server.common.Extension
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
-import im.actor.server.group.GroupType
 
 import scala.language.implicitConversions
 
@@ -39,9 +40,9 @@ object ApiConversions {
   implicit def avatarOptToApi(avatarOpt: Option[Avatar]): Option[ApiAvatar] =
     avatarOpt map avatarToApi
 
-  implicit def groupTypeToApi(groupType: GroupType.ValueType): ApiGroupType.Value =
-    ApiGroupType.apply(groupType.value)
+  implicit def extensionToApi(ext: Extension): ApiExtension =
+    ApiExtension(ext.id, ext.data.toByteArray)
 
-  implicit def apiToGroupType(groupType: ApiGroupType.Value): GroupType.ValueType =
-    GroupType.fromValue(groupType.id)
+  implicit def apiToExtension(ext: ApiExtension): Extension =
+    Extension(ext.id, ByteString.copyFrom(ext.data))
 }
