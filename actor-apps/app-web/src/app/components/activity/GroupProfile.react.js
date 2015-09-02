@@ -39,6 +39,8 @@ const getStateFromStores = (groupId) => {
   };
 };
 
+let _prevGroupId;
+
 @ReactMixin.decorate(IntlMixin)
 class GroupProfile extends React.Component {
   static propTypes = {
@@ -75,19 +77,19 @@ class GroupProfile extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    // FIXME!!!
-    setTimeout(() => {
-      this.setState(getStateFromStores(newProps.group.id));
+    this.setState(getStateFromStores(newProps.group.id));
+    if (newProps.group.id !== _prevGroupId) {
       GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
-    }, 0);
+      _prevGroupId = newProps.group.id;
+    }
   }
 
   onAddMemberClick = group => {
     InviteUserActions.show(group);
   };
 
-  onLeaveGroupClick = groupId => {
-    DialogActionCreators.leaveGroup(groupId);
+  onLeaveGroupClick = gid => {
+    DialogActionCreators.leaveGroup(gid);
   };
 
   onNotificationChange = event => {
