@@ -61,22 +61,49 @@ const DialogActionCreators = {
   },
 
   leaveGroup(gid) {
-    ActorClient
-      .leaveGroup(gid)
-      .then(() => {
-        dispatch(ActionTypes.LEFT_GROUP, {
-          gid
-        });
-      });
+    dispatchAsync(ActorClient.leaveGroup(gid), {
+      request: ActionTypes.CHAT_LEAVE,
+      success: ActionTypes.CHAT_LEAVE_SUCCESS,
+      failure: ActionTypes.CHAT_LEAVE_ERROR
+    }, { gid });
   },
 
   changeNotificationsEnabled(peer, isEnabled) {
     dispatch(ActionTypes.NOTIFICATION_CHANGE, {
       peer, isEnabled
     });
+  },
 
+  deleteChat(peer) {
+    const gid = peer.id;
+    const leaveGroup = () => dispatchAsync(ActorClient.leaveGroup(gid), {
+      request: ActionTypes.CHAT_LEAVE,
+      success: ActionTypes.CHAT_LEAVE_SUCCESS,
+      failure: ActionTypes.CHAT_LEAVE_ERROR
+    }, { gid });
+    const deleteChat = () => dispatchAsync(ActorClient.deleteChat(peer), {
+      request: ActionTypes.CHAT_DELETE,
+      success: ActionTypes.CHAT_DELETE_SUCCESS,
+      failure: ActionTypes.CHAT_DELETE_ERROR
+    }, { peer });
+
+    switch (peer.type) {
+      case PeerTypes.USER:
+        deleteChat();
+        break;
+      case PeerTypes.GROUP:
+        leaveGroup().then(() => deleteChat());
+        break;
+    }
+  },
+
+  clearChat(peer) {
+    dispatchAsync(ActorClient.clearChat(peer), {
+      request: ActionTypes.CHAT_CLEAR,
+      success: ActionTypes.CHAT_CLEAR_SUCCESS,
+      failure: ActionTypes.CHAT_CLEAR_ERROR
+    }, { peer });
   }
-
 };
 
 export default DialogActionCreators;

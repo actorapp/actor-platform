@@ -10,8 +10,7 @@ import { IntlMixin, FormattedMessage } from 'react-intl';
 import { Styles, Snackbar } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
 import classnames from 'classnames';
-//import { Experiment, Variant } from 'react-ab';
-//import mixpanel from 'utils/Mixpanel';
+import ActorClient from 'utils/ActorClient';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
@@ -128,6 +127,16 @@ class GroupProfile extends React.Component {
     this.setState({isCopyButtonEnabled: true});
   };
 
+  onClearGroupClick = (gid) => {
+    const peer = ActorClient.getGroupPeer(gid);
+    DialogActionCreators.clearChat(peer);
+  };
+
+  onDeleteGroupClick = (gid) => {
+    const peer = ActorClient.getGroupPeer(gid);
+    DialogActionCreators.deleteChat(peer);
+  };
+
   render() {
     const { group } = this.props;
     const { isNotificationsEnabled, integrationToken, isCopyButtonEnabled, isMoreDropdownOpen } = this.state;
@@ -154,10 +163,6 @@ class GroupProfile extends React.Component {
         <li className="dropdown__menu__item hide">
           <i className="material-icons">mode_edit</i>
           <FormattedMessage message={this.getIntlMessage('editGroup')}/>
-        </li>
-      ,
-        <li className="dropdown__menu__item hide">
-          <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
         </li>
       ];
     }
@@ -245,8 +250,16 @@ class GroupProfile extends React.Component {
                     <ul className="dropdown__menu dropdown__menu--right">
                       {adminControls}
                       <li className="dropdown__menu__item dropdown__menu__item--light"
-                          onClick={this.onLeaveGroupClick.bind(this, group.id)}>
+                          onClick={() => this.onLeaveGroupClick(group.id)}>
                         <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
+                      </li>
+                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                          onClick={() => this.onClearGroupClick(group.id)}>
+                        <FormattedMessage message={this.getIntlMessage('clearGroup')}/>
+                      </li>
+                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                          onClick={() => this.onDeleteGroupClick(group.id)}>
+                        <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
                       </li>
                     </ul>
                   </div>

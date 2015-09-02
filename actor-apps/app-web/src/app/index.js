@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import polyfills from 'utils/polyfills'; // eslint-disable-line
 import RouterContainer from 'utils/RouterContainer';
 
@@ -35,9 +39,7 @@ Pace.start({
   restartOnPushState: false
 });
 
-const DefaultRoute = Router.DefaultRoute;
-const Route = Router.Route;
-const RouteHandler = Router.RouteHandler;
+const { DefaultRoute, Route, RouteHandler } = Router;
 
 const ActorInitEvent = 'concurrentActorInit';
 
