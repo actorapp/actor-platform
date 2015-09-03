@@ -1,11 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 
 import React from 'react';
 import Modal from 'react-modal';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-import { Styles, FlatButton } from 'material-ui';
-import ActorTheme from 'constants/ActorTheme';
 
 import ActorClient from 'utils/ActorClient';
 import { KeyCodes } from 'constants/ActorAppConstants';
@@ -17,8 +19,6 @@ import ContactStore from 'stores/ContactStore';
 import InviteUserStore from 'stores/InviteUserStore';
 
 import ContactItem from './invite-user/ContactItem.react';
-
-const ThemeManager = new Styles.ThemeManager();
 
 const getStateFromStores = () => {
   return ({
@@ -33,29 +33,12 @@ const hasMember = (group, userId) =>
 
 @ReactMixin.decorate(IntlMixin)
 class InviteUser extends React.Component {
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
-
   constructor(props) {
     super(props);
 
     this.state = _.assign({
       search: ''
     }, getStateFromStores());
-
-    ThemeManager.setTheme(ActorTheme);
-    ThemeManager.setComponentThemes({
-      button: {
-        minWidth: 60
-      }
-    });
 
     InviteUserStore.addChangeListener(this.onChange);
     ContactStore.addChangeListener(this.onChange);
@@ -82,7 +65,9 @@ class InviteUser extends React.Component {
   };
 
   onInviteUrlByClick = () => {
-    InviteUserByLinkActions.show(this.state.group);
+    const { group } = this.state;
+
+    InviteUserByLinkActions.show(group);
     InviteUserActions.hide();
   };
 
@@ -139,12 +124,7 @@ class InviteUser extends React.Component {
             <FormattedMessage message={this.getIntlMessage('inviteModalTitle')}/>
           </h4>
           <div className="pull-right">
-            <FlatButton hoverColor="rgba(74,144,226,.12)"
-                        label="Done"
-                        labelStyle={{padding: '0 8px'}}
-                        onClick={this.onClose}
-                        secondary={true}
-                        style={{marginTop: -6}}/>
+            <button className="button button--lightblue" onClick={this.onClose}>Done</button>
           </div>
         </header>
 
@@ -155,7 +135,7 @@ class InviteUser extends React.Component {
                    onChange={this.onSearchChange}
                    placeholder={this.getIntlMessage('inviteModalSearch')}
                    type="search"
-                   value={this.state.search}/>
+                   value={search}/>
           </div>
 
           <a className="link link--blue" onClick={this.onInviteUrlByClick}>
