@@ -60,6 +60,8 @@ import static im.actor.messenger.app.core.Core.users;
 public class GroupInfoFragment extends BaseFragment {
 
     private static final String EXTRA_CHAT_ID = "chat_id";
+    private String[] theme;
+    private String[] about;
 
     public static GroupInfoFragment create(int chatId) {
         Bundle args = new Bundle();
@@ -130,39 +132,29 @@ public class GroupInfoFragment extends BaseFragment {
         }
 
         //Description
-        final String[] theme = new String[1];
-        final String[] about = new String[1];
+        theme = new String[1];
+        about = new String[1];
         TextView themeTV = (TextView) header.findViewById(R.id.theme);
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
+        final View descriptionContainer = header.findViewById(R.id.descriptionContainer);
+        final TextView themeHeader = (TextView) header.findViewById(R.id.theme_header);
 
         final boolean finalIsAdmin = isAdmin;
         bind(themeTV, header.findViewById(R.id.themeContainer), groupInfo.getTheme(), new ActorBinder.OnChangedListener() {
             @Override
             public void onChanged(String s) {
                 theme[0] = s;
-                if ((s != null && !s.isEmpty()) || (about[0] != null && !about[0].isEmpty()) || finalIsAdmin) {
-                    header.findViewById(R.id.descriptionContainer).setVisibility(View.VISIBLE);
-                } else {
-                    header.findViewById(R.id.descriptionContainer).setVisibility(View.GONE);
-                }
+                updateDescriptionVisibility(descriptionContainer, finalIsAdmin, header);
             }
         }, !isAdmin, getString(R.string.theme_group_empty));
+
+        //bind(themeHeader, themeHeader, groupInfo.getTheme());
 
         bind(aboutTV, header.findViewById(R.id.aboutContainer), groupInfo.getAbout(), new ActorBinder.OnChangedListener() {
             @Override
             public void onChanged(String s) {
                 about[0] = s;
-                if ((s != null && !s.isEmpty()) || (theme[0] != null && !theme[0].isEmpty()) || finalIsAdmin) {
-                    header.findViewById(R.id.descriptionContainer).setVisibility(View.VISIBLE);
-                } else {
-                    header.findViewById(R.id.descriptionContainer).setVisibility(View.GONE);
-                }
-
-                if (s != null && !s.isEmpty()) {
-                    header.findViewById(R.id.themeDivider).setVisibility(View.VISIBLE);
-                } else {
-                    header.findViewById(R.id.themeDivider).setVisibility(View.GONE);
-                }
+                updateDescriptionVisibility(descriptionContainer, finalIsAdmin, header);
             }
         }, !isAdmin, getString(R.string.about_group_empty));
 
@@ -345,6 +337,17 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         return res;
+    }
+
+    public void updateDescriptionVisibility(View descriptionContainer, boolean finalIsAdmin, View header) {
+        View themeDivider = header.findViewById(R.id.themeDivider);
+
+        boolean themeVis = theme[0] != null && !theme[0].isEmpty();
+        boolean aboutVis = about[0] != null && !about[0].isEmpty();
+
+        descriptionContainer.setVisibility((aboutVis || themeVis || finalIsAdmin) ? View.VISIBLE : View.GONE);
+        themeDivider.setVisibility((themeVis && aboutVis) ? View.VISIBLE : View.GONE);
+
     }
 
     public void updateBar(int offset) {
