@@ -6,8 +6,10 @@ package im.actor.core.entity.compat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import im.actor.core.api.ApiExtension;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiMember;
 import im.actor.runtime.bser.BserObject;
@@ -47,7 +49,7 @@ public class ObsoleteGroup extends BserObject {
                 creatorId,
                 members,
                 0/*In old Layout doesn't contain group creation date*/,
-                null, null, null, null, null, null, null, null, null, null);
+                null, null, null, null, null, null, null, null, null, Collections.EMPTY_LIST);
     }
 
     public int getGroupId() {
