@@ -48,6 +48,7 @@ private[group] case class Group(
   bot:            Option[Bot],
   avatar:         Option[Avatar],
   topic:          Option[String],
+  isHidden:       Boolean,
   extensions:     Seq[Extension]
 ) extends ProcessorState
 
@@ -199,8 +200,8 @@ private[group] final class GroupProcessor
   override def handleInitCommand: Receive = {
     case Create(_, typ, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
       create(groupId, typ, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
-    case CreateInternal(_, typ, creatorUserId, title, userIds, extensions) ⇒
-      createInternal(typ, creatorUserId, title, userIds, extensions)
+    case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, extensions) ⇒
+      createInternal(typ, creatorUserId, title, userIds, isHidden, extensions)
   }
 
   override def handleCommand(state: Group): Receive = {
@@ -277,6 +278,7 @@ private[group] final class GroupProcessor
       invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,
       topic = None,
+      isHidden = evt.isHidden.getOrElse(false),
       extensions = evt.extensions
     )
   }

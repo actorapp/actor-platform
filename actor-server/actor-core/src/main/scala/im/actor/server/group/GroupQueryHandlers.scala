@@ -2,7 +2,6 @@ package im.actor.server.group
 
 import im.actor.server.ApiConversions._
 import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup, Member ⇒ ApiMember }
-import im.actor.api.rpc.misc.{ Extension ⇒ ApiExtension }
 
 private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   this: GroupProcessor ⇒
@@ -42,7 +41,7 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
       isAdmin = Some(isAdmin(group, clientUserId)),
       theme = group.topic,
       about = group.about,
-      isHidden = Some(false),
+      isHidden = Some(group.isHidden),
       extensions = group.extensions.toVector
     )
 
