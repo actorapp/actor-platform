@@ -144,7 +144,7 @@ class MessagingServiceSpec
 
         {
           implicit val clientData = clientData2
-          expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(UpdateMessage.header, UpdateCountersChanged.header)) {
+          expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
             case (UpdateMessage.header, update) ⇒ parseUpdate[UpdateMessage](update)
             case (UpdateCountersChanged.header, update) ⇒
               val counters = parseUpdate[UpdateCountersChanged](update)
@@ -281,7 +281,7 @@ class MessagingServiceSpec
 
         {
           implicit val clientData = clientData2
-          expectUpdatesUnordered(ignoreUnmatched)(0, Array.empty, Set(UpdateMessage.header, UpdateCountersChanged.header)) {
+          expectUpdatesUnordered(ignoreUnmatched)(0, Array.empty, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
             case (UpdateMessage.header, update)         ⇒ parseUpdate[UpdateMessage](update)
             case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
           }
