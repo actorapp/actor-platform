@@ -1,144 +1,104 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+/*
+ * Buttons
+ */
 .button {
   font-size: 14px;
   font-weight: 500;
-  line-height: 24px;
+  line-height: 20px;
 
   display: inline-block;
 
   box-sizing: border-box;
-  min-width: 36px;
+  //min-width: 100px;
   height: 36px;
-  padding: 6px 12px;
+  padding: 8px 16px;
 
-  cursor: pointer !important;
-  transition: background $default-transition-duration $default-transition-timing, color $default-transition-duration $default-transition-timing, box-shadow $default-transition-duration $default-transition-timing;
-  text-align: center;
+  cursor: pointer;
+  transition: box-shadow 200ms, background 200ms;
   vertical-align: middle;
-  text-decoration: none;
+  //letter-spacing: .5px;
+  text-transform: uppercase;
 
-  color: $button-text-color;
+  color: rgba(0, 0, 0, .5);
   border: none;
-  border-radius: $button-border-radius;
+  border-radius: 2px;
   outline: none;
-  background-color: transparent;;
-  span {
-    vertical-align: top !important;
-  }
+  background-color: transparent;
 
+  apperance: none;
   i {
-    font-size: 24px;
     line-height: 20px;
 
-    width: 20px;
-    height: 20px;
-    margin-right: 4px;
-    padding: 2px;
+    margin-right: 6px;
 
-    vertical-align: top;
+    vertical-align: middle;
   }
-  &:hover {
-    background-color: rgba(160,160,160, .2);
+
+  &:hover,
+  &:focus {
+    background-color: rgba(0, 0, 0, .05);
   }
   &:active {
-    color: darken($button-text-color, 10);
-    background-color: rgba(160,160,160, .4);
-  }
-  &--primary {
-    min-width: 60px;
-
-    color: white !important;
-    background-color: $kashmir-blue;
-    &:hover {
-      background-color: lighten($body-base-color, 10);
-    }
-  }
-  &--danger {
-    color: $color-red !important;
-  }
-  &--wide {
-    display: block;
-
-    width: 100%;
+    background-color: lighten(rgba(0, 0, 0, .1), 10);
   }
 
-  &--blue,
-  &--light-blue {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 18px;
+  &--lightblue {
+    color: $dark-sky-blue;
 
-    padding: 8px 12px;
-
-    vertical-align: top;
-    text-transform: uppercase;
-
-    color: $dark-sky-blue !important;
-    background-color: rgba($dark-sky-blue, .19) !important;
-    i {
-      font-size: 17px;
-      line-height: 18px;
-
-      display: inline-block;
-
-      width: 18px;
-      height: 18px;
-      margin-right: 5px;
-      padding: 0;
-
-      vertical-align: top;
-    }
     &:hover,
-    &.zeroclipboard-is-hover {
-      background-color: rgba($dark-sky-blue, .17) !important;
-      box-shadow: 0 1px 1px 0 rgba($dark-sky-blue2, .35) !important;
+    &:focus {
+      background-color: rgba($dark-sky-blue, .15);
     }
-    &:active,
-    &.zeroclipboard-is-active {
-      background-color: rgba($dark-sky-blue, .19) !important;
-      box-shadow: 0 2px 2px 0 rgba($dark-sky-blue2, .35) !important;
+    &:active {
+      background-color: lighten(rgba($dark-sky-blue, .15), 15);
     }
   }
-  &--blue {
-    &,
+
+  &--rised {
+    color: white;
+    background-color: $dark-sky-blue;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, .1), 0 2px 8px 0 rgba(0, 0, 0, .15);
     &:hover,
-    &.zeroclipboard-is-hover,
-    &:active,
-    &.zeroclipboard-is-active {
-      color: white !important;
-      background-color: rgba($dark-sky-blue, .95) !important;
+    &:focus {
+      background-color: lighten($dark-sky-blue, 5);
+    }
+    &:active {
+      background-color: lighten($dark-sky-blue, 7);
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, .2), 0 4px 10px 0 rgba(0, 0, 0, .1);
     }
   }
-  &--light {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 18px;
-
-    padding: 10px 12px;
-
-    text-transform: uppercase;
-
-    color: #7ab7ff !important;
+  &--flat {
+    color: $dark-sky-blue;
+    background-color: rgba($dark-sky-blue, .15);
+    &:hover,
+    &:focus {
+      background-color: lighten(rgba($dark-sky-blue, .15), 5);
+      box-shadow: 0 1px 1px 0 rgba($dark-sky-blue, .35);
+    }
+    &:active {
+      background-color: lighten(rgba($dark-sky-blue, .15), 15);
+      box-shadow: 0 2px 2px 0 rgba($dark-sky-blue, .35);
+    }
   }
 
   &--icon {
-    min-width: 24px;
+    line-height: 1px;
+
+    min-width: 0;
     padding: 6px;
 
     border-radius: 50%;
     i {
+      font-size: 24px;
       line-height: 24px;
 
       width: 24px;
       height: 24px;
       margin: 0;
-      padding: 0;
-
-      color: rgba(black, .25);
-    }
-    &.button--active {
-      i {
-        color: $dark-sky-blue;
-      }
     }
   }
 }
