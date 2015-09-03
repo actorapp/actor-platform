@@ -83,11 +83,12 @@ public class Core {
         Fresco.initialize(application);
 
         // Keep Alive
-        Intent keepAliveService = new Intent(application, KeepAliveService.class);
-        PendingIntent pintent = PendingIntent.getService(application, 0, keepAliveService, 0);
-        AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
-        alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pintent);
-
+        if (BuildConfig.IS_FREE) {
+            Intent keepAliveService = new Intent(application, KeepAliveService.class);
+            PendingIntent pintent = PendingIntent.getService(application, 0, keepAliveService, 0);
+            AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
+            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pintent);
+        }
 
         // Helpers
         AppContext.setContext(application);
