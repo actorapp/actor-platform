@@ -10,7 +10,6 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ServiceMessage
 import im.actor.api.rpc.misc.Extension
 import im.actor.api.rpc.users.Sex
-import im.actor.server.{ persist ⇒ p, models }
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.history.HistoryUtils
@@ -38,11 +37,11 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   import GroupCommands._
   import GroupEvents._
 
-  protected def createInternal(typ: GroupType, creatorUserId: Int, title: String, userIds: Seq[Int], extensions: Seq[Extension] = Seq.empty): Unit = {
+  protected def createInternal(typ: GroupType, creatorUserId: Int, title: String, userIds: Seq[Int], isHidden: Option[Boolean], extensions: Seq[Extension] = Seq.empty): Unit = {
     val accessHash = genAccessHash()
 
     val date = now()
-    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, (userIds.toSet + creatorUserId).toSeq, extensions)
+    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, (userIds.toSet + creatorUserId).toSeq, isHidden, extensions)
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒
@@ -76,7 +75,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     val date = now()
 
-    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, Seq(creatorUserId))
+    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, Seq(creatorUserId), isHidden = Some(false))
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒
