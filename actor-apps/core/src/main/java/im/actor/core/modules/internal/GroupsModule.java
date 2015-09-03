@@ -5,6 +5,7 @@
 package im.actor.core.modules.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -138,7 +139,7 @@ public class GroupsModule extends AbsModule {
                                 response.getGroupPeer().getGroupId(),
                                 response.getGroupPeer().getAccessHash(),
                                 title, null, true, myUid(), members,
-                                response.getDate(), null, null, null, null, null, true, null, null, null, null);
+                                response.getDate(), null, null, null, null, null, true, null, null, null, Collections.EMPTY_LIST);
                         ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
                         groups.add(group);
 
