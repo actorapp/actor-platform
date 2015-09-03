@@ -6,14 +6,14 @@ import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.counters.UpdateCountersChanged
-import im.actor.api.rpc.groups.{ UpdateGroupTitleChanged, UpdateGroupInvite, UpdateGroupUserInvited }
+import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupTitleChanged, UpdateGroupUserInvited }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, SequenceService }
 import im.actor.server.util.AnyRefLogSource
+import org.scalatest.Inside._
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.{ BeMatcher, MatchResult }
-import org.scalatest.Inside._
 
 import scala.annotation.tailrec
 import scala.reflect._
@@ -59,7 +59,7 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
   }
 
   //size bound ordered check
-  def expectUpdatesOrdered(unmatchedBehaviour: PartialFunction[(Int, DifferenceUpdate), Any])(seq: Int, state: Array[Byte], orderedHeaders: List[Int])(check: PartialFunction[(Int, DifferenceUpdate), Any])(implicit client: ClientData) = {
+  def expectUpdatesOrdered(unmatchedBehaviour: PartialFunction[(Int, DifferenceUpdate), Any])(seq: Int, state: Array[Byte], orderedHeaders: Seq[Int])(check: PartialFunction[(Int, DifferenceUpdate), Any])(implicit client: ClientData) = {
     matchUpdates(seq, state) { serviceUpdates ⇒
       val serviceUpdatesHeaders = serviceUpdates.map(_.updateHeader)
       withClue(
@@ -76,7 +76,7 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
   }
 
   //checks that difference contains all headers that we want to check. Unordered. Does not check size of
-  def expectUpdatesUnordered(unmatchedBehaviour: PartialFunction[(Int, DifferenceUpdate), Any])(seq: Int, state: Array[Byte], headers: Set[Int])(check: PartialFunction[(Int, DifferenceUpdate), Any])(implicit client: ClientData) = {
+  def expectUpdatesUnordered(unmatchedBehaviour: PartialFunction[(Int, DifferenceUpdate), Any])(seq: Int, state: Array[Byte], headers: Seq[Int])(check: PartialFunction[(Int, DifferenceUpdate), Any])(implicit client: ClientData) = {
     matchUpdates(seq, state) { serviceUpdates ⇒
       val serviceUpdatesHeaders = serviceUpdates.map(_.updateHeader)
       withClue(
@@ -85,14 +85,14 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
             |requested updates: $headers
         """.stripMargin
       ) {
-        (headers diff serviceUpdatesHeaders.toSet) shouldBe empty
+        (headers diff serviceUpdatesHeaders) shouldBe empty
       }
       val updateMap: Map[Int, DifferenceUpdate] = serviceUpdates.map(u ⇒ (u.updateHeader, u)).toMap
       updateMap foreach (check orElse unmatchedBehaviour)
     }
   }
 
-  def expectUpdatesUnorderedOnly(unmatchedBehaviour: PartialFunction[(Int, DifferenceUpdate), Any])(seq: Int, state: Array[Byte], headers: List[Int])(check: PartialFunction[(Int, DifferenceUpdate), Any])(implicit client: ClientData) = {
+  def expectUpdatesUnorderedOnly(unmatchedBehaviour: PartialFunction[(Int, DifferenceUpdate), Any])(seq: Int, state: Array[Byte], headers: Seq[Int])(check: PartialFunction[(Int, DifferenceUpdate), Any])(implicit client: ClientData) = {
     matchUpdates(seq, state) { serviceUpdates ⇒
       val serviceUpdatesHeaders = serviceUpdates.map(_.updateHeader)
       withClue(
