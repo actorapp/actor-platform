@@ -49,6 +49,15 @@
                 android:textSize="26sp" />
 
             <TextView
+                android:id="@+id/theme_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:textColor="@color/profile_subtitle"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/createdBy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

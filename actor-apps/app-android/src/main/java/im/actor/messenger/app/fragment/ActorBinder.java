@@ -79,6 +79,9 @@ public class ActorBinder {
         });
     }
 
+    public void bind(final TextView textView, final View container, final ValueModel<String> value) {
+        bind(textView, container, value, null, true, "");
+    }
 
     public void bind(final TextView textView, final View container, final ValueModel<String> value, final OnChangedListener callback, final boolean hide, final String defaultValue) {
         bind(value, new ValueChangedListener<String>() {
