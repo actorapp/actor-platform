@@ -63,6 +63,7 @@
     padding-right: 16px;
     header {
       @include clearfix();
+      height: 60px;
     }
 
     .avatar {
@@ -167,6 +168,7 @@
     padding-right: 16px;
     header {
       @include clearfix();
+      height: 60px;
     }
 
     .avatar {
@@ -205,10 +207,6 @@
 
     footer {
       margin-top: 18px;
-
-      .button {
-        width: 100%;
-      }
     }
   }
   &__notifications {

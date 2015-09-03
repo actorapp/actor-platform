@@ -20,9 +20,14 @@
   .dropdown {
     &--opened {
       .dropdown__button {
-        background-color: rgba(74, 143, 226, .19) !important;
-        box-shadow: 0 2px 2px 0 rgba(81, 145, 219, .35) !important;
+        background-color: lighten(rgba($dark-sky-blue, .15), 15);
+        box-shadow: 0 2px 2px 0 rgba($dark-sky-blue, .35);
       }
+    }
+  }
+  .button {
+    i {
+      font-size: 20px;
     }
   }
 }
