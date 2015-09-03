@@ -121,6 +121,9 @@ abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: Class
       case Terminated(`valueActor`) =>
         replyTo ! Status.Failure(new Exception(s"Value actor ${key} is terminated"))
         end()
+      case failure: Status.Failure =>
+        replyTo ! failure
+        end()
       case _ => stash()
     }, discardOld = false)
   }
