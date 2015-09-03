@@ -52,7 +52,7 @@ class ToolbarSection extends React.Component {
     const { dialogInfo, isActivityOpen } = this.state;
 
     const infoButtonClassName = classnames('button button--icon', {
-      'button--active': isActivityOpen
+      'active': isActivityOpen
     });
 
     if (dialogInfo !== null) {
