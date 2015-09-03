@@ -1,6 +1,9 @@
 package im.actor.messenger.app.core;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
@@ -80,7 +83,11 @@ public class Core {
         Fresco.initialize(application);
 
         // Keep Alive
-        application.startService(new Intent(application, KeepAliveService.class));
+        Intent keepAliveService = new Intent(application, KeepAliveService.class);
+        PendingIntent pintent = PendingIntent.getService(application, 0, keepAliveService, 0);
+        AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
+        alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pintent);
+
 
         // Helpers
         AppContext.setContext(application);
