@@ -65,7 +65,6 @@ class GroupProfile extends React.Component {
     }, getStateFromStores(props.group.id));
 
     if (props.group.members.length > 0 && myId === props.group.adminId) {
-      console.debug('admin get token');
       GroupProfileActionCreators.getIntegrationToken(props.group.id);
     }
 
@@ -86,7 +85,6 @@ class GroupProfile extends React.Component {
     setTimeout(() => {
       this.setState(getStateFromStores(newProps.group.id));
       if (newProps.group.id !== _prevGroupId && newProps.group.members.length > 0 && myId === newProps.group.adminId) {
-        console.debug('admin get token');
         GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
         _prevGroupId = newProps.group.id;
       }
