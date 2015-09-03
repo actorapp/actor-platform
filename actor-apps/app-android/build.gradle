@@ -45,21 +45,26 @@ android {
         // Java types for BuildConfig
         def STRING = "String"
         def VERSION_TITLE = "VERSION_TITLE"
+        def BOOLEAN = "boolean"
+        def IS_FREE = "IS_FREE"
 
         release {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Release)\""
+            buildConfigField BOOLEAN, IS_FREE, "false"
             signingConfig signingConfigs.release
             applicationIdSuffix ".cloud"
         }
 
         free {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Free)\""
+            buildConfigField BOOLEAN, IS_FREE, "true"
             signingConfig signingConfigs.release
             applicationIdSuffix ".free"
         }
 
         debug {
             buildConfigField STRING, VERSION_TITLE, "\"Debug Version (${getDate()})\""
+            buildConfigField BOOLEAN, IS_FREE, "false"
             applicationIdSuffix ".debug"
         }
     }
