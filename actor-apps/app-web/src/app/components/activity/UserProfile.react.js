@@ -146,7 +146,7 @@ class UserProfile extends React.Component {
 
             <footer>
               <div className={dropdownClassNames}>
-                <button className="dropdown__button button button--light-blue" onClick={this.toggleActionsDropdown}>
+                <button className="dropdown__button button button--flat" onClick={this.toggleActionsDropdown}>
                   <i className="material-icons">more_horiz</i>
                   <FormattedMessage message={this.getIntlMessage('actions')}/>
                 </button>
