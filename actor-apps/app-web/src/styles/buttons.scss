@@ -19,6 +19,7 @@
 
   cursor: pointer;
   transition: box-shadow 200ms, background 200ms;
+  text-align: center;
   vertical-align: middle;
   //letter-spacing: .5px;
   text-transform: uppercase;
@@ -35,7 +36,7 @@
 
     margin-right: 6px;
 
-    vertical-align: middle;
+    vertical-align: bottom;
   }
 
   &:hover,
@@ -57,7 +58,6 @@
       background-color: lighten(rgba($dark-sky-blue, .15), 15);
     }
   }
-
   &--rised {
     color: white;
     background-color: $dark-sky-blue;
@@ -84,7 +84,6 @@
       box-shadow: 0 2px 2px 0 rgba($dark-sky-blue, .35);
     }
   }
-
   &--icon {
     line-height: 1px;
 
@@ -100,5 +99,9 @@
       height: 24px;
       margin: 0;
     }
+  }
+
+  &--wide {
+    width: 100%;
   }
 }
