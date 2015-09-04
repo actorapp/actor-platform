@@ -9,6 +9,7 @@ import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 
 import ActorClient from 'utils/ActorClient';
+import confirm from 'utils/confirm'
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
@@ -80,7 +81,11 @@ class GroupProfile extends React.Component {
   };
 
   onLeaveGroupClick = gid => {
-    DialogActionCreators.leaveGroup(gid);
+    confirm('Do you really want to leave this conversation?').then(
+      () => {
+        DialogActionCreators.leaveGroup(gid);
+      }
+    );
   };
 
   onNotificationChange = event => {
@@ -113,13 +118,21 @@ class GroupProfile extends React.Component {
   };
 
   onClearGroupClick = (gid) => {
-    const peer = ActorClient.getGroupPeer(gid);
-    DialogActionCreators.clearChat(peer);
+    confirm('Do you really want to clear this conversation?').then(
+      () => {
+        const peer = ActorClient.getGroupPeer(gid);
+        DialogActionCreators.clearChat(peer)
+      }
+    );
   };
 
   onDeleteGroupClick = (gid) => {
-    const peer = ActorClient.getGroupPeer(gid);
-    DialogActionCreators.deleteChat(peer);
+    confirm('Do you really want to delete this conversation?').then(
+      () => {
+        const peer = ActorClient.getGroupPeer(gid);
+        DialogActionCreators.deleteChat(peer);
+      }
+    );
   };
 
   render() {
