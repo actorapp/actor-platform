@@ -72,6 +72,12 @@ public class Intents {
                 .putExtra(EXTRA_EDIT_ID, groupId);
     }
 
+    public static Intent editGroupTheme(int groupId, Context context) {
+        return new Intent(context, EditNameActivity.class)
+                .putExtra(EXTRA_EDIT_TYPE, EditNameActivity.TYPE_GROUP_THEME)
+                .putExtra(EXTRA_EDIT_ID, groupId);
+    }
+
     public static Intent editUserAbout(Context context) {
         return new Intent(context, EditAboutActivity.class)
                 .putExtra(EXTRA_EDIT_TYPE, EditAboutActivity.TYPE_ME)

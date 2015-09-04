@@ -271,6 +271,9 @@
     <string name="group_not_member">You is not member of this group</string>
 
     <string name="about_group">About group</string>
+    <string name="about_group_empty">Set group description</string>
+    <string name="theme_group">Group theme</string>
+    <string name="theme_group_empty">Set group theme</string>
 
     <!-- Avatar -->
     <string name="avatar_title_your">Your photo</string>
@@ -345,9 +348,12 @@
     <string name="edit_name_title_you">Enter your name</string>
     <string name="edit_name_title_contact">Enter contact name</string>
     <string name="edit_name_title_group">Enter group name</string>
+    <string name="edit_name_title_group_theme">Enter group theme</string>
     <string name="edit_name_cancel">CANCEL</string>
     <string name="edit_name_save">SAVE</string>
     <string name="edit_name_process">Changing name…</string>
+    <string name="edit_about_process">Changing description…</string>
+    <string name="edit_theme_process">Changing theme…</string>
 
     <!-- Help -->
     <string name="help_title">Help</string>
