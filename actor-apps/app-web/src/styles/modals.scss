@@ -709,7 +709,7 @@
 
     box-sizing: border-box;
     height: $modal-header-height;
-    padding: 18px 14px 18px 18px;
+    padding: 18px;
 
     user-select: none;
 
@@ -727,7 +727,6 @@
       vertical-align: middle;
 
       color: $greyish-brown;
-      text-transform: uppercase;
     }
   }
   &__body {
