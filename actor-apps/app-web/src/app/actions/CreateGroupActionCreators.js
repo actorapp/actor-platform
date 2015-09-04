@@ -1,22 +1,22 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import ActorClient from 'utils/ActorClient';
 import mixpanel from 'utils/Mixpanel';
 
 import { ActionTypes } from 'constants/ActorAppConstants';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
-import Dispatcher from 'dispatcher/ActorAppDispatcher';
+import { dispatch } from 'dispatcher/ActorAppDispatcher';
 
 const CreateGroupActionCreators = {
   openModal() {
-    Dispatcher.dispatch({
-      type: ActionTypes.CREATE_GROUP_MODAL_OPEN
-    });
+    dispatch(ActionTypes.CREATE_GROUP_MODAL_OPEN)
   },
 
   closeModal() {
-    Dispatcher.dispatch({
-      type: ActionTypes.CREATE_GROUP_MODAL_CLOSE
-    });
+    dispatch(ActionTypes.CREATE_GROUP_MODAL_CLOSE);
   },
 
   createGroup(title, avatar, memberIds) {

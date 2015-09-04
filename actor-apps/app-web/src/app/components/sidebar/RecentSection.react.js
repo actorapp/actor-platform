@@ -30,8 +30,6 @@ class RecentSection extends React.Component {
 
     this.state = getStateFromStore();
 
-    ThemeManager.setTheme(ActorTheme);
-
     DialogStore.addChangeListener(this.onChange);
     CreateGroupStore.addChangeListener(this.onChange);
   }
