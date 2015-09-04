@@ -60,7 +60,7 @@
       transition: box-shadow 200ms, background 200ms;
 
       border-radius: 1px;
-      box-shadow: 0 0 0 2px rgba(0, 0, 0, .3);
+      box-shadow: 0 0 0 2px $dark-sky-blue;
     }
     &:after {
       font-family: 'Material Icons';
