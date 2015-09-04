@@ -124,5 +124,14 @@ public abstract class AbsModule {
             return null;
         }
     }
+
+    public boolean isValidPeer(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            return users().getValue(peer.getPeerId()) != null;
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            return groups().getValue(peer.getPeerId()) != null;
+        }
+        return false;
+    }
 }
 
