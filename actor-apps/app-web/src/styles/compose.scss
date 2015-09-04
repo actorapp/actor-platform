@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 .compose {
   position: relative;
 
@@ -55,6 +59,9 @@
     margin: 0;
     .button {
       margin-right: 4px;
+      &.attachment {
+        text-transform: none;
+      }
       &:last-child {
         margin-right: 0;
       }
@@ -75,7 +82,7 @@
     h3 {
       font-weight: 500;
 
-      color: rgba(0,0,0,.2);
+      color: rgba(0, 0, 0, .2);
     }
   }
 }
