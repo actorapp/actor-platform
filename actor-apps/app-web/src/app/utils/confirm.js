@@ -17,7 +17,10 @@ class Confirm extends React.Component {
     super(props);
 
     this.promise = Promise.defer();
+  }
 
+  componentDidMount() {
+    React.findDOMNode(this.refs.confirm).focus();
     document.addEventListener('keydown', this.onKeyDown, false);
   }
 
@@ -37,8 +40,12 @@ class Confirm extends React.Component {
         </header>
         {confirmDescription}
         <footer className="modal__footer text-right">
-          <button className="button button" onClick={this.abort}>{abortLabel || 'Cancel'}</button>
-          <button className="button button--lightblue" onClick={this.confirm}>{confirmLabel || 'OK'}</button>
+          <button className="button button" onClick={this.abort}>
+            {abortLabel || 'Cancel'}
+          </button>
+          <button className="button button--lightblue" onClick={this.confirm} ref="confirm">
+            {confirmLabel || 'OK'}
+          </button>
         </footer>
       </div>
     );
