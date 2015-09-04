@@ -1,3 +1,5 @@
+package im.actor.messenger;
+
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
