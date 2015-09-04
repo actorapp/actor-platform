@@ -19,6 +19,8 @@ const getStateFromStores = () => {
 };
 
 class CreateGroup extends React.Component {
+  static displayName = 'CreateGroup';
+
   constructor(props) {
     super(props);
 
@@ -34,10 +36,10 @@ class CreateGroup extends React.Component {
   }
 
   render() {
-    const isShown = this.state.isShown;
+    const { isShown } = this.state;
 
     return (
-      <Modal className="modal-new modal-new--create-group" closeTimeoutMS={150} isOpen={isShown}>
+      <Modal className="modal-new modal-new--create-group" closeTimeoutMS={150} isOpen={isShown} style={{width: 350}}>
 
         <header className="modal-new__header">
           <a className="modal-new__header__close modal-new__header__icon material-icons" onClick={this.onClose}>clear</a>
@@ -65,8 +67,6 @@ class CreateGroup extends React.Component {
     }
   }
 }
-
-CreateGroup.displayName = 'CreateGroup';
 
 
 export default CreateGroup;
