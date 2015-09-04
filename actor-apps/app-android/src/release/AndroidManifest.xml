@@ -8,7 +8,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
-
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <application
         android:name="im.actor.messenger.app.ActorApplication"
