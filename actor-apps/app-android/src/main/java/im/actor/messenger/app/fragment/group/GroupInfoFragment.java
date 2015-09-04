@@ -38,8 +38,10 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.BaseActivity;
+import im.actor.messenger.app.fragment.ActorBinder;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.MembersAdapter;
+import im.actor.messenger.app.fragment.media.DocumentsActivity;
 import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
@@ -58,6 +60,8 @@ import static im.actor.messenger.app.core.Core.users;
 public class GroupInfoFragment extends BaseFragment {
 
     private static final String EXTRA_CHAT_ID = "chat_id";
+    private String[] theme;
+    private String[] about;
 
     public static GroupInfoFragment create(int chatId) {
         Bundle args = new Bundle();
@@ -95,7 +99,7 @@ public class GroupInfoFragment extends BaseFragment {
 
         listView = (ListView) res.findViewById(R.id.groupList);
 
-        View header = inflater.inflate(R.layout.fragment_group_header, listView, false);
+        final View header = inflater.inflate(R.layout.fragment_group_header, listView, false);
 
         // Avatar
         avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
@@ -112,9 +116,11 @@ public class GroupInfoFragment extends BaseFragment {
         bind((TextView) header.findViewById(R.id.title), groupInfo.getName());
 
         // Created by
+        boolean isAdmin = false;
         final TextView createdBy = (TextView) header.findViewById(R.id.createdBy);
         if (groupInfo.getCreatorId() == myUid()) {
             createdBy.setText(R.string.group_created_by_you);
+            isAdmin = true;
         } else {
             UserVM admin = users().get(groupInfo.getCreatorId());
             bind(admin.getName(), new ValueChangedListener<String>() {
@@ -125,6 +131,48 @@ public class GroupInfoFragment extends BaseFragment {
             });
         }
 
+        //Description
+        theme = new String[1];
+        about = new String[1];
+        TextView themeTV = (TextView) header.findViewById(R.id.theme);
+        TextView aboutTV = (TextView) header.findViewById(R.id.about);
+        final View descriptionContainer = header.findViewById(R.id.descriptionContainer);
+        final TextView themeHeader = (TextView) header.findViewById(R.id.theme_header);
+
+        final boolean finalIsAdmin = isAdmin;
+        bind(themeTV, header.findViewById(R.id.themeContainer), groupInfo.getTheme(), new ActorBinder.OnChangedListener() {
+            @Override
+            public void onChanged(String s) {
+                theme[0] = s;
+                updateDescriptionVisibility(descriptionContainer, finalIsAdmin, header);
+            }
+        }, !isAdmin, getString(R.string.theme_group_empty));
+
+        //bind(themeHeader, themeHeader, groupInfo.getTheme());
+
+        bind(aboutTV, header.findViewById(R.id.aboutContainer), groupInfo.getAbout(), new ActorBinder.OnChangedListener() {
+            @Override
+            public void onChanged(String s) {
+                about[0] = s;
+                updateDescriptionVisibility(descriptionContainer, finalIsAdmin, header);
+            }
+        }, !isAdmin, getString(R.string.about_group_empty));
+
+        if (isAdmin) {
+            header.findViewById(R.id.themeContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.editGroupTheme(groupInfo.getId(), getActivity()));
+                }
+            });
+
+            header.findViewById(R.id.aboutContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.editGroupAbout(groupInfo.getId(), getActivity()));
+                }
+            });
+        }
         // Settings
 
         final SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
@@ -143,7 +191,14 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
 
-        header.findViewById(R.id.docsContainer).setVisibility(View.GONE);
+        header.findViewById(R.id.docsContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(DocumentsActivity.build(Peer.group(chatId), getActivity()));
+            }
+        });
+
+
         header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
 
         //Members
@@ -282,6 +337,17 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         return res;
+    }
+
+    public void updateDescriptionVisibility(View descriptionContainer, boolean finalIsAdmin, View header) {
+        View themeDivider = header.findViewById(R.id.themeDivider);
+
+        boolean themeVis = theme[0] != null && !theme[0].isEmpty();
+        boolean aboutVis = about[0] != null && !about[0].isEmpty();
+
+        descriptionContainer.setVisibility((aboutVis || themeVis || finalIsAdmin) ? View.VISIBLE : View.GONE);
+        themeDivider.setVisibility((themeVis && aboutVis) ? View.VISIBLE : View.GONE);
+
     }
 
     public void updateBar(int offset) {

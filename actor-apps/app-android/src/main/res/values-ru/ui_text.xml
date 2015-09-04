@@ -259,7 +259,7 @@
 
     <string name="group_menu_add">Добавить пользователя</string>
     <string name="group_menu_leave">Покинуть группу</string>
-    <string name="group_menu_change_theme">Изменить тему</string>
+    <string name="group_menu_change_theme">Изменить название</string>
     <string name="group_menu_change_photo">Изменить фото</string>
     <string name="group_menu_integration_token">Токен интеграции</string>
 
@@ -271,7 +271,9 @@
     <string name="group_not_member">Вы не участник данной группы</string>
 
     <string name="about_group">О группе</string>
-
+    <string name="about_group_empty">Добавить описание группы</string>
+    <string name="theme_group">Тема группы</string>
+    <string name="theme_group_empty">Добавить тему группы</string>
     <!-- Avatar -->
     <string name="avatar_title_your">Ваше фото</string>
     <string name="avatar_title_person">Фото</string>
@@ -343,10 +345,13 @@
     <!-- Edit name -->
     <string name="edit_name_title_you">Введите Ваше имя</string>
     <string name="edit_name_title_contact">Введите имя контакта</string>
-    <string name="edit_name_title_group">Введите тему группы</string>
+    <string name="edit_name_title_group">Введите название группы</string>
+    <string name="edit_name_title_group_theme">Введите тему группы</string>
     <string name="edit_name_cancel">ОТМЕНА</string>
     <string name="edit_name_save">СОХРАНИТЬ</string>
     <string name="edit_name_process">Смена имени…</string>
+    <string name="edit_about_process">Смена описания…</string>
+    <string name="edit_theme_process">Смена темы…</string>
 
     <!-- Help -->
     <string name="help_title">Помощь</string>
