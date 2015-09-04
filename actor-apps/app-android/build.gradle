@@ -169,8 +169,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.1.1'
 
     //GCM
-    releaseCompile "com.google.android.gms:play-services:7.5.+"
-    debugCompile "com.google.android.gms:play-services:7.5.+"
     releaseCompile 'com.google.android.gms:play-services-gcm:7.5.0'
     debugCompile 'com.google.android.gms:play-services-gcm:7.5.0'
 
