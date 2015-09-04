@@ -8,6 +8,9 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 
+import ActorClient from 'utils/ActorClient';
+import confirm from 'utils/confirm'
+
 import ContactActionCreators from 'actions/ContactActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
 
@@ -16,7 +19,6 @@ import DialogStore from 'stores/DialogStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import Fold from 'components/common/Fold.React';
-import ActorClient from 'utils/ActorClient';
 
 const getStateFromStores = (userId) => {
   const thisPeer = PeerStore.getUserPeer(userId);
@@ -55,7 +57,12 @@ class UserProfile extends React.Component {
   };
 
   removeFromContacts =() => {
-    ContactActionCreators.removeContact(this.props.user.id);
+    const { user } = this.props;
+    const confirmText = 'You really want to remove ' + user.name + ' from your contacts?';
+
+    confirm(confirmText).then(
+      () => ContactActionCreators.removeContact(user.id)
+    );
   };
 
   onNotificationChange = (event) => {
@@ -67,7 +74,7 @@ class UserProfile extends React.Component {
   };
 
   toggleActionsDropdown = () => {
-    const isActionsDropdownOpen = this.state.isActionsDropdownOpen;
+    const { isActionsDropdownOpen } = this.state;
 
     if (!isActionsDropdownOpen) {
       this.setState({isActionsDropdownOpen: true});
@@ -83,19 +90,27 @@ class UserProfile extends React.Component {
   };
 
   clearChat = (uid) => {
-    const peer = ActorClient.getUserPeer(uid);
-    DialogActionCreators.clearChat(peer);
+    confirm('Do you really want to delete this conversation?').then(
+      () => {
+        const peer = ActorClient.getUserPeer(uid);
+        DialogActionCreators.clearChat(peer);
+      }
+    );
   };
 
   deleteChat = (uid) => {
-    const peer = ActorClient.getUserPeer(uid);
-    DialogActionCreators.deleteChat(peer);
+    confirm('Do you really want to delete this conversation?').then(
+      () => {
+        const peer = ActorClient.getUserPeer(uid);
+        DialogActionCreators.deleteChat(peer);
+      }
+    );
   };
 
 
   render() {
     const { user } = this.props;
-    const { isNotificationsEnabled } = this.state;
+    const { isNotificationsEnabled, isActionsDropdownOpen } = this.state;
 
     let actions;
     if (user.isContact === false) {
@@ -113,7 +128,7 @@ class UserProfile extends React.Component {
     }
 
     let dropdownClassNames = classnames('dropdown pull-left', {
-      'dropdown--opened': this.state.isActionsDropdownOpen
+      'dropdown--opened': isActionsDropdownOpen
     });
 
     const nickname = user.nick ? (
