@@ -20,7 +20,7 @@
 
 
         <receiver
-            android:name="PushReceiver"
+            android:name="im.actor.messenger.PushReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
