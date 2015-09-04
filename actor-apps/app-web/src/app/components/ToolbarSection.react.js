@@ -8,8 +8,6 @@ import ActivityActionCreators from 'actions/ActivityActionCreators';
 import DialogStore from 'stores/DialogStore';
 import ActivityStore from 'stores/ActivityStore';
 
-//import AvatarItem from 'components/common/AvatarItem.react';
-
 const getStateFromStores = () => {
   return {
     dialogInfo: DialogStore.getSelectedDialogInfo(),
