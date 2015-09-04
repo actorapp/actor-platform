@@ -63,7 +63,7 @@ public class GroupVM extends BaseValueModel<Group> {
     public GroupVM(@NotNull Group rawObj) {
         super(rawObj);
         this.id = rawObj.getGroupId();
-        this.creatorId = rawObj.getAdminId();
+        this.creatorId = rawObj.getCreatorId();
         this.name = new StringValueModel("group." + id + ".title", rawObj.getTitle());
         this.avatar = new AvatarValueModel("group." + id + ".avatar", rawObj.getAvatar());
         this.isMember = new BooleanValueModel("group." + id + ".isMember", rawObj.isMember());

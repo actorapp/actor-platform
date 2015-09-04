@@ -14,11 +14,10 @@ import java.util.List;
 import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiMember;
-import im.actor.core.entity.compat.ObsoleteGroup;
 import im.actor.runtime.bser.BserCreator;
-import im.actor.runtime.storage.KeyValueItem;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
+import im.actor.runtime.storage.KeyValueItem;
 
 public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
 
@@ -38,8 +37,9 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
     private String title;
     @Nullable
     private Avatar avatar;
-    private int adminId;
+    private int creatorId;
     private boolean isMember;
+    private boolean isHidden;
     @Nullable
     private String theme;
     @Nullable
@@ -97,12 +97,16 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
         return about;
     }
 
-    public int getAdminId() {
-        return adminId;
+    public int getCreatorId() {
+        return creatorId;
     }
 
     public boolean isMember() {
         return isMember;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
     }
 
     public Group changeMember(boolean isMember) {
@@ -286,7 +290,9 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 theme,
-                w.getAbout());
+                w.getAbout(),
+                w.isHidden(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -309,7 +315,9 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.disableIntegrationsRevoke(),
                 w.isAdmin(),
                 w.getTheme(),
-                about);
+                about,
+                w.isHidden(),
+                w.getExtensions());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -345,12 +353,13 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
         this.accessHash = wrapped.getAccessHash();
         this.title = wrapped.getTitle();
         this.avatar = wrapped.getAvatar() != null ? new Avatar(wrapped.getAvatar()) : null;
-        this.adminId = wrapped.getCreatorUid();
+        this.creatorId = wrapped.getCreatorUid();
         this.members = new ArrayList<GroupMember>();
         for (ApiMember m : wrapped.getMembers()) {
-            this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == this.adminId));
+            this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == this.creatorId));
         }
         this.isMember = wrapped.isMember();
+        this.isHidden = wrapped.isHidden() != null ? wrapped.isHidden() : false;
         this.about = wrapped.getAbout();
         this.theme = wrapped.getTheme();
     }
@@ -363,7 +372,7 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
             super.parse(values);
         } else {
             // Convert old layout
-            setWrapped(new ObsoleteGroup(values).toApiGroup());
+            throw new IOException("Unsupported obsolete format");
         }
     }
 
