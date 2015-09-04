@@ -5,29 +5,25 @@
 import { assign } from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
-import ReactZeroClipboard from 'react-zeroclipboard';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-import { Styles, Snackbar } from 'material-ui';
-import ActorTheme from 'constants/ActorTheme';
 import classnames from 'classnames';
+
 import ActorClient from 'utils/ActorClient';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
+import InviteUserActions from 'actions/InviteUserActions';
 
 import LoginStore from 'stores/LoginStore';
 import PeerStore from 'stores/PeerStore';
 import DialogStore from 'stores/DialogStore';
 import GroupStore from 'stores/GroupStore';
-import InviteUserActions from 'actions/InviteUserActions';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import InviteUser from 'components/modals/InviteUser.react';
 import InviteByLink from 'components/modals/invite-user/InviteByLink.react';
 import GroupProfileMembers from 'components/activity/GroupProfileMembers.react';
 import Fold from 'components/common/Fold.React';
-
-const ThemeManager = new Styles.ThemeManager();
 
 const getStateFromStores = (groupId) => {
   const thisPeer = PeerStore.getGroupPeer(groupId);
@@ -45,30 +41,18 @@ class GroupProfile extends React.Component {
   static propTypes = {
     group: React.PropTypes.object.isRequired
   };
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
 
   constructor(props) {
     super(props);
     const myId = LoginStore.getMyId();
 
     this.state = assign({
-      isMoreDropdownOpen: false,
-      isCopyButtonEnabled: false
+      isMoreDropdownOpen: false
     }, getStateFromStores(props.group.id));
 
     if (props.group.members.length > 0 && myId === props.group.adminId) {
       GroupProfileActionCreators.getIntegrationToken(props.group.id);
     }
-
-    ThemeManager.setTheme(ActorTheme);
 
     DialogStore.addNotificationsListener(this.onChange);
     GroupStore.addChangeListener(this.onChange);
@@ -100,7 +84,8 @@ class GroupProfile extends React.Component {
   };
 
   onNotificationChange = event => {
-    DialogActionCreators.changeNotificationsEnabled(this.state.thisPeer, event.target.checked);
+    const { thisPeer } = this.state;
+    DialogActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
   onChange = () => {
@@ -109,10 +94,6 @@ class GroupProfile extends React.Component {
 
   selectToken = (event) => {
     event.target.select();
-  };
-
-  onIntegrationTokenCopied = () => {
-    this.refs.integrationTokenCopied.show();
   };
 
   toggleMoreDropdown = () => {
@@ -131,10 +112,6 @@ class GroupProfile extends React.Component {
     document.removeEventListener('click', this.closeMoreDropdown, false);
   };
 
-  onZeroclipboardReady = () => {
-    this.setState({isCopyButtonEnabled: true});
-  };
-
   onClearGroupClick = (gid) => {
     const peer = ActorClient.getGroupPeer(gid);
     DialogActionCreators.clearChat(peer);
@@ -147,12 +124,11 @@ class GroupProfile extends React.Component {
 
   render() {
     const { group } = this.props;
-    const { isNotificationsEnabled, integrationToken, isCopyButtonEnabled, isMoreDropdownOpen } = this.state;
+    const { isNotificationsEnabled, integrationToken, isMoreDropdownOpen } = this.state;
 
     const myId = LoginStore.getMyId();
     const admin = GroupProfileActionCreators.getUser(group.adminId);
     const isMember = DialogStore.isGroupMember(group);
-    const snackbarStyles = ActorTheme.getSnackbarStyles();
 
     let adminControls;
     if (group.adminId === myId) {
@@ -205,10 +181,6 @@ class GroupProfile extends React.Component {
       </div>
     ];
 
-    const copyButtonClassname = classnames({
-      'hide': !isCopyButtonEnabled
-    });
-
     const token = (group.adminId === myId) ? (
       <li className="profile__list__item group_profile__integration no-p">
         <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
@@ -217,19 +189,9 @@ class GroupProfile extends React.Component {
             this integration token allow the most flexibility and communication
             with your own systems.
             <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
-            <ReactZeroClipboard onCopy={this.onIntegrationTokenCopied}
-                                onReady={this.onZeroclipboardReady}
-                                text={integrationToken}>
-              <a className={copyButtonClassname}>Copy integration link</a>
-            </ReactZeroClipboard>
           </div>
           <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
         </Fold>
-        <Snackbar autoHideDuration={3000}
-                  message={this.getIntlMessage('integrationTokenCopied')}
-                  ref="integrationTokenCopied"
-                  style={snackbarStyles}/>
-
       </li>
     ) : null;
 
