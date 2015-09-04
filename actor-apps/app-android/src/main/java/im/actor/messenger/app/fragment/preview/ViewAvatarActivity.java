@@ -315,14 +315,12 @@ public class ViewAvatarActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK) {
             avatarPath = AppContext.getInternalTempFile("avatar", "jpg");
-            new Crop(data.getData())
-                    .output(Uri.fromFile(new File(avatarPath)))
+            Crop.of(data.getData(), Uri.fromFile(new File(avatarPath)))
                     .asSquare()
                     .start(this);
         } else if (requestCode == REQUEST_PHOTO && resultCode == Activity.RESULT_OK) {
             avatarPath = AppContext.getInternalTempFile("avatar", "jpg");
-            new Crop(Uri.fromFile(new File(externalFile)))
-                    .output(Uri.fromFile(new File(avatarPath)))
+            Crop.of(Uri.fromFile(new File(externalFile)), Uri.fromFile(new File(avatarPath)))
                     .asSquare()
                     .start(this);
         } else if (requestCode == Crop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
