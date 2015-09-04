@@ -51,40 +51,45 @@ class InviteByLink extends React.Component {
 
     const groupName = (group !== null) ? <b>{group.name}</b> : null;
 
-    return (
-      <Modal className="modal-new modal-new--invite-by-link"
-             closeTimeoutMS={150}
-             isOpen={isShown}
-             style={{width: 400}}>
+    if (isShown) {
+      return (
+        <Modal className="modal-new modal-new--invite-by-link"
+               closeTimeoutMS={150}
+               isOpen={isShown}
+               style={{width: 400}}>
 
-        <header className="modal-new__header">
-          <svg className="modal-new__header__icon icon icon--blue"
-               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#back"/>'}}
-               onClick={this.onBackClick}/>
+          <header className="modal-new__header">
+            <svg className="modal-new__header__icon icon icon--blue"
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#back"/>'}}
+                 onClick={this.onBackClick}/>
 
-          <h3 className="modal-new__header__title">
-            <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
-          </h3>
-          <div className="pull-right">
-            <button className="button button--lightblue" onClick={this.onClose}>Done</button>
+            <h3 className="modal-new__header__title">
+              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
+            </h3>
+
+            <div className="pull-right">
+              <button className="button button--lightblue" onClick={this.onClose}>Done</button>
+            </div>
+          </header>
+
+          <div className="modal-new__body">
+            <FormattedMessage groupName={groupName} message={this.getIntlMessage('inviteByLinkModalDescription')}/>
+            <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
           </div>
-        </header>
 
-        <div className="modal-new__body">
-          <FormattedMessage groupName={groupName} message={this.getIntlMessage('inviteByLinkModalDescription')}/>
-          <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
-        </div>
-
-        <footer className="modal-new__footer">
-          <button className="button button--rised pull-left hide">
-            <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
-          </button>
-          <button className="button button--rised pull-right hide">
-            <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
-          </button>
-        </footer>
-      </Modal>
-    );
+          <footer className="modal-new__footer">
+            <button className="button button--rised pull-left hide">
+              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
+            </button>
+            <button className="button button--rised pull-right hide">
+              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
+            </button>
+          </footer>
+        </Modal>
+      );
+    } else {
+      return null;
+    }
   }
 
   onClose = () => {
