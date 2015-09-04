@@ -21,7 +21,7 @@ Read more in our [new documentation](http://actor.readme.io/docs/server-docker)
 
 ### Configuration file
 
-Before starting the server, you need an application.conf file from in the ```config``` directory. See the [application.conf.example](actor-server/src/main/resources/application.conf.example) or [application.conf.example-minimal](actor-server/src/main/resources/application.conf.example-minimal) file for an example.
+Before starting the server, you need a server.conf file from the ```config``` directory. See the [application.conf.example](actor-server/src/main/resources/application.conf.example) or [application.conf.example-minimal](actor-server/src/main/resources/application.conf.example-minimal) file for an example.
 
 ## Starting the server
 
@@ -35,6 +35,6 @@ To start the server, unpack dist, and from its root run ```bin/actor-server```.
 * An [Apple Developer Account](https://developer.apple.com)
   * Push Configuration
 
-After meeting the requirements, you need to update your application.conf file with all required settings and restart the server.
+After meeting the requirements, you need to update your server.conf file with all required settings and restart the server.
 
 Once the server is running, you can start to [build your apps](APPS.md).
