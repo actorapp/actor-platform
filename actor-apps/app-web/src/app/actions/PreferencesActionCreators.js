@@ -1,31 +1,26 @@
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import ActorAppConstants from 'constants/ActorAppConstants';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-const ActionTypes = ActorAppConstants.ActionTypes;
+import { dispatch } from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 export default {
   show: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.PREFERENCES_MODAL_SHOW
-    });
+    dispatch(ActionTypes.PREFERENCES_MODAL_SHOW);
   },
 
   hide: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.PREFERENCES_MODAL_HIDE
-    });
+    dispatch(ActionTypes.PREFERENCES_MODAL_HIDE);
   },
 
   load: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.PREFERENCES_LOAD
-    });
+    dispatch(ActionTypes.PREFERENCES_LOAD);
   },
 
   save: (preferences) => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.PREFERENCES_SAVE,
-      preferences: preferences
+    dispatch(ActionTypes.PREFERENCES_SAVE, {
+      preferences
     });
   }
 };

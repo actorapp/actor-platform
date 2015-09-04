@@ -124,7 +124,11 @@ class GroupProfile extends React.Component {
 
   render() {
     const { group } = this.props;
-    const { isNotificationsEnabled, integrationToken, isMoreDropdownOpen } = this.state;
+    const {
+      isNotificationsEnabled,
+      integrationToken,
+      isMoreDropdownOpen
+    } = this.state;
 
     const myId = LoginStore.getMyId();
     const admin = GroupProfileActionCreators.getUser(group.adminId);
@@ -194,7 +198,6 @@ class GroupProfile extends React.Component {
         </Fold>
       </li>
     ) : null;
-
 
     if (isMember) {
       return (
