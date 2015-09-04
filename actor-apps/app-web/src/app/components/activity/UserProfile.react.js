@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
@@ -11,7 +15,6 @@ import PeerStore from 'stores/PeerStore';
 import DialogStore from 'stores/DialogStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
-//import UserProfileContactInfo from 'components/activity/UserProfileContactInfo.react';
 import Fold from 'components/common/Fold.React';
 import ActorClient from 'utils/ActorClient';
 
