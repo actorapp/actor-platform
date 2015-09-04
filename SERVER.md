@@ -21,11 +21,11 @@ Read more in our [new documentation](http://actor.readme.io/docs/server-docker)
 
 ### Configuration file
 
-Before starting the server, you need an application.conf file from in the ```config``` directory. See the [application.conf.example](actor-server/src/main/resources/application.conf.example) file for an example.
+Before starting the server, you need an application.conf file from in the ```config``` directory. See the [application.conf.example](actor-server/src/main/resources/application.conf.example) or [application.conf.example-minimal](actor-server/src/main/resources/application.conf.example-minimal) file for an example.
 
 ## Starting the server
 
-To start the server, run ```bin/start```.
+To start the server, unpack dist, and from its root run ```bin/actor-server```.
 
 ## Mobile Apps configuration
 
