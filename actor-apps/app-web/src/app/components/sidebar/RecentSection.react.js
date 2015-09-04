@@ -5,8 +5,6 @@
 import _ from 'lodash';
 
 import React from 'react';
-import { Styles, RaisedButton } from 'material-ui';
-import ActorTheme from 'constants/ActorTheme';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
@@ -17,7 +15,6 @@ import CreateGroupStore from 'stores/CreateGroupStore';
 import RecentSectionItem from './RecentSectionItem.react';
 import CreateGroupModal from 'components/modals/CreateGroup.react';
 
-const ThemeManager = new Styles.ThemeManager();
 const LoadDialogsScrollBottom = 100;
 
 const getStateFromStore = () => {
@@ -28,16 +25,6 @@ const getStateFromStore = () => {
 };
 
 class RecentSection extends React.Component {
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
-
   constructor(props) {
     super(props);
 
@@ -86,7 +73,7 @@ class RecentSection extends React.Component {
           {dialogList}
         </ul>
         <footer>
-          <RaisedButton label="Create group" onClick={this.openCreateGroup} style={{width: '100%'}}/>
+          <button className="button button--rised button--wide" onClick={this.openCreateGroup}>Create group</button>
           {createGroupModal}
         </footer>
       </section>
