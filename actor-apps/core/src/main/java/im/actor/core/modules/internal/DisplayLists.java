@@ -24,6 +24,7 @@ public class DisplayLists extends AbsModule {
     private PlatformDisplayList<Contact> contactsGlobalList;
 
     private HashMap<Peer, PlatformDisplayList<Message>> chatsGlobalLists = new HashMap<Peer, PlatformDisplayList<Message>>();
+    private HashMap<Peer, PlatformDisplayList<Message>> chatsDocsGlobalLists = new HashMap<Peer, PlatformDisplayList<Message>>();
 
     public DisplayLists(ModuleContext context) {
         super(context);
@@ -57,6 +58,16 @@ public class DisplayLists extends AbsModule {
         }
 
         return chatsGlobalLists.get(peer);
+    }
+
+    public PlatformDisplayList<Message> getDocsSharedList(Peer peer) {
+        im.actor.runtime.Runtime.checkMainThread();
+
+        if (!chatsDocsGlobalLists.containsKey(peer)) {
+            chatsDocsGlobalLists.put(peer, buildChatDocsList(peer, true));
+        }
+
+        return chatsDocsGlobalLists.get(peer);
     }
 
 
@@ -163,6 +174,16 @@ public class DisplayLists extends AbsModule {
 //        return chatList;
     }
 
+    public PlatformDisplayList<Message> buildChatDocsList(final Peer peer, boolean isShared) {
+        im.actor.runtime.Runtime.checkMainThread();
+
+        PlatformDisplayList<Message> res = Storage.createDisplayList(context().getMessagesModule().getConversationDocsEngine(peer),
+                isShared, Message.ENTITY_NAME);
+
+        res.initTop();
+
+        return res;
+    }
 
     public PlatformDisplayList<SearchEntity> buildSearchList(boolean isGlobalList) {
         im.actor.runtime.Runtime.checkMainThread();

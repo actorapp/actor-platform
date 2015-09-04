@@ -15,6 +15,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
+import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
@@ -58,7 +59,11 @@ public class DocHolder extends MessageHolder {
     private DocumentContent document;
 
     public DocHolder(final MessagesAdapter fragment, View itemView) {
-        super(fragment, itemView, false);
+        this(fragment, itemView, false);
+    }
+
+    public DocHolder(final MessagesAdapter fragment, View itemView, boolean isFullSize) {
+        super(fragment, itemView, isFullSize);
 
         // Basic bubble
         View bubbleView = itemView.findViewById(R.id.bubbleContainer);
@@ -264,8 +269,13 @@ public class DocHolder extends MessageHolder {
                     im.actor.runtime.Runtime.postToMainThread(new Runnable() {
                         @Override
                         public void run() {
-                            Activity activity = getAdapter().getMessagesFragment().getActivity();
-                            activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                            if (document instanceof PhotoContent) {
+                                Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), fileIcon, reference.getDescriptor(), currentMessage.getSenderId());
+                            } else {
+                                Activity activity = getAdapter().getMessagesFragment().getActivity();
+                                activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                            }
+
                         }
                     });
                 }
