@@ -103,15 +103,14 @@ public class TakePhotoActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK) {
             tempAvatarPath = AppContext.getInternalTempFile("avatar", "jpg");
-            new Crop(data.getData())
-                    .output(Uri.fromFile(new File(tempAvatarPath)))
+            Crop.of(data.getData(), Uri.fromFile(new File(tempAvatarPath)))
+
                     .asSquare()
                     .start(this);
             return;
         } else if (requestCode == REQUEST_PHOTO && resultCode == Activity.RESULT_OK) {
             tempAvatarPath = AppContext.getInternalTempFile("avatar", "jpg");
-            new Crop(Uri.fromFile(new File(externalFile)))
-                    .output(Uri.fromFile(new File(tempAvatarPath)))
+            Crop.of(Uri.fromFile(new File(externalFile)), Uri.fromFile(new File(tempAvatarPath)))
                     .asSquare()
                     .start(this);
             return;
