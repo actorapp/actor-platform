@@ -9,7 +9,7 @@ Read more in our [new documentation](http://actor.readme.io/docs/server-docker)
 ## Building the server (optional)
 * Install ```java``` and ```sbt``` on your machine.
 * Build server by calling ```sbt dist``` (first build may take up to 10 min).
-* Grab your server in ```actor-server/target/dist```.
+* Grab your server dist zip in ```actor-server/target/universal```.
 
 ## Configuring the server
 
