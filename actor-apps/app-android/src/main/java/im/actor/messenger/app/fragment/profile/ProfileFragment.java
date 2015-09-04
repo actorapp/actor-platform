@@ -36,6 +36,7 @@ import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.fragment.media.DocumentsActivity;
 import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
 import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
@@ -240,8 +241,14 @@ public class ProfileFragment extends BaseFragment {
             }
         });
 
+        res.findViewById(R.id.docsContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(DocumentsActivity.build(Peer.user(uid), getActivity()));
+            }
+        });
+
         res.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
-        res.findViewById(R.id.docsContainer).setVisibility(View.GONE);
 
         View notificationContainter = res.findViewById(R.id.notificationsCont);
         final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);

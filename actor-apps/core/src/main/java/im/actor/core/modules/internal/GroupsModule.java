@@ -21,7 +21,9 @@ import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateGroup;
+import im.actor.core.api.rpc.RequestEditGroupAbout;
 import im.actor.core.api.rpc.RequestEditGroupTitle;
+import im.actor.core.api.rpc.RequestEditGroupTopic;
 import im.actor.core.api.rpc.RequestEnterGroup;
 import im.actor.core.api.rpc.RequestGetGroupInviteUrl;
 import im.actor.core.api.rpc.RequestGetIntegrationToken;
@@ -39,8 +41,10 @@ import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
 import im.actor.core.api.rpc.ResponseJoinGroup;
 import im.actor.core.api.rpc.ResponseSeqDate;
+import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupInvite;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
+import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.api.updates.UpdateGroupUserInvited;
 import im.actor.core.api.updates.UpdateGroupUserKick;
 import im.actor.core.api.updates.UpdateGroupUserLeave;
@@ -215,6 +219,117 @@ public class GroupsModule extends AbsModule {
                                         myUid(),
                                         name,
                                         response.getDate()));
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(true);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Boolean> editTheme(final int gid, final String theme) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                Group group = getGroups().getValue(gid);
+                if (group == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                final long rid = RandomUtils.nextRid();
+                request(new RequestEditGroupTopic(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                        rid, theme), new RpcCallback<ResponseSeqDate>() {
+                    @Override
+                    public void onResult(ResponseSeqDate response) {
+
+                        updates().onSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateGroupTopicChanged(
+                                        gid,
+                                        rid,
+                                        myUid(),
+                                        theme,
+                                        response.getDate()));
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(true);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Boolean> editAbout(final int gid, final String about) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                Group group = getGroups().getValue(gid);
+                if (group == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                final long rid = RandomUtils.nextRid();
+                request(new RequestEditGroupAbout(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                        rid, about), new RpcCallback<ResponseSeqDate>() {
+                    @Override
+                    public void onResult(ResponseSeqDate response) {
+
+                        updates().onSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateGroupAboutChanged(
+                                        gid,
+                                        about));
 
                         updates().executeAfter(response.getSeq(), new Runnable() {
                             @Override
