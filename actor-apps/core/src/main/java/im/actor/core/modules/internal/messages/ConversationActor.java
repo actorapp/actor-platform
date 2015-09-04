@@ -10,6 +10,7 @@ import java.util.List;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.modules.ModuleContext;
@@ -36,6 +37,8 @@ public class ConversationActor extends ModuleActor {
     private final String OUT_RECEIVE_STATE_PREF;
 
     private Peer peer;
+    private boolean isHiddenPeer = false;
+
     private ListEngine<Message> messages;
     private ListEngine<Message> docs;
     private IndexStorage outPendingIndex;
@@ -65,6 +68,10 @@ public class ConversationActor extends ModuleActor {
         inReadState = context().getPreferences().getLong(IN_READ_STATE_PREF, 0);
         outReadState = context().getPreferences().getLong(OUT_READ_STATE_PREF, 0);
         outReceiveState = context().getPreferences().getLong(OUT_RECEIVE_STATE_PREF, 0);
+
+        if (peer.getPeerType() == PeerType.GROUP) {
+            isHiddenPeer = getGroup(peer.getPeerId()).isHidden();
+        }
     }
 
     // Messages receive/update
@@ -127,17 +134,20 @@ public class ConversationActor extends ModuleActor {
 
         // Update dialogs
         if (topMessage != null) {
-            dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
+            if (!isHiddenPeer) {
+                dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
+            }
         }
     }
 
     @Verified
     private void onInMessage(Message message) {
+
         // Ignore if we already have this message
-        // Changed behaviour to providing faster implementation
-//        if (messages.getValue(message.getEngineId()) != null) {
-//            return;
-//        }
+        // UPDATE: Changed behaviour to providing faster implementation
+        // if (messages.getValue(message.getEngineId()) != null) {
+        //     return;
+        // }
 
         if (message.getSenderId() == myUid()) {
             // Force set message state if server out message
@@ -173,7 +183,9 @@ public class ConversationActor extends ModuleActor {
                 }
             }
 
-            dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
+            if (!isHiddenPeer) {
+                dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
+            }
         }
     }
 
@@ -194,8 +206,10 @@ public class ConversationActor extends ModuleActor {
             docs.removeItem(rid);
         }
 
-        // Updating dialog
-        dialogsActor.send(new DialogsActor.MessageContentChanged(peer, rid, content));
+        if (!isHiddenPeer) {
+            // Updating dialog
+            dialogsActor.send(new DialogsActor.MessageContentChanged(peer, rid, content));
+        }
     }
 
     @Verified
@@ -222,8 +236,10 @@ public class ConversationActor extends ModuleActor {
                 docs.addOrUpdateItem(updatedMsg);
             }
 
-            // Updating dialog
-            dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inPendingIndex.getCount()));
+            if (!isHiddenPeer) {
+                // Updating dialog
+                dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inPendingIndex.getCount()));
+            }
 
             // Updating pending index
             if (state != MessageState.READ) {
@@ -247,9 +263,11 @@ public class ConversationActor extends ModuleActor {
                 docs.addOrUpdateItem(updatedMsg);
             }
 
-            // Updating dialog
-            dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
-                    MessageState.ERROR));
+            if (!isHiddenPeer) {
+                // Updating dialog
+                dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
+                        MessageState.ERROR));
+            }
         }
     }
 
@@ -285,7 +303,9 @@ public class ConversationActor extends ModuleActor {
             }
 
             if (minRid != -1) {
-                dialogsActor.send(new DialogsActor.MessageStateChanged(peer, minRid, MessageState.READ));
+                if (!isHiddenPeer) {
+                    dialogsActor.send(new DialogsActor.MessageStateChanged(peer, minRid, MessageState.READ));
+                }
             }
         }
     }
@@ -301,16 +321,16 @@ public class ConversationActor extends ModuleActor {
         List<Long> res = outPendingIndex.findBeforeValue(date);
 
         if (res.size() > 0) {
-            long minRid = -1;
-            long minDate = Long.MAX_VALUE;
+            long maxRid = -1;
+            long maxDate = Long.MIN_VALUE;
             ArrayList<Message> updated = new ArrayList<Message>();
 
             for (Long ref : res) {
                 Message msg = messages.getValue(ref);
                 if (msg != null && msg.isSent()) {
-                    if (msg.getDate() < minDate) {
-                        minDate = msg.getDate();
-                        minRid = ref;
+                    if (msg.getDate() > maxDate) {
+                        maxDate = msg.getDate();
+                        maxRid = ref;
                     }
 
                     updated.add(msg.changeState(MessageState.RECEIVED));
@@ -321,8 +341,10 @@ public class ConversationActor extends ModuleActor {
                 messages.addOrUpdateItems(updated);
             }
 
-            if (minRid != -1) {
-                dialogsActor.send(new DialogsActor.MessageStateChanged(peer, minRid, MessageState.RECEIVED));
+            if (maxRid != -1) {
+                if (!isHiddenPeer) {
+                    dialogsActor.send(new DialogsActor.MessageStateChanged(peer, maxRid, MessageState.RECEIVED));
+                }
             }
         }
     }
@@ -337,7 +359,9 @@ public class ConversationActor extends ModuleActor {
 
         inPendingIndex.removeBeforeValue(date);
 
-        dialogsActor.send(new DialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+        if (!isHiddenPeer) {
+            dialogsActor.send(new DialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+        }
     }
 
     // Deletions
@@ -357,7 +381,9 @@ public class ConversationActor extends ModuleActor {
         outPendingIndex.remove(rids);
 
         // Updating dialog
-        dialogsActor.send(new DialogsActor.MessageDeleted(peer, messages.getHeadValue()));
+        if (!isHiddenPeer) {
+            dialogsActor.send(new DialogsActor.MessageDeleted(peer, messages.getHeadValue()));
+        }
     }
 
     @Verified
@@ -366,7 +392,9 @@ public class ConversationActor extends ModuleActor {
         docs.clear();
         inPendingIndex.clear();
         outPendingIndex.clear();
-        dialogsActor.send(new DialogsActor.ChatClear(peer));
+        if (!isHiddenPeer) {
+            dialogsActor.send(new DialogsActor.ChatClear(peer));
+        }
     }
 
     @Verified
@@ -375,7 +403,9 @@ public class ConversationActor extends ModuleActor {
         docs.clear();
         inPendingIndex.clear();
         outPendingIndex.clear();
-        dialogsActor.send(new DialogsActor.ChatDelete(peer));
+        if (!isHiddenPeer) {
+            dialogsActor.send(new DialogsActor.ChatDelete(peer));
+        }
     }
 
     // History
