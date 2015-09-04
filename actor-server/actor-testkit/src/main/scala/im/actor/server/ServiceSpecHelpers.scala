@@ -5,6 +5,7 @@ import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
+import im.actor.api.rpc.peers.{ PeerType, OutPeer }
 import im.actor.api.{ rpc ⇒ rpcapi }
 import im.actor.server.api.rpc.service.auth
 import im.actor.server.api.rpc.RpcApiService
@@ -12,6 +13,7 @@ import im.actor.server.oauth.GoogleProvider
 import im.actor.server.presences.{ PresenceManagerRegion, GroupPresenceManagerRegion }
 import im.actor.server.sequence.WeakUpdatesManagerRegion
 import im.actor.server.session.{ SessionRegion, Session, SessionConfig }
+import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
 import org.scalatest.Suite
 import slick.driver.PostgresDriver.api._
 
@@ -39,6 +41,8 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   protected lazy val mediator: ActorRef = DistributedPubSubExtension(system).mediator
 
   protected val fairy = Fairy.create()
+
+  import system._
 
   def buildPhone(): Long = {
     75550000000L + scala.util.Random.nextInt(999999)
@@ -109,6 +113,12 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
 
   def createUser(phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): rpcapi.users.User =
     createUser(createAuthId(), phoneNumber)
+
+  def getOutPeer(userId: Int, clientAuthId: Long): OutPeer = {
+    implicit val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
+    val accessHash = Await.result(UserOffice.getAccessHash(userId, clientAuthId), 5.seconds)
+    OutPeer(PeerType.Private, userId, accessHash)
+  }
 
   //TODO: make same method to work with email
   def createUser(authId: Long, phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): rpcapi.users.User =

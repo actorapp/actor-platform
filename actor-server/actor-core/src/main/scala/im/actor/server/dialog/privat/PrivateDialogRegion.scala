@@ -5,11 +5,11 @@ import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 
 object PrivateDialogRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
-    case c: PrivateDialogCommand ⇒ (s"${c.left}_${c.right}", c)
+    case c: PrivateDialogCommand ⇒ (c.dialogId.stringId, c)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case c: PrivateDialogCommand ⇒ (c.left % 100).toString // TODO: configurable
+    case c: PrivateDialogCommand ⇒ (c.dialogId.left % 100).toString // TODO: configurable
   }
 
   val typeName = "PrivateDialog"

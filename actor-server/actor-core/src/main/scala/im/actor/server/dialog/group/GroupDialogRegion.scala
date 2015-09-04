@@ -5,11 +5,11 @@ import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 
 object GroupDialogRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
-    case c: GroupDialogCommand ⇒ (c.groupId.toString, c)
+    case c: GroupDialogCommand ⇒ (c.dialogId.groupId.toString, c)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case c: GroupDialogCommand ⇒ (c.groupId % 100).toString // TODO: configurable
+    case c: GroupDialogCommand ⇒ (c.dialogId.groupId % 100).toString // TODO: configurable
   }
 
   val typeName = "GroupDialog"
