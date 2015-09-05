@@ -97,16 +97,23 @@ class TextCellLayout: CellLayout {
     private static let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
     private static let maxTextWidth = isIPad ? 400 : 210
     
-    static let bubbleFont = isIPad ? UIFont(name: "HelveticaNeue", size: 17)! : UIFont(name: "HelveticaNeue", size: 16)!
-    static let bubbleFontUnsupported = isIPad ? UIFont(name: "HelveticaNeue-Italic", size: 17)! : UIFont(name: "HelveticaNeue-Italic", size: 16)!
+    static let fontSize: CGFloat = isIPad ? 17 : 16
+    static let fontRegular = UIFont(name: "HelveticaNeue", size: fontSize)!
+    static let fontItalic = UIFont(name: "HelveticaNeue-Italic", size: fontSize)!
+    static let fontBold = UIFont(name: "HelveticaNeue-Bold", size: fontSize)!
+    
+    static let bubbleFont = fontRegular
+    static let bubbleFontUnsupported = fontItalic
     
     var text: String
+    var attrText: NSAttributedString?
     var isUnsupported: Bool
     var textSizeWithPadding: CGSize
     var textSize: CGSize
     
     override init(message: ACMessage) {
         
+        var isOut = message.isOut
         if let content = message.content as? ACTextContent {
             text = content.text
             isUnsupported = false
@@ -114,28 +121,99 @@ class TextCellLayout: CellLayout {
             text = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
             isUnsupported = true
         }
-
-        // Measure text
-        var measureText = (text + (message.senderId == Actor.myUid() ? TextCellLayout.stringOutPadding : TextCellLayout.stringInPadding)) as NSString;
         
+        // Markdown processing
+        var parser = ARMarkdownParser(int: 0)
+        var doc = parser.processDocumentWithNSString(text)
+        
+        if !doc.isTrivial() {
+            var sections: [ARMDSection] = doc.getSections().toSwiftArray()
+            var nAttrText = NSMutableAttributedString()
+            var isFirst = true
+            for s in sections {
+                if !isFirst {
+                    nAttrText.appendAttributedString(NSAttributedString(string: "\n"))
+                }
+                isFirst = false
+                
+                if s.getType() == ARMDSection_TYPE_CODE {
+                    nAttrText.appendAttributedString(NSAttributedString(string: "[CODE]\n\(s.getCode().getCode())\n[/CODE]"))
+                } else if s.getType() == ARMDSection_TYPE_TEXT {
+                    var child: [ARMDText] = s.getText().toSwiftArray()
+                    for c in child {
+                        nAttrText.appendAttributedString(TextCellLayout.buildText(c))
+                    }
+                } else {
+                    fatalError("Unsupported section type")
+                }
+            }
+
+            self.attrText = nAttrText
+        }
+        
+        // Measure text        
         var size = CGSize(width: TextCellLayout.maxTextWidth - 2, height: 100000);
         
         var style = NSMutableParagraphStyle();
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-        var rect = measureText.boundingRectWithSize(size,
-            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
-            attributes: [NSFontAttributeName: isUnsupported ?  TextCellLayout.bubbleFontUnsupported : TextCellLayout.bubbleFont, NSParagraphStyleAttributeName: style],
-            context: nil);
-        textSizeWithPadding = CGSizeMake(round(rect.width + 2), round(rect.height))
         
-        rect = text.boundingRectWithSize(size,
-            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
-            attributes: [NSFontAttributeName: isUnsupported ?  TextCellLayout.bubbleFontUnsupported : TextCellLayout.bubbleFont, NSParagraphStyleAttributeName: style],
-            context: nil);
-        textSize = CGSizeMake(round(rect.width + 2), round(rect.height))
+        if self.attrText == nil {
+            var measureText = (text + (isOut ? TextCellLayout.stringOutPadding : TextCellLayout.stringInPadding)) as NSString;
+            var rect = measureText.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: isUnsupported ?  TextCellLayout.bubbleFontUnsupported : TextCellLayout.bubbleFont, NSParagraphStyleAttributeName: style], context: nil);
+            textSizeWithPadding = CGSizeMake(ceil(rect.width + 2), ceil(rect.height))
+            
+            rect = text.boundingRectWithSize(size,
+                options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+                attributes: [NSFontAttributeName: isUnsupported ?  TextCellLayout.bubbleFontUnsupported : TextCellLayout.bubbleFont, NSParagraphStyleAttributeName: style],
+                context: nil);
+            textSize = CGSizeMake(ceil(rect.width + 2), ceil(rect.height))
+        } else {
+            var measureText = NSMutableAttributedString()
+            measureText.appendAttributedString(self.attrText!)
+            if isOut {
+                measureText.appendAttributedString(NSAttributedString(string: TextCellLayout.stringOutPadding, attributes: [NSFontAttributeName: TextCellLayout.fontRegular]))
+            } else {
+                measureText.appendAttributedString(NSAttributedString(string: TextCellLayout.stringInPadding, attributes: [NSFontAttributeName: TextCellLayout.fontRegular]))
+            }
+            
+            var rect = measureText.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin|NSStringDrawingOptions.UsesFontLeading, context: nil)
+            textSizeWithPadding = CGSizeMake(ceil(rect.width + 2), ceil(rect.height - 1))
+            
+            rect = self.attrText!.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin|NSStringDrawingOptions.UsesFontLeading, context: nil)
+            textSize = CGSizeMake(ceil(rect.width + 2), ceil(rect.height + 8))
+        }
 
         super.init(message: message)
         height = textSizeWithPadding.height + AABubbleCell.bubbleContentTop + AABubbleCell.bubbleContentBottom
+    }
+    
+    class func buildText(text: ARMDText) -> NSAttributedString {
+        if let raw = text as? ARMDRawText {
+            return NSAttributedString(string: raw.getRawText(), attributes: [NSFontAttributeName: fontRegular])
+        } else if let span = text as? ARMDSpan {
+            var res = NSMutableAttributedString()
+            res.beginEditing()
+            
+            // Processing child texts
+            var child: [ARMDText] = span.getChild().toSwiftArray()
+            for c in child {
+                res.appendAttributedString(buildText(c))
+            }
+            
+            // Setting span elements
+            if span.getSpanType() == ARMDSpan_TYPE_BOLD {
+                res.addAttribute(NSFontAttributeName, value: fontBold, range: NSMakeRange(0, res.length))
+            } else if span.getSpanType() == ARMDSpan_TYPE_ITALIC {
+                res.addAttribute(NSFontAttributeName, value: fontItalic, range: NSMakeRange(0, res.length))
+            } else {
+                fatalError("Unsupported span type")
+            }
+            
+            res.endEditing()
+            return res
+        } else {
+            fatalError("Unsupported text type")
+        }
     }
 }
 

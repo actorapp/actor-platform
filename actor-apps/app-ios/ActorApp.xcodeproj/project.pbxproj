@@ -18,7 +18,7 @@
 		0CA595BCB5F16107145374B11C486D6A /* SearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE552DCE0898430CAF7DA33B8397678 /* SearchSource.swift */; };
 		0DAD5BEAEA98A71E7F0A36EB771967BB /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8FAC295B7ADC03358B1685D1112325E9 /* silence.caf */; };
 		0F45012F3ACEF774F904B68452A5F214 /* rhea.caf in Resources */ = {isa = PBXBuildFile; fileRef = E95EF27950F1B5D2AA8BFC0CC8622008 /* rhea.caf */; };
-		132FAF64C7A06E5D6578B49E5DD6EBC9 /* Navigtions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3058D297C6B9406B1ABED389B91456 /* Navigtions.swift */; };
+		132FAF64C7A06E5D6578B49E5DD6EBC9 /* Navigations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3058D297C6B9406B1ABED389B91456 /* Navigations.swift */; };
 		14652A2C5993BA776D3513BDC6427F03 /* CocoaFileSystemRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4BB1819B4B6A6C91D8F0AF29EFB9C7 /* CocoaFileSystemRuntime.swift */; };
 		14BF6FDE6BA7069F9343E427D46EAF47 /* Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3015DA92AE10E0E73AC78E4268204269 /* Wrappers.swift */; };
 		1542852080DCA59D70519AD3FE1B090D /* ConversationMessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6150D18986C2046F840169F3F0DCB1 /* ConversationMessagesViewController.swift */; };
@@ -222,7 +222,7 @@
 		78A456BF465556D2C6EF3174135BDFD6 /* Months_Ar.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months_Ar.properties; path = ../core/src/main/resources/Months_Ar.properties; sourceTree = "<group>"; };
 		7941E0C888E71462CD3AFD67E22D006C /* iOSPhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = iOSPhoneBookProvider.swift; path = ../ActorCore/Providers/iOSPhoneBookProvider.swift; sourceTree = "<group>"; };
 		796716015D2A287B6493C1BDDF02B9A8 /* CocoaNetworkRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaNetworkRuntime.swift; path = ../ActorCore/Providers/CocoaNetworkRuntime.swift; sourceTree = "<group>"; };
-		7B3058D297C6B9406B1ABED389B91456 /* Navigtions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Navigtions.swift; path = "Controllers Support/Navigtions.swift"; sourceTree = "<group>"; };
+		7B3058D297C6B9406B1ABED389B91456 /* Navigations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Navigations.swift; path = "Controllers Support/Navigations.swift"; sourceTree = "<group>"; };
 		7C171D4472C8F54A2AA0315EA0C69FED /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7DECDBC8DD771BBEE2810B6B0EC08988 /* UATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UATableViewCell.swift; path = View/Cells/UATableViewCell.swift; sourceTree = "<group>"; };
 		7E8ACF1A5456CC41B4F0FDAFA21CD772 /* Placeholders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Placeholders.swift; path = View/Placeholders.swift; sourceTree = "<group>"; };
@@ -712,7 +712,7 @@
 				DCEE46ED3EB34E4275B275A262E624BA /* EditTextController.swift */,
 				CBD9262C41A9D8F3FCFD438545A15A73 /* EngineListController.swift */,
 				E89E42542E452AB6DE6EE3CC73547926 /* Executions.swift */,
-				7B3058D297C6B9406B1ABED389B91456 /* Navigtions.swift */,
+				7B3058D297C6B9406B1ABED389B91456 /* Navigations.swift */,
 				FBE552DCE0898430CAF7DA33B8397678 /* SearchSource.swift */,
 			);
 			name = "Controllers Support";
@@ -1008,7 +1008,7 @@
 				D6AA6CCE078399CA702E7F03094453D5 /* MeasureUtils.swift in Sources */,
 				E53FAE1C8969DECE56280C942CED0F57 /* MessagesLayout.swift in Sources */,
 				BE591031FF67D3E4E6D9D92D0757AFCA /* MixpanelProvider.swift in Sources */,
-				132FAF64C7A06E5D6578B49E5DD6EBC9 /* Navigtions.swift in Sources */,
+				132FAF64C7A06E5D6578B49E5DD6EBC9 /* Navigations.swift in Sources */,
 				8071F48ACB9E359116BEE7450C3E5AD6 /* NoSelectionViewController.swift in Sources */,
 				6FF92ED0DB91181E376DA71BE7A89CE4 /* Placeholders.swift in Sources */,
 				1E0DC2E12B3919AD7A8A61316298F0AD /* PublicCell.swift in Sources */,

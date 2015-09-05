@@ -38,6 +38,14 @@ extension NSData {
     }
 }
 
+extension ACMessage {
+    var isOut: Bool {
+        get {
+            return Actor.myUid() == self.senderId
+        }
+    }
+}
+
 extension NSMutableData {
     func appendUInt32(value: UInt32) {
       var raw = value.bigEndian
@@ -99,6 +107,44 @@ extension NSData {
         }
         s = s % 65536;
         return UInt16(s);
+    }
+}
+
+extension JavaUtilArrayList {
+    
+    func toSwiftArray<T>() -> [T] {
+        var res = [T]()
+        for i in 0..<self.size() {
+            res.append(self.getWithInt(i) as! T)
+        }
+        return res
+    }
+    
+    func toSwiftArray() -> [AnyObject] {
+        var res = [AnyObject]()
+        for i in 0..<self.size() {
+            res.append(self.getWithInt(i))
+        }
+        return res
+    }
+}
+
+extension IOSObjectArray {
+    
+    func toSwiftArray<T>() -> [T] {
+        var res = [T]()
+        for i in 0..<self.length() {
+            res.append(self.objectAtIndex(UInt(i)) as! T)
+        }
+        return res
+    }
+    
+    func toSwiftArray() -> [AnyObject] {
+        var res = [AnyObject]()
+        for i in 0..<self.length() {
+            res.append(self.objectAtIndex(UInt(i)))
+        }
+        return res
     }
 }
 

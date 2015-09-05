@@ -173,7 +173,7 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
         titleLabel.sizeToFit()
         titleLabel.frame = CGRect(x: (screenSize.width - titleLabel.frame.size.width) / 2.0, y: grayBackground.frame.height - titleLabel.frame.size.height - CGFloat(padding), width: titleLabel.frame.size.width, height: titleLabel.frame.size.height)
         
-        navigationBarSeparator.frame = CGRect(x: 0.0, y: grayBackground.bounds.size.height, width: screenSize.width, height: retinaPixel)
+        navigationBarSeparator.frame = CGRect(x: 0.0, y: grayBackground.bounds.size.height, width: screenSize.width, height: 0.5)
         
         let fieldWidth : CGFloat = isIPad
             ? (520)
@@ -185,7 +185,7 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     
         firstNameField.frame = CGRectMake((screenSize.width - fieldWidth)/2 + 135.0, navigationBarSeparator.frame.origin.y + 34.0, fieldWidth - 134.0 - 8.0, 56.0)
         
-        firstNameFieldSeparator.frame = CGRect(x: (screenSize.width - fieldWidth)/2+134.0, y: firstNameField.frame.origin.y + firstNameField.bounds.size.height, width: fieldWidth - 134.0 - 8.0, height: retinaPixel)
+        firstNameFieldSeparator.frame = CGRect(x: (screenSize.width - fieldWidth)/2+134.0, y: firstNameField.frame.origin.y + firstNameField.bounds.size.height, width: fieldWidth - 134.0 - 8.0, height: 0.5)
         
         if (hintLabel != nil) {
             let hintPadding : CGFloat = isIPad
