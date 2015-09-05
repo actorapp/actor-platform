@@ -1,30 +1,28 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 
 export default {
   show() {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.MY_PROFILE_MODAL_SHOW
-    });
+    dispatch(ActionTypes.MY_PROFILE_MODAL_SHOW);
   },
 
   hide() {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.MY_PROFILE_MODAL_HIDE
-    });
+    dispatch(ActionTypes.MY_PROFILE_MODAL_HIDE);
   },
 
   saveName(name) {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.MY_PROFILE_SAVE_NAME,
-      name: name
+    dispatch(ActionTypes.MY_PROFILE_SAVE_NAME, {
+      name
     });
   },
 
   saveNickname(nick) {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.MY_PROFILE_SAVE_NICKNAME,
-      nick: nick
+    dispatch(ActionTypes.MY_PROFILE_SAVE_NICKNAME, {
+      nick
     });
   }
 };
