@@ -34,6 +34,7 @@ var MessageStore = assign({}, EventEmitter.prototype, {
 
 var _bindMessages = function(messages) {
   _messages = messages;
+  console.debug(messages[messages.length - 1]);
   MessageStore.emitChange();
 };
 
@@ -47,6 +48,7 @@ MessageStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
 
       _boundPeer = action.peer;
+
       ActorClient.bindChat(action.peer, _bindMessages);
 
       break;

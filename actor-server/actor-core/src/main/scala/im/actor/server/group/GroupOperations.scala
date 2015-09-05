@@ -22,21 +22,21 @@ private[group] sealed trait Commands {
     client:            AuthorizedClientData
   ): Future[CreateAck] = create(groupId, client.userId, client.authId, title, randomId, userIds)
 
-  def create(groupId: Int, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long, userIds: Set[Int])(
+  def create(groupId: Int, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long, userIds: Set[Int], typ: GroupType.ValueType = GroupType.General)(
     implicit
     peerManagerRegion: GroupProcessorRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[CreateAck] =
-    (peerManagerRegion.ref ? Create(groupId, clientUserId, clientAuthId, title, randomId, userIds.toSeq)).mapTo[CreateAck]
+    (peerManagerRegion.ref ? Create(groupId, typ, clientUserId, clientAuthId, title, randomId, userIds.toSeq)).mapTo[CreateAck]
 
-  def createInternal(groupId: Int, creatorUserId: Int, title: String, userIds: Set[Int])(
+  def createInternal(groupId: Int, typ: GroupType.ValueType, creatorUserId: Int, title: String, userIds: Set[Int], isHidden: Boolean)(
     implicit
     region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[CreateInternalAck] =
-    (region.ref ? CreateInternal(groupId, creatorUserId, title, userIds.toSeq)).mapTo[CreateInternalAck]
+    (region.ref ? CreateInternal(groupId, typ, creatorUserId, title, userIds.toSeq, isHidden = Some(isHidden))).mapTo[CreateInternalAck]
 
   def makePublic(groupId: Int, description: String)(
     implicit
@@ -177,4 +177,10 @@ private[group] sealed trait Queries {
     ec:      ExecutionContext
   ): Future[(Seq[Int], Seq[Int], Option[Int])] = (region.ref ? GetMembers(groupId)).mapTo[GetMembersResponse] map (r ⇒ (r.memberIds, r.invitedUserIds, r.botId))
 
+  def getAccessHash(groupId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Long] = (region.ref ? GetAccessHash(groupId)).mapTo[GetAccessHashResponse] map (_.accessHash)
 }

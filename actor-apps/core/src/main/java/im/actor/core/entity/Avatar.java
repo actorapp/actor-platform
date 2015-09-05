@@ -10,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 
 import im.actor.core.api.ApiAvatar;
-import im.actor.core.entity.compat.ObsoleteAvatar;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
@@ -60,7 +59,7 @@ public class Avatar extends WrapperEntity<ApiAvatar> {
             super.parse(values);
         } else {
             // Convert old layout
-            setWrapped(new ObsoleteAvatar(values).toApiAvatar());
+            throw new IOException("Unsupported obsolete format");
         }
     }
 

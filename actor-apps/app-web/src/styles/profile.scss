@@ -207,9 +207,8 @@
     footer {
       margin-top: 18px;
 
-      @include clearfix();
       .button {
-        width: 145px;
+        width: 100%;
       }
     }
   }

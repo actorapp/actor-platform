@@ -85,7 +85,7 @@ class WebhookHandlerSpec
 
       val firstMessage = Text("Alert! All tests are failed!")
       whenReady(handler.send(firstMessage, token)) { _ ⇒
-        expectUpdatesUnordered(ignoreUnmatched)(initSeq, initState, Set(UpdateMessage.header, UpdateCountersChanged.header)) {
+        expectUpdatesUnordered(ignoreUnmatched)(initSeq, initState, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
           case (UpdateMessage.header, u) ⇒
             val update = parseUpdate[UpdateMessage](u)
             update.message shouldEqual TextMessage(firstMessage.text, Vector.empty, None)
@@ -100,7 +100,7 @@ class WebhookHandlerSpec
 
       val secondMessage = Text("It's ok now!")
       whenReady(handler.send(secondMessage, token)) { _ ⇒
-        expectUpdatesUnordered(failUnmatched)(seq1, state1, Set(UpdateMessage.header, UpdateCountersChanged.header)) {
+        expectUpdatesUnordered(failUnmatched)(seq1, state1, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
           case (UpdateMessage.header, u) ⇒
             val update = parseUpdate[UpdateMessage](u)
             update.message shouldEqual TextMessage(secondMessage.text, Vector.empty, None)

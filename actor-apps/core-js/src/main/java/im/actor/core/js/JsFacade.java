@@ -366,6 +366,10 @@ public class JsFacade implements Exportable {
         messenger.sendMessageWithMentionsDetect(peer.convert(), text);
     }
 
+    public void sendMarkdownMessage(JsPeer peer, String text, String markdownText) {
+        messenger.sendMessageWithMentionsDetect(peer.convert(), text, markdownText);
+    }
+
     public void sendFile(JsPeer peer, JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.sendDocument(peer.convert(),
