@@ -175,12 +175,12 @@ services {
     s3 {
 
       # S3 Api Key
-      access-key: <write_your_s3_key_here>
+      access-key: "YOUR AWS KEY ID"
       # S3 Api Secret
-      secret-key: <write_your_s3_secret_here>
+      secret-key: "YOUR AWS SECRET KEY"
 
       # File bucket
-      default-bucket: <write_your_s3_bucket_here>
+      default-bucket: "bucket for storing files"
     }
   }
 
