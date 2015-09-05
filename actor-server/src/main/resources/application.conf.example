@@ -175,12 +175,12 @@ services {
     s3 {
 
       # S3 Api Key
-      access-key: <write_your_s3_key_here>
+      access-key: "write_your_s3_key_here"
       # S3 Api Secret
-      secret-key: <write_your_s3_secret_here>
+      secret-key: "write_your_s3_secret_here"
 
       # File bucket
-      default-bucket: <write_your_s3_bucket_here>
+      default-bucket: "write_your_s3_bucket_here"
     }
   }
 
