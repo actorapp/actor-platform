@@ -124,7 +124,7 @@ class TextCellLayout: CellLayout {
         }
         
         // Markdown processing
-        var parser = ARMarkdownParser(int: 0)
+        var parser = ARMarkdownParser(int: ARMarkdownParser_MODE_LITE)
         var doc = parser.processDocumentWithNSString(text)
         
         if !doc.isTrivial() {
