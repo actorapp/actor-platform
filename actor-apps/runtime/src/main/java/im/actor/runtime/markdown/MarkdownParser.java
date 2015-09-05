@@ -47,7 +47,17 @@ public class MarkdownParser {
                         handleTextBlock(cursor, blockStart, paragraphs);
                     }
 
-                    String codeContent = cursor.text.substring(cursor.currentOffset + 3, blockEnd - 3);
+                    String codeContent = cursor.text.substring(cursor.currentOffset + 3, blockEnd - 3).trim();
+
+                    // TODO: Better removing of empty leading and tailing lines
+                    // Required to remove only ONE line
+                    if (codeContent.startsWith("\n")) {
+                        codeContent = codeContent.substring(1);
+                    }
+                    if (codeContent.endsWith("\n")) {
+                        codeContent = codeContent.substring(0, codeContent.length() - 1);
+                    }
+
                     cursor.currentOffset = blockEnd;
                     paragraphs.add(new MDSection(new MDCode(codeContent)));
                     return true;
@@ -103,9 +113,17 @@ public class MarkdownParser {
                 char span = cursor.text.charAt(spanStart);
                 int spanEnd = findSpanEnd(cursor, spanStart, blockEnd, span);
                 if (spanEnd >= 0) {
+
+                    // Handling next elements before span
                     handleUrls(cursor, spanStart, elements);
 
+                    // Increment offset before processing internal spans
+                    cursor.currentOffset++;
+
+                    // Building child spans
                     MDText[] spanElements = handleSpans(cursor, spanEnd - 1);
+
+                    // End of search: move cursor after span
                     cursor.currentOffset = spanEnd;
 
                     MDSpan spanElement = new MDSpan(
