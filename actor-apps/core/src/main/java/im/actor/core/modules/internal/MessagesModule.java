@@ -28,6 +28,7 @@ import im.actor.core.entity.User;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.events.PeerChatOpened;
 import im.actor.core.modules.internal.messages.ConversationActor;
 import im.actor.core.modules.internal.messages.ConversationHistoryActor;
 import im.actor.core.modules.internal.messages.CursorReaderActor;
@@ -45,18 +46,20 @@ import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.runtime.*;
+import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
 import im.actor.runtime.actors.tools.BounceFilterActor;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.SyncKeyValue;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
-public class MessagesModule extends AbsModule {
+public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private ListEngine<Dialog> dialogs;
     private ActorRef dialogsActor;
@@ -132,6 +135,8 @@ public class MessagesModule extends AbsModule {
                 return new MessageShownActor(context());
             }
         }), "actor/shown");
+
+        context().getEvents().subscribe(this, PeerChatOpened.EVENT);
     }
 
     public ActorRef getSendMessageActor() {
@@ -186,10 +191,6 @@ public class MessagesModule extends AbsModule {
         synchronized (conversationActors) {
             return conversationActors.get(peer);
         }
-    }
-
-    public void onConversationOpen(Peer peer) {
-        assumeConvActor(peer);
     }
 
     public ListEngine<Message> getConversationEngine(Peer peer) {
@@ -472,5 +473,12 @@ public class MessagesModule extends AbsModule {
 
     public void resetModule() {
         // TODO: Implement
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+        if (event instanceof PeerChatOpened) {
+            assumeConvActor(((PeerChatOpened) event).getPeer());
+        }
     }
 }
