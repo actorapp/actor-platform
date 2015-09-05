@@ -60,6 +60,9 @@ export const ActionTypes = keymirror({
 
   CREATE_GROUP_MODAL_OPEN: null,
   CREATE_GROUP_MODAL_CLOSE: null,
+  CREATE_GROUP: null,
+  CREATE_GROUP_SUCCESS: null,
+  CREATE_GROUP_ERROR: null,
 
   NOTIFICATION_CHANGE: null,
 
