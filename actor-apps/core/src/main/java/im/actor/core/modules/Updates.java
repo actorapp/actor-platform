@@ -10,16 +10,19 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.base.FatSeqUpdate;
 import im.actor.core.api.base.SeqUpdate;
+import im.actor.core.modules.events.NewSessionCreated;
 import im.actor.core.modules.updates.SequenceActor;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
-public class Updates extends AbsModule {
+public class Updates extends AbsModule implements BusSubscriber {
 
     private ActorRef updateActor;
 
@@ -34,10 +37,8 @@ public class Updates extends AbsModule {
                 return new SequenceActor(context());
             }
         }).changeDispatcher("updates"), "actor/updates");
-    }
 
-    public void onNewSessionCreated() {
-        updateActor.send(new SequenceActor.Invalidate());
+        context().getEvents().subscribe(this, NewSessionCreated.EVENT);
     }
 
     public void onPushReceived(int seq) {
@@ -68,5 +69,12 @@ public class Updates extends AbsModule {
 
     public void resetModule() {
         // TODO: Implement
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+        if (event instanceof NewSessionCreated) {
+            updateActor.send(new SequenceActor.Invalidate());
+        }
     }
 }
