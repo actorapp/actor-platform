@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.core.modules.internal.users;
+package im.actor.core.modules.internal;
 
 import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.api.rpc.RequestEditAbout;
@@ -16,7 +16,6 @@ import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
-import im.actor.core.modules.Module;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.network.RpcCallback;
 import im.actor.core.network.RpcException;
