@@ -5,10 +5,10 @@
 package im.actor.core.modules.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import im.actor.core.api.ApiExtension;
 import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiGroupOutPeer;
 import im.actor.core.api.ApiMember;
@@ -82,7 +82,7 @@ public class GroupsModule extends AbsModule {
 
     public GroupsModule(final ModuleContext context) {
         super(context);
-        
+
         collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR, Group.CREATOR);
         groups = collection.getEngine();
 
@@ -136,14 +136,16 @@ public class GroupsModule extends AbsModule {
                     @Override
                     public void onResult(ResponseCreateGroup response) {
                         List<ApiMember> members = new ArrayList<ApiMember>();
-                        for (int u : uids) {
+                        for (int u : response.getUsers()) {
                             members.add(new ApiMember(u, myUid(), response.getDate(), u == myUid()));
                         }
                         final ApiGroup group = new ApiGroup(
                                 response.getGroupPeer().getGroupId(),
                                 response.getGroupPeer().getAccessHash(),
                                 title, null, true, myUid(), members,
-                                response.getDate(), null, null, null, null, null, true, null, null, null, Collections.EMPTY_LIST);
+                                response.getDate(), null,
+                                null, null, null, null, true, null, null, null,
+                                new ArrayList<ApiExtension>());
                         ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
                         groups.add(group);
 
