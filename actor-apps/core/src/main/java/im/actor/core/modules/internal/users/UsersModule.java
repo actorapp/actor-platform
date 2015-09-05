@@ -28,7 +28,7 @@ import im.actor.runtime.Storage;
 import im.actor.runtime.mvvm.MVVMCollection;
 import im.actor.runtime.storage.KeyValueEngine;
 
-public class UsersModule extends AbsModule implements Module {
+public class UsersModule extends AbsModule {
 
     private KeyValueEngine<User> users;
     private MVVMCollection<User, UserVM> collection;

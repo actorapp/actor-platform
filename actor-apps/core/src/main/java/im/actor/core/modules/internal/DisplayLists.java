@@ -80,31 +80,6 @@ public class DisplayLists extends AbsModule {
         res.initTop();
 
         return res;
-
-//        ListEngine<Dialog> dialogsEngine = context().getMessagesModule().getDialogsEngine();
-//        if (!(dialogsEngine instanceof ListEngineDisplayExt)) {
-//            throw new RuntimeException("Dialogs ListEngine must implement ListEngineDisplayExt for using global list");
-//        }
-//
-//        BindedDisplayList.BindHook<Dialog> hook = null;
-//        if (isGlobalList) {
-//            hook = new BindedDisplayList.BindHook<Dialog>() {
-//
-//                @Override
-//                public void onScrolledToEnd() {
-//                    context().getMessagesModule().loadMoreDialogs();
-//                }
-//
-//                @Override
-//                public void onItemTouched(Dialog item) {
-//
-//                }
-//            };
-//        }
-//        BindedDisplayList<Dialog> displayList = new BindedDisplayList<Dialog>((ListEngineDisplayExt<Dialog>) dialogsEngine,
-//                isGlobalList, LOAD_PAGE, LOAD_GAP, operationMode, hook);
-//        displayList.initTop(false);
-//        return displayList;
     }
 
     public PlatformDisplayList<Contact> buildContactList(boolean isShared) {
@@ -131,47 +106,6 @@ public class DisplayLists extends AbsModule {
         }
 
         return res;
-//
-//        if (lastRead != 0)
-//            chatList.initCenter(lastRead, false);
-//        else
-//            chatList.initTop(false);
-
-//        ListEngine<Message> messagesEngine = context().getMessagesModule().getConversationEngine(peer);
-//        if (!(messagesEngine instanceof ListEngineDisplayExt)) {
-//            throw new RuntimeException("Conversation ListEngine must implement ListEngineDisplayExt for using global list");
-//        }
-//
-//        BindedDisplayList.BindHook<Message> hook = null;
-//        if (isGlobalList) {
-//            hook = new BindedDisplayList.BindHook<Message>() {
-//
-//                @Override
-//                public void onScrolledToEnd() {
-//                    context().getMessagesModule().loadMoreHistory(peer);
-//                }
-//
-//                @Override
-//                public void onItemTouched(Message item) {
-//                    if (item.isOnServer()) {
-//                        context().getMessagesModule().onMessageShown(peer, item.getSortDate());
-//                    }
-//                }
-//            };
-//        }
-//
-//        // BaseAsyncStorageProvider storageProvider = (BaseAsyncStorageProvider) modules().getConfiguration().getStorageProvider();
-//
-//        BindedDisplayList<Message> chatList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) messagesEngine,
-//                isGlobalList, 20, 20, operationMode, hook);
-//
-//        long lastRead = context().getMessagesModule().loadReadState(peer);
-//
-//        if (lastRead != 0)
-//            chatList.initCenter(lastRead, false);
-//        else
-//            chatList.initTop(false);
-//        return chatList;
     }
 
     public PlatformDisplayList<Message> buildChatDocsList(final Peer peer, boolean isShared) {
