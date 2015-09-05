@@ -147,14 +147,16 @@ public class MarkdownParser {
     }
 
     private boolean handleUrl(TextCursor cursor, int limit, ArrayList<MDText> elements) {
-        Url url = findUrl(cursor, limit);
-        if (url != null) {
-            handleText(cursor, url.getStart(), elements);
-            String title = cursor.text.substring(url.getStart() + 1, url.getMiddle());
-            String urlVal = cursor.text.substring(url.getMiddle() + 2, url.getEnd());
-            elements.add(new MDUrl(title, urlVal));
-            cursor.currentOffset = url.getEnd() + 1;
-            return true;
+        if (mode == MODE_FULL ||mode == MODE_ONLY_LINKS) {
+            Url url = findUrl(cursor, limit);
+            if (url != null) {
+                handleText(cursor, url.getStart(), elements);
+                String title = cursor.text.substring(url.getStart() + 1, url.getMiddle());
+                String urlVal = cursor.text.substring(url.getMiddle() + 2, url.getEnd());
+                elements.add(new MDUrl(title, urlVal));
+                cursor.currentOffset = url.getEnd() + 1;
+                return true;
+            }
         }
 
         handleText(cursor, limit, elements);
