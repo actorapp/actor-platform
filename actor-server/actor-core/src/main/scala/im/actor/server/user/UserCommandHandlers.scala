@@ -9,7 +9,8 @@ import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.users._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.history.HistoryUtils
-import im.actor.server.api.ApiConversions._
+import im.actor.server.{ persist ⇒ p, ApiConversions, models }
+import ApiConversions._
 import im.actor.server.{ persist ⇒ p, models }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ ImageUtils, Avatar }
@@ -18,7 +19,6 @@ import im.actor.server.sequence.SeqState
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
 import ContactsUtils.addContact
-import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -122,7 +122,7 @@ private[user] trait UserCommandHandlers {
         senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
         senderName = senderUser.localName.getOrElse(senderUser.name)
         pushText ← getPushText(peer, userId, senderName, message)
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat, deliveryId = Some(s"msg_${randomId}"))
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
       } yield DeliverMessageAck()
     } else {
       Future.successful(DeliverMessageAck())
@@ -140,10 +140,10 @@ private[user] trait UserCommandHandlers {
       message = message
     )
 
-    SeqUpdatesManager.persistAndPushUpdatesF(user.authIds filterNot (_ == senderAuthId), update, None, isFat, deliveryId = Some(s"msg_${randomId}"))
+    SeqUpdatesManager.persistAndPushUpdatesF(user.authIds filterNot (_ == senderAuthId), update, None, isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
 
     val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
-    SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, ownUpdate, None, isFat, deliveryId = Some(s"msgsent_${randomId}")) pipeTo sender()
+    SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, ownUpdate, None, isFat, deliveryId = Some(s"msgsent_${peer.toString}_${randomId}")) pipeTo sender()
   }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {

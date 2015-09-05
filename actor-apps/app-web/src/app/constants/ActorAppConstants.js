@@ -67,6 +67,8 @@ export const ActionTypes = keymirror({
   APP_UPDATE_CONFIRM: null,
 
   GET_INTEGRATION_TOKEN: null,
+  GET_INTEGRATION_TOKEN_SUCCESS: null,
+  GET_INTEGRATION_TOKEN_ERROR: null,
 
   FAVICON_SET_DEFAULT: null,
   FAVICON_SET_NOTIFICATION: null,
@@ -75,6 +77,9 @@ export const ActionTypes = keymirror({
   INVITE_USER_MODAL_HIDE: null,
   INVITE_USER_BY_LINK_MODAL_SHOW: null,
   INVITE_USER_BY_LINK_MODAL_HIDE: null,
+  INVITE_USER: null,
+  INVITE_USER_SUCCESS: null,
+  INVITE_USER_ERROR: null,
 
   PREFERENCES_SAVE: null,
   PREFERENCES_LOAD: null,
@@ -86,7 +91,11 @@ export const ActionTypes = keymirror({
   MY_PROFILE_MODAL_SHOW: null,
   MY_PROFILE_MODAL_HIDE: null,
   MY_PROFILE_SAVE_NAME: null,
-  MY_PROFILE_SAVE_NICKNAME: null
+  MY_PROFILE_SAVE_NICKNAME: null,
+
+  KICK_USER: null,
+  KICK_USER_SUCCESS: null,
+  KICK_USER_ERROR: null
 });
 
 export const PeerTypes = {
@@ -115,6 +124,13 @@ export const KeyCodes = {
   ARROW_DOWN: 40
 };
 
+export const AsyncActionStates = {
+  PENDING: 0,
+  PROCESSING: 1,
+  SUCCESS: 2,
+  FAILURE: 3
+};
+
 export const version = app.base_version;
 
 export const Mixpanel = app.mixpanel;
@@ -136,6 +152,8 @@ export default {
   MessageContentTypes: MessageContentTypes,
 
   KeyCodes: KeyCodes,
+
+  ChangeState: AsyncActionStates,
 
   Mixpanel: Mixpanel,
 

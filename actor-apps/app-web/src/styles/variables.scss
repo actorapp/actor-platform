@@ -2,7 +2,7 @@
 $default-padding: 16px;
 $default-border-radius: 3px;
 $default-transition-duration: 400ms;
-$default-transition-timing: cubic-bezier(.25,.8,.25,1);
+$default-transition-timing: cubic-bezier(.25, .8, .25, 1);
 $default-avatar-size: 36px;
 
 // Colors
@@ -42,7 +42,6 @@ $cloudy-blue: #d6dce3;
 $light-grey-blue: #a5bedc;
 $pale-grey: #f5f6f7;
 
-
 // Body
 $body-background-color: $bismark;
 $body-base-color: $bismark;
@@ -75,40 +74,36 @@ $sidebar-header-height: 64px;
 $sidebar-tabs-height: 46px;
 $sidebar-text-color: white;
 //$sidebarHeaderHoverColor: rgba(0,0,0,.1);
-$sidebar-header-hover-color: rgb(72,97,129); // Must be non transparent
+$sidebar-header-hover-color: rgb(72, 97, 129);
+// Must be non transparent
 
 // Right aside block
 $activity-width: 340px;
 $activity-text-color: rgba($mine-shaft, .85);
 //$activity-background-color: rgba(0,0,0,.02);
-$activity-background-color: rgb(255,255,255);
+$activity-background-color: rgb(255, 255, 255);
 
 // Messages
 $message-sender-text-color: $mine-shaft;
 $message-text-color: $dove-gray;
 $message-line-height: 20px;
-$message-service-text-color: rgba($mine-shaft, .3);
+$message-state-color: rgba($mine-shaft, .3);
+$message-timestamp-color: $message-state-color;
+$message-service-text-color: rgba($mine-shaft, .5);
 $message-document-icon-size: 64px;
 
 // Modal
 $modal-default-width: 400px;
-$modal-default-background: rgb(255,255,255);
+$modal-default-background: rgb(255, 255, 255);
 $modal-default-radius: 4px;
-$modal-backdrop-color: rgba(0,0,0,.6);
+$modal-backdrop-color: rgba(0, 0, 0, .6);
 $modal-header-height: 60px;
-$modal-text-color: rgba(57,57,57,.85);
-$modal-text-light-color: rgba(57,57,57,.6);
+$modal-text-color: rgba(57, 57, 57, .85);
+$modal-text-light-color: rgba(57, 57, 57, .6);
 
 // Login
 $login-text-color: #8ba8cb;
 $login-input-color: #659ee1;
-
-// Old Modals
-// TODO: remove camelcased vars when all old modals removed
-$modalBackdropColor: rgba(darken($body-base-color,20),.4);
-$modalHeaderHeight: 60px;
-$modalDefaultWidth: 350px;
-$modalDefaultHeight: 300px;
 
 // Compose
 $compose-message-height: 80px;

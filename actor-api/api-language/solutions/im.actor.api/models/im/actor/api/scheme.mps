@@ -3925,6 +3925,11 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3zYHvadTSQ$" resolve="disableIntegrationView" />
         </node>
+        <node concept="NX1gA" id="3pJJa69XH0D" role="NXodf">
+          <property role="NX6R2" value="Group extensions" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3pJJa69XGZy" resolve="extensions" />
+        </node>
         <node concept="2m7Kf5" id="GBscvBB6pT" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="id" />
@@ -4029,6 +4034,22 @@
           <property role="TrG5h" value="about" />
           <node concept="2m5nlT" id="6WYZhOUZ46C" role="2m7DVh">
             <node concept="2m5ndX" id="6WYZhOUZ46I" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3pJJa69XRFT" role="2m0hLx">
+          <property role="2m7DUN" value="20" />
+          <property role="TrG5h" value="isHidden" />
+          <node concept="2m5nlT" id="3pJJa69XSfL" role="2m7DVh">
+            <node concept="2m5ndN" id="3pJJa69XSfR" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3pJJa69XGZy" role="2m0hLx">
+          <property role="2m7DUN" value="21" />
+          <property role="TrG5h" value="extensions" />
+          <node concept="2m5nlk" id="3pJJa69XH0g" role="2m7DVh">
+            <node concept="2m5mGg" id="3pJJa69XH0m" role="3GJlyp">
+              <ref role="2m5mJy" node="3pJJa69XFS8" resolve="Extension" />
+            </node>
           </node>
         </node>
       </node>
@@ -7591,6 +7612,32 @@
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="maxGroupSize" />
           <node concept="2m5ndE" id="GBscvBB6CC" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="3pJJa69XFS8" role="2m5mJr">
+        <property role="TrG5h" value="Extension" />
+        <node concept="2m7Kf5" id="3pJJa69XFSO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="3pJJa69XFSS" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3pJJa69XFSV" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="data" />
+          <node concept="2m61tm" id="3pJJa69XFT1" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="3pJJa69XFT4" role="NXodf">
+          <property role="NXePf" value="Extention" />
+        </node>
+        <node concept="NX1gA" id="3pJJa69XFTh" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Extension id" />
+          <ref role="NX6Kv" node="3pJJa69XFSO" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="3pJJa69XFTp" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Extension data" />
+          <ref role="NX6Kv" node="3pJJa69XFSV" resolve="data" />
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBBjCE" role="2m5mJr">

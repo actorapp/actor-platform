@@ -15,7 +15,7 @@ public abstract class MessageHolder extends BindedViewHolder
         implements BubbleContainer.OnAvatarClickListener, BubbleContainer.OnAvatarLongClickListener, View.OnClickListener, View.OnLongClickListener {
 
     private MessagesAdapter adapter;
-    private BubbleContainer container;
+    protected BubbleContainer container;
     private boolean isFullSize;
     protected Message currentMessage;
 

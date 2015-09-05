@@ -4,7 +4,8 @@ import akka.actor.ActorSystem
 import akka.pattern.pipe
 
 import im.actor.api.rpc.users.{ User ⇒ ApiUser }
-import im.actor.server.api.ApiConversions._
+import im.actor.server.ApiConversions
+import ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.commons.KeyValueMappings
 import ContactsUtils.localNameKey
@@ -44,4 +45,6 @@ private[user] trait UserQueriesHandlers {
   protected def checkAccessHash(state: User, senderAuthId: Long, accessHash: Long): Unit =
     sender() ! CheckAccessHashResponse(isCorrect = accessHash == ACLUtils.userAccessHash(senderAuthId, userId, state.accessSalt))
 
+  protected def getAccessHash(state: User, clientAuthId: Long): Unit =
+    sender() ! GetAccessHashResponse(ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt))
 }

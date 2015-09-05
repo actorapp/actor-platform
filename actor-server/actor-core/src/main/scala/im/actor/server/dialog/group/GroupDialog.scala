@@ -8,9 +8,8 @@ import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.group.GroupDialog._
 import im.actor.server.dialog.group.GroupDialogEvents.GroupDialogEvent
-import im.actor.server.dialog.{ AuthIdRandomId, GroupDialogCommands, StopDialog }
+import im.actor.server.dialog._
 import im.actor.server.group.{ GroupExtension, GroupProcessorRegion, GroupViewRegion }
 import im.actor.server.office.{ ProcessorState, Processor }
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -22,8 +21,8 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
-trait GroupDialogCommand {
-  def groupId: Int
+private[dialog] trait GroupDialogCommand {
+  val dialogId: GroupDialogId
 }
 
 case class GroupDialogState(
@@ -89,12 +88,12 @@ class GroupDialog extends Processor[GroupDialogState, GroupDialogEvent] with Gro
   override protected def handleInitCommand: Receive = working(initState)
 
   override protected def handleCommand(state: GroupDialogState): Receive = {
-    case SendMessage(_, senderUserId, senderAuthId, randomId, message, isFat) ⇒
+    case SendMessage(id, senderUserId, senderAuthId, randomId, message, isFat) ⇒
       sendMessage(state, senderUserId, senderAuthId, randomId, message, isFat)
-    case MessageReceived(_, receiverUserId, _, date) ⇒
-      messageReceived(state, receiverUserId, date)
-    case MessageRead(_, readerUserId, readerAuthId, date) ⇒
-      messageRead(state, readerUserId, readerAuthId, date)
+    case MessageReceived(id, senderUserId, _, date) ⇒
+      messageReceived(state, senderUserId, date)
+    case MessageRead(id, senderUserId, readerAuthId, date) ⇒
+      messageRead(state, senderUserId, readerAuthId, date)
     case StopDialog     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }

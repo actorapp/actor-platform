@@ -5,6 +5,7 @@ import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
+import im.actor.api.rpc.misc.Extension
 import im.actor.server.commons.KeyValueMappings
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
@@ -36,6 +37,7 @@ private[group] case class Bot(
 
 private[group] case class Group(
   id:             Int,
+  typ:            GroupType,
   accessHash:     Long,
   creatorUserId:  Int,
   createdAt:      DateTime,
@@ -43,10 +45,11 @@ private[group] case class Group(
   invitedUserIds: Set[Int],
   title:          String,
   about:          Option[String],
-  isPublic:       Boolean,
   bot:            Option[Bot],
   avatar:         Option[Avatar],
-  topic:          Option[String]
+  topic:          Option[String],
+  isHidden:       Boolean,
+  extensions:     Seq[Extension]
 ) extends ProcessorState
 
 trait GroupCommand {
@@ -93,6 +96,8 @@ object GroupProcessor {
       21009 → classOf[GroupQueries.IsPublic],
       21010 → classOf[GroupQueries.IsPublicResponse],
       21011 → classOf[GroupQueries.GetIntegrationTokenInternal],
+      21012 → classOf[GroupQueries.GetAccessHash],
+      21013 → classOf[GroupQueries.GetAccessHashResponse],
 
       22003 → classOf[GroupEvents.UserInvited],
       22004 → classOf[GroupEvents.UserJoined],
@@ -153,12 +158,12 @@ private[group] final class GroupProcessor
         state.copy(bot = Some(Bot(userId, token)))
       case TSEvent(ts, GroupEvents.UserInvited(userId, inviterUserId)) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
           invitedUserIds = state.invitedUserIds + userId
         )
       case TSEvent(ts, GroupEvents.UserJoined(userId, inviterUserId)) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = userId == state.creatorUserId)),
           invitedUserIds = state.invitedUserIds - userId
         )
       case TSEvent(_, GroupEvents.UserKicked(userId, kickerUserId, _)) ⇒
@@ -170,7 +175,7 @@ private[group] final class GroupProcessor
       case TSEvent(_, GroupEvents.TitleUpdated(title)) ⇒
         state.copy(title = title)
       case TSEvent(_, GroupEvents.BecamePublic()) ⇒
-        state.copy(isPublic = true)
+        state.copy(typ = GroupType.Public)
       case TSEvent(_, GroupEvents.AboutUpdated(about)) ⇒
         state.copy(about = about)
       case TSEvent(_, GroupEvents.TopicUpdated(topic)) ⇒
@@ -189,13 +194,14 @@ private[group] final class GroupProcessor
     case GroupQueries.CheckAccessHash(_, accessHash) ⇒ checkAccessHash(state, accessHash)
     case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
     case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
+    case GroupQueries.GetAccessHash(_)               ⇒ getAccessHash(state)
   }
 
   override def handleInitCommand: Receive = {
-    case Create(_, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
-      create(groupId, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
-    case CreateInternal(_, creatorUserId, title, userIds) ⇒
-      createInternal(creatorUserId, title, userIds)
+    case Create(_, typ, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
+      create(groupId, typ, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
+    case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, extensions) ⇒
+      createInternal(typ, creatorUserId, title, userIds, isHidden, extensions)
   }
 
   override def handleCommand(state: Group): Receive = {
@@ -261,17 +267,19 @@ private[group] final class GroupProcessor
   protected def initState(ts: DateTime, evt: GroupEvents.Created): Group = {
     Group(
       id = groupId,
+      typ = evt.typ.getOrElse(GroupType.General),
       accessHash = evt.accessHash,
       title = evt.title,
       about = None,
       creatorUserId = evt.creatorUserId,
       createdAt = ts,
       members = (evt.userIds map (userId ⇒ (userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId))))).toMap,
-      isPublic = false,
       bot = None,
       invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,
-      topic = None
+      topic = None,
+      isHidden = evt.isHidden.getOrElse(false),
+      extensions = evt.extensions
     )
   }
 

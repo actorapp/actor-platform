@@ -58,6 +58,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     private ActorRef appStateActor;
     private BindedDisplayList<Dialog> dialogList;
     private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<Peer, BindedDisplayList<Message>>();
+    private HashMap<Peer, BindedDisplayList<Message>> docsLists = new HashMap<Peer, BindedDisplayList<Message>>();
 
     public AndroidMessenger(Context context, im.actor.core.Configuration configuration) {
         super(configuration);
@@ -442,5 +443,27 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
 
         return messagesLists.get(peer);
+    }
+
+    public BindedDisplayList<Message> getDocsDisplayList(final Peer peer) {
+        if (!docsLists.containsKey(peer)) {
+            BindedDisplayList<Message> list = (BindedDisplayList<Message>) modules.getDisplayListsModule().getDocsSharedList(peer);
+            list.setBindHook(new BindedDisplayList.BindHook<Message>() {
+                @Override
+                public void onScrolledToEnd() {
+                    modules.getMessagesModule().loadMoreHistory(peer);
+                }
+
+                @Override
+                public void onItemTouched(Message item) {
+                    if (item.isOnServer()) {
+                        modules.getMessagesModule().onMessageShown(peer, item.getSenderId(), item.getSortDate());
+                    }
+                }
+            });
+            docsLists.put(peer, list);
+        }
+
+        return docsLists.get(peer);
     }
 }

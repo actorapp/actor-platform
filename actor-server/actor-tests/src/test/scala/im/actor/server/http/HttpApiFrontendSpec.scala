@@ -40,7 +40,7 @@ class HttpApiFrontendSpec
 
   "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
 
-  it should "respond with Forbidden in public groups" in t.publicGroups()
+  //  it should "respond with Forbidden in public groups" in t.publicGroups()
 
   it should "respond with BadRequest to non existing groups" in t.nonExistingBot()
 
@@ -468,13 +468,6 @@ class HttpApiFrontendSpec
         resp.status shouldEqual OK
         resp.entity.dataBytes.runWith(Sink.ignore)
       }
-    }
-  }
-
-  private def extractToken(groupId: Int): String = {
-    whenReady(GroupOffice.getIntegrationToken(groupId)) { optToken ⇒
-      optToken shouldBe defined
-      optToken.get
     }
   }
 

@@ -105,6 +105,8 @@ object UserProcessor {
       11006 → classOf[UserQueries.CheckAccessHashResponse],
       11007 → classOf[UserQueries.GetApiStruct],
       11008 → classOf[UserQueries.GetApiStructResponse],
+      11009 → classOf[UserQueries.GetAccessHash],
+      11010 → classOf[UserQueries.GetAccessHashResponse],
 
       12001 → classOf[UserEvents.AuthAdded],
       12002 → classOf[UserEvents.AuthRemoved],
@@ -207,6 +209,7 @@ private[user] final class UserProcessor
     case GetApiStruct(_, clientUserId, clientAuthId)  ⇒ getApiStruct(state, clientUserId, clientAuthId)
     case GetContactRecords(_)                         ⇒ getContactRecords(state)
     case CheckAccessHash(_, senderAuthId, accessHash) ⇒ checkAccessHash(state, senderAuthId, accessHash)
+    case GetAccessHash(_, clientAuthId)               ⇒ getAccessHash(state, clientAuthId)
   }
 
   protected[this] var userStateMaybe: Option[User] = None

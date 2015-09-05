@@ -316,6 +316,11 @@ public class NotificationsActor extends ModuleActor {
         }
 
         if (peer.getPeerType() == PeerType.GROUP) {
+            // Disable notifications for hidden groups
+            if (getGroup(peer.getPeerId()).isHidden()) {
+                return false;
+            }
+
             if (context().getSettingsModule().isGroupNotificationsEnabled()) {
                 if (context().getSettingsModule().isNotificationsEnabled(peer)) {
                     // If enabled in group: use only mentions rule
