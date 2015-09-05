@@ -36,12 +36,6 @@ class MessagesLayouting {
             height += AABubbleCell.dateSize
         }
         
-        // New message separator
-//        if (setting.showNewMessages) {
-//            height += AABubbleCell.newMessageSize
-//        }
-        
-        
         return height
     }
     
@@ -124,7 +118,7 @@ class TextCellLayout: CellLayout {
         // Measure text
         var measureText = (text + (message.senderId == Actor.myUid() ? TextCellLayout.stringOutPadding : TextCellLayout.stringInPadding)) as NSString;
         
-        var size = CGSize(width: TextCellLayout.maxTextWidth, height: 0);
+        var size = CGSize(width: TextCellLayout.maxTextWidth - 2, height: 100000);
         
         var style = NSMutableParagraphStyle();
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
@@ -132,13 +126,13 @@ class TextCellLayout: CellLayout {
             options: NSStringDrawingOptions.UsesLineFragmentOrigin,
             attributes: [NSFontAttributeName: isUnsupported ?  TextCellLayout.bubbleFontUnsupported : TextCellLayout.bubbleFont, NSParagraphStyleAttributeName: style],
             context: nil);
-        textSizeWithPadding = CGSizeMake(round(rect.width), round(rect.height))
+        textSizeWithPadding = CGSizeMake(round(rect.width + 2), round(rect.height))
         
         rect = text.boundingRectWithSize(size,
             options: NSStringDrawingOptions.UsesLineFragmentOrigin,
             attributes: [NSFontAttributeName: isUnsupported ?  TextCellLayout.bubbleFontUnsupported : TextCellLayout.bubbleFont, NSParagraphStyleAttributeName: style],
             context: nil);
-        textSize = CGSizeMake(round(rect.width), round(rect.height))
+        textSize = CGSizeMake(round(rect.width + 2), round(rect.height))
 
         super.init(message: message)
         height = textSizeWithPadding.height + AABubbleCell.bubbleContentTop + AABubbleCell.bubbleContentBottom
