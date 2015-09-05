@@ -173,7 +173,7 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
         titleLabel.sizeToFit()
         titleLabel.frame = CGRect(x: (screenSize.width - titleLabel.frame.size.width) / 2.0, y: grayBackground.frame.height - titleLabel.frame.size.height - CGFloat(padding), width: titleLabel.frame.size.width, height: titleLabel.frame.size.height)
         
-        navigationBarSeparator.frame = CGRect(x: 0.0, y: grayBackground.bounds.size.height, width: screenSize.width, height: retinaPixel)
+        navigationBarSeparator.frame = CGRect(x: 0.0, y: grayBackground.bounds.size.height, width: screenSize.width, height: 0.5)
         
         let fieldWidth : CGFloat = isIPad
             ? (520)
@@ -185,7 +185,7 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     
         firstNameField.frame = CGRectMake((screenSize.width - fieldWidth)/2 + 135.0, navigationBarSeparator.frame.origin.y + 34.0, fieldWidth - 134.0 - 8.0, 56.0)
         
-        firstNameFieldSeparator.frame = CGRect(x: (screenSize.width - fieldWidth)/2+134.0, y: firstNameField.frame.origin.y + firstNameField.bounds.size.height, width: fieldWidth - 134.0 - 8.0, height: retinaPixel)
+        firstNameFieldSeparator.frame = CGRect(x: (screenSize.width - fieldWidth)/2+134.0, y: firstNameField.frame.origin.y + firstNameField.bounds.size.height, width: fieldWidth - 134.0 - 8.0, height: 0.5)
         
         if (hintLabel != nil) {
             let hintPadding : CGFloat = isIPad
@@ -237,48 +237,47 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
         } else {
             var avatarPath: String? = nil
             
-//            if avatarImageView.image != nil {
-//                avatarPath = "/tmp/avatar_" + NSUUID().UUIDString + ".jpg"
-//                var avatarFilePath = CocoaFiles.pathFromDescriptor(avatarPath!)
-//                var image = avatarImageView.image
-//                var thumb = image?.resizeSquare(600, maxH: 600);
-//                UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
-//            }
+            if avatarImageView.image != nil {
+                avatarPath = "/tmp/avatar_" + NSUUID().UUIDString + ".jpg"
+                var avatarFilePath = CocoaFiles.pathFromDescriptor(avatarPath!)
+                var image = avatarImageView.image
+                var thumb = image?.resizeSquare(600, maxH: 600);
+                UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
+            }
             
             var action = "SignUp";
             
-//            execute(MSG.signUpCommandWithName(username, withSex: ACSexEnum_get_UNKNOWN(), withAvatar: avatarPath), successBlock: { (val) -> Void in
-//                MSG.trackActionSuccess(action)
-//                self.onAuthenticated()
-//            }, failureBlock: { (val) -> Void in
-//                
-//                var message = "Unknwon Error"
-//                var tag = "UNKNOWN"
-//                
-//                if let exception = val as? ACRpcException {
-//                    tag = exception.getTag()
-//                    if (tag == "PHONE_CODE_EXPIRED") {
-//                        message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
-//                    } else if (tag == "NAME_INVALID") {
-//                        let screenSize = UIScreen.mainScreen().bounds.size
-//                        let fieldWidth : CGFloat = isIPad
-//                            ? (520)
-//                            : (screenSize.width)
-//                        self.shakeView(self.firstNameField, originalX: (screenSize.width - fieldWidth)/2+135.0)
-//                        return
-//                    } else {
-//                        message = exception.getLocalizedMessage()
-//                    }
-//                } else if let exception = val as? JavaLangException {
-//                    message = exception.getLocalizedMessage()
-//                }
-//                
-//                MSG.trackActionError(action, withTag: tag, withMessage: message)
-//                
-//                var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
-//                alertView.show()
-//            })
-            
+            execute(Actor.signUpCommandWithName(username, withSex: ACSexEnum.values().objectAtIndex(ACSex.UNKNOWN.rawValue) as! ACSexEnum, withAvatar: avatarPath), successBlock: { (val) -> Void in
+                Actor.trackActionSuccess(action)
+                self.onAuthenticated()
+                }, failureBlock: { (val) -> Void in
+                    
+                    var message = "Unknwon Error"
+                    var tag = "UNKNOWN"
+                    
+                    if let exception = val as? ACRpcException {
+                        tag = exception.getTag()
+                        if (tag == "PHONE_CODE_EXPIRED") {
+                            message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
+                        } else if (tag == "NAME_INVALID") {
+                            let screenSize = UIScreen.mainScreen().bounds.size
+                            let fieldWidth : CGFloat = isIPad
+                                ? (520)
+                                : (screenSize.width)
+                            self.shakeView(self.firstNameField, originalX: (screenSize.width - fieldWidth)/2+135.0)
+                            return
+                        } else {
+                            message = exception.getLocalizedMessage()
+                        }
+                    } else if let exception = val as? JavaLangException {
+                        message = exception.getLocalizedMessage()
+                    }
+                    
+                    Actor.trackActionError(action, withTag: tag, withMessage: message)
+                    
+                    var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
+                    alertView.show()
+            })
         }
     }
     

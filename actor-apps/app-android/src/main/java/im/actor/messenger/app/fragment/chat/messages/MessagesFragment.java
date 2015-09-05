@@ -56,7 +56,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
     private Peer peer;
 
     private ChatLinearLayoutManager linearLayoutManager;
-    private MessagesAdapter messagesAdapter;
+    protected MessagesAdapter messagesAdapter;
     // private ConversationVM conversationVM;
     private ActionMode actionMode;
     private int onPauseSize = 0;
@@ -101,7 +101,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         return res;
     }
 
-    private BindedDisplayList<Message> onCreateDisplayList() {
+    protected BindedDisplayList<Message> onCreateDisplayList() {
         BindedDisplayList<Message> res = messenger().getMessageDisplayList(peer);
         if (res.getListProcessor() == null) {
             res.setListProcessor(new ChatListProcessor(this));
@@ -112,7 +112,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
 
     private boolean isLoaded = false;
 
-    private void bindDisplayListLoad() {
+    protected void bindDisplayListLoad() {
         final BindedDisplayList<Message> list = getDisplayList();
         DisplayList.AndroidChangeListener<Message> listener = new DisplayList.AndroidChangeListener<Message>() {
 
@@ -175,11 +175,14 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
         }
 
         if (index > 0) {
-            linearLayoutManager.setStackFromEnd(false);
-            linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
-            // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
-            // linearLayoutManager.scrollToPosition(index + 1);
-            // getCollection().scrollToPosition(index + 1);
+            if (linearLayoutManager != null) {
+                linearLayoutManager.setStackFromEnd(false);
+                linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
+                // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
+                // linearLayoutManager.scrollToPosition(index + 1);
+                // getCollection().scrollToPosition(index + 1);
+            }
+
         } else {
             // linearLayoutManager.scrollToPosition(0);
             getCollection().scrollToPosition(0);

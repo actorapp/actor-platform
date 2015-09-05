@@ -4,11 +4,16 @@ import React from 'react';
 
 import { PeerTypes } from 'constants/ActorAppConstants';
 
+import PeerUtils from 'utils/PeerUtils';
+
 import MessagesSection from 'components/dialog/MessagesSection.react';
 import TypingSection from 'components/dialog/TypingSection.react';
 import ComposeSection from 'components/dialog/ComposeSection.react';
+import ToolbarSection from 'components/ToolbarSection.react';
+import ActivitySection from 'components/ActivitySection.react';
 import ConnectionState from 'components/common/ConnectionState.react';
 
+import ActivityStore from 'stores/ActivityStore';
 import DialogStore from 'stores/DialogStore';
 import MessageStore from 'stores/MessageStore';
 import GroupStore from 'stores/GroupStore';
@@ -49,13 +54,25 @@ class DialogSection extends React.Component {
 
     this.state = getStateFromStores();
 
+    ActivityStore.addChangeListener(this.fixScrollTimeout.bind(this));
     DialogStore.addSelectListener(this.onSelectedDialogChange);
     MessageStore.addChangeListener(this.onMessagesChange);
   }
 
   componentWillUnmount() {
+    ActivityStore.removeChangeListener(this.fixScrollTimeout.bind(this));
     DialogStore.removeSelectListener(this.onSelectedDialogChange);
     MessageStore.removeChangeListener(this.onMessagesChange);
+  }
+
+  componentDidMount() {
+    const peer = DialogStore.getSelectedDialogPeer();
+
+    if (peer) {
+      DialogActionCreators.onConversationOpen(peer);
+      this.fixScroll();
+      this.loadMessagesByScroll();
+    }
   }
 
   componentDidUpdate() {
@@ -66,9 +83,11 @@ class DialogSection extends React.Component {
   render() {
     const peer = this.state.peer;
 
+    let mainContent;
+
     if (peer) {
       let isMember = true,
-          memberArea;
+        memberArea;
 
       if (peer.type === PeerTypes.GROUP) {
         const group = GroupStore.getGroup(peer.id);
@@ -79,7 +98,7 @@ class DialogSection extends React.Component {
         memberArea = (
           <div>
             <TypingSection/>
-            <ComposeSection peer={this.state.peer}/>
+            <ComposeSection peer={peer}/>
           </div>
         );
       } else {
@@ -90,13 +109,13 @@ class DialogSection extends React.Component {
         );
       }
 
-      return (
+      mainContent = (
         <section className="dialog" onScroll={this.loadMessagesByScroll}>
           <ConnectionState/>
 
           <div className="messages">
             <MessagesSection messages={this.state.messagesToRender}
-                             peer={this.state.peer}
+                             peer={peer}
                              ref="MessagesSection"/>
 
           </div>
@@ -105,23 +124,39 @@ class DialogSection extends React.Component {
         </section>
       );
     } else {
-      return (
+      mainContent = (
         <section className="dialog dialog--empty row center-xs middle-xs">
           <ConnectionState/>
           <h2>Select dialog or start a new one.</h2>
         </section>
       );
     }
+
+    return (
+      <section className="main">
+        <ToolbarSection/>
+
+        <div className="flexrow">
+          {mainContent}
+          <ActivitySection/>
+        </div>
+      </section>
+    );
   }
 
+  fixScrollTimeout = () => {
+    setTimeout(this.fixScroll, 50);
+  };
+
   fixScroll = () => {
-    if (lastPeer !== null ) {
-      let node = React.findDOMNode(this.refs.MessagesSection);
-      node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
+    const node = React.findDOMNode(this.refs.MessagesSection);
+    if (node) {
+      node.scrollTop = node.scrollHeight - lastScrolledFromBottom - node.offsetHeight;
     }
   };
 
   onSelectedDialogChange = () => {
+    lastScrolledFromBottom = 0;
     renderMessagesCount = initialRenderMessagesCount;
 
     if (lastPeer != null) {
@@ -137,23 +172,21 @@ class DialogSection extends React.Component {
   }, 10, {maxWait: 50, leading: true});
 
   loadMessagesByScroll = _.debounce(() => {
-    if (lastPeer !== null ) {
-      let node = React.findDOMNode(this.refs.MessagesSection);
-      let scrollTop = node.scrollTop;
-      lastScrolledFromBottom = node.scrollHeight - scrollTop;
+    let node = React.findDOMNode(this.refs.MessagesSection);
+    let scrollTop = node.scrollTop;
+    lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
 
-      if (node.scrollTop < LoadMessagesScrollTop) {
-        DialogActionCreators.onChatEnd(this.state.peer);
+    if (node.scrollTop < LoadMessagesScrollTop) {
+      DialogActionCreators.onChatEnd(this.state.peer);
 
-        if (this.state.messages.length > this.state.messagesToRender.length) {
-          renderMessagesCount += renderMessagesStep;
+      if (this.state.messages.length > this.state.messagesToRender.length) {
+        renderMessagesCount += renderMessagesStep;
 
-          if (renderMessagesCount > this.state.messages.length) {
-            renderMessagesCount = this.state.messages.length;
-          }
-
-          this.setState(getStateFromStores());
+        if (renderMessagesCount > this.state.messages.length) {
+          renderMessagesCount = this.state.messages.length;
         }
+
+        this.setState(getStateFromStores());
       }
     }
   }, 5, {maxWait: 30});

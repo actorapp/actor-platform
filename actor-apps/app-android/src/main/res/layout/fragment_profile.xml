@@ -124,8 +124,7 @@
                         android:id="@+id/sharedContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -141,7 +140,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:background="@drawable/clickable_background"
-                            android:paddingRight="8dp">
+                            android:paddingRight="8dp"
+                            android:visibility="gone">
 
                             <im.actor.messenger.app.view.TintImageView
                                 android:layout_width="72dp"

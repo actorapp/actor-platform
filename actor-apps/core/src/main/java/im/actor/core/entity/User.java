@@ -15,7 +15,6 @@ import im.actor.core.api.ApiAvatar;
 import im.actor.core.api.ApiContactRecord;
 import im.actor.core.api.ApiContactType;
 import im.actor.core.api.ApiUser;
-import im.actor.core.entity.compat.ObsoleteUser;
 import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -263,7 +262,7 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
             super.parse(values);
         } else {
             // Convert old layout
-            setWrapped(new ObsoleteUser(values).toApiUser());
+            throw new IOException("Unsupported obsolete format");
         }
     }
 

@@ -28,7 +28,7 @@ object HistoryUtils {
     ec: ExecutionContext
   ): DBIO[Unit] = {
     requirePrivatePeer(fromPeer)
-    requireDifferentPeers(fromPeer, toPeer)
+    // requireDifferentPeers(fromPeer, toPeer)
 
     if (toPeer.typ == models.PeerType.Private) {
       val outMessage = models.HistoryMessage(
@@ -42,19 +42,18 @@ object HistoryUtils {
         deletedAt = None
       )
 
-      val inMessage = models.HistoryMessage(
-        userId = toPeer.id,
-        peer = fromPeer,
-        date = date,
-        senderUserId = fromPeer.id,
-        randomId = randomId,
-        messageContentHeader = messageContentHeader,
-        messageContentData = messageContentData,
-        deletedAt = None
-      )
+      val messages =
+        if (fromPeer != toPeer) {
+          Seq(
+            outMessage,
+            outMessage.copy(userId = toPeer.id, peer = fromPeer)
+          )
+        } else {
+          Seq(outMessage)
+        }
 
       for {
-        _ ← persist.HistoryMessage.create(Seq(outMessage, inMessage))
+        _ ← persist.HistoryMessage.create(messages)
         _ ← persist.Dialog.updateLastMessageDate(fromPeer.id, toPeer, date)
         res ← persist.Dialog.updateLastMessageDate(toPeer.id, fromPeer, date)
       } yield ()
@@ -85,7 +84,7 @@ object HistoryUtils {
 
   def markMessagesReceived(byPeer: models.Peer, peer: models.Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
     requirePrivatePeer(byPeer)
-    requireDifferentPeers(byPeer, peer)
+    // requireDifferentPeers(byPeer, peer)
 
     peer.typ match {
       case models.PeerType.Private ⇒
@@ -111,7 +110,7 @@ object HistoryUtils {
 
   def markMessagesRead(byPeer: models.Peer, peer: models.Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
     requirePrivatePeer(byPeer)
-    requireDifferentPeers(byPeer, peer)
+    // requireDifferentPeers(byPeer, peer)
 
     peer.typ match {
       case models.PeerType.Private ⇒

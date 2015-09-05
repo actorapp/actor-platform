@@ -11,11 +11,17 @@ import "scalapb/scalapb.proto";
 import "file.proto";
 import "sequence.proto";
 
+enum GroupType {
+    General = 1;
+    Public = 2;
+}
+
 message GroupCommands {
     message Create {
         option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
 
         required int32 group_id = 6;
+        required GroupType typ = 7;
         required int32 creator_user_id = 1;
         required int64 creator_auth_id = 2;
         required string title = 3;
@@ -33,10 +39,12 @@ message GroupCommands {
         option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
 
         required int32 group_id = 1;
-
+        required GroupType typ = 2;
         required int32 creator_user_id = 3;
         required string title = 4;
         repeated int32 user_ids = 5;
+        optional bool is_hidden = 7;
+        repeated bytes extensions = 6 [(scalapb.field).type = "im.actor.api.rpc.misc.Extension"];
     }
 
     message CreateInternalAck {
@@ -225,6 +233,16 @@ message GroupQueries {
     message IsPublicResponse {
         required bool is_public = 1;
     }
+
+    message GetAccessHash {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
+    message GetAccessHashResponse {
+        required int64 access_hash = 1;
+    }
 }
 
 message GroupEvents {
@@ -232,10 +250,13 @@ message GroupEvents {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
         required int32 group_id = 1;
+        optional GroupType typ = 5 [default = General];
         required int32 creator_user_id = 2;
         required int64 access_hash = 3;
         required string title = 4;
         repeated int32 user_ids = 6;
+        optional bool is_hidden = 8;
+        repeated bytes extensions = 7  [(scalapb.field).type = "im.actor.api.rpc.misc.Extension"];
     }
 
     message UserInvited {

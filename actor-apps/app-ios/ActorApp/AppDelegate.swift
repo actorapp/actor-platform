@@ -23,6 +23,7 @@ import Foundation
         
         // Apply crash logging
         if config.mint != nil {
+            Mint.sharedInstance().disableNetworkMonitoring()
             Mint.sharedInstance().initAndStartSession(config.mint!)
         }
         

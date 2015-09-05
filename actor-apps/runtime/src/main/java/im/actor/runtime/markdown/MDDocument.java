@@ -11,6 +11,19 @@ public class MDDocument {
         return sections;
     }
 
+    public boolean isTrivial() {
+        if (sections.length == 1) {
+            if (sections[0].getType() == MDSection.TYPE_TEXT) {
+                if (sections[0].getText().length == 1) {
+                    if (sections[0].getText()[0] instanceof MDRawText) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public String toMarkdown() {
         String res = "";
         for (MDSection section : sections) {

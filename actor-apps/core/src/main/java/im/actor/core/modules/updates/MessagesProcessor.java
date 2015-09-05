@@ -136,6 +136,11 @@ public class MessagesProcessor extends AbsModule {
     public void onMessageRead(ApiPeer _peer, long startDate) {
         Peer peer = convert(_peer);
 
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)){
+            return;
+        }
+
         // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageRead(startDate));
     }
@@ -143,6 +148,11 @@ public class MessagesProcessor extends AbsModule {
     @Verified
     public void onMessageReceived(ApiPeer _peer, long startDate) {
         Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)){
+            return;
+        }
 
         // Sending event to conversation actor
         conversationActor(peer).send(new ConversationActor.MessageReceived(startDate));
@@ -152,6 +162,11 @@ public class MessagesProcessor extends AbsModule {
     public void onMessageReadByMe(ApiPeer _peer, long startDate) {
         Peer peer = convert(_peer);
 
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)){
+            return;
+        }
+
         // Sending event to own read actor
         ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
     }
@@ -159,6 +174,11 @@ public class MessagesProcessor extends AbsModule {
     @Verified
     public void onMessageSent(ApiPeer _peer, long rid, long date) {
         Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)){
+            return;
+        }
 
         // Change message state in conversation
         conversationActor(peer).send(new ConversationActor.MessageSent(rid, date));
@@ -174,6 +194,11 @@ public class MessagesProcessor extends AbsModule {
     public void onMessageContentChanged(ApiPeer _peer, long rid,
                                         ApiMessage message) {
         Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)){
+            return;
+        }
 
         AbsContent content;
         try {
@@ -191,6 +216,11 @@ public class MessagesProcessor extends AbsModule {
     public void onMessageDelete(ApiPeer _peer, List<Long> rids) {
         Peer peer = convert(_peer);
 
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)){
+            return;
+        }
+
         // Deleting messages from conversation
         conversationActor(peer).send(new ConversationActor.MessagesDeleted(rids));
 
@@ -201,6 +231,11 @@ public class MessagesProcessor extends AbsModule {
     public void onChatClear(ApiPeer _peer) {
         Peer peer = convert(_peer);
 
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)){
+            return;
+        }
+
         // Clearing conversation
         conversationActor(peer).send(new ConversationActor.ClearConversation());
 
@@ -210,6 +245,11 @@ public class MessagesProcessor extends AbsModule {
     @Verified
     public void onChatDelete(ApiPeer _peer) {
         Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)){
+            return;
+        }
 
         // Deleting conversation
         conversationActor(peer).send(new ConversationActor.DeleteConversation());

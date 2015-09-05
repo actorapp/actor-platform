@@ -99,7 +99,7 @@ class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(UpdateGroupUserInvited.header, UpdateGroupInvite.header)) {
+    expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateGroupUserInvited.header, UpdateGroupInvite.header)) {
       case (UpdateGroupUserInvited.header, update) ⇒ parseUpdate[UpdateGroupUserInvited](update)
       case (UpdateGroupInvite.header, update)      ⇒ parseUpdate[UpdateGroupInvite](update)
     }
@@ -130,7 +130,7 @@ class GroupsServiceSpec
           case Ok(ResponseSeqDate(1001, _, _)) ⇒
         }
       }
-      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(UpdateGroupUserInvited.header, UpdateGroupInvite.header)) {
+      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateGroupUserInvited.header, UpdateGroupInvite.header)) {
         case (UpdateGroupUserInvited.header, update) ⇒ parseUpdate[UpdateGroupUserInvited](update)
         case (UpdateGroupInvite.header, update)      ⇒ parseUpdate[UpdateGroupInvite](update)
       }
@@ -138,7 +138,7 @@ class GroupsServiceSpec
 
     {
       implicit val clientData = clientData2
-      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(UpdateGroupInvite.header)) {
+      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateGroupInvite.header)) {
         case (UpdateGroupInvite.header, update) ⇒ parseUpdate[UpdateGroupInvite](update)
       }
     }
@@ -163,7 +163,7 @@ class GroupsServiceSpec
           case Ok(ResponseSeqDate(1002, _, _)) ⇒
         }
       }
-      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(
+      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(
         UpdateGroupUserInvited.header,
         UpdateGroupInvite.header,
         UpdateGroupTitleChanged.header
@@ -176,7 +176,7 @@ class GroupsServiceSpec
 
     {
       implicit val clientData = clientData2
-      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(
+      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(
         UpdateGroupInvite.header,
         UpdateGroupTitleChanged.header
       )) {
@@ -539,7 +539,7 @@ class GroupsServiceSpec
 
     {
       implicit val clientData = clientData1
-      expectUpdatesUnordered(ignoreUnmatched)(0, Array.empty, Set(
+      expectUpdatesUnordered(ignoreUnmatched)(0, Array.empty, Seq(
         UpdateGroupInvite.header,
         UpdateGroupUserInvited.header,
         UpdateMessageRead.header,
@@ -598,7 +598,6 @@ class GroupsServiceSpec
 
   def e13() = {
     val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
 
     implicit val clientData = ClientData(authId1, createSessionId(), Some(user1.id))
 
