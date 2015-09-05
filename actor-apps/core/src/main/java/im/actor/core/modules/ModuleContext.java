@@ -20,7 +20,7 @@ import im.actor.core.modules.internal.SearchModule;
 import im.actor.core.modules.internal.SecurityModule;
 import im.actor.core.modules.internal.SettingsModule;
 import im.actor.core.modules.internal.TypingModule;
-import im.actor.core.modules.internal.users.UsersModule;
+import im.actor.core.modules.internal.UsersModule;
 import im.actor.core.network.ActorApi;
 import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.storage.PreferencesStorage;
