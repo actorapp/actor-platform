@@ -15,7 +15,6 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     var needRelayout = true
     var isClanchTop:Bool = false
     var isClanchBottom:Bool = false
-    var isAttributed:Bool = false
     
     private let dateText = UILabel()
     private var messageState: UInt = ACMessageState.UNKNOWN.rawValue
@@ -72,11 +71,22 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     }
     
     func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
-        UIApplication.sharedApplication().openURL(url)
+        openUrl(url)
     }
     
     func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
-        UIApplication.sharedApplication().openURL(url)
+        openUrl(url)
+    }
+    
+    func openUrl(url: NSURL) {
+        if url.scheme == "source" {
+            var path = url.path!
+            var index = path.substringFromIndex(advance(path.startIndex, 1)).toInt()!
+            var code = self.cellLayout.sources[index]
+            self.controller.navigateNext(CodePreviewController(code: code), removeCurrent: false)
+        } else {
+            UIApplication.sharedApplication().openURL(url)
+        }
     }
     
     override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
@@ -89,10 +99,8 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             
             if self.cellLayout.attrText != nil {
                 messageText.setText(self.cellLayout.attrText)
-                isAttributed = true
             } else {
                 messageText.text = self.cellLayout.text
-                isAttributed = false
             }
             
             if self.cellLayout.isUnsupported {
@@ -213,7 +221,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         }
         
         // Layout elements
-        var topPadding : CGFloat = self.isAttributed ? -0.5 : 0
+        var topPadding : CGFloat = self.cellLayout.attrText != nil ? -0.5 : 0
         if (self.isOut) {
             self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - insets.right, y: insets.top + topPadding)
             self.dateText.frame = CGRectMake(contentWidth - insets.right - 70, textHeight + insets.top - 20, 46, 26)
