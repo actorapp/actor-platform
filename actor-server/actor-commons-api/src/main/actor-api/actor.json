@@ -4239,6 +4239,12 @@
                 "argument": "disableIntegrationView",
                 "category": "full",
                 "description": "  Disabling allowing to get integration token to non-admins"
+              },
+              {
+                "type": "reference",
+                "argument": "extensions",
+                "category": "full",
+                "description": "  Group extensions"
               }
             ],
             "expandable": "true",
@@ -4361,6 +4367,25 @@
                 },
                 "id": 18,
                 "name": "about"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 20,
+                "name": "isHidden"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Extension"
+                  }
+                },
+                "id": 21,
+                "name": "extensions"
               }
             ]
           }
@@ -8317,7 +8342,13 @@
           "content": {
             "name": "AppCounters",
             "doc": [
-              "Application counters"
+              "Application counters",
+              {
+                "type": "reference",
+                "argument": "globalCounter",
+                "category": "full",
+                "description": "  Global unread counter"
+              }
             ],
             "expandable": "true",
             "attributes": [
@@ -8610,6 +8641,39 @@
                 "type": "int32",
                 "id": 1,
                 "name": "maxGroupSize"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Extension",
+            "doc": [
+              "Extention",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Extension id"
+              },
+              {
+                "type": "reference",
+                "argument": "data",
+                "category": "full",
+                "description": "  Extension data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "data"
               }
             ]
           }

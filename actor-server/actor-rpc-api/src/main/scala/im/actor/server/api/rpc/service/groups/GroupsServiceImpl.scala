@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.groups
 
+import im.actor.server.{ ApiConversions, models, persist }
+
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
@@ -16,7 +18,7 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.acl.ACLUtils
-import im.actor.server.api.ApiConversions._
+import ApiConversions._
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, ImageUtils, FileErrors }
 import im.actor.server.group.{ GroupCommands, GroupErrors, GroupExtension, GroupOffice, GroupProcessorRegion, GroupViewRegion }

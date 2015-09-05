@@ -1,3 +1,4 @@
+import { assign } from 'lodash';
 import React from 'react';
 import Modal from 'react-modal';
 import addons from 'react/addons';
@@ -5,6 +6,7 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import { Styles, FlatButton, Snackbar } from 'material-ui';
 import ReactZeroClipboard from 'react-zeroclipboard';
+import classnames from 'classnames';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 import ActorTheme from 'constants/ActorTheme';
@@ -45,7 +47,9 @@ class InviteByLink extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores();
+    this.state = assign({
+      isCopyButtonEnabled: false
+    }, getStateFromStores());
 
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
@@ -64,15 +68,18 @@ class InviteByLink extends React.Component {
   }
 
   render() {
-    const group = this.state.group;
-    const inviteUrl = this.state.inviteUrl;
-    const isShown = this.state.isShown;
+    const { group } = this.state;
+    const { inviteUrl, isShown, isCopyButtonEnabled } = this.state;
     const snackbarStyles = ActorTheme.getSnackbarStyles();
 
     let groupName;
     if (group !== null) {
       groupName = <b>{group.name}</b>;
     }
+
+    const copyButtonClassname = classnames('button button--blue pull-right', {
+      'hide': !isCopyButtonEnabled
+    });
 
     return (
       <Modal className="modal-new modal-new--invite-by-link"
@@ -107,8 +114,8 @@ class InviteByLink extends React.Component {
           <button className="button button--light-blue pull-left hide">
             <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
           </button>
-          <ReactZeroClipboard onCopy={this.onInviteLinkCopied} text={inviteUrl}>
-            <button className="button button--blue pull-right">
+          <ReactZeroClipboard onCopy={this.onInviteLinkCopied} onReady={this.onZeroclipboardReady} text={inviteUrl}>
+            <button className={copyButtonClassname}>
               <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
             </button>
           </ReactZeroClipboard>
@@ -150,6 +157,9 @@ class InviteByLink extends React.Component {
     this.refs.inviteLinkCopied.show();
   };
 
+  onZeroclipboardReady = () => {
+    this.setState({isCopyButtonEnabled: true});
+  };
 }
 
 export default InviteByLink;

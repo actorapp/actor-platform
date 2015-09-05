@@ -168,4 +168,12 @@
 #import "im/actor/runtime/storage/ListStorageDisplayEx.h"
 #import "im/actor/runtime/storage/PreferencesStorage.h"
 
+#import "im/actor/runtime/markdown/MarkdownParser.h"
+#import "im/actor/runtime/markdown/MDText.h"
+#import "im/actor/runtime/markdown/MDRawText.h"
+#import "im/actor/runtime/markdown/MDCode.h"
+#import "im/actor/runtime/markdown/MDDocument.h"
+#import "im/actor/runtime/markdown/MDSection.h"
+#import "im/actor/runtime/markdown/MDSpan.h"
+
 #endif

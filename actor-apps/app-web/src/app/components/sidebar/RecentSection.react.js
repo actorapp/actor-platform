@@ -40,30 +40,28 @@ class RecentSection extends React.Component {
     this.state = getStateFromStore();
 
     DialogStore.addChangeListener(this.onChange);
-    DialogStore.addSelectListener(this.onChange);
     CreateGroupStore.addChangeListener(this.onChange);
     ThemeManager.setTheme(ActorTheme);
   }
 
   componentWillUnmount() {
     DialogStore.removeChangeListener(this.onChange);
-    DialogStore.removeSelectListener(this.onChange);
     CreateGroupStore.removeChangeListener(this.onChange);
   }
 
   onChange = () => {
     this.setState(getStateFromStore());
-  }
+  };
 
   openCreateGroup = () => {
     CreateGroupActionCreators.openModal();
-  }
+  };
 
   onScroll = event => {
     if (event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight <= LoadDialogsScrollBottom) {
       DialogActionCreators.onDialogsEnd();
     }
-  }
+  };
 
   render() {
     let dialogs = _.map(this.state.dialogs, (dialog, index) => {

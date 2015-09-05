@@ -54,14 +54,7 @@ class TextCell: UATableViewCell {
     }
     
     class func measure(text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
-        
-        var style = NSMutableParagraphStyle();
-        style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-        var rect = text.boundingRectWithSize(CGSize(width: width - 30 - (enableNavigation ? 30 : 0), height: 10000),
-            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
-            attributes: [NSFontAttributeName: UIFont.systemFontOfSize(17.0), NSParagraphStyleAttributeName: style],
-            context: nil);
-        
-        return CGFloat(round(rect.height) + 36)
+        var height = UIViewMeasure.measureText(text, width: width - 30 - (enableNavigation ? 30 : 0), fontSize: 17)
+        return CGFloat(height + 36)
     }
 }

@@ -5,6 +5,10 @@
 package im.actor.core.viewmodel;
 
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.events.AppVisibleChanged;
+import im.actor.core.modules.events.ConnectingStateChanged;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.mvvm.ValueModel;
 
 /**
@@ -47,6 +51,27 @@ public class AppStateVM {
         this.isContactsLoaded = context.getPreferences().getBool("app.contacts.loaded", false);
 
         this.isAppLoaded = new ValueModel<Boolean>("app.loaded", isBookImported && isDialogsLoaded && isContactsLoaded);
+
+        context.getEvents().subscribe(new BusSubscriber() {
+            @Override
+            public void onBusEvent(Event event) {
+                if (event instanceof AppVisibleChanged) {
+                    if (((AppVisibleChanged) event).isVisible()) {
+                        isAppVisible.change(true);
+                        globalTempCounter.change(0);
+                    } else {
+                        isAppVisible.change(false);
+                    }
+                }
+            }
+        }, AppVisibleChanged.EVENT);
+
+        context.getEvents().subscribe(new BusSubscriber() {
+            @Override
+            public void onBusEvent(Event event) {
+                isConnecting.change(((ConnectingStateChanged) event).isConnecting());
+            }
+        }, ConnectingStateChanged.EVENT);
     }
 
     private void updateLoaded() {
@@ -67,21 +92,6 @@ public class AppStateVM {
         if (!isAppVisible.get()) {
             globalTempCounter.change(value);
         }
-    }
-
-    /**
-     * Notify when app become visible
-     */
-    public synchronized void onAppVisible() {
-        isAppVisible.change(true);
-        globalTempCounter.change(0);
-    }
-
-    /**
-     * Notify when app become hidden
-     */
-    public synchronized void onAppHidden() {
-        isAppVisible.change(false);
     }
 
     /**

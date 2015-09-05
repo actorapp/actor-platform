@@ -76,7 +76,7 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
     case m @ Migrate(group, avatarDataOpt, botUsers, users) ⇒
       log.info("Migrate: {}", m)
 
-      val created: TSEvent = TSEvent(group.createdAt, Created(group.id, group.creatorUserId, group.accessHash, group.title))
+      val created: TSEvent = TSEvent(group.createdAt, Created(group.id, Some(GroupType.General), group.creatorUserId, group.accessHash, group.title))
 
       val botAdded: Vector[TSEvent] = botUsers.toVector map { bu ⇒
         TSEvent(group.createdAt, BotAdded(bu.userId, bu.token))

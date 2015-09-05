@@ -1,7 +1,5 @@
 package im.actor.server.persist
 
-import im.actor.server.models
-
 import scala.concurrent.ExecutionContext
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
@@ -65,8 +63,16 @@ object Dialog {
   def byPK(userId: Int, peer: models.Peer) =
     byPKSimple(userId, peer.typ.toInt, peer.id)
 
+  def byPeerType(userId: Rep[Int], peerType: Rep[Int]) =
+    dialogs.filter(d ⇒ d.userId === userId && d.peerType === peerType)
+
+  def idByPeerType(userId: Rep[Int], peerType: Rep[Int]) =
+    byPeerType(userId, peerType).map(_.peerId)
+
   val byPKC = Compiled(byPKSimple _)
   val byPeerC = Compiled(byPeerSimple _)
+  val byPeerTypeC = Compiled(byPeerType _)
+  val idByPeerTypeC = Compiled(idByPeerType _)
 
   def create(dialog: models.Dialog) =
     dialogs += dialog
@@ -80,6 +86,15 @@ object Dialog {
 
   def find(userId: Int, peer: models.Peer): SqlAction[Option[models.Dialog], NoStream, Read] =
     byPKC((userId, peer.typ.toInt, peer.id)).result.headOption
+
+  def findGroups(userId: Int): FixedSqlStreamingAction[Seq[models.Dialog], models.Dialog, Read] =
+    byPeerTypeC((userId, models.PeerType.Group.toInt)).result
+
+  def findGroupIds(userId: Int): FixedSqlStreamingAction[Seq[Int], Int, Read] =
+    idByPeerTypeC((userId, models.PeerType.Group.toInt)).result
+
+  def findUserIds(userId: Int): FixedSqlStreamingAction[Seq[Int], Int, Read] =
+    idByPeerTypeC((userId, models.PeerType.Private.toInt)).result
 
   def findLastReadBefore(date: DateTime, userId: Int) =
     dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result

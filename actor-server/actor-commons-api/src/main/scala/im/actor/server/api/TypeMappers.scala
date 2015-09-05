@@ -1,9 +1,8 @@
 package im.actor.server.api
 
-import akka.actor.ActorRef
-import akka.serialization.Serialization
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
+import im.actor.api.rpc.misc.Extension
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.rpc.users.{ Sex ⇒ S }
 import im.actor.api.rpc.users.Sex.Sex
@@ -111,6 +110,17 @@ private[api] trait MessageMapper {
     ByteString.copyFrom(upd.toByteArray)
   }
 
+  def applyExtension(bytes: ByteString): Extension = {
+    if (bytes.size > 0) {
+      Extension.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+    } else {
+      null
+    }
+  }
+
+  def unapplyExtension(ext: Extension): ByteString =
+    ByteString.copyFrom(ext.toByteArray)
+
   implicit val seqUpdMapper: TypeMapper[ByteString, SeqUpdate] = TypeMapper(applySeqUpdate)(unapplySeqUpdate)
 
   implicit val anyRefMapper: TypeMapper[ByteString, AnyRef] = TypeMapper(applyAnyRef)(unapplyAnyRef)
@@ -128,6 +138,8 @@ private[api] trait MessageMapper {
   implicit val avatarMapper: TypeMapper[ByteString, Avatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 
   implicit val sexMapper: TypeMapper[Int, Sex] = TypeMapper(applySex)(unapplySex)
+
+  implicit val extensionMapper: TypeMapper[ByteString, Extension] = TypeMapper(applyExtension)(unapplyExtension)
 }
 
 object CommonSerialization {

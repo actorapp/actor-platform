@@ -5,12 +5,12 @@ import java.time.{ LocalDateTime, ZoneOffset }
 import akka.actor.Status
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
-import com.trueaccord.scalapb.GeneratedMessage
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ServiceMessage
+import im.actor.api.rpc.misc.Extension
 import im.actor.api.rpc.users.Sex
-import im.actor.server.api.ApiConversions._
+import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.history.HistoryUtils
 import im.actor.server.{ persist ⇒ p, models }
@@ -25,7 +25,6 @@ import im.actor.server.user.UserOffice
 import ACLUtils._
 import im.actor.server.util.IdUtils._
 import ImageUtils._
-import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -38,19 +37,26 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   import GroupCommands._
   import GroupEvents._
 
-  protected def createInternal(creatorUserId: Int, title: String, userIds: Seq[Int]): Unit = {
+  protected def createInternal(typ: GroupType, creatorUserId: Int, title: String, userIds: Seq[Int], isHidden: Option[Boolean], extensions: Seq[Extension] = Seq.empty): Unit = {
     val accessHash = genAccessHash()
 
     val date = now()
-    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title, userIds)
+    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, (userIds.toSet + creatorUserId).toSeq, isHidden, extensions)
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒
       context become working(state)
 
       val rng = ThreadLocalRandom.current()
+
+      // FIXME: invite other members
+
+      val update = UpdateGroupInvite(groupId, creatorUserId, date.getMillis, rng.nextLong())
+
       db.run(for {
         _ ← createInDb(state, rng.nextLong())
+        _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
+        _ ← DBIO.from(UserOffice.broadcastUserUpdate(creatorUserId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${groupId}_${update.randomId}")))
       } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
         case e ⇒
           log.error(e, "Failed to create group internally")
@@ -58,7 +64,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def create(groupId: Int, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
+  protected def create(groupId: Int, typ: GroupType, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
     val accessHash = genAccessHash()
 
     val rng = ThreadLocalRandom.current()
@@ -69,7 +75,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     val date = now()
 
-    val created = GroupEvents.Created(groupId, creatorUserId, accessHash, title, Seq(creatorUserId))
+    val created = GroupEvents.Created(groupId, Some(typ), creatorUserId, accessHash, title, Seq(creatorUserId), isHidden = Some(false))
     val state = initState(date, created)
 
     persist(TSEvent(date, created)) { _ ⇒
@@ -87,7 +93,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               creatorUserId = state.creatorUserId,
               accessHash = state.accessHash,
               title = state.title,
-              isPublic = state.isPublic,
+              isPublic = (state.typ == GroupType.Public),
               createdAt = state.createdAt,
               about = None,
               topic = None
@@ -104,7 +110,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
             serviceMessage.toByteArray
           )
           seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
-          else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${randomId}")))
+          else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${groupId}_${randomId}")))
         } yield CreateAck(state.accessHash, seqstate, date.getMillis)
       ) pipeTo sender() onFailure {
           case e ⇒
@@ -118,8 +124,6 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     persist(TSEvent(now(), botAdded)) { tsEvt ⇒
       context become working(updatedState(tsEvt, state))
-
-      val rng = ThreadLocalRandom.current()
 
       (for {
         _ ← UserOffice.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), "Bot", "US", Sex.Unknown, isBot = true)
@@ -143,10 +147,10 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
     for {
       _ ← db.run(p.GroupUser.create(groupId, userId, inviterUserId, date, None, isAdmin = false))
-      _ ← UserOffice.broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true, deliveryId = Some(s"invite_${randomId}"))
+      _ ← UserOffice.broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true, deliveryId = Some(s"invite_${groupId}_${randomId}"))
       // TODO: #perf the following broadcasts do update serializing per each user
-      _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(UserOffice.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true, deliveryId = Some(s"useradded_${randomId}")))) // use broadcastUsersUpdate maybe?
-      seqstate ← UserOffice.broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true, deliveryId = Some(s"useradded_${randomId}"))
+      _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(UserOffice.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true, deliveryId = Some(s"useradded_${groupId}_${randomId}")))) // use broadcastUsersUpdate maybe?
+      seqstate ← UserOffice.broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true, deliveryId = Some(s"useradded_${groupId}_${randomId}"))
       // TODO: Move to a History Writing subsystem
       _ ← db.run(HistoryUtils.writeHistoryMessage(
         models.Peer.privat(inviterUserId),
@@ -429,7 +433,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         creatorUserId = state.creatorUserId,
         accessHash = state.accessHash,
         title = state.title,
-        isPublic = state.isPublic,
+        isPublic = (state.typ == GroupType.Public),
         createdAt = state.createdAt,
         about = None,
         topic = None
