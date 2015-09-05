@@ -24,15 +24,3 @@ var isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 var isIPhone = UIDevice.currentDevice().userInterfaceIdiom == .Phone
 
 let isiOS8 = floor(NSFoundationVersionNumber) > floor(NSFoundationVersionNumber_iOS_7_1)
-
-var isRetina : Bool {
-    get {
-        return UIScreen.mainScreen().scale > 1
-    }
-}
-
-var retinaPixel : CGFloat {
-    get {
-        return isRetina ? 0.5 : 1.0
-    }
-}
