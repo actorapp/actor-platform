@@ -21,8 +21,6 @@ const STEPS = keymirror({
 });
 
 class CreateGroupForm extends React.Component {
-  static displayName = 'CreateGroupForm'
-
   static childContextTypes = {
     muiTheme: React.PropTypes.object
   };
