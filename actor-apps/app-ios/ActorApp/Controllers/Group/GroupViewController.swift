@@ -101,10 +101,10 @@ class GroupViewController: AATableViewController {
                 self.editName()
             })
         
-        adminSection
-            .addNavigationCell("GroupIntegrations", actionClosure: { () -> () in
-                self.navigateNext(IntegrationViewController(gid: jint(self.gid)), removeCurrent: false)
-            })
+//        adminSection
+//            .addNavigationCell("GroupIntegrations", actionClosure: { () -> () in
+//                self.navigateNext(IntegrationViewController(gid: jint(self.gid)), removeCurrent: false)
+//            })
         
         // Notifications
         tableData.addSection(autoSeparator: true)
