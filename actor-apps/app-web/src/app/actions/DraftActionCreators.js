@@ -1,19 +1,20 @@
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import { dispatch } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 
 const DraftActionCreators = {
   loadDraft(peer) {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.DRAFT_LOAD,
-      peer: peer
+    dispatch(ActionTypes.DRAFT_LOAD, {
+      peer
     });
   },
 
   saveDraft(draft, saveNow = false) {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.DRAFT_SAVE,
-      draft: draft,
-      saveNow: saveNow
+    dispatch(ActionTypes.DRAFT_SAVE, {
+      draft, saveNow
     });
   }
 };

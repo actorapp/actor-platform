@@ -19,8 +19,6 @@ const getStateFromStores = () => {
 };
 
 class CreateGroup extends React.Component {
-  static displayName = 'CreateGroup';
-
   constructor(props) {
     super(props);
 
