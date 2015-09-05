@@ -15,6 +15,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     var needRelayout = true
     var isClanchTop:Bool = false
     var isClanchBottom:Bool = false
+    var isAttributed:Bool = false
     
     private let dateText = UILabel()
     private var messageState: UInt = ACMessageState.UNKNOWN.rawValue
@@ -35,6 +36,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
         messageText.activeLinkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
             kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
+        messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Top
         
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
@@ -85,7 +87,13 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         if (!reuse) {
             needRelayout = true
             
-            messageText.text = self.cellLayout.text
+            if self.cellLayout.attrText != nil {
+                messageText.setText(self.cellLayout.attrText)
+                isAttributed = true
+            } else {
+                messageText.text = self.cellLayout.text
+                isAttributed = false
+            }
             
             if self.cellLayout.isUnsupported {
                 messageText.font = TextCellLayout.bubbleFontUnsupported
@@ -195,8 +203,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         // Measure Text
         var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
         
-         self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSizeWithPadding.width, self.cellLayout.textSizeWithPadding.height)
-         self.messageText.sizeToFit()
+        self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSize.width, self.cellLayout.textSize.height)
         
         var textWidth = round(self.cellLayout.textSizeWithPadding.width)
         var textHeight = round(self.cellLayout.textSizeWithPadding.height)
@@ -206,13 +213,14 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         }
         
         // Layout elements
+        var topPadding : CGFloat = self.isAttributed ? -0.5 : 0
         if (self.isOut) {
-            self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - insets.right, y: insets.top)
+            self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - insets.right, y: insets.top + topPadding)
             self.dateText.frame = CGRectMake(contentWidth - insets.right - 70, textHeight + insets.top - 20, 46, 26)
             self.statusView.frame = CGRectMake(contentWidth - insets.right - 24, textHeight + insets.top - 20, 20, 26)
             self.statusView.hidden = false
         } else {
-            self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top)
+            self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top + topPadding)
             self.dateText.frame = CGRectMake(insets.left + textWidth - 47, textHeight + insets.top - 20, 46, 26)
             self.statusView.hidden = true
         }
