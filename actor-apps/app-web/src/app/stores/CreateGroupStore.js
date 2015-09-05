@@ -8,35 +8,45 @@ import Dispatcher from 'dispatcher/ActorAppDispatcher';
 
 const CHANGE_EVENT = 'change';
 
-let modalOpen = false;
+let _modalOpen = false;
 
 const CreateGroupStore = _.assign(EventEmitter.prototype, {
   emitChange: () => {
     CreateGroupStore.emit(CHANGE_EVENT);
   },
 
-  addChangeListener: (cb) => {
-    CreateGroupStore.on(CHANGE_EVENT, cb);
+  addChangeListener: (callback) => {
+    CreateGroupStore.on(CHANGE_EVENT, callback);
   },
 
-  removeChangeListener: (cb) => {
-    CreateGroupStore.removeListener(CHANGE_EVENT, cb);
+  removeChangeListener: (callback) => {
+    CreateGroupStore.removeListener(CHANGE_EVENT, callback);
   },
 
   isModalOpen: () => {
-    return modalOpen;
+    return _modalOpen;
   }
 });
 
 CreateGroupStore.dispatchToken = Dispatcher.register((action) => {
   switch (action.type) {
     case ActionTypes.CREATE_GROUP_MODAL_OPEN:
-      modalOpen = true;
+      _modalOpen = true;
       CreateGroupStore.emitChange();
       break;
     case ActionTypes.CREATE_GROUP_MODAL_CLOSE:
-      modalOpen = false;
+      _modalOpen = false;
       CreateGroupStore.emitChange();
+      break;
+
+    case ActionTypes.CREATE_GROUP:
+    case ActionTypes.CREATE_GROUP_SUCCESS:
+      CreateGroupStore.emitChange();
+      break;
+    case ActionTypes.CREATE_GROUP_ERROR:
+      console.error('Failed to create group', action.error);
+      CreateGroupStore.emitChange();
+      break;
   }
 });
 

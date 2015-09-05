@@ -8,7 +8,7 @@ import mixpanel from 'utils/Mixpanel';
 import { ActionTypes } from 'constants/ActorAppConstants';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
-import { dispatch } from 'dispatcher/ActorAppDispatcher';
+import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 
 const CreateGroupActionCreators = {
   openModal() {
@@ -20,19 +20,17 @@ const CreateGroupActionCreators = {
   },
 
   createGroup(title, avatar, memberIds) {
-    const p = ActorClient.createGroup(title, avatar, memberIds);
+    const createGroup = () => dispatchAsync(ActorClient.createGroup(title, avatar, memberIds), {
+      request: ActionTypes.CREATE_GROUP,
+      success: ActionTypes.CREATE_GROUP_SUCCESS,
+      failure: ActionTypes.CREATE_GROUP_ERROR
+    }, { title, avatar, memberIds });
 
-    p.then(
-        peer => {
-        DialogActionCreators.selectDialogPeer(peer);
-        this.closeModal();
-        mixpanel.track('Create group');
-      },
-        error => {
-        console.error('Failed to create group', error);
-      });
-
-    return p;
+    createGroup().then((peer) => {
+      this.closeModal();
+      DialogActionCreators.selectDialogPeer(peer);
+      mixpanel.track('Create group');
+    });
   }
 };
 
