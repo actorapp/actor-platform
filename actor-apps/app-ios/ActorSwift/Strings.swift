@@ -29,6 +29,10 @@ extension String {
         return "".join(componentsSeparatedByCharactersInSet(set))
     }
     
+    func replace(src: String, dest:String) -> String {
+        return stringByReplacingOccurrencesOfString(src, withString: dest, options: NSStringCompareOptions.allZeros, range: nil)
+    }
+    
     func toLong() -> Int64? {
         return NSNumberFormatter().numberFromString(self)?.longLongValue
     }

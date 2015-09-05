@@ -110,6 +110,7 @@ class TextCellLayout: CellLayout {
     var isUnsupported: Bool
     var textSizeWithPadding: CGSize
     var textSize: CGSize
+    var sources = [String]()
     
     override init(message: ACMessage) {
         
@@ -137,7 +138,11 @@ class TextCellLayout: CellLayout {
                 isFirst = false
                 
                 if s.getType() == ARMDSection_TYPE_CODE {
-                    nAttrText.appendAttributedString(NSAttributedString(string: "[CODE]\n\(s.getCode().getCode())\n[/CODE]"))
+                    var attributes = [NSLinkAttributeName: NSURL(string: "source:///\(sources.count)") as! AnyObject,
+                        NSFontAttributeName: TextCellLayout.fontRegular]
+                    nAttrText.appendAttributedString(NSAttributedString(string: "Open Code", attributes: attributes))
+                    
+                    sources.append(s.getCode().getCode())
                 } else if s.getType() == ARMDSection_TYPE_TEXT {
                     var child: [ARMDText] = s.getText().toSwiftArray()
                     for c in child {
