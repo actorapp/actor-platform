@@ -27,10 +27,20 @@ object DialogId {
     }
   }
 
-  def peer(dialogId: DialogId, clientUserId: Int): Peer = {
+  def toPeer(dialogId: DialogId, clientUserId: Int): Peer = {
     dialogId match {
       case id: PrivateDialogId ⇒
         val userId = if (id.left == clientUserId) id.right else id.left
+        Peer(PeerType.Private, userId)
+      case id: GroupDialogId ⇒
+        Peer(PeerType.Group, id.groupId)
+    }
+  }
+
+  def fromPeer(dialogId: DialogId, clientUserId: Int): Peer = {
+    dialogId match {
+      case id: PrivateDialogId ⇒
+        val userId = if (id.left == clientUserId) id.left else id.right
         Peer(PeerType.Private, userId)
       case id: GroupDialogId ⇒
         Peer(PeerType.Group, id.groupId)
