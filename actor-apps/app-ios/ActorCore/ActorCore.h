@@ -89,6 +89,7 @@
 #import "im/actor/core/viewmodel/generics/StringValueModel.h"
 #import "im/actor/core/viewmodel/generics/AvatarValueModel.h"
 #import "im/actor/core/viewmodel/generics/BooleanValueModel.h"
+#import "im/actor/core/viewmodel/generics/IntValueModel.h"
 #import "im/actor/core/viewmodel/generics/UserPhoneValueModel.h"
 #import "im/actor/core/viewmodel/generics/UserPresenceValueModel.h"
 #import "im/actor/core/viewmodel/generics/ArrayListUserPhone.h"

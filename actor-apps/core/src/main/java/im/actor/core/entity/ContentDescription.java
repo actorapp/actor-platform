@@ -6,13 +6,10 @@ package im.actor.core.entity;
 
 import java.io.IOException;
 
-import im.actor.runtime.bser.Bser;
-import im.actor.runtime.bser.BserObject;
-import im.actor.runtime.bser.BserValues;
-import im.actor.runtime.bser.BserWriter;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.PhotoContent;
+import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
 import im.actor.core.entity.content.ServiceGroupTitleChanged;
@@ -23,6 +20,10 @@ import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.runtime.bser.Bser;
+import im.actor.runtime.bser.BserObject;
+import im.actor.runtime.bser.BserValues;
+import im.actor.runtime.bser.BserWriter;
 
 
 public class ContentDescription extends BserObject {
@@ -66,6 +67,9 @@ public class ContentDescription extends BserObject {
         } else if (msg instanceof ServiceGroupUserJoined) {
             return new ContentDescription(ContentType.SERVICE_JOINED, "",
                     0, false);
+        } else if (msg instanceof ServiceContent) {
+            return new ContentDescription(ContentType.SERVICE,
+                    ((ServiceContent) msg).getCompatText(), 0, false);
         } else {
             return new ContentDescription(ContentType.UNKNOWN_CONTENT);
         }
