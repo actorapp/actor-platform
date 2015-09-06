@@ -42,9 +42,9 @@ class SettingsNotificationsViewController: AATableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (section == 0) {
             return 1
-        } else if (section == 2) {
-            return Actor.isNotificationsEnabled() ? 2 : 1
         } else if (section == 1) {
+            return Actor.isNotificationsEnabled() ? 2 : 1
+        } else if (section == 2) {
             return Actor.isGroupNotificationsEnabled() ? 2 : 1
         } else if (section == 3) {
             return 1
@@ -56,9 +56,9 @@ class SettingsNotificationsViewController: AATableViewController {
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if (section == 0) {
             return NSLocalizedString("NotificationsEffectsTitle", comment: "Effects")
-        } else if (section == 2) {
-            return NSLocalizedString("NotificationsMobileTitle", comment: "Mobile Notifications")
         } else if (section == 1) {
+            return NSLocalizedString("NotificationsMobileTitle", comment: "Mobile Notifications")
+        } else if (section == 2) {
             return NSLocalizedString("NotificationsGroups", comment: "Group Notifications")
         } else if (section == 3) {
             return NSLocalizedString("NotificationsPrivacyTitle", comment: "Privacy")
@@ -68,9 +68,9 @@ class SettingsNotificationsViewController: AATableViewController {
     }
     
     func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if (section == 2) {
+        if (section == 1) {
             return NSLocalizedString("NotificationsNotificationHint", comment: "Disable hint")
-        } else if (section == 1) {
+        } else if (section == 2) {
             return NSLocalizedString("NotificationsOnlyMentionsHint", comment: "Only Mentions hint")
         } else if (section == 3) {
             return NSLocalizedString("NotificationsPreviewHint", comment: "Preview hint")
@@ -109,7 +109,7 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.switchBlock = { (nValue: Bool) in
             self.tableView.beginUpdates()
             Actor.changeNotificationsEnabledWithValue(nValue)
-            var rows = [NSIndexPath(forRow: 1, inSection: 2)]
+            var rows = [NSIndexPath(forRow: 1, inSection: indexPath.section)]
             if (nValue) {
                 self.tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Middle)
             } else {
@@ -153,7 +153,7 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.switchBlock = { (nValue: Bool) in
             self.tableView.beginUpdates()
             Actor.changeGroupNotificationsEnabled(nValue)
-            var rows = [NSIndexPath(forRow: 1, inSection: 1)]
+            var rows = [NSIndexPath(forRow: 1, inSection: indexPath.section)]
             if (nValue) {
                 self.tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Middle)
             } else {
@@ -267,13 +267,13 @@ class SettingsNotificationsViewController: AATableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             return notificationsTonesCell(indexPath)
-        } else if (indexPath.section == 2) {
+        } else if (indexPath.section == 1) {
             if (indexPath.row == 0) {
                 return notificationsEnableCell(indexPath)
             } else if (indexPath.row == 1) {
                 return notificationsAlertCell(indexPath)
             }
-        } else if (indexPath.section == 1) {
+        } else if (indexPath.section == 2) {
             if (indexPath.row == 0) {
                 return groupEnabledCell(indexPath)
             } else {
