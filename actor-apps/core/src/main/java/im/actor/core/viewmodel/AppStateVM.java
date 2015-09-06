@@ -7,6 +7,8 @@ package im.actor.core.viewmodel;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.events.AppVisibleChanged;
 import im.actor.core.modules.events.ConnectingStateChanged;
+import im.actor.core.viewmodel.generics.BooleanValueModel;
+import im.actor.core.viewmodel.generics.IntValueModel;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.mvvm.ValueModel;
@@ -16,15 +18,15 @@ import im.actor.runtime.mvvm.ValueModel;
  */
 public class AppStateVM {
     private ModuleContext context;
-    private ValueModel<Boolean> isAppVisible;
-    private ValueModel<Boolean> isDialogsEmpty;
-    private ValueModel<Boolean> isContactsEmpty;
-    private ValueModel<Boolean> isAppEmpty;
-    private ValueModel<Boolean> isAppLoaded;
-    private ValueModel<Boolean> isConnecting;
-    private ValueModel<Boolean> isSyncing;
-    private ValueModel<Integer> globalCounter;
-    private ValueModel<Integer> globalTempCounter;
+    private BooleanValueModel isAppVisible;
+    private BooleanValueModel isDialogsEmpty;
+    private BooleanValueModel isContactsEmpty;
+    private BooleanValueModel isAppEmpty;
+    private BooleanValueModel isAppLoaded;
+    private BooleanValueModel isConnecting;
+    private BooleanValueModel isSyncing;
+    private IntValueModel globalCounter;
+    private IntValueModel globalTempCounter;
 
     private boolean isBookImported;
     private boolean isDialogsLoaded;
@@ -37,20 +39,20 @@ public class AppStateVM {
      */
     public AppStateVM(ModuleContext context) {
         this.context = context;
-        this.isDialogsEmpty = new ValueModel<Boolean>("app.dialogs.empty", context.getPreferences().getBool("app.dialogs.empty", true));
-        this.isContactsEmpty = new ValueModel<Boolean>("app.contacts.empty", context.getPreferences().getBool("app.contacts.empty", true));
-        this.isAppEmpty = new ValueModel<Boolean>("app.empty", context.getPreferences().getBool("app.empty", true));
-        this.globalCounter = new ValueModel<Integer>("app.counter", context.getPreferences().getInt("app.counter", 0));
-        this.globalTempCounter = new ValueModel<Integer>("app.temp_counter", 0);
-        this.isConnecting = new ValueModel<Boolean>("app.connecting", false);
-        this.isSyncing = new ValueModel<Boolean>("app.syncing", false);
-        this.isAppVisible = new ValueModel<Boolean>("app.visible", false);
+        this.isDialogsEmpty = new BooleanValueModel("app.dialogs.empty", context.getPreferences().getBool("app.dialogs.empty", true));
+        this.isContactsEmpty = new BooleanValueModel("app.contacts.empty", context.getPreferences().getBool("app.contacts.empty", true));
+        this.isAppEmpty = new BooleanValueModel("app.empty", context.getPreferences().getBool("app.empty", true));
+        this.globalCounter = new IntValueModel("app.counter", context.getPreferences().getInt("app.counter", 0));
+        this.globalTempCounter = new IntValueModel("app.temp_counter", 0);
+        this.isConnecting = new BooleanValueModel("app.connecting", false);
+        this.isSyncing = new BooleanValueModel("app.syncing", false);
+        this.isAppVisible = new BooleanValueModel("app.visible", false);
 
         this.isBookImported = context.getPreferences().getBool("app.contacts.imported", false);
         this.isDialogsLoaded = context.getPreferences().getBool("app.dialogs.loaded", false);
         this.isContactsLoaded = context.getPreferences().getBool("app.contacts.loaded", false);
 
-        this.isAppLoaded = new ValueModel<Boolean>("app.loaded", isBookImported && isDialogsLoaded && isContactsLoaded);
+        this.isAppLoaded = new BooleanValueModel("app.loaded", isBookImported && isDialogsLoaded && isContactsLoaded);
 
         context.getEvents().subscribe(new BusSubscriber() {
             @Override
@@ -168,7 +170,7 @@ public class AppStateVM {
      *
      * @return Value Model of Boolean
      */
-    public ValueModel<Boolean> getIsDialogsEmpty() {
+    public BooleanValueModel getIsDialogsEmpty() {
         return isDialogsEmpty;
     }
 
@@ -177,7 +179,7 @@ public class AppStateVM {
      *
      * @return Value Model of Boolean
      */
-    public ValueModel<Boolean> getIsContactsEmpty() {
+    public BooleanValueModel getIsContactsEmpty() {
         return isContactsEmpty;
     }
 
@@ -186,7 +188,7 @@ public class AppStateVM {
      *
      * @return Value Model of Boolean
      */
-    public ValueModel<Boolean> getIsAppLoaded() {
+    public BooleanValueModel getIsAppLoaded() {
         return isAppLoaded;
     }
 
@@ -204,7 +206,7 @@ public class AppStateVM {
      *
      * @return View Model of Boolean
      */
-    public ValueModel<Boolean> getIsSyncing() {
+    public BooleanValueModel getIsSyncing() {
         return isSyncing;
     }
 
@@ -213,7 +215,7 @@ public class AppStateVM {
      *
      * @return View Model of Boolean
      */
-    public ValueModel<Boolean> getIsConnecting() {
+    public BooleanValueModel getIsConnecting() {
         return isConnecting;
     }
 
@@ -223,7 +225,7 @@ public class AppStateVM {
      *
      * @return View Model of Integer
      */
-    public ValueModel<Integer> getGlobalCounter() {
+    public IntValueModel getGlobalCounter() {
         return globalCounter;
     }
 
@@ -232,7 +234,7 @@ public class AppStateVM {
      *
      * @return View Model of Integer
      */
-    public ValueModel<Integer> getGlobalTempCounter() {
+    public IntValueModel getGlobalTempCounter() {
         return globalTempCounter;
     }
 
@@ -241,7 +243,7 @@ public class AppStateVM {
      *
      * @return View Model of Boolean
      */
-    public ValueModel<Boolean> getIsAppVisible() {
+    public BooleanValueModel getIsAppVisible() {
         return isAppVisible;
     }
 }

@@ -65,7 +65,6 @@
 		5D784D31545B05F66D1ED4985D970A86 /* FMDBIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000064EEABC89FAC7C43D2F369AC16D3 /* FMDBIndex.swift */; };
 		608F490C46BB12865A5583A1074059F4 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = C772F5EB883A182214784A5C995DE7B6 /* Images.swift */; };
 		61B1EF2014125C07D1AF3B6BCEBF78E7 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E45FB7A6E225A31077A6FB065672BB9 /* Views.swift */; };
-		6371DDB5904628A9BC6D8908EBCF59E8 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3B2D85A08862EC831BECFF27291B8D0 /* CircullarNode.swift */; };
 		67509EE194F38C0359136465B90DF236 /* elara.caf in Resources */ = {isa = PBXBuildFile; fileRef = 48448FF015AAF39A18598B1AFE123AC4 /* elara.caf */; };
 		694BB9EB1A442B5C8E95DF19884325C6 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413C14151BC38D2FCB0135BC1B77FAF5 /* Colors.swift */; };
 		6B9C1168FE9DE8E5DDE9D195708EB934 /* ContactActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119EDCF19501F81786E607DCC673A1B9 /* ContactActionCell.swift */; };
@@ -137,7 +136,6 @@
 		ED7E5318F3FF72926AC679F191E91953 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1619660CAFA063EAFB102429F467323B /* AuthViewController.swift */; };
 		EDCFCAD9F29CF123468677A31DE2E84F /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D86D2754C8EC18452BFE0A267EA67E3 /* Resouces.swift */; };
 		EE7A27B265451E5467AD5866E42AD20E /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9074592CD0FF573B8A6CA6DD1B11EE7 /* libPods-ActorApp.a */; };
-		F02C6154E8D51F28AE3711E9DC38EAFB /* CircullarProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67620281875B696DF4C75F44CC7A2E59 /* CircullarProgress.swift */; };
 		F0F13508684297EEEC9CB2314462DA46 /* JoinPublicViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298B24DDB97237BD8E787C84E89F2C7A /* JoinPublicViewContoller.swift */; };
 		F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */; };
 		F50FACABD6BF7DC482213EF442F37FF9 /* AppText_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 6A16AB1DC8BC82B61F1EB7914D1EA768 /* AppText_Ru.properties */; };
@@ -214,7 +212,6 @@
 		6238B42B2462DBE201B457C54CA819D7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		63B5137E34869AF4B9C3EFC4B36222F4 /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BasicCell.swift; path = View/Cells/BasicCell.swift; sourceTree = "<group>"; };
 		65E498AE225CBED71E8F3CD1CA2767B7 /* ActorApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActorApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		67620281875B696DF4C75F44CC7A2E59 /* CircullarProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircullarProgress.swift; path = View/Progress/CircullarProgress.swift; sourceTree = "<group>"; };
 		6A16AB1DC8BC82B61F1EB7914D1EA768 /* AppText_Ru.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AppText_Ru.properties; path = ../core/src/main/resources/AppText_Ru.properties; sourceTree = "<group>"; };
 		6C6150D18986C2046F840169F3F0DCB1 /* ConversationMessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversationMessagesViewController.swift; path = Controllers/Conversation/ConversationMessagesViewController.swift; sourceTree = "<group>"; };
 		6E45FB7A6E225A31077A6FB065672BB9 /* Views.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Views.swift; path = ActorSwift/Views.swift; sourceTree = "<group>"; };
@@ -252,7 +249,6 @@
 		96C99B4AB6507A7D36CAB2CB6F0A9BC8 /* europa.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = europa.caf; path = Resources/Sounds/europa.caf; sourceTree = "<group>"; };
 		993125DEA698CD065C01215DCA5C3A6E /* TitledCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TitledCell.swift; path = View/Cells/TitledCell.swift; sourceTree = "<group>"; };
 		A26C1FF1A5693F9F9CEDE81D65C7AD87 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
-		A3B2D85A08862EC831BECFF27291B8D0 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircullarNode.swift; path = View/Progress/CircullarNode.swift; sourceTree = "<group>"; };
 		A4686D7D7B53AE388A9FBE510DFA6798 /* DialogsSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogsSearchCell.swift; path = Controllers/Dialogs/Cells/DialogsSearchCell.swift; sourceTree = "<group>"; };
 		A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Config.swift; path = ActorCore/Config.swift; sourceTree = "<group>"; };
 		ABB53674A14E3D46A5B22DBAF8A27AA1 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -627,8 +623,6 @@
 			isa = PBXGroup;
 			children = (
 				93C0BB4D02D30127D1FBD0D44F43BAD8 /* CircullarLayerProgress.swift */,
-				A3B2D85A08862EC831BECFF27291B8D0 /* CircullarNode.swift */,
-				67620281875B696DF4C75F44CC7A2E59 /* CircullarProgress.swift */,
 			);
 			name = Progress;
 			sourceTree = "<group>";
@@ -983,8 +977,6 @@
 				E8172B3FE77CEEA46F355F0F4D5D3C06 /* BubbleBackgroundProcessor.swift in Sources */,
 				54C40D41266049E8CECFAE3E15D3A4EE /* BubbleLayouts.swift in Sources */,
 				0697229ADDEB47FD0793551932F43DA6 /* CircullarLayerProgress.swift in Sources */,
-				6371DDB5904628A9BC6D8908EBCF59E8 /* CircullarNode.swift in Sources */,
-				F02C6154E8D51F28AE3711E9DC38EAFB /* CircullarProgress.swift in Sources */,
 				14652A2C5993BA776D3513BDC6427F03 /* CocoaFileSystemRuntime.swift in Sources */,
 				957F74E157A5735103DDFE4D53E57A56 /* CocoaHttpRuntime.swift in Sources */,
 				502D1B8825055C6602281A7BB967E803 /* CocoaMessenger.swift in Sources */,
