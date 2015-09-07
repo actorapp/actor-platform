@@ -6,7 +6,7 @@ import memoize from 'memoizee';
 import emojify from 'emojify.js';
 import emojiCharacters from 'emoji-named-characters';
 
-import Markdown from '../../../utils/Markdown';
+import ActorClient from 'utils/ActorClient';
 
 const inversedEmojiCharacters = _.invert(_.mapValues(emojiCharacters, (e) => e.character));
 
@@ -22,7 +22,8 @@ const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), function (name
 const emojiRegexp = new RegExp('(' + emojiVariants.join('|') + ')', 'gi');
 
 const processText = function (text) {
-  let markedText = Markdown.default(text);
+  const markedText = ActorClient.renderMarkdown(text);
+  console.warn('[MARKED]', markedText);
 
   // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
   const noPTag = markedText.replace(/<p>/g, '<p> ');
