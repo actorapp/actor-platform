@@ -9,7 +9,7 @@ import { ActionTypes } from 'constants/ActorAppConstants';
 export default {
   show: (group) => {
     dispatch(ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW, {
-      group: group
+      group
     });
   },
 

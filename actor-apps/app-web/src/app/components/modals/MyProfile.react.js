@@ -83,7 +83,6 @@ class MyProfile extends React.Component {
   };
 
   onAboutChange = event => {
-    console.debug(event.target.value);
     this.setState({about: event.target.value});
   };
 

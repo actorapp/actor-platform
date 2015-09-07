@@ -30,20 +30,20 @@ const CreateGroupStore = _.assign(EventEmitter.prototype, {
 
 CreateGroupStore.dispatchToken = Dispatcher.register((action) => {
   switch (action.type) {
-    case ActionTypes.CREATE_GROUP_MODAL_OPEN:
+    case ActionTypes.GROUP_CREATE_MODAL_OPEN:
       _modalOpen = true;
       CreateGroupStore.emitChange();
       break;
-    case ActionTypes.CREATE_GROUP_MODAL_CLOSE:
+    case ActionTypes.GROUP_CREATE_MODAL_CLOSE:
       _modalOpen = false;
       CreateGroupStore.emitChange();
       break;
 
-    case ActionTypes.CREATE_GROUP:
-    case ActionTypes.CREATE_GROUP_SUCCESS:
+    case ActionTypes.GROUP_CREATE:
+    case ActionTypes.GROUP_CREATE_SUCCESS:
       CreateGroupStore.emitChange();
       break;
-    case ActionTypes.CREATE_GROUP_ERROR:
+    case ActionTypes.GROUP_CREATE_ERROR:
       console.error('Failed to create group', action.error);
       CreateGroupStore.emitChange();
       break;
