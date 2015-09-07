@@ -243,5 +243,9 @@ export default {
 
   editGroupTitle(gid, title) {
     return window.messenger.editGroupTitle(gid, title);
+  },
+
+  renderMarkdown(markdownText) {
+    return window.messenger.renderMarkdown(markdownText);
   }
 };

@@ -6,6 +6,8 @@ package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
 
+import im.actor.core.js.utils.HtmlMarkdownUtils;
+import im.actor.runtime.markdown.MarkdownParser;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -925,5 +927,14 @@ public class JsFacade implements Exportable {
 
     public void changeSoundEffectsEnabled(boolean enabled) {
         messenger.changeConversationTonesEnabled(enabled);
+    }
+
+    public String renderMarkdown(final String markdownText) {
+        try {
+            return HtmlMarkdownUtils.processText(markdownText, MarkdownParser.MODE_FULL);
+        } catch (Exception e) {
+            Log.e("Markdown", e);
+            return "[Error while processing text]";
+        }
     }
 }
