@@ -28,7 +28,7 @@ let getStateFromStores = () => {
   return {
     text: ComposeStore.getText(),
     profile: ActorClient.getUser(ActorClient.getUid()),
-    sendByEnter: PreferencesStore.sendByEnter,
+    sendByEnter: PreferencesStore.getSendByEnter(),
     mentions: ComposeStore.getMentions()
   };
 };
@@ -69,7 +69,7 @@ let getStateFromStores = () => {
     const { mentions, sendByEnter } = this.state;
 
     if (mentions === null) {
-      if (sendByEnter === 'true') {
+      if (sendByEnter === true) {
         if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
           event.preventDefault();
           this.sendTextMessage();
