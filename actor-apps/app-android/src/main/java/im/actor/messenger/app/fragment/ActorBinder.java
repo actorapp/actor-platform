@@ -41,6 +41,7 @@ public class ActorBinder {
 
     }
 
+
     public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<int[]> typing) {
         bind(typing, new ValueChangedListener<int[]>() {
             @Override
@@ -73,6 +74,33 @@ public class ActorBinder {
                 } else {
                     container.setVisibility(View.INVISIBLE);
                     titleContainer.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    public void bind(final TextView textView, final View container, final ValueModel<String> value) {
+        bind(textView, container, value, null, true, "");
+    }
+
+    public void bind(final TextView textView, final View container, final ValueModel<String> value, final OnChangedListener callback, final boolean hide, final String defaultValue) {
+        bind(value, new ValueChangedListener<String>() {
+            @Override
+            public void onChanged(String val, ValueModel<String> valueModel) {
+
+                if (val != null) {
+                    if (hide) {
+                        container.setVisibility(View.VISIBLE);
+                    }
+                    textView.setText(val);
+                } else {
+                    if (hide) {
+                        container.setVisibility(View.GONE);
+                    }
+                    textView.setText(defaultValue);
+                }
+                if (callback != null) {
+                    callback.onChanged(val);
                 }
             }
         });
@@ -216,5 +244,9 @@ public class ActorBinder {
         public void unbind() {
             model.unsubscribe(listener);
         }
+    }
+
+    public interface OnChangedListener {
+        void onChanged(String s);
     }
 }

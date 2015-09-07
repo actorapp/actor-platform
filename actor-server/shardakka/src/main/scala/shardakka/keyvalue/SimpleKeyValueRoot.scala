@@ -8,10 +8,14 @@ object SimpleKeyValueRoot {
     Props(classOf[SimpleKeyValueRoot], name)
 }
 
-final class SimpleKeyValueRoot(name: String) extends Root[ValueCommands.Upsert, ValueCommands.Ack, ValueCommands.Delete, ValueCommands.Ack] {
+final class SimpleKeyValueRoot(name: String) extends Root {
   override def persistenceId = ShardakkaExtension.KVPersistencePrefix + "_" + name + "_root"
 
   protected override def handleCustom: Receive = {
+    case cmd @ ValueCommands.Upsert(key, _) ⇒
+      create[ValueCommands.Ack](key, cmd)
+    case cmd @ ValueCommands.Delete(key) ⇒
+      delete[ValueCommands.Ack](key, cmd)
     case query: ValueQuery ⇒
       valueActorOf(query.key) forward query
   }

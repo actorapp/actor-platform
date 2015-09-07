@@ -18,6 +18,9 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.events.NewSessionCreated;
+import im.actor.core.modules.events.PeerChatOpened;
+import im.actor.core.modules.events.PeerInfoOpened;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
@@ -32,11 +35,13 @@ import im.actor.runtime.actors.mailbox.Envelope;
 import im.actor.runtime.actors.mailbox.Mailbox;
 import im.actor.runtime.actors.mailbox.MailboxesQueue;
 import im.actor.runtime.annotations.Verified;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 
 @Verified
-public class PresenceActor extends ModuleActor {
+public class PresenceActor extends ModuleActor implements BusSubscriber {
 
-    public static ActorRef get(final ModuleContext messenger) {
+    public static ActorRef create(final ModuleContext messenger) {
         return ActorSystem.system().actorOf(Props.create(PresenceActor.class, new ActorCreator<PresenceActor>() {
             @Override
             public PresenceActor create() {
@@ -72,6 +77,13 @@ public class PresenceActor extends ModuleActor {
 
     public PresenceActor(ModuleContext messenger) {
         super(messenger);
+    }
+
+    @Override
+    public void preStart() {
+        context().getEvents().subscribe(this, NewSessionCreated.EVENT);
+        context().getEvents().subscribe(this, PeerChatOpened.EVENT);
+        context().getEvents().subscribe(this, PeerInfoOpened.EVENT);
     }
 
     @Verified
@@ -259,6 +271,17 @@ public class PresenceActor extends ModuleActor {
             onUserGoesOffline(timeout.getUid(), timeout.getDate(), timeout.getUpdateDate());
         } else {
             drop(message);
+        }
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+        if (event instanceof NewSessionCreated) {
+            self().send(new SessionCreated());
+        } else if (event instanceof PeerChatOpened) {
+            self().send(new Subscribe(((PeerChatOpened) event).getPeer()));
+        } else if (event instanceof PeerInfoOpened) {
+            self().send(new Subscribe(((PeerInfoOpened) event).getPeer()));
         }
     }
 

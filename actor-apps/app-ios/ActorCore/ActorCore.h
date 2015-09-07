@@ -89,6 +89,7 @@
 #import "im/actor/core/viewmodel/generics/StringValueModel.h"
 #import "im/actor/core/viewmodel/generics/AvatarValueModel.h"
 #import "im/actor/core/viewmodel/generics/BooleanValueModel.h"
+#import "im/actor/core/viewmodel/generics/IntValueModel.h"
 #import "im/actor/core/viewmodel/generics/UserPhoneValueModel.h"
 #import "im/actor/core/viewmodel/generics/UserPresenceValueModel.h"
 #import "im/actor/core/viewmodel/generics/ArrayListUserPhone.h"
@@ -167,5 +168,13 @@
 #import "im/actor/runtime/storage/ListStorage.h"
 #import "im/actor/runtime/storage/ListStorageDisplayEx.h"
 #import "im/actor/runtime/storage/PreferencesStorage.h"
+
+#import "im/actor/runtime/markdown/MarkdownParser.h"
+#import "im/actor/runtime/markdown/MDText.h"
+#import "im/actor/runtime/markdown/MDRawText.h"
+#import "im/actor/runtime/markdown/MDCode.h"
+#import "im/actor/runtime/markdown/MDDocument.h"
+#import "im/actor/runtime/markdown/MDSection.h"
+#import "im/actor/runtime/markdown/MDSpan.h"
 
 #endif

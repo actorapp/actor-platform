@@ -4,6 +4,9 @@
 
 package im.actor.core.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Utility methods
  */
@@ -12,7 +15,7 @@ public class JavaUtil {
     /**
      * Checking if string array contains value
      *
-     * @param vals values
+     * @param vals  values
      * @param value value
      * @return is array contains string
      */
@@ -43,5 +46,24 @@ public class JavaUtil {
             return false;
         }
         return a.equals(b);
+    }
+
+    /**
+     * Getting last elements of list in reverse order
+     *
+     * @param elements source list
+     * @param limit    maximum elements count
+     * @param <T>      type of objects
+     * @return result list
+     */
+    public static <T> List<T> last(List<T> elements, int limit) {
+        ArrayList<T> res = new ArrayList<T>();
+        for (int i = 0; i < elements.size(); i++) {
+            if (res.size() >= limit) {
+                break;
+            }
+            res.add(elements.get(elements.size() - 1 - i));
+        }
+        return res;
     }
 }

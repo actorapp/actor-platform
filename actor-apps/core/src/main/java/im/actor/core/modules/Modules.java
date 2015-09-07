@@ -24,31 +24,37 @@ import im.actor.core.modules.internal.SearchModule;
 import im.actor.core.modules.internal.SecurityModule;
 import im.actor.core.modules.internal.SettingsModule;
 import im.actor.core.modules.internal.TypingModule;
-import im.actor.core.modules.internal.users.UsersModule;
-import im.actor.core.modules.utils.PreferenceApiStorage;
+import im.actor.core.modules.internal.UsersModule;
 import im.actor.core.network.ActorApi;
-import im.actor.core.network.ActorApiCallback;
-import im.actor.core.network.Endpoints;
 import im.actor.core.util.Timing;
 import im.actor.runtime.Storage;
+import im.actor.runtime.eventbus.EventBus;
 import im.actor.runtime.storage.PreferencesStorage;
 
 public class Modules implements ModuleContext {
 
+    // Messenger object
+    private final Messenger messenger;
+
+    // Very basic modules
     private final Configuration configuration;
     private final I18nEngine i18nEngine;
-    private final AnalyticsModule analytics;
-    private final ActorApi actorApi;
-    private final Authentication authentication;
-    private final AppStateModule appStateModule;
-    private final Messenger messenger;
-    private final ExternalModule external;
+    private final PreferencesStorage preferences;
+    private final EventBus events;
 
-    private boolean isAppVisible;
-    private volatile PreferencesStorage preferences;
+    // API support
+    private final ApiModule api;
+
+    // Modules required before authentication
+    private final AnalyticsModule analytics;
+    private final AppStateModule appStateModule;
+    private final ExternalModule external;
+    private final Authentication authentication;
+
+    // Modules for authenticated users
+    private volatile Updates updates;
     private volatile UsersModule users;
     private volatile GroupsModule groups;
-    private volatile Updates updates;
     private volatile MessagesModule messages;
     private volatile PushesModule pushes;
     private volatile PresenceModule presence;
@@ -75,17 +81,14 @@ public class Modules implements ModuleContext {
         timing.section("Preferences");
         this.preferences = Storage.createPreferencesStorage();
 
-        timing.section("Analytics");
-        this.analytics = new AnalyticsModule(this);
+        timing.section("Events");
+        this.events = new EventBus();
 
         timing.section("API");
-        this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
-                new PreferenceApiStorage(preferences),
-                new ActorApiCallbackImpl(),
-                configuration.isEnableNetworkLogging(),
-                configuration.getMinDelay(),
-                configuration.getMaxDelay(),
-                configuration.getMaxFailureCount());
+        this.api = new ApiModule(this);
+
+        timing.section("Analytics");
+        this.analytics = new AnalyticsModule(this);
 
         timing.section("App State");
         this.appStateModule = new AppStateModule(this);
@@ -101,10 +104,6 @@ public class Modules implements ModuleContext {
         this.authentication.run();
         timing.end();
     }
-
-//    public void run() {
-//        this.auth.run();
-//    }
 
     public void onLoggedIn() {
         Timing timing = new Timing("ACCOUNT_CREATE");
@@ -155,21 +154,9 @@ public class Modules implements ModuleContext {
         messages.run();
         timing.section("Updates");
         updates.run();
-        timing.section("Presence");
-        presence.run();
         timing.section("DisplayLists");
         displayLists = new DisplayLists(this);
         timing.end();
-
-        // Notify about app visible
-        if (isAppVisible) {
-            presence.onAppVisible();
-            notifications.onAppVisible();
-        } else {
-            // Doesn't notify presence to avoid unessessary setOnline request
-            // presence.onAppHidden();
-            notifications.onAppHidden();
-        }
 
         messenger.onLoggedIn();
     }
@@ -184,11 +171,6 @@ public class Modules implements ModuleContext {
                 im.actor.runtime.Runtime.killApp();
             }
         });
-    }
-
-    @Override
-    public Module getModule(String name) {
-        return null;
     }
 
     public PreferencesStorage getPreferences() {
@@ -228,7 +210,7 @@ public class Modules implements ModuleContext {
     }
 
     public ActorApi getActorApi() {
-        return actorApi;
+        return api.getActorApi();
     }
 
     public I18nEngine getI18nModule() {
@@ -291,56 +273,7 @@ public class Modules implements ModuleContext {
         return mentions;
     }
 
-    public void onAppVisible() {
-        isAppVisible = true;
-        actorApi.forceNetworkCheck();
-        analytics.trackAppVisible();
-        if (authentication.isLoggedIn()) {
-            getPresenceModule().onAppVisible();
-            getNotificationsModule().onAppVisible();
-            appStateModule.getAppStateVM().onAppVisible();
-        }
-    }
-
-    public void onAppHidden() {
-        isAppVisible = false;
-        analytics.trackAppHidden();
-        if (authentication.isLoggedIn()) {
-            getPresenceModule().onAppHidden();
-            getNotificationsModule().onAppHidden();
-            appStateModule.getAppStateVM().onAppHidden();
-        }
-    }
-
-    private class ActorApiCallbackImpl implements ActorApiCallback {
-
-        @Override
-        public void onAuthIdInvalidated() {
-            onLoggedOut();
-        }
-
-        @Override
-        public void onNewSessionCreated() {
-            if (updates != null) {
-                updates.onNewSessionCreated();
-            }
-            if (presence != null) {
-                presence.onNewSessionCreated();
-            }
-        }
-
-        @Override
-        public void onUpdateReceived(Object obj) {
-            if (updates != null) {
-                updates.onUpdateReceived(obj);
-            }
-        }
-
-        @Override
-        public void onConnectionsChanged(int count) {
-            if (appStateModule != null) {
-                appStateModule.getAppStateVM().getIsConnecting().change(count == 0);
-            }
-        }
+    public EventBus getEvents() {
+        return events;
     }
 }

@@ -228,6 +228,13 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".app.fragment.media.DocumentsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+
         <!-- Actions -->
         <activity
             android:name=".app.fragment.settings.EditNameActivity"

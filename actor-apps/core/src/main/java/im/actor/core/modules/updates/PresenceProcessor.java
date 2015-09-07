@@ -17,7 +17,7 @@ public class PresenceProcessor extends AbsModule {
     @Verified
     public PresenceProcessor(ModuleContext modules) {
         super(modules);
-        this.presenceActor = PresenceActor.get(modules);
+        this.presenceActor = PresenceActor.create(modules);
     }
 
     @Verified

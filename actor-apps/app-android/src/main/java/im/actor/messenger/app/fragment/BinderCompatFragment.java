@@ -32,6 +32,14 @@ public class BinderCompatFragment extends android.support.v4.app.Fragment {
         BINDER.bind(textView, container, user);
     }
 
+    public void bind(final TextView textView, final View container, ValueModel<String> value) {
+        BINDER.bind(textView, container, value);
+    }
+
+    public void bind(final TextView textView, final View container, ValueModel<String> value, ActorBinder.OnChangedListener callback, boolean hide, String defaultValue) {
+        BINDER.bind(textView, container, value, callback, hide, defaultValue);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
