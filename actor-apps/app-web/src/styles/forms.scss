@@ -45,6 +45,7 @@
     padding-left: 30px;
 
     cursor: pointer;
+    user-select: none;
 
     &:before {
       position: absolute;
@@ -64,7 +65,7 @@
     }
     &:after {
       font-family: 'Material Icons';
-      font-size: 20px;
+      font-size: 18px;
       font-style: normal;
 
       position: absolute;
@@ -78,7 +79,8 @@
       height: 20px;
 
       content: 'check';
-      transition: scale 200ms;
+      transition: transform 200ms;
+      text-align: center;
 
       color: white;
 
@@ -125,6 +127,7 @@
     padding-left: 30px;
 
     cursor: pointer;
+    user-select: none;
     &:before {
       position: absolute;
       top: 2px;
@@ -149,7 +152,7 @@
       height: 10px;
 
       content: '';
-      transition: scale 200ms;
+      transition: transform 200ms;
 
       border-radius: 100%;
       background: $dark-sky-blue;
@@ -196,6 +199,7 @@
     height: 14px;
 
     cursor: pointer;
+    user-select: none;
     transition: background 200ms;
 
     border-radius: 14px;
@@ -246,14 +250,18 @@
 .textarea {
   font-size: 15px;
   line-height: 20px;
+
   display: block;
+
   box-sizing: border-box;
   width: 100%;
   height: 56px;
   padding: 8px;
+
   resize: none;
   cursor: pointer;
   word-break: break-all;
+
   color: #4d4d4d;
   border: 1px solid $light-grey-blue;
   border-radius: 3px;
