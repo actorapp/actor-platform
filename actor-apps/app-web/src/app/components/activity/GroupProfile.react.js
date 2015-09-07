@@ -14,6 +14,7 @@ import confirm from 'utils/confirm'
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
 import InviteUserActions from 'actions/InviteUserActions';
+import EditGroupActionCreators from 'actions/EditGroupActionCreators';
 
 import LoginStore from 'stores/LoginStore';
 import PeerStore from 'stores/PeerStore';
@@ -25,6 +26,7 @@ import InviteUser from 'components/modals/InviteUser.react';
 import InviteByLink from 'components/modals/invite-user/InviteByLink.react';
 import GroupProfileMembers from 'components/activity/GroupProfileMembers.react';
 import Fold from 'components/common/Fold.React';
+import EditGroup from 'components/modals/EditGroup.react';
 
 const getStateFromStores = (groupId) => {
   const thisPeer = PeerStore.getGroupPeer(groupId);
@@ -82,9 +84,8 @@ class GroupProfile extends React.Component {
 
   onLeaveGroupClick = gid => {
     confirm('Do you really want to leave this conversation?').then(
-      () => {
-        DialogActionCreators.leaveGroup(gid);
-      }
+      () => DialogActionCreators.leaveGroup(gid),
+      () => {}
     );
   };
 
@@ -122,7 +123,8 @@ class GroupProfile extends React.Component {
       () => {
         const peer = ActorClient.getGroupPeer(gid);
         DialogActionCreators.clearChat(peer)
-      }
+      },
+      () => {}
     );
   };
 
@@ -131,8 +133,13 @@ class GroupProfile extends React.Component {
       () => {
         const peer = ActorClient.getGroupPeer(gid);
         DialogActionCreators.deleteChat(peer);
-      }
+      },
+      () => {}
     );
+  };
+
+  onEditGroupClick = (gid) => {
+    EditGroupActionCreators.show(gid)
   };
 
   render() {
@@ -161,7 +168,7 @@ class GroupProfile extends React.Component {
           <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
         </li>
       ,
-        <li className="dropdown__menu__item hide">
+        <li className="dropdown__menu__item" onClick={() => this.onEditGroupClick(group.id)}>
           <i className="material-icons">mode_edit</i>
           <FormattedMessage message={this.getIntlMessage('editGroup')}/>
         </li>
@@ -291,6 +298,7 @@ class GroupProfile extends React.Component {
 
           <InviteUser/>
           <InviteByLink/>
+          <EditGroup/>
         </div>
       );
     } else {
