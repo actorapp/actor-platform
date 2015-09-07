@@ -47,8 +47,8 @@ android {
         }
 
         free {
-            java.srcDirs -= "src/nofree/java"
-            java.srcDirs += "src/free/java"
+            java.exclude 'src/nofree/java'
+            java.srcDirs += 'src/free/java'
         }
     }
 
