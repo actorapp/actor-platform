@@ -16,7 +16,8 @@ import PreferencesStore from 'stores/PreferencesStore';
 const getStateFromStores = () => {
   return {
     isOpen: PreferencesStore.isModalOpen(),
-    isSendByEnterEnabled: PreferencesStore.getSendByEnter()
+    isSendByEnterEnabled: PreferencesStore.getSendByEnter(),
+    isSoundEffectsEnabled: PreferencesStore.getSoundEffectsEnabled()
   };
 };
 
@@ -45,9 +46,9 @@ class PreferencesModal extends React.Component {
   };
 
   onDone = () => {
-    const { isSendByEnterEnabled } = this.state;
+    const { isSendByEnterEnabled, isSoundEffectsEnabled } = this.state;
     PreferencesActionCreators.save({
-      isSendByEnterEnabled
+      isSendByEnterEnabled, isSoundEffectsEnabled
     });
     this.onClose();
   };
@@ -59,12 +60,11 @@ class PreferencesModal extends React.Component {
     }
   };
 
-  changeSendByEnter = (event) => {
-    this.setState({isSendByEnterEnabled: event.target.value});
-  };
+  changeSendByEnter = (event) => this.setState({isSendByEnterEnabled: event.target.value});
+  changeSoundEffectsEnabled = (event) => this.setState({isSoundEffectsEnabled: event.target.checked});
 
   render() {
-    const { isOpen, isSendByEnterEnabled } = this.state;
+    const { isOpen, isSendByEnterEnabled, isSoundEffectsEnabled } = this.state;
 
     if (isOpen) {
       return (
@@ -81,8 +81,7 @@ class PreferencesModal extends React.Component {
             </h3>
 
             <div className="pull-right">
-              <button className="button button--lightblue"
-                      onClick={this.onDone}>Done</button>
+              <button className="button button--lightblue" onClick={this.onDone}>Done</button>
             </div>
           </div>
 
@@ -94,7 +93,6 @@ class PreferencesModal extends React.Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">keyboard</i>
-
                         <div className="radio">
                           <input type="radio"
                                  name="sendByEnter"
@@ -114,30 +112,20 @@ class PreferencesModal extends React.Component {
                           <label htmlFor="sendByEnterDisabled"><b>Cmd + Enter</b> – send message, <b>Enter</b> – new line</label>
                         </div>
                       </li>
-                      <li className="language">
-                        <i className="icon material-icons">menu</i>
-                      </li>
                     </ul>
                   </div>
                   <div className="preferences__list__item preferences__list__item--notifications">
                     <ul>
                       <li>
                         <i className="icon material-icons">notifications</i>
-                        {/*
-                        <RadioButtonGroup defaultSelected="all" name="notifications">
-                          <RadioButton label="Notifications for activity of any kind"
-                                       style={{marginBottom: 12}}
-                                       value="all"/>
-                          <RadioButton label="Notifications for Highlight Words and direct messages"
-                                       style={{marginBottom: 12}}
-                                       value="quiet"/>
-                          <RadioButton label="Never send me notifications"
-                                       style={{marginBottom: 12}}
-                                       value="disable"/>
-                        </RadioButtonGroup>
-
-                        */}
-                        <p className="hint">
+                        <div className="checkbox">
+                          <input type="checkbox"
+                                 id="soundEffects"
+                                 defaultChecked={isSoundEffectsEnabled}
+                                 onChange={this.changeSoundEffectsEnabled}/>
+                          <label htmlFor="soundEffects">Enable sound notifications</label>
+                        </div>
+                        <p className="hint hide">
                           You can override your desktop notification preference on a case-by-case
                           basis for channels and groups from the channel or group menu.
                         </p>
