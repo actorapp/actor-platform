@@ -20,11 +20,11 @@ public class AndroidPushActor extends Actor {
     private static final String TAG = "im.actor.core.AndroidPushActor";
     private static final long PROJECT_ID = 209133700967L;
 
-    private final Modules messenger;
+    private final AndroidMessenger messenger;
     private final Context context;
     private boolean isRegistered;
 
-    public AndroidPushActor(Context context, Modules messenger) {
+    public AndroidPushActor(Context context, AndroidMessenger messenger) {
         this.messenger = messenger;
         this.context = context;
     }
@@ -79,7 +79,7 @@ public class AndroidPushActor extends Actor {
     private void onPushRegistered(String token) {
         isRegistered = true;
         messenger.getPreferences().putBool("push_registered", true);
-        messenger.getPushesModule().registerGooglePush(PROJECT_ID, token);
+        messenger.registerGooglePush(PROJECT_ID, token);
     }
 
     @Override
