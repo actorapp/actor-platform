@@ -10,5 +10,4 @@ package object dialog {
   case object ReadFailed extends Exception with NoStackTrace
 
   private[dialog] case object StopDialog
-
 }

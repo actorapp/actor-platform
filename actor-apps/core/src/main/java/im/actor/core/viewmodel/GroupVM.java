@@ -7,6 +7,7 @@ package im.actor.core.viewmodel;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,6 +49,10 @@ public class GroupVM extends BaseValueModel<Group> {
     private ValueModel<Integer> presence;
     @NotNull
     private ArrayList<ModelChangedListener<GroupVM>> listeners = new ArrayList<ModelChangedListener<GroupVM>>();
+    @Nullable
+    private StringValueModel theme;
+    @Nullable
+    private StringValueModel about;
 
     /**
      * <p>INTERNAL API</p>
@@ -58,12 +63,14 @@ public class GroupVM extends BaseValueModel<Group> {
     public GroupVM(@NotNull Group rawObj) {
         super(rawObj);
         this.id = rawObj.getGroupId();
-        this.creatorId = rawObj.getAdminId();
+        this.creatorId = rawObj.getCreatorId();
         this.name = new StringValueModel("group." + id + ".title", rawObj.getTitle());
         this.avatar = new AvatarValueModel("group." + id + ".avatar", rawObj.getAvatar());
         this.isMember = new BooleanValueModel("group." + id + ".isMember", rawObj.isMember());
         this.members = new ValueModel<HashSet<GroupMember>>("group." + id + ".members", new HashSet<GroupMember>(rawObj.getMembers()));
         this.presence = new ValueModel<Integer>("group." + id + ".presence", 0);
+        this.theme = new StringValueModel("group." + id + ".theme", rawObj.getTheme());
+        this.about = new StringValueModel("group." + id + ".about", rawObj.getAbout());
     }
 
     /**
@@ -154,6 +161,8 @@ public class GroupVM extends BaseValueModel<Group> {
     @Override
     protected void updateValues(@NotNull Group rawObj) {
         boolean isChanged = name.change(rawObj.getTitle());
+        isChanged |= theme.change(rawObj.getTheme());
+        isChanged |= about.change(rawObj.getAbout());
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= isMember.change(rawObj.isMember());
         isChanged |= members.change(new HashSet<GroupMember>(rawObj.getMembers()));
@@ -163,6 +172,27 @@ public class GroupVM extends BaseValueModel<Group> {
         }
     }
 
+    /**
+     * Get About Value Model
+     *
+     * @return Value Model of String
+     */
+    @Nullable
+    @ObjectiveCName("getAboutModel")
+    public StringValueModel getAbout() {
+        return about;
+    }
+
+    /**
+     * Get Theme Value Model
+     *
+     * @return Value Model of String
+     */
+    @Nullable
+    @ObjectiveCName("getThemeModel")
+    public StringValueModel getTheme() {
+        return theme;
+    }
 
     /**
      * Subscribe for GroupVM updates

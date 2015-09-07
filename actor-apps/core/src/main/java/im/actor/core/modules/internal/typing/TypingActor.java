@@ -42,7 +42,7 @@ public class TypingActor extends ModuleActor {
         }), "actor/typing");
     }
 
-    private static final int TYPING_TEXT_TIMEOUT = 3000;
+    private static final int TYPING_TEXT_TIMEOUT = 7000;
 
     private HashSet<Integer> typings = new HashSet<Integer>();
     private HashMap<Integer, HashSet<Integer>> groupTypings = new HashMap<Integer, HashSet<Integer>>();

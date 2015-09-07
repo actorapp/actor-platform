@@ -19,7 +19,7 @@ private case class CreateAck[A](key: String, ack: A, replyTo: ActorRef)
 
 private case class DeleteAck[A](key: String, ack: A, replyTo: ActorRef)
 
-abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: ClassTag, DeleteCommand <: Command : ClassTag, DeleteCommandAck: ClassTag]
+abstract class Root
   extends PersistentActor
   with ActorLogging {
 
@@ -48,61 +48,65 @@ abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: Class
   protected def getKeys = keys
 
   private def handleRootCommand: Receive = {
-    case cmd: CreateCommand =>
-      val replyTo = sender()
-      val value = valueActorOf(cmd.key)
-
-      context.actorOf(Props(new Actor {
-        value ! cmd
-
-        def receive = {
-          case ack: CreateCommandAck =>
-            context.parent ! CreateAck(cmd.key, ack, replyTo)
-            context stop self
-          case Failure(e) =>
-            log.error(e, "Failed to create item")
-        }
-      }))
-    case cmd: DeleteCommand =>
-      val replyTo = sender()
-      val value = valueActorOf(cmd.key)
-
-      context.actorOf(Props(new Actor {
-        value ! cmd
-
-        def receive = {
-          case ack: DeleteCommandAck =>
-            context.parent ! DeleteAck(cmd.key, ack, replyTo)
-            context stop self
-          case Failure(e) =>
-            log.error(e, "Failed to delete item")
-        }
-      }))
-    case CreateAck(key, ack, replyTo) =>
+    case CreateAck(key, ack, replyTo) ⇒
       createKey(key) {
         replyTo ! ack
       }
-    case DeleteAck(key, ack, replyTo) =>
+    case DeleteAck(key, ack, replyTo) ⇒
       deleteKey(key) {
         replyTo ! ack
       }
   }
 
-  protected def createKey(key: String)(f: => Unit): Unit = {
+  protected def create[Ack: ClassTag](key: String, cmd: Any): Unit = {
+    val replyTo = sender()
+    val value = valueActorOf(key)
+
+    context.actorOf(Props(new Actor {
+      value ! cmd
+
+      def receive = {
+        case ack: Ack ⇒
+          context.parent ! CreateAck(key, ack, replyTo)
+          context stop self
+        case Failure(e) ⇒
+          log.error(e, "Failed to create item")
+      }
+    }))
+  }
+
+  protected def delete[Ack: ClassTag](key: String, cmd: Any): Unit = {
+    val replyTo = sender()
+    val value = valueActorOf(key)
+
+    context.actorOf(Props(new Actor {
+      value ! cmd
+
+      def receive = {
+        case ack: Ack ⇒
+          context.parent ! DeleteAck(key, ack, replyTo)
+          context stop self
+        case Failure(e) ⇒
+          log.error(e, "Failed to delete item")
+      }
+    }))
+  }
+
+  protected def createKey(key: String)(f: ⇒ Unit): Unit = {
     if (keyExists(key)) {
       log.error("Key {} already exists", key)
       f
     } else {
-      persist(KeyCreated(key)) { e =>
+      persist(KeyCreated(key)) { e ⇒
         updateState(e)
         f
       }
     }
   }
 
-  protected def deleteKey(key: String)(f: => Unit): Unit = {
+  protected def deleteKey(key: String)(f: ⇒ Unit): Unit = {
     if (keyExists(key)) {
-      persist(KeyDeleted(key)) { e =>
+      persist(KeyDeleted(key)) { e ⇒
         updateState(e)
         f
       }
@@ -118,10 +122,13 @@ abstract class Root[CreateCommand <: Command : ClassTag, CreateCommandAck: Class
     context watch valueActor
     valueActor ! cmd
     context become (f orElse {
-      case Terminated(`valueActor`) =>
+      case Terminated(`valueActor`) ⇒
         replyTo ! Status.Failure(new Exception(s"Value actor ${key} is terminated"))
         end()
-      case _ => stash()
+      case failure: Status.Failure ⇒
+        replyTo ! failure
+        end()
+      case _ ⇒ stash()
     }, discardOld = false)
   }
 

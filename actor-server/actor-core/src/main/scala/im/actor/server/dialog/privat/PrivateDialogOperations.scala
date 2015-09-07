@@ -1,13 +1,13 @@
 package im.actor.server.dialog.privat
 
+import akka.pattern.ask
 import akka.util.Timeout
-import im.actor.server.dialog.PrivateDialogCommands.Origin.{ RIGHT, LEFT }
+import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
+import im.actor.server.dialog.DialogId
 import im.actor.server.dialog.PrivateDialogCommands._
 import im.actor.server.sequence.SeqStateDate
-import akka.pattern.ask
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.{ ExecutionContext, Future }
 
 object PrivateDialogErrors {
 
@@ -22,8 +22,8 @@ object PrivateDialogOperations {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqStateDate] = {
-    val r = Routing(senderId, toUser)
-    (region.ref ? SendMessage(r.left, r.right, r.origin(senderId), senderAuthId, randomId, message, isFat)).mapTo[SeqStateDate]
+    val id = DialogId.privat(senderId, toUser)
+    (region.ref ? SendMessage(id, id.origin(senderId), senderAuthId, randomId, message, isFat)).mapTo[SeqStateDate]
   }
 
   def messageReceived(receiverUserId: Int, peerUserId: Int, date: Long)(
@@ -32,8 +32,8 @@ object PrivateDialogOperations {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[Unit] = {
-    val r = Routing(peerUserId, receiverUserId)
-    (region.ref ? MessageReceived(r.left, r.right, r.origin(receiverUserId), date)).mapTo[MessageReceivedAck] map (_ ⇒ ())
+    val id = DialogId.privat(peerUserId, receiverUserId)
+    (region.ref ? MessageReceived(id, id.origin(receiverUserId), date)).mapTo[MessageReceivedAck] map (_ ⇒ ())
   }
 
   def messageRead(readerUserId: Int, readerAuthId: Long, peerUserId: Int, date: Long)(
@@ -42,16 +42,7 @@ object PrivateDialogOperations {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[Unit] = {
-    val r = Routing(peerUserId, readerUserId)
-    (region.ref ? MessageRead(r.left, r.right, r.origin(readerUserId), readerAuthId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
+    val id = DialogId.privat(peerUserId, readerUserId)
+    (region.ref ? MessageRead(id, id.origin(readerUserId), readerAuthId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
   }
-
-  case class Routing(private val a: Int, private val b: Int) {
-    if (a == b)
-      throw PrivateDialogErrors.MessageToSelf
-
-    val (left, right) = if (a > b) (b, a) else (a, b)
-    def origin(uid: Int): Origin = if (uid == left) LEFT else RIGHT
-  }
-
 }

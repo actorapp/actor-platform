@@ -21,6 +21,7 @@ class PhoneBookProvider: NSObject, ACPhoneBookProvider {
                 return;
             }
             
+            let numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
             var contacts = JavaUtilArrayList()
             var index = 1
             if let people = ABAddressBookCopyArrayOfAllPeople(book).takeRetainedValue() as? [ABRecordRef] {
@@ -42,7 +43,6 @@ class PhoneBookProvider: NSObject, ACPhoneBookProvider {
                     
                     if let phones: ABMultiValueRef =
                         self.extractProperty(person as ABRecord, propertyName: kABPersonPhoneProperty) as ABMultiValueRef? {
-                            var numbersSet = NSCharacterSet(charactersInString: "0123456789").invertedSet
                             for i in 0...ABMultiValueGetCount(phones) {
                                 var phoneStr = self.extractString(phones, index: i)
                                 if (phoneStr == nil || phoneStr!.trim().size == 0) {

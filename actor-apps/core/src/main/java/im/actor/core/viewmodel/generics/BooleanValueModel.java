@@ -6,9 +6,6 @@ package im.actor.core.viewmodel.generics;
 
 import im.actor.runtime.mvvm.ValueModel;
 
-/**
- * Created by ex3ndr on 22.05.15.
- */
 public class BooleanValueModel extends ValueModel<Boolean> {
     /**
      * Create ValueModel
