@@ -46,25 +46,25 @@ android {
         def STRING = "String"
         def VERSION_TITLE = "VERSION_TITLE"
         def BOOLEAN = "boolean"
-        def IS_FREE = "IS_FREE"
+        def ENABLE_KEEP_ALIVE = "ENABLE_KEEP_ALIVE"
 
         release {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Release)\""
-            buildConfigField BOOLEAN, IS_FREE, "false"
+            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "false"
             signingConfig signingConfigs.release
             applicationIdSuffix ".cloud"
         }
 
         free {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Free)\""
-            buildConfigField BOOLEAN, IS_FREE, "true"
+            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "true"
             signingConfig signingConfigs.release
             applicationIdSuffix ".free"
         }
 
         debug {
             buildConfigField STRING, VERSION_TITLE, "\"Debug Version (${getDate()})\""
-            buildConfigField BOOLEAN, IS_FREE, "false"
+            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "false"
             applicationIdSuffix ".debug"
         }
     }

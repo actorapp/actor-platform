@@ -12,7 +12,8 @@ import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
 
 /**
- * this actor is used for load GCM token and register it on server
+ * GCM push implementation for Actor push registration.
+ * This actor is used for load GCM token and register it on server.
  */
 public class AndroidPushActor extends Actor {
 
@@ -48,7 +49,6 @@ public class AndroidPushActor extends Actor {
                             if (regId != null) {
                                 Log.d(TAG, "Token loaded");
                                 self().send(new PushRegistered(regId));
-
                                 return;
                             } else {
                                 Log.d(TAG, "Unable to load Token");
