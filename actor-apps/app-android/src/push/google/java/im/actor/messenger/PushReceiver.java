@@ -18,12 +18,7 @@ import im.actor.runtime.Log;
 
 import static im.actor.messenger.app.core.Core.messenger;
 
-/**
- * Created by ex3ndr on 18.09.14.
- */
 public class PushReceiver extends WakefulBroadcastReceiver {
-
-    private static final int NOTIFICATION_ID = 2;
 
     private static final String TAG = "PushReceiver";
 
