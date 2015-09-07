@@ -66,8 +66,9 @@
   &__meta {
     padding-right: 16px;
     header {
-      @include clearfix();
       height: 60px;
+
+      @include clearfix();
     }
 
     .avatar {
@@ -94,6 +95,14 @@
       line-height: 22px;
 
       color: rgba(0, 0, 0, .3);
+    }
+    &__about {
+      font-size: 15px;
+      line-height: 22px;
+
+      margin-top: 18px;
+
+      color: $greyish-brown;
     }
 
     footer {
@@ -171,8 +180,9 @@
   &__meta {
     padding-right: 16px;
     header {
-      @include clearfix();
       height: 60px;
+
+      @include clearfix();
     }
 
     .avatar {
