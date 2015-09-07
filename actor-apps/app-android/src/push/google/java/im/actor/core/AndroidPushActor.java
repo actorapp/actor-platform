@@ -10,11 +10,9 @@ import im.actor.core.modules.Modules;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
 
-
 /**
- * Created by ex3ndr on 02.04.15.
+ * this actor is used for load GCM token and register it on server
  */
-// TODO: Add processing of token die
 public class AndroidPushActor extends Actor {
 
     private static final String TAG = "im.actor.core.AndroidPushActor";
@@ -50,10 +48,7 @@ public class AndroidPushActor extends Actor {
                             if (regId != null) {
                                 Log.d(TAG, "Token loaded");
                                 self().send(new PushRegistered(regId));
-//                                if (AndroidMixpanelAnalytics.getRegisteredApi() != null) {
-//                                    AndroidMixpanelAnalytics.getRegisteredApi()
-//                                            .getPeople().setPushRegistrationId(regId);
-//                                }
+
                                 return;
                             } else {
                                 Log.d(TAG, "Unable to load Token");
