@@ -23,7 +23,6 @@ const emojiRegexp = new RegExp('(' + emojiVariants.join('|') + ')', 'gi');
 
 const processText = function (text) {
   const markedText = ActorClient.renderMarkdown(text);
-  console.warn('[MARKED]', markedText);
 
   // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
   const noPTag = markedText.replace(/<p>/g, '<p> ');
