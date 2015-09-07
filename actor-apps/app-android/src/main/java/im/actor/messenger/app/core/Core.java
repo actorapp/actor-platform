@@ -68,7 +68,6 @@ public class Core {
         return core;
     }
 
-    private String hockeyToken;
     private final SmileProcessor smileProcessor;
     // private final StickerProcessor stickerProcessor;
     private AndroidMessenger messenger;
@@ -80,7 +79,6 @@ public class Core {
         // Integrations
         //noinspection ConstantConditions
         JSONObject config = new JSONObject(new String(readAll(application.getAssets().open("app.json"))));
-        hockeyToken = config.optString("hockeyapp");
 
         if (config.optString("mint") != null && !config.optString("mint").equals("null")) {
             Mint.disableNetworkMonitoring();
@@ -158,12 +156,6 @@ public class Core {
 
     }
 
-    public String getHockeyToken() {
-        if (hockeyToken != null && hockeyToken.equals("null")) {
-            return null;
-        }
-        return hockeyToken;
-    }
 
     public String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
