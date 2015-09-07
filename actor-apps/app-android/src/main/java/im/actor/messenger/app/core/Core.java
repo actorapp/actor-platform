@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import im.actor.core.AndroidMessenger;
+import im.actor.core.AndroidPushActor;
 import im.actor.core.ApiConfiguration;
 import im.actor.core.PlatformType;
 import im.actor.core.ConfigurationBuilder;
@@ -28,10 +29,14 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Props;
 import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.mvvm.MVVMCollection;
 
 import static im.actor.core.utils.IOUtils.readAll;
+import static im.actor.runtime.actors.ActorSystem.system;
 
 /**
  * Created by ex3ndr on 30.08.14.
@@ -41,6 +46,7 @@ public class Core {
     private static final int API_ID = 1;
     private static final String API_KEY = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
     public static final int MAX_DELAY = 15000 * 60;
+    private ActorRef androidPushesActor;
 
     private static volatile Core core;
 
@@ -67,7 +73,7 @@ public class Core {
     // private final StickerProcessor stickerProcessor;
     private AndroidMessenger messenger;
 
-    private Core(Application application) throws IOException, JSONException {
+    private Core(final Application application) throws IOException, JSONException {
 
         AndroidContext.setContext(application);
 
@@ -140,6 +146,16 @@ public class Core {
                 getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
+
+        //GCM
+
+        this.androidPushesActor = system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
+            @Override
+            public AndroidPushActor create() {
+                return new AndroidPushActor(application, messenger);
+            }
+        }), "actor/android/push");
+
     }
 
     public String getHockeyToken() {
