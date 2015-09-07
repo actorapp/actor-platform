@@ -1,15 +1,13 @@
 import { EventEmitter } from 'events';
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
+import ActorClient from 'utils/ActorClient';
 
 import { english, russian } from 'l18n';
 
 const CHANGE_EVENT = 'change';
 
 let _isModalOpen = false,
-    _preferences = {},
-    _sendByEnter = '',
-    _language = '',
     _languageData = null;
 
 class PreferencesStore extends EventEmitter {
@@ -29,30 +27,32 @@ class PreferencesStore extends EventEmitter {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
-  get isModalOpen() {
+  isModalOpen() {
     return _isModalOpen;
   }
 
-  get preferences() {
-    return _preferences;
+  istSendByEnterEnabled() {
+    return ActorClient.isSendByEnterEnabled();
   }
 
-  get sendByEnter() {
-    return _sendByEnter;
+  isGroupsNotificationsEnabled() {
+    return ActorClient.isGroupsNotificationsEnabled();
   }
 
-  get language() {
-    return _language;
+  isOnlyMentionNotifications() {
+    return ActorClient.isOnlyMentionNotifications();
   }
 
-  get languageData() {
-    switch (_language) {
+  isSoundEffectsEnabled() {
+    return ActorClient.isSoundEffectsEnabled();
+  }
+
+  getLanguageData() {
+    switch (navigator.language) {
+      case 'ru-RU':
       case 'ru':
         _languageData = russian;
         break;
-      //case 'en':
-      //  _languageData = english;
-      //  break;
       default:
         _languageData = english;
         break;
@@ -62,20 +62,19 @@ class PreferencesStore extends EventEmitter {
   }
 
   savePreferences(newPreferences) {
-    localStorage['preferences.SEND_BY_ENTER'] = _sendByEnter = newPreferences.sendByEnter;
-    localStorage['preferences.LANGUAGE'] = _language = newPreferences.language;
+    const {
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications
+    } = newPreferences;
 
-    _preferences = newPreferences;
-  }
+    ActorClient.changeSendByEnter(isSendByEnterEnabled);
+    ActorClient.changeSoundEffectsEnabled(isSoundEffectsEnabled);
+    ActorClient.changeGroupNotificationsEnabled(isGroupsNotificationsEnabled);
+    ActorClient.changeIsOnlyMentionNotifications(isOnlyMentionNotifications);
 
-  loadPreferences() {
-    _sendByEnter = localStorage.getItem('preferences.SEND_BY_ENTER') || 'true';
-    _language = localStorage.getItem('preferences.LANGUAGE') || 'en';
-
-    _preferences = {
-      sendByEnter: _sendByEnter,
-      language: _language
-    };
+    PreferencesStoreInstance.emitChange();
   }
 }
 
@@ -94,13 +93,8 @@ PreferencesStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
 
     case ActionTypes.PREFERENCES_SAVE:
       PreferencesStoreInstance.savePreferences(action.preferences);
-      PreferencesStoreInstance.emitChange();
       break;
 
-    case ActionTypes.PREFERENCES_LOAD:
-      PreferencesStoreInstance.loadPreferences();
-      PreferencesStoreInstance.emitChange();
-      break;
     default:
       return;
   }
