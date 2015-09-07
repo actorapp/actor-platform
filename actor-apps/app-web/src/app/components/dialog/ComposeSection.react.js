@@ -87,7 +87,7 @@ let getStateFromStores = () => {
     const { text } = this.state;
     const { peer } = this.props;
 
-    if (text) {
+    if (text.trim().length !== 0) {
       MessageActionCreators.sendTextMessage(peer, text);
     }
     ComposeActionCreators.cleanText();
