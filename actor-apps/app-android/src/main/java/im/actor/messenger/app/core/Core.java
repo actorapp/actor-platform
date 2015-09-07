@@ -46,6 +46,7 @@ public class Core {
     private static final int API_ID = 1;
     private static final String API_KEY = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
     public static final int MAX_DELAY = 15000 * 60;
+    public static long PUSH_ID;
     private ActorRef androidPushesActor;
 
     private static volatile Core core;
@@ -79,6 +80,10 @@ public class Core {
         // Integrations
         //noinspection ConstantConditions
         JSONObject config = new JSONObject(new String(readAll(application.getAssets().open("app.json"))));
+
+        if (config.optString("push_id") != null && !config.optString("push_id").equals("null")) {
+            PUSH_ID = config.getLong("push_id");
+        }
 
         if (config.optString("mint") != null && !config.optString("mint").equals("null")) {
             Mint.disableNetworkMonitoring();
