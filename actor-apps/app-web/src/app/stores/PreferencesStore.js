@@ -31,11 +31,19 @@ class PreferencesStore extends EventEmitter {
     return _isModalOpen;
   }
 
-  getSendByEnter() {
+  istSendByEnterEnabled() {
     return ActorClient.isSendByEnterEnabled();
   }
 
-  getSoundEffectsEnabled() {
+  isGroupsNotificationsEnabled() {
+    return ActorClient.isGroupsNotificationsEnabled();
+  }
+
+  isOnlyMentionNotifications() {
+    return ActorClient.isOnlyMentionNotifications();
+  }
+
+  isSoundEffectsEnabled() {
     return ActorClient.isSoundEffectsEnabled();
   }
 
@@ -54,10 +62,17 @@ class PreferencesStore extends EventEmitter {
   }
 
   savePreferences(newPreferences) {
-    const { isSendByEnterEnabled, isSoundEffectsEnabled } = newPreferences;
+    const {
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications
+    } = newPreferences;
 
     ActorClient.changeSendByEnter(isSendByEnterEnabled);
     ActorClient.changeSoundEffectsEnabled(isSoundEffectsEnabled);
+    ActorClient.changeGroupNotificationsEnabled(isGroupsNotificationsEnabled);
+    ActorClient.changeIsOnlyMentionNotifications(isOnlyMentionNotifications);
 
     PreferencesStoreInstance.emitChange();
   }
