@@ -28,7 +28,7 @@ let getStateFromStores = () => {
   return {
     text: ComposeStore.getText(),
     profile: ActorClient.getUser(ActorClient.getUid()),
-    sendByEnter: PreferencesStore.getSendByEnter(),
+    sendByEnter: PreferencesStore.istSendByEnterEnabled(),
     mentions: ComposeStore.getMentions()
   };
 };

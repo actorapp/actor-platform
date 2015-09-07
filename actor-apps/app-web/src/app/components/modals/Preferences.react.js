@@ -16,8 +16,10 @@ import PreferencesStore from 'stores/PreferencesStore';
 const getStateFromStores = () => {
   return {
     isOpen: PreferencesStore.isModalOpen(),
-    isSendByEnterEnabled: PreferencesStore.getSendByEnter(),
-    isSoundEffectsEnabled: PreferencesStore.getSoundEffectsEnabled()
+    isSendByEnterEnabled: PreferencesStore.istSendByEnterEnabled(),
+    isSoundEffectsEnabled: PreferencesStore.isSoundEffectsEnabled(),
+    isGroupsNotificationsEnabled: PreferencesStore.isGroupsNotificationsEnabled(),
+    isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications()
   };
 };
 
@@ -46,9 +48,15 @@ class PreferencesModal extends React.Component {
   };
 
   onDone = () => {
-    const { isSendByEnterEnabled, isSoundEffectsEnabled } = this.state;
+    const {
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications
+      } = this.state;
+
     PreferencesActionCreators.save({
-      isSendByEnterEnabled, isSoundEffectsEnabled
+      isSendByEnterEnabled, isSoundEffectsEnabled, isGroupsNotificationsEnabled, isOnlyMentionNotifications
     });
     this.onClose();
   };
@@ -62,9 +70,17 @@ class PreferencesModal extends React.Component {
 
   changeSendByEnter = (event) => this.setState({isSendByEnterEnabled: event.target.value === 'true'});
   changeSoundEffectsEnabled = (event) => this.setState({isSoundEffectsEnabled: event.target.checked});
+  changeGroupsNotificationsEnabled = (event) => this.setState({isGroupsNotificationsEnabled: event.target.checked});
+  changeMentionNotifications = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
 
   render() {
-    const { isOpen, isSendByEnterEnabled, isSoundEffectsEnabled } = this.state;
+    const {
+      isOpen,
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications
+      } = this.state;
 
     if (isOpen) {
       return (
@@ -100,7 +116,9 @@ class PreferencesModal extends React.Component {
                                  value={true}
                                  defaultChecked={isSendByEnterEnabled}
                                  onChange={this.changeSendByEnter}/>
-                          <label htmlFor="sendByEnterEnabled"><b>Enter</b> – send message, <b>Shift + Enter</b> – new line</label>
+                          <label htmlFor="sendByEnterEnabled">
+                            <b>Enter</b> – send message, <b>Shift + Enter</b> – new line
+                          </label>
                         </div>
                         <div className="radio">
                           <input type="radio"
@@ -109,7 +127,9 @@ class PreferencesModal extends React.Component {
                                  value={false}
                                  defaultChecked={!isSendByEnterEnabled}
                                  onChange={this.changeSendByEnter}/>
-                          <label htmlFor="sendByEnterDisabled"><b>Cmd + Enter</b> – send message, <b>Enter</b> – new line</label>
+                          <label htmlFor="sendByEnterDisabled">
+                            <b>Cmd + Enter</b> – send message, <b>Enter</b> – new line
+                          </label>
                         </div>
                       </li>
                     </ul>
@@ -120,15 +140,34 @@ class PreferencesModal extends React.Component {
                         <i className="icon material-icons">notifications</i>
                         <div className="checkbox">
                           <input type="checkbox"
+                                 id="groupNotifications"
+                                 defaultChecked={isGroupsNotificationsEnabled}
+                                 onChange={this.changeGroupsNotificationsEnabled}/>
+                          <label htmlFor="groupNotifications">Enable group notifications</label>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="checkbox">
+                          <input type="checkbox"
+                                 id="mentionsNotifications"
+                                 defaultChecked={isOnlyMentionNotifications}
+                                 onChange={this.changeMentionNotifications}/>
+                          <label htmlFor="mentionsNotifications">Enable mention notifications</label>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="preferences__list__item preferences__list__item--notifications">
+                    <ul>
+                      <li>
+                        <i className="icon material-icons">music_note</i>
+                        <div className="checkbox">
+                          <input type="checkbox"
                                  id="soundEffects"
                                  defaultChecked={isSoundEffectsEnabled}
                                  onChange={this.changeSoundEffectsEnabled}/>
                           <label htmlFor="soundEffects">Enable sound effects</label>
                         </div>
-                        <p className="hint hide">
-                          You can override your desktop notification preference on a case-by-case
-                          basis for channels and groups from the channel or group menu.
-                        </p>
                       </li>
                     </ul>
                   </div>
