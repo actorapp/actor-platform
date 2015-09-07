@@ -75,12 +75,12 @@ android {
 
         main {
             res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
-            java.srcDirs += 'src/nofree/java'
+            java.srcDirs += 'src/main/nofree'
         }
 
         free {
-            manifest.srcFile 'src/free/AndroidManifest.xml'
-            java.exclude 'nofree/java/**'
+            manifest.srcFile 'free/AndroidManifest.xml'
+            java.exclude 'nofree/**'
         }
 
         debug {
