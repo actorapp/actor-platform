@@ -203,6 +203,12 @@
     }
     .about {
       padding: 0 16px 16px 0;
+      label {
+        font-size: 12px;
+        color: rgba(0, 0, 0, .5);
+        display: inline-block;
+        margin-bottom: 6px;
+      }
     }
 
     footer {

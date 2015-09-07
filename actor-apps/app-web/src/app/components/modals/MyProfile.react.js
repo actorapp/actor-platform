@@ -8,7 +8,7 @@ import MyProfileStore from 'stores/MyProfileStore';
 import AvatarItem from 'components/common/AvatarItem.react';
 
 import Modal from 'react-modal';
-import { Styles, TextField, FlatButton } from 'material-ui';
+import { Styles, TextField } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
@@ -18,6 +18,7 @@ const getStateFromStores = () => {
     profile: MyProfileStore.getProfile(),
     name: MyProfileStore.getName(),
     nick: MyProfileStore.getNick(),
+    about: MyProfileStore.getAbout(),
     isOpen: MyProfileStore.isModalOpen()
   };
 };
@@ -40,9 +41,6 @@ class MyProfile extends React.Component {
 
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
-      button: {
-        minWidth: 60
-      },
       textField: {
         textColor: 'rgba(0,0,0,.87)',
         focusColor: '#68a3e7',
@@ -84,16 +82,22 @@ class MyProfile extends React.Component {
     this.setState({nick: event.target.value});
   };
 
+  onAboutChange = event => {
+    console.debug(event.target.value);
+    this.setState({about: event.target.value});
+  };
+
   onSave = () => {
-    const { nick, name } = this.state;
+    const { nick, name, about } = this.state;
 
     MyProfileActions.saveName(name);
     MyProfileActions.saveNickname(nick);
+    MyProfileActions.editMyAbout(about);
     this.onClose();
   };
 
   render() {
-    const { isOpen, profile, nick, name } = this.state;
+    const { isOpen, profile, nick, name, about } = this.state;
 
     if (profile !== null && isOpen === true) {
       return (
@@ -105,12 +109,8 @@ class MyProfile extends React.Component {
             <a className="modal-new__header__icon material-icons">person</a>
             <h4 className="modal-new__header__title">Profile</h4>
             <div className="pull-right">
-              <FlatButton hoverColor="rgba(74,144,226,.12)"
-                          label="Done"
-                          labelStyle={{padding: '0 8px'}}
-                          onClick={this.onSave}
-                          secondary={true}
-                          style={{marginTop: -6}}/>
+              <button className="button button--lightblue"
+                      onClick={this.onSave}>Done</button>
             </div>
 
           </header>
@@ -143,6 +143,14 @@ class MyProfile extends React.Component {
                            fullWidth
                            type="tel"
                            value={profile.phones[0].number}/>
+              </div>
+              <div className="about">
+                <label htmlFor="about">About</label>
+                <textarea className="textarea"
+                          id="about"
+                          onChange={this.onAboutChange}
+                          placeholder="Few words about you"
+                          value={about}/>
               </div>
             </div>
           </div>

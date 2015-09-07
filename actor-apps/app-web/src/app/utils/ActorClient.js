@@ -235,5 +235,9 @@ export default {
 
   clearChat(peer) {
     return window.messenger.clearChat(peer);
+  },
+
+  editMyAbout(about) {
+    return window.messenger.editMyAbout(about);
   }
 };
