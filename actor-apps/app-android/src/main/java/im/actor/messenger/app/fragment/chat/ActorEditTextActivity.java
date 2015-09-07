@@ -175,11 +175,9 @@ public abstract class ActorEditTextActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    protected void onPause() {
+        super.onPause();
         // Destroy emoji keyboard
-        // TODO: Is it right place to do it here? it was in onPause method
         emojiKeyboard.destroy();
     }
 }
