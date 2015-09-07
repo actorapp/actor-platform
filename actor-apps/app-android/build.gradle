@@ -184,7 +184,6 @@ dependencies {
     debugCompile 'com.google.android.gms:play-services-gcm:7.5.0'
 
     // Integration
-    compile 'com.mixpanel.android:mixpanel-android:4.5.3'
     compile 'com.splunk.mint:mint:4.0.8'
 
 //    // Annotation processing
