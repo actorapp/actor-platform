@@ -78,6 +78,7 @@ android {
 
         debug {
             res.srcDirs = ['src/themes/dev']
+            java.srcDirs += 'src/release/java'
         }
     }
 
