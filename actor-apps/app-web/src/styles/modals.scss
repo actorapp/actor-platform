@@ -414,7 +414,6 @@
         }
         &__list {
           width: 100%;
-          //display: block;
           &__item {
             ul {
               margin: 0;
@@ -427,14 +426,14 @@
 
                 position: relative;
 
-                padding: 30px 0;
+                padding: 32px 0;
 
                 border-bottom: 1px solid rgba(black, .12);
                 .icon {
                   line-height: 24px;
 
                   position: absolute;
-                  top: 30px;
+                  top: 32px;
                   left: -60px;
 
                   color: rgba(black, .4);
@@ -453,16 +452,25 @@
               }
             }
             &--general {
-              .language {
-                padding: 14px 0 15px;
-                & > span {
-                  line-height: 54px;
-
-                  display: inline-block;
-
-                  vertical-align: middle;
+              .radio {
+                margin-bottom: 8px;
+                b {
+                  font-weight: 500;
+                }
+                &:last-child {
+                  margin-bottom: 0;
                 }
               }
+              //.language {
+              //  padding: 14px 0 15px;
+              //  & > span {
+              //    line-height: 54px;
+              //
+              //    display: inline-block;
+              //
+              //    vertical-align: middle;
+              //  }
+              //}
             }
           }
         }
