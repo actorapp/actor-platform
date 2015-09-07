@@ -60,7 +60,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<Peer, BindedDisplayList<Message>>();
     private HashMap<Peer, BindedDisplayList<Message>> docsLists = new HashMap<Peer, BindedDisplayList<Message>>();
 
-    public AndroidMessenger(final Context context, im.actor.core.Configuration configuration) {
+    public AndroidMessenger(Context context, im.actor.core.Configuration configuration) {
         super(configuration);
 
         this.context = context;
