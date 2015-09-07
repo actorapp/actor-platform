@@ -56,13 +56,21 @@ public class AndroidMessenger extends im.actor.core.Messenger {
     private Context context;
     private final Random random = new Random();
     private ActorRef appStateActor;
+    private ActorRef androidPushesActor;
     private BindedDisplayList<Dialog> dialogList;
     private HashMap<Peer, BindedDisplayList<Message>> messagesLists = new HashMap<Peer, BindedDisplayList<Message>>();
 
-    public AndroidMessenger(Context context, im.actor.core.Configuration configuration) {
+    public AndroidMessenger(final Context context, im.actor.core.Configuration configuration) {
         super(configuration);
 
         this.context = context;
+
+        this.androidPushesActor = system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
+            @Override
+            public AndroidPushActor create() {
+                return new AndroidPushActor(context, modules);
+            }
+        }), "actor/android/push");
 
         this.appStateActor = system().actorOf(Props.create(AppStateActor.class, new ActorCreator<AppStateActor>() {
             @Override
