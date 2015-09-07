@@ -10,6 +10,7 @@ const CHANGE_EVENT = 'change';
 let _profile = null,
     _name = null,
     _nick = null,
+    _about = null,
     _isModalOpen = false;
 
 class MyProfileStore extends EventEmitter {
@@ -41,6 +42,10 @@ class MyProfileStore extends EventEmitter {
     return _nick;
   }
 
+  getAbout() {
+    return _about;
+  }
+
   getProfile() {
     return _profile;
   }
@@ -50,6 +55,7 @@ const setProfile = (profile) => {
   _profile = profile;
   _name = profile.name;
   _nick = profile.nick;
+  _about = profile.about;
 };
 
 let MyProfileStoreInstance = new MyProfileStore();
@@ -77,6 +83,12 @@ MyProfileStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
       if (_nick !== action.nick) {
         _nick = action.nick;
         ActorClient.editMyNick(_nick);
+        MyProfileStoreInstance.emitChange();
+      }
+      break;
+    case ActionTypes.MY_PROFILE_EDIT_ABOUT_SUCCESS:
+      if (_about !== action.about) {
+        _about = action.about;
         MyProfileStoreInstance.emitChange();
       }
       break;

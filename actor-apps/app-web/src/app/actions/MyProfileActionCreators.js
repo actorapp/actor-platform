@@ -2,8 +2,9 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
+import ActorClient from 'utils/ActorClient';
 
 export default {
   show() {
@@ -24,5 +25,13 @@ export default {
     dispatch(ActionTypes.MY_PROFILE_SAVE_NICKNAME, {
       nick
     });
+  },
+
+  editMyAbout(about) {
+    dispatchAsync(ActorClient.editMyAbout(about),{
+      request: ActionTypes.MY_PROFILE_EDIT_ABOUT,
+      success: ActionTypes.MY_PROFILE_EDIT_ABOUT_SUCCESS,
+      failure: ActionTypes.MY_PROFILE_EDIT_ABOUT_ERROR
+    }, { about });
   }
 };
