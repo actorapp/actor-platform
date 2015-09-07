@@ -60,7 +60,7 @@ class PreferencesModal extends React.Component {
     }
   };
 
-  changeSendByEnter = (event) => this.setState({isSendByEnterEnabled: event.target.value});
+  changeSendByEnter = (event) => this.setState({isSendByEnterEnabled: event.target.value === 'true'});
   changeSoundEffectsEnabled = (event) => this.setState({isSoundEffectsEnabled: event.target.checked});
 
   render() {
@@ -123,7 +123,7 @@ class PreferencesModal extends React.Component {
                                  id="soundEffects"
                                  defaultChecked={isSoundEffectsEnabled}
                                  onChange={this.changeSoundEffectsEnabled}/>
-                          <label htmlFor="soundEffects">Enable sound notifications</label>
+                          <label htmlFor="soundEffects">Enable sound effects</label>
                         </div>
                         <p className="hint hide">
                           You can override your desktop notification preference on a case-by-case
