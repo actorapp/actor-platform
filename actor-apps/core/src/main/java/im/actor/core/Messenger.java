@@ -24,6 +24,13 @@ import im.actor.core.entity.User;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.Modules;
+import im.actor.core.modules.events.AppVisibleChanged;
+import im.actor.core.modules.events.DialogsClosed;
+import im.actor.core.modules.events.DialogsOpened;
+import im.actor.core.modules.events.PeerChatClosed;
+import im.actor.core.modules.events.PeerChatOpened;
+import im.actor.core.modules.events.PeerInfoClosed;
+import im.actor.core.modules.events.PeerInfoOpened;
 import im.actor.core.network.NetworkState;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
@@ -358,7 +365,7 @@ public class Messenger {
      */
     @ObjectiveCName("onAppVisible")
     public void onAppVisible() {
-        modules.onAppVisible();
+        modules.getEvents().postSticky(new AppVisibleChanged(true));
     }
 
     /**
@@ -366,7 +373,7 @@ public class Messenger {
      */
     @ObjectiveCName("onAppHidden")
     public void onAppHidden() {
-        modules.onAppHidden();
+        modules.getEvents().postSticky(new AppVisibleChanged(false));
     }
 
     /**
@@ -374,9 +381,7 @@ public class Messenger {
      */
     @ObjectiveCName("onDialogsOpen")
     public void onDialogsOpen() {
-        if (modules.getNotificationsModule() != null) {
-            modules.getNotificationsModule().onDialogsOpen();
-        }
+        modules.getEvents().post(new DialogsOpened());
     }
 
     /**
@@ -384,9 +389,7 @@ public class Messenger {
      */
     @ObjectiveCName("onDialogsClosed")
     public void onDialogsClosed() {
-        if (modules.getNotificationsModule() != null) {
-            modules.getNotificationsModule().onDialogsClosed();
-        }
+        modules.getEvents().post(new DialogsClosed());
     }
 
     /**
@@ -396,12 +399,7 @@ public class Messenger {
      */
     @ObjectiveCName("onConversationOpenWithPeer:")
     public void onConversationOpen(@NotNull Peer peer) {
-        modules.getAnalyticsModule().trackChatOpen(peer);
-        if (modules.getPresenceModule() != null) {
-            modules.getPresenceModule().subscribe(peer);
-            modules.getNotificationsModule().onConversationOpen(peer);
-            modules.getMessagesModule().onConversationOpen(peer);
-        }
+        modules.getEvents().post(new PeerChatOpened(peer));
     }
 
     /**
@@ -411,10 +409,7 @@ public class Messenger {
      */
     @ObjectiveCName("onConversationClosedWithPeer:")
     public void onConversationClosed(@NotNull Peer peer) {
-        modules.getAnalyticsModule().trackChatClosed(peer);
-        if (modules.getPresenceModule() != null) {
-            modules.getNotificationsModule().onConversationClose(peer);
-        }
+        modules.getEvents().post(new PeerChatClosed(peer));
     }
 
     /**
@@ -424,10 +419,7 @@ public class Messenger {
      */
     @ObjectiveCName("onProfileOpenWithUid:")
     public void onProfileOpen(int uid) {
-        modules.getAnalyticsModule().trackProfileOpen(uid);
-        if (modules.getPresenceModule() != null) {
-            modules.getPresenceModule().subscribe(Peer.user(uid));
-        }
+        modules.getEvents().post(new PeerInfoOpened(Peer.user(uid)));
     }
 
     /**
@@ -437,7 +429,7 @@ public class Messenger {
      */
     @ObjectiveCName("onProfileClosedWithUid:")
     public void onProfileClosed(int uid) {
-        modules.getAnalyticsModule().trackProfileClosed(uid);
+        modules.getEvents().post(new PeerInfoClosed(Peer.user(uid)));
     }
 
     /**
@@ -800,6 +792,32 @@ public class Messenger {
     @ObjectiveCName("editGroupTitleCommandWithGid:withTitle:")
     public Command<Boolean> editGroupTitle(final int gid, final String title) {
         return modules.getGroupsModule().editTitle(gid, title);
+    }
+
+    /**
+     * Edit group's theme
+     *
+     * @param gid   group's id
+     * @param theme new group theme
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("editGroupThemeCommandWithGid:withTheme:")
+    public Command<Boolean> editGroupTheme(final int gid, final String theme) {
+        return modules.getGroupsModule().editTheme(gid, theme);
+    }
+
+    /**
+     * Edit group's about
+     *
+     * @param gid   group's id
+     * @param about new group about
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("editGroupAboutCommandWithGid:withAbout:")
+    public Command<Boolean> editGroupAbout(final int gid, final String about) {
+        return modules.getGroupsModule().editAbout(gid, about);
     }
 
     /**

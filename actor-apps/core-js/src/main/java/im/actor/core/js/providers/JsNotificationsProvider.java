@@ -40,9 +40,7 @@ public class JsNotificationsProvider implements NotificationProvider {
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount, boolean isInApp) {
-
-        Log.d("JsNotificationsProvider", "onNotification");
+    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount) {
 
         String peerTitle;
         String peerAvatarUrl = null;

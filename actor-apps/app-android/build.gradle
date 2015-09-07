@@ -149,7 +149,7 @@ dependencies {
 
     // UI
     compile 'com.droidkit:progress:0.5'
-    compile 'com.soundcloud.android:android-crop:0.9.10@aar'
+    compile 'com.soundcloud.android:android-crop:1.0.0@aar'
     compile 'com.facebook.fresco:fresco:0.1.0'
     compile 'com.facebook.rebound:rebound:0.3.7'
     compile('com.github.chrisbanes.photoview:library:1.2.3') {

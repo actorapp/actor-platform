@@ -21,10 +21,12 @@ import im.actor.core.network.parser.Response;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.actors.Actor;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.PreferencesStorage;
 
-public class ModuleActor extends Actor {
+public class ModuleActor extends Actor implements BusSubscriber {
 
     protected static final long CURSOR_RECEIVED = 0;
     protected static final long CURSOR_READ = 1;
@@ -32,9 +34,28 @@ public class ModuleActor extends Actor {
     protected static final long CURSOR_DELETE = 3;
 
     private ModuleContext context;
+    private BusSubscriber subscriber;
 
     public ModuleActor(ModuleContext context) {
         this.context = context;
+    }
+
+    public void subscribe(String eventType) {
+        if (subscriber == null) {
+            subscriber = new BusSubscriber() {
+                @Override
+                public void onBusEvent(final Event event) {
+                    self().send(new Runnable() {
+                        @Override
+                        public void run() {
+                            ModuleActor.this.onBusEvent(event);
+                        }
+                    });
+                }
+            };
+        }
+
+        context().getEvents().subscribe(subscriber, eventType);
     }
 
     public ApiOutPeer buidOutPeer(Peer peer) {
@@ -155,5 +176,10 @@ public class ModuleActor extends Actor {
                 });
             }
         });
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+
     }
 }

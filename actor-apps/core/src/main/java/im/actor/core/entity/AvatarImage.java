@@ -10,8 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 import im.actor.core.api.ApiAvatarImage;
-import im.actor.core.api.ApiFileLocation;
-import im.actor.core.entity.compat.ObsoleteAvatarImage;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 
@@ -54,15 +52,7 @@ public class AvatarImage extends WrapperEntity<ApiAvatarImage> {
             super.parse(values);
         } else {
             // Convert old layout
-            ObsoleteAvatarImage obsoleteAvatarImage = new ObsoleteAvatarImage(values);
-
-            setWrapped(new ApiAvatarImage(
-                    new ApiFileLocation(
-                            obsoleteAvatarImage.getFileReference().getFileId(),
-                            obsoleteAvatarImage.getFileReference().getAccessHash()),
-                    obsoleteAvatarImage.getWidth(),
-                    obsoleteAvatarImage.getHeight(),
-                    obsoleteAvatarImage.getFileReference().getFileSize()));
+            throw new IOException("Unsupported obsolete format");
         }
     }
 

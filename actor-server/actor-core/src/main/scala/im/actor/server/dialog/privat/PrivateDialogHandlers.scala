@@ -4,12 +4,12 @@ import akka.actor.Status
 import akka.pattern.pipe
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.server.dialog.PrivateDialogCommands.Origin.{ LEFT, RIGHT }
+import im.actor.server.dialog.Origin
+import im.actor.server.dialog.Origin.{ LEFT, RIGHT }
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed, AuthIdRandomId, PrivateDialogCommands }
 import im.actor.server.history.HistoryUtils
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
-import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserOffice

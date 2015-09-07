@@ -192,18 +192,13 @@ public class I18nEngine {
     @ObjectiveCName("formatPresence:withSex:")
     public String formatPresence(UserPresence value, Sex sex) {
         if (value == null) {
-            Log.d(TAG, "formatPresence: null");
             return null;
         }
 
-        Log.d(TAG, "formatPresence: " + value.getState() + ": " + value.getLastSeen());
-
         if (value.getState() == UserPresence.State.OFFLINE) {
-            long currentTime = im.actor.runtime.Runtime.getCurrentSyncedTime() / 1000L;
-            Log.d(TAG, "formatPresence: time:" + currentTime);
-            int delta = (int) (currentTime - value.getLastSeen());
-            Log.d(TAG, "formatPresence: delta:" + delta);
 
+            long currentTime = im.actor.runtime.Runtime.getCurrentSyncedTime() / 1000L;
+            int delta = (int) (currentTime - value.getLastSeen());
             if (delta < 60) {
                 Log.d(TAG, "formatPresence: onlineNow");
                 if (locale.containsKey("OnlineNowMale") && locale.containsKey("OnlineNowFemale")) {
@@ -216,10 +211,8 @@ public class I18nEngine {
                     return locale.get("OnlineNow");
                 }
             } else if (delta < 24 * 60 * 60) {
+
                 String time = formatTime(value.getLastSeen() * 1000L);
-
-                Log.d(TAG, "formatPresence: today " + time);
-
                 if (areSameDays(value.getLastSeen() * 1000L, new Date().getTime())) {
                     if (locale.containsKey("OnlineLastSeenTodayMale") && locale.containsKey("OnlineLastSeenTodayMale")) {
                         return (sex == Sex.UNKNOWN
@@ -245,9 +238,6 @@ public class I18nEngine {
 
                 String time = formatTime(value.getLastSeen() * 1000L);
                 String date = formatDate(value.getLastSeen() * 1000L);
-
-                Log.d(TAG, "formatPresence: datetime " + date + " " + time);
-
                 if (locale.containsKey("OnlineLastSeenDateTimeMale") && locale.containsKey("OnlineLastSeenDateTimeMale")) {
                     return (sex == Sex.UNKNOWN
                             ? locale.get("OnlineLastSeenDateTime")
@@ -263,9 +253,6 @@ public class I18nEngine {
                 }
             } else if (delta < 6 * 30 * 24 * 60 * 60) {
                 String date = formatDate(value.getLastSeen() * 1000L);
-
-                Log.d(TAG, "formatPresence: date " + date);
-
                 if (locale.containsKey("OnlineLastSeenDateMale") && locale.containsKey("OnlineLastSeenDateMale")) {
                     return (sex == Sex.UNKNOWN
                             ? locale.get("OnlineLastSeenDate")
@@ -278,18 +265,12 @@ public class I18nEngine {
                             .replace("{date}", date);
                 }
             } else {
-
-                Log.d(TAG, "formatPresence: offline");
-
                 return locale.get("OnlineOff");
             }
         } else if (value.getState() == UserPresence.State.ONLINE) {
-            Log.d(TAG, "formatPresence: online");
-
             return locale.get("OnlineOn");
         }
 
-        Log.d(TAG, "formatPresence: null");
         return null;
     }
 
@@ -433,8 +414,6 @@ public class I18nEngine {
         } else if (content instanceof ServiceGroupUserJoined) {
             return getTemplateNamed(senderId, "ServiceGroupJoined");
         }
-
-        Log.w("i18NEngine", "Unknown service content: " + content);
 
         return content.getCompatText();
     }

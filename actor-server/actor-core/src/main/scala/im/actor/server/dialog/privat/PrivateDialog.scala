@@ -7,10 +7,9 @@ import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.PrivateDialogCommands.Origin
-import im.actor.server.dialog.PrivateDialogCommands.Origin.{ LEFT, RIGHT }
+import im.actor.server.dialog._
+import im.actor.server.dialog.Origin.{ LEFT, RIGHT }
 import im.actor.server.dialog.privat.PrivateDialogEvents.PrivateDialogEvent
-import im.actor.server.dialog.{ StopDialog, AuthIdRandomId, PrivateDialogCommands }
 import im.actor.server.office.{ ProcessorState, Processor }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
@@ -22,10 +21,8 @@ import scala.concurrent.duration._
 
 import scala.concurrent.{ Future, ExecutionContext }
 
-trait PrivateDialogCommand {
-  require(right > left, "Left should be less than right")
-  def left: Int
-  def right: Int
+private[dialog] trait PrivateDialogCommand {
+  val dialogId: PrivateDialogId
 }
 
 case class DialogState(
@@ -72,7 +69,7 @@ class PrivateDialog extends Processor[PrivateDialogState, PrivateDialogEvent] wi
 
   val (left, right) = {
     val lr = self.path.name.toString split "_" map (_.toInt)
-    (lr(0), lr(1))
+    (lr(1), lr(2))
   }
 
   private val initState: PrivateDialogState = PrivateDialogState(Map(
@@ -106,12 +103,12 @@ class PrivateDialog extends Processor[PrivateDialogState, PrivateDialogEvent] wi
   override protected def handleInitCommand: Receive = working(initState)
 
   override protected def handleCommand(state: PrivateDialogState): Receive = {
-    case SendMessage(_, _, origin, senderAuthId, randomId, message, isFat) ⇒
-      sendMessage(state, origin, senderAuthId, randomId, message, isFat)
-    case MessageReceived(_, _, origin, date) ⇒
-      messageReceived(state, origin, date)
-    case MessageRead(_, _, origin, readerAuthId, date) ⇒
-      messageRead(state, origin, readerAuthId, date)
+    case SendMessage(id, senderUserId, senderAuthId, randomId, message, isFat) ⇒
+      sendMessage(state, senderUserId, senderAuthId, randomId, message, isFat)
+    case MessageReceived(id, receiverUserId, date) ⇒
+      messageReceived(state, receiverUserId, date)
+    case MessageRead(id, readerUserUd, readerAuthId, date) ⇒
+      messageRead(state, readerUserUd, readerAuthId, date)
     case StopDialog     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }

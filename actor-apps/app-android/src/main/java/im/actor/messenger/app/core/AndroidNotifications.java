@@ -63,20 +63,13 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount, boolean isInApp) {
-
-        // Android ignores isInApp argument because it is ok to send normal notification
-        // instead in-app
+    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount) {
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.ic_app_notify);
-        if (isInApp) {
-            builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-        } else {
-            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        }
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
         int defaults = NotificationCompat.DEFAULT_LIGHTS;

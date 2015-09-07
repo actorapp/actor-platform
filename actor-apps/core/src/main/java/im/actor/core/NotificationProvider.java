@@ -29,12 +29,9 @@ public interface NotificationProvider {
      * @param topNotifications   top 10 notifications
      * @param messagesCount      total messages count
      * @param conversationsCount total conversations count
-     * @param isInApp            is notification performed in application window
      */
-    @ObjectiveCName("onNotificationWithMessenger:withTopNotifications:withMessagesCount:withConversationsCount:" +
-            "withIsInApp:")
-    void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount,
-                        int conversationsCount, boolean isInApp);
+    @ObjectiveCName("onNotificationWithMessenger:withTopNotifications:withMessagesCount:withConversationsCount:")
+    void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount);
 
     /**
      * On Notification panel update

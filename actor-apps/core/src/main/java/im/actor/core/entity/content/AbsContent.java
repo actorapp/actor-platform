@@ -22,7 +22,6 @@ import im.actor.core.api.ApiServiceExUserKicked;
 import im.actor.core.api.ApiServiceExUserLeft;
 import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.api.ApiTextMessage;
-import im.actor.core.entity.compat.content.ObsoleteContent;
 import im.actor.core.entity.content.internal.AbsContentContainer;
 import im.actor.core.entity.content.internal.AbsLocalContent;
 import im.actor.core.entity.content.internal.ContentLocalContainer;
@@ -60,7 +59,7 @@ public abstract class AbsContent {
         if (reader.getBool(32, false)) {
             container = AbsContentContainer.loadContainer(reader.getBytes(33));
         } else {
-            container = ObsoleteContent.contentFromValues(reader);
+            throw new IOException("Unsupported obsolete format");
         }
         return convertData(container);
     }

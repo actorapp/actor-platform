@@ -23,7 +23,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     private MessagesFragment messagesFragment;
     private Context context;
     private long firstUnread = -1;
-    private HashMap<Long, Message> selected = new HashMap<Long, Message>();
+    protected HashMap<Long, Message> selected = new HashMap<Long, Message>();
 
     public MessagesAdapter(BindedDisplayList<Message> displayList,
                            MessagesFragment messagesFragment, Context context) {
@@ -89,7 +89,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
         }
     }
 
-    private View inflate(int id, ViewGroup viewGroup) {
+    protected View inflate(int id, ViewGroup viewGroup) {
         return LayoutInflater
                 .from(context)
                 .inflate(id, viewGroup, false);
