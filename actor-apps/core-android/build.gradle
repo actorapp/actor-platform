@@ -35,7 +35,6 @@ android {
         main {
             java {
                 srcDirs = ['src/main/java',
-                           'src/main/nofree',
                            '../core/src/main/java',
                            '../runtime/src/main/java',
                            '../runtime/src/generic/java',
@@ -46,8 +45,15 @@ android {
             }
         }
 
+        release {
+            java.srcDirs += 'src/nofree/java'
+        }
+
+        debug {
+            java.srcDirs += 'src/nofree/java'
+        }
+
         free {
-            java.exclude 'nofree/**'
             java.srcDirs += 'src/free/java'
         }
     }
