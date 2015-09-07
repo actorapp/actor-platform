@@ -7,6 +7,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 
 import im.actor.core.modules.Modules;
+import im.actor.messenger.app.core.Core;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
 
@@ -16,7 +17,6 @@ import im.actor.runtime.actors.Actor;
 public class AndroidPushActor extends Actor {
 
     private static final String TAG = "im.actor.core.AndroidPushActor";
-    private static final long PROJECT_ID = 209133700967L;
 
     private final AndroidMessenger messenger;
     private final Context context;
@@ -44,7 +44,7 @@ public class AndroidPushActor extends Actor {
                         GoogleCloudMessaging cloudMessaging = GoogleCloudMessaging.getInstance(context);
                         try {
                             Log.d(TAG, "Requesting push token iteration...");
-                            String regId = cloudMessaging.register("" + PROJECT_ID);
+                            String regId = cloudMessaging.register("" + Core.PUSH_ID);
                             if (regId != null) {
                                 Log.d(TAG, "Token loaded");
                                 self().send(new PushRegistered(regId));
@@ -74,7 +74,7 @@ public class AndroidPushActor extends Actor {
     private void onPushRegistered(String token) {
         isRegistered = true;
         messenger.getPreferences().putBool("push_registered", true);
-        messenger.registerGooglePush(PROJECT_ID, token);
+        messenger.registerGooglePush(Core.PUSH_ID, token);
     }
 
     @Override
