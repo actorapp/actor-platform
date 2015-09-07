@@ -279,9 +279,9 @@ export default {
     window.messenger.changeIsOnlyMentionNotifications(isEnabled);
   },
   isSoundEffectsEnabled() {
-    return window.messenger.isGroupsNotificationsEnabled();
+    return window.messenger.isSoundEffectsEnabled();
   },
   changeSoundEffectsEnabled(isEnabled) {
-    window.messenger.isGroupsNotificationsEnabled(isEnabled);
+    window.messenger.changeSoundEffectsEnabled(isEnabled);
   }
-};
+}

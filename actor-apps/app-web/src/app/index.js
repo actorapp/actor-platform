@@ -68,11 +68,7 @@ class App extends React.Component {
 }
 
 // Internationalisation
-let intlData;
-PreferencesStore.addChangeListener(() => {
-  intlData = PreferencesStore.languageData;
-});
-PreferencesActionCreators.load();
+const intlData = PreferencesStore.getLanguageData();
 
 const initReact = () => {
   if (window.location.hash !== '#/deactivated') {
