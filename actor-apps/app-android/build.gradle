@@ -78,16 +78,16 @@ android {
         }
 
         release {
-            java.srcDirs += 'src/nofree/java'
+            java.srcDirs += 'src/nofree_sources/java'
         }
 
         free {
-            java.srcDirs += 'src/free/java'
+            java.srcDirs += 'src/free_sources/java'
         }
 
 
         debug {
-            java.srcDirs += 'src/nofree/java'
+            java.srcDirs += 'src/nofree_sources/java'
             res.srcDirs = ['src/themes/dev']
         }
     }
