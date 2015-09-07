@@ -49,6 +49,15 @@
                 android:textSize="26sp" />
 
             <TextView
+                android:id="@+id/theme_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:textColor="@color/profile_subtitle"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/createdBy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,6 +72,96 @@
             android:layout_gravity="bottom"
             android:background="@drawable/card_shadow_top" />
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/descriptionContainer"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/themeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:background="@drawable/clickable_background"
+            android:paddingRight="8dp"
+            android:paddingLeft="72dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:text="@string/theme_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_marginLeft="72dp"
+            android:id="@+id/themeDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/div_size"
+            android:layout_gravity="bottom"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:id="@+id/aboutContainer"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:background="@drawable/clickable_background"
+            android:paddingRight="8dp"
+            android:paddingLeft="72dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:text="@string/about_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:background="@color/bg_backyard">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="top"
+                android:background="@drawable/card_shadow_bottom" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/card_shadow_top" />
+        </FrameLayout>
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -121,7 +220,7 @@
 
     <LinearLayout
         android:id="@+id/sharedContainer"
-        android:visibility="gone"
+        android:visibility="visible"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -134,6 +233,7 @@
             android:textColor="@color/settings_main_title"
             android:textSize="16sp" />
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/mediaContainer"
             android:layout_width="match_parent"
             android:layout_height="48dp"

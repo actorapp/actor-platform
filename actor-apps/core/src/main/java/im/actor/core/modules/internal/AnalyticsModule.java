@@ -8,10 +8,18 @@ import java.util.HashMap;
 
 import im.actor.core.AnalyticsProvider;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerType;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.events.AppVisibleChanged;
+import im.actor.core.modules.events.PeerChatClosed;
+import im.actor.core.modules.events.PeerChatOpened;
+import im.actor.core.modules.events.PeerInfoClosed;
+import im.actor.core.modules.events.PeerInfoOpened;
+import im.actor.runtime.eventbus.BusSubscriber;
+import im.actor.runtime.eventbus.Event;
 
-public class AnalyticsModule extends AbsModule {
+public class AnalyticsModule extends AbsModule implements BusSubscriber {
 
     private AnalyticsProvider analyticsProvider;
 
@@ -19,6 +27,12 @@ public class AnalyticsModule extends AbsModule {
         super(context);
 
         analyticsProvider = context.getConfiguration().getAnalyticsProvider();
+
+        context.getEvents().subscribe(this, AppVisibleChanged.EVENT);
+        context.getEvents().subscribe(this, PeerInfoOpened.EVENT);
+        context.getEvents().subscribe(this, PeerInfoClosed.EVENT);
+        context.getEvents().subscribe(this, PeerChatOpened.EVENT);
+        context.getEvents().subscribe(this, PeerChatClosed.EVENT);
     }
 
     public void onLoggedOut(String deviceId) {
@@ -28,13 +42,13 @@ public class AnalyticsModule extends AbsModule {
     }
 
     public void onLoggedIn(String deviceId, int uid, Long[] phoneNumbers, String userName) {
-        if (analyticsProvider != null && phoneNumbers.length>0) {
+        if (analyticsProvider != null && phoneNumbers.length > 0) {
             analyticsProvider.onLoggedIn(deviceId, uid, phoneNumbers[0], userName);
         }
     }
 
     public void onLoggedInPerformed(String deviceId, int uid, Long[] phoneNumber, String userName) {
-        if (analyticsProvider != null && phoneNumber.length>0) {
+        if (analyticsProvider != null && phoneNumber.length > 0) {
             analyticsProvider.onLoggedInPerformed(deviceId, uid, phoneNumber[0], userName);
         }
     }
@@ -260,6 +274,32 @@ public class AnalyticsModule extends AbsModule {
                 params.put(args[i], args[i + 1]);
             }
             analyticsProvider.trackEvent(event, params);
+        }
+    }
+
+    @Override
+    public void onBusEvent(Event event) {
+        if (event instanceof AppVisibleChanged) {
+            AppVisibleChanged visibleChanged = (AppVisibleChanged) event;
+            if (visibleChanged.isVisible()) {
+                trackAppVisible();
+            } else {
+                trackAppHidden();
+            }
+        } else if (event instanceof PeerChatOpened) {
+            trackChatOpen(((PeerChatOpened) event).getPeer());
+        } else if (event instanceof PeerChatClosed) {
+            trackChatClosed(((PeerChatClosed) event).getPeer());
+        } else if (event instanceof PeerInfoOpened) {
+            Peer peer = ((PeerInfoOpened) event).getPeer();
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                trackProfileOpen(peer.getPeerId());
+            }
+        } else if (event instanceof PeerInfoClosed) {
+            Peer peer = ((PeerInfoClosed) event).getPeer();
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                trackProfileClosed(peer.getPeerId());
+            }
         }
     }
 }

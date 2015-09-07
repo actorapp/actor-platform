@@ -93,6 +93,9 @@ object Dialog {
   def findGroupIds(userId: Int): FixedSqlStreamingAction[Seq[Int], Int, Read] =
     idByPeerTypeC((userId, models.PeerType.Group.toInt)).result
 
+  def findUserIds(userId: Int): FixedSqlStreamingAction[Seq[Int], Int, Read] =
+    idByPeerTypeC((userId, models.PeerType.Private.toInt)).result
+
   def findLastReadBefore(date: DateTime, userId: Int) =
     dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result
 
