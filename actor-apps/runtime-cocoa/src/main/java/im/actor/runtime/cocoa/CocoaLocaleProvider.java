@@ -5,9 +5,10 @@ import im.actor.runtime.LocaleRuntime;
 public class CocoaLocaleProvider implements LocaleRuntime {
 
     @Override
-    public String getCurrentLocale() {
-        return "En";
-    }
+    public native String getCurrentLocale()/*-[
+        NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        return [language capitalizedString];
+    ]-*/;
 
     @Override
     public native String formatDate(long date)/*-[
