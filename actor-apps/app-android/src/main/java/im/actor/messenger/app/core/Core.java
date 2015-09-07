@@ -92,7 +92,7 @@ public class Core {
         Fresco.initialize(application);
 
         // Keep Alive
-        if (BuildConfig.IS_FREE) {
+        if (BuildConfig.ENABLE_KEEP_ALIVE) {
             Intent keepAliveService = new Intent(application, KeepAliveService.class);
             PendingIntent pintent = PendingIntent.getService(application, 0, keepAliveService, 0);
             AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
