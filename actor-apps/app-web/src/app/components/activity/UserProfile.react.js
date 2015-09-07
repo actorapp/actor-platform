@@ -66,11 +66,13 @@ class UserProfile extends React.Component {
   };
 
   onNotificationChange = (event) => {
-    DialogActionCreators.changeNotificationsEnabled(this.state.thisPeer, event.target.checked);
+    const { thisPeer } = this.state;
+    DialogActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
   onChange = () => {
-    this.setState(getStateFromStores(this.props.user.id));
+    const { user } = this.props;
+    this.setState(getStateFromStores(user.id));
   };
 
   toggleActionsDropdown = () => {
@@ -112,25 +114,25 @@ class UserProfile extends React.Component {
     const { user } = this.props;
     const { isNotificationsEnabled, isActionsDropdownOpen } = this.state;
 
-    let actions;
-    if (user.isContact === false) {
-      actions = (
-        <li className="dropdown__menu__item" onClick={this.addToContacts}>
-          <FormattedMessage message={this.getIntlMessage('addToContacts')}/>
-        </li>
-      );
-    } else {
-      actions = (
-        <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
-          <FormattedMessage message={this.getIntlMessage('removeFromContacts')}/>
-        </li>
-      );
-    }
+    const actions = (user.isContact === false) ? (
+      <li className="dropdown__menu__item" onClick={this.addToContacts}>
+        <FormattedMessage message={this.getIntlMessage('addToContacts')}/>
+      </li>
+    ) : (
+      <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
+        <FormattedMessage message={this.getIntlMessage('removeFromContacts')}/>
+      </li>
+    );
 
     let dropdownClassNames = classnames('dropdown pull-left', {
       'dropdown--opened': isActionsDropdownOpen
     });
 
+    const about = user.about ? (
+      <div className="user_profile__meta__about">
+        {user.about}
+      </div>
+    ) : null;
     const nickname = user.nick ? (
       <li>
         <svg className="icon icon--pink"
@@ -161,7 +163,7 @@ class UserProfile extends React.Component {
               <h3 className="user_profile__meta__title">{user.name}</h3>
               <div className="user_profile__meta__presence">{user.presence}</div>
             </header>
-
+            {about}
             <footer>
               <div className={dropdownClassNames}>
                 <button className="dropdown__button button button--flat" onClick={this.toggleActionsDropdown}>

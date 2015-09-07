@@ -97,6 +97,9 @@ export const ActionTypes = keymirror({
   MY_PROFILE_MODAL_HIDE: null,
   MY_PROFILE_SAVE_NAME: null,
   MY_PROFILE_SAVE_NICKNAME: null,
+  MY_PROFILE_EDIT_ABOUT: null,
+  MY_PROFILE_EDIT_ABOUT_SUCCESS: null,
+  MY_PROFILE_EDIT_ABOUT_ERROR: null,
 
   KICK_USER: null,
   KICK_USER_SUCCESS: null,
