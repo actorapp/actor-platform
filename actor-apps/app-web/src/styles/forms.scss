@@ -65,7 +65,7 @@
     }
     &:after {
       font-family: 'Material Icons';
-      font-size: 20px;
+      font-size: 18px;
       font-style: normal;
 
       position: absolute;
@@ -80,6 +80,7 @@
 
       content: 'check';
       transition: transform 200ms;
+      text-align: center;
 
       color: white;
 
