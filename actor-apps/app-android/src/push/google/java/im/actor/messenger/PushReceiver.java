@@ -38,11 +38,10 @@ public class PushReceiver extends WakefulBroadcastReceiver {
                     int seq = Integer.parseInt(extras.getString("seq"));
                     messenger().onPushReceived(seq);
                     setResultCode(Activity.RESULT_OK);
+                    Log.d(TAG, "Push received");
                 }
             }
-        } else {
         }
-
         completeWakefulIntent(intent);
     }
 }
