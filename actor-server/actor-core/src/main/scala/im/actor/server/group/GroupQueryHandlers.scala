@@ -65,4 +65,6 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   def getAccessHash(group: Group): Unit =
     sender() ! GetAccessHashResponse(group.accessHash)
 
+  def isHistoryShared(group: Group): Unit =
+    sender() ! IsHistorySharedResponse(group.isHistoryShared)
 }

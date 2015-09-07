@@ -84,7 +84,7 @@ trait HistoryHandlers {
           if (peer.`type` == PeerType.Private) {
             DBIO.successful(true)
           } else {
-            withGroup(peer.id)(g ⇒ DBIO.successful(!g.isPublic))
+            DBIO.from(GroupOffice.isHistoryShared(peer.id)) flatMap (isHistoryShared ⇒ DBIO.successful(!isHistoryShared))
           }
         }
         _ ← fromDBIO(persist.HistoryMessage.deleteAll(client.userId, peer.asModel))
