@@ -5,15 +5,15 @@
 
 
     <permission
-        tools:merge="remove"
+        tools:merge="REMOVE"
         android:name="${applicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission
-        tools:merge="remove"
+        tools:merge="REMOVE"
         android:name="${applicationId}.permission.C2D_MESSAGE" />
     <uses-permission
-        tools:merge="remove"
+        tools:merge="REMOVE"
         android:name="com.google.android.c2dm.permission.RECEIVE" />
 
 
@@ -26,7 +26,7 @@
 
 
         <receiver
-            tools:merge="remove"
+            tools:merge="REMOVE"
             android:name="im.actor.messenger.PushReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
