@@ -54,10 +54,10 @@ class PreferencesStore extends EventEmitter {
   }
 
   savePreferences(newPreferences) {
-    const isSendByEnterEnabled = newPreferences.isSendByEnterEnabled === 'true';
+    const { isSendByEnterEnabled, isSoundEffectsEnabled } = newPreferences;
 
     ActorClient.changeSendByEnter(isSendByEnterEnabled);
-    ActorClient.changeSoundEffectsEnabled(newPreferences.isSoundEffectsEnabled);
+    ActorClient.changeSoundEffectsEnabled(isSoundEffectsEnabled);
 
     PreferencesStoreInstance.emitChange();
   }
