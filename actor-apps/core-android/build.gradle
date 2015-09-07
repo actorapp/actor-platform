@@ -47,7 +47,7 @@ android {
         }
 
         free {
-            java.exclude 'src/nofree/java'
+            java.exclude 'nofree/java/**'
             java.srcDirs += 'src/free/java'
         }
     }
