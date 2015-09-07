@@ -35,7 +35,7 @@ android {
         main {
             java {
                 srcDirs = ['src/main/java',
-                           'src/nofree/java',
+                           'src/main/nofree',
                            '../core/src/main/java',
                            '../runtime/src/main/java',
                            '../runtime/src/generic/java',
@@ -47,7 +47,7 @@ android {
         }
 
         free {
-            java.exclude 'nofree/java/**'
+            java.exclude 'nofree/**'
             java.srcDirs += 'src/free/java'
         }
     }
