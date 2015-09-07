@@ -21,6 +21,7 @@ android {
 }
 
 android {
+
     sourceSets {
         main {
             java {
@@ -34,6 +35,7 @@ android {
                 srcDirs = ['../core/src/main/resources']
             }
         }
+
     }
 
     lintOptions {
@@ -44,4 +46,5 @@ android {
 dependencies {
     compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
+
 }
