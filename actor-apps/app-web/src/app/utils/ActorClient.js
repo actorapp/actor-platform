@@ -239,5 +239,9 @@ export default {
 
   editMyAbout(about) {
     return window.messenger.editMyAbout(about);
+  },
+
+  editGroupTitle(gid, title) {
+    return window.messenger.editGroupTitle(gid, title);
   }
 };

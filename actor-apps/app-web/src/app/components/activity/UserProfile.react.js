@@ -96,7 +96,8 @@ class UserProfile extends React.Component {
       () => {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.clearChat(peer);
-      }
+      },
+      () => {}
     );
   };
 
@@ -105,7 +106,8 @@ class UserProfile extends React.Component {
       () => {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.deleteChat(peer);
-      }
+      },
+      () => {}
     );
   };
 
