@@ -6,15 +6,11 @@ import im.actor.core.modules.Modules;
 import im.actor.runtime.actors.Actor;
 
 /**
- * this actor is used for load push token and register it on server
- *
- * we are not using pushes for free version of Actor, that's why it's empty
+ * Empty push implementation for free version of Actor.
  */
 public class AndroidPushActor extends Actor {
 
-
     public AndroidPushActor(Context context, AndroidMessenger messenger) {
     }
-
 
 }
