@@ -281,8 +281,6 @@
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
-        <activity android:name="net.hockeyapp.android.UpdateActivity" />
-
         <activity android:name="com.mixpanel.android.surveys.SurveyActivity" />
 
         <activity
