@@ -72,13 +72,19 @@ android {
     // Setting themes
     sourceSets {
 
+
         main {
             res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
+            java.srcDirs += 'src/nofree/java'
+        }
+
+        free {
+            manifest.srcFile 'src.free.androidManifest.xml'
+            java.srcDirs -= 'src/nofree/java'
         }
 
         debug {
             res.srcDirs = ['src/themes/dev']
-            java.srcDirs += 'src/release/java'
         }
     }
 
