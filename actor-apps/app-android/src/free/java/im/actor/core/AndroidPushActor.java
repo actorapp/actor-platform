@@ -9,7 +9,7 @@ import im.actor.runtime.actors.Actor;
 public class AndroidPushActor extends Actor {
 
 
-    public AndroidPushActor(Context context, Modules messenger) {
+    public AndroidPushActor(Context context, AndroidMessenger messenger) {
     }
 
 
