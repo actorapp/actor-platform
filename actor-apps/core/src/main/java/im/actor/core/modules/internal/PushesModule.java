@@ -15,12 +15,12 @@ import static im.actor.runtime.actors.ActorSystem.system;
 
 public class PushesModule extends AbsModule {
 
-    private ActorRef pushActor;
+    private ActorRef pushRegisterActor;
 
     public PushesModule(ModuleContext modules) {
         super(modules);
 
-        pushActor = system().actorOf(Props.create(PushRegisterActor.class, new ActorCreator<PushRegisterActor>() {
+        pushRegisterActor = system().actorOf(Props.create(PushRegisterActor.class, new ActorCreator<PushRegisterActor>() {
             @Override
             public PushRegisterActor create() {
                 return new PushRegisterActor(context());
@@ -29,14 +29,14 @@ public class PushesModule extends AbsModule {
     }
 
     public void registerGooglePush(long projectId, String token) {
-        pushActor.send(new PushRegisterActor.RegisterGooglePush(projectId, token));
+        pushRegisterActor.send(new PushRegisterActor.RegisterGooglePush(projectId, token));
     }
 
     public void registerApplePush(int apnsKey, String token) {
-        pushActor.send(new PushRegisterActor.RegisterApplePush(apnsKey, token));
+        pushRegisterActor.send(new PushRegisterActor.RegisterApplePush(apnsKey, token));
     }
 
     public void resetModule() {
-        pushActor.send(new PushRegisterActor.ResendPush());
+        pushRegisterActor.send(new PushRegisterActor.ResendPush());
     }
 }
