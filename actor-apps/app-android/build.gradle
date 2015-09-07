@@ -45,21 +45,26 @@ android {
         // Java types for BuildConfig
         def STRING = "String"
         def VERSION_TITLE = "VERSION_TITLE"
+        def BOOLEAN = "boolean"
+        def ENABLE_KEEP_ALIVE = "ENABLE_KEEP_ALIVE"
 
         release {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Release)\""
+            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "false"
             signingConfig signingConfigs.release
             applicationIdSuffix ".cloud"
         }
 
         free {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Free)\""
+            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "true"
             signingConfig signingConfigs.release
             applicationIdSuffix ".free"
         }
 
         debug {
             buildConfigField STRING, VERSION_TITLE, "\"Debug Version (${getDate()})\""
+            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "false"
             applicationIdSuffix ".debug"
         }
     }
@@ -67,11 +72,22 @@ android {
     // Setting themes
     sourceSets {
 
+
         main {
             res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
         }
 
+        release {
+            java.srcDirs += 'src/push/google/java'
+        }
+
+        free {
+            java.srcDirs += 'src/push/empty/java'
+        }
+
+
         debug {
+            java.srcDirs += 'src/push/google/java'
             res.srcDirs = ['src/themes/dev']
         }
     }
@@ -163,10 +179,12 @@ dependencies {
     compile 'com.android.support:palette-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
 
+    //GCM
+    releaseCompile 'com.google.android.gms:play-services-gcm:7.5.0'
+    debugCompile 'com.google.android.gms:play-services-gcm:7.5.0'
+
     // Integration
-    compile 'com.mixpanel.android:mixpanel-android:4.5.3'
     compile 'com.splunk.mint:mint:4.0.8'
-    compile files('libs/HockeySDK-3.5.0.jar')
 
 //    // Annotation processing
 //    apt "org.androidannotations:androidannotations:3.3.2"

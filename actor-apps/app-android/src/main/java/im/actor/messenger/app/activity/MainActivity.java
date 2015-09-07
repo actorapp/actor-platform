@@ -3,7 +3,6 @@ package im.actor.messenger.app.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import net.hockeyapp.android.UpdateManager;
 
 import im.actor.messenger.app.core.Core;
 import im.actor.messenger.app.activity.base.ControllerActivity;
@@ -27,8 +26,6 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
 
         super.onCreate(savedInstance);
 
-
-        checkForUpdates();
 
         if (messenger().getAuthState() != AuthState.LOGGED_IN) {
             startActivity(new Intent(this, TourActivity.class));
@@ -56,9 +53,5 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
         getController().onItemClicked(item);
     }
 
-    private void checkForUpdates() {
-        if (Core.core().getHockeyToken() != null) {
-            UpdateManager.register(this, Core.core().getHockeyToken());
-        }
-    }
+
 }
