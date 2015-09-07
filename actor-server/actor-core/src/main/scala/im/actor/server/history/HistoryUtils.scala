@@ -1,7 +1,9 @@
 package im.actor.server.history
 
+import akka.actor.ActorSystem
+import akka.util.Timeout
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.server.group.GroupUtils
+import im.actor.server.group.{ GroupExtension, GroupOffice, GroupUtils }
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -25,7 +27,9 @@ object HistoryUtils {
     messageContentData:   Array[Byte]
   )(
     implicit
-    ec: ExecutionContext
+    ec:      ExecutionContext,
+    system:  ActorSystem,
+    timeout: Timeout
   ): DBIO[Unit] = {
     requirePrivatePeer(fromPeer)
     // requireDifferentPeers(fromPeer, toPeer)
@@ -58,9 +62,10 @@ object HistoryUtils {
         res ← persist.Dialog.updateLastMessageDate(toPeer.id, fromPeer, date)
       } yield ()
     } else if (toPeer.typ == models.PeerType.Group) {
-      withGroup(toPeer.id) { group ⇒
-        withGroupUserIds(group.id) { groupUserIds ⇒
-          if (group.isPublic) {
+      implicit val groupViewRegion = GroupExtension(system).viewRegion
+      DBIO.from(GroupOffice.isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒
+        withGroupUserIds(toPeer.id) { groupUserIds ⇒
+          if (isHistoryShared) {
             val historyMessage = models.HistoryMessage(sharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
 
             for {
@@ -137,14 +142,17 @@ object HistoryUtils {
 
   def withHistoryOwner[A](peer: models.Peer)(f: Int ⇒ DBIO[A])(
     implicit
-    ec:     ExecutionContext,
-    client: AuthorizedClientData
+    ec:      ExecutionContext,
+    system:  ActorSystem,
+    timeout: Timeout,
+    client:  AuthorizedClientData
   ): DBIO[A] = {
     (peer.typ match {
       case models.PeerType.Private ⇒ DBIO.successful(client.userId)
       case models.PeerType.Group ⇒
-        withGroup(peer.id) { group ⇒
-          if (group.isPublic) {
+        implicit val groupViewRegion = GroupExtension(system).viewRegion
+        DBIO.from(GroupOffice.isHistoryShared(peer.id)) flatMap { isHistoryShared ⇒
+          if (isHistoryShared) {
             DBIO.successful(sharedUserId)
           } else {
             DBIO.successful(client.userId)
