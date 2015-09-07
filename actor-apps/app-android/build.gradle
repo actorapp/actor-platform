@@ -78,16 +78,16 @@ android {
         }
 
         release {
-            java.srcDirs += 'src/nofree/java'
+            java.srcDirs += 'src/push/google/java'
         }
 
         free {
-            java.srcDirs += 'src/free/java'
+            java.srcDirs += 'src/push/empty/java'
         }
 
 
         debug {
-            java.srcDirs += 'src/nofree/java'
+            java.srcDirs += 'src/push/google/java'
             res.srcDirs = ['src/themes/dev']
         }
     }
@@ -186,7 +186,6 @@ dependencies {
     // Integration
     compile 'com.mixpanel.android:mixpanel-android:4.5.3'
     compile 'com.splunk.mint:mint:4.0.8'
-    compile files('libs/HockeySDK-3.5.0.jar')
 
 //    // Annotation processing
 //    apt "org.androidannotations:androidannotations:3.3.2"
