@@ -35,6 +35,10 @@ class PreferencesStore extends EventEmitter {
     return ActorClient.isSendByEnterEnabled();
   }
 
+  getSoundEffectsEnabled() {
+    return ActorClient.isSoundEffectsEnabled();
+  }
+
   getLanguageData() {
     switch (navigator.language) {
       case 'ru-RU':
@@ -53,6 +57,7 @@ class PreferencesStore extends EventEmitter {
     const isSendByEnterEnabled = newPreferences.isSendByEnterEnabled === 'true';
 
     ActorClient.changeSendByEnter(isSendByEnterEnabled);
+    ActorClient.changeSoundEffectsEnabled(newPreferences.isSoundEffectsEnabled);
 
     PreferencesStoreInstance.emitChange();
   }
