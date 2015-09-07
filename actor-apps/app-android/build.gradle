@@ -82,8 +82,9 @@ android {
         }
 
         free {
-            manifest.srcFile 'AndroidManifestFree.xml'
+            java.srcDirs += 'src/free/java'
         }
+
 
         debug {
             java.srcDirs += 'src/nofree/java'
