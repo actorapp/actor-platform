@@ -1,6 +1,9 @@
 package im.actor.messenger.app.core;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
@@ -14,6 +17,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import im.actor.core.AndroidMessenger;
+import im.actor.core.AndroidPushActor;
 import im.actor.core.ApiConfiguration;
 import im.actor.core.PlatformType;
 import im.actor.core.ConfigurationBuilder;
@@ -25,10 +29,14 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.Props;
 import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.mvvm.MVVMCollection;
 
 import static im.actor.core.utils.IOUtils.readAll;
+import static im.actor.runtime.actors.ActorSystem.system;
 
 /**
  * Created by ex3ndr on 30.08.14.
@@ -38,6 +46,8 @@ public class Core {
     private static final int API_ID = 1;
     private static final String API_KEY = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
     public static final int MAX_DELAY = 15000 * 60;
+    public static long PUSH_ID;
+    private ActorRef androidPushesActor;
 
     private static volatile Core core;
 
@@ -59,19 +69,21 @@ public class Core {
         return core;
     }
 
-    private String hockeyToken;
     private final SmileProcessor smileProcessor;
     // private final StickerProcessor stickerProcessor;
     private AndroidMessenger messenger;
 
-    private Core(Application application) throws IOException, JSONException {
+    private Core(final Application application) throws IOException, JSONException {
 
         AndroidContext.setContext(application);
 
         // Integrations
         //noinspection ConstantConditions
         JSONObject config = new JSONObject(new String(readAll(application.getAssets().open("app.json"))));
-        hockeyToken = config.optString("hockeyapp");
+
+        if (config.optString("push_id") != null && !config.optString("push_id").equals("null")) {
+            PUSH_ID = config.getLong("push_id");
+        }
 
         if (config.optString("mint") != null && !config.optString("mint").equals("null")) {
             Mint.disableNetworkMonitoring();
@@ -80,7 +92,12 @@ public class Core {
         Fresco.initialize(application);
 
         // Keep Alive
-        application.startService(new Intent(application, KeepAliveService.class));
+        if (BuildConfig.ENABLE_KEEP_ALIVE) {
+            Intent keepAliveService = new Intent(application, KeepAliveService.class);
+            PendingIntent pintent = PendingIntent.getService(application, 0, keepAliveService, 0);
+            AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
+            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pintent);
+        }
 
         // Helpers
         AppContext.setContext(application);
@@ -132,14 +149,18 @@ public class Core {
                 getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
+
+        //GCM
+
+        this.androidPushesActor = system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
+            @Override
+            public AndroidPushActor create() {
+                return new AndroidPushActor(application, messenger);
+            }
+        }), "actor/android/push");
+
     }
 
-    public String getHockeyToken() {
-        if (hockeyToken != null && hockeyToken.equals("null")) {
-            return null;
-        }
-        return hockeyToken;
-    }
 
     public String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
