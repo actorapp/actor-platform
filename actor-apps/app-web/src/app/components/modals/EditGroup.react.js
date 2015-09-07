@@ -57,7 +57,7 @@ class EditGroup extends Component {
 
   render() {
     const { isOpen, group, title } = this.state;
-    console.debug(this.state);
+
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--edit-group"
