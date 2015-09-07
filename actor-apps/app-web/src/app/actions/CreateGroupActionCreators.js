@@ -12,18 +12,18 @@ import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 
 const CreateGroupActionCreators = {
   openModal() {
-    dispatch(ActionTypes.CREATE_GROUP_MODAL_OPEN)
+    dispatch(ActionTypes.GROUP_CREATE_MODAL_OPEN)
   },
 
   closeModal() {
-    dispatch(ActionTypes.CREATE_GROUP_MODAL_CLOSE);
+    dispatch(ActionTypes.GROUP_CREATE_MODAL_CLOSE);
   },
 
   createGroup(title, avatar, memberIds) {
     const createGroup = () => dispatchAsync(ActorClient.createGroup(title, avatar, memberIds), {
-      request: ActionTypes.CREATE_GROUP,
-      success: ActionTypes.CREATE_GROUP_SUCCESS,
-      failure: ActionTypes.CREATE_GROUP_ERROR
+      request: ActionTypes.GROUP_CREATE,
+      success: ActionTypes.GROUP_CREATE_SUCCESS,
+      failure: ActionTypes.GROUP_CREATE_ERROR
     }, { title, avatar, memberIds });
 
     createGroup().then((peer) => {

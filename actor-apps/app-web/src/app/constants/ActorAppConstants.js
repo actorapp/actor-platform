@@ -58,11 +58,17 @@ export const ActionTypes = keymirror({
   CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED: null,
   CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT: null,
 
-  CREATE_GROUP_MODAL_OPEN: null,
-  CREATE_GROUP_MODAL_CLOSE: null,
-  CREATE_GROUP: null,
-  CREATE_GROUP_SUCCESS: null,
-  CREATE_GROUP_ERROR: null,
+  // Group actions
+  GROUP_CREATE_MODAL_OPEN: null,
+  GROUP_CREATE_MODAL_CLOSE: null,
+  GROUP_CREATE: null,
+  GROUP_CREATE_SUCCESS: null,
+  GROUP_CREATE_ERROR: null,
+  GROUP_EDIT_MODAL_SHOW: null,
+  GROUP_EDIT_MODAL_HIDE: null,
+  GROUP_EDIT_TITLE: null,
+  GROUP_EDIT_TITLE_SUCCESS: null,
+  GROUP_EDIT_TITLE_ERROR: null,
 
   NOTIFICATION_CHANGE: null,
 
@@ -114,7 +120,6 @@ export const ActionTypes = keymirror({
   CHAT_CLEAR: null,
   CHAT_CLEAR_SUCCESS: null,
   CHAT_CLEAR_ERROR: null
-
 });
 
 export const PeerTypes = {
