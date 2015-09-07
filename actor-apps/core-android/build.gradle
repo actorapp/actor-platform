@@ -24,11 +24,8 @@ android {
 
     buildTypes {
 
-        release {}
-
         free {}
 
-        debug {}
     }
 
     sourceSets {
