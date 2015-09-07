@@ -44,6 +44,7 @@ message GroupCommands {
         required string title = 4;
         repeated int32 user_ids = 5;
         optional bool is_hidden = 7;
+        optional bool is_history_shared = 8;
         repeated bytes extensions = 6 [(scalapb.field).type = "im.actor.api.rpc.misc.Extension"];
     }
 
@@ -234,6 +235,16 @@ message GroupQueries {
         required bool is_public = 1;
     }
 
+    message IsHistoryShared {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+    }
+
+    message IsHistorySharedResponse {
+        required bool is_history_shared = 1;
+    }
+
     message GetAccessHash {
         option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
 
@@ -256,6 +267,7 @@ message GroupEvents {
         required string title = 4;
         repeated int32 user_ids = 6;
         optional bool is_hidden = 8;
+        optional bool is_history_shared = 9;
         repeated bytes extensions = 7  [(scalapb.field).type = "im.actor.api.rpc.misc.Extension"];
     }
 
