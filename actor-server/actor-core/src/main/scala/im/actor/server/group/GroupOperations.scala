@@ -163,6 +163,13 @@ private[group] sealed trait Queries {
     ec:      ExecutionContext
   ): Future[Boolean] = (region.ref ? IsPublic(groupId)).mapTo[IsPublicResponse] map (_.isPublic)
 
+  def isHistoryShared(groupId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Boolean] = (region.ref ? IsHistoryShared(groupId)).mapTo[IsHistorySharedResponse] map (_.isHistoryShared)
+
   def checkAccessHash(groupId: Int, hash: Long)(
     implicit
     region:  GroupViewRegion,

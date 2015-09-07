@@ -36,20 +36,21 @@ private[group] case class Bot(
 )
 
 private[group] case class Group(
-  id:             Int,
-  typ:            GroupType,
-  accessHash:     Long,
-  creatorUserId:  Int,
-  createdAt:      DateTime,
-  members:        Map[Int, Member],
-  invitedUserIds: Set[Int],
-  title:          String,
-  about:          Option[String],
-  bot:            Option[Bot],
-  avatar:         Option[Avatar],
-  topic:          Option[String],
-  isHidden:       Boolean,
-  extensions:     Seq[Extension]
+  id:              Int,
+  typ:             GroupType,
+  accessHash:      Long,
+  creatorUserId:   Int,
+  createdAt:       DateTime,
+  members:         Map[Int, Member],
+  invitedUserIds:  Set[Int],
+  title:           String,
+  about:           Option[String],
+  bot:             Option[Bot],
+  avatar:          Option[Avatar],
+  topic:           Option[String],
+  isHidden:        Boolean,
+  isHistoryShared: Boolean,
+  extensions:      Seq[Extension]
 ) extends ProcessorState
 
 trait GroupCommand {
@@ -98,6 +99,8 @@ object GroupProcessor {
       21011 → classOf[GroupQueries.GetIntegrationTokenInternal],
       21012 → classOf[GroupQueries.GetAccessHash],
       21013 → classOf[GroupQueries.GetAccessHashResponse],
+      21014 → classOf[GroupQueries.IsHistoryShared],
+      21015 → classOf[GroupQueries.IsHistorySharedResponse],
 
       22003 → classOf[GroupEvents.UserInvited],
       22004 → classOf[GroupEvents.UserJoined],
@@ -175,7 +178,7 @@ private[group] final class GroupProcessor
       case TSEvent(_, GroupEvents.TitleUpdated(title)) ⇒
         state.copy(title = title)
       case TSEvent(_, GroupEvents.BecamePublic()) ⇒
-        state.copy(typ = GroupType.Public)
+        state.copy(typ = GroupType.Public, isHistoryShared = true)
       case TSEvent(_, GroupEvents.AboutUpdated(about)) ⇒
         state.copy(about = about)
       case TSEvent(_, GroupEvents.TopicUpdated(topic)) ⇒
@@ -195,13 +198,14 @@ private[group] final class GroupProcessor
     case GroupQueries.GetMembers(_)                  ⇒ getMembers(state)
     case GroupQueries.IsPublic(_)                    ⇒ isPublic(state)
     case GroupQueries.GetAccessHash(_)               ⇒ getAccessHash(state)
+    case GroupQueries.IsHistoryShared(_)             ⇒ isHistoryShared(state)
   }
 
   override def handleInitCommand: Receive = {
     case Create(_, typ, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
       create(groupId, typ, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
-    case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, extensions) ⇒
-      createInternal(typ, creatorUserId, title, userIds, isHidden, extensions)
+    case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions) ⇒
+      createInternal(typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions)
   }
 
   override def handleCommand(state: Group): Receive = {
@@ -279,6 +283,7 @@ private[group] final class GroupProcessor
       avatar = None,
       topic = None,
       isHidden = evt.isHidden.getOrElse(false),
+      isHistoryShared = evt.isHistoryShared.getOrElse(false),
       extensions = evt.extensions
     )
   }
