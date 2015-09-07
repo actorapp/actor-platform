@@ -14,10 +14,6 @@ export default {
     dispatch(ActionTypes.PREFERENCES_MODAL_HIDE);
   },
 
-  load: () => {
-    dispatch(ActionTypes.PREFERENCES_LOAD);
-  },
-
   save: (preferences) => {
     dispatch(ActionTypes.PREFERENCES_SAVE, {
       preferences
