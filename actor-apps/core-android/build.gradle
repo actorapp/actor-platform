@@ -21,6 +21,16 @@ android {
 }
 
 android {
+
+    buildTypes {
+
+        release {}
+
+        free {}
+
+        debug {}
+    }
+
     sourceSets {
         main {
             java {
@@ -34,6 +44,14 @@ android {
                 srcDirs = ['../core/src/main/resources']
             }
         }
+
+        debug {
+            java.srcDirs += "src/release/java"
+        }
+
+        free {
+            java.srcDirs += "src/free/java"
+        }
     }
 
     lintOptions {
@@ -44,4 +62,9 @@ android {
 dependencies {
     compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
+
+    //GCM
+    releaseCompile 'com.google.android.gms:play-services-gcm:7.5.0'
+    debugCompile 'com.google.android.gms:play-services-gcm:7.5.0'
+
 }
