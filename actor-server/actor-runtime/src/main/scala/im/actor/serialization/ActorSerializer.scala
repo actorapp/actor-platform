@@ -1,7 +1,7 @@
-package im.actor.server.commons.serialization
+package im.actor.serialization
 
 import akka.serialization._
-import com.google.protobuf.{ GeneratedMessage ⇒ GGeneratedMessage, ByteString }
+import com.google.protobuf.{ ByteString, GeneratedMessage ⇒ GGeneratedMessage }
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap.{ Builder ⇒ MapBuilder }
 import com.trueaccord.scalapb.GeneratedMessage
 

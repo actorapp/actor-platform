@@ -1,5 +1,7 @@
 package im.actor.server.user
 
+import im.actor.serialization.ActorSerializer
+
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -12,7 +14,6 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.users.Sex
-import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar

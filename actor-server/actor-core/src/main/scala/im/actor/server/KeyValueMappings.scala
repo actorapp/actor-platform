@@ -1,4 +1,4 @@
-package im.actor.server.commons
+package im.actor.server
 
 object KeyValueMappings {
   val LocalNames = "LocalNames"

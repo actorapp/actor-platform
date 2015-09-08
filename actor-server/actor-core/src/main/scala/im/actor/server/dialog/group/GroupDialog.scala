@@ -6,7 +6,7 @@ import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.group.GroupDialogEvents.GroupDialogEvent
 import im.actor.server.dialog._

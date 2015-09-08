@@ -1,8 +1,7 @@
 package im.actor.server.session
 
 import akka.actor.ActorRef
-
-import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.serialization.ActorSerializer
 
 case class SessionRegion(ref: ActorRef)
 
