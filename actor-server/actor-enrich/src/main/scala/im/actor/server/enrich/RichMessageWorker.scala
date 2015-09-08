@@ -1,6 +1,7 @@
 package im.actor.server.enrich
 
 import im.actor.server.file.{ FileUtils, FileStorageAdapter, S3StorageExtension, ImageUtils }
+import im.actor.util.log.AnyRefLogSource
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
@@ -22,7 +23,6 @@ import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.UserViewRegion
-import im.actor.server.util._
 
 object RichMessageWorker {
   val groupId = Some("RichMessageWorker")

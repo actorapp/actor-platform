@@ -25,7 +25,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerRegion }
 import im.actor.server.user._
-import im.actor.server.util.PhoneNumberUtils
+import im.actor.util.misc.PhoneNumberUtils
 import im.actor.server.{ models, persist }
 
 class ContactsServiceImpl(

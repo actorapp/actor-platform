@@ -4,10 +4,9 @@ import akka.actor._
 import akka.event.Logging
 import akka.stream.Materializer
 import akka.stream.scaladsl._
-import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.session.SessionRegion
-import im.actor.server.tls.{ Tls, TlsContext }
+import im.actor.tls.{ Tls, TlsContext }
 
 object TcpFrontend extends Frontend {
   override protected val connIdPrefix = "tcp"

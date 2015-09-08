@@ -10,7 +10,7 @@ import com.typesafe.config.Config
 import im.actor.server.group.{ GroupExtension, GroupViewRegion }
 import im.actor.server.sms.{ ClickatellSmsEngine, SmsEngine }
 import im.actor.server.user.{ UserExtension, UserViewRegion }
-import im.actor.server.util.AnyRefLogSource
+import im.actor.util.log.AnyRefLogSource
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContextExecutor

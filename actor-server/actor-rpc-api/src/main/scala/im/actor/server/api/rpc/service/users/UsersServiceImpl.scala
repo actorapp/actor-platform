@@ -18,7 +18,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.persist
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.user.{ ContactsUtils, UserExtension, UserOffice, UserViewRegion }
-import im.actor.server.util.StringUtils
+import im.actor.util.misc.StringUtils
 
 import scalaz.{ -\/, \/- }
 
