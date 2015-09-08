@@ -1,4 +1,4 @@
-package im.actor.server.commons
+package im.actor.config
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
