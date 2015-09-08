@@ -10,18 +10,15 @@ import scalaz.{ -\/, \/, \/- }
 
 import akka.actor.ActorSystem
 import akka.pattern.ask
-import slick.dbio
-import slick.dbio.Effect.Write
 import slick.dbio._
 
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
-import im.actor.api.rpc.users.Sex._
+import im.actor.api.rpc.users.ApiSex._
 import im.actor.server.activation.Activation.{ EmailCode, SmsCode }
 import im.actor.server.activation._
 import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User }
 import im.actor.server.persist.auth.AuthTransaction
-import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.session._
 import im.actor.server.user.UserOffice
 import im.actor.util.misc.IdUtils._
@@ -33,7 +30,7 @@ trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
 
   //expiration of code won't work
-  protected def newUserPhoneSignUp(transaction: models.AuthPhoneTransaction, name: String, sex: Option[Sex]): Result[(Int, String) \/ User] = {
+  protected def newUserPhoneSignUp(transaction: models.AuthPhoneTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
     val phone = transaction.phoneNumber
     for {
       optPhone ← fromDBIO(persist.UserPhone.findByPhoneNumber(phone).headOption)
@@ -46,7 +43,7 @@ trait AuthHelpers extends Helpers {
     } yield result
   }
 
-  protected def newUserEmailSignUp(transaction: models.AuthEmailTransaction, name: String, sex: Option[Sex]): Result[(Int, String) \/ User] = {
+  protected def newUserEmailSignUp(transaction: models.AuthEmailTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
     val email = transaction.email
     for {
       optEmail ← fromDBIO(persist.UserEmail.find(email))
@@ -69,7 +66,7 @@ trait AuthHelpers extends Helpers {
 
   def handleUserCreate(user: models.User, transaction: models.AuthTransactionChildren, authId: Long): Result[User] = {
     for {
-      _ ← fromFuture(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt), isBot = false))
+      _ ← fromFuture(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
       _ ← fromDBIO(persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
       _ ← fromDBIO(AuthTransaction.delete(transaction.transactionHash))
       _ ← transaction match {
@@ -176,7 +173,7 @@ trait AuthHelpers extends Helpers {
     case _                                         ⇒ genCode()
   }
 
-  private def newUser(name: String, countryCode: String, optSex: Option[Sex]): Result[\/-[User]] = {
+  private def newUser(name: String, countryCode: String, optSex: Option[ApiSex]): Result[\/-[User]] = {
     val rng = ThreadLocalRandom.current()
     val sex = optSex.map(s ⇒ models.Sex.fromInt(s.id)).getOrElse(models.NoSex)
     for {

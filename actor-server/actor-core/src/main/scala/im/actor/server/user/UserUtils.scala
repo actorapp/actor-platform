@@ -7,25 +7,25 @@ import im.actor.server.models.UserPhone
 import scala.language.postfixOps
 
 object UserUtils {
-  def defaultUserContactRecords(phones: Vector[Long], emails: Vector[String]): Vector[ContactRecord] = {
+  def defaultUserContactRecords(phones: Vector[Long], emails: Vector[String]): Vector[ApiContactRecord] = {
     val phoneRecords = phones map { phone ⇒
-      ContactRecord(ContactType.Phone, stringValue = None, longValue = Some(phone), title = Some("Mobile phone"), subtitle = None)
+      ApiContactRecord(ApiContactType.Phone, stringValue = None, longValue = Some(phone), title = Some("Mobile phone"), subtitle = None)
     }
 
     val emailRecords = emails map { email ⇒
-      ContactRecord(ContactType.Email, stringValue = Some(email), longValue = None, title = Some("Email"), subtitle = None)
+      ApiContactRecord(ApiContactType.Email, stringValue = Some(email), longValue = None, title = Some("Email"), subtitle = None)
     }
 
     phoneRecords ++ emailRecords
   }
 
-  def userContactRecords(phones: Vector[models.UserPhone], emails: Vector[models.UserEmail]): Vector[ContactRecord] = {
+  def userContactRecords(phones: Vector[models.UserPhone], emails: Vector[models.UserEmail]): Vector[ApiContactRecord] = {
     val phoneRecords = phones map { phone ⇒
-      ContactRecord(ContactType.Phone, stringValue = None, longValue = Some(phone.number), title = Some(phone.title), subtitle = None)
+      ApiContactRecord(ApiContactType.Phone, stringValue = None, longValue = Some(phone.number), title = Some(phone.title), subtitle = None)
     }
 
     val emailRecords = emails map { email ⇒
-      ContactRecord(ContactType.Email, stringValue = Some(email.email), longValue = None, title = Some(email.title), subtitle = None)
+      ApiContactRecord(ApiContactType.Email, stringValue = Some(email.email), longValue = None, title = Some(email.title), subtitle = None)
     }
 
     phoneRecords ++ emailRecords

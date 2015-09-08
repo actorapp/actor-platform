@@ -1,18 +1,11 @@
 package im.actor.server.enrich
 
 import im.actor.server.acl.ACLUtils
-import im.actor.server.group.{ GroupProcessorRegion, GroupOffice }
-import im.actor.server.user.{ UserProcessorRegion, UserOffice }
-
-import scala.util.Random
-
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import slick.dbio.{ DBIO, DBIOAction, Effect, NoStream }
 
 import im.actor.api.rpc.Implicits._
-import im.actor.api.rpc.files.FastThumb
-import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage, UpdateMessageContentChanged }
-import im.actor.api.rpc.peers.PeerType
+import im.actor.api.rpc.files.ApiFastThumb
+import im.actor.api.rpc.messaging.{ ApiDocumentExPhoto, ApiDocumentMessage, ApiTextMessage, UpdateMessageContentChanged }
+import im.actor.api.rpc.peers.ApiPeerType
 import im.actor.api.rpc.{ ClientData, peers }
 import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -67,17 +60,17 @@ class RichMessageWorkerSpec
       val (user2, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
       val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
-      val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+      val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
       def dontChangePrivate() = {
 
-        val resp1 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.mixedText, Vector.empty, None)))(_.toOption.get)
+        val resp1 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.mixedText, Vector.empty, None)))(_.toOption.get)
         expectNoUpdate(resp1.seq, resp1.state, UpdateMessageContentChanged.header)
 
-        val resp2 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.plainText, Vector.empty, None)))(_.toOption.get)
+        val resp2 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.plainText, Vector.empty, None)))(_.toOption.get)
         expectNoUpdate(resp2.seq, resp2.state, UpdateMessageContentChanged.header)
 
-        val resp3 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.nonImageUrl, Vector.empty, None)))(_.toOption.get)
+        val resp3 = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(NonImages.nonImageUrl, Vector.empty, None)))(_.toOption.get)
         expectNoUpdate(resp2.seq, resp2.state, UpdateMessageContentChanged.header)
 
       }
@@ -87,11 +80,11 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
           expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
             update.message should matchPattern {
-              case DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+              case ApiDocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
           }
         }
@@ -100,11 +93,11 @@ class RichMessageWorkerSpec
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
           expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
             update.message should matchPattern {
-              case DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+              case ApiDocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
           }
         }
@@ -112,11 +105,11 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
           expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
             update.message should matchPattern {
-              case DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+              case ApiDocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
           }
         }
@@ -135,13 +128,13 @@ class RichMessageWorkerSpec
 
       def dontChangeGroup() = {
 
-        val resp1 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.mixedText, Vector.empty, None)))(_.toOption.get)
+        val resp1 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.mixedText, Vector.empty, None)))(_.toOption.get)
         expectNoUpdate(resp1.seq, resp1.state, UpdateMessageContentChanged.header)
 
-        val resp2 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.plainText, Vector.empty, None)))(_.toOption.get)
+        val resp2 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.plainText, Vector.empty, None)))(_.toOption.get)
         expectNoUpdate(resp2.seq, resp2.state, UpdateMessageContentChanged.header)
 
-        val resp3 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.nonImageUrl, Vector.empty, None)))(_.toOption.get)
+        val resp3 = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(NonImages.nonImageUrl, Vector.empty, None)))(_.toOption.get)
         expectNoUpdate(resp3.seq, resp3.state, UpdateMessageContentChanged.header)
       }
 
@@ -150,11 +143,11 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
           expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
             update.message should matchPattern {
-              case DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+              case ApiDocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
           }
         }
@@ -163,11 +156,11 @@ class RichMessageWorkerSpec
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
           expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
             update.message should matchPattern {
-              case DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+              case ApiDocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
           }
         }
@@ -175,11 +168,11 @@ class RichMessageWorkerSpec
         {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)))(_.toOption.get)
+          val resp = whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage(image.url, Vector.empty, None)))(_.toOption.get)
 
           expectUpdate[UpdateMessageContentChanged](resp.seq, resp.state, UpdateMessageContentChanged.header, Some(1)) { update ⇒
             update.message should matchPattern {
-              case DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h))) ⇒
+              case ApiDocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(ApiFastThumb(`thumbW`, `thumbH`, _)), Some(ApiDocumentExPhoto(image.w, image.h))) ⇒
             }
           }
         }

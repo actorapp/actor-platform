@@ -14,10 +14,10 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
-import im.actor.api.rpc.files.FileLocation
+import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
+import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.server.acl.ACLUtils
 import ApiConversions._
 import im.actor.server.db.DbExtension
@@ -51,7 +51,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   private implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(actorSystem).processorRegion
   private implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
 
-  override def jhandleEditGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
+  override def jhandleEditGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withFileLocation(fileLocation, AvatarSizeLimit) {
@@ -77,7 +77,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     }
   }
 
-  override def jhandleRemoveGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def jhandleRemoveGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
@@ -93,7 +93,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleKickUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def jhandleKickUser(groupOutPeer: ApiGroupOutPeer, randomId: Long, userOutPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withKickableGroupMember(groupOutPeer, userOutPeer) { fullGroup ⇒ //maybe move to group peer manager
         for {
@@ -108,7 +108,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleLeaveGroup(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def jhandleLeaveGroup(groupOutPeer: ApiGroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
@@ -122,7 +122,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
+  override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withUserOutPeers(users) {
         withValidGroupTitle(title) { validTitle ⇒
@@ -132,7 +132,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
 
           val f = for (res ← GroupOffice.create(groupId, title, randomId, userIds)) yield {
             Ok(ResponseCreateGroup(
-              groupPeer = GroupOutPeer(groupId, res.accessHash),
+              groupPeer = ApiGroupOutPeer(groupId, res.accessHash),
               seq = res.seqstate.seq,
               state = res.seqstate.state.toByteArray,
               users = groupUserIds.toVector,
@@ -148,7 +148,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleInviteUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def jhandleInviteUser(groupOutPeer: ApiGroupOutPeer, randomId: Long, userOutPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
@@ -167,7 +167,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     }
   }
 
-  override def jhandleEditGroupTitle(groupOutPeer: GroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def jhandleEditGroupTitle(groupOutPeer: ApiGroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
@@ -179,7 +179,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
-  override def jhandleGetGroupInviteUrl(groupPeer: GroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
+  override def jhandleGetGroupInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
         for {
@@ -219,7 +219,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     }
   }
 
-  override def jhandleEnterGroup(peer: GroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseEnterGroup]] = {
+  override def jhandleEnterGroup(peer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseEnterGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withPublicGroup(peer) { fullGroup ⇒
         persist.GroupUser.find(fullGroup.id, client.userId) flatMap {
@@ -240,7 +240,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     }
   }
 
-  override def jhandleRevokeInviteUrl(groupPeer: GroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
+  override def jhandleRevokeInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
         val token = accessToken(ThreadLocalRandom.current())
@@ -258,7 +258,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   /**
    * all members of group can edit group topic
    */
-  def jhandleEditGroupTopic(groupPeer: GroupOutPeer, randomId: Long, topic: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  def jhandleEditGroupTopic(groupPeer: ApiGroupOutPeer, randomId: Long, topic: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
         SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.updateTopic(groupPeer.groupId, client.userId, client.authId, topic, randomId))
@@ -273,7 +273,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   /**
    * only admin can change group's about
    */
-  def jhandleEditGroupAbout(groupPeer: GroupOutPeer, randomId: Long, about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  def jhandleEditGroupAbout(groupPeer: ApiGroupOutPeer, randomId: Long, about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
         SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.updateAbout(groupPeer.groupId, client.userId, client.authId, about, randomId))
@@ -290,7 +290,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
    * if this user id already admin - `GroupErrors.UserAlreadyAdmin` will be returned
    * it could be many admins in one group
    */
-  def jhandleMakeUserAdmin(groupPeer: GroupOutPeer, userPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseMakeUserAdmin]] = {
+  def jhandleMakeUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseMakeUserAdmin]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
         (members, SeqState(seq, state)) ← DBIO.from(GroupOffice.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))

@@ -8,7 +8,7 @@ import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.configs.{ ConfigsService, Parameter, ResponseGetParameters, UpdateParameterChanged }
+import im.actor.api.rpc.configs.{ ConfigsService, ApiParameter, ResponseGetParameters, UpdateParameterChanged }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server.db.DbExtension
 import im.actor.server.sequence.SeqState
@@ -51,7 +51,7 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
         params ← persist.configs.Parameter.find(client.userId)
       } yield {
         val paramsStructs = params map { param ⇒
-          Parameter(param.key, param.value.getOrElse(""))
+          ApiParameter(param.key, param.value.getOrElse(""))
         }
 
         Ok(ResponseGetParameters(paramsStructs.toVector))

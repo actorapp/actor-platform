@@ -15,7 +15,7 @@ import akka.pattern.pipe
 import com.google.protobuf.ByteString
 
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
-import im.actor.api.rpc.peers.Peer
+import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
@@ -195,7 +195,7 @@ private final class SeqUpdatesManagerActor(
     refs:           UpdateRefs,
     isFat:          Boolean,
     pushText:       Option[String],
-    originPeer:     Option[Peer],
+    originPeer:     Option[ApiPeer],
     cb:             SeqState ⇒ Unit
   ): Unit = {
     // TODO: #perf pinned dispatcher?

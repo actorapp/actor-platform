@@ -14,7 +14,7 @@ import akka.http.scaladsl.server.Route
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.files.FileLocation
+import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json.JsonFormatters.{ errorsFormat, groupInviteInfoFormat }
 import im.actor.server.api.http.json.{ AvatarUrls, Errors, Group, GroupInviteInfo, User }
@@ -75,7 +75,7 @@ class GroupsHandler()(
     }.getOrElse(DBIO.successful(None))
   }
 
-  private def urlOrNone(location: FileLocation): DBIO[Option[String]] = {
+  private def urlOrNone(location: ApiFileLocation): DBIO[Option[String]] = {
     implicit val timeout = 1.day
     for {
       fileOpt ← persist.File.find(location.fileId)

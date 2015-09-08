@@ -2,9 +2,9 @@ package im.actor.server.user
 
 import akka.pattern.ask
 import akka.util.Timeout
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
-import im.actor.api.rpc.peers.Peer
-import im.actor.api.rpc.users.{ Sex, User ⇒ ApiUser }
+import im.actor.api.rpc.messaging.ApiMessage
+import im.actor.api.rpc.peers.ApiPeer
+import im.actor.api.rpc.users.{ ApiSex, ApiUser }
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
 import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension, SeqUpdatesManager, UpdateRefs }
@@ -27,7 +27,7 @@ private[user] sealed trait Commands extends AuthCommands {
 
   import UserCommands._
 
-  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, isBot: Boolean)(
+  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean)(
     implicit
     userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
@@ -81,7 +81,7 @@ private[user] sealed trait Commands extends AuthCommands {
     (userOfficeRegion.ref ? ChangeName(userId, name)).mapTo[SeqState]
   }
 
-  def deliverMessage(userId: Int, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
+  def deliverMessage(userId: Int, peer: ApiPeer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
     implicit
     region:  UserProcessorRegion,
     timeout: Timeout,
@@ -89,7 +89,7 @@ private[user] sealed trait Commands extends AuthCommands {
   ): Future[Unit] =
     (region.ref ? DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat)) map (_ ⇒ ())
 
-  def deliverOwnMessage(userId: Int, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
+  def deliverOwnMessage(userId: Int, peer: ApiPeer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
     implicit
     region:  UserProcessorRegion,
     timeout: Timeout,
@@ -148,7 +148,7 @@ private[user] sealed trait Commands extends AuthCommands {
     serializedData: Array[Byte],
     refs:           UpdateRefs,
     pushText:       Option[String],
-    originPeer:     Option[Peer],
+    originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
   )(implicit
@@ -306,7 +306,7 @@ private[user] sealed trait Commands extends AuthCommands {
     serializedData: Array[Byte],
     refs:           UpdateRefs,
     pushText:       Option[String],
-    originPeer:     Option[Peer],
+    originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
   )(implicit

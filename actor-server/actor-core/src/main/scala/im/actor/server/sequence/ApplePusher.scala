@@ -6,13 +6,13 @@ import akka.actor.ActorSystem
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.{ models, persist }
 
 private[sequence] class ApplePusher(pushManager: ApplePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   private implicit val ec: ExecutionContext = system.dispatcher
 
-  def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer], unreadCount: Int): Unit = {
+  def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[ApiPeer], unreadCount: Int): Unit = {
     val paramBase = "category.mobile.notification"
 
     system.log.debug("Delivering apple push, authId: {}, seq: {}, text: {}, originPeer: {}", authId, seq, textOpt, originPeerOpt)
@@ -24,8 +24,8 @@ private[sequence] class ApplePusher(pushManager: ApplePushManager, db: Database)
         persist.AuthId.findUserId(authId) flatMap {
           case Some(userId) ⇒
             val peerStr = originPeer.`type` match {
-              case PeerType.Private ⇒ s"PRIVATE_${originPeer.id}"
-              case PeerType.Group   ⇒ s"GROUP_${originPeer.id}"
+              case ApiPeerType.Private ⇒ s"PRIVATE_${originPeer.id}"
+              case ApiPeerType.Group   ⇒ s"GROUP_${originPeer.id}"
             }
 
             system.log.debug(s"Loading params ${paramBase}")

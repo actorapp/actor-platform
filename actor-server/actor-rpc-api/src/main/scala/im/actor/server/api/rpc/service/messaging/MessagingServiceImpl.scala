@@ -12,7 +12,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupProcessorRegion, GroupExtension, GroupViewRegion }
 import im.actor.server.models
@@ -24,7 +24,7 @@ sealed trait Event
 
 object Events {
 
-  final case class PeerMessage(fromPeer: models.Peer, toPeer: models.Peer, randomId: Long, date: Long, message: Message) extends Event
+  final case class PeerMessage(fromPeer: models.Peer, toPeer: models.Peer, randomId: Long, date: Long, message: ApiMessage) extends Event
 
 }
 
@@ -41,13 +41,13 @@ object MessagingService {
     s"messaging.messages.${strType}.${peer.id}"
   }
 
-  def messagesTopic(peer: Peer): String =
+  def messagesTopic(peer: ApiPeer): String =
     messagesTopic(peer.asModel)
 
   def publish(mediator: ActorRef, message: Events.PeerMessage): Unit = {
     message.toPeer.typ match {
       case models.PeerType.Private ⇒
-        val senderTopic = MessagingService.messagesTopic(Peer(PeerType.Private, message.fromPeer.id))
+        val senderTopic = MessagingService.messagesTopic(ApiPeer(ApiPeerType.Private, message.fromPeer.id))
         val receiverTopic = messagesTopic(message.toPeer)
 
         mediator ! DistributedPubSubMediator.Publish(privateMessagesTopic, message, sendOneMessageToEachGroup = true)
