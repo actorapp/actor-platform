@@ -14,7 +14,7 @@ import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserOffice
 import HistoryUtils._
-import im.actor.utils.cache.CacheHelpers._
+import im.actor.util.cache.CacheHelpers._
 import org.joda.time.DateTime
 
 import scala.concurrent.Future

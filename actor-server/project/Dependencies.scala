@@ -106,7 +106,7 @@ object Dependencies {
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
-  val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
+  val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, caffeine, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
 
@@ -117,8 +117,6 @@ object Dependencies {
   val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, jodaTime, playJson)
 
   val email = shared ++ Seq(akkaActor, apacheEmail)
-
-  val internalServices = shared ++ Seq(akkaActor, akkaStream, scodecBits)
 
   val oauth = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
@@ -138,8 +136,6 @@ object Dependencies {
 
   val social = shared :+ akkaContrib
 
-  val tls = shared ++ Seq(akkaHttp, akkaStream)
-
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   
   val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
@@ -154,12 +150,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaContrib, slick)
 
-  val utils = shared ++ Seq(akkaActor, cats, libPhoneNumber, scalazCore)
-  // val utils = shared ++ Seq(akkaActor, akkaHttp, amazonaws, awsWrap, cats, libPhoneNumber, scrImageCore, slick)
-
-  val utilsCache = shared :+ caffeine
-
-  val utilsHttp = shared ++ Seq(akkaActor, akkaHttp, akkaTestkit, scalatest)
+  val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, caffeine, cats, libPhoneNumber, scalazCore, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 

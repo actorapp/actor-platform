@@ -11,7 +11,7 @@ import slick.dbio.DBIO
 
 import im.actor.api.rpc.peers._
 import im.actor.server.api.rpc.service.groups.GroupRpcErrors
-import im.actor.server.util.StringUtils
+import im.actor.util.misc.StringUtils
 import im.actor.server.{ models, persist }
 
 object PeerHelpers {
