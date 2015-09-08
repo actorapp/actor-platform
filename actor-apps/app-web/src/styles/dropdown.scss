@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 .dropdown {
   position: relative;
   &--opened {
@@ -162,11 +166,10 @@
 
     overflow: hidden;
 
-    width: 500px;
+    max-width: 500px;
 
     border-radius: 2px;
     background-color: rgba(white, .975);
-    //border: 1px solid $cloudy-blue;
     box-shadow: 0 0 0 1px $cloudy-blue, 0 0 6px 0 rgba(black, .13);
   }
   &__header {
@@ -253,6 +256,30 @@
     }
   }
 
+  &--opened {
+    display: block;
+  }
+}
+
+.emoji-dropdown {
+  position: relative;
+
+  display: none;
+
+  &__wrapper {
+    position: absolute;
+    z-index: 5;
+    bottom: 0;
+    right: 1px;
+
+    overflow: hidden;
+
+    max-width: 500px;
+
+    border-radius: 2px;
+    background-color: rgba(white, .975);
+    box-shadow: 0 0 0 1px $cloudy-blue, 0 0 6px 0 rgba(black, .13);
+  }
   &--opened {
     display: block;
   }
