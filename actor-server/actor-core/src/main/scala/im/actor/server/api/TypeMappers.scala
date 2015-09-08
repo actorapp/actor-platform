@@ -10,7 +10,7 @@ import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.rpc.users.Sex.Sex
 import im.actor.api.rpc.users.{ Sex ⇒ S, User ⇒ ApiUser }
-import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.serialization.ActorSerializer
 import org.joda.time.DateTime
 
 object TypeMappers extends MessageMapper
@@ -140,8 +140,3 @@ private[api] trait MessageMapper {
   implicit val extensionMapper: TypeMapper[ByteString, Extension] = TypeMapper(applyExtension)(unapplyExtension)
 }
 
-object CommonSerialization {
-  def register(): Unit = {
-    ActorSerializer.register(100, classOf[im.actor.server.event.TSEvent])
-  }
-}

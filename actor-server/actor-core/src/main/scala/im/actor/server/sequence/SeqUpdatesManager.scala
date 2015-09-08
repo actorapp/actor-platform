@@ -4,7 +4,7 @@ import java.nio.ByteBuffer
 
 import akka.serialization.Serialization
 import com.google.protobuf.ByteString
-import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.serialization.ActorSerializer
 
 import scala.annotation.tailrec
 import scala.concurrent._
