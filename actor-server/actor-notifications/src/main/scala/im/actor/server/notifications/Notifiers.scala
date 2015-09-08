@@ -8,7 +8,7 @@ import im.actor.server.persist
 import im.actor.server.sms.SmsEngine
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.util.StringUtils._
+import im.actor.util.misc.StringUtils._
 
 trait Notifier {
   def processTask(task: Notification): Unit

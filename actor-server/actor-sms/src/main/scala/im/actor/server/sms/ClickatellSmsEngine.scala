@@ -8,7 +8,7 @@ import akka.http.scaladsl.model._
 import akka.stream.Materializer
 import com.typesafe.config._
 
-import im.actor.server.util.StringUtils._
+import im.actor.util.misc.StringUtils._
 
 class ClickatellSmsEngine(config: Config)(implicit system: ActorSystem, materializer: Materializer, http: HttpExt) extends SmsEngine {
   private val user = config.getString("user")
