@@ -2,7 +2,7 @@ package im.actor.server.office
 
 import akka.util.Timeout
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.group.{ GroupExtension, GroupOffice }
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -11,15 +11,15 @@ trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[
 
   private implicit val ec: ExecutionContext = context.dispatcher
 
-  protected def getPushText(peer: Peer, outUser: Int, clientName: String, message: Message)(implicit timeout: Timeout): Future[String] = {
+  protected def getPushText(peer: ApiPeer, outUser: Int, clientName: String, message: ApiMessage)(implicit timeout: Timeout): Future[String] = {
     message match {
-      case TextMessage(text, _, _) ⇒
+      case ApiTextMessage(text, _, _) ⇒
         formatAuthored(peer, outUser, clientName, text)
-      case dm: DocumentMessage ⇒
+      case dm: ApiDocumentMessage ⇒
         dm.ext match {
-          case Some(_: DocumentExPhoto) ⇒
+          case Some(_: ApiDocumentExPhoto) ⇒
             formatAuthored(peer, outUser, clientName, "Photo")
-          case Some(_: DocumentExVideo) ⇒
+          case Some(_: ApiDocumentExVideo) ⇒
             formatAuthored(peer, outUser, clientName, "Video")
           case _ ⇒
             formatAuthored(peer, outUser, clientName, dm.name)
@@ -28,11 +28,11 @@ trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[
     }
   }
 
-  private def formatAuthored(peer: Peer, userId: Int, authorName: String, message: String)(implicit timeout: Timeout): Future[String] = {
+  private def formatAuthored(peer: ApiPeer, userId: Int, authorName: String, message: String)(implicit timeout: Timeout): Future[String] = {
     implicit val viewRegion = GroupExtension(context.system).viewRegion
     peer match {
-      case Peer(PeerType.Group, groupId) ⇒ GroupOffice.getApiStruct(groupId, userId) map (g ⇒ s"$authorName@${g.title}: $message")
-      case Peer(PeerType.Private, _)     ⇒ Future.successful(s"$authorName: $message")
+      case ApiPeer(ApiPeerType.Group, groupId) ⇒ GroupOffice.getApiStruct(groupId, userId) map (g ⇒ s"$authorName@${g.title}: $message")
+      case ApiPeer(ApiPeerType.Private, _)     ⇒ Future.successful(s"$authorName: $message")
     }
   }
 

@@ -57,7 +57,7 @@ message SeqUpdatesManagerMessages {
         required UpdateRefs refs = 5;
         required bool is_fat = 8;
         optional string push_text = 6;
-        optional bytes origin_peer = 7 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
+        optional bytes origin_peer = 7 [(scalapb.field).type = "im.actor.api.rpc.peers.ApiPeer"];
     }
 
     message PushUpdateAck {

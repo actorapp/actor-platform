@@ -7,8 +7,8 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
-import im.actor.api.rpc.weak.{ TypingType, UpdateTyping, WeakService }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
+import im.actor.api.rpc.weak.{ ApiTypingType, UpdateTyping, WeakService }
 import im.actor.server.persist
 import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
 import im.actor.server.sequence.{ WeakUpdatesManager, WeakUpdatesManagerRegion }
@@ -20,15 +20,15 @@ class WeakServiceImpl(implicit
                       actorSystem:           ActorSystem) extends WeakService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  override def jhandleTyping(peer: OutPeer, typingType: TypingType.TypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val action = peer.`type` match {
-        case PeerType.Private ⇒
-          val update = UpdateTyping(Peer(PeerType.Private, client.userId), client.userId, typingType)
+        case ApiPeerType.Private ⇒
+          val update = UpdateTyping(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
 
           WeakUpdatesManager.broadcastUserWeakUpdate(peer.id, update)
-        case PeerType.Group ⇒
-          val update = UpdateTyping(Peer(PeerType.Group, peer.id), client.userId, typingType)
+        case ApiPeerType.Group ⇒
+          val update = UpdateTyping(ApiPeer(ApiPeerType.Group, peer.id), client.userId, typingType)
 
           for {
             otherUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.filterNot(_ == client.userId))

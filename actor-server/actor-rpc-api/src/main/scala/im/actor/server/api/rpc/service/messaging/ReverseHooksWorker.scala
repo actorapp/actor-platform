@@ -11,8 +11,8 @@ import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.Timeout
 import com.google.protobuf.CodedInputStream
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import im.actor.api.rpc.messaging.{ Message, TextMessage }
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.messaging.{ ApiMessage, ApiTextMessage }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.{ KeyValueMappings, models }
 import im.actor.server.models.PeerType.{ Group, Private }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
@@ -61,7 +61,7 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
 
   def init: Receive = {
     case Resubscribe ⇒
-      mediator ! Subscribe(MessagingService.messagesTopic(Peer(PeerType.Group, groupId)), None, self)
+      mediator ! Subscribe(MessagingService.messagesTopic(ApiPeer(ApiPeerType.Group, groupId)), None, self)
     case SubscribeAck(Subscribe(topic, _, _)) ⇒
       log.debug("Watching for group's {} reverse hooks", groupId)
       scheduledResubscribe.cancel()
@@ -71,7 +71,7 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
   def working: Receive = {
     case Events.PeerMessage(from, _, _, _, message) ⇒
       log.debug("Got message from group {} to forward to webhook", groupId)
-      val parsed = Message.parseFrom(CodedInputStream.newInstance(message.toByteArray))
+      val parsed = ApiMessage.parseFrom(CodedInputStream.newInstance(message.toByteArray))
 
       val optNickname = from match {
         case models.Peer(Private, id) ⇒ UserOffice.getApiStruct(id, 0, 0L) map (_.nick)
@@ -81,7 +81,7 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
       parsed.left foreach (_ ⇒ log.debug("Failed to parse message for groupId: {}", groupId))
 
       parsed.right map {
-        case TextMessage(content, _, _) ⇒
+        case ApiTextMessage(content, _, _) ⇒
           parseCommand(content) map {
             case (command, text) ⇒
               for {

@@ -11,8 +11,8 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
-import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, SequenceService }
+import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
+import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference, SequenceService }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
 import im.actor.server.models
@@ -74,7 +74,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleSubscribeToOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSubscribeToOnline(users: Vector[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       DBIO.successful(Ok(ResponseVoid))
     }
@@ -89,7 +89,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleSubscribeFromOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSubscribeFromOnline(users: Vector[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       DBIO.successful(Ok(ResponseVoid))
     }
@@ -104,7 +104,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleSubscribeToGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSubscribeToGroupOnline(groups: Vector[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
@@ -113,7 +113,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleSubscribeFromGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSubscribeFromGroupOnline(groups: Vector[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
@@ -122,10 +122,10 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  private def extractDiff(updates: Vector[models.sequence.SeqUpdate]): (Vector[DifferenceUpdate], Set[Int], Set[Int]) = {
-    updates.foldLeft[(Vector[DifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
+  private def extractDiff(updates: Vector[models.sequence.SeqUpdate]): (Vector[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
+    updates.foldLeft[(Vector[ApiDifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
       case ((updates, userIds, groupIds), update) ⇒
-        (updates :+ DifferenceUpdate(update.header, update.serializedData),
+        (updates :+ ApiDifferenceUpdate(update.header, update.serializedData),
           userIds ++ update.userIds,
           groupIds ++ update.groupIds)
     }

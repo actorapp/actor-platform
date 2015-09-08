@@ -2,7 +2,7 @@ package im.actor.server.dialog.privat
 
 import akka.pattern.ask
 import akka.util.Timeout
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
+import im.actor.api.rpc.messaging.ApiMessage
 import im.actor.server.dialog.DialogId
 import im.actor.server.dialog.PrivateDialogCommands._
 import im.actor.server.sequence.SeqStateDate

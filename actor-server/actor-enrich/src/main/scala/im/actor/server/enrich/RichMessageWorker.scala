@@ -17,7 +17,7 @@ import com.sksamuel.scrimage.{ AsyncImage, Format }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.files.FastThumb
+import im.actor.api.rpc.files.ApiFastThumb
 import im.actor.api.rpc.messaging._
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
@@ -86,7 +86,7 @@ final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   def ready: Receive = {
     case Events.PeerMessage(fromPeer, toPeer, randomId, _, message) ⇒
       message match {
-        case TextMessage(text, _, _) ⇒
+        case ApiTextMessage(text, _, _) ⇒
           Try(Uri(text.trim)) match {
             case Success(uri) ⇒
               log.debug("TextMessage with uri: {}", uri)
@@ -113,14 +113,14 @@ final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
           _ = log.debug("uploaded file to location {}", location)
           _ = log.debug("image with width: {}, height: {}", image.width, image.height)
 
-          updated = DocumentMessage(
+          updated = ApiDocumentMessage(
             fileId = location.fileId,
             accessHash = location.accessHash,
             fileSize = fileSize.toInt,
             name = fullName,
             mimeType = mimeType,
-            thumb = Some(FastThumb(thumb.width, thumb.height, thumbBytes)),
-            ext = Some(DocumentExPhoto(image.width, image.height))
+            thumb = Some(ApiFastThumb(thumb.width, thumb.height, thumbBytes)),
+            ext = Some(ApiDocumentExPhoto(image.width, image.height))
           )
           _ ← handler.handleDbUpdate(updated)
           _ ← handler.handleUpdate(updated)

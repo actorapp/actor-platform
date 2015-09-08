@@ -12,7 +12,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
-import im.actor.api.rpc.files.FileLocation
+import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import ApiConversions._
@@ -52,7 +52,7 @@ class ProfileServiceImpl()(
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
   private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
 
-  override def jhandleEditAvatar(fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] = {
+  override def jhandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] = {
     // TODO: flatten
 
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒

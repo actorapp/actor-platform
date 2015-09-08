@@ -37,7 +37,7 @@ class FilesServiceSpec
 
   var uploadKey: Array[Byte] = Array.empty
 
-  var fileLocation: Option[FileLocation] = None
+  var fileLocation: Option[ApiFileLocation] = None
 
   var expectedContents: Option[String] = None
 
