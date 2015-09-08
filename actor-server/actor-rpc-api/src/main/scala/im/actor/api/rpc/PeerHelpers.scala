@@ -16,12 +16,12 @@ import im.actor.server.{ models, persist }
 
 object PeerHelpers {
   def withOutPeer[R <: RpcResponse](
-    outPeer: OutPeer
+    outPeer: ApiOutPeer
   )(
     f: ⇒ DBIO[RpcError \/ R]
   )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): DBIO[RpcError \/ R] = {
     outPeer.`type` match {
-      case PeerType.Private ⇒
+      case ApiPeerType.Private ⇒
         (for {
           optUser ← persist.User.find(outPeer.id).headOption
           usererrOrUser ← validUser(optUser)
@@ -30,7 +30,7 @@ object PeerHelpers {
           case Error(err) ⇒ DBIO.successful(Error(err))
           case _          ⇒ f
         }
-      case PeerType.Group ⇒
+      case ApiPeerType.Group ⇒
         (for {
           optGroup ← persist.Group.find(outPeer.id)
           grouperrOrGroup ← validGroup(optGroup)
@@ -43,16 +43,16 @@ object PeerHelpers {
     }
   }
 
-  def withOutPeerAsGroupPeer[R <: RpcResponse](outPeer: OutPeer)(
-    f: GroupOutPeer ⇒ DBIO[RpcError \/ R]
+  def withOutPeerAsGroupPeer[R <: RpcResponse](outPeer: ApiOutPeer)(
+    f: ApiGroupOutPeer ⇒ DBIO[RpcError \/ R]
   )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): DBIO[RpcError \/ R] = {
     outPeer.`type` match {
-      case PeerType.Group   ⇒ f(GroupOutPeer(outPeer.id, outPeer.accessHash))
-      case PeerType.Private ⇒ DBIO.successful(Error(RpcError(403, "PEER_IS_NOT_GROUP", "", false, None)))
+      case ApiPeerType.Group   ⇒ f(ApiGroupOutPeer(outPeer.id, outPeer.accessHash))
+      case ApiPeerType.Private ⇒ DBIO.successful(Error(RpcError(403, "PEER_IS_NOT_GROUP", "", false, None)))
     }
   }
 
-  def withUserOutPeer[R <: RpcResponse](userOutPeer: UserOutPeer)(f: ⇒ DBIO[RpcError \/ R])(
+  def withUserOutPeer[R <: RpcResponse](userOutPeer: ApiUserOutPeer)(f: ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
     actorSystem: ActorSystem,
@@ -61,7 +61,7 @@ object PeerHelpers {
     renderCheckResult(Seq(checkUserPeer(userOutPeer.userId, userOutPeer.accessHash)), f)
   }
 
-  def withOwnGroupMember[R <: RpcResponse](groupOutPeer: GroupOutPeer, userId: Int)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
+  def withOwnGroupMember[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer, userId: Int)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
     withGroupOutPeer(groupOutPeer) { group ⇒
       (for (user ← persist.GroupUser.find(group.id, userId)) yield user).flatMap {
         case Some(user) ⇒ f(group)
@@ -70,7 +70,7 @@ object PeerHelpers {
     }
   }
 
-  def withGroupAdmin[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIO[RpcError \/ R] = {
+  def withGroupAdmin[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIO[RpcError \/ R] = {
     withOwnGroupMember(groupOutPeer, client.userId) { group ⇒
       (for (user ← persist.GroupUser.find(group.id, client.userId)) yield user).flatMap {
         case Some(gu) if gu.isAdmin ⇒ f(group)
@@ -89,14 +89,14 @@ object PeerHelpers {
     case \/-(validTitle) ⇒ f(validTitle)
   }
 
-  def withUserOutPeers[R <: RpcResponse](userOutPeers: immutable.Seq[UserOutPeer])(f: ⇒ DBIO[RpcError \/ R])(
+  def withUserOutPeers[R <: RpcResponse](userOutPeers: immutable.Seq[ApiUserOutPeer])(f: ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
     actorSystem: ActorSystem,
     ec:          ExecutionContext
   ): DBIO[RpcError \/ R] = {
     val checkOptsFutures = userOutPeers map {
-      case UserOutPeer(userId, accessHash) ⇒
+      case ApiUserOutPeer(userId, accessHash) ⇒
         checkUserPeer(userId, accessHash)
     }
 
@@ -131,8 +131,8 @@ object PeerHelpers {
   }
 
   def withKickableGroupMember[R <: RpcResponse](
-    groupOutPeer:    GroupOutPeer,
-    kickUserOutPeer: UserOutPeer
+    groupOutPeer:    ApiGroupOutPeer,
+    kickUserOutPeer: ApiUserOutPeer
   )(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
@@ -152,7 +152,7 @@ object PeerHelpers {
     }
   }
 
-  def withPublicGroup[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(
+  def withPublicGroup[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
     actorSystem: ActorSystem,
@@ -203,7 +203,7 @@ object PeerHelpers {
     case None ⇒ DBIO.successful(Error(CommonErrors.GroupNotFound))
   }
 
-  private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
+  private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: ApiGroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
     persist.Group.findFull(groupOutPeer.groupId) flatMap {
       case Some(group) ⇒
         if (group.accessHash != groupOutPeer.accessHash) {

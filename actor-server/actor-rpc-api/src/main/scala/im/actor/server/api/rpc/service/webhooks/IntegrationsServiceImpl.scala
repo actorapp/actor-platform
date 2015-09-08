@@ -8,7 +8,7 @@ import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc.integrtions.{ IntegrtionsService, ResponseIntegrationToken }
-import im.actor.api.rpc.peers.OutPeer
+import im.actor.api.rpc.peers.ApiOutPeer
 import im.actor.api.rpc._
 import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
@@ -26,7 +26,7 @@ class IntegrationsServiceImpl(config: HttpApiConfig)(
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(10.seconds)
 
-  override def jhandleGetIntegrationToken(groupPeer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] = {
+  override def jhandleGetIntegrationToken(groupPeer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
@@ -42,7 +42,7 @@ class IntegrationsServiceImpl(config: HttpApiConfig)(
     }
   }
 
-  override def jhandleRevokeIntegrationToken(groupPeer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] = {
+  override def jhandleRevokeIntegrationToken(groupPeer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {

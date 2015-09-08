@@ -1,7 +1,5 @@
 package im.actor.server
 
-import java.net.InetAddress
-
 import akka.actor._
 import akka.testkit._
 import com.typesafe.config._

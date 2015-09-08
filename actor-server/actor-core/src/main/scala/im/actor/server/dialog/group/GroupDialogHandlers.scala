@@ -3,7 +3,7 @@ package im.actor.server.dialog.group
 import akka.actor.Status
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
+import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.server.dialog.{ AuthIdRandomId, GroupDialogCommands, ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice

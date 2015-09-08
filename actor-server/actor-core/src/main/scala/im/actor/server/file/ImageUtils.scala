@@ -2,7 +2,7 @@ package im.actor.server.file
 
 import akka.actor.ActorSystem
 import com.sksamuel.scrimage.{ AsyncImage, Format, Position }
-import im.actor.api.rpc.files.{ AvatarImage ⇒ ApiAvatarImage, FileLocation ⇒ ApiFileLocation, Avatar ⇒ ApiAvatar }
+import im.actor.api.rpc.files.{ ApiAvatarImage, ApiFileLocation, ApiAvatar }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.{ models, persist }
 import slick.dbio.DBIO

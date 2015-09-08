@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.PathMatchers.Segment
 import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import im.actor.api.rpc.messaging.{ Message, TextMessage }
+import im.actor.api.rpc.messaging.{ ApiMessage, ApiTextMessage }
 import im.actor.server.api.http.json._
 import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.group.GroupOffice
@@ -36,10 +36,10 @@ trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
   }
 
   def send(content: Content, token: String): Future[Either[StatusCode, Unit]] = {
-    val message: Message = content match {
-      case Text(text)    ⇒ TextMessage(text, Vector.empty, None)
-      case Document(url) ⇒ throw new NotImplementedError()
-      case Image(url)    ⇒ throw new NotImplementedError()
+    val message: ApiMessage = content match {
+      case Text(text)    ⇒ ApiTextMessage(text, Vector.empty, None)
+      case Document(url) ⇒ throw new Exception("Not implementer")
+      case Image(url)    ⇒ throw new Exception("Not implementer")
     }
 
     for {

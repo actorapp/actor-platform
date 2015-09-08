@@ -5,7 +5,7 @@ import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ OutPeer, PeerType }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.dialog.privat.PrivateDialogOperations
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
@@ -28,19 +28,17 @@ object HistoryErrors {
 trait HistoryHandlers {
   self: MessagingServiceImpl ⇒
 
-  import GroupUtils._
   import HistoryUtils._
-  import UserUtils._
   import im.actor.api.rpc.Implicits._
 
-  override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       val receivedFuture = peer.`type` match {
-        case PeerType.Private ⇒
+        case ApiPeerType.Private ⇒
           for {
             _ ← PrivateDialogOperations.messageReceived(client.userId, peer.id, date)
           } yield Ok(ResponseVoid)
-        case PeerType.Group ⇒
+        case ApiPeerType.Group ⇒
           for {
             _ ← GroupDialogOperations.messageReceived(peer.id, client.userId, client.authId, date)
           } yield Ok(ResponseVoid)
@@ -54,14 +52,14 @@ trait HistoryHandlers {
     }
   }
 
-  override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       val readFuture = peer.`type` match {
-        case PeerType.Private ⇒
+        case ApiPeerType.Private ⇒
           for {
             _ ← PrivateDialogOperations.messageRead(client.userId, client.authId, peer.id, date)
           } yield Ok(ResponseVoid)
-        case PeerType.Group ⇒
+        case ApiPeerType.Group ⇒
           for {
             _ ← GroupDialogOperations.messageRead(peer.id, client.userId, client.authId, date)
           } yield Ok(ResponseVoid)
@@ -75,13 +73,13 @@ trait HistoryHandlers {
     }
   }
 
-  override def jhandleClearChat(peer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val action = requireAuth(clientData) map { implicit client ⇒
       val update = UpdateChatClear(peer.asPeer)
 
       for {
         _ ← fromDBIOBoolean(CommonErrors.forbidden("Clearing of public chats is forbidden")) {
-          if (peer.`type` == PeerType.Private) {
+          if (peer.`type` == ApiPeerType.Private) {
             DBIO.successful(true)
           } else {
             DBIO.from(GroupOffice.isHistoryShared(peer.id)) flatMap (isHistoryShared ⇒ DBIO.successful(!isHistoryShared))
@@ -95,7 +93,7 @@ trait HistoryHandlers {
     db.run(toDBIOAction(action map (_.run)))
   }
 
-  override def jhandleDeleteChat(peer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleDeleteChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       val update = UpdateChatDelete(peer.asPeer)
 
@@ -128,7 +126,7 @@ trait HistoryHandlers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleLoadHistory(peer: OutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] = {
+  override def jhandleLoadHistory(peer: ApiOutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeer(peer) {
         withHistoryOwner(peer.asModel) { historyOwner ⇒
@@ -139,7 +137,7 @@ trait HistoryHandlers {
 
               val (messages, userIds) = messageModels.view
                 .map(_.ofUser(client.userId))
-                .foldLeft(Vector.empty[HistoryMessage], Set.empty[Int]) {
+                .foldLeft(Vector.empty[ApiHistoryMessage], Set.empty[Int]) {
                   case ((msgs, userIds), message) ⇒
                     val messageStruct = message.asStruct(lastReceivedAt, lastReadAt)
                     val newMsgs = msgs :+ messageStruct
@@ -167,7 +165,7 @@ trait HistoryHandlers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleDeleteMessage(outPeer: OutPeer, randomIds: Vector[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleDeleteMessage(outPeer: ApiOutPeer, randomIds: Vector[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       withOutPeer(outPeer) {
         val peer = outPeer.asModel
@@ -216,17 +214,17 @@ trait HistoryHandlers {
     }
   }
 
-  private def getDialogStruct(dialogModel: models.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[Dialog] = {
+  private def getDialogStruct(dialogModel: models.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialog] = {
     withHistoryOwner(dialogModel.peer) { historyOwner ⇒
       for {
         messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
         unreadCount ← getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield {
-        val emptyMessageContent = TextMessage(text = "", mentions = Vector.empty, ext = None)
+        val emptyMessageContent = ApiTextMessage(text = "", mentions = Vector.empty, ext = None)
         val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
         val message = messageModel.asStruct(dialogModel.lastReceivedAt, dialogModel.lastReadAt)
 
-        Dialog(
+        ApiDialog(
           peer = dialogModel.peer.asStruct,
           unreadCount = unreadCount,
           sortDate = dialogModel.lastMessageDate.getMillis,
@@ -251,10 +249,10 @@ trait HistoryHandlers {
     }
   }
 
-  private def getDialogsUsersGroups(dialogs: Seq[Dialog])(implicit client: AuthorizedClientData) = {
+  private def getDialogsUsersGroups(dialogs: Seq[ApiDialog])(implicit client: AuthorizedClientData) = {
     val (userIds, groupIds) = dialogs.foldLeft((Set.empty[Int], Set.empty[Int])) {
       case ((uacc, gacc), dialog) ⇒
-        if (dialog.peer.`type` == PeerType.Private) {
+        if (dialog.peer.`type` == ApiPeerType.Private) {
           (uacc ++ relatedUsers(dialog.message) ++ Set(dialog.peer.id, dialog.senderUserId), gacc)
         } else {
           (uacc ++ relatedUsers(dialog.message) + dialog.senderUserId, gacc + dialog.peer.id)
@@ -268,26 +266,26 @@ trait HistoryHandlers {
     } yield (users, groups)
   }
 
-  private def relatedUsers(message: Message): Set[Int] = {
+  private def relatedUsers(message: ApiMessage): Set[Int] = {
     message match {
-      case ServiceMessage(_, extOpt)   ⇒ extOpt map (relatedUsers) getOrElse (Set.empty)
-      case TextMessage(_, mentions, _) ⇒ mentions.toSet
-      case JsonMessage(_)              ⇒ Set.empty
-      case _: DocumentMessage          ⇒ Set.empty
+      case ApiServiceMessage(_, extOpt)   ⇒ extOpt map (relatedUsers) getOrElse (Set.empty)
+      case ApiTextMessage(_, mentions, _) ⇒ mentions.toSet
+      case ApiJsonMessage(_)              ⇒ Set.empty
+      case _: ApiDocumentMessage          ⇒ Set.empty
     }
   }
 
-  private def relatedUsers(ext: ServiceEx): Set[Int] =
+  private def relatedUsers(ext: ApiServiceEx): Set[Int] =
     ext match {
-      case ServiceExContactRegistered(userId)               ⇒ Set(userId)
-      case ServiceExChangedAvatar(_)                        ⇒ Set.empty
-      case ServiceExChangedTitle(_)                         ⇒ Set.empty
-      case ServiceExGroupCreated | _: ServiceExGroupCreated ⇒ Set.empty
-      case ServiceExPhoneCall(_)                            ⇒ Set.empty
-      case ServiceExPhoneMissed | _: ServiceExPhoneMissed   ⇒ Set.empty
-      case ServiceExUserInvited(invitedUserId)              ⇒ Set(invitedUserId)
-      case ServiceExUserJoined | _: ServiceExUserJoined     ⇒ Set.empty
-      case ServiceExUserKicked(kickedUserId)                ⇒ Set(kickedUserId)
-      case ServiceExUserLeft | _: ServiceExUserLeft         ⇒ Set.empty
+      case ApiServiceExContactRegistered(userId)                  ⇒ Set(userId)
+      case ApiServiceExChangedAvatar(_)                           ⇒ Set.empty
+      case ApiServiceExChangedTitle(_)                            ⇒ Set.empty
+      case ApiServiceExGroupCreated | _: ApiServiceExGroupCreated ⇒ Set.empty
+      case ApiServiceExPhoneCall(_)                               ⇒ Set.empty
+      case ApiServiceExPhoneMissed | _: ApiServiceExPhoneMissed   ⇒ Set.empty
+      case ApiServiceExUserInvited(invitedUserId)                 ⇒ Set(invitedUserId)
+      case ApiServiceExUserJoined | _: ApiServiceExUserJoined     ⇒ Set.empty
+      case ApiServiceExUserKicked(kickedUserId)                   ⇒ Set(kickedUserId)
+      case ApiServiceExUserLeft | _: ApiServiceExUserLeft         ⇒ Set.empty
     }
 }
