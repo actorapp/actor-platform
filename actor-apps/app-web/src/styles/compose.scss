@@ -76,6 +76,14 @@
     opacity: 0;
   }
 
+  .emoji-toggle {
+    position: absolute;
+    top: 6px;
+    right: 38px;
+    cursor: pointer;
+    color: $greyish;
+  }
+
   &--disabled {
     height: 154px;
     padding: 0;
