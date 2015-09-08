@@ -45,7 +45,7 @@ object Build extends sbt.Build {
       //PB.javaConversions in PB.protobufConfig := true,
       libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
       PB.includePaths in PB.protobufConfig ++= Seq(
-        file("actor-commons-api/src/main/protobuf"),
+        file("actor-runtime/src/main/protobuf"),
         file("actor-core/src/main/protobuf"),
         file("shardakka/src/main/protobuf")
       ),
@@ -87,7 +87,6 @@ object Build extends sbt.Build {
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(actorRunner)
     .aggregate(
-      actorCommonsBase,
       //      actorDashboard,
       actorCore,
       actorEmail,
@@ -111,7 +110,6 @@ object Build extends sbt.Build {
     settings = defaultSettings
   ).dependsOn(
     actorActivation,
-    actorCommonsBase,
     actorEnrich,
     actorEmail,
     actorFrontend,
@@ -130,16 +128,6 @@ object Build extends sbt.Build {
         scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
       )
   ).dependsOn(actorEmail, actorSms, actorPersist)
-
-  lazy val actorCommonsBase = Project(
-    id = "actor-commons-base",
-    base = file("actor-commons-base"),
-    settings =
-      defaultSettings ++
-        Seq(
-          libraryDependencies ++= Dependencies.commonsBase
-        )
-  )
 
   lazy val actorCore = Project(
     id = "actor-core",
@@ -195,7 +183,7 @@ object Build extends sbt.Build {
     id = "actor-session-messages",
     base = file("actor-session-messages"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sessionMessages)
-  ).dependsOn(actorCommonsBase, actorCore)
+  ).dependsOn(actorCore)
 
   lazy val actorPresences = Project(
     id = "actor-presences",
@@ -289,7 +277,6 @@ object Build extends sbt.Build {
   ).configs(Configs.all: _*)
     .dependsOn(
       actorCore,
-      actorCommonsBase,
       actorRpcApi,
       actorSession,
       actorPresences
@@ -324,7 +311,6 @@ object Build extends sbt.Build {
       actorActivation,
       actorCodecs,
       actorCore,
-      actorCommonsBase,
       //      actorDashboard,
       actorEmail,
       actorEnrich,
@@ -344,6 +330,6 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.shardakka
     )
-  ).dependsOn(actorCommonsBase)
+  ).dependsOn(actorRuntime)
 
 }

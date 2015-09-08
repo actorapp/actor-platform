@@ -4,7 +4,7 @@ import java.time.Instant
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.server.commons.KeyValueMappings
+import im.actor.server.KeyValueMappings
 import shardakka.{ InstantCodec, ShardakkaExtension }
 import slick.driver.PostgresDriver.api._
 

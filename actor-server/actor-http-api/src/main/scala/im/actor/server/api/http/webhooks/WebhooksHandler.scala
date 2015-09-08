@@ -5,8 +5,8 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
 import akka.util.Timeout
+import im.actor.server.KeyValueMappings
 import im.actor.server.api.http.RoutesHandler
-import im.actor.server.commons.KeyValueMappings
 import im.actor.server.dialog.group.GroupDialogRegion
 import im.actor.server.group.GroupViewRegion
 import shardakka.{ IntCodec, ShardakkaExtension }
