@@ -26,16 +26,16 @@ private[messaging] trait MessagingHandlers {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout: Timeout = Timeout(5.seconds) // TODO: configurable
 
-  override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: Message, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def jhandleSendMessage(outPeer: ApiOutPeer, randomId: Long, message: ApiMessage, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val seqstateAction = outPeer.`type` match {
-        case PeerType.Private ⇒
+        case ApiPeerType.Private ⇒
           for {
             isChecked ← fromFuture(UserOffice.checkAccessHash(outPeer.id, client.authId, outPeer.accessHash))
             _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
             result ← fromFuture(PrivateDialogOperations.sendMessage(outPeer.id, client.userId, client.authId, randomId, message))
           } yield result
-        case PeerType.Group ⇒
+        case ApiPeerType.Group ⇒
           for {
             isChecked ← fromFuture(GroupOffice.checkAccessHash(outPeer.id, outPeer.accessHash))
             _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
@@ -44,7 +44,7 @@ private[messaging] trait MessagingHandlers {
       }
 
       (for (SeqStateDate(seq, state, date) ← seqstateAction) yield {
-        val fromPeer = Peer(PeerType.Private, client.userId)
+        val fromPeer = ApiPeer(ApiPeerType.Private, client.userId)
         val toPeer = outPeer.asPeer
         onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, date, message))
         ResponseSeqDate(seq, state.toByteArray, date)

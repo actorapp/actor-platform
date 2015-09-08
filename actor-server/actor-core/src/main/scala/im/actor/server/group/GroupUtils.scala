@@ -2,9 +2,9 @@ package im.actor.server.group
 
 import akka.util.Timeout
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup }
-import im.actor.api.rpc.pubgroups.PublicGroup
-import im.actor.api.rpc.users.{ User ⇒ ApiUser }
+import im.actor.api.rpc.groups.ApiGroup
+import im.actor.api.rpc.pubgroups.ApiPublicGroup
+import im.actor.api.rpc.users.ApiUser
 import im.actor.server.file.ImageUtils
 import im.actor.server.user.{ UserViewRegion, UserOffice }
 import im.actor.server.{ models, persist }
@@ -17,18 +17,18 @@ object GroupUtils {
 
   import ImageUtils._
 
-  def getPubgroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[PublicGroup, NoStream, Read with Read] = {
+  def getPubgroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
     for {
       membersIds ← persist.GroupUser.findUserIds(group.id)
       userContactsIds ← persist.contact.UserContact.findNotDeletedIds(senderUserId)
       friendsCount = (membersIds intersect userContactsIds).length
       groupAvatarModelOpt ← persist.AvatarData.findByGroupId(group.id)
     } yield {
-      PublicGroup(group.id, group.accessHash, group.title, membersIds.length, friendsCount, group.about.getOrElse(""), groupAvatarModelOpt map getAvatar)
+      ApiPublicGroup(group.id, group.accessHash, group.title, membersIds.length, friendsCount, group.about.getOrElse(""), groupAvatarModelOpt map getAvatar)
     }
   }
 
-  def getPubgroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[PublicGroup, NoStream, Read with Read] = {
+  def getPubgroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
     getPubgroupStructUnsafe(group, clientData.userId)
   }
 

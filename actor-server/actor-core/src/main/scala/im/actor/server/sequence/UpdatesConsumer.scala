@@ -3,10 +3,10 @@ package im.actor.server.sequence
 import akka.actor._
 import akka.util.Timeout
 import im.actor.api.rpc.codecs.UpdateBoxCodec
-import im.actor.api.rpc.groups.Group
+import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.messaging.UpdateMessageSent
 import im.actor.api.rpc.sequence.{ FatSeqUpdate, WeakUpdate }
-import im.actor.api.rpc.users.User
+import im.actor.api.rpc.users.ApiUser
 import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
 import im.actor.server.db.DbExtension
@@ -203,7 +203,7 @@ private[sequence] class UpdatesConsumer(
   )(
     implicit
     ec: ExecutionContext
-  ): Future[(Seq[User], Seq[Group])] = {
+  ): Future[(Seq[ApiUser], Seq[ApiGroup])] = {
     implicit lazy val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
     implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
 

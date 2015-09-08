@@ -10,7 +10,7 @@ import scala.util.Random
 import slick.dbio.DBIO
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.contacts.PhoneToImport
+import im.actor.api.rpc.contacts.ApiPhoneToImport
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -157,11 +157,11 @@ class ContactsServiceSpec
       implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 
       def ru() = {
-        whenReady(service.handleImportContacts(Vector(PhoneToImport(79031161616L, Some("Kaizer 7"))), Vector.empty)) { resp ⇒
+        whenReady(service.handleImportContacts(Vector(ApiPhoneToImport(79031161616L, Some("Kaizer 7"))), Vector.empty)) { resp ⇒
           resp.toOption.get.users.map(_.id) shouldEqual Vector(user2.id)
         }
 
-        whenReady(service.handleImportContacts(Vector(PhoneToImport(89031171717L, Some("Kaizer 8"))), Vector.empty)) { resp ⇒
+        whenReady(service.handleImportContacts(Vector(ApiPhoneToImport(89031171717L, Some("Kaizer 8"))), Vector.empty)) { resp ⇒
           resp.toOption.get.users.map(_.id) shouldEqual Vector(user3.id)
         }
       }

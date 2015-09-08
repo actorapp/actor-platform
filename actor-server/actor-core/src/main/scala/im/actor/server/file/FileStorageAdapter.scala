@@ -2,7 +2,7 @@ package im.actor.server.file
 
 import java.io.File
 
-import im.actor.api.rpc.files.{ FileLocation ⇒ ApiFileLocation }
+import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.server.models
 import slick.driver.PostgresDriver.api._
 

@@ -12,7 +12,7 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.api.rpc.peers.UserOutPeer
+import im.actor.api.rpc.peers.ApiUserOutPeer
 import im.actor.api.rpc.sequence.RequestSubscribeToOnline
 import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
@@ -260,7 +260,7 @@ class SessionSpec extends BaseSessionSpec {
         val userForSubscribe = 2
 
         // FIXME: real user and real accessHash
-        val encodedSubscribeRequest = RequestCodec.encode(Request(RequestSubscribeToOnline(Vector(UserOutPeer(userForSubscribe, 0L))))).require
+        val encodedSubscribeRequest = RequestCodec.encode(Request(RequestSubscribeToOnline(Vector(ApiUserOutPeer(userForSubscribe, 0L))))).require
 
         val messageId = Random.nextLong()
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedSubscribeRequest))

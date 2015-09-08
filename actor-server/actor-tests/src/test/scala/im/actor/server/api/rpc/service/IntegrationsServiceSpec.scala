@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.integrtions.ResponseIntegrationToken
-import im.actor.api.rpc.peers.{ UserOutPeer, OutPeer, PeerType }
+import im.actor.api.rpc.peers.{ ApiUserOutPeer, ApiOutPeer, ApiPeerType }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -58,13 +58,13 @@ class IntegrationsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     def e1(): Unit = {
       val outPeer = {
         implicit val clientData = clientData1
         val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
-        OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+        ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
       whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2))(_ should matchNotAuthorized)
     }
@@ -73,7 +73,7 @@ class IntegrationsServiceSpec
       val outPeer = {
         implicit val clientData = clientData1
         val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
-        OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+        ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
       val groupToken = extractToken(outPeer.id)
@@ -92,7 +92,7 @@ class IntegrationsServiceSpec
       val outPeer = {
         implicit val clientData = clientData1
         val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
-        OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+        ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
       whenReady(service.jhandleRevokeIntegrationToken(outPeer, clientData2)) { resp ⇒
@@ -112,7 +112,7 @@ class IntegrationsServiceSpec
       implicit val clientData = clientData1
       val outPeer = {
         val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
-        OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+        ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
       val groupToken = extractToken(outPeer.id)
@@ -131,7 +131,7 @@ class IntegrationsServiceSpec
       implicit val clientData = clientData1
       val outPeer = {
         val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
-        OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+        ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
       val newTokenResponse =
@@ -154,7 +154,7 @@ class IntegrationsServiceSpec
     def e6(): Unit = {
       implicit val clientData = clientData1
       val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
-      val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+      val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
       whenReady(groupsService.handleMakeUserAdmin(groupOutPeer, user2OutPeer)) { resp ⇒
         resp should matchPattern { case Ok(_) ⇒ }

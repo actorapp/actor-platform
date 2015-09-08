@@ -7,7 +7,7 @@ import akka.testkit.TestProbe
 import com.sksamuel.scrimage.Image
 import org.joda.time.DateTime
 
-import im.actor.api.rpc.messaging.Message
+import im.actor.api.rpc.messaging.ApiMessage
 
 class PreviewMakerSpec extends BaseRichMessageSpec {
   behavior of "Preview maker actor"
@@ -125,8 +125,8 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
     }
 
     class DummyUpdateHandler extends UpdateHandler(0L) {
-      def handleDbUpdate(message: Message) = ???
-      def handleUpdate(message: Message) = ???
+      def handleDbUpdate(message: ApiMessage) = ???
+      def handleUpdate(message: ApiMessage) = ???
     }
 
     protected def sendGetPreview(previewMaker: ActorRef, url: String)(implicit probe: TestProbe) = {
