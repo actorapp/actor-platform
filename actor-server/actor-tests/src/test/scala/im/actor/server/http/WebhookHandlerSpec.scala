@@ -15,7 +15,6 @@ import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ CommandParser, ReverseHooksListener }
 import im.actor.server.api.rpc.service.messaging
-import im.actor.server.commons.KeyValueMappings
 import im.actor.server.group.{ GroupOffice, GroupServiceMessages }
 import im.actor.server.migrations.IntegrationTokenMigrator
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
