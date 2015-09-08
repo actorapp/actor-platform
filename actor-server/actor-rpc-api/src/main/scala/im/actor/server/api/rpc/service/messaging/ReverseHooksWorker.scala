@@ -17,7 +17,7 @@ import im.actor.server.commons.KeyValueMappings
 import im.actor.server.models
 import im.actor.server.models.PeerType.{ Group, Private }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
-import im.actor.server.util.AnyRefLogSource
+import im.actor.util.log.AnyRefLogSource
 import play.api.libs.json.{ Format, Json }
 import shardakka.ShardakkaExtension
 
