@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.webhooks
 
+import rpc.PeersImplicits
+
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 

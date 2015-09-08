@@ -104,8 +104,6 @@ object Dependencies {
 
   val commonsBase = shared ++ Seq(akkaActor, akkaPersistence, akkaPersistenceJdbc, concmap, jodaConvert, jodaTime)
 
-  val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
-
   val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, caffeine, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
