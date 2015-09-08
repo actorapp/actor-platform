@@ -23,7 +23,7 @@ import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
-import im.actor.server.util.StringUtils
+import im.actor.util.misc.StringUtils
 
 object ProfileErrors {
   val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",

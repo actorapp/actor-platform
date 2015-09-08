@@ -5,7 +5,7 @@ import akka.contrib.pattern.ShardRegion
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
-import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.dialog.Origin.{ LEFT, RIGHT }
@@ -16,7 +16,7 @@ import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.{ UserViewRegion, UserExtension }
 import slick.driver.PostgresDriver.api.Database
-import im.actor.utils.cache.CacheHelpers._
+import im.actor.util.cache.CacheHelpers._
 import scala.concurrent.duration._
 
 import scala.concurrent.{ Future, ExecutionContext }

@@ -16,7 +16,6 @@ import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
-import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
