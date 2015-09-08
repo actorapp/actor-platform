@@ -2,8 +2,7 @@ package im.actor.server.user
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.server.commons.KeyValueMappings
-import im.actor.server.{ models, persist }
+import im.actor.server.{ KeyValueMappings, models, persist }
 import shardakka.ShardakkaExtension
 import slick.dbio.DBIO
 
