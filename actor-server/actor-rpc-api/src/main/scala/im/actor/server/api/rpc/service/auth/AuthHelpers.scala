@@ -24,10 +24,9 @@ import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.session._
 import im.actor.server.user.UserOffice
-import im.actor.server.util.IdUtils._
-import im.actor.server.util.PhoneNumberUtils._
-import im.actor.server.util.StringUtils.validName
-import im.actor.server.util._
+import im.actor.util.misc.IdUtils._
+import im.actor.util.misc.PhoneNumberUtils._
+import im.actor.util.misc.StringUtils.validName
 import im.actor.server.{ models, persist }
 
 trait AuthHelpers extends Helpers {

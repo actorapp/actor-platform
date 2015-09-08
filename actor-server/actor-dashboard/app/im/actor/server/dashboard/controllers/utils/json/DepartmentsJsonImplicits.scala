@@ -9,7 +9,6 @@ import play.api.libs.json._
 import im.actor.server.dashboard.controllers.utils.NestedDept
 import im.actor.server.dashboard.controllers.utils.json.Common._
 import im.actor.server.models
-import im.actor.server.util.IdUtils
 
 object DepartmentsJsonImplicits {
 

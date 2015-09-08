@@ -4,7 +4,7 @@ import java.nio.ByteBuffer
 
 import akka.serialization.Serialization
 import com.google.protobuf.ByteString
-import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.serialization.ActorSerializer
 
 import scala.annotation.tailrec
 import scala.concurrent._
@@ -15,9 +15,9 @@ import akka.pattern.ask
 import akka.util.Timeout
 import slick.dbio.DBIO
 
+import im.actor.api.{ rpc ⇒ api }
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.peers.{ PeerType, Peer }
-import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.db.DbExtension
 import im.actor.server.models.sequence
 import im.actor.server.{ models, persist ⇒ p }

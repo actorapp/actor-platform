@@ -10,7 +10,6 @@ import play.api.libs.json.{ JsPath, Reads }
 
 import im.actor.server.dashboard.controllers.utils.json.Common._
 import im.actor.server.models
-import im.actor.server.util.IdUtils._
 
 object ManagersJsonImplicits {
 

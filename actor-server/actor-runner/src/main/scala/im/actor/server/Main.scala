@@ -6,9 +6,9 @@ import akka.actor._
 import akka.cluster.Cluster
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
+import im.actor.config.ActorConfig
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
-import im.actor.server.api.CommonSerialization
 import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.RpcApiService
@@ -25,7 +25,6 @@ import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, Sequenc
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import im.actor.server.commons.ActorConfig
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.privat.{ PrivateDialog, PrivateDialogExtension }
 import im.actor.server.email.{ EmailConfig, EmailSender }

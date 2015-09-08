@@ -23,7 +23,7 @@ import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
 import ACLUtils._
-import im.actor.server.util.IdUtils._
+import im.actor.util.misc.IdUtils._
 import ImageUtils._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
