@@ -183,7 +183,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                 // getCollection().scrollToPosition(index + 1);
             }
 
-        } else {
+        } else if (getCollection() != null) {
             // linearLayoutManager.scrollToPosition(0);
             getCollection().scrollToPosition(0);
         }
