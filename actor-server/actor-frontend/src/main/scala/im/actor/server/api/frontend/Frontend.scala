@@ -11,7 +11,7 @@ import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.session.SessionRegion
-import im.actor.server.tls.TlsContext
+import im.actor.tls.TlsContext
 
 sealed trait EndpointType
 
