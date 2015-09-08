@@ -12,7 +12,7 @@ import akka.util.ByteString
 import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.session.SessionRegion
-import im.actor.server.tls.TlsContext
+import im.actor.tls.TlsContext
 
 object WsFrontend extends Frontend {
 

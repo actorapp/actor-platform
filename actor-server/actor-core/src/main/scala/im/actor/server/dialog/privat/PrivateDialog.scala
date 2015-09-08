@@ -16,7 +16,7 @@ import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.{ UserViewRegion, UserExtension }
 import slick.driver.PostgresDriver.api.Database
-import im.actor.utils.cache.CacheHelpers._
+import im.actor.util.cache.CacheHelpers._
 import scala.concurrent.duration._
 
 import scala.concurrent.{ Future, ExecutionContext }

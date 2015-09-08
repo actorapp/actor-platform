@@ -20,7 +20,7 @@ import im.actor.server.office.{ ProcessorState, PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import im.actor.utils.cache.CacheHelpers._
+import im.actor.util.cache.CacheHelpers._
 
 trait UserEvent
 

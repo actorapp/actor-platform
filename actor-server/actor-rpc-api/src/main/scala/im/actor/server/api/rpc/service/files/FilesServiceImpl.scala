@@ -22,7 +22,6 @@ import im.actor.api.rpc.FileHelpers.Errors
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
 import im.actor.server.db.DbExtension
-import im.actor.server.util._
 import im.actor.server.{ models, persist }
 
 class FilesServiceImpl(
