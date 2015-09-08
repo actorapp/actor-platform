@@ -40,7 +40,7 @@ trait HistoryHandlers {
           } yield Ok(ResponseVoid)
         case ApiPeerType.Group ⇒
           for {
-            _ ← GroupDialogOperations.messageReceived(peer.id, client.userId, client.authId, date)
+            _ ← GroupDialogOperations.messageReceived(peer.id, client.userId, date)
           } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }

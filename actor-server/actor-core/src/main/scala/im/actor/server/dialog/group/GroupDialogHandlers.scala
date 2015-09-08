@@ -4,7 +4,7 @@ import akka.actor.Status
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
-import im.actor.server.dialog.{ AuthIdRandomId, GroupDialogCommands, ReadFailed, ReceiveFailed }
+import im.actor.server.dialog.{ DialogCommands, AuthIdRandomId, ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
 import im.actor.server.history.HistoryUtils
@@ -22,7 +22,7 @@ import scala.concurrent.Future
 trait GroupDialogHandlers extends UpdateCounters {
   this: GroupDialog ⇒
 
-  import GroupDialogCommands._
+  import DialogCommands._
   import GroupDialogEvents._
 
   protected def sendMessage(
