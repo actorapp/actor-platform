@@ -45,7 +45,7 @@ message GroupCommands {
         repeated int32 user_ids = 5;
         optional bool is_hidden = 7;
         optional bool is_history_shared = 8;
-        repeated bytes extensions = 6 [(scalapb.field).type = "im.actor.api.rpc.misc.Extension"];
+        repeated bytes extensions = 6 [(scalapb.field).type = "im.actor.api.rpc.misc.ApiExtension"];
     }
 
     message CreateInternalAck {
@@ -101,7 +101,7 @@ message GroupCommands {
     }
 
     message UpdateAvatarAck {
-        optional bytes avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.Avatar"];
+        optional bytes avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.ApiAvatar"];
         required SeqStateDate seqstatedate = 2;
     }
 
@@ -199,7 +199,7 @@ message GroupQueries {
     }
 
     message GetApiStructResponse {
-        required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.Group"];
+        required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.ApiGroup"];
     }
 
     message CheckAccessHash {
@@ -268,7 +268,7 @@ message GroupEvents {
         repeated int32 user_ids = 6;
         optional bool is_hidden = 8;
         optional bool is_history_shared = 9;
-        repeated bytes extensions = 7  [(scalapb.field).type = "im.actor.api.rpc.misc.Extension"];
+        repeated bytes extensions = 7  [(scalapb.field).type = "im.actor.api.rpc.misc.ApiExtension"];
     }
 
     message UserInvited {

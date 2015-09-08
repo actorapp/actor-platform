@@ -17,9 +17,9 @@ import org.scalatest.Inside._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
-import im.actor.api.rpc.contacts.{ ResponseGetContacts, PhoneToImport, UpdateContactRegistered }
+import im.actor.api.rpc.contacts.{ ResponseGetContacts, ApiPhoneToImport, UpdateContactRegistered }
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.api.rpc.users.{ ContactRecord, ContactType, Sex }
+import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthErrors
@@ -381,7 +381,7 @@ final class AuthServiceSpec
     def e8() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
-      val userSex = Some(Sex.Male)
+      val userSex = Some(ApiSex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
       implicit val clientData = ClientData(authId, sessionId, None)
@@ -407,7 +407,7 @@ final class AuthServiceSpec
     def e9() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
-      val userSex = Some(Sex.Male)
+      val userSex = Some(ApiSex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
       implicit val clientData = ClientData(authId, sessionId, None)
@@ -434,7 +434,7 @@ final class AuthServiceSpec
             user.phone shouldEqual Some(phoneNumber)
             user.contactInfo should have length 1
             user.contactInfo.head should matchPattern {
-              case ContactRecord(ContactType.Phone, None, Some(phone), Some(_), None) ⇒
+              case ApiContactRecord(ApiContactType.Phone, None, Some(phone), Some(_), None) ⇒
             }
         }
       }
@@ -443,7 +443,7 @@ final class AuthServiceSpec
     def e90() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
-      val userSex = Some(Sex.Male)
+      val userSex = Some(ApiSex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
       val unregClientData = ClientData(authId, sessionId, None)
@@ -485,7 +485,7 @@ final class AuthServiceSpec
     def e91() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
-      val userSex = Some(Sex.Male)
+      val userSex = Some(ApiSex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
       val unregClientData = ClientData(authId, sessionId, None)
@@ -496,7 +496,7 @@ final class AuthServiceSpec
 
       {
         implicit val clientData = regClientData
-        val unregPhones = Vector(PhoneToImport(phoneNumber, localName))
+        val unregPhones = Vector(ApiPhoneToImport(phoneNumber, localName))
         whenReady(contactService.handleImportContacts(unregPhones, Vector.empty))(_ ⇒ ())
       }
 
@@ -567,7 +567,7 @@ final class AuthServiceSpec
     def e11() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
-      val userSex = Some(Sex.Male)
+      val userSex = Some(ApiSex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
       implicit val clientData = ClientData(authId, sessionId, None)
@@ -602,7 +602,7 @@ final class AuthServiceSpec
 
       whenReady(startEmailAuth(email)) { resp ⇒
         inside(resp) {
-          case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒
+          case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒
             hash should not be empty
         }
       }
@@ -636,7 +636,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(q()) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -645,7 +645,7 @@ final class AuthServiceSpec
       whenReady(seq) { resps ⇒
         resps foreach {
           inside(_) {
-            case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒
+            case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒
               hash shouldEqual transactionHash
           }
         }
@@ -687,7 +687,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startEmailAuth(email)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -701,7 +701,7 @@ final class AuthServiceSpec
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       whenReady(startEmailAuth(email)) { resp ⇒
-        resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+        resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
       }
 
       whenReady(service.handleGetOAuth2Params("wrongHash22aksdl320d3", correctUri)) { resp ⇒
@@ -715,7 +715,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startEmailAuth(email)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -741,7 +741,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startEmailAuth(email)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
       whenReady(service.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
@@ -761,7 +761,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startEmailAuth(email)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
       whenReady(service.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
@@ -793,7 +793,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startEmailAuth(email)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
       whenReady(service.handleGetOAuth2Params(transactionHash, correctUri)) { resp ⇒
@@ -816,12 +816,12 @@ final class AuthServiceSpec
     def e22() = {
       val email = buildEmail(gmail)
       val userName = "Rock Jam"
-      val userSex = Some(Sex.Male)
+      val userSex = Some(ApiSex.Male)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
         whenReady(startEmailAuth(email)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
       whenReady(service.handleSignUp(transactionHash, userName, userSex)) { resp ⇒
@@ -840,7 +840,7 @@ final class AuthServiceSpec
       val email = buildEmail(gmail)
       DummyOAuth2Server.email = email
       val userName = "Rock Jam"
-      val userSex = Some(Sex.Male)
+      val userSex = Some(ApiSex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
       implicit val clientData = ClientData(authId, sessionId, None)
@@ -849,7 +849,7 @@ final class AuthServiceSpec
 
       val transactionHash =
         whenReady(startEmailAuth(email)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
           resp.toOption.get.transactionHash
         }
 
@@ -869,7 +869,7 @@ final class AuthServiceSpec
               u.sex shouldEqual userSex
               u.contactInfo should have length 1
               u.contactInfo.head should matchPattern {
-                case ContactRecord(ContactType.Email, Some(`email`), None, Some(_), None) ⇒
+                case ApiContactRecord(ApiContactType.Email, Some(`email`), None, Some(_), None) ⇒
               }
           }
           resp.toOption.get.user
@@ -892,7 +892,7 @@ final class AuthServiceSpec
       val email = buildEmail(gmail)
       DummyOAuth2Server.email = email
       val userName = "Rock Jam"
-      val userSex = Some(Sex.Male)
+      val userSex = Some(ApiSex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
       val unregClientData = ClientData(authId, sessionId, None)
@@ -908,7 +908,7 @@ final class AuthServiceSpec
         implicit val clientData = unregClientData
         val transactionHash =
           whenReady(startEmailAuth(email)) { resp ⇒
-            resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+            resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, ApiEmailActivationType.OAUTH2)) ⇒ }
             resp.toOption.get.transactionHash
           }
 

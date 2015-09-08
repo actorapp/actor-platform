@@ -5,7 +5,7 @@ import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
-import im.actor.api.rpc.peers.{ PeerType, OutPeer }
+import im.actor.api.rpc.peers.{ ApiPeerType, ApiOutPeer }
 import im.actor.api.{ rpc ⇒ rpcapi }
 import im.actor.server.api.rpc.service.auth
 import im.actor.server.api.rpc.RpcApiService
@@ -28,7 +28,7 @@ trait PersistenceHelpers {
 }
 
 trait UserStructExtensions {
-  implicit class ExtUser(user: rpcapi.users.User) {
+  implicit class ExtUser(user: rpcapi.users.ApiUser) {
     def asModel()(implicit db: Database): models.User =
       Await.result(db.run(persist.User.find(user.id).head), 3.seconds)
   }
@@ -105,23 +105,23 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     Await.result(db.run(persist.AuthSmsCodeObsolete.findByPhoneNumber(phoneNumber).head), 5.seconds)
   }
 
-  def createUser()(implicit service: rpcapi.auth.AuthService, db: Database, system: ActorSystem): (rpcapi.users.User, Long, Long) = {
+  def createUser()(implicit service: rpcapi.auth.AuthService, db: Database, system: ActorSystem): (rpcapi.users.ApiUser, Long, Long) = {
     val authId = createAuthId()
     val phoneNumber = buildPhone()
     (createUser(authId, phoneNumber), authId, phoneNumber)
   }
 
-  def createUser(phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): rpcapi.users.User =
+  def createUser(phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): rpcapi.users.ApiUser =
     createUser(createAuthId(), phoneNumber)
 
-  def getOutPeer(userId: Int, clientAuthId: Long): OutPeer = {
+  def getOutPeer(userId: Int, clientAuthId: Long): ApiOutPeer = {
     implicit val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
     val accessHash = Await.result(UserOffice.getAccessHash(userId, clientAuthId), 5.seconds)
-    OutPeer(PeerType.Private, userId, accessHash)
+    ApiOutPeer(ApiPeerType.Private, userId, accessHash)
   }
 
   //TODO: make same method to work with email
-  def createUser(authId: Long, phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): rpcapi.users.User =
+  def createUser(authId: Long, phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): rpcapi.users.ApiUser =
     withoutLogs {
       val smsCode = getSmsCode(authId, phoneNumber)
 

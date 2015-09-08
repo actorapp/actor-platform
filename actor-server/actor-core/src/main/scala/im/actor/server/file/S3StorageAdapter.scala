@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
 import com.github.kxbmap.configs._
 import com.typesafe.config.{ Config, ConfigFactory }
-import im.actor.api.rpc.files.{ FileLocation ⇒ ApiFileLocation }
+import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.serialization.ActorSerializer
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension

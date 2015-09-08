@@ -3,7 +3,7 @@ package im.actor.server.group
 import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup, Member ⇒ ApiMember }
+import im.actor.api.rpc.groups.{ ApiGroup, ApiMember }
 import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 

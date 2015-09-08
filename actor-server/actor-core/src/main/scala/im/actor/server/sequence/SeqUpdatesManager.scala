@@ -17,7 +17,7 @@ import slick.dbio.DBIO
 
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.api.rpc.messaging.UpdateMessage
-import im.actor.api.rpc.peers.{ PeerType, Peer }
+import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
 import im.actor.server.db.DbExtension
 import im.actor.server.models.sequence
 import im.actor.server.{ models, persist ⇒ p }
@@ -62,7 +62,7 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     refs:           UpdateRefs,
     pushText:       Option[String],
-    originPeer:     Option[Peer],
+    originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
   )(implicit
@@ -93,7 +93,7 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     refs:           UpdateRefs,
     pushText:       Option[String],
-    originPeer:     Option[Peer],
+    originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
   )(implicit
@@ -137,7 +137,7 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     refs:           UpdateRefs,
     pushText:       Option[String],
-    originPeer:     Option[Peer],
+    originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
   )(implicit
@@ -153,7 +153,7 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     refs:           UpdateRefs,
     pushText:       Option[String],
-    originPeer:     Option[Peer],
+    originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
   )(implicit
@@ -283,8 +283,8 @@ object SeqUpdatesManager {
   }
 
   def updateRefs(update: api.Update): UpdateRefs = {
-    def peerRefs(peer: api.peers.Peer): UpdateRefs = {
-      if (peer.`type` == api.peers.PeerType.Private) {
+    def peerRefs(peer: api.peers.ApiPeer): UpdateRefs = {
+      if (peer.`type` == api.peers.ApiPeerType.Private) {
         UpdateRefs(Seq(peer.id), Seq.empty)
       } else {
         UpdateRefs(Seq.empty, Seq(peer.id))
@@ -302,13 +302,13 @@ object SeqUpdatesManager {
       case _: api.configs.UpdateParameterChanged ⇒ empty
       case api.messaging.UpdateChatClear(peer) ⇒
         peer.`type` match {
-          case PeerType.Private ⇒ singleUser(peer.id)
-          case PeerType.Group   ⇒ singleGroup(peer.id)
+          case ApiPeerType.Private ⇒ singleUser(peer.id)
+          case ApiPeerType.Group   ⇒ singleGroup(peer.id)
         }
       case api.messaging.UpdateChatDelete(peer) ⇒
         peer.`type` match {
-          case PeerType.Private ⇒ singleUser(peer.id)
-          case PeerType.Group   ⇒ singleGroup(peer.id)
+          case ApiPeerType.Private ⇒ singleUser(peer.id)
+          case ApiPeerType.Group   ⇒ singleGroup(peer.id)
         }
       case api.messaging.UpdateMessage(peer, senderUserId, _, _, _) ⇒
         val refs = peerRefs(peer)
@@ -378,7 +378,7 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     refs:           UpdateRefs,
     pushText:       Option[String],
-    originPeer:     Option[Peer],
+    originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
   )(implicit
@@ -391,7 +391,7 @@ object SeqUpdatesManager {
     ).mapTo[SeqState]
   }
 
-  def getOriginPeer(update: api.Update): Option[Peer] = {
+  def getOriginPeer(update: api.Update): Option[ApiPeer] = {
     update match {
       case u: UpdateMessage ⇒ Some(u.peer)
       case _                ⇒ None

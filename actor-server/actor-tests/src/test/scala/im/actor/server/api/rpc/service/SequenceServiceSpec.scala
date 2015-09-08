@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.rpc.messaging.{ UpdateMessageContentChanged, TextMessage }
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.messaging.{ UpdateMessageContentChanged, ApiTextMessage }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -14,7 +14,7 @@ import slick.dbio.DBIO
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseSeq
-import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference }
+import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.presences.PresenceManager
 import im.actor.server.sequence.SeqUpdatesManager
@@ -63,11 +63,11 @@ class SequenceServiceSpec extends BaseAppSuite({
     val (user2, _, _) = createUser()
     val sessionId = createSessionId()
 
-    val user2Peer = Peer(PeerType.Private, user2.id)
+    val user2Peer = ApiPeer(ApiPeerType.Private, user2.id)
 
     implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
-    val message = TextMessage("Hello mr President. Zzz", Vector.empty, None)
+    val message = ApiTextMessage("Hello mr President. Zzz", Vector.empty, None)
 
     def withError(maxUpdateSize: Long) = {
       val example = UpdateMessageContentChanged(user2Peer, 1000L, message)
@@ -80,7 +80,7 @@ class SequenceServiceSpec extends BaseAppSuite({
       val update = UpdateMessageContentChanged(user2Peer, i, message)
       persistAndPushUpdate(authId, update, pushText = None, isFat = false)
     }
-    var totalUpdates: Seq[DifferenceUpdate] = Seq.empty
+    var totalUpdates: Seq[ApiDifferenceUpdate] = Seq.empty
 
     Await.result(db.run(DBIO.sequence(actions)), 10.seconds)
 
@@ -139,14 +139,14 @@ class SequenceServiceSpec extends BaseAppSuite({
     val (user2, _, _) = createUser()
     val sessionId = createSessionId()
 
-    val user2Peer = Peer(PeerType.Private, user2.id)
+    val user2Peer = ApiPeer(ApiPeerType.Private, user2.id)
 
     implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
     val maxSize = config.maxDifferenceSize
 
-    val smallUpdate = UpdateMessageContentChanged(user2Peer, 1L, TextMessage("Hello", Vector.empty, None))
-    val bigUpdate = UpdateMessageContentChanged(user2Peer, 2L, TextMessage((for (_ ← 1L to maxSize * 10) yield "b").mkString(""), Vector.empty, None))
+    val smallUpdate = UpdateMessageContentChanged(user2Peer, 1L, ApiTextMessage("Hello", Vector.empty, None))
+    val bigUpdate = UpdateMessageContentChanged(user2Peer, 2L, ApiTextMessage((for (_ ← 1L to maxSize * 10) yield "b").mkString(""), Vector.empty, None))
 
     whenReady(persistAndPushUpdateF(authId, smallUpdate, pushText = None, isFat = false))(identity)
     whenReady(persistAndPushUpdateF(authId, bigUpdate, pushText = None, isFat = false))(identity)

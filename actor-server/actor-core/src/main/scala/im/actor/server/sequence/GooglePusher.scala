@@ -6,14 +6,14 @@ import akka.actor.ActorSystem
 import com.google.android.gcm.server.Message
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.peers.Peer
+import im.actor.api.rpc.peers.ApiPeer
 import im.actor.server.{ models, persist }
 
 // FIXME: #perf pinned dispatcher
 private[sequence] class GooglePusher(pushManager: GooglePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   implicit val ec: ExecutionContext = system.dispatcher
 
-  def deliverGooglePush(creds: models.push.GooglePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer]): Unit = {
+  def deliverGooglePush(creds: models.push.GooglePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[ApiPeer]): Unit = {
     pushManager.getInstance(creds.projectId) match {
       case Some(gcmSender) ⇒
         system.log.debug("Delivering google push, authId: {}, seq: {}", authId, seq)
