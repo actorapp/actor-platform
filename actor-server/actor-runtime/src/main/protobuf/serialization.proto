@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package im.actor.server.commons;
+package im.actor;
 
 message SerializedMessage {
     required int32 id = 1;
