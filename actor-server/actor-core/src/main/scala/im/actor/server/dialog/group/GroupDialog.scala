@@ -15,7 +15,7 @@ import im.actor.server.office.{ ProcessorState, Processor }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
-import im.actor.utils.cache.CacheHelpers._
+import im.actor.util.cache.CacheHelpers._
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._

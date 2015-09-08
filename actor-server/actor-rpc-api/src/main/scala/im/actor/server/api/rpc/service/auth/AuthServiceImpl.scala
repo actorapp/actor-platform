@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.auth
 import java.time.{ ZoneOffset, LocalDateTime }
 
 import im.actor.server.acl.ACLUtils
+import im.actor.util.log.AnyRefLogSource
 
 import scala.concurrent._, duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -30,9 +31,9 @@ import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import im.actor.server.util.PhoneNumberUtils._
+import im.actor.util.misc.PhoneNumberUtils._
 import im.actor.server.user.{ UserViewRegion, UserExtension, UserOffice, UserProcessorRegion }
-import im.actor.server.util._
+import im.actor.util.misc._
 import im.actor.server.{ persist, models }
 
 case class PubSubMediator(mediator: ActorRef)
