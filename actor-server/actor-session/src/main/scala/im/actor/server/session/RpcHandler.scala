@@ -17,7 +17,7 @@ import im.actor.api.rpc.RpcInternalError
 import im.actor.server.api.rpc.{ RpcResultCodec, RpcApiService }
 import im.actor.server.api.rpc.RpcApiService.RpcResponse
 import im.actor.server.mtproto.protocol.{ ProtoMessage, RpcResponseBox }
-import im.actor.utils.cache.CacheHelpers._
+import im.actor.util.cache.CacheHelpers._
 
 private[session] object RpcHandler {
   private[session] val MaxCacheSize = 100L

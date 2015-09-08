@@ -4,7 +4,7 @@ import akka.actor._
 import akka.contrib.pattern.{ ClusterSingletonProxy, ClusterSingletonManager }
 import akka.pattern.ask
 import akka.util.Timeout
-import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.serialization.ActorSerializer
 import shardakka.{ StringCodec, Codec, ShardakkaExtension }
 
 import scala.collection.immutable

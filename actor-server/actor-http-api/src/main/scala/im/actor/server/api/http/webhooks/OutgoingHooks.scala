@@ -6,9 +6,10 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import cats.data.Xor
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
+import im.actor.server.KeyValueMappings
 import im.actor.server.api.http.json._
-import im.actor.server.commons.KeyValueMappings
-import im.actor.server.util.{ FutureResult, IdUtils }
+import im.actor.concurrent.FutureResultCats
+import im.actor.util.misc.IdUtils
 import shardakka.ShardakkaExtension
 import shardakka.keyvalue.SimpleKeyValue
 
@@ -16,7 +17,7 @@ import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.Try
 
-object FutureResultHttp extends FutureResult[(StatusCode, String)]
+object FutureResultHttp extends FutureResultCats[(StatusCode, String)]
 
 object OutgoingHooksErrors {
   val WrongIntegrationToken = "Wrong integration token"

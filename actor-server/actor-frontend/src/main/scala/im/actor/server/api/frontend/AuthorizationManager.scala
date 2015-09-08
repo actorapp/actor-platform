@@ -1,17 +1,17 @@
 package im.actor.server.api.frontend
 
 import im.actor.server.db.DbExtension
-import im.actor.server.util.IdUtils
+import im.actor.util.misc.IdUtils
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
+import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.{ Failure, Success }
 
 import akka.actor._
 import akka.stream.actor.ActorPublisher
 import slick.driver.PostgresDriver.api.Database
 
-import im.actor.server.api.util.rand
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
@@ -75,7 +75,7 @@ class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[M
         case RequestAuthId ⇒
           val f =
             if (authId == 0L) {
-              authId = IdUtils.nextAuthId(rand)
+              authId = IdUtils.nextAuthId(ThreadLocalRandom.current())
               db.run(persist.AuthId.create(authId, None, None))
             } else Future.successful(())
 

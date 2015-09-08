@@ -7,7 +7,7 @@ import akka.util.Timeout
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
 import im.actor.server.persist
-import im.actor.server.util.AnyRefLogSource
+import im.actor.util.log.AnyRefLogSource
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
