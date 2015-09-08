@@ -2,14 +2,22 @@ package im.actor.server.dialog.group
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import im.actor.server.dialog.{ DialogIdContainer, DialogCommand }
 
 object GroupDialogRegion {
-  private val idExtractor: ShardRegion.IdExtractor = {
-    case c: GroupDialogCommand ⇒ (c.dialogId.groupId.toString, c)
+
+  private def idExtractor: ShardRegion.IdExtractor = {
+    case c: DialogCommand ⇒ c.dialogId match {
+      case DialogIdContainer(id) if id.isGroup ⇒ (c.dialogId.getGroup.stringId, c)
+      case _                                   ⇒ throw new Exception("Unsupported dialogId")
+    }
   }
 
-  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case c: GroupDialogCommand ⇒ (c.dialogId.groupId % 100).toString // TODO: configurable
+  private def shardResolver: ShardRegion.ShardResolver = {
+    case c: DialogCommand ⇒ c.dialogId match {
+      case DialogIdContainer(id) if id.isGroup ⇒ (c.dialogId.getGroup.groupId % 100).toString
+      case _                                   ⇒ throw new Exception("Unsupported dialogId")
+    }
   }
 
   val typeName = "GroupDialog"

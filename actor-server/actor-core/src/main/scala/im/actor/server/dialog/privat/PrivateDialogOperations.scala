@@ -3,8 +3,8 @@ package im.actor.server.dialog.privat
 import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.messaging.ApiMessage
-import im.actor.server.dialog.DialogId
-import im.actor.server.dialog.PrivateDialogCommands._
+import im.actor.server.dialog.{ DialogIdContainer, DialogId }
+import im.actor.server.dialog.DialogCommands._
 import im.actor.server.sequence.SeqStateDate
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -22,8 +22,7 @@ object PrivateDialogOperations {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqStateDate] = {
-    val id = DialogId.privat(senderId, toUser)
-    (region.ref ? SendMessage(id, id.origin(senderId), senderAuthId, randomId, message, isFat)).mapTo[SeqStateDate]
+    (region.ref ? SendMessage(privatDialogId(senderId, toUser), senderId, senderAuthId, randomId, message, isFat)).mapTo[SeqStateDate]
   }
 
   def messageReceived(receiverUserId: Int, peerUserId: Int, date: Long)(
@@ -32,8 +31,7 @@ object PrivateDialogOperations {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[Unit] = {
-    val id = DialogId.privat(peerUserId, receiverUserId)
-    (region.ref ? MessageReceived(id, id.origin(receiverUserId), date)).mapTo[MessageReceivedAck] map (_ ⇒ ())
+    (region.ref ? MessageReceived(privatDialogId(peerUserId, receiverUserId), receiverUserId, date)).mapTo[MessageReceivedAck] map (_ ⇒ ())
   }
 
   def messageRead(readerUserId: Int, readerAuthId: Long, peerUserId: Int, date: Long)(
@@ -42,7 +40,8 @@ object PrivateDialogOperations {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[Unit] = {
-    val id = DialogId.privat(peerUserId, readerUserId)
-    (region.ref ? MessageRead(id, id.origin(readerUserId), readerAuthId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
+    (region.ref ? MessageRead(privatDialogId(peerUserId, readerUserId), readerUserId, readerAuthId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
   }
+
+  private def privatDialogId(a: Int, b: Int) = DialogIdContainer().withPrivat(DialogId.privat(a, b))
 }
