@@ -2,18 +2,16 @@ package im.actor.server.api
 
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
-import im.actor.api.rpc.misc.Extension
-import im.actor.api.rpc.sequence.SeqUpdate
-import im.actor.api.rpc.users.{ Sex ⇒ S }
-import im.actor.api.rpc.users.Sex.Sex
-import org.joda.time.DateTime
-
-import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup }
 import im.actor.api.rpc.files.Avatar
+import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup }
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
+import im.actor.api.rpc.misc.Extension
 import im.actor.api.rpc.peers.Peer
-import im.actor.api.rpc.users.{ User ⇒ ApiUser }
+import im.actor.api.rpc.sequence.SeqUpdate
+import im.actor.api.rpc.users.Sex.Sex
+import im.actor.api.rpc.users.{ Sex ⇒ S, User ⇒ ApiUser }
 import im.actor.server.commons.serialization.ActorSerializer
+import org.joda.time.DateTime
 
 object TypeMappers extends MessageMapper
 
