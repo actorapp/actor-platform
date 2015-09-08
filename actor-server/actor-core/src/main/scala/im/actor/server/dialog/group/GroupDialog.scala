@@ -5,7 +5,7 @@ import akka.contrib.pattern.ShardRegion
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.group.GroupDialogEvents.GroupDialogEvent
@@ -58,7 +58,7 @@ class GroupDialog extends Processor[GroupDialogState, GroupDialogEvent] with Gro
   import GroupDialogEvents._
 
   protected val groupId = self.path.name.toInt
-  protected val groupPeer = Peer(PeerType.Group, groupId)
+  protected val groupPeer = ApiPeer(ApiPeerType.Group, groupId)
 
   private val initState = GroupDialogState(None, None, None)
 

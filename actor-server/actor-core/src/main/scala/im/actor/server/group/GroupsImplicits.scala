@@ -1,6 +1,6 @@
 package im.actor.server.group
 
-import im.actor.api.rpc.groups.{ Member ⇒ ApiMember }
+import im.actor.api.rpc.groups.ApiMember
 
 trait GroupsImplicits {
   implicit class ExtMember(m: Member) {

@@ -13,7 +13,7 @@ import com.github.benmanes.caffeine.cache.Cache
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.users.Sex
+import im.actor.api.rpc.users.ApiSex
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
@@ -38,7 +38,7 @@ private[user] case class User(
   accessSalt:  String,
   name:        String,
   countryCode: String,
-  sex:         Sex.Sex,
+  sex:         ApiSex.ApiSex,
   phones:      Seq[Long],
   emails:      Seq[String],
   authIds:     Set[Long],

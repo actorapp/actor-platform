@@ -2,19 +2,17 @@ package im.actor.server.api.rpc.service
 
 import akka.contrib.pattern.DistributedPubSubMediator
 import akka.testkit.TestProbe
-import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
 import im.actor.api.rpc.counters.UpdateCountersChanged
-import im.actor.api.rpc.files.FileLocation
+import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.Events
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 
 import scala.concurrent.Future
@@ -63,7 +61,7 @@ class MessagingServiceSpec
         val (user2, user2AuthId, _) = createUser()
         val user2Model = getUserModel(user2.id)
         val user2AccessHash = ACLUtils.userAccessHash(user1AuthId1, user2.id, user2Model.accessSalt)
-        val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+        val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
         val sessionId = createSessionId()
         val clientData11 = ClientData(user1AuthId1, sessionId, Some(user1.id))
@@ -75,14 +73,14 @@ class MessagingServiceSpec
         {
           implicit val clienData = clientData11
 
-          whenReady(service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
+          whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
             resp should matchPattern {
               case Ok(ResponseSeqDate(1000, _, _)) ⇒
             }
           }
 
           expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(1)) { update ⇒
-            update.peer shouldEqual Peer(PeerType.Private, user2.id)
+            update.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
             update.randomId shouldEqual randomId
           }
         }
@@ -91,7 +89,7 @@ class MessagingServiceSpec
           implicit val clientData = clientData12
 
           expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header, Some(1)) { update ⇒
-            update.peer shouldEqual Peer(PeerType.Private, user2.id)
+            update.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
             update.randomId shouldEqual randomId
             update.senderUserId shouldEqual user1.id
           }
@@ -103,7 +101,7 @@ class MessagingServiceSpec
           expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(UpdateMessage.header, UpdateCountersChanged.header)) {
             case (UpdateMessage.header, u) ⇒
               val update = parseUpdate[UpdateMessage](u)
-              update.peer shouldEqual Peer(PeerType.Private, user1.id)
+              update.peer shouldEqual ApiPeer(ApiPeerType.Private, user1.id)
               update.randomId shouldEqual randomId
               update.senderUserId shouldEqual user1.id
             case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
@@ -120,7 +118,7 @@ class MessagingServiceSpec
 
         val user2Model = getUserModel(user2.id)
         val user2AccessHash = ACLUtils.userAccessHash(user1AuthId1, user2.id, user2Model.accessSalt)
-        val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+        val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
         {
           implicit val clientData = clientData1
@@ -128,11 +126,11 @@ class MessagingServiceSpec
           val randomId = Random.nextLong()
           val text = "Hi Shiva"
           val actions = Future.sequence(List(
-            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
-            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
-            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
-            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
-            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None))
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(user2Peer, randomId, ApiTextMessage(text, Vector.empty, None))
           ))
 
           whenReady(actions) { resps ⇒
@@ -179,14 +177,14 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData11
 
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi again", Vector.empty, None))) { resp ⇒
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None))) { resp ⇒
             resp should matchPattern {
               case Ok(ResponseSeqDate(1002, _, _)) ⇒
             }
           }
 
           expectUpdate[UpdateMessageSent](groupSeq, groupState, UpdateMessageSent.header) { update ⇒
-            update.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+            update.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
             update.randomId shouldEqual randomId
           }
         }
@@ -195,7 +193,7 @@ class MessagingServiceSpec
           implicit val clientData = clientData12
 
           expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header) { update ⇒
-            update.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+            update.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
             update.randomId shouldEqual randomId
             update.senderUserId shouldEqual user1.id
           }
@@ -205,7 +203,7 @@ class MessagingServiceSpec
           implicit val clientData = clientData2
 
           expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header) { update ⇒
-            update.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+            update.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
             update.randomId shouldEqual randomId
             update.senderUserId shouldEqual user1.id
           }
@@ -217,7 +215,7 @@ class MessagingServiceSpec
 
         val alienClientData = ClientData(user1AuthId1, sessionId, Some(alien.id))
 
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Hi again", Vector.empty, None))(alienClientData)) { resp ⇒
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi again", Vector.empty, None))(alienClientData)) { resp ⇒
           resp should matchNotAuthorized
         }
 
@@ -226,13 +224,13 @@ class MessagingServiceSpec
         }
 
         val (user3, authId3, _) = createUser()
-        val user3OutPeer = UserOutPeer(user3.id, 11)
+        val user3OutPeer = ApiUserOutPeer(user3.id, 11)
 
         whenReady(groupsService.handleInviteUser(groupOutPeer, 4L, user3OutPeer)(alienClientData)) { resp ⇒
           resp should matchNotAuthorized
         }
 
-        val fileLocation = FileLocation(1L, 1L)
+        val fileLocation = ApiFileLocation(1L, 1L)
         whenReady(groupsService.handleEditGroupAvatar(groupOutPeer, 5L, fileLocation)(alienClientData)) { resp ⇒
           resp should matchNotAuthorized
         }
@@ -265,11 +263,11 @@ class MessagingServiceSpec
           val randomId = Random.nextLong()
           val text = "Hi Shiva"
           val actions = Future.sequence(List(
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
-            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None))
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, ApiTextMessage(text, Vector.empty, None))
           ))
 
           whenReady(actions) { resps ⇒
@@ -300,7 +298,7 @@ class MessagingServiceSpec
       val (user2, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
       val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
-      val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+      val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
       def publish() = {
         val probe = TestProbe()
@@ -315,7 +313,7 @@ class MessagingServiceSpec
           probe.expectMsg(SubscribeAck(Subscribe(topic, Some("testProbe"), probe.ref)))
         }
 
-        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi PubSub", Vector.empty, None))) { resp ⇒
+        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi PubSub", Vector.empty, None))) { resp ⇒
           probe.expectMsgClass(classOf[Events.PeerMessage])
           probe.expectMsgClass(classOf[Events.PeerMessage])
         }

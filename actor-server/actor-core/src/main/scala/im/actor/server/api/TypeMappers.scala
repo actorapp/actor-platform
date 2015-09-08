@@ -2,14 +2,14 @@ package im.actor.server.api
 
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
-import im.actor.api.rpc.files.Avatar
-import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup }
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
-import im.actor.api.rpc.misc.Extension
-import im.actor.api.rpc.peers.Peer
+import im.actor.api.rpc.files.ApiAvatar
+import im.actor.api.rpc.groups.ApiGroup
+import im.actor.api.rpc.messaging.ApiMessage
+import im.actor.api.rpc.misc.ApiExtension
+import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.sequence.SeqUpdate
-import im.actor.api.rpc.users.Sex.Sex
-import im.actor.api.rpc.users.{ Sex ⇒ S, User ⇒ ApiUser }
+import im.actor.api.rpc.users.ApiSex.ApiSex
+import im.actor.api.rpc.users.{ ApiSex ⇒ S, ApiUser }
 import im.actor.serialization.ActorSerializer
 import org.joda.time.DateTime
 
@@ -55,34 +55,34 @@ private[api] trait MessageMapper {
     ByteString.copyFrom(group.toByteArray)
   }
 
-  private def applyPeer(bytes: ByteString): Peer = {
+  private def applyPeer(bytes: ByteString): ApiPeer = {
     if (bytes.size() > 0) {
-      Peer.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+      ApiPeer.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
     } else {
       null
     }
   }
 
-  private def unapplyPeer(peer: Peer): ByteString =
+  private def unapplyPeer(peer: ApiPeer): ByteString =
     ByteString.copyFrom(peer.toByteArray)
 
   private def applyDateTime(millis: Long): DateTime = new DateTime(millis)
 
   private def unapplyDateTime(dt: DateTime): Long = dt.getMillis
 
-  private def applyAvatar(buf: ByteString): Avatar =
-    Avatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())).right.get
+  private def applyAvatar(buf: ByteString): ApiAvatar =
+    ApiAvatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())).right.get
 
-  private def unapplyAvatar(avatar: Avatar): ByteString =
+  private def unapplyAvatar(avatar: ApiAvatar): ByteString =
     ByteString.copyFrom(avatar.toByteArray)
 
-  private def applySex(i: Int): Sex = i match {
+  private def applySex(i: Int): ApiSex = i match {
     case 2 ⇒ S.Male
     case 3 ⇒ S.Female
     case _ ⇒ S.Unknown
   }
 
-  private def unapplySex(sex: Sex): Int = sex.id
+  private def unapplySex(sex: ApiSex): Int = sex.id
 
   def applyAnyRef(buf: ByteString): AnyRef = {
     if (buf.size() > 0) {
@@ -108,15 +108,15 @@ private[api] trait MessageMapper {
     ByteString.copyFrom(upd.toByteArray)
   }
 
-  def applyExtension(bytes: ByteString): Extension = {
+  def applyExtension(bytes: ByteString): ApiExtension = {
     if (bytes.size > 0) {
-      Extension.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+      ApiExtension.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
     } else {
       null
     }
   }
 
-  def unapplyExtension(ext: Extension): ByteString =
+  def unapplyExtension(ext: ApiExtension): ByteString =
     ByteString.copyFrom(ext.toByteArray)
 
   implicit val seqUpdMapper: TypeMapper[ByteString, SeqUpdate] = TypeMapper(applySeqUpdate)(unapplySeqUpdate)
@@ -129,14 +129,14 @@ private[api] trait MessageMapper {
 
   implicit val groupMapper: TypeMapper[ByteString, ApiGroup] = TypeMapper(applyGroup)(unapplyGroup)
 
-  implicit val peerMapper: TypeMapper[ByteString, Peer] = TypeMapper(applyPeer)(unapplyPeer)
+  implicit val peerMapper: TypeMapper[ByteString, ApiPeer] = TypeMapper(applyPeer)(unapplyPeer)
 
   implicit val dateTimeMapper: TypeMapper[Long, DateTime] = TypeMapper(applyDateTime)(unapplyDateTime)
 
-  implicit val avatarMapper: TypeMapper[ByteString, Avatar] = TypeMapper(applyAvatar)(unapplyAvatar)
+  implicit val avatarMapper: TypeMapper[ByteString, ApiAvatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 
-  implicit val sexMapper: TypeMapper[Int, Sex] = TypeMapper(applySex)(unapplySex)
+  implicit val sexMapper: TypeMapper[Int, ApiSex] = TypeMapper(applySex)(unapplySex)
 
-  implicit val extensionMapper: TypeMapper[ByteString, Extension] = TypeMapper(applyExtension)(unapplyExtension)
+  implicit val extensionMapper: TypeMapper[ByteString, ApiExtension] = TypeMapper(applyExtension)(unapplyExtension)
 }
 

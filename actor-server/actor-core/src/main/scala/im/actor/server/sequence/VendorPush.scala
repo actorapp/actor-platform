@@ -5,7 +5,7 @@ import scala.concurrent.ExecutionContext
 import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.{ models, persist }
 
 private[sequence] trait VendorPush {
@@ -29,10 +29,10 @@ private[sequence] trait VendorPush {
     }
   }
 
-  protected def getChatNotificationEnabled(userId: Int, paramBase: String, originPeer: Peer)(implicit ec: ExecutionContext): DBIOAction[Boolean, NoStream, Read] = {
+  protected def getChatNotificationEnabled(userId: Int, paramBase: String, originPeer: ApiPeer)(implicit ec: ExecutionContext): DBIOAction[Boolean, NoStream, Read] = {
     val peerStr = originPeer.`type` match {
-      case PeerType.Private ⇒ s"PRIVATE_${originPeer.id}"
-      case PeerType.Group   ⇒ s"GROUP_${originPeer.id}"
+      case ApiPeerType.Private ⇒ s"PRIVATE_${originPeer.id}"
+      case ApiPeerType.Group   ⇒ s"GROUP_${originPeer.id}"
     }
 
     persist.configs.Parameter.findValue(userId, s"${paramBase}.chat.${peerStr}.enabled") map {
