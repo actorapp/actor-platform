@@ -23,6 +23,7 @@ import ComposeStore from 'stores/ComposeStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import MentionDropdown from 'components/common/MentionDropdown.react';
+import EmojiDropdown from 'components/common/EmojiDropdown.react';
 
 let getStateFromStores = () => {
   return {
@@ -33,7 +34,8 @@ let getStateFromStores = () => {
   };
 };
 
-@ReactMixin.decorate(PureRenderMixin) class ComposeSection extends React.Component {
+@ReactMixin.decorate(PureRenderMixin)
+class ComposeSection extends React.Component {
   static propTypes = {
     peer: React.PropTypes.object.isRequired
   };
@@ -41,7 +43,9 @@ let getStateFromStores = () => {
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores();
+    this.state = _.assign({
+      isEmojiDropdownShow: false
+    }, getStateFromStores());
 
     GroupStore.addChangeListener(this.onChange);
     ComposeStore.addChangeListener(this.onChange);
@@ -147,8 +151,14 @@ let getStateFromStores = () => {
     return selection.start;
   };
 
+  onEmojiDropdownSelect = () => {};
+
+  onEmojiDropdownClose = () => this.setState({isEmojiDropdownShow: false});
+
+  onEmojiShowClick = () => this.setState({isEmojiDropdownShow: true});
+
   render() {
-    const { text, profile, mentions } = this.state;
+    const { text, profile, mentions, isEmojiDropdownShow } = this.state;
 
     return (
       <section className="compose" onPaste={this.onPaste}>
@@ -156,6 +166,14 @@ let getStateFromStores = () => {
         <MentionDropdown mentions={mentions}
                          onSelect={this.onMentionSelect}
                          onClose={this.onMentionClose}/>
+
+        <EmojiDropdown isOpen={isEmojiDropdownShow}
+                       onSelect={this.onEmojiDropdownSelect}
+                       onClose={this.onEmojiDropdownClose}/>
+
+
+        <i className="emoji-toggle material-icons"
+           onClick={this.onEmojiShowClick}>insert_emoticon</i>
 
         <AvatarItem className="my-avatar"
                     image={profile.avatar}
