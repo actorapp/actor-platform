@@ -3,7 +3,6 @@ package im.actor.server.dialog
 import akka.actor.ActorSystem
 import akka.util.Timeout
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.server.dialog.Origin.{ RIGHT, LEFT }
 import im.actor.server.group.{ GroupExtension, GroupViewRegion, GroupOffice }
 
 import scala.concurrent.Future
@@ -77,9 +76,6 @@ private[dialog] trait PrivateDialogIdBase extends DialogId {
   require(right >= left, "Left should be >= right")
   def left: Int
   def right: Int
-
-  def origin(senderUserId: Int): Origin =
-    if (senderUserId == left) LEFT else RIGHT
 
   override def stringId: String = s"${ApiPeerType.Private.id}_${left}_${right}"
 }

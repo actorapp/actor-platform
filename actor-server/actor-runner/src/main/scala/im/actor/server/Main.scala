@@ -26,13 +26,12 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.privat.{ PrivateDialog, PrivateDialogExtension }
+import im.actor.server.dialog.{DialogExtension, DialogProcessor}
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
 import im.actor.server.migrations.{ GroupCreatorMemberMigrator, IntegrationTokenMigrator, LocalNamesMigrator }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.sequence._
 import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
@@ -45,8 +44,7 @@ object Main extends App {
   CommonSerialization.register()
   UserProcessor.register()
   GroupProcessor.register()
-  GroupDialog.register()
-  PrivateDialog.register()
+  DialogProcessor.register()
 
   val serverConfig = ActorConfig.load()
 
@@ -96,8 +94,8 @@ object Main extends App {
   implicit val userViewRegion = UserExtension(system).viewRegion
   implicit val groupProcessorRegion = GroupExtension(system).processorRegion
   implicit val groupViewRegion = GroupExtension(system).viewRegion
-  implicit val groupDialogRegion = GroupDialogExtension(system).region //no need to be implicit
-  implicit val privateDialogRegion = PrivateDialogExtension(system).region
+  implicit val groupDialogRegion = DialogExtension(system).groupRegion
+  implicit val privateDialogRegion = DialogExtension(system).privateRegion
 
   IntegrationTokenMigrator.migrate()
 
