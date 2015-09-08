@@ -9,7 +9,7 @@ import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupTitleChanged, UpdateGroupUserInvited }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, SequenceService }
-import im.actor.server.util.AnyRefLogSource
+import im.actor.util.log.AnyRefLogSource
 import org.scalatest.Inside._
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures

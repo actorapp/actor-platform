@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.groups
 
 import im.actor.server.{ ApiConversions, models, persist }
+import im.actor.util.misc.IdUtils
 
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -26,7 +27,6 @@ import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerReg
 import im.actor.server.sequence.{ SeqState, SeqStateDate, SeqUpdatesExtension }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 import ACLUtils.accessToken
-import im.actor.server.util._
 import im.actor.server.{ models, persist }
 
 final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(

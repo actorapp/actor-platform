@@ -8,7 +8,7 @@ import scalaz.syntax.all._
 import slick.dbio._
 
 import im.actor.api.rpc._
-import im.actor.server.util.StringUtils
+import im.actor.util.misc.StringUtils
 
 private[auth] trait Helpers extends PublicKeyHelpers {
   val emailPattern = Pattern.compile("""^[-.\w]+@(?:[a-z\d]{2,}\.)+[a-z]{2,6}$""", Pattern.UNICODE_CHARACTER_CLASS) //which regexp should we use?

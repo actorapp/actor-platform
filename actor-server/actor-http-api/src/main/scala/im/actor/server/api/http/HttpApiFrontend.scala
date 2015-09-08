@@ -22,7 +22,7 @@ import im.actor.server.api.http.app.AppFilesHandler
 import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
-import im.actor.server.tls.TlsContext
+import im.actor.tls.TlsContext
 
 object HttpApiFrontend {
   private val corsHeaders = List(
