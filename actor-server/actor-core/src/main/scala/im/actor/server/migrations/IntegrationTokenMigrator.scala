@@ -2,10 +2,9 @@ package im.actor.server.migrations
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.server.commons.KeyValueMappings
 import im.actor.server.group.GroupErrors.NoBotFound
 import im.actor.server.group.{ GroupExtension, GroupOffice, GroupViewRegion }
-import im.actor.server.persist
+import im.actor.server.{ KeyValueMappings, persist }
 import shardakka.keyvalue.SimpleKeyValue
 import shardakka.{ IntCodec, ShardakkaExtension }
 import slick.driver.PostgresDriver

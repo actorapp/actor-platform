@@ -13,8 +13,7 @@ import com.google.protobuf.CodedInputStream
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.server.commons.KeyValueMappings
-import im.actor.server.models
+import im.actor.server.{ KeyValueMappings, models }
 import im.actor.server.models.PeerType.{ Group, Private }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 import im.actor.util.log.AnyRefLogSource
