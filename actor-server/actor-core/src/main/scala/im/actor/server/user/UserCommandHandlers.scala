@@ -4,8 +4,8 @@ import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.pattern.pipe
 import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
-import im.actor.api.rpc.peers.Peer
+import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.users._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.history.HistoryUtils
@@ -26,7 +26,7 @@ import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
 private object ServiceMessages {
-  def contactRegistered(userId: Int) = ServiceMessage("Contact registered", Some(ServiceExContactRegistered(userId)))
+  def contactRegistered(userId: Int) = ApiServiceMessage("Contact registered", Some(ApiServiceExContactRegistered(userId)))
 }
 
 private[user] trait UserCommandHandlers {
@@ -34,7 +34,7 @@ private[user] trait UserCommandHandlers {
 
   import ImageUtils._
 
-  protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, isBot: Boolean): Unit = {
+  protected def create(accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean): Unit = {
     log.debug("Creating user {} {}", userId, name)
 
     val ts = now()
@@ -108,7 +108,7 @@ private[user] trait UserCommandHandlers {
       } yield AddEmailAck())
     }
 
-  protected def deliverMessage(user: User, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Unit = {
+  protected def deliverMessage(user: User, peer: ApiPeer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Unit = {
     val update = UpdateMessage(
       peer = peer,
       senderUserId = senderUserId,
@@ -131,7 +131,7 @@ private[user] trait UserCommandHandlers {
     result pipeTo sender()
   }
 
-  protected def deliverOwnMessage(user: User, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
+  protected def deliverOwnMessage(user: User, peer: ApiPeer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
     val update = UpdateMessage(
       peer = peer,
       senderUserId = userId,

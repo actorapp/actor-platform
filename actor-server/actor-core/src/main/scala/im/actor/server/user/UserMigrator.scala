@@ -5,7 +5,7 @@ import java.time.ZoneOffset
 import akka.actor.{ ActorLogging, ActorSystem, Props }
 import akka.pattern.pipe
 import akka.persistence.{ PersistentActor, RecoveryCompleted, RecoveryFailure }
-import im.actor.api.rpc.users.Sex
+import im.actor.api.rpc.users.ApiSex
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
 import im.actor.server.migrations.Migration
@@ -95,7 +95,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
   def receiveCommand: Receive = {
     case m @ Migrate(accessSalt, name, countryCode, sex, isBot, createdAt, authIds, phones, emails, avatarOpt) ⇒
       log.info("Migrate: {}", m)
-      val created = TSEvent(createdAt, Created(userId, accessSalt, name, countryCode, Sex(sex.toInt), isBot))
+      val created = TSEvent(createdAt, Created(userId, accessSalt, name, countryCode, ApiSex(sex.toInt), isBot))
       val authAdded = authIds map (a ⇒ TSEvent(createdAt, AuthAdded(a)))
       val phoneAdded = phones map (p ⇒ TSEvent(createdAt, PhoneAdded(p.number)))
       val emailAdded = emails map (e ⇒ TSEvent(createdAt, EmailAdded(e.email)))

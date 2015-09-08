@@ -38,7 +38,7 @@ message UserCommands {
         required string access_salt = 1;
         required string name = 2;
         required string country_code = 3;
-        required int32 sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex.Sex"];
+        required int32 sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.ApiSex.ApiSex"];
         required bool is_bot = 5;
     }
 
@@ -99,11 +99,11 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 9;
-        required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
+        required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.ApiPeer"];
         required int32 sender_user_id = 1;
         required int64 random_id = 3;
         required int64 date = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
-        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.Message"];
+        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
         required bool is_fat = 6;
     }
 
@@ -113,11 +113,11 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 9;
-        required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
+        required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.ApiPeer"];
         required int64 sender_auth_id = 1;
         required int64 random_id = 3;
         required int64 date = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
-        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.Message"];
+        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
         required bool is_fat = 6;
     }
 
@@ -130,7 +130,7 @@ message UserCommands {
         repeated int32 user_ids = 3;
         repeated int32 group_ids = 4;
         optional string push_text = 5;
-        optional bytes origin_peer = 6 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
+        optional bytes origin_peer = 6 [(scalapb.field).type = "im.actor.api.rpc.peers.ApiPeer"];
         required bool is_fat = 7;
         optional int64 exclude_auth_id = 8;
         optional int64 track_auth_id = 9;
@@ -149,7 +149,7 @@ message UserCommands {
     }
 
     message UpdateAvatarAck {
-        optional bytes avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.Avatar"];
+        optional bytes avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.ApiAvatar"];
         required SeqState seqstatedate = 2;
     }
 
@@ -191,7 +191,7 @@ message UserQueries {
     }
 
     message GetApiStructResponse {
-        required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.users.User"];
+        required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.users.ApiUser"];
     }
 
     message GetContactRecords {
@@ -250,7 +250,7 @@ message UserEvents {
         required string access_salt = 1;
         required string name = 2;
         required string country_code = 3;
-        required int32 sex = 5 [(scalapb.field).type = "im.actor.api.rpc.users.Sex.Sex"];
+        required int32 sex = 5 [(scalapb.field).type = "im.actor.api.rpc.users.ApiSex.ApiSex"];
         required bool is_bot = 6;
     }
 

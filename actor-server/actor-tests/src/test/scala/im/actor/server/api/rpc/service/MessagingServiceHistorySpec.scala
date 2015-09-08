@@ -6,7 +6,7 @@ import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
+import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiPeerType }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -61,11 +61,11 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
     val user1Model = getUserModel(user1.id)
     val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
-    val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
+    val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
-    val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+    val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
     def privat() = {
       val step = 100L
@@ -73,19 +73,19 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
       val (message1Date, message2Date, message3Date) = {
         implicit val clientData = clientData1
 
-        val message1Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None)))(_.toOption.get.date)
+        val message1Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None)))(_.toOption.get.date)
 
         Thread.sleep(step)
 
-        val message2Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 2", Vector.empty, None)))(_.toOption.get.date)
+        val message2Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None)))(_.toOption.get.date)
 
         Thread.sleep(step)
 
-        val message3Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 3", Vector.empty, None)))(_.toOption.get.date)
+        val message3Date = whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None)))(_.toOption.get.date)
 
         Thread.sleep(step)
 
-        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 4", Vector.empty, None)))(_ ⇒ ())
+        whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 4", Vector.empty, None)))(_ ⇒ ())
 
         (message1Date, message2Date, message3Date)
       }
@@ -121,7 +121,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           respBody.users.length should ===(0)
           respBody.history.length should ===(3)
-          respBody.history.map(_.state) should ===(Seq(Some(MessageState.Sent), Some(MessageState.Received), Some(MessageState.Read)))
+          respBody.history.map(_.state) should ===(Seq(Some(ApiMessageState.Sent), Some(ApiMessageState.Received), Some(ApiMessageState.Read)))
         }
       }
     }
@@ -168,10 +168,10 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
       val accessHash = whenReady(GroupOffice.create(groupId, pubUser.id, pubAuthId, "Public group", Random.nextLong, Set.empty))(_.accessHash)
       whenReady(GroupOffice.makePublic(groupId, "Public group description"))(identity)
 
-      val groupOutPeer = GroupOutPeer(groupId, accessHash)
+      val groupOutPeer = ApiGroupOutPeer(groupId, accessHash)
 
-      val firstMessage = TextMessage("First", Vector.empty, None)
-      val secondMessage = TextMessage("Second", Vector.empty, None)
+      val firstMessage = ApiTextMessage("First", Vector.empty, None)
+      val secondMessage = ApiTextMessage("Second", Vector.empty, None)
 
       {
         implicit val clientData = clientData1
@@ -205,10 +205,10 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
-        val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
+        val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
 
         val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
-        val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+        val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
         val startDate = {
           implicit val clientData = clientData1
@@ -216,9 +216,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           val startDate = System.currentTimeMillis()
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None)),
-            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 2", Vector.empty, None))),
-            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 3", Vector.empty, None)))
+            service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None)),
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None))),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None)))
           ))
 
           whenReady(sendMessages)(_ ⇒ ())
@@ -267,10 +267,10 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         val clientData22 = ClientData(createAuthId(user2.id), sessionId, Some(user2.id))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
-        val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
+        val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
 
         val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
-        val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+        val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
         val startDate = {
           implicit val clientData = clientData1
@@ -278,9 +278,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           val startDate = System.currentTimeMillis()
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None)),
-            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 2", Vector.empty, None))),
-            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 3", Vector.empty, None)))
+            service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None)),
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None))),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None)))
           ))
 
           whenReady(sendMessages)(_ ⇒ ())
@@ -369,15 +369,15 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         val clientData21 = ClientData(authId21, sessionId, Some(user2.id))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
-        val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
+        val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
 
         val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
-        val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+        val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
         val startDate = {
           implicit val clientData = clientData1
 
-          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None))) { resp ⇒
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None))) { resp ⇒
             val seqStateDate = resp.toOption.get
             seqStateDate.date
           }
@@ -428,9 +428,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           implicit val clientData = clientData1
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None)),
-            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Hi Shiva 2", Vector.empty, None))),
-            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Hi Shiva 3", Vector.empty, None)))
+            service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None)),
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None))),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None)))
           ))
 
           whenReady(sendMessages)(_ ⇒ ())
@@ -487,9 +487,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           implicit val clientData = clientData1
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Hi Shiva 1", Vector.empty, None)),
-            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Hi Shiva 2", Vector.empty, None))),
-            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Hi Shiva 3", Vector.empty, None)))
+            service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 1", Vector.empty, None)),
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 2", Vector.empty, None))),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), ApiTextMessage("Hi Shiva 3", Vector.empty, None)))
           ))
 
           whenReady(sendMessages)(_ ⇒ ())
@@ -534,6 +534,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
             case (UpdateMessageRead.header, update) ⇒ parseUpdate[UpdateMessageRead](update)
           }
         }
+
         {
           implicit val clientData = clientData2
           expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(

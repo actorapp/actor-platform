@@ -42,7 +42,7 @@ class ConfigsServiceSpec
   def e2() = {
     whenReady(service.handleGetParameters()) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseGetParameters(Vector(Parameter("par1", "val2")))) ⇒
+        case Ok(ResponseGetParameters(Vector(ApiParameter("par1", "val2")))) ⇒
       }
     }
   }

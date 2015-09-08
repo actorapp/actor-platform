@@ -5,7 +5,7 @@ import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType, ApiUserOutPeer }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
@@ -119,7 +119,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     {
       implicit val clientData = clientData1
@@ -196,7 +196,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -293,7 +293,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
@@ -358,7 +358,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -380,7 +380,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -415,7 +415,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Invite Fun group", Set.empty).groupPeer
 
@@ -448,7 +448,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
@@ -459,7 +459,7 @@ class GroupsServiceSpec
 
           {
             implicit val clientData = ClientData(authId2, createSessionId(), Some(user2.id))
-            val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+            val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
             whenReady(messagingService.handleMessageRead(outPeer, System.currentTimeMillis()))(_ ⇒ ())
 
             whenReady(service.handleJoinGroup(url)) { resp ⇒
@@ -482,7 +482,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val createGroupResponse = createGroup("Invite Fun group", Set.empty)
 
@@ -519,7 +519,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = {
       implicit val clientData = clientData1
@@ -533,8 +533,8 @@ class GroupsServiceSpec
     {
       implicit val clientData = clientData2
       // send it twice to ensure that ServiceMessage isn't sent twice
-      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
-      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
+      whenReady(messagingService.handleMessageRead(ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
+      whenReady(messagingService.handleMessageRead(ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
     }
 
     {
@@ -574,9 +574,9 @@ class GroupsServiceSpec
       }
     }
 
-    val peer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+    val peer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
-    whenReady(messagingService.jhandleSendMessage(peer, 22324L, TextMessage("hello", Vector.empty, None), clientData1)) { _ ⇒ }
+    whenReady(messagingService.jhandleSendMessage(peer, 22324L, ApiTextMessage("hello", Vector.empty, None), clientData1)) { _ ⇒ }
 
     whenReady(messagingService.jhandleMessageRead(peer, System.currentTimeMillis, clientData2)) { _ ⇒ }
 
@@ -584,7 +584,7 @@ class GroupsServiceSpec
       implicit val clientData = clientData1
       expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
         UpdateGroupInvite.header,
-        ServiceExGroupCreated.header,
+        UpdateMessageSent.header,
         UpdateMessage.header,
         UpdateCountersChanged.header,
         UpdateMessageRead.header
@@ -628,7 +628,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
@@ -650,7 +650,7 @@ class GroupsServiceSpec
 
     val user3Model = getUserModel(user3.id)
     val user3AccessHash = ACLUtils.userAccessHash(clientData2.authId, user3.id, user3Model.accessSalt)
-    val user3OutPeer = UserOutPeer(user3.id, user3AccessHash)
+    val user3OutPeer = ApiUserOutPeer(user3.id, user3AccessHash)
 
     val groupOutPeer = {
       implicit val clientData = clientData1
@@ -670,7 +670,7 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
@@ -846,11 +846,11 @@ class GroupsServiceSpec
       implicit val clientData = clientData1
       createGroup("Fun group", Set(user2.id)).groupPeer
     }
-    val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+    val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None))) { _ ⇒ }
     }
 
     {
@@ -873,7 +873,7 @@ class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("bye left user", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye left user", Vector.empty, None))) { _ ⇒ }
     }
 
     {
@@ -898,17 +898,17 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = {
       implicit val clientData = clientData1
       createGroup("Fun group", Set(user2.id)).groupPeer
     }
-    val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+    val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello", Vector.empty, None))) { _ ⇒ }
     }
 
     {
@@ -936,7 +936,7 @@ class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("bye kicked user", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None))) { _ ⇒ }
     }
 
     {
@@ -961,17 +961,17 @@ class GroupsServiceSpec
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
-    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+    val user2OutPeer = ApiUserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = {
       implicit val clientData = clientData1
       createPubGroup("Public group", "desc", Set(user2.id)).groupPeer
     }
-    val outPeer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+    val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("hello public", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("hello public", Vector.empty, None))) { _ ⇒ }
     }
 
     {
@@ -999,7 +999,7 @@ class GroupsServiceSpec
 
     for (_ ← 1 to 6) {
       implicit val clientData = clientData1
-      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), TextMessage("bye kicked user", Vector.empty, None))) { _ ⇒ }
+      whenReady(messagingService.handleSendMessage(outPeer, Random.nextLong(), ApiTextMessage("bye kicked user", Vector.empty, None))) { _ ⇒ }
     }
 
     {

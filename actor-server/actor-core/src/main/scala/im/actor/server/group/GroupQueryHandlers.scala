@@ -1,7 +1,7 @@
 package im.actor.server.group
 
 import im.actor.server.ApiConversions._
-import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup, Member ⇒ ApiMember }
+import im.actor.api.rpc.groups.{ ApiGroup, ApiMember }
 
 private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
   this: GroupProcessor ⇒
