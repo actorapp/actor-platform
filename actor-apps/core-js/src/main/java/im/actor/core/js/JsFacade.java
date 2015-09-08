@@ -6,6 +6,8 @@ package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
 
+import im.actor.core.api.ApiAuthSession;
+import im.actor.core.js.entity.*;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.runtime.markdown.MarkdownParser;
 import org.timepedia.exporter.client.Export;
@@ -21,18 +23,6 @@ import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
-import im.actor.core.js.entity.Enums;
-import im.actor.core.js.entity.JsAuthErrorClosure;
-import im.actor.core.js.entity.JsAuthSuccessClosure;
-import im.actor.core.js.entity.JsClosure;
-import im.actor.core.js.entity.JsContact;
-import im.actor.core.js.entity.JsDialog;
-import im.actor.core.js.entity.JsGroup;
-import im.actor.core.js.entity.JsMentionFilterResult;
-import im.actor.core.js.entity.JsMessage;
-import im.actor.core.js.entity.JsPeer;
-import im.actor.core.js.entity.JsTyping;
-import im.actor.core.js.entity.JsUser;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
@@ -226,6 +216,72 @@ public class JsFacade implements Exportable {
                     canTryAgain = ((RpcException) e).isCanTryAgain();
                 }
                 error.onError(tag, message, canTryAgain, getAuthState());
+            }
+        });
+    }
+
+    public JsPromise loadSessions() {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.loadSessions().start(new CommandCallback<List<ApiAuthSession>>() {
+                    @Override
+                    public void onResult(List<ApiAuthSession> res) {
+                        JsArray<JsAuthSession> jsSessions = JsArray.createArray().cast();
+
+                        for (ApiAuthSession session : res) {
+                            jsSessions.push(JsAuthSession.create(session));
+                        }
+
+                        resolve(jsSessions);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, e);
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise terminateSession(final int id) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.terminateSession(id).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, e);
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise terminateAllSessions() {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.terminateAllSessions().start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, e);
+                        reject(e.getMessage());
+                    }
+                });
             }
         });
     }
