@@ -102,8 +102,6 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
-  val commonsBase = shared ++ Seq(akkaActor, akkaPersistence, akkaPersistenceJdbc, concmap, jodaConvert, jodaTime)
-
   val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, caffeine, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
@@ -148,7 +146,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaContrib, slick)
 
-  val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, caffeine, cats, libPhoneNumber, scalazCore, akkaTestkit % "test", scalatest % "test")
+  val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalazCore, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
