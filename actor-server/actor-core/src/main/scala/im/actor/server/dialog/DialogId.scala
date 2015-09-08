@@ -2,7 +2,7 @@ package im.actor.server.dialog
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.dialog.Origin.{ RIGHT, LEFT }
 import im.actor.server.group.{ GroupExtension, GroupViewRegion, GroupOffice }
 
@@ -19,31 +19,31 @@ object DialogId {
 
   def fromStringId(id: String): DialogId = {
     id.split('_').toList match {
-      case head :: tail if head == PeerType.Private.id.toString ⇒
+      case head :: tail if head == ApiPeerType.Private.id.toString ⇒
         privat(tail(0).toInt, tail(1).toInt)
-      case head :: tail if head == PeerType.Group.id.toString ⇒
+      case head :: tail if head == ApiPeerType.Group.id.toString ⇒
         group(tail.head.toInt)
       case unknown ⇒ throw new Exception(s"Unknown dialogId string ${unknown}")
     }
   }
 
-  def toPeer(dialogId: DialogId, clientUserId: Int): Peer = {
+  def toPeer(dialogId: DialogId, clientUserId: Int): ApiPeer = {
     dialogId match {
       case id: PrivateDialogId ⇒
         val userId = if (id.left == clientUserId) id.right else id.left
-        Peer(PeerType.Private, userId)
+        ApiPeer(ApiPeerType.Private, userId)
       case id: GroupDialogId ⇒
-        Peer(PeerType.Group, id.groupId)
+        ApiPeer(ApiPeerType.Group, id.groupId)
     }
   }
 
-  def fromPeer(dialogId: DialogId, clientUserId: Int): Peer = {
+  def fromPeer(dialogId: DialogId, clientUserId: Int): ApiPeer = {
     dialogId match {
       case id: PrivateDialogId ⇒
         val userId = if (id.left == clientUserId) id.left else id.right
-        Peer(PeerType.Private, userId)
+        ApiPeer(ApiPeerType.Private, userId)
       case id: GroupDialogId ⇒
-        Peer(PeerType.Group, id.groupId)
+        ApiPeer(ApiPeerType.Group, id.groupId)
     }
   }
 
@@ -70,7 +70,7 @@ trait DialogId {
 private[dialog] trait GroupDialogIdBase extends DialogId {
   def groupId: Int
 
-  override def stringId: String = s"${PeerType.Group.id}_${groupId}"
+  override def stringId: String = s"${ApiPeerType.Group.id}_${groupId}"
 }
 
 private[dialog] trait PrivateDialogIdBase extends DialogId {
@@ -81,6 +81,6 @@ private[dialog] trait PrivateDialogIdBase extends DialogId {
   def origin(senderUserId: Int): Origin =
     if (senderUserId == left) LEFT else RIGHT
 
-  override def stringId: String = s"${PeerType.Private.id}_${left}_${right}"
+  override def stringId: String = s"${ApiPeerType.Private.id}_${left}_${right}"
 }
 

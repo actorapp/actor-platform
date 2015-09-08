@@ -12,7 +12,7 @@ import com.sksamuel.scrimage.AsyncImage
 import org.scalatest.Inside._
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.files.FileLocation
+import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.server._
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
@@ -67,7 +67,7 @@ class ProfileServiceSpec
     def e1() = {
       val validOrigFileModel = Await.result(db.run(fsAdapter.uploadFile("avatar.jpg", validOrigFile)), 5.seconds)
 
-      whenReady(service.handleEditAvatar(FileLocation(validOrigFileModel.fileId, validOrigFileModel.accessHash))) { resp ⇒
+      whenReady(service.handleEditAvatar(ApiFileLocation(validOrigFileModel.fileId, validOrigFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
           case Ok(_) ⇒
         }
@@ -101,7 +101,7 @@ class ProfileServiceSpec
     def e2() = {
       val invalidImageFileModel = Await.result(db.run(fsAdapter.uploadFile("invalid-avatar.jpg", invalidImageFile)), 5.seconds)
 
-      whenReady(service.handleEditAvatar(FileLocation(invalidImageFileModel.fileId, invalidImageFileModel.accessHash))) { resp ⇒
+      whenReady(service.handleEditAvatar(ApiFileLocation(invalidImageFileModel.fileId, invalidImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
           case -\/(RpcError(400, "LOCATION_INVALID", _, _, _)) ⇒
         }
@@ -111,7 +111,7 @@ class ProfileServiceSpec
     def e3() = {
       val tooLargeImageFileModel = Await.result(db.run(fsAdapter.uploadFile("too-large-avatar.jpg", tooLargeImageFile)), 30.seconds) //WTF???
 
-      whenReady(service.handleEditAvatar(FileLocation(tooLargeImageFileModel.fileId, tooLargeImageFileModel.accessHash))) { resp ⇒
+      whenReady(service.handleEditAvatar(ApiFileLocation(tooLargeImageFileModel.fileId, tooLargeImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
           case -\/(RpcError(400, "FILE_TOO_LARGE", _, _, _)) ⇒
         }
