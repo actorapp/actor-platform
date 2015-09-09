@@ -76,7 +76,7 @@
     opacity: 0;
   }
 
-  .emoji-toggle {
+  .emoji-opener {
     position: absolute;
     top: 6px;
     right: 38px;
@@ -85,6 +85,7 @@
     opacity: .8;
     transform: scale(.9);
     transition: .2s;
+    &--active,
     &:hover {
       opacity: 1;
       transform: scale(1);
