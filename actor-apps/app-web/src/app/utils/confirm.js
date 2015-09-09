@@ -16,7 +16,10 @@ class Confirm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.promise = Promise.defer();
+    this.promise = new Promise((resolve, reject) => {
+      this.reject = reject;
+      this.resolve = resolve;
+    });
   }
 
   componentDidMount() {
@@ -40,10 +43,10 @@ class Confirm extends React.Component {
         </header>
         {confirmDescription}
         <footer className="modal__footer text-right">
-          <button className="button button" onClick={this.abort}>
+          <button className="button button" onClick={this.reject}>
             {abortLabel || 'Cancel'}
           </button>
-          <button className="button button--lightblue" onClick={this.confirm} ref="confirm">
+          <button className="button button--lightblue" onClick={this.resolve} ref="confirm">
             {confirmLabel || 'OK'}
           </button>
         </footer>
@@ -51,13 +54,10 @@ class Confirm extends React.Component {
     );
   }
 
-  abort = () => this.promise.reject();
-  confirm = () => this.promise.resolve();
-
   onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
-      this.abort();
+      this.reject();
     }
   }
 }
@@ -67,7 +67,6 @@ export default function confirm(message, options = {})  {
   element.className = 'modal-backdrop';
   const wrapper = document.body.appendChild(element);
   const component = React.render(React.createElement(Confirm, {message, ...options}), wrapper);
-  const { promise } = component.promise;
 
   function cleanup() {
     React.unmountComponentAtNode(wrapper);
@@ -75,10 +74,10 @@ export default function confirm(message, options = {})  {
   }
 
   // Unmount component and remove it from DOM
-  promise.then(
+  component.promise.then(
     () => cleanup(),
     () => cleanup()
   );
 
-  return promise;
+  return component.promise;
 }
