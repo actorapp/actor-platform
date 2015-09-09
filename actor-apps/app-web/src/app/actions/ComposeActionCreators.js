@@ -1,46 +1,34 @@
-import ActorClient from 'utils/ActorClient';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-
+import { dispatch } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
-
 import DraftActionCreators from 'actions/DraftActionCreators';
+import ActorClient from 'utils/ActorClient';
 
 export default {
   cleanText: () => {
     DraftActionCreators.saveDraft('', true);
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.COMPOSE_CLEAN
-    });
+    dispatch(ActionTypes.COMPOSE_CLEAN);
   },
 
   insertMention: (peer, text, caretPosition, mention) => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.COMPOSE_MENTION_INSERT,
-      peer: peer,
-      text: text,
-      caretPosition: caretPosition,
-      mention: mention
+    dispatch(ActionTypes.COMPOSE_MENTION_INSERT, {
+      peer, text, caretPosition, mention
     });
   },
 
   closeMention: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.COMPOSE_MENTION_CLOSE
-    });
+    dispatch(ActionTypes.COMPOSE_MENTION_CLOSE);
   },
 
   onTyping: function(peer, text, caretPosition) {
-    if (text !== '') {
-      ActorClient.onTyping(peer);
-    }
+    if (text !== '') ActorClient.onTyping(peer);
 
     DraftActionCreators.saveDraft(text);
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.COMPOSE_TYPING,
-      peer: peer,
-      text: text,
-      caretPosition: caretPosition
+    dispatch(ActionTypes.COMPOSE_TYPING, {
+      peer, text, caretPosition
     });
   }
 };
