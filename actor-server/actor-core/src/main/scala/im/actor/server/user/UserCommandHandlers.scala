@@ -108,44 +108,6 @@ private[user] trait UserCommandHandlers {
       } yield AddEmailAck())
     }
 
-  protected def deliverMessage(user: User, peer: ApiPeer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Unit = {
-    val update = UpdateMessage(
-      peer = peer,
-      senderUserId = senderUserId,
-      date = date.getMillis,
-      randomId = randomId,
-      message = message
-    )
-
-    val result = if (user.authIds.nonEmpty) {
-      for {
-        senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
-        senderName = senderUser.localName.getOrElse(senderUser.name)
-        pushText ← getPushText(peer, userId, senderName, message)
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
-      } yield DeliverMessageAck()
-    } else {
-      Future.successful(DeliverMessageAck())
-    }
-
-    result pipeTo sender()
-  }
-
-  protected def deliverOwnMessage(user: User, peer: ApiPeer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
-    val update = UpdateMessage(
-      peer = peer,
-      senderUserId = userId,
-      date = date.getMillis,
-      randomId = randomId,
-      message = message
-    )
-
-    SeqUpdatesManager.persistAndPushUpdatesF(user.authIds filterNot (_ == senderAuthId), update, None, isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
-
-    val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
-    SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, ownUpdate, None, isFat, deliveryId = Some(s"msgsent_${peer.toString}_${randomId}")) pipeTo sender()
-  }
-
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
     persistReply(TSEvent(now(), UserEvents.NicknameChanged(nickname)), user) { _ ⇒
       val update = UpdateUserNickChanged(userId, nickname)
