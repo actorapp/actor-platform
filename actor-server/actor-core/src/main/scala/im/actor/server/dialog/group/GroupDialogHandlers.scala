@@ -4,7 +4,7 @@ import akka.actor.Status
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
-import im.actor.server.dialog.{ DialogCommands, AuthIdRandomId, ReadFailed, ReceiveFailed }
+import im.actor.server.dialog._
 import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupOffice
 import im.actor.server.history.HistoryUtils
@@ -38,21 +38,18 @@ trait GroupDialogHandlers extends UpdateCounters {
         if ((memberIds contains senderUserId) || optBot.contains(senderUserId)) {
           withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
             val date = new DateTime
+            val dateMillis = date.getMillis
             for {
               _ ← Future.sequence(memberIds.filterNot(_ == senderUserId) map { userId ⇒
-                for {
-                  _ ← UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
-                  counterUpdate ← db.run(getUpdateCountersChanged(userId))
-                  _ ← UserOffice.broadcastUserUpdate(userId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
-                } yield ()
+                delivery.receiverDelivery(userId, senderUserId, groupPeer, randomId, dateMillis, message, isFat)
               })
               SeqState(seq, state) ← if (optBot.contains(senderUserId)) {
                 Future.successful(SeqState(0, ByteString.EMPTY))
               } else {
-                UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
+                delivery.senderDelivery(senderUserId, senderAuthId, groupPeer, randomId, dateMillis, message, isFat)
               }
               _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
-            } yield SeqStateDate(seq, state, date.getMillis)
+            } yield SeqStateDate(seq, state, dateMillis)
           } recover {
             case e ⇒
               log.error(e, "Failed to send message")
