@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 
 import React from 'react';
@@ -6,18 +10,17 @@ import memoize from 'memoizee';
 import emojify from 'emojify.js';
 import emojiCharacters from 'emoji-named-characters';
 
+import { Path } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 
 const inversedEmojiCharacters = _.invert(_.mapValues(emojiCharacters, (e) => e.character));
 
 emojify.setConfig({
   mode: 'img',
-  img_dir: 'assets/img/emoji' // eslint-disable-line
+  img_dir: Path.toEmoji // eslint-disable-line
 });
 
-const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), function (name) {
-  return name.replace(/\+/g, '\\+');
-});
+const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), (name) => name.replace(/\+/g, '\\+'));
 
 const emojiRegexp = new RegExp('(' + emojiVariants.join('|') + ')', 'gi');
 
@@ -28,7 +31,7 @@ const processText = function (text) {
   const noPTag = markedText.replace(/<p>/g, '<p> ');
 
   let emojifiedText = emojify
-    .replace(noPTag.replace(emojiRegexp, (match) => ':' + inversedEmojiCharacters[match] + ':'));
+    .replace(noPTag.replace(emojiRegexp, (match) => `:${inversedEmojiCharacters[match]}:`));
 
   return emojifiedText;
 };
