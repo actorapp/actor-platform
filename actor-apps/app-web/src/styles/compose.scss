@@ -76,6 +76,22 @@
     opacity: 0;
   }
 
+  .emoji-opener {
+    position: absolute;
+    top: 6px;
+    right: 38px;
+    cursor: pointer;
+    color: $greyish;
+    opacity: .8;
+    transform: scale(.9);
+    transition: .2s;
+    &--active,
+    &:hover {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
   &--disabled {
     height: 154px;
     padding: 0;
