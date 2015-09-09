@@ -119,7 +119,7 @@ const onSelectDialogPeer = () => {
 };
 
 const onEmojiInsert = (action) => {
-  const emojiText = ` ${action.emoji} `;
+  const emojiText = `${action.emoji} `;
 
   text = action.text.substring(0, action.caretPosition) +
          emojiText +
