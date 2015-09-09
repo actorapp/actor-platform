@@ -151,7 +151,10 @@ class ComposeSection extends React.Component {
     return selection.start;
   };
 
-  onEmojiDropdownSelect = () => {};
+  onEmojiDropdownSelect = (emoji) => {
+    const { text } = this.state;
+    ComposeActionCreators.insertEmoji(text, this.getCaretPosition(), emoji);
+  };
 
   onEmojiDropdownClose = () => this.setState({isEmojiDropdownShow: false});
 

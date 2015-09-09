@@ -30,5 +30,12 @@ export default {
     dispatch(ActionTypes.COMPOSE_TYPING, {
       peer, text, caretPosition
     });
+  },
+
+  insertEmoji: (text, caretPosition, emoji) => {
+    console.debug(text, caretPosition, emoji);
+    dispatch(ActionTypes.COMPOSE_EMOJI_INSERT, {
+      text, caretPosition, emoji
+    });
   }
 };
