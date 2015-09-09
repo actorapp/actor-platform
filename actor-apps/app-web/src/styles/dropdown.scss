@@ -269,8 +269,8 @@
   &__wrapper {
     position: absolute;
     z-index: 5;
-    bottom: 0;
     right: 1px;
+    bottom: 0;
 
     overflow: hidden;
 
@@ -279,6 +279,43 @@
     border-radius: 2px;
     background-color: rgba(white, .975);
     box-shadow: 0 0 0 1px $cloudy-blue, 0 0 6px 0 rgba(black, .13);
+  }
+  &__header {
+    font-size: 12px;
+    line-height: 20px;
+
+    padding: 4px 14px;
+
+    color: rgba($greyish-brown, .6);
+    border-bottom: 1px solid #ebebeb;
+    background-color: white;
+
+    @include clearfix();
+  }
+  &__body {
+    overflow: auto;
+
+    box-sizing: border-box;
+    width: 268px;
+    height: 268px;
+    padding: 4px;
+
+    @include clearfix();
+    img {
+      line-height: 1px;
+
+      display: block;
+      float: left;
+
+      width: 22px;
+      height: 22px;
+      padding: 2px;
+
+      border-radius: 2px;
+      &:hover {
+        background-color: rgba(0, 0, 0, .1);
+      }
+    }
   }
   &--opened {
     display: block;
