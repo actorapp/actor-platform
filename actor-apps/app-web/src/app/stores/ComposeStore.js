@@ -118,6 +118,16 @@ const onSelectDialogPeer = () => {
   ComposeStoreInstance.emitChange();
 };
 
+const onEmojiInsert = (action) => {
+  const emojiText = ` ${action.emoji} `;
+
+  text = action.text.substring(0, action.caretPosition) +
+         emojiText +
+         action.text.substring(action.caretPosition, action.text.length);
+
+  ComposeStoreInstance.emitChange();
+};
+
 ComposeStoreInstance.dispatchToken = register(action => {
   switch (action.type) {
     case ActionTypes.COMPOSE_TYPING:
@@ -134,6 +144,9 @@ ComposeStoreInstance.dispatchToken = register(action => {
       break;
     case ActionTypes.SELECT_DIALOG_PEER:
       onSelectDialogPeer();
+      break;
+    case ActionTypes.COMPOSE_EMOJI_INSERT:
+      onEmojiInsert(action);
       break;
     default:
   }

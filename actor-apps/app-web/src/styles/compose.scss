@@ -82,6 +82,13 @@
     right: 38px;
     cursor: pointer;
     color: $greyish;
+    opacity: .8;
+    transform: scale(.9);
+    transition: .2s;
+    &:hover {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   &--disabled {
