@@ -26,7 +26,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{DialogExtension, DialogProcessor}
+import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._

@@ -60,6 +60,8 @@ class GroupDialog extends DialogProcessor[GroupDialogState, GroupDialogEvent] wi
   protected implicit val peerRegion: GroupDialogRegion = DialogExtension(system).groupRegion
   protected implicit val timeout = Timeout(5.seconds)
 
+  protected val delivery = new MessageDelivery()
+
   context.setReceiveTimeout(1.hours)
 
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
