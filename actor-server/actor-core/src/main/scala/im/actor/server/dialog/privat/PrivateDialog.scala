@@ -71,6 +71,8 @@ class PrivateDialog extends DialogProcessor[PrivateDialogState, PrivateDialogEve
   protected implicit val socialRegion = SocialExtension(system).region
   protected implicit val timeout = Timeout(5.seconds)
 
+  protected val delivery = new MessageDelivery()
+
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 

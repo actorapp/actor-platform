@@ -83,8 +83,6 @@ object UserProcessor {
       10012 → classOf[UserCommands.ChangeName],
       10013 → classOf[UserCommands.CreateAck],
       10014 → classOf[UserCommands.ChangeCountryCode],
-      10015 → classOf[UserCommands.DeliverMessage],
-      10016 → classOf[UserCommands.DeliverOwnMessage],
       10017 → classOf[UserCommands.RemoveAuthAck],
       10018 → classOf[UserCommands.DeleteAck],
       10019 → classOf[UserCommands.AddPhone],
@@ -96,7 +94,6 @@ object UserProcessor {
       10025 → classOf[UserCommands.ChangeAbout],
       10026 → classOf[UserCommands.UpdateAvatar],
       10027 → classOf[UserCommands.UpdateAvatarAck],
-      10028 → classOf[UserCommands.DeliverMessageAck],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -187,17 +184,13 @@ private[user] final class UserProcessor
   }
 
   override protected def handleCommand(state: User): Receive = {
-    case NewAuth(_, authId)                ⇒ addAuth(state, authId)
-    case RemoveAuth(_, authId)             ⇒ removeAuth(state, authId)
-    case ChangeCountryCode(_, countryCode) ⇒ changeCountryCode(state, countryCode)
-    case ChangeName(_, name, clientAuthId) ⇒ changeName(state, name, clientAuthId)
-    case Delete(_)                         ⇒ delete(state)
-    case AddPhone(_, phone)                ⇒ addPhone(state, phone)
-    case AddEmail(_, email)                ⇒ addEmail(state, email)
-    case DeliverMessage(_, peer, senderUserId, randomId, date, message, isFat) ⇒
-      deliverMessage(state, peer, senderUserId, randomId, date, message, isFat)
-    case DeliverOwnMessage(_, peer, senderAuthId, randomId, date, message, isFat) ⇒
-      deliverOwnMessage(state, peer, senderAuthId, randomId, date, message, isFat)
+    case NewAuth(_, authId)                        ⇒ addAuth(state, authId)
+    case RemoveAuth(_, authId)                     ⇒ removeAuth(state, authId)
+    case ChangeCountryCode(_, countryCode)         ⇒ changeCountryCode(state, countryCode)
+    case ChangeName(_, name, clientAuthId)         ⇒ changeName(state, name, clientAuthId)
+    case Delete(_)                                 ⇒ delete(state)
+    case AddPhone(_, phone)                        ⇒ addPhone(state, phone)
+    case AddEmail(_, email)                        ⇒ addEmail(state, email)
     case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
     case ChangeAbout(_, clientAuthId, about)       ⇒ changeAbout(state, clientAuthId, about)
     case UpdateAvatar(_, clientAuthId, avatarOpt)  ⇒ updateAvatar(state, clientAuthId, avatarOpt)

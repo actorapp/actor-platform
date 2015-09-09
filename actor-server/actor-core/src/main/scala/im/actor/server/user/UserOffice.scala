@@ -81,22 +81,6 @@ private[user] sealed trait Commands extends AuthCommands {
     (userOfficeRegion.ref ? ChangeName(userId, name)).mapTo[SeqState]
   }
 
-  def deliverMessage(userId: Int, peer: ApiPeer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
-    implicit
-    region:  UserProcessorRegion,
-    timeout: Timeout,
-    ec:      ExecutionContext
-  ): Future[Unit] =
-    (region.ref ? DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat)) map (_ ⇒ ())
-
-  def deliverOwnMessage(userId: Int, peer: ApiPeer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
-    implicit
-    region:  UserProcessorRegion,
-    timeout: Timeout,
-    ec:      ExecutionContext
-  ): Future[SeqState] =
-    (region.ref ? DeliverOwnMessage(userId, peer, senderAuthId, randomId, date, message, isFat)).mapTo[SeqState]
-
   def changeNickname(userId: Int, clientAuthId: Long, nickname: Option[String])(
     implicit
     userOfficeRegion: UserProcessorRegion,

@@ -4,7 +4,7 @@ import akka.actor.Status
 import akka.pattern.pipe
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.server.dialog.{ ReadFailed, ReceiveFailed, AuthIdRandomId, DialogCommands }
+import im.actor.server.dialog._
 import im.actor.server.history.HistoryUtils
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
@@ -37,12 +37,10 @@ trait PrivateDialogHandlers extends UpdateCounters {
     deferStashingReply(LastMessageDate(dateMillis, userState.peerId), state) { e ⇒
       withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
         for {
-          _ ← UserOffice.deliverMessage(userState.peerId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat)
-          SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userState.peerId), senderAuthId, randomId, date, message, isFat)
+          SeqState(seq, state) ← delivery.senderDelivery(senderUserId, senderAuthId, privatePeerStruct(userState.peerId), randomId, dateMillis, message, isFat)
           _ = recordRelation(senderUserId, userState.peerId)
           _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userState.peerId), date, randomId, message.header, message.toByteArray))
-          counterUpdate ← db.run(getUpdateCountersChanged(userState.peerId))
-          _ ← UserOffice.broadcastUserUpdate(userState.peerId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
+          _ ← delivery.receiverDelivery(userState.peerId, senderUserId, privatePeerStruct(senderUserId), randomId, dateMillis, message, isFat)
         } yield SeqStateDate(seq, state, dateMillis)
       } recover {
         case e ⇒
