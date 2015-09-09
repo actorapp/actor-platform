@@ -17,11 +17,9 @@ export default class Fav extends React.Component {
     setTimeout(() => {
       // Clone created element and create href attribute
       let updatedFavicon = document.getElementById('favicon').cloneNode(true);
-      let href = document.createAttribute('href');
 
       // Set new href attribute
-      href.value = FaviconStore.getFaviconPath();
-      updatedFavicon.setAttributeNode(href);
+      updatedFavicon.setAttribute('href', FaviconStore.getFaviconPath());
 
       // Remove old and add new favicon
       document.getElementById('favicon').remove();
