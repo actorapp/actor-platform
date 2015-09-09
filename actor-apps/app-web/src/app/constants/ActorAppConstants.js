@@ -39,6 +39,7 @@ export const ActionTypes = keymirror({
   COMPOSE_TYPING: null,
   COMPOSE_MENTION_INSERT: null,
   COMPOSE_MENTION_CLOSE: null,
+  COMPOSE_EMOJI_INSERT: null,
 
   SEND_MESSAGE_TEXT: null,
   SEND_MESSAGE_FILE: null,
@@ -164,6 +165,10 @@ export const Support = {
   phone: '+75551234567'
 };
 
+export const Path = {
+  toImages: 'assets/img'
+};
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -183,5 +188,7 @@ export default {
 
   version: version,
 
-  Support: Support
+  Support: Support,
+
+  Path: Path
 };
