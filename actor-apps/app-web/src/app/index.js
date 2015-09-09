@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import polyfills from 'utils/polyfills'; // eslint-disable-line
+import babelPolyfill from 'babel/polyfill'; // eslint-disable-line
 import RouterContainer from 'utils/RouterContainer';
 
 import crosstab from 'crosstab';
