@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import {PeerTypes} from 'constants/ActorAppConstants';
+import { PeerTypes } from 'constants/ActorAppConstants';
 
 import ActorClient from 'utils/ActorClient';
 

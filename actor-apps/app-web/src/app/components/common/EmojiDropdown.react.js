@@ -2,11 +2,11 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
+import { map } from 'lodash';
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { Path } from 'constants/ActorAppConstants';
-import emojiCharacters from 'emoji-named-characters';
+import EmojiUtils from 'utils/EmojiUtils';
 
 export default class EmojiDropdown extends Component {
   static propTypes = {
@@ -35,16 +35,14 @@ export default class EmojiDropdown extends Component {
   }
 
   onClose = () => this.props.onClose();
-  onSelect = (emojiText) => this.props.onSelect(emojiText);
+  onSelect = (emoji) => this.props.onSelect(emoji);
 
   render() {
     const { isOpen } = this.state;
 
-    const emojiChars =  _.map(_.keys(emojiCharacters), (value) => {
-      const pathToImg = `${Path.toEmoji}/${value}.png`;
-      const emojiText = `:${value}:`;
-
-      return <img src={pathToImg} alt={emojiText} onClick={() => this.onSelect(emojiText)}/>;
+    const emojiChars = map(EmojiUtils.names, (name, index) => {
+      const emojiText = `:${name}:`;
+      return <img src={EmojiUtils.pathToImage(name)}alt={emojiText} key={index} onClick={() => this.onSelect(emojiText)}/>;
     });
 
     const emojiDropdownClassName = classnames('emoji-dropdown', {
@@ -55,9 +53,7 @@ export default class EmojiDropdown extends Component {
       return (
         <div className={emojiDropdownClassName}>
           <div className="emoji-dropdown__wrapper">
-            <header className="emoji-dropdown__header">
-              Emoji
-            </header>
+            <header className="emoji-dropdown__header">Emoji</header>
             <div className="emoji-dropdown__body">
               {emojiChars}
             </div>

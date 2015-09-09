@@ -33,7 +33,6 @@ export default {
   },
 
   insertEmoji: (text, caretPosition, emoji) => {
-    console.debug(text, caretPosition, emoji);
     dispatch(ActionTypes.COMPOSE_EMOJI_INSERT, {
       text, caretPosition, emoji
     });
