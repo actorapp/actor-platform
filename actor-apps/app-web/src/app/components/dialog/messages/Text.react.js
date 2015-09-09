@@ -17,12 +17,10 @@ const inversedEmojiCharacters = _.invert(_.mapValues(emojiCharacters, (e) => e.c
 
 emojify.setConfig({
   mode: 'img',
-  img_dir: Path.toImages + '/emoji' // eslint-disable-line
+  img_dir: Path.toEmoji // eslint-disable-line
 });
 
-const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), function (name) {
-  return name.replace(/\+/g, '\\+');
-});
+const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), (name) => name.replace(/\+/g, '\\+'));
 
 const emojiRegexp = new RegExp('(' + emojiVariants.join('|') + ')', 'gi');
 
@@ -33,7 +31,7 @@ const processText = function (text) {
   const noPTag = markedText.replace(/<p>/g, '<p> ');
 
   let emojifiedText = emojify
-    .replace(noPTag.replace(emojiRegexp, (match) => ':' + inversedEmojiCharacters[match] + ':'));
+    .replace(noPTag.replace(emojiRegexp, (match) => `:${inversedEmojiCharacters[match]}:`));
 
   return emojifiedText;
 };

@@ -166,7 +166,8 @@ export const Support = {
 };
 
 export const Path = {
-  toImages: 'assets/img'
+  toImages: 'assets/img',
+  toEmoji: 'assets/img/emoji'
 };
 
 export default {
