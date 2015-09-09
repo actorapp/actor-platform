@@ -99,24 +99,32 @@ class ComposeSection extends React.Component {
   };
 
   onSendFileClick = () => {
-    const fileInput = document.getElementById('composeFileInput');
+    const fileInput = React.findDOMNode(this.refs.composeFileInput);
     fileInput.click();
   };
 
   onSendPhotoClick = () => {
-    const photoInput = document.getElementById('composePhotoInput');
+    const photoInput = React.findDOMNode(this.refs.composePhotoInput);
     photoInput.accept = 'image/*';
     photoInput.click();
   };
 
   onFileInputChange = () => {
-    const files = document.getElementById('composeFileInput').files;
-    MessageActionCreators.sendFileMessage(this.props.peer, files[0]);
+    const fileInput = React.findDOMNode(this.refs.composeFileInput);
+    MessageActionCreators.sendFileMessage(this.props.peer, fileInput.files[0]);
+    this.resetSendFileForm();
   };
 
   onPhotoInputChange = () => {
-    const photos = document.getElementById('composePhotoInput').files;
-    MessageActionCreators.sendPhotoMessage(this.props.peer, photos[0]);
+    console.debug('onPhotoInputChange');
+    const photoInput = React.findDOMNode(this.refs.composePhotoInput);
+    MessageActionCreators.sendPhotoMessage(this.props.peer, photoInput.files[0]);
+    this.resetSendFileForm();
+  };
+
+  resetSendFileForm = () => {
+    const form = React.findDOMNode(this.refs.sendFileForm);
+    form.reset();
   };
 
   onPaste = event => {
@@ -204,14 +212,10 @@ class ComposeSection extends React.Component {
 
         </footer>
 
-        <div className="compose__hidden">
-          <input id="composeFileInput"
-                 onChange={this.onFileInputChange}
-                 type="file"/>
-          <input id="composePhotoInput"
-                 onChange={this.onPhotoInputChange}
-                 type="file"/>
-        </div>
+        <form className="compose__hidden" ref="sendFileForm">
+          <input ref="composeFileInput" onChange={this.onFileInputChange} type="file"/>
+          <input ref="composePhotoInput" onChange={this.onPhotoInputChange} type="file"/>
+        </form>
       </section>
     );
   }
