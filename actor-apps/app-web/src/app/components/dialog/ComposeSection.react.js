@@ -139,7 +139,7 @@ class ComposeSection extends React.Component {
     const { text } = this.state;
 
     ComposeActionCreators.insertMention(peer, text, this.getCaretPosition(), mention);
-    this.refs.area.getDOMNode().focus();
+    React.findDOMNode(this.refs.area).focus();
   };
 
   onMentionClose = () => {
@@ -147,14 +147,14 @@ class ComposeSection extends React.Component {
   };
 
   getCaretPosition = () => {
-    const el = this.refs.area.getDOMNode();
-    const selection = Inputs.getInputSelection(el);
+    const composeArea = React.findDOMNode(this.refs.area);
+    const selection = Inputs.getInputSelection(composeArea);
     return selection.start;
   };
 
   onEmojiDropdownSelect = (emoji) => {
     ComposeActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
-    this.refs.area.getDOMNode().focus();
+    React.findDOMNode(this.refs.area).focus();
   };
   onEmojiDropdownClose = () => this.setState({isEmojiDropdownShow: false});
   onEmojiShowClick = () => this.setState({isEmojiDropdownShow: true});
@@ -200,7 +200,7 @@ class ComposeSection extends React.Component {
 
           <span className="col-xs"></span>
 
-          <button className="button button--lightblue" onClick={this.sendTextMessage} >Send</button>
+          <button className="button button--lightblue" onClick={this.sendTextMessage}>Send</button>
 
         </footer>
 
