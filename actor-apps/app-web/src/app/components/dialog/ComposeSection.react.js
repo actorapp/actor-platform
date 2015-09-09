@@ -5,6 +5,7 @@
 import _ from 'lodash';
 
 import React from 'react';
+import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
 import addons from 'react/addons';
 const {addons: { PureRenderMixin }} = addons;
@@ -151,17 +152,16 @@ class ComposeSection extends React.Component {
     return selection.start;
   };
 
-  onEmojiDropdownSelect = (emoji) => {
-    const { text } = this.state;
-    ComposeActionCreators.insertEmoji(text, this.getCaretPosition(), emoji);
-  };
-
+  onEmojiDropdownSelect = (emoji) => ComposeActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
   onEmojiDropdownClose = () => this.setState({isEmojiDropdownShow: false});
-
   onEmojiShowClick = () => this.setState({isEmojiDropdownShow: true});
 
   render() {
     const { text, profile, mentions, isEmojiDropdownShow } = this.state;
+
+    const emojiOpenerClassName = classnames('emoji-opener material-icons', {
+      'emoji-opener--active': isEmojiDropdownShow
+    });
 
     return (
       <section className="compose" onPaste={this.onPaste}>
@@ -173,9 +173,7 @@ class ComposeSection extends React.Component {
         <EmojiDropdown isOpen={isEmojiDropdownShow}
                        onSelect={this.onEmojiDropdownSelect}
                        onClose={this.onEmojiDropdownClose}/>
-
-
-        <i className="emoji-toggle material-icons"
+        <i className={emojiOpenerClassName}
            onClick={this.onEmojiShowClick}>insert_emoticon</i>
 
         <AvatarItem className="my-avatar"
