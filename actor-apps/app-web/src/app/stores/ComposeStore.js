@@ -1,12 +1,14 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 import { EventEmitter } from 'events';
 import ActorClient from 'utils/ActorClient';
 
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { register, waitFor } from 'dispatcher/ActorAppDispatcher';
 
-import { ActionTypes } from 'constants/ActorAppConstants';
-
-import {PeerTypes} from 'constants/ActorAppConstants';
+import { ActionTypes, PeerTypes } from 'constants/ActorAppConstants';
 
 import GroupStore from './GroupStore';
 import DraftStore from './DraftStore';
@@ -14,8 +16,8 @@ import UserStore from './UserStore';
 
 const CHANGE_EVENT = 'change';
 
-let getQuery = (text, position) => {
-  let run = (runText, query) => {
+const getQuery = (text, position) => {
+  const run = (runText, query) => {
     if (runText.length === 0) {
       return null;
     } else {
@@ -41,7 +43,7 @@ let getQuery = (text, position) => {
     }
   };
 
-  let runText = text.substring(0, position);
+  const runText = text.substring(0, position);
   return run(runText, null);
 };
 
@@ -70,9 +72,9 @@ class ComposeStore extends EventEmitter {
   }
 }
 
-const instance = new ComposeStore();
+const ComposeStoreInstance = new ComposeStore();
 
-let onTyping = (action) => {
+const onTyping = (action) => {
   text = action.text;
   const query = getQuery(text, action.caretPosition);
 
@@ -82,41 +84,41 @@ let onTyping = (action) => {
     mentions = null;
   }
 
-  instance.emitChange();
+  ComposeStoreInstance.emitChange();
 };
 
-let onMentionInsert = (action) => {
+const onMentionInsert = (action) => {
   const query = getQuery(action.text, action.caretPosition);
   const mentionEnding = query.atStart ? ': ' : ' ';
 
   text = action.text.substring(0, action.caretPosition - query.text.length - 1) +
          action.mention.mentionText +
-         action.text.substring(action.caretPosition, action.text.length) +
-         mentionEnding;
+         mentionEnding +
+         action.text.substring(action.caretPosition, action.text.length);
 
   mentions = null;
 
-  instance.emitChange();
+  ComposeStoreInstance.emitChange();
 };
 
-let onMentionClose = () => {
+const onMentionClose = () => {
   mentions = null;
-  instance.emitChange();
+  ComposeStoreInstance.emitChange();
 };
 
-let onComposeClean = () => {
+const onComposeClean = () => {
   text = '';
   mentions = null;
-  instance.emitChange();
+  ComposeStoreInstance.emitChange();
 };
 
-let onSelectDialogPeer = () => {
-  ActorAppDispatcher.waitFor([DraftStore.dispatchToken]);
+const onSelectDialogPeer = () => {
+  waitFor([DraftStore.dispatchToken]);
   text = DraftStore.getDraft();
-  instance.emitChange();
+  ComposeStoreInstance.emitChange();
 };
 
-instance.dispatchToken = ActorAppDispatcher.register(action => {
+ComposeStoreInstance.dispatchToken = register(action => {
   switch (action.type) {
     case ActionTypes.COMPOSE_TYPING:
       onTyping(action);
@@ -137,4 +139,4 @@ instance.dispatchToken = ActorAppDispatcher.register(action => {
   }
 });
 
-export default instance;
+export default ComposeStoreInstance;
