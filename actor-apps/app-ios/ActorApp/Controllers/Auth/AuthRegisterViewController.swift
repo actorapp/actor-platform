@@ -228,7 +228,7 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     func nextButtonPressed() {
         let username = firstNameField.text
         
-        if count(username) == 0 {
+        if username?.length == 0 {
             let screenSize = UIScreen.mainScreen().bounds.size
             let fieldWidth : CGFloat = isIPad
                 ? (520)
@@ -242,7 +242,7 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
                 var avatarFilePath = CocoaFiles.pathFromDescriptor(avatarPath!)
                 var image = avatarImageView.image
                 var thumb = image?.resizeSquare(600, maxH: 600);
-                UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
+                UIImageJPEGRepresentation(thumb!, 0.8)!.writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
             }
             
             var action = "SignUp";
@@ -387,9 +387,3 @@ extension AuthRegisterViewController: UIActionSheetDelegate {
 
 // MARK: -
 // MARK: UINavigationController Delegate
-
-extension AuthRegisterViewController: UINavigationControllerDelegate {
-    
-    
-    
-}

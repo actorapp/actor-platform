@@ -17,7 +17,7 @@ extension UIImage {
         
         // Mask tint color-swatch to this image's opaque mask.
         // We want behaviour like NSCompositeDestinationIn on Mac OS X.
-        self.drawInRect(rect, blendMode: kCGBlendModeDestinationIn, alpha: 1.0)
+        self.drawInRect(rect, blendMode: .DestinationIn, alpha: 1.0)
         
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
@@ -40,7 +40,7 @@ extension UIImage {
 
         // Mask tint color-swatch to this image's opaque mask.
         // We want behaviour like NSCompositeDestinationIn on Mac OS X.
-        self.drawInRect(rect, blendMode: kCGBlendModeOverlay, alpha: 1.0)
+        self.drawInRect(rect, blendMode: .Overlay, alpha: 1.0)
         
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
@@ -63,7 +63,7 @@ extension UIImage {
         
         CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x19/255.0).CGColor);
         CGContextAddArc(context,CGFloat(newSize)/2, CGFloat(newSize)/2, CGFloat(newSize)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
-        CGContextDrawPath(context, kCGPathStroke);
+        CGContextDrawPath(context, .Stroke);
         
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();

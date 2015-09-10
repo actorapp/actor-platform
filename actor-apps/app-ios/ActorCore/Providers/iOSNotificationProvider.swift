@@ -15,7 +15,7 @@ import AudioToolbox.AudioServices
     override init() {
         super.init()
         var path = NSBundle.mainBundle().URLForResource("notification", withExtension: "caf");
-        AudioServicesCreateSystemSoundID(path, &internalMessage)
+        AudioServicesCreateSystemSoundID(path!, &internalMessage)
     }
     
     func onMessageArriveInAppWithMessenger(messenger: ACMessenger!) {

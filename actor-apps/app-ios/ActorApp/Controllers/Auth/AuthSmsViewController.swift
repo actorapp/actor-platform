@@ -78,7 +78,7 @@ class AuthSmsViewController: AuthViewController, UIAlertViewDelegate {
         hintLabel.text = NSLocalizedString("AuthCodeHint", comment: "Hint")
         view.addSubview(hintLabel)
         
-        var nextBarButton = UIBarButtonItem(title:NSLocalizedString("NavigationNext", comment: "Next"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed"))
+        let nextBarButton = UIBarButtonItem(title:NSLocalizedString("NavigationNext", comment: "Next"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed"))
         navigationItem.rightBarButtonItem = nextBarButton
     }
 
@@ -140,8 +140,8 @@ class AuthSmsViewController: AuthViewController, UIAlertViewDelegate {
     // MARK: Methods
     
     func nextButtonPressed() {
-        if count(codeTextField.text) > 0 {
-            var action = "Send Code"
+        if codeTextField.text?.length > 0 {
+            let action = "Send Code"
             execute(Actor.validateCodeCommandWithCode(codeTextField.text), successBlock: { (val) -> () in
                 if let state = val as? ACAuthStateEnum {
                     Actor.trackActionSuccess(action)
@@ -190,9 +190,8 @@ class AuthSmsViewController: AuthViewController, UIAlertViewDelegate {
 extension AuthSmsViewController: UITextFieldDelegate {
 
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        
-        let newString = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
-        if count(newString) == 6 {
+        let newString = (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string)
+        if newString.length == 6 {
             // TODO: Auto check code correct?
         }
         

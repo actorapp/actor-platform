@@ -54,8 +54,6 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        println("viewWillAppear")
-        
         self.collectionView.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 200, right: 0)
         
         isVisible = true
@@ -228,20 +226,20 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
             self.collectionView.performBatchUpdates({ () -> Void in
                 // Removed rows
                 if modification.removedCount() > 0 {
-                    var rows: NSMutableArray = []
+                    var rows = [NSIndexPath]()
                     for i in 0..<modification.removedCount() {
-                        rows.addObject(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))), inSection: 0))
+                        rows.append(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))), inSection: 0))
                     }
-                    self.collectionView.deleteItemsAtIndexPaths(rows as [AnyObject])
+                    self.collectionView.deleteItemsAtIndexPaths(rows)
                 }
                 
                 // Added rows
                 if modification.addedCount() > 0 {
-                    var rows: NSMutableArray = []
+                    var rows = [NSIndexPath]()
                     for i in 0..<modification.addedCount() {
-                        rows.addObject(NSIndexPath(forRow: Int(modification.getAdded(jint(i))), inSection: 0))
+                        rows.append(NSIndexPath(forRow: Int(modification.getAdded(jint(i))), inSection: 0))
                     }
-                    self.collectionView.insertItemsAtIndexPaths(rows as [AnyObject])
+                    self.collectionView.insertItemsAtIndexPaths(rows)
                 }
                 
                 // Moved rows
@@ -311,7 +309,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
             UIView.setAnimationsEnabled(true)
         }
         
-        println("collectionChanged: \(CFAbsoluteTimeGetCurrent() - start)")
+        print("collectionChanged: \(CFAbsoluteTimeGetCurrent() - start)")
     }
     
     func willUpdate() {

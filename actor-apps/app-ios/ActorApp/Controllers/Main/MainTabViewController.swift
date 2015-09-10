@@ -200,7 +200,7 @@ extension MainTabViewController: UIAlertViewDelegate {
         // TODO: Localize
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
-            if textField.text?.size > 0 {
+            if textField.text?.length > 0 {
                 self.execute(Actor.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> Void in
                     var user: ACUserVM?
                     user = val as? ACUserVM

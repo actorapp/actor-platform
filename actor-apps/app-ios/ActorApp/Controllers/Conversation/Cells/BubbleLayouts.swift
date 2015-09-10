@@ -181,10 +181,10 @@ class TextCellLayout: CellLayout {
                 measureText.appendAttributedString(NSAttributedString(string: TextCellLayout.stringInPadding, attributes: [NSFontAttributeName: TextCellLayout.fontRegular]))
             }
             
-            var rect = measureText.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin|NSStringDrawingOptions.UsesFontLeading, context: nil)
+            var rect = measureText.boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], context: nil)
             textSizeWithPadding = CGSizeMake(ceil(rect.width + 2), ceil(rect.height - 1))
             
-            rect = self.attrText!.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin|NSStringDrawingOptions.UsesFontLeading, context: nil)
+            rect = self.attrText!.boundingRectWithSize(size, options: [.UsesLineFragmentOrigin, .UsesFontLeading], context: nil)
             textSize = CGSizeMake(ceil(rect.width + 2), ceil(rect.height + 8))
         }
 
