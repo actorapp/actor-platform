@@ -184,8 +184,8 @@ class AuthPhoneViewController: AuthViewController, UITextFieldDelegate {
     func nextButtonPressed() {
         let action = "Request code"
         Actor.trackCodeRequest()
-        let numberLength = count(phoneTextField.phoneNumber) as Int
-        let numberRequiredLength: Int = (ABPhoneField.phoneMinLengthByCountryCode()[currentIso] as! String).toInt()!
+        let numberLength = phoneTextField.phoneNumber.length
+        let numberRequiredLength = Int(ABPhoneField.phoneMinLengthByCountryCode()[currentIso] as! String)!
         if (numberLength < numberRequiredLength) {
             var msg = NSLocalizedString("AuthPhoneTooShort", comment: "Too short error");
             var alertView = UIAlertView(title: nil, message: msg, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))

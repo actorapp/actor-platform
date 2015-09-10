@@ -39,12 +39,12 @@ import Foundation
         // Register notifications
         // Register always even when not enabled in build for local notifications
         if #available(iOS 8.0, *) {
-            let types: UIUserNotificationType = (UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound)
+            let types: UIUserNotificationType = [.Alert, .Badge, .Sound]
             let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
             application.registerUserNotificationSettings(settings)
             application.registerForRemoteNotifications()
         } else {
-            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+            application.registerForRemoteNotificationTypes([.Alert, .Badge, .Sound])
         }
         
         // Apply styles

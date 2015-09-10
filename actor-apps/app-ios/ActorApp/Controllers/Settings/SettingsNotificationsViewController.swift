@@ -288,12 +288,12 @@ class SettingsNotificationsViewController: AATableViewController {
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel.textColor = MainAppTheme.list.sectionColor
+        header.textLabel!.textColor = MainAppTheme.list.sectionColor
     }
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel.textColor = MainAppTheme.list.hintColor
+        header.textLabel!.textColor = MainAppTheme.list.hintColor
     }
     
 

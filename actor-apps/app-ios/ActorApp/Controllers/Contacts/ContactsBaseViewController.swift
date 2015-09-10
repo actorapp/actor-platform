@@ -57,7 +57,7 @@ class ContactsBaseViewController: EngineListController {
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
         var contact = item as! ACContact;
         var isLast = false
-        if (indexPath.section == tableView.numberOfSections() - 1) {
+        if (indexPath.section == tableView.numberOfSections - 1) {
             isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)
         }
         

@@ -124,7 +124,7 @@ extension UIViewController {
         actionShit.delegate = shitDelegate
         
         // Convert from weak to strong reference
-        setAssociatedObject(actionShit, shitDelegate, &actionShitReference, UInt(OBJC_ASSOCIATION_RETAIN_NONATOMIC))
+        setAssociatedObject(actionShit, value: shitDelegate, associativeKey: &actionShitReference, policy: objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
         actionShit.showWithCompletion(nil)
     }

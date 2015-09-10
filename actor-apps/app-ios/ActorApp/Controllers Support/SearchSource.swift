@@ -60,7 +60,7 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         var normalized = searchText.trim().lowercaseString
-        if (normalized.size > 0) {
+        if (normalized.length > 0) {
             displayList.initSearchWithQuery(normalized, withRefresh: false)
         } else {
             displayList.initEmpty()
