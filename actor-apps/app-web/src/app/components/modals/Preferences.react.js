@@ -54,7 +54,7 @@ class PreferencesModal extends Component {
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
       isShowNotificationsTextEnabled
-      } = this.state;
+    } = this.state;
 
     PreferencesActionCreators.save({
       isSendByEnterEnabled,
