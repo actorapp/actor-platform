@@ -3,15 +3,17 @@
  */
 
 import React from 'react';
+import Modal from 'react-modal';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
 import MyProfileActions from 'actions/MyProfileActionCreators';
+import ProfilePictureActionCreators from 'actions/ProfilePictureActionCreators';
+
 import MyProfileStore from 'stores/MyProfileStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 
-import Modal from 'react-modal';
 import { Styles, TextField } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
 
@@ -99,6 +101,11 @@ class MyProfile extends React.Component {
     this.onClose();
   };
 
+  openProfilePictureModal = () => {
+    ProfilePictureActionCreators.show();
+    this.onClose()
+  };
+
   render() {
     const { isOpen, profile, nick, name, about } = this.state;
 
@@ -118,10 +125,12 @@ class MyProfile extends React.Component {
 
           </header>
           <div className="modal-new__body row">
-            <AvatarItem image={profile.bigAvatar}
-                        placeholder={profile.placeholder}
-                        size="big"
-                        title={profile.name}/>
+            <a onClick={this.openProfilePictureModal}>
+              <AvatarItem image={profile.bigAvatar}
+                          placeholder={profile.placeholder}
+                          size="big"
+                          title={profile.name}/>
+            </a>
             <div className="col-xs">
               <div className="name">
                 <TextField className="login__form__input"
