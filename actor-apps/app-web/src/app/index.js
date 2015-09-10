@@ -6,7 +6,7 @@ import crosstab from 'crosstab';
 import React from 'react';
 import Router from 'react-router';
 import Raven from 'utils/Raven'; // eslint-disable-line
-import isMobile from 'utils/isMobile';
+import isMobile from 'utils/IsMobile';
 import ReactMixin from 'react-mixin';
 
 import Intl from 'intl'; // eslint-disable-line
