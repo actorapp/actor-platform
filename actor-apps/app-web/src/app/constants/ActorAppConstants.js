@@ -128,7 +128,10 @@ export const ActionTypes = keymirror({
   CHAT_DELETE_ERROR: null,
   CHAT_CLEAR: null,
   CHAT_CLEAR_SUCCESS: null,
-  CHAT_CLEAR_ERROR: null
+  CHAT_CLEAR_ERROR: null,
+
+  PROFILE_PICTURE_MODAL_SHOW: null,
+  PROFILE_PICTURE_MODAL_HIDE: null
 });
 
 export const PeerTypes = {
