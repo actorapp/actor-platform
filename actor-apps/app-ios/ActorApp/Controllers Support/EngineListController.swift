@@ -52,7 +52,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             self.engineTableView.alpha = 1
         }
         
-        var selected = self.engineTableView.indexPathForSelectedRow();
+        var selected = self.engineTableView.indexPathForSelectedRow;
         if (selected != nil){
             self.engineTableView.deselectRowAtIndexPath(selected!, animated: animated);
         }
@@ -88,20 +88,20 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             
             // Removed rows
             if modification.removedCount() > 0 {
-                var rows: NSMutableArray = []
+                var rows = [NSIndexPath]()
                 for i in 0..<modification.removedCount() {
-                    rows.addObject(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))), inSection: contentSection))
+                    rows.append(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))), inSection: contentSection))
                 }
-                self.engineTableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+                self.engineTableView.deleteRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Automatic)
             }
             
             // Added rows
             if modification.addedCount() > 0 {
-                var rows: NSMutableArray = []
+                var rows = [NSIndexPath]()
                 for i in 0..<modification.addedCount() {
-                    rows.addObject(NSIndexPath(forRow: Int(modification.getAdded(jint(i))), inSection: contentSection))
+                    rows.append(NSIndexPath(forRow: Int(modification.getAdded(jint(i))), inSection: contentSection))
                 }
-                self.engineTableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+                self.engineTableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Automatic)
             }
             
             // Moved rows
@@ -117,7 +117,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         
         // Updated rows
         if modification.updatedCount() > 0 {
-            var visibleIndexes = self.engineTableView.indexPathsForVisibleRows() as! [NSIndexPath]
+            var visibleIndexes = self.engineTableView.indexPathsForVisibleRows!
             for i in 0..<modification.updatedCount() {
                 for visibleIndex in visibleIndexes {
                     if (visibleIndex.row == Int(modification.getUpdated(jint(i))) && visibleIndex.section == contentSection) {

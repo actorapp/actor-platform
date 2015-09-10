@@ -178,7 +178,7 @@ class ListProcessor: NSObject, ARListProcessor {
     }
 }
 
-@objc class PreprocessedList {
+@objc class PreprocessedList: NSObject {
     var items: [ACMessage]!
     var cellSettings: [CellSetting]!
     var layouts: [CellLayout]!
