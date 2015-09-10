@@ -83,12 +83,12 @@ class ConversationViewController: ConversationBaseViewController {
         // Navigation Avatar
         
         avatarView.frame = CGRectMake(0, 0, 36, 36)
-        var avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap");
+        let avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap");
         avatarTapGesture.numberOfTapsRequired = 1
         avatarTapGesture.numberOfTouchesRequired = 1
         avatarView.addGestureRecognizer(avatarTapGesture)
         
-        var barItem = UIBarButtonItem(customView: avatarView)
+        let barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
     }
     
@@ -106,7 +106,7 @@ class ConversationViewController: ConversationBaseViewController {
         // Installing bindings
         if (UInt(peer.getPeerType().ordinal()) == ACPeerType.PRIVATE.rawValue) {
             let user = Actor.getUserWithUid(peer.getPeerId())
-            var nameModel = user.getNameModel();
+            let nameModel = user.getNameModel();
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
                 self.titleView.text = String(value!);

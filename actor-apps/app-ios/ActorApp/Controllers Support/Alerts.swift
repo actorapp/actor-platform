@@ -52,7 +52,7 @@ extension UIViewController {
         alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.tapBlock = { (alert: UIAlertView, buttonIndex) -> () in
             if (buttonIndex != alert.cancelButtonIndex) {
-                tapYes(nval: alert.textFieldAtIndex(0)!.text)
+                tapYes(nval: alert.textFieldAtIndex(0)!.text!)
             }
         }
         alertView.show()

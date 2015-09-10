@@ -69,15 +69,15 @@ struct SinglyLinkedList<T> {
         }
     }
     func displayNodes() {
-        println("Printing Nodes")
+        print("Printing Nodes")
         if var currentNode = head.next {
-            println("First Node's Value is \(currentNode.value!)")
+            print("First Node's Value is \(currentNode.value!)")
             while let nextNode = currentNode.next {
                 currentNode = nextNode
-                println("Next Node's Value is \(currentNode.value!)")
+                print("Next Node's Value is \(currentNode.value!)")
             }
         } else {
-            println("List is empty")
+            print("List is empty")
         }
     }
 }
