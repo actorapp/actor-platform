@@ -7,12 +7,9 @@ import Foundation
 extension UIViewController {
     func navigateDetail(controller: UIViewController) {
         if (isIPad) {
-            var split = UIApplication.sharedApplication().keyWindow?.rootViewController as! UISplitViewController;
-//            if (split == nil) {
-//                split = navigationController?.splitViewController
-//            }
-            var master = split.viewControllers[0]
-            var detail = AANavigationController()
+            let split = UIApplication.sharedApplication().keyWindow?.rootViewController as! UISplitViewController;
+            let master = split.viewControllers[0]
+            let detail = AANavigationController()
             detail.viewControllers = [controller]
             split.viewControllers = [master, detail]
         } else {
@@ -32,7 +29,7 @@ extension UIViewController {
         if (!removeCurrent) {
             self.navigationController!.pushViewController(controller, animated: true);
         } else {
-            var nControllers : [AnyObject] = []
+            var nControllers = [UIViewController]()
             var oldControllers = self.navigationController!.viewControllers
             if (oldControllers.count >= 2) {
                 for i in 0...(oldControllers.count - 2) {
@@ -46,16 +43,16 @@ extension UIViewController {
     
     func navigateBack() {
         if (self.navigationController!.viewControllers.last != nil) {
-            if (self.navigationController!.viewControllers.last! as! UIViewController == self) {
+            if (self.navigationController!.viewControllers.last! == self) {
                 self.navigationController!.popViewControllerAnimated(true)
             } else {
             
             }
         } else {
-            var nControllers : [AnyObject] = []
+            var nControllers = [UIViewController]()
             var oldControllers = self.navigationController!.viewControllers
             for i in 0..<oldControllers.count {
-                if (oldControllers[i] as! UIViewController != self) {
+                if (oldControllers[i] != self) {
                     nControllers.append(oldControllers[i])
                 }
             }

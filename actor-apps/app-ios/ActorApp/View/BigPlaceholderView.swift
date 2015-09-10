@@ -59,7 +59,7 @@ class BigPlaceholderView: UIView {
         subtitleLabel.numberOfLines = 0
         contentView.addSubview(subtitleLabel)
         
-        actionButton = UIButton.buttonWithType(UIButtonType.System) as! UIButton
+        actionButton = UIButton(type: .System)
         actionButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Medium", size: 21.0)
         contentView.addSubview(actionButton)
         
@@ -70,7 +70,7 @@ class BigPlaceholderView: UIView {
         subtitle2Label.numberOfLines = 0
         contentView.addSubview(subtitle2Label)
         
-        action2Button = UIButton.buttonWithType(UIButtonType.System) as! UIButton
+        action2Button = UIButton(type: .System)
         action2Button.titleLabel!.font = UIFont(name: "HelveticaNeue-Medium", size: 21.0)
         contentView.addSubview(action2Button)
     }

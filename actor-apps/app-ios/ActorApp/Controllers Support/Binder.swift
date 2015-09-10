@@ -61,7 +61,7 @@ class Binder {
     
 }
 
-class BindListener: NSObject, JavaObject, ARValueChangedListener {
+class BindListener: NSObject, ARValueChangedListener {
     
     var closure: (value: AnyObject?)->();
     
