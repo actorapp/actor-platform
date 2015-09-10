@@ -6,14 +6,14 @@ import Foundation
 
 extension String {
     
-    var size: Int { return count(self) }
+    var length: Int { return self.characters.count }
     
     func trim() -> String {
         return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
     }
     
     subscript (i: Int) -> Character {
-        return self[advance(self.startIndex, i)]
+        return self[self.startIndex.advancedBy(i)]
     }
     
     subscript (i: Int) -> String {
@@ -21,16 +21,16 @@ extension String {
     }
     
     func first(count: Int) -> String {
-        let realCount = min(count, size);
-        return substringToIndex(advance(startIndex, realCount));
+        let realCount = min(count, length);
+        return substringToIndex(startIndex.advancedBy(realCount));
     }
     
     func strip(set: NSCharacterSet) -> String {
-        return "".join(componentsSeparatedByCharactersInSet(set))
+        return componentsSeparatedByCharactersInSet(set).joinWithSeparator("")
     }
     
     func replace(src: String, dest:String) -> String {
-        return stringByReplacingOccurrencesOfString(src, withString: dest, options: NSStringCompareOptions.allZeros, range: nil)
+        return stringByReplacingOccurrencesOfString(src, withString: dest, options: NSStringCompareOptions(), range: nil)
     }
     
     func toLong() -> Int64? {
@@ -81,6 +81,8 @@ extension String {
         
         return res
     }
+    
+    var asNS: NSString { return (self as NSString) }
 }
 
 

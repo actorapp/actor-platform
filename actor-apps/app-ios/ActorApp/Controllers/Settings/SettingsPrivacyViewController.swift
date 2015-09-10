@@ -78,7 +78,7 @@ class SettingsPrivacyViewController: AATableViewController {
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if authSessions != nil {
-            if count(authSessions!) > 0 {
+            if authSessions!.count > 0 {
                 return 2
             }
         }
@@ -87,7 +87,7 @@ class SettingsPrivacyViewController: AATableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 1 {
-            return count(authSessions!)
+            return authSessions!.count
         }
         return 1
     }
@@ -130,11 +130,11 @@ class SettingsPrivacyViewController: AATableViewController {
     
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel.textColor = MainAppTheme.list.sectionColor
+        header.textLabel!.textColor = MainAppTheme.list.sectionColor
     }
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel.textColor = MainAppTheme.list.hintColor
+        header.textLabel!.textColor = MainAppTheme.list.hintColor
     }    
 }

@@ -146,10 +146,10 @@ class ListProcessor: NSObject, ARListProcessor {
         let calendar = NSCalendar.currentCalendar()
         
         var currentDate = NSDate(timeIntervalSince1970: Double(source.date)/1000.0)
-        var currentDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: currentDate)
+        var currentDateComp = calendar.components([.Day, .Year, .Month], fromDate: currentDate)
         
         var nextDate = NSDate(timeIntervalSince1970: Double(prev.date)/1000.0)
-        var nextDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: nextDate)
+        var nextDateComp = calendar.components([.Day, .Year, .Month], fromDate: nextDate)
         
         return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
     }
@@ -178,7 +178,7 @@ class ListProcessor: NSObject, ARListProcessor {
     }
 }
 
-@objc class PreprocessedList: NSObject {
+class PreprocessedList: NSObject {
     var items: [ACMessage]!
     var cellSettings: [CellSetting]!
     var layouts: [CellLayout]!

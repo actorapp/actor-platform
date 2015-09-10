@@ -13,7 +13,7 @@ class TableViewHeader: UIView {
             // Fix for UISearchBar disappear
             // http://stackoverflow.com/questions/19044156/searchbar-disappears-from-headerview-in-ios-7
             if let search = view as? UISearchBar {
-                if let buggyView = search.subviews.first as? UIView {
+                if let buggyView = search.subviews.first {
                     buggyView.bounds = search.bounds
                     buggyView.center = CGPointMake(buggyView.bounds.width/2,buggyView.bounds.height/2)
                 }

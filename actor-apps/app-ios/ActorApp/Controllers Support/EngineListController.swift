@@ -65,7 +65,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     }
     
     func filter(val: String) {
-        if (val.size == 0) {
+        if (val.length == 0) {
             self.displayList.initTopWithRefresh(false)
         } else {
             self.displayList.initSearchWithQuery(val, withRefresh: false)
