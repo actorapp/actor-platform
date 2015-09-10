@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import MessageUI
 
-class MainTabViewController : UITabBarController, UITabBarDelegate {
+class MainTabViewController : UITabBarController {
     
     // MARK: -
     // MARK: Private vars
@@ -177,8 +177,8 @@ class MainTabViewController : UITabBarController, UITabBarDelegate {
         return false
     }
     
-    override func supportedInterfaceOrientations() -> Int {
-        return Int(UIInterfaceOrientationMask.Portrait.rawValue)
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.Portrait
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -200,7 +200,7 @@ extension MainTabViewController: UIAlertViewDelegate {
         // TODO: Localize
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
-            if count(textField.text) > 0 {
+            if textField.text?.size > 0 {
                 self.execute(Actor.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> Void in
                     var user: ACUserVM?
                     user = val as? ACUserVM
