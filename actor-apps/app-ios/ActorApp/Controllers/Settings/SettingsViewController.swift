@@ -73,7 +73,7 @@ class SettingsViewController: AATableViewController {
         
         // Avatar
         
-        var profileInfoSection = tableData.addSection(autoSeparator: true)
+        var profileInfoSection = tableData.addSection(true)
             .setFooterHeight(15)
         
         profileInfoSection.addCustomCell { (tableView, indexPath) -> UITableViewCell in
@@ -109,7 +109,7 @@ class SettingsViewController: AATableViewController {
             .setAction { () -> () in
                 self.textInputAlert("SettingsUsernameTitle", content: self.user!.getNickModel().get(), action: "AlertSave", tapYes: { (nval) -> () in
                     var nNick: String? = nval.trim()
-                    if nNick?.size == 0 {
+                    if nNick?.length == 0 {
                         nNick = nil
                     }
                     self.execute(Actor.editMyNickCommandWithNick(nNick))
@@ -133,7 +133,7 @@ class SettingsViewController: AATableViewController {
             }
             var controller = EditTextController(title: localized("SettingsChangeAboutTitle"), actionTitle: localized("NavigationSave"), content: text, completition: { (newText) -> () in
                 var updatedText: String? = newText.trim()
-                if updatedText?.size == 0 {
+                if updatedText?.length == 0 {
                     updatedText = nil
                 }
                 self.execute(Actor.editMyAboutCommandWithNick(updatedText))
@@ -180,7 +180,7 @@ class SettingsViewController: AATableViewController {
         
         
         // Profile
-        var topSection = tableData.addSection(autoSeparator: true)
+        var topSection = tableData.addSection(true)
         topSection.setHeaderHeight(15)
         topSection.setFooterHeight(15)
         
@@ -228,7 +228,7 @@ class SettingsViewController: AATableViewController {
             alertView.tapBlock = { (alertView, buttonIndex) -> () in
                 if (buttonIndex == 1) {
                     let textField = alertView.textFieldAtIndex(0)!
-                    if count(textField.text) > 0 {
+                    if textField.text!.length > 0 {
                         self.execute(Actor.editMyNameCommandWithName(textField.text))
                     }
                 }
@@ -238,7 +238,7 @@ class SettingsViewController: AATableViewController {
         })
 
         // Settings
-        var actionsSection = tableData.addSection(autoSeparator: true)
+        var actionsSection = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
         
@@ -253,7 +253,7 @@ class SettingsViewController: AATableViewController {
         })
         
         // Support
-        var supportSection = tableData.addSection(autoSeparator: true)
+        var supportSection = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
         
@@ -282,7 +282,7 @@ class SettingsViewController: AATableViewController {
         // Support: App version
         var version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
         supportSection.addCommonCell()
-            .setContent(NSLocalizedString("SettingsVersion", comment: "Version").stringByReplacingOccurrencesOfString("{version}", withString: version, options: NSStringCompareOptions.allZeros, range: nil))
+            .setContent(NSLocalizedString("SettingsVersion", comment: "Version").stringByReplacingOccurrencesOfString("{version}", withString: version, options: NSStringCompareOptions(), range: nil))
             .setStyle(.Hint)
         
         // Bind

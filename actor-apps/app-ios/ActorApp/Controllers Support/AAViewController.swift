@@ -71,11 +71,11 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         rFirst.origin.x = r.origin.x + 4
         r.origin.x = r.origin.x - 4
         
-        UIView.animateWithDuration(0.05, delay: 0.0, options: UIViewAnimationOptions.Autoreverse, animations: { () -> Void in
+        UIView.animateWithDuration(0.05, delay: 0.0, options: .Autoreverse, animations: { () -> Void in
             view.frame = rFirst
             }) { (finished) -> Void in
                 if (finished) {
-                    UIView.animateWithDuration(0.05, delay: 0.0, options: (UIViewAnimationOptions.Repeat | UIViewAnimationOptions.Autoreverse), animations: { () -> Void in
+                    UIView.animateWithDuration(0.05, delay: 0.0, options: [.Repeat, .Autoreverse], animations: { () -> Void in
                         UIView.setAnimationRepeatCount(3)
                         view.frame = r
                         }, completion: { (finished) -> Void in
@@ -122,7 +122,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         
         var pickerController = AAImagePickerController()
         pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
-        pickerController.mediaTypes = [kUTTypeImage]
+        pickerController.mediaTypes = [kUTTypeImage as String]
         pickerController.view.backgroundColor = MainAppTheme.list.bgColor
         pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
         pickerController.delegate = self
@@ -149,7 +149,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
 
 }
 
-extension AAViewController: UIImagePickerControllerDelegate, PECropViewControllerDelegate, UINavigationControllerDelegate {
+extension AAViewController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
     
     func cropImage(image: UIImage) {
         var cropController = PECropViewController()
@@ -175,14 +175,14 @@ extension AAViewController: UIImagePickerControllerDelegate, PECropViewControlle
     }
     
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         MainAppTheme.navigation.applyStatusBar()
         navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
             self.cropImage(image)
         })
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in

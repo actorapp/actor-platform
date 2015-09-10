@@ -67,7 +67,7 @@ class GroupViewController: AATableViewController {
             .setHeight(avatarHeight)
         
         // Change Photo
-        var adminSection = tableData.addSection(autoSeparator: true)
+        var adminSection = tableData.addSection(true)
             .setFooterHeight(15)
         
         adminSection.addActionCell("GroupSetPhoto", actionClosure: { () -> () in
@@ -107,7 +107,7 @@ class GroupViewController: AATableViewController {
 //            })
         
         // Notifications
-        tableData.addSection(autoSeparator: true)
+        tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
             .addCommonCell()
@@ -124,7 +124,7 @@ class GroupViewController: AATableViewController {
         
         // Members
         
-        var membersSection = tableData.addSection(autoSeparator: true)
+        var membersSection = tableData.addSection(true)
             .setHeaderHeight(15)
         
         membersSection
@@ -158,7 +158,7 @@ class GroupViewController: AATableViewController {
                     sourceRect: self.view.bounds,
                     tapClosure: { (index) -> () in
                         if (index == -2) {
-                            self.confirmUser(NSLocalizedString("GroupMemberKickMessage", comment: "Button Title").stringByReplacingOccurrencesOfString("{name}", withString: name, options: NSStringCompareOptions.allZeros, range: nil),
+                            self.confirmUser(NSLocalizedString("GroupMemberKickMessage", comment: "Button Title").stringByReplacingOccurrencesOfString("{name}", withString: name, options: NSStringCompareOptions(), range: nil),
                                 action: "GroupMemberKickAction",
                                 cancel: "AlertCancel",
                                 sourceView: self.view,
@@ -218,7 +218,7 @@ class GroupViewController: AATableViewController {
             .setLeftInset(65.0)
         
         // Leave group
-        tableData.addSection(autoSeparator: true)
+        tableData.addSection(true)
             .setFooterHeight(15)
             .setHeaderHeight(15)
             .addActionCell("GroupLeave", actionClosure: { () -> () in
@@ -283,7 +283,7 @@ class GroupViewController: AATableViewController {
     
     func editName() {
         textInputAlert("GroupEditHeader", content: group!.getNameModel().get(), action: "AlertSave") { (nval) -> () in
-            if count(nval) > 0 {
+            if nval.length > 0 {
                 self.confirmUser("GroupEditConfirm",
                     action: "GroupEditConfirmAction",
                     cancel: "AlertCancel",

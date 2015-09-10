@@ -11,7 +11,7 @@ import Foundation
     
     override init() {
         self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
-            .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db")
+            .UserDomainMask, true)[0].asNS.stringByAppendingPathComponent("actor.db")
     }
     
     func createPreferencesStorage() -> ARPreferencesStorage! {
