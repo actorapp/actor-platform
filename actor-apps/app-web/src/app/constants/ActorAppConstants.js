@@ -170,6 +170,8 @@ export const Path = {
   toEmoji: 'assets/img/emoji'
 };
 
+export const endpoints = app.endpoints;
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -188,6 +190,8 @@ export default {
   Mixpanel: Mixpanel,
 
   version: version,
+
+  endpoints: endpoints,
 
   Support: Support,
 
