@@ -78,12 +78,12 @@ class AuthCountriesViewController: AATableViewController {
     private func countries() -> NSDictionary {
         if (_countries == nil) {
             var countries = NSMutableDictionary()
-            for (index, iso) in enumerate(ABPhoneField.sortedIsoCodes()) {
+            for (index, iso) in ABPhoneField.sortedIsoCodes().enumerate()) {
                 let countryName = ABPhoneField.countryNameByCountryCode()[iso as! String] as! String
                 let phoneCode = ABPhoneField.callingCodeByCountryCode()[iso as! String] as! String
                 //            if (self.searchBar.text.length == 0 || [countryName rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound)
                 
-                let countryLetter = countryName.substringToIndex(advance(countryName.startIndex, 1))
+                let countryLetter = countryName.substringToIndex(countryName.startIndex.advanceBy(1))
                 if (countries[countryLetter] == nil) {
                     countries[countryLetter] = NSMutableArray()
                 }
