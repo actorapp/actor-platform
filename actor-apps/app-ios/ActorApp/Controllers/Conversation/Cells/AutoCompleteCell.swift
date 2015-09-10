@@ -45,11 +45,11 @@ class AutoCompleteCell: UITableViewCell {
         var nickAttrs = NSMutableAttributedString(string: nickText)
         var nameAttrs = NSMutableAttributedString(string: nameText)
         
-        nickAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nickText.size))
-        nickAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.textColor, range: NSMakeRange(0, nickText.size))
+        nickAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nickText.length))
+        nickAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.textColor, range: NSMakeRange(0, nickText.length))
         
-        nameAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nameText.size))
-        nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.hintColor, range: NSMakeRange(0, nameText.size))
+        nameAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nameText.length))
+        nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.hintColor, range: NSMakeRange(0, nameText.length))
         
         for i in 0..<user.getMentionMatches().size() {
             var match = user.getMentionMatches().getWithInt(i) as! ACStringMatch

@@ -22,7 +22,7 @@ class Placeholders {
             CGContextAddRect(context, CGRect(x: 0, y: 0, width: size, height: size))
         }
         
-        CGContextDrawPath(context, kCGPathFill);
+        CGContextDrawPath(context, .Fill);
         
         // Text
         
@@ -44,7 +44,7 @@ class Placeholders {
         if rounded {
             CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x10/255.0).CGColor);
             CGContextAddArc(context,CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
-            CGContextDrawPath(context, kCGPathStroke);
+            CGContextDrawPath(context, .Stroke);
         }
         
         var image = UIGraphicsGetImageFromCurrentImageContext();

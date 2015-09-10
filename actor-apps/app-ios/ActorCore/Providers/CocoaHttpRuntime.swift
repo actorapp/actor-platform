@@ -15,11 +15,11 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
         request.setValue(header, forHTTPHeaderField: "Range")
         request.HTTPMethod = "GET"
         
-        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
             if (error != nil) {
                 callback.onDownloadFailure()
             } else {
-                callback.onDownloadedWithByteArray(data.toJavaBytes())
+                callback.onDownloadedWithByteArray(data!.toJavaBytes())
             }
         })
     }
@@ -32,7 +32,7 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
         request.HTTPBody = contents.toNSData()
         request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         
-        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
             if (error != nil) {
                 callback.onUploadFailure()
             } else {

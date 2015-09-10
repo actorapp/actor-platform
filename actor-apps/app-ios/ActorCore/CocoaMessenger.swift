@@ -110,12 +110,12 @@ func createActor() {
         var resized = image.resizeOptimize(1200 * 1200);
         
         var thumbData = UIImageJPEGRepresentation(thumb, 0.55);
-        var fastThumb = ACFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData.toJavaBytes())
+        var fastThumb = ACFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData!.toJavaBytes())
         
         var descriptor = "/tmp/"+NSUUID().UUIDString
         var path = CocoaFiles.pathFromDescriptor(descriptor);
         
-        UIImageJPEGRepresentation(resized, 0.80).writeToFile(path, atomically: true)
+        UIImageJPEGRepresentation(resized, 0.80)!.writeToFile(path, atomically: true)
         
         sendPhotoWithPeer(peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor)
     }
@@ -124,7 +124,7 @@ func createActor() {
         var res = "/tmp/" + NSUUID().UUIDString
         let avatarPath = CocoaFiles.pathFromDescriptor(res)
         var thumb = image.resizeSquare(800, maxH: 800);
-        UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)
+        UIImageJPEGRepresentation(thumb, 0.8)!.writeToFile(avatarPath, atomically: true)
         return res
     }
     

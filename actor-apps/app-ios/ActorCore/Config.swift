@@ -15,12 +15,16 @@ class Config {
     
     init() {
         let path = NSBundle.mainBundle().pathForResource("app", ofType: "json")
-        var text = String(contentsOfFile: path!, encoding: NSUTF8StringEncoding, error: nil)!
+        let text: String
+        let parsedObject: AnyObject?
+        do {
+            text = try String(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
+            parsedObject = try NSJSONSerialization.JSONObjectWithData(text.asNS.dataUsingEncoding(NSUTF8StringEncoding)!,
+                options: NSJSONReadingOptions.AllowFragments)
+        } catch _ {
+            fatalError("Unable to load config")
+        }
 
-        var parseError: NSError?
-        let parsedObject: AnyObject? = NSJSONSerialization.JSONObjectWithData((text as NSString).dataUsingEncoding(NSUTF8StringEncoding)!,
-            options: NSJSONReadingOptions.AllowFragments,
-            error:&parseError)
         if let configData = parsedObject as? NSDictionary {
             if let endpoints = configData["endpoints"] as? NSArray {
                 for endpoint in endpoints {

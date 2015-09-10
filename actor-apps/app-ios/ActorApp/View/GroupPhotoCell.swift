@@ -20,7 +20,6 @@ class GroupPhotoCell: CommonCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        println("\(contentView.bounds.width)")
         groupAvatarView = AvatarView(frameSize: Int(contentView.bounds.width), type: .Square, placeholderImage: UIImage())
         groupAvatarView.backgroundColor = MainAppTheme.chat.profileBgTint
         groupAvatarView.clipsToBounds = true

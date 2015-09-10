@@ -78,12 +78,12 @@ class AuthCountriesViewController: AATableViewController {
     private func countries() -> NSDictionary {
         if (_countries == nil) {
             var countries = NSMutableDictionary()
-            for (index, iso) in ABPhoneField.sortedIsoCodes().enumerate()) {
+            for (index, iso) in ABPhoneField.sortedIsoCodes().enumerate() {
                 let countryName = ABPhoneField.countryNameByCountryCode()[iso as! String] as! String
                 let phoneCode = ABPhoneField.callingCodeByCountryCode()[iso as! String] as! String
                 //            if (self.searchBar.text.length == 0 || [countryName rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound)
                 
-                let countryLetter = countryName.substringToIndex(countryName.startIndex.advanceBy(1))
+                let countryLetter = countryName.substringToIndex(countryName.startIndex.advancedBy(1))
                 if (countries[countryLetter] == nil) {
                     countries[countryLetter] = NSMutableArray()
                 }
@@ -130,9 +130,9 @@ class AuthCountriesViewController: AATableViewController {
         cell.setSearchMode(false) // TODO: Add search bar
         
         let letter = letters()[indexPath.section] as! String
-        let countryData: AnyObject = (countries()[letter] as! NSArray)[indexPath.row]
-        cell.setTitle(countryData[0] as! String)
-        cell.setCode("+\(countryData[2] as! String)")
+        let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
+        cell.setTitle(countryData[0])
+        cell.setCode("+\(countryData[2])")
 
         return cell
     }
@@ -144,9 +144,9 @@ class AuthCountriesViewController: AATableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         if (delegate?.respondsToSelector(Selector("countriesController:didChangeCurrentIso:")) != nil) {
             let letter = letters()[indexPath.section] as! String
-            let countryData: AnyObject = (countries()[letter] as! NSArray)[indexPath.row]
-            Actor.trackAuthCountryPickedWithCountry(countryData[1] as! String)
-            delegate!.countriesController(self, didChangeCurrentIso: countryData[1] as! String)
+            let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
+            Actor.trackAuthCountryPickedWithCountry(countryData[1])
+            delegate!.countriesController(self, didChangeCurrentIso: countryData[1])
         }
         dismiss()
     }

@@ -70,7 +70,8 @@ class AvatarView: UIImageView {
     }
     
     required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
+        super.init(coder: aDecoder)!
+        
         self.frameSize = Int(min(frame.width, frame.height))
     }
     
