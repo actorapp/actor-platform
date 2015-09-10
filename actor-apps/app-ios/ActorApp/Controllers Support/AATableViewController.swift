@@ -90,7 +90,3 @@ class AATableViewController: AAViewController, UITableViewDataSource, UITableVie
     }
     
 }
-
-extension AATableViewController: UITableViewDelegate {
-    
-}

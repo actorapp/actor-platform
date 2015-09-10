@@ -135,7 +135,7 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
     }
     
     func doNext() {
-        var title = groupName.text.trim()
+        var title = groupName.text!.trim()
         if (title.size == 0) {
             shakeView(groupName, originalX: groupName.frame.origin.x)
             return

@@ -4,7 +4,7 @@
 
 import UIKit
 
-class GroupMembersController: ContactsBaseViewController/*, CLTokenInputViewDelegate*/ {
+class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelegate {
 
     private var groupTitle: String!
     private var groupImage: UIImage?
