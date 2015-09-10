@@ -13,6 +13,8 @@ import Raven from 'utils/Raven'; // eslint-disable-line
 import isMobile from 'utils/isMobile';
 import ReactMixin from 'react-mixin';
 
+import { endpoints } from 'constants/ActorAppConstants'
+
 import Intl from 'intl'; // eslint-disable-line
 import LocaleData from 'intl/locale-data/jsonp/en-US'; // eslint-disable-line
 import { IntlMixin } from 'react-intl';
@@ -79,7 +81,7 @@ const initReact = () => {
     if (location.pathname === '/app/index.html') {
       window.messenger = new window.actor.ActorApp(['ws://' + location.hostname + ':9080/']);
     } else {
-      window.messenger = new window.actor.ActorApp();
+      window.messenger = new window.actor.ActorApp(endpoints);
     }
   }
 
