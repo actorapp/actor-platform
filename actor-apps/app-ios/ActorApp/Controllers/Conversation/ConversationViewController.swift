@@ -170,7 +170,7 @@ class ConversationViewController: ConversationBaseViewController {
                         membersString = membersString + ", ";
                         var onlineString = Actor.getFormatter().formatGroupOnline(onlineCount!.intValue());
                         var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
-                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size, onlineString.size))
+                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.length, onlineString.length))
                         self.subtitleView.attributedText = attributedString
                     }
                 }
@@ -206,9 +206,9 @@ class ConversationViewController: ConversationBaseViewController {
         
         (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
         
-        if count(navigationController!.viewControllers) > 2 {
+        if navigationController!.viewControllers.count > 2 {
             if let firstController = navigationController!.viewControllers[0] as? UIViewController,
-                let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? ConversationViewController {
+                let currentController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1] as? ConversationViewController {
                     navigationController!.setViewControllers([firstController, currentController], animated: false)
             }
         }
@@ -324,7 +324,7 @@ class ConversationViewController: ConversationBaseViewController {
                 var pickerController = AAImagePickerController()
                 pickerController.sourceType = (hasCamera && index == 0) ?
                     UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary
-                pickerController.mediaTypes = [kUTTypeImage]
+                pickerController.mediaTypes = [kUTTypeImage as String]
                 pickerController.view.backgroundColor = MainAppTheme.list.bgColor
                 pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
                 pickerController.delegate = self
@@ -332,10 +332,14 @@ class ConversationViewController: ConversationBaseViewController {
                 pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
                 self.presentViewController(pickerController, animated: true, completion: nil)
             } else if index >= 0 {
-                var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll, inMode: UIDocumentPickerMode.Import)
-                documentPicker.view.backgroundColor = UIColor.clearColor()
-                documentPicker.delegate = self
-                self.presentViewController(documentPicker, animated: true, completion: nil)
+                if #available(iOS 8.0, *) {
+                    var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
+                    documentPicker.view.backgroundColor = UIColor.clearColor()
+                    documentPicker.delegate = self
+                    self.presentViewController(documentPicker, animated: true, completion: nil)
+                } else {
+                    // Fallback on earlier versions
+                }
             }
         }
         
@@ -440,12 +444,20 @@ class ConversationViewController: ConversationBaseViewController {
         
         // Prevent the cell from inheriting the Table View's margin settings
         if cell.respondsToSelector("setPreservesSuperviewLayoutMargins:") {
-            cell.preservesSuperviewLayoutMargins = false
+            if #available(iOS 8.0, *) {
+                cell.preservesSuperviewLayoutMargins = false
+            } else {
+                // Fallback on earlier versions
+            }
         }
         
         // Explictly set your cell's layout margins
         if cell.respondsToSelector("setLayoutMargins:") {
-            cell.layoutMargins = UIEdgeInsetsZero
+            if #available(iOS 8.0, *) {
+                cell.layoutMargins = UIEdgeInsetsZero
+            } else {
+                // Fallback on earlier versions
+            }
         }
     }
 }
@@ -455,10 +467,11 @@ class ConversationViewController: ConversationBaseViewController {
 
 extension ConversationViewController: UIDocumentPickerDelegate {
     
+    @available(iOS 8.0, *)
     func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         var path = url.path!;
         var fileName = url.lastPathComponent
-        var range = path.rangeOfString("/tmp", options: NSStringCompareOptions.allZeros, range: nil, locale: nil)
+        var range = path.rangeOfString("/tmp", options: NSStringCompareOptions(), range: nil, locale: nil)
         var descriptor = path.substringFromIndex(range!.startIndex)
         NSLog("Picked file: \(descriptor)")
         Actor.trackDocumentSendWithPeer(peer)
@@ -472,14 +485,14 @@ extension ConversationViewController: UIDocumentPickerDelegate {
 
 extension ConversationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         Actor.trackPhotoSendWithPeer(peer)
         Actor.sendUIImage(image, peer: peer)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         
@@ -494,6 +507,7 @@ extension ConversationViewController: UIImagePickerControllerDelegate, UINavigat
 }
 
 extension ConversationViewController: UIDocumentMenuDelegate {
+    @available(iOS 8.0, *)
     func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)

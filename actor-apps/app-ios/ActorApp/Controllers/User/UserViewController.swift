@@ -63,7 +63,7 @@ class UserViewController: AATableViewController {
         
         // Top section
         var contactsSection = tableData
-            .addSection(autoSeparator: true)
+            .addSection(true)
             .setFooterHeight(15)
         
         // Send Message
@@ -146,7 +146,7 @@ class UserViewController: AATableViewController {
             .setContent("ProfileNotifications")
             .setStyle(.Switch)
         
-        var contactSection = tableData.addSection(autoSeparator: true)
+        var contactSection = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
 
@@ -242,7 +242,7 @@ class UserViewController: AATableViewController {
             content: self.user!.getNameModel().get(),
             action: "AlertSave",
             tapYes: { (nval) -> () in
-                if count(nval) > 0 {
+                if nval.length > 0 {
                     self.execute(Actor.editNameCommandWithUid(jint(self.uid), withName: nval))
                 }
         })

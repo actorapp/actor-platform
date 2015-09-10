@@ -39,10 +39,14 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
     }
     
     override func doConnect() {
-        //        NSLog("\(TAG) connecting...")
+        let endpoint = getEndpoint()
+        
         gcdSocket = GCDAsyncSocket(delegate: self, delegateQueue: CocoaTcpConnection.queue)
-        var endpoint = getEndpoint()
-        gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: Double(ARManagedConnection_CONNECTION_TIMEOUT) / 1000.0, error: nil)
+        do {
+            try self.gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: Double(ARManagedConnection_CONNECTION_TIMEOUT) / 1000.0)
+        } catch _ {
+            
+        }
     }
     
     // Affer successful connection
