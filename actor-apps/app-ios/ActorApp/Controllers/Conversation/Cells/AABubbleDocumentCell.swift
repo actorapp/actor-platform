@@ -136,7 +136,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
                 }, onDownloading: { (progress) -> () in
                     Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                 }, onDownloaded: { (reference) -> () in
-                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
+                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference)))
                     docController.delegate = self
                     docController.presentPreviewAnimated(true)
             }))
@@ -148,7 +148,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
                 }, onUploading: { (progress) -> () in
                     Actor.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
-                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor())))
                     docController.delegate = self
                     docController.presentPreviewAnimated(true)
             }))

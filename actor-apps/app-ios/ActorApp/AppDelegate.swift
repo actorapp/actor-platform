@@ -38,8 +38,8 @@ import Foundation
         
         // Register notifications
         // Register always even when not enabled in build for local notifications
-        if application.respondsToSelector("registerUserNotificationSettings:") {
-            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+        if #available(iOS 8.0, *) {
+            let types: UIUserNotificationType = (UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound)
             let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
             application.registerUserNotificationSettings(settings)
             application.registerForRemoteNotifications()
@@ -157,7 +157,7 @@ import Foundation
     }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
-        println("open url: \(url)")
+        print("open url: \(url)")
         
         if (url.scheme == "actor") {
             if (url.host == "invite") {
