@@ -90,7 +90,7 @@ class LinkedList<K, V> {
 }
 
 
-class SwiftlyLRU<K : Hashable, V> : Printable {
+class SwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
     
     let capacity: Int
     var length = 0
