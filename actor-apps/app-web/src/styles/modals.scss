@@ -49,7 +49,7 @@
 
   overflow: hidden;
 
-  width: $modal-default-width;
+  min-width: $modal-default-width;
   //min-height: $modal-default-height;
   //margin: 160px auto 0;
 
@@ -546,6 +546,18 @@
       }
     }
   }
+  &--profile-picture {
+    .modal-new__body {
+      padding: 0;
+      line-height: 1px;
+      h3 {
+        padding: 16px;
+      }
+      img {
+        display: inline-block;
+      }
+    }
+  }
 }
 
 .contacts {
@@ -610,6 +622,7 @@
   }
 }
 
+// Confirm modal
 .modal-backdrop {
   position: fixed;
   z-index: 1000;
@@ -627,7 +640,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .modal {
   overflow: hidden;
 
