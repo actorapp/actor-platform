@@ -97,7 +97,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         
         MainAppTheme.search.styleSearchBar(searchView!)
         
-        searchDisplay = UISearchDisplayController(searchBar: searchView, contentsController: self)
+        searchDisplay = UISearchDisplayController(searchBar: searchView!, contentsController: self)
         searchDisplay?.searchResultsDelegate = self
         searchDisplay?.searchResultsTableView.rowHeight = 76
         searchDisplay?.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None

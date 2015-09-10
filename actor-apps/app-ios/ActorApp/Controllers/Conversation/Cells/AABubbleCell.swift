@@ -374,10 +374,10 @@ class AABubbleCell: UICollectionViewCell {
         bubble.frame = frame
         bubbleBorder.frame = frame
     }
-    
-    override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes! {
-        return layoutAttributes
-    }
+//    
+//    override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes! {
+//        return layoutAttributes
+//    }
 }
 
 enum BubbleType {

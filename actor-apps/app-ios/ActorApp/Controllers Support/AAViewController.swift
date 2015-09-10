@@ -5,7 +5,7 @@
 import UIKit
 import MobileCoreServices
 
-class AAViewController: UIViewController {
+class AAViewController: UIViewController, UINavigationControllerDelegate {
     
     // MARK: -
     // MARK: Public vars
@@ -195,10 +195,6 @@ extension AAViewController: UIImagePickerControllerDelegate, PECropViewControlle
         MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
-    
-}
-
-extension AAViewController: UINavigationControllerDelegate {
     
 }
 

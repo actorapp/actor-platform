@@ -81,7 +81,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     func openUrl(url: NSURL) {
         if url.scheme == "source" {
             var path = url.path!
-            var index = path.substringFromIndex(advance(path.startIndex, 1)).toInt()!
+            var index = Int(path.substringFromIndex(path.startIndex.advancedBy(1)))!
             var code = self.cellLayout.sources[index]
             self.controller.navigateNext(CodePreviewController(code: code), removeCurrent: false)
         } else {

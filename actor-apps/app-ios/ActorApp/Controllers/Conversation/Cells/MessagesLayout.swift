@@ -95,36 +95,33 @@ class MessagesLayout : UICollectionViewLayout {
         return CGSize(width: self.collectionView!.bounds.width, height: contentHeight)
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
-        var res = [AnyObject]()
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        var res = [UICollectionViewLayoutAttributes]()
         for i in 0..<items.count {
             if CGRectIntersectsRect(rect, frames[i]) {
                 res.append(items[i].attrs)
             }
-        }        
+        }
         return res
     }
     
-    override func prepareForCollectionViewUpdates(updateItems: [AnyObject]!) {
-        
+    override func prepareForCollectionViewUpdates(updateItems: [UICollectionViewUpdateItem]) {
         var start = CFAbsoluteTimeGetCurrent()
         super.prepareForCollectionViewUpdates(updateItems)
         
         insertedIndexPaths.removeAll(keepCapacity: true)
         deletedIndexPaths.removeAll(keepCapacity: true)
         for update in updateItems {
-            if let upd = update as? UICollectionViewUpdateItem {
-                if upd.updateAction == .Insert {
-                    insertedIndexPaths.append(upd.indexPathAfterUpdate!)
-                } else if upd.updateAction == .Delete {
-                    deletedIndexPaths.append(upd.indexPathBeforeUpdate!)
-                }
+            if update.updateAction == .Insert {
+                insertedIndexPaths.append(update.indexPathAfterUpdate)
+            } else if update.updateAction == .Delete {
+                deletedIndexPaths.append(update.indexPathBeforeUpdate)
             }
         }
-        println("prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
+        print("prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
     }
-    
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
+
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
         return items[indexPath.item].attrs
     }    
     
@@ -162,7 +159,7 @@ class MessagesLayout : UICollectionViewLayout {
             }
         }
         
-        println("finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
+        print("finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
     }
 }
 
