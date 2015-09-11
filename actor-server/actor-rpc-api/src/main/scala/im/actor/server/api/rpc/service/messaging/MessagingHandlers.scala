@@ -8,9 +8,9 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.dialog.privat.PrivateDialogErrors
-import im.actor.server.group.{ GroupErrors, GroupOffice }
+import im.actor.server.group.{ GroupErrors, GroupExtension }
 import im.actor.server.sequence.SeqStateDate
-import im.actor.server.user.UserOffice
+import im.actor.server.user.UserExtension
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -26,13 +26,13 @@ private[messaging] trait MessagingHandlers {
   override def jhandleSendMessage(outPeer: ApiOutPeer, randomId: Long, message: ApiMessage, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val accessHashCheck = outPeer.`type` match {
-        case ApiPeerType.Private ⇒ UserOffice.checkAccessHash(outPeer.id, client.authId, outPeer.accessHash)
-        case ApiPeerType.Group   ⇒ GroupOffice.checkAccessHash(outPeer.id, outPeer.accessHash)
+        case ApiPeerType.Private ⇒ userExt.checkAccessHash(outPeer.id, client.authId, outPeer.accessHash)
+        case ApiPeerType.Group   ⇒ groupExt.checkAccessHash(outPeer.id, outPeer.accessHash)
       }
       val seqstateAction = for {
         isChecked ← fromFuture(accessHashCheck)
         _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
-        result ← fromFuture(DialogExtension(actorSystem).sendMessage(
+        result ← fromFuture(dialogExt.sendMessage(
           peerType = outPeer.`type`,
           peerId = outPeer.id,
           senderUserId = client.userId,

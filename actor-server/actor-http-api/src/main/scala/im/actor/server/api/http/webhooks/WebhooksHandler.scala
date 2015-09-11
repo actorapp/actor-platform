@@ -15,10 +15,9 @@ import scala.concurrent.duration._
 
 class WebhooksHandler()(
   implicit
-  val system:               ActorSystem,
-  val ec:                   ExecutionContext,
-  val groupProcessorRegion: GroupViewRegion,
-  val materializer:         Materializer
+  val system:       ActorSystem,
+  val ec:           ExecutionContext,
+  val materializer: Materializer
 ) extends RoutesHandler with OutgoingHooks with IngoingHooks with TokenStatus {
 
   implicit val timeout: Timeout = Timeout(5.seconds)

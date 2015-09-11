@@ -21,7 +21,7 @@ object GroupErrors {
   case object NoBotFound extends Exception with NoStackTrace
 }
 
-object GroupOffice extends GroupOperations {
+object GroupOffice {
   def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
 }
 

@@ -43,7 +43,7 @@ object ApnsCert {
 }
 
 class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
-  private implicit val ec: ExecutionContext = system.dispatcher
+  import system.dispatcher
 
   private val managers: Map[Int, PushManager[SimpleApnsPushNotification]] =
     config.certs.map { cert ⇒
@@ -93,10 +93,7 @@ private class LoggingRejectedNotificationListener(_system: ActorSystem) extends 
 
 private class CleanExpiredTokenListener(_system: ActorSystem) extends ExpiredTokenListener[SimpleApnsPushNotification] {
   private implicit val system: ActorSystem = _system
-  private implicit val ec: ExecutionContext = _system.dispatcher
-  private implicit val timeout: Timeout = Timeout(20.seconds)
-  private implicit val db: Database = DbExtension(_system).db
-  private implicit val userProcessorRegion: UserProcessorRegion = UserExtension(_system).processorRegion
+  implicit val db: Database = DbExtension(system).db
 
   override def handleExpiredTokens(
     pushManager:   PushManager[_ <: SimpleApnsPushNotification],
@@ -104,7 +101,7 @@ private class CleanExpiredTokenListener(_system: ActorSystem) extends ExpiredTok
   ): Unit = {
     expiredTokens foreach { t ⇒
       system.log.warning("APNS reported expired token, loggint out")
-      UserOffice.logoutByAppleToken(t.getToken)
+      UserExtension(system).logoutByAppleToken(t.getToken)
     }
   }
 }
