@@ -32,7 +32,10 @@ class ProfilePictureModal extends Component {
     }
   }
 
-  onClose = () => ProfilePictureActionCreators.hide();
+  onClose = () => {
+    ProfilePictureActionCreators.hide();
+    this.setState({profilePhoto: null});
+  };
 
   onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
@@ -42,12 +45,15 @@ class ProfilePictureModal extends Component {
   };
 
   onProfilePhotoChange = () => {
-    const input = React.findDOMNode(this.refs.crop);
-    let reader = new FileReader();
+    const input = React.findDOMNode(this.refs.image);
+    const imageForm = React.findDOMNode(this.refs.imageForm);
     const file = input.files[0];
-    console.debug(file);
+    let reader = new FileReader();
 
-    reader.onload = (event) => this.setState({profilePhoto: event.target.result});
+    reader.onload = (event) => {
+      this.setState({profilePhoto: event.target.result});
+      imageForm.reset();
+    };
     reader.readAsDataURL(file);
   };
 
@@ -55,10 +61,13 @@ class ProfilePictureModal extends Component {
     const { isOpen, profilePhoto } = this.state;
 
     const modalBody = profilePhoto ? (
-      <img src={profilePhoto}/>
+        <img src={profilePhoto}/>
     ) : [
-      <h3>Chose image to set profile picture</h3>,
-      <input type="file" ref="crop" onChange={this.onProfilePhotoChange}/>
+      <h3>Chose image to set profile picture</h3>
+    ,
+      <form ref="imageForm">
+        <input type="file" ref="image" onChange={this.onProfilePhotoChange}/>
+      </form>
     ];
 
     console.debug(modalBody);
