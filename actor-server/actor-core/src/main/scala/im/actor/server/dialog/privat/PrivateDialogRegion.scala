@@ -4,6 +4,10 @@ import akka.actor.{ ActorSystem, Props, ActorRef }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import im.actor.server.dialog.{ DialogIdContainer, DialogCommand }
 
+object PrivateDialogErrors {
+  final object MessageToSelf extends Exception("Private dialog with self is not allowed")
+}
+
 object PrivateDialogRegion {
 
   private def idExtractor: ShardRegion.IdExtractor = {

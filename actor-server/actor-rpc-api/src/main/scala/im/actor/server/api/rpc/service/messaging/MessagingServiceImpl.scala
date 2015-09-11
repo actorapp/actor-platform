@@ -1,25 +1,20 @@
 package im.actor.server.api.rpc.service.messaging
 
-import im.actor.server.dialog.DialogExtension
-import im.actor.server.dialog.privat.PrivateDialogRegion
-import im.actor.server.dialog.group.GroupDialogRegion
-
-import scala.concurrent.duration._
-
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubMediator
 import akka.util.Timeout
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.db.DbExtension
-import im.actor.server.group.{ GroupProcessorRegion, GroupExtension, GroupViewRegion }
+import im.actor.server.group.{ GroupExtension, GroupProcessorRegion, GroupViewRegion }
 import im.actor.server.models
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import im.actor.server.user.{ UserProcessorRegion, UserExtension, UserViewRegion }
+import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.duration._
 
 sealed trait Event
 
@@ -87,8 +82,6 @@ final class MessagingServiceImpl(
   protected implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
   protected implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(actorSystem).processorRegion
   protected implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
-  protected implicit val groupDialogRegion: GroupDialogRegion = DialogExtension(actorSystem).groupRegion
-  protected implicit val privateDialogRegion: PrivateDialogRegion = DialogExtension(actorSystem).privateRegion
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
   protected implicit val timeout = Timeout(30.seconds)
 }

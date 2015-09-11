@@ -6,9 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
-import im.actor.server.dialog.group.GroupDialogOperations
-import im.actor.server.dialog.privat.PrivateDialogOperations
-import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
+import im.actor.server.dialog.{ DialogExtension, ReadFailed, ReceiveFailed }
 import im.actor.server.group.{ GroupUtils, GroupOffice }
 import im.actor.server.history.HistoryUtils
 import im.actor.server.user.{ UserUtils, UserOffice }
@@ -33,18 +31,9 @@ trait HistoryHandlers {
 
   override def jhandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      val receivedFuture = peer.`type` match {
-        case ApiPeerType.Private ⇒
-          for {
-            _ ← PrivateDialogOperations.messageReceived(client.userId, peer.id, date)
-          } yield Ok(ResponseVoid)
-        case ApiPeerType.Group ⇒
-          for {
-            _ ← GroupDialogOperations.messageReceived(peer.id, client.userId, date)
-          } yield Ok(ResponseVoid)
-        case _ ⇒ throw new Exception("Not implemented")
+      DBIO.from {
+        DialogExtension(actorSystem).messageReceived(peer.`type`, client.userId, peer.id, date) map (_ ⇒ Ok(ResponseVoid))
       }
-      DBIO.from(receivedFuture)
     }
 
     db.run(toDBIOAction(action)) recover {
@@ -54,18 +43,9 @@ trait HistoryHandlers {
 
   override def jhandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      val readFuture = peer.`type` match {
-        case ApiPeerType.Private ⇒
-          for {
-            _ ← PrivateDialogOperations.messageRead(client.userId, client.authId, peer.id, date)
-          } yield Ok(ResponseVoid)
-        case ApiPeerType.Group ⇒
-          for {
-            _ ← GroupDialogOperations.messageRead(peer.id, client.userId, client.authId, date)
-          } yield Ok(ResponseVoid)
-        case _ ⇒ throw new Exception("Not implemented")
+      DBIO.from {
+        DialogExtension(actorSystem).messageRead(peer.`type`, client.userId, peer.id, client.authId, date) map (_ ⇒ Ok(ResponseVoid))
       }
-      DBIO.from(readFuture)
     }
 
     db.run(toDBIOAction(action)) recover {

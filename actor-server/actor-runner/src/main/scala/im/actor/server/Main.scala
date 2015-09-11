@@ -94,8 +94,8 @@ object Main extends App {
   implicit val userViewRegion = UserExtension(system).viewRegion
   implicit val groupProcessorRegion = GroupExtension(system).processorRegion
   implicit val groupViewRegion = GroupExtension(system).viewRegion
-  implicit val groupDialogRegion = DialogExtension(system).groupRegion
-  implicit val privateDialogRegion = DialogExtension(system).privateRegion
+  val groupDialogRegion = DialogExtension(system).groupRegion
+  val privateDialogRegion = DialogExtension(system).privateRegion
 
   IntegrationTokenMigrator.migrate()
 
