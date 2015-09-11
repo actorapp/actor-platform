@@ -7,7 +7,6 @@ import akka.stream.Materializer
 import akka.util.Timeout
 import im.actor.server.KeyValueMappings
 import im.actor.server.api.http.RoutesHandler
-import im.actor.server.dialog.group.GroupDialogRegion
 import im.actor.server.group.GroupViewRegion
 import shardakka.{ IntCodec, ShardakkaExtension }
 
@@ -19,7 +18,6 @@ class WebhooksHandler()(
   val system:               ActorSystem,
   val ec:                   ExecutionContext,
   val groupProcessorRegion: GroupViewRegion,
-  val groupDialogRegion:    GroupDialogRegion,
   val materializer:         Materializer
 ) extends RoutesHandler with OutgoingHooks with IngoingHooks with TokenStatus {
 
