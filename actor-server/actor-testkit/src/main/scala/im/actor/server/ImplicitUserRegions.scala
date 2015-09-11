@@ -11,6 +11,6 @@ trait ImplicitUserRegions extends ImplicitSocialManagerRegion with ImplicitSeqUp
 
   protected implicit val system: ActorSystem
 
-  protected implicit lazy val userProcessorRegion: UserProcessorRegion = UserExtension(system).processorRegion
-  protected implicit lazy val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
+  protected val userProcessorRegion: UserProcessorRegion = UserExtension(system).processorRegion
+  protected val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
 }

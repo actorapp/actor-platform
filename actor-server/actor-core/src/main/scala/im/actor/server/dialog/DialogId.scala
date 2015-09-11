@@ -46,18 +46,14 @@ object DialogId {
     }
   }
 
-  def getParticipants(dialogId: DialogId)(implicit system: ActorSystem, timeout: Timeout): Future[Seq[Int]] = {
+  def getParticipants(dialogId: DialogId)(implicit system: ActorSystem): Future[Seq[Int]] = {
     import system.dispatcher
 
     dialogId match {
       case PrivateDialogId(left, right) ⇒
         Future.successful(Seq(left, right))
       case GroupDialogId(groupId) ⇒
-        implicit val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-
-        for {
-          (userIds, _, _) ← GroupOffice.getMemberIds(groupId)
-        } yield userIds
+        for ((userIds, _, _) ← GroupExtension(system).getMemberIds(groupId)) yield userIds
     }
   }
 }

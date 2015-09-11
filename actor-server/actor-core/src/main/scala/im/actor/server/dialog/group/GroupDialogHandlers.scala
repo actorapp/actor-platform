@@ -6,14 +6,13 @@ import com.google.protobuf.ByteString
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.server.dialog._
 import im.actor.server.group.GroupErrors.NotAMember
-import im.actor.server.group.GroupOffice
-import im.actor.server.history.HistoryUtils
+import im.actor.server.group.GroupExtension
+import im.actor.server.history.HistoryUtils._
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.UserOffice
-import HistoryUtils._
+import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
 import org.joda.time.DateTime
 
@@ -71,7 +70,7 @@ trait GroupDialogHandlers extends UpdateCounters {
         val now = System.currentTimeMillis
         val update = UpdateMessageReceived(groupPeer, date, now)
 
-        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map UserOffice.getAuthIds) map (_.flatten.toSet)
+        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map userExt.getAuthIds) map (_.flatten.toSet)
         for {
           _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
           authIds ← authIdsF
@@ -94,16 +93,16 @@ trait GroupDialogHandlers extends UpdateCounters {
         if (memberIds contains readerUserId) {
           for {
             _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-            _ ← UserOffice.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false, deliveryId = None)
+            _ ← userExt.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false, deliveryId = None)
             counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-            _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
+            _ ← userExt.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
           } yield ()
         } else Future.successful(())
       }
 
     val joinerF: Future[Unit] = withMembers { (_, invitedUserIds, _) ⇒
       if (invitedUserIds contains readerUserId) {
-        GroupOffice.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
+        groupExt.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
       } else Future.successful(())
     }
 
@@ -119,7 +118,7 @@ trait GroupDialogHandlers extends UpdateCounters {
         if (memberIds contains readerUserId) {
           val now = new DateTime().getMillis
           val restMembers = memberIds.filterNot(_ == readerUserId)
-          val authIdsF = Future.sequence(restMembers map UserOffice.getAuthIds) map (_.flatten.toSet)
+          val authIdsF = Future.sequence(restMembers map userExt.getAuthIds) map (_.flatten.toSet)
 
           for {
             authIds ← authIdsF
@@ -142,7 +141,7 @@ trait GroupDialogHandlers extends UpdateCounters {
   }
 
   protected def withMemberIds[T](groupId: Int)(f: (Set[Int], Set[Int], Option[Int]) ⇒ Future[T]): Future[T] = {
-    GroupOffice.getMemberIds(groupId) flatMap {
+    groupExt.getMemberIds(groupId) flatMap {
       case (memberIds, invitedUserIds, optBot) ⇒
         f(memberIds.toSet, invitedUserIds.toSet, optBot)
     }

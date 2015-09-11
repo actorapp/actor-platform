@@ -1,16 +1,18 @@
 package im.actor.server.misc
 
 import akka.actor.ActorSystem
-import akka.util.Timeout
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
-import im.actor.server.group.{ GroupExtension, GroupOffice }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.server.group.GroupExtension
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 
 trait PushText {
 
-  protected def getPushText(peer: ApiPeer, outUser: Int, clientName: String, message: ApiMessage)(implicit system: ActorSystem, ec: ExecutionContext, timeout: Timeout): Future[String] = {
+  implicit val system: ActorSystem
+  import system.dispatcher
+
+  protected def getPushText(peer: ApiPeer, outUser: Int, clientName: String, message: ApiMessage): Future[String] = {
     message match {
       case ApiTextMessage(text, _, _) ⇒
         formatAuthored(peer, outUser, clientName, text)
@@ -27,10 +29,9 @@ trait PushText {
     }
   }
 
-  private def formatAuthored(peer: ApiPeer, userId: Int, authorName: String, message: String)(implicit system: ActorSystem, ec: ExecutionContext, timeout: Timeout): Future[String] = {
-    implicit val viewRegion = GroupExtension(system).viewRegion
+  private def formatAuthored(peer: ApiPeer, userId: Int, authorName: String, message: String): Future[String] = {
     peer match {
-      case ApiPeer(ApiPeerType.Group, groupId) ⇒ GroupOffice.getApiStruct(groupId, userId) map (g ⇒ s"$authorName@${g.title}: $message")
+      case ApiPeer(ApiPeerType.Group, groupId) ⇒ GroupExtension(system).getApiStruct(groupId, userId) map (g ⇒ s"$authorName@${g.title}: $message")
       case ApiPeer(ApiPeerType.Private, _)     ⇒ Future.successful(s"$authorName: $message")
     }
   }

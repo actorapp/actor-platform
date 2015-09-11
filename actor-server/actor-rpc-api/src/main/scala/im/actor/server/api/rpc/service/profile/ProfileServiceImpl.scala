@@ -45,10 +45,8 @@ class ProfileServiceImpl()(
 
   private implicit val timeout = Timeout(5.seconds)
   // TODO: configurable
-  private implicit val db: Database = DbExtension(actorSystem).db
-  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
-  private implicit val userProcessorRegion: UserProcessorRegion = UserExtension(actorSystem).processorRegion
-  private implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
+  private val db: Database = DbExtension(actorSystem).db
+  private val userExt = UserExtension(actorSystem)
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
   private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
 
@@ -60,7 +58,7 @@ class ProfileServiceImpl()(
         scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
           case Right(avatar) ⇒
             for {
-              UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(UserOffice.updateAvatar(client.userId, client.authId, Some(avatar)))
+              UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, client.authId, Some(avatar)))
             } yield Ok(ResponseEditAvatar(
               avatar.get,
               seq,
@@ -80,7 +78,7 @@ class ProfileServiceImpl()(
   override def jhandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
-        UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(UserOffice.updateAvatar(client.userId, client.authId, None))
+        UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, client.authId, None))
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
@@ -89,7 +87,7 @@ class ProfileServiceImpl()(
 
   override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      DBIO.from(UserOffice.changeName(client.userId, name) map {
+      DBIO.from(userExt.changeName(client.userId, name) map {
         case SeqState(seq, state) ⇒ Ok(ResponseSeq(seq, state.toByteArray))
       })
     }
@@ -107,7 +105,7 @@ class ProfileServiceImpl()(
             _ ← fromDBIOBoolean(ProfileErrors.NicknameBusy)(persist.User.nicknameExists(checkExist).map(exist ⇒ !exist))
           } yield ()
         } else point(())
-        SeqState(seq, state) ← fromFuture(UserOffice.changeNickname(client.userId, client.authId, trimmed))
+        SeqState(seq, state) ← fromFuture(userExt.changeNickname(client.userId, client.authId, trimmed))
       } yield ResponseSeq(seq, state.toByteArray)
       action.run
     }
@@ -131,7 +129,7 @@ class ProfileServiceImpl()(
         trimmed ← point(about.map(_.trim))
         _ ← fromBoolean(ProfileErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
 
-        SeqState(seq, state) ← fromFuture(UserOffice.changeAbout(client.userId, client.authId, trimmed))
+        SeqState(seq, state) ← fromFuture(userExt.changeAbout(client.userId, client.authId, trimmed))
       } yield ResponseSeq(seq, state.toByteArray)
       action.run
     }

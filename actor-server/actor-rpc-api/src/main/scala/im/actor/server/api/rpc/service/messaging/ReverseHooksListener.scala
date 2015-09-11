@@ -3,13 +3,11 @@ package im.actor.server.api.rpc.service.messaging
 import akka.actor._
 import akka.contrib.pattern.ClusterSingletonManager
 import akka.event.Logging
-import akka.util.Timeout
 import im.actor.server.db.DbExtension
-import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
+import im.actor.server.group.GroupExtension
 import im.actor.server.persist
 import im.actor.util.log.AnyRefLogSource
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 object ReverseHooksListener {
@@ -40,10 +38,8 @@ private[messaging] final class ReverseHooksListener(mediator: ActorRef) extends 
   import ReverseHooksListener._
   import ReverseHooksWorker._
 
-  private[this] implicit val ec: ExecutionContext = context.dispatcher
   private[this] implicit val system: ActorSystem = context.system
-  private[this] implicit val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-  private[this] implicit val timeout: Timeout = Timeout(5.seconds)
+  import system.dispatcher
 
   private[this] val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute, self, RefetchGroups)
   private[this] val db = DbExtension(system).db
@@ -82,7 +78,7 @@ private[messaging] final class ReverseHooksListener(mediator: ActorRef) extends 
   private def createGroupInterceptor(groupId: Int): Unit = {
     log.debug("Creating interceptor for group {}", groupId)
     for {
-      optToken ← GroupOffice.getIntegrationToken(groupId)
+      optToken ← GroupExtension(system).getIntegrationToken(groupId)
     } yield {
       optToken.map { token ⇒
         context.actorOf(

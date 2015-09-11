@@ -36,8 +36,10 @@ object SeqUpdatesManager {
     ActorSerializer.register(60002, classOf[SeqStateDate])
   }
 
-  def getSeqState(authId: Long)(implicit ext: SeqUpdatesExtension, ec: ExecutionContext): Future[SeqState] =
+  def getSeqState(authId: Long)(implicit system: ActorSystem): Future[SeqState] = {
+    val ext = SeqUpdatesExtension(system)
     ext.region.ref.ask(GetSeqState(authId))(OperationTimeout).mapTo[SeqState]
+  }
 
   def persistAndPushUpdate(
     authId:     Long,
@@ -45,11 +47,7 @@ object SeqUpdatesManager {
     pushText:   Option[String],
     isFat:      Boolean        = false,
     deliveryId: Option[String] = None
-  )(
-    implicit
-    ec:  ExecutionContext,
-    ext: SeqUpdatesExtension
-  ): DBIO[SeqState] = {
+  )(implicit system: ActorSystem): DBIO[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -65,9 +63,7 @@ object SeqUpdatesManager {
     originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
-  )(implicit
-    ext: SeqUpdatesExtension,
-    ec: ExecutionContext): DBIO[SeqState] =
+  )(implicit system: ActorSystem): DBIO[SeqState] =
     DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
 
   def persistAndPushUpdateF(
@@ -76,11 +72,7 @@ object SeqUpdatesManager {
     pushText:   Option[String],
     isFat:      Boolean        = false,
     deliveryId: Option[String] = None
-  )(
-    implicit
-    ec:  ExecutionContext,
-    ext: SeqUpdatesExtension
-  ): Future[SeqState] = {
+  )(implicit system: ActorSystem): Future[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -96,9 +88,7 @@ object SeqUpdatesManager {
     originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
-  )(implicit
-    ext: SeqUpdatesExtension,
-    ec: ExecutionContext): Future[SeqState] =
+  )(implicit system: ActorSystem): Future[SeqState] =
     pushUpdateGetSeqState(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
 
   def persistAndPushUpdates(
@@ -107,9 +97,7 @@ object SeqUpdatesManager {
     pushText:   Option[String],
     isFat:      Boolean        = false,
     deliveryId: Option[String] = None
-  )(implicit
-    ec: ExecutionContext,
-    ext: SeqUpdatesExtension): DBIO[Seq[SeqState]] = {
+  )(implicit system: ActorSystem): DBIO[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -122,9 +110,7 @@ object SeqUpdatesManager {
     pushText:   Option[String],
     isFat:      Boolean        = false,
     deliveryId: Option[String] = None
-  )(implicit
-    ec: ExecutionContext,
-    ext: SeqUpdatesExtension): Future[Seq[SeqState]] = {
+  )(implicit system: ActorSystem): Future[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -140,9 +126,7 @@ object SeqUpdatesManager {
     originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
-  )(implicit
-    ec: ExecutionContext,
-    ext: SeqUpdatesExtension): DBIO[Seq[SeqState]] =
+  )(implicit system: ActorSystem): DBIO[Seq[SeqState]] =
     DBIO.sequence(authIds.toSeq map { authId ⇒
       persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     })
@@ -156,12 +140,12 @@ object SeqUpdatesManager {
     originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
-  )(implicit
-    ec: ExecutionContext,
-    ext: SeqUpdatesExtension): Future[Seq[SeqState]] =
+  )(implicit system: ActorSystem): Future[Seq[SeqState]] = {
+    import system.dispatcher
     Future.sequence(authIds.toSeq map { authId ⇒
       persistAndPushUpdateF(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     })
+  }
 
   def broadcastClientAndUsersUpdate(
     clientUserId: Int,
@@ -171,9 +155,9 @@ object SeqUpdatesManager {
     pushText:     Option[String],
     isFat:        Boolean        = false,
     deliveryId:   Option[String] = None
-  )(implicit
-    ec: ExecutionContext,
-    ext: SeqUpdatesExtension): DBIO[(SeqState, Seq[SeqState])] = {
+  )(implicit system: ActorSystem): DBIO[(SeqState, Seq[SeqState])] = {
+    import system.dispatcher
+
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -198,11 +182,9 @@ object SeqUpdatesManager {
     pushText:      Option[String],
     isFat:         Boolean        = false,
     deliveryId:    Option[String] = None
-  )(
-    implicit
-    ec:  ExecutionContext,
-    ext: SeqUpdatesExtension
-  ): DBIO[SeqState] = {
+  )(implicit system: ActorSystem): DBIO[SeqState] = {
+    import system.dispatcher
+
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -219,7 +201,8 @@ object SeqUpdatesManager {
   def setPushCredentials(
     authId: Long,
     creds:  models.push.PushCredentials
-  )(implicit ext: SeqUpdatesExtension): Unit = {
+  )(implicit system: ActorSystem): Unit = {
+    val ext = SeqUpdatesExtension(system)
     val msg = creds match {
       case c: models.push.GooglePushCredentials ⇒
         PushCredentialsUpdated(authId).withGoogle(GooglePushCredentials(c.projectId, c.regId))
@@ -230,16 +213,19 @@ object SeqUpdatesManager {
     ext.region.ref ! msg
   }
 
-  def deletePushCredentials(authId: Long)(implicit ext: SeqUpdatesExtension): Unit = {
+  def deletePushCredentials(authId: Long)(implicit system: ActorSystem): Unit = {
+    val ext = SeqUpdatesExtension(system)
     ext.region.ref ! PushCredentialsDeleted(authId)
   }
 
-  def deleteApplePushToken(token: Array[Byte])(implicit ec: ExecutionContext, system: ActorSystem): Unit = {
-    val seqRegion = SeqUpdatesExtension(system).region
+  def deleteApplePushToken(token: Array[Byte])(implicit system: ActorSystem): Unit = {
+    import system.dispatcher
+
+    val ext = SeqUpdatesExtension(system)
 
     DbExtension(system).db.run(p.push.ApplePushCredentials.findByToken(token)) foreach { creds ⇒
       creds foreach { c ⇒
-        seqRegion.ref ! PushCredentialsDeleted(c.authId)
+        ext.region.ref ! PushCredentialsDeleted(c.authId)
       }
     }
   }
@@ -372,6 +358,7 @@ object SeqUpdatesManager {
     ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
   }
 
+  //todo: call seqUpdates extension here maybe?
   private def pushUpdateGetSeqState(
     authId:         Long,
     header:         Int,
@@ -381,9 +368,8 @@ object SeqUpdatesManager {
     originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
-  )(implicit
-    ext: SeqUpdatesExtension,
-    ec: ExecutionContext): Future[SeqState] = {
+  )(implicit system: ActorSystem): Future[SeqState] = {
+    val ext = SeqUpdatesExtension(system)
     ext.region.ref.ask(
       PushUpdate(
         authId, deliveryId, header, ByteString.copyFrom(serializedData), refs, isFat, pushText, originPeer

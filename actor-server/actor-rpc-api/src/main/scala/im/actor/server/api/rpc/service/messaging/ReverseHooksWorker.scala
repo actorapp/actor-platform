@@ -49,7 +49,6 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
   private[this] implicit val ec: ExecutionContext = system.dispatcher
   private[this] implicit val timeout: Timeout = Timeout(5.seconds)
   private[this] implicit val materializer: Materializer = ActorMaterializer()
-  private[this] implicit val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
 
   private[this] val scheduledResubscribe = system.scheduler.schedule(Duration.Zero, 1.minute, self, Resubscribe)
   private[this] val reverseHooksKv = ShardakkaExtension(system).simpleKeyValue(KeyValueMappings.ReverseHooks + "_" + token)
@@ -74,7 +73,7 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
       val parsed = ApiMessage.parseFrom(CodedInputStream.newInstance(message.toByteArray))
 
       val optNickname = from match {
-        case models.Peer(Private, id) ⇒ UserOffice.getApiStruct(id, 0, 0L) map (_.nick)
+        case models.Peer(Private, id) ⇒ UserExtension(system).getApiStruct(id, 0, 0L) map (_.nick)
         case models.Peer(Group, _)    ⇒ Future.successful(None)
       }
 
