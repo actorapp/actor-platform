@@ -9,16 +9,17 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ApiServiceMessage
 import im.actor.api.rpc.misc.ApiExtension
+import im.actor.api.rpc.peers.ApiPeerType
 import im.actor.api.rpc.users.ApiSex
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
+import im.actor.server.dialog.DialogExtension
 import im.actor.server.history.HistoryUtils
 import im.actor.server.{ persist ⇒ p, models }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ ImageUtils, Avatar }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
-import im.actor.server.dialog.group.GroupDialogOperations
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserOffice
@@ -182,7 +183,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               for {
                 exists ← p.GroupUser.exists(groupId, joiningUserId)
                 _ ← if (exists) DBIO.successful(()) else p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
-                seqstatedate ← DBIO.from(GroupDialogOperations.sendMessage(groupId, joiningUserId, joiningUserAuthId, randomId, GroupServiceMessages.userJoined, isFat = true))
+                seqstatedate ← DBIO.from(DialogExtension(system).sendMessage(
+                  peerType = ApiPeerType.Group,
+                  peerId = groupId,
+                  senderUserId = joiningUserId,
+                  senderAuthId = joiningUserAuthId,
+                  randomId = randomId,
+                  message = GroupServiceMessages.userJoined,
+                  isFat = true
+                ))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
           } yield updates

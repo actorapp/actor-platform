@@ -9,11 +9,9 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.DialogExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, Avatar }
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
-import im.actor.server.dialog.group.GroupDialogRegion
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
 import org.joda.time.DateTime
@@ -143,11 +141,6 @@ private[group] final class GroupProcessor
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
   protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
-
-  //Declared lazy because of cyclic dependency between GroupDialogRegion and GroupProcessorRegion.
-  //It lead to problems with initialization of extensions.
-  //Such bugs are hard to catch. One should avoid such behaviour
-  lazy protected implicit val groupDialogRegion: GroupDialogRegion = DialogExtension(system).groupRegion
 
   protected val groupId = self.path.name.toInt
 
