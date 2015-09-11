@@ -1,24 +1,21 @@
 package im.actor.server.notifications
 
-import akka.util.Timeout
-import im.actor.server.group.{ GroupOffice, GroupViewRegion }
+import akka.actor.ActorSystem
+import im.actor.server.db.DbExtension
+import im.actor.server.group.GroupExtension
 import im.actor.server.models.PeerType
-import im.actor.server.user.{ UserOffice, UserViewRegion }
+import im.actor.server.user.UserExtension
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 
-class UnreadWatcher(implicit
-  db: Database,
-                    config:      UnreadWatcherConfig,
-                    ec:          ExecutionContext,
-                    userRegion:  UserViewRegion,
-                    timeout:     Timeout,
-                    groupRegion: GroupViewRegion) {
+class UnreadWatcher()(implicit system: ActorSystem, config: UnreadWatcherConfig) {
+  import system.dispatcher
 
+  private val db: Database = DbExtension(system).db
   private val unreadTimeout = config.unreadTimeout.toMillis
 
   def getNotifications: Future[Seq[Notification]] = {
@@ -49,8 +46,8 @@ class UnreadWatcher(implicit
 
   private def getNameByPeer(userId: Int, peer: models.Peer): Future[Option[String]] = {
     (if (peer.typ == PeerType.Private)
-      UserOffice.getApiStruct(peer.id, userId, 0L) map (u ⇒ u.localName.getOrElse(u.name))
-    else GroupOffice.getApiStruct(peer.id, userId) map (_.title)) map (Some(_))
+      UserExtension(system).getApiStruct(peer.id, userId, 0L) map (u ⇒ u.localName.getOrElse(u.name))
+    else GroupExtension(system).getApiStruct(peer.id, userId) map (_.title)) map (Some(_))
   }
 
 }

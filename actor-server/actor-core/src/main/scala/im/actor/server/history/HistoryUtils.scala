@@ -25,12 +25,8 @@ object HistoryUtils {
     randomId:             Long,
     messageContentHeader: Int,
     messageContentData:   Array[Byte]
-  )(
-    implicit
-    ec:      ExecutionContext,
-    system:  ActorSystem,
-    timeout: Timeout
-  ): DBIO[Unit] = {
+  )(implicit system: ActorSystem): DBIO[Unit] = {
+    import system.dispatcher
     requirePrivatePeer(fromPeer)
     // requireDifferentPeers(fromPeer, toPeer)
 
@@ -62,8 +58,7 @@ object HistoryUtils {
         res ← persist.Dialog.updateLastMessageDate(toPeer.id, fromPeer, date)
       } yield ()
     } else if (toPeer.typ == models.PeerType.Group) {
-      implicit val groupViewRegion = GroupExtension(system).viewRegion
-      DBIO.from(GroupOffice.isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒
+      DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒
         withGroupUserIds(toPeer.id) { groupUserIds ⇒
           if (isHistoryShared) {
             val historyMessage = models.HistoryMessage(sharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
@@ -140,18 +135,13 @@ object HistoryUtils {
     }
   }
 
-  def withHistoryOwner[A](peer: models.Peer)(f: Int ⇒ DBIO[A])(
-    implicit
-    ec:      ExecutionContext,
-    system:  ActorSystem,
-    timeout: Timeout,
-    client:  AuthorizedClientData
-  ): DBIO[A] = {
+  def withHistoryOwner[A](peer: models.Peer)(f: Int ⇒ DBIO[A])(implicit system: ActorSystem, client: AuthorizedClientData): DBIO[A] = {
+    import system.dispatcher
     (peer.typ match {
       case models.PeerType.Private ⇒ DBIO.successful(client.userId)
       case models.PeerType.Group ⇒
         implicit val groupViewRegion = GroupExtension(system).viewRegion
-        DBIO.from(GroupOffice.isHistoryShared(peer.id)) flatMap { isHistoryShared ⇒
+        DBIO.from(GroupExtension(system).isHistoryShared(peer.id)) flatMap { isHistoryShared ⇒
           if (isHistoryShared) {
             DBIO.successful(sharedUserId)
           } else {

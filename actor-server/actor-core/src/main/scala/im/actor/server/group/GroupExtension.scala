@@ -1,14 +1,21 @@
 package im.actor.server.group
 
 import akka.actor._
+import akka.util.Timeout
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 
 sealed trait GroupExtension extends Extension
 
-final class GroupExtensionImpl(system: ActorSystem) extends GroupExtension {
+final class GroupExtensionImpl(system: ActorSystem) extends GroupExtension with GroupOperations {
   GroupProcessor.register()
 
   lazy val processorRegion: GroupProcessorRegion = GroupProcessorRegion.start()(system)
   lazy val viewRegion: GroupViewRegion = GroupViewRegion(processorRegion.ref)
+
+  implicit val timeout: Timeout = Timeout(20.seconds)
+  implicit val ec: ExecutionContext = system.dispatcher
 }
 
 object GroupExtension extends ExtensionId[GroupExtensionImpl] with ExtensionIdProvider {

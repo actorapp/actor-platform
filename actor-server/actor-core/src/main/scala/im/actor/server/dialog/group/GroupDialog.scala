@@ -51,13 +51,10 @@ class GroupDialog extends DialogProcessor[GroupDialogState, GroupDialogEvent] wi
   protected implicit val system: ActorSystem = context.system
   protected implicit val ec: ExecutionContext = system.dispatcher
 
-  protected implicit val db: Database = DbExtension(system).db
+  protected val db: Database = DbExtension(system).db
   protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
-  protected implicit val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-  protected implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(system).processorRegion
-  protected implicit val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
-  protected implicit val userProcessorRegion: UserProcessorRegion = UserExtension(context.system).processorRegion
-  protected implicit val timeout = Timeout(5.seconds)
+  protected val groupExt = GroupExtension(system)
+  protected val userExt = UserExtension(system)
 
   protected val delivery = new MessageDelivery()
 
