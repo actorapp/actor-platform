@@ -27,7 +27,7 @@ gwt {
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/java', '../core/src/main/java', '../runtime/src/main/java', '../runtime-js/src/main/java']
+            srcDirs = ['src/main/java', '../core/src/main/java', '../core/src/ext/java', '../runtime/src/main/java', '../runtime-js/src/main/java']
         }
         resources {
             srcDirs = ['../core/src/main/resources']
