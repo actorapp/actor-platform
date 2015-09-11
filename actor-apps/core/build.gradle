@@ -10,6 +10,7 @@ project(':core') {
         main {
             java {
                 srcDirs = ['src/main/java',
+                           'src/ext/java',
                            '../runtime/src/main/java',
                            '../runtime/src/template/java']
             }

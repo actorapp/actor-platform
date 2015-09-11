@@ -23,6 +23,7 @@ import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.i18n.I18nEngine;
+import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.events.AppVisibleChanged;
 import im.actor.core.modules.events.DialogsClosed;
@@ -1806,25 +1807,20 @@ public class Messenger {
         return modules.getPreferences();
     }
 
-
-    /**
-     * Executing external command
-     *
-     * @param request command request
-     * @param <T>     return type
-     * @return Command
-     */
-    @NotNull
-    @ObjectiveCName("executeExternalCommand:")
-    public <T extends Response> Command<T> executeExternalCommand(@NotNull Request<T> request) {
-        return modules.getExternalModule().externalMethod(request);
-    }
-
     /**
      * Force checking of connection
      */
     @ObjectiveCName("forceNetworkCheck")
     public void forceNetworkCheck() {
         modules.getActorApi().forceNetworkCheck();
+    }
+
+    /**
+     * Get modules of messenger for extensions
+     *
+     * @return Module Contexts
+     */
+    ModuleContext getModuleContext() {
+        return modules;
     }
 }

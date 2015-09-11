@@ -25,12 +25,12 @@ if (project.hasProperty('buildIndex')) {
 
 android {
 
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode Integer.valueOf(customVersionCode)
         versionName project.version
         applicationId "im.actor"
@@ -138,20 +138,6 @@ android {
         abortOnError false
     }
 }
-//
-//apt {
-//    arguments {
-//        androidManifestFile variant.outputs[0].processResources.manifestFile
-//        // if you have multiple outputs (when using splits), you may want to have other index than 0
-//
-//        // you should set your package name here if you are using different application IDs
-//        // resourcePackageName "your.package.name"
-//
-//        // You can set optional annotation processing options here, like these commented options:
-//        // logLevel 'INFO'
-//        // logFile '/var/log/aa.log'
-//    }
-//}
 
 dependencies {
 
@@ -173,11 +159,11 @@ dependencies {
     compile files('libs/libphonenumber-5.9.jar')
 
     // Android Support
-    compile 'com.android.support:support-v4:22.2.1'
-    compile 'com.android.support:support-v13:22.1.1'
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:palette-v7:22.1.1'
-    compile 'com.android.support:recyclerview-v7:22.1.1'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:support-v13:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:palette-v7:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
 
     //GCM
     releaseCompile 'com.google.android.gms:play-services-gcm:7.5.0'
