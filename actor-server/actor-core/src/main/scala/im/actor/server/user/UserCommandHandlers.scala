@@ -79,7 +79,7 @@ private[user] trait UserCommandHandlers {
       val update = UpdateUserNameChanged(userId, name)
       for {
         relatedUserIds ← getRelations(userId)
-        _ ← UserOffice.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
+        _ ← userExt.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false, deliveryId = None)
         seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, pushText = None, isFat = false)
       } yield seqstate
@@ -114,7 +114,7 @@ private[user] trait UserCommandHandlers {
       for {
         _ ← db.run(p.User.setNickname(userId, nickname))
         relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
+        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield seqstate
     }
   }
@@ -125,7 +125,7 @@ private[user] trait UserCommandHandlers {
       for {
         _ ← db.run(p.User.setAbout(userId, about))
         relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
+        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield seqstate
     }
   }
@@ -141,7 +141,7 @@ private[user] trait UserCommandHandlers {
       for {
         _ ← db.run(p.AvatarData.createOrUpdate(avatarData))
         relatedUserIds ← relationsF
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
+        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
     }
   }
@@ -159,7 +159,7 @@ private[user] trait UserCommandHandlers {
         val localName = contact.name
         for {
           _ ← addContact(contact.ownerUserId, user.id, phoneNumber, localName, user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
+          _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
@@ -191,7 +191,7 @@ private[user] trait UserCommandHandlers {
         val localName = contact.name
         for {
           _ ← addContact(contact.ownerUserId, user.id, email, localName, user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
+          _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),

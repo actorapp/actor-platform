@@ -65,8 +65,7 @@ class PrivateDialog extends DialogProcessor[PrivateDialogState, PrivateDialogEve
   protected implicit val system: ActorSystem = context.system
 
   protected val db: Database = DbExtension(system).db
-  protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
-  protected implicit val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
+  protected val userExt = UserExtension(system)
   protected implicit val socialRegion = SocialExtension(system).region
   protected implicit val timeout = Timeout(5.seconds)
 

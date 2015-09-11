@@ -10,7 +10,6 @@ import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
-import im.actor.server.user.UserOffice
 import HistoryUtils._
 import im.actor.util.cache.CacheHelpers._
 import org.joda.time.DateTime
@@ -62,7 +61,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
 
       val update = UpdateMessageReceived(privatePeerStruct(receiverUserId), date, now)
       for {
-        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
+        _ ← userExt.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
         _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userState.peerId), new DateTime(date)))
       } yield MessageReceivedAck()
     } else {
@@ -87,13 +86,13 @@ trait PrivateDialogHandlers extends UpdateCounters {
       val update = UpdateMessageRead(privatePeerStruct(readerUserId), date, now)
       val readerUpdate = UpdateMessageReadByMe(privatePeerStruct(userState.peerId), date)
       for {
-        _ ← UserOffice.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
+        _ ← userExt.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
         counterUpdate ← db.run(for {
           _ ← markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userState.peerId), new DateTime(date))
           u ← getUpdateCountersChanged(readerUserId)
         } yield u)
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
-        _ ← UserOffice.notifyUserUpdate(readerUserId, readerAuthId, readerUpdate, None, isFat = false, deliveryId = None)
+        _ ← userExt.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
+        _ ← userExt.notifyUserUpdate(readerUserId, readerAuthId, readerUpdate, None, isFat = false, deliveryId = None)
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())

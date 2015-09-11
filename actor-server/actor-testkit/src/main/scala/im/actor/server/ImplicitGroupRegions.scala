@@ -11,6 +11,6 @@ trait ImplicitGroupRegions extends ImplicitUserRegions with ImplicitFileStorageA
 
   protected implicit val system: ActorSystem
 
-  protected implicit lazy val groupProcessorRegion: GroupProcessorRegion = GroupExtension(system).processorRegion
-  protected implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
+  protected val groupProcessorRegion: GroupProcessorRegion = GroupExtension(system).processorRegion
+  protected val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
 }

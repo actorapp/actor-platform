@@ -133,11 +133,8 @@ private[group] final class GroupProcessor
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
-  protected implicit val db: Database = DbExtension(system).db
-  protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
-  protected implicit val groupViewRegion: GroupViewRegion = GroupViewRegion(context.parent)
-  protected implicit val userProcessorRegion: UserProcessorRegion = UserExtension(context.system).processorRegion
-  protected implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
+  protected val db: Database = DbExtension(system).db
+  protected val userExt = UserExtension(system)
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
   protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)

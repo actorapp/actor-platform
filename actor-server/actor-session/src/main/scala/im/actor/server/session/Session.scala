@@ -25,7 +25,7 @@ import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesManagerRegion }
-import im.actor.server.user.{ UserOffice, AuthEvents }
+import im.actor.server.user.{ UserExtension, AuthEvents }
 import im.actor.server.{ models, persist }
 
 case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
@@ -115,7 +115,7 @@ class Session(mediator: ActorRef)(
       val replyTo = sender()
       stash()
 
-      val subscribe = DistributedPubSubMediator.Subscribe(UserOffice.authIdTopic(authId), self)
+      val subscribe = DistributedPubSubMediator.Subscribe(UserExtension(context.system).authIdTopic(authId), self)
       mediator ! subscribe
 
       context.become(waitingForSessionInfo(authId, sessionId, subscribe))

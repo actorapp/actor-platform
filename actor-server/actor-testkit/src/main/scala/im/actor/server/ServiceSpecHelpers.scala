@@ -115,8 +115,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     createUser(createAuthId(), phoneNumber)
 
   def getOutPeer(userId: Int, clientAuthId: Long): ApiOutPeer = {
-    implicit val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
-    val accessHash = Await.result(UserOffice.getAccessHash(userId, clientAuthId), 5.seconds)
+    val accessHash = Await.result(UserExtension(system).getAccessHash(userId, clientAuthId), 5.seconds)
     ApiOutPeer(ApiPeerType.Private, userId, accessHash)
   }
 
