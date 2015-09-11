@@ -1,8 +1,6 @@
 package im.actor.server
 
 import akka.actor.ActorSystem
-import im.actor.server.dialog.DialogExtension
-import im.actor.server.dialog.group.GroupDialogRegion
 import im.actor.server.group.{ GroupExtension, GroupProcessor, GroupProcessorRegion, GroupViewRegion }
 import org.scalatest.Suite
 
@@ -15,5 +13,4 @@ trait ImplicitGroupRegions extends ImplicitUserRegions with ImplicitFileStorageA
 
   protected implicit lazy val groupProcessorRegion: GroupProcessorRegion = GroupExtension(system).processorRegion
   protected implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-  protected implicit lazy val groupDialogRegion: GroupDialogRegion = DialogExtension(system).groupRegion
 }

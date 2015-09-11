@@ -1,22 +1,19 @@
 package im.actor.server.api.rpc.service.messaging
 
-import im.actor.api.rpc._
-import im.actor.server.dialog.group.GroupDialogOperations
-import im.actor.server.dialog.privat.{ PrivateDialogErrors, PrivateDialogOperations }
-import im.actor.server.sequence.SeqStateDate
-
-import scala.concurrent._
-import scala.concurrent.duration._
-
 import akka.util.Timeout
-import DBIOResult._
-
+import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
+import im.actor.server.dialog.DialogExtension
+import im.actor.server.dialog.privat.PrivateDialogErrors
 import im.actor.server.group.{ GroupErrors, GroupOffice }
+import im.actor.server.sequence.SeqStateDate
 import im.actor.server.user.UserOffice
+
+import scala.concurrent._
+import scala.concurrent.duration._
 
 private[messaging] trait MessagingHandlers {
   self: MessagingServiceImpl ⇒
@@ -28,20 +25,22 @@ private[messaging] trait MessagingHandlers {
 
   override def jhandleSendMessage(outPeer: ApiOutPeer, randomId: Long, message: ApiMessage, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      val seqstateAction = outPeer.`type` match {
-        case ApiPeerType.Private ⇒
-          for {
-            isChecked ← fromFuture(UserOffice.checkAccessHash(outPeer.id, client.authId, outPeer.accessHash))
-            _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
-            result ← fromFuture(PrivateDialogOperations.sendMessage(outPeer.id, client.userId, client.authId, randomId, message))
-          } yield result
-        case ApiPeerType.Group ⇒
-          for {
-            isChecked ← fromFuture(GroupOffice.checkAccessHash(outPeer.id, outPeer.accessHash))
-            _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
-            result ← fromFuture(GroupDialogOperations.sendMessage(outPeer.id, client.userId, client.authId, randomId, message))
-          } yield result
+      val accessHashCheck = outPeer.`type` match {
+        case ApiPeerType.Private ⇒ UserOffice.checkAccessHash(outPeer.id, client.authId, outPeer.accessHash)
+        case ApiPeerType.Group   ⇒ GroupOffice.checkAccessHash(outPeer.id, outPeer.accessHash)
       }
+      val seqstateAction = for {
+        isChecked ← fromFuture(accessHashCheck)
+        _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
+        result ← fromFuture(DialogExtension(actorSystem).sendMessage(
+          peerType = outPeer.`type`,
+          peerId = outPeer.id,
+          senderUserId = client.userId,
+          senderAuthId = client.authId,
+          randomId = randomId,
+          message = message
+        ))
+      } yield result
 
       (for (SeqStateDate(seq, state, date) ← seqstateAction) yield {
         val fromPeer = ApiPeer(ApiPeerType.Private, client.userId)

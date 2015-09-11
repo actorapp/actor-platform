@@ -43,7 +43,6 @@ class MessagingServiceSpec
   object s {
     implicit val ec = system.dispatcher
 
-    implicit val sessionRegion = buildSessionRegionProxy()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
