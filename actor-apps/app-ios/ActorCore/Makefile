@@ -52,6 +52,7 @@ SOURCE_ROOTS = \
 	$(APPS_ROOT)/runtime/src/generic/java \
 	$(APPS_ROOT)/runtime-cocoa/src/main/java \
 	$(APPS_ROOT)/core/src/main/java \
+    $(APPS_ROOT)/core/src/ext/java \
 	$(APPS_ROOT)/core-cocoa/src/main/java
 
 EXCLUDED_CLASSES = \
