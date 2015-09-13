@@ -66,7 +66,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
     func shakeView(view: UIView, originalX: CGFloat) {
         var r = view.frame
         r.origin.x = originalX
-        var originalFrame = r
+        let originalFrame = r
         var rFirst = r
         rFirst.origin.x = r.origin.x + 4
         r.origin.x = r.origin.x - 4
@@ -88,8 +88,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
     }
     
     func applyScrollUi(tableView: UITableView, cell: UITableViewCell?) {
-        var maxOffset = tableView.frame.width - avatarHeight
-        var offset = min(tableView.contentOffset.y, avatarHeight)
+        let offset = min(tableView.contentOffset.y, avatarHeight)
         
         if let userCell = cell as? UserPhotoCell {
             userCell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, avatarHeight - offset)
@@ -120,7 +119,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
     func pickAvatar(takePhoto:Bool, closure: (image: UIImage) -> ()) {
         self.pendingPickClosure = closure
         
-        var pickerController = AAImagePickerController()
+        let pickerController = AAImagePickerController()
         pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
         pickerController.mediaTypes = [kUTTypeImage as String]
         pickerController.view.backgroundColor = MainAppTheme.list.bgColor
@@ -152,7 +151,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
 extension AAViewController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
     
     func cropImage(image: UIImage) {
-        var cropController = PECropViewController()
+        let cropController = PECropViewController()
         cropController.cropAspectRatio = 1.0
         cropController.keepingCropAspectRatio = true
         cropController.image = image

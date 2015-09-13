@@ -30,8 +30,8 @@ class BasicCell : UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        var width = self.contentView.frame.width;
-        var height = self.contentView.frame.height;
+        let width = self.contentView.frame.width;
+        let height = self.contentView.frame.height;
 
         separatorView.frame = CGRectMake(CGFloat(separatorPadding), CGFloat(height - 0.5), width - CGFloat(separatorPadding), CGFloat(0.5));
     }

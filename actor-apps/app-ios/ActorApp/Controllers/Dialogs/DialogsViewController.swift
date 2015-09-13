@@ -71,23 +71,6 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     override func viewDidLoad() {
         
-        // Footer
-        var footer = TableViewHeader(frame: CGRectMake(0, 0, 320, 80));
-        
-        var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
-        footerHint.textAlignment = NSTextAlignment.Center;
-        footerHint.font = UIFont.systemFontOfSize(16);
-        footerHint.textColor = MainAppTheme.list.hintColor
-        footerHint.text = NSLocalizedString("DialogsHint", comment: "Swipe hint")
-        footer.addSubview(footerHint);
-        
-        var shadow = UIImageView(image: UIImage(named: "CardBottom2"));
-        shadow.frame = CGRectMake(0, 0, 320, 4);
-        shadow.contentMode = UIViewContentMode.ScaleToFill;
-        footer.addSubview(shadow);
-        
-        self.tableView.tableFooterView = footer;
-        
         bindTable(tableView, fade: true);
         
         searchView = UISearchBar()
@@ -104,14 +87,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsTableView.backgroundColor = MainAppTheme.list.backyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        var header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        let header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
         header.addSubview(searchDisplay!.searchBar)
-
-//        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-//        headerShadow.image = UIImage(named: "CardTop2");
-//        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-//        header.addSubview(headerShadow);
-        
         tableView.tableHeaderView = header
         
         searchSource = DialogsSearchSource(searchDisplay: searchDisplay!)
@@ -156,8 +133,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         super.viewWillAppear(animated)
         
         // SearchBar hack
-        var searchBar = searchDisplay!.searchBar
-        var superView = searchBar.superview
+        let searchBar = searchDisplay!.searchBar
+        let superView = searchBar.superview
         if !(superView is UITableView) {
             searchBar.removeFromSuperview()
             superView?.addSubview(searchBar)
@@ -219,7 +196,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
-            var dialog = objectAtIndexPath(indexPath) as! ACDialog
+            let dialog = objectAtIndexPath(indexPath) as! ACDialog
             
             execute(Actor.deleteChatCommandWithPeer(dialog.getPeer()));
         }
@@ -239,17 +216,17 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        var dialog = item as! ACDialog;
+        let dialog = item as! ACDialog;
         let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
         (cell as! DialogCell).bindDialog(dialog, isLast: isLast);
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if (tableView == self.tableView) {
-            var dialog = objectAtIndexPath(indexPath) as! ACDialog
+            let dialog = objectAtIndexPath(indexPath) as! ACDialog
             navigateToMessagesWithPeer(dialog.getPeer())
         } else {
-            var searchEntity = searchSource!.objectAtIndexPath(indexPath) as! ACSearchEntity
+            let searchEntity = searchSource!.objectAtIndexPath(indexPath) as! ACSearchEntity
             navigateToMessagesWithPeer(searchEntity.getPeer())
         }
     }

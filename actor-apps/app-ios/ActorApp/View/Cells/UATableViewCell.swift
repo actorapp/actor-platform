@@ -14,7 +14,7 @@ class UATableViewCell: UITableViewCell {
         
         // Cell colors
         backgroundColor = MainAppTheme.list.bgColor
-        var selectedView = UIView()
+        let selectedView = UIView()
         selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
         selectedBackgroundView = selectedView
         

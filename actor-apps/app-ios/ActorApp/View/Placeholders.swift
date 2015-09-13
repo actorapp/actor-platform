@@ -7,10 +7,10 @@ import Foundation
 class Placeholders {
     
     class func avatarPlaceholder(index: jint, size: Int, title: NSString, rounded: Bool) -> UIImage {
-        var color = MainAppTheme.common.placeholders[Int(abs(index)) % MainAppTheme.common.placeholders.count].CGColor;
+        let color = MainAppTheme.common.placeholders[Int(abs(index)) % MainAppTheme.common.placeholders.count].CGColor;
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: size, height: size), false, UIScreen.mainScreen().scale);
-        var context = UIGraphicsGetCurrentContext();
+        let context = UIGraphicsGetCurrentContext();
         
         // Background
         
@@ -28,11 +28,11 @@ class Placeholders {
         
         UIColor.whiteColor().set()
         
-        var font = UIFont.systemFontOfSize(CGFloat(size / 2));
+        let font = UIFont.systemFontOfSize(CGFloat(size / 2));
         var rect = CGRectMake(0, 0, CGFloat(size), CGFloat(size))
         rect.origin.y = round(CGFloat(size * 47 / 100) - font.pointSize / 2);
         
-        var style : NSMutableParagraphStyle = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
+        let style : NSMutableParagraphStyle = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
         style.alignment = NSTextAlignment.Center
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
         
@@ -47,7 +47,7 @@ class Placeholders {
             CGContextDrawPath(context, .Stroke);
         }
         
-        var image = UIGraphicsGetImageFromCurrentImageContext();
+        let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return image;
     }

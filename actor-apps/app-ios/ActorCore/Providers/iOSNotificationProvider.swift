@@ -14,12 +14,12 @@ import AudioToolbox.AudioServices
     
     override init() {
         super.init()
-        var path = NSBundle.mainBundle().URLForResource("notification", withExtension: "caf");
+        let path = NSBundle.mainBundle().URLForResource("notification", withExtension: "caf");
         AudioServicesCreateSystemSoundID(path!, &internalMessage)
     }
     
     func onMessageArriveInAppWithMessenger(messenger: ACMessenger!) {
-        var currentTime = NSDate().timeIntervalSinceReferenceDate
+        let currentTime = NSDate().timeIntervalSinceReferenceDate
         if (currentTime - lastSoundPlay > 0.2) {
             AudioServicesPlaySystemSound(internalMessage)
             lastSoundPlay = currentTime
@@ -28,7 +28,7 @@ import AudioToolbox.AudioServices
     
     func onNotificationWithMessenger(messenger: ACMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint) {
         
-        var n = topNotifications.getWithInt(0) as! ACNotification
+        let n = topNotifications.getWithInt(0) as! ACNotification
         
         messenger.getFormatter().formatNotificationText(n)
         
@@ -36,17 +36,17 @@ import AudioToolbox.AudioServices
         if (!messenger.isShowNotificationsText()) {
             message = NSLocalizedString("NotificationSecretMessage", comment: "New Message")
         }
-        var senderUser = messenger.getUserWithUid(n.getSender())
+        let senderUser = messenger.getUserWithUid(n.getSender())
         var sender = senderUser.getNameModel().get()
-        var peer = n.getPeer()
+        let peer = n.getPeer()
         
-        if (UInt(n.getPeer().getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
-            var group = messenger.getGroupWithGid(n.getPeer().getPeerId())
+        if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
+            let group = messenger.getGroupWithGid(n.getPeer().getPeerId())
             sender = "\(sender)@\(group.getNameModel().get())"
         }
         
         dispatchOnUi { () -> Void in
-            var localNotification =  UILocalNotification ()
+            let localNotification =  UILocalNotification ()
             localNotification.alertBody = "\(sender): \(message)"
             if (messenger.isNotificationSoundEnabled()) {
                 localNotification.soundName = "\(self.getNotificationSound(messenger)).caf"
@@ -63,7 +63,7 @@ import AudioToolbox.AudioServices
     func hideAllNotifications() {
         dispatchOnUi { () -> Void in
             // Clearing notifications
-            var number = Actor.getAppState().getGlobalCounter().get().integerValue
+            let number = Actor.getAppState().getGlobalCounter().get().integerValue
             UIApplication.sharedApplication().applicationIconBadgeNumber = 0 // If current value will equals to number + 1
             UIApplication.sharedApplication().applicationIconBadgeNumber = number + 1
             UIApplication.sharedApplication().applicationIconBadgeNumber = number
@@ -75,7 +75,7 @@ import AudioToolbox.AudioServices
     
     func getNotificationSound(messenger: ACMessenger!) -> String {
         if (messenger.getNotificationSound() != nil) {
-            var path = NSBundle.mainBundle().pathForResource(messenger.getNotificationSound(), ofType: "caf")
+            let path = NSBundle.mainBundle().pathForResource(messenger.getNotificationSound(), ofType: "caf")
             if (NSFileManager.defaultManager().fileExistsAtPath(path!)) {
                 return messenger.getNotificationSound()
             }

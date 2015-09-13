@@ -95,7 +95,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     
     
     func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
-        var message = (item as! ACMessage);
+        let message = (item as! ACMessage);
         var cell: AABubbleCell
         if (message.content is ACTextContent) {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
@@ -113,10 +113,10 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     }
     
     func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UICollectionViewCell) {
-        var list = getProcessedList()
-        var message = list!.items[indexPath.row]
-        var setting = list!.cellSettings[indexPath.row]
-        var bubbleCell = (cell as! AABubbleCell)
+        let list = getProcessedList()
+        let message = list!.items[indexPath.row]
+        let setting = list!.cellSettings[indexPath.row]
+        let bubbleCell = (cell as! AABubbleCell)
         bubbleCell.performBind(message, setting: setting, isShowNewMessages: message.rid == unreadMessageId, layoutCache: list!.layoutCache)
     }
     
@@ -160,8 +160,8 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        var item: AnyObject? = objectAtIndexPath(indexPath)
-        var cell = buildCell(collectionView, cellForRowAtIndexPath:indexPath, item:item)
+        let item: AnyObject? = objectAtIndexPath(indexPath)
+        let cell = buildCell(collectionView, cellForRowAtIndexPath:indexPath, item:item)
         bindCell(collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell)
         displayList.touchWithIndex(jint(indexPath.row))
 //        cell.contentView.transform = collectionView.transform
@@ -181,7 +181,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     // Model updates
     
     func displayListForController() -> ARBindedDisplayList {
-        var res = Actor.getMessageDisplayList(peer)
+        let res = Actor.getMessageDisplayList(peer)
         if (res.getListProcessor() == nil) {
             let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
             res.setListProcessor(ListProcessor(isGroup: group))
@@ -210,16 +210,15 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     
     func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
 
-        var start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         
         if modification.isLoadMore {
             UIView.setAnimationsEnabled(false)
         }
         
         self.willUpdate()
-        var list = self.displayList.getProcessedList() as? PreprocessedList
+        let list = self.displayList.getProcessedList() as? PreprocessedList
         self.layout.beginUpdates(modification.isLoadMore, list: list, unread: unreadMessageId)
-        var changedRows = Set<Int>()
         
         if modification.nonUpdateCount() > 0 {
             isUpdating = true
@@ -245,7 +244,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
                 // Moved rows
                 if modification.movedCount() > 0 {
                     for i in 0..<modification.movedCount() {
-                        var mov = modification.getMoved(jint(i))
+                        let mov = modification.getMoved(jint(i))
                         self.collectionView.moveItemAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()), inSection: 0))
                     }
                 }
@@ -278,12 +277,12 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         }
         
         var forcedRows = [NSIndexPath]()
-        var visibleIndexes = self.collectionView.indexPathsForVisibleItems() as! [NSIndexPath]
+        let visibleIndexes = self.collectionView.indexPathsForVisibleItems()
         for ind in updated {
-            var indexPath = NSIndexPath(forRow: ind, inSection: 0)
+            let indexPath = NSIndexPath(forRow: ind, inSection: 0)
             if visibleIndexes.contains(indexPath) {
-                var cell = self.collectionView.cellForItemAtIndexPath(indexPath)
-                var item: AnyObject? = self.objectAtIndexPath(indexPath)
+                let cell = self.collectionView.cellForItemAtIndexPath(indexPath)
+                let item: AnyObject? = self.objectAtIndexPath(indexPath)
                 if !self.needFullReload(item, cell: cell!) {
                     self.bindCell(self.collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell!)
                     continue
@@ -294,7 +293,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         }
         
         for ind in updatedForce {
-            var indexPath = NSIndexPath(forRow: ind, inSection: 0)
+            let indexPath = NSIndexPath(forRow: ind, inSection: 0)
             forcedRows.append(indexPath)
         }
         
@@ -318,12 +317,12 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
             isLoaded = true
             isLoadedAfter = true
             
-            var readState = Actor.loadFirstUnread(peer)
+            let readState = Actor.loadFirstUnread(peer)
            
             if readState > 0 {
                 for i in 0..<getCount() {
-                    var ind = getCount() - 1 - i
-                    var item = objectAtIndex(ind)!
+                    let ind = getCount() - 1 - i
+                    let item = objectAtIndex(ind)!
                 
                     if item.getSenderId() != Actor.myUid() {
                         if readState < item.getSortDate() {
@@ -351,11 +350,11 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     }
     
     func onBubbleAvatarTap(view: UIView, uid: jint) {
-        var controller = UserViewController(uid: Int(uid))
+        let controller = UserViewController(uid: Int(uid))
         if (isIPad) {
-            var navigation = AANavigationController()
+            let navigation = AANavigationController()
             navigation.viewControllers = [controller]
-            var popover = UIPopoverController(contentViewController:  navigation)
+            let popover = UIPopoverController(contentViewController:  navigation)
             controller.popover = popover
             popover.presentPopoverFromRect(view.bounds, inView: view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
         } else {

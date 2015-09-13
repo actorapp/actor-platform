@@ -37,7 +37,7 @@ class InviteLinkViewController: AATableViewController {
             .addCommonCell()
             .setStyle(.Normal)
         
-        var section = tableData.addSection()
+        let section = tableData.addSection()
 
         section.addActionCell("ActionCopyLink", actionClosure: { () -> () in
                 UIPasteboard.generalPasteboard().string = self.currentUrl
@@ -61,7 +61,7 @@ class InviteLinkViewController: AATableViewController {
             .setStyle(.Destructive)
         
         execute(Actor.requestInviteLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
-                self.currentUrl = val as! String
+                self.currentUrl = val as? String
                 self.urlCell.setContent(self.currentUrl!)
                 self.tableView.hidden = false
                 self.tableView.reloadData()
@@ -72,7 +72,7 @@ class InviteLinkViewController: AATableViewController {
     
     func reloadLink() {
         execute(Actor.requestRevokeLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
-                self.currentUrl = val as! String
+                self.currentUrl = val as? String
                 self.urlCell.setContent(self.currentUrl!)
                 self.tableView.hidden = false
                 self.tableView.reloadData()
