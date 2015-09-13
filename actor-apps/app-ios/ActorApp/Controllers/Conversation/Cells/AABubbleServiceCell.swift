@@ -9,38 +9,30 @@ import Foundation
 
 class AABubbleServiceCell : AABubbleCell {
     
-    private static let serviceBubbleFont = UIFont(name: "HelveticaNeue-Medium", size: 12)!
-    
-    // MARK: -
-    // MARK: Private vars
+    private static let serviceBubbleFont = UIFont.boldSystemFontOfSize(12)
+    private static let maxServiceTextWidth: CGFloat = 260
     
     private let serviceText = UILabel()
     
-    // MARK: -
-    // MARK: Constructors
+    private var bindedLayout: ServiceCellLayout!
     
     init(frame: CGRect) {
         super.init(frame: frame, isFullSize: true)
        
+        // Configuring service label
         serviceText.font = AABubbleServiceCell.serviceBubbleFont;
         serviceText.lineBreakMode = .ByWordWrapping;
         serviceText.numberOfLines = 0;
         serviceText.textColor = UIColor.whiteColor()
         serviceText.contentMode = UIViewContentMode.Center
         serviceText.textAlignment = NSTextAlignment.Center
-        
-        self.contentInsets = UIEdgeInsets(
-            top: 3,
-            left: 8,
-            bottom: 3,
-            right: 8)
-        self.bubbleInsets = UIEdgeInsets(
-            top: 3,
-            left: 0,
-            bottom: 3,
-            right: 0)
         mainView.addSubview(serviceText)
         
+        // Setting content and bubble insets
+        contentInsets = UIEdgeInsets(top: 3, left: 8, bottom: 3, right: 8)
+        bubbleInsets = UIEdgeInsets(top: 3, left: 0, bottom: 3, right: 0)
+        
+        // Setting bubble background
         bindBubbleType(.Service, isCompact: false)
     }
     
@@ -48,50 +40,59 @@ class AABubbleServiceCell : AABubbleCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
-    // MARK: Bind
-
     override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+        self.bindedLayout = cellLayout as! ServiceCellLayout
+        
         if (!reuse) {
-            serviceText.text = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
+            serviceText.text = bindedLayout.text
         }
     }
     
-    // MARK: -
-    // MARK: Getters
-    
-    class func measureServiceHeight(message: ACMessage) -> CGFloat {
-        var text = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
-        return measureText(text).height + 3 + 3 + 3 + 3
-    }
-    
-    // MARK: -
-    // MARK: Layout
-    
     override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
-        var insets = fullContentInsets
-        var contentWidth = self.contentView.frame.width
-        var contentHeight = self.contentView.frame.height
+
+        let insets = fullContentInsets
+        let contentWidth = self.contentView.frame.width
+        let serviceWidth = bindedLayout.textSize.width
+        let serviceHeight = bindedLayout.textSize.height
         
-        var bubbleHeight = contentHeight - insets.top - insets.bottom
-        var bubbleWidth = CGFloat(AABubbleServiceCell.maxServiceTextWidth)
+        serviceText.frame = CGRectMake((contentWidth - serviceWidth) / 2.0, insets.top, serviceWidth, serviceHeight);
         
-        let serviceTextSize = serviceText.sizeThatFits(CGSize(width: bubbleWidth, height: CGFloat.max))
-        serviceText.frame = CGRectMake((contentWidth - serviceTextSize.width) / 2.0, insets.top, serviceTextSize.width, serviceTextSize.height);
-        
-        layoutBubble(serviceTextSize.width, contentHeight: serviceTextSize.height)
-    }
-    
-    private static let maxServiceTextWidth = 260
-    
-    private class func measureText(message: String) -> CGRect {
-        print("measureText:service")
-        var messageValue = message as NSString;
-        var style = NSMutableParagraphStyle();
-        style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-        
-        var size = CGSize(width: maxServiceTextWidth, height: 0);
-        var rect = messageValue.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: serviceBubbleFont, NSParagraphStyleAttributeName: style], context: nil);
-        return CGRectMake(0, 0, round(rect.width), round(rect.height))
+        layoutBubble(serviceWidth, contentHeight: serviceHeight)
     }
 }
+
+class ServiceCellLayout: CellLayout {
+
+    var text: String
+    var textSize: CGSize
+    
+    init(text: String, date: Int64) {
+        
+        // Saving text size
+        self.text = text
+        
+        // Measuring text size
+        self.textSize = UIViewMeasure.measureText(text, width: AABubbleServiceCell.maxServiceTextWidth, font: AABubbleServiceCell.serviceBubbleFont)
+        
+        // Creating layout
+        super.init(height: textSize.height + 6, date: date, key: "service")
+    }
+}
+
+class AABubbleServiceCellLayouter: AABubbleLayouter {
+    
+    func isSuitable(message: ACMessage) -> Bool {
+        return message.content is ACServiceContent
+    }
+    
+    func buildLayout(peer: ACPeer, message: ACMessage) -> CellLayout {
+        var serviceText = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
+        
+        return ServiceCellLayout(text: serviceText, date: Int64(message.date))
+    }
+    
+    func cellClass() -> AnyClass {
+        return AABubbleServiceCell.self
+    }
+}
+
