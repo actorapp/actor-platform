@@ -73,11 +73,11 @@ class SettingsViewController: AATableViewController {
         
         // Avatar
         
-        var profileInfoSection = tableData.addSection(true)
+        let profileInfoSection = tableData.addSection(true)
             .setFooterHeight(15)
         
         profileInfoSection.addCustomCell { (tableView, indexPath) -> UITableViewCell in
-            var cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
+            let cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
             cell.contentView.superview?.clipsToBounds = false
             if self.user != nil {
                 cell.setUsername(self.user!.getNameModel().get())
@@ -90,7 +90,7 @@ class SettingsViewController: AATableViewController {
         // Nick
         profileInfoSection
             .addCustomCell { (tableView, indexPath) -> UITableViewCell in
-                var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
+                let cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
                 
                 cell.enableNavigationIcon()
                 
@@ -120,7 +120,7 @@ class SettingsViewController: AATableViewController {
         if about == nil {
             about = localized("SettingsAboutNotSet")
         }
-        var aboutCell = profileInfoSection
+        let aboutCell = profileInfoSection
             .addTextCell(localized("ProfileAbout"), text: about)
             .setEnableNavigation(true)
         if self.user!.getAboutModel().get() == nil {
@@ -131,14 +131,14 @@ class SettingsViewController: AATableViewController {
             if text == nil {
                 text = ""
             }
-            var controller = EditTextController(title: localized("SettingsChangeAboutTitle"), actionTitle: localized("NavigationSave"), content: text, completition: { (newText) -> () in
+            let controller = EditTextController(title: localized("SettingsChangeAboutTitle"), actionTitle: localized("NavigationSave"), content: text, completition: { (newText) -> () in
                 var updatedText: String? = newText.trim()
                 if updatedText?.length == 0 {
                     updatedText = nil
                 }
                 self.execute(Actor.editMyAboutCommandWithNick(updatedText))
             })
-            var navigation = AANavigationController(rootViewController: controller)
+            let navigation = AANavigationController(rootViewController: controller)
             self.presentViewController(navigation, animated: true, completion: nil)
         }
         
@@ -150,14 +150,14 @@ class SettingsViewController: AATableViewController {
             }
             return 0
             }) { (tableView, index, indexPath) -> UITableViewCell in
-                var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
+                let cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
                 if let phone = self.phones!.getWithInt(jint(index)) as? ACUserPhone {
                     cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
                 }
                 return cell
             }.setAction { (index) -> () in
-                var phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
-                var hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
+                let phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
+                let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
                 if (!hasPhone) {
                     UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
                     self.alertUser("NumberCopied")
@@ -180,13 +180,13 @@ class SettingsViewController: AATableViewController {
         
         
         // Profile
-        var topSection = tableData.addSection(true)
+        let topSection = tableData.addSection(true)
         topSection.setHeaderHeight(15)
         topSection.setFooterHeight(15)
         
         // Profile: Set Photo
         topSection.addActionCell("SettingsSetPhoto", actionClosure: { () -> () in
-            var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+            let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
             self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                 cancelButton: "AlertCancel",
                 destructButton: self.user!.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
@@ -214,7 +214,7 @@ class SettingsViewController: AATableViewController {
         // Profile: Set Name
         topSection.addActionCell("SettingsChangeName", actionClosure: { () -> () in
 
-            var alertView = UIAlertView(title: nil,
+            let alertView = UIAlertView(title: nil,
                 message: NSLocalizedString("SettingsEditHeader", comment: "Title"),
                 delegate: nil,
                 cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
@@ -238,7 +238,7 @@ class SettingsViewController: AATableViewController {
         })
 
         // Settings
-        var actionsSection = tableData.addSection(true)
+        let actionsSection = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
         
@@ -253,7 +253,7 @@ class SettingsViewController: AATableViewController {
         })
         
         // Support
-        var supportSection = tableData.addSection(true)
+        let supportSection = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
         
@@ -280,7 +280,7 @@ class SettingsViewController: AATableViewController {
         })
         
         // Support: App version
-        var version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
+        let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
         supportSection.addCommonCell()
             .setContent(NSLocalizedString("SettingsVersion", comment: "Version").stringByReplacingOccurrencesOfString("{version}", withString: version, options: NSStringCompareOptions(), range: nil))
             .setStyle(.Hint)
@@ -328,7 +328,7 @@ class SettingsViewController: AATableViewController {
         }
         
         binder.bind(user!.getPresenceModel(), closure: { (presence: ACUserPresence?) -> () in
-            var presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
+            let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                     cell.setPresence(presenceText)

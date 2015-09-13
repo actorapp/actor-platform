@@ -33,7 +33,7 @@ import Foundation
     func resetStorage() {
         preferences.clear()
         
-        var db = FMDatabase(path: dbPath)
+        let db = FMDatabase(path: dbPath)
         db.open()
         db.executeStatements("select 'drop table ' || name || ';' from sqlite_master where type = 'table';")
         db.close()

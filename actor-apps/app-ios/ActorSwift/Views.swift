@@ -20,9 +20,9 @@ extension UIView {
 
 class UIViewMeasure {
     class func measureText(text: String, width: CGFloat, fontSize: CGFloat) -> CGFloat {
-        var style = NSMutableParagraphStyle();
+        let style = NSMutableParagraphStyle();
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-        var rect = text.boundingRectWithSize(CGSize(width: width - 2, height: 10000),
+        let rect = text.boundingRectWithSize(CGSize(width: width - 2, height: 10000),
             options: NSStringDrawingOptions.UsesLineFragmentOrigin,
             attributes: [NSFontAttributeName: UIFont.systemFontOfSize(fontSize), NSParagraphStyleAttributeName: style],
             context: nil);

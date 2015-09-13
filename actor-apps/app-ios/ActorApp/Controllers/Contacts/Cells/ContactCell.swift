@@ -27,7 +27,7 @@ class ContactCell : BasicCell {
         
         backgroundColor = MainAppTheme.list.bgColor
         
-        var selectedView = UIView()
+        let selectedView = UIView()
         selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
         selectedBackgroundView = selectedView
     }
@@ -53,7 +53,7 @@ class ContactCell : BasicCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        var width = self.contentView.frame.width;
+        let width = self.contentView.frame.width;
         shortNameView.frame = CGRectMake(0, 8, 30, 40);
         avatarView.frame = CGRectMake(30, 8, 40, 40);
         titleView.frame = CGRectMake(80, 8, width - 80 - 14, 40);
