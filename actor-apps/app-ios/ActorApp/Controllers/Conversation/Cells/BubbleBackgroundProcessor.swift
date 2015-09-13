@@ -4,110 +4,156 @@
 
 import Foundation
 
-//class BubbleBackgroundProcessor: NSObject, ARBackgroundProcessor {
-//    
-//    let layoutCache: LayoutCache = LayoutCache()
-//    
-//    func processInBackgroundWithId(item: AnyObject!) {
-//        var message = item as! ACMessage
-//        
-//        Actor.getUserWithUid(message.senderId)
-//        
-//        var cached = layoutCache.pick(message.rid)
-//        if (cached != nil) {
-//            return
-//        }
-//        
-//        println("process \(message.rid)")
-//        var layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
-//        self.layoutCache.cache(message.rid, layout: layout)
-//    }
-//}
+/**
+    Display list preprocessed list state
+*/
+class PreprocessedList: NSObject {
 
+    // Array of items in list
+    var items: [ACMessage]!
+
+    // Map from rid to index of item
+    var indexMap: [jlong: Int]!
+    
+    // Current settings of cell look and feel
+    var cellSettings: [CellSetting]!
+    
+    // Prepared layouts of cells
+    var layouts: [CellLayout]!
+    
+    // Height of item
+    var heights: [CGFloat]!
+    
+    // Is item need to be force-udpated
+    var forceUpdated: [Bool]!
+    
+    // Is item need to be soft-updated
+    var updated: [Bool]!
+}
+
+/**
+    Display list preprocessor. Used for performing all required calculations
+    before collection is updated
+*/
 class ListProcessor: NSObject, ARListProcessor {
     
     let layoutCache: LayoutCache = LayoutCache()
-    let isGroup: Bool
     
-    init(isGroup: Bool) {
-        self.isGroup = isGroup
-    }
+    let peer: ACPeer
     
-    func buildLayout(message: ACMessage) {
-        Actor.getUserWithUid(message.senderId)
-        
-        var cached = layoutCache.pick(message.rid)
-        if (cached != nil) {
-            return
-        }
-        
-        var layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
-        self.layoutCache.cache(message.rid, layout: layout)
+    init(peer: ACPeer) {
+        self.peer = peer
     }
     
     func processWithItems(items: JavaUtilList!, withPrevious previous: AnyObject!) -> AnyObject! {
+        
+        // Building content list and dictionary from rid to index list
         var objs = [ACMessage]()
         var indexes = [jlong: Int]()
         for i in 0..<items.size() {
-            var msg = items.getWithInt(i) as! ACMessage
+            let msg = items.getWithInt(i) as! ACMessage
             indexes.updateValue(Int(i), forKey: msg.rid)
             objs.append(msg)
         }
         
+        // Calculating cell settings
+        // TODO: Cache and avoid recalculation of whole list
         var settings = [CellSetting]()
         for i in 0..<objs.count {
             settings.append(buildCellSetting(i, items: objs))
         }
         
+        // Building cell layouts
         var layouts = [CellLayout]()
         for i in 0..<objs.count {
-            layouts.append(MessagesLayouting.buildLayout(objs[i], layoutCache: layoutCache))
+            layouts.append(buildLayout(objs[i]))
         }
         
+        // Calculating force and simple updates
         var forceUpdates = [Bool]()
         var updates = [Bool]()
         if let prevList = previous as? PreprocessedList {
             for i in 0..<objs.count {
-                var obj = objs[i]
-                var oldIndex = prevList.indexMap[obj.rid]
+                var isForced = false
+                var isUpdated = false
+                
+                let obj = objs[i]
+                let oldIndex: Int! = prevList.indexMap[obj.rid]
                 if oldIndex != nil {
-                    var oldSetting = prevList.cellSettings[oldIndex!]
-                    var setting = settings[i]
                     
-                    if setting.clenchTop != oldSetting.clenchTop || setting.clenchBottom != oldSetting.clenchBottom || setting.showDate != oldSetting.showDate {
-                        if setting.showDate != oldSetting.showDate {
-                            forceUpdates.append(true)
-                            updates.append(false)
-                        } else {
-                            forceUpdates.append(false)
-                            updates.append(true)
-                        }
+                    // Check if layout keys are same
+                    // If text was replaced by media it might force-updated
+                    // If size of bubble changed you might to change layout key
+                    // to update it's size
+                    // TODO: In the future releases it might be implemented
+                    // in more flexible way
+                    log("layouting: \(prevList.layouts[oldIndex].key) -> \(layouts[i].key)")
+                    if prevList.layouts[oldIndex].key != layouts[i].key {
+                        
+                        // Mark as forced update
+                        isForced = true
+                        
+                        // Hack for rewriting layout information
+                        // Removing layout from cache
+                        layoutCache.revoke(objs[i].rid)
+                        // Building new layout
+                        layouts[i] = buildLayout(objs[i])
+                        
                     } else {
-                        forceUpdates.append(false)
-                        updates.append(false)
+                        
+                        // Otherwise check bubble settings to check
+                        // if it is changed and we need to recalculate size
+                        let oldSetting = prevList.cellSettings[oldIndex]
+                        let setting = settings[i]
+                    
+                        if setting != oldSetting {
+                            if setting.showDate != oldSetting.showDate {
+                                
+                                // Date separator change size so make cell for resize
+                                isForced = true
+                            } else {
+                                
+                                // Other changes doesn't change size, so just update content
+                                // without resizing
+                                isUpdated = true
+                            }
+                        }
                     }
+                }
+                
+                // Saving update state value
+                if isForced {
+                    forceUpdates.append(true)
+                    updates.append(false)
+                } else if isUpdated {
+                    forceUpdates.append(false)
+                    updates.append(true)
                 } else {
                     forceUpdates.append(false)
                     updates.append(false)
                 }
             }
         } else {
-            for i in 0..<objs.count {
+            for _ in 0..<objs.count {
                 forceUpdates.append(false)
                 updates.append(false)
             }
         }
         
+        // Updating cell heights
+        // TODO: Need to implement width calculations too
+        //       to make bubble menu appear at right place
         var heights = [CGFloat]()
         for i in 0..<objs.count {
-            heights.append(buildHeight(i, items: objs, settings: settings))
+            let height = measureHeight(objs[i], setting: settings[i], layoutCache: layoutCache)
+            heights.append(height)
         }
         
-        var res = PreprocessedList()
+        // Put everything together
+        let res = PreprocessedList()
         res.items = objs
         res.cellSettings = settings
         res.layouts = layouts
-        res.layoutCache = layoutCache
         res.heights = heights
         res.indexMap = indexes
         res.forceUpdated = forceUpdates
@@ -115,11 +161,15 @@ class ListProcessor: NSObject, ARListProcessor {
         return res
     }
     
+    /**
+        Building Cell Setting: Information about decorators like date separator 
+        and clenching of bubbles
+    */
     func buildCellSetting(index: Int, items: [ACMessage]) -> CellSetting {
         
-        var current = items[index]
-        var next: ACMessage! = index > 0 ? items[index - 1] : nil
-        var prev: ACMessage! = index + 1 < items.count ? items[index + 1] : nil
+        let current = items[index]
+        let next: ACMessage! = index > 0 ? items[index - 1] : nil
+        let prev: ACMessage! = index + 1 < items.count ? items[index + 1] : nil
         
         var isShowDate = true
         var isShowDateNext = true
@@ -142,18 +192,24 @@ class ListProcessor: NSObject, ARListProcessor {
         return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom)
     }
     
+    /**
+        Checking if messages have same send day
+    */
     func areSameDate(source:ACMessage, prev: ACMessage) -> Bool {
         let calendar = NSCalendar.currentCalendar()
         
-        var currentDate = NSDate(timeIntervalSince1970: Double(source.date)/1000.0)
-        var currentDateComp = calendar.components([.Day, .Year, .Month], fromDate: currentDate)
+        let currentDate = NSDate(timeIntervalSince1970: Double(source.date)/1000.0)
+        let currentDateComp = calendar.components([.Day, .Year, .Month], fromDate: currentDate)
         
-        var nextDate = NSDate(timeIntervalSince1970: Double(prev.date)/1000.0)
-        var nextDateComp = calendar.components([.Day, .Year, .Month], fromDate: nextDate)
+        let nextDate = NSDate(timeIntervalSince1970: Double(prev.date)/1000.0)
+        let nextDateComp = calendar.components([.Day, .Year, .Month], fromDate: nextDate)
         
         return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
     }
     
+    /**
+        Checking if it is good to make bubbles clenched
+    */
     func useCompact(source: ACMessage, next: ACMessage) -> Bool {
         if (source.content is ACServiceContent) {
             if (next.content is ACServiceContent) {
@@ -171,20 +227,35 @@ class ListProcessor: NSObject, ARListProcessor {
         return false
     }
     
-    func buildHeight(index: Int, items: [ACMessage], settings: [CellSetting]) -> CGFloat {
-        var message = items[index]
-        var setting = settings[index]
-        return MessagesLayouting.measureHeight(message, group: isGroup, setting: setting, layoutCache: layoutCache)
+    func measureHeight(message: ACMessage, setting: CellSetting, layoutCache: LayoutCache) -> CGFloat {
+        
+        let content = message.content!
+        
+        var layout = layoutCache.pick(message.rid)
+        if (layout == nil) {
+            // Usually never happens
+            layout = buildLayout(message)
+            layoutCache.cache(message.rid, layout: layout!)
+        }
+        
+        var height = layout!.height
+        if content is ACServiceContent {
+            height += AABubbleCell.bubbleTop
+            height += AABubbleCell.bubbleBottom
+        } else {
+            height += (setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop)
+            height += (setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom)
+        }
+        
+        // Date separator
+        if (setting.showDate) {
+            height += AABubbleCell.dateSize
+        }
+        
+        return height
     }
-}
-
-class PreprocessedList: NSObject {
-    var items: [ACMessage]!
-    var cellSettings: [CellSetting]!
-    var layouts: [CellLayout]!
-    var layoutCache: LayoutCache!
-    var heights: [CGFloat]!
-    var forceUpdated: [Bool]!
-    var updated: [Bool]!
-    var indexMap: [jlong: Int]!
+    
+    func buildLayout(message: ACMessage) -> CellLayout {
+        return Bubbles.buildLayout(peer, message: message)
+    }
 }

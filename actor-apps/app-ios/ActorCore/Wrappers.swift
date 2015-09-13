@@ -81,3 +81,89 @@ class CocoaUploadCallback : NSObject, ACUploadFileCallback {
         self.onUploading?(progress: Double(progress))
     }
 }
+
+class MDFormattedText {
+    
+    let isTrivial: Bool
+    let attributedText: NSAttributedString
+    let code: [String]
+    
+    init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
+        self.attributedText = attributedText
+        self.code = code
+        self.isTrivial = isTrivial
+    }
+}
+
+extension ARMarkdownParser {
+    
+    func parse(text: String, textColor: UIColor, fontSize: CGFloat) -> MDFormattedText {
+        
+        let doc = self.processDocumentWithNSString(text)
+        if doc.isTrivial() {
+           return MDFormattedText(attributedText: NSAttributedString(string: text), isTrivial: true, code: [])
+        }
+        
+        var sources = [String]()
+        
+        let sections: [ARMDSection] = doc.getSections().toSwiftArray()
+        let nAttrText = NSMutableAttributedString()
+        var isFirst = true
+        for s in sections {
+            if !isFirst {
+                nAttrText.appendAttributedString(NSAttributedString(string: "\n"))
+            }
+            isFirst = false
+            
+            if s.getType() == ARMDSection_TYPE_CODE {
+                let attributes = [NSLinkAttributeName: NSURL(string: "source:///\(sources.count)") as! AnyObject,
+                    NSFontAttributeName: UIFont.systemFontOfSize(fontSize)]
+                nAttrText.appendAttributedString(NSAttributedString(string: "Open Code", attributes: attributes))
+                sources.append(s.getCode().getCode())
+            } else if s.getType() == ARMDSection_TYPE_TEXT {
+                let child: [ARMDText] = s.getText().toSwiftArray()
+                for c in child {
+                    nAttrText.appendAttributedString(buildText(c, fontSize: fontSize))
+                }
+            } else {
+                fatalError("Unsupported section type")
+            }
+        }
+        
+        nAttrText.appendColor(textColor)
+        
+        return MDFormattedText(attributedText: nAttrText, isTrivial: false, code: sources)
+    }
+    
+    private func buildText(text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
+        if let raw = text as? ARMDRawText {
+            return NSAttributedString(string: raw.getRawText(), font: UIFont.systemFontOfSize(fontSize))
+        } else if let span = text as? ARMDSpan {
+            let res = NSMutableAttributedString()
+            res.beginEditing()
+            
+            // Processing child texts
+            let child: [ARMDText] = span.getChild().toSwiftArray()
+            for c in child {
+                res.appendAttributedString(buildText(c, fontSize: fontSize))
+            }
+            
+            // Setting span elements
+            if span.getSpanType() == ARMDSpan_TYPE_BOLD {
+                res.appendFont(UIFont.boldSystemFontOfSize(fontSize))
+            } else if span.getSpanType() == ARMDSpan_TYPE_ITALIC {
+                res.appendFont(UIFont.italicSystemFontOfSize(fontSize))
+            } else {
+                fatalError("Unsupported span type")
+            }
+            
+            res.endEditing()
+            return res
+        } else {
+            fatalError("Unsupported text type")
+        }
+    }
+}
+
+
+
