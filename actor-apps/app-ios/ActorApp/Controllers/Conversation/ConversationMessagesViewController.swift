@@ -7,12 +7,6 @@ import UIKit;
 
 class ConversationBaseViewController: SLKTextViewController, ARDisplayList_AppleChangeListener {
 
-    private let BubbleTextIdentifier = "BubbleTextIdentifier"
-    private let BubbleMediaIdentifier = "BubbleMediaIdentifier"
-    private let BubbleDocumentIdentifier = "BubbleDocumentIdentifier"
-    private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
-    private let BubbleBannerIdentifier = "BubbleBannerIdentifier"
-    
     let peer: ACPeer
     
     private var displayList: ARBindedDisplayList!
@@ -22,21 +16,18 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     private var isLoaded: Bool = false
     private var isLoadedAfter: Bool = false
     private var unreadIndex: Int? = nil
-    private let layout = MessagesLayout()
+    private let collectionViewLayout = MessagesFlowLayout()
     private var prevCount: Int = 0
     private var unreadMessageId: jlong = 0
     
     init(peer: ACPeer) {
         self.peer = peer
         
-        super.init(collectionViewLayout: layout)
+        super.init(collectionViewLayout: collectionViewLayout)
         
-        self.collectionView.registerClass(AABubbleTextCell.self, forCellWithReuseIdentifier: BubbleTextIdentifier)
-        self.collectionView.registerClass(AABubbleMediaCell.self, forCellWithReuseIdentifier: BubbleMediaIdentifier)
-        self.collectionView.registerClass(AABubbleDocumentCell.self, forCellWithReuseIdentifier: BubbleDocumentIdentifier)
-        self.collectionView.registerClass(AABubbleServiceCell.self, forCellWithReuseIdentifier: BubbleServiceIdentifier)
         self.collectionView.backgroundColor = UIColor.clearColor()
         self.collectionView.alwaysBounceVertical = true
+        Bubbles.initCollectionView(self.collectionView)
     }
     
     required init!(coder decoder: NSCoder!) {
@@ -63,7 +54,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         
         if (isStarted) {
             self.willUpdate()
-            self.layout.beginUpdates(false, list: self.displayList.getProcessedList() as? PreprocessedList, unread: unreadMessageId)
+            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? PreprocessedList, unread: unreadMessageId)
             self.collectionView.reloadData()
             prevCount = getCount()
             self.displayList.addAppleListener(self)
@@ -85,7 +76,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
             })
             
             self.willUpdate()
-            self.layout.beginUpdates(false, list: self.displayList.getProcessedList() as? PreprocessedList, unread: self.unreadMessageId)
+            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? PreprocessedList, unread: self.unreadMessageId)
             self.collectionView.reloadData()
             self.prevCount = self.getCount()
             self.displayList.addAppleListener(self)
@@ -95,19 +86,10 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     
     
     func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
-        let message = (item as! ACMessage);
-        var cell: AABubbleCell
-        if (message.content is ACTextContent) {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
-        } else if (message.content is ACPhotoContent) {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleMediaIdentifier, forIndexPath: indexPath) as! AABubbleMediaCell
-        } else if (message.content is ACDocumentContent) {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleDocumentIdentifier, forIndexPath: indexPath) as! AABubbleDocumentCell
-        } else if (message.content is ACServiceContent){
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleServiceIdentifier, forIndexPath: indexPath) as! AABubbleServiceCell
-        } else {
-            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
-        }
+        let message = (item as! ACMessage)
+        let cellType = Bubbles.cellTypeForMessage(message)
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellType, forIndexPath: indexPath)
+            as! AABubbleCell
         cell.setConfig(peer, controller: self)
         return cell
     }
@@ -116,8 +98,10 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         let list = getProcessedList()
         let message = list!.items[indexPath.row]
         let setting = list!.cellSettings[indexPath.row]
+        let layout = list!.layouts[indexPath.row]
         let bubbleCell = (cell as! AABubbleCell)
-        bubbleCell.performBind(message, setting: setting, isShowNewMessages: message.rid == unreadMessageId, layoutCache: list!.layoutCache)
+        let isShowNewMessages = message.rid == unreadMessageId
+        bubbleCell.performBind(message, setting: setting, isShowNewMessages: isShowNewMessages, layout: layout)
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
@@ -184,7 +168,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         let res = Actor.getMessageDisplayList(peer)
         if (res.getListProcessor() == nil) {
             let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
-            res.setListProcessor(ListProcessor(isGroup: group))
+            res.setListProcessor(ListProcessor(peer: peer))
         }
         return res
     }
@@ -218,7 +202,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         
         self.willUpdate()
         let list = self.displayList.getProcessedList() as? PreprocessedList
-        self.layout.beginUpdates(modification.isLoadMore, list: list, unread: unreadMessageId)
+        self.collectionViewLayout.beginUpdates(modification.isLoadMore, list: list, unread: unreadMessageId)
         
         if modification.nonUpdateCount() > 0 {
             isUpdating = true
@@ -259,7 +243,13 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         
         if modification.updatedCount() > 0 {
             for i in 0..<modification.updatedCount() {
-                updated.append(Int(modification.getUpdated(i)))
+                
+                let updIndex = Int(modification.getUpdated(i))
+                // Is forced update not marking as required for soft update
+                if (list!.forceUpdated[updIndex]) {
+                    continue
+                }
+                updated.append(updIndex)
             }
         }
         
@@ -271,6 +261,10 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
             }
             for i in 0..<list!.updated.count {
                 if list!.updated[i] {
+                    // If already in list
+                    if updated.contains(i) {
+                       continue
+                    }
                     updated.append(i)
                 }
             }
@@ -283,13 +277,8 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
             if visibleIndexes.contains(indexPath) {
                 let cell = self.collectionView.cellForItemAtIndexPath(indexPath)
                 let item: AnyObject? = self.objectAtIndexPath(indexPath)
-                if !self.needFullReload(item, cell: cell!) {
-                    self.bindCell(self.collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell!)
-                    continue
-                }
+                self.bindCell(self.collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell!)
             }
-            
-            forcedRows.append(indexPath)
         }
         
         for ind in updatedForce {
@@ -298,8 +287,10 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         }
         
         if (forcedRows.count > 0) {
-            self.layout.beginUpdates(false, list: list, unread: unreadMessageId)
-            self.collectionView.reloadItemsAtIndexPaths(forcedRows)
+            self.collectionViewLayout.beginUpdates(false, list: list, unread: unreadMessageId)
+            self.collectionView.performBatchUpdates({ () -> Void in
+                self.collectionView.reloadItemsAtIndexPaths(forcedRows)
+            }, completion: nil)
         }
         
         self.didUpdate()
@@ -339,7 +330,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     func didUpdate() {
         if isLoadedAfter {
             if unreadIndex != nil {
-                self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: unreadIndex!, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.CenteredVertically, animated: false)
+                self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: unreadIndex!, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                 unreadIndex = nil
             }
         }

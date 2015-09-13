@@ -19,13 +19,33 @@ extension UIView {
 }
 
 class UIViewMeasure {
-    class func measureText(text: String, width: CGFloat, fontSize: CGFloat) -> CGFloat {
-        let style = NSMutableParagraphStyle();
-        style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-        let rect = text.boundingRectWithSize(CGSize(width: width - 2, height: 10000),
+    
+    class func measureText(text: String, width: CGFloat, fontSize: CGFloat) -> CGSize {
+       return UIViewMeasure.measureText(text, width: width, font: UIFont.systemFontOfSize(fontSize))
+    }
+    
+    class func measureText(text: String, width: CGFloat, font: UIFont) -> CGSize {
+        
+        // Building paragraph styles
+        let style = NSMutableParagraphStyle()
+        style.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        
+        // Measuring text with reduced width
+        let rect = text.boundingRectWithSize(CGSize(width: width - 2, height: CGFloat.max),
             options: NSStringDrawingOptions.UsesLineFragmentOrigin,
-            attributes: [NSFontAttributeName: UIFont.systemFontOfSize(fontSize), NSParagraphStyleAttributeName: style],
-            context: nil);
-        return CGFloat(ceil(rect.height))
+            attributes: [NSFontAttributeName: font, NSParagraphStyleAttributeName: style],
+            context: nil)
+        
+        // Returning size with expanded width
+        return CGSizeMake(ceil(rect.width + 2), CGFloat(ceil(rect.height)))
+    }
+    
+    class func measureText(attributedText: NSAttributedString, width: CGFloat) -> CGSize {
+        
+        // Measuring text with reduced width
+        let rect = attributedText.boundingRectWithSize(CGSize(width: width - 2, height: CGFloat.max), options: [.UsesLineFragmentOrigin, .UsesFontLeading], context: nil)
+        
+        // Returning size with expanded width and height
+        return CGSizeMake(ceil(rect.width + 2), CGFloat(ceil(rect.height)))
     }
 }
