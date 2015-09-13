@@ -71,14 +71,8 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        var header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        let header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
         header.addSubview(searchView!)
-        
-//        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-//        headerShadow.image = UIImage(named: "CardTop2");
-//        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-//        header.addSubview(headerShadow);
-        
         tableView.tableHeaderView = header
         
         searchSource = ContactsSearchSource(searchDisplay: searchDisplay!)
@@ -111,14 +105,14 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        var selected = tableView.indexPathForSelectedRow
+        let selected = tableView.indexPathForSelectedRow
         if (selected != nil){
             tableView.deselectRowAtIndexPath(selected!, animated: animated);
         }
         
         // SearchBar hack
-        var searchBar = searchDisplay!.searchBar
-        var superView = searchBar.superview
+        let searchBar = searchDisplay!.searchBar
+        let superView = searchBar.superview
         if !(superView is UITableView) {
             searchBar.removeFromSuperview()
             superView?.addSubview(searchBar)
@@ -165,14 +159,14 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
         } else {
             if (indexPath.row == 1) {
                 let reuseId = "cell_invite";
-                var res = ContactActionCell(reuseIdentifier: reuseId)
+                let res = ContactActionCell(reuseIdentifier: reuseId)
                 res.bind("ic_add_user",
                     actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
                     isLast: false)
                 return res
             } else {
                 let reuseId = "cell_add";
-                var res = ContactActionCell(reuseIdentifier: reuseId)
+                let res = ContactActionCell(reuseIdentifier: reuseId)
                 res.bind("ic_invite_user",
                     actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
                     isLast: false)
@@ -186,7 +180,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     
     
     func doAddContact() {
-        var alertView = UIAlertView(
+        let alertView = UIAlertView(
             title: NSLocalizedString("ContactsAddHeader", comment: "Alert Title"),
             message: NSLocalizedString("ContactsAddHint", comment: "Alert Hint"),
             delegate: self,
@@ -212,7 +206,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
             } else {
                 doAddContact()
             }
-            var selected = tableView.indexPathForSelectedRow
+            let selected = tableView.indexPathForSelectedRow
             if (selected != nil){
                 tableView.deselectRowAtIndexPath(selected!, animated: true);
             }
@@ -260,7 +254,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
 // MARK: MFMessageComposeViewController Delegate
 
 extension ContactsViewController: MFMessageComposeViewControllerDelegate {
-    func messageComposeViewController(controller: MFMessageComposeViewController!, didFinishWithResult result: MessageComposeResult) {
+    func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
 }

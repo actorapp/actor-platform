@@ -54,7 +54,7 @@ class TextCell: UATableViewCell {
     }
     
     class func measure(text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
-        var height = UIViewMeasure.measureText(text, width: width - 30 - (enableNavigation ? 30 : 0), fontSize: 17)
+        let height = UIViewMeasure.measureText(text, width: width - 30 - (enableNavigation ? 30 : 0), fontSize: 17)
         return CGFloat(height + 36)
     }
 }

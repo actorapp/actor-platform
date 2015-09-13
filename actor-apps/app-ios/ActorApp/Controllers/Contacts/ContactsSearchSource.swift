@@ -19,7 +19,7 @@ class ContactsSearchSource: SearchSource {
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        var contact = item as! ACContact;
+        let contact = item as! ACContact;
         let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
         
         // Building short name
@@ -27,10 +27,10 @@ class ContactsSearchSource: SearchSource {
         if (indexPath.row == 0) {
             shortName = contact.getName().smallValue();
         } else {
-            var prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! ACContact;
+            let prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! ACContact;
             
-            var prevName = prevContact.getName().smallValue();
-            var name = contact.getName().smallValue();
+            let prevName = prevContact.getName().smallValue();
+            let name = contact.getName().smallValue();
             
             if (prevName != name){
                 shortName = name;
