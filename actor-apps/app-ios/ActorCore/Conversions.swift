@@ -46,6 +46,14 @@ extension ACMessage {
     }
 }
 
+extension ACPeer {
+    var isGroup: Bool {
+        get {
+            return UInt(self.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue
+        }
+    }
+}
+
 extension NSMutableData {
     func appendUInt32(value: UInt32) {
       var raw = value.bigEndian
