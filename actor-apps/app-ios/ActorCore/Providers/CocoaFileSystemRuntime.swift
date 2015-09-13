@@ -98,7 +98,7 @@ class CocoaFile : NSObject, ARFileSystemReference {
     
     func openWriteWithSize(size: jint) -> AROutputFile! {
         
-        var fileHandle = NSFileHandle(forWritingAtPath: realPath);
+        let fileHandle = NSFileHandle(forWritingAtPath: realPath);
 
         if (fileHandle == nil) {
             return nil
@@ -112,7 +112,7 @@ class CocoaFile : NSObject, ARFileSystemReference {
     
     func openRead() -> ARInputFile! {
         
-        var fileHandle = NSFileHandle(forReadingAtPath: realPath);
+        let fileHandle = NSFileHandle(forReadingAtPath: realPath);
         
         if (fileHandle == nil) {
             return nil
@@ -131,10 +131,10 @@ class CocoaOutputFile : NSObject, AROutputFile {
     }
     
     func writeWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset dataOffset: jint, withLength dataLen: jint) -> Bool {
-        var toWrite = NSMutableData(length: Int(dataLen))!;
+        let toWrite = NSMutableData(length: Int(dataLen))!;
         var srcBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
         var destBuffer = UnsafeMutablePointer<UInt8>(toWrite.bytes);
-        for i in 0..<dataLen {
+        for _ in 0..<dataLen {
             destBuffer.memory = srcBuffer.memory;
             destBuffer++;
             srcBuffer++;
@@ -164,12 +164,12 @@ class CocoaInputFile :NSObject, ARInputFile {
     func readWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset offset: jint, withLength len: jint, withCallback callback: ARFileReadCallback!) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
             self.fileHandle.seekToFileOffset(UInt64(fileOffset));
-            var readed:NSData = self.fileHandle.readDataOfLength(Int(len));
+            let readed:NSData = self.fileHandle.readDataOfLength(Int(len));
             
             var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes);
             var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
-            var len = min(Int(len), Int(readed.length));
-            for i in offset..<offset+len {
+            let len = min(Int(len), Int(readed.length));
+            for _ in offset..<offset+len {
                 destBuffer.memory = srcBuffer.memory;
                 destBuffer++;
                 srcBuffer++;

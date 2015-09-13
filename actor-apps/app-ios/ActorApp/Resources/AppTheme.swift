@@ -194,9 +194,9 @@ class AppSearchBar {
     func applyAppearance(application: UIApplication) {
         
         // SearchBar Text Color
-        var textField = UITextField.my_appearanceWhenContainedIn(UISearchBar.self)
+        let textField = UITextField.my_appearanceWhenContainedIn(UISearchBar.self)
         // textField.tintColor = UIColor.redColor()
-        var font = UIFont(name: "HelveticaNeue", size: 14.0)
+        let font = UIFont(name: "HelveticaNeue", size: 14.0)
         textField.defaultTextAttributes = [NSFontAttributeName: font!,
                         NSForegroundColorAttributeName : fieldTextColor]
     }
@@ -223,7 +223,7 @@ class AppSearchBar {
         searchBar.backgroundColor = backgroundColor
         
         // SearchBar field color
-        var fieldBg = Imaging.imageWithColor(fieldBackgroundColor, size: CGSize(width: 14,height: 28))
+        let fieldBg = Imaging.imageWithColor(fieldBackgroundColor, size: CGSize(width: 14,height: 28))
                                 .roundCorners(14, h: 28, roundSize: 4)
         searchBar.setSearchFieldBackgroundImage(fieldBg.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
         
@@ -259,7 +259,7 @@ class AppTabBar {
     }
     
     func applyAppearance(application: UIApplication) {
-        var tabBar = UITabBar.appearance()
+        let tabBar = UITabBar.appearance()
         // TabBar Background color
         tabBar.barTintColor = backgroundColor;
 
@@ -270,7 +270,7 @@ class AppTabBar {
             tabBar.shadowImage = nil
         }
         
-        var tabBarItem = UITabBarItem.appearance()
+        let tabBarItem = UITabBarItem.appearance()
         // TabBar Unselected Text
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: unselectedTextColor], forState: UIControlState.Normal)
         // TabBar Selected Text
@@ -301,7 +301,7 @@ class AppNavigationBar {
             application.statusBarStyle = UIStatusBarStyle.Default
         }
         
-        var navAppearance = UINavigationBar.appearance();
+        let navAppearance = UINavigationBar.appearance();
         
         // NavigationBar Icon
         navAppearance.tintColor = titleColor;

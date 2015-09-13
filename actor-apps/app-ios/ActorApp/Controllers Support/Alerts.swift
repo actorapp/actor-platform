@@ -40,7 +40,7 @@ extension UIViewController {
     }
     
     func textInputAlert(message: String, content: String?, action:String, tapYes: (nval: String)->()) {
-        var alertView = UIAlertView(
+        let alertView = UIAlertView(
             title: nil,
             message: NSLocalizedString(message, comment: "Title"),
             delegate: self,
@@ -111,7 +111,7 @@ extension UIViewController {
     }
     
     func showActionSheetFast(buttons: [String], cancelButton: String, tapClosure: (index: Int) -> ()) {
-        var actionShit = ABActionShit()
+        let actionShit = ABActionShit()
         
         var convertedButtons:[String] = [String]()
         for b in buttons {
@@ -120,7 +120,7 @@ extension UIViewController {
         
         actionShit.buttonTitles = convertedButtons
         actionShit.cancelButtonTitle = NSLocalizedString(cancelButton,comment: "Cancel")
-        var shitDelegate = ActionShitDelegate(tapClosure: tapClosure)
+        let shitDelegate = ActionShitDelegate(tapClosure: tapClosure)
         actionShit.delegate = shitDelegate
         
         // Convert from weak to strong reference

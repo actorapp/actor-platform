@@ -27,7 +27,7 @@ class CodePreviewController: AAViewController {
         
         navigationItem.title = "Source Code"
 
-        var data = "<html>\n<header>\n<link rel=\"stylesheet\" href=\"highlight-default.min.css\">\n<script src=\"highlight.min.js\"></script>\n<script>hljs.initHighlightingOnLoad();</script>\n</header>\n<body>\n<pre><code>" +
+        let data = "<html>\n<header>\n<link rel=\"stylesheet\" href=\"highlight-default.min.css\">\n<script src=\"highlight.min.js\"></script>\n<script>hljs.initHighlightingOnLoad();</script>\n</header>\n<body>\n<pre><code>" +
             code
                 .replace("&", dest: "&amp;")
                 .replace("<", dest: "&lt;")
@@ -38,8 +38,8 @@ class CodePreviewController: AAViewController {
             "</body>\n" +
             "</html>"
 
-        var bundle = NSBundle.mainBundle()
-        var path = bundle.pathForResource("highlight.min", ofType: "js")!
+        let bundle = NSBundle.mainBundle()
+        let path = bundle.pathForResource("highlight.min", ofType: "js")!
         
         webView.loadHTMLString(data, baseURL: NSURL(fileURLWithPath: path))
         

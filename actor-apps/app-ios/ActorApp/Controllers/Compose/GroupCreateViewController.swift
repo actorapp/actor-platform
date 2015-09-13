@@ -36,7 +36,7 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
         view.addSubview(groupNameFieldSeparator)
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 110, height: 110), false, 0.0);
-        var context = UIGraphicsGetCurrentContext();
+        let context = UIGraphicsGetCurrentContext();
         CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor);
         CGContextFillEllipseInRect(context, CGRectMake(0.0, 0.0, 110.0, 110.0));
         CGContextSetStrokeColorWithColor(context, UIColor.RGB(0xd9d9d9).CGColor);
@@ -49,14 +49,14 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
         addPhotoButton.setBackgroundImage(buttonImage, forState: UIControlState.Normal)
         addPhotoButton.addTarget(self, action: "photoTap", forControlEvents: UIControlEvents.TouchUpInside)
         
-        var addPhotoLabelFirst = UILabel()
+        let addPhotoLabelFirst = UILabel()
         addPhotoLabelFirst.text = NSLocalizedString("AuthProfileAddPhoto1", comment: "Title")
         addPhotoLabelFirst.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelFirst.backgroundColor = UIColor.clearColor()
         addPhotoLabelFirst.textColor = UIColor.RGB(0xd9d9d9)
         addPhotoLabelFirst.sizeToFit()
         
-        var addPhotoLabelSecond = UILabel()
+        let addPhotoLabelSecond = UILabel()
         addPhotoLabelSecond.text = NSLocalizedString("AuthProfileAddPhoto2", comment: "Title")
         addPhotoLabelSecond.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelSecond.backgroundColor = UIColor.clearColor()
@@ -103,7 +103,7 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
     }
     
     func photoTap() {
-        var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
             cancelButton: "AlertCancel",
             destructButton: self.avatarImageView.image != nil ? "PhotoRemove" : nil,
@@ -135,7 +135,7 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
     }
     
     func doNext() {
-        var title = groupName.text!.trim()
+        let title = groupName.text!.trim()
         if (title.length == 0) {
             shakeView(groupName, originalX: groupName.frame.origin.x)
             return

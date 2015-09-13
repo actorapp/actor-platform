@@ -71,7 +71,7 @@ import Foundation
         checkTable()
         
         // TODO: Fix?
-        var result = db!.longForQuery(queryItem, key.toNSNumber());
+        let result = db!.longForQuery(queryItem, key.toNSNumber());
         if (result == nil) {
             return nil
         }
@@ -82,13 +82,13 @@ import Foundation
     func findBeforeValue(value: jlong) -> JavaUtilList! {
         checkTable()
         
-        var dbResult = db!.executeQuery(queryFind, value.toNSNumber())
+        let dbResult = db!.executeQuery(queryFind, value.toNSNumber())
         
         if dbResult == nil {
             return JavaUtilArrayList()
         }
         
-        var res = JavaUtilArrayList()
+        let res = JavaUtilArrayList()
         while(dbResult!.next()) {
             res.addWithId(JavaLangLong(long: jlong(dbResult!.longLongIntForColumn("ID"))))
         }
@@ -100,7 +100,7 @@ import Foundation
     func removeBeforeValue(value: jlong) -> JavaUtilList! {
         checkTable()
         
-        var res = findBeforeValue(value)
+        let res = findBeforeValue(value)
         
         removeWithKeys(res)
         
@@ -120,7 +120,7 @@ import Foundation
      
         db!.beginTransaction()
         for index in 0..<keys.size() {
-            var key = (keys.getWithInt(index) as! JavaLangLong).longLongValue()
+            let key = (keys.getWithInt(index) as! JavaLangLong).longLongValue()
             db!.executeUpdate(queryDelete, key.toNSNumber())
         }
         db!.commit()
@@ -129,12 +129,12 @@ import Foundation
     func getCount() -> jint {
         checkTable()
         
-        var result = db!.executeQuery(queryCount)
+        let result = db!.executeQuery(queryCount)
         if (result == nil) {
             return 0;
         }
         if (result!.next()) {
-            var res = jint(result!.intForColumnIndex(0))
+            let res = jint(result!.intForColumnIndex(0))
             result?.close()
             return res
         } else {

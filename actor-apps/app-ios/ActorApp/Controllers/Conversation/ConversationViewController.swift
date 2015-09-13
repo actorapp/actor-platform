@@ -122,9 +122,9 @@ class ConversationViewController: ConversationBaseViewController {
                     self.subtitleView.text = Actor.getFormatter().formatTyping();
                     self.subtitleView.textColor = Resources.PrimaryLightText
                 } else {
-                    var stateText = Actor.getFormatter().formatPresence(presence, withSex: user.getSex())
+                    let stateText = Actor.getFormatter().formatPresence(presence, withSex: user.getSex())
                     self.subtitleView.text = stateText;
-                    var state = UInt(presence!.getState().ordinal())
+                    let state = UInt(presence!.getState().ordinal())
                     if (state == ACUserPresence_State.ONLINE.rawValue) {
                         self.subtitleView.textColor = Resources.PrimaryLightText
                     } else {
@@ -134,7 +134,7 @@ class ConversationViewController: ConversationBaseViewController {
             })
         } else if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
             let group = Actor.getGroupWithGid(peer.getPeerId())
-            var nameModel = group.getNameModel()
+            let nameModel = group.getNameModel()
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
                 self.titleView.text = String(value!);
@@ -155,8 +155,8 @@ class ConversationViewController: ConversationBaseViewController {
                 if (typingValue != nil && typingValue!.length() > 0) {
                     self.subtitleView.textColor = Resources.PrimaryLightText
                     if (typingValue!.length() == 1) {
-                        var uid = typingValue!.intAtIndex(0);
-                        var user = Actor.getUserWithUid(uid)
+                        let uid = typingValue!.intAtIndex(0);
+                        let user = Actor.getUserWithUid(uid)
                         self.subtitleView.text = Actor.getFormatter().formatTypingWithName(user.getNameModel().get())
                     } else {
                         self.subtitleView.text = Actor.getFormatter().formatTypingWithCount(typingValue!.length());
@@ -168,8 +168,8 @@ class ConversationViewController: ConversationBaseViewController {
                         self.subtitleView.text = membersString;
                     } else {
                         membersString = membersString + ", ";
-                        var onlineString = Actor.getFormatter().formatGroupOnline(onlineCount!.intValue());
-                        var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
+                        let onlineString = Actor.getFormatter().formatGroupOnline(onlineCount!.intValue());
+                        let attributedString = NSMutableAttributedString(string: (membersString + onlineString))
                         attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.length, onlineString.length))
                         self.subtitleView.attributedText = attributedString
                     }
@@ -207,10 +207,9 @@ class ConversationViewController: ConversationBaseViewController {
         (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
         
         if navigationController!.viewControllers.count > 2 {
-            if let firstController = navigationController!.viewControllers[0] as? UIViewController,
-                let currentController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1] as? ConversationViewController {
-                    navigationController!.setViewControllers([firstController, currentController], animated: false)
-            }
+            let firstController = navigationController!.viewControllers[0]
+            let currentController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1]
+            navigationController!.setViewControllers([firstController, currentController], animated: false)
         }
     }
     
@@ -267,7 +266,7 @@ class ConversationViewController: ConversationBaseViewController {
                         bubbleFrame = collectionView.convertRect(bubbleFrame, fromView: cell.bubble.superview)
                         if CGRectContainsPoint(bubbleFrame, point) {
                             // cell.becomeFirstResponder()
-                            var menuController = UIMenuController.sharedMenuController()
+                            let menuController = UIMenuController.sharedMenuController()
                             menuController.setTargetRect(bubbleFrame, inView:collectionView)
                             menuController.menuItems = [UIMenuItem(title: "Copy", action: "copy")]
                             menuController.setMenuVisible(true, animated: true)
@@ -290,9 +289,9 @@ class ConversationViewController: ConversationBaseViewController {
         }
         
         if (isIPad) {
-            var navigation = AANavigationController()
+            let navigation = AANavigationController()
             navigation.viewControllers = [controller]
-            var popover = UIPopoverController(contentViewController:  navigation)
+            let popover = UIPopoverController(contentViewController:  navigation)
             controller.popover = popover
             popover.presentPopoverFromBarButtonItem(navigationItem.rightBarButtonItem!,
                 permittedArrowDirections: UIPopoverArrowDirection.Up,
@@ -317,11 +316,11 @@ class ConversationViewController: ConversationBaseViewController {
     override func didPressLeftButton(sender: AnyObject!) {
         super.didPressLeftButton(sender)
         
-        var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-        var buttons = hasCamera ? ["PhotoCamera", "PhotoLibrary", "SendDocument"] : ["PhotoLibrary", "SendDocument"]
-        var tapBlock = { (index: Int) -> () in
+        let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        let buttons = hasCamera ? ["PhotoCamera", "PhotoLibrary", "SendDocument"] : ["PhotoLibrary", "SendDocument"]
+        let tapBlock = { (index: Int) -> () in
             if index == 0 || (hasCamera && index == 1) {
-                var pickerController = AAImagePickerController()
+                let pickerController = AAImagePickerController()
                 pickerController.sourceType = (hasCamera && index == 0) ?
                     UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary
                 pickerController.mediaTypes = [kUTTypeImage as String]
@@ -333,7 +332,7 @@ class ConversationViewController: ConversationBaseViewController {
                 self.presentViewController(pickerController, animated: true, completion: nil)
             } else if index >= 0 {
                 if #available(iOS 8.0, *) {
-                    var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
+                    let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
                     documentPicker.view.backgroundColor = UIColor.clearColor()
                     documentPicker.delegate = self
                     self.presentViewController(documentPicker, animated: true, completion: nil)
@@ -369,7 +368,7 @@ class ConversationViewController: ConversationBaseViewController {
 //    }
     
     override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
-        var message = (item as! ACMessage);
+        let message = (item as! ACMessage);
         if cell is AABubbleTextCell {
             if (message.content is ACPhotoContent) {
                 return true
@@ -387,10 +386,10 @@ class ConversationViewController: ConversationBaseViewController {
         if UInt(self.peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue {
             if self.foundPrefix == "@" {
 
-                var oldCount = filteredMembers.count
+                let oldCount = filteredMembers.count
                 filteredMembers.removeAll(keepCapacity: true)
                 
-                var res = Actor.findMentionsWithGid(self.peer.getPeerId(), withQuery: self.foundWord)
+                let res = Actor.findMentionsWithGid(self.peer.getPeerId(), withQuery: self.foundWord)
                 for index in 0..<res.size() {
                     filteredMembers.append(res.getWithInt(index) as! ACMentionFilterResult)
                 }
@@ -413,13 +412,13 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var res = AutoCompleteCell(style: UITableViewCellStyle.Default, reuseIdentifier: "user_name")
+        let res = AutoCompleteCell(style: UITableViewCellStyle.Default, reuseIdentifier: "user_name")
         res.bindData(filteredMembers[indexPath.row], highlightWord: foundWord)
         return res
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var user = filteredMembers[indexPath.row]
+        let user = filteredMembers[indexPath.row]
 
         var postfix = " "
         if foundPrefixRange.location == 0 {
@@ -430,7 +429,7 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func heightForAutoCompletionView() -> CGFloat {
-        var cellHeight: CGFloat = 44.0;
+        let cellHeight: CGFloat = 44.0;
         return cellHeight * CGFloat(filteredMembers.count)
     }
     
@@ -469,10 +468,10 @@ extension ConversationViewController: UIDocumentPickerDelegate {
     
     @available(iOS 8.0, *)
     func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
-        var path = url.path!;
-        var fileName = url.lastPathComponent
-        var range = path.rangeOfString("/tmp", options: NSStringCompareOptions(), range: nil, locale: nil)
-        var descriptor = path.substringFromIndex(range!.startIndex)
+        let path = url.path!;
+        let fileName = url.lastPathComponent
+        let range = path.rangeOfString("/tmp", options: NSStringCompareOptions(), range: nil, locale: nil)
+        let descriptor = path.substringFromIndex(range!.startIndex)
         NSLog("Picked file: \(descriptor)")
         Actor.trackDocumentSendWithPeer(peer)
         Actor.sendDocumentWithPeer(peer, withName: fileName, withMime: "application/octet-stream", withDescriptor: descriptor)

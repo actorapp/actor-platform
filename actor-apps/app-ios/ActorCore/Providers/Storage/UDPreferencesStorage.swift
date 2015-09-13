@@ -14,7 +14,7 @@ import Foundation
     }
 
     func getLongWithKey(key: String!, withDefault def: jlong) -> jlong {
-        var val: AnyObject? = prefs.objectForKey(key)
+        let val: AnyObject? = prefs.objectForKey(key)
         if (val == nil || !(val is NSNumber)) {
             return def;
         } else {
@@ -28,7 +28,7 @@ import Foundation
     }
     
     func getIntWithKey(key: String!, withDefault def: jint) -> jint {
-        var val: AnyObject? = prefs.objectForKey(key)
+        let val: AnyObject? = prefs.objectForKey(key)
         if (val == nil || !(val is NSNumber)) {
             return def;
         } else {
@@ -42,7 +42,7 @@ import Foundation
     }
     
     func getBoolWithKey(key: String!, withDefault def: Bool) -> Bool {
-        var val: AnyObject? = prefs.objectForKey(key);
+        let val: AnyObject? = prefs.objectForKey(key);
         if (val == nil || (!(val is Bool))) {
             return def;
         } else {
@@ -56,7 +56,7 @@ import Foundation
     }
     
     func getBytesWithKey(key: String!) -> IOSByteArray! {
-        var val: AnyObject? = prefs.objectForKey(key);
+        let val: AnyObject? = prefs.objectForKey(key);
         if (val == nil || !(val is NSData)){
             return nil
         } else {
@@ -70,7 +70,7 @@ import Foundation
     }
     
     func getStringWithKey(key: String!) -> String! {
-        var val: AnyObject? = prefs.objectForKey(key);
+        let val: AnyObject? = prefs.objectForKey(key);
         if (val == nil || !(val is String)) {
             return nil
         } else {
@@ -79,7 +79,7 @@ import Foundation
     }
     
     func clear() {
-        var appDomain = NSBundle.mainBundle().bundleIdentifier!
+        let appDomain = NSBundle.mainBundle().bundleIdentifier!
         prefs.removePersistentDomainForName(appDomain)
     }
 }
