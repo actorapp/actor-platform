@@ -38,7 +38,7 @@ class IntegrationViewController: AATableViewController {
             .addCommonCell()
             .setStyle(.Normal)
         
-        var section = tableData.addSection()
+        let section = tableData.addSection()
         
         section.addActionCell("ActionCopyLink", actionClosure: { () -> () in
                 UIPasteboard.generalPasteboard().string = self.currentUrl
@@ -62,7 +62,7 @@ class IntegrationViewController: AATableViewController {
             .setStyle(.Destructive)
         
         execute(Actor.requestIntegrationTokenCommandWithGid(gid), successBlock: { (val) -> Void in
-            self.currentUrl = val as! String
+            self.currentUrl = val as? String
             self.urlCell.setContent(self.currentUrl!)
             self.tableView.hidden = false
             self.tableView.reloadData()
@@ -73,7 +73,7 @@ class IntegrationViewController: AATableViewController {
     
     func reloadLink() {
         execute(Actor.revokeIntegrationTokenCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
-            self.currentUrl = val as! String
+            self.currentUrl = val as? String
             self.urlCell.setContent(self.currentUrl!)
             self.tableView.hidden = false
             self.tableView.reloadData()

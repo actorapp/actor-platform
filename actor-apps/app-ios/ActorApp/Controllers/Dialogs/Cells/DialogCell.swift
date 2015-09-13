@@ -53,7 +53,7 @@ class DialogCell: UITableViewCell {
         self.contentView.addSubview(unreadViewBg)
         self.contentView.addSubview(unreadView)
         
-        var selectedView = UIView()
+        let selectedView = UIView()
         selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
         selectedBackgroundView = selectedView
     }
@@ -85,7 +85,7 @@ class DialogCell: UITableViewCell {
             self.unreadViewBg.hidden = true
         }
         
-        var messageState = UInt(dialog.getStatus().ordinal());
+        let messageState = UInt(dialog.getStatus().ordinal());
         
         if (messageState == ACMessageState.PENDING.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSending

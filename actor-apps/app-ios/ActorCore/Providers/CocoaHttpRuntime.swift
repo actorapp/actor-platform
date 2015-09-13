@@ -8,8 +8,8 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
     let queue:NSOperationQueue = NSOperationQueue()
     
     func getMethodWithUrl(url: String!, withStartOffset startOffset: jint, withSize size: jint, withTotalSize totalSize: jint, withCallback callback: ARFileDownloadCallback!) {
-        var header = "bytes=\(startOffset)-\(min(startOffset + size, totalSize))"
-        var request = NSMutableURLRequest(URL: NSURL(string: url)!)
+        let header = "bytes=\(startOffset)-\(min(startOffset + size, totalSize))"
+        let request = NSMutableURLRequest(URL: NSURL(string: url)!)
         request.HTTPShouldHandleCookies = false
         request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
         request.setValue(header, forHTTPHeaderField: "Range")
@@ -25,7 +25,7 @@ class CocoaHttpRuntime: NSObject, ARHttpRuntime {
     }
     
     func putMethodWithUrl(url: String!, withContents contents: IOSByteArray!, withCallback callback: ARFileUploadCallback!) {
-        var request = NSMutableURLRequest(URL: NSURL(string: url)!)
+        let request = NSMutableURLRequest(URL: NSURL(string: url)!)
         request.HTTPShouldHandleCookies = false
         request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
         request.HTTPMethod = "PUT"

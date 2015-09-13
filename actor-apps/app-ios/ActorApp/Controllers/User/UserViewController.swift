@@ -49,7 +49,7 @@ class UserViewController: AATableViewController {
         
         // Avatar
         tableData.addSection().addCustomCell { (tableView, indexPath) -> UITableViewCell in
-            var cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
+            let cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
             cell.contentView.superview?.clipsToBounds = false
             
             if self.user != nil {
@@ -62,7 +62,7 @@ class UserViewController: AATableViewController {
         }.setHeight(avatarHeight)
         
         // Top section
-        var contactsSection = tableData
+        let contactsSection = tableData
             .addSection(true)
             .setFooterHeight(15)
         
@@ -75,13 +75,13 @@ class UserViewController: AATableViewController {
                 })
         }
         
-        var nick = user!.getNickModel().get()
+        let nick = user!.getNickModel().get()
         if nick != nil {
             contactsSection
                 .addTitledCell(localized("ProfileUsername"), text: "@\(nick)")
         }
         
-        var about = user!.getAboutModel().get()
+        let about = user!.getAboutModel().get()
         if about != nil {
             contactsSection
                 .addTextCell(localized("ProfileAbout"), text: about)
@@ -95,14 +95,14 @@ class UserViewController: AATableViewController {
                 }
                 return 0
                 }) { (tableView, index, indexPath) -> UITableViewCell in
-                    var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
+                    let cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
                     if let phone = self.phones!.getWithInt(jint(index)) as? ACUserPhone {
                         cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
                     }
                     return cell
             }.setAction { (index) -> () in
-                var phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
-                var hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
+                let phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
+                let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
                 if (!hasPhone) {
                     UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
                     self.alertUser("NumberCopied")
@@ -146,7 +146,7 @@ class UserViewController: AATableViewController {
             .setContent("ProfileNotifications")
             .setStyle(.Switch)
         
-        var contactSection = tableData.addSection(true)
+        let contactSection = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
 
@@ -199,7 +199,7 @@ class UserViewController: AATableViewController {
         })
 
         binder.bind(user!.getPresenceModel(), closure: { (presence: ACUserPresence?) -> () in
-            var presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
+            let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                     cell.setPresence(presenceText)

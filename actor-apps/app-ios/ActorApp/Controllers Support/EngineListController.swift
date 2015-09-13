@@ -52,7 +52,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             self.engineTableView.alpha = 1
         }
         
-        var selected = self.engineTableView.indexPathForSelectedRow;
+        let selected = self.engineTableView.indexPathForSelectedRow;
         if (selected != nil){
             self.engineTableView.deselectRowAtIndexPath(selected!, animated: animated);
         }
@@ -107,7 +107,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             // Moved rows
             if modification.movedCount() > 0 {
                 for i in 0..<modification.movedCount() {
-                    var mov = modification.getMoved(jint(i))
+                    let mov = modification.getMoved(jint(i))
                     self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()), inSection: contentSection), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()), inSection: contentSection))
                 }
             }
@@ -117,13 +117,13 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         
         // Updated rows
         if modification.updatedCount() > 0 {
-            var visibleIndexes = self.engineTableView.indexPathsForVisibleRows!
+            let visibleIndexes = self.engineTableView.indexPathsForVisibleRows!
             for i in 0..<modification.updatedCount() {
                 for visibleIndex in visibleIndexes {
                     if (visibleIndex.row == Int(modification.getUpdated(jint(i))) && visibleIndex.section == contentSection) {
                         // Need to rebind manually because we need to keep cell reference same
-                        var item: AnyObject? = objectAtIndexPath(visibleIndex)
-                        var cell = self.engineTableView.cellForRowAtIndexPath(visibleIndex)
+                        let item: AnyObject? = objectAtIndexPath(visibleIndex)
+                        let cell = self.engineTableView.cellForRowAtIndexPath(visibleIndex)
                         bindCell(self.engineTableView, cellForRowAtIndexPath: visibleIndex, item: item, cell: cell!)
                     }
                 }
@@ -166,8 +166,8 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var item: AnyObject? = objectAtIndexPath(indexPath)
-        var cell = buildCell(tableView, cellForRowAtIndexPath:indexPath, item:item);
+        let item: AnyObject? = objectAtIndexPath(indexPath)
+        let cell = buildCell(tableView, cellForRowAtIndexPath:indexPath, item:item);
         bindCell(tableView, cellForRowAtIndexPath: indexPath, item: item, cell: cell);
         displayList.touchWithIndex(jint(indexPath.row))
         return cell;

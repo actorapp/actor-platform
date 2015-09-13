@@ -74,14 +74,14 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
         } else {
             if (indexPath.row == 0) {
                 let reuseId = "create_group";
-                var res = ContactActionCell(reuseIdentifier: reuseId)
+                let res = ContactActionCell(reuseIdentifier: reuseId)
                 res.bind("ic_add_user",
                     actionTitle: NSLocalizedString("CreateGroup", comment: "Create Group"),
                     isLast: false)
                 return res
             } else {
                 let reuseId = "find_public";
-                var res = ContactActionCell(reuseIdentifier: reuseId)
+                let res = ContactActionCell(reuseIdentifier: reuseId)
                 res.bind("ic_add_user",
                     actionTitle: NSLocalizedString("Join public group", comment: "Create Group"),
                     isLast: false)
@@ -100,11 +100,11 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
                 }
                 MainAppTheme.navigation.applyStatusBar()
             } else {
-                var contact = objectAtIndexPath(indexPath) as! ACContact
+                let contact = objectAtIndexPath(indexPath) as! ACContact
                 navigateToMessagesWithPeerId(contact.getUid())
             }
         } else {
-            var contact = searchSource!.objectAtIndexPath(indexPath) as! ACContact
+            let contact = searchSource!.objectAtIndexPath(indexPath) as! ACContact
             navigateToMessagesWithPeerId(contact.getUid())
         }
     }
