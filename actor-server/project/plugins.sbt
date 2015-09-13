@@ -21,7 +21,7 @@ addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.6.12")
 
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.4.0")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.3")
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.4")
 
 addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.14")
 
