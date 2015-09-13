@@ -14,15 +14,9 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     let timeLabel = UILabel()
     let statusView = UIImageView()
     
-    // Layout
-    
-    var contentWidth = 0
-    var contentHeight = 0
-    var contentViewSize: CGSize? = nil
-    
     // Binded data
     
-    var thumb : ACFastThumb? = nil
+    var bindedLayout: MediaCellLayout!
     var thumbLoaded = false
     var contentLoaded = false
     
@@ -58,6 +52,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     // Binding
     
     override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+        self.bindedLayout = cellLayout as! MediaCellLayout
         
         bubbleInsets = UIEdgeInsets(
             top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
@@ -74,26 +69,10 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                 bindBubbleType(BubbleType.MediaIn, isCompact: false)
             }
             
-            // Build bubble size
-            if (message.content is ACPhotoContent) {
-                var photo = message.content as! ACPhotoContent;
-                thumb = photo.getFastThumb()
-                contentWidth = Int(photo.getW())
-                contentHeight = Int(photo.getH())
-            } else if (message.content is ACVideoContent) {
-                var video = message.content as! ACVideoContent;
-                thumb = video.getFastThumb()
-                contentWidth = Int(video.getW())
-                contentHeight = Int(video.getH())
-            } else {
-                fatalError("Unsupported content")
-            }
-            contentViewSize = AABubbleMediaCell.measureMedia(contentWidth, h: contentHeight)
-            
-            // Reset loaded thumbs and contents
-            preview.image = nil
-            thumbLoaded = false
+            // Reset content state
+            self.preview.image = nil
             contentLoaded = false
+            thumbLoaded = false
             
             // Reset progress
             self.progress.hideButton()
@@ -103,7 +82,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             })
 
             // Bind file
-            fileBind(message, autoDownload: message.content is ACPhotoContent)
+            fileBind(message, autoDownload: bindedLayout.autoDownload)
         }
         
         // Update time
@@ -200,8 +179,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
         thumbLoaded = true
         
-        if (thumb != nil) {
-            var loadedThumb = UIImage(data: self.thumb!.getImage().toNSData()!)?.roundCorners(contentViewSize!.width - 2, h: contentViewSize!.height - 2, roundSize: 14)
+        if (bindedLayout.fastThumb != nil) {
+            let loadedThumb = UIImage(data: bindedLayout.fastThumb!)?
+                .roundCorners(bindedLayout.screenSize.width,
+                    h: bindedLayout.screenSize.height,
+                    roundSize: 14)
             
             runOnUiThread(selfGeneration,closure: { ()->() in
                 self.setPreviewImage(loadedThumb!, fast: true)
@@ -215,7 +197,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
         contentLoaded = true
         
-        var loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(contentViewSize!.width - 2, h: contentViewSize!.height - 2, roundSize: 14)
+        let loadedContent = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))?.roundCorners(self.bindedLayout.screenSize.width, h: self.bindedLayout.screenSize.height, roundSize: 14)
         
         if (loadedContent == nil) {
             return
@@ -236,7 +218,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     // Media Action
     
     func mediaDidTap() {
-        var content = bindedMessage!.content as! ACDocumentContent
+        let content = bindedMessage!.content as! ACDocumentContent
         if let fileSource = content.getSource() as? ACFileRemoteSource {
             Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
                 notDownloaded: { () -> () in
@@ -244,8 +226,8 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                 }, onDownloading: { (progress) -> () in
                     Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                 }, onDownloaded: { (reference) -> () in
-                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
-                    var controller = NYTPhotosViewController(photos: [photoInfo])
+                    let photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
+                    let controller = NYTPhotosViewController(photos: [photoInfo])
                     controller.delegate = self
                     
                     (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
@@ -253,15 +235,15 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
-            var rid = bindedMessage!.rid
+            let rid = bindedMessage!.rid
             Actor.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
                 notUploaded: { () -> () in
                     Actor.resumeUploadWithRid(rid)
                 }, onUploading: { (progress) -> () in
                     Actor.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
-                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-                    var controller = NYTPhotosViewController(photos: [photoInfo])
+                    let photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                    let controller = NYTPhotosViewController(photos: [photoInfo])
                     controller.delegate = self
                     
                     (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
@@ -274,12 +256,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     // Layouting
     
     override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
-        var insets = fullContentInsets
-        var contentWidth = self.contentView.frame.width
-        var contentHeight = self.contentView.frame.height
-        
-        var bubbleHeight = contentHeight - insets.top - insets.bottom
-        var bubbleWidth = bubbleHeight * CGFloat(self.contentWidth) / CGFloat(self.contentHeight)
+        let insets = fullContentInsets
+        let contentWidth = self.contentView.frame.width
+        let contentHeight = self.contentView.frame.height
+        let bubbleWidth = self.bindedLayout.screenSize.width
+        let bubbleHeight = self.bindedLayout.screenSize.height
         
         layoutBubble(bubbleWidth, contentHeight: bubbleHeight)
         
@@ -294,8 +275,8 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
         timeLabel.sizeToFit()
         
-        var timeWidth = (isOut ? 23 : 0) + timeLabel.bounds.width
-        var timeHeight: CGFloat = 20
+        let timeWidth = (isOut ? 23 : 0) + timeLabel.bounds.width
+        let timeHeight: CGFloat = 20
         
         timeLabel.frame = CGRectMake(preview.frame.maxX - timeWidth - 18, preview.frame.maxY - timeHeight - 6, timeLabel.frame.width, timeHeight)
         
@@ -316,29 +297,89 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
     }
+}
+
+/**
+    Media cell layout
+*/
+class MediaCellLayout: CellLayout {
     
-    // Measures
+    let fastThumb: NSData?
+    let contentSize: CGSize
+    let screenSize: CGSize
+    let autoDownload: Bool
     
-    private class func measureMedia(w: Int, h: Int) -> CGSize {
-        var screenScale = UIScreen.mainScreen().scale;
-        var scaleW = 240 / CGFloat(w)
-        var scaleH = 340 / CGFloat(h)
-        var scale = min(scaleW, scaleH)
-        return CGSize(width: scale * CGFloat(w), height: scale * CGFloat(h))
+    /**
+        Creting layout for media bubble
+    */
+    init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, fastThumb: ACFastThumb?, autoDownload: Bool) {
+        
+        // Saving content size
+        self.contentSize = CGSizeMake(width, height)
+        
+        // Saving autodownload flag
+        self.autoDownload = autoDownload
+
+        // Calculating bubble screen size
+        let scaleW = 240 / width
+        let scaleH = 340 / height
+        let scale = min(scaleW, scaleH)
+        self.screenSize = CGSize(width: scale * width, height: scale * height)
+        
+        // Prepare fast thumb
+        self.fastThumb = fastThumb?.getImage().toNSData()
+        
+        // Creating layout
+        super.init(height: self.screenSize.height + 2, date: date, key: "media")
     }
     
-    class func measureMediaHeight(message: ACMessage) -> CGFloat {
-        if (message.content is ACPhotoContent) {
-            var photo = message.content as! ACPhotoContent;
-            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 2;
-        } else if (message.content is ACVideoContent) {
-            var video = message.content as! ACVideoContent;
-            return measureMedia(Int(video.getW()), h: Int(video.getH())).height + 2;
+    /**
+        Creating layout for photo content
+    */
+    convenience init(id: Int64, photoContent: ACPhotoContent, date: Int64) {
+        self.init(id: id, width: CGFloat(photoContent.getW()), height: CGFloat(photoContent.getH()), date: date, fastThumb: photoContent.getFastThumb(), autoDownload: true)
+    }
+    
+    /**
+        Creating layout for video content
+    */
+    convenience init(id: Int64, videoContent: ACVideoContent, date: Int64) {
+        self.init(id: id, width: CGFloat(videoContent.getW()), height: CGFloat(videoContent.getH()), date: date, fastThumb: videoContent.getFastThumb(),autoDownload: false)
+    }
+    
+    /**
+        Creating layout for message
+    */
+    convenience init(message: ACMessage) {
+        if let content = message.content as? ACPhotoContent {
+            self.init(id: Int64(message.rid), photoContent: content, date: Int64(message.date))
+        } else if let content = message.content as? ACVideoContent {
+            self.init(id: Int64(message.rid), videoContent: content, date: Int64(message.date))
         } else {
-            fatalError("Unknown content type")
+            fatalError("Unsupported content for media cell")
         }
     }
 }
 
-
-
+/**
+    Layouter for media bubbles
+*/
+class AABubbleMediaCellLayouter: AABubbleLayouter {
+    
+    func isSuitable(message: ACMessage) -> Bool {
+        if message.content is ACPhotoContent {
+            return true
+        } else if message.content is ACVideoContent {
+            return true
+        }
+        return false
+    }
+    
+    func buildLayout(peer: ACPeer, message: ACMessage) -> CellLayout {
+        return MediaCellLayout(message: message)
+    }
+    
+    func cellClass() -> AnyClass {
+        return AABubbleMediaCell.self
+    }
+}
