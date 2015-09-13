@@ -4,7 +4,7 @@
 
 import Foundation
 
-class MessagesLayout : UICollectionViewLayout {
+class MessagesFlowLayout : UICollectionViewLayout {
     
     var deletedIndexPaths = [NSIndexPath]()
     var insertedIndexPaths = [NSIndexPath]()
@@ -34,12 +34,12 @@ class MessagesLayout : UICollectionViewLayout {
         
         // Saving current visible cells
         currentItems.removeAll(keepCapacity: true)
-        var visibleItems = self.collectionView!.indexPathsForVisibleItems()
-        var currentOffset = self.collectionView!.contentOffset.y
+        let visibleItems = self.collectionView!.indexPathsForVisibleItems()
+        let currentOffset = self.collectionView!.contentOffset.y
         for indexPath in visibleItems {
-            var index = (indexPath as! NSIndexPath).item
-            var topOffset = items[index].attrs.frame.origin.y - currentOffset
-            var id = items[index].id
+            let index = indexPath.item
+            let topOffset = items[index].attrs.frame.origin.y - currentOffset
+            let id = items[index].id
             currentItems.append(CachedLayout(id: id, offset: topOffset))
         }
         
@@ -50,7 +50,7 @@ class MessagesLayout : UICollectionViewLayout {
         super.prepareLayout()
         
         // Validate sections
-        var sectionsCount = self.collectionView!.numberOfSections()
+        let sectionsCount = self.collectionView!.numberOfSections()
         if sectionsCount == 0 {
             items.removeAll(keepCapacity: true)
             contentHeight = 0.0
@@ -66,20 +66,19 @@ class MessagesLayout : UICollectionViewLayout {
         
         if list != nil {
             for i in 0..<list!.items.count {
-                var indexPath = NSIndexPath(forRow: i, inSection: 0)
-                var itemId = list!.items[i].rid
+                let itemId = list!.items[i].rid
                 var height = list!.heights[i]
                 if itemId == unread {
                     height += AABubbleCell.newMessageSize
                 }
-                var itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
+                let itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
                 
-                var frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
+                let frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
                 var item = LayoutItem(id: itemId)
                 
                 item.size = itemSize
                 
-                var attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
+                let attrs = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forRow: i, inSection: 0))
                 attrs.frame = frame
                 item.attrs = attrs
                 
@@ -106,7 +105,7 @@ class MessagesLayout : UICollectionViewLayout {
     }
     
     override func prepareForCollectionViewUpdates(updateItems: [UICollectionViewUpdateItem]) {
-        var start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         super.prepareForCollectionViewUpdates(updateItems)
         
         insertedIndexPaths.removeAll(keepCapacity: true)
@@ -126,7 +125,7 @@ class MessagesLayout : UICollectionViewLayout {
     }    
     
     override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        var res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
+        let res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
         if insertedIndexPaths.contains(itemIndexPath) {
             res?.alpha = 0
             res?.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
@@ -139,16 +138,15 @@ class MessagesLayout : UICollectionViewLayout {
     override func finalizeCollectionViewUpdates() {
         super.finalizeCollectionViewUpdates()
         
-        var start = CFAbsoluteTimeGetCurrent()
+        let start = CFAbsoluteTimeGetCurrent()
         
         if disableAutoScroll {
-            var size = collectionViewContentSize()
             var delta: CGFloat! = nil
             for item in items {
                 for current in currentItems {
                     if current.id == item.id {
-                        var oldOffset = current.offset
-                        var newOffset = item.attrs!.frame.origin.y - self.collectionView!.contentOffset.y
+                        let oldOffset = current.offset
+                        let newOffset = item.attrs!.frame.origin.y - self.collectionView!.contentOffset.y
                         delta = oldOffset - newOffset
                     }
                 }

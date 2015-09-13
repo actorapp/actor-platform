@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AABubbleDocumentCell: AABubbleBaseFileCell {
+class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControllerDelegate {
     
     private let progress = CircullarLayerProgress(size: CGSizeMake(48, 48))
     private let fileIcon = UIImageView()
@@ -15,7 +15,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     private let dateLabel = UILabel()
     private let statusView = UIImageView()
     
-    private var bindedExt = ""
+    private var bindedLayout: DocumentCellLayout!
     
     init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
@@ -63,6 +63,9 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: Bind
     
     override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+
+        self.bindedLayout = cellLayout as! DocumentCellLayout
+        
         let document = message.content as! ACDocumentContent
         
         self.bubbleInsets = UIEdgeInsets(
@@ -75,14 +78,15 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
             if (isOut) {
                 bindBubbleType(.MediaOut, isCompact: false)
                 dateLabel.textColor = MainAppTheme.bubbles.textDateOut
+                self.statusView.hidden = false
             } else {
                 bindBubbleType(.MediaIn, isCompact: false)
                 dateLabel.textColor = MainAppTheme.bubbles.textDateIn
+                self.statusView.hidden = true
             }
             
-            titleLabel.text = document.getName()
-            bindedExt = document.getExt().lowercaseString
-            sizeLabel.text = Actor.getFormatter().formatFileSize(document.getSource().getSize())
+            titleLabel.text = bindedLayout.fileName
+            sizeLabel.text = bindedLayout.fileSize
             
             // Reset progress
             self.progress.hideButton()
@@ -97,6 +101,8 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         
         // Always update date and state
         dateLabel.text = cellLayout.date
+        
+        // Setting message status
         if (isOut) {
             switch(UInt(message.messageState.ordinal())) {
             case ACMessageState.PENDING.rawValue:
@@ -196,9 +202,94 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     }
     
     override func fileReady(reference: String, selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration) { () -> () in
+            
+            self.fileIcon.image = self.bindedLayout.icon
+            self.fileIcon.showView()
+            
+            self.progress.hideView()
+            self.progress.setProgress(1)
+        }
+    }
+    
+    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+        var insets = fullContentInsets
+        
+        var contentWidth = self.contentView.frame.width
+        var contentHeight = self.contentView.frame.height
+        
+        layoutBubble(200, contentHeight: 66)
+        
+        var contentLeft = self.isOut ? contentWidth - 200 - insets.right - contentInsets.left : insets.left
+        
+        // Content
+        self.titleLabel.frame = CGRectMake(contentLeft + 62, 16, 200 - 64, 22)
+        self.sizeLabel.frame = CGRectMake(contentLeft + 62, 16 + 22, 200 - 64, 22)
+        
+        // Progress state
+        var progressRect = CGRectMake(contentLeft + 8, 12, 48, 48)
+        self.progress.frame = progressRect
+        self.fileIcon.frame = CGRectMake(contentLeft + 16, 20, 32, 32)
+        
+        // Message state
+        if (self.isOut) {
+            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
+            self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26)
+            self.statusView.hidden = false
+        } else {
+            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
+            self.statusView.hidden = true
+        }
+    }
+
+    func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController {
+        return self.controller
+    }
+}
+
+class AABubbleDocumentCellLayout: AABubbleLayouter {
+    
+    func isSuitable(message: ACMessage) -> Bool {
+        return message.content is ACDocumentContent
+    }
+    
+    func buildLayout(peer: ACPeer, message: ACMessage) -> CellLayout {
+        return DocumentCellLayout(message: message)
+    }
+    
+    func cellClass() -> AnyClass {
+        return AABubbleDocumentCell.self
+    }
+}
+
+class DocumentCellLayout: CellLayout {
+    
+    let fileName: String
+    let fileExt: String
+    let fileSize: String
+    
+    let icon: UIImage
+    let fastThumb: NSData?
+    
+    let autoDownload: Bool
+    
+    init(fileName: String, fileExt: String, fileSize: Int, fastThumb: ACFastThumb?, date: Int64, autoDownload: Bool) {
+        
+        // File metadata
+        self.fileName = fileName
+        self.fileExt = fileExt.lowercaseString
+        self.fileSize = Actor.getFormatter().formatFileSize(jint(fileSize))
+        
+        // Auto download flag
+        self.autoDownload = autoDownload
+        
+        // Fast thumb
+        self.fastThumb = fastThumb?.getImage().toNSData()
+        
+        // File icon
         var fileName = "file_unknown"
-        if (FileTypes[bindedExt] != nil) {
-            switch(FileTypes[bindedExt]!) {
+        if (FileTypes[self.fileExt] != nil) {
+            switch(FileTypes[self.fileExt]!) {
             case FileType.Music:
                 fileName = "file_music"
                 break
@@ -237,114 +328,16 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
                 break
             }
         }
-        var icon = UIImage(named: fileName)!
+        self.icon = UIImage(named: fileName)!
         
-        self.runOnUiThread(selfGeneration) { () -> () in
-            self.fileIcon.image = icon
-            self.fileIcon.showView()
-            
-            self.progress.hideView()
-            self.progress.setProgress(1)
-        }
-//        bgShowIcon(UIImage(named: fileName)!, selfGeneration: selfGeneration)
-//        bgHideProgress(selfGeneration)
+        super.init(height: 66, date: date, key: "document")
     }
     
-    // Progress show/hide
-//    func bgHideProgress(selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            UIView.animateWithDuration(0.4, animations: { () -> Void in
-//                self.circullarNode.alpha = 0
-//                }, completion: { (val) -> Void in
-//                    if (val) {
-//                        self.circullarNode.hidden = true
-//                    }
-//            })
-//        })
-//    }
-//    func bgShowProgress(value: Double, selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration) { () -> () in
-//            self.fileIcon.hideView()
-//            self.progress.showView()
-//            self.progress.setProgress(value)
-//            self.progress.setButtonType(FlatButtonType.buttonPausedType, animated: true)
-//        }
-//    }
-    
-    // State show/hide
-//    func bgHideState(selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            self.progressBg.hideView()
-//        })
-//    }
-//    
-//    func bgShowState(selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            self.progressBg.showView()
-//        })
-//    }
-//    
-//    // Icon show/hide
-//    func bgShowIcon(image: UIImage, selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            self.fileIcon.image = image
-//            self.fileIcon.showView()
-//        })
-//    }
-//    func bgHideIcon(selfGeneration: Int) {
-//        self.runOnUiThread(selfGeneration, closure: { () -> () in
-//            self.fileIcon.hideView()
-//        })
-//    }
-    
-    // MARK: -
-    // MARK: Methods
-    
-    // MARK: -
-    // MARK: Getters
-    
-    class func measureDocumentHeight(message: ACMessage) -> CGFloat {
-        return 66
+    convenience init(document: ACDocumentContent, date: Int64) {
+        self.init(fileName: document.getName(), fileExt: document.getExt(), fileSize: Int(document.getSource().getSize()), fastThumb: document.getFastThumb(), date: date, autoDownload: (document.getSource().getSize() < 1024 * 1025 * 1024))
     }
     
-    // MARK: -
-    // MARK: Layout
-    
-    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
-        var insets = fullContentInsets
-        
-        var contentWidth = self.contentView.frame.width
-        var contentHeight = self.contentView.frame.height
-        
-        layoutBubble(200, contentHeight: 66)
-        
-        var contentLeft = self.isOut ? contentWidth - 200 - insets.right - contentInsets.left : insets.left
-        
-        // Content
-        self.titleLabel.frame = CGRectMake(contentLeft + 62, 16, 200 - 64, 22)
-        self.sizeLabel.frame = CGRectMake(contentLeft + 62, 16 + 22, 200 - 64, 22)
-        
-        // Progress state
-        var progressRect = CGRectMake(contentLeft + 8, 12, 48, 48)
-        self.progress.frame = progressRect
-        self.fileIcon.frame = CGRectMake(contentLeft + 16, 20, 32, 32)
-        
-        // Message state
-        if (self.isOut) {
-            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
-            self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26)
-            self.statusView.hidden = false
-        } else {
-            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
-            self.statusView.hidden = true
-        }
-    }
-
-}
-
-
-extension AABubbleDocumentCell: UIDocumentInteractionControllerDelegate {
-    func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController {
-        return self.controller
+    convenience init(message: ACMessage) {
+        self.init(document: message.content as! ACDocumentContent, date: Int64(message.date))
     }
 }
