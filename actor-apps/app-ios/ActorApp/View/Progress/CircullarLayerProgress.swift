@@ -20,14 +20,14 @@ class CircullarLayerProgress: UIView {
         self.backgroundColor = UIColor.clearColor()
         self.userInteractionEnabled = false
 
-        var bgPath = UIBezierPath(ovalInRect: CGRectMake(0, 0, self.bounds.width, self.bounds.height))
+        let bgPath = UIBezierPath(ovalInRect: CGRectMake(0, 0, self.bounds.width, self.bounds.height))
         backgroundPathLayer.frame = bounds
         backgroundPathLayer.path = bgPath.CGPath
         backgroundPathLayer.fillColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0).CGColor
         backgroundPathLayer.strokeColor = UIColor.clearColor().CGColor
         layer.addSublayer(backgroundPathLayer)
         
-        var circlePath = UIBezierPath(ovalInRect: CGRectMake(3, 3, self.bounds.width - 6, self.bounds.height - 6))
+        let circlePath = UIBezierPath(ovalInRect: CGRectMake(3, 3, self.bounds.width - 6, self.bounds.height - 6))
         circlePathLayer.frame = bounds
         circlePathLayer.path = circlePath.CGPath
         circlePathLayer.lineWidth = 3
@@ -63,9 +63,9 @@ class CircullarLayerProgress: UIView {
             progressButton.animateToType(type)
         } else {
             hideButton()
-            var size: CGFloat =  self.bounds.width < 64 ? 24 : 32
-            var x = (self.bounds.width - size) / 2
-            var y = (self.bounds.height - size) / 2
+            let size: CGFloat =  self.bounds.width < 64 ? 24 : 32
+            let x = (self.bounds.width - size) / 2
+            let y = (self.bounds.height - size) / 2
             progressButton = VBFPopFlatButton(frame: CGRect(x: x, y: y, width: size, height: size), buttonType: type, buttonStyle: FlatButtonStyle.buttonPlainStyle, animateToInitialState: animated)
             progressButton.userInteractionEnabled = false
             self.addSubview(progressButton)

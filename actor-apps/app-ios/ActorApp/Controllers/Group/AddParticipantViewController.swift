@@ -51,7 +51,7 @@ class AddParticipantViewController: ContactsBaseViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if (indexPath.section == 0) {
             let reuseId = "cell_invite";
-            var res = ContactActionCell(reuseIdentifier: reuseId)
+            let res = ContactActionCell(reuseIdentifier: reuseId)
             res.bind("ic_invite_user",
                 actionTitle: NSLocalizedString("GroupAddParticipantUrl", comment: "Action Title"),
                 isLast: false)
@@ -67,7 +67,7 @@ class AddParticipantViewController: ContactsBaseViewController {
         if indexPath.section == 0 {
             navigateNext(InviteLinkViewController(gid: gid), removeCurrent: false)
         } else {
-            var contact = objectAtIndexPath(indexPath) as! ACContact;
+            let contact = objectAtIndexPath(indexPath) as! ACContact;
             execute(Actor.inviteMemberCommandWithGid(jint(gid), withUid: contact.getUid()), successBlock: { (val) -> () in
                     self.dismiss()
                 }, failureBlock: { (val) -> () in

@@ -98,8 +98,6 @@ class CommonCell: UATableViewCell {
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
-        default:
-            break
         }
     }
     
