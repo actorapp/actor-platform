@@ -43,7 +43,7 @@ func createActor() {
     builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
     
     // Logs
-    builder.setEnableFilesLogging(true)
+    // builder.setEnableFilesLogging(true)
     
     // Creating messenger
     Actor = CocoaMessenger(configuration: builder.build(), config: config);

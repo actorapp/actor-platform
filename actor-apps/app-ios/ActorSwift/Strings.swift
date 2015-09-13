@@ -82,10 +82,44 @@ extension String {
         return res
     }
     
+    func repeatString(count: Int) -> String {
+        var res = ""
+        for _ in 0..<count {
+            res += self
+        }
+        return res
+    }
+    
     var asNS: NSString { return (self as NSString) }
 }
 
+extension NSAttributedString {
+    
+    func append(text: NSAttributedString) -> NSAttributedString {
+        let res = NSMutableAttributedString()
+        res.appendAttributedString(self)
+        res.appendAttributedString(text)
+        return res
+    }
+    
+    func append(text: String, font: UIFont) -> NSAttributedString {
+        return append(NSAttributedString(string: text, attributes: [NSFontAttributeName: font]))
+    }
+    
+    convenience init(string: String, font: UIFont) {
+        self.init(string: string)
+    }
+}
 
-
+extension NSMutableAttributedString {
+    
+    func appendFont(font: UIFont) {
+        self.addAttribute(NSFontAttributeName, value: font, range: NSMakeRange(0, self.length))
+    }
+    
+    func appendColor(color: UIColor) {
+        self.addAttribute(NSForegroundColorAttributeName, value: color.CGColor, range: NSMakeRange(0, self.length))
+    }
+}
 
 

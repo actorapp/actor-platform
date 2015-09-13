@@ -5,6 +5,47 @@
 import Foundation
 import UIKit;
 
+/**
+    Bubble types
+*/
+enum BubbleType {
+    // Outcome text bubble
+    case TextOut
+    // Income text bubble
+    case TextIn
+    // Outcome media bubble
+    case MediaOut
+    // Income media bubble
+    case MediaIn
+    // Service bubbl
+    case Service
+}
+
+/**
+    Root class for bubble layouter. Used for preprocessing bubble layout in background.
+*/
+protocol AABubbleLayouter  {
+    
+    func isSuitable(message: ACMessage) -> Bool
+    
+    func buildLayout(peer: ACPeer, message: ACMessage) -> CellLayout
+    
+    func cellClass() -> AnyClass
+}
+
+// Extension for automatically building reuse ids
+extension AABubbleLayouter {
+    
+    var reuseId: String {
+        get {
+            return "\(self.dynamicType)"
+        }
+    }
+}
+
+/**
+    Root class for bubble cells
+*/
 class AABubbleCell: UICollectionViewCell {
     
     // MARK: -
@@ -21,23 +62,23 @@ class AABubbleCell: UICollectionViewCell {
     static let newMessageSize: CGFloat = 30
     
     // Cached bubble images
-    private static var cacnedOutTextBg:UIImage = UIImage(named: "BubbleOutgoingFull")!.tintImage(MainAppTheme.bubbles.textBgOut)
-    private static var cacnedOutTextBgBorder:UIImage = UIImage(named: "BubbleOutgoingFullBorder")!.tintImage(MainAppTheme.bubbles.textBgOutBorder)
-    private static var cacnedInTextBg:UIImage = UIImage(named: "BubbleIncomingFull")!.tintImage(MainAppTheme.bubbles.textBgIn)
-    private static var cacnedInTextBgBorder:UIImage = UIImage(named: "BubbleIncomingFullBorder")!.tintImage(MainAppTheme.bubbles.textBgInBorder)
+    private static var cachedOutTextBg:UIImage = UIImage(named: "BubbleOutgoingFull")!.tintImage(MainAppTheme.bubbles.textBgOut)
+    private static var cachedOutTextBgBorder:UIImage = UIImage(named: "BubbleOutgoingFullBorder")!.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+    private static var cachedInTextBg:UIImage = UIImage(named: "BubbleIncomingFull")!.tintImage(MainAppTheme.bubbles.textBgIn)
+    private static var cachedInTextBgBorder:UIImage = UIImage(named: "BubbleIncomingFullBorder")!.tintImage(MainAppTheme.bubbles.textBgInBorder)
     
-    private static var cacnedOutTextCompactBg:UIImage = UIImage(named: "BubbleOutgoingPartial")!.tintImage(MainAppTheme.bubbles.textBgOut)
-    private static var cacnedOutTextCompactBgBorder:UIImage = UIImage(named: "BubbleOutgoingPartialBorder")!.tintImage(MainAppTheme.bubbles.textBgOutBorder)
-    private static var cacnedInTextCompactBg:UIImage = UIImage(named: "BubbleIncomingPartial")!.tintImage(MainAppTheme.bubbles.textBgIn)
-    private static var cacnedInTextCompactBgBorder:UIImage = UIImage(named: "BubbleIncomingPartialBorder")!.tintImage(MainAppTheme.bubbles.textBgInBorder)
+    private static var cachedOutTextCompactBg:UIImage = UIImage(named: "BubbleOutgoingPartial")!.tintImage(MainAppTheme.bubbles.textBgOut)
+    private static var cachedOutTextCompactBgBorder:UIImage = UIImage(named: "BubbleOutgoingPartialBorder")!.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+    private static var cachedInTextCompactBg:UIImage = UIImage(named: "BubbleIncomingPartial")!.tintImage(MainAppTheme.bubbles.textBgIn)
+    private static var cachedInTextCompactBgBorder:UIImage = UIImage(named: "BubbleIncomingPartialBorder")!.tintImage(MainAppTheme.bubbles.textBgInBorder)
     
-    private static let cacnedOutMediaBg:UIImage = UIImage(named: "BubbleOutgoingPartial")!.tintImage(MainAppTheme.bubbles.mediaBgOut)
-    private static var cacnedOutMediaBgBorder:UIImage = UIImage(named: "BubbleIncomingPartialBorder")!.tintImage(MainAppTheme.bubbles.mediaBgInBorder)
+    private static let cachedOutMediaBg:UIImage = UIImage(named: "BubbleOutgoingPartial")!.tintImage(MainAppTheme.bubbles.mediaBgOut)
+    private static var cachedOutMediaBgBorder:UIImage = UIImage(named: "BubbleIncomingPartialBorder")!.tintImage(MainAppTheme.bubbles.mediaBgInBorder)
 
-    private static var cacnedInMediaBg:UIImage? = nil;
-    private static var cacnedInMediaBgBorder:UIImage? = nil;
+    private static var cachedInMediaBg:UIImage? = nil;
+    private static var cachedInMediaBgBorder:UIImage? = nil;
     
-    private static var cacnedServiceBg:UIImage = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
+    private static var cachedServiceBg:UIImage = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
     
     private static var dateBgImage = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
     
@@ -170,7 +211,7 @@ class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    func performBind(message: ACMessage, setting: CellSetting, isShowNewMessages: Bool, layoutCache: LayoutCache) {
+    func performBind(message: ACMessage, setting: CellSetting, isShowNewMessages: Bool, layout: CellLayout) {
         self.clipsToBounds = false
         self.contentView.clipsToBounds = false
         
@@ -207,16 +248,9 @@ class AABubbleCell: UICollectionViewCell {
             self.dateText.text = Actor.getFormatter().formatDate(message.date)
         }
         
-        var layout = layoutCache.pick(message.rid)
-            
-        if (layout == nil) {
-            layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
-            layoutCache.cache(message.rid, layout: layout!)
-        }
-        
         self.bindedSetting = setting
         
-        bind(message, reuse: reuse, cellLayout: layout!, setting: setting)
+        bind(message, reuse: reuse, cellLayout: layout, setting: setting)
         
         if (!reuse) {
             needLayout = true
@@ -235,32 +269,32 @@ class AABubbleCell: UICollectionViewCell {
         switch(type) {
             case BubbleType.TextIn:
                 if (isCompact) {
-                    bubble.image = AABubbleCell.cacnedInTextCompactBg
-                    bubbleBorder.image = AABubbleCell.cacnedInTextCompactBgBorder
+                    bubble.image = AABubbleCell.cachedInTextCompactBg
+                    bubbleBorder.image = AABubbleCell.cachedInTextCompactBgBorder
                 } else {
-                    bubble.image = AABubbleCell.cacnedInTextBg
-                    bubbleBorder.image = AABubbleCell.cacnedInTextBgBorder
+                    bubble.image = AABubbleCell.cachedInTextBg
+                    bubbleBorder.image = AABubbleCell.cachedInTextBgBorder
                 }
             break
             case BubbleType.TextOut:
                 if (isCompact) {
-                    bubble.image =  AABubbleCell.cacnedOutTextCompactBg
-                    bubbleBorder.image =  AABubbleCell.cacnedOutTextCompactBgBorder
+                    bubble.image =  AABubbleCell.cachedOutTextCompactBg
+                    bubbleBorder.image =  AABubbleCell.cachedOutTextCompactBgBorder
                 } else {
-                    bubble.image =  AABubbleCell.cacnedOutTextBg
-                    bubbleBorder.image =  AABubbleCell.cacnedOutTextBgBorder
+                    bubble.image =  AABubbleCell.cachedOutTextBg
+                    bubbleBorder.image =  AABubbleCell.cachedOutTextBgBorder
                 }
             break
             case BubbleType.MediaIn:
-                bubble.image =  AABubbleCell.cacnedOutMediaBg
-                bubbleBorder.image =  AABubbleCell.cacnedOutMediaBgBorder
+                bubble.image =  AABubbleCell.cachedOutMediaBg
+                bubbleBorder.image =  AABubbleCell.cachedOutMediaBgBorder
             break
             case BubbleType.MediaOut:
-                bubble.image =  AABubbleCell.cacnedOutMediaBg
-                bubbleBorder.image =  AABubbleCell.cacnedOutMediaBgBorder
+                bubble.image =  AABubbleCell.cachedOutMediaBg
+                bubbleBorder.image =  AABubbleCell.cachedOutMediaBgBorder
             break
             case BubbleType.Service:
-                bubble.image = AABubbleCell.cacnedServiceBg
+                bubble.image = AABubbleCell.cachedServiceBg
                 bubbleBorder.image = nil
             break
             default:
@@ -374,16 +408,8 @@ class AABubbleCell: UICollectionViewCell {
         bubble.frame = frame
         bubbleBorder.frame = frame
     }
-//    
-//    override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes! {
-//        return layoutAttributes
-//    }
-}
-
-enum BubbleType {
-    case TextOut
-    case TextIn
-    case MediaOut
-    case MediaIn
-    case Service
+    
+    override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        return layoutAttributes
+    }
 }
