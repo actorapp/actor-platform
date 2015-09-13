@@ -31,7 +31,7 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     }
     
     func addSection(autoSeparator: Bool = false) -> UASection {
-        var res = UASection(tableView: tableView, index: sections.count)
+        let res = UASection(tableView: tableView, index: sections.count)
         res.autoSeparators = autoSeparator
         sections.append(res)
         return res
@@ -76,7 +76,7 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        var section = sections[indexPath.section]
+        let section = sections[indexPath.section]
         if (section.canSelect(tableView, cellForRowAtIndexPath: indexPath)) {
             section.select(tableView, cellForRowAtIndexPath: indexPath)
         }
@@ -185,37 +185,37 @@ class UASection {
     }
     
     func addCommonCell(closure: (cell: CommonCell)->()) -> UACommonCellRegion {
-        var res = UACommonCellRegion(section: self, closure: closure)
+        let res = UACommonCellRegion(section: self, closure: closure)
         regions.append(res)
         return res
     }
     
     func addCommonCell() -> UACommonCellRegion {
-        var res = UACommonCellRegion(section: self)
+        let res = UACommonCellRegion(section: self)
         regions.append(res)
         return res
     }
     
     func addTextCell(title: String, text: String) -> UATextCellRegion {
-        var res = UATextCellRegion(title: title, text: text, section: self)
+        let res = UATextCellRegion(title: title, text: text, section: self)
         regions.append(res)
         return res
     }
     
     func addTitledCell(title: String, text: String) -> UATitledCellRegion {
-        var res = UATitledCellRegion(title: title, text: text, section: self)
+        let res = UATitledCellRegion(title: title, text: text, section: self)
         regions.append(res)
         return res
     }
     
     func addCustomCell(closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellRegion {
-        var res = UACustomCellRegion(section: self, closure: closure)
+        let res = UACustomCellRegion(section: self, closure: closure)
         regions.append(res)
         return res
     }
     
     func addCustomCells(height: CGFloat,countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellsRegion {
-        var res = UACustomCellsRegion(height:height, countClosure: countClosure, closure: closure, section: self)
+        let res = UACustomCellsRegion(height:height, countClosure: countClosure, closure: closure, section: self)
         regions.append(res)
         return res
     }
@@ -241,10 +241,10 @@ class UASection {
     }
     
     func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var r = getRegion(indexPath)
-        var res = r.region.buildCell(tableView, index: r.index, indexPath: indexPath)
+        let r = getRegion(indexPath)
+        let res = r.region.buildCell(tableView, index: r.index, indexPath: indexPath)
         if autoSeparators {
-            if var cell = res as? UATableViewCell {
+            if let cell = res as? UATableViewCell {
                 cell.topSeparatorLeftInset = 0
                 cell.topSeparatorVisible = indexPath.row == 0
                 
@@ -261,17 +261,17 @@ class UASection {
     }
     
     func cellHeight(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        var r = getRegion(indexPath)
+        let r = getRegion(indexPath)
         return r.region.cellHeight(r.index, width: tableView.bounds.width)
     }
     
     func canSelect(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        var r = getRegion(indexPath)
+        let r = getRegion(indexPath)
         return r.region.canSelect(r.index)
     }
     
     func select(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) {
-        var r = getRegion(indexPath)
+        let r = getRegion(indexPath)
         r.region.select(r.index)
     }
 }
@@ -419,7 +419,7 @@ class UATextCellRegion: UASingleCellRegion {
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
-        var res = tableView.dequeueReusableCellWithIdentifier(UABaseTableData.ReuseTextCell, forIndexPath: indexPath) as! TextCell
+        let res = tableView.dequeueReusableCellWithIdentifier(UABaseTableData.ReuseTextCell, forIndexPath: indexPath) as! TextCell
         res.setTitle(title, content: text)
         res.setAction(isAction)
         if enableNavigation {
@@ -447,7 +447,7 @@ class UATitledCellRegion: UASingleCellRegion {
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
-        var res = tableView.dequeueReusableCellWithIdentifier(UABaseTableData.ReuseTitledCell, forIndexPath: indexPath) as! TitledCell
+        let res = tableView.dequeueReusableCellWithIdentifier(UABaseTableData.ReuseTitledCell, forIndexPath: indexPath) as! TitledCell
         res.setTitle(title, content: text)
         return res
     }
@@ -545,7 +545,7 @@ class UACommonCellRegion : UARegion {
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
-        var res = tableView
+        let res = tableView
             .dequeueReusableCellWithIdentifier(
                 UABaseTableData.ReuseCommonCell,
                 forIndexPath: indexPath)

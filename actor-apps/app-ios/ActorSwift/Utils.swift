@@ -102,7 +102,7 @@ class ObjectPool<T: AnyObject> {
     
     func get() -> T? {
         if objects.count > 0 {
-            var res = objects.objectAtIndex(objects.count - 1) as! T
+            let res = objects.objectAtIndex(objects.count - 1) as! T
             objects.removeLastObject()
             return res
         }

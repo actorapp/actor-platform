@@ -142,7 +142,7 @@ class MainTabViewController : UITabBarController {
                 MainAppTheme.navigation.applyStatusBarFast()
             })
         } else {
-            UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
+            UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK").show()
         }
     }
     
@@ -151,7 +151,7 @@ class MainTabViewController : UITabBarController {
     }
     
     func doAddContact() {
-        var alertView = UIAlertView(
+        let alertView = UIAlertView(
             title: NSLocalizedString("ContactsAddHeader", comment: "Alert Title"),
             message: NSLocalizedString("ContactsAddHint", comment: "Alert Hint"),
             delegate: self,
@@ -188,7 +188,7 @@ class MainTabViewController : UITabBarController {
 
 extension MainTabViewController: MFMessageComposeViewControllerDelegate {
     
-    func messageComposeViewController(controller: MFMessageComposeViewController!, didFinishWithResult result: MessageComposeResult) {
+    func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     

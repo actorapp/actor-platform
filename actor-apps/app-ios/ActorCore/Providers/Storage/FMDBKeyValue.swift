@@ -72,7 +72,7 @@ import Foundation
         
         db!.beginTransaction()
         for i in 0..<keys.length() {
-            var key = keys.longAtIndex(UInt(i));
+            let key = keys.longAtIndex(UInt(i));
             db!.executeUpdate(queryDelete, key.toNSNumber())
         }
         db!.commit()
@@ -89,7 +89,7 @@ import Foundation
     func getValueWithKey(key: jlong) -> IOSByteArray! {
         checkTable();
         
-        var result = db!.dataForQuery(queryItem, key.toNSNumber());
+        let result = db!.dataForQuery(queryItem, key.toNSNumber());
         if (result == nil) {
             return nil;
         }

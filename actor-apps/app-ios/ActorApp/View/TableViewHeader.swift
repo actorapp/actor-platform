@@ -7,7 +7,7 @@ import Foundation
 class TableViewHeader: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        for view in self.subviews as! [UIView] {
+        for view in self.subviews {
             view.frame = CGRectMake(view.frame.minX, view.frame.minY, self.frame.width, view.frame.height)
             
             // Fix for UISearchBar disappear
