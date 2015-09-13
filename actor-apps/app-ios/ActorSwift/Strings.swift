@@ -43,7 +43,7 @@ extension String {
             return "#";
         }
         let letters = NSCharacterSet.letterCharacterSet()
-        var res: String = self[0];
+        let res: String = self[0];
         if (res.rangeOfCharacterFromSet(letters) != nil) {
             return res.uppercaseString;
         } else {
@@ -70,7 +70,7 @@ extension String {
         
         var searchRange = Range<String.Index>(start: self.startIndex, end: self.endIndex)
         while true {
-            var found = self.rangeOfString(text, options: NSStringCompareOptions.CaseInsensitiveSearch, range: searchRange, locale: nil)
+            let found = self.rangeOfString(text, options: NSStringCompareOptions.CaseInsensitiveSearch, range: searchRange, locale: nil)
             if found != nil {
                 res.append(found!)
                 searchRange = Range<String.Index>(start: found!.endIndex, end: self.endIndex)

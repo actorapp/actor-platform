@@ -19,7 +19,7 @@ extension UIImage {
         // We want behaviour like NSCompositeDestinationIn on Mac OS X.
         self.drawInRect(rect, blendMode: .DestinationIn, alpha: 1.0)
         
-        var image = UIGraphicsGetImageFromCurrentImageContext();
+        let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
         if (self.capInsets.bottom != 0 || self.capInsets.top != 0 || self.capInsets.left != 0 || self.capInsets.right != 0) {
@@ -42,16 +42,16 @@ extension UIImage {
         // We want behaviour like NSCompositeDestinationIn on Mac OS X.
         self.drawInRect(rect, blendMode: .Overlay, alpha: 1.0)
         
-        var image = UIGraphicsGetImageFromCurrentImageContext();
+        let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
 
         return image
     }
     
     func roundImage(newSize: Int) -> UIImage {
-        var nSize = CGSize(width: newSize, height: newSize)
+        let nSize = CGSize(width: newSize, height: newSize)
         UIGraphicsBeginImageContextWithOptions(nSize,false,UIScreen.mainScreen().scale);
-        var context = UIGraphicsGetCurrentContext();
+        let context = UIGraphicsGetCurrentContext();
         
         // Background
         
@@ -65,51 +65,48 @@ extension UIImage {
         CGContextAddArc(context,CGFloat(newSize)/2, CGFloat(newSize)/2, CGFloat(newSize)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
         CGContextDrawPath(context, .Stroke);
         
-        var image = UIGraphicsGetImageFromCurrentImageContext();
+        let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return image;
     }
     
     func roundCorners(w: CGFloat, h: CGFloat, roundSize: CGFloat) -> UIImage {
-        var nSize = CGSize(width: w, height: h)
+        let nSize = CGSize(width: w, height: h)
         UIGraphicsBeginImageContextWithOptions(nSize, false, UIScreen.mainScreen().scale);
-        var context = UIGraphicsGetCurrentContext();
         
         // Background
-  
         UIBezierPath(roundedRect: CGRectMake(0, 0, w, h), cornerRadius: roundSize).addClip()
-//        CGContextClip(context);
         
         self.drawInRect(CGRect(origin: CGPointMake(-1, -1), size: CGSize(width: (w+2), height: (h+2))));
 
-        var image = UIGraphicsGetImageFromCurrentImageContext();
+        let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return image;
     }
     
     func resizeSquare(maxW: CGFloat, maxH: CGFloat) -> UIImage {
-        var realW = self.size.width / self.scale;
-        var realH = self.size.height / self.scale;
-        var factor = min(maxW/realW, maxH/realH)
+        let realW = self.size.width / self.scale;
+        let realH = self.size.height / self.scale;
+        let factor = min(maxW/realW, maxH/realH)
         return resize(factor * realW, h: factor * realH)
     }
     
     func resizeOptimize(maxPixels: Int) -> UIImage {
-        var realW = self.size.width / self.scale;
-        var realH = self.size.height / self.scale;
-        var factor =  min(1.0,   CGFloat(maxPixels) / (realW * realH));
+        let realW = self.size.width / self.scale;
+        let realH = self.size.height / self.scale;
+        let factor =  min(1.0,   CGFloat(maxPixels) / (realW * realH));
         return resize(factor * realW, h: factor * realH)
     }
     
     func resize(w: CGFloat, h: CGFloat) -> UIImage {
-        var nSize = CGSize(width: w, height: h)
+        let nSize = CGSize(width: w, height: h)
         
         UIGraphicsBeginImageContextWithOptions(nSize, false, 1.0);
-        var context = UIGraphicsGetCurrentContext();
+        let context = UIGraphicsGetCurrentContext();
         
         self.drawInRect(CGRect(origin: CGPointMake(-1, -1), size: CGSize(width: (w+2), height: (h+2))));
         
-        var image = UIGraphicsGetImageFromCurrentImageContext();
+        let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return image;
     }
@@ -118,12 +115,12 @@ extension UIImage {
 class Imaging {
     
     class func roundedImage(color: UIColor, size: CGSize, radius: CGFloat) -> UIImage {
-        var rect = CGRectMake(0, 0, size.width, size.height)
+        let rect = CGRectMake(0, 0, size.width, size.height)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        var path = UIBezierPath(roundedRect: CGRectMake(0, 0, size.width, size.height), cornerRadius: radius)
+        let path = UIBezierPath(roundedRect: CGRectMake(0, 0, size.width, size.height), cornerRadius: radius)
         color.setFill()
         path.fill()
-        var image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         return image
@@ -131,11 +128,11 @@ class Imaging {
     }
     
     class func imageWithColor(color: UIColor, size: CGSize) -> UIImage {
-        var rect = CGRectMake(0, 0, size.width, size.height)
+        let rect = CGRectMake(0, 0, size.width, size.height)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
         color.setFill()
         UIRectFill(rect)
-        var image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image
     }

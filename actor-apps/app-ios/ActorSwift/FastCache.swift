@@ -7,7 +7,7 @@ import Foundation
 struct HashMap<T> {
     var table = Array<SinglyLinkedList<T>?>()
     init() {
-        for i in 0...99 {
+        for _ in 0...99 {
             table.append(SinglyLinkedList<T>())
         }
     }

@@ -50,12 +50,12 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
     }
     
     func doNext() {
-        var res = IOSIntArray(length: UInt(selected.count))
+        let res = IOSIntArray(length: UInt(selected.count))
         for i in 0..<selected.count {
             res.replaceIntAtIndex(UInt(i), withInt: selected[i].contact.getUid())
         }
         execute(Actor.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res), successBlock: { (val) -> Void in
-            var gid = (val as! JavaLangInteger).intValue
+            let gid = (val as! JavaLangInteger).intValue
             if self.groupImage != nil {
                 Actor.changeGroupAvatar(gid, image: self.groupImage!)
             }
@@ -68,10 +68,10 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        var contact = objectAtIndexPath(indexPath) as! ACContact
+        let contact = objectAtIndexPath(indexPath) as! ACContact
         
         for i in 0..<selected.count {
-            var n = selected[i]
+            let n = selected[i]
             if (n.contact.getUid() == contact.getUid()) {
                 selected.removeAtIndex(i)
                 tokenView.removeToken(n.token)
@@ -79,7 +79,7 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
             }
         }
         
-        var token = CLToken(displayText: contact.getName(), context: nil)
+        let token = CLToken(displayText: contact.getName(), context: nil)
         tokenView.addToken(token)
         selected.append(TokenRef(contact: contact, token: token))
         filter("")
@@ -97,7 +97,7 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
     
     func tokenInputView(view: CLTokenInputView!, didRemoveToken token: CLToken!) {
         for i in 0..<selected.count {
-            var n = selected[i]
+            let n = selected[i]
             if (n.token == token) {
                 selected.removeAtIndex(i)
                 return

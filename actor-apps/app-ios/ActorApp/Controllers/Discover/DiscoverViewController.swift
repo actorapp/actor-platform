@@ -39,24 +39,6 @@ class DiscoverViewController: AATableViewController {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         
-        var footer = TableViewHeader(frame: CGRectMake(0, 0, 320, 80));
-        
-//        var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
-//        footerHint.textAlignment = NSTextAlignment.Center;
-//        footerHint.font = UIFont.systemFontOfSize(16);
-//        footerHint.textColor = MainAppTheme.list.hintColor
-//        footerHint.text = NSLocalizedString("DialogsHint", comment: "Swipe hint")
-//        footer.addSubview(footerHint);
-        
-        var shadow = UIImageView(image: UIImage(named: "CardBottom2"));
-        shadow.frame = CGRectMake(0, 0, 320, 4);
-        shadow.contentMode = UIViewContentMode.ScaleToFill;
-        footer.addSubview(shadow);
-        
-        self.tableView.tableFooterView = footer;
-        
-        // tableView.tableHeaderView = nil
-        
         tableView.hidden = true
         
         // tableData = UAGrouppedTableData(tableView: tableView)
@@ -89,17 +71,17 @@ class DiscoverViewController: AATableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroup
-        var res = PublicCell()
+        let g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroup
+        let res = PublicCell()
         res.bind(g, isLast: (indexPath.row == self.groups.size() - 1))
         return res
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        var g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroup
+        let g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroup
         confirmAlertUser("JoinAlertMessage", action: "AlertYes") { () -> () in
-            var gid = g.getId()
+            let gid = g.getId()
             self.execute(Actor.joinPublicGroupCommandWithGig(g.getId(), withAccessHash: g.getAccessHash()), successBlock: { (val) -> Void in
                 self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: false)
             }, failureBlock: { (val) -> Void in

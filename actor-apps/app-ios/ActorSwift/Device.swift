@@ -19,8 +19,8 @@ struct DeviceType {
     static let IS_IPHONE_6P = UIDevice.currentDevice().userInterfaceIdiom == .Phone && ScreenSize.SCREEN_MAX_LENGTH == 736.0
 }
 
-var isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
+let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
-var isIPhone = UIDevice.currentDevice().userInterfaceIdiom == .Phone
+let isIPhone = UIDevice.currentDevice().userInterfaceIdiom == .Phone
 
 let isiOS8 = floor(NSFoundationVersionNumber) > floor(NSFoundationVersionNumber_iOS_7_1)
