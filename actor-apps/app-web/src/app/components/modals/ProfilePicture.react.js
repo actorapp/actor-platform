@@ -52,7 +52,7 @@ class ProfilePictureModal extends Component {
   onClose = () => {
     ProfilePictureActionCreators.hide();
     this.setState({
-      profilePhoto: null,
+      profilePictureSource: null,
       currentStep: ProfilePictureStep.SELECT_SOURCE
     });
   };
@@ -127,7 +127,7 @@ class ProfilePictureModal extends Component {
     let reader = new FileReader();
     reader.onload = (event) => {
       this.setState({
-        profilePhotoSource: event.target.result,
+        profilePictureSource: event.target.result,
         currentStep: ProfilePictureStep.CROP
       });
       imageForm.reset();
@@ -138,8 +138,24 @@ class ProfilePictureModal extends Component {
   onSelectFromDisk = () => this.setState({currentStep: ProfilePictureStep.SELECT_FROM_DISK});
   onSelectFromWebcam = () => this.setState({currentStep: ProfilePictureStep.SELECT_FROM_WEBCAM});
 
+  onCrop = () => {
+    const { cropPosition, cropSize } = this.state;
+    const cropImage = React.findDOMNode(this.refs.cropImage);
+    let canvas = document.createElement('canvas');
+
+    canvas.width = cropSize.width;
+    canvas.height = cropSize.height;
+
+    let context = canvas.getContext('2d');
+    context.drawImage(cropImage, cropPosition.x, cropPosition.y, cropSize.width, cropSize.height, 0, 0, cropSize.width, cropSize.height);
+
+    const croppedImage = canvas.toDataURL();
+    this.setState({croppedImage});
+    window.open(croppedImage);
+  };
+
   render() {
-    const { isOpen, profilePhotoSource, currentStep, cropPosition } = this.state;
+    const { isOpen, profilePictureSource, currentStep, cropPosition } = this.state;
 
     let modalBody;
     switch (currentStep) {
@@ -167,10 +183,11 @@ class ProfilePictureModal extends Component {
                  onMouseDown={this.onStartMoving}
                  onTouchStart={this.onStartMoving}
                  onMouseUp={this.onEndMoving}
-                 onTouchEnd={this.onEndMoving}>
-              <img src={profilePhotoSource} draggable="false" style={{left: -cropPosition.x, top: -cropPosition.y}}/>
+                 onTouchEnd={this.onEndMoving}
+                 onDoubleClick={this.onCrop}>
+              <img src={profilePictureSource} ref="cropImage" draggable="false" style={{left: -cropPosition.x, top: -cropPosition.y}}/>
             </div>
-            <img ref="originalImage" src={profilePhotoSource} className="crop-wrapper__image-original"
+            <img ref="originalImage" src={profilePictureSource} className="crop-wrapper__image-original"
                  draggable="false"/>
           </div>
         );
