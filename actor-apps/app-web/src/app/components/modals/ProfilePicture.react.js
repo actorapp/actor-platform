@@ -51,7 +51,10 @@ class ProfilePictureModal extends Component {
 
   onClose = () => {
     ProfilePictureActionCreators.hide();
-    this.setState({profilePhoto: null});
+    this.setState({
+      profilePhoto: null,
+      currentStep: ProfilePictureStep.SELECT_SOURCE
+    });
   };
 
   onKeyDown = (event) => {
@@ -87,15 +90,21 @@ class ProfilePictureModal extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const cropPosition = {
+    let cropPosition = {
       x: (event.pageX - overlayRect.left) - dragOffset.x,
       y: (event.pageY - overlayRect.top) - dragOffset.y
     };
 
-    if (cropPosition.x < cropSize.width/2) {
+    if (cropPosition.x < 0) {
       cropPosition.x = 0;
-    //} else if (cropPosition.x > (overlayRect - cropSize.width)) {
-    //  console.debug('x>or-w/2')
+    } else if (cropPosition.x > overlayRect.width - cropSize.width) {
+      cropPosition.x = overlayRect.width - cropSize.width;
+    }
+
+    if (cropPosition.y < 0) {
+      cropPosition.y = 0;
+    } else if (cropPosition.y > overlayRect.height - cropSize.height) {
+      cropPosition.y = overlayRect.height - cropSize.height;
     }
 
     this.setState({cropPosition})
@@ -156,7 +165,9 @@ class ProfilePictureModal extends Component {
             <div className="crop-wrapper__overlay"
                  style={{left: cropPosition.x, top: cropPosition.y}}
                  onMouseDown={this.onStartMoving}
-                 onMouseUp={this.onEndMoving}>
+                 onTouchStart={this.onStartMoving}
+                 onMouseUp={this.onEndMoving}
+                 onTouchEnd={this.onEndMoving}>
               <img src={profilePhotoSource} draggable="false" style={{left: -cropPosition.x, top: -cropPosition.y}}/>
             </div>
             <img ref="originalImage" src={profilePhotoSource} className="crop-wrapper__image-original"
