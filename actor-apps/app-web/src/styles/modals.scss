@@ -550,6 +550,7 @@
     .modal-new__body {
       padding: 0;
       line-height: 1px;
+      overflow: hidden;
       h3 {
         padding: 16px;
       }
@@ -682,5 +683,34 @@
   &--confirm {
     border-radius: 2px;
     background-color: #fff;
+  }
+}
+
+
+.crop-wrapper {
+  position: relative;
+  &__image-original {
+    filter: blur(7px);
+    //transform: scale(1.03);
+    pointer-events: none;
+    user-select: none;
+  }
+  &__overlay {
+    cursor: move;
+    position: absolute;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    box-sizing: content-box;
+    border-radius: 50%;
+    background-color: rgba(255, 0, 0, .2);
+    box-shadow: 0 0 0 3px white;
+    img {
+      position: absolute;
+      display: block;
+    }
   }
 }
