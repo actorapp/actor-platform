@@ -5,6 +5,8 @@
 package im.actor.core.entity.content;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.core.api.ApiDocumentExPhoto;
 import im.actor.core.api.ApiDocumentExVideo;
@@ -38,6 +40,17 @@ import im.actor.runtime.json.JSONObject;
 
 public abstract class AbsContent {
 
+    private static ContentConverter[] converters = new ContentConverter[0];
+
+    public static void registerConverter(ContentConverter contentConverter) {
+        ContentConverter[] nConverters = new ContentConverter[converters.length + 1];
+        for (int i = 0; i < converters.length; i++) {
+            nConverters[i] = converters[i];
+        }
+        nConverters[nConverters.length - 1] = contentConverter;
+        converters = nConverters;
+    }
+
     public static byte[] serialize(AbsContent content) throws IOException {
         DataOutput dataOutput = new DataOutput();
         BserWriter writer = new BserWriter(dataOutput);
@@ -65,6 +78,19 @@ public abstract class AbsContent {
     }
 
     protected static AbsContent convertData(AbsContentContainer container) throws IOException {
+
+        // Processing extension converters
+        for (ContentConverter converter : converters) {
+            try {
+                AbsContent res = converter.convert(container);
+                if (res != null) {
+                    return res;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         if (container instanceof ContentLocalContainer) {
             ContentLocalContainer localContainer = (ContentLocalContainer) container;
             AbsLocalContent content = ((ContentLocalContainer) container).getContent();
