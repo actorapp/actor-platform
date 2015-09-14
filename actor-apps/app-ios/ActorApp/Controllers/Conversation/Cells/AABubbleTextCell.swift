@@ -80,23 +80,18 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             
             // When not reusing force to relayout view
             needRelayout = true
+
+            // Setting text's font size and color
+            messageText.textColor = self.cellLayout.textColor
             
             if self.cellLayout.text != nil {
+
                 // Setting text
                 messageText.text = self.cellLayout.text
-                
-                // Setting text's font size and color
-                if (isOut) {
-                    messageText.textColor = MainAppTheme.bubbles.textOut
-                } else {
-                    messageText.textColor = MainAppTheme.bubbles.textIn
-                }
             } else {
+                
                 // Setting attributed text
                 messageText.setText(self.cellLayout.attrText)
-                
-                // No need to set text color and font as it is specified
-                // in NSAttributed string
             }
             
             // Setting sender name if needed
@@ -270,8 +265,8 @@ class TextCellLayout: CellLayout {
     private static let parser = ARMarkdownParser(int: ARMarkdownParser_MODE_LITE)
     
     var text: String?
-    var textColor: UIColor?
     var attrText: NSAttributedString?
+    var textColor: UIColor
     
     var isUnsupported: Bool = false
     var textSizeWithPadding: CGSize
@@ -308,10 +303,11 @@ class TextCellLayout: CellLayout {
     /**
         NSAttributedString layout
     */
-    init(attributedText: NSAttributedString, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
+    init(attributedText: NSAttributedString, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
         
         // Setting attributed text
         self.attrText = attributedText
+        self.textColor = textColor
         self.isUnsupported = false
         
         // Building padded text
@@ -349,7 +345,7 @@ class TextCellLayout: CellLayout {
         } else {
             
             // Creating attributed text layout
-            self.init(attributedText: text.attributedText, date: date, isOut: isOut, peer: peer, layoutKey: layoutKey)
+            self.init(attributedText: text.attributedText, textColor: textColor, date: date, isOut: isOut, peer: peer, layoutKey: layoutKey)
             
             // Setting source code references
             self.sources = text.code
