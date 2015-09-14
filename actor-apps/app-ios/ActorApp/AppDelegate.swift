@@ -22,10 +22,10 @@ import Foundation
         var config = Actor.config
         
         // Apply crash logging
-        if config.mint != nil {
-            Mint.sharedInstance().disableNetworkMonitoring()
-            Mint.sharedInstance().initAndStartSession(config.mint!)
-        }
+//        if config.mint != nil {
+//            Mint.sharedInstance().disableNetworkMonitoring()
+//            Mint.sharedInstance().initAndStartSession(config.mint!)
+//        }
         
         // Register hockey app
         if config.hockeyapp != nil {
@@ -232,9 +232,9 @@ import Foundation
             Actor.registerApplePushWithApnsId(jint(config.pushId!), withToken: tokenString)
         }
         
-        if config.mixpanel != nil {
-            Mixpanel.sharedInstance().people.addPushDeviceToken(deviceToken)
-        }
+//        if config.mixpanel != nil {
+//            Mixpanel.sharedInstance().people.addPushDeviceToken(deviceToken)
+//        }
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
