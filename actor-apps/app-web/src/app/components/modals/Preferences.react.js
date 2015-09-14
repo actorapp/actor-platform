@@ -145,14 +145,12 @@ class PreferencesModal extends React.Component {
                                  onChange={this.changeGroupsNotificationsEnabled}/>
                           <label htmlFor="groupNotifications">Enable group notifications</label>
                         </div>
-                      </li>
-                      <li>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="mentionsNotifications"
                                  defaultChecked={isOnlyMentionNotifications}
                                  onChange={this.changeMentionNotifications}/>
-                          <label htmlFor="mentionsNotifications">Enable mention notifications</label>
+                          <label htmlFor="mentionsNotifications">Enable mention only notifications</label>
                         </div>
                       </li>
                     </ul>
