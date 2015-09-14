@@ -1816,6 +1816,17 @@ public class Messenger {
     }
 
     /**
+     * Find core extension by key
+     *
+     * @param key extension key
+     * @return founded extension, null if not found
+     */
+    @ObjectiveCName("findExtension:")
+    public Extension findExtension(String key) {
+        return modules.findExtension(key);
+    }
+
+    /**
      * Get modules of messenger for extensions
      *
      * @return Module Contexts
