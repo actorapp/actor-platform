@@ -222,6 +222,11 @@ public class Modules implements ModuleContext {
         return api.getActorApi();
     }
 
+    @Override
+    public ApiModule getApiModule() {
+        return api;
+    }
+
     public I18nEngine getI18nModule() {
         return i18nEngine;
     }
