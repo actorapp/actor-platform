@@ -5,6 +5,7 @@
 package im.actor.core.modules;
 
 import im.actor.core.Configuration;
+import im.actor.core.Extension;
 import im.actor.core.Extensions;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
@@ -279,6 +280,11 @@ public class Modules implements ModuleContext {
 
     public MentionsModule getMentions() {
         return mentions;
+    }
+
+    @Override
+    public Extension findExtension(String key) {
+        return extensions.findExtension(key);
     }
 
     public EventBus getEvents() {
