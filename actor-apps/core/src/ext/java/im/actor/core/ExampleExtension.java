@@ -6,6 +6,12 @@ import im.actor.runtime.util.ClassCreator;
 class ExampleExtension implements Extension {
 
     /**
+     * Define public extension key for easier accessing
+     * to extensions from other ones or outside of core
+     */
+    public static final String KEY = "example";
+
+    /**
      * For registering extension implement creator and add it to Extensions class
      */
     public static ClassCreator<ExampleExtension> CREATOR = new ClassCreator<ExampleExtension>() {
@@ -19,6 +25,16 @@ class ExampleExtension implements Extension {
      * Keep reference to context
      */
     private ModuleContext context;
+
+    /**
+     * Get unique extension key
+     *
+     * @return extension key
+     */
+    @Override
+    public String getExtensionKey() {
+        return KEY;
+    }
 
     /**
      * Performing registration of extension before Messenger run
