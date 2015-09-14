@@ -8,6 +8,13 @@ import im.actor.core.modules.ModuleContext;
 public interface Extension {
 
     /**
+     * Get unique extension key
+     *
+     * @return extension key
+     */
+    String getExtensionKey();
+
+    /**
      * Performing registration of extension before Messenger run
      *
      * @param context Module context
@@ -18,4 +25,5 @@ public interface Extension {
      * Running extension
      */
     void runExtension();
+
 }
