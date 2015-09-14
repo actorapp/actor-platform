@@ -690,8 +690,8 @@
 .crop-wrapper {
   position: relative;
   &__image-original {
-    filter: blur(7px);
-    //transform: scale(1.03);
+    filter: blur(10px) saturate(.2);
+    transform: scale(1.03);
     pointer-events: none;
     user-select: none;
   }
@@ -706,7 +706,6 @@
     overflow: hidden;
     box-sizing: content-box;
     border-radius: 50%;
-    background-color: rgba(255, 0, 0, .2);
     box-shadow: 0 0 0 3px white;
     img {
       position: absolute;
