@@ -12,6 +12,15 @@ import im.actor.runtime.storage.ListEngineItem;
 
 public class Modifications {
 
+    public static <T extends ListEngineItem> Modification<T> noOp() {
+        return new Modification<T>() {
+            @Override
+            public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
+                return new ArrayList<ChangeDescription<T>>();
+            }
+        };
+    }
+
     public static <T extends ListEngineItem> Modification<T> addOrUpdate(final T item) {
         ArrayList<T> res = new ArrayList<T>();
         res.add(item);

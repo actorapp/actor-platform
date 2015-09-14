@@ -16,6 +16,7 @@ import im.actor.runtime.actors.Actor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;
+import im.actor.runtime.generic.mvvm.alg.Modifications;
 
 import static im.actor.runtime.actors.ActorSystem.system;
 
@@ -93,6 +94,11 @@ public class DisplayList<T> {
     @ObjectiveCName("editList:withLoadMoreFlag:")
     public void editList(Modification<T> mod, boolean isLoadMore) {
         this.executor.send(new EditList<T>(mod, null, isLoadMore));
+    }
+
+    @ObjectiveCName("forcePreprocessing")
+    public void forcePreprocessing() {
+        this.executor.send(new EditList<T>((Modification<T>) Modifications.noOp(), null, false));
     }
 
     @ObjectiveCName("setListProcessor:")
