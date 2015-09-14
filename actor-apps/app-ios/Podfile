@@ -34,7 +34,5 @@ target 'ActorApp' do
     # pod 'MDRadialProgress'
     
     # Tracking
-    pod 'HockeySDK'
-    pod 'SplunkMint-iOS'
-    pod 'Mixpanel'
+    pod 'HockeySDK', '~> 3.8-RC'
 end
