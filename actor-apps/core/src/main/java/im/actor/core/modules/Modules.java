@@ -5,6 +5,7 @@
 package im.actor.core.modules;
 
 import im.actor.core.Configuration;
+import im.actor.core.Extensions;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AnalyticsModule;
@@ -68,6 +69,7 @@ public class Modules implements ModuleContext {
     private volatile SecurityModule security;
     private volatile DisplayLists displayLists;
     private volatile MentionsModule mentions;
+    private volatile Extensions extensions;
 
     public Modules(Messenger messenger, Configuration configuration) {
         this.messenger = messenger;
@@ -135,7 +137,13 @@ public class Modules implements ModuleContext {
         profile = new ProfileModule(this);
         timing.section("Mentions");
         mentions = new MentionsModule(this);
+        timing.section("DisplayLists");
+        displayLists = new DisplayLists(this);
+        timing.section("Extension");
+        extensions = new Extensions(this);
+        extensions.registerExtensions();
         timing.end();
+
 
         timing = new Timing("ACCOUNT_RUN");
         timing.section("Settings");
@@ -154,8 +162,8 @@ public class Modules implements ModuleContext {
         messages.run();
         timing.section("Updates");
         updates.run();
-        timing.section("DisplayLists");
-        displayLists = new DisplayLists(this);
+        timing.section("Extension");
+        extensions.runExtensions();
         timing.end();
 
         messenger.onLoggedIn();
