@@ -34,6 +34,8 @@ public interface ModuleContext {
     // API Access
     ActorApi getActorApi();
 
+    ApiModule getApiModule();
+
     // Preferences
     PreferencesStorage getPreferences();
 
