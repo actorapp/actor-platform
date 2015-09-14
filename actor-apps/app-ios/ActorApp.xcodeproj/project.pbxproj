@@ -1120,7 +1120,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -1164,8 +1164,6 @@
 					"\"QuickLook\"",
 					"-framework",
 					"\"Security\"",
-					"-framework",
-					"\"SplunkMint-iOS\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
@@ -1231,7 +1229,7 @@
 				CODE_SIGN_ENTITLEMENTS = ActorApp/ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -1274,8 +1272,6 @@
 					"\"QuickLook\"",
 					"-framework",
 					"\"Security\"",
-					"-framework",
-					"\"SplunkMint-iOS\"",
 					"-framework",
 					"\"SystemConfiguration\"",
 					"-framework",
