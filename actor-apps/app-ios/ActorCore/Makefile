@@ -38,7 +38,7 @@ J2OBJC_DISTRIBUTION = $(APPS_ROOT)/build-tools/dist/j2objc-0.9.8
 J2OBJC = $(J2OBJC_DISTRIBUTION)/j2objc
 J2OBJCC = $(J2OBJC_DISTRIBUTION)/j2objcc
 J2OBJC_ARGS = -use-arc --generate-deprecated --doc-comments -g
-J2OBJCC_ARGS = -ObjC -fobjc-arc -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include
+J2OBJCC_ARGS = -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include
 
 CC_ARM7 = -arch armv7 --sysroot=$(IOS_SDK_ROOT)
 CC_ARM7S = -arch armv7s --sysroot=$(IOS_SDK_ROOT)

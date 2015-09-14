@@ -34,9 +34,9 @@ func createActor() {
     // Providers
     builder.setPhoneBookProvider(PhoneBookProvider())
     builder.setNotificationProvider(iOSNotificationProvider())
-    if config.mixpanel != nil {
-        builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
-    }
+//    if config.mixpanel != nil {
+//        builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
+//    }
     
     // Stats
     builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
