@@ -294,6 +294,16 @@ export default {
     window.messenger.changeSoundEffectsEnabled(isEnabled);
   },
 
+  isNotificationTextPreviewEnabled() {
+    console.debug('isNotificationTextPreviewEnabled');
+    //return window.messenger.isSoundEffectsEnabled();
+  },
+
+  changeNotificationTextPreviewEnabled(isEnabled) {
+    console.debug('changeNotificationTextPreviewEnabled');
+    //window.messenger.isNotificationTextPreviewEnabled(isEnabled);
+  },
+
   loadSessions() {
     return window.messenger.loadSessions();
   },

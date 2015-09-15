@@ -28,6 +28,7 @@ class PreferencesModal extends Component {
       isSoundEffectsEnabled: PreferencesStore.isSoundEffectsEnabled(),
       isGroupsNotificationsEnabled: PreferencesStore.isGroupsNotificationsEnabled(),
       isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications(),
+      isNotificationTextPreviewEnabled: PreferencesStore.isNotificationTextPreviewEnabled(),
       sessions: PreferencesStore.getSessions()
     }
   };
@@ -49,11 +50,12 @@ class PreferencesModal extends Component {
       isSendByEnterEnabled,
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
-      isOnlyMentionNotifications
+      isOnlyMentionNotifications,
+      isNotificationTextPreviewEnabled
     } = this.state;
 
     PreferencesActionCreators.save({
-      isSendByEnterEnabled, isSoundEffectsEnabled, isGroupsNotificationsEnabled, isOnlyMentionNotifications
+      isSendByEnterEnabled, isSoundEffectsEnabled, isGroupsNotificationsEnabled, isOnlyMentionNotifications, isNotificationTextPreviewEnabled
     });
     this.onClose();
   };
@@ -69,6 +71,7 @@ class PreferencesModal extends Component {
   changeSoundEffectsEnabled = (event) => this.setState({isSoundEffectsEnabled: event.target.checked});
   changeGroupsNotificationsEnabled = (event) => this.setState({isGroupsNotificationsEnabled: event.target.checked});
   changeMentionNotifications = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
+  changeNotificationTextPreviewEnabled = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
 
   onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
 
@@ -79,7 +82,8 @@ class PreferencesModal extends Component {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
-      sessions
+      sessions,
+      isNotificationTextPreviewEnabled
     } = this.state;
 
     const sessionList = map(sessions, (session) => <Session {...session}/>);
@@ -174,6 +178,21 @@ class PreferencesModal extends Component {
                       </li>
                     </ul>
                   </div>
+                  <div className="preferences__list__item preferences__list__item--effects">
+                    <ul>
+                      <li>
+                        <i className="icon material-icons">view_headline</i>
+
+                        <div className="checkbox">
+                          <input type="checkbox"
+                                 id="notificationTextPreview"
+                                 defaultChecked={isNotificationTextPreviewEnabled}
+                                 onChange={this.changeNotificationTextPreviewEnabled}/>
+                          <label htmlFor="notificationTextPreview">Preview text message in notifications</label>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
                   <div className="preferences__list__item preferences__list__item--sessions">
                     <ul>
                       <li>
@@ -181,7 +200,7 @@ class PreferencesModal extends Component {
                         <h4>Active sessions</h4>
                         <ul className="session-list">
                           {sessionList}
-                          <li className="session-list__session text-center">
+                          <li className="session-list__session">
                             <a className="link--red" onClick={this.onTerminateAllSessionsClick}>Terminate all sessions</a>
                           </li>
                         </ul>
