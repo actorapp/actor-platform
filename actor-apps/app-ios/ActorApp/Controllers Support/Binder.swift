@@ -8,7 +8,7 @@ class Binder {
     
     var bindings : [BindHolder] = [];
     
-    func bind<T1,T2,T3>(valueModel1:ARValueModel, valueModel2:ARValueModel, valueModel3:ARValueModel, closure: (value1:T1?, value2:T2?, value3:T3?) -> ()) {
+    func bind<T1,T2,T3>(valueModel1:ARValue, valueModel2:ARValue, valueModel3:ARValue, closure: (value1:T1?, value2:T2?, value3:T3?) -> ()) {
         
         let listener1 = BindListener { (_value1) -> () in
             closure(value1: _value1 as? T1, value2: valueModel2.get() as? T2, value3: valueModel3.get() as? T3)
@@ -29,7 +29,7 @@ class Binder {
     }
 
     
-    func bind<T1,T2>(valueModel1:ARValueModel, valueModel2:ARValueModel, closure: (value1:T1?, value2:T2?) -> ()) {
+    func bind<T1,T2>(valueModel1:ARValue, valueModel2:ARValue, closure: (value1:T1?, value2:T2?) -> ()) {
         let listener1 = BindListener { (_value1) -> () in
             closure(value1: _value1 as? T1, value2: valueModel2.get() as? T2)
         };
@@ -43,43 +43,43 @@ class Binder {
         closure(value1: valueModel1.get() as? T1, value2: valueModel2.get() as? T2)
     }
     
-    func bind<T>(value:ARValueModel, closure: (value: T?)->()) {
+    func bind<T>(value:ARValue, closure: (value: T?)->()) {
         let listener = BindListener { (value2) -> () in
-            closure(value: value2 as? T);
+            closure(value: value2 as? T)
         };
-        let holder = BindHolder(valueModel: value, listener: listener);
-        bindings.append(holder);
-        value.subscribeWithListener(listener);
+        let holder = BindHolder(valueModel: value, listener: listener)
+        bindings.append(holder)
+        value.subscribeWithListener(listener)
     }
     
     func unbindAll() {
         for holder in bindings {
-            holder.valueModel.unsubscribeWithListener(holder.listener);
+            holder.valueModel.unsubscribeWithListener(holder.listener)
         }
-        bindings.removeAll(keepCapacity: true);
+        bindings.removeAll(keepCapacity: true)
     }
     
 }
 
 class BindListener: NSObject, ARValueChangedListener {
     
-    var closure: (value: AnyObject?)->();
+    var closure: (value: AnyObject?)->()
     
-    init(closure: (value: AnyObject?)->()){
-        self.closure = closure;
+    init(closure: (value: AnyObject?)->()) {
+        self.closure = closure
     }
     
-    func onChanged(val: AnyObject!, withModel valueModel: ARValueModel!) {
-        closure(value: val);
+    func onChanged(val: AnyObject!, withModel valueModel: ARValue!) {
+        closure(value: val)
     }
 }
 
 class BindHolder {
-    var listener: BindListener;
-    var valueModel: ARValueModel;
+    var listener: BindListener
+    var valueModel: ARValue
     
-    init(valueModel: ARValueModel, listener: BindListener) {
-        self.valueModel = valueModel;
-        self.listener = listener;
+    init(valueModel: ARValue, listener: BindListener) {
+        self.valueModel = valueModel
+        self.listener = listener
     }
 }
