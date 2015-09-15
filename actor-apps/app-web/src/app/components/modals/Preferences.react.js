@@ -115,7 +115,7 @@ class PreferencesModal extends Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">keyboard</i>
-
+                        <h4>Send message</h4>
                         <div className="radio">
                           <input type="radio"
                                  name="sendByEnter"
@@ -145,7 +145,7 @@ class PreferencesModal extends Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">notifications</i>
-
+                        <h4>Notifications</h4>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="groupNotifications"
@@ -167,7 +167,7 @@ class PreferencesModal extends Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">music_note</i>
-
+                        <h4>Sound effects</h4>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="soundEffects"
@@ -182,7 +182,7 @@ class PreferencesModal extends Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">view_headline</i>
-
+                        <h4>Messages preview</h4>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="notificationTextPreview"
