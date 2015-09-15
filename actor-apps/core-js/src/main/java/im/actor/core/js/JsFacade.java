@@ -981,6 +981,14 @@ public class JsFacade implements Exportable {
         return messenger.isConversationTonesEnabled();
     }
 
+    public boolean isShowNotificationsTextEnabled() {
+        return messenger.isShowNotificationsText();
+    }
+
+    public void changeIsShowNotificationTextEnabled(boolean value) {
+        messenger.changeShowNotificationTextEnabled(value);
+    }
+
     public void changeSoundEffectsEnabled(boolean enabled) {
         messenger.changeConversationTonesEnabled(enabled);
     }
