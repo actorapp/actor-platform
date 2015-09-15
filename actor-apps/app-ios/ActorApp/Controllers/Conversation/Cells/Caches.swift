@@ -4,21 +4,50 @@
 
 import Foundation
 
-class LayoutCache {
+class Cache<T> {
+    private var cache = HashMap<T>()
     
-    private var layouts = HashMap<CellLayout>()
-    
-    func pick(id: Int64) -> CellLayout? {
-        return layouts.getValueAtKey(id)
+    func pick(id: Int64) -> T? {
+        return cache.getValueAtKey(id)
     }
     
-    func cache(id: Int64, layout: CellLayout) {
-        layouts.setKey(id, withValue: layout)
+    func cache(id: Int64, value: T) {
+        cache.setKey(id, withValue: value)
     }
     
     func revoke(id: Int64) {
-        layouts.setKey(id, withValue: nil)
+        cache.setKey(id, withValue: nil)
     }
+
+}
+
+struct CachedSetting {
+    
+    let prevId: jlong?
+    let nextId: jlong?
+    let cached: CellSetting
+    
+    init(cached: CellSetting, prevId: jlong?, nextId: jlong?) {
+        self.prevId = prevId
+        self.nextId = nextId
+        self.cached = cached
+    }
+    
+    func isValid(prev: ACMessage?, next:ACMessage?) -> Bool {
+        if prev?.rid != prevId {
+            return false
+        }
+        
+        if next?.rid != nextId {
+            return false
+        }
+
+        return true
+    }
+}
+
+class LayoutCache : Cache<CellLayout> {
+
 }
 
 class FastThumbCache {
