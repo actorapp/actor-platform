@@ -694,6 +694,26 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise editGroupAbout(final int gid, final String newAbout) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.editGroupAbout(gid, newAbout).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, e);
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
     public JsPromise createGroup(final String title, final JsFile file, final int[] uids) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
