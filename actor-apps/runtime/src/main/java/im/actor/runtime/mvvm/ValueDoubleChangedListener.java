@@ -8,5 +8,5 @@ import com.google.j2objc.annotations.ObjectiveCName;
 
 public interface ValueDoubleChangedListener<T, V> {
     @ObjectiveCName("onChanged:withModel:withValue2:withModel2:")
-    void onChanged(T val, ValueModel<T> valueModel, V val2, ValueModel<V> valueModel2);
+    void onChanged(T val, Value<T> valueModel, V val2, Value<V> valueModel2);
 }

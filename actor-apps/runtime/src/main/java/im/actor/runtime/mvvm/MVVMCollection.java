@@ -31,7 +31,7 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
     private ProxyKeyValueEngine proxyKeyValueEngine;
 
     public MVVMCollection(KeyValueStorage collectionStorage, ValueModelCreator<T, V> creator,
-                             BserCreator<T> bserCreator) {
+                          BserCreator<T> bserCreator) {
         this.creator = creator;
         this.bserCreator = bserCreator;
         this.collectionStorage = collectionStorage;
@@ -159,6 +159,7 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
             }
 
             byte[] data = collectionStorage.getValue(id);
+
             if (data != null) {
                 try {
                     T res = bserCreator.createInstance();
