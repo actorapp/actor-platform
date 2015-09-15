@@ -379,7 +379,7 @@
         display: flex;
         flex-direction: row;
 
-        height: 430px;
+        height: 600px;
 
         flex: 1;
         &__tabs {
@@ -429,7 +429,7 @@
 
                 position: relative;
 
-                padding: 32px 0;
+                padding: 32px 0 8px;
 
                 border-bottom: 1px solid rgba(black, .12);
                 .icon {
@@ -437,7 +437,7 @@
 
                   position: absolute;
                   top: 32px;
-                  left: -60px;
+                  left: -64px;
 
                   color: rgba(black, .4);
                 }
@@ -454,6 +454,19 @@
                 }
               }
             }
+            h4 {
+              font-weight: 500;
+              line-height: 24px;
+              font-size: 13px;
+
+              display: inline-block;
+
+              margin-top: 0;
+
+              text-transform: uppercase;
+
+              color: rgba(black, .4);
+            }
             .radio {
               margin-bottom: 8px;
               b {
@@ -467,13 +480,6 @@
               margin-bottom: 8px;
             }
             &--sessions {
-              h4 {
-                font-weight: 500;
-
-                display: inline-block;
-
-                margin-top: 0;
-              }
               .session-list {
                 margin: 0;
                 padding: 0;
@@ -487,7 +493,8 @@
 
                   position: relative;
 
-                  padding: 8px 0;
+                  padding: 0 0 8px;
+                  margin-bottom: 8px;
                   &__terminate {
                     position: absolute;
                     top: 22px;
@@ -495,8 +502,9 @@
                   }
                   .title {
                     small {
-                      margin-left: 6px;
                       font-style: italic;
+
+                      margin-left: 6px;
                     }
                   }
                   small {
