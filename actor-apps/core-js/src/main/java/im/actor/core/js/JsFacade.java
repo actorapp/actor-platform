@@ -623,7 +623,7 @@ public class JsFacade implements Exportable {
         });
     }
 
-    public void editMyAvatar(final JsFile file) {
+    public void changeMyAvatar(final JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.changeMyAvatar(descriptor);
     }
@@ -712,6 +712,11 @@ public class JsFacade implements Exportable {
                 });
             }
         });
+    }
+
+    public void changeGroupAvatar(final int gid, final JsFile file) {
+        String descriptor = provider.registerUploadFile(file);
+        messenger.changeGroupAvatar(gid, descriptor);
     }
 
     public JsPromise createGroup(final String title, final JsFile file, final int[] uids) {
