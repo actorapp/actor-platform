@@ -11,10 +11,14 @@ public abstract class BaseValueModel<T> {
         this.rawObj = rawObj;
     }
 
-    void update(T rawObj) {
+    final void update(T rawObj) {
         this.rawObj = rawObj;
         updateValues(rawObj);
     }
 
     protected abstract void updateValues(T rawObj);
+
+    protected T getRawObj() {
+        return rawObj;
+    }
 }
