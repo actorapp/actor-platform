@@ -16,10 +16,15 @@ import org.joda.time.DateTime
 object TypeMappers extends MessageMapper
 
 private[api] trait MessageMapper {
+  def get[E, A](xor: Either[E, A]): A = xor match {
+    case Right(res) ⇒ res
+    case Left(e)    ⇒ throw new Exception(s"Parse error: ${e}")
+  }
+
   private def applyMessage(bytes: ByteString): ApiMessage = {
     if (bytes.size() > 0) {
       val res = ApiMessage.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
-      res.right.get
+      get(res)
     } else {
       null
     }
@@ -32,7 +37,7 @@ private[api] trait MessageMapper {
   private def applyUser(bytes: ByteString): ApiUser = {
     if (bytes.size() > 0) {
       val res = ApiUser.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
-      res.right.get
+      get(res)
     } else {
       null
     }
@@ -45,7 +50,7 @@ private[api] trait MessageMapper {
   private def applyGroup(bytes: ByteString): ApiGroup = {
     if (bytes.size() > 0) {
       val res = ApiGroup.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
-      res.right.get
+      get(res)
     } else {
       null
     }
@@ -57,7 +62,7 @@ private[api] trait MessageMapper {
 
   private def applyPeer(bytes: ByteString): ApiPeer = {
     if (bytes.size() > 0) {
-      ApiPeer.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+      get(ApiPeer.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())))
     } else {
       null
     }
@@ -71,7 +76,7 @@ private[api] trait MessageMapper {
   private def unapplyDateTime(dt: DateTime): Long = dt.getMillis
 
   private def applyAvatar(buf: ByteString): ApiAvatar =
-    ApiAvatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())).right.get
+    get(ApiAvatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())))
 
   private def unapplyAvatar(avatar: ApiAvatar): ByteString =
     ByteString.copyFrom(avatar.toByteArray)
@@ -98,7 +103,7 @@ private[api] trait MessageMapper {
 
   def applySeqUpdate(bytes: ByteString): SeqUpdate = {
     if (bytes.size() > 0) {
-      SeqUpdate.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+      get(SeqUpdate.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())))
     } else {
       null
     }
@@ -110,7 +115,7 @@ private[api] trait MessageMapper {
 
   def applyExtension(bytes: ByteString): ApiExtension = {
     if (bytes.size > 0) {
-      ApiExtension.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())).right.get
+      get(ApiExtension.parseFrom(CodedInputStream.newInstance(bytes.asReadOnlyByteBuffer())))
     } else {
       null
     }
