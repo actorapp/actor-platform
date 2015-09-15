@@ -8,5 +8,5 @@ import com.google.j2objc.annotations.ObjectiveCName;
 
 public interface ValueChangedListener<T> {
     @ObjectiveCName("onChanged:withModel:")
-    void onChanged(T val, ValueModel<T> valueModel);
+    void onChanged(T val, Value<T> valueModel);
 }
