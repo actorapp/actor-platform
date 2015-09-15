@@ -2,7 +2,9 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import { map } from 'lodash';
+import React, { Component } from 'react';
+import { Container } from 'flux/utils';
 import Modal from 'react-modal';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
@@ -13,39 +15,34 @@ import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 import PreferencesStore from 'stores/PreferencesStore';
 
-const getStateFromStores = () => {
-  return {
-    isOpen: PreferencesStore.isModalOpen(),
-    isSendByEnterEnabled: PreferencesStore.istSendByEnterEnabled(),
-    isSoundEffectsEnabled: PreferencesStore.isSoundEffectsEnabled(),
-    isGroupsNotificationsEnabled: PreferencesStore.isGroupsNotificationsEnabled(),
-    isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications()
-  };
-};
+import Session from './preferences/Session.react'
 
 @ReactMixin.decorate(IntlMixin)
-class PreferencesModal extends React.Component {
-  constructor(props) {
-    super(props);
+class PreferencesModal extends Component {
+  static getStores = () => [PreferencesStore];
 
-    this.state = getStateFromStores();
-
-    PreferencesStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
-  }
-
-  componentWillUnmount() {
-    PreferencesStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
-  }
-
-  onChange = () => {
-    this.setState(getStateFromStores());
+  static calculateState() {
+    return {
+      isOpen: PreferencesStore.isOpen(),
+      isSendByEnterEnabled: PreferencesStore.isSendByEnterEnabled(),
+      isSoundEffectsEnabled: PreferencesStore.isSoundEffectsEnabled(),
+      isGroupsNotificationsEnabled: PreferencesStore.isGroupsNotificationsEnabled(),
+      isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications(),
+      sessions: PreferencesStore.getSessions()
+    }
   };
 
-  onClose = () => {
-    PreferencesActionCreators.hide();
-  };
+  componentWillUpdate(nextProps, nextState) {
+    const { isOpen } = nextState;
+
+    if (isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
+  }
+
+  onClose = () => PreferencesActionCreators.hide();
 
   onDone = () => {
     const {
@@ -53,7 +50,7 @@ class PreferencesModal extends React.Component {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications
-      } = this.state;
+    } = this.state;
 
     PreferencesActionCreators.save({
       isSendByEnterEnabled, isSoundEffectsEnabled, isGroupsNotificationsEnabled, isOnlyMentionNotifications
@@ -73,21 +70,26 @@ class PreferencesModal extends React.Component {
   changeGroupsNotificationsEnabled = (event) => this.setState({isGroupsNotificationsEnabled: event.target.checked});
   changeMentionNotifications = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
 
+  onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
+
   render() {
     const {
       isOpen,
       isSendByEnterEnabled,
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
-      isOnlyMentionNotifications
-      } = this.state;
+      isOnlyMentionNotifications,
+      sessions
+    } = this.state;
+
+    const sessionList = map(sessions, (session) => <Session {...session}/>);
 
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--preferences"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 560}}>
+               style={{width: 500}}>
 
           <div className="modal-new__header">
             <i className="modal-new__header__icon material-icons">settings</i>
@@ -109,11 +111,12 @@ class PreferencesModal extends React.Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">keyboard</i>
+
                         <div className="radio">
                           <input type="radio"
                                  name="sendByEnter"
                                  id="sendByEnterEnabled"
-                                 value={true}
+                                 value="true"
                                  defaultChecked={isSendByEnterEnabled}
                                  onChange={this.changeSendByEnter}/>
                           <label htmlFor="sendByEnterEnabled">
@@ -124,7 +127,7 @@ class PreferencesModal extends React.Component {
                           <input type="radio"
                                  name="sendByEnter"
                                  id="sendByEnterDisabled"
-                                 value={false}
+                                 value="false"
                                  defaultChecked={!isSendByEnterEnabled}
                                  onChange={this.changeSendByEnter}/>
                           <label htmlFor="sendByEnterDisabled">
@@ -138,6 +141,7 @@ class PreferencesModal extends React.Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">notifications</i>
+
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="groupNotifications"
@@ -155,10 +159,11 @@ class PreferencesModal extends React.Component {
                       </li>
                     </ul>
                   </div>
-                  <div className="preferences__list__item preferences__list__item--notifications">
+                  <div className="preferences__list__item preferences__list__item--effects">
                     <ul>
                       <li>
                         <i className="icon material-icons">music_note</i>
+
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="soundEffects"
@@ -166,6 +171,20 @@ class PreferencesModal extends React.Component {
                                  onChange={this.changeSoundEffectsEnabled}/>
                           <label htmlFor="soundEffects">Enable sound effects</label>
                         </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="preferences__list__item preferences__list__item--sessions">
+                    <ul>
+                      <li>
+                        <i className="icon material-icons">devices</i>
+                        <h4>Active sessions</h4>
+                        <ul className="session-list">
+                          {sessionList}
+                          <li className="session-list__session text-center">
+                            <a className="link--red" onClick={this.onTerminateAllSessionsClick}>Terminate all sessions</a>
+                          </li>
+                        </ul>
                       </li>
                     </ul>
                   </div>
@@ -182,4 +201,4 @@ class PreferencesModal extends React.Component {
   }
 }
 
-export default PreferencesModal;
+export default Container.create(PreferencesModal, {pure: false});
