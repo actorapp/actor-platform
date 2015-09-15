@@ -22,6 +22,12 @@ export default {
     });
   },
 
+  changeTab(tab) {
+    dispatch(ActionTypes.PREFERENCES_CHANGE_TAB, {
+      tab
+    });
+  },
+
   loadSessions() {
     dispatchAsync(ActorClient.loadSessions(), {
       request: ActionTypes.PREFERENCES_SESSION_LOAD,

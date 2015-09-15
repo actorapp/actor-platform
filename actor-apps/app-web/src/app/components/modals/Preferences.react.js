@@ -31,7 +31,7 @@ class PreferencesModal extends Component {
       isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications(),
       isShowNotificationsTextEnabled: PreferencesStore.isShowNotificationsTextEnabled(),
       sessions: PreferencesStore.getSessions(),
-      activeTab: 'GENERAL'
+      activeTab: PreferencesStore.getCurrentTab()
     }
   };
 
@@ -81,7 +81,7 @@ class PreferencesModal extends Component {
 
   onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
 
-  changeTab = (tab) => this.setState({activeTab: tab});
+  changeTab = (tab) => PreferencesActionCreators.changeTab(tab);
 
   render() {
     const {
@@ -141,7 +141,7 @@ class PreferencesModal extends Component {
                 <a className={generalTabClassNames}
                    onClick={() => this.changeTab('GENERAL')}>General</a>
                 <a className={notificationTabClassNames}
-                   onClick={() => this.changeTab('NOTIFICATIONS')}>Notifications & Sounds</a>
+                   onClick={() => this.changeTab('NOTIFICATIONS')}>Notifications &amp; Sounds</a>
                 <a className={securityTabClassNames}
                    onClick={() => this.changeTab('SECURITY')}>Security</a>
               </aside>
@@ -251,4 +251,4 @@ class PreferencesModal extends Component {
   }
 }
 
-export default Container.create(PreferencesModal, {pure: false});
+export default Container.create(PreferencesModal);
