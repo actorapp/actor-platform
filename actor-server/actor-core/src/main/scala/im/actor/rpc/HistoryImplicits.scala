@@ -30,7 +30,7 @@ trait HistoryImplicits {
             }
 
             ApiHistoryMessage(senderUserId = model.senderUserId, randomId = model.randomId, date = model.date.getMillis, message = messageContent, state = state)
-          case Left(e) ⇒ throw new Exception(s"Failed to parse message content $e")
+          case Left(e) ⇒ throw new Exception(s"Failed to parse message content: $e")
         }
       } catch {
         case e: Throwable ⇒

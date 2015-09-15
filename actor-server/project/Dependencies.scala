@@ -146,7 +146,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaContrib, slick)
 
-  val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalazCore, akkaTestkit % "test", scalatest % "test")
+  val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, catsStd, concmap, jodaConvert, jodaTime, libPhoneNumber, scalazCore, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
