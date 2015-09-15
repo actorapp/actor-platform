@@ -5,6 +5,7 @@
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
+import classnames from 'classnames';
 import Modal from 'react-modal';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
@@ -29,7 +30,8 @@ class PreferencesModal extends Component {
       isGroupsNotificationsEnabled: PreferencesStore.isGroupsNotificationsEnabled(),
       isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications(),
       isShowNotificationsTextEnabled: PreferencesStore.isShowNotificationsTextEnabled(),
-      sessions: PreferencesStore.getSessions()
+      sessions: PreferencesStore.getSessions(),
+      activeTab: 'GENERAL'
     }
   };
 
@@ -52,10 +54,14 @@ class PreferencesModal extends Component {
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
       isShowNotificationsTextEnabled
-    } = this.state;
+      } = this.state;
 
     PreferencesActionCreators.save({
-      isSendByEnterEnabled, isSoundEffectsEnabled, isGroupsNotificationsEnabled, isOnlyMentionNotifications, isShowNotificationsTextEnabled
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications,
+      isShowNotificationsTextEnabled
     });
     this.onClose();
   };
@@ -75,9 +81,12 @@ class PreferencesModal extends Component {
 
   onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
 
+  changeTab = (tab) => this.setState({activeTab: tab});
+
   render() {
     const {
       isOpen,
+      activeTab,
       isSendByEnterEnabled,
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
@@ -88,12 +97,31 @@ class PreferencesModal extends Component {
 
     const sessionList = map(sessions, (session) => <Session {...session}/>);
 
+    const generalTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab === 'GENERAL'
+    });
+    const notificationTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab === 'NOTIFICATIONS'
+    });
+    const securityTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab === 'SECURITY'
+    });
+    const generalTabContentClassName = classnames('preferences__list__item', {
+      'preferences__list__item--active': activeTab === 'GENERAL'
+    });
+    const notificationTabContentClassName = classnames('preferences__list__item', {
+      'preferences__list__item--active': activeTab === 'NOTIFICATIONS'
+    });
+    const securityTabContentClassName = classnames('preferences__list__item', {
+      'preferences__list__item--active': activeTab === 'SECURITY'
+    });
+
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--preferences"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 500}}>
+               style={{width: 700}}>
 
           <div className="modal-new__header">
             <i className="modal-new__header__icon material-icons">settings</i>
@@ -109,9 +137,17 @@ class PreferencesModal extends Component {
 
           <div className="modal-new__body">
             <div className="preferences">
+              <aside className="preferences__tabs">
+                <a className={generalTabClassNames}
+                   onClick={() => this.changeTab('GENERAL')}>General</a>
+                <a className={notificationTabClassNames}
+                   onClick={() => this.changeTab('NOTIFICATIONS')}>Notifications & Sounds</a>
+                <a className={securityTabClassNames}
+                   onClick={() => this.changeTab('SECURITY')}>Security</a>
+              </aside>
               <div className="preferences__body">
                 <div className="preferences__list">
-                  <div className="preferences__list__item  preferences__list__item--general">
+                  <div className={generalTabContentClassName}>
                     <ul>
                       <li>
                         <i className="icon material-icons">keyboard</i>
@@ -141,8 +177,19 @@ class PreferencesModal extends Component {
                       </li>
                     </ul>
                   </div>
-                  <div className="preferences__list__item preferences__list__item--notifications">
+                  <div className={notificationTabContentClassName}>
                     <ul>
+                      <li>
+                        <i className="icon material-icons">music_note</i>
+                        <h4>Effects</h4>
+                        <div className="checkbox">
+                          <input type="checkbox"
+                                 id="soundEffects"
+                                 defaultChecked={isSoundEffectsEnabled}
+                                 onChange={this.changeSoundEffectsEnabled}/>
+                          <label htmlFor="soundEffects">Enable sound effects</label>
+                        </div>
+                      </li>
                       <li>
                         <i className="icon material-icons">notifications</i>
                         <h4>Notifications</h4>
@@ -160,40 +207,23 @@ class PreferencesModal extends Component {
                                  onChange={this.changeMentionNotifications}/>
                           <label htmlFor="mentionsNotifications">Enable mention only notifications</label>
                         </div>
+                        <p className="hint">You can enable notifications only for messages that contains you mention</p>
                       </li>
-                    </ul>
-                  </div>
-                  <div className="preferences__list__item preferences__list__item--effects">
-                    <ul>
                       <li>
-                        <i className="icon material-icons">music_note</i>
-                        <h4>Sound effects</h4>
-                        <div className="checkbox">
-                          <input type="checkbox"
-                                 id="soundEffects"
-                                 defaultChecked={isSoundEffectsEnabled}
-                                 onChange={this.changeSoundEffectsEnabled}/>
-                          <label htmlFor="soundEffects">Enable sound effects</label>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="preferences__list__item preferences__list__item--effects">
-                    <ul>
-                      <li>
-                        <i className="icon material-icons">view_headline</i>
-                        <h4>Messages preview</h4>
+                        <i className="icon material-icons">visibility</i>
+                        <h4>Privacy</h4>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="notificationTextPreview"
                                  defaultChecked={isShowNotificationsTextEnabled}
                                  onChange={this.changeIsShowNotificationTextEnabled}/>
-                          <label htmlFor="notificationTextPreview">Preview text message in notifications</label>
+                          <label htmlFor="notificationTextPreview">Message preview</label>
                         </div>
+                        <p className="hint">Remove message text from notifications.</p>
                       </li>
                     </ul>
                   </div>
-                  <div className="preferences__list__item preferences__list__item--sessions">
+                  <div className={securityTabContentClassName}>
                     <ul>
                       <li>
                         <i className="icon material-icons">devices</i>
@@ -207,6 +237,7 @@ class PreferencesModal extends Component {
                       </li>
                     </ul>
                   </div>
+
                 </div>
               </div>
             </div>

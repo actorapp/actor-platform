@@ -379,13 +379,13 @@
         display: flex;
         flex-direction: row;
 
-        height: 600px;
+        height: 440px;
 
         flex: 1;
         &__tabs {
           display: block;
 
-          width: 187px;
+          width: 190px;
           height: 100%;
           &__tab {
             font-size: 15px;
@@ -393,7 +393,7 @@
 
             display: block;
 
-            padding: 10px 24px;
+            padding: 10px 16px;
 
             cursor: pointer;
 
@@ -409,7 +409,7 @@
           overflow-x: hidden;
           overflow-y: auto;
 
-          padding: 0 32px 0 100px;
+          padding: 0 0 0 80px;
 
           background-color: white;
 
@@ -418,6 +418,7 @@
         &__list {
           width: 100%;
           &__item {
+            display: none;
             ul {
               margin: 0;
               padding: 0;
@@ -429,7 +430,7 @@
 
                 position: relative;
 
-                padding: 32px 0 8px;
+                padding: 32px 32px 32px 0;
 
                 border-bottom: 1px solid rgba(black, .12);
                 .icon {
@@ -437,17 +438,18 @@
 
                   position: absolute;
                   top: 32px;
-                  left: -64px;
+                  left: -52px;
 
                   color: rgba(black, .4);
                 }
                 .hint {
                   font-size: 13px;
-                  line-height: 24px;
+                  line-height: 18px;
 
                   margin: 0;
+                  padding-left: 32px;
 
-                  color: rgba(black, .4);
+                  color: rgba(black, .3);
                 }
                 &:last-child {
                   border-bottom: none;
@@ -479,46 +481,48 @@
             .checkbox {
               margin-bottom: 8px;
             }
-            &--sessions {
-              .session-list {
-                margin: 0;
-                padding: 0;
+            .session-list {
+              margin: 0;
+              padding: 0;
 
-                list-style: none;
-                a {
-                  cursor: pointer;
+              list-style: none;
+              a {
+                cursor: pointer;
+              }
+              &__session {
+                line-height: 24px;
+
+                position: relative;
+
+                padding: 0 32px 8px 0;
+                margin-bottom: 8px;
+                margin-right: -32px;
+                &__terminate {
+                  position: absolute;
+                  top: 16px;
+                  right: 32px;
                 }
-                &__session {
-                  line-height: 24px;
-
-                  position: relative;
-
-                  padding: 0 0 8px;
-                  margin-bottom: 8px;
-                  &__terminate {
-                    position: absolute;
-                    top: 22px;
-                    right: 8px;
-                  }
-                  .title {
-                    small {
-                      font-style: italic;
-
-                      margin-left: 6px;
-                    }
-                  }
+                .title {
                   small {
-                    font-size: 13px;
+                    font-style: italic;
 
-                    color: rgba(0, 0, 0, .3);
-                    b {
-                      font-weight: 400;
+                    margin-left: 6px;
+                  }
+                }
+                small {
+                  font-size: 13px;
 
-                      color: rgba(0, 0, 0, .5);
-                    }
+                  color: rgba(0, 0, 0, .3);
+                  b {
+                    font-weight: 400;
+
+                    color: rgba(0, 0, 0, .5);
                   }
                 }
               }
+            }
+            &--active {
+              display: block;
             }
           }
         }
