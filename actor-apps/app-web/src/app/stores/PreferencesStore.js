@@ -35,6 +35,10 @@ class PreferencesStore extends Store {
     return ActorClient.isSoundEffectsEnabled();
   }
 
+  isNotificationTextPreviewEnabled() {
+    return ActorClient.isNotificationTextPreviewEnabled();
+  }
+
   getLanguageData() {
     switch (navigator.language) {
       case 'ru-RU':
@@ -57,13 +61,15 @@ class PreferencesStore extends Store {
       isSendByEnterEnabled,
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
-      isOnlyMentionNotifications
+      isOnlyMentionNotifications,
+      isNotificationTextPreviewEnabled
     } = newPreferences;
 
     ActorClient.changeSendByEnter(isSendByEnterEnabled);
     ActorClient.changeSoundEffectsEnabled(isSoundEffectsEnabled);
     ActorClient.changeGroupNotificationsEnabled(isGroupsNotificationsEnabled);
     ActorClient.changeIsOnlyMentionNotifications(isOnlyMentionNotifications);
+    ActorClient.changeNotificationTextPreviewEnabled(isNotificationTextPreviewEnabled);
   }
 
   __onDispatch = (action) => {
