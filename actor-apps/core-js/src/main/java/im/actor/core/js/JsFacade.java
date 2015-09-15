@@ -5,27 +5,15 @@
 package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
-
+import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
-import im.actor.core.js.entity.*;
-import im.actor.core.js.utils.HtmlMarkdownUtils;
-import im.actor.runtime.markdown.MarkdownParser;
-import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.ExportPackage;
-import org.timepedia.exporter.client.Exportable;
-
-import java.util.List;
-
-import im.actor.core.ApiConfiguration;
-import im.actor.core.AuthState;
-import im.actor.core.ConfigurationBuilder;
-import im.actor.core.DeviceCategory;
-import im.actor.core.PlatformType;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
+import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
+import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
@@ -38,6 +26,12 @@ import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
+import im.actor.runtime.markdown.MarkdownParser;
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
+
+import java.util.List;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -627,6 +621,11 @@ public class JsFacade implements Exportable {
                 });
             }
         });
+    }
+
+    public void editMyAvatar(final JsFile file) {
+        String descriptor = provider.registerUploadFile(file);
+        messenger.changeMyAvatar(descriptor);
     }
 
     public JsPromise editName(final int uid, final String newName) {
