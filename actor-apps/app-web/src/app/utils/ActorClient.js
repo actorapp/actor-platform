@@ -257,31 +257,52 @@ export default {
   changeNotificationsEnabled(peer, isEnabled) {
     window.messenger.changeNotificationsEnabled(peer, isEnabled);
   },
+
   isNotificationsEnabled(peer) {
     return window.messenger.isNotificationsEnabled(peer);
   },
+
   isSendByEnterEnabled() {
     return window.messenger.isSendByEnterEnabled();
   },
+
   changeSendByEnter(isEnabled) {
     window.messenger.changeSendByEnter(isEnabled);
   },
+
   isGroupsNotificationsEnabled() {
     return window.messenger.isGroupsNotificationsEnabled();
   },
+
   changeGroupNotificationsEnabled(isEnabled) {
     window.messenger.changeGroupNotificationsEnabled(isEnabled);
   },
+
   isOnlyMentionNotifications() {
     return window.messenger.isOnlyMentionNotifications();
   },
+
   changeIsOnlyMentionNotifications(isEnabled) {
     window.messenger.changeIsOnlyMentionNotifications(isEnabled);
   },
+
   isSoundEffectsEnabled() {
     return window.messenger.isSoundEffectsEnabled();
   },
+
   changeSoundEffectsEnabled(isEnabled) {
     window.messenger.changeSoundEffectsEnabled(isEnabled);
+  },
+
+  loadSessions() {
+    return window.messenger.loadSessions();
+  },
+
+  terminateSession(id) {
+    return window.messenger.terminateSession(id);
+  },
+
+  terminateAllSessions() {
+    return window.messenger.terminateAllSessions();
   }
 }
