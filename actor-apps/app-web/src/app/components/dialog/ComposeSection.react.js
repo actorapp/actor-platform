@@ -30,7 +30,7 @@ let getStateFromStores = () => {
   return {
     text: ComposeStore.getText(),
     profile: ActorClient.getUser(ActorClient.getUid()),
-    sendByEnter: PreferencesStore.istSendByEnterEnabled(),
+    sendByEnter: PreferencesStore.isSendByEnterEnabled(),
     mentions: ComposeStore.getMentions()
   };
 };
@@ -50,13 +50,12 @@ class ComposeSection extends React.Component {
 
     GroupStore.addChangeListener(this.onChange);
     ComposeStore.addChangeListener(this.onChange);
-    PreferencesStore.addChangeListener(this.onChange);
+    PreferencesStore.addListener(this.onChange);
   }
 
   componentWillUnmount() {
     GroupStore.removeChangeListener(this.onChange);
     ComposeStore.removeChangeListener(this.onChange);
-    PreferencesStore.removeChangeListener(this.onChange);
   }
 
   onChange = () => {
