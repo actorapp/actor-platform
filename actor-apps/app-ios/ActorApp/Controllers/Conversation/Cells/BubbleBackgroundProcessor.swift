@@ -39,6 +39,8 @@ class ListProcessor: NSObject, ARListProcessor {
     
     let layoutCache: LayoutCache = LayoutCache()
     
+    let settingsCache = Cache<CachedSetting>()
+    
     let peer: ACPeer
     
     init(peer: ACPeer) {
@@ -46,6 +48,9 @@ class ListProcessor: NSObject, ARListProcessor {
     }
     
     func processWithItems(items: JavaUtilList!, withPrevious previous: AnyObject!) -> AnyObject! {
+        
+        let start = CFAbsoluteTimeGetCurrent()
+        var section = start
         
         // Building content list and dictionary from rid to index list
         var objs = [ACMessage]()
@@ -56,6 +61,9 @@ class ListProcessor: NSObject, ARListProcessor {
             objs.append(msg)
         }
         
+        log("processing(items): \(CFAbsoluteTimeGetCurrent() - section)")
+        section = CFAbsoluteTimeGetCurrent()
+        
         // Calculating cell settings
         // TODO: Cache and avoid recalculation of whole list
         var settings = [CellSetting]()
@@ -63,11 +71,17 @@ class ListProcessor: NSObject, ARListProcessor {
             settings.append(buildCellSetting(i, items: objs))
         }
         
+        log("processing(settings): \(CFAbsoluteTimeGetCurrent() - section)")
+        section = CFAbsoluteTimeGetCurrent()
+        
         // Building cell layouts
         var layouts = [CellLayout]()
         for i in 0..<objs.count {
-            layouts.append(buildLayout(objs[i]))
+            layouts.append(buildLayout(objs[i], layoutCache: layoutCache))
         }
+        
+        log("processing(layouts): \(CFAbsoluteTimeGetCurrent() - section)")
+        section = CFAbsoluteTimeGetCurrent()
         
         // Calculating force and simple updates
         var forceUpdates = [Bool]()
@@ -87,7 +101,6 @@ class ListProcessor: NSObject, ARListProcessor {
                     // to update it's size
                     // TODO: In the future releases it might be implemented
                     // in more flexible way
-                    log("layouting: \(prevList.layouts[oldIndex].key) -> \(layouts[i].key)")
                     if prevList.layouts[oldIndex].key != layouts[i].key {
                         
                         // Mark as forced update
@@ -97,7 +110,7 @@ class ListProcessor: NSObject, ARListProcessor {
                         // Removing layout from cache
                         layoutCache.revoke(objs[i].rid)
                         // Building new layout
-                        layouts[i] = buildLayout(objs[i])
+                        layouts[i] = buildLayout(objs[i], layoutCache: layoutCache)
                         
                     } else {
                         
@@ -140,14 +153,21 @@ class ListProcessor: NSObject, ARListProcessor {
             }
         }
         
+        log("processing(updates): \(CFAbsoluteTimeGetCurrent() - section)")
+        section = CFAbsoluteTimeGetCurrent()
+        
         // Updating cell heights
         // TODO: Need to implement width calculations too
         //       to make bubble menu appear at right place
         var heights = [CGFloat]()
         for i in 0..<objs.count {
-            let height = measureHeight(objs[i], setting: settings[i], layoutCache: layoutCache)
+            let height = measureHeight(objs[i], setting: settings[i], layout: layouts[i])
             heights.append(height)
         }
+        
+        log("processing(heights): \(CFAbsoluteTimeGetCurrent() - section)")
+        
+        log("processing(all): \(CFAbsoluteTimeGetCurrent() - start)")
         
         // Put everything together
         let res = PreprocessedList()
@@ -168,8 +188,16 @@ class ListProcessor: NSObject, ARListProcessor {
     func buildCellSetting(index: Int, items: [ACMessage]) -> CellSetting {
         
         let current = items[index]
+        let id = Int64(current.rid)
         let next: ACMessage! = index > 0 ? items[index - 1] : nil
         let prev: ACMessage! = index + 1 < items.count ? items[index + 1] : nil
+        
+        let cached: CachedSetting! = settingsCache.pick(id)
+        if cached != nil {
+            if cached.isValid(prev, next: next) {
+                return cached.cached
+            }
+        }
         
         var isShowDate = true
         var isShowDateNext = true
@@ -189,7 +217,11 @@ class ListProcessor: NSObject, ARListProcessor {
             }
         }
         
-        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom)
+        let res = CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom)
+        
+        settingsCache.cache(id, value: CachedSetting(cached: res, prevId: prev?.rid, nextId: next?.rid))
+        
+        return res
     }
     
     /**
@@ -227,18 +259,11 @@ class ListProcessor: NSObject, ARListProcessor {
         return false
     }
     
-    func measureHeight(message: ACMessage, setting: CellSetting, layoutCache: LayoutCache) -> CGFloat {
+    func measureHeight(message: ACMessage, setting: CellSetting, layout: CellLayout) -> CGFloat {
         
         let content = message.content!
         
-        var layout = layoutCache.pick(message.rid)
-        if (layout == nil) {
-            // Usually never happens
-            layout = buildLayout(message)
-            layoutCache.cache(message.rid, layout: layout!)
-        }
-        
-        var height = layout!.height
+        var height = layout.height
         if content is ACServiceContent {
             height += AABubbleCell.bubbleTop
             height += AABubbleCell.bubbleBottom
@@ -255,7 +280,16 @@ class ListProcessor: NSObject, ARListProcessor {
         return height
     }
     
-    func buildLayout(message: ACMessage) -> CellLayout {
-        return Bubbles.buildLayout(peer, message: message)
+    func buildLayout(message: ACMessage, layoutCache: LayoutCache) -> CellLayout {
+        
+        var layout: CellLayout! = layoutCache.pick(message.rid)
+        
+        if (layout == nil) {
+            // Usually never happens
+            layout = Bubbles.buildLayout(peer, message: message)
+            layoutCache.cache(message.rid, value: layout!)
+        }
+        
+        return layout
     }
 }
