@@ -35,8 +35,8 @@ class PreferencesStore extends Store {
     return ActorClient.isSoundEffectsEnabled();
   }
 
-  isNotificationTextPreviewEnabled() {
-    return ActorClient.isNotificationTextPreviewEnabled();
+  isShowNotificationsTextEnabled() {
+    return ActorClient.isShowNotificationsTextEnabled();
   }
 
   getLanguageData() {
@@ -62,14 +62,14 @@ class PreferencesStore extends Store {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
-      isNotificationTextPreviewEnabled
+      isShowNotificationsTextEnabled
     } = newPreferences;
 
     ActorClient.changeSendByEnter(isSendByEnterEnabled);
     ActorClient.changeSoundEffectsEnabled(isSoundEffectsEnabled);
     ActorClient.changeGroupNotificationsEnabled(isGroupsNotificationsEnabled);
     ActorClient.changeIsOnlyMentionNotifications(isOnlyMentionNotifications);
-    ActorClient.changeNotificationTextPreviewEnabled(isNotificationTextPreviewEnabled);
+    ActorClient.changeIsShowNotificationTextEnabled(isShowNotificationsTextEnabled);
   }
 
   __onDispatch = (action) => {

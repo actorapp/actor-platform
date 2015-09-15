@@ -294,14 +294,12 @@ export default {
     window.messenger.changeSoundEffectsEnabled(isEnabled);
   },
 
-  isNotificationTextPreviewEnabled() {
-    console.debug('isNotificationTextPreviewEnabled');
-    //return window.messenger.isSoundEffectsEnabled();
+  isShowNotificationsTextEnabled() {
+    return window.messenger.isShowNotificationsTextEnabled();
   },
 
-  changeNotificationTextPreviewEnabled(isEnabled) {
-    console.debug('changeNotificationTextPreviewEnabled');
-    //window.messenger.isNotificationTextPreviewEnabled(isEnabled);
+  changeIsShowNotificationTextEnabled(isEnabled) {
+    window.messenger.changeIsShowNotificationTextEnabled(isEnabled);
   },
 
   loadSessions() {

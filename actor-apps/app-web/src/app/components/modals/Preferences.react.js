@@ -28,7 +28,7 @@ class PreferencesModal extends Component {
       isSoundEffectsEnabled: PreferencesStore.isSoundEffectsEnabled(),
       isGroupsNotificationsEnabled: PreferencesStore.isGroupsNotificationsEnabled(),
       isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications(),
-      isNotificationTextPreviewEnabled: PreferencesStore.isNotificationTextPreviewEnabled(),
+      isShowNotificationsTextEnabled: PreferencesStore.isShowNotificationsTextEnabled(),
       sessions: PreferencesStore.getSessions()
     }
   };
@@ -51,11 +51,11 @@ class PreferencesModal extends Component {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
-      isNotificationTextPreviewEnabled
+      isShowNotificationsTextEnabled
     } = this.state;
 
     PreferencesActionCreators.save({
-      isSendByEnterEnabled, isSoundEffectsEnabled, isGroupsNotificationsEnabled, isOnlyMentionNotifications, isNotificationTextPreviewEnabled
+      isSendByEnterEnabled, isSoundEffectsEnabled, isGroupsNotificationsEnabled, isOnlyMentionNotifications, isShowNotificationsTextEnabled
     });
     this.onClose();
   };
@@ -71,7 +71,7 @@ class PreferencesModal extends Component {
   changeSoundEffectsEnabled = (event) => this.setState({isSoundEffectsEnabled: event.target.checked});
   changeGroupsNotificationsEnabled = (event) => this.setState({isGroupsNotificationsEnabled: event.target.checked});
   changeMentionNotifications = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
-  changeNotificationTextPreviewEnabled = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
+  changeIsShowNotificationTextEnabled = (event) => this.setState({isShowNotificationsTextEnabled: event.target.checked});
 
   onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
 
@@ -82,8 +82,8 @@ class PreferencesModal extends Component {
       isSoundEffectsEnabled,
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
-      sessions,
-      isNotificationTextPreviewEnabled
+      isShowNotificationsTextEnabled,
+      sessions
     } = this.state;
 
     const sessionList = map(sessions, (session) => <Session {...session}/>);
@@ -186,8 +186,8 @@ class PreferencesModal extends Component {
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="notificationTextPreview"
-                                 defaultChecked={isNotificationTextPreviewEnabled}
-                                 onChange={this.changeNotificationTextPreviewEnabled}/>
+                                 defaultChecked={isShowNotificationsTextEnabled}
+                                 onChange={this.changeIsShowNotificationTextEnabled}/>
                           <label htmlFor="notificationTextPreview">Preview text message in notifications</label>
                         </div>
                       </li>
