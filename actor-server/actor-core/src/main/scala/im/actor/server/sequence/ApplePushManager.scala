@@ -16,23 +16,29 @@ import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.user.{ UserProcessorRegion, UserExtension, UserOffice }
 
-case class ApplePushManagerConfig(certs: List[ApnsCert], isSandbox: Boolean)
+import scala.util.Try
+
+case class ApplePushManagerConfig(certs: List[ApnsCert])
 
 object ApplePushManagerConfig {
   def load(config: Config): ApplePushManagerConfig = {
     ApplePushManagerConfig(
-      certs = config.getConfigList("certs").toList map (ApnsCert.fromConfig),
-      isSandbox = config.getBoolean("sandbox")
+      certs = config.getConfigList("certs").toList map ApnsCert.fromConfig
     )
 
   }
 }
 
-case class ApnsCert(key: Int, path: String, password: String)
+case class ApnsCert(key: Int, path: String, password: String, isSandbox: Boolean)
 
 object ApnsCert {
   def fromConfig(config: Config): ApnsCert = {
-    ApnsCert(config.getInt("key"), config.getString("path"), config.getString("password"))
+    ApnsCert(
+      config.getInt("key"),
+      config.getString("path"),
+      config.getString("password"),
+      Try(config.getBoolean("sandbox")).getOrElse(false)
+    )
   }
 }
 
@@ -41,7 +47,7 @@ class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
 
   private val managers: Map[Int, PushManager[SimpleApnsPushNotification]] =
     config.certs.map { cert ⇒
-      val env = config.isSandbox match {
+      val env = cert.isSandbox match {
         case false ⇒ ApnsEnvironment.getProductionEnvironment
         case true  ⇒ ApnsEnvironment.getSandboxEnvironment
       }
