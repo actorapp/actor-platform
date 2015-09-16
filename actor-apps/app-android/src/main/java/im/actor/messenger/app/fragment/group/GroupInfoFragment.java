@@ -47,7 +47,7 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
@@ -91,7 +91,7 @@ public class GroupInfoFragment extends BaseFragment {
 
         bind(groupInfo.isMember(), new ValueChangedListener<Boolean>() {
             @Override
-            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+            public void onChanged(Boolean val, Value<Boolean> Value) {
                 notMemberView.setVisibility(val ? View.GONE : View.VISIBLE);
                 getActivity().invalidateOptionsMenu();
             }
@@ -125,7 +125,7 @@ public class GroupInfoFragment extends BaseFragment {
             UserVM admin = users().get(groupInfo.getCreatorId());
             bind(admin.getName(), new ValueChangedListener<String>() {
                 @Override
-                public void onChanged(String val, ValueModel<String> valueModel) {
+                public void onChanged(String val, Value<String> Value) {
                     createdBy.setText(getString(R.string.group_created_by).replace("{0}", val));
                 }
             });
@@ -224,7 +224,7 @@ public class GroupInfoFragment extends BaseFragment {
         groupUserAdapter = new MembersAdapter(groupInfo.getMembers().get(), getActivity());
         bind(groupInfo.getMembers(), new ValueChangedListener<HashSet<GroupMember>>() {
             @Override
-            public void onChanged(HashSet<GroupMember> val, ValueModel<HashSet<GroupMember>> valueModel) {
+            public void onChanged(HashSet<GroupMember> val, Value<HashSet<GroupMember>> Value) {
                 groupUserAdapter.updateUid(val);
             }
         });

@@ -51,7 +51,7 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;
@@ -100,7 +100,7 @@ public class MyProfileFragment extends BaseFragment {
 
         bind(userModel.getNick(), new ValueChangedListener<String>() {
             @Override
-            public void onChanged(final String val, ValueModel<String> valueModel) {
+            public void onChanged(final String val, Value<String> Value) {
                 final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
                 TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
                 tintImageView.setVisibility(View.INVISIBLE);
@@ -122,17 +122,18 @@ public class MyProfileFragment extends BaseFragment {
 
                         builder.input(getString(R.string.nickname), val, false, new MaterialDialog.InputCallback() {
                             @Override
-                            public void onInput(final MaterialDialog materialDialog, final CharSequence charSequence) {
-                                execute(messenger().executeExternalCommand(new RequestEditNickName(charSequence.toString())), R.string.progress_common, new CommandCallback<ResponseSeq>() {
+                            public void onInput(MaterialDialog materialDialog, final CharSequence charSequence) {
+                                execute(messenger().editMyNick(charSequence.toString()), R.string.progress_common, new CommandCallback<Boolean>() {
+
                                     @Override
-                                    public void onResult(ResponseSeq res) {
+                                    public void onResult(Boolean res) {
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 ((TextView) recordView.findViewById(R.id.value)).setText(charSequence.toString());
-                                                materialDialog.dismiss();
                                             }
                                         });
+
                                     }
 
                                     @Override
@@ -166,7 +167,7 @@ public class MyProfileFragment extends BaseFragment {
 
         bind(userModel.getPhones(), new ValueChangedListener<ArrayListUserPhone>() {
             @Override
-            public void onChanged(ArrayListUserPhone val, ValueModel<ArrayListUserPhone> valueModel) {
+            public void onChanged(ArrayListUserPhone val, Value<ArrayListUserPhone> Value) {
                 if (val.size() == 0) {
                     contactsContainer.setVisibility(View.GONE);
                 } else {
