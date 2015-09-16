@@ -1,0 +1,14 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+@media (max-width: 1050px) {
+  .main {
+    .activity {
+      position: absolute;
+      right: 0;
+      top: $toolbar-height;
+      bottom: 0;
+    }
+  }
+}

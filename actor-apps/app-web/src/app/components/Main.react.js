@@ -14,7 +14,6 @@ import SidebarSection from 'components/SidebarSection.react';
 import DialogSection from 'components/DialogSection.react';
 import Banner from 'components/common/Banner.react';
 import Favicon from 'components/common/Favicon.react';
-import ProfilePictureModal from 'components/modals/ProfilePicture.react';
 
 const visibilitychange = 'visibilitychange';
 
@@ -76,9 +75,6 @@ class Main extends React.Component {
         <Banner/>
         <SidebarSection selectedPeer={peer}/>
         <DialogSection peer={peer}/>
-
-        {/* MODALS */}
-        <ProfilePictureModal/>
       </div>
     );
   }
