@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import im.actor.core.api.ApiPublicGroup;
 import im.actor.core.api.rpc.RequestGetPublicGroups;
@@ -47,13 +48,13 @@ public class JoinPublicGroupFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Command<ResponseGetPublicGroups> cmd = messenger().executeExternalCommand(new RequestGetPublicGroups());
-        if (cmd != null) cmd.start(new CommandCallback<ResponseGetPublicGroups>() {
+        Command<List<PublicGroup>> cmd = messenger().listPublicGroups();
+        if (cmd != null) cmd.start(new CommandCallback<List<PublicGroup>>() {
             @Override
-            public void onResult(ResponseGetPublicGroups res) {
+            public void onResult(List<PublicGroup> res) {
                 final ArrayList<PublicGroup> groups = new ArrayList<PublicGroup>();
-                for (ApiPublicGroup g : res.getGroups()) {
-                    groups.add(new PublicGroup(g));
+                for (PublicGroup g : res) {
+                    groups.add(g);
                 }
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
