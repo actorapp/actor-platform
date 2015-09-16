@@ -14,7 +14,7 @@ Modal.setAppElement(appElement);
 
 const getStateFromStores = () => {
   return {
-    isShown: CreateGroupStore.isModalOpen()
+    isOpen: CreateGroupStore.isModalOpen()
   };
 };
 
@@ -25,38 +25,49 @@ class CreateGroup extends React.Component {
     this.state = getStateFromStores();
 
     CreateGroupStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     CreateGroupStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    const { isOpen } = nextState;
+
+    if (isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
   }
 
   render() {
-    const { isShown } = this.state;
+    const { isOpen } = this.state;
 
-    return (
-      <Modal className="modal-new modal-new--create-group" closeTimeoutMS={150} isOpen={isShown} style={{width: 350}}>
+    if (isOpen) {
+      return (
+        <Modal className="modal-new modal-new--create-group"
+               closeTimeoutMS={150}
+               isOpen={isOpen}
+               style={{width: 350}}>
 
-        <header className="modal-new__header">
-          <a className="modal-new__header__close modal-new__header__icon material-icons" onClick={this.onClose}>clear</a>
-          <h3 className="modal-new__header__title">Create group</h3>
-        </header>
+          <header className="modal-new__header">
+            <a className="modal-new__header__close modal-new__header__icon material-icons" onClick={this.onClose}>clear</a>
+            <h3 className="modal-new__header__title">Create group</h3>
+          </header>
 
-        <CreateGroupForm/>
+          <CreateGroupForm/>
 
-      </Modal>
-    );
+        </Modal>
+      );
+    } else {
+      return null;
+    }
   }
 
-  onChange = () => {
-    this.setState(getStateFromStores());
-  }
+  onChange = () => this.setState(getStateFromStores());
 
-  onClose = () => {
-    CreateGroupActionCreators.closeModal();
-  }
+  onClose = () => CreateGroupActionCreators.closeModal();
 
   onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {

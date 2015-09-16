@@ -36,11 +36,9 @@ class PreferencesModal extends Component {
   };
 
   componentWillUpdate(nextProps, nextState) {
-    const { isOpen } = nextState;
-
-    if (isOpen) {
+    if (nextState.isOpen && !this.state.isOpen) {
       document.addEventListener('keydown', this.onKeyDown, false);
-    } else {
+    } else if (!nextState.isOpen && this.state.isOpen) {
       document.removeEventListener('keydown', this.onKeyDown, false);
     }
   }
