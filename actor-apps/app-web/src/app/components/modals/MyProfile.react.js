@@ -118,9 +118,7 @@ class MyProfile extends React.Component {
 
   onProfilePictureRemove = () => console.debug('onProfilePictureRemove');
 
-  changeMyAvatar = (croppedImage) => {
-    console.debug('changeMyAvatar', croppedImage);
-  };
+  changeMyAvatar = (croppedImage) => MyProfileActions.changeMyAvatar(croppedImage);
 
   render() {
     const { isOpen, isCropModalOpen, profile, nick, name, about } = this.state;
@@ -142,20 +140,6 @@ class MyProfile extends React.Component {
             </div>
           </header>
           <div className="modal-new__body row">
-            <div className="profile-picture text-center">
-              <a onClick={this.onChangeAvatarClick}>
-                <AvatarItem image={profile.bigAvatar}
-                            placeholder={profile.placeholder}
-                            size="big"
-                            title={profile.name}/>
-              </a>
-              <div className="profile-picture__controls">
-                <a onClick={this.onProfilePictureRemove}>Remove</a>
-              </div>
-              <form className="hide" ref="imageForm">
-                <input onChange={this.onProfilePictureInputChange} ref="imageInput" type="file"/>
-              </form>
-            </div>
             <div className="col-xs">
               <div className="name">
                 <TextField className="login__form__input"
@@ -189,6 +173,24 @@ class MyProfile extends React.Component {
                           placeholder="Few words about you"
                           value={about}/>
               </div>
+            </div>
+            <div className="profile-picture text-center">
+              <div className="profile-picture__changer">
+                <AvatarItem image={profile.bigAvatar}
+                            placeholder={profile.placeholder}
+                            size="big"
+                            title={profile.name}/>
+                <a onClick={this.onChangeAvatarClick}>
+                  <span>Change</span>
+                  <span>avatar</span>
+                </a>
+              </div>
+              <div className="profile-picture__controls">
+                <a onClick={this.onProfilePictureRemove}>Remove</a>
+              </div>
+              <form className="hide" ref="imageForm">
+                <input onChange={this.onProfilePictureInputChange} ref="imageInput" type="file"/>
+              </form>
             </div>
           </div>
 
