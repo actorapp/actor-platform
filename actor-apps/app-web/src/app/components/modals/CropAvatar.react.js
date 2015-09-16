@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
+import { dataURItoBlob } from 'utils/ImageUtils';
 
 import Modal from 'react-modal';
 
@@ -118,7 +119,7 @@ class CropAvatarModal extends Component {
     let context = canvas.getContext('2d');
     context.drawImage(cropImage, cropPosition.x, cropPosition.y, cropSize.width, cropSize.height, 0, 0, cropSize.width, cropSize.height);
 
-    const croppedImage = canvas.toDataURL();
+    const croppedImage = dataURItoBlob(canvas.toDataURL());
 
     onCropFinish(croppedImage);
     this.onClose();
