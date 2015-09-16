@@ -131,8 +131,8 @@ export const ActionTypes = keymirror({
   CHAT_CLEAR_SUCCESS: null,
   CHAT_CLEAR_ERROR: null,
 
-  PROFILE_PICTURE_MODAL_SHOW: null,
-  PROFILE_PICTURE_MODAL_HIDE: null
+  CROP_AVATAR_MODAL_SHOW: null,
+  CROP_AVATAR_MODAL_HIDE: null
 });
 
 export const PeerTypes = {
