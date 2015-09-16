@@ -312,5 +312,13 @@ export default {
 
   terminateAllSessions() {
     return window.messenger.terminateAllSessions();
+  },
+
+  changeMyAvatar(avatar) {
+    window.messenger.changeMyAvatar(avatar)
+  },
+
+  changeGroupAvatar(gid, avatar) {
+    window.messenger.changeGroupAvatar(avatar)
   }
 }
