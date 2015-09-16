@@ -18,7 +18,7 @@ import im.actor.messenger.app.fragment.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 
 public class BaseActivity extends AppCompatActivity {
     private final ActorBinder BINDER = new ActorBinder();
@@ -47,12 +47,12 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    public void bind(final TextView textView, ValueModel<String> value) {
+    public void bind(final TextView textView, Value<String> value) {
         BINDER.bind(textView, value);
     }
 
     public void bind(final AvatarView avatarView, final int id,
-                     final ValueModel<Avatar> avatar, final ValueModel<String> name) {
+                     final Value<Avatar> avatar, final Value<String> name) {
         BINDER.bind(avatarView, id, avatar, name);
     }
 
@@ -64,19 +64,19 @@ public class BaseActivity extends AppCompatActivity {
         BINDER.bind(textView, titleContainer, value);
     }
 
-    public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<int[]> typing) {
+    public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final Value<int[]> typing) {
         BINDER.bindGroupTyping(textView, container, titleContainer, typing);
     }
 
-    public void bindPrivateTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<Boolean> typing) {
+    public void bindPrivateTyping(final TextView textView, final View container, final View titleContainer, final Value<Boolean> typing) {
         BINDER.bindPrivateTyping(textView, container, titleContainer, typing);
     }
 
-    public <T> void bind(ValueModel<T> value, ValueChangedListener<T> listener) {
+    public <T> void bind(Value<T> value, ValueChangedListener<T> listener) {
         BINDER.bind(value, listener);
     }
 
-    public <T, V> void bind(final ValueModel<T> value1, final ValueModel<V> value2,
+    public <T, V> void bind(final Value<T> value1, final Value<V> value2,
                             final ValueDoubleChangedListener<T, V> listener) {
         BINDER.bind(value1, value2, listener);
     }

@@ -14,7 +14,7 @@ import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.messenger.app.activity.MainActivity;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
@@ -58,7 +58,7 @@ public class ProfileActivity extends BaseFragmentActivity {
         super.onResume();
         bind(users().get(uid).isContact(), new ValueChangedListener<Boolean>() {
             @Override
-            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+            public void onChanged(Boolean val, Value<Boolean> Value) {
                 invalidateOptionsMenu();
             }
         });
