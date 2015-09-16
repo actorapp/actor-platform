@@ -43,9 +43,7 @@ class RecentSection extends React.Component {
     this.setState(getStateFromStore());
   };
 
-  openCreateGroup = () => {
-    CreateGroupActionCreators.openModal();
-  };
+  openCreateGroup = () => CreateGroupActionCreators.openModal();
 
   onScroll = event => {
     const { scrollHeight, scrollTop, clientHeight } = event.target;
