@@ -33,7 +33,7 @@ import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 import uk.co.senab.photoview.PhotoView;
 
 import static im.actor.messenger.app.core.Core.groups;
@@ -117,21 +117,21 @@ public class ViewAvatarActivity extends BaseActivity {
         if (peer.getPeerType() == PeerType.PRIVATE && peer.getPeerId() == myUid()) {
             bind(getAvatar(), messenger().getOwnAvatarVM().getUploadState(), new ValueDoubleChangedListener<Avatar, AvatarUploadState>() {
                 @Override
-                public void onChanged(Avatar val, ValueModel<Avatar> valueModel, AvatarUploadState val2, ValueModel<AvatarUploadState> valueModel2) {
+                public void onChanged(Avatar val, Value<Avatar> Value, AvatarUploadState val2, Value<AvatarUploadState> Value2) {
                     performBind(val, val2);
                 }
             });
         } else if (peer.getPeerType() == PeerType.GROUP) {
             bind(getAvatar(), messenger().getGroupAvatarVM(peer.getPeerId()).getUploadState(), new ValueDoubleChangedListener<Avatar, AvatarUploadState>() {
                 @Override
-                public void onChanged(Avatar val, ValueModel<Avatar> valueModel, AvatarUploadState val2, ValueModel<AvatarUploadState> valueModel2) {
+                public void onChanged(Avatar val, Value<Avatar> Value, AvatarUploadState val2, Value<AvatarUploadState> Value2) {
                     performBind(val, val2);
                 }
             });
         } else if (peer.getPeerType() == PeerType.PRIVATE) {
             bind(getAvatar(), new ValueChangedListener<Avatar>() {
                 @Override
-                public void onChanged(Avatar val, ValueModel<Avatar> valueModel) {
+                public void onChanged(Avatar val, Value<Avatar> Value) {
                     performBind(val, null);
                 }
             });
@@ -140,7 +140,7 @@ public class ViewAvatarActivity extends BaseActivity {
         }
     }
 
-    private ValueModel<Avatar> getAvatar() {
+    private Value<Avatar> getAvatar() {
         if (peer.getPeerType() == PeerType.GROUP) {
             return groups().get(peer.getPeerId()).getAvatar();
         } else {
