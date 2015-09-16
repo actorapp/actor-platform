@@ -162,19 +162,17 @@
 
   &--profile {
     .modal-new__body {
-      padding-bottom: 6px;
+      padding: 16px;
+      //padding-bottom: 6px;
     }
 
     .avatar {
-      margin: 16px 23px 0 16px;
+      margin: 16px;
     }
     .name,
     .nick {
       font-size: 18px;
 
-      margin-right: 16px;
-      //font-weight: 700;
-      //margin-top: 24px;
       margin-bottom: 6px;
 
       color: $modal-text-color;
@@ -182,14 +180,7 @@
         margin-bottom: 0;
       }
     }
-    .phone {
-      //margin-bottom: 16px;
-      margin-right: 16px;
-
-      //color: $modal-text-light-color;
-    }
     .about {
-      padding: 0 16px 16px 0;
       label {
         font-size: 12px;
 
@@ -198,6 +189,20 @@
         margin-bottom: 6px;
 
         color: rgba(0, 0, 0, .5);
+      }
+    }
+
+    .col-xs {
+      padding: 0 16px 16px;
+    }
+    .profile-picture {
+      &__controls {
+        a {
+          color: $dark-sky-blue;
+          font-weight: 500;
+          font-size: 13px;
+          cursor: pointer;
+        }
       }
     }
 
@@ -486,7 +491,7 @@
                 margin-right: -32px;
                 &__terminate {
                   position: absolute;
-                  top: 16px;
+                  top: 14px;
                   right: 32px;
                 }
                 .title {
@@ -538,12 +543,6 @@
       padding: 0;
       line-height: 1px;
       overflow: hidden;
-      h3 {
-        padding: 16px;
-      }
-      img {
-        display: inline-block;
-      }
     }
   }
 }
@@ -628,6 +627,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .modal {
   overflow: hidden;
 
@@ -672,7 +672,6 @@
     background-color: #fff;
   }
 }
-
 
 .crop-wrapper {
   position: relative;
