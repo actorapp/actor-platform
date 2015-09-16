@@ -10,21 +10,21 @@ import Modal from 'react-modal';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
-import ProfilePictureActionCreators from 'actions/ProfilePictureActionCreators';
+import CropAvatarActionCreators from 'actions/CropAvatarActionCreators';
 
-import ProfilePictureStore from 'stores/ProfilePictureStore'
+import CropAvatarStore from 'stores/CropAvatarStore'
 
-class ProfilePictureModal extends Component {
+class CropAvatarModal extends Component {
   static propTypes = {
-    onCropFinish: React.PropTypes.func//.isRequired
+    onCropFinish: React.PropTypes.func.isRequired
   };
 
-  static getStores = () => [ProfilePictureStore];
+  static getStores = () => [CropAvatarStore];
 
   static calculateState() {
     return {
-      isOpen: ProfilePictureStore.isOpen(),
-      pictureSource: ProfilePictureStore.getPictureSource(),
+      isOpen: CropAvatarStore.isOpen(),
+      pictureSource: CropAvatarStore.getPictureSource(),
       cropPosition: {
         x: 0,
         y: 0
@@ -43,7 +43,7 @@ class ProfilePictureModal extends Component {
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
-  onClose = () => ProfilePictureActionCreators.hide();
+  onClose = () => CropAvatarActionCreators.hide();
 
   onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
@@ -134,8 +134,8 @@ class ProfilePictureModal extends Component {
                isOpen={isOpen}>
 
           <div className="modal-new__header">
-            <i className="modal-new__header__icon material-icons">portrait</i>
-            <h3 className="modal-new__header__title">Profile picture</h3>
+            <i className="modal-new__header__icon material-icons">crop</i>
+            <h3 className="modal-new__header__title">Crop picture</h3>
             <div className="pull-right">
               <button className="button button--lightblue" onClick={this.onCrop}>Done</button>
             </div>
@@ -169,4 +169,4 @@ class ProfilePictureModal extends Component {
   }
 }
 
-export default Container.create(ProfilePictureModal);
+export default Container.create(CropAvatarModal);

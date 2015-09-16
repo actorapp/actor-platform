@@ -20,12 +20,12 @@ class ProfilePictureStore extends Store {
 
   __onDispatch = (action) => {
     switch(action.type) {
-      case ActionTypes.PROFILE_PICTURE_MODAL_SHOW:
+      case ActionTypes.CROP_AVATAR_MODAL_SHOW:
         _isOpen = true;
         _pictureSource = action.source;
         this.__emitChange();
         break;
-      case ActionTypes.PROFILE_PICTURE_MODAL_HIDE:
+      case ActionTypes.CROP_AVATAR_MODAL_HIDE:
         _isOpen = false;
         _pictureSource = null;
         this.__emitChange();

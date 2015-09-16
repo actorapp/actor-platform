@@ -8,13 +8,13 @@ import Modal from 'react-modal';
 import { KeyCodes } from 'constants/ActorAppConstants';
 
 import MyProfileActions from 'actions/MyProfileActionCreators';
-import ProfilePictureActionCreators from 'actions/ProfilePictureActionCreators';
+import CropAvatarActionCreators from 'actions/CropAvatarActionCreators';
 
 import MyProfileStore from 'stores/MyProfileStore';
-import ProfilePictureStore from 'stores/ProfilePictureStore';
+import CropAvatarStore from 'stores/CropAvatarStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
-import ProfilePictureModal from 'components/modals/ProfilePicture.react';
+import CropAvatarModal from './CropAvatar.react.js';
 
 import { Styles, TextField } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
@@ -28,7 +28,7 @@ const getStateFromStores = () => {
     nick: MyProfileStore.getNick(),
     about: MyProfileStore.getAbout(),
     isOpen: MyProfileStore.isModalOpen(),
-    isCropModalOpen: ProfilePictureStore.isOpen()
+    isCropModalOpen: CropAvatarStore.isOpen()
   };
 };
 
@@ -60,7 +60,7 @@ class MyProfile extends React.Component {
     });
 
     MyProfileStore.addChangeListener(this.onChange);
-    ProfilePictureStore.addListener(this.onChange);
+    CropAvatarStore.addListener(this.onChange);
   }
 
   componentWillUnmount() {
@@ -105,7 +105,7 @@ class MyProfile extends React.Component {
 
     let reader = new FileReader();
     reader.onload = (event) => {
-      ProfilePictureActionCreators.show(event.target.result);
+      CropAvatarActionCreators.show(event.target.result);
       imageForm.reset();
     };
     reader.readAsDataURL(file);
@@ -125,7 +125,7 @@ class MyProfile extends React.Component {
   render() {
     const { isOpen, isCropModalOpen, profile, nick, name, about } = this.state;
 
-    const cropModal = isCropModalOpen ? <ProfilePictureModal onCropFinish={this.changeMyAvatar}/> : null;
+    const cropAvatar = isCropModalOpen ? <CropAvatarModal onCropFinish={this.changeMyAvatar}/> : null;
 
     if (profile !== null && isOpen) {
       return (
@@ -192,7 +192,7 @@ class MyProfile extends React.Component {
             </div>
           </div>
 
-          {cropModal}
+          {cropAvatar}
         </Modal>
       );
     } else {
