@@ -57,17 +57,21 @@ class MyProfile extends React.Component {
     });
 
     MyProfileStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     MyProfileStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
-  onClose = () => {
-    MyProfileActions.hide();
-  };
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (!nextState.isOpen && this.state.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
+  }
+
+  onClose = () => MyProfileActions.hide();
 
   onKeyDown = event => {
     if (event.keyCode === KeyCodes.ESC) {
@@ -76,21 +80,10 @@ class MyProfile extends React.Component {
     }
   };
 
-  onChange = () => {
-    this.setState(getStateFromStores());
-  };
-
-  onNameChange = event => {
-    this.setState({name: event.target.value});
-  };
-
-  onNicknameChange = event => {
-    this.setState({nick: event.target.value});
-  };
-
-  onAboutChange = event => {
-    this.setState({about: event.target.value});
-  };
+  onChange = () => this.setState(getStateFromStores());
+  onNameChange = event => this.setState({name: event.target.value});
+  onNicknameChange = event => this.setState({nick: event.target.value});
+  onAboutChange = event => this.setState({about: event.target.value});
 
   onSave = () => {
     const { nick, name, about } = this.state;
@@ -101,36 +94,58 @@ class MyProfile extends React.Component {
     this.onClose();
   };
 
-  openProfilePictureModal = () => {
-    ProfilePictureActionCreators.show();
-    this.onClose()
+  onProfilePictureInputChange = () => {
+    const imageInput = React.findDOMNode(this.refs.imageInput);
+    const imageForm = React.findDOMNode(this.refs.imageForm);
+    const file = imageInput.files[0];
+
+    let reader = new FileReader();
+    reader.onload = (event) => {
+      ProfilePictureActionCreators.show(event.target.result);
+      imageForm.reset();
+    };
+    reader.readAsDataURL(file);
+  };
+  onProfileImageChangeClick = () => {
+    const imageInput = React.findDOMNode(this.refs.imageInput);
+    imageInput.click()
+  };
+  onProfilePictureRemove = () => {
+    console.debug('onProfilePictureRemove');
   };
 
   render() {
     const { isOpen, profile, nick, name, about } = this.state;
 
-    if (profile !== null && isOpen === true) {
+    if (profile !== null && isOpen) {
       return (
         <Modal className="modal-new modal-new--profile"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 340}}>
+               style={{width: 540}}>
+
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person</a>
             <h4 className="modal-new__header__title">Profile</h4>
             <div className="pull-right">
-              <button className="button button--lightblue"
-                      onClick={this.onSave}>Done</button>
+              <button className="button button--lightblue" onClick={this.onSave}>Done</button>
             </div>
-
           </header>
           <div className="modal-new__body row">
-            <a onClick={this.openProfilePictureModal}>
-              <AvatarItem image={profile.bigAvatar}
-                          placeholder={profile.placeholder}
-                          size="big"
-                          title={profile.name}/>
-            </a>
+            <div className="profile-picture text-center">
+              <a onClick={this.onProfileImageChangeClick}>
+                <AvatarItem image={profile.bigAvatar}
+                            placeholder={profile.placeholder}
+                            size="huge"
+                            title={profile.name}/>
+              </a>
+              <div className="profile-picture__controls">
+                <a onClick={this.onProfilePictureRemove}>Remove</a>
+              </div>
+              <form className="hide" ref="imageForm">
+                <input onChange={this.onProfilePictureInputChange} ref="imageInput" type="file"/>
+              </form>
+            </div>
             <div className="col-xs">
               <div className="name">
                 <TextField className="login__form__input"

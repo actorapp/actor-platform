@@ -28,17 +28,23 @@ class EditGroup extends Component {
     this.state = getStateFromStores();
 
     EditGroupStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     EditGroupStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
-  onChange = () => this.setState(getStateFromStores());
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (!nextState.isOpen && this.state.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
+  }
 
   onClose = () => EditGroupActionCreators.hide();
+  onChange = () => this.setState(getStateFromStores());
+  onTitleChange = event => this.setState({title: event.target.value});
 
   onKeyDown = event => {
     if (event.keyCode === KeyCodes.ESC) {
@@ -52,8 +58,6 @@ class EditGroup extends Component {
     EditGroupActionCreators.editGroupTitle(group.id, title);
     this.onClose();
   };
-
-  onTitleChange = event => this.setState({title: event.target.value});
 
   render() {
     const { isOpen, group, title } = this.state;

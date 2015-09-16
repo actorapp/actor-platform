@@ -22,9 +22,9 @@ import ContactItem from './invite-user/ContactItem.react';
 
 const getStateFromStores = () => {
   return ({
+    isOpen: InviteUserStore.isModalOpen(),
     contacts: ContactStore.getContacts(),
-    group: InviteUserStore.getGroup(),
-    isOpen: InviteUserStore.isModalOpen()
+    group: InviteUserStore.getGroup()
   });
 };
 
@@ -42,27 +42,25 @@ class InviteUser extends React.Component {
 
     InviteUserStore.addChangeListener(this.onChange);
     ContactStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     InviteUserStore.removeChangeListener(this.onChange);
     ContactStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
-  onChange = () => {
-    this.setState(getStateFromStores());
-  };
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (!nextState.isOpen && this.state.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
+  }
 
-  onClose = () => {
-    InviteUserActions.hide();
-  };
-
-  onContactSelect = (contact) => {
-    const { group } = this.state;
-    InviteUserActions.inviteUser(group.id, contact.uid);
-  };
+  onChange = () => this.setState(getStateFromStores());
+  onClose = () => InviteUserActions.hide();
+  onContactSelect = (contact) => InviteUserActions.inviteUser(this.state.group.id, contact.uid);
+  onSearchChange = (event) => this.setState({search: event.target.value});
 
   onInviteUrlByClick = () => {
     const { group } = this.state;
@@ -78,14 +76,11 @@ class InviteUser extends React.Component {
     }
   };
 
-  onSearchChange = (event) => {
-    this.setState({search: event.target.value});
-  };
-
   render() {
     const { contacts, group, search, isOpen } = this.state;
 
     let contactList = [];
+
     if (isOpen) {
 
       _.forEach(contacts, (contact, i) => {
