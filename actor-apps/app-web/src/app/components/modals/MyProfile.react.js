@@ -11,8 +11,10 @@ import MyProfileActions from 'actions/MyProfileActionCreators';
 import ProfilePictureActionCreators from 'actions/ProfilePictureActionCreators';
 
 import MyProfileStore from 'stores/MyProfileStore';
+import ProfilePictureStore from 'stores/ProfilePictureStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
+import ProfilePictureModal from 'components/modals/ProfilePicture.react';
 
 import { Styles, TextField } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
@@ -25,7 +27,8 @@ const getStateFromStores = () => {
     name: MyProfileStore.getName(),
     nick: MyProfileStore.getNick(),
     about: MyProfileStore.getAbout(),
-    isOpen: MyProfileStore.isModalOpen()
+    isOpen: MyProfileStore.isModalOpen(),
+    isCropModalOpen: ProfilePictureStore.isOpen()
   };
 };
 
@@ -57,6 +60,7 @@ class MyProfile extends React.Component {
     });
 
     MyProfileStore.addChangeListener(this.onChange);
+    ProfilePictureStore.addListener(this.onChange);
   }
 
   componentWillUnmount() {
@@ -64,9 +68,9 @@ class MyProfile extends React.Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextState.isOpen && !this.state.isOpen) {
+    if ((nextState.isOpen && !this.state.isOpen) || (this.state.isOpen && !nextState.isCropModalOpen)) {
       document.addEventListener('keydown', this.onKeyDown, false);
-    } else if (!nextState.isOpen && this.state.isOpen) {
+    } else if ((!nextState.isOpen && this.state.isOpen) || (this.state.isOpen && nextState.isCropModalOpen)) {
       document.removeEventListener('keydown', this.onKeyDown, false);
     }
   }
@@ -106,23 +110,29 @@ class MyProfile extends React.Component {
     };
     reader.readAsDataURL(file);
   };
-  onProfileImageChangeClick = () => {
+
+  onChangeAvatarClick = () => {
     const imageInput = React.findDOMNode(this.refs.imageInput);
     imageInput.click()
   };
-  onProfilePictureRemove = () => {
-    console.debug('onProfilePictureRemove');
+
+  onProfilePictureRemove = () => console.debug('onProfilePictureRemove');
+
+  changeMyAvatar = (croppedImage) => {
+    console.debug('changeMyAvatar', croppedImage);
   };
 
   render() {
-    const { isOpen, profile, nick, name, about } = this.state;
+    const { isOpen, isCropModalOpen, profile, nick, name, about } = this.state;
+
+    const cropModal = isCropModalOpen ? <ProfilePictureModal onCropFinish={this.changeMyAvatar}/> : null;
 
     if (profile !== null && isOpen) {
       return (
         <Modal className="modal-new modal-new--profile"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 540}}>
+               style={{width: 440}}>
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person</a>
@@ -133,10 +143,10 @@ class MyProfile extends React.Component {
           </header>
           <div className="modal-new__body row">
             <div className="profile-picture text-center">
-              <a onClick={this.onProfileImageChangeClick}>
+              <a onClick={this.onChangeAvatarClick}>
                 <AvatarItem image={profile.bigAvatar}
                             placeholder={profile.placeholder}
-                            size="huge"
+                            size="big"
                             title={profile.name}/>
               </a>
               <div className="profile-picture__controls">
@@ -181,6 +191,8 @@ class MyProfile extends React.Component {
               </div>
             </div>
           </div>
+
+          {cropModal}
         </Modal>
       );
     } else {
