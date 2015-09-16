@@ -83,7 +83,7 @@ class EditGroup extends Component {
           <div className="modal-new__body row">
             <AvatarItem image={group.bigAvatar}
                         placeholder={group.placeholder}
-                        size="big"
+                        size="large"
                         title={group.name}/>
 
             <div className="col-xs">
