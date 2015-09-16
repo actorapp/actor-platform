@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
 
-import { Styles, TextField, FlatButton } from 'material-ui';
+import { Styles, TextField } from 'material-ui';
 
 import AddContactStore from 'stores/AddContactStore';
 import AddContactActionCreators from 'actions/AddContactActionCreators';
@@ -16,9 +16,6 @@ import { KeyCodes } from 'constants/ActorAppConstants';
 import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
-
-const appElement = document.getElementById('actor-web-app');
-Modal.setAppElement(appElement);
 
 const getStateFromStores = () => {
   return {
@@ -106,10 +103,7 @@ class AddContact extends React.Component {
           <span className={messageClassName}>{message}</span>
 
           <footer className="modal-new__footer text-right">
-            <FlatButton hoverColor="rgba(74,144,226,.12)"
-                        label="Add"
-                        onClick={this.onAddContact}
-                        secondary={true} />
+            <button className="button button--lightblue" onClick={this.onAddContact} type="submit">Add</button>
           </footer>
 
         </Modal>
@@ -119,21 +113,10 @@ class AddContact extends React.Component {
     }
   }
 
-  onClose = () => {
-    AddContactActionCreators.closeModal();
-  };
-
-  onPhoneChange = event => {
-    this.setState({phone: event.target.value});
-  };
-
-  onAddContact = () => {
-    AddContactActionCreators.findUsers(this.state.phone);
-  };
-
-  onChange = () => {
-    this.setState(getStateFromStores());
-  };
+  onChange = () => this.setState(getStateFromStores());
+  onClose = () => AddContactActionCreators.closeModal();
+  onPhoneChange = event => this.setState({phone: event.target.value});
+  onAddContact = () => AddContactActionCreators.findUsers(this.state.phone);
 
   onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
