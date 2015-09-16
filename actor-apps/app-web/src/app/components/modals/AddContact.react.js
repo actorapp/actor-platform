@@ -22,7 +22,7 @@ Modal.setAppElement(appElement);
 
 const getStateFromStores = () => {
   return {
-    isShown: AddContactStore.isModalOpen(),
+    isOpen: AddContactStore.isModalOpen(),
     message: AddContactStore.getMessage()
   };
 };
@@ -59,27 +59,33 @@ class AddContact extends React.Component {
     });
 
     AddContactStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     AddContactStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (!nextState.isOpen && this.state.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
   }
 
   render() {
-    const { isShown, message, phone } = this.state;
+    const { isOpen, message, phone } = this.state;
 
     const messageClassName = classNames({
       'error-message': true,
       'error-message--shown': message
     });
 
-    if (isShown) {
+    if (isOpen) {
       return (
         <Modal className="modal-new modal-new--add-contact"
                closeTimeoutMS={150}
-               isOpen={isShown}
+               isOpen={isOpen}
                style={{width: 320}}>
 
           <header className="modal-new__header">
