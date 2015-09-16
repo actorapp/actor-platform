@@ -109,6 +109,17 @@
       height: $avatar-medium-size - 2px;
     }
   }
+  &--large {
+    width: $avatar-large-size;
+    height: $avatar-large-size;
+    .avatar__placeholder {
+      font-size: 14px;
+      line-height: $avatar-large-size - 2px;
+
+      width: $avatar-large-size - 2px;
+      height: $avatar-large-size - 2px;
+    }
+  }
   &--big {
     width: $avatar-big-size;
     height: $avatar-big-size;
@@ -129,30 +140,6 @@
 
       width: $avatar-huge-size - 2px;
       height: $avatar-huge-size - 2px;
-    }
-  }
-  &--square {
-    display: block;
-
-    width: 100%;
-    height: auto;
-    padding: 0;
-
-    border-radius: 0;
-    .avatar__image {
-      width: $avatar-square-size;
-      height: $avatar-square-size;
-
-      border-radius: 0;
-    }
-    .avatar__placeholder {
-      font-size: 80px;
-      line-height: $avatar-square-size;
-
-      width: $avatar-square-size;
-      height: $avatar-square-size;
-
-      border-radius: 0;
     }
   }
 }
