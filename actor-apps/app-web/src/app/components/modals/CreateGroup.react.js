@@ -9,9 +9,6 @@ import Modal from 'react-modal';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
-const appElement = document.getElementById('actor-web-app');
-Modal.setAppElement(appElement);
-
 const getStateFromStores = () => {
   return {
     isOpen: CreateGroupStore.isModalOpen()
@@ -25,20 +22,12 @@ class CreateGroup extends React.Component {
     this.state = getStateFromStores();
 
     CreateGroupStore.addChangeListener(this.onChange);
+    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     CreateGroupStore.removeChangeListener(this.onChange);
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    const { isOpen } = nextState;
-
-    if (isOpen) {
-      document.addEventListener('keydown', this.onKeyDown, false);
-    } else {
-      document.removeEventListener('keydown', this.onKeyDown, false);
-    }
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   render() {
@@ -76,6 +65,5 @@ class CreateGroup extends React.Component {
     }
   }
 }
-
 
 export default CreateGroup;
