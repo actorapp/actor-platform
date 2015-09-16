@@ -33,5 +33,9 @@ export default {
       success: ActionTypes.MY_PROFILE_EDIT_ABOUT_SUCCESS,
       failure: ActionTypes.MY_PROFILE_EDIT_ABOUT_ERROR
     }, { about });
+  },
+
+  changeMyAvatar(newAvatar) {
+    ActorClient.changeMyAvatar(newAvatar);
   }
 };
