@@ -63,6 +63,7 @@ class RecentSection extends React.Component {
         <RecentSectionItem dialog={dialog} key={index}/>
       );
     }, this);
+
     const createGroupModal = isCreateGroupModalOpen ? <CreateGroupModal/> : null;
 
     return (
