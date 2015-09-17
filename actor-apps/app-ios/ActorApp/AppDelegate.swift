@@ -20,10 +20,11 @@ import Foundation
         createActor()
         
         // Apply crash logging
-        if AppConfig.mint != nil {
-            Mint.sharedInstance().disableNetworkMonitoring()
-            Mint.sharedInstance().initAndStartSession(AppConfig.mint!)
-        }
+        // WARRING: Disabled because Mint doesn't support bitcode
+        // if AppConfig.mint != nil {
+        //    Mint.sharedInstance().disableNetworkMonitoring()
+        //    Mint.sharedInstance().initAndStartSession(AppConfig.mint!)
+        // }
         
         // Register hockey app
         if AppConfig.hockeyapp != nil {
