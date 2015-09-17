@@ -10,7 +10,6 @@ class Config {
     var mixpanel: String? = nil
     var hockeyapp: String? = nil
     var mint: String? = nil
-    var enableCommunity: Bool = false
     var pushId: Int? = nil
     
     init() {
@@ -39,9 +38,6 @@ class Config {
             }
             if let mint = configData["mint"] as? String {
                 self.mint = mint
-            }
-            if let enableCommunity = configData["community"] as? Bool {
-                self.enableCommunity = enableCommunity
             }
             if let pushId = configData["push_id"] as? Int {
                 self.pushId = pushId
