@@ -77,13 +77,7 @@ class MainTabViewController : UITabBarController {
                 let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
                 let settingsNavigation = AANavigationController(rootViewController: SettingsViewController())
                 
-                if Actor.config.enableCommunity {
-                    let exploreNavigation = AANavigationController(rootViewController: DiscoverViewController())
-                    viewControllers = [contactsNavigation, dialogsNavigation, exploreNavigation, settingsNavigation]
-                } else {
-                    viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation]
-                }
-                
+                viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation]
 
                 selectedIndex = 0;
                 selectedIndex = 1;
