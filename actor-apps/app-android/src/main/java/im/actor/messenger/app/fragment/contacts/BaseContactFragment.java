@@ -29,7 +29,7 @@ import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 
 import static im.actor.messenger.app.core.Core.messenger;
 
@@ -68,7 +68,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         bind(messenger().getAppState().getIsContactsEmpty(), new ValueChangedListener<Boolean>() {
             @Override
-            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+            public void onChanged(Boolean val, Value<Boolean> Value) {
                 if (emptyView != null) {
                     if (val) {
                         emptyView.setVisibility(View.VISIBLE);

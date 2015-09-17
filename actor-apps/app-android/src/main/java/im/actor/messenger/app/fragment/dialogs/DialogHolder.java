@@ -24,7 +24,7 @@ import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;
@@ -259,7 +259,7 @@ public class DialogHolder extends BindedViewHolder {
             bindedUid = data.getPeer().getPeerId();
             privateTypingListener = new ValueChangedListener<Boolean>() {
                 @Override
-                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                public void onChanged(Boolean val, Value<Boolean> Value) {
                     if (val) {
                         text.setText(messenger().getFormatter().formatTyping());
                         text.setTextColor(context.getResources().getColor(R.color.chats_typing));
@@ -274,7 +274,7 @@ public class DialogHolder extends BindedViewHolder {
             bindedGid = data.getPeer().getPeerId();
             groupTypingListener = new ValueChangedListener<int[]>() {
                 @Override
-                public void onChanged(int[] val, ValueModel<int[]> valueModel) {
+                public void onChanged(int[] val, Value<int[]> Value) {
                     if (val.length != 0) {
                         if (val.length == 1) {
                             text.setText(messenger().getFormatter().formatTyping(messenger().getUsers().get(val[0]).getName().get()));

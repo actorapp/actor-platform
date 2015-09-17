@@ -16,9 +16,10 @@ import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.CoverAvatarView;
+import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueTripleChangedListener;
 
 import static im.actor.messenger.app.core.Core.messenger;
@@ -31,10 +32,10 @@ public class ActorBinder {
 
     private ArrayList<Binding> bindings = new ArrayList<Binding>();
 
-    public void bind(final TextView textView, ValueModel<String> value) {
+    public void bind(final TextView textView, Value<String> value) {
         bind(value, new ValueChangedListener<String>() {
             @Override
-            public void onChanged(String val, ValueModel<String> valueModel) {
+            public void onChanged(String val, Value<String> Value) {
                 textView.setText(val);
             }
         });
@@ -42,10 +43,10 @@ public class ActorBinder {
     }
 
 
-    public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final ValueModel<int[]> typing) {
+    public void bindGroupTyping(final TextView textView, final View container, final View titleContainer, final Value<int[]> typing) {
         bind(typing, new ValueChangedListener<int[]>() {
             @Override
-            public void onChanged(int[] val, ValueModel<int[]> valueModel) {
+            public void onChanged(int[] val, Value<int[]> Value) {
                 if (val.length == 0) {
                     container.setVisibility(View.INVISIBLE);
                     titleContainer.setVisibility(View.VISIBLE);
@@ -63,10 +64,10 @@ public class ActorBinder {
     }
 
     public void bindPrivateTyping(final TextView textView, final View container, final View titleContainer,
-                                  final ValueModel<Boolean> typing) {
+                                  final Value<Boolean> typing) {
         bind(typing, new ValueChangedListener<Boolean>() {
             @Override
-            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+            public void onChanged(Boolean val, Value<Boolean> Value) {
                 if (val) {
                     textView.setText(messenger().getFormatter().formatTyping());
                     container.setVisibility(View.VISIBLE);
@@ -79,14 +80,14 @@ public class ActorBinder {
         });
     }
 
-    public void bind(final TextView textView, final View container, final ValueModel<String> value) {
+    public void bind(final TextView textView, final View container, final Value<String> value) {
         bind(textView, container, value, null, true, "");
     }
 
-    public void bind(final TextView textView, final View container, final ValueModel<String> value, final OnChangedListener callback, final boolean hide, final String defaultValue) {
+    public void bind(final TextView textView, final View container, final Value<String> value, final OnChangedListener callback, final boolean hide, final String defaultValue) {
         bind(value, new ValueChangedListener<String>() {
             @Override
-            public void onChanged(String val, ValueModel<String> valueModel) {
+            public void onChanged(String val, Value<String> Value) {
 
                 if (val != null) {
                     if (hide) {
@@ -109,7 +110,7 @@ public class ActorBinder {
     public void bind(final TextView textView, final View container, final UserVM user) {
         bind(user.getPresence(), new ValueChangedListener<UserPresence>() {
             @Override
-            public void onChanged(UserPresence val, ValueModel<UserPresence> valueModel) {
+            public void onChanged(UserPresence val, Value<UserPresence> Value) {
                 String s = messenger().getFormatter().formatPresence(val, user.getSex());
                 if (s != null) {
                     container.setVisibility(View.VISIBLE);
@@ -125,8 +126,8 @@ public class ActorBinder {
     public void bind(final TextView textView, final View titleContainer, final GroupVM value) {
         bind(value.getPresence(), value.getMembers(), value.isMember(), new ValueTripleChangedListener<Integer, HashSet<GroupMember>, Boolean>() {
             @Override
-            public void onChanged(Integer online, ValueModel<Integer> onlineModel,
-                                  HashSet<GroupMember> members, ValueModel<HashSet<GroupMember>> membersModel, Boolean isMember, ValueModel<Boolean> isMemberModel) {
+            public void onChanged(Integer online, Value<Integer> onlineModel,
+                                  HashSet<GroupMember> members, Value<HashSet<GroupMember>> membersModel, Boolean isMember, Value<Boolean> isMemberModel) {
                 if (isMember) {
                     titleContainer.setVisibility(View.VISIBLE);
                     if (online <= 0) {
@@ -151,19 +152,19 @@ public class ActorBinder {
     }
 
     public void bind(final AvatarView avatarView, final int id,
-                     final ValueModel<Avatar> avatar, final ValueModel<String> name) {
+                     final Value<Avatar> avatar, final Value<String> name) {
         bind(avatar, name, new ValueDoubleChangedListener<Avatar, String>() {
             @Override
-            public void onChanged(Avatar val, ValueModel<Avatar> valueModel, String val2, ValueModel<String> valueModel2) {
+            public void onChanged(Avatar val, Value<Avatar> Value, String val2, Value<String> Value2) {
                 avatarView.bind(val, val2, id);
             }
         });
     }
 
-    public void bind(final CoverAvatarView avatarView, final ValueModel<Avatar> avatar) {
+    public void bind(final CoverAvatarView avatarView, final Value<Avatar> avatar) {
         bind(avatar, new ValueChangedListener<Avatar>() {
             @Override
-            public void onChanged(Avatar val, ValueModel<Avatar> valueModel) {
+            public void onChanged(Avatar val, Value<Avatar> Value) {
                 if (val != null) {
                     avatarView.bind(val);
                 } else {
@@ -174,52 +175,52 @@ public class ActorBinder {
         });
     }
 
-    public <T> void bind(ValueModel<T> value, ValueChangedListener<T> listener) {
+    public <T> void bind(Value<T> value, ValueChangedListener<T> listener) {
         value.subscribe(listener);
         bindings.add(new Binding(value, listener));
     }
 
-    public <T> void bind(ValueModel<T> value, boolean notify, ValueChangedListener<T> listener) {
+    public <T> void bind(Value<T> value, boolean notify, ValueChangedListener<T> listener) {
         value.subscribe(listener, notify);
         bindings.add(new Binding(value, listener));
     }
 
-    public <T, V> void bind(final ValueModel<T> value1, final ValueModel<V> value2,
+    public <T, V> void bind(final Value<T> value1, final Value<V> value2,
                             final ValueDoubleChangedListener<T, V> listener) {
 
         bind(value1, false, new ValueChangedListener<T>() {
             @Override
-            public void onChanged(T val, ValueModel<T> valueModel) {
-                listener.onChanged(val, valueModel, value2.get(), value2);
+            public void onChanged(T val, Value<T> Value) {
+                listener.onChanged(val, Value, value2.get(), value2);
             }
         });
         bind(value2, false, new ValueChangedListener<V>() {
             @Override
-            public void onChanged(V val, ValueModel<V> valueModel) {
-                listener.onChanged(value1.get(), value1, val, valueModel);
+            public void onChanged(V val, Value<V> Value) {
+                listener.onChanged(value1.get(), value1, val, Value);
             }
         });
         listener.onChanged(value1.get(), value1, value2.get(), value2);
     }
 
-    public <T, V, S> void bind(final ValueModel<T> value1, final ValueModel<V> value2, final ValueModel<S> value3,
+    public <T, V, S> void bind(final Value<T> value1, final Value<V> value2, final Value<S> value3,
                                final ValueTripleChangedListener<T, V, S> listener) {
         bind(value1, false, new ValueChangedListener<T>() {
             @Override
-            public void onChanged(T val, ValueModel<T> valueModel) {
-                listener.onChanged(val, valueModel, value2.get(), value2, value3.get(), value3);
+            public void onChanged(T val, Value<T> Value) {
+                listener.onChanged(val, Value, value2.get(), value2, value3.get(), value3);
             }
         });
         bind(value2, false, new ValueChangedListener<V>() {
             @Override
-            public void onChanged(V val, ValueModel<V> valueModel) {
-                listener.onChanged(value1.get(), value1, val, valueModel, value3.get(), value3);
+            public void onChanged(V val, Value<V> Value) {
+                listener.onChanged(value1.get(), value1, val, Value, value3.get(), value3);
             }
         });
         bind(value3, false, new ValueChangedListener<S>() {
             @Override
-            public void onChanged(S val, ValueModel<S> valueModel) {
-                listener.onChanged(value1.get(), value1, value2.get(), value2, val, valueModel);
+            public void onChanged(S val, Value<S> Value) {
+                listener.onChanged(value1.get(), value1, value2.get(), value2, val, Value);
             }
         });
         listener.onChanged(value1.get(), value1, value2.get(), value2, value3.get(), value3);
@@ -233,10 +234,10 @@ public class ActorBinder {
     }
 
     private class Binding {
-        private ValueModel model;
+        private Value model;
         private ValueChangedListener listener;
 
-        private Binding(ValueModel model, ValueChangedListener listener) {
+        private Binding(Value model, ValueChangedListener listener) {
             this.model = model;
             this.listener = listener;
         }
