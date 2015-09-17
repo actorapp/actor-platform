@@ -11,7 +11,7 @@ private[actor] trait Versioning {
     version
   }
 
-  private def getVersionPatch: String = sys.env.get("VERSION_MINOR").orElse(sys.env.get("BUILD_NUMBER")).getOrElse("0")
+  private def getVersionPatch: String = sys.env.get("VERSION_PATCH").orElse(sys.env.get("BUILD_NUMBER")).getOrElse("0")
 
   private def getVersionPostfix: String = sys.env.get("VERSION_POSTFIX").map("-" + _).getOrElse("")
 }
