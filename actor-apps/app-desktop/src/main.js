@@ -178,19 +178,27 @@ app.on('activate-with-no-open-windows', showWindow);
 // Adding tray
 
 ipc.on('new-messages-show', function(event, arg) {
-  app.dock.bounce();
-  app.dock.setBadge('.');
+  if (process.platform == 'darwin') {
+    app.dock.bounce();
+    app.dock.setBadge('.');
+   }
 });
 
 ipc.on('tray-badge', function(event, arg) {
-  app.dock.bounce();
-  app.dock.setBadge(arg);
+  if (process.platform == 'darwin') {
+    app.dock.bounce();
+    app.dock.setBadge(arg.count.toString());
+  }
 });
 
 ipc.on('new-messages-hide', function(event, arg) {
-  app.dock.setBadge('');
+  if (process.platform == 'darwin') {
+    app.dock.setBadge('');
+  }
 });
 
 ipc.on('tray-bounce', function(event, arg) {
-  app.dock.bounce();
+  if (process.platform == 'darwin') {
+    app.dock.bounce();
+  }
 });
