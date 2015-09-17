@@ -2,6 +2,7 @@ package im.actor.server.api.rpc.service.auth
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.api.rpc.misc.ApiExtension
 import im.actor.server.acl.ACLUtils
 
 import scala.concurrent.Future
@@ -66,7 +67,7 @@ trait AuthHelpers extends Helpers {
 
   def handleUserCreate(user: models.User, transaction: models.AuthTransactionChildren, authId: Long): Result[User] = {
     for {
-      _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
+      _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false, Seq.empty[ApiExtension]))
       _ ← fromDBIO(persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
       _ ← fromDBIO(AuthTransaction.delete(transaction.transactionHash))
       _ ← transaction match {

@@ -55,7 +55,7 @@ private[group] final class GroupDialog extends DialogProcessor[GroupDialogState,
   protected val groupExt = GroupExtension(system)
   protected val userExt = UserExtension(system)
 
-  protected val delivery = new MessageDelivery()
+  protected val delivery = new ActorDelivery()
 
   context.setReceiveTimeout(1.hours)
 
