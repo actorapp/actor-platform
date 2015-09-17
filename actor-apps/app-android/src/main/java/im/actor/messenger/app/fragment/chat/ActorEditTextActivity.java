@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.messenger.app.view.SelectionListenerEditText;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.keyboard.KeyboardStatusListener;
 import im.actor.messenger.app.view.keyboard.emoji.EmojiKeyboard;
@@ -26,7 +26,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
     //////////////////////////////////
 
     // Message edit text
-    protected SelectionListenerEditText messageEditText;
+    protected EditText messageEditText;
     // Send message button
     protected TintImageView sendButton;
     // Attach button
@@ -58,7 +58,7 @@ public abstract class ActorEditTextActivity extends BaseActivity {
         }
 
         // Message Body
-        messageEditText = (SelectionListenerEditText) findViewById(R.id.et_message);
+        messageEditText = (EditText) findViewById(R.id.et_message);
         // messageEditText.addTextChangedListener(new TextWatcherImp());
 
         // Handling selection changed
