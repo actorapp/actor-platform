@@ -5,9 +5,9 @@ import sbt._
 import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 
-object Build extends sbt.Build {
-  val Version = "1.0.2038"
+object Build extends sbt.Build with Versioning {
   val ScalaVersion = "2.11.7"
+  val Version = getVersion
 
   lazy val buildSettings =
     Defaults.coreDefaultSettings ++
@@ -331,5 +331,4 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.shardakka
     )
   ).dependsOn(actorRuntime)
-
 }
