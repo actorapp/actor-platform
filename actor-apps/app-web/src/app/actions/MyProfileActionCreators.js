@@ -7,20 +7,27 @@ import { ActionTypes } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 
 export default {
-  show: () => dispatch(ActionTypes.MY_PROFILE_MODAL_SHOW),
-  hide: () => dispatch(ActionTypes.MY_PROFILE_MODAL_HIDE),
+  show() {
+    ActorClient.bindUser(ActorClient.getUid(), this.onProfileChanged);
+    dispatch(ActionTypes.MY_PROFILE_MODAL_SHOW);
+  },
+
+  hide() {
+    ActorClient.unbindUser(ActorClient.getUid(), this.onProfileChanged);
+    dispatch(ActionTypes.MY_PROFILE_MODAL_HIDE);
+  },
+
+  onProfileChanged(profile) {
+    dispatch(ActionTypes.MY_PROFILE_CHANGED, { profile });
+  },
 
   // TODO: use dispatchAsync
   saveName(name) {
-    dispatch(ActionTypes.MY_PROFILE_SAVE_NAME, {
-      name
-    });
+    dispatch(ActionTypes.MY_PROFILE_SAVE_NAME, { name });
   },
   // TODO: use dispatchAsync
   saveNickname(nick) {
-    dispatch(ActionTypes.MY_PROFILE_SAVE_NICKNAME, {
-      nick
-    });
+    dispatch(ActionTypes.MY_PROFILE_SAVE_NICKNAME, { nick });
   },
 
   editMyAbout(about) {
