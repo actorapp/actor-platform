@@ -60,7 +60,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     val action =
       for {
         client ← authorizedClient(clientData)
-        (clientPhones, clientEmails) ← fromDBIO(DBIO.from(userExt.getContactRecordsSet(client.userId)))
+        (clientPhones, clientEmails) ← fromFuture(userExt.getContactRecordsSet(client.userId))
         user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
         optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
         optEmail ← fromDBIO(persist.UserEmail.findByUserId(client.userId).headOption)
@@ -166,7 +166,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
       for {
         client ← authorizedClient(clientData)
         clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
-        (clientPhones, _) ← fromDBIO(DBIO.from(userExt.getContactRecordsSet(client.userId)))
+        (clientPhones, _) ← fromFuture(userExt.getContactRecordsSet(client.userId))
         optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption map (_.filterNot(p ⇒ clientPhones.contains(p.number))))
         normalizedPhone ← point(PhoneNumberUtils.normalizeStr(rawNumber, clientUser.countryCode))
 

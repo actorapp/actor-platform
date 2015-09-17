@@ -74,7 +74,7 @@ trait GroupDialogHandlers extends UpdateCounters {
         for {
           _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
           authIds ← authIdsF
-          _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None, isFat = false))
+          _ ← persistAndPushUpdates(authIds.toSet, update, None, isFat = false)
         } yield MessageReceivedAck()
       }
     } else Future.successful(MessageReceivedAck())) pipeTo replyTo onFailure {
@@ -123,7 +123,7 @@ trait GroupDialogHandlers extends UpdateCounters {
           for {
             authIds ← authIdsF
             _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-            _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
+            _ ← persistAndPushUpdates(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
           } yield ()
         } else Future.successful(())
       }

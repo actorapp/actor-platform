@@ -112,7 +112,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         email ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmail.find(transaction.email))
 
         user ← authorizeT(email.userId, profile.locale.getOrElse(""), clientData)
-        userStruct ← fromDBIO(DBIO.from(userExt.getApiStruct(user.id, user.id, clientData.authId)))
+        userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
 
         //refresh session data
         authSession = models.AuthSession(
@@ -181,7 +181,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, clientData)
           case \/-(user)                  ⇒ handleUserCreate(user, transaction, clientData.authId)
         }
-        userStruct ← fromDBIO(DBIO.from(userExt.getApiStruct(user.id, user.id, clientData.authId)))
+        userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
         //refresh session data
         authSession = models.AuthSession(
           userId = user.id,
@@ -243,7 +243,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
         //sign in user and delete auth transaction
         user ← authorizeT(userId, countryCode, clientData)
-        userStruct ← fromDBIO(DBIO.from(userExt.getApiStruct(user.id, user.id, clientData.authId)))
+        userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
         _ ← fromDBIO(persist.auth.AuthTransaction.delete(transaction.transactionHash))
 
         //refresh session data

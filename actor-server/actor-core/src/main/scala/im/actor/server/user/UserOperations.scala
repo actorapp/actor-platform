@@ -95,7 +95,7 @@ private[user] sealed trait Commands extends AuthCommands {
   ): Future[Seq[SeqState]] = {
     for {
       authIds ← getAuthIds(userId)
-      seqstates ← SeqUpdatesManager.persistAndPushUpdatesF(authIds.toSet, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
+      seqstates ← SeqUpdatesManager.persistAndPushUpdates(authIds.toSet, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     } yield seqstates
   }
 
@@ -115,7 +115,7 @@ private[user] sealed trait Commands extends AuthCommands {
     for {
       authIds ← getAuthIds(userIds)
       seqstates ← Future.sequence(
-        authIds.map(SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
+        authIds.map(SeqUpdatesManager.persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
       )
     } yield seqstates
   }
@@ -145,11 +145,11 @@ private[user] sealed trait Commands extends AuthCommands {
       otherAuthIds ← getAuthIds(clientUserId) map (_.filter(_ != clientAuthId))
       _ ← Future.sequence(
         otherAuthIds map (
-          SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
+          SeqUpdatesManager.persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
         )
       )
 
-      seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
+      seqstate ← SeqUpdatesManager.persistAndPushUpdate(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     } yield seqstate
   }
 
@@ -182,9 +182,9 @@ private[user] sealed trait Commands extends AuthCommands {
       seqstates ← Future.sequence(
         authIds.view
           .filterNot(_ == clientAuthId)
-          .map(SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
+          .map(SeqUpdatesManager.persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
       )
-      seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
+      seqstate ← SeqUpdatesManager.persistAndPushUpdate(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     } yield (seqstate, seqstates)
   }
 
@@ -219,7 +219,7 @@ private[user] sealed trait Commands extends AuthCommands {
     for {
       otherAuthIds ← getAuthIds(userId) map (_.filter(_ != exceptAuthId))
       seqstates ← Future.sequence(otherAuthIds map { authId ⇒
-        SeqUpdatesManager.persistAndPushUpdateF(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
+        SeqUpdatesManager.persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
       })
     } yield seqstates
   }
