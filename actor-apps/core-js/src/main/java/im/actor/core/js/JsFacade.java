@@ -5,6 +5,7 @@
 package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.user.client.Event;
 import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.entity.MentionFilterResult;
@@ -1025,4 +1026,20 @@ public class JsFacade implements Exportable {
             return "[Error while processing text]";
         }
     }
+
+    public native void handleLinkClick(Event event)/*-{
+        console.warn('event type is', event.type);
+        if (event.type == 'click') {
+            if (window.$wnd.messenger.isElectron()) {
+                console.warn('opening external');
+                var url = event.target.getAttribute('href');
+                window.$wnd.require('shell').openExternal(url);
+                event.preventDefault()
+            } else {
+                console.warn('type of window.require is', typeof window.$wnd.require);
+            }
+        } else {
+            throw new Error("Event has type " + event.type + ", must to be click");
+        }
+    }-*/;
 }
