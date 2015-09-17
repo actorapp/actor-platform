@@ -291,7 +291,7 @@ public class MarkdownParser {
             } else {
                 String currentText = cursor.text.substring(start);
 
-                if (Patterns.WEB_URL_START.test(currentText)) {
+                if (isGoodAnchor(cursor.text, start - 1) && Patterns.WEB_URL_START.test(currentText)) {
                     final MatcherCompat matcher = Patterns.WEB_URL_START.matcher(currentText);
                     final String url = matcher.group();
                     if (url.length() > 0) {
