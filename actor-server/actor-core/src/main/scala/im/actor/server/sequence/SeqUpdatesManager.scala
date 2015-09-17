@@ -2,25 +2,23 @@ package im.actor.server.sequence
 
 import java.nio.ByteBuffer
 
+import akka.actor._
+import akka.pattern.ask
 import akka.serialization.Serialization
+import akka.util.Timeout
 import com.google.protobuf.ByteString
+import im.actor.api.rpc.messaging.UpdateMessage
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.api.{ rpc ⇒ api }
 import im.actor.serialization.ActorSerializer
+import im.actor.server.db.DbExtension
+import im.actor.server.models.sequence
+import im.actor.server.{ models, persist ⇒ p }
+import slick.dbio.DBIO
 
 import scala.annotation.tailrec
 import scala.concurrent._
 import scala.concurrent.duration._
-
-import akka.actor._
-import akka.pattern.ask
-import akka.util.Timeout
-import slick.dbio.DBIO
-
-import im.actor.api.{ rpc ⇒ api }
-import im.actor.api.rpc.messaging.UpdateMessage
-import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
-import im.actor.server.db.DbExtension
-import im.actor.server.models.sequence
-import im.actor.server.{ models, persist ⇒ p }
 
 object SeqUpdatesManager {
 
@@ -47,7 +45,7 @@ object SeqUpdatesManager {
     pushText:   Option[String],
     isFat:      Boolean        = false,
     deliveryId: Option[String] = None
-  )(implicit system: ActorSystem): DBIO[SeqState] = {
+  )(implicit system: ActorSystem): Future[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -55,31 +53,6 @@ object SeqUpdatesManager {
   }
 
   def persistAndPushUpdate(
-    authId:         Long,
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[ApiPeer],
-    isFat:          Boolean,
-    deliveryId:     Option[String]
-  )(implicit system: ActorSystem): DBIO[SeqState] =
-    DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
-
-  def persistAndPushUpdateF(
-    authId:     Long,
-    update:     api.Update,
-    pushText:   Option[String],
-    isFat:      Boolean        = false,
-    deliveryId: Option[String] = None
-  )(implicit system: ActorSystem): Future[SeqState] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    persistAndPushUpdateF(authId, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat, deliveryId)
-  }
-
-  def persistAndPushUpdateF(
     authId:         Long,
     header:         Int,
     serializedData: Array[Byte],
@@ -97,24 +70,11 @@ object SeqUpdatesManager {
     pushText:   Option[String],
     isFat:      Boolean        = false,
     deliveryId: Option[String] = None
-  )(implicit system: ActorSystem): DBIO[Seq[SeqState]] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    persistAndPushUpdates(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat, deliveryId)
-  }
-
-  def persistAndPushUpdatesF(
-    authIds:    Set[Long],
-    update:     api.Update,
-    pushText:   Option[String],
-    isFat:      Boolean        = false,
-    deliveryId: Option[String] = None
   )(implicit system: ActorSystem): Future[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
-    persistAndPushUpdatesF(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat, deliveryId)
+    persistAndPushUpdates(authIds, header, serializedData, updateRefs(update), pushText, getOriginPeer(update), isFat, deliveryId)
   }
 
   def persistAndPushUpdates(
@@ -126,76 +86,11 @@ object SeqUpdatesManager {
     originPeer:     Option[ApiPeer],
     isFat:          Boolean,
     deliveryId:     Option[String]
-  )(implicit system: ActorSystem): DBIO[Seq[SeqState]] =
-    DBIO.sequence(authIds.toSeq map { authId ⇒
-      persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
-    })
-
-  def persistAndPushUpdatesF(
-    authIds:        Set[Long],
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[ApiPeer],
-    isFat:          Boolean,
-    deliveryId:     Option[String]
   )(implicit system: ActorSystem): Future[Seq[SeqState]] = {
     import system.dispatcher
     Future.sequence(authIds.toSeq map { authId ⇒
-      persistAndPushUpdateF(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
+      persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
     })
-  }
-
-  def broadcastClientAndUsersUpdate(
-    clientUserId: Int,
-    clientAuthId: Long,
-    userIds:      Set[Int],
-    update:       api.Update,
-    pushText:     Option[String],
-    isFat:        Boolean        = false,
-    deliveryId:   Option[String] = None
-  )(implicit system: ActorSystem): DBIO[(SeqState, Seq[SeqState])] = {
-    import system.dispatcher
-
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = getOriginPeer(update)
-    val refs = updateRefs(update)
-
-    for {
-      authIds ← p.AuthId.findIdByUserIds(userIds + clientUserId)
-      seqstates ← DBIO.sequence(
-        authIds.view
-          .filterNot(_ == clientAuthId)
-          .map(persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
-      )
-      seqstate ← persistAndPushUpdate(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
-    } yield (seqstate, seqstates)
-  }
-
-  def broadcastOtherDevicesUpdate(
-    userId:        Int,
-    currentAuthId: Long,
-    update:        api.Update,
-    pushText:      Option[String],
-    isFat:         Boolean        = false,
-    deliveryId:    Option[String] = None
-  )(implicit system: ActorSystem): DBIO[SeqState] = {
-    import system.dispatcher
-
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = getOriginPeer(update)
-    val refs = updateRefs(update)
-
-    for {
-      otherAuthIds ← p.AuthId.findIdByUserId(userId).map(_.view.filter(_ != currentAuthId))
-      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)))
-      seqstate ← persistAndPushUpdate(currentAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
-    } yield seqstate
   }
 
   def setPushCredentials(

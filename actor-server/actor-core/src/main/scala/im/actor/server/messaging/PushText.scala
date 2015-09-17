@@ -1,4 +1,4 @@
-package im.actor.server.misc
+package im.actor.server.messaging
 
 import akka.actor.ActorSystem
 import im.actor.api.rpc.messaging._

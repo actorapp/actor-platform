@@ -1,8 +1,9 @@
 package im.actor.server.dialog.privat
 
-import akka.actor.{ ActorSystem, Props, ActorRef }
+import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
-import im.actor.server.dialog.{ DialogIdContainer, DialogCommand }
+import im.actor.server.dialog.DialogCommand
+import im.actor.server.dialog.DialogIdExtractors.getPrivateDialogId
 
 object PrivateDialogErrors {
   final object MessageToSelf extends Exception("Private dialog with self is not allowed")
@@ -11,17 +12,11 @@ object PrivateDialogErrors {
 object PrivateDialogRegion {
 
   private def idExtractor: ShardRegion.IdExtractor = {
-    case c: DialogCommand ⇒ c.dialogId match {
-      case DialogIdContainer(id) if id.isPrivat ⇒ (c.dialogId.getPrivat.stringId, c)
-      case _                                    ⇒ throw new Exception("Unsupported dialogId")
-    }
+    case c: DialogCommand ⇒ (getPrivateDialogId(c.dialogId).stringId, c)
   }
 
   private def shardResolver: ShardRegion.ShardResolver = {
-    case c: DialogCommand ⇒ c.dialogId match {
-      case DialogIdContainer(id) if id.isPrivat ⇒ (c.dialogId.getPrivat.left % 100).toString
-      case _                                    ⇒ throw new Exception("Unsupported dialogId")
-    }
+    case c: DialogCommand ⇒ (getPrivateDialogId(c.dialogId).left % 100).toString
   }
 
   val typeName = "PrivateDialog"
