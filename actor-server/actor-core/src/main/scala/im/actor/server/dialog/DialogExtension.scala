@@ -23,7 +23,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
   val groupRegion: GroupDialogRegion = GroupDialogRegion.start()(system)
 
   implicit val ec: ExecutionContext = system.dispatcher
-  implicit val timeout: Timeout = Timeout(5.seconds)
+  implicit val timeout: Timeout = Timeout(20.seconds) //TODO: configurable
 
   def sendMessage(peerType: ApiPeerType, peerId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] = {
     (peerType match {

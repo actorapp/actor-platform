@@ -3,16 +3,15 @@ package im.actor.server.dialog.group
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
-import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.dialog.group.GroupDialogEvents.GroupDialogEvent
-import im.actor.server.group.{ GroupExtension, GroupProcessorRegion, GroupViewRegion }
+import im.actor.server.group.GroupExtension
 import im.actor.server.office.ProcessorState
 import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesExtension }
-import im.actor.server.user.{ UserExtension, UserProcessorRegion, UserViewRegion }
+import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
 import slick.driver.PostgresDriver.api._
 
@@ -38,7 +37,7 @@ object GroupDialog {
   def props: Props = Props(classOf[GroupDialog])
 }
 
-class GroupDialog extends DialogProcessor[GroupDialogState, GroupDialogEvent] with GroupDialogHandlers {
+private[group] final class GroupDialog extends DialogProcessor[GroupDialogState, GroupDialogEvent] with GroupDialogHandlers {
 
   import DialogCommands._
   import GroupDialogEvents._
