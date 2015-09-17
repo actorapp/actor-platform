@@ -5,23 +5,23 @@ xcodeproj 'ActorApp.xcodeproj'
 target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
-	# Core
+    # Core
     pod 'FMDB', :git => 'https://github.com/ccgus/fmdb'
     pod 'RegexKitLite', :inhibit_warnings => true
     pod 'CocoaAsyncSocket'
-        
-	# UI
+
+    # UI
     pod 'pop'
     pod 'VBFPopFlatButton'
-	pod 'MBProgressHUD'
-	pod 'PSTAlertController'
-	pod 'DZNPhotoPickerController'
-	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
+    pod 'MBProgressHUD'
+    pod 'PSTAlertController'
+    pod 'DZNPhotoPickerController'
+    pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
     pod 'JVFloatLabeledTextField'
     pod 'CLTokenInputView'
-    
+
     pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
-    
+
     pod 'NYTPhotoViewer'
     pod 'PEPhotoCropEditor'
     # pod 'TWMessageBarManager'
@@ -32,7 +32,8 @@ target 'ActorApp' do
     pod 'TTTAttributedLabel'
     pod 'M13ProgressSuite'
     # pod 'MDRadialProgress'
-    
+
     # Tracking
     pod 'HockeySDK', '~> 3.8-RC'
+    pod 'SplunkMint'
 end
