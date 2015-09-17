@@ -2,9 +2,10 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component } from 'react';
+import { Container } from 'flux/utils';
 import Modal from 'react-modal';
-
+import ActorClient from 'utils/ActorClient';
 import { KeyCodes } from 'constants/ActorAppConstants';
 
 import MyProfileActions from 'actions/MyProfileActionCreators';
@@ -21,18 +22,7 @@ import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 
-const getStateFromStores = () => {
-  return {
-    profile: MyProfileStore.getProfile(),
-    name: MyProfileStore.getName(),
-    nick: MyProfileStore.getNick(),
-    about: MyProfileStore.getAbout(),
-    isOpen: MyProfileStore.isModalOpen(),
-    isCropModalOpen: CropAvatarStore.isOpen()
-  };
-};
-
-class MyProfile extends React.Component {
+class MyProfile extends Component {
   static childContextTypes = {
     muiTheme: React.PropTypes.object
   };
@@ -43,11 +33,20 @@ class MyProfile extends React.Component {
     };
   }
 
-  constructor(props) {
-    super(props);
+  static getStores = () => [MyProfileStore, CropAvatarStore];
 
-    this.state = getStateFromStores();
+  static calculateState() {
+    return {
+      profile: MyProfileStore.getProfile(),
+      name: MyProfileStore.getName(),
+      nick: MyProfileStore.getNick(),
+      about: MyProfileStore.getAbout(),
+      isOpen: MyProfileStore.isModalOpen(),
+      isCropModalOpen: CropAvatarStore.isOpen()
+    };
+  }
 
+  componentWillMount() {
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
       textField: {
@@ -58,13 +57,6 @@ class MyProfile extends React.Component {
         disabledTextColor: 'rgba(0,0,0,.4)'
       }
     });
-
-    MyProfileStore.addChangeListener(this.onChange);
-    CropAvatarStore.addListener(this.onChange);
-  }
-
-  componentWillUnmount() {
-    MyProfileStore.removeChangeListener(this.onChange);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -84,7 +76,6 @@ class MyProfile extends React.Component {
     }
   };
 
-  onChange = () => this.setState(getStateFromStores());
   onNameChange = event => this.setState({name: event.target.value});
   onNicknameChange = event => this.setState({nick: event.target.value});
   onAboutChange = event => this.setState({about: event.target.value});
@@ -203,4 +194,4 @@ class MyProfile extends React.Component {
   }
 }
 
-export default MyProfile;
+export default Container.create(MyProfile, {pure: false});
