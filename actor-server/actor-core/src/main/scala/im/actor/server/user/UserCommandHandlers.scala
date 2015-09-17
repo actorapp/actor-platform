@@ -5,13 +5,13 @@ import java.time.{ LocalDateTime, ZoneOffset }
 import akka.pattern.pipe
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.users._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.history.HistoryUtils
 import im.actor.server.{ persist ⇒ p, ApiConversions, models }
 import ApiConversions._
-import im.actor.server.{ persist ⇒ p, models }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ ImageUtils, Avatar }
 import im.actor.server.sequence.SeqUpdatesManager
@@ -34,13 +34,13 @@ private[user] trait UserCommandHandlers {
 
   import ImageUtils._
 
-  protected def create(accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean): Unit = {
+  protected def create(accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension]): Unit = {
     log.debug("Creating user {} {}", userId, name)
 
     val ts = now()
-    val e = UserEvents.Created(userId, accessSalt, name, countryCode, sex, isBot)
+    val e = UserEvents.Created(userId, accessSalt, name, countryCode, sex, isBot, extensions)
     val createEvent = TSEvent(ts, e)
-    val user = User(ts, e)
+    val user = UserCreator(ts, e)
 
     persistStashingReply(createEvent, user) { evt ⇒
       val user = models.User(
@@ -79,7 +79,7 @@ private[user] trait UserCommandHandlers {
       for {
         relatedUserIds ← getRelations(userId)
         _ ← userExt.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
-        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false, deliveryId = None)
+        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds.filterNot(_ == clientAuthId).toSet, update, pushText = None, isFat = false, deliveryId = None)
         seqstate ← SeqUpdatesManager.persistAndPushUpdate(clientAuthId, update, pushText = None, isFat = false)
       } yield seqstate
     }

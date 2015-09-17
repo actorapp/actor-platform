@@ -46,4 +46,6 @@ private[user] trait UserQueriesHandlers {
 
   protected def getAccessHash(state: User, clientAuthId: Long): Unit =
     sender() ! GetAccessHashResponse(ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt))
+
+  protected def getUser(state: User): Unit = sender() ! state
 }

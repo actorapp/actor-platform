@@ -127,7 +127,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       context become working(updatedState(tsEvt, state))
 
       (for {
-        _ ← userExt.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), "Bot", "US", ApiSex.Unknown, isBot = true)
+        _ ← userExt.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), "Bot", "US", ApiSex.Unknown, isBot = true, Seq.empty[ApiExtension])
         _ ← db.run(p.GroupBot.create(groupId, botUserId, botToken))
         _ ← integrationTokensKv.upsert(botToken, groupId)
       } yield ()) onFailure {

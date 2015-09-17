@@ -2,7 +2,7 @@ package im.actor.server.dialog.privat
 
 import akka.actor.Status
 import akka.pattern.pipe
-import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
+import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageReceived }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.dialog._
 import im.actor.server.history.HistoryUtils
@@ -23,7 +23,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
   import PrivateDialogEvents._
 
   protected def sendMessage(
-    state:        PrivateDialogState,
+    dialogState:  PrivateDialogState,
     senderUserId: Int,
     senderAuthId: Long,
     randomId:     Long,
@@ -32,14 +32,14 @@ trait PrivateDialogHandlers extends UpdateCounters {
   ): Unit = {
     val date = new DateTime
     val dateMillis = date.getMillis
-    val userState = state(senderUserId)
-    deferStashingReply(LastMessageDate(dateMillis, userState.peerId), state) { e ⇒
+    val userState = dialogState(senderUserId)
+    deferStashingReply(LastMessageDate(dateMillis, userState.peerId), dialogState) { e ⇒
       withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
         for {
-          SeqState(seq, state) ← delivery.senderDelivery(senderUserId, senderAuthId, privatePeerStruct(userState.peerId), randomId, dateMillis, message, isFat)
+          SeqState(seq, state) ← deliveryExt(senderUserId, dialogState).senderDelivery(senderUserId, senderAuthId, privatePeerStruct(userState.peerId), randomId, dateMillis, message, isFat)
           _ = recordRelation(senderUserId, userState.peerId)
           _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userState.peerId), date, randomId, message.header, message.toByteArray))
-          _ ← delivery.receiverDelivery(userState.peerId, senderUserId, privatePeerStruct(senderUserId), randomId, dateMillis, message, isFat)
+          _ ← deliveryExt(userState.peerId, dialogState).receiverDelivery(userState.peerId, senderUserId, privatePeerStruct(senderUserId), randomId, dateMillis, message, isFat)
         } yield SeqStateDate(seq, state, dateMillis)
       } recover {
         case e ⇒
@@ -82,16 +82,10 @@ trait PrivateDialogHandlers extends UpdateCounters {
       (userState.lastMessageDate.isEmpty || userState.lastMessageDate.exists(_ >= date))) {
       context become working(updatedState(LastReadDate(date, readerUserId), state))
 
-      val update = UpdateMessageRead(privatePeerStruct(readerUserId), date, now)
-      val readerUpdate = UpdateMessageReadByMe(privatePeerStruct(userState.peerId), date)
       for {
-        _ ← userExt.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
-        counterUpdate ← db.run(for {
-          _ ← markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userState.peerId), new DateTime(date))
-          u ← getUpdateCountersChanged(readerUserId)
-        } yield u)
-        _ ← userExt.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
-        _ ← userExt.notifyUserUpdate(readerUserId, readerAuthId, readerUpdate, None, isFat = false, deliveryId = None)
+        _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userState.peerId), new DateTime(date)))
+        _ ← deliveryExt(userState.peerId, state).authorRead(readerUserId, userState.peerId, date, now)
+        _ ← deliveryExt(readerUserId, state).readerRead(readerUserId, readerAuthId, userState.peerId, date)
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
