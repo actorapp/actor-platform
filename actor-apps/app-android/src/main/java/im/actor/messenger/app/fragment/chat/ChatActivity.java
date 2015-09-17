@@ -49,12 +49,12 @@ import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MentionSpan;
-import im.actor.messenger.app.view.SelectionListenerEditText;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.markdown.AndroidMarkdown;
+import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
@@ -380,7 +380,7 @@ public class ChatActivity extends ActorEditTextActivity {
             // Binding membership flag to removedFromGroup panel
             bind(messenger().getGroups().get(peer.getPeerId()).isMember(), new ValueChangedListener<Boolean>() {
                 @Override
-                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                public void onChanged(Boolean val, Value<Boolean> Value) {
                     removedFromGroup.setVisibility(val ? View.GONE : View.VISIBLE);
                 }
             });

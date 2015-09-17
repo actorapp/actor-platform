@@ -44,7 +44,7 @@ import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
@@ -317,8 +317,8 @@ public class MainPhoneController extends MainBaseController {
                 messenger().getAppState().getIsAppEmpty(),
                 new ValueDoubleChangedListener<Boolean, Boolean>() {
                     @Override
-                    public void onChanged(Boolean isAppLoaded, ValueModel<Boolean> valueModel,
-                                          Boolean isAppEmpty, ValueModel<Boolean> valueModel2) {
+                    public void onChanged(Boolean isAppLoaded, Value<Boolean> Value,
+                                          Boolean isAppEmpty, Value<Boolean> Value2) {
                         if (isAppEmpty) {
                             if (isAppLoaded) {
                                 barTabs.setVisibility(View.GONE);
