@@ -20,11 +20,12 @@ eval $(parse_yaml "$CONFIG_DIR/keys.yaml" "config_")
 APP_IDENTITY=$(eval "echo \$$(echo config_vendors_${VENDOR}_identity)")
 APP_TITLE=$(eval "echo \$$(echo config_vendors_${VENDOR}_title)")
 APP_CERTIFICATE=$(eval "echo \$$(echo config_vendors_${VENDOR}_certificate)")
+APP_FABRIC_API=$(eval "echo \$$(echo config_vendors_${VENDOR}_fabric_api)")
+APP_FABRIC_SECRET=$(eval "echo \$$(echo config_vendors_${VENDOR}_fabric_secret)")
 APP_BUNDLE_ID=$(eval "echo \$$(echo config_vendors_${VENDOR}_apps_${APP}_bundle)")
 APP_PROVISION=$(eval "echo \$$(echo config_vendors_${VENDOR}_apps_${APP}_provision)")
 APP_ENTITLEMENTS=$(eval "echo \$$(echo config_vendors_${VENDOR}_apps_${APP}_entitlements)")
 APP_APP_STORE=$(eval "echo \$$(echo config_vendors_${VENDOR}_apps_${APP}_appstore)")
-
 # Starting build
 echo Building $APP_BUNDLE_ID $APP_IDENTITY with $CONFIG_DIR/$APP_PROVISION and $CONFIG_DIR/$APP_ENTITLEMENTS
 echo "##teamcity[blockClosed name='Loading config']"
@@ -40,9 +41,14 @@ echo "##teamcity[blockClosed name='Installing j2objc']"
 
 ################################################################################
 echo "##teamcity[blockOpened name='Configuring Info.plist']"
+
 # Setting bundle id
 echo "##teamcity[message text='Setting bundle id: $APP_BUNDLE_ID']"
 build-tools/ios-plist-set.sh "CFBundleIdentifier" "$APP_BUNDLE_ID" "$BUILD_DIR/app-ios/ActorApp/Supporting Files/Info.plist"
+
+# Setting fabric api key
+build-tools/ios-plist-set.sh ":Fabric:APIKey" "$APP_FABRIC_API" "$BUILD_DIR/app-ios/ActorApp/Supporting Files/Info.plist"
+
 # Setting build counter
 if [ ! -z "$BUILD_COUNTER" ]; then
   echo "##teamcity[message text='Setting build counter: $BUILD_COUNTER']"
@@ -66,10 +72,23 @@ echo "##teamcity[blockClosed name='Installing CocoaPods']"
 
 ################################################################################
 echo "##teamcity[blockOpened name='Building app']"
+
 # Clearing build dir
 rm -fr build
+
 # Building app without sign
-../build-tools/ios-build-nosign.sh "ActorApp.xcworkspace" "ActorApp"
+xcodebuild \
+  -workspace "ActorApp.xcworkspace" \
+  -scheme "ActorApp" \
+  FABRIC_BUILD_SECRET=$APP_FABRIC_SECRET
+  DEPLOYMENT_LOCATION=yes \
+  DSTROOT=build \
+  DWARF_DSYM_FOLDER_PATH=build \
+  CODE_SIGN_IDENTITY="" \
+  CODE_SIGNING_REQUIRED=NO \
+  clean \
+  build
+
 echo "##teamcity[blockClosed name='Building app']"
 
 ################################################################################
