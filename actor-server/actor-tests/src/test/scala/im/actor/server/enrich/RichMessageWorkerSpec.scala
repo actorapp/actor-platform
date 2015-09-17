@@ -19,7 +19,6 @@ class RichMessageWorkerSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with MessageParsing
-  with ImplicitGroupRegions
   with ImplicitSessionRegionProxy
   with ImplicitSequenceService
   with SequenceMatchers

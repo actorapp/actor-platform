@@ -28,7 +28,7 @@ class SequenceServiceSpec extends BaseAppSuite({
       """
     )
   )
-}) with ImplicitGroupRegions with ImplicitSessionRegionProxy with ImplicitAuthService {
+}) with ImplicitSessionRegionProxy with ImplicitAuthService with ImplicitFileStorageAdapter {
 
   behavior of "Sequence service"
 
