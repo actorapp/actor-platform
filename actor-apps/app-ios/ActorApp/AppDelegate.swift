@@ -4,6 +4,9 @@
 
 import Foundation
 
+import Fabric
+import Crashlytics
+
 @objc class AppDelegate : UIResponder,  UIApplicationDelegate {
     
     var window : UIWindow?
@@ -20,11 +23,10 @@ import Foundation
         createActor()
         
         // Apply crash logging
-        // WARRING: Disabled because Mint doesn't support bitcode
-        // if AppConfig.mint != nil {
-        //    Mint.sharedInstance().disableNetworkMonitoring()
-        //    Mint.sharedInstance().initAndStartSession(AppConfig.mint!)
-        // }
+        
+        // Even when Fabric/Crashlytics not configured
+        // this method doesn't crash
+        Fabric.with([Crashlytics.self()])
         
         // Register hockey app
         if AppConfig.hockeyapp != nil {
