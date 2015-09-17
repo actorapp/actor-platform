@@ -248,9 +248,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
       val memberIds = group.members.keySet
 
-      db.run(for {
-        _ ← p.AvatarData.createOrUpdate(avatarData)
-        (seqstate, _) ← broadcastClientAndUsersUpdate(clientUserId, clientAuthId, memberIds, update, None, isFat = false)
+      for {
+        _ ← db.run(p.AvatarData.createOrUpdate(avatarData))
+        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(clientUserId, clientAuthId, memberIds, update, None, isFat = false, deliveryId = None)
       } yield {
         db.run(HistoryUtils.writeHistoryMessage(
           models.Peer.privat(clientUserId),
@@ -262,7 +262,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         ))
 
         UpdateAvatarAck(avatarOpt, SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
-      })
+      }
     }
   }
 
@@ -294,7 +294,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           serviceMessage.header,
           serviceMessage.toByteArray
         )
-        (seqstate, _) ← broadcastClientAndUsersUpdate(clientUserId, clientAuthId, memberIds, update, Some(PushTexts.TitleChanged), isFat = false)
+        (seqstate, _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
+          clientUserId = clientUserId,
+          clientAuthId = clientAuthId,
+          userIds = memberIds,
+          update = update,
+          pushText = Some(PushTexts.TitleChanged),
+          isFat = false,
+          deliveryId = None
+        ))
       } yield SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
     }
   }
@@ -318,14 +326,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               serviceMessage.header,
               serviceMessage.toByteArray
             )
-            (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(
+            (SeqState(seq, state), _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
               clientUserId = clientUserId,
               clientAuthId = clientAuthId,
               userIds = group.members.keySet - clientUserId,
               update = update,
               pushText = Some(PushTexts.TopicChanged),
-              isFat = false
-            )
+              isFat = false,
+              deliveryId = None
+            ))
           } yield SeqStateDate(seq, state, dateMillis))
         }
       } else {
@@ -353,14 +362,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               serviceMessage.header,
               serviceMessage.toByteArray
             )
-            (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(
+            (SeqState(seq, state), _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
               clientUserId = clientUserId,
               clientAuthId = clientAuthId,
               userIds = group.members.keySet - clientUserId,
               update = update,
               pushText = Some(PushTexts.AboutChanged),
-              isFat = false
-            )
+              isFat = false,
+              deliveryId = None
+            ))
           } yield SeqStateDate(seq, state, dateMillis))
         }
       } else {
@@ -379,17 +389,18 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
             //we have current state, that does not updated by UserBecameAdmin event. That's why we update it manually
             val updated = group.members.updated(candidateId, group.members(candidateId).copy(isAdmin = true))
             val members = updated.values.map(_.asStruct).toVector
-            db.run(for {
-              _ ← p.GroupUser.makeAdmin(groupId, candidateId)
-              (seqState, _) ← broadcastClientAndUsersUpdate(
+            for {
+              _ ← db.run(p.GroupUser.makeAdmin(groupId, candidateId))
+              (seqState, _) ← userExt.broadcastClientAndUsersUpdate(
                 clientUserId = clientUserId,
                 clientAuthId = clientAuthId,
                 userIds = group.members.keySet - clientUserId,
                 update = UpdateGroupMembersUpdate(groupId, members),
                 pushText = None,
-                isFat = false
+                isFat = false,
+                deliveryId = None
               )
-            } yield (members, seqState))
+            } yield (members, seqState)
           } else {
             Future.failed(UserAlreadyAdmin)
           }
@@ -417,7 +428,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     for {
       _ ← p.GroupUser.delete(groupId, userId)
       _ ← p.GroupInviteToken.revoke(groupId, userId)
-      (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(userId, clientAuthId, memberIds - userId, update, Some(PushTexts.Left), isFat = false)
+      (SeqState(seq, state), _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
+        clientUserId = userId,
+        clientAuthId = clientAuthId,
+        userIds = memberIds - userId,
+        update = update,
+        pushText = Some(PushTexts.Left),
+        isFat = false,
+        deliveryId = None
+      ))
       // TODO: Move to a History Writing subsystem
       _ ← p.Dialog.updateLastReadAt(userId, groupPeer, date)
       _ ← p.Dialog.updateOwnerLastReadAt(userId, groupPeer, date)

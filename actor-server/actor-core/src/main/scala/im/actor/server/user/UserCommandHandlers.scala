@@ -80,8 +80,8 @@ private[user] trait UserCommandHandlers {
       for {
         relatedUserIds ← getRelations(userId)
         _ ← userExt.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false, deliveryId = None)
-        seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, pushText = None, isFat = false)
+        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false, deliveryId = None)
+        seqstate ← SeqUpdatesManager.persistAndPushUpdate(clientAuthId, update, pushText = None, isFat = false)
       } yield seqstate
     }
 

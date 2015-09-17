@@ -4,7 +4,8 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc.messaging.{ UpdateMessageSent, UpdateMessage, ApiMessage }
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.server.db.DbExtension
-import im.actor.server.misc.{ UpdateCounters, PushText }
+import im.actor.server.messaging.PushText
+import im.actor.server.misc.UpdateCounters
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqState, SeqUpdatesManager }
 import im.actor.server.user.UserExtension
 
@@ -43,7 +44,7 @@ class MessageDelivery()(implicit val system: ActorSystem) extends UpdateCounters
             senderUser ← userExt.getApiStruct(senderUserId, receiverUserId, receiverAuthId)
             senderName = senderUser.localName.getOrElse(senderUser.name)
             pushText ← getPushText(peer, receiverUserId, senderName, message)
-            _ ← SeqUpdatesManager.persistAndPushUpdatesF(receiverAuthIds.toSet, receiverUpdate, Some(pushText), isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
+            _ ← SeqUpdatesManager.persistAndPushUpdates(receiverAuthIds.toSet, receiverUpdate, Some(pushText), isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
             counterUpdate ← db.run(getUpdateCountersChanged(receiverUserId))
             _ ← userExt.broadcastUserUpdate(receiverUserId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
           } yield ()
@@ -69,11 +70,11 @@ class MessageDelivery()(implicit val system: ActorSystem) extends UpdateCounters
     )
     for {
       senderAuthIds ← userExt.getAuthIds(senderUserId) map (_.toSet)
-      _ ← SeqUpdatesManager.persistAndPushUpdatesF(senderAuthIds filterNot (_ == senderAuthId), senderUpdate, None, isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
+      _ ← SeqUpdatesManager.persistAndPushUpdates(senderAuthIds filterNot (_ == senderAuthId), senderUpdate, None, isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
     } yield ()
 
     val senderAuthIdUpdate = UpdateMessageSent(peer, randomId, timestamp)
-    SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, senderAuthIdUpdate, None, isFat, deliveryId = Some(s"msgsent_${peer.toString}_${randomId}"))
+    SeqUpdatesManager.persistAndPushUpdate(senderAuthId, senderAuthIdUpdate, None, isFat, deliveryId = Some(s"msgsent_${peer.toString}_${randomId}"))
   }
 
 }

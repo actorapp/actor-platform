@@ -45,7 +45,7 @@ object PrivateDialog {
   def props = Props(classOf[PrivateDialog])
 }
 
-class PrivateDialog extends DialogProcessor[PrivateDialogState, PrivateDialogEvent] with PrivateDialogHandlers {
+private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogState, PrivateDialogEvent] with PrivateDialogHandlers {
 
   import DialogCommands._
   import PrivateDialog._
