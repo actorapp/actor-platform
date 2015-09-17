@@ -32,6 +32,7 @@ import im.actor.core.viewmodel.UserTypingVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.js.mvvm.JsDisplayList;
 import im.actor.runtime.mvvm.ModelChangedListener;
+import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 
@@ -67,7 +68,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
 
             vm.getIsConnecting().subscribe(new ValueChangedListener<Boolean>() {
                 @Override
-                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
                     if (val) {
                         onlineState.changeValue("connecting");
                     } else {
@@ -81,7 +82,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             });
             vm.getIsSyncing().subscribe(new ValueChangedListener<Boolean>() {
                 @Override
-                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
                     if (vm.getIsConnecting().get()) {
                         onlineState.changeValue("connecting");
                     } else {
@@ -114,7 +115,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             // Sign for presence separately
             userVM.getPresence().subscribe(new ValueChangedListener<UserPresence>() {
                 @Override
-                public void onChanged(UserPresence val, ValueModel<UserPresence> valueModel) {
+                public void onChanged(UserPresence val, Value<UserPresence> valueModel) {
                     value.changeValue(JsUser.fromUserVM(userVM, messenger));
                 }
             }, false);
@@ -139,7 +140,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             // Sign for presence separately
             groupVM.getPresence().subscribe(new ValueChangedListener<Integer>() {
                 @Override
-                public void onChanged(Integer val, ValueModel<Integer> valueModel) {
+                public void onChanged(Integer val, Value<Integer> valueModel) {
                     value.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
                 }
             }, false);
@@ -156,7 +157,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 final JsBindedValue<JsTyping> value = new JsBindedValue<JsTyping>();
                 userTypingVM.getTyping().subscribe(new ValueChangedListener<Boolean>() {
                     @Override
-                    public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                    public void onChanged(Boolean val, Value<Boolean> valueModel) {
                         String typingValue = null;
                         if (val) {
                             typingValue = messenger.getFormatter().formatTyping("");
@@ -170,7 +171,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                 final JsBindedValue<JsTyping> value = new JsBindedValue<JsTyping>();
                 groupTypingVM.getActive().subscribe(new ValueChangedListener<int[]>() {
                     @Override
-                    public void onChanged(int[] val, ValueModel<int[]> valueModel) {
+                    public void onChanged(int[] val, Value<int[]> valueModel) {
                         String typingValue = null;
                         if (val.length == 1) {
                             typingValue = messenger.getFormatter().formatTyping(context()
@@ -224,7 +225,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             globalCounter = new JsBindedValue<JsCounter>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override
-                public void onChanged(Integer val, ValueModel<Integer> valueModel) {
+                public void onChanged(Integer val, Value<Integer> valueModel) {
                     globalCounter.changeValue(JsCounter.create(val));
                 }
             }, false);
@@ -238,7 +239,7 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
             tempGlobalCounter = new JsBindedValue<JsCounter>(JsCounter.create(counter.get()));
             counter.subscribe(new ValueChangedListener<Integer>() {
                 @Override
-                public void onChanged(Integer val, ValueModel<Integer> valueModel) {
+                public void onChanged(Integer val, Value<Integer> valueModel) {
                     tempGlobalCounter.changeValue(JsCounter.create(val));
                 }
             }, false);
