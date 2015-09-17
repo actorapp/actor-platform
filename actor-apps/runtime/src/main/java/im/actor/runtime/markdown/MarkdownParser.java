@@ -147,7 +147,7 @@ public class MarkdownParser {
     }
 
     private boolean handleUrl(TextCursor cursor, int limit, ArrayList<MDText> elements) {
-        if (mode == MODE_FULL ||mode == MODE_ONLY_LINKS) {
+        if (mode == MODE_FULL || mode == MODE_ONLY_LINKS) {
             Url url = findUrl(cursor, limit);
             if (url != null) {
                 handleText(cursor, url.getStart(), elements);
@@ -173,7 +173,7 @@ public class MarkdownParser {
     private void handleText(TextCursor cursor, int limit, ArrayList<MDText> elements) {
         if (cursor.currentOffset < limit) {
             elements.add(new MDRawText(cursor.text.substring(cursor.currentOffset, limit)));
-            cursor.currentOffset = limit + 1;
+            cursor.currentOffset = limit;
         }
     }
 
