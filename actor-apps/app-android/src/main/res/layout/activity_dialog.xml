@@ -85,7 +85,7 @@
         android:background="@color/bg_main"
         android:minHeight="56dp">
 
-        <im.actor.messenger.app.view.SelectionListenerEditText
+        <EditText
             android:id="@+id/et_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
