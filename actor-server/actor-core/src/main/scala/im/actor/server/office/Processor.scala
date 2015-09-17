@@ -31,6 +31,16 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
 
   protected def updatedState(evt: Event, state: State): State
 
+  protected def workWith(es: immutable.Seq[Event], state: State): State = {
+    val newState = es.foldLeft(state) {
+      case (s, e) ⇒
+        log.debug("Updating state: {} with event: {}", s, e)
+        updatedState(e, s)
+    }
+    context become working(newState)
+    newState
+  }
+
   protected def workWith(e: Event, s: State): State = {
     val updated = updatedState(e, s)
     self ! Work(updated)
@@ -58,7 +68,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
     case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
   }
 
-  private final def stashingBehavior: Receive = {
+  protected final def stashingBehavior: Receive = {
     case UnstashAndWork(evt, s) =>
       context become working(updatedState(evt, s))
       unstashAll()
@@ -104,6 +114,14 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
           log.error(f, "Failure while processing event {}", e)
           unstashAndWork(e, state)
       }
+    }
+  }
+
+  final def persistStashing[R](es: immutable.Seq[Event], state: State)(f: Event ⇒ Unit): Unit = {
+    log.debug("[persistStashing], events {}", es)
+    context become stashing(state)
+    defer(es) { _ ⇒
+      unstashAndWorkBatch(es, state)
     }
   }
 
@@ -158,7 +176,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
     }
   }
 
-  private final def unstashAndWork(evt: Event, state: State): Unit = self ! UnstashAndWork(evt, state)
+  protected final def unstashAndWork(evt: Event, state: State): Unit = self ! UnstashAndWork(evt, state)
 
   private final def unstashAndWorkBatch(es: immutable.Seq[Event], state: State): Unit = self ! UnstashAndWorkBatch(es, state)
 
