@@ -80,7 +80,7 @@ rm -fr build
 xcodebuild \
   -workspace "ActorApp.xcworkspace" \
   -scheme "ActorApp" \
-  FABRIC_BUILD_SECRET=$APP_FABRIC_SECRET
+  FABRIC_BUILD_SECRET=$APP_FABRIC_SECRET \
   DEPLOYMENT_LOCATION=yes \
   DSTROOT=build \
   DWARF_DSYM_FOLDER_PATH=build \
