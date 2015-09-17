@@ -42,6 +42,8 @@ import im.actor.runtime.js.JsFileSystemProvider;
 import im.actor.runtime.js.fs.JsBlob;
 import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayList;
+import im.actor.runtime.mvvm.Value;
+import im.actor.runtime.mvvm.ValueChangedListener;
 
 public class JsMessenger extends Messenger {
 
@@ -88,6 +90,19 @@ public class JsMessenger extends Messenger {
         }
 
         JsMessenger.instance = this;
+
+        if (isElectron) {
+            getAppState().getGlobalTempCounter().subscribe(new ValueChangedListener<Integer>() {
+                @Override
+                public void onChanged(Integer val, Value<Integer> valueModel) {
+                    if (val == null || val == 0) {
+                        JsElectronApp.hideNewMessages();
+                    } else {
+                        JsElectronApp.updateBadge(val);
+                    }
+                }
+            });
+        }
     }
 
     public boolean isElectron() {
