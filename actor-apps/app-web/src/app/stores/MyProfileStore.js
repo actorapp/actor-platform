@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
 import { Store } from 'flux/utils';
 import Dispatcher from 'dispatcher/ActorAppDispatcher';
@@ -31,25 +34,25 @@ class MyProfileStore extends Store {
     return _profile;
   }
 
-  setProfile = (profile) => {
+  setProfile(profile) {
     _profile = profile;
     _name = profile.name;
     _nick = profile.nick;
     _about = profile.about;
-
-    //this.__emitChange();
   };
 
   __onDispatch = (action) => {
     switch(action.type) {
       case ActionTypes.MY_PROFILE_MODAL_SHOW:
-        ActorClient.bindUser(ActorClient.getUid(), this.setProfile);
         _isModalOpen = true;
         this.__emitChange();
         break;
       case ActionTypes.MY_PROFILE_MODAL_HIDE:
-        ActorClient.unbindUser(ActorClient.getUid(), this.setProfile);
         _isModalOpen = false;
+        this.__emitChange();
+        break;
+      case ActionTypes.MY_PROFILE_CHANGED:
+        this.setProfile(action.profile);
         this.__emitChange();
         break;
       case ActionTypes.MY_PROFILE_SAVE_NAME:
