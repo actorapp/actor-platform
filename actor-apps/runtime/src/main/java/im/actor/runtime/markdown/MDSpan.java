@@ -4,6 +4,7 @@ public class MDSpan extends MDText {
 
     public static final int TYPE_BOLD = 0;
     public static final int TYPE_ITALIC = 1;
+    public static final int TYPE_URL = 2;
 
     private int spanType;
     private MDText[] child;
@@ -28,6 +29,8 @@ public class MDSpan extends MDText {
             res += "*";
         } else if (spanType == TYPE_ITALIC) {
             res += "_";
+        } if (spanType == TYPE_URL) {
+
         } else {
             throw new RuntimeException("Unknown type");
         }
