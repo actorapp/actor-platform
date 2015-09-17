@@ -119,24 +119,16 @@ public class JsNotificationsProvider implements NotificationProvider {
             }
         }
 
-        if (JsElectronApp.isElectron()) {
-            JsElectronApp.showNewMessages();
-        }
-
         playSound();
 
         if (!JsNotification.isSupported()) {
-            Log.d("JsNotificationsProvider", "not supported");
             return;
         }
         if (!JsNotification.isGranted()) {
-            Log.d("JsNotificationsProvider", "not granted");
             return;
         }
 
         JsManagedNotification.show(peerTitle, contentMessage, peerAvatarUrl);
-
-        Log.d("JsNotificationsProvider", "Shown");
     }
 
     @Override
