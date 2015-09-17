@@ -22,7 +22,7 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.mvvm.ValueChangedListener;
-import im.actor.runtime.mvvm.ValueModel;
+import im.actor.runtime.mvvm.Value;
 
 import static im.actor.messenger.app.core.Core.messenger;
 
@@ -81,7 +81,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         emptyDialogs = res.findViewById(R.id.emptyDialogs);
         bind(messenger().getAppState().getIsDialogsEmpty(), new ValueChangedListener<Boolean>() {
             @Override
-            public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+            public void onChanged(Boolean val, Value<Boolean> Value) {
                 if (val) {
                     emptyDialogs.setVisibility(View.VISIBLE);
                 } else {

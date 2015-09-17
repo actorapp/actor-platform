@@ -142,6 +142,12 @@ public class AndroidMessenger extends im.actor.core.Messenger {
                 ShortcutBadger.with(AndroidContext.getContext()).count(val);
             }
         });
+//        modules.getAppStateModule().getAppStateVM().getGlobalCounter().subscribe(new ValueChangedListener<Integer>() {
+//            @Override
+//            public void onChanged(Integer val, ValueModel<Integer> valueModel) {
+//                ShortcutBadger.with(AndroidContext.getContext()).count(val);
+//            }
+//        });
     }
 
     public Context getContext() {
