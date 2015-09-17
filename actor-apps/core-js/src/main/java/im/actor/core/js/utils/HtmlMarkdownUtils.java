@@ -71,6 +71,11 @@ public class HtmlMarkdownUtils {
     }
 
     private static String urlElement(MDUrl url) {
-        return "<a href=\"" + UriUtils.sanitizeUri(url.getUrl()) + "\">" + SafeHtmlUtils.htmlEscape(url.getUrlTitle()) + "</a>";
+        return "<a " +
+                "target=\"_blank\" " +
+                "onClick=\"window.messenger.handleLinkClick(event)\" " +
+                "href=\"" + UriUtils.sanitizeUri(url.getUrl()) + "\">" +
+                SafeHtmlUtils.htmlEscape(url.getUrlTitle()) +
+                "</a>";
     }
 }
