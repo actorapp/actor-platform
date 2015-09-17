@@ -71,3 +71,29 @@ task buildPackage(dependsOn: ['war']) {
         }
     }
 }
+
+task buildPackageDev(dependsOn: ['draftWar']) {
+    doFirst {
+        copy {
+            into "$buildDir/library"
+            with draftWar
+            exclude "actor/actor.devmode.js"
+            include "actor/**"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$buildDir/library/actor"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/src/main/javascript"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/../runtime-js/src/main/javascript"
+        }
+    }
+}
