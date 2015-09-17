@@ -12,7 +12,6 @@ import im.actor.server._
 class FilesServiceSpec
   extends BaseAppSuite
   with ImplicitFileStorageAdapter
-  with ImplicitUserRegions
   with ImplicitSessionRegionProxy
   with ImplicitAuthService {
   behavior of "FilesService"

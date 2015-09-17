@@ -28,7 +28,6 @@ class WebhookHandlerSpec
   with GroupsServiceHelpers
   with MessageParsing
   with PeersImplicits
-  with ImplicitGroupRegions
   with ImplicitSequenceService
   with ImplicitSessionRegionProxy
   with ImplicitAuthService

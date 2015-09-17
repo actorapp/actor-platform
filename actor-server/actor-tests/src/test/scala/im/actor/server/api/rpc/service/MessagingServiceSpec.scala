@@ -21,7 +21,6 @@ import scala.util.Random
 class MessagingServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
-  with ImplicitGroupRegions
   with ImplicitSequenceService
   with ImplicitSessionRegionProxy
   with ImplicitAuthService
