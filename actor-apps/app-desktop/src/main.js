@@ -22,8 +22,8 @@ function showWindow() {
     return;
   }
   // Create the browser window.
-  mainWindow = new BrowserWindow({ 
-    width: 1200, 
+  mainWindow = new BrowserWindow({
+    width: 1200,
     height: 750,
     "min-width": 400,
     "min-height": 300,
@@ -182,6 +182,11 @@ ipc.on('new-messages-show', function(event, arg) {
   app.dock.setBadge('.');
 });
 
+ipc.on('tray-badge', function(event, arg) {
+  app.dock.bounce();
+  app.dock.setBadge(arg);
+});
+
 ipc.on('new-messages-hide', function(event, arg) {
   app.dock.setBadge('');
 });
@@ -189,4 +194,3 @@ ipc.on('new-messages-hide', function(event, arg) {
 ipc.on('tray-bounce', function(event, arg) {
   app.dock.bounce();
 });
-  
