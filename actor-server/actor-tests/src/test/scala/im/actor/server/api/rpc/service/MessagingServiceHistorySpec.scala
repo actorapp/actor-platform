@@ -19,7 +19,6 @@ import scala.util.Random
 class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   with ImplicitFileStorageAdapter
   with ImplicitSessionRegionProxy
-  with ImplicitGroupRegions
   with ImplicitAuthService
   with ImplicitSequenceService
   with SequenceMatchers {
