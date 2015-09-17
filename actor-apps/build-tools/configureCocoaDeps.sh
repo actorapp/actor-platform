@@ -10,8 +10,7 @@ source "$BUILD_DIRECTORY/common.sh"
 
 if [ ! -d "${J2OBJC_DIR}/j2objc-${J2OBJC_VERSION}" ]; then
 	echo_w "Downloading j2objc..."
-
-	curl -o "${BUILD_DIRECTORY}/j2objc-${J2OBJC_VERSION}.zip" -L https://bintray.com/artifact/download/ex3ndr/generic/j2objc-${J2OBJC_VERSION}.zip
+	curl -o "${BUILD_DIRECTORY}/j2objc-${J2OBJC_VERSION}.zip" -L https://dl.bintray.com/actor/j2objc/j2objc-${J2OBJC_VERSION}.zip
 
 	echo "Extracting j2objc..."
 	mkdir -p "${J2OBJC_DIR}"
