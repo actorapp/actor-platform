@@ -21,6 +21,7 @@ import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.events.NewSessionCreated;
 import im.actor.core.modules.events.PeerChatOpened;
 import im.actor.core.modules.events.PeerInfoOpened;
+import im.actor.core.modules.events.UserVisible;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
@@ -84,6 +85,7 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
         context().getEvents().subscribe(this, NewSessionCreated.EVENT);
         context().getEvents().subscribe(this, PeerChatOpened.EVENT);
         context().getEvents().subscribe(this, PeerInfoOpened.EVENT);
+        context().getEvents().subscribe(this, UserVisible.EVENT);
     }
 
     @Verified
@@ -282,6 +284,8 @@ public class PresenceActor extends ModuleActor implements BusSubscriber {
             self().send(new Subscribe(((PeerChatOpened) event).getPeer()));
         } else if (event instanceof PeerInfoOpened) {
             self().send(new Subscribe(((PeerInfoOpened) event).getPeer()));
+        } else if (event instanceof UserVisible) {
+            self().send(new Subscribe(Peer.user(((UserVisible) event).getUid())));
         }
     }
 
