@@ -115,7 +115,7 @@
       p {
         margin: 0 0 7px;
 
-        word-wrap: normal;
+        word-wrap: break-word;
         //word-break: keep-all;
         &:last-child {
           margin-bottom: 0;
