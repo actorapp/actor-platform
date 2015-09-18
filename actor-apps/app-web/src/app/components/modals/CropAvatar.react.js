@@ -15,6 +15,8 @@ import CropAvatarActionCreators from 'actions/CropAvatarActionCreators';
 
 import CropAvatarStore from 'stores/CropAvatarStore'
 
+const minCropSize = 100;
+
 class CropAvatarModal extends Component {
   static propTypes = {
     onCropFinish: React.PropTypes.func.isRequired
@@ -186,6 +188,11 @@ class CropAvatarModal extends Component {
         };
         break;
       default:
+    }
+
+    if (resizedCropSize < minCropSize) {
+      resizedCropSize = cropSize;
+      resizeCropPosition = cropPosition;
     }
 
     this.setState({resizeLastCoord: axisCoord});
