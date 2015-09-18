@@ -36,7 +36,8 @@ class CropAvatarModal extends Component {
       scaledWidth: 0,
       scaledHeight: 0,
       naturalWidth: 0,
-      naturalHeight: 0
+      naturalHeight: 0,
+      maxImageHeight: (document.body.clientHeight * .9) - 64 // 64 is modal header height.
     };
   }
 
@@ -227,7 +228,6 @@ class CropAvatarModal extends Component {
   };
 
   storeScaledSizes = (event) => {
-    console.debug('storeScaledSizes:', event);
     const originalImage = React.findDOMNode(this.refs.originalImage);
     this.setState({
       scaledWidth: originalImage.width,
@@ -240,7 +240,7 @@ class CropAvatarModal extends Component {
 
   render() {
     console.debug(this.state);
-    const { isOpen, pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight } = this.state;
+    const { isOpen, pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight, maxImageHeight } = this.state;
 
     if (isOpen) {
       return (
@@ -289,7 +289,8 @@ class CropAvatarModal extends Component {
               <img className="crop-wrapper__image-original"
                    draggable="false"
                    ref="originalImage"
-                   src={pictureSource}/>
+                   src={pictureSource}
+                   style={{maxHeight: maxImageHeight}}/>
             </div>
           </div>
         </Modal>
