@@ -32,6 +32,7 @@ import im.actor.core.modules.events.PeerChatClosed;
 import im.actor.core.modules.events.PeerChatOpened;
 import im.actor.core.modules.events.PeerInfoClosed;
 import im.actor.core.modules.events.PeerInfoOpened;
+import im.actor.core.modules.events.UserVisible;
 import im.actor.core.network.NetworkState;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
@@ -421,6 +422,16 @@ public class Messenger {
     @ObjectiveCName("onProfileOpenWithUid:")
     public void onProfileOpen(int uid) {
         modules.getEvents().post(new PeerInfoOpened(Peer.user(uid)));
+    }
+
+    /**
+     * Fire event when user object became visible
+     *
+     * @param uid user's Id
+     */
+    @ObjectiveCName("onUserVisibleWithUid:")
+    public void onUserVisible(int uid) {
+        modules.getEvents().post(new UserVisible(uid));
     }
 
     /**
