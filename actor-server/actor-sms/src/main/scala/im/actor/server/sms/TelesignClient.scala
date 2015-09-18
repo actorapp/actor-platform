@@ -49,7 +49,7 @@ final class TelesignClient(config: Config)(implicit system: ActorSystem) {
   }
 
   def sendCallCode(phoneNumber: Long, code: String, language: String): Future[Unit] = {
-    postRequest("/verify/sms", Map(
+    postRequest("/verify/call", Map(
       "phone_number" → phoneNumber.toString,
       "ucid" → "BACS",
       "verify_code" → code,
