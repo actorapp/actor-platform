@@ -1,30 +1,32 @@
 package im.actor.server.activation.internal
 
-import java.time.{ ZoneOffset, LocalDateTime }
 import java.time.temporal.ChronoUnit._
-
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.concurrent.duration._
-import scalaz.{ \/-, \/ }
+import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor._
 import akka.stream.Materializer
-
-import im.actor.server.activation.Activation.{ Code, EmailCode, SmsCode }
+import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
 import im.actor.server.activation._
 import im.actor.server.activation.internal.InternalCodeActivation.Send
 import im.actor.server.email.{ EmailSender, Message }
 import im.actor.server.models.AuthCode
 import im.actor.server.persist
-import im.actor.server.sms.AuthSmsEngine
+import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
 import slick.driver.PostgresDriver.api._
 
+import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
+import scalaz.{ \/, \/- }
+
 object InternalCodeActivation {
+
   private[activation] sealed trait Message
+
   private[activation] final case class Send(code: Code)
+
   private[activation] final case class ForgetSentCode(code: Code) extends Message
 
-  def newContext(config: ActivationConfig, smsEngine: AuthSmsEngine, emailSender: EmailSender)(
+  def newContext(config: ActivationConfig, smsEngine: AuthSmsEngine, callEngine: AuthCallEngine, emailSender: EmailSender)(
     implicit
     system:       ActorSystem,
     materializer: Materializer,
@@ -32,13 +34,14 @@ object InternalCodeActivation {
     ec:           ExecutionContext
   ): InternalCodeActivation = {
     new InternalCodeActivation(
-      system.actorOf(Props(classOf[Activation], config.repeatLimit, smsEngine, emailSender, materializer), "activation"),
+      system.actorOf(Props(classOf[Activation], config.repeatLimit, smsEngine, callEngine, emailSender, materializer), "activation"),
       config
     )
   }
 }
 
 private[activation] class InternalCodeActivation(activationActor: ActorRef, config: ActivationConfig)(implicit db: Database, ec: ExecutionContext) extends CodeActivation {
+
   import im.actor.server.activation.Activation._
 
   def send(transactionHash: Option[String], code: Code): DBIO[String \/ Unit] = transactionHash match {
@@ -73,14 +76,18 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
 
   private def send(code: Code): Future[String \/ Unit] = {
     code match {
-      case SmsCode(phone, _) ⇒ if (!phone.toString.startsWith("7555")) activationActor ! Send(code)
-      case _: EmailCode      ⇒ activationActor ! Send(code)
+      case SmsCode(phone, _)     ⇒ if (!isTestPhone(phone)) activationActor ! Send(code)
+      case CallCode(phone, _, _) ⇒ if (!isTestPhone(phone)) activationActor ! Send(code)
+      case _: EmailCode          ⇒ activationActor ! Send(code)
     }
     Future.successful(\/-(()))
   }
+
+  private def isTestPhone(number: Long): Boolean = number.toString.startsWith("7555")
 }
 
-class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, emailSender: EmailSender)(implicit materializer: Materializer) extends Actor with ActorLogging {
+class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: AuthCallEngine, emailSender: EmailSender)(implicit materializer: Materializer) extends Actor with ActorLogging {
+
   import InternalCodeActivation._
 
   implicit val system = context.system
@@ -89,8 +96,11 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, emailSender: E
   private val sentCodes = new scala.collection.mutable.HashSet[Code]()
 
   def codeWasNotSent(code: Code) = !sentCodes.contains(code)
+
   def rememberSentCode(code: Code) = sentCodes += code
+
   def forgetSentCode(code: Code) = sentCodes -= code
+
   def forgetSentCodeAfterDelay(code: Code) =
     system.scheduler.scheduleOnce(repeatLimit.toMillis.millis, self, ForgetSentCode(code))
 
@@ -106,8 +116,9 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, emailSender: E
       rememberSentCode(code)
 
       code match {
-        case SmsCode(phone, c)   ⇒ smsEngine.sendCode(phone, c)
-        case EmailCode(email, c) ⇒ emailSender.send(Message(email, "Actor activation code", s"$c is your Actor code"))
+        case SmsCode(phone, c)            ⇒ smsEngine.sendCode(phone, c)
+        case CallCode(phone, c, language) ⇒ callEngine.sendCode(phone, c, language)
+        case EmailCode(email, c)          ⇒ emailSender.send(Message(email, "Actor activation code", s"$c is your Actor code"))
       }
 
       forgetSentCodeAfterDelay(code)

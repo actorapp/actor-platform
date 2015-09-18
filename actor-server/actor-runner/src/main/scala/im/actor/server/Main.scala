@@ -36,7 +36,7 @@ import im.actor.server.dialog.group.{ GroupDialog, GroupDialogExtension }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.sequence._
 import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
-import im.actor.server.sms.TelesignSmsEngine
+import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngine }
 import im.actor.server.social.SocialExtension
 import im.actor.server.user._
 
@@ -103,10 +103,13 @@ object Main extends App {
 
   val mediator = DistributedPubSubExtension(system).mediator
 
+  val telesignClient = new TelesignClient(serverConfig.getConfig("services.telesign"))
+
   val activationContext = serverConfig.getString("services.activation.default-service") match {
     case "internal" ⇒ InternalCodeActivation.newContext(
       activationConfig,
-      new TelesignSmsEngine(serverConfig.getConfig("services.telesign")),
+      new TelesignSmsEngine(telesignClient),
+      new TelesignCallEngine((telesignClient)),
       new EmailSender(emailConfig)
     )
     case "actor-activation" ⇒ new GateCodeActivation(gateConfig)
