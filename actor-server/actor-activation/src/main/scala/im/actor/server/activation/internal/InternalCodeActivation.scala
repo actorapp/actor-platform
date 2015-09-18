@@ -47,7 +47,7 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
   def send(transactionHash: Option[String], code: Code): DBIO[String \/ Unit] = transactionHash match {
     case Some(hash) ⇒
       for {
-        _ ← persist.AuthCode.create(hash, code.code)
+        _ ← persist.AuthCode.createOrUpdate(hash, code.code)
         result ← DBIO.from(send(code))
       } yield result
     case None ⇒ DBIO.successful(\/-(send(code)))
