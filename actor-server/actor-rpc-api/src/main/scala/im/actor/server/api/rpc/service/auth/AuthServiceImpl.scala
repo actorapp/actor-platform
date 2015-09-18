@@ -154,7 +154,11 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       normalizedPhone ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeLong(phoneNumber).headOption)
       optAuthTransaction ← fromDBIO(persist.auth.AuthPhoneTransaction.findByPhoneAndDeviceHash(normalizedPhone, deviceHash))
       transactionHash ← optAuthTransaction match {
-        case Some(transaction) ⇒ point(transaction.transactionHash)
+        case Some(transaction) ⇒
+          val hash = transaction.transactionHash
+          for {
+            _ ← fromDBIO(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(hash)))
+          } yield hash
         case None ⇒
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
@@ -222,7 +226,16 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       isRegistered ← fromDBIO(persist.UserEmail.exists(validEmail))
       optTransaction ← fromDBIO(persist.auth.AuthEmailTransaction.findByEmailAndDeviceHash(validEmail, deviceHash))
       transactionHash ← optTransaction match {
-        case Some(trans) ⇒ point(trans.transactionHash)
+        case Some(trans) ⇒
+          val hash = trans.transactionHash
+          activationType match {
+            case CODE ⇒
+              for {
+                _ ← fromDBIO(sendEmailCode(email, genCode(), hash))
+              } yield hash
+            case OAUTH2 ⇒
+              point(hash)
+          }
         case None ⇒
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
