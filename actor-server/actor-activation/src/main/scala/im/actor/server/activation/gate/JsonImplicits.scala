@@ -7,7 +7,7 @@ import play.api.libs.functional.syntax._
 
 import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
 
-import im.actor.server.activation.Activation.{ EmailCode, SmsCode, Code }
+import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode, Code }
 import im.actor.server.activation._
 
 trait JsonImplicits {
@@ -19,6 +19,7 @@ trait JsonImplicits {
 
   implicit val codeWrites = Writes[Code] {
     case smsCode: SmsCode     ⇒ smsCodeWrites.writes(smsCode)
+    case callCode: CallCode   ⇒ Json.writes[CallCode].writes(callCode)
     case emailCode: EmailCode ⇒ Json.writes[EmailCode].writes(emailCode)
   }
 
