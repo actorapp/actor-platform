@@ -15,7 +15,7 @@ import slick.dbio._
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.users.ApiSex._
-import im.actor.server.activation.Activation.{ EmailCode, SmsCode }
+import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode }
 import im.actor.server.activation._
 import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User }
 import im.actor.server.persist.auth.AuthTransaction
@@ -155,12 +155,17 @@ trait AuthHelpers extends Helpers {
   }
 
   protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[String \/ Unit] = {
-    log.info("Sending code {} to {}", code, phoneNumber)
+    log.info("Sending sms code {} to {}", code, phoneNumber)
     activationContext.send(transactionHash, SmsCode(phoneNumber, code))
   }
 
+  protected def sendCallCode(phoneNumber: Long, code: String, transactionHash: Option[String], language: String)(implicit system: ActorSystem): DBIO[String \/ Unit] = {
+    log.info("Sending call code {} to {}", code, phoneNumber)
+    activationContext.send(transactionHash, CallCode(phoneNumber, code, language))
+  }
+
   protected def sendEmailCode(email: String, code: String, transactionHash: String)(implicit system: ActorSystem): DBIO[String \/ Unit] = {
-    log.info("Sending code {} to {}", code, email)
+    log.info("Sending email code {} to {}", code, email)
     activationContext.send(Some(transactionHash), EmailCode(email, code))
   }
 
