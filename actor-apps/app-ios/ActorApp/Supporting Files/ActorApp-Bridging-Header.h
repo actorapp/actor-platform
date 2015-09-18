@@ -32,8 +32,6 @@
 #import <UIActionSheet+Blocks/UIActionSheet+Blocks.h>
 #import <UIAlertController+Blocks/UIAlertController+Blocks.h>
 
-// WARRING: Disabled because Mint doesn't support bitcode
-// #import <SplunkMint/SplunkMint.h>
 #import <HockeySDK/HockeySDK.h>
 #import <AddressBook/AddressBook.h>
 // #import <Mixpanel/Mixpanel.h>

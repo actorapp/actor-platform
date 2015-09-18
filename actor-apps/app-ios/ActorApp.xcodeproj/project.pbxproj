@@ -368,11 +368,11 @@
 		1ACEA023B930E6F261DAC0A6BDB410C1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				94EE37C03BC0B4DD1E82AE89A542A35B /* ActorApp-Bridging-Header.h */,
 				DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */,
+				94EE37C03BC0B4DD1E82AE89A542A35B /* ActorApp-Bridging-Header.h */,
+				148837AEB986AFDE519BEBD3686AB073 /* main.m */,
 				F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */,
 				897AD66A77219F6888322861BDA2CD14 /* app.json */,
-				148837AEB986AFDE519BEBD3686AB073 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -824,6 +824,7 @@
 				4533F91FE5E247335BA76B35E6FC28C1 /* Frameworks */,
 				B094A1F03E91E4354C789DE8702D2FB4 /* Resources */,
 				8A6D3D9BB256B05E9E66DD2FD43B13B0 /* Copy Pods Resources */,
+				06FC5E741BAB2DCC0071F153 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -919,6 +920,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		06FC5E741BAB2DCC0071F153 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Initialization of Crashlytics\n\n# Getting build secret\nBUILD_SECRET=$FABRIC_BUILD_SECRET\n\n# Getting api key from Info.plist\nAPI_KEY=$(/usr/libexec/PlistBuddy \"${PRODUCT_SETTINGS_PATH}\" -c \"Print :Fabric:APIKey\")\n\nif [ -n \"$BUILD_SECRET\" ]; then\n    if [[ $? -ne 0 ]]; then\n        echo \"Crashlytics not installed, skipping\"\n    else\n        if [ -n \"$API_KEY\" ]; then\n            echo \"Uploading symbols to crashlytics\" \"$API_KEY\" \"$BUILD_SECRET\"\n            \"${PODS_ROOT}/Fabric/Fabric.framework/run\" \"$API_KEY\" \"$BUILD_SECRET\"\n        else\n            echo \"Crashlytics not installed, skipping\"\n        fi\n    fi\nelse\n    echo \"Crashlytics build secret not set, skipping\"\nfi";
+		};
 		8A6D3D9BB256B05E9E66DD2FD43B13B0 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1126,6 +1140,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = YES;
+				FABRIC_BUILD_SECRET = "";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -1236,6 +1251,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = YES;
+				FABRIC_BUILD_SECRET = "";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;

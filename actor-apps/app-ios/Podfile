@@ -35,5 +35,6 @@ target 'ActorApp' do
 
     # Tracking
     pod 'HockeySDK', '~> 3.8-RC'
-    # pod 'SplunkMint'
+    pod 'Fabric'
+    pod 'Crashlytics'
 end
