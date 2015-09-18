@@ -87,15 +87,15 @@ class HeaderSection extends React.Component {
   };
 
   render() {
-    const { user } = this.state;
+    const { user, isOpened } = this.state;
 
     if (user) {
 
       let headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
-        'sidebar__header--opened': this.state.isOpened
+        'sidebar__header--opened': isOpened
       });
       let menuClass = classNames('dropdown', {
-        'dropdown--opened': this.state.isOpened
+        'dropdown--opened': isOpened
       });
 
       return (
