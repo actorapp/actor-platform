@@ -32,7 +32,7 @@ import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
-import im.actor.server.sms.AuthSmsEngine
+import im.actor.server.sms.{AuthCallEngine, AuthSmsEngine}
 import im.actor.server._
 
 final class AuthServiceSpec
@@ -125,7 +125,7 @@ final class AuthServiceSpec
     val oauthGoogleConfig = DummyOAuth2Server.config
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     val activationConfig = ActivationConfig.load.get
-    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, null)
+    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, null)
     implicit val service = new auth.AuthServiceImpl(activationContext, mediator)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     implicit val contactService = new ContactsServiceImpl
@@ -1074,4 +1074,8 @@ object DummyOAuth2Server {
 
 class DummySmsEngine extends AuthSmsEngine {
   override def sendCode(phoneNumber: Long, code: String): Future[Unit] = Future.successful(())
+}
+
+class DummyCallEngine extends AuthCallEngine {
+  override def sendCode(phoneNumber: Long, code: String, language: String): Future[Unit] = Future.successful(())
 }
