@@ -9,7 +9,7 @@ import { ActionTypes } from 'constants/ActorAppConstants';
 let _isOpen = false,
     _pictureSource = null;
 
-class ProfilePictureStore extends Store {
+class CropAvatarStore extends Store {
   isOpen() {
     return _isOpen;
   }
@@ -36,4 +36,4 @@ class ProfilePictureStore extends Store {
   }
 }
 
-export default new ProfilePictureStore(Dispatcher);
+export default new CropAvatarStore(Dispatcher);
