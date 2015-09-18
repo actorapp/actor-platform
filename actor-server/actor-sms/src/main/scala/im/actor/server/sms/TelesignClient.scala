@@ -15,7 +15,8 @@ import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Failure
 
 object TelesignClient {
-  private val BaseUrl = "https://rest.telesign.com/v1"
+  private val BaseUrl = "https://rest.telesign.com"
+  private val ApiVersion = "v1"
   val DefaultSmsTemplate: String = "$$CODE$$ is your Actor code"
   val DefaultLanguage = "en"
   val CallLanguages: Set[String] = "af sq ar ar-EG hy bn eu be bn-BD bs bg ca ku zh-HK zh-CN zh-TW hr cs da fa-AF nl egx en-AU en-GB en-US et fil fi fr fr-CA gl ka de el gu ha he hi hu is id zu it ja kn kk km sw ko ko ky lv ln lt lb mk ms ml mr ne no or fa pl pt pt-BR pt-PT pa-IN pa-PK ro ru sr sr-BA sd sk sk-SK sl es es-ES es-CL es-419 es-ES sv gsw ta te th tr uk ur vi cy".split(" ").toSet
@@ -31,7 +32,7 @@ final class TelesignClient(config: Config)(implicit system: ActorSystem) {
 
   private val HmacSha1Algorithm = "HmacSHA1"
   private val Utf8Encoding = "UTF-8"
-  val FormContentType = "application/x-www-form-urlencoded"
+  private val FormContentType = "application/x-www-form-urlencoded"
 
   private val http = new Http()
 
@@ -59,18 +60,21 @@ final class TelesignClient(config: Config)(implicit system: ActorSystem) {
     }
   }
 
-  private def resourceUrl(resourcePath: String): Req = url(BaseUrl + resourcePath)
+  private def resourceUrl(resourcePath: String): Req = url(s"$BaseUrl${resourceUri(resourcePath)}")
+  private def resourceUri(resourcePath: String): String = s"/$ApiVersion$resourcePath"
 
   private def postRequest(resourcePath: String, params: Map[String, String]): Future[Response] = {
     val body = params.map(p ⇒ s"${p._1}=${URLEncoder.encode(p._2, Utf8Encoding)}").mkString("&")
-    val request = (resourceUrl(resourcePath).POST.setContentType(FormContentType, Utf8Encoding).setBody(body))
+    val resUrl = resourceUrl(resourcePath)
+    val request = (resUrl.POST.setContentType(FormContentType, Utf8Encoding).setBody(body))
     val date = dateFormat.format(new Date)
     val stringToSign =
       s"""POST
           |${FormContentType}; charset=${Utf8Encoding}
           |${date}
           |${body}
-          |${resourcePath}""".stripMargin
+          |${resourceUri(resourcePath)}""".stripMargin
+
     val mac = Mac.getInstance(HmacSha1Algorithm)
     mac.init(new SecretKeySpec(apiKey, HmacSha1Algorithm))
     val hmac = mac.doFinal(stringToSign.getBytes(Utf8Encoding))
