@@ -32,16 +32,25 @@ class CropAvatarModal extends Component {
         x: 0,
         y: 0
       },
-      cropSize: 200
+      cropSize: 200,
+      scaledWidth: 0,
+      scaledHeight: 0,
+      naturalWidth: 0,
+      naturalHeight: 0
     };
   }
 
   componentDidMount() {
+    const originalImage = React.findDOMNode(this.refs.originalImage);
     document.addEventListener('keydown', this.onKeyDown, false);
+    window.addEventListener('resize', this.storeScaledSizes, false);
+    originalImage.addEventListener('load', this.storeScaledSizes, false);
   }
 
   componentWillUnmount() {
+    const originalImage = React.findDOMNode(this.refs.originalImage);
     document.removeEventListener('keydown', this.onKeyDown, false);
+    window.removeEventListener('resize', this.storeScaledSizes, false);
   }
 
   onClose = () => CropAvatarActionCreators.hide();
@@ -98,12 +107,8 @@ class CropAvatarModal extends Component {
   onStartResizeTop = (event) => {
     const wrapper = React.findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageY;
-
     event.preventDefault();
-
     this.setState({resizeLastCoord});
-    console.debug('onStartResizeTop:', resizeLastCoord);
-
     wrapper.addEventListener('mousemove', this.onResizeTop);
     wrapper.addEventListener('touchmove', this.onResizeTop);
   };
@@ -111,12 +116,8 @@ class CropAvatarModal extends Component {
   onStartResizeRight = (event) => {
     const wrapper = React.findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageX;
-
     event.preventDefault();
-    console.debug('onStartResizeRight:', resizeLastCoord);
-
     this.setState({resizeLastCoord});
-
     wrapper.addEventListener('mousemove', this.onResizeRight);
     wrapper.addEventListener('touchmove', this.onResizeRight);
   };
@@ -124,12 +125,8 @@ class CropAvatarModal extends Component {
   onStartResizeBottom = (event) => {
     const wrapper = React.findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageY;
-
     event.preventDefault();
-
-    console.debug('onStartResizeBottom:', resizeLastCoord);
     this.setState({resizeLastCoord});
-
     wrapper.addEventListener('mousemove', this.onResizeBottom);
     wrapper.addEventListener('touchmove', this.onResizeBottom);
   };
@@ -137,12 +134,8 @@ class CropAvatarModal extends Component {
   onStartResizeLeft = (event) => {
     const wrapper = React.findDOMNode(this.refs.wrapper);
     const resizeLastCoord = event.pageX;
-
     event.preventDefault();
-
     this.setState({resizeLastCoord});
-    console.debug('onStartResizeLeft:', resizeLastCoord);
-
     wrapper.addEventListener('mousemove', this.onResizeLeft);
     wrapper.addEventListener('touchmove', this.onResizeLeft);
   };
@@ -153,7 +146,7 @@ class CropAvatarModal extends Component {
   onResizeLeft = (event) => this.onCropResize(event, 'LEFT');
 
   onCropResize = (event, direction) => {
-    const { cropPosition, resizeLastCoord, cropSize } = this.state;
+    const { cropPosition, resizeLastCoord, cropSize, scaledWidth, scaledHeight } = this.state;
     const axisCoord = (direction === 'RIGHT' || direction === 'LEFT') ? event.pageX : event.pageY;
     const resizeValue = resizeLastCoord - axisCoord;
 
@@ -190,7 +183,7 @@ class CropAvatarModal extends Component {
       default:
     }
 
-    if (resizedCropSize < minCropSize) {
+    if (resizedCropSize < minCropSize || resizedCropSize > scaledWidth || resizedCropSize > scaledHeight) {
       resizedCropSize = cropSize;
       resizeCropPosition = cropPosition;
     }
@@ -217,17 +210,15 @@ class CropAvatarModal extends Component {
   updateCropSize = (cropSize, cropPosition) => this.setState({cropSize, cropPosition});
 
   onCrop = () => {
-    const { cropPosition, cropSize } = this.state;
+    const { cropPosition, cropSize, scaleRatio } = this.state;
     const { onCropFinish } = this.props;
-
     const cropImage = React.findDOMNode(this.refs.cropImage);
     let canvas = document.createElement('canvas');
-
-    canvas.width = cropSize;
-    canvas.height = cropSize;
-
     let context = canvas.getContext('2d');
-    context.drawImage(cropImage, cropPosition.x, cropPosition.y, cropSize, cropSize, 0, 0, cropSize, cropSize);
+
+    canvas.width = canvas.height = cropSize;
+
+    context.drawImage(cropImage, cropPosition.x / scaleRatio, cropPosition.y / scaleRatio, cropSize / scaleRatio, cropSize / scaleRatio, 0, 0, cropSize, cropSize);
 
     const croppedImage = dataURItoBlob(canvas.toDataURL());
 
@@ -235,8 +226,21 @@ class CropAvatarModal extends Component {
     this.onClose();
   };
 
+  storeScaledSizes = (event) => {
+    console.debug('storeScaledSizes:', event);
+    const originalImage = React.findDOMNode(this.refs.originalImage);
+    this.setState({
+      scaledWidth: originalImage.width,
+      scaledHeight: originalImage.height,
+      naturalWidth: originalImage.naturalWidth,
+      naturalHeight: originalImage.naturalHeight,
+      scaleRatio: originalImage.width/originalImage.naturalWidth
+    })
+  };
+
   render() {
-    const { isOpen, pictureSource, cropPosition, cropSize } = this.state;
+    console.debug(this.state);
+    const { isOpen, pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight } = this.state;
 
     if (isOpen) {
       return (
@@ -280,7 +284,7 @@ class CropAvatarModal extends Component {
                      draggable="false"
                      ref="cropImage"
                      src={pictureSource}
-                     style={{left: -cropPosition.x, top: -cropPosition.y}}/>
+                     style={{left: -cropPosition.x, top: -cropPosition.y, width: scaledWidth, height: scaledHeight}}/>
               </div>
               <img className="crop-wrapper__image-original"
                    draggable="false"
