@@ -415,7 +415,10 @@ public class SmileProcessor {
             listeners.add(new SmilesListener() {
                 @Override
                 public void onSmilesUpdated(boolean completed) {
-                    lock.notify();
+                    synchronized (lock){
+                        lock.notify();
+                    }
+
                 }
             });
             try {
