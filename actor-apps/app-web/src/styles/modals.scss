@@ -659,6 +659,17 @@
         }
       }
     }
+    .about {
+      label {
+        font-size: 12px;
+
+        display: inline-block;
+
+        margin-bottom: 6px;
+
+        color: rgba(0, 0, 0, .5);
+      }
+    }
   }
   &--profile-picture {
     max-width: 90%;

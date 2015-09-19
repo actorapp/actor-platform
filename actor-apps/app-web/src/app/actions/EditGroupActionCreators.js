@@ -34,5 +34,13 @@ export default {
 
   changeGroupAvatar(gid, avatar) {
     ActorClient.changeGroupAvatar(gid, avatar)
+  },
+
+  editGroupAbout: (gid, about) => {
+    dispatchAsync(ActorClient.editGroupAbout(gid, about), {
+      request: ActionTypes.GROUP_EDIT_ABOUT,
+      success: ActionTypes.GROUP_EDIT_ABOUT_SUCCESS,
+      failure: ActionTypes.GROUP_EDIT_ABOUT_ERROR
+    }, { gid, about });
   }
 };
