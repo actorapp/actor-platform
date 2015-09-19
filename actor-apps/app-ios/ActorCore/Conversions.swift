@@ -46,6 +46,15 @@ extension ACMessage {
     }
 }
 
+//extension ACAuthStateEnum {
+//    
+//}
+//
+////public func ==(lhs: ACAuthStateEnum, rhs: ACAuthStateEnum) -> Bool {
+////    return lhs.ordinal() == rhs.ordinal()
+////}
+
+
 extension ACPeer {
     var isGroup: Bool {
         get {

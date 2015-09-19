@@ -16,6 +16,43 @@ extension UIView {
             self.alpha = 1
         })
     }
+    
+    var height: CGFloat {
+        get {
+            return self.bounds.height
+        }
+    }
+    
+    var width: CGFloat {
+        get {
+            return self.bounds.width
+        }
+    }
+    
+    var left: CGFloat {
+        get {
+            return self.frame.minX
+        }
+    }
+    
+    var right: CGFloat {
+        get {
+            return self.frame.maxX
+        }
+    }
+
+    var top: CGFloat {
+        get {
+            return self.frame.minY
+        }
+    }
+    
+    var bottom: CGFloat {
+        get {
+            return self.frame.maxY
+        }
+    }
+    
 }
 
 class UIViewMeasure {

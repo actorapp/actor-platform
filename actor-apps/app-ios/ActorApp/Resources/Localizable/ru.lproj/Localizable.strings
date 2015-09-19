@@ -304,6 +304,12 @@
 
 "AuthCodeHint" = "Мы отправили Вам SMS с кодом активации.";
 
+"AuthCallDoneHint" = "Актор набрал ваш номер телефона.";
+
+"AuthCallHint" = "Актор позвонит вам через {time}";
+
+"AuthNoCodeHint" = "Не получили код?";
+
 "AuthProfileTitle" = "Ваш профиль";
 
 "AuthProfileAddPhoto1" = "добавить";
@@ -355,6 +361,10 @@
 "AlertYes" = "Да";
 
 "AlertNo" = "Нет";
+
+"AlertError" = "Ошибка";
+
+"AlertTryAgain" = "Повторить";
 
 "UnsupportedContent" = "Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.";
 
