@@ -302,6 +302,12 @@
 
 "AuthCodeHint" = "We have sent you an SMS with the code.";
 
+"AuthCallHint" = "Actor will call you in {time}";
+
+"AuthCallDoneHint" = "Actor dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
 "AuthProfileTitle" = "Your Info";
 
 "AuthProfileAddPhoto1" = "add";
@@ -353,6 +359,10 @@
 "AlertYes" = "Yes";
 
 "AlertNo" = "No";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
 
 "UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
 
