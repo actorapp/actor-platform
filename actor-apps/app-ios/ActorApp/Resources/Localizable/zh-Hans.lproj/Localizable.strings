@@ -304,6 +304,12 @@
 
 "AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
 
+"AuthCallHint" = "Actor will call you in {time}";
+
+"AuthCallDoneHint" = "Actor dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
 "AuthProfileTitle" = "你的信息";
 
 "AuthProfileAddPhoto1" = "添加";
@@ -355,6 +361,10 @@
 "AlertYes" = "是";
 
 "AlertNo" = "否";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 

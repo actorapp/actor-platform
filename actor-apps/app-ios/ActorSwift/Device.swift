@@ -23,4 +23,23 @@ let isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
 let isIPhone = UIDevice.currentDevice().userInterfaceIdiom == .Phone
 
-let isiOS8 = floor(NSFoundationVersionNumber) > floor(NSFoundationVersionNumber_iOS_7_1)
+private let device = Device()
+
+let isiOS8 = device.atLeastiOS8
+
+let isiOS9 = device.atLeastiOS9
+
+private class Device {
+    let atLeastiOS8: Bool
+    let atLeastiOS9: Bool
+    
+    init() {
+        if #available(iOS 8.0, *) {
+            atLeastiOS8 = true
+            atLeastiOS9 = NSProcessInfo.processInfo().isOperatingSystemAtLeastVersion( NSOperatingSystemVersion(majorVersion: 9, minorVersion: 0, patchVersion: 0))
+        } else {
+            atLeastiOS9 = false
+            atLeastiOS8 = false
+        }
+    }
+}
