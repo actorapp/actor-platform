@@ -126,7 +126,7 @@ class UserProfile extends React.Component {
       </li>
     );
 
-    let dropdownClassNames = classnames('dropdown pull-left', {
+    const dropdownClassNames = classnames('dropdown pull-left', {
       'dropdown--opened': isActionsDropdownOpen
     });
 
@@ -159,7 +159,7 @@ class UserProfile extends React.Component {
             <header>
               <AvatarItem image={user.bigAvatar}
                           placeholder={user.placeholder}
-                          size="big"
+                          size="large"
                           title={user.name}/>
 
               <h3 className="user_profile__meta__title">{user.name}</h3>

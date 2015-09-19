@@ -12,7 +12,8 @@ import { english, russian } from 'l18n';
 
 let _isOpen = false,
     _languageData = null,
-    _sessions = [];
+    _sessions = [],
+    _currentTab = 'GENERAL';
 
 class PreferencesStore extends Store {
   isOpen() {
@@ -56,6 +57,10 @@ class PreferencesStore extends Store {
     return _sessions;
   }
 
+  getCurrentTab() {
+    return _currentTab;
+  }
+
   savePreferences(newPreferences) {
     const {
       isSendByEnterEnabled,
@@ -88,6 +93,10 @@ class PreferencesStore extends Store {
         break;
       case ActionTypes.PREFERENCES_SESSION_LOAD_SUCCESS:
         _sessions = action.response;
+        this.__emitChange();
+        break;
+      case ActionTypes.PREFERENCES_CHANGE_TAB:
+        _currentTab = action.tab;
         this.__emitChange();
         break;
       default:

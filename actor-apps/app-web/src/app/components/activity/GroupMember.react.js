@@ -16,6 +16,7 @@ import KickUserStore from 'stores/KickUserStore'
 import AvatarItem from 'components/common/AvatarItem.react';
 import * as Stateful from 'components/common/Stateful.react';
 
+import ActorClient from 'utils/ActorClient'
 
 const getStateFromStore = (uid) => {
   const kickUserState = KickUserStore.getKickUserState(uid);
@@ -48,9 +49,10 @@ export default class GroupMember extends React.Component {
   render() {
     const { peerInfo, canKick, gid } = this.props;
     const { kickUserState } = this.state;
+    const myId = ActorClient.getUid();
 
     let controls;
-    if (canKick) {
+    if (canKick && peerInfo.peer.id !== myId) {
       controls = (
         <div className="controls pull-right">
           <Stateful.Root currentState={kickUserState}>

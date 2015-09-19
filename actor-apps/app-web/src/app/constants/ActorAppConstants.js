@@ -32,8 +32,9 @@ export const ActionTypes = keymirror({
   AUTH_WRONG_NUMBER_CLICK: null,
 
   DIALOGS_CHANGED: null,
-  SELECT_DIALOG_PEER: null,
   SELECTED_DIALOG_INFO_CHANGED: null,
+  MY_PROFILE_CHANGED: null,
+  SELECT_DIALOG_PEER: null,
 
   COMPOSE_CLEAN: null,
   COMPOSE_TYPING: null,
@@ -70,6 +71,7 @@ export const ActionTypes = keymirror({
   GROUP_EDIT_TITLE: null,
   GROUP_EDIT_TITLE_SUCCESS: null,
   GROUP_EDIT_TITLE_ERROR: null,
+  GROUP_INFO_CHANGED: null,
 
   NOTIFICATION_CHANGE: null,
 
@@ -98,6 +100,7 @@ export const ActionTypes = keymirror({
   PREFERENCES_SAVE: null,
   PREFERENCES_MODAL_HIDE: null,
   PREFERENCES_MODAL_SHOW: null,
+  PREFERENCES_CHANGE_TAB: null,
   PREFERENCES_SESSION_LOAD: null,
   PREFERENCES_SESSION_LOAD_SUCCESS: null,
   PREFERENCES_SESSION_LOAD_ERROR: null,
@@ -128,7 +131,10 @@ export const ActionTypes = keymirror({
   CHAT_DELETE_ERROR: null,
   CHAT_CLEAR: null,
   CHAT_CLEAR_SUCCESS: null,
-  CHAT_CLEAR_ERROR: null
+  CHAT_CLEAR_ERROR: null,
+
+  CROP_AVATAR_MODAL_SHOW: null,
+  CROP_AVATAR_MODAL_HIDE: null
 });
 
 export const PeerTypes = {
