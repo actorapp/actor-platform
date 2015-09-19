@@ -39,6 +39,7 @@ class EditGroup extends Component {
       isOpen: EditGroupStore.isOpen(),
       group: EditGroupStore.getGroup(),
       title: EditGroupStore.getTitle(),
+      about: EditGroupStore.getAbout(),
       isCropModalOpen: CropAvatarStore.isOpen()
     }
   }
@@ -66,6 +67,7 @@ class EditGroup extends Component {
 
   onClose = () => EditGroupActionCreators.hide();
   onTitleChange = event => this.setState({title: event.target.value});
+  onAboutChange = event => this.setState({about: event.target.value});
 
   onKeyDown = event => {
     if (event.keyCode === KeyCodes.ESC) {
@@ -75,8 +77,9 @@ class EditGroup extends Component {
   };
 
   onSave = () => {
-    const { group, title } = this.state;
+    const { group, title, about } = this.state;
     EditGroupActionCreators.editGroupTitle(group.id, title);
+    EditGroupActionCreators.editGroupAbout(group.id, about);
     this.onClose();
   };
 
@@ -104,7 +107,7 @@ class EditGroup extends Component {
   };
 
   render() {
-    const { isOpen, group, isCropModalOpen, title } = this.state;
+    const { isOpen, group, isCropModalOpen, title, about } = this.state;
 
     const cropAvatar = isCropModalOpen ? <CropAvatarModal onCropFinish={this.changeGroupAvatar}/> : null;
 
@@ -131,6 +134,12 @@ class EditGroup extends Component {
                          onChange={this.onTitleChange}
                          type="text"
                          value={title}/>
+
+              <div className="about">
+                <label htmlFor="about">Group about</label>
+                <textarea className="textarea" value={about} onChange={this.onAboutChange} id="about"
+                          placeholder="Some description"/>
+              </div>
             </div>
             <div className="profile-picture text-center">
               <div className="profile-picture__changer">

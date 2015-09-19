@@ -9,6 +9,7 @@ import ActorClient from 'utils/ActorClient';
 
 let _isOpen = false,
     _title = '',
+    _about = '',
     _group = {};
 
 class EditGroupStore extends Store {
@@ -20,21 +21,29 @@ class EditGroupStore extends Store {
     return _group;
   }
 
+  getAbout() {
+    return _about;
+  }
+
   getTitle() {
     return _title;
   }
 
+  setGroup(group) {
+    _group = group;
+    _title = _group.name;
+    _about = _group.about;
+  }
   __onDispatch = action => {
     switch (action.type) {
       case ActionTypes.GROUP_EDIT_MODAL_SHOW:
         _isOpen = true;
-        _group = action.group;
-        _title = _group.name;
+        this.setGroup(action.group);
         this.__emitChange();
         break;
 
       case ActionTypes.GROUP_INFO_CHANGED:
-        _group = action.group;
+        this.setGroup(action.group);
         this.__emitChange();
         break;
 
