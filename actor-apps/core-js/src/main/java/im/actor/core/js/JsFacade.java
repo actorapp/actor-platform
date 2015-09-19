@@ -629,6 +629,10 @@ public class JsFacade implements Exportable {
         messenger.changeMyAvatar(descriptor);
     }
 
+    public void removeMyAvatar() {
+        messenger.removeMyAvatar();
+    }
+
     public JsPromise editName(final int uid, final String newName) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -718,6 +722,10 @@ public class JsFacade implements Exportable {
     public void changeGroupAvatar(final int gid, final JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.changeGroupAvatar(gid, descriptor);
+    }
+
+    public void removeGroupAvatar(final int gid) {
+        messenger.removeGroupAvatar(gid);
     }
 
     public JsPromise createGroup(final String title, final JsFile file, final int[] uids) {
