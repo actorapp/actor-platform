@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service
 import im.actor.api.rpc.messaging.{ UpdateMessageContentChanged, ApiTextMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration._
 
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -28,7 +28,7 @@ class SequenceServiceSpec extends BaseAppSuite({
       """
     )
   )
-}) with ImplicitGroupRegions with ImplicitSessionRegionProxy with ImplicitAuthService {
+}) with ImplicitSessionRegionProxy with ImplicitAuthService with ImplicitFileStorageAdapter {
 
   behavior of "Sequence service"
 
@@ -82,7 +82,7 @@ class SequenceServiceSpec extends BaseAppSuite({
     }
     var totalUpdates: Seq[ApiDifferenceUpdate] = Seq.empty
 
-    Await.result(db.run(DBIO.sequence(actions)), 10.seconds)
+    Await.result(Future.sequence(actions), 10.seconds)
 
     val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
       val diff = res.toOption.get
@@ -148,9 +148,9 @@ class SequenceServiceSpec extends BaseAppSuite({
     val smallUpdate = UpdateMessageContentChanged(user2Peer, 1L, ApiTextMessage("Hello", Vector.empty, None))
     val bigUpdate = UpdateMessageContentChanged(user2Peer, 2L, ApiTextMessage((for (_ ← 1L to maxSize * 10) yield "b").mkString(""), Vector.empty, None))
 
-    whenReady(persistAndPushUpdateF(authId, smallUpdate, pushText = None, isFat = false))(identity)
-    whenReady(persistAndPushUpdateF(authId, bigUpdate, pushText = None, isFat = false))(identity)
-    whenReady(persistAndPushUpdateF(authId, bigUpdate, pushText = None, isFat = false))(identity)
+    whenReady(persistAndPushUpdate(authId, smallUpdate, pushText = None, isFat = false))(identity)
+    whenReady(persistAndPushUpdate(authId, bigUpdate, pushText = None, isFat = false))(identity)
+    whenReady(persistAndPushUpdate(authId, bigUpdate, pushText = None, isFat = false))(identity)
 
     // expect first small update and needMore == true
     val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒

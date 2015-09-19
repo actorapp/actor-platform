@@ -1,33 +1,27 @@
 package im.actor.server.api.rpc.service.groups
 
-import im.actor.server.{ ApiConversions, models, persist }
-import im.actor.util.misc.IdUtils
-
-import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.concurrent.{ ExecutionContext, Future }
-
 import akka.actor.ActorSystem
-import akka.util.Timeout
-import slick.dbio.DBIO
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
-import im.actor.server.acl.ACLUtils
-import ApiConversions._
+import im.actor.server.ApiConversions._
+import im.actor.server.acl.ACLUtils.accessToken
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, ImageUtils, FileErrors }
-import im.actor.server.group.{ GroupCommands, GroupErrors, GroupExtension, GroupOffice, GroupProcessorRegion, GroupViewRegion }
+import im.actor.server.file.{ FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension }
+import im.actor.server.group.{ GroupCommands, GroupErrors, GroupExtension }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
-import im.actor.server.sequence.{ SeqState, SeqStateDate, SeqUpdatesExtension }
-import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
-import ACLUtils.accessToken
+import im.actor.server.sequence.{ SeqState, SeqStateDate }
+import im.actor.server.user.UserExtension
 import im.actor.server.{ models, persist }
+import im.actor.util.misc.IdUtils
+import slick.dbio.DBIO
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.concurrent.{ ExecutionContext, Future }
 
 final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   implicit
@@ -41,15 +35,11 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   import ImageUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
-  private implicit val timeout = Timeout(5.seconds)
 
-  private implicit val db: Database = DbExtension(actorSystem).db
+  private val db: Database = DbExtension(actorSystem).db
+  private val groupExt = GroupExtension(actorSystem)
+  private val userExt = UserExtension(actorSystem)
   private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
-
-  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
-  protected implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
-  private implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(actorSystem).processorRegion
-  private implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
 
   override def jhandleEditGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -58,7 +48,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
             case Right(avatar) ⇒
               for {
-                UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, Some(avatar), randomId))
+                UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, client.authId, Some(avatar), randomId))
               } yield Ok(ResponseEditGroupAvatar(
                 avatar.get,
                 seq,
@@ -81,7 +71,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, None, randomId))
+          UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, client.authId, None, randomId))
         } yield Ok(ResponseSeqDate(
           seq,
           state.toByteArray,
@@ -98,7 +88,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       withKickableGroupMember(groupOutPeer, userOutPeer) { fullGroup ⇒ //maybe move to group peer manager
         for {
           //todo: get rid of DBIO.from
-          SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.kickUser(fullGroup.id, userOutPeer.userId, randomId))
+          SeqStateDate(seq, state, date) ← DBIO.from(groupExt.kickUser(fullGroup.id, userOutPeer.userId, randomId))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, userOutPeer.userId)
           Ok(ResponseSeqDate(seq, state.toByteArray, date))
@@ -112,7 +102,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.leaveGroup(fullGroup.id, randomId))
+          SeqStateDate(seq, state, date) ← DBIO.from(groupExt.leaveGroup(fullGroup.id, randomId))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, client.userId)
           Ok(ResponseSeqDate(seq, state.toByteArray, date))
@@ -130,7 +120,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           val userIds = users.map(_.userId).toSet
           val groupUserIds = userIds + client.userId
 
-          val f = for (res ← GroupOffice.create(groupId, title, randomId, userIds)) yield {
+          val f = for (res ← groupExt.create(groupId, title, randomId, userIds)) yield {
             Ok(ResponseCreateGroup(
               groupPeer = ApiGroupOutPeer(groupId, res.accessHash),
               seq = res.seqstate.seq,
@@ -153,7 +143,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
           for {
-            res ← DBIO.from(GroupOffice.inviteToGroup(fullGroup.id, userOutPeer.userId, randomId))
+            res ← DBIO.from(groupExt.inviteToGroup(fullGroup.id, userOutPeer.userId, randomId))
           } yield {
             GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
             Ok(ResponseSeqDate(res.seq, res.state.toByteArray, res.date))
@@ -171,7 +161,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.updateTitle(fullGroup.id, client.userId, client.authId, title, randomId))
+          SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateTitle(fullGroup.id, client.userId, client.authId, title, randomId))
         } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
       }
     }
@@ -201,7 +191,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
         val group = models.Group.fromFull(fullGroup)
 
-        val join = GroupOffice.joinGroup(
+        val join = groupExt.joinGroup(
           groupId = group.id,
           joiningUserId = client.userId,
           joiningUserAuthId = client.authId,
@@ -209,8 +199,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
         )
         for {
           (seqstatedate, userIds, randomId) ← DBIO.from(join)
-          userStructs ← DBIO.from(Future.sequence(userIds.map(UserOffice.getApiStruct(_, client.userId, client.authId))))
-          groupStruct ← DBIO.from(GroupOffice.getApiStruct(group.id, client.userId))
+          userStructs ← DBIO.from(Future.sequence(userIds.map(userExt.getApiStruct(_, client.userId, client.authId))))
+          groupStruct ← DBIO.from(groupExt.getApiStruct(group.id, client.userId))
         } yield Ok(ResponseJoinGroup(groupStruct, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date, userStructs.toVector, randomId))
       }
     }
@@ -227,9 +217,9 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           case None ⇒
             val group = models.Group.fromFull(fullGroup)
             for {
-              (seqstatedate, userIds, randomId) ← DBIO.from(GroupOffice.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
-              userStructs ← DBIO.from(Future.sequence(userIds.map(UserOffice.getApiStruct(_, client.userId, client.authId))))
-              groupStruct ← DBIO.from(GroupOffice.getApiStruct(group.id, client.userId))
+              (seqstatedate, userIds, randomId) ← DBIO.from(groupExt.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
+              userStructs ← DBIO.from(Future.sequence(userIds.map(userExt.getApiStruct(_, client.userId, client.authId))))
+              groupStruct ← DBIO.from(groupExt.getApiStruct(group.id, client.userId))
             } yield Ok(ResponseEnterGroup(groupStruct, userStructs.toVector, randomId, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date))
         }
       }
@@ -261,7 +251,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   def jhandleEditGroupTopic(groupPeer: ApiGroupOutPeer, randomId: Long, topic: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
-        SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.updateTopic(groupPeer.groupId, client.userId, client.authId, topic, randomId))
+        SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateTopic(groupPeer.groupId, client.userId, client.authId, topic, randomId))
       } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
     }
     db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {
@@ -276,7 +266,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   def jhandleEditGroupAbout(groupPeer: ApiGroupOutPeer, randomId: Long, about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
-        SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.updateAbout(groupPeer.groupId, client.userId, client.authId, about, randomId))
+        SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateAbout(groupPeer.groupId, client.userId, client.authId, about, randomId))
       } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
     }
     db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {
@@ -293,7 +283,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   def jhandleMakeUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseMakeUserAdmin]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
-        (members, SeqState(seq, state)) ← DBIO.from(GroupOffice.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))
+        (members, SeqState(seq, state)) ← DBIO.from(groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))
       } yield Ok(ResponseMakeUserAdmin(members, seq, state.toByteArray))
     }
     db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {

@@ -1,24 +1,18 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.api.rpc._
+import im.actor.api.rpc.contacts.ApiPhoneToImport
+import im.actor.api.{ rpc ⇒ api }
+import im.actor.server._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.user.{ UserUtils, UserOffice }
+import im.actor.server.user.UserExtension
 
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.Random
 
-import slick.dbio.DBIO
-
-import im.actor.api.rpc._
-import im.actor.api.rpc.contacts.ApiPhoneToImport
-import im.actor.api.{ rpc ⇒ api }
-import im.actor.server
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server._
-
 class ContactsServiceSpec
   extends BaseAppSuite
-  with ImplicitUserRegions
   with ImplicitSessionRegionProxy
   with ImplicitAuthService {
   behavior of "Contacts Service"
@@ -65,7 +59,7 @@ class ContactsServiceSpec
 
       def changed() = {
         val expectedUsers = Await.result(Future.sequence(userModels map { u ⇒
-          UserOffice.getApiStruct(u.id, user.id, authId)
+          UserExtension(system).getApiStruct(u.id, user.id, authId)
         }), 3.seconds)
 
         whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp ⇒
@@ -117,7 +111,7 @@ class ContactsServiceSpec
         }
 
         val expectedUsers = Vector(Await.result(
-          UserOffice.getApiStruct(user2.id, user.id, authId),
+          UserExtension(system).getApiStruct(user2.id, user.id, authId),
           3.seconds
         ))
 
