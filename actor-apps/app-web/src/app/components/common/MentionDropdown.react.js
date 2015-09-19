@@ -26,7 +26,7 @@ class MentionDropdown extends React.Component {
     const { mentions } = props;
 
     this.state = {
-      isShown: mentions && mentions.length > 0,
+      isOpen: mentions && mentions.length > 0,
       selectedIndex: 0
     };
   }
@@ -36,9 +36,9 @@ class MentionDropdown extends React.Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextState.isShown && !this.state.isShown) {
+    if (nextState.isOpen && !this.state.isOpen) {
       this.setListeners();
-    } else if (!nextState.isShown && this.state.isShown) {
+    } else if (!nextState.isOpen && this.state.isOpen) {
       this.cleanListeners();
     }
   }
@@ -46,7 +46,7 @@ class MentionDropdown extends React.Component {
   componentWillReceiveProps(props) {
     const { mentions } = props;
     this.setState({
-      isShown: mentions && mentions.length > 0,
+      isOpen: mentions && mentions.length > 0,
       selectedIndex: 0
     });
   }
@@ -62,14 +62,9 @@ class MentionDropdown extends React.Component {
     document.removeEventListener('click', this.closeMentions, false);
   }
 
-  closeMentions = () => {
-    this.setState({isShown: false});
-  };
+  closeMentions = () => this.setState({isOpen: false});
 
-  onSelect = (value) => {
-    const { onSelect } = this.props;
-    onSelect(value);
-  };
+  onSelect = (value) => this.props.onSelect(value);
 
   handleScroll = (top) => {
     const menuListNode = React.findDOMNode(this.refs.mentionList);
@@ -141,22 +136,22 @@ class MentionDropdown extends React.Component {
 
   render() {
     const { className, mentions } = this.props;
-    const { isShown, selectedIndex } = this.state;
+    const { isOpen, selectedIndex } = this.state;
 
     const mentionClassName = classnames('mention', {
-      'mention--opened': isShown
+      'mention--opened': isOpen
     }, className);
     const mentionsElements = _.map(mentions, (mention, index) => {
       const itemClassName = classnames('mention__list__item', {
         'mention__list__item--active': selectedIndex === index
       });
-      const title = mention.isNick ?
-        [
-          <span className="nickname">{mention.mentionText}</span>,
-          <span className="name">{mention.secondText}</span>
-        ]
-      :
-        <span className="name">{mention.mentionText}</span>;
+
+      const title = mention.isNick ? [
+        <span className="nickname">{mention.mentionText}</span>,
+        <span className="name">{mention.secondText}</span>
+      ] : (
+        <span className="name">{mention.mentionText}</span>
+      );
 
       return (
         <li className={itemClassName}
@@ -172,7 +167,7 @@ class MentionDropdown extends React.Component {
       );
     });
 
-    if (isShown) {
+    if (isOpen) {
       return (
         <div className={mentionClassName}>
           <div className="mention__wrapper">

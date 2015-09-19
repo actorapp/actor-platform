@@ -190,7 +190,7 @@ class GroupProfile extends React.Component {
       <header>
         <AvatarItem image={group.bigAvatar}
                     placeholder={group.placeholder}
-                    size="big"
+                    size="large"
                     title={group.name}/>
 
         <h3 className="group_profile__meta__title">{group.name}</h3>
