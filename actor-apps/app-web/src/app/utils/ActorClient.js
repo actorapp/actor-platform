@@ -249,6 +249,10 @@ export default {
     return window.messenger.editGroupTitle(gid, title);
   },
 
+  editGroupAbout(gid, title) {
+    return window.messenger.editGroupAbout(gid, title);
+  },
+
   renderMarkdown(markdownText) {
     return window.messenger.renderMarkdown(markdownText);
   },
