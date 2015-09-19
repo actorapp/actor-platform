@@ -7,7 +7,7 @@ import RouterContainer from 'utils/RouterContainer';
 
 import crosstab from 'crosstab';
 
-import React from 'react';
+import React, { Component } from 'react';
 import Router from 'react-router';
 import Raven from 'utils/Raven'; // eslint-disable-line
 import isMobile from 'utils/IsMobile';
@@ -25,7 +25,6 @@ import LoginStore from 'stores/LoginStore';
 import PreferencesStore from 'stores/PreferencesStore';
 
 import LoginActionCreators from 'actions/LoginActionCreators';
-import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 import Deactivated from 'components/Deactivated.react';
 import Login from 'components/Login.react';
@@ -63,7 +62,7 @@ if (isMobile() && window.location.hash !== '#/install') {
 }
 
 @ReactMixin.decorate(IntlMixin)
-class App extends React.Component {
+class App extends Component {
   render() {
     return <RouteHandler/>;
   }
@@ -112,6 +111,4 @@ const initReact = () => {
   }
 };
 
-window.jsAppLoaded = () => {
-  setTimeout(initReact, 0);
-};
+window.jsAppLoaded = () => setTimeout(initReact, 0);
