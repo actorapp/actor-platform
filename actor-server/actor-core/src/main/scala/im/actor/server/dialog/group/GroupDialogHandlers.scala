@@ -4,16 +4,15 @@ import akka.actor.Status
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
-import im.actor.server.dialog.{ AuthIdRandomId, GroupDialogCommands, ReadFailed, ReceiveFailed }
+import im.actor.server.dialog._
 import im.actor.server.group.GroupErrors.NotAMember
-import im.actor.server.group.GroupOffice
-import im.actor.server.history.HistoryUtils
+import im.actor.server.group.GroupExtension
+import im.actor.server.history.HistoryUtils._
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.UserOffice
-import HistoryUtils._
+import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
 import org.joda.time.DateTime
 
@@ -22,7 +21,7 @@ import scala.concurrent.Future
 trait GroupDialogHandlers extends UpdateCounters {
   this: GroupDialog ⇒
 
-  import GroupDialogCommands._
+  import DialogCommands._
   import GroupDialogEvents._
 
   protected def sendMessage(
@@ -38,21 +37,18 @@ trait GroupDialogHandlers extends UpdateCounters {
         if ((memberIds contains senderUserId) || optBot.contains(senderUserId)) {
           withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
             val date = new DateTime
+            val dateMillis = date.getMillis
             for {
               _ ← Future.sequence(memberIds.filterNot(_ == senderUserId) map { userId ⇒
-                for {
-                  _ ← UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
-                  counterUpdate ← db.run(getUpdateCountersChanged(userId))
-                  _ ← UserOffice.broadcastUserUpdate(userId, counterUpdate, None, isFat = false, deliveryId = Some(s"counter_${randomId}"))
-                } yield ()
+                delivery.receiverDelivery(userId, senderUserId, groupPeer, randomId, dateMillis, message, isFat)
               })
               SeqState(seq, state) ← if (optBot.contains(senderUserId)) {
                 Future.successful(SeqState(0, ByteString.EMPTY))
               } else {
-                UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
+                delivery.senderDelivery(senderUserId, senderAuthId, groupPeer, randomId, dateMillis, message, isFat)
               }
               _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
-            } yield SeqStateDate(seq, state, date.getMillis)
+            } yield SeqStateDate(seq, state, dateMillis)
           } recover {
             case e ⇒
               log.error(e, "Failed to send message")
@@ -74,11 +70,11 @@ trait GroupDialogHandlers extends UpdateCounters {
         val now = System.currentTimeMillis
         val update = UpdateMessageReceived(groupPeer, date, now)
 
-        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map UserOffice.getAuthIds) map (_.flatten.toSet)
+        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map userExt.getAuthIds) map (_.flatten.toSet)
         for {
           _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
           authIds ← authIdsF
-          _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None, isFat = false))
+          _ ← persistAndPushUpdates(authIds.toSet, update, None, isFat = false)
         } yield MessageReceivedAck()
       }
     } else Future.successful(MessageReceivedAck())) pipeTo replyTo onFailure {
@@ -97,16 +93,16 @@ trait GroupDialogHandlers extends UpdateCounters {
         if (memberIds contains readerUserId) {
           for {
             _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-            _ ← UserOffice.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false, deliveryId = None)
+            _ ← userExt.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false, deliveryId = None)
             counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-            _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
+            _ ← userExt.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
           } yield ()
         } else Future.successful(())
       }
 
     val joinerF: Future[Unit] = withMembers { (_, invitedUserIds, _) ⇒
       if (invitedUserIds contains readerUserId) {
-        GroupOffice.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
+        groupExt.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
       } else Future.successful(())
     }
 
@@ -122,12 +118,12 @@ trait GroupDialogHandlers extends UpdateCounters {
         if (memberIds contains readerUserId) {
           val now = new DateTime().getMillis
           val restMembers = memberIds.filterNot(_ == readerUserId)
-          val authIdsF = Future.sequence(restMembers map UserOffice.getAuthIds) map (_.flatten.toSet)
+          val authIdsF = Future.sequence(restMembers map userExt.getAuthIds) map (_.flatten.toSet)
 
           for {
             authIds ← authIdsF
             _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-            _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
+            _ ← persistAndPushUpdates(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
           } yield ()
         } else Future.successful(())
       }
@@ -145,7 +141,7 @@ trait GroupDialogHandlers extends UpdateCounters {
   }
 
   protected def withMemberIds[T](groupId: Int)(f: (Set[Int], Set[Int], Option[Int]) ⇒ Future[T]): Future[T] = {
-    GroupOffice.getMemberIds(groupId) flatMap {
+    groupExt.getMemberIds(groupId) flatMap {
       case (memberIds, invitedUserIds, optBot) ⇒
         f(memberIds.toSet, invitedUserIds.toSet, optBot)
     }

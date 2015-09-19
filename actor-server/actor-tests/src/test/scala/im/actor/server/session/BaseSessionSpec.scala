@@ -39,7 +39,6 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   with FlatSpecLike
   with ScalaFutures
   with Matchers
-  with ImplicitUserRegions
   with ActorSerializerPrepare {
 
   override implicit def patienceConfig: PatienceConfig =

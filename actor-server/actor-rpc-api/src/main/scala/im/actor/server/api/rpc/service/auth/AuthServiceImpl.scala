@@ -1,40 +1,38 @@
 package im.actor.server.api.rpc.service.auth
 
-import java.time.{ ZoneOffset, LocalDateTime }
-
-import im.actor.server.acl.ACLUtils
-import im.actor.util.log.AnyRefLogSource
-
-import scala.concurrent._, duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.language.postfixOps
-import scalaz._
+import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 import akka.util.Timeout
-import org.joda.time.DateTime
-import shapeless._
-import slick.dbio.DBIO
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.ApiEmailActivationType._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.ApiSex.ApiSex
+import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.internal.CodeActivation
 import im.actor.server.db.DbExtension
-import im.actor.server.oauth.{ OAuth2ProvidersDomains, GoogleProvider }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
 import im.actor.server.persist.auth.AuthTransaction
-import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
+import im.actor.server.user.UserExtension
+import im.actor.server.{ models, persist }
+import im.actor.util.log.AnyRefLogSource
 import im.actor.util.misc.PhoneNumberUtils._
-import im.actor.server.user.{ UserViewRegion, UserExtension, UserOffice, UserProcessorRegion }
 import im.actor.util.misc._
-import im.actor.server.{ persist, models }
+import org.joda.time.DateTime
+import shapeless._
+import slick.dbio.DBIO
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent._
+import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.language.postfixOps
+import scalaz._
 
 case class PubSubMediator(mediator: ActorRef)
 
@@ -55,9 +53,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   protected implicit val db: Database = DbExtension(actorSystem).db
-  protected implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
-  protected implicit val userProcessorRegion: UserProcessorRegion = UserExtension(actorSystem).processorRegion
-  protected implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
+  protected val userExt = UserExtension(actorSystem)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
 
   protected val log = Logging(actorSystem, this)
@@ -116,7 +112,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         email ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmail.find(transaction.email))
 
         user ← authorizeT(email.userId, profile.locale.getOrElse(""), clientData)
-        userStruct ← fromDBIO(DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId)))
+        userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
 
         //refresh session data
         authSession = models.AuthSession(
@@ -198,7 +194,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, clientData)
           case \/-(user)                  ⇒ handleUserCreate(user, transaction, clientData.authId)
         }
-        userStruct ← fromDBIO(DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId)))
+        userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
         //refresh session data
         authSession = models.AuthSession(
           userId = user.id,
@@ -269,7 +265,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
         //sign in user and delete auth transaction
         user ← authorizeT(userId, countryCode, clientData)
-        userStruct ← fromDBIO(DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId)))
+        userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
         _ ← fromDBIO(persist.auth.AuthTransaction.delete(transaction.transactionHash))
 
         //refresh session data
@@ -296,7 +292,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val action = requireAuth(clientData) map { implicit client ⇒
       persist.AuthSession.findByAuthId(client.authId) flatMap {
         case Some(session) ⇒
-          for (_ ← DBIO.from(UserOffice.logout(session))) yield Ok(misc.ResponseVoid)
+          for (_ ← DBIO.from(userExt.logout(session))) yield Ok(misc.ResponseVoid)
         case None ⇒ throw new Exception(s"Cannot find AuthSession for authId: ${client.authId}")
       }
     }
@@ -308,7 +304,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val authorizedAction = requireAuth(clientData).map { client ⇒
       for {
         sessions ← persist.AuthSession.findByUserId(client.userId) map (_.filterNot(_.authId == client.authId))
-        _ ← DBIO.from(Future.sequence(sessions map UserOffice.logout))
+        _ ← DBIO.from(Future.sequence(sessions map userExt.logout))
       } yield {
         Ok(ResponseVoid)
       }
@@ -321,7 +317,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val authorizedAction = requireAuth(clientData).map { client ⇒
       persist.AuthSession.find(client.userId, id).headOption flatMap {
         case Some(session) ⇒
-          for (_ ← DBIO.from(UserOffice.logout(session))) yield Ok(ResponseVoid)
+          for (_ ← DBIO.from(userExt.logout(session))) yield Ok(ResponseVoid)
         case None ⇒
           DBIO.successful(Error(AuthErrors.AuthSessionNotFound))
       }
@@ -455,9 +451,9 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                         //todo: move this to UserOffice
                         val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered, LocalDateTime.now(ZoneOffset.UTC))
                         for {
-                          _ ← DBIO.from(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
-                          _ ← DBIO.from(UserOffice.auth(userId, clientData.authId))
-                          _ ← DBIO.from(UserOffice.addPhone(user.id, normPhoneNumber))
+                          _ ← DBIO.from(userExt.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
+                          _ ← DBIO.from(userExt.auth(userId, clientData.authId))
+                          _ ← DBIO.from(userExt.addPhone(user.id, normPhoneNumber))
                           _ ← persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
                         } yield {
                           \/-(user :: HNil)
@@ -496,9 +492,9 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
               for {
                 prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
-                _ ← DBIO.from(Future.sequence(prevSessions map UserOffice.logout))
+                _ ← DBIO.from(Future.sequence(prevSessions map userExt.logout))
                 _ ← persist.AuthSession.create(authSession)
-                userStruct ← DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId))
+                userStruct ← DBIO.from(userExt.getApiStruct(user.id, user.id, clientData.authId))
               } yield {
                 Ok(
                   ResponseAuth(
@@ -530,8 +526,8 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       case None ⇒ throw new Exception("Failed to retrieve user")
       case Some(user) ⇒
         for {
-          _ ← DBIO.from(UserOffice.changeCountryCode(userId, countryCode))
-          _ ← DBIO.from(UserOffice.auth(userId, clientData.authId))
+          _ ← DBIO.from(userExt.changeCountryCode(userId, countryCode))
+          _ ← DBIO.from(userExt.auth(userId, clientData.authId))
         } yield \/-(user :: HNil)
     }
   }
