@@ -38,16 +38,11 @@ object IntegrationTokenMigrator extends Migration {
     } map (_ ⇒ ())
   }
 
-  private def migrateSingle(groupId: Int)(
-    implicit
-    system:     ActorSystem,
-    ec:         ExecutionContext,
-    viewRegion: GroupViewRegion,
-    kv:         SimpleKeyValue[Int]
-  ): Future[Unit] = {
+  private def migrateSingle(groupId: Int)(implicit system: ActorSystem, kv: SimpleKeyValue[Int]): Future[Unit] = {
+    import system.dispatcher
     implicit val timeout = Timeout(40.seconds)
     for {
-      optToken ← GroupOffice.getIntegrationToken(groupId)
+      optToken ← GroupExtension(system).getIntegrationToken(groupId)
       _ ← optToken map { token ⇒ kv.upsert(token, groupId) } getOrElse {
         system.log.warning("Could not find integration token in group {}", groupId)
         Future.successful(())

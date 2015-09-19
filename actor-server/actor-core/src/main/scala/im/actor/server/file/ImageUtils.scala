@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import com.sksamuel.scrimage.{ AsyncImage, Format, Position }
 import im.actor.api.rpc.files.{ ApiAvatarImage, ApiFileLocation, ApiAvatar }
 import im.actor.server.acl.ACLUtils
+import im.actor.server.db.DbExtension
 import im.actor.server.{ models, persist }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -63,10 +64,10 @@ object ImageUtils {
   )(
     implicit
     fsAdapter: FileStorageAdapter,
-    db:        Database,
     ec:        ExecutionContext,
     system:    ActorSystem
   ) = {
+    val db: Database = DbExtension(system).db
     val smallFileName = "small-avatar.jpg"
     val largeFileName = "large-avatar.jpg"
 

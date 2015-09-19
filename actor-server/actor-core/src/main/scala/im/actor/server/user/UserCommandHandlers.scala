@@ -79,9 +79,9 @@ private[user] trait UserCommandHandlers {
       val update = UpdateUserNameChanged(userId, name)
       for {
         relatedUserIds ← getRelations(userId)
-        _ ← UserOffice.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false, deliveryId = None)
-        seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, pushText = None, isFat = false)
+        _ ← userExt.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
+        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false, deliveryId = None)
+        seqstate ← SeqUpdatesManager.persistAndPushUpdate(clientAuthId, update, pushText = None, isFat = false)
       } yield seqstate
     }
 
@@ -108,51 +108,13 @@ private[user] trait UserCommandHandlers {
       } yield AddEmailAck())
     }
 
-  protected def deliverMessage(user: User, peer: ApiPeer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Unit = {
-    val update = UpdateMessage(
-      peer = peer,
-      senderUserId = senderUserId,
-      date = date.getMillis,
-      randomId = randomId,
-      message = message
-    )
-
-    val result = if (user.authIds.nonEmpty) {
-      for {
-        senderUser ← UserOffice.getApiStruct(senderUserId, userId, getAuthIdUnsafe(user))
-        senderName = senderUser.localName.getOrElse(senderUser.name)
-        pushText ← getPushText(peer, userId, senderName, message)
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, Some(pushText), isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
-      } yield DeliverMessageAck()
-    } else {
-      Future.successful(DeliverMessageAck())
-    }
-
-    result pipeTo sender()
-  }
-
-  protected def deliverOwnMessage(user: User, peer: ApiPeer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
-    val update = UpdateMessage(
-      peer = peer,
-      senderUserId = userId,
-      date = date.getMillis,
-      randomId = randomId,
-      message = message
-    )
-
-    SeqUpdatesManager.persistAndPushUpdatesF(user.authIds filterNot (_ == senderAuthId), update, None, isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
-
-    val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
-    SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, ownUpdate, None, isFat, deliveryId = Some(s"msgsent_${peer.toString}_${randomId}")) pipeTo sender()
-  }
-
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
     persistReply(TSEvent(now(), UserEvents.NicknameChanged(nickname)), user) { _ ⇒
       val update = UpdateUserNickChanged(userId, nickname)
       for {
         _ ← db.run(p.User.setNickname(userId, nickname))
         relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
+        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield seqstate
     }
   }
@@ -163,7 +125,7 @@ private[user] trait UserCommandHandlers {
       for {
         _ ← db.run(p.User.setAbout(userId, about))
         relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
+        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield seqstate
     }
   }
@@ -179,7 +141,7 @@ private[user] trait UserCommandHandlers {
       for {
         _ ← db.run(p.AvatarData.createOrUpdate(avatarData))
         relatedUserIds ← relationsF
-        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
+        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
     }
   }
@@ -197,7 +159,7 @@ private[user] trait UserCommandHandlers {
         val localName = contact.name
         for {
           _ ← addContact(contact.ownerUserId, user.id, phoneNumber, localName, user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
+          _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
@@ -229,7 +191,7 @@ private[user] trait UserCommandHandlers {
         val localName = contact.name
         for {
           _ ← addContact(contact.ownerUserId, user.id, email, localName, user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
+          _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
