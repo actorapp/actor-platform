@@ -250,10 +250,10 @@
 
         &:hover {
           .avatar {
-            opacity: .3;
+            opacity: .5;
           }
           a {
-            background-color: rgba(0, 0, 0, .2);
+            background-color: rgba(0, 0, 0, .1);
             //box-shadow: inset 0 0 64px 8px rgba(0, 0, 0, .4);
             span {
               transform: translateY(0);
@@ -583,17 +583,80 @@
   &--edit-group {
     .modal-new__body {
       padding: 16px;
-      .avatar {
-        margin-right: 16px;
+      .col-xs {
+        padding: 0 16px 16px;
       }
-      label {
-        display: inline-block;
+      .profile-picture {
+        padding: 16px;
+        &__controls {
+          a {
+            font-size: 13px;
+            font-weight: 500;
 
-        margin-bottom: 8px;
-      }
-      input {
-        box-sizing: border-box;
-        width: 100%;
+            cursor: pointer;
+
+            color: $dark-sky-blue;
+          }
+        }
+        &__changer {
+          position: relative;
+
+          margin-bottom: 8px;
+
+          border-radius: 50%;
+          .avatar {
+            position: relative;
+            z-index: 0;
+            //transition: 200ms;
+          }
+          a {
+            font-size: 11px;
+            font-weight: 700;
+
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+
+            display: block;
+
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            margin-bottom: 8px;
+            padding-top: 50px;
+
+            cursor: pointer;
+            //transition: 200ms;
+            text-transform: uppercase;
+
+            color: white;
+            border-radius: 50%;
+            text-shadow: 0 0 4px rgba(black, .7);
+            span {
+              display: block;
+
+              opacity: 0;
+              //transition: 200ms;
+              //transform: translateY(-5px);
+            }
+          }
+
+          &:hover {
+            .avatar {
+              opacity: .5;
+            }
+            a {
+              background-color: rgba(0, 0, 0, .1);
+              //box-shadow: inset 0 0 64px 8px rgba(0, 0, 0, .4);
+              span {
+                transform: translateY(0);
+
+                opacity: 1;
+              }
+            }
+          }
+        }
       }
     }
   }
