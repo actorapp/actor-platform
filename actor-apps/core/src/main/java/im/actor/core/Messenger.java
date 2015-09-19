@@ -119,7 +119,7 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
-    @ObjectiveCName("requestStartEmailAuthCommandWithEmail:")
+    @ObjectiveCName("requestStartAuthCommandWithEmail:")
     public Command<AuthState> requestStartEmailAuth(final String email) {
         return modules.getAuthModule().requestStartEmailAuth(email);
     }
@@ -131,7 +131,7 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
-    @ObjectiveCName("requestStartPhoneAuthCommandWithEmail:")
+    @ObjectiveCName("requestStartAuthCommandWithPhone:")
     public Command<AuthState> requestStartPhoneAuth(final long phone) {
         return modules.getAuthModule().requestStartPhoneAuth(phone);
     }
@@ -166,7 +166,7 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
-    @ObjectiveCName("validateCodeCommandWithCode:")
+    @ObjectiveCName("validateCodeCommand:")
     public Command<AuthState> validateCode(final String code) {
         return modules.getAuthModule().requestValidateCode(code);
     }

@@ -158,7 +158,6 @@ import Crashlytics
     }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        print("open url: \(url)")
         
         if (url.scheme == "actor") {
             if (url.host == "invite") {
@@ -167,7 +166,7 @@ import Crashlytics
                     if token != nil {
                         UIAlertView.showWithTitle(nil, message: localized("GroupJoinMessage"), cancelButtonTitle: localized("AlertNo"), otherButtonTitles: [localized("GroupJoinAction")], tapBlock: { (view, index) -> Void in
                             if (index == view.firstOtherButtonIndex) {
-                                self.execute(Actor.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
+                                Executions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
                                     let groupId = val as! JavaLangInteger
                                     self.openChat(ACPeer.groupWithInt(groupId.intValue))
                                     }, failureBlock: { (val) -> Void in
@@ -256,30 +255,39 @@ import Crashlytics
         self.completionHandler = completionHandler
     }
     
-    func execute(command: ACCommand) {
-        execute(command, successBlock: nil, failureBlock: nil)
-    }
-    
-    func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
-        let window = UIApplication.sharedApplication().windows[1]
-        let hud = MBProgressHUD(window: window)
-        hud.mode = MBProgressHUDMode.Indeterminate
-        hud.removeFromSuperViewOnHide = true
-        window.addSubview(hud)
-        window.bringSubviewToFront(hud)
-        hud.show(true)
-        command.startWithCallback(CocoaCallback(result: { (val:Any?) -> () in
-            dispatchOnUi {
-                hud.hide(true)
-                successBlock?(val: val)
-            }
-            }, error: { (val) -> () in
-                dispatchOnUi {
-                    hud.hide(true)
-                    failureBlock?(val: val)
-                }
-        }))
-    }
+//    func execute(command: ACCommand) {
+//        execute(command, successBlock: nil, failureBlock: nil)
+//    }
+//    
+//    func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
+//        let hud = showProgress()
+//        command.startWithCallback(CocoaCallback(result: { (val:Any?) -> () in
+//            dispatchOnUi {
+//                hud.hide(true)
+//                successBlock?(val: val)
+//            }
+//            }, error: { (val) -> () in
+//                dispatchOnUi {
+//                    hud.hide(true)
+//                    failureBlock?(val: val)
+//                }
+//        }))
+//    }
+//    
+//    func executeRecoverable(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
+//        
+//    }
+//    
+//    private func showProgress() -> MBProgressHUD {
+//        let window = UIApplication.sharedApplication().windows[1]
+//        let hud = MBProgressHUD(window: window)
+//        hud.mode = MBProgressHUDMode.Indeterminate
+//        hud.removeFromSuperViewOnHide = true
+//        window.addSubview(hud)
+//        window.bringSubviewToFront(hud)
+//        hud.show(true)
+//        return hud
+//    }
     
     func openChat(peer: ACPeer) {
         for i in UIApplication.sharedApplication().windows {

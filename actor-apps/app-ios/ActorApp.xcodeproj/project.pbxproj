@@ -18,6 +18,9 @@
 		0689FDC28E670B8183BE15C0BAFECC88 /* DialogsSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4686D7D7B53AE388A9FBE510DFA6798 /* DialogsSearchCell.swift */; };
 		0697229ADDEB47FD0793551932F43DA6 /* CircullarLayerProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C0BB4D02D30127D1FBD0D44F43BAD8 /* CircullarLayerProgress.swift */; };
 		06E7FAC51BAA3BA000177709 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7FAC41BAA3BA000177709 /* Extensions.swift */; settings = {ASSET_TAGS = (); }; };
+		06FC5E781BACB3130071F153 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E771BACB3130071F153 /* Fonts.swift */; settings = {ASSET_TAGS = (); }; };
+		06FC5E7A1BACBCCC0071F153 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E791BACBCCC0071F153 /* Localization.swift */; settings = {ASSET_TAGS = (); }; };
+		06FC5E801BACEEC00071F153 /* Numbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E7F1BACEEC00071F153 /* Numbers.swift */; settings = {ASSET_TAGS = (); }; };
 		0AA06E7DC00FC7267A50485F830C9C1D /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246B87CFA2D1555AFFE5943E61934F2C /* Binder.swift */; };
 		0B6A05B711CA9DCD88C79CCA8104C0F1 /* TitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993125DEA698CD065C01215DCA5C3A6E /* TitledCell.swift */; };
 		0CA595BCB5F16107145374B11C486D6A /* SearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE552DCE0898430CAF7DA33B8397678 /* SearchSource.swift */; };
@@ -111,7 +114,7 @@
 		BE591031FF67D3E4E6D9D92D0757AFCA /* MixpanelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36CE703BBF72624C46093055091BECF /* MixpanelProvider.swift */; };
 		BEC41DB0B496CF9B32D2C36671216C5B /* AppText_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 6190F42AD224A8678A9213BB02634EBE /* AppText_Pt.properties */; };
 		C11F78ED09BEDC41CF4F693C22FDB425 /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D473CD2EBD067BD6B46A520C987B060 /* TableViewSeparator.swift */; };
-		C31D285F0307F13832A80E828D4B059A /* AuthSmsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4432A2D7B49BD9E6FBD62DB6388D1A /* AuthSmsViewController.swift */; };
+		C31D285F0307F13832A80E828D4B059A /* AuthCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4432A2D7B49BD9E6FBD62DB6388D1A /* AuthCodeViewController.swift */; };
 		C7370CCA314ADBC029F3FA4ACE1954F1 /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF37E48A7FDFFD8B6E60B27F2C610F51 /* AABubbleServiceCell.swift */; };
 		C7CD6FE54110A3E70B02CF1DAE087E39 /* notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C3B1707BE978450E8DC7222BCB23792E /* notification.caf */; };
 		CB06179197AB7EB66FBA1CAB3ADCCDDC /* FMDBList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7ED1C853A024A0E18037ACBD69C08B /* FMDBList.swift */; };
@@ -161,6 +164,9 @@
 		068505CA1B9AB5CB00819D16 /* highlight-default.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "highlight-default.min.css"; path = "Resources/Highlighter/highlight-default.min.css"; sourceTree = "<group>"; };
 		068505CB1B9AB5CB00819D16 /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = highlight.min.js; path = Resources/Highlighter/highlight.min.js; sourceTree = "<group>"; };
 		06E7FAC41BAA3BA000177709 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		06FC5E771BACB3130071F153 /* Fonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
+		06FC5E791BACBCCC0071F153 /* Localization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
+		06FC5E7F1BACEEC00071F153 /* Numbers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Numbers.swift; sourceTree = "<group>"; };
 		08F86D72B75F036762AE29FCB370C5DA /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABActionShit.h; path = View/ABActionShit/ABActionShit.h; sourceTree = "<group>"; };
 		0A5291BE37AEB0A847B40186961C343D /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "Launch Screen.xib"; path = "Resources/Launch Screen.xib"; sourceTree = "<group>"; };
 		0D473CD2EBD067BD6B46A520C987B060 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewSeparator.swift; path = View/TableViewSeparator.swift; sourceTree = "<group>"; };
@@ -242,7 +248,7 @@
 		8AEE724642D37D09EDCBC4CB7D64D143 /* ABPhoneField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ABPhoneField.m; path = View/ABPhoneField/ABPhoneField.m; sourceTree = "<group>"; };
 		8B0B56F75C11CA3A0404AB4417F9B41B /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8D00C4384AD8EBF50502D8C96917AB77 /* MainTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainTabViewController.swift; path = Controllers/Main/MainTabViewController.swift; sourceTree = "<group>"; };
-		8E4432A2D7B49BD9E6FBD62DB6388D1A /* AuthSmsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthSmsViewController.swift; path = Controllers/Auth/AuthSmsViewController.swift; sourceTree = "<group>"; };
+		8E4432A2D7B49BD9E6FBD62DB6388D1A /* AuthCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthCodeViewController.swift; path = Controllers/Auth/AuthCodeViewController.swift; sourceTree = "<group>"; };
 		8FAC295B7ADC03358B1685D1112325E9 /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = silence.caf; path = Resources/Sounds/silence.caf; sourceTree = "<group>"; };
 		938D544583A7F59B3428AFF83F7FD072 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = Controllers/Contacts/ContactsViewController.swift; sourceTree = "<group>"; };
 		93C0BB4D02D30127D1FBD0D44F43BAD8 /* CircullarLayerProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircullarLayerProgress.swift; path = View/Progress/CircullarLayerProgress.swift; sourceTree = "<group>"; };
@@ -544,8 +550,8 @@
 				1CB4315C1895D2D9E9CF3C18E8B401A0 /* Cells */,
 				561E3DDF5D90B257A86D90E7ECD79A9D /* AuthCountriesViewController.swift */,
 				6FE4331DE8A9E679274F5E616BC4EAA1 /* AuthPhoneViewController.swift */,
+				8E4432A2D7B49BD9E6FBD62DB6388D1A /* AuthCodeViewController.swift */,
 				D9A73DC0230482192627EF91CAB65790 /* AuthRegisterViewController.swift */,
-				8E4432A2D7B49BD9E6FBD62DB6388D1A /* AuthSmsViewController.swift */,
 				1619660CAFA063EAFB102429F467323B /* AuthViewController.swift */,
 			);
 			name = Auth;
@@ -633,6 +639,9 @@
 				CCE726AEAF889909BB5DA836E32F60DB /* UIBarAppearance+Swift.m */,
 				CDFCA363C7BBB8FCDF34FD61F12AACA4 /* Utils.swift */,
 				6E45FB7A6E225A31077A6FB065672BB9 /* Views.swift */,
+				06FC5E771BACB3130071F153 /* Fonts.swift */,
+				06FC5E791BACBCCC0071F153 /* Localization.swift */,
+				06FC5E7F1BACEEC00071F153 /* Numbers.swift */,
 			);
 			name = ActorSwift;
 			sourceTree = "<group>";
@@ -983,6 +992,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06FC5E781BACB3130071F153 /* Fonts.swift in Sources */,
 				FC08D7A3075BED069C45A29D155A13CE /* AABubbleBaseFileCell.swift in Sources */,
 				D3D9A06ACF822941722FDBE6FE633354 /* AABubbleCell.swift in Sources */,
 				93CF1F16824BC7BC7797BC016A87BB87 /* AABubbleDocumentCell.swift in Sources */,
@@ -996,6 +1006,7 @@
 				986D6082C5488BF030361C212BE29983 /* ABActionShit.m in Sources */,
 				20BF8FDDCB33B880453062E2781C7912 /* ABPhoneField.m in Sources */,
 				1EE9033A0CB8968FA8620DFCB940A879 /* AddParticipantViewController.swift in Sources */,
+				06FC5E801BACEEC00071F153 /* Numbers.swift in Sources */,
 				7226E099F1D301533F030787EAC6E94B /* Alerts.swift in Sources */,
 				DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */,
 				D1AE902CEB4CF563A8E5F86B52D28B82 /* AppTheme.swift in Sources */,
@@ -1004,9 +1015,10 @@
 				36020A34B882BC9BB7DA87E84545CE84 /* AuthCountryCell.swift in Sources */,
 				F71CAF552B1B9055B0EF5BD707C1AF4D /* AuthPhoneViewController.swift in Sources */,
 				ED2A2902044923B528B19D6490ADB38C /* AuthRegisterViewController.swift in Sources */,
-				C31D285F0307F13832A80E828D4B059A /* AuthSmsViewController.swift in Sources */,
+				C31D285F0307F13832A80E828D4B059A /* AuthCodeViewController.swift in Sources */,
 				ED7E5318F3FF72926AC679F191E91953 /* AuthViewController.swift in Sources */,
 				CBAE73D23FE25BBC0A9EEA1D8CF94449 /* AutoCompleteCell.swift in Sources */,
+				06FC5E7A1BACBCCC0071F153 /* Localization.swift in Sources */,
 				CF5BBC58E26FC099FE730B662AB81B76 /* AvatarView.swift in Sources */,
 				32081EFFCBB4D4D6B627EEF9E096709A /* BasicCell.swift in Sources */,
 				E4722445FFBFBDD5EF58B4B1C5D957C8 /* BigPlaceholderView.swift in Sources */,
@@ -1139,7 +1151,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
@@ -1250,7 +1262,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";

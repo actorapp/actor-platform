@@ -301,6 +301,12 @@
 
 "AuthCodeHint" = "Nós te enviamos um SMS com o código.";
 
+"AuthCallHint" = "Actor will call you in {time}";
+
+"AuthCallDoneHint" = "Actor dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
 "AuthProfileTitle" = "Suas Informações";
 
 "AuthProfileAddPhoto1" = "adicionar";
@@ -352,6 +358,10 @@
 "AlertYes" = "Sim";
 
 "AlertNo" = "Não";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
 
 "UnsupportedContent" = "Mensagem não suportada nesta versão. Por favor espere por uma atualização para ver esta mensagem.";
 

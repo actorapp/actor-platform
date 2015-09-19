@@ -317,7 +317,12 @@ public class Authentication {
                         } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
                             modules.getPreferences().putString(KEY_CODE, code);
                             state = AuthState.SIGN_UP;
-                            callback.onResult(AuthState.SIGN_UP);
+                            Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onResult(AuthState.SIGN_UP);
+                                }
+                            });
                             return;
                         }
 
