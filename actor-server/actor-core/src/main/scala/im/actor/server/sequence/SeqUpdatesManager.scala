@@ -226,8 +226,6 @@ object SeqUpdatesManager {
       case api.weak.UpdateUserLastSeen(userId, _) ⇒ singleUser(userId)
       case api.weak.UpdateUserOffline(userId)     ⇒ singleUser(userId)
       case api.weak.UpdateUserOnline(userId)      ⇒ singleUser(userId)
-      case api.calls.UpdateCallRing(user, _)      ⇒ singleUser(user.id)
-      case api.calls.UpdateCallEnd(_)             ⇒ empty
       case api.counters.UpdateCountersChanged(_)  ⇒ empty
     }
   }
