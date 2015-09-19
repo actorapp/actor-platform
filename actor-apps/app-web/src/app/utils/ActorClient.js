@@ -315,10 +315,10 @@ export default {
   },
 
   changeMyAvatar(avatar) {
-    window.messenger.changeMyAvatar(avatar)
+    window.messenger.changeMyAvatar(avatar);
   },
 
   changeGroupAvatar(gid, avatar) {
-    window.messenger.changeGroupAvatar(avatar)
+    window.messenger.changeGroupAvatar(gid, avatar);
   }
 }
