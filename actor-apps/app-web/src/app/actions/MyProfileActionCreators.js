@@ -8,30 +8,37 @@ import ActorClient from 'utils/ActorClient';
 
 export default {
   show() {
+    ActorClient.bindUser(ActorClient.getUid(), this.onProfileChanged);
     dispatch(ActionTypes.MY_PROFILE_MODAL_SHOW);
   },
 
   hide() {
+    ActorClient.unbindUser(ActorClient.getUid(), this.onProfileChanged);
     dispatch(ActionTypes.MY_PROFILE_MODAL_HIDE);
   },
 
-  saveName(name) {
-    dispatch(ActionTypes.MY_PROFILE_SAVE_NAME, {
-      name
-    });
+  onProfileChanged(profile) {
+    dispatch(ActionTypes.MY_PROFILE_CHANGED, { profile });
   },
 
+  // TODO: use dispatchAsync
+  saveName(name) {
+    dispatch(ActionTypes.MY_PROFILE_SAVE_NAME, { name });
+  },
+  // TODO: use dispatchAsync
   saveNickname(nick) {
-    dispatch(ActionTypes.MY_PROFILE_SAVE_NICKNAME, {
-      nick
-    });
+    dispatch(ActionTypes.MY_PROFILE_SAVE_NICKNAME, { nick });
   },
 
   editMyAbout(about) {
-    dispatchAsync(ActorClient.editMyAbout(about),{
+    dispatchAsync(ActorClient.editMyAbout(about), {
       request: ActionTypes.MY_PROFILE_EDIT_ABOUT,
       success: ActionTypes.MY_PROFILE_EDIT_ABOUT_SUCCESS,
       failure: ActionTypes.MY_PROFILE_EDIT_ABOUT_ERROR
     }, { about });
+  },
+
+  changeMyAvatar(newAvatar) {
+    ActorClient.changeMyAvatar(newAvatar);
   }
 };

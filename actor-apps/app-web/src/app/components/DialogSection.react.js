@@ -127,6 +127,7 @@ class DialogSection extends React.Component {
       mainContent = (
         <section className="dialog dialog--empty row center-xs middle-xs">
           <ConnectionState/>
+
           <h2>Select dialog or start a new one.</h2>
         </section>
       );
@@ -172,21 +173,23 @@ class DialogSection extends React.Component {
   }, 10, {maxWait: 50, leading: true});
 
   loadMessagesByScroll = _.debounce(() => {
-    let node = React.findDOMNode(this.refs.MessagesSection);
-    let scrollTop = node.scrollTop;
-    lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
+    if (this.state.peer) {
+      let node = React.findDOMNode(this.refs.MessagesSection);
+      let scrollTop = node.scrollTop;
+      lastScrolledFromBottom = node.scrollHeight - scrollTop - node.offsetHeight; // was node.scrollHeight - scrollTop
 
-    if (node.scrollTop < LoadMessagesScrollTop) {
-      DialogActionCreators.onChatEnd(this.state.peer);
+      if (node.scrollTop < LoadMessagesScrollTop) {
+        DialogActionCreators.onChatEnd(this.state.peer);
 
-      if (this.state.messages.length > this.state.messagesToRender.length) {
-        renderMessagesCount += renderMessagesStep;
+        if (this.state.messages.length > this.state.messagesToRender.length) {
+          renderMessagesCount += renderMessagesStep;
 
-        if (renderMessagesCount > this.state.messages.length) {
-          renderMessagesCount = this.state.messages.length;
+          if (renderMessagesCount > this.state.messages.length) {
+            renderMessagesCount = this.state.messages.length;
+          }
+
+          this.setState(getStateFromStores());
         }
-
-        this.setState(getStateFromStores());
       }
     }
   }, 5, {maxWait: 30});

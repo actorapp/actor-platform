@@ -1,22 +1,24 @@
 .ReactModalPortal {
   width: auto;
   height: auto;
+  .ReactModal__Overlay {
+    background-color: transparent !important;
+  }
+  &:last-child {
+    .ReactModal__Overlay {
+      background-color: $modal-backdrop-color !important;
+    }
+  }
 }
 
 .ReactModal__Overlay {
   position: fixed;
   z-index: 100;
-  //top: 0;
-  //right: 0;
-  //bottom: 0;
-  //left: 0;
-  //perspective: 600px;
 
   display: flex;
   flex-direction: column;
 
   opacity: 0;
-  background-color: $modal-backdrop-color;
 
   flex: 1;
   align-items: center;
@@ -31,27 +33,12 @@
   }
 }
 
-.ReactModal__Content {
-  //transform: scale(.5);
-
-  &--after-open {
-    //transition: all 150ms ease-in;
-    //transform: scale(1);
-  }
-  &--before-close {
-    //transition: all 150ms ease-in;
-    //-webkit-transform: scale(.75);
-  }
-}
-
 .modal-new {
   position: relative;
 
   overflow: hidden;
 
-  width: $modal-default-width;
-  //min-height: $modal-default-height;
-  //margin: 160px auto 0;
+  min-width: $modal-default-width;
 
   color: $modal-text-color;
   border-radius: $modal-default-radius;
@@ -87,7 +74,7 @@
     &__icon {
       //margin-top: -2px;
       //color: $dove-gray;
-      font-size: 20px;
+      //font-size: 20px;
       line-height: 24px;
 
       margin-right: 18px;
@@ -175,19 +162,14 @@
 
   &--profile {
     .modal-new__body {
-      padding-bottom: 6px;
+      padding: 16px;
+      //padding-bottom: 6px;
     }
 
-    .avatar {
-      margin: 16px 23px 0 16px;
-    }
     .name,
     .nick {
       font-size: 18px;
 
-      margin-right: 16px;
-      //font-weight: 700;
-      //margin-top: 24px;
       margin-bottom: 6px;
 
       color: $modal-text-color;
@@ -195,14 +177,7 @@
         margin-bottom: 0;
       }
     }
-    .phone {
-      //margin-bottom: 16px;
-      margin-right: 16px;
-
-      //color: $modal-text-light-color;
-    }
     .about {
-      padding: 0 16px 16px 0;
       label {
         font-size: 12px;
 
@@ -211,6 +186,82 @@
         margin-bottom: 6px;
 
         color: rgba(0, 0, 0, .5);
+      }
+    }
+
+    .col-xs {
+      padding: 0 16px 16px;
+    }
+    .profile-picture {
+      padding: 16px;
+      &__controls {
+        a {
+          font-size: 13px;
+          font-weight: 500;
+
+          cursor: pointer;
+
+          color: $dark-sky-blue;
+        }
+      }
+      &__changer {
+        position: relative;
+
+        margin-bottom: 8px;
+
+        border-radius: 50%;
+        .avatar {
+          position: relative;
+          z-index: 0;
+          //transition: 200ms;
+        }
+        a {
+          font-size: 11px;
+          font-weight: 700;
+
+          position: absolute;
+          z-index: 1;
+          top: 0;
+          left: 0;
+
+          display: block;
+
+          box-sizing: border-box;
+          width: 100%;
+          height: 100%;
+          margin-bottom: 8px;
+          padding-top: 50px;
+
+          cursor: pointer;
+          //transition: 200ms;
+          text-transform: uppercase;
+
+          color: white;
+          border-radius: 50%;
+          text-shadow: 0 0 4px rgba(black, .7);
+          span {
+            display: block;
+
+            opacity: 0;
+            //transition: 200ms;
+            //transform: translateY(-5px);
+          }
+        }
+
+        &:hover {
+          .avatar {
+            opacity: .5;
+          }
+          a {
+            background-color: rgba(0, 0, 0, .1);
+            //box-shadow: inset 0 0 64px 8px rgba(0, 0, 0, .4);
+            span {
+              transform: translateY(0);
+
+              opacity: 1;
+            }
+          }
+        }
       }
     }
 
@@ -457,9 +508,9 @@
               }
             }
             h4 {
+              font-size: 13px;
               font-weight: 500;
               line-height: 24px;
-              font-size: 13px;
 
               display: inline-block;
 
@@ -494,12 +545,12 @@
 
                 position: relative;
 
-                padding: 0 32px 8px 0;
-                margin-bottom: 8px;
                 margin-right: -32px;
+                margin-bottom: 8px;
+                padding: 0 32px 8px 0;
                 &__terminate {
                   position: absolute;
-                  top: 16px;
+                  top: 14px;
                   right: 32px;
                 }
                 .title {
@@ -532,18 +583,92 @@
   &--edit-group {
     .modal-new__body {
       padding: 16px;
-      .avatar {
-        margin-right: 16px;
+      .col-xs {
+        padding: 0 16px 16px;
       }
-      label {
-        display: inline-block;
+      .profile-picture {
+        padding: 16px;
+        &__controls {
+          a {
+            font-size: 13px;
+            font-weight: 500;
 
-        margin-bottom: 8px;
+            cursor: pointer;
+
+            color: $dark-sky-blue;
+          }
+        }
+        &__changer {
+          position: relative;
+
+          margin-bottom: 8px;
+
+          border-radius: 50%;
+          .avatar {
+            position: relative;
+            z-index: 0;
+            //transition: 200ms;
+          }
+          a {
+            font-size: 11px;
+            font-weight: 700;
+
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+
+            display: block;
+
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            margin-bottom: 8px;
+            padding-top: 50px;
+
+            cursor: pointer;
+            //transition: 200ms;
+            text-transform: uppercase;
+
+            color: white;
+            border-radius: 50%;
+            text-shadow: 0 0 4px rgba(black, .7);
+            span {
+              display: block;
+
+              opacity: 0;
+              //transition: 200ms;
+              //transform: translateY(-5px);
+            }
+          }
+
+          &:hover {
+            .avatar {
+              opacity: .5;
+            }
+            a {
+              background-color: rgba(0, 0, 0, .1);
+              //box-shadow: inset 0 0 64px 8px rgba(0, 0, 0, .4);
+              span {
+                transform: translateY(0);
+
+                opacity: 1;
+              }
+            }
+          }
+        }
       }
-      input {
-        box-sizing: border-box;
-        width: 100%;
-      }
+    }
+  }
+  &--profile-picture {
+    max-width: 90%;
+    max-height: 90%;
+    .modal-new__body {
+      line-height: 1px;
+
+      overflow: hidden;
+
+      padding: 0;
     }
   }
 }
@@ -610,6 +735,7 @@
   }
 }
 
+// Confirm modal
 .modal-backdrop {
   position: fixed;
   z-index: 1000;
@@ -670,5 +796,91 @@
   &--confirm {
     border-radius: 2px;
     background-color: #fff;
+  }
+}
+
+.crop-wrapper {
+  position: relative;
+  &__image-original {
+    user-select: none;
+    transform: scale(1.03);
+    pointer-events: none;
+    max-width: 100%;
+    max-height: 100%; // WTF? It didn't work
+    width: auto;
+    height: auto;
+
+    filter: blur(10px) saturate(.2);
+  }
+  &__overlay {
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 0;
+
+    overflow: hidden;
+
+    box-sizing: content-box;
+
+    cursor: move;
+
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px white;
+    img {
+      position: absolute;
+
+      display: block;
+    }
+  }
+  &__scale {
+    position: absolute;
+    z-index: 1000;
+
+    user-select: none;
+    pointer-events: none;
+
+    $scale-handler-size: 18px;
+    &__handler {
+      position: absolute;
+
+      display: block;
+
+      width: $scale-handler-size;
+      height: $scale-handler-size;
+
+      content: '';
+      pointer-events: auto;
+
+      border-radius: 50%;
+      background-color: white;
+      //box-shadow: inset 0 0 0 2px white;
+      &:hover {
+        background-color: $dark-sky-blue;
+      }
+      &--top {
+        top: -($scale-handler-size/2) - 2;
+        left: 50%;
+        margin-left: -$scale-handler-size/2;
+        cursor: ns-resize;
+      }
+      &--right {
+        top: 50%;
+        right: -($scale-handler-size/2) - 2;
+        margin-top: -$scale-handler-size/2;
+        cursor: ew-resize;
+      }
+      &--bottom {
+        bottom: -($scale-handler-size/2) - 2;
+        left: 50%;
+        margin-left: -$scale-handler-size/2;
+        cursor: ns-resize;
+      }
+      &--left {
+        top: 50%;
+        left: -($scale-handler-size/2) - 2;
+        margin-top: -$scale-handler-size/2;
+        cursor: ew-resize;
+      }
+    }
   }
 }

@@ -31,16 +31,14 @@ class PreferencesModal extends Component {
       isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications(),
       isShowNotificationsTextEnabled: PreferencesStore.isShowNotificationsTextEnabled(),
       sessions: PreferencesStore.getSessions(),
-      activeTab: 'GENERAL'
+      activeTab: PreferencesStore.getCurrentTab()
     }
   };
 
   componentWillUpdate(nextProps, nextState) {
-    const { isOpen } = nextState;
-
-    if (isOpen) {
+    if (nextState.isOpen && !this.state.isOpen) {
       document.addEventListener('keydown', this.onKeyDown, false);
-    } else {
+    } else if (!nextState.isOpen && this.state.isOpen) {
       document.removeEventListener('keydown', this.onKeyDown, false);
     }
   }
@@ -54,7 +52,7 @@ class PreferencesModal extends Component {
       isGroupsNotificationsEnabled,
       isOnlyMentionNotifications,
       isShowNotificationsTextEnabled
-      } = this.state;
+    } = this.state;
 
     PreferencesActionCreators.save({
       isSendByEnterEnabled,
@@ -81,7 +79,7 @@ class PreferencesModal extends Component {
 
   onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
 
-  changeTab = (tab) => this.setState({activeTab: tab});
+  changeTab = (tab) => PreferencesActionCreators.changeTab(tab);
 
   render() {
     const {
@@ -141,7 +139,7 @@ class PreferencesModal extends Component {
                 <a className={generalTabClassNames}
                    onClick={() => this.changeTab('GENERAL')}>General</a>
                 <a className={notificationTabClassNames}
-                   onClick={() => this.changeTab('NOTIFICATIONS')}>Notifications & Sounds</a>
+                   onClick={() => this.changeTab('NOTIFICATIONS')}>Notifications &amp; Sounds</a>
                 <a className={securityTabClassNames}
                    onClick={() => this.changeTab('SECURITY')}>Security</a>
               </aside>
@@ -251,4 +249,4 @@ class PreferencesModal extends Component {
   }
 }
 
-export default Container.create(PreferencesModal, {pure: false});
+export default Container.create(PreferencesModal);

@@ -23,7 +23,7 @@ const {addons: { PureRenderMixin }} = addons;
 
 const getStateFromStores = () => {
   return {
-    isShown: InviteUserStore.isInviteWithLinkModalOpen(),
+    isOpen: InviteUserStore.isInviteWithLinkModalOpen(),
     group: InviteUserStore.getGroup(),
     inviteUrl: InviteUserStore.getInviteUrl()
   };
@@ -38,24 +38,30 @@ class InviteByLink extends React.Component {
     this.state = getStateFromStores();
 
     InviteUserStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     InviteUserStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (this.state.isOpen && !nextState.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
   }
 
   render() {
-    const { group, inviteUrl, isShown } = this.state;
+    const { group, inviteUrl, isOpen } = this.state;
 
     const groupName = (group !== null) ? <b>{group.name}</b> : null;
 
-    if (isShown) {
+    if (isOpen) {
       return (
         <Modal className="modal-new modal-new--invite-by-link"
                closeTimeoutMS={150}
-               isOpen={isShown}
+               isOpen={isOpen}
                style={{width: 400}}>
 
           <header className="modal-new__header">
@@ -92,23 +98,15 @@ class InviteByLink extends React.Component {
     }
   }
 
-  onClose = () => {
-    InviteUserByLinkActions.hide();
-  };
+  onChange = () => this.setState(getStateFromStores());
+  onClose = () => InviteUserByLinkActions.hide();
+  onInviteLinkClick = event => event.target.select();
 
   onBackClick = () => {
     const { group } = this.state;
 
     this.onClose();
     InviteUserActions.show(group);
-  };
-
-  onInviteLinkClick = event => {
-    event.target.select();
-  };
-
-  onChange = () => {
-    this.setState(getStateFromStores());
   };
 
   onKeyDown = (event) => {

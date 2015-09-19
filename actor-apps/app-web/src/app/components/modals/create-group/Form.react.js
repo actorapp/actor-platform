@@ -68,10 +68,7 @@ class CreateGroupForm extends React.Component {
             </div>
 
             <footer className="modal-new__footer text-right">
-              <FlatButton hoverColor="rgba(74,144,226,.12)"
-                          label="Add members"
-                          secondary={true}
-                          type="submit"/>
+              <button className="button button--lightblue" type="submit">Add members</button>
             </footer>
 
           </form>
@@ -96,11 +93,7 @@ class CreateGroupForm extends React.Component {
             </div>
 
             <footer className="modal-new__footer text-right">
-              <FlatButton hoverColor="rgba(74,144,226,.12)"
-                          label="Create group"
-                          secondary={true}
-                          type="submit"/>
-
+              <button className="button button--lightblue" type="submit">Create group</button>
             </footer>
           </form>
         );
