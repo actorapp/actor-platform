@@ -20,7 +20,7 @@ import im.actor.server.activation._
 import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.session._
-import im.actor.server.user.UserOffice
+import im.actor.server.user.UserExtension
 import im.actor.util.misc.IdUtils._
 import im.actor.util.misc.PhoneNumberUtils._
 import im.actor.util.misc.StringUtils.validName
@@ -66,7 +66,7 @@ trait AuthHelpers extends Helpers {
 
   def handleUserCreate(user: models.User, transaction: models.AuthTransactionChildren, authId: Long): Result[User] = {
     for {
-      _ ← fromFuture(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
+      _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
       _ ← fromDBIO(persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
       _ ← fromDBIO(AuthTransaction.delete(transaction.transactionHash))
       _ ← transaction match {
@@ -74,10 +74,10 @@ trait AuthHelpers extends Helpers {
           val phone = p.phoneNumber
           for {
             _ ← fromDBIO(activationContext.finish(p.transactionHash))
-            _ ← fromFuture(UserOffice.addPhone(user.id, phone))
+            _ ← fromFuture(userExt.addPhone(user.id, phone))
           } yield ()
         case e: models.AuthEmailTransaction ⇒
-          fromFuture(UserOffice.addEmail(user.id, e.email))
+          fromFuture(userExt.addEmail(user.id, e.email))
       }
     } yield user
   }
@@ -129,16 +129,13 @@ trait AuthHelpers extends Helpers {
   protected def refreshAuthSession(deviceHash: Array[Byte], newSession: models.AuthSession): DBIO[Unit] =
     for {
       prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
-      _ ← DBIO.from(Future.sequence(prevSessions map UserOffice.logout))
+      _ ← DBIO.from(Future.sequence(prevSessions map userExt.logout))
       _ ← persist.AuthSession.create(newSession)
     } yield ()
 
-  protected def authorize(userId: Int, clientData: ClientData)(
-    implicit
-    sessionRegion: SessionRegion
-  ): Future[AuthorizeUserAck] = {
+  protected def authorize(userId: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
     for {
-      _ ← UserOffice.auth(userId, clientData.authId)
+      _ ← userExt.auth(userId, clientData.authId)
       ack ← sessionRegion.ref
         .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId)))
         .mapTo[AuthorizeUserAck]
@@ -149,7 +146,7 @@ trait AuthHelpers extends Helpers {
   protected def authorizeT(userId: Int, countryCode: String, clientData: ClientData): Result[User] = {
     for {
       user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(userId).headOption)
-      _ ← fromFuture(UserOffice.changeCountryCode(userId, countryCode))
+      _ ← fromFuture(userExt.changeCountryCode(userId, countryCode))
       _ ← fromDBIO(persist.AuthId.setUserData(clientData.authId, userId))
     } yield user
   }

@@ -3,7 +3,6 @@ package im.actor.server.dialog
 import akka.actor.ActorSystem
 import akka.util.Timeout
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.server.dialog.Origin.{ RIGHT, LEFT }
 import im.actor.server.group.{ GroupExtension, GroupViewRegion, GroupOffice }
 
 import scala.concurrent.Future
@@ -47,18 +46,14 @@ object DialogId {
     }
   }
 
-  def getParticipants(dialogId: DialogId)(implicit system: ActorSystem, timeout: Timeout): Future[Seq[Int]] = {
+  def getParticipants(dialogId: DialogId)(implicit system: ActorSystem): Future[Seq[Int]] = {
     import system.dispatcher
 
     dialogId match {
       case PrivateDialogId(left, right) ⇒
         Future.successful(Seq(left, right))
       case GroupDialogId(groupId) ⇒
-        implicit val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-
-        for {
-          (userIds, _, _) ← GroupOffice.getMemberIds(groupId)
-        } yield userIds
+        for ((userIds, _, _) ← GroupExtension(system).getMemberIds(groupId)) yield userIds
     }
   }
 }
@@ -77,9 +72,6 @@ private[dialog] trait PrivateDialogIdBase extends DialogId {
   require(right >= left, "Left should be >= right")
   def left: Int
   def right: Int
-
-  def origin(senderUserId: Int): Origin =
-    if (senderUserId == left) LEFT else RIGHT
 
   override def stringId: String = s"${ApiPeerType.Private.id}_${left}_${right}"
 }

@@ -33,9 +33,8 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(10.seconds)
 
-  private implicit val db: Database = DbExtension(actorSystem).db
-  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
-  private implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
+  private val db: Database = DbExtension(actorSystem).db
+  private val userExt = UserExtension(actorSystem)
 
   override def jhandleEditUserLocalName(userId: Int, accessHash: Long, name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -51,13 +50,13 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
                     for {
                       userPhone ← persist.UserPhone.findByUserId(user.id).head
                       _ ← addContact(client.userId, userId, userPhone.number, Some(validName), user.accessSalt)
-                      _ ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateContactsAdded(Vector(userId)), None, isFat = true))
+                      _ ← DBIO.from(userExt.broadcastClientUpdate(UpdateContactsAdded(Vector(userId)), None, isFat = true))
                     } yield ()
                 }
 
                 for {
                   _ ← action
-                  seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, Some(name)), None, isFat = false))
+                  seqstate ← DBIO.from(userExt.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, Some(name)), None, isFat = false))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               } else {
                 DBIO.successful(Error(CommonErrors.InvalidAccessHash))

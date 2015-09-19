@@ -1,5 +1,6 @@
 package im.actor.server.enrich
 
+import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileUtils, FileStorageAdapter, S3StorageExtension, ImageUtils }
 import im.actor.util.log.AnyRefLogSource
 
@@ -21,30 +22,18 @@ import im.actor.api.rpc.files.ApiFastThumb
 import im.actor.api.rpc.messaging._
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
-import im.actor.server.sequence.SeqUpdatesExtension
-import im.actor.server.user.UserViewRegion
 
 object RichMessageWorker {
   val groupId = Some("RichMessageWorker")
 
   def startWorker(config: RichMessageConfig, mediator: ActorRef)(
     implicit
-    system:         ActorSystem,
-    db:             Database,
-    userViewRegion: UserViewRegion,
-    materializer:   Materializer
-  ): ActorRef = system.actorOf(Props(
-    classOf[RichMessageWorker],
-    config, mediator, db, userViewRegion, materializer
-  ))
+    system:       ActorSystem,
+    materializer: Materializer
+  ): ActorRef = system.actorOf(Props(classOf[RichMessageWorker], config, mediator, materializer))
 }
 
-final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
-  implicit
-  db:             Database,
-  userViewRegion: UserViewRegion,
-  materializer:   Materializer
-) extends Actor with ActorLogging {
+final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(implicit materializer: Materializer) extends Actor with ActorLogging {
 
   import DistributedPubSubMediator.SubscribeAck
 
@@ -56,7 +45,8 @@ final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   private implicit val ec: ExecutionContextExecutor = system.dispatcher
   private implicit val timeout: Timeout = Timeout(10.seconds)
 
-  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
+  private val db = DbExtension(system).db
+
   private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
   override val log = Logging(system, this)
