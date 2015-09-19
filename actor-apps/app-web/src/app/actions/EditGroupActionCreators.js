@@ -5,19 +5,34 @@
 import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
+import EditGroupStore from 'stores/EditGroupStore'
 
 export default {
-  show: (gid) => {
-    dispatch(ActionTypes.GROUP_EDIT_MODAL_SHOW, { gid });
+  show(gid) {
+    const group = ActorClient.getGroup(gid);
+    ActorClient.bindGroup(gid, this.onCurrentGroupChange);
+    dispatch(ActionTypes.GROUP_EDIT_MODAL_SHOW, { group });
   },
 
-  hide: () => dispatch(ActionTypes.GROUP_EDIT_MODAL_HIDE),
+  hide()  {
+    const group = EditGroupStore.getGroup();
+    ActorClient.unbindGroup(group.id, this.onCurrentGroupChange);
+    dispatch(ActionTypes.GROUP_EDIT_MODAL_HIDE)
+  },
 
-  editGroupTitle: (gid, title) => {
+  onCurrentGroupChange(group) {
+    dispatch(ActionTypes.GROUP_INFO_CHANGED, { group })
+  },
+
+  editGroupTitle(gid, title) {
     dispatchAsync(ActorClient.editGroupTitle(gid, title), {
       request: ActionTypes.GROUP_EDIT_TITLE,
       success: ActionTypes.GROUP_EDIT_TITLE_SUCCESS,
       failure: ActionTypes.GROUP_EDIT_TITLE_ERROR
     }, { gid, title });
+  },
+
+  changeGroupAvatar(gid, avatar) {
+    ActorClient.changeGroupAvatar(gid, avatar)
   }
 };
