@@ -169,7 +169,7 @@ class ComposeSection extends React.Component {
   render() {
     const { text, profile, mentions, isEmojiDropdownShow } = this.state;
 
-    const emojiOpenerClassName = classnames('emoji-opener material-icons', {
+    const emojiOpenerClassName = classnames('emoji-opener material-icons hide', {
       'emoji-opener--active': isEmojiDropdownShow
     });
 
