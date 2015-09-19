@@ -239,7 +239,6 @@ class CropAvatarModal extends Component {
   };
 
   render() {
-    console.debug(this.state);
     const { isOpen, pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight, maxImageHeight } = this.state;
 
     if (isOpen) {
