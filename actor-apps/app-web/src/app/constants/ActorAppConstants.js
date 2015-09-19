@@ -71,6 +71,7 @@ export const ActionTypes = keymirror({
   GROUP_EDIT_TITLE: null,
   GROUP_EDIT_TITLE_SUCCESS: null,
   GROUP_EDIT_TITLE_ERROR: null,
+  GROUP_INFO_CHANGED: null,
 
   NOTIFICATION_CHANGE: null,
 
