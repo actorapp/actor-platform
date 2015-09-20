@@ -318,7 +318,11 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val authorizedAction = requireAuth(clientData).map { client ⇒
       persist.AuthSession.find(client.userId, id).headOption flatMap {
         case Some(session) ⇒
-          for (_ ← DBIO.from(userExt.logout(session))) yield Ok(ResponseVoid)
+          if (session.authId != clientData.authId) {
+            for (_ ← DBIO.from(userExt.logout(session))) yield Ok(ResponseVoid)
+          } else {
+            DBIO.successful(Error(AuthErrors.CurrentSessionTermination))
+          }
         case None ⇒
           DBIO.successful(Error(AuthErrors.AuthSessionNotFound))
       }
