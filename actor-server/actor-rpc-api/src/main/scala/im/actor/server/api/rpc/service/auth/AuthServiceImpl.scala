@@ -172,6 +172,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   override def jhandleSendCodeByPhoneCall(transactionHash: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = for {
       tx ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthPhoneTransaction.find(transactionHash))
+      code ← fromDBIO(persist.AuthCode.findByTransactionHash(tx.transactionHash) map (_ map (_.code) getOrElse (genSmsCode(tx.phoneNumber))))
       _ ← fromDBIO(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), Some(transactionHash), PhoneNumberUtils.normalizeWithCountry(tx.phoneNumber).headOption.map(_._2).getOrElse("en")))
     } yield ResponseVoid
 
