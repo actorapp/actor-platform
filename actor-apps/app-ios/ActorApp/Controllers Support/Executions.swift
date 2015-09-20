@@ -150,4 +150,8 @@ extension UIViewController {
             successBlock?(val: nil)
         })
     }
+    
+    func executeHidden(command: ACCommand, successBlock: ((val: Any?) -> Void)? = nil) {
+        Executions.execute(command, type: .Hidden, successBlock: successBlock, failureBlock: nil)
+    }
 }
