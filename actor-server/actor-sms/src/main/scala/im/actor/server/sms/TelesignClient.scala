@@ -54,7 +54,7 @@ final class TelesignClient(config: Config)(implicit system: ActorSystem) {
       "phone_number" → phoneNumber.toString,
       "ucid" → "BACS",
       "verify_code" → code,
-      "language" → (if (CallLanguages.exists(_ == language)) language else DefaultLanguage)
+      "language" → (if (CallLanguages.exists(_ == language)) language else DefaultLanguage).toLowerCase
     )) map { _ ⇒
       system.log.debug("Call sent via telesign")
     }
