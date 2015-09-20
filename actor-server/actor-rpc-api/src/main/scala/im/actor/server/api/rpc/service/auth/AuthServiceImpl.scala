@@ -100,9 +100,9 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   def jhandleCompleteOAuth2(transactionHash: String, code: String, clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
       for {
-        transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthEmailTransaction.find(transactionHash))
-        token ← fromDBIOOption(AuthErrors.FailedToGetOAuth2Token)(oauth2Service.completeOAuth(code, transaction.email, transaction.redirectUri))
-        profile ← fromFutureOption(AuthErrors.FailedToGetOAuth2Token)(oauth2Service.fetchProfile(token.accessToken))
+        transaction ← fromDBIOOption(AuthErrors.EmailCodeExpired)(persist.auth.AuthEmailTransaction.find(transactionHash))
+        token ← fromDBIOOption(AuthErrors.EmailCodeExpired)(oauth2Service.completeOAuth(code, transaction.email, transaction.redirectUri))
+        profile ← fromFutureOption(AuthErrors.EmailCodeExpired)(oauth2Service.fetchProfile(token.accessToken))
 
         _ ← fromBoolean(AuthErrors.OAuthUserIdDoesNotMatch)(transaction.email == profile.email)
         _ ← fromDBIO(persist.OAuth2Token.createOrUpdate(token))
@@ -138,7 +138,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   def jhandleGetOAuth2Params(transactionHash: String, redirectUrl: String, clientData: ClientData): Future[HandlerResult[ResponseGetOAuth2Params]] = {
     val action =
       for {
-        transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthEmailTransaction.find(transactionHash))
+        transaction ← fromDBIOOption(AuthErrors.EmailCodeExpired)(persist.auth.AuthEmailTransaction.find(transactionHash))
         url ← fromOption(AuthErrors.RedirectUrlInvalid)(oauth2Service.getAuthUrl(redirectUrl, transaction.email))
         _ ← fromDBIO(persist.auth.AuthEmailTransaction.updateRedirectUri(transaction.transactionHash, redirectUrl))
       } yield ResponseGetOAuth2Params(url)
@@ -171,7 +171,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
   override def jhandleSendCodeByPhoneCall(transactionHash: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = for {
-      tx ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthPhoneTransaction.find(transactionHash))
+      tx ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.auth.AuthPhoneTransaction.find(transactionHash))
       code ← fromDBIO(persist.AuthCode.findByTransactionHash(tx.transactionHash) map (_ map (_.code) getOrElse (genSmsCode(tx.phoneNumber))))
       _ ← fromDBIO(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), Some(transactionHash), PhoneNumberUtils.normalizeWithCountry(tx.phoneNumber).headOption.map(_._2).getOrElse("en")))
     } yield ResponseVoid
@@ -183,7 +183,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val action: Result[ResponseAuth] =
       for {
         //retrieve `authTransaction`
-        transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthTransaction.findChildren(transactionHash))
+        transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.auth.AuthTransaction.findChildren(transactionHash))
         //ensure that `authTransaction` is checked
         _ ← fromBoolean(AuthErrors.NotValidated)(transaction.isChecked)
         signInORsignUp ← transaction match {
@@ -258,7 +258,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val action: Result[ResponseAuth] =
       for {
         //retreive `authTransaction`
-        transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthTransaction.findChildren(transactionHash))
+        transaction ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.auth.AuthTransaction.findChildren(transactionHash))
 
         //validate code
         userAndCounty ← validateCode(transaction, code)

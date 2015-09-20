@@ -6,7 +6,6 @@ object AuthErrors {
   val AuthSessionNotFound = RpcError(404, "AUTH_SESSION_NOT_FOUND", "Auth session not found.", false, None)
   val CurrentSessionTermination = RpcError(400, "CURRENT_SESSION_TERMINATION", "You tried to terminate current auth session.", false, None)
   val InvalidKey = RpcError(400, "INVALID_KEY", "Invalid key.", false, None)
-  val InvalidAuthTransaction = RpcError(400, "TRANSACTION_HASH_INVALID", "", false, None)
   val PhoneNumberInvalid = RpcError(400, "PHONE_NUMBER_INVALID", "Invalid phone number.", false, None)
   val PhoneNumberUnoccupied = RpcError(400, "PHONE_NUMBER_UNOCCUPIED", "", false, None)
   val PhoneCodeEmpty = RpcError(400, "PHONE_CODE_EMPTY", "Code is empty.", false, None)
