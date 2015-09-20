@@ -22,7 +22,7 @@ class DialogsSearchCell: CommonCell {
     init(reuseIdentifier:String) {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
         
-        titleView.font = UIFont(name: "Roboto-Medium", size: 19);
+        titleView.font = UIFont.mediumSystemFontOfSize(19)
         titleView.textColor = MainAppTheme.list.textColor
         
         contentView.addSubview(avatarView)
