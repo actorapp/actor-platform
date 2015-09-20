@@ -153,6 +153,33 @@
         {
           "type": "rpc",
           "content": {
+            "name": "SendCodeByPhoneCall",
+            "header": 197,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Dial phone and dictate auth code",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "danger",
+                "description": "Transaction hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "StartEmailAuth",
             "header": 185,
             "response": {
@@ -2755,93 +2782,6 @@
                 "type": "int32",
                 "id": 1,
                 "name": "duration"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "ServiceExTaskCreated",
-            "doc": [
-              "Update about task created"
-            ],
-            "trait": {
-              "name": "ServiceEx",
-              "key": 241
-            },
-            "expandable": "true",
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 1,
-                "name": "rid"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "taskTitle"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "ServiceExTaskClosed",
-            "doc": [
-              "Update about task close"
-            ],
-            "trait": {
-              "name": "ServiceEx",
-              "key": 242
-            },
-            "expandable": "true",
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 1,
-                "name": "rid"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "taskTitle"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "ServiceExTaskReopened",
-            "doc": [
-              "Update about task reopen"
-            ],
-            "trait": {
-              "name": "ServiceEx",
-              "key": 243
-            },
-            "expandable": "true",
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 1,
-                "name": "rid"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "taskTitle"
               }
             ]
           }
@@ -7026,6 +6966,149 @@
       ]
     },
     {
+      "title": "Calls",
+      "package": "calls",
+      "doc": [
+        "Performing voice calls with WebRTC and SIP"
+      ],
+      "items": [
+        {
+          "type": "update",
+          "content": {
+            "name": "CallRing",
+            "header": 49,
+            "doc": [
+              "Update about phone ring",
+              {
+                "type": "reference",
+                "argument": "user",
+                "category": "hidden",
+                "description": "  Calling User"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "User"
+                },
+                "id": 1,
+                "name": "user"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallEnd",
+            "header": 83,
+            "doc": [
+              "Update about phone call end"
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 2,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InitVoxSupport",
+            "header": 130,
+            "response": {
+              "type": "anonymous",
+              "header": 129,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "userName",
+                  "category": "full",
+                  "description": "  User Name for authentication"
+                },
+                {
+                  "type": "reference",
+                  "argument": "password",
+                  "category": "full",
+                  "description": "  Password for authentication"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "userName"
+                },
+                {
+                  "type": "string",
+                  "id": 2,
+                  "name": "password"
+                }
+              ]
+            },
+            "doc": [
+              "Initialization VoxImplant support on client"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetVoxUser",
+            "header": 131,
+            "response": {
+              "type": "anonymous",
+              "header": 132,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "callNumber",
+                  "category": "full",
+                  "description": "  Call number"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "callNumber"
+                }
+              ]
+            },
+            "doc": [
+              "Get Vox user name for VoxImplant",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "Destination peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "llectro",
       "package": "llectro",
       "doc": [
@@ -7301,985 +7384,6 @@
               "Get current balance"
             ],
             "attributes": []
-          }
-        }
-      ]
-    },
-    {
-      "title": "Projector",
-      "package": "projector",
-      "doc": [
-        "Projector: Adding simple project management to Actor"
-      ],
-      "items": [
-        {
-          "type": "enum",
-          "content": {
-            "name": "TaskState",
-            "values": [
-              {
-                "name": "Active",
-                "id": 1
-              },
-              {
-                "name": "Done",
-                "id": 2
-              },
-              {
-                "name": "Obsolete",
-                "id": 3
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "Task",
-            "doc": [
-              "Task entity",
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Task Random Id"
-              },
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  Author UID"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "full",
-                "description": "  Task title"
-              },
-              {
-                "type": "reference",
-                "argument": "description",
-                "category": "full",
-                "description": "  Task description"
-              },
-              {
-                "type": "reference",
-                "argument": "taskState",
-                "category": "full",
-                "description": "  Task state"
-              },
-              {
-                "type": "reference",
-                "argument": "created",
-                "category": "full",
-                "description": "  Task create date"
-              },
-              {
-                "type": "reference",
-                "argument": "closed",
-                "category": "full",
-                "description": "  Task close date"
-              },
-              {
-                "type": "reference",
-                "argument": "closedUid",
-                "category": "full",
-                "description": "  Task closed uid"
-              },
-              {
-                "type": "reference",
-                "argument": "updatedDate",
-                "category": "full",
-                "description": "  Task update date"
-              }
-            ],
-            "expandable": "true",
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 1,
-                "name": "rid"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "uid"
-              },
-              {
-                "type": "string",
-                "id": 3,
-                "name": "title"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 9,
-                "name": "description"
-              },
-              {
-                "type": {
-                  "type": "enum",
-                  "childType": "TaskState"
-                },
-                "id": 4,
-                "name": "taskState"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 5,
-                "name": "created"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "alias",
-                    "childType": "date"
-                  }
-                },
-                "id": 6,
-                "name": "closed"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "int32"
-                },
-                "id": 7,
-                "name": "closedUid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 8,
-                "name": "updatedDate"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "PeerTasks",
-            "doc": [
-              "Peer's tasks list",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Tasks peer"
-              },
-              {
-                "type": "reference",
-                "argument": "tasks",
-                "category": "full",
-                "description": "  Peer tasks"
-              }
-            ],
-            "expandable": "true",
-            "attributes": [
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Peer"
-                  }
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Task"
-                  }
-                },
-                "id": 2,
-                "name": "tasks"
-              }
-            ]
-          }
-        },
-        {
-          "type": "response",
-          "content": {
-            "name": "SeqTask",
-            "header": 230,
-            "doc": [
-              "Response for task create/update",
-              {
-                "type": "reference",
-                "argument": "seq",
-                "category": "full",
-                "description": "  Seq of update"
-              },
-              {
-                "type": "reference",
-                "argument": "state",
-                "category": "compact",
-                "description": "  State of update"
-              },
-              {
-                "type": "reference",
-                "argument": "task",
-                "category": "full",
-                "description": "  Task value"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "seq"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "seq_state"
-                },
-                "id": 2,
-                "name": "state"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Task"
-                },
-                "id": 3,
-                "name": "task"
-              }
-            ]
-          }
-        },
-        {
-          "type": "response",
-          "content": {
-            "name": "SeqTasksOrder",
-            "header": 241,
-            "doc": [
-              "Response for tasks reorder",
-              {
-                "type": "reference",
-                "argument": "seq",
-                "category": "full",
-                "description": "  Seq of update"
-              },
-              {
-                "type": "reference",
-                "argument": "state",
-                "category": "compact",
-                "description": "  State of update"
-              },
-              {
-                "type": "reference",
-                "argument": "rids",
-                "category": "full",
-                "description": "  Tasks random ids, reordered"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "seq"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "seq_state"
-                },
-                "id": 2,
-                "name": "state"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": "int64"
-                },
-                "id": 3,
-                "name": "rids"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "CreateNewTask",
-            "header": 229,
-            "response": {
-              "type": "reference",
-              "name": "SeqTask"
-            },
-            "doc": [
-              "Creating tasks",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Peer for task"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random id of task"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "full",
-                "description": "Title of task"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              },
-              {
-                "type": "string",
-                "id": 3,
-                "name": "title"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "string"
-                },
-                "id": 4,
-                "name": "description"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "CloseTask",
-            "header": 231,
-            "response": {
-              "type": "reference",
-              "name": "SeqTask"
-            },
-            "doc": [
-              "Closing Task",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Peer of task"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random id of task"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "DeleteTask",
-            "header": 232,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Delete Task",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Peer of task"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Random id of task"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "ReadTasks",
-            "header": 233,
-            "response": {
-              "type": "reference",
-              "name": "Seq"
-            },
-            "doc": [
-              "Reading tasks",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Peer"
-              },
-              {
-                "type": "reference",
-                "argument": "readDate",
-                "category": "full",
-                "description": "Task read date"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": "int64",
-                "id": 2,
-                "name": "readDate"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "LoadTasks",
-            "header": 234,
-            "response": {
-              "type": "anonymous",
-              "header": 235,
-              "doc": [
-                "Current tasks of peer",
-                {
-                  "type": "reference",
-                  "argument": "tasks",
-                  "category": "full",
-                  "description": "  Current tasks"
-                },
-                {
-                  "type": "reference",
-                  "argument": "readDate",
-                  "category": "full",
-                  "description": "  Tasks read date"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Task"
-                    }
-                  },
-                  "id": 1,
-                  "name": "tasks"
-                },
-                {
-                  "type": "int64",
-                  "id": 2,
-                  "name": "readDate"
-                }
-              ]
-            },
-            "doc": [
-              "Loading tasks",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Peer of tasks"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "GetTaskChat",
-            "header": 236,
-            "response": {
-              "type": "anonymous",
-              "header": 237,
-              "doc": [
-                "Chat associated with task",
-                {
-                  "type": "reference",
-                  "argument": "group",
-                  "category": "full",
-                  "description": "  Group"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "struct",
-                    "childType": "Group"
-                  },
-                  "id": 1,
-                  "name": "group"
-                }
-              ]
-            },
-            "doc": [
-              "Get chat associated with task",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Task peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Task random id"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "ReorderTasks",
-            "header": 239,
-            "response": {
-              "type": "reference",
-              "name": "SeqTasksOrder"
-            },
-            "doc": [
-              "Reorder tasks",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Task peer"
-              },
-              {
-                "type": "reference",
-                "argument": "randomId",
-                "category": "full",
-                "description": "Random Id of task"
-              },
-              {
-                "type": "reference",
-                "argument": "position",
-                "category": "full",
-                "description": "Position where task should be inserted"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "randomId"
-              },
-              {
-                "type": "int32",
-                "id": 3,
-                "name": "position"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "LoadActiveTasks",
-            "header": 242,
-            "response": {
-              "type": "anonymous",
-              "header": 243,
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "PeerTasks"
-                    }
-                  },
-                  "id": 1,
-                  "name": "peerTasks"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 2,
-                  "name": "users"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Group"
-                    }
-                  },
-                  "id": 3,
-                  "name": "groups"
-                }
-              ]
-            },
-            "doc": [
-              "Load active tasks of all groups"
-            ],
-            "attributes": []
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "ReopenTask",
-            "header": 244,
-            "response": {
-              "type": "reference",
-              "name": "SeqTask"
-            },
-            "doc": [
-              "Reopen closed task",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Task peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Task random id"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "TasksRead",
-            "header": 225,
-            "doc": [
-              "Update about task read",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Task list peer"
-              },
-              {
-                "type": "reference",
-                "argument": "readDate",
-                "category": "full",
-                "description": "  Project's read date"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": "int64",
-                "id": 2,
-                "name": "readDate"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "NewTask",
-            "header": 226,
-            "doc": [
-              "Update about new task",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Task list peer"
-              },
-              {
-                "type": "reference",
-                "argument": "task",
-                "category": "full",
-                "description": "  Task data"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Task"
-                },
-                "id": 3,
-                "name": "task"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "TaskUpdated",
-            "header": 227,
-            "doc": [
-              "Update about Task update",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Task list peer"
-              },
-              {
-                "type": "reference",
-                "argument": "task",
-                "category": "full",
-                "description": "  Updated task"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Task"
-                },
-                "id": 2,
-                "name": "task"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "TaskDeleted",
-            "header": 228,
-            "doc": [
-              "Update about Task delete",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Task list peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random Id of task"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "TaskReordered",
-            "header": 229,
-            "doc": [
-              "Update about Task reorder",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Task list peer"
-              },
-              {
-                "type": "reference",
-                "argument": "rids",
-                "category": "full",
-                "description": "  Position before which task is inserted"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "alias",
-                    "childType": "randomId"
-                  }
-                },
-                "id": 2,
-                "name": "rids"
-              }
-            ]
           }
         }
       ]
@@ -9631,4 +8735,3 @@
     }
   ]
 }
-
