@@ -78,7 +78,7 @@ class Executions {
     class func error(message: String, rep:(()->())? = nil, cancel:(()->())? = nil) {
         if rep != nil {
             let d = UIAlertViewBlock(clickedClosure: { (index) -> () in
-                if index >= 0 {
+                if index > 0 {
                     rep?()
                 } else {
                     cancel?()
@@ -145,7 +145,7 @@ extension UIViewController {
         Executions.execute(command, successBlock: successBlock, failureBlock: failureBlock)
     }
     
-    func executeSafe(command: ACCommand, ignore: [String] = [], successBlock: ((val: Any?) -> Void)?) {
+    func executeSafe(command: ACCommand, ignore: [String] = [], successBlock: ((val: Any?) -> Void)? = nil) {
         Executions.execute(command, type: .Safe, ignore: ignore, successBlock: successBlock, failureBlock: { (val) -> () in
             successBlock?(val: nil)
         })

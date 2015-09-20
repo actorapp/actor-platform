@@ -50,7 +50,7 @@
 
 "SettingsChangeAboutTitle" = "About me";
 
-"SettingsSecurity" = "Privacy and Security";
+"SettingsSecurity" = "Security";
 
 "SettingsEditHeader" = "Change your name";
 
@@ -58,7 +58,9 @@
 
 "SettingsAskQuestion" = "Ask Question";
 
-"SettingsAbout" = "About";
+"SettingsTwitter" = "Actor Twitter";
+
+"SettingsAbout" = "Actor Homepage";
 
 "SettingsVersion" = "Version {version}";
 
@@ -236,9 +238,13 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Privacy and Security";
+"SecurityTitle" = "Security";
 
 "PrivacyTerminate" = "Terminate all other sessions";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
 
 "PrivacyTerminateHint" = "Logs out all devices except for this one.";
 
