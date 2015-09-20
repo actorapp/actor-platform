@@ -60,6 +60,10 @@
 
 "SettingsAbout" = "О Программе";
 
+"SettingsTwitter" = "Twitter Актора";
+
+"SettingsAbout" = "Домашняя страница";
+
 "SettingsVersion" = "Версия {version}";
 
 /*
@@ -238,9 +242,13 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Приватность и безопасность";
+"PrivacyTitle" = "Безопасность";
 
 "PrivacyTerminate" = "Удалить все другие сессии";
+
+"PrivacyTerminateAlert" = "Удалить другие сессии";
+
+"PrivacyTerminateAlertSingle" = "Удалить сессию";
 
 "PrivacyTerminateHint" = "Выход со всех устройств кроме этого.";
 

@@ -174,10 +174,11 @@ class AuthPhoneViewController: AuthViewController, UITextFieldDelegate, AuthCoun
         
         if (numberLength < numberRequiredLength) {
             
+            // Show error about incorrect phone
             Executions.errorWithTag("LOCAL_INCORRECT_PHONE")
-            
         } else {
             
+            // Safely executing command for starting activation
             executeSafe(Actor.requestStartAuthCommandWithPhone(number)) { (val) -> Void in
                 // Showing code input controller
                 let phoneNumber = "+\(self.phoneTextField.formattedPhoneNumber)"

@@ -19,11 +19,17 @@ extension UIViewController {
             tapBlock: nil)
     }
     
-    func confirmAlertUser(message: String, action: String, tapYes: ()->()) {
-        confirmAlertUser(message, action: action, tapYes: tapYes, tapNo: nil)
+    func confirmDangerSheetUser(action: String, tapYes: ()->(), tapNo: (()->())?) {
+        showActionSheet(nil, buttons: [], cancelButton: "AlertCancel", destructButton: action, sourceView: UIView(), sourceRect: CGRectZero) { (index) -> () in
+            if index == -2 {
+                tapYes()
+            } else {
+                tapNo?()
+            }
+        }
     }
     
-    func confirmAlertUser(message: String, action: String, tapYes: ()->(), tapNo: (()->())?) {
+    func confirmAlertUser(message: String, action: String, tapYes: ()->(), tapNo: (()->())? = nil) {
         RMUniversalAlert.showAlertInViewController(self,
             withTitle: nil,
             message: NSLocalizedString(message, comment: "Message"),

@@ -80,7 +80,7 @@ class DiscoverViewController: AATableViewController {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroup
-        confirmAlertUser("JoinAlertMessage", action: "AlertYes") { () -> () in
+        confirmAlertUser("JoinAlertMessage", action: "AlertYes", tapYes: { () -> () in
             let gid = g.getId()
             self.execute(Actor.joinPublicGroupCommandWithGig(g.getId(), withAccessHash: g.getAccessHash()), successBlock: { (val) -> Void in
                 self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: false)
@@ -89,7 +89,7 @@ class DiscoverViewController: AATableViewController {
                 // TODO: Better logic
                 self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: false)
             })
-        }
+        })
     }
 }
 
