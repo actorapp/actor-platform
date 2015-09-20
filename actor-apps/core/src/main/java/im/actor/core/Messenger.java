@@ -160,6 +160,17 @@ public class Messenger {
     }
 
     /**
+     * Request phone call activation
+     *
+     * @return command for execution
+     */
+    @NotNull
+    @ObjectiveCName("requestPhoneCall")
+    public Command<Boolean> requestPhoneCall() {
+        return modules.getAuthModule().requestCallActivation();
+    }
+
+    /**
      * Sending activation code
      *
      * @param code activation code
