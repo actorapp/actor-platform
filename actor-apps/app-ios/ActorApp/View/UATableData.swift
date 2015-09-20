@@ -50,11 +50,22 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].headerText
+        let text = sections[section].headerText
+        if text != nil {
+            return localized(text!)
+        } else {
+            return text
+        }
     }
 
     func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return sections[section].footerText
+        let text = sections[section].footerText
+        if text != nil {
+            return localized(text!)
+        } else {
+            return text
+        }
+
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -139,6 +150,8 @@ class UASection {
     
     var index: Int
     
+    var autoSeparatorTopOffset: Int = 0
+    var autoSeparatorBottomOffset: Int = 0
     var autoSeparators: Bool = false
     var autoSeparatorsInset: CGFloat = 15.0
     
@@ -148,6 +161,11 @@ class UASection {
     init(tableView: UITableView, index: Int) {
         self.tableView = tableView
         self.index = index
+    }
+    
+    func setSeparatorsTopOffset(offset: Int) -> UASection {
+        self.autoSeparatorTopOffset = offset
+        return self
     }
     
     func setFooterText(footerText: String) -> UASection {
@@ -174,7 +192,14 @@ class UASection {
         return addCommonCell()
             .setContent(title)
             .setAction(actionClosure)
-            .setStyle(.Blue)
+            .setStyle(.Action)
+    }
+    
+    func addDangerCell(title: String, actionClosure: (() -> ())) -> UACommonCellRegion {
+        return addCommonCell()
+            .setContent(title)
+            .setAction(actionClosure)
+            .setStyle(.Destructive)
     }
     
     func addNavigationCell(title: String, actionClosure: (() -> ())) -> UACommonCellRegion {
@@ -245,16 +270,24 @@ class UASection {
         let res = r.region.buildCell(tableView, index: r.index, indexPath: indexPath)
         if autoSeparators {
             if let cell = res as? UATableViewCell {
+                
+                // Top separator
+                // Showing only for top cell
                 cell.topSeparatorLeftInset = 0
-                cell.topSeparatorVisible = indexPath.row == 0
+                cell.topSeparatorVisible = indexPath.row == autoSeparatorTopOffset
                 
-                cell.bottomSeparatorVisible = true
-                
-                if indexPath.row == itemsCount() - 1 {
-                    cell.bottomSeparatorLeftInset = 0
+                if indexPath.row >= autoSeparatorTopOffset {
+                    cell.bottomSeparatorVisible = true
+                    if indexPath.row == itemsCount() - 1 {
+                        cell.bottomSeparatorLeftInset = 0
+                    } else {
+                        cell.bottomSeparatorLeftInset = autoSeparatorsInset
+                    }
                 } else {
-                    cell.bottomSeparatorLeftInset = autoSeparatorsInset
+                    // too high
+                    cell.bottomSeparatorVisible = false
                 }
+                
             }
         }
         return res

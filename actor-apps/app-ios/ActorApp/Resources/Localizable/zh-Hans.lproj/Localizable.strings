@@ -52,7 +52,7 @@
 
 "SettingsUsernameTitle" = "Change your username";
 
-"SettingsSecurity" = "隐私和安全";
+"SettingsSecurity" = "安全";
 
 "SettingsEditHeader" = "修改名字";
 
@@ -60,7 +60,9 @@
 
 "SettingsAskQuestion" = "提问";
 
-"SettingsAbout" = "关于";
+"SettingsTwitter" = "Actor Twitter";
+
+"SettingsAbout" = "Actor Homepage";
 
 "SettingsVersion" = "版本 {version}";
 
@@ -238,9 +240,13 @@
  * Privacy
  */
 
-"PrivacyTitle" = "隐私和安全";
+"PrivacyTitle" = "安全";
 
 "PrivacyTerminate" = "终止所有会话";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
 
 "PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
 
