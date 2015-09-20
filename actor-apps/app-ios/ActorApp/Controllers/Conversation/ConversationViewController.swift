@@ -61,7 +61,7 @@ class ConversationViewController: ConversationBaseViewController {
         navigationView.frame = CGRectMake(0, 0, 200, 44);
         navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 17)!
+        titleView.font = UIFont.mediumSystemFontOfSize(17)
         titleView.adjustsFontSizeToFitWidth = false;
         titleView.textColor = Resources.PrimaryLightText
         titleView.textAlignment = NSTextAlignment.Center;

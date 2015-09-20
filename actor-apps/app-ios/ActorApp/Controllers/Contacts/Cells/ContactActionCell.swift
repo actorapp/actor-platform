@@ -11,7 +11,7 @@ class ContactActionCell: BasicCell {
     
     init(reuseIdentifier:String) {
         super.init(reuseIdentifier: reuseIdentifier, separatorPadding: 80)
-        titleView.font = UIFont(name: "HelveticaNeue", size: 18);
+        titleView.font = UIFont.systemFontOfSize(18)
         titleView.textColor = MainAppTheme.list.actionColor
         iconView.contentMode = UIViewContentMode.Center
         self.contentView.addSubview(titleView)
