@@ -304,7 +304,7 @@
 
 "AuthCodeHint" = "Мы отправили Вам SMS с кодом активации.";
 
-"AuthCallDoneHint" = "Актор набрал ваш номер телефона.";
+"AuthCallDoneHint" = "Актор набрал ваш номер.";
 
 "AuthCallHint" = "Актор позвонит вам через {time}";
 
