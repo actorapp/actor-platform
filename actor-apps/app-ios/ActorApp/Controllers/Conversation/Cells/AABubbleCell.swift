@@ -140,12 +140,12 @@ class AABubbleCell: UICollectionViewCell {
         self.isFullSize = isFullSize
   
         dateBg.image = AABubbleCell.dateBgImage
-        dateText.font = UIFont(name: "HelveticaNeue-Medium", size: 12)!
+        dateText.font = UIFont.mediumSystemFontOfSize(12)
         dateText.textColor = UIColor.whiteColor()
         dateText.contentMode = UIViewContentMode.Center
         dateText.textAlignment = NSTextAlignment.Center
         
-        newMessage.font = UIFont(name: "HelveticaNeue-Medium", size: 14)!
+        newMessage.font = UIFont.mediumSystemFontOfSize(14)
         newMessage.textColor = UIColor.whiteColor()
         newMessage.contentMode = UIViewContentMode.Center
         newMessage.textAlignment = NSTextAlignment.Center
@@ -200,7 +200,7 @@ class AABubbleCell: UICollectionViewCell {
     }
     
     override func delete(sender: AnyObject?) {
-        var rids = IOSLongArray(length: 1)
+        let rids = IOSLongArray(length: 1)
         rids.replaceLongAtIndex(0, withLong: bindedMessage!.rid)
         Actor.deleteMessagesWithPeer(self.peer, withRids: rids)
     }
@@ -297,8 +297,6 @@ class AABubbleCell: UICollectionViewCell {
                 bubble.image = AABubbleCell.cachedServiceBg
                 bubbleBorder.image = nil
             break
-            default:
-            break
         }
     }
     
@@ -318,7 +316,7 @@ class AABubbleCell: UICollectionViewCell {
         UIView.performWithoutAnimation { () -> Void in
             let endPadding: CGFloat = 32
             let startPadding: CGFloat = (!self.isOut && self.isGroup) ? AABubbleCell.avatarPadding : 0
-            var cellMaxWidth = self.contentView.frame.size.width - endPadding - startPadding
+            let cellMaxWidth = self.contentView.frame.size.width - endPadding - startPadding
             self.layoutContent(cellMaxWidth, offsetX: startPadding)
             self.layoutAnchor()
             if (!self.isOut && self.isGroup && !self.isFullSize) {
@@ -367,7 +365,6 @@ class AABubbleCell: UICollectionViewCell {
     
     func layoutBubble(contentWidth: CGFloat, contentHeight: CGFloat) {
         let fullWidth = contentView.bounds.width
-        let fullHeight = contentView.bounds.height
         let bubbleW = contentWidth + contentInsets.left + contentInsets.right
         let bubbleH = contentHeight + contentInsets.top + contentInsets.bottom
         var topOffset = CGFloat(0)

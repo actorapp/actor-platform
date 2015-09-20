@@ -20,4 +20,12 @@ extension UIFont {
             return UIFont(name: "HelveticaNeue-Light", size: size)!
         }
     }
+    
+    class func mediumSystemFontOfSize(size: CGFloat) -> UIFont {
+        if #available(iOS 8.2, *) {
+            return UIFont.systemFontOfSize(size, weight: UIFontWeightMedium)
+        } else {
+            return UIFont(name: "HelveticaNeue-Medium", size: size)!
+        }
+    }
 }
