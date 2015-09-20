@@ -17,13 +17,13 @@ class PublicCell: UITableViewCell {
     init() {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
         
-        title.font = UIFont(name: "Roboto-Medium", size: 19);
+        title.font = UIFont.mediumSystemFontOfSize(19)
         title.textColor = MainAppTheme.list.dialogTitle
         
-        members.font = UIFont(name: "Roboto-Medium", size: 19);
+        members.font = UIFont.mediumSystemFontOfSize(19)
         members.textColor = MainAppTheme.list.dialogTitle
         
-        desc.font = UIFont(name: "HelveticaNeue", size: 16);
+        desc.font = UIFont.systemFontOfSize(16)
         desc.textColor = MainAppTheme.list.dialogText
         desc.lineBreakMode = NSLineBreakMode.ByWordWrapping
         desc.numberOfLines = 2
