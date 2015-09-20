@@ -157,7 +157,7 @@ class UserViewController: AATableViewController {
                     cell.style = .Destructive
                 } else {
                     cell.setContent(NSLocalizedString("ProfileAddToContacts", comment: "Add To Contacts"))
-                    cell.style = .Blue
+                    cell.style = .Action
                 }
             }
             .setAction { () -> () in

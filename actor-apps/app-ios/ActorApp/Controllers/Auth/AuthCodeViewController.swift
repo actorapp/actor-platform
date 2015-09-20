@@ -5,7 +5,7 @@
 import UIKit
 import MessageUI
 
-class AuthCodeViewController: AuthViewController, UIAlertViewDelegate {
+class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailComposeViewControllerDelegate {
 
     // Views
     
@@ -27,9 +27,12 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate {
     private var counter = AuthCodeViewController.DIAL_SECONDS
     
     private let phoneNumber: String
+    private let supportEnabled: Bool
     
     init(phoneNumber: String) {
+        
         self.phoneNumber = phoneNumber
+        self.supportEnabled = AppConfig.activationEmail != nil || AppConfig.supportEmail != nil
         
         super.init()
         
@@ -178,7 +181,9 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate {
     func updateTimerText() {
         if dialed {
             callHintLabel.textLocalized = "AuthCallDoneHint"
-            callActionLabel.hidden = false
+            if self.supportEnabled {
+                callActionLabel.hidden = false
+            }
         } else {
             let min = counter / 60
             let sec = counter % 60
@@ -227,9 +232,20 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate {
     
     func noCodeDidPressed() {
         let emailController = MFMailComposeViewController()
-        emailController.setSubject("Activation code problem ("+phoneNumber+")")
-        emailController.setToRecipients(["activation@actor.im"])
+        emailController.setSubject("Activation code problem (\(phoneNumber))")
+        if AppConfig.activationEmail != nil {
+            emailController.setToRecipients([AppConfig.activationEmail!])
+        } else if AppConfig.supportEmail != nil {
+            emailController.setToRecipients([AppConfig.supportEmail!])
+        } else {
+            fatalError("Support emails not set")
+        }
         emailController.setMessageBody("Hello, Dear Support!\n\nI can't receive any activation codes to the phone: \(phoneNumber).\n\nHope, you will answer soon. Thank you!", isHTML: false)
+        emailController.delegate = self
         presentViewController(emailController, animated: true, completion: nil)
+    }
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        controller.dismissViewControllerAnimated(false, completion: nil)
     }
 }
