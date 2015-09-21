@@ -42,5 +42,9 @@ export default {
       success: ActionTypes.GROUP_EDIT_ABOUT_SUCCESS,
       failure: ActionTypes.GROUP_EDIT_ABOUT_ERROR
     }, { gid, about });
+  },
+
+  removeGroupAvatar(gid) {
+    ActorClient.removeGroupAvatar(gid)
   }
 };

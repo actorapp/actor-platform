@@ -107,7 +107,7 @@ class MyProfile extends Component {
     imageInput.click()
   };
 
-  onProfilePictureRemove = () => console.debug('onProfilePictureRemove');
+  onProfilePictureRemove = () => MyProfileActions.removeMyAvatar();
 
   changeMyAvatar = (croppedImage) => MyProfileActions.changeMyAvatar(croppedImage);
 
