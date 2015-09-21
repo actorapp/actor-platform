@@ -77,7 +77,7 @@ public class Main {
                     for (String key : variantData.keySet()) {
                         // Override keys
                         res.remove(key);
-                        res.put(key, convertToJson(platformData.get(key)));
+                        res.put(key, convertToJson(variantData.get(key)));
                     }
                 }
             }
