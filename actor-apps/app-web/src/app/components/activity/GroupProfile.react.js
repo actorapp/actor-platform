@@ -5,30 +5,28 @@
 import { assign } from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
-import ReactZeroClipboard from 'react-zeroclipboard';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-import { Styles, Snackbar } from 'material-ui';
-import ActorTheme from 'constants/ActorTheme';
 import classnames from 'classnames';
-//import { Experiment, Variant } from 'react-ab';
-//import mixpanel from 'utils/Mixpanel';
+
+import ActorClient from 'utils/ActorClient';
+import confirm from 'utils/confirm'
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
+import InviteUserActions from 'actions/InviteUserActions';
+import EditGroupActionCreators from 'actions/EditGroupActionCreators';
 
 import LoginStore from 'stores/LoginStore';
 import PeerStore from 'stores/PeerStore';
 import DialogStore from 'stores/DialogStore';
 import GroupStore from 'stores/GroupStore';
-import InviteUserActions from 'actions/InviteUserActions';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import InviteUser from 'components/modals/InviteUser.react';
 import InviteByLink from 'components/modals/invite-user/InviteByLink.react';
 import GroupProfileMembers from 'components/activity/GroupProfileMembers.react';
 import Fold from 'components/common/Fold.React';
-
-const ThemeManager = new Styles.ThemeManager();
+import EditGroup from 'components/modals/EditGroup.react';
 
 const getStateFromStores = (groupId) => {
   const thisPeer = PeerStore.getGroupPeer(groupId);
@@ -39,31 +37,25 @@ const getStateFromStores = (groupId) => {
   };
 };
 
+let _prevGroupId;
+
 @ReactMixin.decorate(IntlMixin)
 class GroupProfile extends React.Component {
   static propTypes = {
     group: React.PropTypes.object.isRequired
   };
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
 
   constructor(props) {
     super(props);
+    const myId = LoginStore.getMyId();
 
     this.state = assign({
-      isMoreDropdownOpen: false,
-      isCopyButtonEnabled: false
+      isMoreDropdownOpen: false
     }, getStateFromStores(props.group.id));
-    GroupProfileActionCreators.getIntegrationToken(props.group.id);
 
-    ThemeManager.setTheme(ActorTheme);
+    if (props.group.members.length > 0 && myId === props.group.adminId) {
+      GroupProfileActionCreators.getIntegrationToken(props.group.id);
+    }
 
     DialogStore.addNotificationsListener(this.onChange);
     GroupStore.addChangeListener(this.onChange);
@@ -75,10 +67,14 @@ class GroupProfile extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
+    const myId = LoginStore.getMyId();
     // FIXME!!!
     setTimeout(() => {
       this.setState(getStateFromStores(newProps.group.id));
-      GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
+      if (newProps.group.id !== _prevGroupId && newProps.group.members.length > 0 && myId === newProps.group.adminId) {
+        GroupProfileActionCreators.getIntegrationToken(newProps.group.id);
+        _prevGroupId = newProps.group.id;
+      }
     }, 0);
   }
 
@@ -86,12 +82,16 @@ class GroupProfile extends React.Component {
     InviteUserActions.show(group);
   };
 
-  onLeaveGroupClick = groupId => {
-    DialogActionCreators.leaveGroup(groupId);
+  onLeaveGroupClick = gid => {
+    confirm('Do you really want to leave this conversation?').then(
+      () => DialogActionCreators.leaveGroup(gid),
+      () => {}
+    );
   };
 
   onNotificationChange = event => {
-    DialogActionCreators.changeNotificationsEnabled(this.state.thisPeer, event.target.checked);
+    const { thisPeer } = this.state;
+    DialogActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
   onChange = () => {
@@ -100,10 +100,6 @@ class GroupProfile extends React.Component {
 
   selectToken = (event) => {
     event.target.select();
-  };
-
-  onIntegrationTokenCopied = () => {
-    this.refs.integrationTokenCopied.show();
   };
 
   toggleMoreDropdown = () => {
@@ -122,18 +118,41 @@ class GroupProfile extends React.Component {
     document.removeEventListener('click', this.closeMoreDropdown, false);
   };
 
-  onZeroclipboardReady = () => {
-    this.setState({isCopyButtonEnabled: true});
+  onClearGroupClick = (gid) => {
+    confirm('Do you really want to clear this conversation?').then(
+      () => {
+        const peer = ActorClient.getGroupPeer(gid);
+        DialogActionCreators.clearChat(peer)
+      },
+      () => {}
+    );
+  };
+
+  onDeleteGroupClick = (gid) => {
+    confirm('Do you really want to delete this conversation?').then(
+      () => {
+        const peer = ActorClient.getGroupPeer(gid);
+        DialogActionCreators.deleteChat(peer);
+      },
+      () => {}
+    );
+  };
+
+  onEditGroupClick = (gid) => {
+    EditGroupActionCreators.show(gid)
   };
 
   render() {
     const { group } = this.props;
-    const { isNotificationsEnabled, integrationToken, isCopyButtonEnabled, isMoreDropdownOpen } = this.state;
+    const {
+      isNotificationsEnabled,
+      integrationToken,
+      isMoreDropdownOpen
+    } = this.state;
 
     const myId = LoginStore.getMyId();
     const admin = GroupProfileActionCreators.getUser(group.adminId);
     const isMember = DialogStore.isGroupMember(group);
-    const snackbarStyles = ActorTheme.getSnackbarStyles();
 
     let adminControls;
     if (group.adminId === myId) {
@@ -149,13 +168,9 @@ class GroupProfile extends React.Component {
           <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
         </li>
       ,
-        <li className="dropdown__menu__item hide">
+        <li className="dropdown__menu__item" onClick={() => this.onEditGroupClick(group.id)}>
           <i className="material-icons">mode_edit</i>
           <FormattedMessage message={this.getIntlMessage('editGroup')}/>
-        </li>
-      ,
-        <li className="dropdown__menu__item hide">
-          <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
         </li>
       ];
     }
@@ -175,7 +190,7 @@ class GroupProfile extends React.Component {
       <header>
         <AvatarItem image={group.bigAvatar}
                     placeholder={group.placeholder}
-                    size="big"
+                    size="large"
                     title={group.name}/>
 
         <h3 className="group_profile__meta__title">{group.name}</h3>
@@ -185,14 +200,22 @@ class GroupProfile extends React.Component {
         </div>
       </header>
     ,
-      <div className="group_profile__meta__description hide">
-        Description here
-      </div>
+      group.about ? <div className="group_profile__meta__description">{group.about}</div> : null
     ];
 
-    const copyButtonClassname = classnames({
-      'hide': !isCopyButtonEnabled
-    });
+    const token = (group.adminId === myId) ? (
+      <li className="profile__list__item group_profile__integration no-p">
+        <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
+          <div className="info info--light">
+            If you have programming chops, or know someone who does,
+            this integration token allow the most flexibility and communication
+            with your own systems.
+            <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
+          </div>
+          <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
+        </Fold>
+      </li>
+    ) : null;
 
     if (isMember) {
       return (
@@ -202,24 +225,33 @@ class GroupProfile extends React.Component {
               {groupMeta}
               <footer className="row">
                 <div className="col-xs">
-                  <button className="button button--light-blue"
+                  <button className="button button--flat button--wide"
                           onClick={() => this.onAddMemberClick(group)}>
                     <i className="material-icons">person_add</i>
                     <FormattedMessage message={this.getIntlMessage('addPeople')}/>
                   </button>
                 </div>
-                <div style={{width: 10}}></div>
+                <div style={{width: 10}}/>
                 <div className="col-xs">
                   <div className={dropdownClassNames}>
-                    <button className="dropdown__button button button--light-blue" onClick={this.toggleMoreDropdown}>
+                    <button className="dropdown__button button button--flat button--wide"
+                            onClick={this.toggleMoreDropdown}>
                       <i className="material-icons">more_horiz</i>
                       <FormattedMessage message={this.getIntlMessage('more')}/>
                     </button>
                     <ul className="dropdown__menu dropdown__menu--right">
                       {adminControls}
                       <li className="dropdown__menu__item dropdown__menu__item--light"
-                          onClick={this.onLeaveGroupClick.bind(this, group.id)}>
+                          onClick={() => this.onLeaveGroupClick(group.id)}>
                         <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
+                      </li>
+                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                          onClick={() => this.onClearGroupClick(group.id)}>
+                        <FormattedMessage message={this.getIntlMessage('clearGroup')}/>
+                      </li>
+                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                          onClick={() => this.onDeleteGroupClick(group.id)}>
+                        <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
                       </li>
                     </ul>
                   </div>
@@ -259,31 +291,12 @@ class GroupProfile extends React.Component {
               </Fold>
             </li>
 
-            <li className="profile__list__item group_profile__integration no-p">
-              <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
-                <div className="info info--light">
-                  If you have programming chops, or know someone who does,
-                  this integration token allow the most flexibility and communication
-                  with your own systems.
-                  <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
-                  <ReactZeroClipboard onCopy={this.onIntegrationTokenCopied}
-                                      onReady={this.onZeroclipboardReady}
-                                      text={integrationToken}>
-                    <a className={copyButtonClassname}>Copy integration link</a>
-                  </ReactZeroClipboard>
-                </div>
-                <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
-              </Fold>
-            </li>
+            {token}
           </ul>
 
           <InviteUser/>
           <InviteByLink/>
-
-          <Snackbar autoHideDuration={3000}
-                    message={this.getIntlMessage('integrationTokenCopied')}
-                    ref="integrationTokenCopied"
-                    style={snackbarStyles}/>
+          <EditGroup/>
         </div>
       );
     } else {

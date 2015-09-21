@@ -6,18 +6,17 @@ package im.actor.core.js.entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Peer;
 import im.actor.core.js.JsMessenger;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.runtime.Log;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 
 public class JsGroup extends JavaScriptObject {
     public static JsGroup fromGroupVM(GroupVM groupVM, JsMessenger messenger) {
@@ -58,16 +57,18 @@ public class JsGroup extends JavaScriptObject {
         for (JsGroupMember member : convertedMembers) {
             jsMembers.push(member);
         }
-        return create(groupVM.getId(), groupVM.getName().get(), fileUrl, bigFileUrl,
+        return create(groupVM.getId(), groupVM.getName().get(), groupVM.getAbout().get(), fileUrl, bigFileUrl,
                 Placeholders.getPlaceholder(groupVM.getId()), groupVM.getCreatorId(), presence,
                 jsMembers);
     }
 
-    public static native JsGroup create(int id, String name, String avatar, String bigAvatar,
+    public static native JsGroup create(int id, String name, String about, String avatar, String bigAvatar,
                                         String placeholder, int adminId, String presence,
                                         JsArray<JsGroupMember> members)/*-{
-        return {id: id, name: name, avatar: avatar, bigAvatar: bigAvatar, placeholder:placeholder,
-            adminId: adminId, presence: presence, members: members};
+        return {
+            id: id, name: name, about: about, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
+            adminId: adminId, presence: presence, members: members
+        };
     }-*/;
 
     protected JsGroup() {
