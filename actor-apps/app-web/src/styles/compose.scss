@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 .compose {
   position: relative;
 
@@ -55,6 +59,9 @@
     margin: 0;
     .button {
       margin-right: 4px;
+      &.attachment {
+        text-transform: none;
+      }
       &:last-child {
         margin-right: 0;
       }
@@ -69,13 +76,29 @@
     opacity: 0;
   }
 
+  .emoji-opener {
+    position: absolute;
+    top: 6px;
+    right: 38px;
+    cursor: pointer;
+    color: $greyish;
+    opacity: .8;
+    transform: scale(.9);
+    transition: .2s;
+    &--active,
+    &:hover {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
   &--disabled {
     height: 154px;
     padding: 0;
     h3 {
       font-weight: 500;
 
-      color: rgba(0,0,0,.2);
+      color: rgba(0, 0, 0, .2);
     }
   }
 }

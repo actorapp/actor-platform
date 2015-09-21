@@ -40,10 +40,6 @@ let GroupStoreInstance = new GroupStore();
 
 GroupStoreInstance.dispatchToken = register(action => {
   switch (action.type) {
-    case ActionTypes.LEFT_GROUP:
-      GroupStoreInstance.emitChange();
-      break;
-
     case ActionTypes.GET_INTEGRATION_TOKEN:
       waitFor([DialogStore.dispatchToken]);
       GroupStoreInstance.emitChange();
@@ -54,6 +50,18 @@ GroupStoreInstance.dispatchToken = register(action => {
       break;
     case ActionTypes.GET_INTEGRATION_TOKEN_ERROR:
       _integrationToken = null;
+      GroupStoreInstance.emitChange();
+      break;
+
+    case ActionTypes.CHAT_CLEAR:
+    case ActionTypes.CHAT_CLEAR_SUCCESS:
+    case ActionTypes.CHAT_CLEAR_ERROR:
+    case ActionTypes.CHAT_LEAVE:
+    case ActionTypes.CHAT_LEAVE_SUCCESS:
+    case ActionTypes.CHAT_LEAVE_ERROR:
+    case ActionTypes.CHAT_DELETE:
+    case ActionTypes.CHAT_DELETE_SUCCESS:
+    case ActionTypes.CHAT_DELETE_ERROR:
       GroupStoreInstance.emitChange();
       break;
   }
