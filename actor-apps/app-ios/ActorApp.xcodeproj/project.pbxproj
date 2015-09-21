@@ -260,7 +260,7 @@
 		993125DEA698CD065C01215DCA5C3A6E /* TitledCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TitledCell.swift; path = View/Cells/TitledCell.swift; sourceTree = "<group>"; };
 		A26C1FF1A5693F9F9CEDE81D65C7AD87 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A4686D7D7B53AE388A9FBE510DFA6798 /* DialogsSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogsSearchCell.swift; path = Controllers/Dialogs/Cells/DialogsSearchCell.swift; sourceTree = "<group>"; };
-		A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Config.swift; path = ActorCore/Config.swift; sourceTree = "<group>"; };
+		A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Config.swift; path = ../ActorCore/Config.swift; sourceTree = "<group>"; };
 		ABB53674A14E3D46A5B22DBAF8A27AA1 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		AE5039836BF26A546049866916D0908B /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeController.swift; path = Controllers/Compose/ComposeController.swift; sourceTree = "<group>"; };
 		AEA37A57771C84E79F88D6F91C8784F0 /* GroupCreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GroupCreateViewController.swift; path = Controllers/Compose/GroupCreateViewController.swift; sourceTree = "<group>"; };
@@ -378,7 +378,6 @@
 				94EE37C03BC0B4DD1E82AE89A542A35B /* ActorApp-Bridging-Header.h */,
 				148837AEB986AFDE519BEBD3686AB073 /* main.m */,
 				F76A77E9428111C798E69B43EA06A281 /* ActorApp.entitlements */,
-				897AD66A77219F6888322861BDA2CD14 /* app.json */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -588,7 +587,6 @@
 				06E7FAC41BAA3BA000177709 /* Extensions.swift */,
 				96AEEE09EE154156E7009B6AF0A2DF79 /* Conversions.swift */,
 				3015DA92AE10E0E73AC78E4268204269 /* Wrappers.swift */,
-				A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */,
 			);
 			name = ActorCore;
 			sourceTree = "<group>";
@@ -751,6 +749,8 @@
 				75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */,
 				1ACEA023B930E6F261DAC0A6BDB410C1 /* Supporting Files */,
 				2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */,
+				A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */,
+				897AD66A77219F6888322861BDA2CD14 /* app.json */,
 			);
 			path = ActorApp;
 			sourceTree = "<group>";

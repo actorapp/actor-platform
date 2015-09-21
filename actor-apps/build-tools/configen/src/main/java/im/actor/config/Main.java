@@ -74,7 +74,7 @@ public class Main {
                 if (platformData.containsKey(variant)) {
                     Map<String, Object> variantData = (Map<String, Object>) variants.get(variant);
 
-                    for (String key : platformData.keySet()) {
+                    for (String key : variantData.keySet()) {
                         // Override keys
                         res.remove(key);
                         res.put(key, convertToJson(platformData.get(key)));
