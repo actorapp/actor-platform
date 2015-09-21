@@ -1,13 +1,19 @@
-import polyfills from 'utils/polyfills'; // eslint-disable-line
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import babelPolyfill from 'babel/polyfill'; // eslint-disable-line
 import RouterContainer from 'utils/RouterContainer';
 
 import crosstab from 'crosstab';
 
-import React from 'react';
+import React, { Component } from 'react';
 import Router from 'react-router';
 import Raven from 'utils/Raven'; // eslint-disable-line
 import isMobile from 'utils/IsMobile';
 import ReactMixin from 'react-mixin';
+
+import { endpoints } from 'constants/ActorAppConstants'
 
 import Intl from 'intl'; // eslint-disable-line
 import LocaleData from 'intl/locale-data/jsonp/en-US'; // eslint-disable-line
@@ -19,7 +25,6 @@ import LoginStore from 'stores/LoginStore';
 import PreferencesStore from 'stores/PreferencesStore';
 
 import LoginActionCreators from 'actions/LoginActionCreators';
-import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 import Deactivated from 'components/Deactivated.react';
 import Login from 'components/Login.react';
@@ -35,9 +40,7 @@ Pace.start({
   restartOnPushState: false
 });
 
-const DefaultRoute = Router.DefaultRoute;
-const Route = Router.Route;
-const RouteHandler = Router.RouteHandler;
+const { DefaultRoute, Route, RouteHandler } = Router;
 
 const ActorInitEvent = 'concurrentActorInit';
 
@@ -59,18 +62,14 @@ if (isMobile() && window.location.hash !== '#/install') {
 }
 
 @ReactMixin.decorate(IntlMixin)
-class App extends React.Component {
+class App extends Component {
   render() {
     return <RouteHandler/>;
   }
 }
 
 // Internationalisation
-let intlData;
-PreferencesStore.addChangeListener(() => {
-  intlData = PreferencesStore.languageData;
-});
-PreferencesActionCreators.load();
+const intlData = PreferencesStore.getLanguageData();
 
 const initReact = () => {
   if (window.location.hash !== '#/deactivated') {
@@ -81,7 +80,7 @@ const initReact = () => {
     if (location.pathname === '/app/index.html') {
       window.messenger = new window.actor.ActorApp(['ws://' + location.hostname + ':9080/']);
     } else {
-      window.messenger = new window.actor.ActorApp();
+      window.messenger = new window.actor.ActorApp(endpoints);
     }
   }
 
@@ -112,6 +111,4 @@ const initReact = () => {
   }
 };
 
-window.jsAppLoaded = () => {
-  setTimeout(initReact, 0);
-};
+window.jsAppLoaded = () => setTimeout(initReact, 0);

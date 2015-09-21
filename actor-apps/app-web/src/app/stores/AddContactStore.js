@@ -4,7 +4,7 @@ import { ActionTypes } from 'constants/ActorAppConstants';
 
 const CHANGE_EVENT = 'change';
 
-let _isModalOpen = false,
+let _isOpen = false,
     _message = null;
 
 class AddContactStore extends EventEmitter {
@@ -13,7 +13,7 @@ class AddContactStore extends EventEmitter {
   }
 
   isModalOpen() {
-    return _isModalOpen;
+    return _isOpen;
   }
 
   getMessage() {
@@ -38,16 +38,16 @@ let AddContactStoreInstance = new AddContactStore();
 AddContactStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
   switch(action.type) {
     case ActionTypes.CONTACT_ADD_MODAL_SHOW:
-      _isModalOpen = true;
+      _isOpen = true;
       AddContactStoreInstance.emitChange();
       break;
     case ActionTypes.CONTACT_ADD_MODAL_HIDE:
-      _isModalOpen = false;
+      _isOpen = false;
       _message = null;
       AddContactStoreInstance.emitChange();
       break;
     case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK:
-      _isModalOpen = false;
+      _isOpen = false;
       _message = null;
       AddContactStoreInstance.emitChange();
       break;

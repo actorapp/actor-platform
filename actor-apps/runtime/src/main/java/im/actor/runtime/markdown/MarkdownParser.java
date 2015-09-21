@@ -1,5 +1,7 @@
 package im.actor.runtime.markdown;
 
+import im.actor.runtime.regexp.MatcherCompat;
+
 import java.util.ArrayList;
 
 public class MarkdownParser {
@@ -151,10 +153,23 @@ public class MarkdownParser {
             Url url = findUrl(cursor, limit);
             if (url != null) {
                 handleText(cursor, url.getStart(), elements);
-                String title = cursor.text.substring(url.getStart() + 1, url.getMiddle());
-                String urlVal = cursor.text.substring(url.getMiddle() + 2, url.getEnd());
+                String title;
+                String urlVal;
+
+                if (url instanceof BasicUrl) {
+                    BasicUrl basicUrl = (BasicUrl) url;
+                    title = cursor.text.substring(basicUrl.getStart(), basicUrl.getEnd());
+                    urlVal = title;
+                    cursor.currentOffset = url.getEnd();
+                } else {
+                    TitledUrl titledUrl = (TitledUrl) url;
+                    title = cursor.text.substring(titledUrl.getStart() + 1, titledUrl.getMiddle());
+                    urlVal = cursor.text.substring(titledUrl.getMiddle() + 2, titledUrl.getEnd());
+                    cursor.currentOffset = url.getEnd() + 1;
+                }
+
                 elements.add(new MDUrl(title, urlVal));
-                cursor.currentOffset = url.getEnd() + 1;
+
                 return true;
             }
         }
@@ -271,8 +286,22 @@ public class MarkdownParser {
                 if (!isGoodAnchor(cursor.text, start - 1)) {
                     continue start_loop;
                 }
-            } else {
+            } else if (isGoodAnchor(cursor.text, start)) {
                 continue start_loop;
+            } else {
+                String currentText = cursor.text.substring(start);
+
+                if (isGoodAnchor(cursor.text, start - 1) && Patterns.WEB_URL_START.test(currentText)) {
+                    final MatcherCompat matcher = Patterns.WEB_URL_START.matcher(currentText);
+                    final String url = matcher.group();
+                    if (url.length() > 0) {
+                        return new BasicUrl(start + matcher.start(), start + matcher.start() + url.length());
+                    } else {
+                        continue start_loop;
+                    }
+                } else {
+                    continue start_loop;
+                }
             }
 
             middle_loop:
@@ -286,8 +315,7 @@ public class MarkdownParser {
                     if (cursor.text.charAt(end) != ')') {
                         continue end_loop;
                     }
-
-                    return new Url(start, middle, end);
+                    return new TitledUrl(start, middle, end);
                 }
             }
         }
@@ -330,18 +358,45 @@ public class MarkdownParser {
         return true;
     }
 
-    private static class Url {
+    private static abstract class Url {
+        public abstract int getStart();
+
+        public abstract int getEnd();
+    }
+
+    private static class BasicUrl extends Url {
+        private int start;
+        private int end;
+
+        public BasicUrl(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public int getStart() {
+            return start;
+        }
+
+        @Override
+        public int getEnd() {
+            return end;
+        }
+    }
+
+    private static class TitledUrl extends Url {
 
         private int start;
         private int middle;
         private int end;
 
-        public Url(int start, int middle, int end) {
+        public TitledUrl(int start, int middle, int end) {
             this.start = start;
             this.middle = middle;
             this.end = end;
         }
 
+        @Override
         public int getStart() {
             return start;
         }
@@ -350,6 +405,7 @@ public class MarkdownParser {
             return middle;
         }
 
+        @Override
         public int getEnd() {
             return end;
         }
