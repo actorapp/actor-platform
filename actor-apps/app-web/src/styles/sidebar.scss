@@ -43,7 +43,7 @@
         transition: transform $default-transition-duration $default-transition-timing;
         vertical-align: middle;
 
-        color: rgba(255,255,255,.65);
+        color: rgba(255, 255, 255, .65);
       }
     }
 
@@ -56,19 +56,19 @@
       }
     }
     .dropdown__menu {
-      min-width: 230px;
-      margin-right: -42px;
+      min-width: 255px;
+      margin-right: -67px;
     }
 
     &:hover {
       //background-color: rgba($baby-blue,.2);
-      background-color: rgba($baby-blue,.12);
+      background-color: rgba($baby-blue, .12);
     }
     &--clickable {
       cursor: pointer;
     }
     &--opened {
-      background-color: rgba($baby-blue,.2) !important;
+      background-color: rgba($baby-blue, .2) !important;
       .dropdown__button {
         transform: scale(1, -1);
 
@@ -111,7 +111,7 @@
           text-decoration: none;
           text-transform: uppercase;
 
-          color: rgba(255,255,255,.75);
+          color: rgba(255, 255, 255, .75);
           &:hover {
             color: white;
           }
@@ -223,7 +223,7 @@
 
       &:hover {
         color: white;
-        background-color: rgba($baby-blue,.12);
+        background-color: rgba($baby-blue, .12);
         box-shadow: none;
         .avatar {
           filter: none;
