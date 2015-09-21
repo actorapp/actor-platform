@@ -8,6 +8,8 @@ const english = {
     'helpAndFeedback': 'Help & Feedback',
     'preferences': 'Preferences',
     'signOut': 'Sign Out',
+    'addContact': 'Add contact',
+    'twitter': 'Our twitter',
 
     // Toolbar
     'search': 'Search',
