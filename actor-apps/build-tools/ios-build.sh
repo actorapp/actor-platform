@@ -16,8 +16,6 @@ echo "##teamcity[message text='Loading confgiguration']"
 # Parsing settings
 eval $(parse_yaml "$CONFIG_DIR/apps.yaml" "config_")
 
-# Loading settings
-
 # Bundle Title. Used for result bundle file name.
 APP_TITLE=$(eval "echo \$$(echo config_apps_${APP}_title)")
 
@@ -51,6 +49,13 @@ cd $BUILD_DIR
 echo "##teamcity[blockClosed name='Installing j2objc']"
 
 ################################################################################
+echo "##teamcity[blockOpened name='Configuring app.json']"
+
+build-tools/configen/dist/bin/configen "$CONFIG_DIR/apps.yaml" "ios" "$APP" "$VARIANT" "$BUILD_DIR/app-ios/ActorApp/Supporting Files/app.json"
+
+echo "##teamcity[blockClosed name='Configuring app.json']"
+
+################################################################################
 echo "##teamcity[blockOpened name='Configuring Info.plist']"
 
 # Setting bundle id
@@ -64,8 +69,8 @@ build-tools/ios-plist-set.sh ":Fabric:APIKey" "$APP_FABRIC_API" "$BUILD_DIR/app-
 if [ ! -z "$BUILD_COUNTER" ]; then
   echo "##teamcity[message text='Setting build counter: $BUILD_COUNTER']"
   APP_VERSION=$(eval "build-tools/ios-update-version.sh \"$BUILD_COUNTER\" \"$BUILD_DIR/app-ios/ActorApp/Supporting Files/Info.plist\"")
-  APP_ARCHIVE_NAME=$APP_TITLE-$APP-$APP_VERSION
-  echo "##teamcity[buildNumber '$APP_VERSION-$APP']"
+  APP_ARCHIVE_NAME=$APP_TITLE-$VARIANT-$APP_VERSION
+  echo "##teamcity[buildNumber '$APP_VERSION-$VARIANT']"
 else
   APP_ARCHIVE_NAME=$APP_TITLE
 fi
