@@ -1,14 +1,14 @@
 package im.actor.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 
@@ -16,130 +16,101 @@ public class Main {
 
         System.out.println("Config builder for Actor Apps");
 
-        if (args.length != 3 && args.length != 4) {
-            System.out.println("USAGE: configen <source_config> [optional_config] <dest_file> android|ios|web");
+        if (args.length != 5) {
+            System.out.println("USAGE: configen <source_config> android|ios|web <app> <variant> <dest_path>");
             return;
         }
 
         String sourceFileName = args[0];
-        String altFileName = args.length == 4 ? args[1] : null;
-        String destFileName = args[1 + (args.length - 3)];
-        String type = args[2 + (args.length - 3)];
+        String destFileName = args[4];
+        String platform = args[1];
+        String app = args[2];
+        String variant = args[3];
 
-        Config config = ConfigFactory.parseFile(new File(sourceFileName));
-        Config configAlt = null;
-        if (altFileName != null) {
-            configAlt = ConfigFactory.parseFile(new File(altFileName));
-        }
+        Yaml yaml = new Yaml();
+        Map<String, Object> appData = (Map<String, Object>) ((Map) ((Map) yaml.load(new FileInputStream(sourceFileName)))
+                .get("apps"))
+                .get(app);
 
-        // Build Android config
+        JSONObject res = new JSONObject();
 
-        MobileConfig android = new MobileConfig();
-        MobileConfig ios = new MobileConfig();
-        WebConfig web = new WebConfig();
-
-        // Endpoints
-        List<String> str = config.getStringList("server_endpoints");
-        for (String s : str) {
-            URI uri = URI.create(s);
-            if (uri.getScheme().equals("tls") || uri.getScheme().equals("tcp")) {
-                android.getEndpoints().add(s);
-                ios.getEndpoints().add(s);
-            } else {
-                web.getEndpoints().add(s);
+        for (String key : appData.keySet()) {
+            if ("android".equals(key)) {
+                continue;
             }
+            if ("ios".equals(key)) {
+                continue;
+            }
+            if ("web".equals(key)) {
+                continue;
+            }
+
+            // Ignore build section
+            if ("build".equals(key)) {
+                continue;
+            }
+
+            res.put(key, convertToJson(appData.get(key)));
         }
-        if (android.getEndpoints().size() == 0) {
-            throw new RuntimeException("No Mobile endpoints specified");
-        }
 
-        ios.setMixpanel(getString(config, configAlt, "mixpanel.ios"));
-        android.setMixpanel(getString(config, configAlt, "mixpanel.android"));
-        web.setMixpanel(getString(config, configAlt, "mixpanel.web"));
+        if (appData.containsKey(platform)) {
 
-        ios.setHockeyApp(getString(config, configAlt, "hockeyapp.ios"));
-        android.setHockeyApp(getString(config, configAlt, "hockeyapp.android"));
+            // Platform values
+            Map<String, Object> platformData = (Map<String, Object>) appData.get(platform);
 
-        ios.setMint(getString(config, configAlt, "mint.ios"));
-        android.setMint(getString(config, configAlt, "mint.android"));
+            for (String key : platformData.keySet()) {
+                if ("variants".equals(key)) {
+                    continue;
+                }
 
-        ios.setBaseVersion(getString(config, configAlt, "version.ios"));
-        android.setBaseVersion(getString(config, configAlt, "version.android"));
-        web.setBaseVersion(getString(config, configAlt, "version.web"));
+                // Override keys
+                res.remove(key);
+                res.put(key, convertToJson(platformData.get(key)));
+            }
 
-        ios.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
-        android.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
-        web.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
+            // Variant values
+            if (platformData.containsKey("variants")) {
+                Map<String, Object> variants = (Map<String, Object>) platformData.get(variant);
+                if (platformData.containsKey(variant)) {
+                    Map<String, Object> variantData = (Map<String, Object>) variants.get(variant);
 
-        ios.setPushId(getLong(config, configAlt, "push.ios"));
-        android.setPushId(getLong(config, configAlt, "push.android"));
-
-        // Save Config
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        if (type.equals("android")) {
-            mapper.writeValue(new File(destFileName), android);
-        } else if (type.equals("ios")) {
-            mapper.writeValue(new File(destFileName), ios);
-        } else if (type.equals("web")) {
-            mapper.writeValue(new File(destFileName), web);
-        } else {
-            throw new RuntimeException("Unknown type: " + type);
-        }
-    }
-
-    protected static String getString(Config config, Config altConfig, String path) {
-        if (altConfig != null) {
-            if (altConfig.hasPath(path)) {
-                if (!altConfig.getIsNull(path)) {
-                    return altConfig.getString(path);
-                } else {
-                    return null;
+                    for (String key : platformData.keySet()) {
+                        // Override keys
+                        res.remove(key);
+                        res.put(key, convertToJson(platformData.get(key)));
+                    }
                 }
             }
         }
-        if (config.hasPath(path)) {
-            if (!config.getIsNull(path)) {
-                return config.getString(path);
-            }
-        }
-        return null;
+
+        JSonWriter writer = new JSonWriter();
+        res.writeJSONString(writer);
+        String data = writer.toString();
+
+        FileWriter fileWriter = new FileWriter(destFileName);
+        fileWriter.write(data);
+        fileWriter.close();
     }
 
-    protected static boolean getBool(Config config, Config altConfig, String path, boolean value) {
-        if (altConfig != null) {
-            if (altConfig.hasPath(path)) {
-                if (!altConfig.getIsNull(path)) {
-                    return altConfig.getBoolean(path);
-                } else {
-                    return value;
-                }
+    protected static Object convertToJson(Object src) {
+        if (src instanceof Map) {
+            JSONObject res = new JSONObject();
+            for (String s : ((Map<String, Object>) src).keySet()) {
+                res.put(s, ((Map<String, Object>) src).get(s));
             }
-        }
-        if (config.hasPath(path)) {
-            if (!config.getIsNull(path)) {
-                return config.getBoolean(path);
+            return res;
+        } else if (src instanceof String) {
+            return src;
+        } else if (src instanceof Integer) {
+            return src;
+        } else if (src instanceof List) {
+            JSONArray res = new JSONArray();
+            for (Object o : (List) src) {
+                res.add(convertToJson(o));
             }
+            return res;
         }
-        return value;
-    }
 
-    protected static Long getLong(Config config, Config altConfig, String path) {
-        if (altConfig != null) {
-            if (altConfig.hasPath(path)) {
-                if (!altConfig.getIsNull(path)) {
-                    return altConfig.getLong(path);
-                } else {
-                    return null;
-                }
-            }
-        }
-        if (config.hasPath(path)) {
-            if (!config.getIsNull(path)) {
-                return config.getLong(path);
-            }
-        }
-        return null;
+        throw new RuntimeException("type: " + src.getClass());
     }
 }
