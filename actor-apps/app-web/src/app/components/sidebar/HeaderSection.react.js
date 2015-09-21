@@ -36,6 +36,7 @@ class HeaderSection extends React.Component {
   }
 
   componentDidMount() {
+    // TODO: Move binding to login action creators.
     ActorClient.bindUser(ActorClient.getUid(), this.setUser);
   }
 
@@ -86,6 +87,8 @@ class HeaderSection extends React.Component {
     document.removeEventListener('click', this.closeHeaderMenu, false);
   };
 
+  openTwitter = () => window.open('https://twitter.com/actorapp');
+
   render() {
     const { user, isOpened } = this.state;
 
@@ -124,7 +127,7 @@ class HeaderSection extends React.Component {
                   Add contact
                 </li>
                 <li className="dropdown__menu__separator"></li>
-                <li className="dropdown__menu__item  hide">
+                <li className="dropdown__menu__item hide">
                   <svg className="icon icon--dropdown"
                        dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
                   <FormattedMessage message={this.getIntlMessage('configureIntegrations')}/>
@@ -133,10 +136,17 @@ class HeaderSection extends React.Component {
                   <i className="material-icons">help</i>
                   <FormattedMessage message={this.getIntlMessage('helpAndFeedback')}/>
                 </li>
+                <li className="dropdown__menu__item" onClick={this.openTwitter}>
+                  <svg className="icon icon--dropdown"
+                       style={{marginLeft: -34}}
+                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#twitter"/>'}}/>
+                  Our twitter
+                </li>
                 <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
                   <i className="material-icons">settings</i>
                   <FormattedMessage message={this.getIntlMessage('preferences')}/>
                 </li>
+                <li className="dropdown__menu__separator"></li>
                 <li className="dropdown__menu__item dropdown__menu__item--light" onClick={this.setLogout}>
                   <FormattedMessage message={this.getIntlMessage('signOut')}/>
                 </li>
