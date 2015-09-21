@@ -3,8 +3,8 @@ set -e
 
 BUILD_DIR=$1
 CONFIG_DIR=$2
-VENDOR=$3
-APP=$4
+APP=$3
+VARIANT=$4
 BUILD_COUNTER=$5
 
 # Including yaml parser
@@ -14,18 +14,29 @@ BUILD_COUNTER=$5
 echo "##teamcity[blockOpened name='Loading config']"
 echo "##teamcity[message text='Loading confgiguration']"
 # Parsing settings
-eval $(parse_yaml "$CONFIG_DIR/keys.yaml" "config_")
+eval $(parse_yaml "$CONFIG_DIR/apps.yaml" "config_")
 
 # Loading settings
-APP_IDENTITY=$(eval "echo \$$(echo config_vendors_${VENDOR}_identity)")
-APP_TITLE=$(eval "echo \$$(echo config_vendors_${VENDOR}_title)")
-APP_CERTIFICATE=$(eval "echo \$$(echo config_vendors_${VENDOR}_certificate)")
-APP_FABRIC_API=$(eval "echo \$$(echo config_vendors_${VENDOR}_fabric_api)")
-APP_FABRIC_SECRET=$(eval "echo \$$(echo config_vendors_${VENDOR}_fabric_secret)")
-APP_BUNDLE_ID=$(eval "echo \$$(echo config_vendors_${VENDOR}_apps_${APP}_bundle)")
-APP_PROVISION=$(eval "echo \$$(echo config_vendors_${VENDOR}_apps_${APP}_provision)")
-APP_ENTITLEMENTS=$(eval "echo \$$(echo config_vendors_${VENDOR}_apps_${APP}_entitlements)")
-APP_APP_STORE=$(eval "echo \$$(echo config_vendors_${VENDOR}_apps_${APP}_appstore)")
+
+# Bundle Title. Used for result bundle file name.
+APP_TITLE=$(eval "echo \$$(echo config_apps_${APP}_title)")
+
+# Fabric configuration
+APP_FABRIC_API=$(eval "echo \$$(echo config_apps_${APP}_build_fabric_api_key)")
+APP_FABRIC_SECRET=$(eval "echo \$$(echo config_apps_${APP}_build_fabric_build_secret)")
+
+# Application signing configuration
+APP_SIGNING_VENDOR=$(eval "echo \$$(echo config_apps_${APP}_ios_variants_${VARIANT}_build_key_vendor)")
+APP_SIGNING_KEY=$(eval "echo \$$(echo config_apps_${APP}_ios_variants_${VARIANT}_build_key_key)")
+
+# Loading config
+APP_IDENTITY=$(eval "echo \$$(echo config_ios_signing_${APP_SIGNING_VENDOR}_identity)")
+APP_CERTIFICATE=$(eval "echo \$$(echo config_ios_signing_${APP_SIGNING_VENDOR}_certificate)")
+APP_BUNDLE_ID=$(eval "echo \$$(echo config_ios_signing_${APP_SIGNING_VENDOR}_keys_${APP_SIGNING_KEY}_bundle)")
+APP_PROVISION=$(eval "echo \$$(echo config_ios_signing_${APP_SIGNING_VENDOR}_keys_${APP_SIGNING_KEY}_provision)")
+APP_ENTITLEMENTS=$(eval "echo \$$(echo config_ios_signing_${APP_SIGNING_VENDOR}_keys_${APP_SIGNING_KEY}_entitlements)")
+APP_APP_STORE=$(eval "echo \$$(echo config_ios_signing_${APP_SIGNING_VENDOR}_keys_${APP_SIGNING_KEY}_appstore)")
+
 # Starting build
 echo Building $APP_BUNDLE_ID $APP_IDENTITY with $CONFIG_DIR/$APP_PROVISION and $CONFIG_DIR/$APP_ENTITLEMENTS
 echo "##teamcity[blockClosed name='Loading config']"
