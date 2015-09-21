@@ -106,6 +106,11 @@ class EditGroup extends Component {
     EditGroupActionCreators.changeGroupAvatar(group.id, croppedImage);
   };
 
+  onProfilePictureRemove = () =>  {
+    const { group } = this.state;
+    EditGroupActionCreators.removeGroupAvatar(group.id);
+  };
+
   render() {
     const { isOpen, group, isCropModalOpen, title, about } = this.state;
 

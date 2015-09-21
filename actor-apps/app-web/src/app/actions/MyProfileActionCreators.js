@@ -40,5 +40,9 @@ export default {
 
   changeMyAvatar(newAvatar) {
     ActorClient.changeMyAvatar(newAvatar);
+  },
+
+  removeMyAvatar() {
+    ActorClient.removeMyAvatar();
   }
 };
