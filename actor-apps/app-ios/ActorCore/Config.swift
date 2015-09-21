@@ -52,8 +52,8 @@ class Config {
                 }
                 if let support = info["support"] as? NSDictionary {
                     self.supportEmail = support["email"] as? String
-                    self.activationEmail = support["activation-email"] as? String
-                    self.supportAccount = support["in-app"] as? String
+                    self.activationEmail = support["activation_email"] as? String
+                    self.supportAccount = support["in_app"] as? String
                 }
             }
         }
