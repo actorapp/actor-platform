@@ -42,7 +42,7 @@ const russian = {
 
     // Modals
     'inviteModalTitle': 'Пригласить людей в группу',
-    'inviteModalSearch': 'Поиск по именам и никанеймам',
+    'inviteModalSearch': 'Поиск по именам и никнеймам',
     'inviteModalNotFound': 'Извините, ничего не найдено',
     'inviteByLink': 'Ссылка для приглашения в группу',
     'inviteByLinkModalTitle': 'Пригласить по ссылке',
@@ -51,8 +51,27 @@ const russian = {
     'inviteByLinkModalRevokeButton': 'Отменить',
     'inviteLinkCopied': 'Ссылка скопирована.',
 
-    'preferencesModalTitle': 'Настройки'
-
+    'preferencesModalTitle': 'Настройки',
+    'preferencesGeneralTab': 'Основные',
+    'preferencesNotificationsTab': 'Уведомления и Звуки',
+    'preferencesSecurityTab': 'Безопасность',
+    'preferencesSendMessageTitle': 'Отправка сообщений',
+    'preferencesSendMessage': 'отправить сообщение',
+    'preferencesNewLine': 'новая строка',
+    'preferencesEffectsTitle': 'Эффекты',
+    'preferencesEnableEffects': 'Включить звуковые эффекты',
+    'preferencesNotificationsTitle': 'Уведомления',
+    'preferencesNotificationsGroup': 'Включить уведомления для групп',
+    'preferencesNotificationsOnlyMention': 'Включить уведомления только для упоминаний',
+    'preferencesNotificationsOnlyMentionHint': 'Вы можете включить уведомления только для сообщений в которых вы упомянуты.',
+    'preferencesPrivacyTitle': 'Конфиденциальность',
+    'preferencesMessagePreview': 'Предварительный просмотр сообщений',
+    'preferencesMessagePreviewHint': 'Удаляет текст сообщений из уведомлений.',
+    'preferencesSessionsTitle': 'Активные сессии',
+    'preferencesSessionsCurrentSession': 'Текущий сеанс',
+    'preferencesSessionsAuthTime': 'Авторизовано',
+    'preferencesSessionsTerminate': 'Завершить',
+    'preferencesSessionsTerminateAll': 'Завершить все сеансы'
   }
 };
 
