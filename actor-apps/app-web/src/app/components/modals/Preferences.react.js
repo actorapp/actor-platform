@@ -119,7 +119,7 @@ class PreferencesModal extends Component {
         <Modal className="modal-new modal-new--preferences"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 700}}>
+               style={{width: 760}}>
 
           <div className="modal-new__header">
             <i className="modal-new__header__icon material-icons">settings</i>
@@ -137,11 +137,17 @@ class PreferencesModal extends Component {
             <div className="preferences">
               <aside className="preferences__tabs">
                 <a className={generalTabClassNames}
-                   onClick={() => this.changeTab('GENERAL')}>General</a>
+                   onClick={() => this.changeTab('GENERAL')}>
+                  <FormattedMessage message={this.getIntlMessage('preferencesGeneralTab')}/>
+                </a>
                 <a className={notificationTabClassNames}
-                   onClick={() => this.changeTab('NOTIFICATIONS')}>Notifications &amp; Sounds</a>
+                   onClick={() => this.changeTab('NOTIFICATIONS')}>
+                  <FormattedMessage message={this.getIntlMessage('preferencesNotificationsTab')}/>
+                </a>
                 <a className={securityTabClassNames}
-                   onClick={() => this.changeTab('SECURITY')}>Security</a>
+                   onClick={() => this.changeTab('SECURITY')}>
+                  <FormattedMessage message={this.getIntlMessage('preferencesSecurityTab')}/>
+                </a>
               </aside>
               <div className="preferences__body">
                 <div className="preferences__list">
@@ -149,7 +155,7 @@ class PreferencesModal extends Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">keyboard</i>
-                        <h4>Send message</h4>
+                        <h4><FormattedMessage message={this.getIntlMessage('preferencesSendMessageTitle')}/></h4>
                         <div className="radio">
                           <input type="radio"
                                  name="sendByEnter"
@@ -158,7 +164,7 @@ class PreferencesModal extends Component {
                                  defaultChecked={isSendByEnterEnabled}
                                  onChange={this.changeSendByEnter}/>
                           <label htmlFor="sendByEnterEnabled">
-                            <b>Enter</b> – send message, <b>Shift + Enter</b> – new line
+                            <b>Enter</b> – <FormattedMessage message={this.getIntlMessage('preferencesSendMessage')}/>, <b>Shift + Enter</b> – <FormattedMessage message={this.getIntlMessage('preferencesNewLine')}/>
                           </label>
                         </div>
                         <div className="radio">
@@ -169,7 +175,7 @@ class PreferencesModal extends Component {
                                  defaultChecked={!isSendByEnterEnabled}
                                  onChange={this.changeSendByEnter}/>
                           <label htmlFor="sendByEnterDisabled">
-                            <b>Cmd + Enter</b> – send message, <b>Enter</b> – new line
+                            <b>Cmd + Enter</b> – <FormattedMessage message={this.getIntlMessage('preferencesSendMessage')}/>, <b>Enter</b> – <FormattedMessage message={this.getIntlMessage('preferencesNewLine')}/>
                           </label>
                         </div>
                       </li>
@@ -179,45 +185,53 @@ class PreferencesModal extends Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">music_note</i>
-                        <h4>Effects</h4>
+                        <h4><FormattedMessage message={this.getIntlMessage('preferencesEffectsTitle')}/></h4>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="soundEffects"
                                  defaultChecked={isSoundEffectsEnabled}
                                  onChange={this.changeSoundEffectsEnabled}/>
-                          <label htmlFor="soundEffects">Enable sound effects</label>
+                          <label htmlFor="soundEffects">
+                            <FormattedMessage message={this.getIntlMessage('preferencesEnableEffects')}/>
+                          </label>
                         </div>
                       </li>
                       <li>
                         <i className="icon material-icons">notifications</i>
-                        <h4>Notifications</h4>
+                        <h4><FormattedMessage message={this.getIntlMessage('preferencesNotificationsTitle')}/></h4>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="groupNotifications"
                                  defaultChecked={isGroupsNotificationsEnabled}
                                  onChange={this.changeGroupsNotificationsEnabled}/>
-                          <label htmlFor="groupNotifications">Enable group notifications</label>
+                          <label htmlFor="groupNotifications">
+                            <FormattedMessage message={this.getIntlMessage('preferencesNotificationsGroup')}/>
+                          </label>
                         </div>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="mentionsNotifications"
                                  defaultChecked={isOnlyMentionNotifications}
                                  onChange={this.changeMentionNotifications}/>
-                          <label htmlFor="mentionsNotifications">Enable mention only notifications</label>
+                          <label htmlFor="mentionsNotifications">
+                            <FormattedMessage message={this.getIntlMessage('preferencesNotificationsOnlyMention')}/>
+                          </label>
                         </div>
-                        <p className="hint">You can enable notifications only for messages that contains you mention</p>
+                        <p className="hint"><FormattedMessage message={this.getIntlMessage('preferencesNotificationsOnlyMentionHint')}/></p>
                       </li>
                       <li>
                         <i className="icon material-icons">visibility</i>
-                        <h4>Privacy</h4>
+                        <h4><FormattedMessage message={this.getIntlMessage('preferencesPrivacyTitle')}/></h4>
                         <div className="checkbox">
                           <input type="checkbox"
                                  id="notificationTextPreview"
                                  defaultChecked={isShowNotificationsTextEnabled}
                                  onChange={this.changeIsShowNotificationTextEnabled}/>
-                          <label htmlFor="notificationTextPreview">Message preview</label>
+                          <label htmlFor="notificationTextPreview">
+                            <FormattedMessage message={this.getIntlMessage('preferencesMessagePreview')}/>
+                          </label>
                         </div>
-                        <p className="hint">Remove message text from notifications.</p>
+                        <p className="hint"><FormattedMessage message={this.getIntlMessage('preferencesMessagePreviewHint')}/></p>
                       </li>
                     </ul>
                   </div>
@@ -225,11 +239,13 @@ class PreferencesModal extends Component {
                     <ul>
                       <li>
                         <i className="icon material-icons">devices</i>
-                        <h4>Active sessions</h4>
+                        <h4><FormattedMessage message={this.getIntlMessage('preferencesSessionsTitle')}/></h4>
                         <ul className="session-list">
                           {sessionList}
                           <li className="session-list__session">
-                            <a className="link--red" onClick={this.onTerminateAllSessionsClick}>Terminate all sessions</a>
+                            <a className="link--red" onClick={this.onTerminateAllSessionsClick}>
+                              <FormattedMessage message={this.getIntlMessage('preferencesSessionsTerminateAll')}/>
+                            </a>
                           </li>
                         </ul>
                       </li>

@@ -4,7 +4,7 @@
 
 import { Store } from 'flux/utils';
 import Dispatcher from 'dispatcher/ActorAppDispatcher';
-import { ActionTypes } from 'constants/ActorAppConstants';
+import { ActionTypes, AsyncActionStates } from 'constants/ActorAppConstants';
 
 import ActorClient from 'utils/ActorClient';
 
@@ -13,7 +13,8 @@ import { english, russian } from 'l18n';
 let _isOpen = false,
     _languageData = null,
     _sessions = [],
-    _currentTab = 'GENERAL';
+    _currentTab = 'GENERAL',
+    _terminateSessionState = [];
 
 class PreferencesStore extends Store {
   isOpen() {
@@ -61,6 +62,12 @@ class PreferencesStore extends Store {
     return _currentTab;
   }
 
+  getTerminateSessionState(id) {
+    console.debug(id);
+    return (_terminateSessionState[id] || AsyncActionStates.PENDING);
+  }
+
+
   savePreferences(newPreferences) {
     const {
       isSendByEnterEnabled,
@@ -99,6 +106,21 @@ class PreferencesStore extends Store {
         _currentTab = action.tab;
         this.__emitChange();
         break;
+
+      case ActionTypes.PREFERENCES_SESSION_TERMINATE:
+        _terminateSessionState[action.id] = AsyncActionStates.PROCESSING;
+        this.__emitChange();
+        break;
+      case ActionTypes.PREFERENCES_SESSION_TERMINATE_SUCCESS:
+        delete _terminateSessionState[action.id];
+        this.__emitChange();
+        break;
+      case ActionTypes.PREFERENCES_SESSION_TERMINATE_ERROR:
+        _terminateSessionState[action.id] = AsyncActionStates.FAILURE;
+        this.__emitChange();
+        break;
+
+
       default:
     }
   }
