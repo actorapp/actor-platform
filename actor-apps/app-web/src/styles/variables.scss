@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 // Defaults
 $default-padding: 16px;
 $default-border-radius: 3px;
@@ -57,9 +61,9 @@ $toolbar-secodary-text-color: #797979;
 $avatar-tiny-size: 24px;
 $avatar-small-size: 32px;
 $avatar-medium-size: 44px;
-$avatar-big-size: 60px;
+$avatar-large-size: 60px;
+$avatar-big-size: 120px;
 $avatar-huge-size: 200px;
-$avatar-square-size: 308px;
 
 // Form elements
 $compose-border-color: rgba($kashmir-blue, .24);
@@ -86,14 +90,14 @@ $activity-background-color: rgb(255, 255, 255);
 // Messages
 $message-sender-text-color: $mine-shaft;
 $message-text-color: $dove-gray;
-$message-line-height: 20px;
+$message-line-height: 22px;
 $message-state-color: rgba($mine-shaft, .3);
 $message-timestamp-color: $message-state-color;
 $message-service-text-color: rgba($mine-shaft, .5);
 $message-document-icon-size: 64px;
 
 // Modal
-$modal-default-width: 400px;
+$modal-default-width: 300px;
 $modal-default-background: rgb(255, 255, 255);
 $modal-default-radius: 4px;
 $modal-backdrop-color: rgba(0, 0, 0, .6);

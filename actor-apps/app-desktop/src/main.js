@@ -191,6 +191,11 @@ ipc.on('tray-badge', function(event, arg) {
   }
 });
 
+ipc.on('tray-badge', function(event, arg) {
+  app.dock.bounce();
+  app.dock.setBadge(arg);
+});
+
 ipc.on('new-messages-hide', function(event, arg) {
   if (process.platform == 'darwin') {
     app.dock.setBadge('');

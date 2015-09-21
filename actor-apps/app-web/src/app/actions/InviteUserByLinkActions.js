@@ -1,17 +1,19 @@
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+
+import { dispatch } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 
 export default {
   show: (group) => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW,
-      group: group
+    dispatch(ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW, {
+      group
     });
   },
 
   hide: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE
-    });
+    dispatch(ActionTypes.INVITE_USER_BY_LINK_MODAL_HIDE);
   }
 };
