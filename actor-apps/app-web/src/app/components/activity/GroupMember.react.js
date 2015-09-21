@@ -4,6 +4,10 @@
 
 import React from 'react';
 
+import confirm from 'utils/confirm'
+
+import { AsyncActionStates } from 'constants/ActorAppConstants';
+
 import DialogActionCreators from 'actions/DialogActionCreators';
 import KickUserActionCreators from 'actions/KickUserActionCreators';
 
@@ -12,11 +16,10 @@ import KickUserStore from 'stores/KickUserStore'
 import AvatarItem from 'components/common/AvatarItem.react';
 import * as Stateful from 'components/common/Stateful.react';
 
-import { AsyncActionStates } from 'constants/ActorAppConstants';
+import ActorClient from 'utils/ActorClient'
 
 const getStateFromStore = (uid) => {
   const kickUserState = KickUserStore.getKickUserState(uid);
-  //console.debug('getStateFromStore kickUserState', uid, kickUserState);
 
   return {
     kickUserState: kickUserState
@@ -46,9 +49,10 @@ export default class GroupMember extends React.Component {
   render() {
     const { peerInfo, canKick, gid } = this.props;
     const { kickUserState } = this.state;
+    const myId = ActorClient.getUid();
 
     let controls;
-    if (canKick) {
+    if (canKick && peerInfo.peer.id !== myId) {
       controls = (
         <div className="controls pull-right">
           <Stateful.Root currentState={kickUserState}>
@@ -96,7 +100,14 @@ export default class GroupMember extends React.Component {
   onClick = (id) => DialogActionCreators.selectDialogPeerUser(id);
 
   onKick = (gid, uid) => {
-    KickUserStore.addChangeListener(this.onChange);
-    KickUserActionCreators.kickMember(gid, uid);
+    const { peerInfo } = this.props;
+    const confirmText = 'Are you sure you want kick ' + peerInfo.title;
+
+    confirm(confirmText).then(
+      () => {
+        KickUserStore.addChangeListener(this.onChange);
+        KickUserActionCreators.kickMember(gid, uid);
+      }
+    );
   };
 }

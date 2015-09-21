@@ -1,19 +1,20 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 
 import React from 'react';
-import { Styles, RaisedButton } from 'material-ui';
-import ActorTheme from 'constants/ActorTheme';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
-import DialogStore from 'stores/DialogStore';
-
 import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
+
+import DialogStore from 'stores/DialogStore';
+import CreateGroupStore from 'stores/CreateGroupStore';
 
 import RecentSectionItem from './RecentSectionItem.react';
 import CreateGroupModal from 'components/modals/CreateGroup.react';
-import CreateGroupStore from 'stores/CreateGroupStore';
 
-const ThemeManager = new Styles.ThemeManager();
 const LoadDialogsScrollBottom = 100;
 
 const getStateFromStore = () => {
@@ -24,16 +25,6 @@ const getStateFromStore = () => {
 };
 
 class RecentSection extends React.Component {
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
-
   constructor(props) {
     super(props);
 
@@ -41,7 +32,6 @@ class RecentSection extends React.Component {
 
     DialogStore.addChangeListener(this.onChange);
     CreateGroupStore.addChangeListener(this.onChange);
-    ThemeManager.setTheme(ActorTheme);
   }
 
   componentWillUnmount() {
@@ -53,35 +43,34 @@ class RecentSection extends React.Component {
     this.setState(getStateFromStore());
   };
 
-  openCreateGroup = () => {
-    CreateGroupActionCreators.openModal();
-  };
+  openCreateGroup = () => CreateGroupActionCreators.openModal();
 
   onScroll = event => {
-    if (event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight <= LoadDialogsScrollBottom) {
+    const { scrollHeight, scrollTop, clientHeight } = event.target;
+
+    if (scrollHeight - scrollTop - clientHeight <= LoadDialogsScrollBottom) {
       DialogActionCreators.onDialogsEnd();
     }
   };
 
   render() {
-    let dialogs = _.map(this.state.dialogs, (dialog, index) => {
+    const { dialogs, isCreateGroupModalOpen } = this.state;
+
+    const dialogList = _.map(dialogs, (dialog, index) => {
       return (
         <RecentSectionItem dialog={dialog} key={index}/>
       );
     }, this);
 
-    let createGroupModal;
-    if (this.state.isCreateGroupModalOpen) {
-      createGroupModal = <CreateGroupModal/>;
-    }
+    const createGroupModal = isCreateGroupModalOpen ? <CreateGroupModal/> : null;
 
     return (
       <section className="sidebar__recent">
         <ul className="sidebar__list sidebar__list--recent" onScroll={this.onScroll}>
-          {dialogs}
+          {dialogList}
         </ul>
         <footer>
-          <RaisedButton label="Create group" onClick={this.openCreateGroup} style={{width: '100%'}}/>
+          <button className="button button--rised button--wide" onClick={this.openCreateGroup}>Create group</button>
           {createGroupModal}
         </footer>
       </section>

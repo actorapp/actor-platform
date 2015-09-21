@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import keymirror from 'keymirror';
 import app from '../../app.json';
 
@@ -28,13 +32,15 @@ export const ActionTypes = keymirror({
   AUTH_WRONG_NUMBER_CLICK: null,
 
   DIALOGS_CHANGED: null,
-  SELECT_DIALOG_PEER: null,
   SELECTED_DIALOG_INFO_CHANGED: null,
+  MY_PROFILE_CHANGED: null,
+  SELECT_DIALOG_PEER: null,
 
   COMPOSE_CLEAN: null,
   COMPOSE_TYPING: null,
   COMPOSE_MENTION_INSERT: null,
   COMPOSE_MENTION_CLOSE: null,
+  COMPOSE_EMOJI_INSERT: null,
 
   SEND_MESSAGE_TEXT: null,
   SEND_MESSAGE_FILE: null,
@@ -54,8 +60,21 @@ export const ActionTypes = keymirror({
   CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED: null,
   CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT: null,
 
-  CREATE_GROUP_MODAL_OPEN: null,
-  CREATE_GROUP_MODAL_CLOSE: null,
+  // Group actions
+  GROUP_CREATE_MODAL_OPEN: null,
+  GROUP_CREATE_MODAL_CLOSE: null,
+  GROUP_CREATE: null,
+  GROUP_CREATE_SUCCESS: null,
+  GROUP_CREATE_ERROR: null,
+  GROUP_EDIT_MODAL_SHOW: null,
+  GROUP_EDIT_MODAL_HIDE: null,
+  GROUP_EDIT_TITLE: null,
+  GROUP_EDIT_TITLE_SUCCESS: null,
+  GROUP_EDIT_TITLE_ERROR: null,
+  GROUP_INFO_CHANGED: null,
+  GROUP_EDIT_ABOUT: null,
+  GROUP_EDIT_ABOUT_SUCCESS: null,
+  GROUP_EDIT_ABOUT_ERROR: null,
 
   NOTIFICATION_CHANGE: null,
 
@@ -82,20 +101,43 @@ export const ActionTypes = keymirror({
   INVITE_USER_ERROR: null,
 
   PREFERENCES_SAVE: null,
-  PREFERENCES_LOAD: null,
   PREFERENCES_MODAL_HIDE: null,
   PREFERENCES_MODAL_SHOW: null,
-
-  LEFT_GROUP: null,
+  PREFERENCES_CHANGE_TAB: null,
+  PREFERENCES_SESSION_LOAD: null,
+  PREFERENCES_SESSION_LOAD_SUCCESS: null,
+  PREFERENCES_SESSION_LOAD_ERROR: null,
+  PREFERENCES_SESSION_TERMINATE: null,
+  PREFERENCES_SESSION_TERMINATE_SUCCESS: null,
+  PREFERENCES_SESSION_TERMINATE_ERROR: null,
+  PREFERENCES_SESSION_TERMINATE_ALL: null,
+  PREFERENCES_SESSION_TERMINATE_ALL_SUCCESS: null,
+  PREFERENCES_SESSION_TERMINATE_ALL_ERROR: null,
 
   MY_PROFILE_MODAL_SHOW: null,
   MY_PROFILE_MODAL_HIDE: null,
   MY_PROFILE_SAVE_NAME: null,
   MY_PROFILE_SAVE_NICKNAME: null,
+  MY_PROFILE_EDIT_ABOUT: null,
+  MY_PROFILE_EDIT_ABOUT_SUCCESS: null,
+  MY_PROFILE_EDIT_ABOUT_ERROR: null,
 
   KICK_USER: null,
   KICK_USER_SUCCESS: null,
-  KICK_USER_ERROR: null
+  KICK_USER_ERROR: null,
+
+  CHAT_LEAVE: null,
+  CHAT_LEAVE_SUCCESS: null,
+  CHAT_LEAVE_ERROR: null,
+  CHAT_DELETE: null,
+  CHAT_DELETE_SUCCESS: null,
+  CHAT_DELETE_ERROR: null,
+  CHAT_CLEAR: null,
+  CHAT_CLEAR_SUCCESS: null,
+  CHAT_CLEAR_ERROR: null,
+
+  CROP_AVATAR_MODAL_SHOW: null,
+  CROP_AVATAR_MODAL_HIDE: null
 });
 
 export const PeerTypes = {
@@ -140,6 +182,13 @@ export const Support = {
   phone: '+75551234567'
 };
 
+export const Path = {
+  toImages: 'assets/img',
+  toEmoji: 'assets/img/emoji'
+};
+
+export const endpoints = app.endpoints;
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -159,5 +208,9 @@ export default {
 
   version: version,
 
-  Support: Support
+  endpoints: endpoints,
+
+  Support: Support,
+
+  Path: Path
 };
