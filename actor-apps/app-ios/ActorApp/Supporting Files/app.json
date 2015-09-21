@@ -1,12 +1,19 @@
 {
-    "endpoints" : [ "tls://front1-mtproto-api-rev2.actor.im", "tls://front2-mtproto-api-rev2.actor.im" ],
-    "hockeyapp" : null,
-    "push_id" : null,
-
-    "homepage": null,
-    "twitter": null,
-
-    "supportAccount": null,
-    "supportEmail": null,
-    "activationEmail": null
+    "endpoints":[
+                 "tls:\/\/front1-mtproto-api-rev2.actor.im",
+                 "tls:\/\/front2-mtproto-api-rev2.actor.im"
+                 ],
+    "info":{
+        "about":{
+            "invite":null,
+            "web":null,
+            "twitter":null
+        },
+        "title":"Actor",
+        "support":{
+            "email":null,
+            "activation-email":null,
+            "in-app":null
+        }
+    }
 }
