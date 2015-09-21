@@ -1,53 +1,232 @@
-// Simple switch element from checkbox
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-.switch {
-  height: 20px;
+/*
+ * Checkbox
+ *
+ * <div class="checkbox">
+ *   <input type="checkbox" id="checkbox">
+ *   <label for="checkbox">Checkbox label</label>
+ * </div>
+ *
+ * Note: Checkbox use Material Icons web font for tick icon.
+ *       Make sure it is included in your project.
+ *
+ */
+.checkbox {
+  height: 24px;
+
+  vertical-align: middle;
   input[type='checkbox'] {
     display: none;
     & + label {
-      position: relative;
+      &:after {
+        transform: scale(0);
+      }
+    }
+    &:checked + label {
+      &:before {
+        background-color: $dark-sky-blue;
+        box-shadow: 0 0 0 2px $dark-sky-blue;
+      }
+      &:after {
+        transform: scale(1);
+      }
+    }
+  }
+  label {
+    line-height: 24px;
+
+    position: relative;
+
+    display: inline-block;
+
+    padding-left: 32px;
+
+    cursor: pointer;
+    user-select: none;
+
+    &:before {
+      position: absolute;
+      top: 4px;
+      left: 2px;
 
       display: block;
 
-      box-sizing: border-box;
-      width: 34px;
-      height: 14px;
-      margin-top: 3px;
+      width: 16px;
+      height: 16px;
 
-      transition: background $default-transition-duration $default-transition-timing;
+      content: '';
+      transition: box-shadow 200ms, background 200ms;
 
-      border-radius: 14px;
-      background-color: rgb(158,158,158);
-      &:before {
-        position: absolute;
-        top: -3px;
-        left: -3px;
-
-        display: block;
-
-        width: 20px;
-        height: 20px;
-
-        content: '';
-        transition: $default-transition-duration $default-transition-timing;
-
-        border-radius: 100%;
-        background-color: rgb(250,250,250);
-        box-shadow: 0 3px 1px -2px rgba(0,0,0,.14),0 2px 2px 0 rgba(0,0,0,.098), 0 1px 5px 0 rgba(0,0,0,.084);
-      }
+      border-radius: 1px;
+      box-shadow: 0 0 0 2px $dark-sky-blue;
     }
+    &:after {
+      font-family: 'Material Icons';
+      font-size: 18px;
+      font-style: normal;
 
-    &:checked + label {
-      background-color: rgba($havelock-blue,.5);
-      &:before {
-        left: 17px;
+      position: absolute;
+      top: 0;
+      left: 0;
 
-        background-color: $havelock-blue;
-      }
+      display: inline-block;
+      overflow: hidden;
+
+      width: 20px;
+      height: 20px;
+
+      content: 'check';
+      transition: transform 200ms;
+      text-align: center;
+
+      color: white;
+
+      text-rendering: optimizeLegibility;
+      font-feature-settings: 'liga' 1;
+      -webkit-font-smoothing: antialiased;
     }
   }
 }
 
+/*
+ * Radio button
+ *
+ * <div class="radio">
+ *   <input type="radio" id="radio">
+ *   <label for="radio">Radio button label</label>
+ * </div>
+ *
+ */
+.radio {
+  height: 24px;
+
+  vertical-align: middle;
+  input[type='radio'] {
+    display: none;
+    & + label {
+      &:after {
+        transform: scale(0);
+      }
+    }
+    &:checked + label {
+      &:after {
+        transform: scale(1);
+      }
+    }
+  }
+  label {
+    line-height: 24px;
+
+    position: relative;
+
+    display: inline-block;
+
+    padding-left: 32px;
+
+    cursor: pointer;
+    user-select: none;
+    &:before {
+      position: absolute;
+      top: 2px;
+      left: 0;
+
+      display: inline-block;
+
+      width: 20px;
+      height: 20px;
+
+      content: '';
+
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px $dark-sky-blue inset;
+    }
+    &:after {
+      position: absolute;
+      top: 7px;
+      left: 5px;
+
+      width: 10px;
+      height: 10px;
+
+      content: '';
+      transition: transform 200ms;
+
+      border-radius: 100%;
+      background: $dark-sky-blue;
+    }
+  }
+}
+
+/*
+ * Switch
+ *
+ * <label for="switch">Switch label</label>
+ * <div class="switch">
+ *   <input id="switch" type="checkbox">
+ *   <label for="switch"></label>
+ * </div>
+ *
+ */
+.switch {
+  display: inline-block;
+
+  box-sizing: border-box;
+  height: 24px;
+  padding: 4px;
+
+  vertical-align: middle;
+  input[type='checkbox'] {
+    display: none;
+    &:checked + label {
+      background-color: rgba($dark-sky-blue, .5);
+      &:before {
+        left: 17px;
+
+        background-color: $dark-sky-blue;
+      }
+    }
+  }
+  label {
+    position: relative;
+
+    display: block;
+
+    box-sizing: border-box;
+    width: 34px;
+    height: 14px;
+
+    cursor: pointer;
+    user-select: none;
+    transition: background 200ms;
+
+    border-radius: 14px;
+    background-color: rgba(0, 0, 0, .2);
+    &:before {
+      position: absolute;
+      top: -3px;
+      left: -3px;
+
+      display: block;
+
+      width: 20px;
+      height: 20px;
+
+      content: '';
+      transition: background 200ms, left 200ms;
+
+      border-radius: 100%;
+      background-color: rgb(250, 250, 250);
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .15), 0 2px 2px 0 rgba(0, 0, 0, .1), 0 1px 5px 0 rgba(0, 0, 0, .085);
+    }
+  }
+}
+
+////////////////////////////////////////
+// TODO: Write styles for text inputs //
+////////////////////////////////////////
 .input {
   &--search {
     line-height: 24px;
@@ -66,4 +245,24 @@
 
     appearance: none !important;
   }
+}
+
+.textarea {
+  font-size: 15px;
+  line-height: 20px;
+
+  display: block;
+
+  box-sizing: border-box;
+  width: 100%;
+  height: 56px;
+  padding: 8px;
+
+  resize: none;
+  cursor: pointer;
+  word-break: break-all;
+
+  color: #4d4d4d;
+  border: 1px solid $light-grey-blue;
+  border-radius: 3px;
 }

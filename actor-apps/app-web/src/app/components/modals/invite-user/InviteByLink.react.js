@@ -1,22 +1,20 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import { assign } from 'lodash';
 import React from 'react';
 import Modal from 'react-modal';
 import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-import { Styles, FlatButton, Snackbar } from 'material-ui';
-import ReactZeroClipboard from 'react-zeroclipboard';
-import classnames from 'classnames';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
-import ActorTheme from 'constants/ActorTheme';
 
 import InviteUserByLinkActions from 'actions/InviteUserByLinkActions';
 import InviteUserActions from 'actions/InviteUserActions';
 
 import InviteUserStore from 'stores/InviteUserStore';
-
-const ThemeManager = new Styles.ThemeManager();
 
 const appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
@@ -25,7 +23,7 @@ const {addons: { PureRenderMixin }} = addons;
 
 const getStateFromStores = () => {
   return {
-    isShown: InviteUserStore.isInviteWithLinkModalOpen(),
+    isOpen: InviteUserStore.isInviteWithLinkModalOpen(),
     group: InviteUserStore.getGroup(),
     inviteUrl: InviteUserStore.getInviteUrl()
   };
@@ -34,116 +32,81 @@ const getStateFromStores = () => {
 @ReactMixin.decorate(IntlMixin)
 @ReactMixin.decorate(PureRenderMixin)
 class InviteByLink extends React.Component {
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
-
   constructor(props) {
     super(props);
 
-    this.state = assign({
-      isCopyButtonEnabled: false
-    }, getStateFromStores());
-
-    ThemeManager.setTheme(ActorTheme);
-    ThemeManager.setComponentThemes({
-      button: {
-        minWidth: 60
-      }
-    });
+    this.state = getStateFromStores();
 
     InviteUserStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     InviteUserStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (this.state.isOpen && !nextState.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
   }
 
   render() {
-    const { group } = this.state;
-    const { inviteUrl, isShown, isCopyButtonEnabled } = this.state;
-    const snackbarStyles = ActorTheme.getSnackbarStyles();
+    const { group, inviteUrl, isOpen } = this.state;
 
-    let groupName;
-    if (group !== null) {
-      groupName = <b>{group.name}</b>;
-    }
+    const groupName = (group !== null) ? <b>{group.name}</b> : null;
 
-    const copyButtonClassname = classnames('button button--blue pull-right', {
-      'hide': !isCopyButtonEnabled
-    });
+    if (isOpen) {
+      return (
+        <Modal className="modal-new modal-new--invite-by-link"
+               closeTimeoutMS={150}
+               isOpen={isOpen}
+               style={{width: 400}}>
 
-    return (
-      <Modal className="modal-new modal-new--invite-by-link"
-             closeTimeoutMS={150}
-             isOpen={isShown}
-             style={{width: 400}}>
+          <header className="modal-new__header">
+            <svg className="modal-new__header__icon icon icon--blue"
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#back"/>'}}
+                 onClick={this.onBackClick}/>
 
-        <header className="modal-new__header">
-          <svg className="modal-new__header__icon icon icon--blue"
-               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#back"/>'}}
-               onClick={this.onBackClick}/>
+            <h3 className="modal-new__header__title">
+              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
+            </h3>
 
-          <h3 className="modal-new__header__title">
-            <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
-          </h3>
-          <div className="pull-right">
-            <FlatButton hoverColor="rgba(81,145,219,.17)"
-                        label="Done"
-                        labelStyle={{padding: '0 8px'}}
-                        onClick={this.onClose}
-                        secondary={true}
-                        style={{marginTop: -6}}/>
+            <div className="pull-right">
+              <button className="button button--lightblue" onClick={this.onClose}>Done</button>
+            </div>
+          </header>
+
+          <div className="modal-new__body">
+            <FormattedMessage groupName={groupName} message={this.getIntlMessage('inviteByLinkModalDescription')}/>
+            <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
           </div>
-        </header>
 
-        <div className="modal-new__body">
-          <FormattedMessage groupName={groupName} message={this.getIntlMessage('inviteByLinkModalDescription')}/>
-          <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
-        </div>
-
-        <footer className="modal-new__footer">
-          <button className="button button--light-blue pull-left hide">
-            <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
-          </button>
-          <ReactZeroClipboard onCopy={this.onInviteLinkCopied} onReady={this.onZeroclipboardReady} text={inviteUrl}>
-            <button className={copyButtonClassname}>
+          <footer className="modal-new__footer">
+            <button className="button button--rised pull-left hide">
+              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
+            </button>
+            <button className="button button--rised pull-right hide">
               <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
             </button>
-          </ReactZeroClipboard>
-        </footer>
-
-        <Snackbar autoHideDuration={3000}
-                  message={this.getIntlMessage('inviteLinkCopied')}
-                  ref="inviteLinkCopied"
-                  style={snackbarStyles}/>
-      </Modal>
-    );
+          </footer>
+        </Modal>
+      );
+    } else {
+      return null;
+    }
   }
 
-  onClose = () => {
-    InviteUserByLinkActions.hide();
-  };
+  onChange = () => this.setState(getStateFromStores());
+  onClose = () => InviteUserByLinkActions.hide();
+  onInviteLinkClick = event => event.target.select();
 
   onBackClick = () => {
+    const { group } = this.state;
+
     this.onClose();
-    InviteUserActions.show(this.state.group);
-  };
-
-  onInviteLinkClick = event => {
-    event.target.select();
-  };
-
-  onChange = () => {
-    this.setState(getStateFromStores());
+    InviteUserActions.show(group);
   };
 
   onKeyDown = (event) => {
@@ -151,14 +114,6 @@ class InviteByLink extends React.Component {
       event.preventDefault();
       this.onClose();
     }
-  };
-
-  onInviteLinkCopied = () => {
-    this.refs.inviteLinkCopied.show();
-  };
-
-  onZeroclipboardReady = () => {
-    this.setState({isCopyButtonEnabled: true});
   };
 }
 

@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import React from 'react';
 import classNames from 'classnames';
-import { Styles, RaisedButton, TextField } from 'material-ui';
+import { Styles, TextField } from 'material-ui';
 
 import { AuthSteps } from 'constants/ActorAppConstants';
 
@@ -173,6 +173,7 @@ class Login extends React.Component {
           <div>
             <h1 className="login-new__heading">Sign in</h1>
             <form className={requestFormClassName} onSubmit={this.onRequestSms}>
+              <a className="wrong" onClick={this.onWrongNumberClick}>Wrong?</a>
               <TextField className="login__form__input"
                          disabled={this.state.step > AuthSteps.PHONE_WAIT}
                          errorText={this.state.errors.phone}
@@ -183,7 +184,7 @@ class Login extends React.Component {
                          value={this.state.phone}/>
 
               <footer className="text-center">
-                <RaisedButton label="Request code" type="submit"/>
+                <button className="button button--rised" type="submit">Request code</button>
               </footer>
             </form>
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
@@ -197,7 +198,7 @@ class Login extends React.Component {
                          value={this.state.code}/>
 
               <footer className="text-center">
-                <RaisedButton label="Check code" type="submit"/>
+                <button className="button button--rised" type="submit">Check code</button>
               </footer>
             </form>
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
@@ -210,7 +211,7 @@ class Login extends React.Component {
                          value={this.state.name}/>
 
               <footer className="text-center">
-                <RaisedButton label="Sign up" type="submit"/>
+                <button className="button button--rised" type="submit">Sign up</button>
               </footer>
             </form>
           </div>

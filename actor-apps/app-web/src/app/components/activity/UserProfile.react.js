@@ -1,8 +1,15 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
+
+import ActorClient from 'utils/ActorClient';
+import confirm from 'utils/confirm'
 
 import ContactActionCreators from 'actions/ContactActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
@@ -11,7 +18,6 @@ import PeerStore from 'stores/PeerStore';
 import DialogStore from 'stores/DialogStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
-//import UserProfileContactInfo from 'components/activity/UserProfileContactInfo.react';
 import Fold from 'components/common/Fold.React';
 
 const getStateFromStores = (userId) => {
@@ -51,19 +57,26 @@ class UserProfile extends React.Component {
   };
 
   removeFromContacts =() => {
-    ContactActionCreators.removeContact(this.props.user.id);
+    const { user } = this.props;
+    const confirmText = 'You really want to remove ' + user.name + ' from your contacts?';
+
+    confirm(confirmText).then(
+      () => ContactActionCreators.removeContact(user.id)
+    );
   };
 
   onNotificationChange = (event) => {
-    DialogActionCreators.changeNotificationsEnabled(this.state.thisPeer, event.target.checked);
+    const { thisPeer } = this.state;
+    DialogActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
   onChange = () => {
-    this.setState(getStateFromStores(this.props.user.id));
+    const { user } = this.props;
+    this.setState(getStateFromStores(user.id));
   };
 
   toggleActionsDropdown = () => {
-    const isActionsDropdownOpen = this.state.isActionsDropdownOpen;
+    const { isActionsDropdownOpen } = this.state;
 
     if (!isActionsDropdownOpen) {
       this.setState({isActionsDropdownOpen: true});
@@ -78,29 +91,50 @@ class UserProfile extends React.Component {
     document.removeEventListener('click', this.closeActionsDropdown, false);
   };
 
+  clearChat = (uid) => {
+    confirm('Do you really want to delete this conversation?').then(
+      () => {
+        const peer = ActorClient.getUserPeer(uid);
+        DialogActionCreators.clearChat(peer);
+      },
+      () => {}
+    );
+  };
+
+  deleteChat = (uid) => {
+    confirm('Do you really want to delete this conversation?').then(
+      () => {
+        const peer = ActorClient.getUserPeer(uid);
+        DialogActionCreators.deleteChat(peer);
+      },
+      () => {}
+    );
+  };
+
+
   render() {
     const { user } = this.props;
-    const { isNotificationsEnabled } = this.state;
+    const { isNotificationsEnabled, isActionsDropdownOpen } = this.state;
 
-    let actions;
-    if (user.isContact === false) {
-      actions = (
-        <li className="dropdown__menu__item" onClick={this.addToContacts}>
-          <FormattedMessage message={this.getIntlMessage('addToContacts')}/>
-        </li>
-      );
-    } else {
-      actions = (
-        <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
-          <FormattedMessage message={this.getIntlMessage('removeFromContacts')}/>
-        </li>
-      );
-    }
+    const actions = (user.isContact === false) ? (
+      <li className="dropdown__menu__item" onClick={this.addToContacts}>
+        <FormattedMessage message={this.getIntlMessage('addToContacts')}/>
+      </li>
+    ) : (
+      <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
+        <FormattedMessage message={this.getIntlMessage('removeFromContacts')}/>
+      </li>
+    );
 
-    let dropdownClassNames = classnames('dropdown pull-left', {
-      'dropdown--opened': this.state.isActionsDropdownOpen
+    const dropdownClassNames = classnames('dropdown pull-left', {
+      'dropdown--opened': isActionsDropdownOpen
     });
 
+    const about = user.about ? (
+      <div className="user_profile__meta__about">
+        {user.about}
+      </div>
+    ) : null;
     const nickname = user.nick ? (
       <li>
         <svg className="icon icon--pink"
@@ -125,21 +159,27 @@ class UserProfile extends React.Component {
             <header>
               <AvatarItem image={user.bigAvatar}
                           placeholder={user.placeholder}
-                          size="big"
+                          size="large"
                           title={user.name}/>
 
               <h3 className="user_profile__meta__title">{user.name}</h3>
               <div className="user_profile__meta__presence">{user.presence}</div>
             </header>
-
+            {about}
             <footer>
               <div className={dropdownClassNames}>
-                <button className="dropdown__button button button--light-blue" onClick={this.toggleActionsDropdown}>
+                <button className="dropdown__button button button--flat" onClick={this.toggleActionsDropdown}>
                   <i className="material-icons">more_horiz</i>
                   <FormattedMessage message={this.getIntlMessage('actions')}/>
                 </button>
                 <ul className="dropdown__menu dropdown__menu--left">
                   {actions}
+                  <li className="dropdown__menu__item dropdown__menu__item--light" onClick={() => this.clearChat(user.id)}>
+                    <FormattedMessage message={this.getIntlMessage('clearConversation')}/>
+                  </li>
+                  <li className="dropdown__menu__item dropdown__menu__item--light" onClick={() => this.deleteChat(user.id)}>
+                    <FormattedMessage message={this.getIntlMessage('deleteConversation')}/>
+                  </li>
                 </ul>
               </div>
             </footer>

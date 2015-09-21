@@ -5,35 +5,16 @@
 package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
-
-import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.ExportPackage;
-import org.timepedia.exporter.client.Exportable;
-
-import java.util.List;
-
-import im.actor.core.ApiConfiguration;
-import im.actor.core.AuthState;
-import im.actor.core.ConfigurationBuilder;
-import im.actor.core.DeviceCategory;
-import im.actor.core.PlatformType;
+import com.google.gwt.user.client.Event;
+import im.actor.core.*;
+import im.actor.core.api.ApiAuthSession;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
-import im.actor.core.js.entity.Enums;
-import im.actor.core.js.entity.JsAuthErrorClosure;
-import im.actor.core.js.entity.JsAuthSuccessClosure;
-import im.actor.core.js.entity.JsClosure;
-import im.actor.core.js.entity.JsContact;
-import im.actor.core.js.entity.JsDialog;
-import im.actor.core.js.entity.JsGroup;
-import im.actor.core.js.entity.JsMentionFilterResult;
-import im.actor.core.js.entity.JsMessage;
-import im.actor.core.js.entity.JsPeer;
-import im.actor.core.js.entity.JsTyping;
-import im.actor.core.js.entity.JsUser;
+import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
+import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
@@ -46,6 +27,12 @@ import im.actor.runtime.js.fs.JsFile;
 import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
+import im.actor.runtime.markdown.MarkdownParser;
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
+
+import java.util.List;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -228,6 +215,72 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise loadSessions() {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.loadSessions().start(new CommandCallback<List<ApiAuthSession>>() {
+                    @Override
+                    public void onResult(List<ApiAuthSession> res) {
+                        JsArray<JsAuthSession> jsSessions = JsArray.createArray().cast();
+
+                        for (ApiAuthSession session : res) {
+                            jsSessions.push(JsAuthSession.create(session));
+                        }
+
+                        resolve(jsSessions);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, e);
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise terminateSession(final int id) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.terminateSession(id).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, e);
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise terminateAllSessions() {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.terminateAllSessions().start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, e);
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
     // Dialogs
 
     public void bindDialogs(JsDisplayListCallback<JsDialog> callback) {
@@ -282,30 +335,44 @@ public class JsFacade implements Exportable {
         }
     }
 
-    public void deleteChat(JsPeer peer, final JsClosure success, final JsClosure error) {
-        messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+    public JsPromise deleteChat(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
             @Override
-            public void onResult(Boolean res) {
-                success.callback();
-            }
+            public void execute() {
+                messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "deleteChat:result");
+                        resolve();
+                    }
 
-            @Override
-            public void onError(Exception e) {
-                error.callback();
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "deleteChat:error");
+                        reject(e.getMessage());
+                    }
+                });
             }
         });
     }
 
-    public void clearChat(JsPeer peer, final JsClosure success, final JsClosure error) {
-        messenger.clearChat(peer.convert()).start(new CommandCallback<Boolean>() {
+    public JsPromise clearChat(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
             @Override
-            public void onResult(Boolean res) {
-                success.callback();
-            }
+            public void execute() {
+                messenger.clearChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "clearChat:result");
+                        resolve();
+                    }
 
-            @Override
-            public void onError(Exception e) {
-                error.callback();
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "clearChat:error");
+                        reject(e.getMessage());
+                    }
+                });
             }
         });
     }
@@ -506,7 +573,7 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onError(Exception e) {
                         Log.d(TAG, "editMyName:error");
-                        reject();
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -528,7 +595,7 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onError(Exception e) {
                         Log.d(TAG, "editMyNick:error");
-                        reject();
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -550,11 +617,20 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onError(Exception e) {
                         Log.d(TAG, "editMyAbout:error");
-                        reject();
+                        reject(e.getMessage());
                     }
                 });
             }
         });
+    }
+
+    public void changeMyAvatar(final JsFile file) {
+        String descriptor = provider.registerUploadFile(file);
+        messenger.changeMyAvatar(descriptor);
+    }
+
+    public void removeMyAvatar() {
+        messenger.removeMyAvatar();
     }
 
     public JsPromise editName(final int uid, final String newName) {
@@ -565,12 +641,14 @@ public class JsFacade implements Exportable {
                 messenger.editName(uid, newName).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
+                        Log.d(TAG, "editName:result");
                         resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "editName:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -585,12 +663,14 @@ public class JsFacade implements Exportable {
                 messenger.joinGroupViaLink(url).start(new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {
+                        Log.d(TAG, "joinGroupViaLink:result");
                         resolve(JsPeer.create(Peer.group(res)));
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "joinGroupViaLink:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -605,16 +685,47 @@ public class JsFacade implements Exportable {
                 messenger.editGroupTitle(gid, newTitle).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
+                        Log.d(TAG, "editGroupTitle:result");
                         resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "editGroupTitle:error");
+                        reject(e.getMessage());
                     }
                 });
             }
         });
+    }
+
+    public JsPromise editGroupAbout(final int gid, final String newAbout) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.editGroupAbout(gid, newAbout).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, e);
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public void changeGroupAvatar(final int gid, final JsFile file) {
+        String descriptor = provider.registerUploadFile(file);
+        messenger.changeGroupAvatar(gid, descriptor);
+    }
+
+    public void removeGroupAvatar(final int gid) {
+        messenger.removeGroupAvatar(gid);
     }
 
     public JsPromise createGroup(final String title, final JsFile file, final int[] uids) {
@@ -626,12 +737,14 @@ public class JsFacade implements Exportable {
                 messenger.createGroup(title, avatarDescriptor, uids).start(new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {
+                        Log.d(TAG, "createGroup:result");
                         resolve(JsPeer.create(Peer.group(res)));
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "createGroup:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -646,12 +759,14 @@ public class JsFacade implements Exportable {
                 messenger.inviteMember(gid, uid).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
+                        Log.d(TAG, "inviteMember:result");
                         resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "inviteMember:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -666,12 +781,14 @@ public class JsFacade implements Exportable {
                 messenger.kickMember(gid, uid).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
+                        Log.d(TAG, "kickMember:result");
                         resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "kickMember:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -686,12 +803,14 @@ public class JsFacade implements Exportable {
                 messenger.leaveGroup(gid).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
+                        Log.d(TAG, "leaveGroup:result");
                         resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "leaveGroup:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -706,12 +825,14 @@ public class JsFacade implements Exportable {
                 messenger.requestIntegrationToken(gid).start(new CommandCallback<String>() {
                     @Override
                     public void onResult(String res) {
+                        Log.d(TAG, "getIntegrationToken:result");
                         resolve(res);
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "getIntegrationToken:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -726,12 +847,14 @@ public class JsFacade implements Exportable {
                 messenger.revokeIntegrationToken(gid).start(new CommandCallback<String>() {
                     @Override
                     public void onResult(String res) {
+                        Log.d(TAG, "revokeIntegrationToken:result");
                         resolve(res);
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "revokeIntegrationToken:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -746,12 +869,14 @@ public class JsFacade implements Exportable {
                 messenger.requestInviteLink(gid).start(new CommandCallback<String>() {
                     @Override
                     public void onResult(String res) {
+                        Log.d(TAG, "getInviteLink:result");
                         resolve(res);
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "getInviteLink:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -766,12 +891,14 @@ public class JsFacade implements Exportable {
                 messenger.revokeInviteLink(gid).start(new CommandCallback<String>() {
                     @Override
                     public void onResult(String res) {
+                        Log.d(TAG, "revokeInviteLink:result");
                         resolve(res);
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "revokeInviteLink:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -786,12 +913,14 @@ public class JsFacade implements Exportable {
                 messenger.addContact(uid).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
+                        Log.d(TAG, "addContact:result");
                         resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "addContact:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -805,6 +934,7 @@ public class JsFacade implements Exportable {
                 messenger.findUsers(query).start(new CommandCallback<UserVM[]>() {
                     @Override
                     public void onResult(UserVM[] users) {
+                        Log.d(TAG, "findUsers:result");
                         JsArray<JsUser> jsUsers = JsArray.createArray().cast();
 
                         for (UserVM user : users) {
@@ -816,6 +946,7 @@ public class JsFacade implements Exportable {
 
                     @Override
                     public void onError(Exception e) {
+                        Log.d(TAG, "findUsers:error");
                         reject(e.getMessage());
                     }
                 });
@@ -831,12 +962,14 @@ public class JsFacade implements Exportable {
                 messenger.removeContact(uid).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
+                        Log.d(TAG, "removeContact:result");
                         resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject();
+                        Log.d(TAG, "removeContact:error");
+                        reject(e.getMessage());
                     }
                 });
             }
@@ -881,7 +1014,40 @@ public class JsFacade implements Exportable {
         return messenger.isConversationTonesEnabled();
     }
 
+    public boolean isShowNotificationsTextEnabled() {
+        return messenger.isShowNotificationsText();
+    }
+
+    public void changeIsShowNotificationTextEnabled(boolean value) {
+        messenger.changeShowNotificationTextEnabled(value);
+    }
+
     public void changeSoundEffectsEnabled(boolean enabled) {
         messenger.changeConversationTonesEnabled(enabled);
     }
+
+    public String renderMarkdown(final String markdownText) {
+        try {
+            return HtmlMarkdownUtils.processText(markdownText, MarkdownParser.MODE_FULL);
+        } catch (Exception e) {
+            Log.e("Markdown", e);
+            return "[Error while processing text]";
+        }
+    }
+
+    public native void handleLinkClick(Event event)/*-{
+        console.warn('event type is', event.type);
+        if (event.type == 'click') {
+            if (window.$wnd.messenger.isElectron()) {
+                console.warn('opening external');
+                var url = event.target.getAttribute('href');
+                window.$wnd.require('shell').openExternal(url);
+                event.preventDefault()
+            } else {
+                console.warn('type of window.require is', typeof window.$wnd.require);
+            }
+        } else {
+            throw new Error("Event has type " + event.type + ", must to be click");
+        }
+    }-*/;
 }
