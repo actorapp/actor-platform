@@ -324,5 +324,13 @@ export default {
 
   changeGroupAvatar(gid, avatar) {
     window.messenger.changeGroupAvatar(gid, avatar);
+  },
+
+  removeMyAvatar() {
+    window.messenger.removeMyAvatar();
+  },
+
+  removeGroupAvatar(gid) {
+    window.messenger.removeGroupAvatar(gid);
   }
 }
