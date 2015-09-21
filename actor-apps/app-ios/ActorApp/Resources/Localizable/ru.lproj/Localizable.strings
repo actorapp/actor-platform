@@ -60,7 +60,7 @@
 
 "SettingsAbout" = "О Программе";
 
-"SettingsTwitter" = "Twitter Актора";
+"SettingsTwitter" = "Twitter";
 
 "SettingsAbout" = "Домашняя страница";
 
@@ -334,7 +334,7 @@
 
 "CurrentLocale" = "Ru";
 
-"InviteText" = "Привет! Давай продолжим наше общение в Акторе https://actor.im/dl";
+"InviteText" = "Привет! Давай продолжим наше общение в Акторе {link}";
 
 "PhotoRemove" = "Удалить фото";
 
