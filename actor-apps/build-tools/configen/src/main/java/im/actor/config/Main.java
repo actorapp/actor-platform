@@ -75,6 +75,10 @@ public class Main {
                     Map<String, Object> variantData = (Map<String, Object>) variants.get(variant);
 
                     for (String key : variantData.keySet()) {
+                        if ("build".equals(key)) {
+                            continue;
+                        }
+
                         // Override keys
                         res.remove(key);
                         res.put(key, convertToJson(variantData.get(key)));
