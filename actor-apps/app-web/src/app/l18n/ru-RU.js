@@ -8,6 +8,8 @@ const russian = {
     'helpAndFeedback': 'Помощь и обратная связь',
     'preferences': 'Настройки',
     'signOut': 'Выход',
+    'addContact': 'Добавить контакт',
+    'twitter': 'Наш твиттер',
 
     // Toolbar
     'search': 'Поиск',

@@ -1,81 +1,40 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { Component } from 'react';
+import { Container } from 'flux/utils';
 import mixpanel from 'utils/Mixpanel';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
+import ActorClient from 'utils/ActorClient';
 
-import MyProfileActions from '../../actions/MyProfileActionCreators';
+import MyProfileActions from 'actions/MyProfileActionCreators';
 import LoginActionCreators from 'actions/LoginActionCreators';
 import HelpActionCreators from 'actions/HelpActionCreators';
 import AddContactActionCreators from 'actions/AddContactActionCreators';
+import PreferencesActionCreators from 'actions/PreferencesActionCreators';
+
+import MyProfileStore from 'stores/MyProfileStore'
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import MyProfileModal from 'components/modals/MyProfile.react';
-import ActorClient from 'utils/ActorClient';
-
 import AddContactModal from 'components/modals/AddContact.react';
-
-import PreferencesModal from '../modals/Preferences.react';
-import PreferencesActionCreators from 'actions/PreferencesActionCreators';
-
-var getStateFromStores = () => {
-  return {
-    dialogInfo: null
-  };
-};
+import PreferencesModal from 'components/modals/Preferences.react';
 
 @ReactMixin.decorate(IntlMixin)
-class HeaderSection extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = _.assign({
-      isOpened: false
-    }, getStateFromStores());
+class HeaderSection extends Component {
+  static getStores = () => [MyProfileStore];
+  static calculateState() {
+    return {
+      isOpened: false,
+      profile: MyProfileStore.getProfile()
+    }
   }
-
-  componentDidMount() {
-    // TODO: Move binding to login action creators.
-    ActorClient.bindUser(ActorClient.getUid(), this.setUser);
-  }
-
-  componentWillUnmount() {
-    ActorClient.unbindUser(ActorClient.getUid(), this.setUser);
-  }
-
-  setUser = (user) => {
-    this.setState({user: user});
-  };
-
-  setLogout = () => {
-    LoginActionCreators.setLoggedOut();
-  };
-
-  openMyProfile = () => {
-    MyProfileActions.show();
-    mixpanel.track('My profile open');
-  };
-
-  openHelpDialog = () => {
-    HelpActionCreators.open();
-    mixpanel.track('Click on HELP');
-  };
-
-  openAddContactModal = () => {
-    AddContactActionCreators.openModal();
-  };
-
-  onSettingsOpen = () => {
-    PreferencesActionCreators.show();
-  };
 
   toggleHeaderMenu = () => {
     const { isOpened } = this.state;
 
     if (!isOpened) {
       this.setState({isOpened: true});
-      mixpanel.track('Open sidebar menu');
       document.addEventListener('click', this.closeHeaderMenu, false);
     } else {
       this.closeHeaderMenu();
@@ -87,12 +46,18 @@ class HeaderSection extends React.Component {
     document.removeEventListener('click', this.closeHeaderMenu, false);
   };
 
+
+  setLogout = () => LoginActionCreators.setLoggedOut();
+  openMyProfile = () => MyProfileActions.show();
+  openHelpDialog = () => HelpActionCreators.open();
+  openAddContactModal = () => AddContactActionCreators.openModal();
+  onSettingsOpen = () => PreferencesActionCreators.show();
   openTwitter = () => window.open('https://twitter.com/actorapp');
 
   render() {
-    const { user, isOpened } = this.state;
+    const { profile, isOpened } = this.state;
 
-    if (user) {
+    if (profile) {
 
       let headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
         'sidebar__header--opened': isOpened
@@ -104,11 +69,11 @@ class HeaderSection extends React.Component {
       return (
         <header className={headerClass}>
           <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
-            <AvatarItem image={user.avatar}
-                        placeholder={user.placeholder}
+            <AvatarItem image={profile.avatar}
+                        placeholder={profile.placeholder}
                         size="tiny"
-                        title={user.name} />
-            <span className="sidebar__header__user__name col-xs">{user.name}</span>
+                        title={profile.name} />
+            <span className="sidebar__header__user__name col-xs">{profile.name}</span>
             <div className={menuClass}>
               <span className="dropdown__button">
                 <i className="material-icons">arrow_drop_down</i>
@@ -124,7 +89,7 @@ class HeaderSection extends React.Component {
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
                   <i className="material-icons">person_add</i>
-                  Add contact
+                  <FormattedMessage message={this.getIntlMessage('addContact')}/>
                 </li>
                 <li className="dropdown__menu__separator"></li>
                 <li className="dropdown__menu__item hide">
@@ -140,14 +105,14 @@ class HeaderSection extends React.Component {
                   <svg className="icon icon--dropdown"
                        style={{marginLeft: -34}}
                        dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#twitter"/>'}}/>
-                  Our twitter
+                  <FormattedMessage message={this.getIntlMessage('twitter')}/>
                 </li>
                 <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
                   <i className="material-icons">settings</i>
                   <FormattedMessage message={this.getIntlMessage('preferences')}/>
                 </li>
                 <li className="dropdown__menu__separator"></li>
-                <li className="dropdown__menu__item dropdown__menu__item--light" onClick={this.setLogout}>
+                <li className="dropdown__menu__item" onClick={this.setLogout}>
                   <FormattedMessage message={this.getIntlMessage('signOut')}/>
                 </li>
               </ul>
@@ -165,4 +130,4 @@ class HeaderSection extends React.Component {
   }
 }
 
-export default HeaderSection;
+export default Container.create(HeaderSection);
