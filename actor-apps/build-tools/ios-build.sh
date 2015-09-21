@@ -17,7 +17,7 @@ echo "##teamcity[message text='Loading confgiguration']"
 eval $(parse_yaml "$CONFIG_DIR/apps.yaml" "config_")
 
 # Bundle Title. Used for result bundle file name.
-APP_TITLE=$(eval "echo \$$(echo config_apps_${APP}_title)")
+APP_TITLE=$(eval "echo \$$(echo config_apps_${APP}_info_title)")
 
 # Fabric configuration
 APP_FABRIC_API=$(eval "echo \$$(echo config_apps_${APP}_build_fabric_api_key)")
