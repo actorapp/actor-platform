@@ -8,12 +8,10 @@ import ActorClient from 'utils/ActorClient';
 
 export default {
   show() {
-    ActorClient.bindUser(ActorClient.getUid(), this.onProfileChanged);
     dispatch(ActionTypes.MY_PROFILE_MODAL_SHOW);
   },
 
   hide() {
-    ActorClient.unbindUser(ActorClient.getUid(), this.onProfileChanged);
     dispatch(ActionTypes.MY_PROFILE_MODAL_HIDE);
   },
 
