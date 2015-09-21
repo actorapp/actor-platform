@@ -4,6 +4,7 @@
 
 package im.actor.core.js;
 
+import com.google.gwt.user.client.Event;
 import im.actor.core.Configuration;
 import im.actor.core.Messenger;
 import im.actor.core.entity.Avatar;
