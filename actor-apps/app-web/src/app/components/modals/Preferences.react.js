@@ -1,83 +1,65 @@
-import _ from 'lodash';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import React from 'react';
+import { map } from 'lodash';
+import React, { Component } from 'react';
+import { Container } from 'flux/utils';
+import classnames from 'classnames';
 import Modal from 'react-modal';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-import { Styles, FlatButton, RadioButtonGroup, RadioButton, DropDownMenu } from 'material-ui';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
-import ActorTheme from 'constants/ActorTheme';
 
 import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 import PreferencesStore from 'stores/PreferencesStore';
 
-const appElement = document.getElementById('actor-web-app');
-Modal.setAppElement(appElement);
-
-const ThemeManager = new Styles.ThemeManager();
-
-const menuItems = [
-  { payload: '1', text: 'English', value: 'en'},
-  { payload: '2', text: 'Russian', value: 'ru'}
-];
-
-const getStateFromStores = () => {
-  const language = PreferencesStore.language;
-  return {
-    isOpen: PreferencesStore.isModalOpen,
-    preferences: PreferencesStore.preferences,
-    language: language,
-    selectedLanguage: _.findIndex(menuItems, {value: language})
-  };
-};
+import Session from './preferences/Session.react'
 
 @ReactMixin.decorate(IntlMixin)
-class PreferencesModal extends React.Component {
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
+class PreferencesModal extends Component {
+  static getStores = () => [PreferencesStore];
 
-  getChildContext() {
+  static calculateState() {
     return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = getStateFromStores();
-
-    ThemeManager.setTheme(ActorTheme);
-    ThemeManager.setComponentThemes({
-      button: {
-        minWidth: 60
-      }
-    });
-
-    PreferencesStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
-  }
-
-  componentWillUnmount() {
-    PreferencesStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
-  }
-
-  onChange = () => {
-    this.setState(getStateFromStores());
+      isOpen: PreferencesStore.isOpen(),
+      isSendByEnterEnabled: PreferencesStore.isSendByEnterEnabled(),
+      isSoundEffectsEnabled: PreferencesStore.isSoundEffectsEnabled(),
+      isGroupsNotificationsEnabled: PreferencesStore.isGroupsNotificationsEnabled(),
+      isOnlyMentionNotifications: PreferencesStore.isOnlyMentionNotifications(),
+      isShowNotificationsTextEnabled: PreferencesStore.isShowNotificationsTextEnabled(),
+      sessions: PreferencesStore.getSessions(),
+      activeTab: PreferencesStore.getCurrentTab()
+    }
   };
 
-  onClose = () => {
-    PreferencesActionCreators.hide();
-  };
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (!nextState.isOpen && this.state.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
+  }
+
+  onClose = () => PreferencesActionCreators.hide();
 
   onDone = () => {
+    const {
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications,
+      isShowNotificationsTextEnabled
+    } = this.state;
+
     PreferencesActionCreators.save({
-      language: this.state.language,
-      sendByEnter: this.refs.sendByEnter.getSelectedValue()
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications,
+      isShowNotificationsTextEnabled
     });
     this.onClose();
   };
@@ -89,97 +71,171 @@ class PreferencesModal extends React.Component {
     }
   };
 
-  onLanguageChange = (event, selectedIndex, menuItem) => {
-    this.setState({
-      language: menuItem.value,
-      selectedLanguage: _.findIndex(menuItems, {value: menuItem.value})
-    });
-  };
+  changeSendByEnter = (event) => this.setState({isSendByEnterEnabled: event.target.value === 'true'});
+  changeSoundEffectsEnabled = (event) => this.setState({isSoundEffectsEnabled: event.target.checked});
+  changeGroupsNotificationsEnabled = (event) => this.setState({isGroupsNotificationsEnabled: event.target.checked});
+  changeMentionNotifications = (event) => this.setState({isOnlyMentionNotifications: event.target.checked});
+  changeIsShowNotificationTextEnabled = (event) => this.setState({isShowNotificationsTextEnabled: event.target.checked});
+
+  onTerminateAllSessionsClick = () => PreferencesActionCreators.terminateAllSessions();
+
+  changeTab = (tab) => PreferencesActionCreators.changeTab(tab);
 
   render() {
-    const preferences = this.state.preferences;
+    const {
+      isOpen,
+      activeTab,
+      isSendByEnterEnabled,
+      isSoundEffectsEnabled,
+      isGroupsNotificationsEnabled,
+      isOnlyMentionNotifications,
+      isShowNotificationsTextEnabled,
+      sessions
+    } = this.state;
 
-    if (this.state.isOpen === true) {
+    const sessionList = map(sessions, (session) => <Session {...session}/>);
+
+    const generalTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab === 'GENERAL'
+    });
+    const notificationTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab === 'NOTIFICATIONS'
+    });
+    const securityTabClassNames = classnames('preferences__tabs__tab', {
+      'preferences__tabs__tab--active': activeTab === 'SECURITY'
+    });
+    const generalTabContentClassName = classnames('preferences__list__item', {
+      'preferences__list__item--active': activeTab === 'GENERAL'
+    });
+    const notificationTabContentClassName = classnames('preferences__list__item', {
+      'preferences__list__item--active': activeTab === 'NOTIFICATIONS'
+    });
+    const securityTabContentClassName = classnames('preferences__list__item', {
+      'preferences__list__item--active': activeTab === 'SECURITY'
+    });
+
+    if (isOpen) {
       return (
         <Modal className="modal-new modal-new--preferences"
                closeTimeoutMS={150}
-               isOpen={this.state.isOpen}
-               style={{width: 760}}>
+               isOpen={isOpen}
+               style={{width: 700}}>
 
           <div className="modal-new__header">
             <i className="modal-new__header__icon material-icons">settings</i>
+
             <h3 className="modal-new__header__title">
               <FormattedMessage message={this.getIntlMessage('preferencesModalTitle')}/>
             </h3>
+
             <div className="pull-right">
-              <FlatButton hoverColor="rgba(81,145,219,.17)"
-                          label="Done"
-                          labelStyle={{padding: '0 8px'}}
-                          onClick={this.onDone}
-                          secondary={true}
-                          style={{marginTop: -6}}/>
+              <button className="button button--lightblue" onClick={this.onDone}>Done</button>
             </div>
           </div>
 
           <div className="modal-new__body">
             <div className="preferences">
               <aside className="preferences__tabs">
-                <a className="preferences__tabs__tab preferences__tabs__tab--active">General</a>
-                <a className="preferences__tabs__tab hide">Notifications</a>
-                <a className="preferences__tabs__tab hide">Sidebar colors</a>
-                <a className="preferences__tabs__tab hide">Security</a>
-                <a className="preferences__tabs__tab hide">Other Options</a>
+                <a className={generalTabClassNames}
+                   onClick={() => this.changeTab('GENERAL')}>General</a>
+                <a className={notificationTabClassNames}
+                   onClick={() => this.changeTab('NOTIFICATIONS')}>Notifications &amp; Sounds</a>
+                <a className={securityTabClassNames}
+                   onClick={() => this.changeTab('SECURITY')}>Security</a>
               </aside>
               <div className="preferences__body">
                 <div className="preferences__list">
-                  <div className="preferences__list__item  preferences__list__item--general">
+                  <div className={generalTabContentClassName}>
                     <ul>
                       <li>
                         <i className="icon material-icons">keyboard</i>
-                        <RadioButtonGroup defaultSelected={preferences.sendByEnter}
-                                          name="send"
-                                          ref="sendByEnter">
-                          <RadioButton label="Enter – send message, Shift + Enter – new line"
-                                       style={{marginBottom: 12}}
-                                       value="true"/>
-                          <RadioButton label="Cmd + Enter – send message, Enter – new line"
-                                       value="false"/>
-                        </RadioButtonGroup>
-                      </li>
-                      <li className="language hide">
-                        <i className="icon material-icons">menu</i>
-                        Language: <DropDownMenu labelStyle={{color: '#5191db'}}
-                                                menuItemStyle={{height: '40px', lineHeight: '40px'}}
-                                                menuItems={menuItems}
-                                                onChange={this.onLanguageChange}
-                                                selectedIndex={this.state.selectedLanguage}
-                                                style={{verticalAlign: 'top', height: 52}}
-                                                underlineStyle={{display: 'none'}}/>
+                        <h4>Send message</h4>
+                        <div className="radio">
+                          <input type="radio"
+                                 name="sendByEnter"
+                                 id="sendByEnterEnabled"
+                                 value="true"
+                                 defaultChecked={isSendByEnterEnabled}
+                                 onChange={this.changeSendByEnter}/>
+                          <label htmlFor="sendByEnterEnabled">
+                            <b>Enter</b> – send message, <b>Shift + Enter</b> – new line
+                          </label>
+                        </div>
+                        <div className="radio">
+                          <input type="radio"
+                                 name="sendByEnter"
+                                 id="sendByEnterDisabled"
+                                 value="false"
+                                 defaultChecked={!isSendByEnterEnabled}
+                                 onChange={this.changeSendByEnter}/>
+                          <label htmlFor="sendByEnterDisabled">
+                            <b>Cmd + Enter</b> – send message, <b>Enter</b> – new line
+                          </label>
+                        </div>
                       </li>
                     </ul>
                   </div>
-                  <div className="preferences__list__item preferences__list__item--notifications hide">
+                  <div className={notificationTabContentClassName}>
                     <ul>
                       <li>
+                        <i className="icon material-icons">music_note</i>
+                        <h4>Effects</h4>
+                        <div className="checkbox">
+                          <input type="checkbox"
+                                 id="soundEffects"
+                                 defaultChecked={isSoundEffectsEnabled}
+                                 onChange={this.changeSoundEffectsEnabled}/>
+                          <label htmlFor="soundEffects">Enable sound effects</label>
+                        </div>
+                      </li>
+                      <li>
                         <i className="icon material-icons">notifications</i>
-                        <RadioButtonGroup defaultSelected="all" name="notifications">
-                          <RadioButton label="Notifications for activity of any kind"
-                                       style={{marginBottom: 12}}
-                                       value="all"/>
-                          <RadioButton label="Notifications for Highlight Words and direct messages"
-                                       style={{marginBottom: 12}}
-                                       value="quiet"/>
-                          <RadioButton label="Never send me notifications"
-                                       style={{marginBottom: 12}}
-                                       value="disable"/>
-                        </RadioButtonGroup>
-                        <p className="hint">
-                          You can override your desktop notification preference on a case-by-case
-                          basis for channels and groups from the channel or group menu.
-                        </p>
+                        <h4>Notifications</h4>
+                        <div className="checkbox">
+                          <input type="checkbox"
+                                 id="groupNotifications"
+                                 defaultChecked={isGroupsNotificationsEnabled}
+                                 onChange={this.changeGroupsNotificationsEnabled}/>
+                          <label htmlFor="groupNotifications">Enable group notifications</label>
+                        </div>
+                        <div className="checkbox">
+                          <input type="checkbox"
+                                 id="mentionsNotifications"
+                                 defaultChecked={isOnlyMentionNotifications}
+                                 onChange={this.changeMentionNotifications}/>
+                          <label htmlFor="mentionsNotifications">Enable mention only notifications</label>
+                        </div>
+                        <p className="hint">You can enable notifications only for messages that contains you mention</p>
+                      </li>
+                      <li>
+                        <i className="icon material-icons">visibility</i>
+                        <h4>Privacy</h4>
+                        <div className="checkbox">
+                          <input type="checkbox"
+                                 id="notificationTextPreview"
+                                 defaultChecked={isShowNotificationsTextEnabled}
+                                 onChange={this.changeIsShowNotificationTextEnabled}/>
+                          <label htmlFor="notificationTextPreview">Message preview</label>
+                        </div>
+                        <p className="hint">Remove message text from notifications.</p>
                       </li>
                     </ul>
                   </div>
+                  <div className={securityTabContentClassName}>
+                    <ul>
+                      <li>
+                        <i className="icon material-icons">devices</i>
+                        <h4>Active sessions</h4>
+                        <ul className="session-list">
+                          {sessionList}
+                          <li className="session-list__session">
+                            <a className="link--red" onClick={this.onTerminateAllSessionsClick}>Terminate all sessions</a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -193,4 +249,4 @@ class PreferencesModal extends React.Component {
   }
 }
 
-export default PreferencesModal;
+export default Container.create(PreferencesModal);

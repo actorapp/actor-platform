@@ -109,7 +109,12 @@ gulp.task('html', () => {
 });
 
 gulp.task('lib:build', shell.task(['cd ../ && ./gradlew :core-js:buildPackage']));
+gulp.task('lib:build:dev', shell.task(['cd ../ && ./gradlew :core-js:buildPackageDev']));
+
 gulp.task('lib', ['lib:build'], () => {
+  return gulp.src('../core-js/build/package/*').pipe(gulp.dest('./dist/actor/'));
+});
+gulp.task('lib:dev', ['lib:build:dev'], () => {
   return gulp.src('../core-js/build/package/*').pipe(gulp.dest('./dist/actor/'));
 });
 
@@ -136,9 +141,14 @@ gulp.task('electron:app', () => {
 
 gulp.task('electron', ['electron:prepare', 'electron:app'], shell.task(['asar pack electron_dist/app electron_dist/app.asar']));
 
-gulp.task('static', ['html', 'assets', 'sprite', 'lib', 'push', 'emoji']);
+const staticTasksBase = ['html', 'assets', 'sprite', 'push', 'emoji'];
+const staticTasks = staticTasksBase.concat(['lib']);
+const staticTasksDev = staticTasksBase.concat(['lib:dev']);
 
-gulp.task('dev', ['static', 'webpack-dev-server']);
+gulp.task('static', staticTasks);
+gulp.task('static:dev', staticTasksDev);
+
+gulp.task('dev', ['static:dev', 'webpack-dev-server']);
 
 gulp.task('build', ['static', 'webpack:build']);
 
