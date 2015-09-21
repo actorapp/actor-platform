@@ -70,7 +70,7 @@ public class Main {
 
             // Variant values
             if (platformData.containsKey("variants")) {
-                Map<String, Object> variants = (Map<String, Object>) platformData.get(variant);
+                Map<String, Object> variants = (Map<String, Object>) platformData.get("variants");
                 if (variants.containsKey(variant)) {
                     Map<String, Object> variantData = (Map<String, Object>) variants.get(variant);
 
