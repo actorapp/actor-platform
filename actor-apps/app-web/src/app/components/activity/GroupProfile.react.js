@@ -78,9 +78,7 @@ class GroupProfile extends React.Component {
     }, 0);
   }
 
-  onAddMemberClick = group => {
-    InviteUserActions.show(group);
-  };
+  onAddMemberClick = group => InviteUserActions.show(group);
 
   onLeaveGroupClick = gid => {
     confirm('Do you really want to leave this conversation?').then(
@@ -94,13 +92,8 @@ class GroupProfile extends React.Component {
     DialogActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
-  onChange = () => {
-    this.setState(getStateFromStores(this.props.group.id));
-  };
-
-  selectToken = (event) => {
-    event.target.select();
-  };
+  onChange = () => this.setState(getStateFromStores(this.props.group.id));
+  selectToken = (event) => event.target.select();
 
   toggleMoreDropdown = () => {
     const { isMoreDropdownOpen } = this.state;
@@ -138,9 +131,7 @@ class GroupProfile extends React.Component {
     );
   };
 
-  onEditGroupClick = (gid) => {
-    EditGroupActionCreators.show(gid)
-  };
+  onEditGroupClick = (gid) => EditGroupActionCreators.show(gid);
 
   render() {
     const { group } = this.props;
@@ -241,15 +232,15 @@ class GroupProfile extends React.Component {
                     </button>
                     <ul className="dropdown__menu dropdown__menu--right">
                       {adminControls}
-                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                      <li className="dropdown__menu__item"
                           onClick={() => this.onLeaveGroupClick(group.id)}>
                         <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
                       </li>
-                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                      <li className="dropdown__menu__item"
                           onClick={() => this.onClearGroupClick(group.id)}>
                         <FormattedMessage message={this.getIntlMessage('clearGroup')}/>
                       </li>
-                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                      <li className="dropdown__menu__item"
                           onClick={() => this.onDeleteGroupClick(group.id)}>
                         <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
                       </li>

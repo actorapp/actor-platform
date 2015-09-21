@@ -174,10 +174,10 @@ class UserProfile extends React.Component {
                 </button>
                 <ul className="dropdown__menu dropdown__menu--left">
                   {actions}
-                  <li className="dropdown__menu__item dropdown__menu__item--light" onClick={() => this.clearChat(user.id)}>
+                  <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
                     <FormattedMessage message={this.getIntlMessage('clearConversation')}/>
                   </li>
-                  <li className="dropdown__menu__item dropdown__menu__item--light" onClick={() => this.deleteChat(user.id)}>
+                  <li className="dropdown__menu__item" onClick={() => this.deleteChat(user.id)}>
                     <FormattedMessage message={this.getIntlMessage('deleteConversation')}/>
                   </li>
                 </ul>
