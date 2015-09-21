@@ -125,12 +125,19 @@ class MainTabViewController : UITabBarController {
     
     func showSmsInvitation(phone: String?) {
         if MFMessageComposeViewController.canSendText() {
+
+            // Silently ignore if not configured
+            if AppConfig.appInviteUrl == nil {
+                return
+            }
+            
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
             if (phone != nil) {
                  messageComposeController.recipients = [phone!]
             }
-            messageComposeController.body = NSLocalizedString("InviteText", comment: "Invite Text")
+            messageComposeController.body = localized("InviteText")
+                .replace("{link}", dest: AppConfig.appInviteUrl!)
             messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
             presentViewController(messageComposeController, animated: true, completion: { () -> Void in
                 MainAppTheme.navigation.applyStatusBarFast()

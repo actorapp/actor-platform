@@ -58,9 +58,9 @@
 
 "SettingsAskQuestion" = "Ask Question";
 
-"SettingsTwitter" = "Actor Twitter";
+"SettingsTwitter" = "App Twitter";
 
-"SettingsAbout" = "Actor Homepage";
+"SettingsAbout" = "App Homepage";
 
 "SettingsVersion" = "Version {version}";
 
@@ -330,7 +330,7 @@
 
 "CurrentLocale" = "En";
 
-"InviteText" = "Hi! Let's switch to Actor! https://actor.im/dl";
+"InviteText" = "Hi! Let's switch to Actor! {link}";
 
 "PhotoRemove" = "Delete Photo";
 
