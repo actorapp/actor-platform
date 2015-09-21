@@ -60,9 +60,9 @@
 
 "SettingsAskQuestion" = "提问";
 
-"SettingsTwitter" = "Actor Twitter";
+"SettingsTwitter" = "App Twitter";
 
-"SettingsAbout" = "Actor Homepage";
+"SettingsAbout" = "App Homepage";
 
 "SettingsVersion" = "版本 {version}";
 
@@ -332,7 +332,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "您好！让我们一起使用Actor安全开聊吧! https://actor.im/dl";
+"InviteText" = "您好！让我们一起使用Actor安全开聊吧! {link}";
 
 "PhotoRemove" = "删除头像";
 
