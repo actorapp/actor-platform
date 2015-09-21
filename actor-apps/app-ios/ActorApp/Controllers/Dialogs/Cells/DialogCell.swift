@@ -126,7 +126,7 @@ class DialogCell: UITableViewCell {
         
         avatarView.frame = CGRectMake(padding, padding, 48, 48);
         
-        titleView.frame = CGRectMake(leftPadding, 18, width - leftPadding - /*paddingRight*/(padding + 50), 18);
+        titleView.frame = CGRectMake(leftPadding, 16, width - leftPadding - /*paddingRight*/(padding + 50), 21);
         
         var messagePadding:CGFloat = 0;
         if (!self.statusView.hidden) {
