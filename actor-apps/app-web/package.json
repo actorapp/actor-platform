@@ -40,6 +40,7 @@
     "react-intl": "^1.2.0",
     "react-mixin": "^3.0.0",
     "react-modal": "^0.3.0",
+    "react-scroll":  "git://github.com/olegshilov/react-scroll.git#develop",
     "react-router": "^0.13.3",
     "react-tap-event-plugin": "^0.1.7",
     "react-visibility-sensor": "^2.1.0",
