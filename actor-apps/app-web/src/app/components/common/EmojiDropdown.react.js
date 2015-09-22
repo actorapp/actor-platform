@@ -2,10 +2,13 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { forEach } from 'lodash';
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Path } from 'constants/ActorAppConstants';
+import { Path, KeyCodes } from 'constants/ActorAppConstants';
 import EmojiUtils from 'utils/EmojiUtils';
+
+import { Element, Link } from 'react-scroll';
 
 export default class EmojiDropdown extends Component {
   static propTypes = {
@@ -19,7 +22,7 @@ export default class EmojiDropdown extends Component {
 
     this.state = {
       isOpen: props.isOpen
-    }
+    };
   }
 
   componentWillReceiveProps(props) {
@@ -27,14 +30,48 @@ export default class EmojiDropdown extends Component {
     this.setState({isOpen});
 
     if (isOpen) {
-      document.addEventListener('click', this.onClose, false);
+      document.addEventListener('click', this.onDocumentClick, false);
+      document.addEventListener('keydown', this.onKeyDown, false);
     } else {
-      document.removeEventListener('click', this.onClose, false);
+      document.removeEventListener('click', this.onDocumentClick, false);
+      document.removeEventListener('keydown', this.onKeyDown, false);
     }
   }
 
+  onKeyDown = () => {
+    if (event.keyCode === KeyCodes.ESC) {
+      event.preventDefault();
+      this.onClose();
+    }
+  };
+
   onClose = () => this.props.onClose();
-  onSelect = (emoji) => this.props.onSelect(emoji);
+  onSelect = (emoji) => {
+    this.onClose();
+    this.props.onSelect(emoji)
+  };
+
+  onDocumentClick = (event) => {
+    const emojiDropdown = React.findDOMNode(this.refs.emojiDropdown);
+    const emojiRect = emojiDropdown.getBoundingClientRect();
+    const coords = {
+      x: event.pageX || event.clientX,
+      y: event.pageY || event.clientY
+    };
+
+    if (!this.isInside(coords, emojiRect)) {
+      this.onClose();
+    }
+  };
+
+  isInside = (coords, rect) => {
+    return (
+      coords.x > rect.left &&
+      coords.y > rect.top &&
+      coords.x < rect.left + rect.width &&
+      coords.y < rect.top + rect.height
+    )
+  };
 
   render() {
     const { isOpen } = this.state;
@@ -90,29 +127,39 @@ export default class EmojiDropdown extends Component {
         );
       }
 
-      emojiCategories.push(<li className="emoji-dropdown__header__tabs__tab">{categoryTabContent}</li>);
+      emojiCategories.push(
+        <Link to={category}
+              spy smooth
+              offset={30}
+              duration={250}
+              containerId="emojiContainer"
+              className="emoji-dropdown__header__tabs__tab"
+              activeClass="emoji-dropdown__header__tabs__tab--active">
+          {categoryTabContent}
+        </Link>
+      );
 
       emojis.push(
-        <div ref={category}>
+        <Element name={category}>
           <p>{categoryTitle}</p>
           {categorizedEmoji}
-        </div>
+        </Element>
       );
     }
 
     if (isOpen) {
       return (
         <div className={emojiDropdownClassName}>
-          <div className="emoji-dropdown__wrapper">
+          <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
             <header className="emoji-dropdown__header">
               Emoji
 
-              <ul className="emoji-dropdown__header__tabs pull-right">
+              <div className="emoji-dropdown__header__tabs pull-right">
                 {emojiCategories}
-              </ul>
+              </div>
 
             </header>
-            <div className="emoji-dropdown__body">
+            <div className="emoji-dropdown__body" id="emojiContainer">
               {emojis}
             </div>
           </div>
