@@ -162,9 +162,15 @@ extension ARMarkdownParser {
         } else if let url = text as? ARMDUrl {
             
             // Parsing url element
-            let attributes = [NSLinkAttributeName: NSURL(string: url.getUrl()) as! AnyObject,
-                NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
-            return NSAttributedString(string: url.getUrlTitle(), attributes: attributes)
+            let nsUrl = NSURL(string: url.getUrl())
+            if nsUrl != nil {
+                let attributes = [NSLinkAttributeName: nsUrl as! AnyObject,
+                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
+                return NSAttributedString(string: url.getUrlTitle(), attributes: attributes)
+            } else {
+                // Unable to parse: show as text
+                return NSAttributedString(string: url.getUrlTitle(), font: UIFont.textFontOfSize(fontSize))
+            }
         } else {
             fatalError("Unsupported text type")
         }

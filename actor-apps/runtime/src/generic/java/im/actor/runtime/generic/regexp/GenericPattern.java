@@ -16,6 +16,6 @@ public class GenericPattern extends PatternCompat {
 
     @Override
     public MatcherCompat matcher(String input) {
-        return new GenericMatch(pattern.matcher(input));
+        return new GenericMatch(pattern.matcher(input), input);
     }
 }
