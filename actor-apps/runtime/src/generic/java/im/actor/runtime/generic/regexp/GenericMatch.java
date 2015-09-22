@@ -7,9 +7,11 @@ import im.actor.runtime.regexp.MatcherCompat;
 public class GenericMatch implements MatcherCompat {
 
     private Matcher matcher;
+    private String input;
 
-    public GenericMatch(Matcher matcher) {
+    public GenericMatch(Matcher matcher, String input) {
         this.matcher = matcher;
+        this.input = input;
     }
 
     @Override
