@@ -24,7 +24,7 @@ class DialogCell: UITableViewCell {
         
         backgroundColor = MainAppTheme.list.bgColor
         
-        titleView.font = UIFont.mediumSystemFontOfSize(18)
+        titleView.font = UIFont.mediumSystemFontOfSize(17)
         titleView.textColor = MainAppTheme.list.dialogTitle
         
         messageView.font = UIFont.systemFontOfSize(16)

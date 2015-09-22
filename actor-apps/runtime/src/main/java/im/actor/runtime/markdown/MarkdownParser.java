@@ -144,38 +144,37 @@ public class MarkdownParser {
         return false;
     }
 
+    /**
+     * Handling urls
+     * @param cursor
+     * @param limit
+     * @param elements
+     */
     private void handleUrls(TextCursor cursor, int limit, ArrayList<MDText> elements) {
-        while (handleUrl(cursor, limit, elements)) ;
-    }
 
-    private boolean handleUrl(TextCursor cursor, int limit, ArrayList<MDText> elements) {
         if (mode == MODE_FULL || mode == MODE_ONLY_LINKS) {
-            Url url = findUrl(cursor, limit);
-            if (url != null) {
-                handleText(cursor, url.getStart(), elements);
-                String title;
-                String urlVal;
+            while (true) {
+                TitledUrl url = findFormattedUrl(cursor, limit);
+                if (url != null) {
 
-                if (url instanceof BasicUrl) {
-                    BasicUrl basicUrl = (BasicUrl) url;
-                    title = cursor.text.substring(basicUrl.getStart(), basicUrl.getEnd());
-                    urlVal = title;
-                    cursor.currentOffset = url.getEnd();
-                } else {
-                    TitledUrl titledUrl = (TitledUrl) url;
-                    title = cursor.text.substring(titledUrl.getStart() + 1, titledUrl.getMiddle());
-                    urlVal = cursor.text.substring(titledUrl.getMiddle() + 2, titledUrl.getEnd());
+                    // Handling text before url first
+                    handleRawText(cursor, url.getStart(), elements);
+
+                    // Adding url
+                    String title = cursor.text.substring(url.getStart() + 1, url.getMiddle());
+                    String urlVal = cursor.text.substring(url.getMiddle() + 2, url.getEnd());
+                    elements.add(new MDUrl(title, urlVal));
+
+                    // Adjusting offset
                     cursor.currentOffset = url.getEnd() + 1;
+                } else {
+                    break;
                 }
-
-                elements.add(new MDUrl(title, urlVal));
-
-                return true;
             }
         }
 
-        handleText(cursor, limit, elements);
-        return false;
+        // Handling remaining text
+        handleRawText(cursor, limit, elements);
     }
 
     /**
@@ -185,7 +184,38 @@ public class MarkdownParser {
      * @param limit    text end
      * @param elements current elements
      */
-    private void handleText(TextCursor cursor, int limit, ArrayList<MDText> elements) {
+    private void handleRawText(TextCursor cursor, int limit, ArrayList<MDText> elements) {
+        while (true) {
+            BasicUrl url = findUrl(cursor, limit);
+            if (url != null) {
+
+                // Handling text before url first
+                addText(cursor, url.getStart(), elements);
+
+                // Adding url
+                String link = cursor.text.substring(url.getStart(), url.getEnd());
+                elements.add(new MDUrl(link, link));
+
+                // Adjusting offset
+                cursor.currentOffset = url.getEnd();
+
+                continue;
+            }
+
+            addText(cursor, limit, elements);
+
+            return;
+        }
+    }
+
+    /**
+     * Adding raw simple text
+     *
+     * @param cursor   text cursor
+     * @param limit    text end
+     * @param elements current elements
+     */
+    private void addText(TextCursor cursor, int limit, ArrayList<MDText> elements) {
         if (cursor.currentOffset < limit) {
             elements.add(new MDRawText(cursor.text.substring(cursor.currentOffset, limit)));
             cursor.currentOffset = limit;
@@ -278,32 +308,20 @@ public class MarkdownParser {
      * @param limit  search limit
      * @return found url, null if not found
      */
-    private Url findUrl(TextCursor cursor, int limit) {
-
+    private TitledUrl findFormattedUrl(TextCursor cursor, int limit) {
         start_loop:
         for (int start = cursor.currentOffset; start < limit; start++) {
+
+            // Finding beginning of url
             if (cursor.text.charAt(start) == '[') {
                 if (!isGoodAnchor(cursor.text, start - 1)) {
                     continue start_loop;
                 }
-            } else if (isGoodAnchor(cursor.text, start)) {
-                continue start_loop;
             } else {
-                String currentText = cursor.text.substring(start);
-
-                if (isGoodAnchor(cursor.text, start - 1) && Patterns.WEB_URL_START.test(currentText)) {
-                    final MatcherCompat matcher = Patterns.WEB_URL_START.matcher(currentText);
-                    final String url = matcher.group();
-                    if (url.length() > 0) {
-                        return new BasicUrl(start + matcher.start(), start + matcher.start() + url.length());
-                    } else {
-                        continue start_loop;
-                    }
-                } else {
-                    continue start_loop;
-                }
+                continue start_loop;
             }
 
+            // Finding middle part of url
             middle_loop:
             for (int middle = start + 1; middle < limit - 1; middle++) {
                 if (cursor.text.charAt(middle) != ']' || cursor.text.charAt(middle + 1) != '(') {
@@ -320,6 +338,24 @@ public class MarkdownParser {
             }
         }
 
+        return null;
+    }
+
+    /**
+     * Finding non-formatted urls in texts
+     *
+     * @param cursor current text cursor
+     * @param limit end of cursor
+     * @return founded url
+     */
+    private BasicUrl findUrl(TextCursor cursor, int limit) {
+        String currentText = cursor.text.substring(cursor.currentOffset, limit);
+        MatcherCompat matcher = Patterns.WEB_URL_START.matcher(currentText);
+        if (matcher.hasMatch()) {
+            String url = matcher.group();
+            int start = cursor.currentOffset + matcher.start();
+            return new BasicUrl(start, start + url.length());
+        }
         return null;
     }
 

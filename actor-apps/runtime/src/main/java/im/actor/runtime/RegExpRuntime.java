@@ -5,6 +5,7 @@
 package im.actor.runtime;
 
 import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.runtime.regexp.PatternCompat;
 
 /**
@@ -14,19 +15,9 @@ public interface RegExpRuntime {
     /**
      * Creates a new PatternCompat instance
      *
-     * @param pattern
-     * @return
+     * @param pattern pattern for matching
+     * @return return compiled pattern
      */
     @ObjectiveCName("getPatternWithPattern:")
-    public abstract PatternCompat getPattern(String pattern);
-
-    /**
-     * Creates a new PatternCompat instance
-     *
-     * @param pattern
-     * @param flags
-     * @return
-     */
-    @ObjectiveCName("getPatternWithExp:withFlags:")
-    public abstract PatternCompat getPattern(String pattern, String flags);
+    PatternCompat getPattern(String pattern);
 }
