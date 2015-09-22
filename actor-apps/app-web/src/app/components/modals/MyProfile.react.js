@@ -154,7 +154,7 @@ class MyProfile extends Component {
                            floatingLabelText="Phone number"
                            fullWidth
                            type="tel"
-                           value={profile.phones[0].number}/>
+                           value={(profile.phones[0] || {}).number}/>
               </div>
               <div className="about">
                 <label htmlFor="about">About</label>
