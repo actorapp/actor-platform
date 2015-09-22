@@ -82,7 +82,6 @@
     vertical-align: middle;
   }
 
-
   &__info {
     line-height: 1px;
 
@@ -98,7 +97,6 @@
     line-height: $message-line-height;
     &--service {
       font-size: 14px;
-
       font-style: italic;
 
       color: $message-service-text-color;
@@ -117,8 +115,8 @@
       p {
         margin: 0 0 7px;
 
-        word-wrap: normal;
-        word-break: keep-all;
+        word-wrap: break-word;
+        //word-break: keep-all;
         &:last-child {
           margin-bottom: 0;
         }
@@ -189,7 +187,7 @@
 
           filter: url(#blur-effect);
           filter: blur(3px);
-          filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
+          filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
         }
         &--original {
           visibility: hidden;
@@ -269,7 +267,7 @@
 
           color: $body-base-color;
           background-color: white;
-          box-shadow: 0 1px 3px -1px rgba($body-base-color,.2);
+          box-shadow: 0 1px 3px -1px rgba($body-base-color, .2);
           i {
             line-height: $message-document-icon-size;
           }
@@ -292,7 +290,7 @@
 
           text-transform: uppercase;
 
-          color: rgba($message-text-color,.3);
+          color: rgba($message-text-color, .3);
           &__ext {
             margin-left: 6px;
           }
@@ -348,7 +346,7 @@
       height: 20px;
 
       opacity: 0;
-      color: rgba(0,0,0,.2);
+      color: rgba(0, 0, 0, .2);
     }
     &__menu {
       top: auto;
@@ -360,7 +358,7 @@
 
     &--opened {
       .dropdown__button {
-        color: rgba(0,0,0,.7);
+        color: rgba(0, 0, 0, .7);
       }
     }
   }
