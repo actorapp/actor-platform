@@ -14,8 +14,8 @@ gwt {
     compiler {
         strict = true;
         // style = "OBF"
-        style = "PRETTY"
-        enableClosureCompiler = false;
+        style = "OBF"
+        enableClosureCompiler = true;
         disableClassMetadata = true;
         disableCastChecking = true;
     }
@@ -51,6 +51,32 @@ task buildPackage(dependsOn: ['war']) {
         copy {
             into "$buildDir/library"
             with war
+            exclude "actor/actor.devmode.js"
+            include "actor/**"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$buildDir/library/actor"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/src/main/javascript"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/../runtime-js/src/main/javascript"
+        }
+    }
+}
+
+task buildPackageDev(dependsOn: ['draftWar']) {
+    doFirst {
+        copy {
+            into "$buildDir/library"
+            with draftWar
             exclude "actor/actor.devmode.js"
             include "actor/**"
         }

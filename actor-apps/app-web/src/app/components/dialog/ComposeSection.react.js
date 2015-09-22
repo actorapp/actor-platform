@@ -1,16 +1,19 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 
 import React from 'react';
+import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
 import addons from 'react/addons';
 const {addons: { PureRenderMixin }} = addons;
 
 import ActorClient from 'utils/ActorClient';
 import Inputs from 'utils/Inputs';
-import { Styles, FlatButton } from 'material-ui';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
-import ActorTheme from 'constants/ActorTheme';
 
 import MessageActionCreators from 'actions/MessageActionCreators';
 import ComposeActionCreators from 'actions/ComposeActionCreators';
@@ -21,14 +24,13 @@ import ComposeStore from 'stores/ComposeStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import MentionDropdown from 'components/common/MentionDropdown.react';
-
-const ThemeManager = new Styles.ThemeManager();
+import EmojiDropdown from 'components/common/EmojiDropdown.react';
 
 let getStateFromStores = () => {
   return {
     text: ComposeStore.getText(),
     profile: ActorClient.getUser(ActorClient.getUid()),
-    sendByEnter: PreferencesStore.sendByEnter,
+    sendByEnter: PreferencesStore.isSendByEnterEnabled(),
     mentions: ComposeStore.getMentions()
   };
 };
@@ -39,47 +41,39 @@ class ComposeSection extends React.Component {
     peer: React.PropTypes.object.isRequired
   };
 
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object
-  };
-
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores();
-
-    ThemeManager.setTheme(ActorTheme);
+    this.state = _.assign({
+      isEmojiDropdownShow: false
+    }, getStateFromStores());
 
     GroupStore.addChangeListener(this.onChange);
     ComposeStore.addChangeListener(this.onChange);
-    PreferencesStore.addChangeListener(this.onChange);
+    PreferencesStore.addListener(this.onChange);
   }
 
   componentWillUnmount() {
     GroupStore.removeChangeListener(this.onChange);
     ComposeStore.removeChangeListener(this.onChange);
-    PreferencesStore.removeChangeListener(this.onChange);
   }
 
   onChange = () => {
     this.setState(getStateFromStores());
   };
 
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
-
   onMessageChange = event => {
-    let text = event.target.value;
+    const text = event.target.value;
+    const { peer } = this.props;
 
-    ComposeActionCreators.onTyping(this.props.peer, text, this.getCaretPosition());
+    ComposeActionCreators.onTyping(peer, text, this.getCaretPosition());
   };
 
   onKeyDown = event => {
-    if (this.state.mentions === null) {
-      if (this.state.sendByEnter === 'true') {
+    const { mentions, sendByEnter } = this.state;
+
+    if (mentions === null) {
+      if (sendByEnter === true) {
         if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
           event.preventDefault();
           this.sendTextMessage();
@@ -94,32 +88,42 @@ class ComposeSection extends React.Component {
   };
 
   sendTextMessage = () => {
-    const text = this.state.text;
-    if (text) {
-      MessageActionCreators.sendTextMessage(this.props.peer, text);
+    const { text } = this.state;
+    const { peer } = this.props;
+
+    if (text.trim().length !== 0) {
+      MessageActionCreators.sendTextMessage(peer, text);
     }
     ComposeActionCreators.cleanText();
   };
 
   onSendFileClick = () => {
-    const fileInput = document.getElementById('composeFileInput');
+    const fileInput = React.findDOMNode(this.refs.composeFileInput);
     fileInput.click();
   };
 
   onSendPhotoClick = () => {
-    const photoInput = document.getElementById('composePhotoInput');
+    const photoInput = React.findDOMNode(this.refs.composePhotoInput);
     photoInput.accept = 'image/*';
     photoInput.click();
   };
 
   onFileInputChange = () => {
-    const files = document.getElementById('composeFileInput').files;
-    MessageActionCreators.sendFileMessage(this.props.peer, files[0]);
+    const fileInput = React.findDOMNode(this.refs.composeFileInput);
+    MessageActionCreators.sendFileMessage(this.props.peer, fileInput.files[0]);
+    this.resetSendFileForm();
   };
 
   onPhotoInputChange = () => {
-    const photos = document.getElementById('composePhotoInput').files;
-    MessageActionCreators.sendPhotoMessage(this.props.peer, photos[0]);
+    console.debug('onPhotoInputChange');
+    const photoInput = React.findDOMNode(this.refs.composePhotoInput);
+    MessageActionCreators.sendPhotoMessage(this.props.peer, photoInput.files[0]);
+    this.resetSendFileForm();
+  };
+
+  resetSendFileForm = () => {
+    const form = React.findDOMNode(this.refs.sendFileForm);
+    form.reset();
   };
 
   onPaste = event => {
@@ -138,8 +142,11 @@ class ComposeSection extends React.Component {
   };
 
   onMentionSelect = (mention) => {
-    ComposeActionCreators.insertMention(this.props.peer, this.state.text, this.getCaretPosition(), mention);
-    this.refs.area.getDOMNode().focus();
+    const { peer } = this.props;
+    const { text } = this.state;
+
+    ComposeActionCreators.insertMention(peer, text, this.getCaretPosition(), mention);
+    React.findDOMNode(this.refs.area).focus();
   };
 
   onMentionClose = () => {
@@ -147,13 +154,24 @@ class ComposeSection extends React.Component {
   };
 
   getCaretPosition = () => {
-    let el = this.refs.area.getDOMNode();
-    let selection = Inputs.getInputSelection(el);
+    const composeArea = React.findDOMNode(this.refs.area);
+    const selection = Inputs.getInputSelection(composeArea);
     return selection.start;
   };
 
+  onEmojiDropdownSelect = (emoji) => {
+    ComposeActionCreators.insertEmoji(this.state.text, this.getCaretPosition(), emoji);
+    React.findDOMNode(this.refs.area).focus();
+  };
+  onEmojiDropdownClose = () => this.setState({isEmojiDropdownShow: false});
+  onEmojiShowClick = () => this.setState({isEmojiDropdownShow: true});
+
   render() {
-    const { text, profile, mentions } = this.state;
+    const { text, profile, mentions, isEmojiDropdownShow } = this.state;
+
+    const emojiOpenerClassName = classnames('emoji-opener material-icons hide', {
+      'emoji-opener--active': isEmojiDropdownShow
+    });
 
     return (
       <section className="compose" onPaste={this.onPaste}>
@@ -161,6 +179,12 @@ class ComposeSection extends React.Component {
         <MentionDropdown mentions={mentions}
                          onSelect={this.onMentionSelect}
                          onClose={this.onMentionClose}/>
+
+        <EmojiDropdown isOpen={isEmojiDropdownShow}
+                       onSelect={this.onEmojiDropdownSelect}
+                       onClose={this.onEmojiDropdownClose}/>
+        <i className={emojiOpenerClassName}
+           onClick={this.onEmojiShowClick}>insert_emoticon</i>
 
         <AvatarItem className="my-avatar"
                     image={profile.avatar}
@@ -174,26 +198,23 @@ class ComposeSection extends React.Component {
                   ref="area"/>
 
         <footer className="compose__footer row">
-          <button className="button" onClick={this.onSendFileClick}>
+          <button className="button attachment" onClick={this.onSendFileClick}>
             <i className="material-icons">attachment</i> Send file
           </button>
-          <button className="button" onClick={this.onSendPhotoClick}>
+          <button className="button attachment" onClick={this.onSendPhotoClick}>
             <i className="material-icons">photo_camera</i> Send photo
           </button>
 
           <span className="col-xs"></span>
 
-          <FlatButton label="Send" onClick={this.sendTextMessage} secondary={true}/>
+          <button className="button button--lightblue" onClick={this.sendTextMessage}>Send</button>
+
         </footer>
 
-        <div className="compose__hidden">
-          <input id="composeFileInput"
-                 onChange={this.onFileInputChange}
-                 type="file"/>
-          <input id="composePhotoInput"
-                 onChange={this.onPhotoInputChange}
-                 type="file"/>
-        </div>
+        <form className="compose__hidden" ref="sendFileForm">
+          <input ref="composeFileInput" onChange={this.onFileInputChange} type="file"/>
+          <input ref="composePhotoInput" onChange={this.onPhotoInputChange} type="file"/>
+        </form>
       </section>
     );
   }
