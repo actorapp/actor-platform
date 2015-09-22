@@ -111,7 +111,7 @@ extension NSAttributedString {
     }
     
     convenience init(string: String, font: UIFont) {
-        self.init(string: string)
+        self.init(string: string, attributes: [NSFontAttributeName: font])
     }
 }
 
