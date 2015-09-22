@@ -169,7 +169,7 @@ class ComposeSection extends React.Component {
   render() {
     const { text, profile, mentions, isEmojiDropdownShow } = this.state;
 
-    const emojiOpenerClassName = classnames('emoji-opener material-icons hide', {
+    const emojiOpenerClassName = classnames('emoji-opener material-icons', {
       'emoji-opener--active': isEmojiDropdownShow
     });
 
@@ -204,11 +204,8 @@ class ComposeSection extends React.Component {
           <button className="button attachment" onClick={this.onSendPhotoClick}>
             <i className="material-icons">photo_camera</i> Send photo
           </button>
-
           <span className="col-xs"></span>
-
           <button className="button button--lightblue" onClick={this.sendTextMessage}>Send</button>
-
         </footer>
 
         <form className="compose__hidden" ref="sendFileForm">
