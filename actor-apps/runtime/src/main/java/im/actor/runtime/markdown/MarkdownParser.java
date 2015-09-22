@@ -1,5 +1,6 @@
 package im.actor.runtime.markdown;
 
+import im.actor.runtime.Log;
 import im.actor.runtime.regexp.MatcherCompat;
 
 import java.util.ArrayList;
@@ -146,6 +147,7 @@ public class MarkdownParser {
 
     /**
      * Handling urls
+     *
      * @param cursor
      * @param limit
      * @param elements
@@ -188,12 +190,12 @@ public class MarkdownParser {
         while (true) {
             BasicUrl url = findUrl(cursor, limit);
             if (url != null) {
+                String link = cursor.text.substring(url.getStart(), url.getEnd());
 
                 // Handling text before url first
                 addText(cursor, url.getStart(), elements);
 
                 // Adding url
-                String link = cursor.text.substring(url.getStart(), url.getEnd());
                 elements.add(new MDUrl(link, link));
 
                 // Adjusting offset
@@ -345,16 +347,21 @@ public class MarkdownParser {
      * Finding non-formatted urls in texts
      *
      * @param cursor current text cursor
-     * @param limit end of cursor
+     * @param limit  end of cursor
      * @return founded url
      */
     private BasicUrl findUrl(TextCursor cursor, int limit) {
-        String currentText = cursor.text.substring(cursor.currentOffset, limit);
-        MatcherCompat matcher = Patterns.WEB_URL_START.matcher(currentText);
-        if (matcher.hasMatch()) {
-            String url = matcher.group();
-            int start = cursor.currentOffset + matcher.start();
-            return new BasicUrl(start, start + url.length());
+        for (int i = cursor.currentOffset; i < limit; i++) {
+            if (!isGoodAnchor(cursor.text, i - 1)) {
+                continue;
+            }
+            String currentText = cursor.text.substring(i, limit);
+            MatcherCompat matcher = Patterns.WEB_URL_START.matcher(currentText);
+            if (matcher.hasMatch()) {
+                String url = matcher.group();
+                int start = i + matcher.start();
+                return new BasicUrl(start, start + url.length());
+            }
         }
         return null;
     }
