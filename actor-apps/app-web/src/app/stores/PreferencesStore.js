@@ -63,7 +63,6 @@ class PreferencesStore extends Store {
   }
 
   getTerminateSessionState(id) {
-    console.debug(id);
     return (_terminateSessionState[id] || AsyncActionStates.PENDING);
   }
 

@@ -4,3 +4,102 @@
   display: inline-block;
   vertical-align: middle;
 }
+
+
+.emoji-dropdown {
+  position: relative;
+  color: rgba($greyish-brown, .6);
+
+  display: none;
+
+  &__wrapper {
+    position: absolute;
+    z-index: 5;
+    right: 1px;
+    bottom: 0;
+
+    overflow: hidden;
+
+    max-width: 500px;
+
+    border-radius: 2px;
+    background-color: rgba(white, .975);
+    box-shadow: 0 0 0 1px $cloudy-blue, 0 0 6px 0 rgba(black, .13);
+  }
+  &__header {
+    font-size: 12px;
+    line-height: 20px;
+
+    padding: 0;
+
+    border-bottom: 1px solid #ebebeb;
+    background-color: white;
+
+    @include clearfix();
+    span {
+      margin: 5px 0 5px 6px;
+      display: inline-block;
+    }
+    &__tabs {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      &__tab {
+        display: inline-block;
+        margin: 0;
+        padding: 4px;
+        line-height: 1px;
+        img {
+          line-height: 1px;
+          width: 20px;
+          height: 20px;
+          filter: grayscale(1);
+          opacity: .6;
+        }
+      }
+    }
+  }
+  &__body {
+    overflow: auto;
+
+    box-sizing: border-box;
+    width: 268px;
+    height: 268px;
+
+    @include clearfix();
+    div {
+      padding: 4px;
+      @include clearfix();
+      border-bottom: 1px solid #ebebeb;
+      &:last-child {
+        border-bottom: 0;
+      }
+      p {
+        display: block;
+        padding: 10px 2px;
+        margin: 0;
+        font-size: 12px;
+      }
+    }
+    img {
+      line-height: 1px;
+
+      display: block;
+      float: left;
+
+      width: 22px;
+      height: 22px;
+      padding: 2px;
+
+      cursor: pointer;
+
+      border-radius: 2px;
+      &:hover {
+        background-color: rgba(0, 0, 0, .1);
+      }
+    }
+  }
+  &--opened {
+    display: block;
+  }
+}

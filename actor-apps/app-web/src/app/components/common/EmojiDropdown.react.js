@@ -2,7 +2,6 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { map } from 'lodash';
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { Path } from 'constants/ActorAppConstants';
@@ -25,7 +24,7 @@ export default class EmojiDropdown extends Component {
 
   componentWillReceiveProps(props) {
     const { isOpen } = props;
-    this.setState({isOpen: isOpen});
+    this.setState({isOpen});
 
     if (isOpen) {
       document.addEventListener('click', this.onClose, false);
@@ -40,22 +39,81 @@ export default class EmojiDropdown extends Component {
   render() {
     const { isOpen } = this.state;
 
-    const emojiChars = map(EmojiUtils.names, (name, index) => {
-      const emojiText = `:${name}:`;
-      return <img src={EmojiUtils.pathToImage(name)}alt={emojiText} key={index} onClick={() => this.onSelect(emojiText)}/>;
-    });
-
     const emojiDropdownClassName = classnames('emoji-dropdown', {
       'emoji-dropdown--opened': isOpen
     });
+
+    const emojiChars = EmojiUtils.categorizedArray();
+    let emojiCategories = [];
+    let emojis = [];
+
+    for (let category in emojiChars) {
+      let categoryTabContent = [];
+      let categoryTitle = '';
+      let categorizedEmoji = [];
+
+      switch(category) {
+        case 'people':
+          categoryTitle = 'People';
+          categoryTabContent = <img src={EmojiUtils.pathToImage('grinning')} alt={categoryTitle}/>;
+          break;
+        case 'nature':
+          categoryTitle = 'Nature';
+          categoryTabContent = <img src={EmojiUtils.pathToImage('evergreen_tree')} alt={categoryTitle}/>;
+          break;
+        case 'foodanddrink':
+          categoryTitle = 'Food & Drink';
+          categoryTabContent = <img src={EmojiUtils.pathToImage('hamburger')} alt={categoryTitle}/>;
+          break;
+        case 'celebration':
+          categoryTitle = 'Celebration';
+          categoryTabContent = <img src={EmojiUtils.pathToImage('gift')} alt={categoryTitle}/>;
+          break;
+        case 'activity':
+          categoryTitle = 'Activity';
+          categoryTabContent = <img src={EmojiUtils.pathToImage('football')} alt={categoryTitle}/>;
+          break;
+        case 'travelandplaces':
+          categoryTitle = 'Travel & Places';
+          categoryTabContent = <img src={EmojiUtils.pathToImage('airplane')} alt={categoryTitle}/>;
+          break;
+        case 'objectsandsymbols':
+          categoryTitle = 'Objects & Symbols';
+          categoryTabContent = <img src={EmojiUtils.pathToImage('eyeglasses')} alt={categoryTitle}/>;
+          break;
+      }
+
+      for (let emoji in emojiChars[category]) {
+        const emojiText = `:${emoji}:`;
+        categorizedEmoji.push(
+          <img src={EmojiUtils.pathToImage(emoji)} alt={emojiText} onClick={() => this.onSelect(emojiText)}/>
+        );
+      }
+
+      emojiCategories.push(<li className="emoji-dropdown__header__tabs__tab">{categoryTabContent}</li>);
+
+      emojis.push(
+        <div ref={category}>
+          <p>{categoryTitle}</p>
+          {categorizedEmoji}
+        </div>
+      );
+    }
 
     if (isOpen) {
       return (
         <div className={emojiDropdownClassName}>
           <div className="emoji-dropdown__wrapper">
-            <header className="emoji-dropdown__header">Emoji</header>
+            <header className="emoji-dropdown__header">
+              Emoji
+
+              <ul className="emoji-dropdown__header__tabs pull-right">
+                {emojiCategories}
+              </ul>
+
+            </header>
             <div className="emoji-dropdown__body">
-              {emojiChars}
+              {emojis}
             </div>
           </div>
         </div>
