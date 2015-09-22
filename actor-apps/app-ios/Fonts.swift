@@ -28,4 +28,18 @@ extension UIFont {
             return UIFont(name: "HelveticaNeue-Medium", size: size)!
         }
     }
+    
+    // Texts
+    
+    class func textFontOfSize(size: CGFloat) -> UIFont {
+        return UIFont(name: "HelveticaNeue", size: size)!
+    }
+    
+    class func italicTextFontOfSize(size: CGFloat) -> UIFont {
+        return UIFont(name: "HelveticaNeue-Italic", size: size)!
+    }
+    
+    class func boldTextFontOfSize(size: CGFloat) -> UIFont {
+        return UIFont(name: "HelveticaNeue-Medium", size: size)!
+    }
 }

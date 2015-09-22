@@ -117,7 +117,7 @@ extension ARMarkdownParser {
             
             if s.getType() == ARMDSection_TYPE_CODE {
                 let attributes = [NSLinkAttributeName: NSURL(string: "source:///\(sources.count)") as! AnyObject,
-                    NSFontAttributeName: UIFont.systemFontOfSize(fontSize)]
+                    NSFontAttributeName: UIFont.textFontOfSize(fontSize)]
                 nAttrText.appendAttributedString(NSAttributedString(string: "Open Code", attributes: attributes))
                 sources.append(s.getCode().getCode())
             } else if s.getType() == ARMDSection_TYPE_TEXT {
@@ -137,7 +137,7 @@ extension ARMarkdownParser {
     
     private func buildText(text: ARMDText, fontSize: CGFloat) -> NSAttributedString {
         if let raw = text as? ARMDRawText {
-            return NSAttributedString(string: raw.getRawText(), font: UIFont.systemFontOfSize(fontSize))
+            return NSAttributedString(string: raw.getRawText(), font: UIFont.textFontOfSize(fontSize))
         } else if let span = text as? ARMDSpan {
             let res = NSMutableAttributedString()
             res.beginEditing()
