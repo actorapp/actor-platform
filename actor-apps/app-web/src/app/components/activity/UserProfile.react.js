@@ -28,8 +28,7 @@ const getStateFromStores = (userId) => {
   };
 };
 
-@ReactMixin.decorate(IntlMixin)
-class UserProfile extends React.Component {
+@ReactMixin.decorate(IntlMixin) class UserProfile extends React.Component {
   static propTypes = {
     user: React.PropTypes.object.isRequired
   };
@@ -56,7 +55,7 @@ class UserProfile extends React.Component {
     ContactActionCreators.addContact(this.props.user.id);
   };
 
-  removeFromContacts =() => {
+  removeFromContacts = () => {
     const { user } = this.props;
     const confirmText = 'You really want to remove ' + user.name + ' from your contacts?';
 
@@ -97,7 +96,8 @@ class UserProfile extends React.Component {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.clearChat(peer);
       },
-      () => {}
+      () => {
+      }
     );
   };
 
@@ -107,7 +107,8 @@ class UserProfile extends React.Component {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.deleteChat(peer);
       },
-      () => {}
+      () => {
+      }
     );
   };
 
@@ -135,6 +136,7 @@ class UserProfile extends React.Component {
         {user.about}
       </div>
     ) : null;
+
     const nickname = user.nick ? (
       <li>
         <svg className="icon icon--pink"
@@ -143,11 +145,20 @@ class UserProfile extends React.Component {
         <span className="description">nickname</span>
       </li>
     ) : null;
+
     const email = user.email ? (
       <li className="hide">
         <i className="material-icons icon icon--blue">mail</i>
         <span className="title">{user.email}</span>
         <span className="description">email</span>
+      </li>
+    ) : null;
+
+    const phone = user.phones[0] ? (
+      <li>
+        <i className="material-icons icon icon--green">call</i>
+        <span className="title">{'+' + user.phones[0].number}</span>
+        <span className="description">mobile</span>
       </li>
     ) : null;
 
@@ -174,10 +185,12 @@ class UserProfile extends React.Component {
                 </button>
                 <ul className="dropdown__menu dropdown__menu--left">
                   {actions}
-                  <li className="dropdown__menu__item dropdown__menu__item--light" onClick={() => this.clearChat(user.id)}>
+                  <li className="dropdown__menu__item dropdown__menu__item--light"
+                      onClick={() => this.clearChat(user.id)}>
                     <FormattedMessage message={this.getIntlMessage('clearConversation')}/>
                   </li>
-                  <li className="dropdown__menu__item dropdown__menu__item--light" onClick={() => this.deleteChat(user.id)}>
+                  <li className="dropdown__menu__item dropdown__menu__item--light"
+                      onClick={() => this.deleteChat(user.id)}>
                     <FormattedMessage message={this.getIntlMessage('deleteConversation')}/>
                   </li>
                 </ul>
@@ -188,11 +201,7 @@ class UserProfile extends React.Component {
           <li className="profile__list__item user_profile__contact_info no-p">
             <ul className="user_profile__contact_info__list">
               {nickname}
-              <li>
-                <i className="material-icons icon icon--green">call</i>
-                <span className="title">{'+' + user.phones[0].number}</span>
-                <span className="description">mobile</span>
-              </li>
+              {phone}
               {email}
             </ul>
           </li>
