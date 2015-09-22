@@ -9,9 +9,4 @@ public class JsRegExpProvider implements RegExpRuntime {
     public PatternCompat getPattern(String pattern) {
         return new JsPattern(pattern);
     }
-
-    @Override
-    public PatternCompat getPattern(String pattern, String flags) {
-        return new JsPattern(pattern, flags);
-    }
 }
