@@ -1,34 +1,19 @@
-import { EventEmitter } from 'events';
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import { Store } from 'flux/utils';
+import Dispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
-
 import ActorClient from 'utils/ActorClient';
-import mixpanel from 'utils/Mixpanel';
-
-const CHANGE_EVENT = 'change';
 
 let _profile = null,
     _name = null,
     _nick = null,
+    _about = null,
     _isModalOpen = false;
 
-class MyProfileStore extends EventEmitter {
-  constructor() {
-    super();
-  }
-
-  emitChange() {
-    this.emit(CHANGE_EVENT);
-  }
-
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  }
-
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  }
-
+class MyProfileStore extends Store {
   isModalOpen() {
     return _isModalOpen;
   }
@@ -41,48 +26,58 @@ class MyProfileStore extends EventEmitter {
     return _nick;
   }
 
+  getAbout() {
+    return _about;
+  }
+
   getProfile() {
     return _profile;
   }
+
+  setProfile(profile) {
+    _profile = profile;
+    _name = profile.name;
+    _nick = profile.nick;
+    _about = profile.about;
+  };
+
+  __onDispatch = (action) => {
+    switch(action.type) {
+      case ActionTypes.MY_PROFILE_MODAL_SHOW:
+        _isModalOpen = true;
+        this.__emitChange();
+        break;
+      case ActionTypes.MY_PROFILE_MODAL_HIDE:
+        _isModalOpen = false;
+        this.__emitChange();
+        break;
+      case ActionTypes.MY_PROFILE_CHANGED:
+        this.setProfile(action.profile);
+        this.__emitChange();
+        break;
+      case ActionTypes.MY_PROFILE_SAVE_NAME:
+        if (_name !== action.name) {
+          _name = action.name;
+          ActorClient.editMyName(_name);
+          this.__emitChange();
+        }
+        break;
+      case ActionTypes.MY_PROFILE_SAVE_NICKNAME:
+        if (_nick !== action.nick) {
+          _nick = action.nick;
+          ActorClient.editMyNick(_nick);
+          this.__emitChange();
+        }
+        break;
+      case ActionTypes.MY_PROFILE_EDIT_ABOUT_SUCCESS:
+        if (_about !== action.about) {
+          _about = action.about;
+          this.__emitChange();
+        }
+        break;
+      default:
+    }
+  }
 }
 
-const setProfile = (profile) => {
-  _profile = profile;
-  _name = profile.name;
-  _nick = profile.nick;
-};
-
-let MyProfileStoreInstance = new MyProfileStore();
-
-MyProfileStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
-  switch(action.type) {
-    case ActionTypes.MY_PROFILE_MODAL_SHOW:
-      ActorClient.bindUser(ActorClient.getUid(), setProfile);
-      _isModalOpen = true;
-      MyProfileStoreInstance.emitChange();
-      break;
-    case ActionTypes.MY_PROFILE_MODAL_HIDE:
-      ActorClient.unbindUser(ActorClient.getUid(), setProfile);
-      _isModalOpen = false;
-      MyProfileStoreInstance.emitChange();
-      break;
-    case ActionTypes.MY_PROFILE_SAVE_NAME:
-      if (_name !== action.name) {
-        _name = action.name;
-        ActorClient.editMyName(_name);
-        MyProfileStoreInstance.emitChange();
-      }
-      break;
-    case ActionTypes.MY_PROFILE_SAVE_NICKNAME:
-      if (_nick !== action.nick) {
-        _nick = action.nick;
-        ActorClient.editMyNick(_nick);
-        MyProfileStoreInstance.emitChange();
-      }
-      break;
-    default:
-      return;
-  }
-});
-
-export default MyProfileStoreInstance;
+export default new MyProfileStore(Dispatcher);

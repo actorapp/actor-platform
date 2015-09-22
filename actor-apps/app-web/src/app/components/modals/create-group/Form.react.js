@@ -21,8 +21,6 @@ const STEPS = keymirror({
 });
 
 class CreateGroupForm extends React.Component {
-  static displayName = 'CreateGroupForm'
-
   static childContextTypes = {
     muiTheme: React.PropTypes.object
   };
@@ -70,10 +68,7 @@ class CreateGroupForm extends React.Component {
             </div>
 
             <footer className="modal-new__footer text-right">
-              <FlatButton hoverColor="rgba(74,144,226,.12)"
-                          label="Add members"
-                          secondary={true}
-                          type="submit"/>
+              <button className="button button--lightblue" type="submit">Add members</button>
             </footer>
 
           </form>
@@ -98,11 +93,7 @@ class CreateGroupForm extends React.Component {
             </div>
 
             <footer className="modal-new__footer text-right">
-              <FlatButton hoverColor="rgba(74,144,226,.12)"
-                          label="Create group"
-                          secondary={true}
-                          type="submit"/>
-
+              <button className="button button--lightblue" type="submit">Create group</button>
             </footer>
           </form>
         );
@@ -113,10 +104,12 @@ class CreateGroupForm extends React.Component {
   }
 
   onContactToggle = (contact, isSelected) => {
+    const { selectedUserIds } = this.state;
+
     if (isSelected) {
-      this.setState({selectedUserIds: this.state.selectedUserIds.add(contact.uid)});
+      this.setState({selectedUserIds: selectedUserIds.add(contact.uid)});
     } else {
-      this.setState({selectedUserIds: this.state.selectedUserIds.remove(contact.uid)});
+      this.setState({selectedUserIds: selectedUserIds.remove(contact.uid)});
     }
   }
 
@@ -127,18 +120,22 @@ class CreateGroupForm extends React.Component {
   }
 
   onNameSubmit = event => {
+    const { name } = this.state;
+
     event.preventDefault();
-    if (this.state.name) {
-      let name = this.state.name.trim();
-      if (name.length > 0) {
+    if (name) {
+      const trimmedName = name.trim();
+      if (trimmedName.length > 0) {
         this.setState({step: STEPS.CONTACTS_SELECTION});
       }
     }
   }
 
-  onMembersSubmit =event => {
+  onMembersSubmit = event => {
+    const { name, selectedUserIds } = this.state;
+
     event.preventDefault();
-    CreateGroupActionCreators.createGroup(this.state.name, null, this.state.selectedUserIds.toJS());
+    CreateGroupActionCreators.createGroup(name, null, selectedUserIds.toJS());
   }
 }
 

@@ -1,13 +1,15 @@
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import ActorAppConstants from 'constants/ActorAppConstants';
-import ActorClient from 'utils/ActorClient';
-const ActionTypes = ActorAppConstants.ActionTypes;
-
-import ContactActionCreators from 'actions/ContactActionCreators';
-import LoginStore from 'stores/LoginStore';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
+import { register , waitFor } from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
+import ActorClient from 'utils/ActorClient';
+
+import ContactActionCreators from 'actions/ContactActionCreators';
+import LoginStore from 'stores/LoginStore';
 
 const CONTACTS_CHANGE_EVENT = 'contacts_change';
 
@@ -36,16 +38,17 @@ var ContactStore = assign({}, EventEmitter.prototype, {
   }
 });
 
-var setContacts = function(contacts) {
+const setContacts = (contacts) => {
+  console.debug(contacts);
   setTimeout(function() {
     ContactActionCreators.setContacts(contacts);
   }, 0);
 };
 
-ContactStore.dispatchToken = ActorAppDispatcher.register(function(action) {
+ContactStore.dispatchToken = register(function(action) {
   switch(action.type) {
     case ActionTypes.SET_LOGGED_IN:
-      ActorAppDispatcher.waitFor([LoginStore.dispatchToken]);
+      waitFor([LoginStore.dispatchToken]);
       ActorClient.bindContacts(setContacts);
       break;
 

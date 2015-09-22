@@ -237,7 +237,7 @@ final class AuthServiceSpec
 
       whenReady(service.handleValidateCode("wrongHash123123", correctAuthCode)) { resp ⇒
         inside(resp) {
-          case Error(AuthErrors.InvalidAuthTransaction) ⇒
+          case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
       }
     }
@@ -366,7 +366,7 @@ final class AuthServiceSpec
       //after code invalidation we remove authCode and AuthTransaction, thus we got InvalidAuthTransaction error
       whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
-          case Error(AuthErrors.InvalidAuthTransaction) ⇒
+          case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
       }
       whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) { code ⇒
@@ -704,7 +704,7 @@ final class AuthServiceSpec
       }
 
       whenReady(service.handleGetOAuth2Params("wrongHash22aksdl320d3", correctUri)) { resp ⇒
-        inside(resp) { case Error(AuthErrors.InvalidAuthTransaction) ⇒ }
+        inside(resp) { case Error(AuthErrors.EmailCodeExpired) ⇒ }
       }
     }
 
@@ -748,7 +748,7 @@ final class AuthServiceSpec
       }
       whenReady(service.handleCompleteOAuth2("wrongTransactionHash29191djlksa", "4/YUlNIa55xSZRA4JcQkLzAh749bHAcv96aA-oVMHTQRU")) { resp ⇒
         inside(resp) {
-          case Error(AuthErrors.InvalidAuthTransaction) ⇒
+          case Error(AuthErrors.EmailCodeExpired) ⇒
         }
       }
     }
