@@ -1,13 +1,16 @@
 package im.actor.runtime.regexp;
 
 public interface MatcherCompat {
-    public abstract boolean matches();
 
-    public abstract int groupCount();
+    boolean hasMatch();
 
-    public abstract String group();
+    boolean matches();
 
-    public abstract String group(int index);
+    int groupCount();
 
-    public abstract int start();
+    String group();
+
+    String group(int index);
+
+    int start();
 }

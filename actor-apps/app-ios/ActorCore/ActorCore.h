@@ -178,5 +178,6 @@
 #import "im/actor/runtime/markdown/MDDocument.h"
 #import "im/actor/runtime/markdown/MDSection.h"
 #import "im/actor/runtime/markdown/MDSpan.h"
+#import "im/actor/runtime/markdown/MDUrl.h"
 
 #endif
