@@ -1,6 +1,7 @@
 package im.actor.runtime.js.regexp;
 
 import com.google.gwt.regexp.shared.MatchResult;
+
 import im.actor.runtime.regexp.MatcherCompat;
 
 public class JsMatcher implements MatcherCompat {
@@ -8,6 +9,11 @@ public class JsMatcher implements MatcherCompat {
 
     public JsMatcher(MatchResult matchResult) {
         this.matchResult = matchResult;
+    }
+
+    @Override
+    public boolean hasMatch() {
+        return matchResult != null;
     }
 
     @Override

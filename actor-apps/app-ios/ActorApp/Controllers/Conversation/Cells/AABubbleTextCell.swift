@@ -41,13 +41,12 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         messageText.lineBreakMode = .ByWordWrapping
         messageText.numberOfLines = 0
         messageText.userInteractionEnabled = true
-        messageText.enabledTextCheckingTypes = NSTextCheckingType.Link.rawValue
         messageText.delegate = self
         messageText.linkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
             kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
         messageText.activeLinkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
             kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
-        messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Top
+        messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Center
         
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
@@ -277,7 +276,7 @@ class TextCellLayout: CellLayout {
     
     private static let stringOutPadding = " " + ("_".repeatString(7));
     private static let stringInPadding = " " + ("_".repeatString(4));
-    private static let parser = ARMarkdownParser(int: ARMarkdownParser_MODE_LITE)
+    private static let parser = ARMarkdownParser(int: ARMarkdownParser_MODE_FULL)
     
     var text: String?
     var attrText: NSAttributedString?
