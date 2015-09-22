@@ -191,7 +191,10 @@ class GroupProfile extends React.Component {
         </div>
       </header>
     ,
-      group.about ? <div className="group_profile__meta__description">{group.about}</div> : null
+      group.about ? (
+        <div className="group_profile__meta__description"
+             dangerouslySetInnerHTML={{__html: group.about.replace(/\n/g, '<br/>')}}/>
+      ) : null
     ];
 
     const token = (group.adminId === myId) ? (

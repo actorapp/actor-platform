@@ -131,9 +131,8 @@ class UserProfile extends React.Component {
     });
 
     const about = user.about ? (
-      <div className="user_profile__meta__about">
-        {user.about}
-      </div>
+      <div className="user_profile__meta__about"
+           dangerouslySetInnerHTML={{__html: user.about.replace(/\n/g, '<br/>')}}/>
     ) : null;
     const nickname = user.nick ? (
       <li>
