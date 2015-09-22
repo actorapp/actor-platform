@@ -37,13 +37,15 @@ class Main extends React.Component {
   constructor(props) {
     super(props);
 
+    const { params } = props;
+
     document.addEventListener(visibilitychange, onVisibilityChange);
 
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
     }
 
-    const peer = PeerUtils.stringToPeer(this.props.params.id);
+    const peer = PeerUtils.stringToPeer(params.id);
 
     if (peer) {
       // It is needed to prevent failure on opening dialog while library didn't load dialogs (right after auth)
@@ -64,7 +66,8 @@ class Main extends React.Component {
   }
 
   render() {
-    const peer = PeerUtils.stringToPeer(this.props.params.id);
+    const { params } = this.props;
+    const peer = PeerUtils.stringToPeer(params.id);
 
     return (
       <div className="app">
@@ -72,7 +75,6 @@ class Main extends React.Component {
         <Banner/>
         <SidebarSection selectedPeer={peer}/>
         <DialogSection peer={peer}/>
-
       </div>
     );
   }

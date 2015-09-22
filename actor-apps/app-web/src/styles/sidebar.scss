@@ -57,8 +57,7 @@
     }
     .dropdown__menu {
       min-width: 230px;
-      margin-top: 15px;
-      margin-right: -30px;
+      margin-right: -42px;
     }
 
     &:hover {
@@ -207,6 +206,21 @@
         border-radius: 12px;
         background-color: $coral;
       }
+      .delete {
+        font-size: 18px;
+        line-height: 24px;
+
+        display: none;
+
+        margin-right: 3px;
+        margin-left: 6px;
+
+        color: rgba(white, .6);
+        &:hover {
+          color: white;
+        }
+      }
+
       &:hover {
         color: white;
         background-color: rgba($baby-blue,.12);
@@ -214,6 +228,12 @@
         .avatar {
           filter: none;
         }
+        //.counter {
+        //  display: none;
+        //}
+        //.delete {
+        //  display: block;
+        //}
       }
       &--active {
         color: white;

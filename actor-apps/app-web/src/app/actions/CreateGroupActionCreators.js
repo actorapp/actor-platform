@@ -1,38 +1,36 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import ActorClient from 'utils/ActorClient';
 import mixpanel from 'utils/Mixpanel';
 
 import { ActionTypes } from 'constants/ActorAppConstants';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
-import Dispatcher from 'dispatcher/ActorAppDispatcher';
+import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 
 const CreateGroupActionCreators = {
   openModal() {
-    Dispatcher.dispatch({
-      type: ActionTypes.CREATE_GROUP_MODAL_OPEN
-    });
+    dispatch(ActionTypes.GROUP_CREATE_MODAL_OPEN)
   },
 
   closeModal() {
-    Dispatcher.dispatch({
-      type: ActionTypes.CREATE_GROUP_MODAL_CLOSE
-    });
+    dispatch(ActionTypes.GROUP_CREATE_MODAL_CLOSE);
   },
 
   createGroup(title, avatar, memberIds) {
-    const p = ActorClient.createGroup(title, avatar, memberIds);
+    const createGroup = () => dispatchAsync(ActorClient.createGroup(title, avatar, memberIds), {
+      request: ActionTypes.GROUP_CREATE,
+      success: ActionTypes.GROUP_CREATE_SUCCESS,
+      failure: ActionTypes.GROUP_CREATE_ERROR
+    }, { title, avatar, memberIds });
 
-    p.then(
-        peer => {
-        DialogActionCreators.selectDialogPeer(peer);
-        this.closeModal();
-        mixpanel.track('Create group');
-      },
-        error => {
-        console.error('Failed to create group', error);
-      });
-
-    return p;
+    createGroup().then((peer) => {
+      this.closeModal();
+      DialogActionCreators.selectDialogPeer(peer);
+      mixpanel.track('Create group');
+    });
   }
 };
 

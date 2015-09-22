@@ -1,16 +1,16 @@
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import { dispatch } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 
 export default {
   show() {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.ACTIVITY_SHOW
-    });
+    dispatch(ActionTypes.ACTIVITY_SHOW);
   },
 
   hide() {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.ACTIVITY_HIDE
-    });
+    dispatch(ActionTypes.ACTIVITY_HIDE);
   }
 };
