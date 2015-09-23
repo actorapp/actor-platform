@@ -7684,6 +7684,135 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="2WAO9Y$lqDN" role="2m5lHt">
+      <property role="TrG5h" value="Collections" />
+      <property role="3XOG$Z" value="collections" />
+      <node concept="w93zz" id="2WAO9Y$lyRS" role="2m5mJr">
+        <property role="1FaRnq" value="true" />
+        <property role="TrG5h" value="RawValue" />
+      </node>
+      <node concept="2m5naR" id="2WAO9Y$l$xO" role="2m5mJr">
+        <property role="TrG5h" value="StringValue" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="2WAO9Y$lyRS" resolve="RawValue" />
+        <node concept="2m7Kf5" id="2WAO9Y$l$xU" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="text" />
+          <node concept="2m5ndX" id="2WAO9Y$l$xY" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="2WAO9Y$l$xS" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+        <node concept="NXeRC" id="2WAO9Y$l_CH" role="NXodf">
+          <property role="NXePf" value="Text value" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="2WAO9Y$lFea" role="2m5mJr">
+        <property role="TrG5h" value="Int32Value" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="2WAO9Y$lyRS" resolve="RawValue" />
+        <node concept="2m7Kf5" id="2WAO9Y$lFeu" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5ndE" id="2WAO9Y$lFey" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="2WAO9Y$lFe_" role="NXodf">
+          <property role="NXePf" value="Int32 value" />
+        </node>
+        <node concept="Nu42z" id="2WAO9Y$lHxb" role="3BtCOu">
+          <property role="Nu42W" value="02" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="2WAO9Y$lFM$" role="2m5mJr">
+        <property role="TrG5h" value="Int64Value" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="2WAO9Y$lyRS" resolve="RawValue" />
+        <node concept="2m7Kf5" id="2WAO9Y$lFMW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5ndQ" id="2WAO9Y$lFN0" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="2WAO9Y$lFN3" role="NXodf">
+          <property role="NXePf" value="Int64 value" />
+        </node>
+        <node concept="Nu42z" id="2WAO9Y$lI4Z" role="3BtCOu">
+          <property role="Nu42W" value="03" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="2WAO9Y$lGna" role="2m5mJr">
+        <property role="TrG5h" value="DoubleValue" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="2WAO9Y$lyRS" resolve="RawValue" />
+        <node concept="2m7Kf5" id="2WAO9Y$lGnA" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="value" />
+          <node concept="3GIWu7" id="2WAO9Y$lGnE" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="2WAO9Y$lGVs" role="NXodf">
+          <property role="NXePf" value="Double value" />
+        </node>
+        <node concept="Nu42z" id="2WAO9Y$lICO" role="3BtCOu">
+          <property role="Nu42W" value="04" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="2WAO9Y$lHwB" role="2m5mJr">
+        <property role="TrG5h" value="ArrayValue" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="2WAO9Y$lyRS" resolve="RawValue" />
+        <node concept="2m7Kf5" id="2WAO9Y$lHx7" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="array" />
+          <node concept="2m5nlk" id="2WAO9Y$lJKz" role="2m7DVh">
+            <node concept="3BlaRf" id="2WAO9Y$lJKD" role="3GJlyp">
+              <ref role="3BrLez" node="2WAO9Y$lyRS" resolve="RawValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="2WAO9Y$lJcE" role="NXodf">
+          <property role="NXePf" value="Array value" />
+        </node>
+        <node concept="Nu42z" id="2WAO9Y$lJKx" role="3BtCOu">
+          <property role="Nu42W" value="05" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="2WAO9Y$lCqX" role="2m5mJr">
+        <property role="TrG5h" value="MapValueItem" />
+        <node concept="NXeRC" id="2WAO9Y$lDyM" role="NXodf">
+          <property role="NXePf" value="Item of Map" />
+        </node>
+        <node concept="2m7Kf5" id="2WAO9Y$lCrc" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m5ndX" id="2WAO9Y$lCrg" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2WAO9Y$lCrj" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="value" />
+          <node concept="3BlaRf" id="2WAO9Y$lCrp" role="2m7DVh">
+            <ref role="3BrLez" node="2WAO9Y$lyRS" resolve="RawValue" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m5naR" id="2WAO9Y$lCqr" role="2m5mJr">
+        <property role="TrG5h" value="MapValue" />
+        <node concept="2m7Kf5" id="2WAO9Y$lCYY" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="items" />
+          <node concept="2m5nlk" id="2WAO9Y$lCZ2" role="2m7DVh">
+            <node concept="2m5mGg" id="2WAO9Y$lCZ8" role="3GJlyp">
+              <ref role="2m5mJy" node="2WAO9Y$lCqX" resolve="MapValueItem" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="2WAO9Y$lE6r" role="NXodf">
+          <property role="NXePf" value="Map Value" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="2WAO9Y$lrKc" role="1Dx9rD">
+        <property role="1Dx9K7" value="Flexible raw collections without structure" />
+      </node>
+    </node>
   </node>
 </model>
 
