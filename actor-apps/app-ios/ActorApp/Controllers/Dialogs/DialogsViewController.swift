@@ -217,7 +217,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
         let dialog = item as! ACDialog;
-        let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
+        let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section) - 1;
         (cell as! DialogCell).bindDialog(dialog, isLast: isLast);
     }
 

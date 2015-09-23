@@ -20,13 +20,17 @@ import Crashlytics
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
-        createActor()
-        
         // Apply crash logging
         
         // Even when Fabric/Crashlytics not configured
         // this method doesn't crash
         Fabric.with([Crashlytics.self()])
+        
+        // Creating Actor
+        createActor()
+        
+        // Creating app style
+        initStyles()
         
         // Register hockey app
         if AppConfig.hockeyapp != nil {
