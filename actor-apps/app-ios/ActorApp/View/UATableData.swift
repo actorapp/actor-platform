@@ -330,11 +330,11 @@ class UARegion {
     }
     
     func canSelect(index: Int) -> Bool {
-        fatalError("Not implemented")
+        return false
     }
     
     func select(index: Int) {
-        fatalError("Not implemented")
+
     }
 }
 
@@ -342,6 +342,7 @@ class UASingleCellRegion : UARegion {
     
     private var height: CGFloat = 44.0
     private var actionClosure: (() -> ())?
+    private var longActionClosure: (() -> ())?
     
     func setAction(actionClosure: () -> ()) -> UASingleCellRegion {
         self.actionClosure = actionClosure
@@ -362,7 +363,7 @@ class UASingleCellRegion : UARegion {
     }
     
     override func select(index: Int) {
-        actionClosure!()
+        actionClosure?()
     }
     
     override func cellHeight(index: Int, width: CGFloat) -> CGFloat {
