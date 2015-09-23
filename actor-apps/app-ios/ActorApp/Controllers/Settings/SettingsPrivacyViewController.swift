@@ -30,7 +30,7 @@ class SettingsPrivacyViewController: AATableViewController {
         let header = data.addSection(true)
             .setFooterText("PrivacyTerminateHint")
         
-        header.addDangerCell("PrivacyTerminate") { () -> () in
+        header.addDangerCell("PrivacyTerminate") { () -> Bool in
             self.confirmDangerSheetUser("PrivacyTerminateAlert", tapYes: { () -> () in
                 
                 // Terminating all sessions and reload list
@@ -38,6 +38,8 @@ class SettingsPrivacyViewController: AATableViewController {
                     self.loadSessions()
                 })
             }, tapNo: nil)
+
+            return true
         }
         
         data.addSection(true)
@@ -55,7 +57,7 @@ class SettingsPrivacyViewController: AATableViewController {
                     }
                     return cell
                 })
-            .setAction { (index) -> () in
+            .setAction { (index) -> Bool in
                 let session = self.authSessions[index]
                 if session.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
                     self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { () -> () in
@@ -65,6 +67,7 @@ class SettingsPrivacyViewController: AATableViewController {
                         })
                     }, tapNo: nil)
                 }
+                return true
             }
         
         // Starting to load sessions

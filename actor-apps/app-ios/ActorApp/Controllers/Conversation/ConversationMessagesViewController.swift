@@ -326,7 +326,7 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     func didUpdate() {
         if isLoadedAfter {
             if unreadIndex != nil {
-                self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: unreadIndex!, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+                self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: unreadIndex!, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Bottom, animated: false)
                 unreadIndex = nil
             }
         }

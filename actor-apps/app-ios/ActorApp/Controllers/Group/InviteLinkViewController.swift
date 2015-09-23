@@ -39,24 +39,27 @@ class InviteLinkViewController: AATableViewController {
         
         let section = tableData.addSection()
 
-        section.addActionCell("ActionCopyLink", actionClosure: { () -> () in
+        section.addActionCell("ActionCopyLink", actionClosure: { () -> Bool in
                 UIPasteboard.generalPasteboard().string = self.currentUrl
                 self.alertUser("AlertLinkCopied")
+                return true
             })
             .showBottomSeparator(15)
             .showTopSeparator(0)
         
-        section.addActionCell("ActionShareLink", actionClosure: { () -> () in
+        section.addActionCell("ActionShareLink", actionClosure: { () -> Bool in
                 UIApplication.sharedApplication().openURL(NSURL(string: self.currentUrl!)!)
+                return true
             })
             .hideTopSeparator()
             .showBottomSeparator(0)
         
         tableData.addSection()
-            .addActionCell("ActionRevokeLink", actionClosure: { () -> () in
+            .addActionCell("ActionRevokeLink", actionClosure: { () -> Bool in
                 self.confirmAlertUser("GroupInviteLinkRevokeMessage", action: "GroupInviteLinkRevokeAction", tapYes: { () -> () in
                     self.reloadLink()
                 })
+                return true
             })
             .setStyle(.Destructive)
         

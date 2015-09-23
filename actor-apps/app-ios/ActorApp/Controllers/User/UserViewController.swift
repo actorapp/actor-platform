@@ -69,9 +69,10 @@ class UserViewController: AATableViewController {
         // Send Message
         if (!user!.isBot().boolValue) {
             contactsSection
-                .addActionCell("ProfileSendMessage", actionClosure: { () -> () in
+                .addActionCell("ProfileSendMessage", actionClosure: { () -> Bool in
                     self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
                     self.popover?.dismissPopoverAnimated(true)
+                    return false
                 })
         }
         
@@ -100,28 +101,17 @@ class UserViewController: AATableViewController {
                         cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
                     }
                     return cell
-            }.setAction { (index) -> () in
+            }.setAction { (index) -> Bool in
                 let phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
-                let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
+                let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "telprompt://")!)
                 if (!hasPhone) {
                     UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
                     self.alertUser("NumberCopied")
                 } else {
-                    self.showActionSheet(["CallNumber", "CopyNumber"],
-                        cancelButton: "AlertCancel",
-                        destructButton: nil,
-                        sourceView: self.view,
-                        sourceRect: self.view.bounds,
-                        tapClosure: { (index) -> () in
-                            if (index == 0) {
-                                UIApplication.sharedApplication().openURL(NSURL(string: "tel://+\(phoneNumber)")!)
-                            } else if index == 1 {
-                                UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
-                                self.alertUser("NumberCopied")
-                            }
-                    })
+                    UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(phoneNumber)")!)
                 }
-        }
+                return true
+            }.setCanCopy(true)
         
         tableData.addSection()
             .setHeaderHeight(15)
@@ -160,17 +150,18 @@ class UserViewController: AATableViewController {
                     cell.style = .Action
                 }
             }
-            .setAction { () -> () in
+            .setAction { () -> Bool in
                 if (self.user!.isContactModel().get().booleanValue()) {
                     self.execute(Actor.removeContactCommandWithUid(jint(self.uid)))
                 } else {
                     self.execute(Actor.addContactCommandWithUid(jint(self.uid)))
                 }
+                return true
             }
         
         // Rename
         contactSection
-            .addActionCell("ProfileRename", actionClosure: { () -> () in
+            .addActionCell("ProfileRename", actionClosure: { () -> Bool in
                 if (!Actor.isRenameHintShown()) {
                     self.confirmAlertUser("ProfileRenameMessage",
                         action: "ProfileRenameAction",
@@ -180,6 +171,7 @@ class UserViewController: AATableViewController {
                 } else {
                     self.renameUser()
                 }
+                return true
             })
         
         // Binding data

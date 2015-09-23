@@ -39,29 +39,23 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
         }
+        
+        self.displayList.addAppleListener(self)
     }
     
     override func viewWillAppear(animated: Bool) {
+        
+        if let row = engineTableView!.indexPathForSelectedRow {
+            engineTableView!.deselectRowAtIndexPath(row, animated: animated)
+        }
+        
         super.viewWillAppear(animated)
         
-        self.displayList.addAppleListener(self)
-        self.engineTableView.reloadData()
         if (displayList.size() == jint(0)) {
             self.engineTableView.alpha = 0
         } else {
             self.engineTableView.alpha = 1
         }
-        
-        let selected = self.engineTableView.indexPathForSelectedRow;
-        if (selected != nil){
-            self.engineTableView.deselectRowAtIndexPath(selected!, animated: animated);
-        }
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        self.displayList.removeAppleListener(self)
     }
     
     func filter(val: String) {

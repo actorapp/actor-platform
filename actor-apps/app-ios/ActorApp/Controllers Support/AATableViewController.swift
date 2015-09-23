@@ -33,6 +33,14 @@ class AATableViewController: AAViewController, UITableViewDataSource, UITableVie
         navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment:"Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        if let row = tableView.indexPathForSelectedRow {
+            tableView.deselectRowAtIndexPath(row, animated: animated)
+        }
+        
+        super.viewWillAppear(animated)
+    }
+    
     override func loadView() {
         super.loadView()
         
