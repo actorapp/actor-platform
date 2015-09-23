@@ -10,6 +10,27 @@ enum ExecutionType {
     case Safe
 }
 
+class MenuBuilder {
+    
+    var tapClosure: ((index: Int) -> ())!
+    var items = [String]()
+    var closures: [(()->())?] = []
+    
+    init() {
+        
+        tapClosure = { (index) -> () in
+            if index >= 0 && index <= self.closures.count {
+                self.closures[index]?()
+            }
+        }
+    }
+    
+    func add(title: String, closure: (()->())?) {
+        items.append(title)
+        closures.append(closure)
+    }
+}
+
 class Executions {
     
     class func execute(command: ACCommand) {
@@ -143,6 +164,10 @@ extension UIViewController {
     
     func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         Executions.execute(command, successBlock: successBlock, failureBlock: failureBlock)
+    }
+    
+    func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
+        Executions.execute(command, successBlock: successBlock, failureBlock: nil)
     }
     
     func executeSafe(command: ACCommand, ignore: [String] = [], successBlock: ((val: Any?) -> Void)? = nil) {

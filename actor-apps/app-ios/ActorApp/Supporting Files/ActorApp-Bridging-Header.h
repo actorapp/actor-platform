@@ -11,6 +11,7 @@
 // Cocoa Pods
 #import <FMDB/FMDB.h>
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
+#import <ZipZap/ZipZap.h>
 
 #import "SLKTextViewController.h"
 #import <LTNavigationBar/UINavigationBar+Awesome.h>
