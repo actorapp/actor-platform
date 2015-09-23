@@ -15,7 +15,7 @@ class GroupViewController: AATableViewController {
     var binder = Binder()
     
     private var tableData: UATableData!
-    private var groupMembers: IOSObjectArray?
+    private var groupMembers = [ACGroupMember]()
     private var groupNameTextField: UITextField?
     
     init (gid: Int) {
@@ -129,22 +129,20 @@ class GroupViewController: AATableViewController {
         
         membersSection
             .addCustomCells(48, countClosure: { () -> Int in
-            if self.groupMembers != nil {
-                return Int(self.groupMembers!.length())
-            }
-            return 0
+            return self.groupMembers.count
         }) { (tableView, index, indexPath) -> UITableViewCell in
             let cell: GroupMemberCell = tableView.dequeueReusableCellWithIdentifier(self.UserCellIdentifier, forIndexPath: indexPath) as! GroupMemberCell
-            if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? ACGroupMember,
-                let user = Actor.getUserWithUid(groupMember.getUid()) {
-                    let username = user.getNameModel().get()
-                    let avatar: ACAvatar? = user.getAvatarModel().get()
-                    cell.userAvatarView.bind(username, id: user.getId(), avatar: avatar)
-                    cell.setUsername(username)
+            let groupMember = self.groupMembers[index]
+            if let user = Actor.getUserWithUid(groupMember.getUid()) {
+                    cell.bind(user)
+                    
+                    // Notify to request onlines
+                    Actor.onUserVisibleWithUid(groupMember.getUid())
             }
             return cell
         }.setAction { (index) -> () in
-            if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? ACGroupMember, let user = Actor.getUserWithUid(groupMember.getUid()) {
+            let groupMember = self.groupMembers[index]
+            if let user = Actor.getUserWithUid(groupMember.getUid()) {
                 if (user.getId() == Actor.myUid()) {
                     return
                 }
@@ -256,7 +254,12 @@ class GroupViewController: AATableViewController {
         // Bind members
         binder.bind(group!.getMembersModel(), closure: { (value: JavaUtilHashSet?) -> () in
             if value != nil {
-                self.groupMembers = value!.toArray()
+                self.groupMembers = value!.toArray().toSwiftArray()
+                self.groupMembers.sortInPlace({ (left: ACGroupMember, right: ACGroupMember) -> Bool in
+                    let lname = Actor.getUserWithUid(left.getUid()).getNameModel().get()
+                    let rname = Actor.getUserWithUid(right.getUid()).getNameModel().get()
+                    return lname < rname
+                })
                 
                 self.tableView.reloadData()
             }
