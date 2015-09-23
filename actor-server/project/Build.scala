@@ -67,7 +67,7 @@ object Build extends sbt.Build with Versioning {
 
 
   lazy val root = Project(
-    "actor-server",
+    "actor",
     file("."),
     settings =
       defaultSettings ++
