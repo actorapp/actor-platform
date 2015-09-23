@@ -1,6 +1,5 @@
 package im.actor
 
-import com.typesafe.sbt.packager.docker.DockerPlugin
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
@@ -63,8 +62,7 @@ object Build extends sbt.Build with Versioning {
         javaOptions ++= Seq("-Dfile.encoding=UTF-8"),
         javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
         fork in Test := false,
-        updateOptions := updateOptions.value.withCachedResolution(true),
-        publishArtifact := false
+        updateOptions := updateOptions.value.withCachedResolution(true)
       )
 
 
@@ -84,8 +82,7 @@ object Build extends sbt.Build with Versioning {
             "-groups",
             "-implicits",
             "-diagrams"
-          ),
-          publishArtifact := true
+          )
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(actorRunner)
