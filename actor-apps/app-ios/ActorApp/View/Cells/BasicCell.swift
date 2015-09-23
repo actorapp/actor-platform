@@ -18,6 +18,8 @@ class BasicCell : UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         self.separatorPadding = 0
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
+        
+        self.contentView.addSubview(separatorView);
     }
 
     required init(coder aDecoder: NSCoder) {

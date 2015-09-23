@@ -22,6 +22,8 @@
 		06FC5E7A1BACBCCC0071F153 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E791BACBCCC0071F153 /* Localization.swift */; settings = {ASSET_TAGS = (); }; };
 		06FC5E801BACEEC00071F153 /* Numbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E7F1BACEEC00071F153 /* Numbers.swift */; settings = {ASSET_TAGS = (); }; };
 		06FC5E881BB22DAB0071F153 /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E871BB22DAB0071F153 /* Tools.swift */; settings = {ASSET_TAGS = (); }; };
+		06FC5E8A1BB30E450071F153 /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E891BB30E450071F153 /* Styles.swift */; settings = {ASSET_TAGS = (); }; };
+		06FC5E8C1BB30F0C0071F153 /* StylesEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E8B1BB30F0C0071F153 /* StylesEngine.swift */; settings = {ASSET_TAGS = (); }; };
 		0AA06E7DC00FC7267A50485F830C9C1D /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246B87CFA2D1555AFFE5943E61934F2C /* Binder.swift */; };
 		0B6A05B711CA9DCD88C79CCA8104C0F1 /* TitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993125DEA698CD065C01215DCA5C3A6E /* TitledCell.swift */; };
 		0CA595BCB5F16107145374B11C486D6A /* SearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE552DCE0898430CAF7DA33B8397678 /* SearchSource.swift */; };
@@ -169,6 +171,8 @@
 		06FC5E791BACBCCC0071F153 /* Localization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 		06FC5E7F1BACEEC00071F153 /* Numbers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Numbers.swift; sourceTree = "<group>"; };
 		06FC5E871BB22DAB0071F153 /* Tools.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
+		06FC5E891BB30E450071F153 /* Styles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
+		06FC5E8B1BB30F0C0071F153 /* StylesEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StylesEngine.swift; sourceTree = "<group>"; };
 		08F86D72B75F036762AE29FCB370C5DA /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABActionShit.h; path = View/ABActionShit/ABActionShit.h; sourceTree = "<group>"; };
 		0A5291BE37AEB0A847B40186961C343D /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "Launch Screen.xib"; path = "Resources/Launch Screen.xib"; sourceTree = "<group>"; };
 		0D473CD2EBD067BD6B46A520C987B060 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewSeparator.swift; path = View/TableViewSeparator.swift; sourceTree = "<group>"; };
@@ -533,6 +537,7 @@
 				0A5291BE37AEB0A847B40186961C343D /* Launch Screen.xib */,
 				CDABC92DB6C23566AC87E5687CF5DB40 /* Localizable.strings */,
 				0D86D2754C8EC18452BFE0A267EA67E3 /* Resouces.swift */,
+				06FC5E8B1BB30F0C0071F153 /* StylesEngine.swift */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -752,6 +757,7 @@
 				75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */,
 				1ACEA023B930E6F261DAC0A6BDB410C1 /* Supporting Files */,
 				2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */,
+				06FC5E891BB30E450071F153 /* Styles.swift */,
 				A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */,
 				897AD66A77219F6888322861BDA2CD14 /* app.json */,
 			);
@@ -1038,6 +1044,7 @@
 				82DE36F3B4199CCF638923BCDFD6688B /* CocoaStorageRuntime.swift in Sources */,
 				694BB9EB1A442B5C8E95DF19884325C6 /* Colors.swift in Sources */,
 				360E8AC7B412C97E3AC5C65996D8B7B1 /* CommonCell.swift in Sources */,
+				06FC5E8A1BB30E450071F153 /* Styles.swift in Sources */,
 				4C338EACE8C572D24AF45F734DFEE1CB /* ComposeController.swift in Sources */,
 				0224F1E3828DAA4189723FDA24F29984 /* Config.swift in Sources */,
 				6B9C1168FE9DE8E5DDE9D195708EB934 /* ContactActionCell.swift in Sources */,
@@ -1097,6 +1104,7 @@
 				4EBCB8645A49DA83D532CAC4C60673CC /* TextCell.swift in Sources */,
 				0B6A05B711CA9DCD88C79CCA8104C0F1 /* TitledCell.swift in Sources */,
 				068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */,
+				06FC5E8C1BB30F0C0071F153 /* StylesEngine.swift in Sources */,
 				ECB5DDB2F5C2FF7FF51921C8AA9F22CC /* UATableData.swift in Sources */,
 				53C89777A15FEC286C526E5EEB066B8E /* UATableViewCell.swift in Sources */,
 				B8D161AA4D112C75BE92D727FE46727E /* UDPreferencesStorage.swift in Sources */,
