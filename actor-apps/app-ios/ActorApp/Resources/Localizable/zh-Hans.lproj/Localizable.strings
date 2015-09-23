@@ -96,6 +96,8 @@
 
 "ProfileUsername" = "username";
 
+"ProfileTitle" = "Info";
+
 "CallNumber" = "拨打这个电话";
 
 "CopyNumber" = "复制电话号码";
