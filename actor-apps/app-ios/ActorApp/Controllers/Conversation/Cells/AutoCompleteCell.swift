@@ -42,8 +42,8 @@ class AutoCompleteCell: UITableViewCell {
             nameText = ""
         }
         
-        var nickAttrs = NSMutableAttributedString(string: nickText)
-        var nameAttrs = NSMutableAttributedString(string: nameText)
+        let nickAttrs = NSMutableAttributedString(string: nickText)
+        let nameAttrs = NSMutableAttributedString(string: nameText)
         
         nickAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nickText.length))
         nickAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.textColor, range: NSMakeRange(0, nickText.length))
@@ -52,14 +52,14 @@ class AutoCompleteCell: UITableViewCell {
         nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.hintColor, range: NSMakeRange(0, nameText.length))
         
         for i in 0..<user.getMentionMatches().size() {
-            var match = user.getMentionMatches().getWithInt(i) as! ACStringMatch
+            let match = user.getMentionMatches().getWithInt(i) as! ACStringMatch
             let nsRange = NSMakeRange(Int(match.getStart()), Int(match.getLength()))
             nickAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.chat.autocompleteHighlight, range: nsRange)
         }
         
         if user.getOriginalString() != nil {
             for i in 0..<user.getOriginalMatches().size() {
-                var match = user.getOriginalMatches().getWithInt(i) as! ACStringMatch
+                let match = user.getOriginalMatches().getWithInt(i) as! ACStringMatch
                 let nsRange = NSMakeRange(Int(match.getStart()) + 3, Int(match.getLength()))
                 nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.chat.autocompleteHighlight, range: nsRange)
             }
@@ -77,7 +77,7 @@ class AutoCompleteCell: UITableViewCell {
         nickView.sizeToFit()
         nickView.frame = CGRectMake(44, 6, nickView.frame.width, 32)
         
-        var left = 44 + nickView.frame.width
+        let left = 44 + nickView.frame.width
         nameView.frame = CGRectMake(left, 6, self.contentView.frame.width - left, 32)
     }
 }
