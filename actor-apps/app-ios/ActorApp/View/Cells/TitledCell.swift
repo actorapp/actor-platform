@@ -6,22 +6,15 @@ import UIKit
 
 class TitledCell: UATableViewCell {
     
-    private var titleLabel: UILabel = UILabel()
-    private var contentLabel: UILabel = UILabel()
+    private var copyData: String?
+    private var isAction: Bool = false
+    private var titleLabel: UILabel = UILabel(style: "cell.titled.title")
+    private var contentLabel: UILabel = UILabel(style: "cell.titled.content")
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(cellStyle: "cell.titled", reuseIdentifier: reuseIdentifier)
         
-        titleLabel.font = UIFont.systemFontOfSize(14.0)
-        titleLabel.text = " "
-        titleLabel.sizeToFit()
-        titleLabel.textColor = MainAppTheme.list.actionColor
         contentView.addSubview(titleLabel)
-        
-        contentLabel.font = UIFont.systemFontOfSize(17.0)
-        contentLabel.text = " "
-        contentLabel.textColor = MainAppTheme.list.textColor
-        contentLabel.sizeToFit()
         contentView.addSubview(contentLabel)
     }
 
@@ -29,12 +22,25 @@ class TitledCell: UATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        if action == "copy:" {
+            return copyData != nil && !isAction
+        }
+        return false
+    }
+    
+    override func copy(sender: AnyObject?) {
+        UIPasteboard.generalPasteboard().string = copyData
+    }
+    
     func setTitle(title: String, content: String) {
         titleLabel.text = title
         contentLabel.text = content
+        copyData = content
     }
     
     func setAction(isAction: Bool) {
+        self.isAction = isAction
         if isAction {
             contentLabel.textColor = MainAppTheme.list.actionColor
         } else {
@@ -49,7 +55,7 @@ class TitledCell: UATableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        titleLabel.frame = CGRect(x: separatorInset.left, y: 7, width: contentView.bounds.width - separatorInset.left - 10, height: titleLabel.bounds.height)
-        contentLabel.frame = CGRect(x: separatorInset.left, y: 27, width: contentView.bounds.width - separatorInset.left - 10, height: contentLabel.bounds.height)
+        titleLabel.frame = CGRect(x: separatorInset.left, y: 7, width: contentView.bounds.width - separatorInset.left - 10, height: 19)
+        contentLabel.frame = CGRect(x: separatorInset.left, y: 27, width: contentView.bounds.width - separatorInset.left - 10, height: 22)
     }
 }

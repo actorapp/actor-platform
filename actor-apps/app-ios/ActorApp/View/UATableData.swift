@@ -85,11 +85,36 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        
         let section = sections[indexPath.section]
         if (section.canSelect(tableView, cellForRowAtIndexPath: indexPath)) {
-            section.select(tableView, cellForRowAtIndexPath: indexPath)
+            if section.select(tableView, cellForRowAtIndexPath: indexPath) {
+                tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            }
+        } else {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        }
+    }
+    
+    func tableView(tableView: UITableView, canPerformAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) -> Bool {
+        
+        if action == "copy:" {
+            let section = sections[indexPath.section]
+            return section.canCopy(tableView, cellForRowAtIndexPath: indexPath)
+        }
+        
+        return false
+    }
+    func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        let section = sections[indexPath.section]
+        return section.canCopy(tableView, cellForRowAtIndexPath: indexPath)
+    }
+    
+    func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
+        if action == "copy:" {
+            let section = sections[indexPath.section]
+            if section.canCopy(tableView, cellForRowAtIndexPath: indexPath) {
+               section.copy(tableView, cellForRowAtIndexPath: indexPath)
+            }
         }
     }
     
@@ -188,21 +213,21 @@ class UASection {
         return self
     }
     
-    func addActionCell(title: String, actionClosure: (() -> ())) -> UACommonCellRegion {
+    func addActionCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
         return addCommonCell()
             .setContent(title)
             .setAction(actionClosure)
             .setStyle(.Action)
     }
     
-    func addDangerCell(title: String, actionClosure: (() -> ())) -> UACommonCellRegion {
+    func addDangerCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
         return addCommonCell()
             .setContent(title)
             .setAction(actionClosure)
             .setStyle(.Destructive)
     }
     
-    func addNavigationCell(title: String, actionClosure: (() -> ())) -> UACommonCellRegion {
+    func addNavigationCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
         return addCommonCell()
             .setContent(title)
             .setAction(actionClosure)
@@ -303,9 +328,19 @@ class UASection {
         return r.region.canSelect(r.index)
     }
     
-    func select(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) {
+    func select(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         let r = getRegion(indexPath)
-        r.region.select(r.index)
+        return r.region.select(r.index)
+    }
+    
+    func canCopy(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        let r = getRegion(indexPath)
+        return r.region.canCopy(r.index)
+    }
+    
+    func copy(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) {
+        let r = getRegion(indexPath)
+        r.region.copy(r.index)
     }
 }
 
@@ -333,19 +368,33 @@ class UARegion {
         return false
     }
     
-    func select(index: Int) {
-
+    func select(index: Int) -> Bool {
+        fatalError("Not implemented")
+    }
+    
+    func canCopy(index: Int) -> Bool {
+        return false
+    }
+    
+    func copy(index: Int) {
+        fatalError("Not implemented")
     }
 }
 
 class UASingleCellRegion : UARegion {
     
+    private var copyData: String?
     private var height: CGFloat = 44.0
-    private var actionClosure: (() -> ())?
+    private var actionClosure: (() -> Bool)?
     private var longActionClosure: (() -> ())?
     
-    func setAction(actionClosure: () -> ()) -> UASingleCellRegion {
+    func setAction(actionClosure: () -> Bool) -> UASingleCellRegion {
         self.actionClosure = actionClosure
+        return self
+    }
+    
+    func setCopy(copyData: String) -> UASingleCellRegion {
+        self.copyData = copyData
         return self
     }
     
@@ -362,12 +411,20 @@ class UASingleCellRegion : UARegion {
         return actionClosure != nil
     }
     
-    override func select(index: Int) {
-        actionClosure?()
+    override func select(index: Int) -> Bool {
+        return actionClosure!()
     }
     
     override func cellHeight(index: Int, width: CGFloat) -> CGFloat {
         return height
+    }
+    
+    override func canCopy(index: Int) -> Bool {
+        return copyData != nil
+    }
+    
+    override func copy(index: Int) {
+        UIPasteboard.generalPasteboard().string = copyData
     }
 }
 
@@ -387,10 +444,11 @@ class UACustomCellRegion : UASingleCellRegion {
 
 class UACustomCellsRegion : UARegion {
     
+    private var canCopy = false
     private var height: CGFloat
     private var countClosure: () -> Int
     private var closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell
-    private var actionClosure: ((index: Int) -> ())?
+    private var actionClosure: ((index: Int) -> Bool)?
     
     init(height: CGFloat, countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell, section: UASection) {
         self.height = height
@@ -399,8 +457,13 @@ class UACustomCellsRegion : UARegion {
         super.init(section: section)
     }
     
-    func setAction(actionClosure: (index: Int) -> ()) -> UACustomCellsRegion {
+    func setAction(actionClosure: (index: Int) -> Bool) -> UACustomCellsRegion {
         self.actionClosure = actionClosure
+        return self
+    }
+    
+    func setCanCopy(canCopy: Bool) -> UACustomCellsRegion {
+        self.canCopy = canCopy
         return self
     }
     
@@ -416,12 +479,16 @@ class UACustomCellsRegion : UARegion {
         return actionClosure != nil
     }
     
-    override func select(index: Int) {
-        actionClosure!(index: index)
+    override func select(index: Int) -> Bool {
+        return actionClosure!(index: index)
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
         return closure(tableView: tableView, index: index, indexPath: indexPath)
+    }
+    
+    override func canCopy(index: Int) -> Bool {
+        return canCopy
     }
 }
 
@@ -489,12 +556,20 @@ class UATitledCellRegion: UASingleCellRegion {
     override func cellHeight(index: Int, width: CGFloat) -> CGFloat {
         return 55
     }
+    
+    override func canCopy(index: Int) -> Bool {
+        return true
+    }
+    
+    override func copy(index: Int) {
+        // Implemented in cell
+    }
 }
 
 class UACommonCellRegion : UARegion {
     
     private var closure: ((cell: CommonCell) -> ())?
-    private var actionClosure: (() -> ())?
+    private var actionClosure: (() -> Bool)?
     
     private var style: CommonCellStyle? = nil
     
@@ -520,7 +595,7 @@ class UACommonCellRegion : UARegion {
         return self
     }
     
-    func setAction(actionClosure: (() -> ())) -> UACommonCellRegion {
+    func setAction(actionClosure: (() -> Bool)) -> UACommonCellRegion {
         self.actionClosure = actionClosure
         return self
     }
@@ -574,8 +649,8 @@ class UACommonCellRegion : UARegion {
         return actionClosure != nil
     }
     
-    override func select(index: Int) {
-        actionClosure!()
+    override func select(index: Int) -> Bool {
+        return actionClosure!()
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {

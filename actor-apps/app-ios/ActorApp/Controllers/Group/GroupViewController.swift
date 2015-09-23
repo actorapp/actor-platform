@@ -32,6 +32,8 @@ class GroupViewController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         view.backgroundColor = MainAppTheme.list.bgColor
         edgesForExtendedLayout = UIRectEdge.Top
         automaticallyAdjustsScrollViewInsets = false
@@ -70,7 +72,7 @@ class GroupViewController: AATableViewController {
         let adminSection = tableData.addSection(true)
             .setFooterHeight(15)
         
-        adminSection.addActionCell("GroupSetPhoto", actionClosure: { () -> () in
+        adminSection.addActionCell("GroupSetPhoto", actionClosure: { () -> Bool in
             let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
             self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                 cancelButton: "AlertCancel",
@@ -94,11 +96,14 @@ class GroupViewController: AATableViewController {
                         })
                     }
                 })
+            
+            return true
         })
         
         adminSection
-            .addActionCell("GroupSetTitle", actionClosure: { () -> () in
+            .addActionCell("GroupSetTitle", actionClosure: { () -> Bool in
                 self.editName()
+                return true
             })
         
 //        adminSection
@@ -140,11 +145,11 @@ class GroupViewController: AATableViewController {
                     Actor.onUserVisibleWithUid(groupMember.getUid())
             }
             return cell
-        }.setAction { (index) -> () in
+        }.setAction { (index) -> Bool in
             let groupMember = self.groupMembers[index]
             if let user = Actor.getUserWithUid(groupMember.getUid()) {
                 if (user.getId() == Actor.myUid()) {
-                    return
+                    return true
                 }
                 
                 let name = user.getNameModel().get()
@@ -197,14 +202,16 @@ class GroupViewController: AATableViewController {
                                 }
                             }
                         }
-                    })
+                    })    
             }
+            
+            return true
         }
         
         // Add member
         membersSection
             .setFooterHeight(15)
-            .addActionCell("GroupAddParticipant", actionClosure: { () -> () in
+            .addActionCell("GroupAddParticipant", actionClosure: { () -> Bool in
                 let addParticipantController = AddParticipantViewController(gid: self.gid)
                 let navigationController = AANavigationController(rootViewController: addParticipantController)
                 if (isIPad) {
@@ -212,6 +219,8 @@ class GroupViewController: AATableViewController {
                     navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
                 }
                 self.presentViewController(navigationController, animated: true, completion: nil)
+                
+                return false
             })
             .setLeftInset(65.0)
         
@@ -219,13 +228,14 @@ class GroupViewController: AATableViewController {
         tableData.addSection(true)
             .setFooterHeight(15)
             .setHeaderHeight(15)
-            .addActionCell("GroupLeave", actionClosure: { () -> () in
+            .addActionCell("GroupLeave", actionClosure: { () -> Bool in
                 self.confirmUser("GroupLeaveConfirm", action: "GroupLeaveConfirmAction", cancel: "AlertCancel",
                     sourceView: self.view,
                     sourceRect: self.view.bounds,
                     tapYes: { () -> () in
                     self.execute(Actor.leaveGroupCommandWithGid(jint(self.gid)))
                 })
+                return true
             })
             .setStyle(.DestructiveCentered)
         
@@ -307,9 +317,12 @@ class GroupViewController: AATableViewController {
     }
     
     override func viewWillAppear(animated: Bool) {
+        
+        
+        
         super.viewWillAppear(animated)
         
-        applyScrollUi(tableView)
+        // applyScrollUi(tableView)
         navigationController?.navigationBar.shadowImage = UIImage()
     }
 }
