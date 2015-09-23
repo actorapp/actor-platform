@@ -160,7 +160,6 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
         searchDisplay?.setActive(false, animated: animated)
     }
     
@@ -229,6 +228,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
             let searchEntity = searchSource!.objectAtIndexPath(indexPath) as! ACSearchEntity
             navigateToMessagesWithPeer(searchEntity.getPeer())
         }
+        
+        // tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
     
     // MARK: -

@@ -107,7 +107,8 @@ class SettingsViewController: AATableViewController {
                 
             }
             .setHeight(55)
-            .setAction { () -> () in
+            .setCopy(self.user!.getNickModel().get())
+            .setAction { () -> Bool in
                 self.textInputAlert("SettingsUsernameTitle", content: self.user!.getNickModel().get(), action: "AlertSave") { (nval) -> () in
                     var nNick: String? = nval.trim()
                     if nNick?.length == 0 {
@@ -115,6 +116,7 @@ class SettingsViewController: AATableViewController {
                     }
                     self.executeSafe(Actor.editMyNickCommandWithNick(nNick))
                 }
+            return true
         }
         
         var about = self.user!.getAboutModel().get()
@@ -124,10 +126,14 @@ class SettingsViewController: AATableViewController {
         let aboutCell = profileInfoSection
             .addTextCell(localized("ProfileAbout"), text: about)
             .setEnableNavigation(true)
+        
         if self.user!.getAboutModel().get() == nil {
             aboutCell.setIsAction(true)
+        } else {
+            aboutCell.setCopy(self.user!.getAboutModel().get())
         }
-        aboutCell.setAction { () -> () in
+        
+        aboutCell.setAction { () -> Bool in
             var text = self.user!.getAboutModel().get()
             if text == nil {
                 text = ""
@@ -141,6 +147,8 @@ class SettingsViewController: AATableViewController {
             })
             let navigation = AANavigationController(rootViewController: controller)
             self.presentViewController(navigation, animated: true, completion: nil)
+            
+            return false
         }
         
         // Phones
@@ -156,28 +164,17 @@ class SettingsViewController: AATableViewController {
                     cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
                 }
                 return cell
-            }.setAction { (index) -> () in
+            }.setAction { (index) -> Bool in
                 let phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
-                let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
+                let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "telprompt://")!)
                 if (!hasPhone) {
                     UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
                     self.alertUser("NumberCopied")
                 } else {
-                    self.showActionSheet(["CallNumber", "CopyNumber"],
-                        cancelButton: "AlertCancel",
-                        destructButton: nil,
-                        sourceView: self.view,
-                        sourceRect: self.view.bounds,
-                        tapClosure: { (index) -> () in
-                            if (index == 0) {
-                                UIApplication.sharedApplication().openURL(NSURL(string: "tel://+\(phoneNumber)")!)
-                            } else if index == 1 {
-                                UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
-                                self.alertUser("NumberCopied")
-                            }
-                        })
+                    UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(phoneNumber)")!)
                 }
-            }
+                return true
+            }.setCanCopy(true)
         
         
         // Profile
@@ -186,7 +183,7 @@ class SettingsViewController: AATableViewController {
         topSection.setFooterHeight(15)
         
         // Profile: Set Photo
-        topSection.addActionCell("SettingsSetPhoto", actionClosure: { () -> () in
+        topSection.addActionCell("SettingsSetPhoto", actionClosure: { () -> Bool in
             let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
             self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                 cancelButton: "AlertCancel",
@@ -210,10 +207,11 @@ class SettingsViewController: AATableViewController {
                         })
                     }
             })
+            return true
         })
         
         // Profile: Set Name
-        topSection.addActionCell("SettingsChangeName", actionClosure: { () -> () in
+        topSection.addActionCell("SettingsChangeName", actionClosure: { () -> Bool in
 
             let alertView = UIAlertView(title: nil,
                 message: NSLocalizedString("SettingsEditHeader", comment: "Title"),
@@ -236,6 +234,8 @@ class SettingsViewController: AATableViewController {
             }
             
             alertView.show()
+            
+            return true
         })
 
         // Settings
@@ -244,13 +244,15 @@ class SettingsViewController: AATableViewController {
             .setFooterHeight(15)
         
         // Settings: Notifications
-        actionsSection.addNavigationCell("SettingsNotifications") { () -> () in
+        actionsSection.addNavigationCell("SettingsNotifications") { () -> Bool in
             self.navigateNext(SettingsNotificationsViewController(), removeCurrent: false)
+            return false
         }
         
         // Settings: Privacy
-        actionsSection.addNavigationCell("SettingsSecurity") { () -> () in
+        actionsSection.addNavigationCell("SettingsSecurity") { () -> Bool in
             self.navigateNext(SettingsPrivacyViewController(), removeCurrent: false)
+            return false
         }
         
         // Support
@@ -260,7 +262,7 @@ class SettingsViewController: AATableViewController {
         
         // Support: Ask Question
         if let account = AppConfig.supportAccount {
-            supportSection.addNavigationCell("SettingsAskQuestion") { () -> () in
+            supportSection.addNavigationCell("SettingsAskQuestion") { () -> Bool in
                 self.executeSafe(Actor.findUsersCommandWithQuery(account)) { (val) -> Void in
                     var user:ACUserVM!
                     if let users = val as? IOSObjectArray {
@@ -272,20 +274,23 @@ class SettingsViewController: AATableViewController {
                     }
                     self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
                 }
+                return true
             }
         }
         
         // Support: Twitter
         if let twitter = AppConfig.appTwitter {
-            supportSection.addNavigationCell("SettingsTwitter") { () -> () in
+            supportSection.addNavigationCell("SettingsTwitter") { () -> Bool in
                 UIApplication.sharedApplication().openURL(NSURL(string: "https://twitter.com/\(twitter)")!)
+                return false
             }
         }
         
         // Support: Home page
         if let homePage = AppConfig.appHomePage {
-            supportSection.addNavigationCell("SettingsAbout") { () -> () in
+            supportSection.addNavigationCell("SettingsAbout") { () -> Bool in
                 UIApplication.sharedApplication().openURL(NSURL(string: homePage)!)
+                return false
             }
         }
         
