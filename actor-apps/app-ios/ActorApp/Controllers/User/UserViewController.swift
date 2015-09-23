@@ -32,49 +32,30 @@ class UserViewController: AATableViewController {
         
         user = Actor.getUserWithUid(jint(uid))
         
-        self.edgesForExtendedLayout = UIRectEdge.Top
-        self.automaticallyAdjustsScrollViewInsets = false
+        title = localized("ProfileTitle")
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
-        tableView.clipsToBounds = false
-        tableView.tableFooterView = UIView()
         
         tableData = UATableData(tableView: tableView)
-        tableData.registerClass(UserPhotoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
+        tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
-        tableData.tableScrollClosure = { (tableView: UITableView) -> () in
-            self.applyScrollUi(tableView)
-        }
-        
-        // Avatar
-        tableData.addSection().addCustomCell { (tableView, indexPath) -> UITableViewCell in
-            let cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
-            cell.contentView.superview?.clipsToBounds = false
-            
-            if self.user != nil {
-                cell.setUsername(self.user!.getNameModel().get())
-            }
-            
-            self.applyScrollUi(tableView, cell: cell)
-            
-            return cell
-        }.setHeight(avatarHeight)
         
         // Top section
         let contactsSection = tableData
             .addSection(true)
             .setFooterHeight(15)
         
-        // Send Message
-        if (!user!.isBot().boolValue) {
-            contactsSection
-                .addActionCell("ProfileSendMessage", actionClosure: { () -> Bool in
-                    self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
-                    self.popover?.dismissPopoverAnimated(true)
-                    return false
-                })
-        }
+        contactsSection.addCustomCell { (tableView, indexPath) -> UITableViewCell in
+            let cell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! AvatarCell
+            cell.selectionStyle = .None
+            if self.user != nil {
+                cell.titleLabel.text = self.user!.getNameModel().get()
+                cell.avatarView.bind(self.user!.getNameModel().get(), id: self.user!.getId(), avatar: self.user!.getAvatarModel().get())
+            }
+            return cell
+            }.setHeight(92)
+
         
         let nick = user!.getNickModel().get()
         if nick != nil {
@@ -82,11 +63,6 @@ class UserViewController: AATableViewController {
                 .addTitledCell(localized("ProfileUsername"), text: "@\(nick)")
         }
         
-        let about = user!.getAboutModel().get()
-        if about != nil {
-            contactsSection
-                .addTextCell(localized("ProfileAbout"), text: about)
-        }
         
         // Phones
         contactsSection
@@ -112,6 +88,26 @@ class UserViewController: AATableViewController {
                 }
                 return true
             }.setCanCopy(true)
+        
+        let about = user!.getAboutModel().get()
+        if about != nil {
+            contactsSection
+                .addTextCell(localized("ProfileAbout"), text: about)
+                .setCopy(about)
+        }
+        
+        
+        // Send Message
+        if (!user!.isBot().boolValue) {
+            tableData.addSection(true)
+                .setHeaderHeight(15)
+                .setFooterHeight(15)
+                .addActionCell("ProfileSendMessage", actionClosure: { () -> Bool in
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
+                    self.popover?.dismissPopoverAnimated(true)
+                    return false
+                })
+        }
         
         tableData.addSection()
             .setHeaderHeight(15)
@@ -178,23 +174,29 @@ class UserViewController: AATableViewController {
         tableView.reloadData()
         
         binder.bind(user!.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
-                cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
+                cell.avatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
             }
         })
 
         binder.bind(user!.getNameModel(), closure: { ( name: String?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
-                cell.setUsername(name!)
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
+                cell.titleLabel.text = name!
             }
-            self.title = name!
         })
 
         binder.bind(user!.getPresenceModel(), closure: { (presence: ACUserPresence?) -> () in
             let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
-                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
-                    cell.setPresence(presenceText)
+                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
+                    
+                    if presence!.getState().ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                        cell.subtitleLabel.applyStyle("user.online")
+                    } else {
+                        cell.subtitleLabel.applyStyle("user.offline")
+                    }
+                    
+                    cell.subtitleLabel.text = presenceText
                 }
             }
         })
@@ -214,8 +216,8 @@ class UserViewController: AATableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        applyScrollUi(tableView)
-        navigationController?.navigationBar.shadowImage = UIImage()
+//        applyScrollUi(tableView)
+//        navigationController?.navigationBar.shadowImage = UIImage()
         Actor.onProfileOpenWithUid(jint(uid))
     }
     
@@ -226,7 +228,7 @@ class UserViewController: AATableViewController {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController?.navigationBar.lt_reset()
+//        navigationController?.navigationBar.lt_reset()
     }
     
     func renameUser() {
