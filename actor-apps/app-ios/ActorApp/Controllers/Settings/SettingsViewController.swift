@@ -53,8 +53,8 @@ class SettingsViewController: AATableViewController {
         super.viewDidLoad()
         
         view.backgroundColor = MainAppTheme.list.bgColor
-        edgesForExtendedLayout = UIRectEdge.Top
-        automaticallyAdjustsScrollViewInsets = false
+        
+        title = localized("TabSettings")
 
         user = Actor.getUserWithUid(jint(uid))
         
@@ -64,29 +64,23 @@ class SettingsViewController: AATableViewController {
         tableView.tableFooterView = UIView()
         
         tableData = UATableData(tableView: tableView)
-        tableData.registerClass(UserPhotoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
+        tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableData.registerClass(TextCell.self, forCellReuseIdentifier: TextCellIdentifier)
-        tableData.tableScrollClosure = { (tableView: UITableView) -> () in
-            self.applyScrollUi(tableView)
-        }
         
         // Avatar
         
         let profileInfoSection = tableData.addSection(true)
             .setFooterHeight(15)
-            .setSeparatorsTopOffset(1)
         
         profileInfoSection.addCustomCell { (tableView, indexPath) -> UITableViewCell in
-            let cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
-            cell.contentView.superview?.clipsToBounds = false
+            let cell: AvatarCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! AvatarCell
+            cell.selectionStyle = .None
             if self.user != nil {
-                cell.setUsername(self.user!.getNameModel().get())
+                cell.titleLabel.text = self.user!.getNameModel().get()
             }
-            self.applyScrollUi(tableView, cell: cell)
-            
             return cell
-        }.setHeight(avatarHeight)
+        }.setHeight(92)
         
         // Nick
         profileInfoSection
@@ -309,8 +303,8 @@ class SettingsViewController: AATableViewController {
                 return
             }
             
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
-                cell.setUsername(value!)
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
+                cell.titleLabel.text = value!
             }
         }
         
@@ -331,13 +325,13 @@ class SettingsViewController: AATableViewController {
         }
         
         binder.bind(Actor.getOwnAvatarVM().getUploadState(), valueModel2: user!.getAvatarModel()) { (upload: ACAvatarUploadState?, avatar:  ACAvatar?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
                 if (upload != nil && upload!.isUploading().boolValue) {
-                    cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), fileName: upload?.getDescriptor())
-                    cell.setProgress(true)
+                    cell.avatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), fileName: upload?.getDescriptor())
+//                    cell.setProgress(true)
                 } else {
-                    cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: avatar, clearPrev: false)
-                    cell.setProgress(false)
+                    cell.avatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: avatar, clearPrev: false)
+//                    cell.setProgress(false)
                 }
             }
         }
@@ -345,8 +339,14 @@ class SettingsViewController: AATableViewController {
         binder.bind(user!.getPresenceModel()) { (presence: ACUserPresence?) -> () in
             let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
-                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
-                    cell.setPresence(presenceText)
+                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
+                    cell.subtitleLabel.text = presenceText
+                    
+                    if presence!.getState().ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                        cell.subtitleLabel.applyStyle("user.online")
+                    } else {
+                        cell.subtitleLabel.applyStyle("user.offline")
+                    }
                 }
             }
         }
@@ -363,19 +363,12 @@ class SettingsViewController: AATableViewController {
         super.viewWillAppear(animated)
         
         Actor.onProfileOpenWithUid(jint(uid))
-        
-        MainAppTheme.navigation.applyStatusBar()
-        navigationController?.navigationBar.shadowImage = UIImage()
-
-        applyScrollUi(tableView)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         Actor.onProfileClosedWithUid(jint(uid))
-        
-        navigationController?.navigationBar.lt_reset()
     }
 }
 
