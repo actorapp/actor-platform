@@ -12,6 +12,10 @@ func initStyles() {
         s.foregroundColor = UIColor.blackColor()
     }
     
+    registerStyle("root.accent") { (s) -> () in
+        s.foregroundColor = UIColor.RGB(0x5085CB)
+    }
+    
     registerStyle("label", parent: "root.text") { (s) -> () in
         s.foregroundColor = s.foregroundColor!.alpha(0xDE/255.0)
     }
@@ -24,21 +28,27 @@ func initStyles() {
     
     registerStyle("cell") { (s) -> () in
         s.backgroundColor = MainAppTheme.list.bgColor
-        s.selectedColor = MainAppTheme.list.bgSelectedColor
+        // s.selectedColor = MainAppTheme.list.bgSelectedColor
         s.cellTopSeparatorVisible = false
         s.cellBottomSeparatorVisible = true
         s.cellSeparatorsLeftInset = 15
     }
     
+    registerStyle("cell.titled", parent: "cell")
+    
+    registerStyle("cell.titled.title", parent: "root.accent") { (s) -> () in
+        s.font = UIFont.systemFontOfSize(14.0)
+    }
+    
+    registerStyle("cell.titled.content") { (s) -> () in
+        s.font = UIFont.systemFontOfSize(17.0)
+    }
+    
     // User online style
     
-    registerStyle("user.online") { (s) -> () in
-        s.foregroundColor = UIColor.RGB(0x5085CB)
-    }
+    registerStyle("user.online", parent: "root.accent")
     
-    registerStyle("user.offline", parent: "hint") { (s) -> () in
-        
-    }
+    registerStyle("user.offline", parent: "hint")
     
     // Avatars
     

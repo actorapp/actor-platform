@@ -40,24 +40,27 @@ class IntegrationViewController: AATableViewController {
         
         let section = tableData.addSection()
         
-        section.addActionCell("ActionCopyLink", actionClosure: { () -> () in
+        section.addActionCell("ActionCopyLink", actionClosure: { () -> Bool in
                 UIPasteboard.generalPasteboard().string = self.currentUrl
                 self.alertUser("AlertLinkCopied")
+                return true
             })
             .showBottomSeparator(15)
             .showTopSeparator(0)
         
-        section.addActionCell("GroupIntegrationDoc", actionClosure: { () -> () in
+        section.addActionCell("GroupIntegrationDoc", actionClosure: { () -> Bool in
                 UIApplication.sharedApplication().openURL(NSURL(string: "https://actor.im/integrations")!)
+                return true
             })
             .showBottomSeparator(0)
             .hideTopSeparator()
         
         tableData.addSection()
-            .addActionCell("ActionRevokeLink", actionClosure: { () -> () in
+            .addActionCell("ActionRevokeLink", actionClosure: { () -> Bool in
                 self.confirmAlertUser("GroupIntegrationLinkRevokeMessage", action: "GroupIntegrationLinkRevokeAction", tapYes: { () -> () in
                     self.reloadLink()
                 })
+                return true
             })
             .setStyle(.Destructive)
         
