@@ -134,7 +134,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
     }
     
     func documentDidTap() {
-        var content = bindedMessage!.content as! ACDocumentContent
+        let content = bindedMessage!.content as! ACDocumentContent
         if let fileSource = content.getSource() as? ACFileRemoteSource {
             Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
                 notDownloaded: { () -> () in
@@ -142,19 +142,19 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
                 }, onDownloading: { (progress) -> () in
                     Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                 }, onDownloaded: { (reference) -> () in
-                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference)))
+                    let docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference)))
                     docController.delegate = self
                     docController.presentPreviewAnimated(true)
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
-            var rid = bindedMessage!.rid
+            let rid = bindedMessage!.rid
             Actor.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
                 notUploaded: { () -> () in
                     Actor.resumeUploadWithRid(rid)
                 }, onUploading: { (progress) -> () in
                     Actor.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
-                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor())))
+                    let docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor())))
                     docController.delegate = self
                     docController.presentPreviewAnimated(true)
             }))
@@ -213,23 +213,24 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
     }
     
     override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
-        var insets = fullContentInsets
+        let insets = fullContentInsets
         
-        var contentWidth = self.contentView.frame.width
-        var contentHeight = self.contentView.frame.height
+        let contentWidth = self.contentView.frame.width
+        let top = insets.top - 2
+//        let contentHeight = self.contentView.frame.height
         
         layoutBubble(200, contentHeight: 66)
         
-        var contentLeft = self.isOut ? contentWidth - 200 - insets.right - contentInsets.left : insets.left
+        let contentLeft = self.isOut ? contentWidth - 200 - insets.right - contentInsets.left : insets.left
         
         // Content
-        self.titleLabel.frame = CGRectMake(contentLeft + 62, 16, 200 - 64, 22)
-        self.sizeLabel.frame = CGRectMake(contentLeft + 62, 16 + 22, 200 - 64, 22)
+        self.titleLabel.frame = CGRectMake(contentLeft + 62, 16 + top, 200 - 64, 22)
+        self.sizeLabel.frame = CGRectMake(contentLeft + 62, 16 + 22 + top, 200 - 64, 22)
         
         // Progress state
-        var progressRect = CGRectMake(contentLeft + 8, 12, 48, 48)
+        let progressRect = CGRectMake(contentLeft + 8, 12 + top, 48, 48)
         self.progress.frame = progressRect
-        self.fileIcon.frame = CGRectMake(contentLeft + 16, 20, 32, 32)
+        self.fileIcon.frame = CGRectMake(contentLeft + 16, 20 + top, 32, 32)
         
         // Message state
         if (self.isOut) {

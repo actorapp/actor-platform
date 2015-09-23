@@ -188,10 +188,6 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
         return Int(displayList.size())
     }
     
-    func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
-        return false
-    }
-    
     func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
 
         let start = CFAbsoluteTimeGetCurrent()

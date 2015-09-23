@@ -9,6 +9,7 @@ target 'ActorApp' do
     pod 'FMDB', :git => 'https://github.com/ccgus/fmdb'
     pod 'RegexKitLite', :inhibit_warnings => true
     pod 'CocoaAsyncSocket'
+    pod 'zipzap'
 
     # UI
     pod 'pop'
