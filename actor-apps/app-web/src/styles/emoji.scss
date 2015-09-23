@@ -14,7 +14,7 @@
 
   &__wrapper {
     position: absolute;
-    z-index: 5;
+    z-index: 15;
     right: 1px;
     bottom: 0;
 
@@ -75,7 +75,8 @@
   }
   &__body {
     $emoji-dropdown-width: 320px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     box-sizing: border-box;
     width: $emoji-dropdown-width;
