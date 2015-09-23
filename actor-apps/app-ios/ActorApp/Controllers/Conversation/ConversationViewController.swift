@@ -6,19 +6,16 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class ConversationViewController: ConversationBaseViewController {
+class ConversationViewController: ConversationBaseViewController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    // MARK: -
-    // MARK: Private vars
+    // Data binder
+    private let binder: Binder = Binder()
     
-    private let BubbleTextIdentifier = "BubbleTextIdentifier"
-    private let BubbleMediaIdentifier = "BubbleMediaIdentifier"
-    private let BubbleDocumentIdentifier = "BubbleDocumentIdentifier"
-    private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
-    private let BubbleBannerIdentifier = "BubbleBannerIdentifier"
+    // Internal state
+    // Members for autocomplete
+    var filteredMembers = [ACMentionFilterResult]()
     
-    private let binder: Binder = Binder();
-    
+    // Views
     private let titleView: UILabel = UILabel()
     private let subtitleView: UILabel = UILabel()
     private let navigationView: UIView = UIView()
@@ -96,7 +93,13 @@ class ConversationViewController: ConversationBaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
+    // Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: nil, style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -188,23 +191,12 @@ class ConversationViewController: ConversationBaseViewController {
         subtitleView.frame = CGRectMake(0, 22, (navigationView.frame.width - 0), 20)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: nil, style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        Actor.onConversationClosedWithPeer(peer)
-        
-        (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
-    }
-    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
+        if !isIPad {
+            (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
+        }
         
         if navigationController!.viewControllers.count > 2 {
             let firstController = navigationController!.viewControllers[0]
@@ -212,36 +204,25 @@ class ConversationViewController: ConversationBaseViewController {
             navigationController!.setViewControllers([firstController, currentController], animated: false)
         }
     }
-
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated);
-        Actor.saveDraftWithPeer(peer, withDraft: textView.text);
-    }
     
-    // MARK: -
-    // MARK: Methods
-    
-    func longPress(gesture: UILongPressGestureRecognizer) {
-        if gesture.state == UIGestureRecognizerState.Began {
-            let point = gesture.locationInView(self.collectionView)
-            let indexPath = self.collectionView.indexPathForItemAtPoint(point)
-            if indexPath != nil {
-                if let cell = collectionView.cellForItemAtIndexPath(indexPath!) as? AABubbleCell {
-                    if cell.bubble.superview != nil {
-                        var bubbleFrame = cell.bubble.frame
-                        bubbleFrame = collectionView.convertRect(bubbleFrame, fromView: cell.bubble.superview)
-                        if CGRectContainsPoint(bubbleFrame, point) {
-                            // cell.becomeFirstResponder()
-                            let menuController = UIMenuController.sharedMenuController()
-                            menuController.setTargetRect(bubbleFrame, inView:collectionView)
-                            menuController.menuItems = [UIMenuItem(title: "Copy", action: "copy")]
-                            menuController.setMenuVisible(true, animated: true)
-                        }
-                    }
-                }
-            }
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        Actor.onConversationClosedWithPeer(peer)
+        
+        if !isIPad {
+            (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
         }
     }
+
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        Actor.saveDraftWithPeer(peer, withDraft: textView.text)
+        
+        // Releasing bindings
+        binder.unbindAll()
+    }
+
+    // Bubble avatar tap
     
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
@@ -267,6 +248,8 @@ class ConversationViewController: ConversationBaseViewController {
         }
     }
     
+    // Text bar actions
+    
     override func textWillUpdate() {
         super.textWillUpdate();
 
@@ -283,56 +266,38 @@ class ConversationViewController: ConversationBaseViewController {
         super.didPressLeftButton(sender)
         
         let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-        let buttons = hasCamera ? ["PhotoCamera", "PhotoLibrary", "SendDocument"] : ["PhotoLibrary", "SendDocument"]
-        let tapBlock = { (index: Int) -> () in
-            if index == 0 || (hasCamera && index == 1) {
-                let pickerController = AAImagePickerController()
-                pickerController.sourceType = (hasCamera && index == 0) ?
-                    UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary
-                pickerController.mediaTypes = [kUTTypeImage as String]
-                pickerController.view.backgroundColor = MainAppTheme.list.bgColor
-                pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
-                pickerController.delegate = self
-                pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-                pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
-                self.presentViewController(pickerController, animated: true, completion: nil)
-            } else if index >= 0 {
-                if #available(iOS 8.0, *) {
-                    let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
-                    documentPicker.view.backgroundColor = UIColor.clearColor()
-                    documentPicker.delegate = self
-                    self.presentViewController(documentPicker, animated: true, completion: nil)
-                } else {
-                    // Fallback on earlier versions
-                }
+        let hasDocs = isiOS8 //ios8+
+        
+        let builder = MenuBuilder()
+        
+        if hasCamera {
+            builder.add("PhotoCamera") { () -> () in
+                self.pickImage(.Camera)
+            }
+        }
+        
+        builder.add("PhotoLibrary") { () -> () in
+            self.pickImage(.PhotoLibrary)
+        }
+        
+        if #available(iOS 8.0, *) {
+            builder.add("SendDocument") { () -> () in
+                self.pickDocument()
             }
         }
         
         if !isIPad {
             
             // For iPhone fast action sheet
-            showActionSheetFast(buttons, cancelButton: "AlertCancel", tapClosure: tapBlock)
+            showActionSheetFast(builder.items, cancelButton: "AlertCancel", tapClosure: builder.tapClosure)
         } else {
             
             // For iPad use old action sheet
-            showActionSheet(buttons, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: tapBlock)
+            showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
         }
     }
  
-    override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
-        let message = (item as! ACMessage);
-        if cell is AABubbleTextCell {
-            if (message.content is ACPhotoContent) {
-                return true
-            }
-        }
-        
-        return false
-    }
-    
     // Completition
-    
-    var filteredMembers = [ACMentionFilterResult]()
     
     override func canShowAutoCompletion() -> Bool {
         if UInt(self.peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue {
@@ -385,9 +350,7 @@ class ConversationViewController: ConversationBaseViewController {
         return cellHeight * CGFloat(filteredMembers.count)
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,
-        forRowAtIndexPath indexPath: NSIndexPath)
-    {
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         // Remove separator inset
         if cell.respondsToSelector("setSeparatorInset:") {
             cell.separatorInset = UIEdgeInsetsZero
@@ -411,30 +374,69 @@ class ConversationViewController: ConversationBaseViewController {
             }
         }
     }
-}
-
-// MARK: -
-// MARK: UIDocumentPicker Delegate
-
-extension ConversationViewController: UIDocumentPickerDelegate {
+    
+    // Document picking
+    
+    @available(iOS 8.0, *)
+    func pickDocument() {
+        let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
+        documentPicker.view.backgroundColor = UIColor.clearColor()
+        documentPicker.delegate = self
+        self.presentViewController(documentPicker, animated: true, completion: nil)
+    }
+    
+    @available(iOS 8.0, *)
+    func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
+        documentPicker.delegate = self
+        self.presentViewController(documentPicker, animated: true, completion: nil)
+    }
     
     @available(iOS 8.0, *)
     func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
-        let path = url.path!;
+        
+        // Loading path and file name
+        let path = url.path!
         let fileName = url.lastPathComponent
-        let range = path.rangeOfString("/tmp", options: NSStringCompareOptions(), range: nil, locale: nil)
-        let descriptor = path.substringFromIndex(range!.startIndex)
-        NSLog("Picked file: \(descriptor)")
-        Actor.trackDocumentSendWithPeer(peer)
-        Actor.sendDocumentWithPeer(peer, withName: fileName, withMime: "application/octet-stream", withDescriptor: descriptor)
+        
+        // Check if file valid or directory
+        var isDir : ObjCBool = false
+        if !NSFileManager.defaultManager().fileExistsAtPath(path, isDirectory: &isDir) {
+            // Not exists
+            return
+        }
+        
+        // Destination file
+        let descriptor = "/tmp/\(NSUUID().UUIDString)"
+        let destPath = CocoaFiles.pathFromDescriptor(descriptor)
+        
+        if isDir {
+            
+            // Zipping contents and sending
+            execute(Tools.zipDirectoryCommand(path, to: destPath)) { (val) -> Void in
+                Actor.sendDocumentWithPeer(self.peer, withName: fileName, withMime: "application/zip", withDescriptor: descriptor)
+            }
+        } else {
+            
+            // Sending file itself
+            execute(Tools.copyFileCommand(path, to: destPath)) { (val) -> Void in
+                Actor.sendDocumentWithPeer(self.peer, withName: fileName, withMime: "application/octet-stream", withDescriptor: descriptor)
+            }
+        }
     }
     
-}
-
-// MARK: -
-// MARK: UIImagePickerController Delegate
-
-extension ConversationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    // Image picking
+    
+    func pickImage(source: UIImagePickerControllerSourceType) {
+        let pickerController = AAImagePickerController()
+        pickerController.sourceType = source
+        pickerController.mediaTypes = [kUTTypeImage as String]
+        pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+        pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
+        pickerController.delegate = self
+        pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
+        self.presentViewController(pickerController, animated: true, completion: nil)
+    }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         MainAppTheme.navigation.applyStatusBar()
@@ -453,14 +455,5 @@ extension ConversationViewController: UIImagePickerControllerDelegate, UINavigat
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-}
-
-extension ConversationViewController: UIDocumentMenuDelegate {
-    @available(iOS 8.0, *)
-    func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
-        documentPicker.delegate = self
-        self.presentViewController(documentPicker, animated: true, completion: nil)
     }
 }
