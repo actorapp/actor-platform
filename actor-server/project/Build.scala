@@ -4,6 +4,7 @@ import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
+import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
 
 object Build extends sbt.Build with Versioning {
   val ScalaVersion = "2.11.7"
@@ -103,6 +104,9 @@ object Build extends sbt.Build with Versioning {
       actorRuntime,
       shardakka
     )
+    .settings(
+    aggregate in Docker := false
+  )
 
   lazy val actorRunner = Project(
     id = "actor-runner",
