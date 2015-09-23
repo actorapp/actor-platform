@@ -222,7 +222,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
         binder.unbindAll()
     }
 
-    // Bubble avatar tap
+    // Chat avatar tap
     
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
@@ -266,7 +266,6 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
         super.didPressLeftButton(sender)
         
         let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-        let hasDocs = isiOS8 //ios8+
         
         let builder = MenuBuilder()
         
