@@ -20,12 +20,12 @@ class AddParticipantViewController: ContactsBaseViewController {
     
     override func viewDidLoad() {
         
-        title = NSLocalizedString("GroupAddParticipantTitle", comment: "Participant Title")
+        title = localized("GroupAddParticipantTitle")
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: NSLocalizedString("NavigationCancel", comment: "Cancel"),
+            title: localized("NavigationCancel"),
             style: UIBarButtonItemStyle.Plain,
-            target: self, action: Selector("dismiss"))
+            target: self, action: "dismiss")
         
         tableView = UITableView(frame: view.bounds, style: UITableViewStyle.Plain)
         tableView.backgroundColor = UIColor.whiteColor()

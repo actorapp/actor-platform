@@ -4,70 +4,54 @@
 
 import UIKit;
 
-class DialogCell: UITableViewCell {
+class DialogCell: UATableViewCell {
     
-    let avatarView = AvatarView(frameSize: 48, type: .Rounded)
-    let titleView: UILabel = UILabel()
-    let messageView: UILabel = UILabel()
-    let dateView: UILabel = UILabel()
-    let statusView: UIImageView = UIImageView()
-    let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor)
+    // Views
     
-    let unreadView: UILabel = UILabel()
-    let unreadViewBg: UIImageView = UIImageView()
+    let avatarView = AvatarView(style: "dialogs.avatar")
+    let titleView: UILabel = UILabel(style: "dialogs.title")
+    let messageView: UILabel = UILabel(style: "dialogs.message")
+    let dateView: UILabel = UILabel(style: "dialogs.date")
+    let statusView: UIImageView = UIImageView(style: "dialogs.status")
+    let counterView: UILabel = UILabel(style: "dialogs.counter")
+    let counterViewBg: UIImageView = UIImageView(style: "dialogs.counter.bg")
     
-    var bindedFile: jlong? = nil;
-    var avatarCallback: CocoaDownloadCallback? = nil;
-    
-    init(reuseIdentifier:String) {
-        super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
+    init(reuseIdentifier: String) {
+        super.init(cellStyle: "dialogs.cell", reuseIdentifier: reuseIdentifier)
         
-        backgroundColor = MainAppTheme.list.bgColor
-        
-        titleView.font = UIFont.mediumSystemFontOfSize(17)
-        titleView.textColor = MainAppTheme.list.dialogTitle
-        
-        messageView.font = UIFont.systemFontOfSize(16)
-        messageView.textColor = MainAppTheme.list.dialogText
-        
-        dateView.font = UIFont.systemFontOfSize(14)
-        dateView.textColor = MainAppTheme.list.dialogDate
-        
-        dateView.textAlignment = NSTextAlignment.Right;
-        statusView.contentMode = UIViewContentMode.Center;
-        
-        unreadView.font = UIFont.systemFontOfSize(14)
-        unreadView.textColor = MainAppTheme.list.unreadText
-        unreadView.textAlignment = .Center
-        
-        unreadViewBg.image =
-            Imaging.imageWithColor(MainAppTheme.list.unreadBg, size: CGSizeMake(18, 18))
-            .roundImage(18).resizableImageWithCapInsets(UIEdgeInsetsMake(9, 9, 9, 9))
+        // Registering all views
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(titleView)
         self.contentView.addSubview(messageView)
         self.contentView.addSubview(dateView)
         self.contentView.addSubview(statusView)
-        self.contentView.addSubview(separatorView)
-        self.contentView.addSubview(unreadViewBg)
-        self.contentView.addSubview(unreadView)
-        
-        let selectedView = UIView()
-        selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
-        selectedBackgroundView = selectedView
+        self.contentView.addSubview(counterViewBg)
+        self.contentView.addSubview(counterView)
     }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bindDialog(dialog: ACDialog, isLast:Bool) {
+    func bindDialog(dialog: ACDialog, isLast: Bool) {
+        
+        if isLast {
+            applyStyle("dialogs.cell.last")
+        } else {
+            applyStyle("dialogs.cell")
+        }
+        
         self.avatarView.bind(dialog.getDialogTitle(), id: dialog.getPeer().getPeerId(), avatar: dialog.getDialogAvatar());
         
         self.titleView.text = dialog.getDialogTitle();
-        
+    
         self.messageView.text = Actor.getFormatter().formatDialogText(dialog)
+        if dialog.getMessageType().ordinal() != jint(ACContentType.TEXT.rawValue) {
+            self.messageView.applyStyle("dialog.message")
+        } else {
+            self.messageView.applyStyle("dialog.message.hightlight")
+        }
         
         if (dialog.getDate() > 0) {
             self.dateView.text = Actor.getFormatter().formatShortDate(dialog.getDate());
@@ -77,12 +61,12 @@ class DialogCell: UITableViewCell {
         }
         
         if (dialog.getUnreadCount() != 0) {
-            self.unreadView.text = "\(dialog.getUnreadCount())"
-            self.unreadView.hidden = false
-            self.unreadViewBg.hidden = false
+            self.counterView.text = "\(dialog.getUnreadCount())"
+            self.counterView.hidden = false
+            self.counterViewBg.hidden = false
         } else {
-            self.unreadView.hidden = true
-            self.unreadViewBg.hidden = true
+            self.counterView.hidden = true
+            self.counterViewBg.hidden = true
         }
         
         let messageState = UInt(dialog.getStatus().ordinal());
@@ -111,9 +95,13 @@ class DialogCell: UITableViewCell {
             self.statusView.hidden = true;
         }
         
-        self.separatorView.hidden = isLast;
-        
         setNeedsLayout()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.avatarView.unbind(true)
     }
     
     override func layoutSubviews() {
@@ -135,19 +123,17 @@ class DialogCell: UITableViewCell {
         }
         
         var unreadPadding = CGFloat(0)
-        if (!self.unreadView.hidden) {
-            unreadView.frame = CGRectMake(0, 0, 1000, 1000)
-            unreadView.sizeToFit()
-            let unreadW = max(unreadView.frame.width + 8, 18)
-            unreadView.frame = CGRectMake(width - padding - unreadW, 44, unreadW, 18)
-            unreadViewBg.frame = unreadView.frame
+        if (!self.counterView.hidden) {
+            counterView.frame = CGRectMake(0, 0, 1000, 1000)
+            counterView.sizeToFit()
+            let unreadW = max(counterView.frame.width + 8, 18)
+            counterView.frame = CGRectMake(width - padding - unreadW, 44, unreadW, 18)
+            counterViewBg.frame = counterView.frame
             unreadPadding = unreadW
         }
 
         messageView.frame = CGRectMake(leftPadding+messagePadding, 44, width - leftPadding - /*paddingRight*/padding - messagePadding - unreadPadding, 18);
         
         dateView.frame = CGRectMake(width - /*width*/60 - /*paddingRight*/padding , 18, 60, 18);
-        separatorView.frame = CGRectMake(leftPadding, 75.5, width, 0.5);
-        
     }
 }
