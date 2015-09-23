@@ -21,7 +21,8 @@ export default class EmojiDropdown extends Component {
     super(props);
 
     this.state = {
-      isOpen: props.isOpen
+      isOpen: props.isOpen,
+      categoryTitle: 'Emoji'
     };
   }
 
@@ -35,6 +36,8 @@ export default class EmojiDropdown extends Component {
     } else {
       document.removeEventListener('click', this.onDocumentClick, false);
       document.removeEventListener('keydown', this.onKeyDown, false);
+
+      this.setState({categoryTitle: 'Emoji'});
     }
   }
 
@@ -73,14 +76,41 @@ export default class EmojiDropdown extends Component {
     )
   };
 
+  onSetActive = (category) => {
+    switch(category) {
+      case 'people':
+        this.setState({categoryTitle: 'People'});
+        break;
+      case 'nature':
+        this.setState({categoryTitle: 'Nature'});
+        break;
+      case 'foodanddrink':
+        this.setState({categoryTitle: 'Food & Drink'});
+        break;
+      case 'celebration':
+        this.setState({categoryTitle: 'Celebration'});
+        break;
+      case 'activity':
+        this.setState({categoryTitle: 'Activity'});
+        break;
+      case 'travelandplaces':
+        this.setState({categoryTitle: 'Travel & Places'});
+        break;
+      case 'objectsandsymbols':
+        this.setState({categoryTitle: 'Objects & Symbols'});
+        break;
+    }
+  };
+
   render() {
-    const { isOpen } = this.state;
+    const { isOpen, categoryTitle } = this.state;
 
     const emojiDropdownClassName = classnames('emoji-dropdown', {
       'emoji-dropdown--opened': isOpen
     });
 
     const emojiChars = EmojiUtils.categorizedArray();
+
     let emojiCategories = [];
     let emojis = [];
 
@@ -132,6 +162,7 @@ export default class EmojiDropdown extends Component {
               spy smooth
               offset={30}
               duration={250}
+              onSetActive={this.onSetActive}
               containerId="emojiContainer"
               className="emoji-dropdown__header__tabs__tab"
               activeClass="emoji-dropdown__header__tabs__tab--active">
@@ -152,7 +183,7 @@ export default class EmojiDropdown extends Component {
         <div className={emojiDropdownClassName}>
           <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
             <header className="emoji-dropdown__header">
-              Emoji
+              {categoryTitle}
 
               <div className="emoji-dropdown__header__tabs pull-right">
                 {emojiCategories}
