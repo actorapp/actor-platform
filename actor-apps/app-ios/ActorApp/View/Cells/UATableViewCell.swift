@@ -12,15 +12,27 @@ class UATableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        // Cell colors
-        backgroundColor = MainAppTheme.list.bgColor
-        let selectedView = UIView()
-        selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
-        selectedBackgroundView = selectedView
+        bottomSeparator.backgroundColor = MainAppTheme.list.separatorColor
+        topSeparator.backgroundColor = MainAppTheme.list.separatorColor
+        
+        applyStyle("cell")
+    }
+    
+    init(cellStyle: String, reuseIdentifier: String?) {
+        
+        let style = pickStyle(cellStyle)
+        let st: UITableViewCellStyle = (style != nil && style!.cellStyle != nil) ? style!.cellStyle! : .Default
+        
+        super.init(style: st, reuseIdentifier: reuseIdentifier)
+        
+        if style != nil {
+            applyStyle(style!)
+        }
         
         bottomSeparator.backgroundColor = MainAppTheme.list.separatorColor
         topSeparator.backgroundColor = MainAppTheme.list.separatorColor
     }
+
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -46,6 +58,7 @@ class UATableViewCell: UITableViewCell {
             
             if topSeparatorVisible {
                 contentView.addSubview(topSeparator)
+                contentView.bringSubviewToFront(topSeparator)
             } else {
                 topSeparator.removeFromSuperview()
             }
@@ -71,21 +84,17 @@ class UATableViewCell: UITableViewCell {
         }
     }
     
-    override func prepareForReuse() {
-        bottomSeparatorVisible = false
-        topSeparatorVisible = false
-        super.prepareForReuse()
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
         if topSeparatorVisible {
             topSeparator.frame = CGRect(x: topSeparatorLeftInset, y: 0, width: bounds.width - topSeparatorLeftInset, height: 0.5)
+            contentView.bringSubviewToFront(topSeparator)
         }
         
         if bottomSeparatorVisible {
             bottomSeparator.frame = CGRect(x: bottomSeparatorLeftInset, y: contentView.bounds.height - Utils.retinaPixel(), width: bounds.width - bottomSeparatorLeftInset, height: 0.5)
+            contentView.bringSubviewToFront(bottomSeparator)
         }
     }
     
