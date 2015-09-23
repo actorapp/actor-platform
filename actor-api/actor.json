@@ -8732,6 +8732,175 @@
           }
         }
       ]
+    },
+    {
+      "title": "Collections",
+      "package": "collections",
+      "doc": [
+        "Flexible raw collections without structure"
+      ],
+      "items": [
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "RawValue",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "StringValue",
+            "doc": [
+              "Text value"
+            ],
+            "trait": {
+              "name": "RawValue",
+              "key": 1
+            },
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "text"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Int32Value",
+            "doc": [
+              "Int32 value"
+            ],
+            "trait": {
+              "name": "RawValue",
+              "key": 2
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "value"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Int64Value",
+            "doc": [
+              "Int64 value"
+            ],
+            "trait": {
+              "name": "RawValue",
+              "key": 3
+            },
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "value"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "DoubleValue",
+            "doc": [
+              "Double value"
+            ],
+            "trait": {
+              "name": "RawValue",
+              "key": 4
+            },
+            "attributes": [
+              {
+                "type": "double",
+                "id": 1,
+                "name": "value"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ArrayValue",
+            "doc": [
+              "Array value"
+            ],
+            "trait": {
+              "name": "RawValue",
+              "key": 5
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "RawValue"
+                  }
+                },
+                "id": 1,
+                "name": "array"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MapValueItem",
+            "doc": [
+              "Item of Map"
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "key"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "RawValue"
+                },
+                "id": 2,
+                "name": "value"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MapValue",
+            "doc": [
+              "Map Value"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValueItem"
+                  }
+                },
+                "id": 1,
+                "name": "items"
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }
