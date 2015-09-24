@@ -2,38 +2,26 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { map, uniq, without, forEach, pick } from 'lodash';
+import jsEmoji from 'js-emoji';
 import { Path } from 'constants/ActorAppConstants';
-import emojilib from 'emojilib';
 
-//const emojiCategories = without(uniq(map(emojilib, (emoji) => emoji.category)), undefined, '_custom');
-const emojiCategories = [
-  'people', 'nature', 'foodanddrink', 'celebration', 'activity', 'travelandplaces', 'objectsandsymbols'
-];
+export const emoji = jsEmoji;
 
-
-
-const getCategoryEmojis = (category) => pick(emojilib, (value, key) => {
-  if (value.category === category) {
-    return key;
+emoji.include_title = true;
+emoji.include_text = true;
+emoji.use_sheet = true;
+emoji.img_set = 'apple';
+emoji.img_sets = {
+  'apple': {
+    'path': Path.toEmoji + '/img-apple-64/',
+    'sheet': Path.toEmoji + '/sheet_apple_64.png',
+    'mask': 1
   }
-});
-
-const categorizedArray = () => {
-  let emojiArray = [];
-
-  forEach(emojiCategories, (category) => {
-    emojiArray[category] = getCategoryEmojis(category);
-  });
-
-  return emojiArray;
 };
 
+export const emojiRegexp = /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g;
 
 export default {
-  emojis: emojilib,
-  categories: emojiCategories,
-  categorizedArray,
-  getCategoryEmojis,
-  pathToImage: (name) => `${Path.toEmoji}/${name}.png`
-}
+  emoji,
+  emojiRegexp
+};
