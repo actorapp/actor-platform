@@ -36,7 +36,7 @@ class SimpleServerE2eSpec extends ActorSuite(
       |}
     """.stripMargin
   ))
-) with ImplicitFileStorageAdapter with ImplicitUserRegions with ImplicitGroupRegions {
+) with ImplicitFileStorageAdapter with ActorSerializerPrepare {
   behavior of "Server"
 
   it should "connect and Handshake" in Server.e1
@@ -49,10 +49,10 @@ class SimpleServerE2eSpec extends ActorSuite(
 
   it should "throw AuthIdInvalid if valid AuthId invalidated by some reason" in Server.e5
 
-  DbExtension(system).clean()
-  DbExtension(system).migrate()
-
   object Server {
+    DbExtension(system).clean()
+    DbExtension(system).migrate()
+
     val serverConfig = system.settings.config
 
     implicit val materializer = ActorMaterializer()

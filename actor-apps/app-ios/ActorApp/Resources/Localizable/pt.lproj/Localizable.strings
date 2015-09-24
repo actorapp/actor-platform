@@ -52,7 +52,7 @@
 
 "SettingsUsernameTitle" = "Change your username";
 
-"SettingsSecurity" = "Privacidade e Segurança";
+"SettingsSecurity" = "Segurança";
 
 "SettingsEditHeader" = "Alterar seu nome";
 
@@ -60,7 +60,9 @@
 
 "SettingsAskQuestion" = "Fazer uma pergunta";
 
-"SettingsAbout" = "Sobre";
+"SettingsTwitter" = "App Twitter";
+
+"SettingsAbout" = "App Homepage";
 
 "SettingsVersion" = "Versão {version}";
 
@@ -235,9 +237,13 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Privacidade e Segurança";
+"PrivacyTitle" = "Segurança";
 
 "PrivacyTerminate" = "Encerrar todas as sessões";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
 
 "PrivacyTerminateHint" = "Descredencia todos os demais dispositivos menos este.";
 
@@ -301,6 +307,12 @@
 
 "AuthCodeHint" = "Nós te enviamos um SMS com o código.";
 
+"AuthCallHint" = "Actor will call you in {time}";
+
+"AuthCallDoneHint" = "Actor dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
 "AuthProfileTitle" = "Suas Informações";
 
 "AuthProfileAddPhoto1" = "adicionar";
@@ -317,7 +329,7 @@
 
 "CurrentLocale" = "Pt";
 
-"InviteText" = "Olá! Vamos mudar para o Actor! https://actor.im/dl";
+"InviteText" = "Olá! Vamos mudar para o Actor! {link}";
 
 "PhotoRemove" = "Remover Foto";
 
@@ -352,6 +364,10 @@
 "AlertYes" = "Sim";
 
 "AlertNo" = "Não";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
 
 "UnsupportedContent" = "Mensagem não suportada nesta versão. Por favor espere por uma atualização para ver esta mensagem.";
 

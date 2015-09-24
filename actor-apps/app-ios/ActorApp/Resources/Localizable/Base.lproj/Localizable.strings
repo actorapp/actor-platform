@@ -50,7 +50,7 @@
 
 "SettingsChangeAboutTitle" = "About me";
 
-"SettingsSecurity" = "Privacy and Security";
+"SettingsSecurity" = "Security";
 
 "SettingsEditHeader" = "Change your name";
 
@@ -58,7 +58,9 @@
 
 "SettingsAskQuestion" = "Ask Question";
 
-"SettingsAbout" = "About";
+"SettingsTwitter" = "App Twitter";
+
+"SettingsAbout" = "App Homepage";
 
 "SettingsVersion" = "Version {version}";
 
@@ -236,9 +238,13 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Privacy and Security";
+"SecurityTitle" = "Security";
 
 "PrivacyTerminate" = "Terminate all other sessions";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
 
 "PrivacyTerminateHint" = "Logs out all devices except for this one.";
 
@@ -302,6 +308,12 @@
 
 "AuthCodeHint" = "We have sent you an SMS with the code.";
 
+"AuthCallHint" = "Actor will call you in {time}";
+
+"AuthCallDoneHint" = "Actor dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
 "AuthProfileTitle" = "Your Info";
 
 "AuthProfileAddPhoto1" = "add";
@@ -318,7 +330,7 @@
 
 "CurrentLocale" = "En";
 
-"InviteText" = "Hi! Let's switch to Actor! https://actor.im/dl";
+"InviteText" = "Hi! Let's switch to Actor! {link}";
 
 "PhotoRemove" = "Delete Photo";
 
@@ -353,6 +365,10 @@
 "AlertYes" = "Yes";
 
 "AlertNo" = "No";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
 
 "UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
 

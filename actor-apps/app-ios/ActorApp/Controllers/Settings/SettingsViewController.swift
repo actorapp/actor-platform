@@ -75,6 +75,7 @@ class SettingsViewController: AATableViewController {
         
         let profileInfoSection = tableData.addSection(true)
             .setFooterHeight(15)
+            .setSeparatorsTopOffset(1)
         
         profileInfoSection.addCustomCell { (tableView, indexPath) -> UITableViewCell in
             let cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
@@ -107,13 +108,13 @@ class SettingsViewController: AATableViewController {
             }
             .setHeight(55)
             .setAction { () -> () in
-                self.textInputAlert("SettingsUsernameTitle", content: self.user!.getNickModel().get(), action: "AlertSave", tapYes: { (nval) -> () in
+                self.textInputAlert("SettingsUsernameTitle", content: self.user!.getNickModel().get(), action: "AlertSave") { (nval) -> () in
                     var nNick: String? = nval.trim()
                     if nNick?.length == 0 {
                         nNick = nil
                     }
-                    self.execute(Actor.editMyNickCommandWithNick(nNick))
-                })
+                    self.executeSafe(Actor.editMyNickCommandWithNick(nNick))
+                }
         }
         
         var about = self.user!.getAboutModel().get()
@@ -243,14 +244,14 @@ class SettingsViewController: AATableViewController {
             .setFooterHeight(15)
         
         // Settings: Notifications
-        actionsSection.addNavigationCell("SettingsNotifications", actionClosure: { () -> () in
+        actionsSection.addNavigationCell("SettingsNotifications") { () -> () in
             self.navigateNext(SettingsNotificationsViewController(), removeCurrent: false)
-        })
+        }
         
         // Settings: Privacy
-        actionsSection.addNavigationCell("SettingsSecurity", actionClosure: { () -> () in
+        actionsSection.addNavigationCell("SettingsSecurity") { () -> () in
             self.navigateNext(SettingsPrivacyViewController(), removeCurrent: false)
-        })
+        }
         
         // Support
         let supportSection = tableData.addSection(true)
@@ -258,26 +259,35 @@ class SettingsViewController: AATableViewController {
             .setFooterHeight(15)
         
         // Support: Ask Question
-        supportSection.addNavigationCell("SettingsAskQuestion", actionClosure: { () -> () in
-            self.execute(Actor.findUsersCommandWithQuery("75551234567"), successBlock: { (val) -> Void in
-                var user:ACUserVM!
-                if let users = val as? IOSObjectArray {
-                    if Int(users.length()) > 0 {
-                        if let tempUser = users.objectAtIndex(0) as? ACUserVM {
-                            user = tempUser
+        if let account = AppConfig.supportAccount {
+            supportSection.addNavigationCell("SettingsAskQuestion") { () -> () in
+                self.executeSafe(Actor.findUsersCommandWithQuery(account)) { (val) -> Void in
+                    var user:ACUserVM!
+                    if let users = val as? IOSObjectArray {
+                        if Int(users.length()) > 0 {
+                            if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+                                user = tempUser
+                            }
                         }
                     }
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
                 }
-                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
-            }, failureBlock: { (val) -> Void in
-                // TODO: Implement
-            })
-        })
+            }
+        }
         
-        // Support: Ask Question
-        supportSection.addNavigationCell("SettingsAbout", actionClosure: { () -> () in
-            UIApplication.sharedApplication().openURL(NSURL(string: "https://actor.im")!)
-        })
+        // Support: Twitter
+        if let twitter = AppConfig.appTwitter {
+            supportSection.addNavigationCell("SettingsTwitter") { () -> () in
+                UIApplication.sharedApplication().openURL(NSURL(string: "https://twitter.com/\(twitter)")!)
+            }
+        }
+        
+        // Support: Home page
+        if let homePage = AppConfig.appHomePage {
+            supportSection.addNavigationCell("SettingsAbout") { () -> () in
+                UIApplication.sharedApplication().openURL(NSURL(string: homePage)!)
+            }
+        }
         
         // Support: App version
         let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
@@ -289,7 +299,7 @@ class SettingsViewController: AATableViewController {
         
         tableView.reloadData()
         
-        binder.bind(user!.getNameModel()!, closure: { (value: String?) -> () in
+        binder.bind(user!.getNameModel()!) { (value: String?) -> () in
             if value == nil {
                 return
             }
@@ -297,9 +307,9 @@ class SettingsViewController: AATableViewController {
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                 cell.setUsername(value!)
             }
-        })
+        }
         
-        binder.bind(user!.getAboutModel(), closure: { (value: String?) -> () in
+        binder.bind(user!.getAboutModel()) { (value: String?) -> () in
             var about = self.user!.getAboutModel().get()
             if about == nil {
                 about = localized("SettingsAboutNotSet")
@@ -309,11 +319,11 @@ class SettingsViewController: AATableViewController {
             }
             aboutCell.setContent(localized("ProfileAbout"), text: about)
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 2, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
-        })
+        }
         
-        binder.bind(user!.getNickModel(), closure: { (value: String?) -> () in
+        binder.bind(user!.getNickModel()) { (value: String?) -> () in
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
-        })
+        }
         
         binder.bind(Actor.getOwnAvatarVM().getUploadState(), valueModel2: user!.getAvatarModel()) { (upload: ACAvatarUploadState?, avatar:  ACAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
@@ -327,14 +337,14 @@ class SettingsViewController: AATableViewController {
             }
         }
         
-        binder.bind(user!.getPresenceModel(), closure: { (presence: ACUserPresence?) -> () in
+        binder.bind(user!.getPresenceModel()) { (presence: ACUserPresence?) -> () in
             let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                     cell.setPresence(presenceText)
                 }
             }
-        })
+        }
         
         binder.bind(user!.getPhonesModel(), closure: { (phones: JavaUtilArrayList?) -> () in
             if phones != nil {

@@ -12,6 +12,7 @@ import im.actor.core.api.ApiEmailActivationType;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.rpc.RequestCompleteOAuth2;
 import im.actor.core.api.rpc.RequestGetOAuth2Params;
+import im.actor.core.api.rpc.RequestSendCodeByPhoneCall;
 import im.actor.core.api.rpc.RequestSignUp;
 import im.actor.core.api.rpc.RequestStartEmailAuth;
 import im.actor.core.api.rpc.RequestStartPhoneAuth;
@@ -20,6 +21,7 @@ import im.actor.core.api.rpc.ResponseAuth;
 import im.actor.core.api.rpc.ResponseGetOAuth2Params;
 import im.actor.core.api.rpc.ResponseStartEmailAuth;
 import im.actor.core.api.rpc.ResponseStartPhoneAuth;
+import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.entity.ContactRecord;
 import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.User;
@@ -317,7 +319,12 @@ public class Authentication {
                         } else if ("PHONE_NUMBER_UNOCCUPIED".equals(e.getTag()) || "EMAIL_UNOCCUPIED".equals(e.getTag())) {
                             modules.getPreferences().putString(KEY_CODE, code);
                             state = AuthState.SIGN_UP;
-                            callback.onResult(AuthState.SIGN_UP);
+                            Runtime.postToMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    callback.onResult(AuthState.SIGN_UP);
+                                }
+                            });
                             return;
                         }
 
@@ -327,6 +334,27 @@ public class Authentication {
                                 callback.onError(e);
                             }
                         });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Boolean> requestCallActivation() {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                String transactionHash = modules.getPreferences().getString(KEY_TRANSACTION_HASH);
+
+                request(new RequestSendCodeByPhoneCall(transactionHash), new RpcCallback<ResponseVoid>() {
+                    @Override
+                    public void onResult(ResponseVoid response) {
+                        callback.onResult(true);
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        callback.onError(e);
                     }
                 });
             }

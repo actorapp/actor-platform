@@ -99,6 +99,7 @@
 #import "im/actor/core/network/RpcException.h"
 
 #import "im/actor/core/api/ApiAuthSession.h"
+#import "im/actor/core/api/ApiAuthHolder.h"
 
 #import "im/actor/core/util/StringMatch.h"
 

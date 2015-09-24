@@ -200,17 +200,11 @@ private[sequence] class UpdatesConsumer(
     userId:      Int,
     fatUserIds:  Seq[Int],
     fatGroupIds: Seq[Int]
-  )(
-    implicit
-    ec: ExecutionContext
-  ): Future[(Seq[ApiUser], Seq[ApiGroup])] = {
-    implicit lazy val userViewRegion: UserViewRegion = UserExtension(system).viewRegion
-    implicit lazy val groupViewRegion: GroupViewRegion = GroupExtension(system).viewRegion
-
+  )(implicit ec: ExecutionContext): Future[(Seq[ApiUser], Seq[ApiGroup])] = {
     for {
-      groups ← Future.sequence(fatGroupIds map (GroupOffice.getApiStruct(_, userId)))
+      groups ← Future.sequence(fatGroupIds map (GroupExtension(system).getApiStruct(_, userId)))
       groupMemberIds = groups.view.map(_.members.map(_.userId)).flatten
-      users ← Future.sequence((fatUserIds ++ groupMemberIds).distinct map (UserOffice.getApiStruct(_, userId, authId)))
+      users ← Future.sequence((fatUserIds ++ groupMemberIds).distinct map (UserExtension(system).getApiStruct(_, userId, authId)))
     } yield (users, groups)
   }
 }

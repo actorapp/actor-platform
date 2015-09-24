@@ -22,6 +22,9 @@ object AuthCode {
   def create(transactionHash: String, code: String) =
     codes += models.AuthCode(transactionHash, code)
 
+  def createOrUpdate(transactionHash: String, code: String) =
+    codes.insertOrUpdate(models.AuthCode(transactionHash, code))
+
   def findByTransactionHash(transactionHash: String) =
     codes.filter(c ⇒ c.transactionHash === transactionHash && c.isDeleted === false).result.headOption
 

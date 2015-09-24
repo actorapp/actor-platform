@@ -52,7 +52,7 @@
 
 "SettingsUsernameTitle" = "Change your username";
 
-"SettingsSecurity" = "隐私和安全";
+"SettingsSecurity" = "安全";
 
 "SettingsEditHeader" = "修改名字";
 
@@ -60,7 +60,9 @@
 
 "SettingsAskQuestion" = "提问";
 
-"SettingsAbout" = "关于";
+"SettingsTwitter" = "App Twitter";
+
+"SettingsAbout" = "App Homepage";
 
 "SettingsVersion" = "版本 {version}";
 
@@ -238,9 +240,13 @@
  * Privacy
  */
 
-"PrivacyTitle" = "隐私和安全";
+"PrivacyTitle" = "安全";
 
 "PrivacyTerminate" = "终止所有会话";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
 
 "PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
 
@@ -304,6 +310,12 @@
 
 "AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
 
+"AuthCallHint" = "Actor will call you in {time}";
+
+"AuthCallDoneHint" = "Actor dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
 "AuthProfileTitle" = "你的信息";
 
 "AuthProfileAddPhoto1" = "添加";
@@ -320,7 +332,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "您好！让我们一起使用Actor安全开聊吧! https://actor.im/dl";
+"InviteText" = "您好！让我们一起使用Actor安全开聊吧! {link}";
 
 "PhotoRemove" = "删除头像";
 
@@ -355,6 +367,10 @@
 "AlertYes" = "是";
 
 "AlertNo" = "否";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 

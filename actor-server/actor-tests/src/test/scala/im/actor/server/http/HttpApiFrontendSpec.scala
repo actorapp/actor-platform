@@ -32,7 +32,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 class HttpApiFrontendSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
-  with ImplicitGroupRegions
+  with ImplicitFileStorageAdapter
   with ImplicitSessionRegionProxy
   with ImplicitAuthService
   with PlayJsonSupport {

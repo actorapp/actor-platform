@@ -1,24 +1,17 @@
 package im.actor.server.api.rpc.service.messaging
 
-import im.actor.server.dialog.privat.{ PrivateDialogExtension, PrivateDialogRegion }
-import im.actor.server.dialog.group.{ GroupDialogExtension, GroupDialogRegion }
-
-import scala.concurrent.duration._
-
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubMediator
-import akka.util.Timeout
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.db.DbExtension
-import im.actor.server.group.{ GroupProcessorRegion, GroupExtension, GroupViewRegion }
+import im.actor.server.dialog.DialogExtension
+import im.actor.server.group.GroupExtension
 import im.actor.server.models
-import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import im.actor.server.user.{ UserProcessorRegion, UserExtension, UserViewRegion }
+import im.actor.server.user.UserExtension
+import slick.driver.PostgresDriver.api._
 
 sealed trait Event
 
@@ -78,16 +71,10 @@ final class MessagingServiceImpl(
 )(
   implicit
   protected val actorSystem: ActorSystem
-)
-  extends MessagingService with MessagingHandlers with HistoryHandlers {
-  protected implicit val db: Database = DbExtension(actorSystem).db
-  protected implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
-  protected implicit val userProcessorRegion: UserProcessorRegion = UserExtension(actorSystem).processorRegion
-  protected implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
-  protected implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(actorSystem).processorRegion
-  protected implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
-  protected implicit val groupDialogRegion: GroupDialogRegion = GroupDialogExtension(actorSystem).region
-  protected implicit val privateDialogRegion: PrivateDialogRegion = PrivateDialogExtension(actorSystem).region
+) extends MessagingService with MessagingHandlers with HistoryHandlers {
+  protected val db: Database = DbExtension(actorSystem).db
+  protected val userExt = UserExtension(actorSystem)
+  protected val groupExt = GroupExtension(actorSystem)
+  protected val dialogExt = DialogExtension(actorSystem)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
-  protected implicit val timeout = Timeout(30.seconds)
 }

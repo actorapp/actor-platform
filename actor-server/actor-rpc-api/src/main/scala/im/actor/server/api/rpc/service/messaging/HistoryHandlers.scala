@@ -6,12 +6,8 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
-import im.actor.server.dialog.group.GroupDialogOperations
-import im.actor.server.dialog.privat.PrivateDialogOperations
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
-import im.actor.server.group.{ GroupUtils, GroupOffice }
 import im.actor.server.history.HistoryUtils
-import im.actor.server.user.{ UserUtils, UserOffice }
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio
@@ -33,18 +29,9 @@ trait HistoryHandlers {
 
   override def jhandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      val receivedFuture = peer.`type` match {
-        case ApiPeerType.Private ⇒
-          for {
-            _ ← PrivateDialogOperations.messageReceived(client.userId, peer.id, date)
-          } yield Ok(ResponseVoid)
-        case ApiPeerType.Group ⇒
-          for {
-            _ ← GroupDialogOperations.messageReceived(peer.id, client.userId, client.authId, date)
-          } yield Ok(ResponseVoid)
-        case _ ⇒ throw new Exception("Not implemented")
+      DBIO.from {
+        dialogExt.messageReceived(peer.`type`, peer.id, client.userId, date) map (_ ⇒ Ok(ResponseVoid))
       }
-      DBIO.from(receivedFuture)
     }
 
     db.run(toDBIOAction(action)) recover {
@@ -54,18 +41,9 @@ trait HistoryHandlers {
 
   override def jhandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      val readFuture = peer.`type` match {
-        case ApiPeerType.Private ⇒
-          for {
-            _ ← PrivateDialogOperations.messageRead(client.userId, client.authId, peer.id, date)
-          } yield Ok(ResponseVoid)
-        case ApiPeerType.Group ⇒
-          for {
-            _ ← GroupDialogOperations.messageRead(peer.id, client.userId, client.authId, date)
-          } yield Ok(ResponseVoid)
-        case _ ⇒ throw new Exception("Not implemented")
+      DBIO.from {
+        dialogExt.messageRead(peer.`type`, peer.id, client.userId, client.authId, date) map (_ ⇒ Ok(ResponseVoid))
       }
-      DBIO.from(readFuture)
     }
 
     db.run(toDBIOAction(action)) recover {
@@ -82,11 +60,11 @@ trait HistoryHandlers {
           if (peer.`type` == ApiPeerType.Private) {
             DBIO.successful(true)
           } else {
-            DBIO.from(GroupOffice.isHistoryShared(peer.id)) flatMap (isHistoryShared ⇒ DBIO.successful(!isHistoryShared))
+            DBIO.from(groupExt.isHistoryShared(peer.id)) flatMap (isHistoryShared ⇒ DBIO.successful(!isHistoryShared))
           }
         }
         _ ← fromDBIO(persist.HistoryMessage.deleteAll(client.userId, peer.asModel))
-        seqstate ← fromFuture(UserOffice.broadcastClientUpdate(update, None, isFat = false))
+        seqstate ← fromFuture(userExt.broadcastClientUpdate(update, None, isFat = false))
       } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)
     }
 
@@ -100,7 +78,7 @@ trait HistoryHandlers {
       for {
         _ ← persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
         _ ← persist.Dialog.delete(client.userId, peer.asModel)
-        seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(update, None, isFat = false))
+        seqstate ← DBIO.from(userExt.broadcastClientUpdate(update, None, isFat = false))
       } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
@@ -152,7 +130,7 @@ trait HistoryHandlers {
                 }
 
               for {
-                userStructs ← DBIO.from(Future.sequence(userIds.toVector map (UserOffice.getApiStruct(_, client.userId, client.authId))))
+                userStructs ← DBIO.from(Future.sequence(userIds.toVector map (userExt.getApiStruct(_, client.userId, client.authId))))
               } yield {
                 Ok(ResponseLoadHistory(messages, userStructs))
               }
@@ -181,7 +159,7 @@ trait HistoryHandlers {
                 for {
                   _ ← persist.HistoryMessage.delete(historyOwner, peer, randomIds.toSet)
                   groupUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.toSet)
-                  (seqstate, _) ← DBIO.from(UserOffice.broadcastClientAndUsersUpdate(groupUserIds, update, None, false))
+                  (seqstate, _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(groupUserIds, update, None, false))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               }
             }
@@ -189,7 +167,7 @@ trait HistoryHandlers {
             val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
             for {
               _ ← persist.HistoryMessage.delete(client.userId, peer, randomIds.toSet)
-              seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(update, None, isFat = false))
+              seqstate ← DBIO.from(userExt.broadcastClientUpdate(update, None, isFat = false))
             } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
           }
         }
@@ -241,7 +219,7 @@ trait HistoryHandlers {
   private def getUnreadCount(historyOwner: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit client: AuthorizedClientData): DBIO[Int] = {
     if (isSharedUser(historyOwner)) {
       for {
-        isMember ← DBIO.from(GroupOffice.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains client.userId })
+        isMember ← DBIO.from(groupExt.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains client.userId })
         result ← if (isMember) persist.HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
       } yield result
     } else {
@@ -260,9 +238,9 @@ trait HistoryHandlers {
     }
 
     for {
-      groups ← DBIO.from(Future.sequence(groupIds map (GroupOffice.getApiStruct(_, client.userId))))
+      groups ← DBIO.from(Future.sequence(groupIds map (groupExt.getApiStruct(_, client.userId))))
       groupUserIds = groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
-      users ← DBIO.from(Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (UserOffice.getApiStruct(_, client.userId, client.authId))))
+      users ← DBIO.from(Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (userExt.getApiStruct(_, client.userId, client.authId))))
     } yield (users, groups)
   }
 

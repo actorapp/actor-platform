@@ -27,7 +27,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         
         timeBg.image = Imaging.imageWithColor(MainAppTheme.bubbles.mediaDateBg, size: CGSize(width: 1, height: 1))
 
-        timeLabel.font = UIFont(name: "HelveticaNeue-Italic", size: 11)
+        timeLabel.font = UIFont.italicSystemFontOfSize(11)
         timeLabel.textColor = MainAppTheme.bubbles.mediaDate
         
         statusView.contentMode = UIViewContentMode.Center

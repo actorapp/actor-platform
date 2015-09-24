@@ -14,10 +14,10 @@ class ContactCell : BasicCell {
     init(reuseIdentifier:String) {
         super.init(reuseIdentifier: reuseIdentifier, separatorPadding: 80)
         
-        titleView.font = UIFont(name: "HelveticaNeue", size: 18);
+        titleView.font = UIFont.systemFontOfSize(18)
         titleView.textColor = MainAppTheme.list.contactsTitle
         
-        shortNameView.font = UIFont(name: "HelveticaNeue-Bold", size: 18);
+        shortNameView.font = UIFont.boldSystemFontOfSize(18)
         shortNameView.textAlignment = NSTextAlignment.Center
         shortNameView.textColor = MainAppTheme.list.contactsShortTitle
         
