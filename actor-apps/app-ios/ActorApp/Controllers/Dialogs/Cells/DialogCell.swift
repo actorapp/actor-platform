@@ -24,19 +24,19 @@ class DialogCell: UITableViewCell {
         
         backgroundColor = MainAppTheme.list.bgColor
         
-        titleView.font = UIFont(name: "Roboto-Medium", size: 19);
+        titleView.font = UIFont.mediumSystemFontOfSize(18)
         titleView.textColor = MainAppTheme.list.dialogTitle
         
-        messageView.font = UIFont(name: "HelveticaNeue", size: 16);
+        messageView.font = UIFont.systemFontOfSize(16)
         messageView.textColor = MainAppTheme.list.dialogText
         
-        dateView.font = UIFont(name: "HelveticaNeue", size: 14);
+        dateView.font = UIFont.systemFontOfSize(14)
         dateView.textColor = MainAppTheme.list.dialogDate
         
         dateView.textAlignment = NSTextAlignment.Right;
         statusView.contentMode = UIViewContentMode.Center;
         
-        unreadView.font = UIFont(name: "HelveticaNeue", size: 14);
+        unreadView.font = UIFont.systemFontOfSize(14)
         unreadView.textColor = MainAppTheme.list.unreadText
         unreadView.textAlignment = .Center
         
@@ -126,7 +126,7 @@ class DialogCell: UITableViewCell {
         
         avatarView.frame = CGRectMake(padding, padding, 48, 48);
         
-        titleView.frame = CGRectMake(leftPadding, 18, width - leftPadding - /*paddingRight*/(padding + 50), 18);
+        titleView.frame = CGRectMake(leftPadding, 16, width - leftPadding - /*paddingRight*/(padding + 50), 21);
         
         var messagePadding:CGFloat = 0;
         if (!self.statusView.hidden) {

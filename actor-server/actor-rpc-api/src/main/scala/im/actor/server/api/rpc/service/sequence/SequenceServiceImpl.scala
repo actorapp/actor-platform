@@ -30,12 +30,9 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   import SeqUpdatesManager._
 
   protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
-  private implicit val timeout: Timeout = Timeout(30.seconds)
 
-  private implicit val db: Database = DbExtension(actorSystem).db
+  private val db: Database = DbExtension(actorSystem).db
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
-  private implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
-  private implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
 
   private val maxDifferenceSize: Long = config.maxDifferenceSize
 
@@ -133,10 +130,10 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   private def getUsersGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData) = {
     DBIO.from(for {
-      groups ← Future.sequence(groupIds map (GroupOffice.getApiStruct(_, client.userId)))
+      groups ← Future.sequence(groupIds map (GroupExtension(actorSystem).getApiStruct(_, client.userId)))
       // TODO: #perf optimize collection operations
       allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten + g.creatorUserId }
-      users ← Future.sequence(allUserIds map (UserOffice.getApiStruct(_, client.userId, client.authId)))
+      users ← Future.sequence(allUserIds map (UserExtension(actorSystem).getApiStruct(_, client.userId, client.authId)))
     } yield (users, groups))
   }
 }

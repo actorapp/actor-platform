@@ -46,7 +46,7 @@ class BigPlaceholderView: UIView {
         
         titleLabel = UILabel()
         titleLabel.textColor = MainAppTheme.placeholder.textTitle
-        titleLabel.font = UIFont(name: "HelveticaNeue", size: 22.0);
+        titleLabel.font = UIFont.systemFontOfSize(22)
         titleLabel.textAlignment = NSTextAlignment.Center
         titleLabel.text = " "
         titleLabel.sizeToFit()
@@ -60,7 +60,7 @@ class BigPlaceholderView: UIView {
         contentView.addSubview(subtitleLabel)
         
         actionButton = UIButton(type: .System)
-        actionButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Medium", size: 21.0)
+        actionButton.titleLabel!.font = UIFont.mediumSystemFontOfSize(21)
         contentView.addSubview(actionButton)
         
         subtitle2Label = UILabel()
@@ -71,7 +71,7 @@ class BigPlaceholderView: UIView {
         contentView.addSubview(subtitle2Label)
         
         action2Button = UIButton(type: .System)
-        action2Button.titleLabel!.font = UIFont(name: "HelveticaNeue-Medium", size: 21.0)
+        action2Button.titleLabel!.font = UIFont.mediumSystemFontOfSize(21)
         contentView.addSubview(action2Button)
     }
 

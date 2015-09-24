@@ -61,7 +61,7 @@ class ConversationViewController: ConversationBaseViewController {
         navigationView.frame = CGRectMake(0, 0, 200, 44);
         navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
-        titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 17)!
+        titleView.font = UIFont.mediumSystemFontOfSize(17)
         titleView.adjustsFontSizeToFitWidth = false;
         titleView.textColor = Resources.PrimaryLightText
         titleView.textAlignment = NSTextAlignment.Center;
@@ -212,41 +212,7 @@ class ConversationViewController: ConversationBaseViewController {
             navigationController!.setViewControllers([firstController, currentController], animated: false)
         }
     }
-    
-//    override func afterLoaded() {
-//        NSLog("afterLoaded")
-//        var sortState = MSG.loadLastReadState(peer)
-//
-//        if (sortState == 0) {
-//            NSLog("lastReadMessage == 0")
-//            return
-//        }
-//        
-//        if (getCount() == 0) {
-//            NSLog("getCount() == 0")
-//            return
-//        }
-//        
-//        var index = -1
-//        unreadMessageId = 0
-//        for var i = getCount() - 1; i >= 0; --i {
-//            var item = objectAtIndex(i) as! AMMessage
-//            if (item.getSortDate() > sortState && item.getSenderId() != MSG.myUid()) {
-//                index = i
-//                unreadMessageId = item.getRid()
-//                break
-//            }
-//        }
-//        
-//        if (index < 0) {
-//            NSLog("Not found")
-//        } else {
-//            NSLog("Founded @\(index)")
-//            // self.tableView.reloadData()
-//            // self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: Int(index), inSection: 0), atScrollPosition: UITableViewScrollPosition.Middle, animated: false)
-//        }
-//    }
-    
+
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated);
         Actor.saveDraftWithPeer(peer, withDraft: textView.text);
@@ -342,31 +308,17 @@ class ConversationViewController: ConversationBaseViewController {
             }
         }
         
-        if (isIPad) {
-            showActionSheet(buttons, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: tapBlock)
-        } else {
+        if !isIPad {
+            
+            // For iPhone fast action sheet
             showActionSheetFast(buttons, cancelButton: "AlertCancel", tapClosure: tapBlock)
+        } else {
+            
+            // For iPad use old action sheet
+            showActionSheet(buttons, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: tapBlock)
         }
     }
  
-    
-//    override func onItemsAdded(indexes: [Int]) {
-//        var toUpdate = [Int]()
-//        for ind in indexes {
-//            if !indexes.contains(ind + 1) {
-//                if ind + 1 < getCount() {
-//                    toUpdate.append(ind + 1)
-//                }
-//            }
-//            if !indexes.contains(ind - 1) {
-//                if ind > 0 {
-//                    toUpdate.append(ind - 1)
-//                }
-//            }
-//        }
-//        updateRows(toUpdate)
-//    }
-    
     override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
         let message = (item as! ACMessage);
         if cell is AABubbleTextCell {

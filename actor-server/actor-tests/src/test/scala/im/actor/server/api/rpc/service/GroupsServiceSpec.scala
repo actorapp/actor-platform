@@ -20,7 +20,6 @@ class GroupsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with MessageParsing
-  with ImplicitGroupRegions
   with ImplicitSequenceService
   with ImplicitAuthService
   with ImplicitSessionRegionProxy

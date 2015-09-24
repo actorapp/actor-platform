@@ -20,7 +20,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
     init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
-        dateLabel.font = UIFont(name: "HelveticaNeue-Italic", size: 11)
+        dateLabel.font = UIFont.italicSystemFontOfSize(11)
         dateLabel.lineBreakMode = .ByClipping
         dateLabel.numberOfLines = 1
         dateLabel.contentMode = UIViewContentMode.TopLeft

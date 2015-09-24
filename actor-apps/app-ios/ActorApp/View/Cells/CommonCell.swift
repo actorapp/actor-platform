@@ -9,8 +9,7 @@ enum CommonCellStyle {
     case DestructiveCentered
     case Destructive
     case Switch
-    case Blue
-    case Green
+    case Action
     case Navigation
     case Hint
 }
@@ -80,15 +79,8 @@ class CommonCell: UATableViewCell {
             switcher?.hidden = false
             accessoryType = UITableViewCellAccessoryType.None
             break
-        case .Blue: // TODO: Maybe rename?
-//            textLabel!.textColor = UIColor.RGB(0x007ee5)
+        case .Action:
             textLabel!.textColor = MainAppTheme.list.actionColor
-            textLabel!.textAlignment = NSTextAlignment.Left
-            switcher?.hidden = true
-            accessoryType = UITableViewCellAccessoryType.None
-            break
-        case .Green:
-            textLabel!.textColor = UIColor(red: 76/255.0, green: 216/255.0, blue: 100/255.0, alpha: 1.0) // TODO: Change color
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
