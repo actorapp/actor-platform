@@ -60,6 +60,10 @@
 
 "SettingsAbout" = "О Программе";
 
+"SettingsTwitter" = "Twitter";
+
+"SettingsAbout" = "Домашняя страница";
+
 "SettingsVersion" = "Версия {version}";
 
 /*
@@ -238,9 +242,13 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Приватность и безопасность";
+"PrivacyTitle" = "Безопасность";
 
 "PrivacyTerminate" = "Удалить все другие сессии";
+
+"PrivacyTerminateAlert" = "Удалить другие сессии";
+
+"PrivacyTerminateAlertSingle" = "Удалить сессию";
 
 "PrivacyTerminateHint" = "Выход со всех устройств кроме этого.";
 
@@ -304,6 +312,12 @@
 
 "AuthCodeHint" = "Мы отправили Вам SMS с кодом активации.";
 
+"AuthCallDoneHint" = "Актор набрал ваш номер.";
+
+"AuthCallHint" = "Актор позвонит вам через {time}";
+
+"AuthNoCodeHint" = "Не получили код?";
+
 "AuthProfileTitle" = "Ваш профиль";
 
 "AuthProfileAddPhoto1" = "добавить";
@@ -320,7 +334,7 @@
 
 "CurrentLocale" = "Ru";
 
-"InviteText" = "Привет! Давай продолжим наше общение в Акторе https://actor.im/dl";
+"InviteText" = "Привет! Давай продолжим наше общение в Акторе {link}";
 
 "PhotoRemove" = "Удалить фото";
 
@@ -355,6 +369,10 @@
 "AlertYes" = "Да";
 
 "AlertNo" = "Нет";
+
+"AlertError" = "Ошибка";
+
+"AlertTryAgain" = "Повторить";
 
 "UnsupportedContent" = "Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.";
 

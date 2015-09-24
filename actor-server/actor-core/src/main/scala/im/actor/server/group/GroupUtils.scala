@@ -1,12 +1,12 @@
 package im.actor.server.group
 
-import akka.util.Timeout
+import akka.actor.ActorSystem
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.pubgroups.ApiPublicGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.file.ImageUtils
-import im.actor.server.user.{ UserViewRegion, UserOffice }
+import im.actor.server.user.UserExtension
 import im.actor.server.{ models, persist }
 import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
@@ -39,6 +39,7 @@ object GroupUtils {
     }
   }
 
+  //todo: use GroupExtension.getMembers instead
   def withGroupUserIds[A](groupId: Int)(f: Seq[Int] ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
     persist.GroupUser.findUserIds(groupId) flatMap f
   }
@@ -46,17 +47,12 @@ object GroupUtils {
   def getUserIds(groups: Seq[ApiGroup]): Seq[Int] =
     groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
 
-  def getGroupsUsers(groupIds: Seq[Int], userIds: Seq[Int], clientUserId: Int, clientAuthId: Long)(
-    implicit
-    ec:              ExecutionContext,
-    timeout:         Timeout,
-    userViewRegion:  UserViewRegion,
-    groupViewRegion: GroupViewRegion
-  ): Future[(Seq[ApiGroup], Seq[ApiUser])] = {
+  def getGroupsUsers(groupIds: Seq[Int], userIds: Seq[Int], clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Future[(Seq[ApiGroup], Seq[ApiUser])] = {
+    import system.dispatcher
     for {
-      groups ← Future.sequence(groupIds map (GroupOffice.getApiStruct(_, clientUserId)))
+      groups ← Future.sequence(groupIds map (GroupExtension(system).getApiStruct(_, clientUserId)))
       memberIds = getUserIds(groups)
-      users ← Future.sequence((userIds.toSet ++ memberIds.toSet) map (UserOffice.getApiStruct(_, clientUserId, clientAuthId)))
+      users ← Future.sequence((userIds.toSet ++ memberIds.toSet) map (UserExtension(system).getApiStruct(_, clientUserId, clientAuthId)))
     } yield (groups, users.toSeq)
   }
 }

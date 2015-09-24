@@ -21,6 +21,7 @@ public class RpcParser extends BaseParser<RpcScope> {
     public RpcScope read(int type, byte[] payload) throws IOException {
         switch(type) {
             case 191: return RequestStartPhoneAuth.fromBytes(payload);
+            case 197: return RequestSendCodeByPhoneCall.fromBytes(payload);
             case 185: return RequestStartEmailAuth.fromBytes(payload);
             case 189: return RequestValidateCode.fromBytes(payload);
             case 194: return RequestGetOAuth2Params.fromBytes(payload);

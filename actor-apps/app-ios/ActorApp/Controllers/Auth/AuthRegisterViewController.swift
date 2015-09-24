@@ -40,8 +40,8 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
         titleLabel.textColor = UIColor.blackColor()
         titleLabel.textAlignment = NSTextAlignment.Center
         titleLabel.font = isIPad
-            ? UIFont(name: "HelveticaNeue-Thin", size: 50.0)
-            : UIFont(name: "HelveticaNeue-Light", size: 30.0)
+            ? UIFont.thinSystemFontOfSize(50)
+            : UIFont.lightSystemFontOfSize(30)
         titleLabel.text = NSLocalizedString("AuthProfileTitle", comment: "Title")
         grayBackground.addSubview(titleLabel)
         

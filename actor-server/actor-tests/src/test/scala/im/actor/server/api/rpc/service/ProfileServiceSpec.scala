@@ -22,7 +22,6 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 class ProfileServiceSpec
   extends BaseAppSuite
   with ImplicitFileStorageAdapter
-  with ImplicitUserRegions
   with ImplicitSessionRegionProxy
   with ImplicitAuthService {
   behavior of "Profile Service"

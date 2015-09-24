@@ -7,9 +7,9 @@ import akka.http.scaladsl.{ Http, HttpExt }
 import akka.stream.Materializer
 import akka.util.Timeout
 import com.typesafe.config.Config
+import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupExtension, GroupViewRegion }
 import im.actor.server.sms.{ ClickatellSmsEngine, SmsEngine }
-import im.actor.server.user.{ UserExtension, UserViewRegion }
 import im.actor.util.log.AnyRefLogSource
 import slick.driver.PostgresDriver.api._
 
@@ -24,7 +24,6 @@ object NotificationsSender {
 
   def startSingleton(notificationsConfig: NotificationsConfig, smsConfig: Config)(
     implicit
-    db:           Database,
     system:       ActorSystem,
     materializer: Materializer
   ): ActorRef = {
@@ -33,7 +32,7 @@ object NotificationsSender {
 
     system.actorOf(
       ClusterSingletonManager.props(
-        singletonProps = props(db, notificationsConfig, engine),
+        singletonProps = props(notificationsConfig, engine),
         singletonName = singletonName,
         terminationMessage = PoisonPill,
         role = None
@@ -42,27 +41,28 @@ object NotificationsSender {
     )
   }
 
-  private def props(implicit db: Database, config: NotificationsConfig, engine: SmsEngine) =
-    Props(classOf[NotificationsSender], db, config, engine)
+  private def props(implicit config: NotificationsConfig, engine: SmsEngine) =
+    Props(classOf[NotificationsSender], config, engine)
 }
 
-class NotificationsSender(implicit db: Database, config: NotificationsConfig, engine: SmsEngine) extends Actor with ActorLogging {
+class NotificationsSender(implicit config: NotificationsConfig, engine: SmsEngine) extends Actor with ActorLogging {
 
   import AnyRefLogSource._
   import NotificationsSender._
 
-  implicit val ec: ExecutionContextExecutor = context.system.dispatcher
+  implicit val system: ActorSystem = context.system
+  implicit val ec: ExecutionContextExecutor = system.dispatcher
+  implicit val db: Database = DbExtension(system).db
   implicit val watcherConfig: UnreadWatcherConfig = config.watcherConfig
-  implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
   implicit val groupViewRegion: GroupViewRegion = GroupExtension(context.system).viewRegion
   implicit val timeout = Timeout(5.seconds)
 
-  override val log = Logging(context.system, this)
+  override val log = Logging(system, this)
 
   private val unreadWatcher = new UnreadWatcher()
   private val notifier = new PhoneNotifier(engine)
 
-  val scheduledSend = context.system.scheduler.schedule(config.initialDelay, config.interval, self, Notify)
+  val scheduledSend = system.scheduler.schedule(config.initialDelay, config.interval, self, Notify)
 
   override def postStop(): Unit = {
     super.postStop()

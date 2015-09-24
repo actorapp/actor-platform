@@ -153,6 +153,33 @@
         {
           "type": "rpc",
           "content": {
+            "name": "SendCodeByPhoneCall",
+            "header": 197,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Dial phone and dictate auth code",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "danger",
+                "description": "Transaction hash"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "StartEmailAuth",
             "header": 185,
             "response": {

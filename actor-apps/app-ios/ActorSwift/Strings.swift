@@ -37,6 +37,10 @@ extension String {
         return NSNumberFormatter().numberFromString(self)?.longLongValue
     }
     
+    func toJLong() -> jlong {
+        return jlong(toLong()!)
+    }
+    
     func smallValue() -> String {
         let trimmed = trim();
         if (trimmed.isEmpty){

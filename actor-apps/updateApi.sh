@@ -7,4 +7,4 @@ SCRIPT_DIR=`pwd`
 # rm -fr "*"
 
 cd "$SCRIPT_DIR/build-tools/codegen-java/"
-"./gradlew" run  "-PappArgs=['$SCRIPT_DIR/../actor-api/actor.json', '$SCRIPT_DIR/core/src/main/java/']"
+dist/bin/codegen-java "$SCRIPT_DIR/../actor-api/actor.json" "$SCRIPT_DIR/core/src/main/java/"

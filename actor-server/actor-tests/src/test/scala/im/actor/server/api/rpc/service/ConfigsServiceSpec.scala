@@ -8,7 +8,6 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 
 class ConfigsServiceSpec
   extends BaseAppSuite
-  with ImplicitUserRegions
   with ImplicitSessionRegionProxy
   with ImplicitAuthService {
   behavior of "Configs Service"

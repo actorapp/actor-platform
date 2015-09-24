@@ -15,7 +15,7 @@ import im.actor.server.social.SocialManager
 import im.actor.server.user.{ UserProcessorRegion, UserOffice }
 import im.actor.server._
 
-class AuthServiceObsoleteSpec extends BaseAppSuite with ImplicitUserRegions {
+class AuthServiceObsoleteSpec extends BaseAppSuite {
   behavior of "Obsolete methods in AuthService"
 
   "SendAuthCode handler" should "respond ok to a request valid number" in s.sendAuthCode.e1
