@@ -24,6 +24,24 @@ func initStyles() {
         s.foregroundColor = UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1)
     }
     
+    // TabView
+    
+    registerStyle("tab.icon") { (s) -> () in
+        s.foregroundColor = MainAppTheme.tab.unselectedIconColor
+    }
+    
+    registerStyle("tab.icon.selected", parent: "root.accent") { (s) -> () in
+        s.foregroundColor = MainAppTheme.tab.selectedIconColor
+    }
+    
+    registerStyle("tab.text") { (s) -> () in
+        s.foregroundColor = MainAppTheme.tab.unselectedTextColor
+    }
+    
+    registerStyle("tab.text.selected", parent: "root.accent") { (s) -> () in
+        s.foregroundColor = MainAppTheme.tab.selectedTextColor
+    }
+    
     // Cell style
     
     registerStyle("cell") { (s) -> () in

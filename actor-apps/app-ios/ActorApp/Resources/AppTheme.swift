@@ -243,8 +243,8 @@ class AppTabBar {
     var selectedIconColor: UIColor { get { return mainColor } }
     var selectedTextColor : UIColor { get { return mainColor } }
     
-    var unselectedIconColor:UIColor { get { return mainColor.alpha(0.56) } }
-    var unselectedTextColor : UIColor { get { return mainColor.alpha(0.56) } }
+    var unselectedIconColor:UIColor { get { return UIColor.RGB(0x929292) } }
+    var unselectedTextColor : UIColor { get { return UIColor.RGB(0x949494) } }
     
     var barShadow : String? { get { return "CardTop2" } }
     
@@ -263,12 +263,12 @@ class AppTabBar {
         // TabBar Background color
         tabBar.barTintColor = backgroundColor;
 
-        // TabBar Shadow
-        if (barShadow != nil) {
-            tabBar.shadowImage = UIImage(named: barShadow!);
-        } else {
-            tabBar.shadowImage = nil
-        }
+//        // TabBar Shadow
+//        if (barShadow != nil) {
+//            tabBar.shadowImage = UIImage(named: barShadow!);
+//        } else {
+//            tabBar.shadowImage = nil
+//        }
         
         let tabBarItem = UITabBarItem.appearance()
         // TabBar Unselected Text

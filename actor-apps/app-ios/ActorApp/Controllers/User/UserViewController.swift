@@ -11,6 +11,7 @@ class UserViewController: AATableViewController {
     
     let uid: Int
     var user: ACUserVM?
+    var isBot: Bool!
     var phones: JavaUtilArrayList?
     var binder = Binder()
     
@@ -31,6 +32,7 @@ class UserViewController: AATableViewController {
         super.viewDidLoad()
         
         user = Actor.getUserWithUid(jint(uid))
+        isBot = user!.isBot().boolValue
         
         title = localized("ProfileTitle")
         
@@ -53,6 +55,11 @@ class UserViewController: AATableViewController {
                 cell.titleLabel.text = self.user!.getNameModel().get()
                 cell.avatarView.bind(self.user!.getNameModel().get(), id: self.user!.getId(), avatar: self.user!.getAvatarModel().get())
             }
+            
+            if self.isBot! {
+                cell.subtitleLabel.hidden = true
+            }
+            
             cell.didTap = { () -> () in
                 let avatar = self.user!.getAvatarModel().get()
                 if avatar != nil && avatar.getFullImage() != nil {
@@ -68,7 +75,7 @@ class UserViewController: AATableViewController {
             }.setHeight(92)
         
         // Send Message
-        if (!user!.isBot().boolValue) {
+        if (!isBot) {
             section
                 .addActionCell("ProfileSendMessage", actionClosure: { () -> Bool in
                     self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
@@ -77,17 +84,20 @@ class UserViewController: AATableViewController {
                 })
         }
         
-        section = tableData
-            .addSection(true)
-            .setFooterHeight(15)
-            .setHeaderHeight(15)
-        
         let nick = user!.getNickModel().get()
+        let about = user!.getAboutModel().get()
+        
+        if !isBot || nick != nil || about != nil {
+            section = tableData
+                .addSection(true)
+                .setFooterHeight(15)
+                .setHeaderHeight(15)
+        }
+    
         if nick != nil {
             section
                 .addTitledCell(localized("ProfileUsername"), text: "@\(nick)")
         }
-        
         
         // Phones
         section
@@ -114,15 +124,12 @@ class UserViewController: AATableViewController {
                 return true
             }.setCanCopy(true)
         
-        let about = user!.getAboutModel().get()
         if about != nil {
             section
                 .addTextCell(localized("ProfileAbout"), text: about)
                 .setCopy(about)
         }
-        
     
-        
         tableData.addSection()
             .setHeaderHeight(15)
             .setFooterHeight(15)
@@ -146,10 +153,12 @@ class UserViewController: AATableViewController {
             .setContent("ProfileNotifications")
             .setStyle(.Switch)
         
+        var contactsIndex: Int!
+        if !isBot {
         section = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
-        let contactsIndex = section.index
+        contactsIndex = section.index
 
         section
             .addCommonCell { (cell) -> () in
@@ -184,6 +193,7 @@ class UserViewController: AATableViewController {
                 }
                 return true
             })
+        }
         
         // Binding data
         tableView.reloadData()
@@ -199,33 +209,36 @@ class UserViewController: AATableViewController {
                 cell.titleLabel.text = name!
             }
         })
-
-        binder.bind(user!.getPresenceModel(), closure: { (presence: ACUserPresence?) -> () in
-            let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
-            if presenceText != nil {
-                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
+        
+        if !isBot {
+            
+            binder.bind(user!.getPresenceModel(), closure: { (presence: ACUserPresence?) -> () in
+                let presenceText = Actor.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
+                if presenceText != nil {
+                    if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
                     
-                    if presence!.getState().ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
-                        cell.subtitleLabel.applyStyle("user.online")
-                    } else {
-                        cell.subtitleLabel.applyStyle("user.offline")
+                        if presence!.getState().ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                            cell.subtitleLabel.applyStyle("user.online")
+                        } else {
+                            cell.subtitleLabel.applyStyle("user.offline")
+                        }
+                    
+                        cell.subtitleLabel.text = presenceText
                     }
-                    
-                    cell.subtitleLabel.text = presenceText
                 }
-            }
-        })
+            })
         
-        binder.bind(user!.getPhonesModel(), closure: { (phones: JavaUtilArrayList?) -> () in
-            if phones != nil {
-                self.phones = phones
-                self.tableView.reloadData()
-            }
-        })
+            binder.bind(user!.getPhonesModel(), closure: { (phones: JavaUtilArrayList?) -> () in
+                if phones != nil {
+                    self.phones = phones
+                    self.tableView.reloadData()
+                }
+            })
         
-        binder.bind(user!.isContactModel(), closure: { (contect: ARValueModel?) -> () in
-            self.tableView.reloadSections(NSIndexSet(index: contactsIndex), withRowAnimation: UITableViewRowAnimation.None)
-        })
+            binder.bind(user!.isContactModel(), closure: { (contect: ARValueModel?) -> () in
+                self.tableView.reloadSections(NSIndexSet(index: contactsIndex), withRowAnimation: UITableViewRowAnimation.None)
+            })
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
