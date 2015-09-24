@@ -1,8 +1,11 @@
 services {
   postgresql {
     host: "postgres"
-    db: postgres
+
+    db: "postgres"
+
     user: "postgres"
+
     password: ""
   }
 
@@ -12,12 +15,9 @@ services {
 
   activation-gate {
     uri: "https://activation-gw.actor.im"
-    auth-token: "a56d5265c877ef10afcfbdbcb0785fb9"
+    auth-token: "FPEinjrmxsq1ZDyu1bc7"
   }
 }
 
-//secret: "2796f6130714290ee8e6b37e7240584eb5c0228df132b535a5a248f5613ba982"
+secret: <put a long random string here>
 
-akka {
-  log-config-on-start: true
-}
