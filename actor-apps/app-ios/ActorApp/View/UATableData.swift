@@ -181,7 +181,7 @@ class UASection {
     var autoSeparatorsInset: CGFloat = 15.0
     
     private var tableView: UITableView
-    private var regions: [UARegion] = [UARegion]()
+    var regions: [UARegion] = [UARegion]()
     
     init(tableView: UITableView, index: Int) {
         self.tableView = tableView
