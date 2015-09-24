@@ -7,32 +7,15 @@ import _ from 'lodash';
 import React from 'react';
 
 import memoize from 'memoizee';
-import emojify from 'emojify.js';
-import emojiCharacters from 'emoji-named-characters';
 
 import { Path } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 
-const inversedEmojiCharacters = _.invert(_.mapValues(emojiCharacters, (e) => e.character));
+import { emoji } from 'utils/EmojiUtils';
 
-emojify.setConfig({
-  mode: 'img',
-  img_dir: Path.toEmoji // eslint-disable-line
-});
-
-const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), (name) => name.replace(/\+/g, '\\+'));
-
-const emojiRegexp = new RegExp('(' + emojiVariants.join('|') + ')', 'gi');
-
-const processText = function (text) {
+const processText = (text) => {
   const markedText = ActorClient.renderMarkdown(text);
-
-  // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
-  const noPTag = markedText.replace(/<p>/g, '<p> ');
-
-  let emojifiedText = emojify
-    .replace(noPTag.replace(emojiRegexp, (match) => `:${inversedEmojiCharacters[match]}:`));
-
+  const emojifiedText = emoji.replace_unified(markedText);
   return emojifiedText;
 };
 
@@ -56,10 +39,10 @@ class Text extends React.Component {
     const { content, className } = this.props;
 
     const renderedContent = (
-        <div className={className}
-             dangerouslySetInnerHTML={{__html: memoizedProcessText(content.text)}}>
-        </div>
-      );
+      <div className={className}
+           dangerouslySetInnerHTML={{__html: memoizedProcessText(content.text)}}>
+      </div>
+    );
 
     return renderedContent;
   }
