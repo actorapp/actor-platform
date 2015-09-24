@@ -32,47 +32,45 @@ class GroupViewController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
         view.backgroundColor = MainAppTheme.list.bgColor
-        edgesForExtendedLayout = UIRectEdge.Top
-        automaticallyAdjustsScrollViewInsets = false
+        
+        title = localized("ProfileTitle")
+        
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
-        tableView.clipsToBounds = false
 
         group = Actor.getGroupWithGid(jint(gid))
         
         tableData = UATableData(tableView: tableView)
-        tableData.registerClass(GroupPhotoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
+        tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
         tableData.registerClass(GroupMemberCell.self, forCellReuseIdentifier: UserCellIdentifier)
-        tableData.tableScrollClosure = { (tableView: UITableView) -> () in
-            self.applyScrollUi(tableView)
-        }
         
         // Banner
-        tableData.addSection()
-            .addCustomCell { (tableView, indexPath) -> UITableViewCell in
-                var cell = tableView.dequeueReusableCellWithIdentifier(
-                    self.GroupInfoCellIdentifier,
-                    forIndexPath: indexPath)
-                    as! GroupPhotoCell
-            
-                cell.contentView.superview?.clipsToBounds = false
-            
-                cell.selectionStyle = UITableViewCellSelectionStyle.None
-            
-                self.applyScrollUi(tableView, cell: cell)
-            
-                return cell
-            }
-            .setHeight(avatarHeight)
-        
-        // Change Photo
-        let adminSection = tableData.addSection(true)
+        var section = tableData.addSection(true)
             .setFooterHeight(15)
         
-        adminSection.addActionCell("GroupSetPhoto", actionClosure: { () -> Bool in
+        section.addCustomCell { (tableView, indexPath) -> UITableViewCell in
+            var cell = tableView.dequeueReusableCellWithIdentifier(self.GroupInfoCellIdentifier, forIndexPath: indexPath) as! AvatarCell
+            cell.selectionStyle = UITableViewCellSelectionStyle.None
+            
+            cell.didTap = { () -> () in
+                let avatar = self.group!.getAvatarModel().get()
+                if avatar != nil && avatar.getFullImage() != nil {
+                    
+                    let full = avatar.getFullImage().getFileReference()
+                    let small = avatar.getSmallImage().getFileReference()
+                    let size = CGSize(width: Int(avatar.getFullImage().getWidth()), height: Int(avatar.getFullImage().getHeight()))
+                    
+                    self.presentViewController(PhotoPreviewController(file: full, previewFile: small, size: size, fromView: cell.avatarView), animated: true, completion: nil)
+                }
+            }
+            
+            return cell
+        }
+        .setHeight(92)
+        
+        // Change Photo
+        section.addActionCell("GroupSetPhoto", actionClosure: { () -> Bool in
             let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
             self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                 cancelButton: "AlertCancel",
@@ -100,11 +98,10 @@ class GroupViewController: AATableViewController {
             return true
         })
         
-        adminSection
-            .addActionCell("GroupSetTitle", actionClosure: { () -> Bool in
+        section.addActionCell("GroupSetTitle", actionClosure: { () -> Bool in
                 self.editName()
                 return true
-            })
+        })
         
 //        adminSection
 //            .addNavigationCell("GroupIntegrations", actionClosure: { () -> () in
@@ -114,7 +111,6 @@ class GroupViewController: AATableViewController {
         // Notifications
         tableData.addSection(true)
             .setHeaderHeight(15)
-            .setFooterHeight(15)
             .addCommonCell()
                 .setStyle(.Switch)
                 .setContent("GroupNotifications")
@@ -130,7 +126,9 @@ class GroupViewController: AATableViewController {
         // Members
         
         let membersSection = tableData.addSection(true)
-            .setHeaderHeight(15)
+        
+        membersSection.addHeaderCell()
+            .setTitle("MEMBERS")
         
         membersSection
             .addCustomCells(48, countClosure: { () -> Int in
@@ -244,19 +242,18 @@ class GroupViewController: AATableViewController {
         
         // Bind group info
         binder.bind(group!.getNameModel()!, closure: { (value: String?) -> () in
-            let cell: GroupPhotoCell? = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? GroupPhotoCell
+            let cell: AvatarCell? = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell
             if cell != nil {
-                cell!.setGroupName(value!)
+                cell!.titleLabel.text = value!
             }
-            self.title = value!
         })
         
         binder.bind(group!.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? GroupPhotoCell {
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
                 if (self.group!.isMemberModel().get().booleanValue()) {
-                    cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: value)
+                    cell.avatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: value)
                 } else {
-                    cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: nil)
+                    cell.avatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: nil)
                 }
             }
         })
@@ -308,21 +305,5 @@ class GroupViewController: AATableViewController {
             }
 
         }
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        navigationController?.navigationBar.lt_reset()
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        
-        
-        
-        super.viewWillAppear(animated)
-        
-        // applyScrollUi(tableView)
-        navigationController?.navigationBar.shadowImage = UIImage()
     }
 }
