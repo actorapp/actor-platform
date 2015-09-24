@@ -255,3 +255,20 @@ extension AvatarView {
     }
 }
 
+extension UIImage {
+    func styled(style: String) -> UIImage {
+        let style = pickStyle(style)!
+        var res = self
+        if let v = style.foregroundColor {
+            res = res.tintImage(v).imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
+        }
+        return res
+    }
+}
+
+extension UIColor {
+    class func style(style: String) -> UIColor {
+        return pickStyle(style)!.foregroundColor!
+    }
+}
+

@@ -52,6 +52,7 @@ class GroupViewController: AATableViewController {
         section.addCustomCell { (tableView, indexPath) -> UITableViewCell in
             var cell = tableView.dequeueReusableCellWithIdentifier(self.GroupInfoCellIdentifier, forIndexPath: indexPath) as! AvatarCell
             cell.selectionStyle = UITableViewCellSelectionStyle.None
+            cell.subtitleLabel.hidden = true
             
             cell.didTap = { () -> () in
                 let avatar = self.group!.getAvatarModel().get()

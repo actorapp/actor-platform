@@ -47,7 +47,12 @@ class AvatarCell: UATableViewCell {
         
         avatarView.frame = CGRect(x: 14, y: 14, width: 64, height: 64)
         progress.frame = avatarView.frame
-        titleLabel.frame = CGRect(x: 82 + 6, y: 14 + 64/2 - 24, width: self.contentView.bounds.width - 82 - 14 - 10, height: 24)
-        subtitleLabel.frame = CGRect(x: 82 + 6, y: 14 + 66/2 + 4, width: self.contentView.bounds.width - 82 - 14 - 10, height: 16)
+
+        if subtitleLabel.hidden {
+            titleLabel.frame = CGRect(x: 82 + 6, y: 14 + 64/2 - 14, width: self.contentView.bounds.width - 82 - 14 - 10, height: 24)
+        } else {
+            titleLabel.frame = CGRect(x: 82 + 6, y: 14 + 64/2 - 24, width: self.contentView.bounds.width - 82 - 14 - 10, height: 24)
+            subtitleLabel.frame = CGRect(x: 82 + 6, y: 14 + 66/2 + 4, width: self.contentView.bounds.width - 82 - 14 - 10, height: 16)
+        }
     }
 }
