@@ -101,15 +101,15 @@ object Main extends App {
 
   val mediator = DistributedPubSubExtension(system).mediator
 
-  val telesignClient = new TelesignClient(serverConfig.getConfig("services.telesign"))
-
   val activationContext = serverConfig.getString("services.activation.default-service") match {
-    case "internal" ⇒ InternalCodeActivation.newContext(
-      activationConfig,
-      new TelesignSmsEngine(telesignClient),
-      new TelesignCallEngine((telesignClient)),
-      new EmailSender(emailConfig)
-    )
+    case "internal" ⇒
+      val telesignClient = new TelesignClient(serverConfig.getConfig("services.telesign"))
+      InternalCodeActivation.newContext(
+        activationConfig,
+        new TelesignSmsEngine(telesignClient),
+        new TelesignCallEngine((telesignClient)),
+        new EmailSender(emailConfig)
+      )
     case "actor-activation" ⇒ new GateCodeActivation(gateConfig)
     case _                  ⇒ throw new Exception("""Invalid activation.default-service value provided: valid options: "internal", actor-activation""")
   }
