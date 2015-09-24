@@ -2,20 +2,16 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
-
-import React from 'react';
-
+import React, { Component } from 'react';
 import memoize from 'memoizee';
-
-import { Path } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 
+import { Path } from 'constants/ActorAppConstants';
 import { emoji } from 'utils/EmojiUtils';
 
 const processText = (text) => {
   const markedText = ActorClient.renderMarkdown(text);
-  const emojifiedText = emoji.replace_unified(markedText);
+  const emojifiedText = emoji.replace_unified(emoji.replace_colons(markedText));
   return emojifiedText;
 };
 
@@ -25,7 +21,7 @@ const memoizedProcessText = memoize(processText, {
   max: 10000
 });
 
-class Text extends React.Component {
+export default class Text extends Component {
   static propTypes = {
     content: React.PropTypes.object.isRequired,
     className: React.PropTypes.string
@@ -38,14 +34,10 @@ class Text extends React.Component {
   render() {
     const { content, className } = this.props;
 
-    const renderedContent = (
+    return (
       <div className={className}
            dangerouslySetInnerHTML={{__html: memoizedProcessText(content.text)}}>
       </div>
     );
-
-    return renderedContent;
   }
 }
-
-export default Text;
