@@ -17,14 +17,10 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     init() {
         super.init(contentSection: 0)
         
-        var title = "";
-        if (MainAppTheme.tab.showText) {
-            title = NSLocalizedString("TabMessages", comment: "Messages Title")
-        }
-        
-        tabBarItem = UITabBarItem(title: title,
-            image: MainAppTheme.tab.createUnselectedIcon("TabIconChats"),
-            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconChatsHighlighted"))
+        tabBarItem = UITabBarItem(
+            title: localized("TabMessages"),
+            image: UIImage(named: "TabIconChats")?.styled("tab.icon"),
+            selectedImage: UIImage(named: "TabIconChatsHighlighted")?.styled("tab.icon.selected"))
         
         binder.bind(Actor.getAppState().getGlobalCounter(), closure: { (value: JavaLangInteger?) -> () in
             if value != nil {
