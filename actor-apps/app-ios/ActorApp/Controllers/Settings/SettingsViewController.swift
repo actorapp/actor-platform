@@ -144,11 +144,31 @@ class SettingsViewController: AATableViewController {
         })
         
         
+        
+        // Settings
         section = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
         
-        // Nick
+        // Settings: Notifications
+        section.addNavigationCell("SettingsNotifications") { () -> Bool in
+            self.navigateNext(SettingsNotificationsViewController(), removeCurrent: false)
+            return false
+        }
+        
+        // Settings: Privacy
+        section.addNavigationCell("SettingsSecurity") { () -> Bool in
+            self.navigateNext(SettingsPrivacyViewController(), removeCurrent: false)
+            return false
+        }
+        
+        // Profile
+        
+        section = tableData.addSection(true)
+            .setHeaderHeight(15)
+            .setFooterHeight(15)
+        
+        // Profile: Nick
         section
             .addCustomCell { (tableView, indexPath) -> UITableViewCell in
                 let cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
@@ -176,7 +196,7 @@ class SettingsViewController: AATableViewController {
                     }
                     self.executeSafe(Actor.editMyNickCommandWithNick(nNick))
                 }
-            return true
+                return true
         }
         
         var about = self.user!.getAboutModel().get()
@@ -211,19 +231,19 @@ class SettingsViewController: AATableViewController {
             return false
         }
         
-        // Phones
+        // Profile: Phones
         section
             .addCustomCells(55, countClosure: { () -> Int in
-            if (self.phones != nil) {
-                return Int(self.phones!.size())
-            }
-            return 0
-            }) { (tableView, index, indexPath) -> UITableViewCell in
-                let cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
-                if let phone = self.phones!.getWithInt(jint(index)) as? ACUserPhone {
-                    cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
+                if (self.phones != nil) {
+                    return Int(self.phones!.size())
                 }
-                return cell
+                return 0
+                }) { (tableView, index, indexPath) -> UITableViewCell in
+                    let cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
+                    if let phone = self.phones!.getWithInt(jint(index)) as? ACUserPhone {
+                        cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
+                    }
+                    return cell
             }.setAction { (index) -> Bool in
                 let phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
                 let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "telprompt://")!)
@@ -235,23 +255,7 @@ class SettingsViewController: AATableViewController {
                 }
                 return true
             }.setCanCopy(true)
-        
-        // Settings
-        section = tableData.addSection(true)
-            .setHeaderHeight(15)
-            .setFooterHeight(15)
-        
-        // Settings: Notifications
-        section.addNavigationCell("SettingsNotifications") { () -> Bool in
-            self.navigateNext(SettingsNotificationsViewController(), removeCurrent: false)
-            return false
-        }
-        
-        // Settings: Privacy
-        section.addNavigationCell("SettingsSecurity") { () -> Bool in
-            self.navigateNext(SettingsPrivacyViewController(), removeCurrent: false)
-            return false
-        }
+
         
         // Support
         section = tableData.addSection(true)
