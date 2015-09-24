@@ -14,7 +14,7 @@ class SettingsViewController: AATableViewController {
     private let TitledCellIdentifier = "TitledCellIdentifier"
     private let TextCellIdentifier = "TextCellIdentifier"
     
-    private var tableData: UATableData!
+    private var tableData: UABaseTableData!
     
     private let uid: Int
     private var user: ACUserVM?
@@ -68,22 +68,88 @@ class SettingsViewController: AATableViewController {
         tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableData.registerClass(TextCell.self, forCellReuseIdentifier: TextCellIdentifier)
         
-        // Avatar
-        
-        let profileInfoSection = tableData.addSection(true)
+        var section = tableData.addSection(true)
             .setFooterHeight(15)
-        
-        profileInfoSection.addCustomCell { (tableView, indexPath) -> UITableViewCell in
+
+        // Avatar
+        section.addCustomCell { (tableView, indexPath) -> UITableViewCell in
             let cell: AvatarCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! AvatarCell
             cell.selectionStyle = .None
             if self.user != nil {
                 cell.titleLabel.text = self.user!.getNameModel().get()
             }
+            cell.didTap = { () -> () in
+                let avatar = self.user!.getAvatarModel().get()
+                if avatar != nil && avatar.getFullImage() != nil {
+                    self.presentViewController(PhotoPreviewController(file: avatar.getFullImage().getFileReference(), fromView: cell.avatarView), animated: true, completion: nil)
+                }
+            }
             return cell
         }.setHeight(92)
         
+        // Profile: Set Photo
+        section.addActionCell("SettingsSetPhoto", actionClosure: { () -> Bool in
+            let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+            self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
+                cancelButton: "AlertCancel",
+                destructButton: self.user!.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
+                sourceView: self.view,
+                sourceRect: self.view.bounds,
+                tapClosure: { (index) -> () in
+                    if index == -2 {
+                        self.confirmUser("PhotoRemoveGroupMessage",
+                            action: "PhotoRemove",
+                            cancel: "AlertCancel",
+                            sourceView: self.view,
+                            sourceRect: self.view.bounds,
+                            tapYes: { () -> () in
+                                Actor.removeMyAvatar()
+                        })
+                    } else if index >= 0 {
+                        let takePhoto: Bool = (index == 0) && hasCamera
+                        self.pickAvatar(takePhoto, closure: { (image) -> () in
+                            Actor.changeOwnAvatar(image)
+                        })
+                    }
+            })
+            return true
+        })
+        
+        // Profile: Set Name
+        section.addActionCell("SettingsChangeName", actionClosure: { () -> Bool in
+            
+            let alertView = UIAlertView(title: nil,
+                message: NSLocalizedString("SettingsEditHeader", comment: "Title"),
+                delegate: nil,
+                cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
+            
+            alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
+            alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+            alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
+            alertView.textFieldAtIndex(0)!.text = self.user!.getNameModel().get()
+            alertView.textFieldAtIndex(0)?.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
+            
+            alertView.tapBlock = { (alertView, buttonIndex) -> () in
+                if (buttonIndex == 1) {
+                    let textField = alertView.textFieldAtIndex(0)!
+                    if textField.text!.length > 0 {
+                        self.execute(Actor.editMyNameCommandWithName(textField.text))
+                    }
+                }
+            }
+            
+            alertView.show()
+            
+            return true
+        })
+        
+        
+        section = tableData.addSection(true)
+            .setHeaderHeight(15)
+            .setFooterHeight(15)
+        
         // Nick
-        profileInfoSection
+        section
             .addCustomCell { (tableView, indexPath) -> UITableViewCell in
                 let cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
                 
@@ -117,7 +183,7 @@ class SettingsViewController: AATableViewController {
         if about == nil {
             about = localized("SettingsAboutNotSet")
         }
-        let aboutCell = profileInfoSection
+        let aboutCell = section
             .addTextCell(localized("ProfileAbout"), text: about)
             .setEnableNavigation(true)
         
@@ -146,7 +212,7 @@ class SettingsViewController: AATableViewController {
         }
         
         // Phones
-        profileInfoSection
+        section
             .addCustomCells(55, countClosure: { () -> Int in
             if (self.phones != nil) {
                 return Int(self.phones!.size())
@@ -170,93 +236,31 @@ class SettingsViewController: AATableViewController {
                 return true
             }.setCanCopy(true)
         
-        
-        // Profile
-        let topSection = tableData.addSection(true)
-        topSection.setHeaderHeight(15)
-        topSection.setFooterHeight(15)
-        
-        // Profile: Set Photo
-        topSection.addActionCell("SettingsSetPhoto", actionClosure: { () -> Bool in
-            let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-            self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
-                cancelButton: "AlertCancel",
-                destructButton: self.user!.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
-                sourceView: self.view,
-                sourceRect: self.view.bounds,
-                tapClosure: { (index) -> () in
-                    if index == -2 {
-                        self.confirmUser("PhotoRemoveGroupMessage",
-                            action: "PhotoRemove",
-                            cancel: "AlertCancel",
-                            sourceView: self.view,
-                            sourceRect: self.view.bounds,
-                            tapYes: { () -> () in
-                                Actor.removeMyAvatar()
-                            })
-                    } else if index >= 0 {
-                        let takePhoto: Bool = (index == 0) && hasCamera
-                        self.pickAvatar(takePhoto, closure: { (image) -> () in
-                            Actor.changeOwnAvatar(image)
-                        })
-                    }
-            })
-            return true
-        })
-        
-        // Profile: Set Name
-        topSection.addActionCell("SettingsChangeName", actionClosure: { () -> Bool in
-
-            let alertView = UIAlertView(title: nil,
-                message: NSLocalizedString("SettingsEditHeader", comment: "Title"),
-                delegate: nil,
-                cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
-            
-            alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
-            alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
-            alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
-            alertView.textFieldAtIndex(0)!.text = self.user!.getNameModel().get()
-            alertView.textFieldAtIndex(0)?.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
-            
-            alertView.tapBlock = { (alertView, buttonIndex) -> () in
-                if (buttonIndex == 1) {
-                    let textField = alertView.textFieldAtIndex(0)!
-                    if textField.text!.length > 0 {
-                        self.execute(Actor.editMyNameCommandWithName(textField.text))
-                    }
-                }
-            }
-            
-            alertView.show()
-            
-            return true
-        })
-
         // Settings
-        let actionsSection = tableData.addSection(true)
+        section = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
         
         // Settings: Notifications
-        actionsSection.addNavigationCell("SettingsNotifications") { () -> Bool in
+        section.addNavigationCell("SettingsNotifications") { () -> Bool in
             self.navigateNext(SettingsNotificationsViewController(), removeCurrent: false)
             return false
         }
         
         // Settings: Privacy
-        actionsSection.addNavigationCell("SettingsSecurity") { () -> Bool in
+        section.addNavigationCell("SettingsSecurity") { () -> Bool in
             self.navigateNext(SettingsPrivacyViewController(), removeCurrent: false)
             return false
         }
         
         // Support
-        let supportSection = tableData.addSection(true)
+        section = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
         
         // Support: Ask Question
         if let account = AppConfig.supportAccount {
-            supportSection.addNavigationCell("SettingsAskQuestion") { () -> Bool in
+            section.addNavigationCell("SettingsAskQuestion") { () -> Bool in
                 self.executeSafe(Actor.findUsersCommandWithQuery(account)) { (val) -> Void in
                     var user:ACUserVM!
                     if let users = val as? IOSObjectArray {
@@ -274,7 +278,7 @@ class SettingsViewController: AATableViewController {
         
         // Support: Twitter
         if let twitter = AppConfig.appTwitter {
-            supportSection.addNavigationCell("SettingsTwitter") { () -> Bool in
+            section.addNavigationCell("SettingsTwitter") { () -> Bool in
                 UIApplication.sharedApplication().openURL(NSURL(string: "https://twitter.com/\(twitter)")!)
                 return false
             }
@@ -282,7 +286,7 @@ class SettingsViewController: AATableViewController {
         
         // Support: Home page
         if let homePage = AppConfig.appHomePage {
-            supportSection.addNavigationCell("SettingsAbout") { () -> Bool in
+            section.addNavigationCell("SettingsAbout") { () -> Bool in
                 UIApplication.sharedApplication().openURL(NSURL(string: homePage)!)
                 return false
             }
@@ -290,7 +294,7 @@ class SettingsViewController: AATableViewController {
         
         // Support: App version
         let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
-        supportSection.addCommonCell()
+        section.addCommonCell()
             .setContent(NSLocalizedString("SettingsVersion", comment: "Version").stringByReplacingOccurrencesOfString("{version}", withString: version, options: NSStringCompareOptions(), range: nil))
             .setStyle(.Hint)
         
@@ -317,21 +321,23 @@ class SettingsViewController: AATableViewController {
                 aboutCell.setIsAction(false)
             }
             aboutCell.setContent(localized("ProfileAbout"), text: about)
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 2, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 1, inSection: 1)], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
         
         binder.bind(user!.getNickModel()) { (value: String?) -> () in
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 1, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 1)], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
         
         binder.bind(Actor.getOwnAvatarVM().getUploadState(), valueModel2: user!.getAvatarModel()) { (upload: ACAvatarUploadState?, avatar:  ACAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
                 if (upload != nil && upload!.isUploading().boolValue) {
                     cell.avatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), fileName: upload?.getDescriptor())
-//                    cell.setProgress(true)
+                    cell.progress.hidden = false
+                    cell.progress.startAnimating()
                 } else {
                     cell.avatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: avatar, clearPrev: false)
-//                    cell.setProgress(false)
+                    cell.progress.hidden = true
+                    cell.progress.stopAnimating()
                 }
             }
         }

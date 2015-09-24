@@ -55,7 +55,6 @@ class UserViewController: AATableViewController {
             }
             return cell
             }.setHeight(92)
-
         
         let nick = user!.getNickModel().get()
         if nick != nil {

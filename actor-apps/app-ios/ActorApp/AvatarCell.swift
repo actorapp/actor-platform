@@ -7,37 +7,46 @@ import Foundation
 
 class AvatarCell: UATableViewCell {
     
-    var titleLabel: UILabel!
-    var subtitleLabel: UILabel!
-    var avatarView: AvatarView!
+    var titleLabel = UILabel()
+    var subtitleLabel = UILabel()
+    var avatarView = AvatarView(frameSize: Int(64), type: .Rounded, placeholderImage: UIImage())
+    var progress = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    var didTap: (()->())?
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        avatarView = AvatarView(frameSize: Int(64), type: .Rounded, placeholderImage: UIImage())
+        avatarView = AvatarView(frameSize: Int(64), type: .Rounded)
+        avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "avatarDidTap"))
+        avatarView.userInteractionEnabled = true
         contentView.addSubview(avatarView)
         
-        titleLabel = UILabel()
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textColor = MainAppTheme.list.textColor
         titleLabel.font = UIFont.systemFontOfSize(20.0)
         contentView.addSubview(titleLabel)
         
-        subtitleLabel = UILabel()
         subtitleLabel.backgroundColor = UIColor.clearColor()
         subtitleLabel.textColor = MainAppTheme.list.hintColor
         subtitleLabel.font = UIFont.systemFontOfSize(14.0)
         contentView.addSubview(subtitleLabel)
+        
+        contentView.addSubview(progress)
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func avatarDidTap() {
+        didTap?()
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
         avatarView.frame = CGRect(x: 14, y: 14, width: 64, height: 64)
+        progress.frame = avatarView.frame
         titleLabel.frame = CGRect(x: 82 + 6, y: 14 + 64/2 - 24, width: self.contentView.bounds.width - 82 - 14 - 10, height: 24)
         subtitleLabel.frame = CGRect(x: 82 + 6, y: 14 + 66/2 + 4, width: self.contentView.bounds.width - 82 - 14 - 10, height: 16)
     }
