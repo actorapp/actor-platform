@@ -165,6 +165,12 @@ class SettingsViewController: AATableViewController {
             return false
         }
         
+        // Settings: Wallpapper
+        section.addNavigationCell("SettingsSecurity") { () -> Bool in
+            self.navigateNext(SettingsWallpapper(), removeCurrent: false)
+            return false
+        }
+        
         // Profile
         
         section = tableData.addSection(true)
