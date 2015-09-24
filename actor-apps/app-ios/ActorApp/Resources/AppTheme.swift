@@ -196,8 +196,8 @@ class AppSearchBar {
         // SearchBar Text Color
         let textField = UITextField.my_appearanceWhenContainedIn(UISearchBar.self)
         // textField.tintColor = UIColor.redColor()
-        let font = UIFont(name: "HelveticaNeue", size: 14.0)
-        textField.defaultTextAttributes = [NSFontAttributeName: font!,
+        let font = UIFont.systemFontOfSize(14)
+        textField.defaultTextAttributes = [NSFontAttributeName: font,
                         NSForegroundColorAttributeName : fieldTextColor]
     }
     

@@ -113,11 +113,11 @@ public class UsersModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -144,11 +144,11 @@ public class UsersModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -175,11 +175,11 @@ public class UsersModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }

@@ -28,7 +28,9 @@ import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.entity.content.TextContent;
+import im.actor.core.modules.Errors;
 import im.actor.core.modules.Modules;
+import im.actor.core.network.RpcException;
 import im.actor.core.util.JavaUtil;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.runtime.LocaleRuntime;
@@ -416,6 +418,32 @@ public class I18nEngine {
         }
 
         return content.getCompatText();
+    }
+
+    @ObjectiveCName("formatErrorTextWithTag:")
+    public String formatErrorText(String tag) {
+        return locale.get(Errors.mapError(tag));
+    }
+
+    @ObjectiveCName("formatErrorTextWithError:")
+    public String formatErrorText(Object o) {
+        if (o instanceof RpcException) {
+            RpcException e = (RpcException) o;
+            String res = Errors.mapError(e.getTag(), null);
+            if (res != null) {
+                return locale.get(res);
+            } else {
+                if (e.getMessage().equals("")) {
+                    return e.getTag();
+                } else {
+                    return e.getMessage();
+                }
+            }
+        } else if (o instanceof Exception) {
+            return ((Exception) o).getMessage();
+        } else {
+            return "" + o;
+        }
     }
 
     @ObjectiveCName("formatPerformerNameWithUid:")

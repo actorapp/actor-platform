@@ -16,7 +16,7 @@ private func lift<T>(x: T) -> Lifted<T>  {
     return Lifted(x)
 }
 
-func setAssociatedObject<T>(object: AnyObject, value: T, associativeKey: UnsafePointer<Void>, policy: objc_AssociationPolicy) {
+func setAssociatedObject<T>(object: AnyObject, value: T, associativeKey: UnsafePointer<Void>, policy: objc_AssociationPolicy = objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) {
     if let v: AnyObject = value as? AnyObject {
         objc_setAssociatedObject(object, associativeKey, v,  policy)
     }

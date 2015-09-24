@@ -6,5 +6,5 @@ import im.actor.server.sequence.SeqUpdatesExtension
 trait ImplicitSeqUpdatesManagerRegion {
   protected implicit val system: ActorSystem
 
-  protected implicit lazy val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
+  protected implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
 }

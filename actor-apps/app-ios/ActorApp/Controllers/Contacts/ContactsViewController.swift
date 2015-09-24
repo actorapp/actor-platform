@@ -229,9 +229,16 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     
     func showSmsInvitation(recipients: [String]?) {
         if MFMessageComposeViewController.canSendText() {
+            
+            if AppConfig.appInviteUrl == nil {
+                // Silently ignore if not configured
+                return
+            }
+            
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
-            messageComposeController.body =  NSLocalizedString("InviteText", comment: "Invite Text")
+            messageComposeController.body = localized("InviteText")
+                .replace("{link}", dest: AppConfig.appInviteUrl!)
             messageComposeController.recipients = recipients
             messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
             presentViewController(messageComposeController, animated: true, completion: { () -> Void in
