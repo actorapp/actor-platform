@@ -42,29 +42,55 @@ class UserViewController: AATableViewController {
         tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         
         // Top section
-        let contactsSection = tableData
+        var section = tableData
             .addSection(true)
             .setFooterHeight(15)
         
-        contactsSection.addCustomCell { (tableView, indexPath) -> UITableViewCell in
+        section.addCustomCell { (tableView, indexPath) -> UITableViewCell in
             let cell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! AvatarCell
             cell.selectionStyle = .None
             if self.user != nil {
                 cell.titleLabel.text = self.user!.getNameModel().get()
                 cell.avatarView.bind(self.user!.getNameModel().get(), id: self.user!.getId(), avatar: self.user!.getAvatarModel().get())
             }
+            cell.didTap = { () -> () in
+                let avatar = self.user!.getAvatarModel().get()
+                if avatar != nil && avatar.getFullImage() != nil {
+                    
+                    let full = avatar.getFullImage().getFileReference()
+                    let small = avatar.getSmallImage().getFileReference()
+                    let size = CGSize(width: Int(avatar.getFullImage().getWidth()), height: Int(avatar.getFullImage().getHeight()))
+                    
+                    self.presentViewController(PhotoPreviewController(file: full, previewFile: small, size: size, fromView: cell.avatarView), animated: true, completion: nil)
+                }
+            }
             return cell
             }.setHeight(92)
         
+        // Send Message
+        if (!user!.isBot().boolValue) {
+            section
+                .addActionCell("ProfileSendMessage", actionClosure: { () -> Bool in
+                    self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
+                    self.popover?.dismissPopoverAnimated(true)
+                    return false
+                })
+        }
+        
+        section = tableData
+            .addSection(true)
+            .setFooterHeight(15)
+            .setHeaderHeight(15)
+        
         let nick = user!.getNickModel().get()
         if nick != nil {
-            contactsSection
+            section
                 .addTitledCell(localized("ProfileUsername"), text: "@\(nick)")
         }
         
         
         // Phones
-        contactsSection
+        section
             .addCustomCells(55, countClosure: { () -> Int in
                 if (self.phones != nil) {
                     return Int(self.phones!.size())
@@ -90,23 +116,12 @@ class UserViewController: AATableViewController {
         
         let about = user!.getAboutModel().get()
         if about != nil {
-            contactsSection
+            section
                 .addTextCell(localized("ProfileAbout"), text: about)
                 .setCopy(about)
         }
         
-        
-        // Send Message
-        if (!user!.isBot().boolValue) {
-            tableData.addSection(true)
-                .setHeaderHeight(15)
-                .setFooterHeight(15)
-                .addActionCell("ProfileSendMessage", actionClosure: { () -> Bool in
-                    self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
-                    self.popover?.dismissPopoverAnimated(true)
-                    return false
-                })
-        }
+    
         
         tableData.addSection()
             .setHeaderHeight(15)
@@ -131,11 +146,12 @@ class UserViewController: AATableViewController {
             .setContent("ProfileNotifications")
             .setStyle(.Switch)
         
-        let contactSection = tableData.addSection(true)
+        section = tableData.addSection(true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
+        let contactsIndex = section.index
 
-       contactSection
+        section
             .addCommonCell { (cell) -> () in
                 if (self.user!.isContactModel().get().booleanValue()) {
                     cell.setContent(NSLocalizedString("ProfileRemoveFromContacts", comment: "Remove From Contacts"))
@@ -155,7 +171,7 @@ class UserViewController: AATableViewController {
             }
         
         // Rename
-        contactSection
+        section
             .addActionCell("ProfileRename", actionClosure: { () -> Bool in
                 if (!Actor.isRenameHintShown()) {
                     self.confirmAlertUser("ProfileRenameMessage",
@@ -208,7 +224,7 @@ class UserViewController: AATableViewController {
         })
         
         binder.bind(user!.isContactModel(), closure: { (contect: ARValueModel?) -> () in
-            self.tableView.reloadSections(NSIndexSet(index: contactSection.index), withRowAnimation: UITableViewRowAnimation.None)
+            self.tableView.reloadSections(NSIndexSet(index: contactsIndex), withRowAnimation: UITableViewRowAnimation.None)
         })
     }
     
