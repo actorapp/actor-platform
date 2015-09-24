@@ -22,8 +22,8 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
         self.init(photos: [photo], fromView: fromView)
     }
     
-    convenience init(file: ACFileReference, fromView: UIView?) {
-        self.init(photos: [PreviewImage(file: file)], fromView: fromView)
+    convenience init(file: ACFileReference, previewFile: ACFileReference?, size: CGSize?, fromView: UIView?) {
+        self.init(photos: [PreviewImage(file: file, previewFile: previewFile, size: size)], fromView: fromView)
     }
     
     init(photos: [PreviewImage], initialPhoto: Int, fromView: UIView?) {
@@ -33,7 +33,9 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
             if p.image != nil {
                 converted.append(AAPhoto(image: p.image))
                 continue
-            } else if p.file != nil  {
+            }
+            
+            if p.file != nil  {
                 let desc = Actor.getDownloadedDescriptorWithFileId(p.file!.getFileId())
                 if desc != nil {
                     let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
@@ -44,7 +46,22 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
                 }
             }
             
-            converted.append(AAPhoto(image: p.preview))
+            if p.previewFile != nil {
+                let desc = Actor.getDownloadedDescriptorWithFileId(p.previewFile!.getFileId())
+                if desc != nil {
+                    var img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
+                    if img != nil {
+                        img = img!.applyBlur(4)
+                        if p.size != nil {
+                            img = img!.resize(p.size!.width, h: p.size!.height)
+                        }
+                        converted.append(AAPhoto(image: nil, placeholderImage: img, attributedCaptionTitle: nil, attributedCaptionSummary: nil, attributedCaptionCredit: nil))
+                        continue
+                    }
+                }
+            }
+            
+            converted.append(AAPhoto(image: nil, placeholderImage: p.preview, attributedCaptionTitle: nil, attributedCaptionSummary: nil, attributedCaptionCredit: nil))
         }
         
         self.photos = photos
@@ -125,17 +142,23 @@ class PreviewImage {
     
     let preview: UIImage?
     var image: UIImage?
+    let previewFile: ACFileReference?
     let file: ACFileReference?
+    let size: CGSize?
     
-    init(file: ACFileReference, preview: UIImage? = nil) {
+    init(file: ACFileReference, previewFile: ACFileReference?, size: CGSize?, preview: UIImage? = nil) {
         self.file = file
         self.preview = preview
         self.image = nil
+        self.previewFile = previewFile
+        self.size = size
     }
     
     init(image: UIImage) {
         self.file = nil
         self.preview = nil
         self.image = image
+        self.previewFile = nil
+        self.size = nil
     }
 }
