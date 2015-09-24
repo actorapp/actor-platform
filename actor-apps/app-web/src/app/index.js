@@ -33,6 +33,8 @@ import JoinGroup from 'components/JoinGroup.react';
 import Install from 'components/Install.react';
 //import AppCache from 'utils/AppCache'; // eslint-disable-line
 
+import { emoji } from 'utils/EmojiUtils'
+
 import Pace from 'pace';
 Pace.start({
   ajax: false,
@@ -60,6 +62,10 @@ if (isMobile() && window.location.hash !== '#/install') {
 } else if (window.location.hash === '#/install') {
   window.location.assign('/');
 }
+
+//Preload emoji sprites
+let emojiSprite = new Image();
+emojiSprite.src = emoji.img_sets[emoji.img_set].sheet;
 
 @ReactMixin.decorate(IntlMixin)
 class App extends Component {
