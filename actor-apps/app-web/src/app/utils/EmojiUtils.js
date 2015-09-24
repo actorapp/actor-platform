@@ -13,21 +13,24 @@ emoji.img_set = 'apple';
 emoji.img_sets = {
   'apple': {
     'path': Path.toEmoji + '/img-apple-64/',
-    'sheet': Path.toEmoji + '/sheet_apple_64.png'
+    'sheet': Path.toEmoji + '/sheet_apple_64.png',
+    'mask': 1
   },
   'google': {
     'path': Path.toEmoji + '/img-google-64/',
-    'sheet': Path.toEmoji + '/sheet_google_64.png'
+    'sheet': Path.toEmoji + '/sheet_google_64.png',
+    'mask': 2
   },
   'twitter': {
     'path': Path.toEmoji + '/img-twitter-64/',
-    'sheet': Path.toEmoji + '/sheet_twitter_64.png'
+    'sheet': Path.toEmoji + '/sheet_twitter_64.png',
+    'mask': 4
   },
   'emojione': {
     'path': Path.toEmoji + '/img-emojione-64/',
-    'sheet': Path.toEmoji + '/sheet_emojione_64.png'
+    'sheet': Path.toEmoji + '/sheet_emojione_64.png',
+    'mask': 8
   }
-
 };
 
 export { emoji as emoji };
