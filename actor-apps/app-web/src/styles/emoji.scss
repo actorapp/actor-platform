@@ -1,24 +1,28 @@
 $emoji-dropdown-width: 320px;
 
-.emoji, .emoji-outer {
-  display: inline-block;
-  height: $message-line-height;
-  width: $message-line-height;
+.emoji-outer {
   line-height: $message-line-height;
+
+  display: inline-block;
+
+  width: $message-line-height;
+  height: $message-line-height;
+
   vertical-align: bottom;
 }
-
 .emoji-inner {
   display: inline-block;
-  text-indent: -9999px;
+
   width: 100%;
   height: 100%;
-  vertical-align: bottom;
-}
 
+  vertical-align: bottom;
+  text-indent: -9999px;
+}
 .emoji-sizer {
   margin: 0;
   padding: 0;
+
   background-size: 100%;
 }
 
@@ -36,8 +40,7 @@ $emoji-dropdown-width: 320px;
     bottom: 0;
 
     overflow: hidden;
-
-    max-width: 500px;
+    //max-width: 500px;
 
     border-radius: 2px;
     background-color: rgba(white, .975);
@@ -54,7 +57,7 @@ $emoji-dropdown-width: 320px;
     box-shadow: inset 0 -1px 0 0 #ebebeb;
 
     @include clearfix();
-    span {
+    &__title {
       display: inline-block;
 
       margin: 5px 0 5px 6px;
@@ -68,6 +71,7 @@ $emoji-dropdown-width: 320px;
       list-style: none;
       &__tab {
         line-height: 1px;
+        line-height: 24px;
 
         display: inline-block;
 
@@ -75,7 +79,8 @@ $emoji-dropdown-width: 320px;
         padding: 4px;
 
         cursor: pointer;
-        img {
+        text-align: center;
+        .emoji-outer {
           line-height: 1px;
 
           width: 22px;
@@ -91,7 +96,7 @@ $emoji-dropdown-width: 320px;
 
         &--active {
           box-shadow: inset 0 -3px 0 0 $dark-sky-blue !important;
-          img {
+          .emoji-outer {
             opacity: .9 !important;
 
             filter: none !important;
@@ -101,14 +106,14 @@ $emoji-dropdown-width: 320px;
     }
   }
   &__body {
-    @include clearfix();
-
     overflow-x: hidden;
     overflow-y: auto;
 
     box-sizing: border-box;
     width: $emoji-dropdown-width;
     height: 200px;
+
+    @include clearfix();
     div {
       padding: 4px;
 
@@ -126,24 +131,25 @@ $emoji-dropdown-width: 320px;
         margin: 0;
         padding: 6px 2px 10px;
       }
-    }
-    img {
-      line-height: 1px;
+      a {
+        line-height: 1px;
+        float: left;
+        display: block;
 
-      display: block;
-      float: left;
+        padding: 2px;
 
-      width: 22px;
-      height: 22px;
-      padding: 2px;
+        cursor: pointer;
 
-      cursor: pointer;
-
-      border-radius: 2px;
-      &:hover {
-        transform: scale(1.2);
-        //background-color: rgba(0, 0, 0, .1);
+        border-radius: 2px;
+        width: 26px;
+        height: 26px;
+        box-sizing: border-box;
+        &:hover {
+          transform: scale(1.2);
+          //background-color: rgba(0, 0, 0, .1);
+        }
       }
+
     }
   }
   &--opened {

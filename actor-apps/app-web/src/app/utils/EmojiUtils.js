@@ -2,10 +2,9 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import jsEmoji from 'js-emoji';
+import emoji from 'js-emoji';
+import emojiDataCategories from 'emoji-data/build/emoji_categories';
 import { Path } from 'constants/ActorAppConstants';
-
-export const emoji = jsEmoji;
 
 emoji.include_title = true;
 emoji.include_text = true;
@@ -14,14 +13,71 @@ emoji.img_set = 'apple';
 emoji.img_sets = {
   'apple': {
     'path': Path.toEmoji + '/img-apple-64/',
-    'sheet': Path.toEmoji + '/sheet_apple_64.png',
-    'mask': 1
+    'sheet': Path.toEmoji + '/sheet_apple_64.png'
+  },
+  'google': {
+    'path': Path.toEmoji + '/img-google-64/',
+    'sheet': Path.toEmoji + '/sheet_google_64.png'
+  },
+  'twitter': {
+    'path': Path.toEmoji + '/img-twitter-64/',
+    'sheet': Path.toEmoji + '/sheet_twitter_64.png'
+  },
+  'emojione': {
+    'path': Path.toEmoji + '/img-emojione-64/',
+    'sheet': Path.toEmoji + '/sheet_emojione_64.png'
   }
+
+};
+
+export { emoji as emoji };
+
+export const getEmojiCategories = () => {
+  let emojiCategories = [];
+
+  for (let category of emojiDataCategories.EmojiDataArray) {
+    let title = category.CVDataTitle.replace(/^(.*)-/, '');
+    let data = category.CVCategoryData.Data.split(',');
+    let icon = '';
+
+    switch (title) {
+      case 'People':
+        icon = ':grinning:';
+        break;
+      case 'Nature':
+        icon = ':evergreen_tree:';
+        break;
+      case 'Foods':
+        icon = ':hamburger:';
+        break;
+      case 'Celebration':
+        icon = ':gift:';
+        break;
+      case 'Activity':
+        icon = ':football:';
+        break;
+      case 'Places':
+        icon = ':airplane:';
+        break;
+      case 'Flags':
+        icon = ':flag-ru:';
+        break;
+      case 'Symbols':
+        icon = ':eyeglasses:';
+        break;
+      default:
+    }
+
+    emojiCategories.push({title, icon, data});
+  }
+
+  return emojiCategories;
 };
 
 export const emojiRegexp = /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g;
 
 export default {
   emoji,
-  emojiRegexp
+  emojiRegexp,
+  getEmojiCategories
 };
