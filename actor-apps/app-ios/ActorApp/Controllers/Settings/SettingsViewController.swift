@@ -60,8 +60,6 @@ class SettingsViewController: AATableViewController {
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
-        tableView.clipsToBounds = false
-        tableView.tableFooterView = UIView()
         
         tableData = UATableData(tableView: tableView)
         tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
