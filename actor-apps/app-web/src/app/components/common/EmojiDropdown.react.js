@@ -90,6 +90,7 @@ export default class EmojiDropdown extends Component {
     for (let category of emojiCategories) {
       let currentCategoryEmojis = [];
 
+      emoji.change_replace_mode('css');
       const categoryIcon = emoji.replace_colons(category.icon);
 
       emojiTabs.push(
