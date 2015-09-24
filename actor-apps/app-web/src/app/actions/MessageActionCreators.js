@@ -1,15 +1,18 @@
-import _ from 'lodash';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
 import ActorClient from 'utils/ActorClient';
-
 import mixpanel from 'utils/Mixpanel';
 import Markdown from 'utils/Markdown';
 import { emoji } from 'utils/EmojiUtils';
 
-const replaceColons = (text) => emoji.replace_colons_to_inified(text);
+const replaceColons = (text) => {
+  emoji.change_replace_mode('unified');
+  return emoji.replace_colons(text)
+};
 
 export default {
-
   setMessageShown: function(peer, message) {
     ActorClient.onMessageShown(peer, message);
   },
