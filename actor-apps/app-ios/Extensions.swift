@@ -35,4 +35,12 @@ extension ACCocoaMessenger {
     func changeGroupAvatar(gid: jint, image: UIImage) {
         changeGroupAvatarWithGid(gid, withDescriptor: prepareAvatar(image))
     }
+    
+    func requestFileState(fileId: jlong, notDownloaded: (()->())?, onDownloading: ((progress: Double) -> ())?, onDownloaded: ((reference: String) -> ())?) {
+        Actor.requestStateWithFileId(fileId, withCallback: CocoaDownloadCallback(notDownloaded: notDownloaded, onDownloading: onDownloading, onDownloaded: onDownloaded))
+    }
+    
+    func requestFileState(fileId: jlong, onDownloaded: ((reference: String) -> ())?) {
+        Actor.requestStateWithFileId(fileId, withCallback: CocoaDownloadCallback(notDownloaded: nil, onDownloading: nil, onDownloaded: onDownloaded))
+    }
 }

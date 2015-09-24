@@ -130,6 +130,24 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
     }
     
+    func previewAvatar(avatar: ACAvatar) {
+        if avatar.getFullImage() != nil {
+            var previewImage: UIImage?
+            
+            let descriptor = Actor.getDownloadedDescriptorWithFileId(avatar.getSmallImage().getFileReference().getFileId())
+            if descriptor != nil {
+                previewImage = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(descriptor))
+            }
+            
+            if avatar.getSmallImage() != nil {
+                let descriptor = Actor.getDownloadedDescriptorWithFileId(avatar.getSmallImage().getFileReference().getFileId())
+                if descriptor != nil {
+                    previewImage = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(descriptor))
+                }
+            }
+        }
+    }
+    
     // MARK: -
     // MARK: Layout
     
