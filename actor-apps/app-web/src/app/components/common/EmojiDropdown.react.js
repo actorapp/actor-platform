@@ -6,7 +6,7 @@ import { forEach } from 'lodash';
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { Path, KeyCodes } from 'constants/ActorAppConstants';
-import EmojiUtils from 'utils/EmojiUtils';
+import { emoji, getEmojiCategories } from 'utils/EmojiUtils';
 
 import { Element, Link } from 'react-scroll';
 
@@ -22,7 +22,8 @@ export default class EmojiDropdown extends Component {
 
     this.state = {
       isOpen: props.isOpen,
-      categoryTitle: 'Emoji'
+      dropdownTitle: 'Emoji',
+      emojiCategories: getEmojiCategories()
     };
   }
 
@@ -36,8 +37,6 @@ export default class EmojiDropdown extends Component {
     } else {
       document.removeEventListener('click', this.onDocumentClick, false);
       document.removeEventListener('keydown', this.onKeyDown, false);
-
-      this.setState({categoryTitle: 'Emoji'});
     }
   }
 
@@ -76,104 +75,52 @@ export default class EmojiDropdown extends Component {
     )
   };
 
-  onSetActive = (category) => {
-    switch(category) {
-      case 'people':
-        this.setState({categoryTitle: 'People'});
-        break;
-      case 'nature':
-        this.setState({categoryTitle: 'Nature'});
-        break;
-      case 'foodanddrink':
-        this.setState({categoryTitle: 'Food & Drink'});
-        break;
-      case 'celebration':
-        this.setState({categoryTitle: 'Celebration'});
-        break;
-      case 'activity':
-        this.setState({categoryTitle: 'Activity'});
-        break;
-      case 'travelandplaces':
-        this.setState({categoryTitle: 'Travel & Places'});
-        break;
-      case 'objectsandsymbols':
-        this.setState({categoryTitle: 'Objects & Symbols'});
-        break;
-    }
-  };
+  changeDropdownTitle = (title) => this.setState({dropdownTitle: title});
 
   render() {
-    const { isOpen, categoryTitle } = this.state;
+    const { isOpen, emojiCategories, dropdownTitle } = this.state;
 
     const emojiDropdownClassName = classnames('emoji-dropdown', {
       'emoji-dropdown--opened': isOpen
     });
 
-    const emojiChars = EmojiUtils.categorizedArray();
-
-    let emojiCategories = [];
+    let emojiTabs = [];
     let emojis = [];
 
-    for (let category in emojiChars) {
-      let categoryTabContent = [];
-      let categoryTitle = '';
-      let categorizedEmoji = [];
+    for (let category of emojiCategories) {
+      let currentCategoryEmojis = [];
 
-      switch(category) {
-        case 'people':
-          categoryTitle = 'People';
-          categoryTabContent = <img src={EmojiUtils.pathToImage('grinning')} alt={categoryTitle}/>;
-          break;
-        case 'nature':
-          categoryTitle = 'Nature';
-          categoryTabContent = <img src={EmojiUtils.pathToImage('evergreen_tree')} alt={categoryTitle}/>;
-          break;
-        case 'foodanddrink':
-          categoryTitle = 'Food & Drink';
-          categoryTabContent = <img src={EmojiUtils.pathToImage('hamburger')} alt={categoryTitle}/>;
-          break;
-        case 'celebration':
-          categoryTitle = 'Celebration';
-          categoryTabContent = <img src={EmojiUtils.pathToImage('gift')} alt={categoryTitle}/>;
-          break;
-        case 'activity':
-          categoryTitle = 'Activity';
-          categoryTabContent = <img src={EmojiUtils.pathToImage('football')} alt={categoryTitle}/>;
-          break;
-        case 'travelandplaces':
-          categoryTitle = 'Travel & Places';
-          categoryTabContent = <img src={EmojiUtils.pathToImage('airplane')} alt={categoryTitle}/>;
-          break;
-        case 'objectsandsymbols':
-          categoryTitle = 'Objects & Symbols';
-          categoryTabContent = <img src={EmojiUtils.pathToImage('eyeglasses')} alt={categoryTitle}/>;
-          break;
-      }
+      const categoryIcon = emoji.replace_colons(category.icon);
 
-      for (let emoji in emojiChars[category]) {
-        const emojiText = `:${emoji}:`;
-        categorizedEmoji.push(
-          <img src={EmojiUtils.pathToImage(emoji)} alt={emojiText} onClick={() => this.onSelect(emojiText)}/>
-        );
-      }
-
-      emojiCategories.push(
-        <Link to={category}
+      emojiTabs.push(
+        <Link to={category.title}
               spy smooth
               offset={30}
               duration={250}
-              onSetActive={this.onSetActive}
+              onSetActive={() => this.changeDropdownTitle(category.title)}
               containerId="emojiContainer"
               className="emoji-dropdown__header__tabs__tab"
               activeClass="emoji-dropdown__header__tabs__tab--active">
-          {categoryTabContent}
+          <span dangerouslySetInnerHTML={{__html: categoryIcon}}/>
         </Link>
       );
 
+      for (let emojiChar of category.data) {
+        emoji.colons_mode = false;
+        const convertedChar = emoji.replace_unified(emojiChar);
+        emoji.colons_mode = true;
+        const emojiColon = emoji.replace_unified(emojiChar).replace(/\+/g, '\\+');
+        emoji.colons_mode = false;
+
+        currentCategoryEmojis.push(
+          <a onClick={() => this.onSelect(emojiColon)} dangerouslySetInnerHTML={{__html: convertedChar}}/>
+        );
+      }
+
       emojis.push(
-        <Element name={category}>
-          <p>{categoryTitle}</p>
-          {categorizedEmoji}
+        <Element name={category.title}>
+          <p>{category.title}</p>
+          {currentCategoryEmojis}
         </Element>
       );
     }
@@ -183,12 +130,11 @@ export default class EmojiDropdown extends Component {
         <div className={emojiDropdownClassName}>
           <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
             <header className="emoji-dropdown__header">
-              {categoryTitle}
+              <p className="emoji-dropdown__header__title">{dropdownTitle}</p>
 
               <div className="emoji-dropdown__header__tabs pull-right">
-                {emojiCategories}
+                {emojiTabs}
               </div>
-
             </header>
             <div className="emoji-dropdown__body" id="emojiContainer">
               {emojis}
