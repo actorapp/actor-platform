@@ -37,17 +37,16 @@ public class ApiArrayValue extends ApiRawValue {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<byte[]> _array = values.getRepeatedBytes(1);
         this.array = new ArrayList<ApiRawValue>();
-        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            array.add(ApiRawValue.fromBytes(_array.get(i)));
+        for (byte[] b : values.getRepeatedBytes(1)) {
+            array.add(ApiRawValue.fromBytes(b));
         }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         for (ApiRawValue i : this.array) {
-            writer.writeBytes(i, 1).buildContainer();
+            writer.writeBytes(1, i.buildContainer());
         }
     }
 
