@@ -54,6 +54,8 @@
 
 "SettingsSecurity" = "Segurança";
 
+"SettingsWallpappers" = "Wallpappers";
+
 "SettingsEditHeader" = "Alterar seu nome";
 
 "SettingsNotifications" = "Alertas e Sons";
@@ -362,6 +364,8 @@
 "AlertSave" = "Salvar";
 
 "AlertOk" = "OK";
+
+"AlertSet" = "Set";
 
 "AlertYes" = "Sim";
 

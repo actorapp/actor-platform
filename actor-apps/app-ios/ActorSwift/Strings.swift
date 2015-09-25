@@ -25,6 +25,11 @@ extension String {
         return substringToIndex(startIndex.advancedBy(realCount));
     }
     
+    func skip(count: Int) -> String {
+        let realCount = min(count, length);
+        return substringFromIndex(startIndex.advancedBy(realCount))
+    }
+    
     func strip(set: NSCharacterSet) -> String {
         return componentsSeparatedByCharactersInSet(set).joinWithSeparator("")
     }
@@ -67,6 +72,14 @@ extension String {
     
     func contains(text: String) -> Bool {
         return self.rangeOfString(text, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil
+    }
+    
+    func startsWith(text: String) -> Bool {
+        var range = rangeOfString(text)
+        if range != nil {
+            return range!.startIndex == startIndex
+        }
+        return false
     }
     
     func rangesOfString(text: String) -> [Range<String.Index>] {

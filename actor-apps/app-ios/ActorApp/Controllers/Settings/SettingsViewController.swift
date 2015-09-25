@@ -13,6 +13,7 @@ class SettingsViewController: AATableViewController {
     private let UserInfoCellIdentifier = "UserInfoCellIdentifier"
     private let TitledCellIdentifier = "TitledCellIdentifier"
     private let TextCellIdentifier = "TextCellIdentifier"
+    private let WallpapperCellIdentifier = "WallpapperCellIdentifier"
     
     private var tableData: UABaseTableData!
     
@@ -65,7 +66,7 @@ class SettingsViewController: AATableViewController {
         tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableData.registerClass(TextCell.self, forCellReuseIdentifier: TextCellIdentifier)
-        
+        tableData.registerClass(WallpapperSettingsCell.self, forCellReuseIdentifier: WallpapperCellIdentifier)
         var section = tableData.addSection(true)
             .setFooterHeight(15)
 
@@ -166,10 +167,19 @@ class SettingsViewController: AATableViewController {
         }
         
         // Settings: Wallpapper
-        section.addNavigationCell("SettingsSecurity") { () -> Bool in
-            self.navigateNext(SettingsWallpapper(), removeCurrent: false)
-            return false
-        }
+//        section.addNavigationCell("SettingsWallpappers") { () -> Bool in
+//            self.navigateNext(SettingsWallpapper(), removeCurrent: false)
+//            return false
+//        }
+        section.addCustomCell { (tableView, indexPath) -> UITableViewCell in
+            let cell = tableView.dequeueReusableCellWithIdentifier(self.WallpapperCellIdentifier, forIndexPath: indexPath) as! WallpapperSettingsCell
+            cell.wallpapperDidTap = { (name) -> () in 
+                self.presentViewController(WallpapperPreviewController(imageName: name), animated: true, completion: nil)
+            }
+            return cell
+        }.setAction { () -> Bool in
+            return true
+        }.setHeight(230)
         
         // Profile
         
@@ -388,6 +398,10 @@ class SettingsViewController: AATableViewController {
         super.viewWillDisappear(animated)
         
         Actor.onProfileClosedWithUid(jint(uid))
+    }
+    
+    func openWallpapper1() {
+        self.presentViewController(WallpapperPreviewController(imageName: "bg_1.jpg"), animated: true, completion: nil)
     }
 }
 
