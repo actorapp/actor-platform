@@ -30,6 +30,11 @@
 		06FC5E961BB464470071F153 /* SettingsWallpapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E951BB464470071F153 /* SettingsWallpapper.swift */; settings = {ASSET_TAGS = (); }; };
 		06FC5E981BB467010071F153 /* AACollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E971BB467010071F153 /* AACollectionViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		06FC5E9B1BB46C290071F153 /* WallpapperPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E9A1BB46C290071F153 /* WallpapperPreviewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		06FC5EA21BB5BBFA0071F153 /* bg_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06FC5E9F1BB5BBFA0071F153 /* bg_3.jpg */; settings = {ASSET_TAGS = (); }; };
+		06FC5EA31BB5BBFA0071F153 /* bg_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06FC5EA01BB5BBFA0071F153 /* bg_2.jpg */; settings = {ASSET_TAGS = (); }; };
+		06FC5EA41BB5BBFA0071F153 /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06FC5EA11BB5BBFA0071F153 /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
+		06FC5EA61BB5C5840071F153 /* WallpapperSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5EA51BB5C5840071F153 /* WallpapperSettingsCell.swift */; settings = {ASSET_TAGS = (); }; };
+		06FC5EA81BB5D36A0071F153 /* WallpapperPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5EA71BB5D36A0071F153 /* WallpapperPreviewController.swift */; settings = {ASSET_TAGS = (); }; };
 		0AA06E7DC00FC7267A50485F830C9C1D /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246B87CFA2D1555AFFE5943E61934F2C /* Binder.swift */; };
 		0B6A05B711CA9DCD88C79CCA8104C0F1 /* TitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 993125DEA698CD065C01215DCA5C3A6E /* TitledCell.swift */; };
 		0CA595BCB5F16107145374B11C486D6A /* SearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBE552DCE0898430CAF7DA33B8397678 /* SearchSource.swift */; };
@@ -185,6 +190,11 @@
 		06FC5E951BB464470071F153 /* SettingsWallpapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsWallpapper.swift; sourceTree = "<group>"; };
 		06FC5E971BB467010071F153 /* AACollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACollectionViewController.swift; sourceTree = "<group>"; };
 		06FC5E9A1BB46C290071F153 /* WallpapperPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WallpapperPreviewCell.swift; sourceTree = "<group>"; };
+		06FC5E9F1BB5BBFA0071F153 /* bg_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_3.jpg; sourceTree = "<group>"; };
+		06FC5EA01BB5BBFA0071F153 /* bg_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_2.jpg; sourceTree = "<group>"; };
+		06FC5EA11BB5BBFA0071F153 /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1.jpg; sourceTree = "<group>"; };
+		06FC5EA51BB5C5840071F153 /* WallpapperSettingsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WallpapperSettingsCell.swift; sourceTree = "<group>"; };
+		06FC5EA71BB5D36A0071F153 /* WallpapperPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WallpapperPreviewController.swift; sourceTree = "<group>"; };
 		08F86D72B75F036762AE29FCB370C5DA /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABActionShit.h; path = View/ABActionShit/ABActionShit.h; sourceTree = "<group>"; };
 		0A5291BE37AEB0A847B40186961C343D /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "Launch Screen.xib"; path = "Resources/Launch Screen.xib"; sourceTree = "<group>"; };
 		0D473CD2EBD067BD6B46A520C987B060 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewSeparator.swift; path = View/TableViewSeparator.swift; sourceTree = "<group>"; };
@@ -394,8 +404,19 @@
 			isa = PBXGroup;
 			children = (
 				06FC5E9A1BB46C290071F153 /* WallpapperPreviewCell.swift */,
+				06FC5EA51BB5C5840071F153 /* WallpapperSettingsCell.swift */,
 			);
 			name = Cells;
+			sourceTree = "<group>";
+		};
+		06FC5E9E1BB5BBAC0071F153 /* Backgrounds */ = {
+			isa = PBXGroup;
+			children = (
+				06FC5E9F1BB5BBFA0071F153 /* bg_3.jpg */,
+				06FC5EA01BB5BBFA0071F153 /* bg_2.jpg */,
+				06FC5EA11BB5BBFA0071F153 /* bg_1.jpg */,
+			);
+			name = Backgrounds;
 			sourceTree = "<group>";
 		};
 		1ACEA023B930E6F261DAC0A6BDB410C1 /* Supporting Files */ = {
@@ -550,6 +571,7 @@
 		75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				06FC5E9E1BB5BBAC0071F153 /* Backgrounds */,
 				068505C91B9AB59700819D16 /* Highlighter */,
 				87D3504700B107393538D20F72E9E639 /* Sounds */,
 				18CE89A383FC24758F0E4EEC7E295C38 /* AppTheme.swift */,
@@ -822,10 +844,11 @@
 			isa = PBXGroup;
 			children = (
 				06FC5E991BB46C1D0071F153 /* Cells */,
+				D3800DBFECE586561F3ACE36EE15FDC4 /* SettingsViewController.swift */,
 				6F6517C304D68DBFAC712D5846CA4EF9 /* SettingsNotificationsViewController.swift */,
 				731E0C36DF5CBDE4DF26ABB0B22C3AFF /* SettingsPrivacyViewController.swift */,
-				D3800DBFECE586561F3ACE36EE15FDC4 /* SettingsViewController.swift */,
 				06FC5E951BB464470071F153 /* SettingsWallpapper.swift */,
+				06FC5EA71BB5D36A0071F153 /* WallpapperPreviewController.swift */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -927,11 +950,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B5393DF20B1FF6612EC82A46DE81C75 /* ABPhoneFieldCodes.txt in Resources */,
+				06FC5EA21BB5BBFA0071F153 /* bg_3.jpg in Resources */,
 				CE360862765F6E876E74C7259B959388 /* AppText.properties in Resources */,
 				DD5096516BDE174E38A9E929787CF08E /* AppText_Ar.properties in Resources */,
 				CE86C7B9A87FBEB711332AA1BDEEAE00 /* AppText_Cn.properties in Resources */,
 				BEC41DB0B496CF9B32D2C36671216C5B /* AppText_Pt.properties in Resources */,
 				068505CD1B9AB5CB00819D16 /* highlight.min.js in Resources */,
+				06FC5EA31BB5BBFA0071F153 /* bg_2.jpg in Resources */,
 				F50FACABD6BF7DC482213EF442F37FF9 /* AppText_Ru.properties in Resources */,
 				2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */,
 				F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */,
@@ -950,6 +975,7 @@
 				BC86E9E96F91BE5D7DFAE1E94E786416 /* ceres.caf in Resources */,
 				67509EE194F38C0359136465B90DF236 /* elara.caf in Resources */,
 				9C44FD8722860C04A9D67A1E36FAABA5 /* europa.caf in Resources */,
+				06FC5EA41BB5BBFA0071F153 /* bg_1.jpg in Resources */,
 				A8103DF7DDC3036768022C4D130A9ED8 /* iapetus.caf in Resources */,
 				405F56C41C8256643C2B40A1369CF9E2 /* io.caf in Resources */,
 				C7CD6FE54110A3E70B02CF1DAE087E39 /* notification.caf in Resources */,
@@ -1042,6 +1068,7 @@
 				06FC5E981BB467010071F153 /* AACollectionViewController.swift in Sources */,
 				20BF8FDDCB33B880453062E2781C7912 /* ABPhoneField.m in Sources */,
 				1EE9033A0CB8968FA8620DFCB940A879 /* AddParticipantViewController.swift in Sources */,
+				06FC5EA81BB5D36A0071F153 /* WallpapperPreviewController.swift in Sources */,
 				06FC5E801BACEEC00071F153 /* Numbers.swift in Sources */,
 				7226E099F1D301533F030787EAC6E94B /* Alerts.swift in Sources */,
 				DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */,
@@ -1127,6 +1154,7 @@
 				0CA595BCB5F16107145374B11C486D6A /* SearchSource.swift in Sources */,
 				06E7FAC51BAA3BA000177709 /* Extensions.swift in Sources */,
 				3BCA9C46B430D01167A6DCC17EA83FCC /* SettingsNotificationsViewController.swift in Sources */,
+				06FC5EA61BB5C5840071F153 /* WallpapperSettingsCell.swift in Sources */,
 				F5519F4816CDF1EE728AAADA577E36BE /* SettingsPrivacyViewController.swift in Sources */,
 				72EA45B0F9C5492F1BAEAD337EE0465B /* SettingsViewController.swift in Sources */,
 				19393DA67238CB7DFE23D9D82CA71329 /* Strings.swift in Sources */,
@@ -1200,7 +1228,7 @@
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.1/lib";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -1311,7 +1339,7 @@
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.1/lib";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
