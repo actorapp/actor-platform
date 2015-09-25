@@ -20,6 +20,8 @@ import org.joda.time.DateTime
 import scala.concurrent._
 import scala.concurrent.duration._
 
+final case class NewUpdate(ub: UpdateBox, reduceKey: Option[String])
+
 trait UpdatesConsumerMessage
 
 object UpdatesConsumerMessage {
@@ -149,10 +151,10 @@ private[sequence] class UpdatesConsumer(
               case None ⇒
                 throw new Exception(s"Cannot find userId for authId ${authId}")
             }
-        }) foreach (sendUpdateBox)
+        }) foreach (sendUpdateBox(_, None))
       }
-    case WeakUpdatesManager.UpdateReceived(updateBox) ⇒
-      sendUpdateBox(updateBox)
+    case WeakUpdatesManager.UpdateReceived(updateBox, reduceKey) ⇒
+      sendUpdateBox(updateBox, reduceKey)
     case PresenceState(userId, presence, lastSeenAt) ⇒
       val update: Update =
         presence match {
@@ -170,14 +172,16 @@ private[sequence] class UpdatesConsumer(
       log.debug("Pushing presence {}", update)
 
       val updateBox = WeakUpdate(nextDateTime().getMillis, update.header, update.toByteArray)
-      sendUpdateBox(updateBox)
+      val reduceKey = WeakUpdatesManager.reduceKeyUser(update.header, userId)
+      sendUpdateBox(updateBox, Some(reduceKey))
     case GroupPresenceState(groupId, onlineCount) ⇒
       val update = UpdateGroupOnline(groupId, onlineCount)
 
       log.debug("Pushing presence {}", update)
 
       val updateBox = WeakUpdate(nextDateTime().getMillis, update.header, update.toByteArray)
-      sendUpdateBox(updateBox)
+      val reduceKey = WeakUpdatesManager.reduceKeyGroup(update.header, groupId)
+      sendUpdateBox(updateBox, Some(reduceKey))
   }
 
   private def nextDateTime(): DateTime = {
@@ -192,9 +196,8 @@ private[sequence] class UpdatesConsumer(
     this.lastDateTime
   }
 
-  private def sendUpdateBox(updateBox: ProtoUpdateBox): Unit = {
-    subscriber ! UpdateBox(UpdateBoxCodec.encode(updateBox).require)
-  }
+  private def sendUpdateBox(updateBox: ProtoUpdateBox, reduceKey: Option[String]): Unit =
+    subscriber ! NewUpdate(UpdateBox(UpdateBoxCodec.encode(updateBox).require), reduceKey)
 
   private def getFatData(
     userId:      Int,
