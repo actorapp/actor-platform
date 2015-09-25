@@ -372,11 +372,10 @@ public class ContainerGenerator {
             } else if (childType instanceof SchemeTraitType) {
                 SchemeTraitType traitType = (SchemeTraitType) childType;
                 String typeName = JavaConfig.getStructName(traitType.getTraitName());
-                generator.appendLn("List<byte[]> _" + attributeName + " = values.getRepeatedBytes(" + attributeId + ");");
                 generator.appendLn("this." + attributeName + " = new ArrayList<" + typeName + ">();");
-                generator.appendLn("for (int i = 0; i < values.getRepeatedCount(" + attributeId + "); i ++) {");
+                generator.appendLn("for (byte[] b : values.getRepeatedBytes(" + attributeId + ")) {");
                 generator.increaseDepth();
-                generator.appendLn(attributeName + ".add(" + typeName + ".fromBytes(_" + attributeName + ".get(i)));");
+                generator.appendLn(attributeName + ".add(" + typeName + ".fromBytes(b));");
                 generator.decreaseDepth();
                 generator.appendLn("}");
             } else {
@@ -583,7 +582,7 @@ public class ContainerGenerator {
                 String traitTypeName = JavaConfig.getStructName(((SchemeTraitType) childType).getTraitName());
                 generator.appendLn("for (" + traitTypeName + " i : this." + attributeName + ") {");
                 generator.increaseDepth();
-                generator.appendLn("writer.writeBytes(i, " + attributeId + ").buildContainer();");
+                generator.appendLn("writer.writeBytes(" + attributeId + ", i.buildContainer());");
                 generator.decreaseDepth();
                 generator.appendLn("}");
             } else {
