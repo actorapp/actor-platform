@@ -6379,6 +6379,134 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="6u8NlnzpZhz" role="2m5lHt">
+      <property role="TrG5h" value="Wallpappers" />
+      <property role="3XOG$Z" value="wallpappers" />
+      <node concept="2m5naR" id="6u8Nlnzq1qw" role="2m5mJr">
+        <property role="TrG5h" value="Wallpapper" />
+        <node concept="2m7Kf5" id="6u8Nlnzq4H3" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="6u8Nlnzq4Hh" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8Nlnzq1qz" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="w" />
+          <node concept="2m5ndE" id="6u8Nlnzq1qB" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8Nlnzq1qE" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="h" />
+          <node concept="2m5ndE" id="6u8Nlnzq1qK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8Nlnzq1qY" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="fileSize" />
+          <node concept="2m5ndE" id="6u8Nlnzq1r8" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8Nlnzq1qN" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="file" />
+          <node concept="2m5mGg" id="6u8Nlnzq1qV" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6u8Nlnzq2wU" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="thumb" />
+          <node concept="2m5mGg" id="6u8Nlnzq2x6" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB67s" resolve="FastThumb" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="6u8Nlnzq1X_" role="NXodf">
+          <property role="NXePf" value="Wallpapper structure" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq5g7" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Wallpapper id" />
+          <ref role="NX6Kv" node="6u8Nlnzq4H3" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq1XE" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Image width" />
+          <ref role="NX6Kv" node="6u8Nlnzq1qz" resolve="w" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq1XM" role="NXodf">
+          <property role="NX6R2" value="Image height" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6u8Nlnzq1qE" resolve="h" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq1XW" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Image file size" />
+          <ref role="NX6Kv" node="6u8Nlnzq1qY" resolve="fileSize" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq1Y8" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Image file reference" />
+          <ref role="NX6Kv" node="6u8Nlnzq1qN" resolve="file" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq2xg" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Image thumb" />
+          <ref role="NX6Kv" node="6u8Nlnzq2wU" resolve="thumb" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6u8Nlnzq495" role="2m5mJr">
+        <property role="TrG5h" value="LoadWallpappers" />
+        <node concept="2m7Kf5" id="6u8Nlnzq5MW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="maxWidth" />
+          <node concept="2m5ndE" id="6u8Nlnzq5N0" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8Nlnzq5N3" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="maxHeight" />
+          <node concept="2m5ndE" id="6u8Nlnzq5N9" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6u8Nlnzq496" role="NuuwV">
+          <property role="Nu42W" value="E7" />
+        </node>
+        <node concept="2m1R6W" id="6u8Nlnzq4a8" role="2m6efq">
+          <node concept="2m7Kf5" id="6u8Nlnzq4ad" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="wallpappers" />
+            <node concept="2m5nlk" id="6u8Nlnzq4ah" role="2m7DVh">
+              <node concept="2m5mGg" id="6u8Nlnzq4an" role="3GJlyp">
+                <ref role="2m5mJy" node="6u8Nlnzq1qw" resolve="Wallpapper" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="6u8Nlnzq4a9" role="NuuwV">
+            <property role="Nu42W" value="E8" />
+          </node>
+          <node concept="NXeRC" id="6u8Nlnzq8xB" role="1y2DgH">
+            <property role="NXePf" value="Loaded Wallpappers" />
+          </node>
+          <node concept="NX1gA" id="6u8Nlnzq8xG" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Available wallpapper list" />
+            <ref role="NX6Kv" node="6u8Nlnzq4ad" resolve="wallpappers" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="6u8Nlnzq6lW" role="1GBnQ6">
+          <property role="NXePf" value="Load available wallpappers" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq6SM" role="1GBnQ6">
+          <property role="NX6R2" value="Maximum width of wallpapper" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6u8Nlnzq5MW" resolve="maxWidth" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq6SU" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Maximum height of wallpapper" />
+          <ref role="NX6Kv" node="6u8Nlnzq5N3" resolve="maxHeight" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="6u8Nlnzq0lW" role="1Dx9rD">
+        <property role="1Dx9K7" value="Wallpappers support" />
+      </node>
+    </node>
     <node concept="2m5mJO" id="GBscvBBuJu" role="2m5lHt">
       <property role="TrG5h" value="Push" />
       <property role="3XOG$Z" value="push" />
