@@ -1222,6 +1222,14 @@
           <property role="TrG5h" value="Email" />
           <property role="2m7y0m" value="2" />
         </node>
+        <node concept="2m7y0F" id="6u8Nlnzn64f" role="2m7ymf">
+          <property role="TrG5h" value="Web" />
+          <property role="2m7y0m" value="3" />
+        </node>
+        <node concept="2m7y0F" id="6u8Nlnzn6Cf" role="2m7ymf">
+          <property role="TrG5h" value="Social" />
+          <property role="2m7y0m" value="3" />
+        </node>
       </node>
       <node concept="2m5naR" id="2tyCW$TVx2J" role="2m5mJr">
         <property role="TrG5h" value="ContactRecord" />
@@ -1233,6 +1241,10 @@
           <property role="NX6R2" value="Record type" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="2tyCW$TVx5V" resolve="type" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzn8kT" role="NXodf">
+          <property role="NX6R2" value="Value for specification type of contact, for example 'mobile/standalone/office' for phones or 'vk/fb/telegram' for extenrnal networks." />
+          <ref role="NX6Kv" node="6u8Nlnzn7Ke" resolve="typeSpec" />
         </node>
         <node concept="NX1gA" id="2tyCW$TVyXr" role="NXodf">
           <property role="NX6R2" value="String value of record" />
@@ -1258,6 +1270,13 @@
           <property role="TrG5h" value="type" />
           <node concept="3GJkcs" id="2tyCW$TVxCu" role="2m7DVh">
             <ref role="3GJkik" node="2tyCW$TVx9j" resolve="ContactType" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6u8Nlnzn7Ke" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="typeSpec" />
+          <node concept="2m5nlT" id="6u8Nlnzn7KC" role="2m7DVh">
+            <node concept="2m5ndX" id="6u8Nlnzn7KI" role="3GH5xg" />
           </node>
         </node>
         <node concept="2m7Kf5" id="2tyCW$TVxCx" role="2m0hLx">
@@ -1350,6 +1369,11 @@
           <property role="NX6R2" value="Is user actually bot. By default is false." />
           <ref role="NX6Kv" node="2tyCW$TVuOS" resolve="isBot" />
         </node>
+        <node concept="NX1gA" id="6u8Nlnzn5w5" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="If not null, is user come from outer network" />
+          <ref role="NX6Kv" node="6u8Nlnzn3Mp" resolve="external" />
+        </node>
         <node concept="2m7Kf5" id="GBscvBAzcC" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="id" />
@@ -1426,6 +1450,13 @@
           <property role="TrG5h" value="about" />
           <node concept="2m5nlT" id="6WYZhOUY$mJ" role="2m7DVh">
             <node concept="2m5ndX" id="6WYZhOUY$mP" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6u8Nlnzn3Mp" role="2m0hLx">
+          <property role="2m7DUN" value="15" />
+          <property role="TrG5h" value="external" />
+          <node concept="2m5nlT" id="6u8Nlnzn4nX" role="2m7DVh">
+            <node concept="2m5ndX" id="6u8Nlnzn4o3" role="3GH5xg" />
           </node>
         </node>
       </node>
