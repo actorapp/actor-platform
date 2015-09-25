@@ -14,6 +14,14 @@
     {
       "type": "int64",
       "alias": "randomId"
+    },
+    {
+      "type": "int64",
+      "alias": "msec"
+    },
+    {
+      "type": "int32",
+      "alias": "sec"
     }
   ],
   "sections": [
@@ -6396,7 +6404,7 @@
                 "type": "reference",
                 "argument": "timeout",
                 "category": "full",
-                "description": "timeout of online state"
+                "description": "timeout of online state in milliseconds"
               }
             ],
             "attributes": [
@@ -6406,7 +6414,10 @@
                 "name": "isOnline"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "msec"
+                },
                 "id": 2,
                 "name": "timeout"
               }
@@ -6823,7 +6834,10 @@
                   "name": "url"
                 },
                 {
-                  "type": "int32",
+                  "type": {
+                    "type": "alias",
+                    "childType": "sec"
+                  },
                   "id": 2,
                   "name": "timeout"
                 }
