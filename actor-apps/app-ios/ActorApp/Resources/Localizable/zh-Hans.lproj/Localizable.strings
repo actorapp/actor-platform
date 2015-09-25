@@ -54,6 +54,8 @@
 
 "SettingsSecurity" = "安全";
 
+"SettingsWallpappers" = "Wallpappers";
+
 "SettingsEditHeader" = "修改名字";
 
 "SettingsNotifications" = "通知和声音";
@@ -363,6 +365,8 @@
 "AlertNext" = "下一步";
 
 "AlertSave" = "保存";
+
+"AlertSet" = "Set";
 
 "AlertOk" = "确定";
 

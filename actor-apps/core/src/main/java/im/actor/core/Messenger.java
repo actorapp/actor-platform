@@ -1493,6 +1493,26 @@ public class Messenger {
         return modules.getSettingsModule().isRenameHintShown();
     }
 
+    /**
+     * Getting selected wallpaper uri. local:[file_name] for local files
+     *
+     * @return not null if custom background set
+     */
+    @ObjectiveCName("getSelectedWallpaper")
+    public String getSelectedWallpaper() {
+        return modules.getSettingsModule().getSelectedWallpapper();
+    }
+
+    /**
+     * Change background
+     *
+     * @param uri background uri
+     */
+    @ObjectiveCName("changeSelectedWallpaper:")
+    public void changeSelectedWallpaper(String uri) {
+        modules.getSettingsModule().changeSelectedWallpapper(uri);
+    }
+
     //////////////////////////////////////
     //            Security
     //////////////////////////////////////

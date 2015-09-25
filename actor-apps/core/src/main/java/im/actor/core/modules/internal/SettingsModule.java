@@ -38,6 +38,8 @@ public class SettingsModule extends AbsModule {
 
     private final String KEY_RENAME_HINT_SHOWN;
 
+    private final String KEY_WALLPAPPER;
+
     private ActorRef settingsSync;
 
     public SettingsModule(ModuleContext context) {
@@ -99,6 +101,8 @@ public class SettingsModule extends AbsModule {
 
         // Hints
         KEY_RENAME_HINT_SHOWN = "hint.contact.rename";
+
+        KEY_WALLPAPPER = "wallpaper.uri";
     }
 
     public void run() {
@@ -254,6 +258,16 @@ public class SettingsModule extends AbsModule {
             changeValue(KEY_RENAME_HINT_SHOWN, true);
         }
         return res;
+    }
+
+    // Wallpaper
+
+    public String getSelectedWallpapper() {
+        return readValue(KEY_WALLPAPPER);
+    }
+
+    public void changeSelectedWallpapper(String uri) {
+        changeValue(KEY_WALLPAPPER, uri);
     }
 
     // Private

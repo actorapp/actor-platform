@@ -4,6 +4,42 @@
 
 import Foundation
 
+private var targetReference = "target"
+extension UITapGestureRecognizer {
+    convenience init(closure: ()->()){
+        let target = ClosureTarget(closure: closure)
+        self.init(target: target, action: "invoke")
+        setAssociatedObject(self, value: target, associativeKey: &targetReference)
+    }
+}
+
+extension UIView {
+    var viewDidTap: (()->())? {
+        set (value) {
+            if value != nil {
+                self.addGestureRecognizer(UITapGestureRecognizer(closure: value!))
+                self.userInteractionEnabled = true
+            }
+        }
+        get {
+            return nil
+        }
+    }
+}
+
+private class ClosureTarget {
+    
+    private let closure: ()->()
+    
+    init(closure: ()->()) {
+        self.closure = closure
+    }
+    
+    @objc func invoke() {
+        closure()
+    }
+}
+
 extension UIView {
     func hideView() {
         UIView.animateWithDuration(0.2, animations: { () -> Void in

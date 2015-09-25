@@ -44,6 +44,8 @@
 
 "SettingsSecurity" = "Безопасность";
 
+"SettingsWallpappers" = "Обои чата";
+
 "SettingsEditHeader" = "Измените свое имя";
 
 "SettingsUsernameTitle" = "Измените свой ник";
@@ -365,6 +367,8 @@
 "AlertNext" = "Далее";
 
 "AlertSave" = "Сохранить";
+
+"AlertSet" = "Установить";
 
 "AlertOk" = "OK";
 

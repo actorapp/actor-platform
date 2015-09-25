@@ -6,11 +6,15 @@ import Foundation
 
 class SettingsWallpapper: AACollectionViewController, UICollectionViewDelegateFlowLayout {
     
+    let padding: CGFloat = 8
+    
     init() {
         super.init(collectionLayout: UICollectionViewFlowLayout())
         
         collectionView.registerClass(WallpapperPreviewCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.contentInset = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
+        collectionView.contentInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+        collectionView.backgroundColor = MainAppTheme.list.bgColor
+        view.backgroundColor = MainAppTheme.list.bgColor
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -22,28 +26,29 @@ class SettingsWallpapper: AACollectionViewController, UICollectionViewDelegateFl
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let res = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath)
-        if indexPath.item % 2 == 0 {
-            res.backgroundColor = UIColor.redColor()
-        } else {
-            res.backgroundColor = UIColor.greenColor()
-        }
+        let res = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) as! WallpapperPreviewCell
+        res.bind(indexPath.item % 3)
+//        if indexPath.item % 2 == 0 {
+//            res.backgroundColor = UIColor.redColor()
+//        } else {
+//            res.backgroundColor = UIColor.greenColor()
+//        }
         return res
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        let w = (collectionView.width  - 4 * 4) / 3
+        let w = (collectionView.width  - 4 * padding) / 3
         let h = w * (UIScreen.mainScreen().bounds.height / UIScreen.mainScreen().bounds.width)
         
         return CGSize(width: w, height: h)
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
-        return 4
+        return padding
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
-        return 4
+        return padding
     }
 }

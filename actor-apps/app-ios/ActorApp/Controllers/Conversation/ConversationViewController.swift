@@ -20,16 +20,25 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     private let subtitleView: UILabel = UILabel()
     private let navigationView: UIView = UIView()
     private let avatarView = BarAvatarView(frameSize: 36, type: .Rounded)
-    private let backgroundView: UIView = UIView()
+    private let backgroundView = UIImageView()
     
     override init(peer: ACPeer) {
         super.init(peer: peer);
         
-        // Messages
+        // Background
         
+        backgroundView.contentMode = .ScaleAspectFill
         backgroundView.clipsToBounds = true
         backgroundView.backgroundColor = UIColor(
             patternImage:UIImage(named: "bg_foggy_birds")!.tintBgImage(MainAppTheme.bubbles.chatBgTint))
+        
+        // Custom background if available
+        if let bg = Actor.getSelectedWallpaper() {
+            if bg.startsWith("local:") {
+                backgroundView.image = UIImage(named: bg.skip(6))
+            }
+        }
+        
         view.insertSubview(backgroundView, atIndex: 0)
 
         // Text Input
