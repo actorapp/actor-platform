@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service
 import im.actor.api.rpc.messaging.{ UpdateMessageContentChanged, ApiTextMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 
-import scala.concurrent.{Future, Await}
+import scala.concurrent.{ Future, Await }
 import scala.concurrent.duration._
 
 import com.amazonaws.services.s3.transfer.TransferManager

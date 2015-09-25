@@ -110,8 +110,8 @@ class SessionSpec extends BaseSessionSpec {
 
       val secondMessageId = Random.nextLong()
       sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, RpcRequestBox(encodedSignUpRequest))
-
       expectMessageAck(authId, sessionId, secondMessageId)
+
       expectRpcResult() should matchPattern {
         case RpcOk(ResponseAuth(_, _)) ⇒
       }
@@ -212,7 +212,7 @@ class SessionSpec extends BaseSessionSpec {
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
 
       val update = UpdateContactRegistered(1, true, 1L, 5L)
-      Await.result(db.run(WeakUpdatesManager.broadcastUserWeakUpdate(clientData.userId, update)), 1.second)
+      Await.result(db.run(WeakUpdatesManager.broadcastUserWeakUpdate(clientData.userId, update, reduceKey = None)), 1.second)
 
       expectWeakUpdate(authId, sessionId).update should ===(update.toByteArray)
     }
