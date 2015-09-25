@@ -17,13 +17,15 @@ import java.util.ArrayList;
 public class ApiContactRecord extends BserObject {
 
     private ApiContactType type;
+    private String typeSpec;
     private String stringValue;
     private Long longValue;
     private String title;
     private String subtitle;
 
-    public ApiContactRecord(@NotNull ApiContactType type, @Nullable String stringValue, @Nullable Long longValue, @Nullable String title, @Nullable String subtitle) {
+    public ApiContactRecord(@NotNull ApiContactType type, @Nullable String typeSpec, @Nullable String stringValue, @Nullable Long longValue, @Nullable String title, @Nullable String subtitle) {
         this.type = type;
+        this.typeSpec = typeSpec;
         this.stringValue = stringValue;
         this.longValue = longValue;
         this.title = title;
@@ -37,6 +39,11 @@ public class ApiContactRecord extends BserObject {
     @NotNull
     public ApiContactType getType() {
         return this.type;
+    }
+
+    @Nullable
+    public String getTypeSpec() {
+        return this.typeSpec;
     }
 
     @Nullable
@@ -62,6 +69,7 @@ public class ApiContactRecord extends BserObject {
     @Override
     public void parse(BserValues values) throws IOException {
         this.type = ApiContactType.parse(values.getInt(1));
+        this.typeSpec = values.optString(6);
         this.stringValue = values.optString(2);
         this.longValue = values.optLong(3);
         this.title = values.optString(4);
@@ -77,6 +85,9 @@ public class ApiContactRecord extends BserObject {
             throw new IOException();
         }
         writer.writeInt(1, this.type.getValue());
+        if (this.typeSpec != null) {
+            writer.writeString(6, this.typeSpec);
+        }
         if (this.stringValue != null) {
             writer.writeString(2, this.stringValue);
         }

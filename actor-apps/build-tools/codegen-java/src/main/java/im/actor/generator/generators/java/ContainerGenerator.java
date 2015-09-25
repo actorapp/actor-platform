@@ -369,6 +369,16 @@ public class ContainerGenerator {
                 generator.appendLn("this." + attributeName + " = values.getRepeatedObj(" + attributeId + ", " +
                         "_" + attributeName + ");");
 
+            } else if (childType instanceof SchemeTraitType) {
+                SchemeTraitType traitType = (SchemeTraitType) childType;
+                String typeName = JavaConfig.getStructName(traitType.getTraitName());
+                generator.appendLn("List<byte[]> _" + attributeName + " = values.getRepeatedBytes(" + attributeId + ");");
+                generator.appendLn("this." + attributeName + " = new ArrayList<" + typeName + ">();");
+                generator.appendLn("for (int i = 0; i < values.getRepeatedCount(" + attributeId + "); i ++) {");
+                generator.increaseDepth();
+                generator.appendLn(attributeName + ".add(" + typeName + ".fromBytes(_" + attributeName + ".get(i)));");
+                generator.decreaseDepth();
+                generator.appendLn("}");
             } else {
                 throw new IOException();
             }
@@ -569,6 +579,13 @@ public class ContainerGenerator {
                 }
             } else if (childType instanceof SchemeStructType) {
                 generator.appendLn("writer.writeRepeatedObj(" + attributeId + ", this." + attributeName + ");");
+            } else if (childType instanceof SchemeTraitType) {
+                String traitTypeName = JavaConfig.getStructName(((SchemeTraitType) childType).getTraitName());
+                generator.appendLn("for (" + traitTypeName + " i : this." + attributeName + ") {");
+                generator.increaseDepth();
+                generator.appendLn("writer.writeBytes(i, " + attributeId + ").buildContainer();");
+                generator.decreaseDepth();
+                generator.appendLn("}");
             } else {
                 throw new IOException();
             }
