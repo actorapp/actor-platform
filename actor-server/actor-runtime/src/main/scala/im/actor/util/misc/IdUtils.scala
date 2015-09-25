@@ -7,6 +7,8 @@ object IdUtils {
 
   def nextIntId(rnd: ThreadLocalRandom): Int = rnd.nextInt(1000, Int.MaxValue) + 1
 
+  def nextAuthId(): Long = nextAuthId(ThreadLocalRandom.current())
+
   def nextAuthId(rng: ThreadLocalRandom): Long = {
     val candidate = rng.nextLong()
     if (candidate == 0L) nextAuthId(rng) else candidate
