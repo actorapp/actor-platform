@@ -7156,6 +7156,158 @@
       ]
     },
     {
+      "title": "Wallpappers",
+      "package": "wallpappers",
+      "doc": [
+        "Wallpappers support"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "Wallpapper",
+            "doc": [
+              "Wallpapper structure",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Wallpapper id"
+              },
+              {
+                "type": "reference",
+                "argument": "w",
+                "category": "full",
+                "description": "  Image width"
+              },
+              {
+                "type": "reference",
+                "argument": "h",
+                "category": "full",
+                "description": "  Image height"
+              },
+              {
+                "type": "reference",
+                "argument": "fileSize",
+                "category": "full",
+                "description": "  Image file size"
+              },
+              {
+                "type": "reference",
+                "argument": "file",
+                "category": "full",
+                "description": "  Image file reference"
+              },
+              {
+                "type": "reference",
+                "argument": "thumb",
+                "category": "full",
+                "description": "  Image thumb"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 7,
+                "name": "id"
+              },
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "fileSize"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 5,
+                "name": "file"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FastThumb"
+                },
+                "id": 6,
+                "name": "thumb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadWallpappers",
+            "header": 231,
+            "response": {
+              "type": "anonymous",
+              "header": 232,
+              "doc": [
+                "Loaded Wallpappers",
+                {
+                  "type": "reference",
+                  "argument": "wallpappers",
+                  "category": "full",
+                  "description": "  Available wallpapper list"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Wallpapper"
+                    }
+                  },
+                  "id": 1,
+                  "name": "wallpappers"
+                }
+              ]
+            },
+            "doc": [
+              "Load available wallpappers",
+              {
+                "type": "reference",
+                "argument": "maxWidth",
+                "category": "full",
+                "description": "Maximum width of wallpapper"
+              },
+              {
+                "type": "reference",
+                "argument": "maxHeight",
+                "category": "full",
+                "description": "Maximum height of wallpapper"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "maxWidth"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "maxHeight"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Push",
       "package": "push",
       "doc": [
