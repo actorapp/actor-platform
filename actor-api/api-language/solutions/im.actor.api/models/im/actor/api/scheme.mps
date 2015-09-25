@@ -140,6 +140,14 @@
       <property role="TrG5h" value="randomId" />
       <node concept="2m5ndQ" id="2vxDjotnUBg" role="wdlUs" />
     </node>
+    <node concept="wd7tA" id="6u8Nlnzqdrd" role="3Bkp18">
+      <property role="TrG5h" value="msec" />
+      <node concept="2m5ndQ" id="6u8Nlnzqdrn" role="wdlUs" />
+    </node>
+    <node concept="wd7tA" id="6u8Nlnzqdrq" role="3Bkp18">
+      <property role="TrG5h" value="sec" />
+      <node concept="2m5ndE" id="6u8NlnzqdrA" role="wdlUs" />
+    </node>
     <node concept="2m5mJO" id="GBscvBB6uy" role="2m5lHt">
       <property role="TrG5h" value="Authentication" />
       <property role="3XOG$Z" value="auth" />
@@ -5751,7 +5759,9 @@
         <node concept="2m7Kf5" id="GBscvBBuyA" role="2m0hLx">
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="timeout" />
-          <node concept="2m5ndQ" id="GBscvBBuyG" role="2m7DVh" />
+          <node concept="wb0Ql" id="6u8NlnzqdYy" role="2m7DVh">
+            <ref role="wb18D" node="6u8Nlnzqdrd" resolve="msec" />
+          </node>
         </node>
         <node concept="Nu42z" id="GBscvBBuyh" role="NuuwV">
           <property role="Nu42W" value="1D" />
@@ -5768,7 +5778,7 @@
           <ref role="NX6Kv" node="GBscvBBuyv" resolve="isOnline" />
         </node>
         <node concept="NX1gA" id="2EAJ7H6foAD" role="1GBnQ6">
-          <property role="NX6R2" value="timeout of online state" />
+          <property role="NX6R2" value="timeout of online state in milliseconds" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBuyA" resolve="timeout" />
         </node>
@@ -6121,7 +6131,9 @@
           <node concept="2m7Kf5" id="3MpuFr6x68z" role="2m0hLx">
             <property role="2m7DUN" value="2" />
             <property role="TrG5h" value="timeout" />
-            <node concept="2m5ndE" id="3MpuFr6x68D" role="2m7DVh" />
+            <node concept="wb0Ql" id="6u8Nlnzqexu" role="2m7DVh">
+              <ref role="wb18D" node="6u8Nlnzqdrq" resolve="sec" />
+            </node>
           </node>
           <node concept="Nu42z" id="3MpuFr6x68o" role="NuuwV">
             <property role="Nu42W" value="4E" />
