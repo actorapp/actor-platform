@@ -1,19 +1,18 @@
 package im.actor.server.session
 
+import akka.testkit.TestProbe
+import com.typesafe.config.ConfigFactory
+import im.actor.api.rpc._
+import im.actor.api.rpc.auth.{RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete}
+import im.actor.api.rpc.codecs.RequestCodec
+import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.server.ActorSpecification
+import im.actor.server.mtproto.protocol._
+import im.actor.server.sequence.{SeqUpdatesManager, WeakUpdatesManager}
 
 import scala.concurrent.duration._
 import scala.util.Random
-
-import akka.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
-
-import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
-import im.actor.api.rpc.codecs.RequestCodec
-import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.server.mtproto.protocol._
-import im.actor.server.sequence.SeqUpdatesManager
 
 class SessionResendSpec extends BaseSessionSpec(
   ActorSpecification.createSystem(ConfigFactory.parseString(
@@ -32,6 +31,7 @@ class SessionResendSpec extends BaseSessionSpec(
   it should "resend messages to new client" in Sessions().e2
   it should "not resend messages if ack received within ack-timeout" in Sessions().e3
   it should "resend updates if no ack received within ack-timeout" in Sessions().e4
+  it should "not resend messages when another came with the same reduceKey" in Sessions().reduceKey
 
   case class Sessions() {
     def e1() = {
@@ -170,5 +170,40 @@ class SessionResendSpec extends BaseSessionSpec(
 
       probe.expectNoMsg(6.seconds)
     }
+
+    def reduceKey() = {
+      implicit val probe = TestProbe()
+
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+
+      val helloMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
+      expectNewSession(authId, sessionId, helloMessageId)
+      expectMessageAck(authId, sessionId, helloMessageId)
+
+      val upd = UpdateUserOffline(userId = Random.nextInt())
+      WeakUpdatesManager.pushUpdate(authId, upd, Some("reduceKey 1 (uniq)"))
+
+      WeakUpdatesManager.pushUpdate(authId, upd, Some("reduceKey 2 (same)"))
+      WeakUpdatesManager.pushUpdate(authId, upd, Some("reduceKey 2 (same)"))
+
+      WeakUpdatesManager.pushUpdate(authId, upd, Some("reduceKey 3 (uniq)"))
+
+      expectWeakUpdate(authId, sessionId)
+      expectWeakUpdate(authId, sessionId)
+      expectWeakUpdate(authId, sessionId)
+      expectWeakUpdate(authId, sessionId)
+
+      // Still no ack
+      probe.expectNoMsg(4.seconds)
+
+      expectWeakUpdate(authId, sessionId)
+      expectWeakUpdate(authId, sessionId)
+      expectWeakUpdate(authId, sessionId)
+
+      probe.expectNoMsg(5.seconds)
+    }
   }
+
 }

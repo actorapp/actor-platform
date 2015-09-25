@@ -25,14 +25,16 @@ class WeakServiceImpl(implicit
       val action = peer.`type` match {
         case ApiPeerType.Private ⇒
           val update = UpdateTyping(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
+          val reduceKey = WeakUpdatesManager.reduceKey(update.header, update.peer)
 
-          WeakUpdatesManager.broadcastUserWeakUpdate(peer.id, update)
+          WeakUpdatesManager.broadcastUserWeakUpdate(peer.id, update, reduceKey = Some(reduceKey))
         case ApiPeerType.Group ⇒
           val update = UpdateTyping(ApiPeer(ApiPeerType.Group, peer.id), client.userId, typingType)
+          val reduceKey = WeakUpdatesManager.reduceKey(update.header, update.peer)
 
           for {
             otherUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.filterNot(_ == client.userId))
-            _ ← DBIO.sequence(otherUserIds map (WeakUpdatesManager.broadcastUserWeakUpdate(_, update)))
+            _ ← DBIO.sequence(otherUserIds map (WeakUpdatesManager.broadcastUserWeakUpdate(_, update, Some(reduceKey))))
           } yield ()
       }
 
