@@ -26,8 +26,9 @@ public class ApiUser extends BserObject {
     private Boolean isBot;
     private String nick;
     private String about;
+    private String external;
 
-    public ApiUser(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable ApiSex sex, @Nullable ApiAvatar avatar, @NotNull List<ApiContactRecord> contactInfo, @Nullable Boolean isBot, @Nullable String nick, @Nullable String about) {
+    public ApiUser(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable ApiSex sex, @Nullable ApiAvatar avatar, @NotNull List<ApiContactRecord> contactInfo, @Nullable Boolean isBot, @Nullable String nick, @Nullable String about, @Nullable String external) {
         this.id = id;
         this.accessHash = accessHash;
         this.name = name;
@@ -38,6 +39,7 @@ public class ApiUser extends BserObject {
         this.isBot = isBot;
         this.nick = nick;
         this.about = about;
+        this.external = external;
     }
 
     public ApiUser() {
@@ -92,6 +94,11 @@ public class ApiUser extends BserObject {
         return this.about;
     }
 
+    @Nullable
+    public String getExternal() {
+        return this.external;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
@@ -111,6 +118,7 @@ public class ApiUser extends BserObject {
         this.isBot = values.optBool(11);
         this.nick = values.optString(13);
         this.about = values.optString(14);
+        this.external = values.optString(15);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -143,6 +151,9 @@ public class ApiUser extends BserObject {
         if (this.about != null) {
             writer.writeString(14, this.about);
         }
+        if (this.external != null) {
+            writer.writeString(15, this.external);
+        }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -164,6 +175,7 @@ public class ApiUser extends BserObject {
         res += ", isBot=" + this.isBot;
         res += ", nick=" + this.nick;
         res += ", about=" + this.about;
+        res += ", external=" + this.external;
         res += "}";
         return res;
     }

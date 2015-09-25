@@ -52,8 +52,6 @@ public class UpdatesParser extends BaseParser<Update> {
             case 8: return UpdateUserOffline.fromBytes(payload);
             case 9: return UpdateUserLastSeen.fromBytes(payload);
             case 33: return UpdateGroupOnline.fromBytes(payload);
-            case 49: return UpdateCallRing.fromBytes(payload);
-            case 83: return UpdateCallEnd.fromBytes(payload);
             case 131: return UpdateParameterChanged.fromBytes(payload);
             case 215: return UpdateCountersChanged.fromBytes(payload);
             case 42: return UpdateConfig.fromBytes(payload);

@@ -133,8 +133,14 @@ public class JavaConfig {
                 return "List<" + mapPrimitiveReferenceType((SchemePrimitiveType) childType) + ">";
             } else if (childType instanceof SchemeStructType) {
                 return "List<" + getStructName(((SchemeStructType) childType).getType()) + ">";
+            } else if (childType instanceof SchemeTraitType) {
+                SchemeTraitType traitType = (SchemeTraitType) childType;
+                if (!definition.getTrait(traitType.getTraitName()).isContainer()) {
+                    throw new IOException("List item type can't be trait");
+                }
+                return "List<" + getStructName(traitType.getTraitName()) + ">";
             } else {
-                throw new IOException();
+                throw new IOException("Unsupported list item type: " + type);
             }
 
         } else if (type instanceof SchemeOptionalType) {
