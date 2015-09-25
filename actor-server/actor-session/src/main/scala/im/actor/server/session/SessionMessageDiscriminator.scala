@@ -5,22 +5,23 @@ import akka.stream.scaladsl._
 import akka.stream.{ FanOutShape, Attributes }
 
 import im.actor.server.mtproto.protocol._
+import im.actor.server.session.ReSenderMessage.IncomingAck
 
-class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[SessionStreamMessage]("SessionMessageDiscriminator"))
+private final class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[SessionStreamMessage]("SessionMessageDiscriminator"))
   extends FanOutShape[SessionStreamMessage](_init) {
   import SessionStreamMessage._
 
   val outProtoMessage = newOutlet[ProtoMessage]("outProtoMessage")
   val outRpc = newOutlet[HandleRpcRequest]("outRpc")
   val outSubscribe = newOutlet[SubscribeCommand]("outSubscribe")
-  val outRequestResend = newOutlet[ProtoMessage]("outRequestResend")
-  val outIncomingAck = newOutlet[ProtoMessage]("outIncomingAck")
+  val outRequestResend = newOutlet[RequestResend]("outRequestResend")
+  val outIncomingAck = newOutlet[MessageAck]("outIncomingAck")
   val outUnmatched = newOutlet[SessionStreamMessage]("outUnmatched")
 
   protected override def construct(i: Init[SessionStreamMessage]) = new SessionMessageDiscriminatorShape(i)
 }
 
-class SessionMessageDiscriminator extends FlexiRoute[SessionStreamMessage, SessionMessageDiscriminatorShape](
+private[session] final class SessionMessageDiscriminator extends FlexiRoute[SessionStreamMessage, SessionMessageDiscriminatorShape](
   new SessionMessageDiscriminatorShape, Attributes.name("SessionMessageDiscriminator")
 ) {
 
@@ -43,7 +44,7 @@ class SessionMessageDiscriminator extends FlexiRoute[SessionStreamMessage, Sessi
         case HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) ⇒
           ctx.emit(p.outRpc)(HandleRpcRequest(messageId, bodyBytes, clientData))
         case HandleMessageBox(MessageBox(messageId, m: MessageAck), clientData) ⇒
-          ctx.emit(p.outIncomingAck)(MessageAck.incoming(m.messageIds))
+          ctx.emit(p.outIncomingAck)(m)
         case HandleMessageBox(MessageBox(messageId, m: RequestResend), _) ⇒
           ctx.emit(p.outRequestResend)(m)
         case HandleMessageBox(MessageBox(messageId, m: SessionHello), _) ⇒
