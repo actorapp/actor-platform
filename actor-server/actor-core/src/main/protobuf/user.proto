@@ -30,6 +30,7 @@ message User {
     optional Avatar avatar = 13;
     required int64 created_at = 14;
     repeated bytes internal_extensions = 15 [(scalapb.field).type = "im.actor.api.rpc.misc.ApiExtension"];
+    optional string external = 16;
 }
 
 message UserCommands {
@@ -61,6 +62,7 @@ message UserCommands {
         required int32 sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.ApiSex.ApiSex"];
         required bool is_bot = 5;
         repeated bytes extensions = 7 [(scalapb.field).type = "im.actor.api.rpc.misc.ApiExtension"];
+        optional string external = 8;
     }
 
     message CreateAck {}
@@ -255,6 +257,7 @@ message UserEvents {
         required int32 sex = 5 [(scalapb.field).type = "im.actor.api.rpc.users.ApiSex.ApiSex"];
         required bool is_bot = 6;
         repeated bytes extensions = 8 [(scalapb.field).type = "im.actor.api.rpc.misc.ApiExtension"];
+        optional string external = 9;
     }
 
     message PhoneAdded {

@@ -47,7 +47,8 @@ private[user] object UserCreator {
       about = None,
       avatar = None,
       createdAt = ts.getMillis,
-      internalExtensions = e.extensions
+      internalExtensions = e.extensions,
+      external = e.external
     )
 }
 
@@ -158,8 +159,8 @@ private[user] final class UserProcessor
   }
 
   override protected def handleInitCommand: Receive = {
-    case Create(_, accessSalt, name, countryCode, sex, isBot, extensions) ⇒
-      create(accessSalt, name, countryCode, sex, isBot, extensions)
+    case Create(_, accessSalt, name, countryCode, sex, isBot, extensions, external) ⇒
+      create(accessSalt, name, countryCode, sex, isBot, extensions, external)
   }
 
   override protected def handleCommand(state: User): Receive = {

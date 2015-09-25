@@ -33,7 +33,8 @@ private[user] trait UserQueriesHandlers {
         isBot = Some(state.isBot),
         contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector),
         nick = state.nickname,
-        about = state.about
+        about = state.about,
+        external = state.external
       ))
     } pipeTo sender()
   }
