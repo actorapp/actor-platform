@@ -10,7 +10,7 @@ public enum ApiContactType {
     PHONE(1),
     EMAIL(2),
     WEB(3),
-    SOCIAL(3),
+    SOCIAL(4),
     UNSUPPORTED_VALUE(-1);
 
     private int value;
@@ -28,7 +28,7 @@ public enum ApiContactType {
             case 1: return ApiContactType.PHONE;
             case 2: return ApiContactType.EMAIL;
             case 3: return ApiContactType.WEB;
-            case 3: return ApiContactType.SOCIAL;
+            case 4: return ApiContactType.SOCIAL;
             default: return ApiContactType.UNSUPPORTED_VALUE;
         }
     }

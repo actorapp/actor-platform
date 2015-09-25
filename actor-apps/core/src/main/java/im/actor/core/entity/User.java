@@ -137,7 +137,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getContactInfo(),
                 w.isBot(),
                 w.getNick(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExternal());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -154,7 +155,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getContactInfo(),
                 w.isBot(),
                 w.getNick(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExternal());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -171,7 +173,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getContactInfo(),
                 w.isBot(),
                 nick,
-                w.getAbout());
+                w.getAbout(),
+                w.getExternal());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -188,7 +191,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getContactInfo(),
                 w.isBot(),
                 w.getNick(),
-                about);
+                about,
+                w.getExternal());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -205,7 +209,8 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.getContactInfo(),
                 w.isBot(),
                 w.getNick(),
-                w.getAbout());
+                w.getAbout(),
+                w.getExternal());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
