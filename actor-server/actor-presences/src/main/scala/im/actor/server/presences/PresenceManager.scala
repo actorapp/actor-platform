@@ -67,9 +67,11 @@ object PresenceManager {
     case Envelope(userId, _) ⇒ (userId % 32).toString // TODO: configurable
   }
 
+  private val typeName = "PresenceManager"
+
   private def startRegion(props: Option[Props])(implicit system: ActorSystem): PresenceManagerRegion =
     PresenceManagerRegion(ClusterSharding(system).start(
-      typeName = "PresenceManager",
+      typeName = typeName,
       entryProps = props,
       idExtractor = idExtractor,
       shardResolver = shardResolver
@@ -78,6 +80,8 @@ object PresenceManager {
   def startRegion()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(Some(props))
 
   def startRegionProxy()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(None)
+
+  def get(system: ActorSystem): PresenceManagerRegion = PresenceManagerRegion(ClusterSharding.get(system).shardRegion(typeName))
 
   def props = Props(classOf[PresenceManager])
 
