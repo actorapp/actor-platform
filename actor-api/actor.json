@@ -1133,6 +1133,14 @@
               {
                 "name": "Email",
                 "id": 2
+              },
+              {
+                "name": "Web",
+                "id": 3
+              },
+              {
+                "name": "Social",
+                "id": 3
               }
             ]
           }
@@ -1148,6 +1156,12 @@
                 "argument": "type",
                 "category": "full",
                 "description": "  Record type"
+              },
+              {
+                "type": "reference",
+                "argument": "typeSpec",
+                "category": "hidden",
+                "description": "  Value for specification type of contact, for example 'mobile/standalone/office' for phones or 'vk/fb/telegram' for extenrnal networks."
               },
               {
                 "type": "reference",
@@ -1183,6 +1197,14 @@
                 },
                 "id": 1,
                 "name": "type"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "typeSpec"
               },
               {
                 "type": {
@@ -1290,6 +1312,12 @@
                 "argument": "isBot",
                 "category": "full",
                 "description": "  Is user actually bot. By default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "external",
+                "category": "full",
+                "description": "  If not null, is user come from outer network"
               }
             ],
             "expandable": "true",
@@ -1382,6 +1410,14 @@
                 },
                 "id": 14,
                 "name": "about"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 15,
+                "name": "external"
               }
             ]
           }
