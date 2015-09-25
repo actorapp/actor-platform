@@ -433,7 +433,7 @@ final class AuthServiceSpec
             user.phone shouldEqual Some(phoneNumber)
             user.contactInfo should have length 1
             user.contactInfo.head should matchPattern {
-              case ApiContactRecord(ApiContactType.Phone, None, Some(phone), Some(_), None) ⇒
+              case ApiContactRecord(ApiContactType.Phone, None, Some(phone), Some(_), None, _) ⇒
             }
         }
       }
@@ -868,7 +868,7 @@ final class AuthServiceSpec
               u.sex shouldEqual userSex
               u.contactInfo should have length 1
               u.contactInfo.head should matchPattern {
-                case ApiContactRecord(ApiContactType.Email, Some(`email`), None, Some(_), None) ⇒
+                case ApiContactRecord(ApiContactType.Email, Some(`email`), None, Some(_), None, _) ⇒
               }
           }
           resp.toOption.get.user

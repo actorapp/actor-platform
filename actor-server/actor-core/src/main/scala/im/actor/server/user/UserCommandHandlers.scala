@@ -34,11 +34,11 @@ private[user] trait UserCommandHandlers {
 
   import ImageUtils._
 
-  protected def create(accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension]): Unit = {
+  protected def create(accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension], external: Option[String]): Unit = {
     log.debug("Creating user {} {}", userId, name)
 
     val ts = now()
-    val e = UserEvents.Created(userId, accessSalt, name, countryCode, sex, isBot, extensions)
+    val e = UserEvents.Created(userId, accessSalt, name, countryCode, sex, isBot, extensions, external)
     val createEvent = TSEvent(ts, e)
     val user = UserCreator(ts, e)
 
