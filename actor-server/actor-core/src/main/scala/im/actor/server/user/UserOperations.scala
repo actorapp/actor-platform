@@ -33,8 +33,8 @@ private[user] sealed trait Commands extends AuthCommands {
 
   implicit val timeout: Timeout
 
-  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension]): Future[CreateAck] = {
-    (processorRegion.ref ? Create(userId, accessSalt, name, countryCode, sex, isBot, extensions)).mapTo[CreateAck]
+  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension], external: Option[String]): Future[CreateAck] = {
+    (processorRegion.ref ? Create(userId, accessSalt, name, countryCode, sex, isBot, extensions, external)).mapTo[CreateAck]
   }
 
   def addPhone(userId: Int, phone: Long): Future[Unit] = {
