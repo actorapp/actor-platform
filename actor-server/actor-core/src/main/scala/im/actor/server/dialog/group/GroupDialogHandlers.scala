@@ -79,7 +79,6 @@ trait GroupDialogHandlers extends UpdateCounters {
       }
     } else Future.successful(MessageReceivedAck())) pipeTo replyTo onFailure {
       case e ⇒
-        replyTo ! Status.Failure(ReceiveFailed)
         log.error(e, "Failed to mark messages received")
     }
   }
@@ -135,7 +134,6 @@ trait GroupDialogHandlers extends UpdateCounters {
       _ ← readerAckF
     } yield MessageReadAck()) pipeTo replyTo onFailure {
       case e ⇒
-        replyTo ! Status.Failure(ReadFailed)
         log.error(e, "Failed to mark messages read")
     }
   }

@@ -15,12 +15,6 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
-object HistoryErrors {
-  val ReceiveFailed = RpcError(500, "RECEIVE_FAILED", "", true, None)
-  val ReadFailed = RpcError(500, "READ_FAILED", "", true, None)
-
-}
-
 trait HistoryHandlers {
   self: MessagingServiceImpl ⇒
 
@@ -34,9 +28,7 @@ trait HistoryHandlers {
       }
     }
 
-    db.run(toDBIOAction(action)) recover {
-      case ReceiveFailed ⇒ Error(HistoryErrors.ReceiveFailed)
-    }
+    db.run(toDBIOAction(action))
   }
 
   override def jhandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -46,9 +38,7 @@ trait HistoryHandlers {
       }
     }
 
-    db.run(toDBIOAction(action)) recover {
-      case ReadFailed ⇒ Error(HistoryErrors.ReadFailed)
-    }
+    db.run(toDBIOAction(action))
   }
 
   override def jhandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
