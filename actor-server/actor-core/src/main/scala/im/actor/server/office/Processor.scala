@@ -119,8 +119,6 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
           unstashAndWork(e, state)
         case Failure(f) ⇒
           log.error(f, "Failure while processing event {}", e)
-          replyTo ! Status.Failure(f)
-
           unstashAndWork(e, state)
       }
     }
@@ -140,8 +138,6 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
           unstashAndWorkBatch(es, state)
         case Failure(e) ⇒
           log.error(e, "Failure while processing event {}", e)
-          replyTo ! Status.Failure(e)
-
           unstashAndWorkBatch(es, state)
       }
     }
@@ -158,8 +154,6 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
         unstashAndWork(e, state)
       case Failure(f) ⇒
         log.error(f, "Failure while processing event {}", e)
-        replyTo ! Status.Failure(f)
-
         unstashAndWork(e, state)
     }
   }
