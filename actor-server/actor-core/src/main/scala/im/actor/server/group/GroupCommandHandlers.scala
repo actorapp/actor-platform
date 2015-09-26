@@ -197,10 +197,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           } yield updates
         }
 
-        db.run(action) pipeTo replyTo onFailure {
-          case e ⇒
-            replyTo ! Status.Failure(e)
-        }
+        db.run(action) pipeTo replyTo
       }
     } else {
       sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
@@ -217,9 +214,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val update = UpdateGroupUserKick(groupId, kickedUserId, kickerUserId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userKicked(kickedUserId)
 
-      db.run(removeUser(kickedUserId, group.members.keySet, kickerAuthId, serviceMessage, update, date, randomId)) pipeTo replyTo onFailure {
-        case e ⇒ replyTo ! Status.Failure(e)
-      }
+      db.run(removeUser(kickedUserId, group.members.keySet, kickerAuthId, serviceMessage, update, date, randomId)) pipeTo replyTo
     }
   }
 
@@ -232,9 +227,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
       val update = UpdateGroupUserLeave(groupId, userId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userLeft(userId)
-      db.run(removeUser(userId, group.members.keySet, authId, serviceMessage, update, date, randomId)) pipeTo replyTo onFailure {
-        case e ⇒ replyTo ! Status.Failure(e)
-      }
+      db.run(removeUser(userId, group.members.keySet, authId, serviceMessage, update, date, randomId)) pipeTo replyTo
     }
   }
 

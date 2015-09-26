@@ -3,13 +3,13 @@ package im.actor.server.session
 import akka.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete}
+import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.server.ActorSpecification
 import im.actor.server.mtproto.protocol._
-import im.actor.server.sequence.{SeqUpdatesManager, WeakUpdatesManager}
+import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesManager }
 
 import scala.concurrent.duration._
 import scala.util.Random
