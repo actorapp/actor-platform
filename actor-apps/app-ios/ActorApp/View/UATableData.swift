@@ -161,7 +161,7 @@ class UAGrouppedTableData : UABaseTableData {
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel!.textColor = MainAppTheme.list.hintColor
+        header.textLabel!.textColor = MainAppTheme.list.sectionHintColor
     }
 }
 
