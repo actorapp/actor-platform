@@ -167,10 +167,6 @@ class SettingsViewController: AATableViewController {
         }
         
         // Settings: Wallpapper
-//        section.addNavigationCell("SettingsWallpappers") { () -> Bool in
-//            self.navigateNext(SettingsWallpapper(), removeCurrent: false)
-//            return false
-//        }
         section.addCustomCell { (tableView, indexPath) -> UITableViewCell in
             let cell = tableView.dequeueReusableCellWithIdentifier(self.WallpapperCellIdentifier, forIndexPath: indexPath) as! WallpapperSettingsCell
             cell.wallpapperDidTap = { (name) -> () in 
@@ -178,7 +174,8 @@ class SettingsViewController: AATableViewController {
             }
             return cell
         }.setAction { () -> Bool in
-            return true
+            self.navigateNext(SettingsWallpapper(), removeCurrent: false)
+            return false
         }.setHeight(230)
         
         // Profile

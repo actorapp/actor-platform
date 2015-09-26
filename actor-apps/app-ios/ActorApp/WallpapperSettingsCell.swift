@@ -11,11 +11,12 @@ class WallpapperSettingsCell: UATableViewCell {
     private let wallpapper2 = UIImageView()
     private let wallpapper3 = UIImageView()
     private let label = UILabel()
+    private let disclose = UIImageView()
     
     var wallpapperDidTap: ((name: String) -> ())?
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(cellStyle: "cell", reuseIdentifier: reuseIdentifier)
         
         wallpapper1.image = UIImage(named: "bg_1.jpg")!
         wallpapper1.clipsToBounds = true
@@ -32,13 +33,13 @@ class WallpapperSettingsCell: UATableViewCell {
         label.font = UIFont.systemFontOfSize(17)
         label.applyStyle("label")
         label.text = localized("SettingsWallpappers")
-        
-        selectionStyle = .None
+        disclose.image = UIImage(named: "ios_disclose")
         
         self.contentView.addSubview(wallpapper1)
         self.contentView.addSubview(wallpapper2)
         self.contentView.addSubview(wallpapper3)
         self.contentView.addSubview(label)
+        self.contentView.addSubview(disclose)
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -60,5 +61,7 @@ class WallpapperSettingsCell: UATableViewCell {
         wallpapper3.frame = CGRectMake(padding * 3 + wWidth * 2, wPadding, wWidth, wHeight)
         
         label.frame = CGRectMake(padding, 0, width - padding * 2, 44)
+        
+        disclose.frame = CGRectMake(width - 13 - 10, 15, 13, 14)
     }
 }
