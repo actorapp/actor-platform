@@ -11,6 +11,7 @@
 		0224F1E3828DAA4189723FDA24F29984 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */; };
 		03C7C2BF4D96B715C8EBB5CE0489609C /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A5291BE37AEB0A847B40186961C343D /* Launch Screen.xib */; };
 		057AECBA478DD3D127189E50F10243A8 /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51407CFA80BA5C7F30CB1D2507FA116C /* AABubbleMediaCell.swift */; };
+		0600225E1BB64FE0004C2C1A /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0600225D1BB64FE0004C2C1A /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
 		06049FE21BA5E26400BF8553 /* Bubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06049FE11BA5E26400BF8553 /* Bubbles.swift */; settings = {ASSET_TAGS = (); }; };
 		068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068505C71B9AB2E300819D16 /* CorePreviewController.swift */; };
 		068505CC1B9AB5CB00819D16 /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 068505CA1B9AB5CB00819D16 /* highlight-default.min.css */; };
@@ -32,7 +33,6 @@
 		06FC5E9B1BB46C290071F153 /* WallpapperPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E9A1BB46C290071F153 /* WallpapperPreviewCell.swift */; settings = {ASSET_TAGS = (); }; };
 		06FC5EA21BB5BBFA0071F153 /* bg_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06FC5E9F1BB5BBFA0071F153 /* bg_3.jpg */; settings = {ASSET_TAGS = (); }; };
 		06FC5EA31BB5BBFA0071F153 /* bg_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06FC5EA01BB5BBFA0071F153 /* bg_2.jpg */; settings = {ASSET_TAGS = (); }; };
-		06FC5EA41BB5BBFA0071F153 /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 06FC5EA11BB5BBFA0071F153 /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
 		06FC5EA61BB5C5840071F153 /* WallpapperSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5EA51BB5C5840071F153 /* WallpapperSettingsCell.swift */; settings = {ASSET_TAGS = (); }; };
 		06FC5EA81BB5D36A0071F153 /* WallpapperPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5EA71BB5D36A0071F153 /* WallpapperPreviewController.swift */; settings = {ASSET_TAGS = (); }; };
 		0AA06E7DC00FC7267A50485F830C9C1D /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246B87CFA2D1555AFFE5943E61934F2C /* Binder.swift */; };
@@ -173,6 +173,7 @@
 /* Begin PBXFileReference section */
 		000064EEABC89FAC7C43D2F369AC16D3 /* FMDBIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FMDBIndex.swift; path = ActorCore/Providers/Storage/FMDBIndex.swift; sourceTree = SOURCE_ROOT; };
 		0328ED9C511FAEEC982E209A78C9443F /* CommonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonCell.swift; path = View/Cells/CommonCell.swift; sourceTree = "<group>"; };
+		0600225D1BB64FE0004C2C1A /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1.jpg; sourceTree = "<group>"; };
 		06049FE11BA5E26400BF8553 /* Bubbles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bubbles.swift; sourceTree = "<group>"; };
 		068505C71B9AB2E300819D16 /* CorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorePreviewController.swift; sourceTree = "<group>"; };
 		068505CA1B9AB5CB00819D16 /* highlight-default.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "highlight-default.min.css"; path = "Resources/Highlighter/highlight-default.min.css"; sourceTree = "<group>"; };
@@ -192,7 +193,6 @@
 		06FC5E9A1BB46C290071F153 /* WallpapperPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WallpapperPreviewCell.swift; sourceTree = "<group>"; };
 		06FC5E9F1BB5BBFA0071F153 /* bg_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_3.jpg; sourceTree = "<group>"; };
 		06FC5EA01BB5BBFA0071F153 /* bg_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_2.jpg; sourceTree = "<group>"; };
-		06FC5EA11BB5BBFA0071F153 /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1.jpg; sourceTree = "<group>"; };
 		06FC5EA51BB5C5840071F153 /* WallpapperSettingsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WallpapperSettingsCell.swift; sourceTree = "<group>"; };
 		06FC5EA71BB5D36A0071F153 /* WallpapperPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WallpapperPreviewController.swift; sourceTree = "<group>"; };
 		08F86D72B75F036762AE29FCB370C5DA /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABActionShit.h; path = View/ABActionShit/ABActionShit.h; sourceTree = "<group>"; };
@@ -412,9 +412,9 @@
 		06FC5E9E1BB5BBAC0071F153 /* Backgrounds */ = {
 			isa = PBXGroup;
 			children = (
+				0600225D1BB64FE0004C2C1A /* bg_1.jpg */,
 				06FC5E9F1BB5BBFA0071F153 /* bg_3.jpg */,
 				06FC5EA01BB5BBFA0071F153 /* bg_2.jpg */,
-				06FC5EA11BB5BBFA0071F153 /* bg_1.jpg */,
 			);
 			name = Backgrounds;
 			sourceTree = "<group>";
@@ -950,6 +950,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B5393DF20B1FF6612EC82A46DE81C75 /* ABPhoneFieldCodes.txt in Resources */,
+				0600225E1BB64FE0004C2C1A /* bg_1.jpg in Resources */,
 				06FC5EA21BB5BBFA0071F153 /* bg_3.jpg in Resources */,
 				CE360862765F6E876E74C7259B959388 /* AppText.properties in Resources */,
 				DD5096516BDE174E38A9E929787CF08E /* AppText_Ar.properties in Resources */,
@@ -975,7 +976,6 @@
 				BC86E9E96F91BE5D7DFAE1E94E786416 /* ceres.caf in Resources */,
 				67509EE194F38C0359136465B90DF236 /* elara.caf in Resources */,
 				9C44FD8722860C04A9D67A1E36FAABA5 /* europa.caf in Resources */,
-				06FC5EA41BB5BBFA0071F153 /* bg_1.jpg in Resources */,
 				A8103DF7DDC3036768022C4D130A9ED8 /* iapetus.caf in Resources */,
 				405F56C41C8256643C2B40A1369CF9E2 /* io.caf in Resources */,
 				C7CD6FE54110A3E70B02CF1DAE087E39 /* notification.caf in Resources */,
@@ -1227,7 +1227,7 @@
 				FABRIC_BUILD_SECRET = "";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.2/lib";
 				ONLY_ACTIVE_ARCH = YES;
@@ -1339,7 +1339,7 @@
 				FABRIC_BUILD_SECRET = "";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.2/lib";
 				OTHER_LDFLAGS = (
