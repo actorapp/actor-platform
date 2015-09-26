@@ -7,6 +7,7 @@ public class CocoaLocaleProvider implements LocaleRuntime {
     @Override
     public native String getCurrentLocale()/*-[
         NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        language = [language substringWithRange:NSMakeRange(0, 2)];
         return [language capitalizedString];
     ]-*/;
 
