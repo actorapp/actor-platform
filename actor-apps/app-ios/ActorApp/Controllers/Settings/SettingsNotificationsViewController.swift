@@ -87,6 +87,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
         cell.topSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isConversationTonesEnabled())
         cell.switchBlock = { (nValue: Bool) in
@@ -104,6 +106,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
         cell.topSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
@@ -129,6 +133,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
         //cell.topSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isNotificationSoundEnabled())
         cell.setSwitcherEnabled(Actor.isNotificationsEnabled())
@@ -148,6 +154,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.topSeparatorVisible = true
         cell.bottomSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isGroupNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
@@ -173,6 +181,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
         //cell.topSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isGroupNotificationsOnlyMentionsEnabled())
         cell.setSwitcherEnabled(Actor.isGroupNotificationsEnabled())
@@ -191,6 +201,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
         cell.topSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isInAppNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
@@ -216,6 +228,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
         // cell.topSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isInAppNotificationSoundEnabled())
         cell.setSwitcherEnabled(Actor.isInAppNotificationsEnabled())
@@ -236,6 +250,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
         //cell.topSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isInAppNotificationVibrationEnabled())
         cell.setSwitcherEnabled(Actor.isInAppNotificationsEnabled())
@@ -255,6 +271,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
         cell.topSeparatorVisible = true
+        cell.bottomSeparatorLeftInset = 0
+        cell.topSeparatorLeftInset = 0
         
         cell.setSwitcherOn(Actor.isShowNotificationsText())
         cell.switchBlock = { (nValue: Bool) in
@@ -293,7 +311,7 @@ class SettingsNotificationsViewController: AATableViewController {
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel!.textColor = MainAppTheme.list.hintColor
+        header.textLabel!.textColor = MainAppTheme.list.sectionHintColor
     }
     
 
