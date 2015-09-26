@@ -54,6 +54,12 @@ extension ACMessage {
 ////    return lhs.ordinal() == rhs.ordinal()
 ////}
 
+extension JavaUtilAbstractCollection : SequenceType {
+    
+    public func generate() -> NSFastGenerator {
+        return NSFastGenerator(self)
+    }    
+}
 
 extension ACPeer {
     var isGroup: Bool {
