@@ -182,6 +182,7 @@
 
 "GroupIntegrationLinkRevokeAction" = "Remover";
 
+"GroupMembers" = "MEMBERS";
 
 /*
  * Compose
