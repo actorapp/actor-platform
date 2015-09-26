@@ -44,7 +44,7 @@
 
 "SettingsSecurity" = "Безопасность";
 
-"SettingsWallpappers" = "Обои чата";
+"SettingsWallpapers" = "Обои чата";
 
 "SettingsEditHeader" = "Измените свое имя";
 
@@ -255,6 +255,14 @@
 "PrivacyTerminateAlertSingle" = "Удалить сессию";
 
 "PrivacyTerminateHint" = "Выход со всех устройств кроме этого.";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Обои чата";
+
+"WallpapersPhoto" = "Медиа библеотека";
 
 /*
  * Chat
