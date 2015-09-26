@@ -206,9 +206,7 @@ private[group] final class GroupProcessor
 
           val replyTo = sender()
 
-          invite(state, inviteeUserId, inviterUserId, inviterAuthId, randomId, evt.ts) pipeTo replyTo onFailure {
-            case e ⇒ replyTo ! Status.Failure(e)
-          }
+          invite(state, inviteeUserId, inviterUserId, inviterAuthId, randomId, evt.ts) pipeTo replyTo
         }
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
