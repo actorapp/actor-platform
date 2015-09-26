@@ -54,7 +54,7 @@
 
 "SettingsSecurity" = "安全";
 
-"SettingsWallpappers" = "Wallpappers";
+"SettingsWallpapers" = "Wallpapers";
 
 "SettingsEditHeader" = "修改名字";
 
@@ -253,6 +253,14 @@
 "PrivacyTerminateAlertSingle" = "Terminate session";
 
 "PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Wallpapers";
+
+"WallpapersPhoto" = "Photo Library";
 
 /*
  * Chat

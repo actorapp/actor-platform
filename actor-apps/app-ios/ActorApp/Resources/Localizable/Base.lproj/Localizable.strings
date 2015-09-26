@@ -52,7 +52,7 @@
 
 "SettingsSecurity" = "Security";
 
-"SettingsWallpappers" = "Wallpappers";
+"SettingsWallpapers" = "Wallpapers";
 
 "SettingsEditHeader" = "Change your name";
 
@@ -251,6 +251,14 @@
 "PrivacyTerminateAlertSingle" = "Terminate session";
 
 "PrivacyTerminateHint" = "Logs out all devices except for this one.";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Wallpapers";
+
+"WallpapersPhoto" = "Photo Library";
 
 /*
  * Chat

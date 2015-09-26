@@ -32,7 +32,7 @@ class WallpapperSettingsCell: UATableViewCell {
         wallpapper3.viewDidTap = { self.wallpapperDidTap?(name: "bg_3.jpg") }
         label.font = UIFont.systemFontOfSize(17)
         label.applyStyle("label")
-        label.text = localized("SettingsWallpappers")
+        label.text = localized("SettingsWallpapers")
         disclose.image = UIImage(named: "ios_disclose")
         
         self.contentView.addSubview(wallpapper1)
