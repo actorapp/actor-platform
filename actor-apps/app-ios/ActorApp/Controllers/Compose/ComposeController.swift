@@ -39,17 +39,11 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
         searchDisplay.searchResultsDelegate = self
         searchDisplay.searchResultsTableView.rowHeight = 56
         searchDisplay.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        searchDisplay.searchResultsTableView.backgroundColor = Resources.BackyardColor
+        searchDisplay.searchResultsTableView.backgroundColor = MainAppTheme.list.bgColor
         searchDisplay.searchResultsTableView.frame = tableView.frame
         
         let header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
         header.addSubview(searchView)
-        
-        let headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-        headerShadow.image = UIImage(named: "CardTop2");
-        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-        header.addSubview(headerShadow);
-        
         tableView.tableHeaderView = header
  
         searchSource = ContactsSearchSource(searchDisplay: searchDisplay!)

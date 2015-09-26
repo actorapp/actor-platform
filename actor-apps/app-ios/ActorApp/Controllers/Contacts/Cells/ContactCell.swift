@@ -5,14 +5,14 @@
 import Foundation
 import UIKit
 
-class ContactCell : BasicCell {
+class ContactCell : UATableViewCell {
     
     let avatarView = AvatarView(frameSize: 40, type: .Rounded);
     let shortNameView = UILabel();
     let titleView = UILabel();
     
     init(reuseIdentifier:String) {
-        super.init(reuseIdentifier: reuseIdentifier, separatorPadding: 80)
+        super.init(cellStyle: "cell", reuseIdentifier: reuseIdentifier)
         
         titleView.font = UIFont.systemFontOfSize(18)
         titleView.textColor = MainAppTheme.list.contactsTitle
@@ -24,12 +24,6 @@ class ContactCell : BasicCell {
         self.contentView.addSubview(avatarView);
         self.contentView.addSubview(shortNameView);
         self.contentView.addSubview(titleView);
-        
-        backgroundColor = MainAppTheme.list.bgColor
-        
-        let selectedView = UIView()
-        selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
-        selectedBackgroundView = selectedView
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -48,7 +42,10 @@ class ContactCell : BasicCell {
             shortNameView.hidden = false;
         }
         
-        hideSeparator(isLast)
+        
+        topSeparatorVisible = false
+        bottomSeparatorVisible = true
+        bottomSeparatorLeftInset = isLast ? 0 : 80
     }
     
     override func layoutSubviews() {

@@ -11,7 +11,7 @@ class ContactsBaseViewController: EngineListController {
         
         table.rowHeight = 56
         table.separatorStyle = UITableViewCellSeparatorStyle.None
-        table.backgroundColor = MainAppTheme.list.backyardColor
+        table.backgroundColor = MainAppTheme.list.bgColor
         
         super.bindTable(table, fade: fade)
     }
@@ -32,7 +32,7 @@ class ContactsBaseViewController: EngineListController {
         let contact = item as! ACContact;
         var isLast = false
         if (indexPath.section == tableView.numberOfSections - 1) {
-            isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)
+            isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section) - 1
         }
         
         // Building short name

@@ -52,7 +52,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         tableView = UITableView()
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.rowHeight = 76
-        tableView.backgroundColor = MainAppTheme.list.backyardColor
+        tableView.backgroundColor = MainAppTheme.list.bgColor
         view.addSubview(tableView)
         // view = tableView
     }
@@ -80,7 +80,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsDelegate = self
         searchDisplay?.searchResultsTableView.rowHeight = 76
         searchDisplay?.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        searchDisplay?.searchResultsTableView.backgroundColor = MainAppTheme.list.backyardColor
+        searchDisplay?.searchResultsTableView.backgroundColor = MainAppTheme.list.bgColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
         let header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))

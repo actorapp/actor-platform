@@ -4,14 +4,13 @@
 
 import UIKit
 
-class DialogsSearchCell: CommonCell {
+class DialogsSearchCell: UATableViewCell {
     
     // MARK: -
     // MARK: Private vars
     
     private let avatarView: AvatarView = AvatarView(frameSize: 48, type: .Rounded);
     private let titleView: UILabel = UILabel();
-    private let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor);
     
     private var bindedFile: jlong? = nil;
     private var avatarCallback: CocoaDownloadCallback? = nil;
@@ -27,7 +26,6 @@ class DialogsSearchCell: CommonCell {
         
         contentView.addSubview(avatarView)
         contentView.addSubview(titleView)
-        contentView.addSubview(separatorView)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -40,7 +38,10 @@ class DialogsSearchCell: CommonCell {
     func bindSearchEntity(searchEntity: ACSearchEntity, isLast: Bool) {
         avatarView.bind(searchEntity.getTitle(), id: searchEntity.getPeer().getPeerId(), avatar: searchEntity.getAvatar());
         titleView.text = searchEntity.getTitle();
-        self.separatorView.hidden = isLast;
+        
+        topSeparatorVisible = false
+        bottomSeparatorLeftInset = isLast ? 0 : 75
+        bottomSeparatorVisible = true
     }
     
     // MARK: -
@@ -55,7 +56,6 @@ class DialogsSearchCell: CommonCell {
         
         avatarView.frame = CGRectMake(padding, padding, 48, 48);
         titleView.frame = CGRectMake(leftPadding, 0, width - leftPadding - (padding + 50), contentView.bounds.size.height);
-        separatorView.frame = CGRectMake(leftPadding, 75.5, width, 0.5);
     }
 
 }
