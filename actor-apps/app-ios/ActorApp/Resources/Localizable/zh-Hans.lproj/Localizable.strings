@@ -186,6 +186,8 @@
 
 "GroupJoinAction" = "Join";
 
+"GroupMembers" = "MEMBERS";
+
 /*
  * Compose
  */

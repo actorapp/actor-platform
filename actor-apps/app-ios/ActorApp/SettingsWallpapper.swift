@@ -11,6 +11,8 @@ class SettingsWallpapper: AACollectionViewController, UICollectionViewDelegateFl
     init() {
         super.init(collectionLayout: UICollectionViewFlowLayout())
         
+        navigationItem.title = localized("WallpapersTitle")
+        
         collectionView.registerClass(WallpapperPreviewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.contentInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
         collectionView.backgroundColor = MainAppTheme.list.bgColor

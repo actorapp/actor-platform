@@ -129,7 +129,7 @@ class GroupViewController: AATableViewController {
         let membersSection = tableData.addSection(true)
         
         membersSection.addHeaderCell()
-            .setTitle("MEMBERS")
+            .setTitle(localized("GroupMembers"))
         
         membersSection
             .addCustomCells(48, countClosure: { () -> Int in
