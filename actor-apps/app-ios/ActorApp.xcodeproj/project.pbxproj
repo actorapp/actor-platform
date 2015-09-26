@@ -1227,9 +1227,9 @@
 				FABRIC_BUILD_SECRET = "";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.1/lib";
+				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.2/lib";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1277,11 +1277,12 @@
 					"-ljre_emul",
 					"-lactor",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8.1/include";
+				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8.2/include";
 			};
 			name = Debug;
 		};
@@ -1338,9 +1339,9 @@
 				FABRIC_BUILD_SECRET = "";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.1/lib";
+				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.2/lib";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1387,11 +1388,12 @@
 					"-ljre_emul",
 					"-lactor",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8.1/include";
+				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8.2/include";
 			};
 			name = Release;
 		};
