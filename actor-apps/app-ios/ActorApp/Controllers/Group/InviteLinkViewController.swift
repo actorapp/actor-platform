@@ -7,7 +7,7 @@ import Foundation
 class InviteLinkViewController: AATableViewController {
 
     let gid: Int
-    var tableData: UAGrouppedTableData!
+    var tableData: UATableData!
     var currentUrl: String?
     var urlCell: UACommonCellRegion!
     
@@ -30,7 +30,7 @@ class InviteLinkViewController: AATableViewController {
         
         tableView.hidden = true
         
-        tableData = UAGrouppedTableData(tableView: tableView)
+        tableData = UATableData(tableView: tableView)
         urlCell = tableData.addSection()
             .setHeaderText(NSLocalizedString("GroupInviteLinkTitle", comment: "Link title"))
             .setFooterText(NSLocalizedString("GroupInviteLinkHint", comment: "Link hint"))
