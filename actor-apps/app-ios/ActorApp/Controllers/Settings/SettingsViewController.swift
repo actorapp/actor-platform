@@ -15,7 +15,7 @@ class SettingsViewController: AATableViewController {
     private let TextCellIdentifier = "TextCellIdentifier"
     private let WallpapperCellIdentifier = "WallpapperCellIdentifier"
     
-    private var tableData: UABaseTableData!
+    private var tableData: UATableData!
     
     private let uid: Int
     private var user: ACUserVM?
@@ -396,9 +396,4 @@ class SettingsViewController: AATableViewController {
         
         Actor.onProfileClosedWithUid(jint(uid))
     }
-    
-    func openWallpapper1() {
-        self.presentViewController(WallpapperPreviewController(imageName: "bg_1.jpg"), animated: true, completion: nil)
-    }
 }
-
