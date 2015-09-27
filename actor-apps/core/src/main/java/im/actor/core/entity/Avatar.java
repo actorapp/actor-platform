@@ -4,6 +4,8 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,10 +20,13 @@ public class Avatar extends WrapperEntity<ApiAvatar> {
     private static final int RECORD_ID = 10;
 
     @Nullable
+    @Property("readonly, nonatomic")
     private AvatarImage smallImage;
     @Nullable
+    @Property("readonly, nonatomic")
     private AvatarImage largeImage;
     @Nullable
+    @Property("readonly, nonatomic")
     private AvatarImage fullImage;
 
     public Avatar(@NotNull ApiAvatar wrapped) {

@@ -193,7 +193,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
             let dialog = objectAtIndexPath(indexPath) as! ACDialog
             
-            execute(Actor.deleteChatCommandWithPeer(dialog.getPeer()));
+            execute(Actor.deleteChatCommandWithPeer(dialog.peer));
         }
     }
     
@@ -219,10 +219,10 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if (tableView == self.tableView) {
             let dialog = objectAtIndexPath(indexPath) as! ACDialog
-            navigateToMessagesWithPeer(dialog.getPeer())
+            navigateToMessagesWithPeer(dialog.peer)
         } else {
             let searchEntity = searchSource!.objectAtIndexPath(indexPath) as! ACSearchEntity
-            navigateToMessagesWithPeer(searchEntity.getPeer())
+            navigateToMessagesWithPeer(searchEntity.peer)
         }
         
         // tableView.deselectRowAtIndexPath(indexPath, animated: true)

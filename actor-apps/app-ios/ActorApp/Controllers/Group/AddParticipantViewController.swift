@@ -68,7 +68,7 @@ class AddParticipantViewController: ContactsBaseViewController {
             navigateNext(InviteLinkViewController(gid: gid), removeCurrent: false)
         } else {
             let contact = objectAtIndexPath(indexPath) as! ACContact;
-            execute(Actor.inviteMemberCommandWithGid(jint(gid), withUid: contact.getUid()), successBlock: { (val) -> () in
+            execute(Actor.inviteMemberCommandWithGid(jint(gid), withUid: contact.uid), successBlock: { (val) -> () in
                     self.dismiss()
                 }, failureBlock: { (val) -> () in
                     self.dismiss()

@@ -95,11 +95,11 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
                 MainAppTheme.navigation.applyStatusBar()
             } else {
                 let contact = objectAtIndexPath(indexPath) as! ACContact
-                navigateToMessagesWithPeerId(contact.getUid())
+                navigateToMessagesWithPeerId(contact.uid)
             }
         } else {
             let contact = searchSource!.objectAtIndexPath(indexPath) as! ACContact
-            navigateToMessagesWithPeerId(contact.getUid())
+            navigateToMessagesWithPeerId(contact.uid)
         }
     }
     

@@ -5,6 +5,8 @@
 package im.actor.core.entity;
 
 
+import com.google.j2objc.annotations.Property;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -17,9 +19,12 @@ public class AvatarImage extends WrapperEntity<ApiAvatarImage> {
 
     private static final int RECORD_ID = 10;
 
+    @Property("readonly, nonatomic")
     private int width;
+    @Property("readonly, nonatomic")
     private int height;
     @NotNull
+    @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
     private FileReference fileReference;
 

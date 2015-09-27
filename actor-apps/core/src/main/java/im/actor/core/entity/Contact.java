@@ -4,6 +4,8 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,12 +28,15 @@ public class Contact extends BserObject implements ListEngineItem {
 
     public static final String ENTITY_NAME = "Contact";
 
+    @Property("readonly, nonatomic")
     private int uid;
     private long sortKey;
     @Nullable
+    @Property("readonly, nonatomic")
     private Avatar avatar;
     @SuppressWarnings("NullableProblems")
     @NotNull
+    @Property("readonly, nonatomic")
     private String name;
 
     public Contact(int uid, long sortKey, @Nullable Avatar avatar, @NotNull String name) {
