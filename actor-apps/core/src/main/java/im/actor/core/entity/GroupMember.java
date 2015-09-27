@@ -4,14 +4,20 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 public class GroupMember {
 
+    @Property("readonly, nonatomic")
     private int uid;
 
+    @Property("readonly, nonatomic")
     private int inviterUid;
 
+    @Property("readonly, nonatomic")
     private long inviteDate;
 
+    @Property("readonly, nonatomic")
     private boolean isAdministrator;
 
     public GroupMember(int uid, int inviterUid, long inviteDate,

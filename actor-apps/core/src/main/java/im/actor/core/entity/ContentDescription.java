@@ -4,6 +4,8 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import java.io.IOException;
 
 import im.actor.core.entity.content.AbsContent;
@@ -75,11 +77,14 @@ public class ContentDescription extends BserObject {
         }
     }
 
+    @Property("readonly, nonatomic")
     private ContentType contentType;
+    @Property("readonly, nonatomic")
     private String text;
+    @Property("readonly, nonatomic")
     private int relatedUser;
+    @Property("readonly, nonatomic")
     private boolean isSilent;
-    private boolean isEncrypted;
 
     public ContentDescription(ContentType contentType, String text, int relatedUser,
                               boolean isSilent) {
@@ -87,7 +92,6 @@ public class ContentDescription extends BserObject {
         this.text = text;
         this.relatedUser = relatedUser;
         this.isSilent = isSilent;
-        this.isEncrypted = false;
     }
 
     public ContentDescription(ContentType contentType, String text) {
@@ -124,7 +128,6 @@ public class ContentDescription extends BserObject {
         text = values.getString(2);
         relatedUser = values.getInt(3);
         isSilent = values.getBool(4);
-        isEncrypted = values.getBool(5);
     }
 
     @Override
@@ -133,6 +136,5 @@ public class ContentDescription extends BserObject {
         writer.writeString(2, text);
         writer.writeInt(3, relatedUser);
         writer.writeBool(4, isSilent);
-        writer.writeBool(5, isEncrypted);
     }
 }

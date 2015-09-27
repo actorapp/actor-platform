@@ -82,7 +82,7 @@ class DiscoverViewController: AATableViewController {
         let g = groups.getWithInt(jint(indexPath.row)) as! ACPublicGroup
         confirmAlertUser("JoinAlertMessage", action: "AlertYes", tapYes: { () -> () in
             let gid = g.getId()
-            self.execute(Actor.joinPublicGroupCommandWithGig(g.getId(), withAccessHash: g.getAccessHash()), successBlock: { (val) -> Void in
+            self.execute(Actor.joinPublicGroupCommandWithGig(g.getId(), withAccessHash: g.accessHash), successBlock: { (val) -> Void in
                 self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: false)
             }, failureBlock: { (val) -> Void in
                 // Try to open chat, why not?

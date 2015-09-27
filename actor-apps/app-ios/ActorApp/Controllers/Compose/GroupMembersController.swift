@@ -52,7 +52,7 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
     func doNext() {
         let res = IOSIntArray(length: UInt(selected.count))
         for i in 0..<selected.count {
-            res.replaceIntAtIndex(UInt(i), withInt: selected[i].contact.getUid())
+            res.replaceIntAtIndex(UInt(i), withInt: selected[i].contact.uid)
         }
         execute(Actor.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res), successBlock: { (val) -> Void in
             let gid = (val as! JavaLangInteger).intValue
@@ -72,14 +72,14 @@ class GroupMembersController: ContactsBaseViewController, CLTokenInputViewDelega
         
         for i in 0..<selected.count {
             let n = selected[i]
-            if (n.contact.getUid() == contact.getUid()) {
+            if (n.contact.uid == contact.uid) {
                 selected.removeAtIndex(i)
                 tokenView.removeToken(n.token)
                 return
             }
         }
         
-        let token = CLToken(displayText: contact.getName(), context: nil)
+        let token = CLToken(displayText: contact.name, context: nil)
         tokenView.addToken(token)
         selected.append(TokenRef(contact: contact, token: token))
         filter("")

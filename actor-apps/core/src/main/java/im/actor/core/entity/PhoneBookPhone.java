@@ -4,8 +4,12 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 public class PhoneBookPhone {
+    @Property("readonly, nonatomic")
     private long id;
+    @Property("readonly, nonatomic")
     private long number;
 
     public PhoneBookPhone(long id, long number) {

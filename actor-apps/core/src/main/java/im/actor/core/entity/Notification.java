@@ -4,9 +4,14 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 public class Notification {
+    @Property("readonly, nonatomic")
     private Peer peer;
+    @Property("readonly, nonatomic")
     private int sender;
+    @Property("readonly, nonatomic")
     private ContentDescription contentDescription;
 
     public Notification(Peer peer, int sender, ContentDescription contentDescription) {

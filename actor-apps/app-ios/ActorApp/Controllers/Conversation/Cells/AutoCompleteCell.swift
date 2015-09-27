@@ -30,14 +30,14 @@ class AutoCompleteCell: UITableViewCell {
     }
 
     func bindData(user: ACMentionFilterResult, highlightWord: String) {
-        avatarView.bind(user.getMentionString(), id: user.getUid(), avatar: user.getAvatar(), clearPrev: true)
+        avatarView.bind(user.mentionString, id: user.uid, avatar: user.avatar, clearPrev: true)
         
         var nickText: String
         var nameText: String
         
-        nickText = user.getMentionString()
-        if user.getOriginalString() != nil {
-            nameText = " \u{2022} \(user.getOriginalString())";
+        nickText = user.mentionString
+        if user.originalString != nil {
+            nameText = " \u{2022} \(user.originalString)";
         } else {
             nameText = ""
         }
@@ -51,15 +51,15 @@ class AutoCompleteCell: UITableViewCell {
         nameAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nameText.length))
         nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.hintColor, range: NSMakeRange(0, nameText.length))
         
-        for i in 0..<user.getMentionMatches().size() {
-            let match = user.getMentionMatches().getWithInt(i) as! ACStringMatch
+        for i in 0..<user.mentionMatches.size() {
+            let match = user.mentionMatches.getWithInt(i) as! ACStringMatch
             let nsRange = NSMakeRange(Int(match.getStart()), Int(match.getLength()))
             nickAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.chat.autocompleteHighlight, range: nsRange)
         }
         
-        if user.getOriginalString() != nil {
-            for i in 0..<user.getOriginalMatches().size() {
-                let match = user.getOriginalMatches().getWithInt(i) as! ACStringMatch
+        if user.originalString != nil {
+            for i in 0..<user.originalMatches.size() {
+                let match = user.originalMatches.getWithInt(i) as! ACStringMatch
                 let nsRange = NSMakeRange(Int(match.getStart()) + 3, Int(match.getLength()))
                 nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.chat.autocompleteHighlight, range: nsRange)
             }

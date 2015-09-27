@@ -221,7 +221,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
             contact = searchSource!.objectAtIndexPath(indexPath) as! ACContact
         }
         
-        navigateToMessagesWithUid(contact.getUid())
+        navigateToMessagesWithUid(contact.uid)
     }
     
     // MARK: -

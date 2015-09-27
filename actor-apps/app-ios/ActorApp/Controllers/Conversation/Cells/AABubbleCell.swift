@@ -183,7 +183,7 @@ class AABubbleCell: UICollectionViewCell {
     func setConfig(peer: ACPeer, controller: ConversationBaseViewController) {
         self.peer = peer
         self.controller = controller
-        if (peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue) && !isFullSize) {
+        if (peer.isGroup && !isFullSize) {
             self.isGroup = true
         }
     }

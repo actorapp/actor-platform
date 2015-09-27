@@ -1,17 +1,26 @@
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import java.util.List;
 
 import im.actor.core.util.StringMatch;
 
 public class MentionFilterResult {
 
+    @Property("readonly, nonatomic")
     private int uid;
+    @Property("readonly, nonatomic")
     private Avatar avatar;
+    @Property("readonly, nonatomic")
     private String mentionString;
+    @Property("readonly, nonatomic")
     private List<StringMatch> mentionMatches;
+    @Property("readonly, nonatomic")
     private String originalString;
+    @Property("readonly, nonatomic")
     private List<StringMatch> originalMatches;
+    @Property("readonly, nonatomic")
     private boolean isNickname;
 
     public MentionFilterResult(int uid, Avatar avatar, String mentionString, List<StringMatch> mentionMatches,

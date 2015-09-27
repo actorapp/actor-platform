@@ -56,11 +56,11 @@ class GroupViewController: AATableViewController {
             
             cell.didTap = { () -> () in
                 let avatar = self.group!.getAvatarModel().get()
-                if avatar != nil && avatar.getFullImage() != nil {
+                if avatar != nil && avatar.fullImage != nil {
                     
-                    let full = avatar.getFullImage().getFileReference()
-                    let small = avatar.getSmallImage().getFileReference()
-                    let size = CGSize(width: Int(avatar.getFullImage().getWidth()), height: Int(avatar.getFullImage().getHeight()))
+                    let full = avatar.fullImage.fileReference
+                    let small = avatar.smallImage.fileReference
+                    let size = CGSize(width: Int(avatar.fullImage.width), height: Int(avatar.fullImage.height))
                     
                     self.presentViewController(PhotoPreviewController(file: full, previewFile: small, size: size, fromView: cell.avatarView), animated: true, completion: nil)
                 }
@@ -137,16 +137,16 @@ class GroupViewController: AATableViewController {
         }) { (tableView, index, indexPath) -> UITableViewCell in
             let cell: GroupMemberCell = tableView.dequeueReusableCellWithIdentifier(self.UserCellIdentifier, forIndexPath: indexPath) as! GroupMemberCell
             let groupMember = self.groupMembers[index]
-            if let user = Actor.getUserWithUid(groupMember.getUid()) {
+            if let user = Actor.getUserWithUid(groupMember.uid) {
                     cell.bind(user)
                     
                     // Notify to request onlines
-                    Actor.onUserVisibleWithUid(groupMember.getUid())
+                    Actor.onUserVisibleWithUid(groupMember.uid)
             }
             return cell
         }.setAction { (index) -> Bool in
             let groupMember = self.groupMembers[index]
-            if let user = Actor.getUserWithUid(groupMember.getUid()) {
+            if let user = Actor.getUserWithUid(groupMember.uid) {
                 if (user.getId() == Actor.myUid()) {
                     return true
                 }
@@ -155,7 +155,7 @@ class GroupViewController: AATableViewController {
                 self.showActionSheet(name,
                     buttons: isIPhone ? ["GroupMemberInfo", "GroupMemberWrite", "GroupMemberCall"] : ["GroupMemberInfo", "GroupMemberWrite"],
                     cancelButton: "Cancel",
-                    destructButton: groupMember.getUid() != Actor.myUid() && (groupMember.getInviterUid() == Actor.myUid() || self.group!.getCreatorId() == Actor.myUid())  ? "GroupMemberKick" : nil,
+                    destructButton: groupMember.uid != Actor.myUid() && (groupMember.inviterUid == Actor.myUid() || self.group!.getCreatorId() == Actor.myUid())  ? "GroupMemberKick" : nil,
                     sourceView: self.view,
                     sourceRect: self.view.bounds,
                     tapClosure: { (index) -> () in
@@ -264,8 +264,8 @@ class GroupViewController: AATableViewController {
             if value != nil {
                 self.groupMembers = value!.toArray().toSwiftArray()
                 self.groupMembers.sortInPlace({ (left: ACGroupMember, right: ACGroupMember) -> Bool in
-                    let lname = Actor.getUserWithUid(left.getUid()).getNameModel().get()
-                    let rname = Actor.getUserWithUid(right.getUid()).getNameModel().get()
+                    let lname = Actor.getUserWithUid(left.uid).getNameModel().get()
+                    let rname = Actor.getUserWithUid(right.uid).getNameModel().get()
                     return lname < rname
                 })
                 
