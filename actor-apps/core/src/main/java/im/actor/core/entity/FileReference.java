@@ -4,6 +4,8 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -16,7 +18,9 @@ public class FileReference extends WrapperEntity<ApiFileLocation> {
 
     private static final int RECORD_ID = 10;
 
+    @Property("readonly, nonatomic")
     private int fileSize;
+    @Property("readonly, nonatomic")
     private String fileName;
 
     public FileReference(ApiFileLocation fileLocation, String fileName, int fileSize) {

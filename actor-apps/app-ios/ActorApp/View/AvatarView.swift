@@ -137,9 +137,9 @@ class AvatarView: UIImageView {
         
         var fileLocation: ACFileReference?
         if needSmallAvatar == true {
-            fileLocation = avatar?.getSmallImage()?.getFileReference();
+            fileLocation = avatar?.smallImage?.fileReference
         } else {
-            fileLocation = avatar?.getFullImage()?.getFileReference();
+            fileLocation = avatar?.smallImage?.fileReference
         }
         
         if (bindedId != nil && bindedId == id) {
@@ -196,7 +196,7 @@ class AvatarView: UIImageView {
         }
         
         if needSmallAvatar == false {
-            let smallFileLocation = avatar?.getSmallImage()?.getFileReference()
+            let smallFileLocation = avatar?.smallImage?.fileReference
             var smallAvatarCached = checkCache(40, id: Int64(smallFileLocation!.getFileId()))
             if smallAvatarCached == nil {
                 smallAvatarCached = checkCache(48, id: Int64(smallFileLocation!.getFileId()))

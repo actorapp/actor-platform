@@ -42,26 +42,26 @@ class DialogCell: UATableViewCell {
             applyStyle("dialogs.cell")
         }
         
-        self.avatarView.bind(dialog.getDialogTitle(), id: dialog.getPeer().getPeerId(), avatar: dialog.getDialogAvatar());
+        self.avatarView.bind(dialog.dialogTitle, id: dialog.peer.peerId, avatar: dialog.dialogAvatar);
         
-        self.titleView.text = dialog.getDialogTitle();
+        self.titleView.text = dialog.dialogTitle;
     
         self.messageView.text = Actor.getFormatter().formatDialogText(dialog)
-        if dialog.getMessageType().ordinal() != jint(ACContentType.TEXT.rawValue) {
+        if dialog.messageType.ordinal() != jint(ACContentType.TEXT.rawValue) {
             self.messageView.applyStyle("dialog.message")
         } else {
             self.messageView.applyStyle("dialog.message.hightlight")
         }
         
-        if (dialog.getDate() > 0) {
-            self.dateView.text = Actor.getFormatter().formatShortDate(dialog.getDate());
+        if (dialog.date > 0) {
+            self.dateView.text = Actor.getFormatter().formatShortDate(dialog.date);
             self.dateView.hidden = false;
         } else {
             self.dateView.hidden = true;
         }
         
-        if (dialog.getUnreadCount() != 0) {
-            self.counterView.text = "\(dialog.getUnreadCount())"
+        if (dialog.unreadCount != 0) {
+            self.counterView.text = "\(dialog.unreadCount)"
             self.counterView.hidden = false
             self.counterViewBg.hidden = false
         } else {
@@ -69,7 +69,7 @@ class DialogCell: UATableViewCell {
             self.counterViewBg.hidden = true
         }
         
-        let messageState = UInt(dialog.getStatus().ordinal());
+        let messageState = UInt(dialog.status.ordinal());
         
         if (messageState == ACMessageState.PENDING.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSending

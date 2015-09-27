@@ -42,15 +42,15 @@ class PublicCell: UITableViewCell {
     func bind(group: ACPublicGroup, isLast: Bool) {
         self.group = group
         
-        title.text = self.group.getTitle()
+        title.text = self.group.title
         desc.text = self.group.getDescription()
         
-        members.text = "\(self.group.getMembers()) members"
-        if self.group.getFriends() > 0 {
-            members.text = members.text! + " and \(self.group.getFriends()) friends"
+        members.text = "\(self.group.members) members"
+        if self.group.friends > 0 {
+            members.text = members.text! + " and \(self.group.friends) friends"
         }
         
-        avatarView.bind(self.group.getTitle(), id: self.group.getId(), avatar: self.group.getAvatar())
+        avatarView.bind(self.group.title, id: self.group.groupId, avatar: self.group.avatar)
         
         separatorView.hidden = isLast
     }

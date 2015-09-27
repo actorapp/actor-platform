@@ -25,12 +25,12 @@ class ContactsSearchSource: SearchSource {
         // Building short name
         var shortName : String? = nil;
         if (indexPath.row == 0) {
-            shortName = contact.getName().smallValue();
+            shortName = contact.name.smallValue();
         } else {
             let prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! ACContact;
             
-            let prevName = prevContact.getName().smallValue();
-            let name = contact.getName().smallValue();
+            let prevName = prevContact.name.smallValue();
+            let name = contact.name.smallValue();
             
             if (prevName != name){
                 shortName = name;

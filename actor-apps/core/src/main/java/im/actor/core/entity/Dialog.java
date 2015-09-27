@@ -4,6 +4,8 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,26 +35,38 @@ public class Dialog extends BserObject implements ListEngineItem {
 
     @NotNull
     @SuppressWarnings("NullableProblems")
+    @Property("readonly, nonatomic")
     private Peer peer;
     @NotNull
     @SuppressWarnings("NullableProblems")
+    @Property("readonly, nonatomic")
     private String dialogTitle;
+    @Property("readonly, nonatomic")
     private int unreadCount;
+    @Property("readonly, nonatomic")
     private long rid;
+    @Property("readonly, nonatomic")
     private long sortDate;
+    @Property("readonly, nonatomic")
     private int senderId;
+    @Property("readonly, nonatomic")
     private long date;
     @NotNull
     @SuppressWarnings("NullableProblems")
+    @Property("readonly, nonatomic")
     private ContentType messageType;
     @NotNull
     @SuppressWarnings("NullableProblems")
+    @Property("readonly, nonatomic")
     private String text;
     @NotNull
     @SuppressWarnings("NullableProblems")
+    @Property("readonly, nonatomic")
     private MessageState status;
     @Nullable
+    @Property("readonly, nonatomic")
     private Avatar dialogAvatar;
+    @Property("readonly, nonatomic")
     private int relatedUid;
 
     public Dialog(@NotNull Peer peer,

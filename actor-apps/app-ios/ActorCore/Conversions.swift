@@ -64,7 +64,7 @@ extension JavaUtilAbstractCollection : SequenceType {
 extension ACPeer {
     var isGroup: Bool {
         get {
-            return UInt(self.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue
+            return UInt(self.peerType.ordinal()) == ACPeerType.GROUP.rawValue
         }
     }
 }

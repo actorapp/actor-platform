@@ -1,19 +1,28 @@
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import im.actor.core.api.ApiPublicGroup;
 
 public class PublicGroup {
 
-    private int id;
+    @Property("readonly, nonatomic")
+    private int groupId;
+    @Property("readonly, nonatomic")
     private long accessHash;
+    @Property("readonly, nonatomic")
     private String title;
+    @Property("readonly, nonatomic")
     private Avatar avatar;
+    @Property("readonly, nonatomic")
     private String description;
+    @Property("readonly, nonatomic")
     private int members;
+    @Property("readonly, nonatomic")
     private int friends;
 
     public PublicGroup(int id, long accessHash, String title, Avatar avatar, String description, int members, int friends) {
-        this.id = id;
+        this.groupId = id;
         this.accessHash = accessHash;
         this.title = title;
         this.avatar = avatar;
@@ -23,7 +32,7 @@ public class PublicGroup {
     }
 
     public PublicGroup(ApiPublicGroup raw) {
-        this.id = raw.getId();
+        this.groupId = raw.getId();
         this.accessHash = raw.getAccessHash();
         this.title = raw.getTitle();
         this.avatar = raw.getAvatar() == null ? null : new Avatar(raw.getAvatar());
@@ -33,7 +42,7 @@ public class PublicGroup {
     }
 
     public int getId() {
-        return id;
+        return groupId;
     }
 
     public long getAccessHash() {

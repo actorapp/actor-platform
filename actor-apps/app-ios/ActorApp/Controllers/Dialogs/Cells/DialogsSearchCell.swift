@@ -36,8 +36,8 @@ class DialogsSearchCell: UATableViewCell {
     // MARK: Methods
     
     func bindSearchEntity(searchEntity: ACSearchEntity, isLast: Bool) {
-        avatarView.bind(searchEntity.getTitle(), id: searchEntity.getPeer().getPeerId(), avatar: searchEntity.getAvatar());
-        titleView.text = searchEntity.getTitle();
+        avatarView.bind(searchEntity.title, id: searchEntity.peer.peerId, avatar: searchEntity.avatar)
+        titleView.text = searchEntity.title
         
         topSeparatorVisible = false
         bottomSeparatorLeftInset = isLast ? 0 : 75

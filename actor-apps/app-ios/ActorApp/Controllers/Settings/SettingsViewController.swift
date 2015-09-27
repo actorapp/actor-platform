@@ -79,11 +79,11 @@ class SettingsViewController: AATableViewController {
             }
             cell.didTap = { () -> () in
                 let avatar = self.user!.getAvatarModel().get()
-                if avatar != nil && avatar.getFullImage() != nil {
+                if avatar != nil && avatar.fullImage != nil {
                     
-                    let full = avatar.getFullImage().getFileReference()
-                    let small = avatar.getSmallImage().getFileReference()
-                    let size = CGSize(width: Int(avatar.getFullImage().getWidth()), height: Int(avatar.getFullImage().getHeight()))
+                    let full = avatar.fullImage.fileReference
+                    let small = avatar.smallImage.fileReference
+                    let size = CGSize(width: Int(avatar.fullImage.width), height: Int(avatar.fullImage.height))
                     
                     self.presentViewController(PhotoPreviewController(file: full, previewFile: small, size: size, fromView: cell.avatarView), animated: true, completion: nil)
                 }
