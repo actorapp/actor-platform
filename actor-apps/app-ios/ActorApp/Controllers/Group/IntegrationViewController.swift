@@ -7,7 +7,7 @@ import Foundation
 class IntegrationViewController: AATableViewController {
 
     let gid: jint
-    var tableData: UAGrouppedTableData!
+    var tableData: UATableData!
     var currentUrl: String?
     var urlCell: UACommonCellRegion!
     
@@ -30,7 +30,7 @@ class IntegrationViewController: AATableViewController {
         
         tableView.hidden = true
 
-        tableData = UAGrouppedTableData(tableView: tableView)
+        tableData = UATableData(tableView: tableView)
         
         urlCell = tableData.addSection()
             .setHeaderText(NSLocalizedString("GroupIntegrationLinkTitle", comment: "Link title"))

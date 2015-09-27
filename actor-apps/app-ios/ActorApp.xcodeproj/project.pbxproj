@@ -13,6 +13,7 @@
 		057AECBA478DD3D127189E50F10243A8 /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51407CFA80BA5C7F30CB1D2507FA116C /* AABubbleMediaCell.swift */; };
 		0600225E1BB64FE0004C2C1A /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0600225D1BB64FE0004C2C1A /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
 		06049FE21BA5E26400BF8553 /* Bubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06049FE11BA5E26400BF8553 /* Bubbles.swift */; settings = {ASSET_TAGS = (); }; };
+		065AFDDF1BB87DD40073E510 /* AMManagedTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDDE1BB87DD40073E510 /* AMManagedTableController.swift */; settings = {ASSET_TAGS = (); }; };
 		068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068505C71B9AB2E300819D16 /* CorePreviewController.swift */; };
 		068505CC1B9AB5CB00819D16 /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 068505CA1B9AB5CB00819D16 /* highlight-default.min.css */; };
 		068505CD1B9AB5CB00819D16 /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 068505CB1B9AB5CB00819D16 /* highlight.min.js */; };
@@ -175,6 +176,7 @@
 		0328ED9C511FAEEC982E209A78C9443F /* CommonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonCell.swift; path = View/Cells/CommonCell.swift; sourceTree = "<group>"; };
 		0600225D1BB64FE0004C2C1A /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1.jpg; sourceTree = "<group>"; };
 		06049FE11BA5E26400BF8553 /* Bubbles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bubbles.swift; sourceTree = "<group>"; };
+		065AFDDE1BB87DD40073E510 /* AMManagedTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMManagedTableController.swift; sourceTree = "<group>"; };
 		068505C71B9AB2E300819D16 /* CorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorePreviewController.swift; sourceTree = "<group>"; };
 		068505CA1B9AB5CB00819D16 /* highlight-default.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "highlight-default.min.css"; path = "Resources/Highlighter/highlight-default.min.css"; sourceTree = "<group>"; };
 		068505CB1B9AB5CB00819D16 /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = highlight.min.js; path = Resources/Highlighter/highlight.min.js; sourceTree = "<group>"; };
@@ -380,6 +382,15 @@
 				42DFB398CD5BFCA0ACCF98EACA6224EB /* Caches.swift */,
 			);
 			name = Layouting;
+			sourceTree = "<group>";
+		};
+		065AFDE01BB880310073E510 /* Managed */ = {
+			isa = PBXGroup;
+			children = (
+				B114C9394B112A2E5A262CE688CD9025 /* UATableData.swift */,
+				065AFDDE1BB87DD40073E510 /* AMManagedTableController.swift */,
+			);
+			name = Managed;
 			sourceTree = "<group>";
 		};
 		068505C61B9AB2D300819D16 /* Preview */ = {
@@ -747,6 +758,7 @@
 		AA093A610DC72A6FA8155EEBC3E55AC4 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				065AFDE01BB880310073E510 /* Managed */,
 				25D1DD55151021BDC2D921D839113F32 /* ABActionShit */,
 				740E30BCB5D905150E7A2C30565D1E96 /* ABPhoneField */,
 				D214427DC9D13DCD43925B4208B71845 /* Cells */,
@@ -757,7 +769,6 @@
 				7E8ACF1A5456CC41B4F0FDAFA21CD772 /* Placeholders.swift */,
 				E3A629833C363BA50CED39226880BD7E /* TableViewHeader.swift */,
 				0D473CD2EBD067BD6B46A520C987B060 /* TableViewSeparator.swift */,
-				B114C9394B112A2E5A262CE688CD9025 /* UATableData.swift */,
 				577EC441D4AE3C17BD9C9D6EBCC66467 /* UserPhotoCell.swift */,
 				06FC5E8D1BB3659B0071F153 /* AvatarCell.swift */,
 			);
@@ -1128,6 +1139,7 @@
 				E214A2620D8EA7D5B19AA28FA71B84FD /* FastCache.swift in Sources */,
 				CB557F2818385B009F260E82EAB9F9D7 /* FileTypes.swift in Sources */,
 				7CE85C6ABE02732D61912417F25E7E34 /* GroupCreateViewController.swift in Sources */,
+				065AFDDF1BB87DD40073E510 /* AMManagedTableController.swift in Sources */,
 				7FA5159C416DFAF518CC0AD68021FD3A /* GroupMemberCell.swift in Sources */,
 				542C6DCBA7C3F09B8815D2B153E8127B /* GroupMembersController.swift in Sources */,
 				37100B1A42B20444DD000E313A035A36 /* GroupPhotoCell.swift in Sources */,
