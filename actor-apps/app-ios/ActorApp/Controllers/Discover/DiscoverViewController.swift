@@ -6,7 +6,7 @@ import Foundation
 
 class DiscoverViewController: AATableViewController {
     
-    var tableData: UATableData!
+    var tableData: ACManagedTable!
     var groups: JavaUtilList!
     
     init() {

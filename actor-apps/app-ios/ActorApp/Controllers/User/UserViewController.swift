@@ -15,7 +15,7 @@ class UserViewController: AATableViewController {
     var phones: JavaUtilArrayList?
     var binder = Binder()
     
-    var tableData: UATableData!
+    var tableData: ACManagedTable!
     
     init(uid: Int) {
         self.uid = uid
@@ -39,7 +39,7 @@ class UserViewController: AATableViewController {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         
-        tableData = UATableData(tableView: tableView)
+        tableData = ACManagedTable(tableView: tableView)
         tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         
