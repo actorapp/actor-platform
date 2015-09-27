@@ -13,7 +13,10 @@
 		057AECBA478DD3D127189E50F10243A8 /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51407CFA80BA5C7F30CB1D2507FA116C /* AABubbleMediaCell.swift */; };
 		0600225E1BB64FE0004C2C1A /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0600225D1BB64FE0004C2C1A /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
 		06049FE21BA5E26400BF8553 /* Bubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06049FE11BA5E26400BF8553 /* Bubbles.swift */; settings = {ASSET_TAGS = (); }; };
-		065AFDDF1BB87DD40073E510 /* AMManagedTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDDE1BB87DD40073E510 /* AMManagedTableController.swift */; settings = {ASSET_TAGS = (); }; };
+		065AFDDF1BB87DD40073E510 /* ACManagedTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDDE1BB87DD40073E510 /* ACManagedTableController.swift */; settings = {ASSET_TAGS = (); }; };
+		065AFDE21BB8872F0073E510 /* ACManagedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE11BB8872F0073E510 /* ACManagedSection.swift */; settings = {ASSET_TAGS = (); }; };
+		065AFDE41BB887BE0073E510 /* ACManagedRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */; settings = {ASSET_TAGS = (); }; };
+		065AFDE61BB887E60073E510 /* ACManagedTableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068505C71B9AB2E300819D16 /* CorePreviewController.swift */; };
 		068505CC1B9AB5CB00819D16 /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 068505CA1B9AB5CB00819D16 /* highlight-default.min.css */; };
 		068505CD1B9AB5CB00819D16 /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 068505CB1B9AB5CB00819D16 /* highlight.min.js */; };
@@ -151,7 +154,7 @@
 		E53FAE1C8969DECE56280C942CED0F57 /* MessagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99C439A29E8D0BF18680CA79BC497A4 /* MessagesFlowLayout.swift */; };
 		E8172B3FE77CEEA46F355F0F4D5D3C06 /* BubbleBackgroundProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22117703C38D24411164AC0A0AF7A050 /* BubbleBackgroundProcessor.swift */; };
 		E86BD1C43436574B6F5EBB7D66300B04 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CDABC92DB6C23566AC87E5687CF5DB40 /* Localizable.strings */; };
-		ECB5DDB2F5C2FF7FF51921C8AA9F22CC /* UATableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B114C9394B112A2E5A262CE688CD9025 /* UATableData.swift */; };
+		ECB5DDB2F5C2FF7FF51921C8AA9F22CC /* ACManagedTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B114C9394B112A2E5A262CE688CD9025 /* ACManagedTable.swift */; };
 		ED2A2902044923B528B19D6490ADB38C /* AuthRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9A73DC0230482192627EF91CAB65790 /* AuthRegisterViewController.swift */; };
 		ED7E5318F3FF72926AC679F191E91953 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1619660CAFA063EAFB102429F467323B /* AuthViewController.swift */; };
 		EDCFCAD9F29CF123468677A31DE2E84F /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D86D2754C8EC18452BFE0A267EA67E3 /* Resouces.swift */; };
@@ -176,7 +179,10 @@
 		0328ED9C511FAEEC982E209A78C9443F /* CommonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonCell.swift; path = View/Cells/CommonCell.swift; sourceTree = "<group>"; };
 		0600225D1BB64FE0004C2C1A /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1.jpg; sourceTree = "<group>"; };
 		06049FE11BA5E26400BF8553 /* Bubbles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bubbles.swift; sourceTree = "<group>"; };
-		065AFDDE1BB87DD40073E510 /* AMManagedTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMManagedTableController.swift; sourceTree = "<group>"; };
+		065AFDDE1BB87DD40073E510 /* ACManagedTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableController.swift; sourceTree = "<group>"; };
+		065AFDE11BB8872F0073E510 /* ACManagedSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedSection.swift; sourceTree = "<group>"; };
+		065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedRegion.swift; sourceTree = "<group>"; };
+		065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableExtensions.swift; sourceTree = "<group>"; };
 		068505C71B9AB2E300819D16 /* CorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorePreviewController.swift; sourceTree = "<group>"; };
 		068505CA1B9AB5CB00819D16 /* highlight-default.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "highlight-default.min.css"; path = "Resources/Highlighter/highlight-default.min.css"; sourceTree = "<group>"; };
 		068505CB1B9AB5CB00819D16 /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = highlight.min.js; path = Resources/Highlighter/highlight.min.js; sourceTree = "<group>"; };
@@ -296,7 +302,7 @@
 		AEA37A57771C84E79F88D6F91C8784F0 /* GroupCreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GroupCreateViewController.swift; path = Controllers/Compose/GroupCreateViewController.swift; sourceTree = "<group>"; };
 		AF9B900E04D4A22FE8F09DCB53FCBFA9 /* AuthCountryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthCountryCell.swift; path = Controllers/Auth/Cells/AuthCountryCell.swift; sourceTree = "<group>"; };
 		B0B4DC1F09685B50B75E32D772AA4419 /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ABActionShit.m; path = View/ABActionShit/ABActionShit.m; sourceTree = "<group>"; };
-		B114C9394B112A2E5A262CE688CD9025 /* UATableData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UATableData.swift; path = View/UATableData.swift; sourceTree = "<group>"; };
+		B114C9394B112A2E5A262CE688CD9025 /* ACManagedTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ACManagedTable.swift; path = View/ACManagedTable.swift; sourceTree = "<group>"; };
 		B2C3E07DBFB267BDBF9A6D7566D6508B /* ABPhoneField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABPhoneField.h; path = View/ABPhoneField/ABPhoneField.h; sourceTree = "<group>"; };
 		B430E43358239BE397051D0E0999641C /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B4D17A2644B1284A3A31407DEC282497 /* LruCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LruCache.swift; path = ActorSwift/LruCache.swift; sourceTree = "<group>"; };
@@ -387,8 +393,11 @@
 		065AFDE01BB880310073E510 /* Managed */ = {
 			isa = PBXGroup;
 			children = (
-				B114C9394B112A2E5A262CE688CD9025 /* UATableData.swift */,
-				065AFDDE1BB87DD40073E510 /* AMManagedTableController.swift */,
+				B114C9394B112A2E5A262CE688CD9025 /* ACManagedTable.swift */,
+				065AFDE11BB8872F0073E510 /* ACManagedSection.swift */,
+				065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */,
+				065AFDDE1BB87DD40073E510 /* ACManagedTableController.swift */,
+				065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */,
 			);
 			name = Managed;
 			sourceTree = "<group>";
@@ -1069,6 +1078,7 @@
 				D3D9A06ACF822941722FDBE6FE633354 /* AABubbleCell.swift in Sources */,
 				93CF1F16824BC7BC7797BC016A87BB87 /* AABubbleDocumentCell.swift in Sources */,
 				057AECBA478DD3D127189E50F10243A8 /* AABubbleMediaCell.swift in Sources */,
+				065AFDE41BB887BE0073E510 /* ACManagedRegion.swift in Sources */,
 				C7370CCA314ADBC029F3FA4ACE1954F1 /* AABubbleServiceCell.swift in Sources */,
 				82CF38ECAAEAF258C9E1396E406098D7 /* AABubbleTextCell.swift in Sources */,
 				78BD18AD2FABD26389722E4C885138F1 /* AAImagePickerController.swift in Sources */,
@@ -1082,6 +1092,7 @@
 				06FC5EA81BB5D36A0071F153 /* WallpapperPreviewController.swift in Sources */,
 				06FC5E801BACEEC00071F153 /* Numbers.swift in Sources */,
 				7226E099F1D301533F030787EAC6E94B /* Alerts.swift in Sources */,
+				065AFDE61BB887E60073E510 /* ACManagedTableExtensions.swift in Sources */,
 				DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */,
 				D1AE902CEB4CF563A8E5F86B52D28B82 /* AppTheme.swift in Sources */,
 				6F37CDEFD008D3AC4F5D422323BDBD7B /* AssociatedObject.swift in Sources */,
@@ -1139,7 +1150,7 @@
 				E214A2620D8EA7D5B19AA28FA71B84FD /* FastCache.swift in Sources */,
 				CB557F2818385B009F260E82EAB9F9D7 /* FileTypes.swift in Sources */,
 				7CE85C6ABE02732D61912417F25E7E34 /* GroupCreateViewController.swift in Sources */,
-				065AFDDF1BB87DD40073E510 /* AMManagedTableController.swift in Sources */,
+				065AFDDF1BB87DD40073E510 /* ACManagedTableController.swift in Sources */,
 				7FA5159C416DFAF518CC0AD68021FD3A /* GroupMemberCell.swift in Sources */,
 				542C6DCBA7C3F09B8815D2B153E8127B /* GroupMembersController.swift in Sources */,
 				37100B1A42B20444DD000E313A035A36 /* GroupPhotoCell.swift in Sources */,
@@ -1158,6 +1169,7 @@
 				D6AA6CCE078399CA702E7F03094453D5 /* MeasureUtils.swift in Sources */,
 				E53FAE1C8969DECE56280C942CED0F57 /* MessagesFlowLayout.swift in Sources */,
 				BE591031FF67D3E4E6D9D92D0757AFCA /* MixpanelProvider.swift in Sources */,
+				065AFDE21BB8872F0073E510 /* ACManagedSection.swift in Sources */,
 				132FAF64C7A06E5D6578B49E5DD6EBC9 /* Navigations.swift in Sources */,
 				8071F48ACB9E359116BEE7450C3E5AD6 /* NoSelectionViewController.swift in Sources */,
 				6FF92ED0DB91181E376DA71BE7A89CE4 /* Placeholders.swift in Sources */,
@@ -1176,7 +1188,7 @@
 				0B6A05B711CA9DCD88C79CCA8104C0F1 /* TitledCell.swift in Sources */,
 				068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */,
 				06FC5E8C1BB30F0C0071F153 /* StylesEngine.swift in Sources */,
-				ECB5DDB2F5C2FF7FF51921C8AA9F22CC /* UATableData.swift in Sources */,
+				ECB5DDB2F5C2FF7FF51921C8AA9F22CC /* ACManagedTable.swift in Sources */,
 				53C89777A15FEC286C526E5EEB066B8E /* UATableViewCell.swift in Sources */,
 				06FC5E8E1BB3659B0071F153 /* AvatarCell.swift in Sources */,
 				B8D161AA4D112C75BE92D727FE46727E /* UDPreferencesStorage.swift in Sources */,
