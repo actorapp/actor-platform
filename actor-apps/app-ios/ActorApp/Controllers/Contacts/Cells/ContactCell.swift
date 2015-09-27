@@ -31,9 +31,9 @@ class ContactCell : UATableViewCell {
     }
     
     func bindContact(contact: ACContact, shortValue: String?, isLast: Bool) {
-        avatarView.bind(contact.getName(), id: contact.getUid(), avatar: contact.getAvatar());
+        avatarView.bind(contact.name, id: contact.uid, avatar: contact.avatar);
         
-        titleView.text = contact.getName();
+        titleView.text = contact.name;
         
         if (shortValue == nil){
             shortNameView.hidden = true;

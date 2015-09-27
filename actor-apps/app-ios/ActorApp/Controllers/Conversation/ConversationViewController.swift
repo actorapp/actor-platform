@@ -116,8 +116,8 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
         textView.text = Actor.loadDraftWithPeer(peer)
         
         // Installing bindings
-        if (UInt(peer.getPeerType().ordinal()) == ACPeerType.PRIVATE.rawValue) {
-            let user = Actor.getUserWithUid(peer.getPeerId())
+        if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
+            let user = Actor.getUserWithUid(peer.peerId)
             let nameModel = user.getNameModel();
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
@@ -128,7 +128,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
                 self.avatarView.bind(user.getNameModel().get(), id: user.getId(), avatar: value)
             })
             
-            binder.bind(Actor.getTypingWithUid(peer.getPeerId())!, valueModel2: user.getPresenceModel()!, closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
+            binder.bind(Actor.getTypingWithUid(peer.peerId)!, valueModel2: user.getPresenceModel()!, closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = Actor.getFormatter().formatTyping();
@@ -144,8 +144,8 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
                     }
                 }
             })
-        } else if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
-            let group = Actor.getGroupWithGid(peer.getPeerId())
+        } else if (UInt(peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue) {
+            let group = Actor.getGroupWithGid(peer.peerId)
             let nameModel = group.getNameModel()
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
@@ -234,11 +234,11 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     // Chat avatar tap
     
     func onAvatarTap() {
-        let id = Int(peer.getPeerId())
+        let id = Int(peer.peerId)
         var controller: AAViewController
-        if (UInt(peer.getPeerType().ordinal()) == ACPeerType.PRIVATE.rawValue) {
+        if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
             controller = UserViewController(uid: id)
-        } else if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
+        } else if (UInt(peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue) {
             controller = GroupViewController(gid: id)
         } else {
             return
@@ -308,13 +308,13 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     // Completition
     
     override func canShowAutoCompletion() -> Bool {
-        if UInt(self.peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue {
+        if UInt(self.peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue {
             if self.foundPrefix == "@" {
 
                 let oldCount = filteredMembers.count
                 filteredMembers.removeAll(keepCapacity: true)
                 
-                let res = Actor.findMentionsWithGid(self.peer.getPeerId(), withQuery: self.foundWord)
+                let res = Actor.findMentionsWithGid(self.peer.peerId, withQuery: self.foundWord)
                 for index in 0..<res.size() {
                     filteredMembers.append(res.getWithInt(index) as! ACMentionFilterResult)
                 }
@@ -350,7 +350,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
             postfix = ": "
         }
         
-        acceptAutoCompletionWithString(user.getMentionString() + postfix, keepPrefix: !user.isNickname())
+        acceptAutoCompletionWithString(user.mentionString + postfix, keepPrefix: !user.isNickname)
     }
     
     override func heightForAutoCompletionView() -> CGFloat {

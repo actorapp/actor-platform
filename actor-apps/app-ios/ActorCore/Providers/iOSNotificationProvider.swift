@@ -36,12 +36,12 @@ import AudioToolbox.AudioServices
         if (!messenger.isShowNotificationsText()) {
             message = NSLocalizedString("NotificationSecretMessage", comment: "New Message")
         }
-        let senderUser = messenger.getUserWithUid(n.getSender())
+        let senderUser = messenger.getUserWithUid(n.sender)
         var sender = senderUser.getNameModel().get()
-        let peer = n.getPeer()
+        let peer = n.peer
         
-        if (UInt(peer.getPeerType().ordinal()) == ACPeerType.GROUP.rawValue) {
-            let group = messenger.getGroupWithGid(n.getPeer().getPeerId())
+        if (peer.isGroup) {
+            let group = messenger.getGroupWithGid(n.peer.peerId)
             sender = "\(sender)@\(group.getNameModel().get())"
         }
         

@@ -4,6 +4,8 @@
 
 package im.actor.core.entity;
 
+import com.google.j2objc.annotations.Property;
+
 import java.io.IOException;
 
 import im.actor.runtime.bser.BserCreator;
@@ -24,9 +26,13 @@ public class SearchEntity extends BserObject implements ListEngineItem {
     public static final String ENTITY_NAME = "Search";
 
     @SuppressWarnings("NullableProblems")
+    @Property("readonly, nonatomic")
     private Peer peer;
+    @Property("readonly, nonatomic")
     private long order;
+    @Property("readonly, nonatomic")
     private Avatar avatar;
+    @Property("readonly, nonatomic")
     @SuppressWarnings("NullableProblems")
     private String title;
 

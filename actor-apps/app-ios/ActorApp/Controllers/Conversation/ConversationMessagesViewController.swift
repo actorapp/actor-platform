@@ -167,7 +167,6 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     func displayListForController() -> ARBindedDisplayList {
         let res = Actor.getMessageDisplayList(peer)
         if (res.getListProcessor() == nil) {
-            let group = peer.getPeerType().ordinal() == jint(ACPeerType.GROUP.rawValue)
             res.setListProcessor(ListProcessor(peer: peer))
         }
         return res
@@ -309,12 +308,12 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
             if readState > 0 {
                 for i in 0..<getCount() {
                     let ind = getCount() - 1 - i
-                    let item = objectAtIndex(ind)!
+                    let item = objectAtIndex(ind) as! ACMessage
                 
-                    if item.getSenderId() != Actor.myUid() {
-                        if readState < item.getSortDate() {
+                    if item.senderId != Actor.myUid() {
+                        if readState < item.sortDate {
                             unreadIndex = ind
-                            setUnread(item.getRid())
+                            setUnread(item.rid)
                             break
                         }
                     }

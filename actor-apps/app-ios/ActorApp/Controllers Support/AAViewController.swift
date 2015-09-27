@@ -131,16 +131,16 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
     }
     
     func previewAvatar(avatar: ACAvatar) {
-        if avatar.getFullImage() != nil {
+        if avatar.fullImage != nil {
             var previewImage: UIImage?
             
-            let descriptor = Actor.getDownloadedDescriptorWithFileId(avatar.getSmallImage().getFileReference().getFileId())
+            let descriptor = Actor.getDownloadedDescriptorWithFileId(avatar.smallImage.fileReference.getFileId())
             if descriptor != nil {
                 previewImage = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(descriptor))
             }
             
-            if avatar.getSmallImage() != nil {
-                let descriptor = Actor.getDownloadedDescriptorWithFileId(avatar.getSmallImage().getFileReference().getFileId())
+            if avatar.smallImage != nil {
+                let descriptor = Actor.getDownloadedDescriptorWithFileId(avatar.smallImage.fileReference.getFileId())
                 if descriptor != nil {
                     previewImage = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(descriptor))
                 }
