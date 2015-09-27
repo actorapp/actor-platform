@@ -15,7 +15,7 @@ class SettingsViewController: AATableViewController {
     private let TextCellIdentifier = "TextCellIdentifier"
     private let WallpapperCellIdentifier = "WallpapperCellIdentifier"
     
-    private var tableData: UATableData!
+    private var tableData: ACManagedTable!
     
     private let uid: Int
     private var user: ACUserVM?
@@ -62,7 +62,7 @@ class SettingsViewController: AATableViewController {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         
-        tableData = UATableData(tableView: tableView)
+        tableData = ACManagedTable(tableView: tableView)
         tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableData.registerClass(TextCell.self, forCellReuseIdentifier: TextCellIdentifier)

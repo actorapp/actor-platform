@@ -14,7 +14,7 @@ class GroupViewController: AATableViewController {
     var group: ACGroupVM?
     var binder = Binder()
     
-    private var tableData: UATableData!
+    private var tableData: ACManagedTable!
     private var groupMembers = [ACGroupMember]()
     private var groupNameTextField: UITextField?
     
@@ -41,7 +41,7 @@ class GroupViewController: AATableViewController {
 
         group = Actor.getGroupWithGid(jint(gid))
         
-        tableData = UATableData(tableView: tableView)
+        tableData = ACManagedTable(tableView: tableView)
         tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
         tableData.registerClass(GroupMemberCell.self, forCellReuseIdentifier: UserCellIdentifier)
         

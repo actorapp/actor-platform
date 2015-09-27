@@ -7,7 +7,7 @@ import UIKit
 class SettingsPrivacyViewController: AATableViewController {
     
     private var authSessions = [ARApiAuthSession]()
-    private var data: UATableData!
+    private var data: ACManagedTable!
     
     init() {
         super.init(style: UITableViewStyle.Grouped)
@@ -25,7 +25,7 @@ class SettingsPrivacyViewController: AATableViewController {
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
-        data = UATableData(tableView: tableView)
+        data = ACManagedTable(tableView: tableView)
         
         let header = data.addSection(true)
             .setFooterText("PrivacyTerminateHint")
@@ -46,7 +46,7 @@ class SettingsPrivacyViewController: AATableViewController {
             .addCustomCells(44, countClosure: { () -> Int in
                     return self.authSessions.count
                 }, closure: { (tableView, index, indexPath) -> UITableViewCell in
-                    let cell = tableView.dequeueReusableCellWithIdentifier(UATableData.ReuseCommonCell, forIndexPath: indexPath) as! CommonCell
+                    let cell = tableView.dequeueReusableCellWithIdentifier(ACManagedTable.ReuseCommonCell, forIndexPath: indexPath) as! CommonCell
                     let session = self.authSessions[indexPath.row]
                     if session.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
                         cell.style = .Normal
