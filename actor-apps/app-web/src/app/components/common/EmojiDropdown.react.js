@@ -107,12 +107,10 @@ export default class EmojiDropdown extends Component {
       );
 
       for (let emojiChar of category.data) {
-        emoji.colons_mode = false;
         emoji.change_replace_mode('css');
         const convertedChar = emoji.replace_unified(emojiChar);
         emoji.colons_mode = true;
-        emoji.change_replace_mode('css');
-        const emojiColon = emoji.replace_unified(emojiChar).replace(/\+/g, '\\+');
+        const emojiColon = emoji.replace_unified(emojiChar);
         emoji.colons_mode = false;
 
         currentCategoryEmojis.push(
