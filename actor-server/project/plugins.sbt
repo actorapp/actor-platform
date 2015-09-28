@@ -25,4 +25,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.4")
 
 addSbtPlugin("com.trueaccord.scalapb" % "sbt-scalapb" % "0.5.14")
 
+addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
+
 libraryDependencies ++= Seq("com.github.os72" % "protoc-jar" % "3.0.0-a3")
