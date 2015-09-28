@@ -4,10 +4,16 @@ import Keys._
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(JDebPackaging)
 
-name in Debian := "actor"
-maintainer in Linux := "Actor LLC <oss@actor.im>"
-packageSummary in Linux := "Actor messaging platform server"
+JavaAppPackaging.projectSettings
+JavaServerAppPackaging.debianSettings
+
+name := "actor"
+
+maintainer := "Actor LLC <oss@actor.im>"
+packageSummary := "Messaging platform server"
 packageDescription := "Open source messaging platform for team communications"
+version in Debian := version.value
+
 daemonUser in Linux := "actor"
 daemonGroup in Linux := (daemonUser in Linux).value
 
