@@ -40,7 +40,7 @@ private[user] trait UserCommandHandlers {
     val ts = now()
     val e = UserEvents.Created(userId, accessSalt, name, countryCode, sex, isBot, extensions, external)
     val createEvent = TSEvent(ts, e)
-    val user = UserCreator(ts, e)
+    val user = UserBuilder(ts, e)
 
     persistStashingReply(createEvent, user) { evt ⇒
       val user = models.User(
