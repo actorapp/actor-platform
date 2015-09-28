@@ -4,6 +4,7 @@ import akka.actor.{ ActorRef, ActorSystem }
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.pattern.ask
 import akka.util.Timeout
+import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.users.{ ApiUser, ApiSex }
@@ -32,8 +33,8 @@ private[user] sealed trait Commands extends AuthCommands {
 
   implicit val timeout: Timeout
 
-  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean): Future[CreateAck] = {
-    (processorRegion.ref ? Create(userId, accessSalt, name, countryCode, sex, isBot)).mapTo[CreateAck]
+  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension], external: Option[String]): Future[CreateAck] = {
+    (processorRegion.ref ? Create(userId, accessSalt, name, countryCode, sex, isBot, extensions, external)).mapTo[CreateAck]
   }
 
   def addPhone(userId: Int, phone: Long): Future[Unit] = {
@@ -245,6 +246,10 @@ private[user] sealed trait Queries {
 
   def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiUser] = {
     (viewRegion.ref ? GetApiStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiStructResponse] map (_.struct)
+  }
+
+  def getUser(userId: Int): Future[User] = {
+    (viewRegion.ref ? GetUser(userId)).mapTo[User]
   }
 
   def getContactRecords(userId: Int): Future[(Seq[Long], Seq[String])] = {
