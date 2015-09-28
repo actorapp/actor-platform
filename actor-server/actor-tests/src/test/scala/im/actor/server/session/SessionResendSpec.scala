@@ -6,7 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.api.rpc.weak.UpdateUserOffline
+import im.actor.api.rpc.weak.{ UpdateUserOnline, UpdateUserOffline }
 import im.actor.server.ActorSpecification
 import im.actor.server.mtproto.protocol._
 import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesManager }
@@ -182,28 +182,50 @@ class SessionResendSpec extends BaseSessionSpec(
       expectNewSession(authId, sessionId, helloMessageId)
       expectMessageAck(authId, sessionId, helloMessageId)
 
-      val upd = UpdateUserOffline(userId = Random.nextInt())
-      WeakUpdatesManager.pushUpdate(authId, upd, Some("reduceKey 1 (uniq)"))
+      val upd1 = UpdateUserOffline(1)
+      val upd2first = UpdateUserOnline(2)
+      val upd2second = UpdateUserOffline(2)
+      val upd3 = UpdateUserOffline(3)
 
-      WeakUpdatesManager.pushUpdate(authId, upd, Some("reduceKey 2 (same)"))
-      WeakUpdatesManager.pushUpdate(authId, upd, Some("reduceKey 2 (same)"))
+      WeakUpdatesManager.pushUpdate(authId, upd1, Some("reduceKey 1 (uniq)"))
 
-      WeakUpdatesManager.pushUpdate(authId, upd, Some("reduceKey 3 (uniq)"))
+      WeakUpdatesManager.pushUpdate(authId, upd2first, Some("reduceKey 2 (same)"))
+      WeakUpdatesManager.pushUpdate(authId, upd2second, Some("reduceKey 2 (same)"))
 
-      expectWeakUpdate(authId, sessionId)
-      expectWeakUpdate(authId, sessionId)
-      expectWeakUpdate(authId, sessionId)
-      expectWeakUpdate(authId, sessionId)
+      WeakUpdatesManager.pushUpdate(authId, upd3, Some("reduceKey 3 (uniq)"))
+
+      expectUserOffline(authId, sessionId, 1)
+
+      expectUserOnline(authId, sessionId, 2)
+      expectUserOffline(authId, sessionId, 2)
+
+      expectUserOffline(authId, sessionId, 3)
+
+      // No ack
+      probe.expectNoMsg(4.seconds)
+
+      expectUserOffline(authId, sessionId, 1)
+      expectUserOffline(authId, sessionId, 2)
+      expectUserOffline(authId, sessionId, 3)
 
       // Still no ack
       probe.expectNoMsg(4.seconds)
 
-      expectWeakUpdate(authId, sessionId)
-      expectWeakUpdate(authId, sessionId)
-      expectWeakUpdate(authId, sessionId)
-
-      probe.expectNoMsg(5.seconds)
+      expectUserOffline(authId, sessionId, 1)
+      expectUserOffline(authId, sessionId, 2)
+      expectUserOffline(authId, sessionId, 3)
     }
   }
 
+  private def expectUserOnline(authId: Long, sessionId: Long, userId: Int)(implicit probe: TestProbe): Unit = {
+    val weak = expectWeakUpdate(authId, sessionId)
+    weak.updateHeader should ===(UpdateUserOnline.header)
+    UpdateUserOnline.parseFrom(weak.update) shouldBe Right(UpdateUserOnline(userId))
+  }
+
+  private def expectUserOffline(authId: Long, sessionId: Long, userId: Int)(implicit probe: TestProbe): Unit = {
+    val weak = expectWeakUpdate(authId, sessionId)
+    weak.updateHeader should ===(UpdateUserOffline.header)
+    UpdateUserOffline.parseFrom(weak.update) shouldBe Right(UpdateUserOffline(userId))
+  }
 }
