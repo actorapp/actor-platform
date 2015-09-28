@@ -3,6 +3,7 @@ import Keys._
 
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(JDebPackaging)
+enablePlugins(RpmPlugin)
 
 JavaAppPackaging.projectSettings
 JavaServerAppPackaging.debianSettings
@@ -13,6 +14,8 @@ maintainer := "Actor LLC <oss@actor.im>"
 packageSummary := "Messaging platform server"
 packageDescription := "Open source messaging platform for team communications"
 version in Debian := version.value
+
+rpmVendor := "actor"
 
 daemonUser in Linux := "actor"
 daemonGroup in Linux := (daemonUser in Linux).value
