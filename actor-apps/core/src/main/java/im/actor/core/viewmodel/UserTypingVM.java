@@ -4,13 +4,17 @@
 
 package im.actor.core.viewmodel;
 
+import com.google.j2objc.annotations.Property;
+
 import im.actor.runtime.mvvm.ValueModel;
 
 /**
  * User's typing ViewModel
  */
 public class UserTypingVM {
+    @Property("nonatomic, readonly")
     private int uid;
+    @Property("nonatomic, readonly")
     private ValueModel<Boolean> userTyping;
 
     public UserTypingVM(int uid) {

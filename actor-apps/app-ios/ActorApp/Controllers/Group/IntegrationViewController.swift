@@ -30,7 +30,7 @@ class IntegrationViewController: AATableViewController {
         
         tableView.hidden = true
 
-        tableData = ACManagedTable(tableView: tableView)
+        tableData = ACManagedTable(tableView: tableView, controller: self)
         
         urlCell = tableData.addSection()
             .setHeaderText(NSLocalizedString("GroupIntegrationLinkTitle", comment: "Link title"))

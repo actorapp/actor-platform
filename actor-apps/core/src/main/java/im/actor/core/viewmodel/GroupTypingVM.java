@@ -4,13 +4,17 @@
 
 package im.actor.core.viewmodel;
 
+import com.google.j2objc.annotations.Property;
+
 import im.actor.runtime.mvvm.ValueModel;
 
 /**
  * User Typing View Model
  */
 public class GroupTypingVM {
+    @Property("nonatomic, readonly")
     private int gid;
+    @Property("nonatomic, readonly")
     private ValueModel<int[]> active;
 
     /**

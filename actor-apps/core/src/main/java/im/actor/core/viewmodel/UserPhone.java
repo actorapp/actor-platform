@@ -4,11 +4,15 @@
 
 package im.actor.core.viewmodel;
 
+import com.google.j2objc.annotations.Property;
+
 /**
  * User's Phone record
  */
 public class UserPhone {
+    @Property("nonatomic, readonly")
     private long phone;
+    @Property("nonatomic, readonly")
     private String title;
 
     /**
