@@ -12,6 +12,8 @@ import { emoji } from 'utils/EmojiUtils';
 const processText = (text) => {
   const markedText = ActorClient.renderMarkdown(text);
   let emojifiedText = markedText;
+
+  emoji.change_replace_mode('css');
   emojifiedText = emoji.replace_colons(emojifiedText);
   emojifiedText = emoji.replace_unified(emojifiedText);
   return emojifiedText;
