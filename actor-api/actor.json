@@ -8513,6 +8513,150 @@
       ]
     },
     {
+      "title": "Webactions",
+      "package": "webactions",
+      "doc": [
+        "Web actions allow clients to visit some predefined web pages,",
+        "perform actions, and pass result on action completion"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InitWebaction",
+            "header": 116,
+            "response": {
+              "type": "anonymous",
+              "header": 117,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "uri",
+                  "category": "full",
+                  "description": "  Web action uri"
+                },
+                {
+                  "type": "reference",
+                  "argument": "regexp",
+                  "category": "full",
+                  "description": "  Regular expression. Required to match completion of web action"
+                },
+                {
+                  "type": "reference",
+                  "argument": "actionHash",
+                  "category": "danger",
+                  "description": "  Identifier of current web action. Required to complete it"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "uri"
+                },
+                {
+                  "type": "string",
+                  "id": 2,
+                  "name": "regexp"
+                },
+                {
+                  "type": "string",
+                  "id": 3,
+                  "name": "actionHash"
+                }
+              ]
+            },
+            "doc": [
+              "Initialize start of web action",
+              {
+                "type": "reference",
+                "argument": "actionName",
+                "category": "full",
+                "description": "Name of web action"
+              },
+              {
+                "type": "reference",
+                "argument": "params",
+                "category": "full",
+                "description": "Additional params required to make action's uri"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "actionName"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MapValue"
+                },
+                "id": 2,
+                "name": "params"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CompleteWebaction",
+            "header": 123,
+            "response": {
+              "type": "anonymous",
+              "header": 124,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "result",
+                  "category": "full",
+                  "description": "  Reslut of web action completion"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  },
+                  "id": 1,
+                  "name": "result"
+                }
+              ]
+            },
+            "doc": [
+              "Complete started web action",
+              {
+                "type": "reference",
+                "argument": "actionHash",
+                "category": "danger",
+                "description": "Identifier of given web action"
+              },
+              {
+                "type": "reference",
+                "argument": "completeUri",
+                "category": "full",
+                "description": "Final uri of web action"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "actionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "completeUri"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Collections",
       "package": "collections",
       "doc": [
