@@ -121,7 +121,6 @@ class PresenceManager extends Actor with ActorLogging with Stash {
   private[this] var devicePresences = Map.empty[Long, Presence]
   private[this] var consumers = Set.empty[ActorRef]
   private[this] var state = PresenceState(userId, Offline, None)
-  private[this] var lastChange = UserPresenceChange(Offline, 0, 0)
 
   private def initialize(userId: Int): Unit = {
     db.run(persist.presences.UserPresence.find(userId).map {
