@@ -9,11 +9,11 @@ import scala.language.postfixOps
 object UserUtils {
   def defaultUserContactRecords(phones: Vector[Long], emails: Vector[String]): Vector[ApiContactRecord] = {
     val phoneRecords = phones map { phone ⇒
-      ApiContactRecord(ApiContactType.Phone, stringValue = None, longValue = Some(phone), title = Some("Mobile phone"), subtitle = None)
+      ApiContactRecord(ApiContactType.Phone, stringValue = None, longValue = Some(phone), title = Some("Mobile phone"), subtitle = None, typeSpec = None)
     }
 
     val emailRecords = emails map { email ⇒
-      ApiContactRecord(ApiContactType.Email, stringValue = Some(email), longValue = None, title = Some("Email"), subtitle = None)
+      ApiContactRecord(ApiContactType.Email, stringValue = Some(email), longValue = None, title = Some("Email"), subtitle = None, typeSpec = None)
     }
 
     phoneRecords ++ emailRecords
@@ -21,11 +21,11 @@ object UserUtils {
 
   def userContactRecords(phones: Vector[models.UserPhone], emails: Vector[models.UserEmail]): Vector[ApiContactRecord] = {
     val phoneRecords = phones map { phone ⇒
-      ApiContactRecord(ApiContactType.Phone, stringValue = None, longValue = Some(phone.number), title = Some(phone.title), subtitle = None)
+      ApiContactRecord(ApiContactType.Phone, stringValue = None, longValue = Some(phone.number), title = Some(phone.title), subtitle = None, typeSpec = None)
     }
 
     val emailRecords = emails map { email ⇒
-      ApiContactRecord(ApiContactType.Email, stringValue = Some(email.email), longValue = None, title = Some(email.title), subtitle = None)
+      ApiContactRecord(ApiContactType.Email, stringValue = Some(email.email), longValue = None, title = Some(email.title), subtitle = None, typeSpec = None)
     }
 
     phoneRecords ++ emailRecords
