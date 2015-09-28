@@ -16,78 +16,100 @@ enum CommonCellStyle {
 
 class CommonCell: UATableViewCell {
     
-    // MARK: -
-    // MARK: Private vars
-    
     private var switcher: UISwitch?
+    private var titleLabel = UILabel()
+    private var hintLabel = UILabel()
     
-    // MARK: -
-    // MARK: Public vars
-    
-    var style: CommonCellStyle = .Normal {
-        didSet {
-            updateCellStyle()
-        }
-    }
-    
+    var style: CommonCellStyle = .Normal { didSet { updateCellStyle() } }
     var switchBlock: ((Bool) -> ())?
-    
-    // MARK: -
-    // MARK: Constructors
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        textLabel!.font = UIFont.systemFontOfSize(17.0)
+        
+        titleLabel.font = UIFont.systemFontOfSize(17.0)
+        contentView.addSubview(titleLabel)
+        
+        hintLabel.font = UIFont.systemFontOfSize(17.0)
+        hintLabel.textColor = MainAppTheme.list.hintColor
+        contentView.addSubview(hintLabel)
     }
-
+    
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
-    // MARK: Methods
+    // Setting text content
+    
+    func setContent(content: String?) {
+        titleLabel.text = content
+    }
+    
+    func setHint(hint: String?) {
+        if hint == nil {
+            hintLabel.hidden = true
+        } else {
+            hintLabel.text = hint
+            hintLabel.hidden = false
+        }
+    }
+    
+    // Setting switcher content
+    
+    func setSwitcherOn(on: Bool) {
+        setSwitcherOn(on, animated: false)
+    }
+    
+    func setSwitcherOn(on: Bool, animated: Bool) {
+        switcher?.setOn(on, animated: animated)
+    }
+    
+    func setSwitcherEnabled(enabled: Bool) {
+        switcher?.enabled = enabled
+    }
+    
+    // Private methods
     
     private func updateCellStyle() {
         switch (style) {
         case .Normal:
-            textLabel!.textColor = MainAppTheme.list.textColor
-            textLabel!.textAlignment = NSTextAlignment.Left
+            titleLabel.textColor = MainAppTheme.list.textColor
+            titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Hint:
-            textLabel!.textColor = MainAppTheme.list.hintColor
-            textLabel!.textAlignment = NSTextAlignment.Left
+            titleLabel.textColor = MainAppTheme.list.hintColor
+            titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .DestructiveCentered:
-            textLabel!.textColor = UIColor.redColor()
-            textLabel!.textAlignment = NSTextAlignment.Center
+            titleLabel.textColor = UIColor.redColor()
+            titleLabel.textAlignment = NSTextAlignment.Center
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Destructive:
-            textLabel!.textColor = UIColor.redColor()
-            textLabel!.textAlignment = NSTextAlignment.Left
+            titleLabel.textColor = UIColor.redColor()
+            titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Switch:
-            textLabel!.textColor = MainAppTheme.list.textColor
+            titleLabel.textColor = MainAppTheme.list.textColor
             setupSwitchIfNeeded()
             switcher?.hidden = false
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Action:
-            textLabel!.textColor = MainAppTheme.list.actionColor
-            textLabel!.textAlignment = NSTextAlignment.Left
+            titleLabel.textColor = MainAppTheme.list.actionColor
+            titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Navigation:
-            textLabel!.textColor = MainAppTheme.list.textColor
-            textLabel!.textAlignment = NSTextAlignment.Left
+            titleLabel.textColor = MainAppTheme.list.textColor
+            titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         }
@@ -107,30 +129,18 @@ class CommonCell: UATableViewCell {
         }
     }
     
-    // MARK: -
-    // MARK: Setters
-    
-    func setContent(content: String?) {
-        textLabel!.text = content
-    }
-    
-    func setSwitcherOn(on: Bool) {
-        setSwitcherOn(on, animated: false)
-    }
-    
-    func setSwitcherOn(on: Bool, animated: Bool) {
-        switcher?.setOn(on, animated: animated)
-    }
-    
-    func setSwitcherEnabled(enabled: Bool) {
-        switcher?.enabled = enabled
-    }
-    
-    // MARK: -
-    // MARK: Layout
-    
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        if hintLabel.text != nil {
+            hintLabel.frame = CGRectMake(0, 0, 100, 44)
+            hintLabel.sizeToFit()
+            
+            hintLabel.frame = CGRectMake(contentView.bounds.width - hintLabel.width, 0, hintLabel.width, 44)
+            titleLabel.frame = CGRectMake(15, 0, contentView.bounds.width - hintLabel.width - 20, 44)
+        } else {
+            titleLabel.frame = CGRectMake(15, 0, contentView.bounds.width - 15, 44)
+        }
         
         if switcher != nil {
             let switcherSize = switcher!.bounds.size
