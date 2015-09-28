@@ -149,4 +149,11 @@ func initStyles() {
     registerStyle("list.label", parent: "label") { (s) -> () in
         
     }
+    
+    // Controllers
+    
+    registerStyle("controller.settings") { (s) -> () in
+        s.backgroundColor = MainAppTheme.list.bgColor
+        s.title = localized("TabSettings")
+    }
 }

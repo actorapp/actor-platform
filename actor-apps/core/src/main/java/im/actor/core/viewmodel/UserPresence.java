@@ -4,11 +4,15 @@
 
 package im.actor.core.viewmodel;
 
+import com.google.j2objc.annotations.Property;
+
 /**
  * User presence state
  */
 public class UserPresence {
+    @Property("nonatomic, readonly")
     private final State state;
+    @Property("nonatomic, readonly")
     private final long lastSeen;
 
     /**

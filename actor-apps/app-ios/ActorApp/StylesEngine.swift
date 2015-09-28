@@ -44,7 +44,9 @@ class Style {
     
     var image: UIImage?
     
+    // Title
 
+    var title: String?
     
     init() {
         
@@ -70,6 +72,7 @@ class Style {
         self.avatarType = base.avatarType
         
         self.image = base.image
+        self.title = base.title
     }
 }
 
@@ -272,3 +275,13 @@ extension UIColor {
     }
 }
 
+extension UIViewController: UIViewStylable {
+    func applyStyle(s: Style) {
+        if let v = s.title {
+            self.navigationItem.title = v
+        }
+        if let v = s.backgroundColor {
+            self.view.backgroundColor = v
+        }
+    }
+}

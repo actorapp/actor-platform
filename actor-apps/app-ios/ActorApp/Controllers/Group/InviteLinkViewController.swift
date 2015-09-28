@@ -30,7 +30,7 @@ class InviteLinkViewController: AATableViewController {
         
         tableView.hidden = true
         
-        tableData = ACManagedTable(tableView: tableView)
+        tableData = ACManagedTable(tableView: tableView, controller: self)
         urlCell = tableData.addSection()
             .setHeaderText(NSLocalizedString("GroupInviteLinkTitle", comment: "Link title"))
             .setFooterText(NSLocalizedString("GroupInviteLinkHint", comment: "Link hint"))

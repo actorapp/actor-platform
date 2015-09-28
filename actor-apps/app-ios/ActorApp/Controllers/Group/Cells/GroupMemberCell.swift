@@ -49,7 +49,7 @@ class GroupMemberCell: UATableViewCell {
             if value != nil {
                 self.onlineLabel.showView()
                 self.onlineLabel.text = Actor.getFormatter().formatPresence(value!, withSex: user.getSex())
-                if value!.getState().ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                if value!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
                     self.onlineLabel.applyStyle("user.online")
                 } else {
                     self.onlineLabel.applyStyle("user.offline")

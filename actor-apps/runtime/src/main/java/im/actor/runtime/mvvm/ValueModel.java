@@ -1,9 +1,11 @@
 package im.actor.runtime.mvvm;
 
 import com.google.j2objc.annotations.ObjectiveCName;
+import com.google.j2objc.annotations.Property;
 
 public class ValueModel<T> extends Value<T> {
 
+    @Property("nonatomic, readonly")
     private T value;
 
     public ValueModel(String name, T defaultValue) {

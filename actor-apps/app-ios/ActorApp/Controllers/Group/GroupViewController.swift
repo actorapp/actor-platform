@@ -11,7 +11,7 @@ class GroupViewController: AATableViewController {
     private let CellIdentifier = "CellIdentifier"
     
     let gid: Int
-    var group: ACGroupVM?
+    var group: ACGroupVM!
     var binder = Binder()
     
     private var tableData: ACManagedTable!
@@ -41,7 +41,7 @@ class GroupViewController: AATableViewController {
 
         group = Actor.getGroupWithGid(jint(gid))
         
-        tableData = ACManagedTable(tableView: tableView)
+        tableData = ACManagedTable(tableView: tableView, controller: self)
         tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
         tableData.registerClass(GroupMemberCell.self, forCellReuseIdentifier: UserCellIdentifier)
         
@@ -155,7 +155,7 @@ class GroupViewController: AATableViewController {
                 self.showActionSheet(name,
                     buttons: isIPhone ? ["GroupMemberInfo", "GroupMemberWrite", "GroupMemberCall"] : ["GroupMemberInfo", "GroupMemberWrite"],
                     cancelButton: "Cancel",
-                    destructButton: groupMember.uid != Actor.myUid() && (groupMember.inviterUid == Actor.myUid() || self.group!.getCreatorId() == Actor.myUid())  ? "GroupMemberKick" : nil,
+                    destructButton: groupMember.uid != Actor.myUid() && (groupMember.inviterUid == Actor.myUid() || self.group!.creatorId == Actor.myUid())  ? "GroupMemberKick" : nil,
                     sourceView: self.view,
                     sourceRect: self.view.bounds,
                     tapClosure: { (index) -> () in
@@ -180,12 +180,12 @@ class GroupViewController: AATableViewController {
                                     self.alertUser("GroupMemberCallNoPhones")
                                 } else if phones.size() == 1 {
                                     let number = phones.getWithInt(0)
-                                    UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.getPhone())")!)
+                                    UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.phone)")!)
                                 } else {
                                     var numbers = [String]()
                                     for i in 0..<phones.size() {
                                         let p = phones.getWithInt(i)
-                                        numbers.append("\(p.getTitle()): +\(p.getPhone())")
+                                        numbers.append("\(p.title): +\(p.phone)")
                                     }
                                     self.showActionSheet(numbers,
                                         cancelButton: "AlertCancel",
@@ -195,7 +195,7 @@ class GroupViewController: AATableViewController {
                                         tapClosure: { (index) -> () in
                                         if (index >= 0) {
                                             let number = phones.getWithInt(jint(index))
-                                            UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.getPhone())")!)
+                                            UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.phone)")!)
                                         }
                                     })
                                 }

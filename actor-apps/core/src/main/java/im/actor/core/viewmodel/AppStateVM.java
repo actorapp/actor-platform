@@ -4,6 +4,8 @@
 
 package im.actor.core.viewmodel;
 
+import com.google.j2objc.annotations.Property;
+
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.events.AppVisibleChanged;
 import im.actor.core.modules.events.ConnectingStateChanged;
@@ -17,15 +19,25 @@ import im.actor.runtime.mvvm.ValueModel;
  * Application initialization View Model
  */
 public class AppStateVM {
+    @Property("nonatomic, readonly")
     private ModuleContext context;
+    @Property("nonatomic, readonly")
     private BooleanValueModel isAppVisible;
+    @Property("nonatomic, readonly")
     private BooleanValueModel isDialogsEmpty;
+    @Property("nonatomic, readonly")
     private BooleanValueModel isContactsEmpty;
+    @Property("nonatomic, readonly")
     private BooleanValueModel isAppEmpty;
+    @Property("nonatomic, readonly")
     private BooleanValueModel isAppLoaded;
+    @Property("nonatomic, readonly")
     private BooleanValueModel isConnecting;
+    @Property("nonatomic, readonly")
     private BooleanValueModel isSyncing;
+    @Property("nonatomic, readonly")
     private IntValueModel globalCounter;
+    @Property("nonatomic, readonly")
     private IntValueModel globalTempCounter;
 
     private boolean isBookImported;
@@ -197,7 +209,7 @@ public class AppStateVM {
      *
      * @return View Model of Boolean
      */
-    public ValueModel<Boolean> getIsAppEmpty() {
+    public BooleanValueModel getIsAppEmpty() {
         return isAppEmpty;
     }
 
