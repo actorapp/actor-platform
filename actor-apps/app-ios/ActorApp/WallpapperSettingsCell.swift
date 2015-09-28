@@ -21,15 +21,15 @@ class WallpapperSettingsCell: UATableViewCell {
         wallpapper1.image = UIImage(named: "bg_1.jpg")!
         wallpapper1.clipsToBounds = true
         wallpapper1.contentMode = .ScaleAspectFill
-        wallpapper1.viewDidTap = { self.wallpapperDidTap?(name: "bg_1.jpg") }
+        wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_1.jpg") }
         wallpapper2.image = UIImage(named: "bg_2.jpg")!
         wallpapper2.clipsToBounds = true
         wallpapper2.contentMode = .ScaleAspectFill
-        wallpapper2.viewDidTap = { self.wallpapperDidTap?(name: "bg_2.jpg") }
+        wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_2.jpg") }
         wallpapper3.image = UIImage(named: "bg_3.jpg")!
         wallpapper3.clipsToBounds = true
         wallpapper3.contentMode = .ScaleAspectFill
-        wallpapper3.viewDidTap = { self.wallpapperDidTap?(name: "bg_3.jpg") }
+        wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_3.jpg") }
         label.font = UIFont.systemFontOfSize(17)
         label.applyStyle("label")
         label.text = localized("SettingsWallpapers")
@@ -40,6 +40,9 @@ class WallpapperSettingsCell: UATableViewCell {
         self.contentView.addSubview(wallpapper3)
         self.contentView.addSubview(label)
         self.contentView.addSubview(disclose)
+        
+        disclose.hidden = true
+        selectionStyle = .None
     }
 
     required init(coder aDecoder: NSCoder) {

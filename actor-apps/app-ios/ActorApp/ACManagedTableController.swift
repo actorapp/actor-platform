@@ -36,9 +36,7 @@ class ACManagedTableController: AAViewController {
         tableView.separatorStyle = .None
         
         // Setting tableView and view bg color depends on table style
-        tableView.backgroundColor = tableViewStyle == UITableViewStyle.Grouped
-            ? MainAppTheme.list.backyardColor
-            : MainAppTheme.list.bgColor
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
         view.backgroundColor = tableView.backgroundColor
         
         managedTable = ACManagedTable(tableView: tableView, controller: self)
@@ -53,8 +51,13 @@ class ACManagedTableController: AAViewController {
         // Initial load of Managed Table
         tableView.reloadData()
     }
-    
+
     override func viewWillAppear(animated: Bool) {
+
+        if let row = tableView.indexPathForSelectedRow {
+            tableView.deselectRowAtIndexPath(row, animated: animated)
+        }
+        
         super.viewWillAppear(animated)
         
         // Performing data binding

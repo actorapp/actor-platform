@@ -6,13 +6,9 @@ import Foundation
 
 class ACManagedTable {
     
-    static let ReuseCommonCell = "_CommonCell";
-    static let ReuseTextCell = "_TextCell";
-    static let ReuseTitledCell = "_TitledCell";
-    
     private var baseDelegate: AMBaseTableDelegate!
     
-    var sections: [UASection] = [UASection]()
+    var sections: [ACManagedSection] = [ACManagedSection]()
     
     unowned let controller: UIViewController
     unowned let tableView: UITableView
@@ -29,24 +25,37 @@ class ACManagedTable {
         // Init table view
         self.tableView.dataSource = self.baseDelegate
         self.tableView.delegate = self.baseDelegate
-        
-        // Registering classes
-        self.tableView.registerClass(CommonCell.self, forCellReuseIdentifier: ACManagedTable.ReuseCommonCell)
-        self.tableView.registerClass(TextCell.self, forCellReuseIdentifier: ACManagedTable.ReuseTextCell)
-        self.tableView.registerClass(TitledCell.self, forCellReuseIdentifier: ACManagedTable.ReuseTitledCell)
+    }
+    
+    func reload() {
+        self.tableView.reloadData()
+    }
+    
+    func reload(section: Int) {
+        self.tableView.reloadSections(NSIndexSet(index: section), withRowAnimation: .Automatic)
     }
     
     func registerClass(cellClass: AnyClass, forCellReuseIdentifier identifier: String) {
         self.tableView.registerClass(cellClass, forCellReuseIdentifier: identifier)
     }
     
-    func addSection(autoSeparator: Bool = false) -> UASection {
-        let res = UASection(managedTable: self, index: sections.count)
+    func addSection(autoSeparator: Bool = false) -> ACManagedSection {
+        let res = ACManagedSection(table: self, index: sections.count)
         res.autoSeparators = autoSeparator
         sections.append(res)
         return res
     }
 }
+
+// Closure based extension
+
+extension ACManagedTable {
+    
+    func section(closure: (s: ACManagedSection) -> ()){
+        closure(s: addSection(true))
+    }
+}
+
 
 // Table view delegates and data sources
 
@@ -103,11 +112,11 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     }
     
     @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.sections[section].itemsCount()
+        return data.sections[section].numberOfItems(data)
     }
     
     @objc func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        return data.sections[indexPath.section].buildCell(tableView, cellForRowAtIndexPath: indexPath)
+        return data.sections[indexPath.section].cellForItem(data, indexPath: indexPath)
     }
     
     @objc func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -130,7 +139,7 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     }
     
     @objc func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return CGFloat(data.sections[indexPath.section].cellHeight(tableView, cellForRowAtIndexPath: indexPath))
+        return data.sections[indexPath.section].cellHeightForItem(data, indexPath: indexPath)
     }
     
     @objc func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -147,8 +156,8 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     
     @objc func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let section = data.sections[indexPath.section]
-        if (section.canSelect(tableView, cellForRowAtIndexPath: indexPath)) {
-            if section.select(tableView, cellForRowAtIndexPath: indexPath) {
+        if section.canSelect(data, indexPath: indexPath) {
+            if section.select(data, indexPath: indexPath) {
                 tableView.deselectRowAtIndexPath(indexPath, animated: true)
             }
         } else {
@@ -160,21 +169,21 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
         
         if action == "copy:" {
             let section = data.sections[indexPath.section]
-            return section.canCopy(tableView, cellForRowAtIndexPath: indexPath)
+            return section.canCopy(data, indexPath: indexPath)
         }
         
         return false
     }
     @objc func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         let section = data.sections[indexPath.section]
-        return section.canCopy(tableView, cellForRowAtIndexPath: indexPath)
+        return section.canCopy(data, indexPath: indexPath)
     }
     
     @objc func tableView(tableView: UITableView, performAction action: Selector, forRowAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject?) {
         if action == "copy:" {
             let section = data.sections[indexPath.section]
-            if section.canCopy(tableView, cellForRowAtIndexPath: indexPath) {
-                section.copy(tableView, cellForRowAtIndexPath: indexPath)
+            if section.canCopy(data, indexPath: indexPath) {
+                section.copy(data, indexPath: indexPath)
             }
         }
     }
@@ -183,18 +192,6 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
         if (data.tableView == scrollView) {
             data.tableScrollClosure?(tableView: data.tableView)
         }
-    }
-}
-
-// Search result
-
-class RegionSearchResult {
-    let region: UARegion
-    let index: Int
-    
-    init(region: UARegion, index: Int) {
-        self.region = region
-        self.index = index
     }
 }
 
