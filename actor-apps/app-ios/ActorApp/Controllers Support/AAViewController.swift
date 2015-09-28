@@ -47,6 +47,11 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
     // MARK: -
     // MARK: Placeholder
     
+    func showPlaceholderWithImage(image: UIImage?, title: String?, subtitle: String?) {
+        placeholder.setImage(image, title: title, subtitle: subtitle)
+        showPlaceholder()
+    }
+    
     func showPlaceholder() {
         if placeholder.superview == nil {
             placeholder.frame = view.bounds

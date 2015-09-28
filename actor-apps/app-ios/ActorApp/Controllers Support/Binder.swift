@@ -63,14 +63,14 @@ class Binder {
 
 class BindListener: NSObject, ARValueChangedListener {
     
-    var closure: (value: AnyObject?)->()
+    var closure: ((value: AnyObject?)->())?
     
     init(closure: (value: AnyObject?)->()) {
         self.closure = closure
     }
     
     func onChanged(val: AnyObject!, withModel valueModel: ARValue!) {
-        closure(value: val)
+        closure?(value: val)
     }
 }
 

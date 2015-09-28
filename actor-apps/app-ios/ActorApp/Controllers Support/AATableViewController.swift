@@ -44,11 +44,6 @@ class AATableViewController: AAViewController, UITableViewDataSource, UITableVie
         tableView.frame = view.bounds;
     }
 
-    func showPlaceholderWithImage(image: UIImage?, title: String?, subtitle: String?) {
-        placeholder.setImage(image, title: title, subtitle: subtitle)
-        super.showPlaceholder()
-    }
-
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)

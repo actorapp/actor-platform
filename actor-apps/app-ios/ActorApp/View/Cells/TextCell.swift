@@ -7,8 +7,8 @@ import Foundation
 
 class TextCell: UATableViewCell {
 
-    private var titleLabel: UILabel = UILabel()
-    private var contentLabel: UILabel = UILabel()
+    var titleLabel: UILabel = UILabel()
+    var contentLabel: UILabel = UILabel()
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -32,7 +32,7 @@ class TextCell: UATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setTitle(title: String, content: String) {
+    func setTitle(title: String?, content: String?) {
         titleLabel.text = title
         contentLabel.text = content
     }
