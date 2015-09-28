@@ -11,7 +11,7 @@ class AvatarCell: UATableViewCell {
     var subtitleLabel = UILabel()
     var avatarView = AvatarView(frameSize: Int(64), type: .Rounded, placeholderImage: UIImage())
     var progress = UIActivityIndicatorView(activityIndicatorStyle: .White)
-    var didTap: (()->())?
+    var didTap: ((view: UIView)->())?
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -41,7 +41,7 @@ class AvatarCell: UATableViewCell {
     }
     
     func avatarDidTap() {
-        didTap?()
+        didTap?(view: avatarView)
     }
     
     override func layoutSubviews() {

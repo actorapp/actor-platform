@@ -6,10 +6,10 @@ import UIKit
 
 class TitledCell: UATableViewCell {
     
-    private var copyData: String?
+//    private var copyData: String?
     private var isAction: Bool = false
-    private var titleLabel: UILabel = UILabel(style: "cell.titled.title")
-    private var contentLabel: UILabel = UILabel(style: "cell.titled.content")
+    let titleLabel: UILabel = UILabel(style: "cell.titled.title")
+    let contentLabel: UILabel = UILabel(style: "cell.titled.content")
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(cellStyle: "cell.titled", reuseIdentifier: reuseIdentifier)
@@ -22,21 +22,21 @@ class TitledCell: UATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        if action == "copy:" {
-            return copyData != nil && !isAction
-        }
-        return false
-    }
-    
-    override func copy(sender: AnyObject?) {
-        UIPasteboard.generalPasteboard().string = copyData
-    }
-    
+//    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+//        if action == "copy:" {
+//            return copyData != nil && !isAction
+//        }
+//        return false
+//    }
+//    
+//    override func copy(sender: AnyObject?) {
+//        UIPasteboard.generalPasteboard().string = copyData
+//    }
+//    
     func setTitle(title: String, content: String) {
         titleLabel.text = title
         contentLabel.text = content
-        copyData = content
+//        copyData = content
     }
     
     func setAction(isAction: Bool) {

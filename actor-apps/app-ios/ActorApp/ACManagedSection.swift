@@ -4,7 +4,7 @@
 
 import Foundation
 
-class UASection {
+class ACManagedSection {
     
     var headerHeight: Double = 0
     var footerHeight: Double = 0
@@ -19,64 +19,36 @@ class UASection {
     var autoSeparators: Bool = false
     var autoSeparatorsInset: CGFloat = 15.0
     
-    unowned let managedTable: ACManagedTable
+    var regions: [ACManagedRange] = [ACManagedRange]()
     
-    var regions: [UARegion] = [UARegion]()
+    unowned let table: ACManagedTable
     
-    init(managedTable: ACManagedTable, index: Int) {
-        self.managedTable = managedTable
+    init(table: ACManagedTable, index: Int) {
         self.index = index
+        self.table = table
     }
     
-    func setSeparatorsTopOffset(offset: Int) -> UASection {
-        self.autoSeparatorTopOffset = offset
-        return self
-    }
+    // Items count
     
-    func setFooterText(footerText: String) -> UASection {
-        self.footerText = footerText
-        return self
-    }
-    
-    func setHeaderText(headerText: String) -> UASection {
-        self.headerText = headerText
-        return self
-    }
-    
-    func setFooterHeight(footerHeight: Double) -> UASection {
-        self.footerHeight = footerHeight
-        return self
-    }
-    
-    func setHeaderHeight(headerHeight: Double) -> UASection {
-        self.headerHeight = headerHeight
-        return self
-    }
-    
-    
-    func itemsCount() -> Int {
+    func numberOfItems(managedTable: ACManagedTable) -> Int {
         var res = 0
         for r in regions {
-            res += r.itemsCount()
+            res += r.rangeNumberOfItems(managedTable)
         }
         return res
     }
     
-    private func getRegion(indexPath: NSIndexPath) -> RegionSearchResult {
-        var prevLength = 0
-        for r in regions {
-            if (prevLength <= indexPath.row && indexPath.row < prevLength + r.itemsCount()) {
-                return RegionSearchResult(region: r, index: indexPath.row - prevLength)
-            }
-            prevLength += r.itemsCount()
-        }
-        
-        fatalError("Inconsistent cell")
+    // Cells
+    
+    func cellHeightForItem(managedTable: ACManagedTable, indexPath: NSIndexPath) -> CGFloat {
+        let r = findCell(managedTable, indexPath: indexPath)
+        return r.cells.rangeCellHeightForItem(managedTable, indexPath: r.index)
     }
     
-    func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let r = getRegion(indexPath)
-        let res = r.region.buildCell(tableView, index: r.index, indexPath: indexPath)
+    func cellForItem(managedTable: ACManagedTable, indexPath: NSIndexPath) -> UITableViewCell {
+        let r = findCell(managedTable, indexPath: indexPath)
+        
+        let res = r.cells.rangeCellForItem(managedTable, indexPath: r.index)
         if autoSeparators {
             if let cell = res as? UATableViewCell {
                 
@@ -87,7 +59,7 @@ class UASection {
                 
                 if indexPath.row >= autoSeparatorTopOffset {
                     cell.bottomSeparatorVisible = true
-                    if indexPath.row == itemsCount() - 1 {
+                    if indexPath.row == numberOfItems(managedTable) - 1 {
                         cell.bottomSeparatorLeftInset = 0
                     } else {
                         cell.bottomSeparatorLeftInset = autoSeparatorsInset
@@ -101,88 +73,85 @@ class UASection {
         }
         return res
     }
+
+    // Selection
     
-    func cellHeight(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let r = getRegion(indexPath)
-        return r.region.cellHeight(r.index, width: tableView.bounds.width)
+    func canSelect(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
+        let r = findCell(managedTable, indexPath: indexPath)
+        return r.cells.rangeCanSelect(managedTable, indexPath: r.index)
     }
     
-    func canSelect(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        let r = getRegion(indexPath)
-        return r.region.canSelect(r.index)
+    func select(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
+        let r = findCell(managedTable, indexPath: indexPath)
+        return r.cells.rangeSelect(managedTable, indexPath: r.index)
     }
     
-    func select(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        let r = getRegion(indexPath)
-        return r.region.select(r.index)
+    // Copying
+    
+    func canCopy(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
+        let r = findCell(managedTable, indexPath: indexPath)
+        return r.cells.rangeCanCopy(managedTable, indexPath: r.index)
     }
     
-    func canCopy(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        let r = getRegion(indexPath)
-        return r.region.canCopy(r.index)
+    func copy(managedTable: ACManagedTable, indexPath: NSIndexPath) {
+        let r = findCell(managedTable, indexPath: indexPath)
+        r.cells.rangeCopy(managedTable, indexPath: r.index)
     }
     
-    func copy(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) {
-        let r = getRegion(indexPath)
-        r.region.copy(r.index)
+    // Private Tools
+    
+    private func findCell(managedTable: ACManagedTable, indexPath: NSIndexPath) -> CellSearchResult {
+        var prevLength = 0
+        for i in 0..<regions.count {
+            let r = regions[i]
+            let itemsCount = r.rangeNumberOfItems(managedTable)
+            if (prevLength <= indexPath.row && indexPath.row < prevLength + itemsCount) {
+                return CellSearchResult(cells: r, index: ACRangeIndexPath(section: indexPath.section, range: i, item: indexPath.row - prevLength, indexPath: indexPath))
+            }
+            prevLength += itemsCount
+        }
+        fatalError("Inconsistent cells")
+    }
+    
+    private class CellSearchResult {
+        
+        let cells: ACManagedRange
+        let index: ACRangeIndexPath
+        
+        init(cells: ACManagedRange, index: ACRangeIndexPath) {
+            self.cells = cells
+            self.index = index
+        }
     }
 }
 
-extension UASection {
-    func addActionCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
-        return addCommonCell()
-            .setContent(title)
-            .setAction(actionClosure)
-            .setStyle(.Action)
+// Obsolete Setters
+
+extension ACManagedSection {
+    
+    func setSeparatorsTopOffset(offset: Int) -> ACManagedSection {
+        self.autoSeparatorTopOffset = offset
+        return self
     }
     
-    func addDangerCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
-        return addCommonCell()
-            .setContent(title)
-            .setAction(actionClosure)
-            .setStyle(.Destructive)
+    func setFooterText(footerText: String) -> ACManagedSection {
+        self.footerText = footerText
+        return self
     }
     
-    func addNavigationCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
-        return addCommonCell()
-            .setContent(title)
-            .setAction(actionClosure)
-            .setStyle(.Navigation)
+    func setHeaderText(headerText: String) -> ACManagedSection {
+        self.headerText = headerText
+        return self
     }
     
-    func addCommonCell(closure: (cell: CommonCell)->()) -> UACommonCellRegion {
-        let res = UACommonCellRegion(section: self, closure: closure)
-        regions.append(res)
-        return res
+    func setFooterHeight(footerHeight: Double) -> ACManagedSection {
+        self.footerHeight = footerHeight
+        return self
     }
     
-    func addCommonCell() -> UACommonCellRegion {
-        let res = UACommonCellRegion(section: self)
-        regions.append(res)
-        return res
-    }
-    
-    func addTextCell(title: String, text: String) -> UATextCellRegion {
-        let res = UATextCellRegion(title: title, text: text, section: self)
-        regions.append(res)
-        return res
-    }
-    
-    func addTitledCell(title: String, text: String) -> UATitledCellRegion {
-        let res = UATitledCellRegion(title: title, text: text, section: self)
-        regions.append(res)
-        return res
-    }
-    
-    func addCustomCell(closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellRegion {
-        let res = UACustomCellRegion(section: self, closure: closure)
-        regions.append(res)
-        return res
-    }
-    
-    func addCustomCells(height: CGFloat,countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellsRegion {
-        let res = UACustomCellsRegion(height:height, countClosure: countClosure, closure: closure, section: self)
-        regions.append(res)
-        return res
+    func setHeaderHeight(headerHeight: Double) -> ACManagedSection {
+        self.headerHeight = headerHeight
+        return self
     }
 }
+
