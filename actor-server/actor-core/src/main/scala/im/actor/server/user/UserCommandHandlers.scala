@@ -50,11 +50,10 @@ private[user] trait UserCommandHandlers {
         countryCode = countryCode,
         sex = models.Sex.fromInt(sex.id),
         state = models.UserState.Registered,
-        createdAt = LocalDateTime.now(ZoneOffset.UTC)
+        createdAt = LocalDateTime.now(ZoneOffset.UTC),
+        external = external
       )
-      db.run(for {
-        _ ← p.User.create(user)
-      } yield CreateAck())
+      db.run(for (_ ← p.User.create(user)) yield CreateAck())
     }
   }
 

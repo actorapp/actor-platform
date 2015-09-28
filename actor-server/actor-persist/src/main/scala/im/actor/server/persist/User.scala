@@ -21,8 +21,9 @@ class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
   def about = column[Option[String]]("about")
   def deletedAt = column[Option[LocalDateTime]]("deleted_at")
   def isBot = column[Boolean]("is_bot")
+  def external = column[Option[String]]("external")
 
-  def * = (id, accessSalt, name, countryCode, sex, state, createdAt, nickname, about, deletedAt, isBot) <> (models.User.tupled, models.User.unapply)
+  def * = (id, accessSalt, name, countryCode, sex, state, createdAt, nickname, about, deletedAt, isBot, external) <> (models.User.tupled, models.User.unapply)
 }
 
 object User {

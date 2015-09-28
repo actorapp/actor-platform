@@ -187,7 +187,8 @@ trait AuthHelpers extends Helpers {
         countryCode = countryCode,
         sex = sex,
         state = models.UserState.Registered,
-        createdAt = LocalDateTime.now(ZoneOffset.UTC)
+        createdAt = LocalDateTime.now(ZoneOffset.UTC),
+        external = None
       )
     } yield \/-(user)
   }
