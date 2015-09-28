@@ -41,5 +41,6 @@ case class User(
   nickname:    Option[String]        = None,
   about:       Option[String]        = None,
   deletedAt:   Option[LocalDateTime] = None,
-  isBot:       Boolean               = false
+  isBot:       Boolean               = false,
+  external:    Option[String]
 )
