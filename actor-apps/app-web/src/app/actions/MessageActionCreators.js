@@ -9,7 +9,8 @@ import { emoji } from 'utils/EmojiUtils';
 
 const replaceColons = (text) => {
   emoji.change_replace_mode('unified');
-  return emoji.replace_colons(text)
+  const replacedText = emoji.replace_colons(text);
+  return replacedText;
 };
 
 export default {

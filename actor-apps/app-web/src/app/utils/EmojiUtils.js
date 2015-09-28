@@ -9,6 +9,7 @@ import { Path } from 'constants/ActorAppConstants';
 emoji.include_title = true;
 emoji.include_text = true;
 emoji.use_sheet = true;
+emoji.colons_mode = false;
 emoji.img_set = 'apple';
 emoji.img_sets = {
   'apple': {
