@@ -43,3 +43,11 @@ object IntCodec extends Codec[Int] {
 
   override def fromBytes(bytes: ByteString): Int = ByteBuffer.wrap(bytes.toByteArray).getInt
 }
+
+object LongCodec extends Codec[Long] {
+  override def toString(bytes: ByteString): String = fromBytes(bytes).toString
+
+  override def toBytes(value: Long): ByteString = ByteString.copyFrom(Longs.toByteArray(value))
+
+  override def fromBytes(bytes: ByteString): Long = ByteBuffer.wrap(bytes.toByteArray).getLong()
+}
