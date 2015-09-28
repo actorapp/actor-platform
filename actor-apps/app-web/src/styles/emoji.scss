@@ -1,4 +1,4 @@
-$emoji-dropdown-width: 320px;
+$emoji-dropdown-width: 314px;
 
 .emoji-outer {
   line-height: $message-line-height;
@@ -70,7 +70,6 @@ $emoji-dropdown-width: 320px;
 
       list-style: none;
       &__tab {
-        line-height: 1px;
         line-height: 24px;
 
         display: inline-block;
@@ -136,17 +135,16 @@ $emoji-dropdown-width: 320px;
         float: left;
         display: block;
 
-        padding: 2px;
+        padding: 6px;
 
         cursor: pointer;
 
         border-radius: 2px;
-        width: 26px;
-        height: 26px;
-        box-sizing: border-box;
+        //width: 26px;
+        //height: 26px;
+        //box-sizing: border-box;
         &:hover {
-          transform: scale(1.2);
-          //background-color: rgba(0, 0, 0, .1);
+          transform: scale(1.5);
         }
       }
 
