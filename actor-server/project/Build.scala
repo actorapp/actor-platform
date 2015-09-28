@@ -6,7 +6,7 @@ import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
 
-object Build extends sbt.Build with Versioning {
+object Build extends sbt.Build with Versioning with Releasing {
   val ScalaVersion = "2.11.7"
   val Version = getVersion
 
@@ -71,7 +71,7 @@ object Build extends sbt.Build with Versioning {
     "actor",
     file("."),
     settings =
-      defaultSettings ++
+      defaultSettings ++ releaseSettings ++
         Revolver.settings ++
         Seq(
           libraryDependencies ++= Dependencies.root,
