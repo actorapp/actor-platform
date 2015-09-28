@@ -79,8 +79,11 @@ export const getEmojiCategories = () => {
 
 export const emojiRegexp = /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g;
 
+export const preloadEmojiSheet = () => (new Image()).src = emoji.img_sets[emoji.img_set].sheet;
+
 export default {
   emoji,
   emojiRegexp,
-  getEmojiCategories
+  getEmojiCategories,
+  preloadEmojiSheet
 };
