@@ -454,7 +454,16 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                         val rnd = ThreadLocalRandom.current()
                         val userId = nextIntId(rnd)
                         //todo: move this to UserOffice
-                        val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered, LocalDateTime.now(ZoneOffset.UTC))
+                        val user = models.User(
+                          id = userId,
+                          accessSalt = ACLUtils.nextAccessSalt(rnd),
+                          name = name,
+                          countryCode = countryCode,
+                          sex = models.NoSex,
+                          state = models.UserState.Registered,
+                          createdAt = LocalDateTime.now(ZoneOffset.UTC),
+                          external = None
+                        )
                         for {
                           _ ← DBIO.from(userExt.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
                           _ ← DBIO.from(userExt.auth(userId, clientData.authId))
