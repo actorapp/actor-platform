@@ -169,9 +169,8 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
       context.stop(self)
   }
 
-  private def enqueueProtoMessageWithResend(message: ProtoMessage with ResendableProtoMessage, reduceKeyOpt: Option[String]): Unit = {
+  private def enqueueProtoMessageWithResend(message: ProtoMessage with ResendableProtoMessage, reduceKeyOpt: Option[String]): Unit =
     enqueueProtoMessageWithResend(nextMessageId(), message, reduceKeyOpt)
-  }
 
   private def enqueueProtoMessageWithResend(messageId: Long, message: ProtoMessage with ResendableProtoMessage, reduceKeyOpt: Option[String]): Unit = {
     scheduleResend(messageId, message, reduceKeyOpt)
@@ -184,20 +183,21 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
     resendBufferSize += message.bodySize
 
     if (resendBufferSize <= MaxBufferSize) {
-      val scheduledResend = context.system.scheduler.scheduleOnce(AckTimeout, self, ScheduledResend(messageId))
-      resendBuffer = resendBuffer.updated(messageId, (message, reduceKeyOpt, scheduledResend))
-
       reduceKeyOpt foreach { reduceKey ⇒
         for {
           msgId ← reduceMap.get(reduceKey)
-          (msg, _, _) ← resendBuffer.get(msgId)
+          (msg, _, scheduledResend) ← resendBuffer.get(msgId)
         } yield {
           resendBuffer -= msgId
           resendBufferSize -= msg.bodySize
+          scheduledResend.cancel()
         }
 
         reduceMap += (reduceKey → messageId)
       }
+
+      val scheduledResend = context.system.scheduler.scheduleOnce(AckTimeout, self, ScheduledResend(messageId))
+      resendBuffer = resendBuffer.updated(messageId, (message, reduceKeyOpt, scheduledResend))
     } else {
       val msg = "Completing stream due to maximum buffer size reached"
       log.warning(msg)
