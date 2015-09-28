@@ -15,9 +15,10 @@
 		06049FE21BA5E26400BF8553 /* Bubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06049FE11BA5E26400BF8553 /* Bubbles.swift */; settings = {ASSET_TAGS = (); }; };
 		065AFDDF1BB87DD40073E510 /* ACManagedTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDDE1BB87DD40073E510 /* ACManagedTableController.swift */; settings = {ASSET_TAGS = (); }; };
 		065AFDE21BB8872F0073E510 /* ACManagedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE11BB8872F0073E510 /* ACManagedSection.swift */; settings = {ASSET_TAGS = (); }; };
-		065AFDE41BB887BE0073E510 /* ACManagedRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */; settings = {ASSET_TAGS = (); }; };
+		065AFDE41BB887BE0073E510 /* ACManagedRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE31BB887BE0073E510 /* ACManagedRange.swift */; settings = {ASSET_TAGS = (); }; };
 		065AFDE61BB887E60073E510 /* ACManagedTableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		065AFDE81BB898470073E510 /* ACContentTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE71BB898470073E510 /* ACContentTableController.swift */; settings = {ASSET_TAGS = (); }; };
+		065AFDEA1BB8CEDB0073E510 /* ACManagedCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE91BB8CEDB0073E510 /* ACManagedCells.swift */; settings = {ASSET_TAGS = (); }; };
 		068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068505C71B9AB2E300819D16 /* CorePreviewController.swift */; };
 		068505CC1B9AB5CB00819D16 /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 068505CA1B9AB5CB00819D16 /* highlight-default.min.css */; };
 		068505CD1B9AB5CB00819D16 /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 068505CB1B9AB5CB00819D16 /* highlight.min.js */; };
@@ -82,7 +83,6 @@
 		542C6DCBA7C3F09B8815D2B153E8127B /* GroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180017C31477FD5929CAA45692E4BEE1 /* GroupMembersController.swift */; };
 		54C40D41266049E8CECFAE3E15D3A4EE /* BubbleLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4302C0C07ED64EF3AA1109AB0939FF23 /* BubbleLayouts.swift */; };
 		5871DD622997F22DDDACA5FD33663BE8 /* Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96AEEE09EE154156E7009B6AF0A2DF79 /* Conversions.swift */; };
-		58EBAD40CE1F2F4095DACB5803FB57DA /* IntegrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C2A3EF21AD5C5CCF8BDA8D2B6B51D2 /* IntegrationViewController.swift */; };
 		5B390BB56CF35C7E70BA1B14BF9A8DC3 /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56732A333F4D42DCFF616A4B4FBCD921 /* MainSplitViewController.swift */; };
 		5CB08F7B92F0B4EA14B1F6188FD25CC9 /* FMDBKeyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5D672C744DE22A0BE17CA610C71D7D /* FMDBKeyValue.swift */; };
 		5CC954286289ADFAC9BB22C7DF7D3929 /* AAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256D79EEDEC36C09E3DAE93764BDA89D /* AAViewController.swift */; };
@@ -182,9 +182,10 @@
 		06049FE11BA5E26400BF8553 /* Bubbles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bubbles.swift; sourceTree = "<group>"; };
 		065AFDDE1BB87DD40073E510 /* ACManagedTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableController.swift; sourceTree = "<group>"; };
 		065AFDE11BB8872F0073E510 /* ACManagedSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedSection.swift; sourceTree = "<group>"; };
-		065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedRegion.swift; sourceTree = "<group>"; };
+		065AFDE31BB887BE0073E510 /* ACManagedRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedRange.swift; sourceTree = "<group>"; };
 		065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableExtensions.swift; sourceTree = "<group>"; };
 		065AFDE71BB898470073E510 /* ACContentTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACContentTableController.swift; sourceTree = "<group>"; };
+		065AFDE91BB8CEDB0073E510 /* ACManagedCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedCells.swift; sourceTree = "<group>"; };
 		068505C71B9AB2E300819D16 /* CorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorePreviewController.swift; sourceTree = "<group>"; };
 		068505CA1B9AB5CB00819D16 /* highlight-default.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "highlight-default.min.css"; path = "Resources/Highlighter/highlight-default.min.css"; sourceTree = "<group>"; };
 		068505CB1B9AB5CB00819D16 /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = highlight.min.js; path = Resources/Highlighter/highlight.min.js; sourceTree = "<group>"; };
@@ -267,7 +268,6 @@
 		6F6517C304D68DBFAC712D5846CA4EF9 /* SettingsNotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsNotificationsViewController.swift; path = Controllers/Settings/SettingsNotificationsViewController.swift; sourceTree = "<group>"; };
 		6FDCEAC99CA1256C705B34B7760D82AF /* AvatarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AvatarView.swift; path = View/AvatarView.swift; sourceTree = "<group>"; };
 		6FE4331DE8A9E679274F5E616BC4EAA1 /* AuthPhoneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthPhoneViewController.swift; path = Controllers/Auth/AuthPhoneViewController.swift; sourceTree = "<group>"; };
-		70C2A3EF21AD5C5CCF8BDA8D2B6B51D2 /* IntegrationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IntegrationViewController.swift; path = Controllers/Group/IntegrationViewController.swift; sourceTree = "<group>"; };
 		731E0C36DF5CBDE4DF26ABB0B22C3AFF /* SettingsPrivacyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsPrivacyViewController.swift; path = Controllers/Settings/SettingsPrivacyViewController.swift; sourceTree = "<group>"; };
 		73EA37A8640299C0B3AAECC2F03FDA70 /* AATableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATableViewController.swift; path = "Controllers Support/AATableViewController.swift"; sourceTree = "<group>"; };
 		78A456BF465556D2C6EF3174135BDFD6 /* Months_Ar.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months_Ar.properties; path = ../core/src/main/resources/Months_Ar.properties; sourceTree = "<group>"; };
@@ -397,7 +397,8 @@
 			children = (
 				B114C9394B112A2E5A262CE688CD9025 /* ACManagedTable.swift */,
 				065AFDE11BB8872F0073E510 /* ACManagedSection.swift */,
-				065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */,
+				065AFDE31BB887BE0073E510 /* ACManagedRange.swift */,
+				065AFDE91BB8CEDB0073E510 /* ACManagedCells.swift */,
 				065AFDDE1BB87DD40073E510 /* ACManagedTableController.swift */,
 				065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */,
 				065AFDE71BB898470073E510 /* ACContentTableController.swift */,
@@ -524,7 +525,6 @@
 				1BEB209D492CC3E24EFBE61F2DD9AC2A /* Cells */,
 				B5E409EE73751501A78FD35A0A86294D /* AddParticipantViewController.swift */,
 				4A4270AD24A6DC40F05233A14677113C /* GroupViewController.swift */,
-				70C2A3EF21AD5C5CCF8BDA8D2B6B51D2 /* IntegrationViewController.swift */,
 				44401A2BCBE6DBBC6A8EF06CCA5E5AD4 /* InviteLinkViewController.swift */,
 			);
 			name = Group;
@@ -1081,7 +1081,7 @@
 				D3D9A06ACF822941722FDBE6FE633354 /* AABubbleCell.swift in Sources */,
 				93CF1F16824BC7BC7797BC016A87BB87 /* AABubbleDocumentCell.swift in Sources */,
 				057AECBA478DD3D127189E50F10243A8 /* AABubbleMediaCell.swift in Sources */,
-				065AFDE41BB887BE0073E510 /* ACManagedRegion.swift in Sources */,
+				065AFDE41BB887BE0073E510 /* ACManagedRange.swift in Sources */,
 				C7370CCA314ADBC029F3FA4ACE1954F1 /* AABubbleServiceCell.swift in Sources */,
 				82CF38ECAAEAF258C9E1396E406098D7 /* AABubbleTextCell.swift in Sources */,
 				78BD18AD2FABD26389722E4C885138F1 /* AAImagePickerController.swift in Sources */,
@@ -1095,6 +1095,7 @@
 				06FC5EA81BB5D36A0071F153 /* WallpapperPreviewController.swift in Sources */,
 				06FC5E801BACEEC00071F153 /* Numbers.swift in Sources */,
 				7226E099F1D301533F030787EAC6E94B /* Alerts.swift in Sources */,
+				065AFDEA1BB8CEDB0073E510 /* ACManagedCells.swift in Sources */,
 				065AFDE61BB887E60073E510 /* ACManagedTableExtensions.swift in Sources */,
 				DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */,
 				D1AE902CEB4CF563A8E5F86B52D28B82 /* AppTheme.swift in Sources */,
@@ -1160,7 +1161,6 @@
 				B19838148BCD5363C7100046393F7981 /* GroupViewController.swift in Sources */,
 				608F490C46BB12865A5583A1074059F4 /* Images.swift in Sources */,
 				06FC5E941BB44FD40071F153 /* HeaderCell.swift in Sources */,
-				58EBAD40CE1F2F4095DACB5803FB57DA /* IntegrationViewController.swift in Sources */,
 				8722BC679DBD10CFD179D0A281C0AFF1 /* IntroViewController.swift in Sources */,
 				A2C6263FB57CE1C8C7B1428938EACE55 /* InviteLinkViewController.swift in Sources */,
 				F0F13508684297EEEC9CB2314462DA46 /* JoinPublicViewContoller.swift in Sources */,

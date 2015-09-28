@@ -110,7 +110,7 @@ class CommonCell: UATableViewCell {
     // MARK: -
     // MARK: Setters
     
-    func setContent(content: String) {
+    func setContent(content: String?) {
         textLabel!.text = content
     }
     

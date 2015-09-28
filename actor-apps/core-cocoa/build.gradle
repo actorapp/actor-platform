@@ -18,7 +18,7 @@ dependencies {
     compile project(':runtime-cocoa')
 }
 
-task j2objc() {
+task cycleFinder() {
     doFirst {
 
         Properties properties = new Properties()
@@ -28,19 +28,7 @@ task j2objc() {
 
         exec {
 
-            executable "${properties.get("j2objcDir")}j2objc"
-
-            args "-use-arc"
-            args "--strip-reflection",  "--generate-deprecated", "--doc-comments"
-            args "-g"
-
-            args "-d", "${projectDir}/src/gen/objc/"
-
-            args "-sourcepath", "${projectDir}/src/main/java/:${projectDir}/../core/src/main/java/:${projectDir}/../runtime/src/main/java/:${projectDir}/../runtime/src/generic/java/:${projectDir}/../runtime-cocoa/src/generic/java/"
-
-            args "--prefixes", "${projectDir}/src/main/prefixes.properties"
-
-            args "--prefixes", "${projectDir}/../runtime-cocoa/src/main/prefixes.properties"
+            executable "${properties.get("j2objcDir")}/cycle_finder"
 
             def srcFiles = fileTree("${projectDir}/src/main/java/").matching {
                 exclude "**/ObjectiveCName.java"
@@ -65,6 +53,3 @@ task j2objc() {
         }
     }
 }
-
-j2objc.dependsOn compileJava
-build.dependsOn j2objc

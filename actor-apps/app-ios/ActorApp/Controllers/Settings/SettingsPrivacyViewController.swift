@@ -4,84 +4,74 @@
 
 import UIKit
 
-class SettingsPrivacyViewController: AATableViewController {
+class SettingsPrivacyViewController: ACContentTableController {
     
-    private var authSessions = [ARApiAuthSession]()
-    private var data: ACManagedTable!
+    private var sessionsCell: ACManagedArrayRows<ARApiAuthSession, CommonCell>?
     
     init() {
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(tableViewStyle: UITableViewStyle.Grouped)
+        
+        navigationItem.title = localized("SecurityTitle")
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func tableDidLoad() {
         
-        navigationItem.title = NSLocalizedString("PrivacyTitle", comment: "Controller title")
-        
-        tableView.backgroundColor = MainAppTheme.list.backyardColor
-        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        
-        data = ACManagedTable(tableView: tableView, controller: self)
-        
-        let header = data.addSection(true)
-            .setFooterText("PrivacyTerminateHint")
-        
-        header.addDangerCell("PrivacyTerminate") { [unowned self] () -> Bool in
-            self.confirmDangerSheetUser("PrivacyTerminateAlert", tapYes: { [unowned self] () -> () in
-                
-                // Terminating all sessions and reload list
-                self.executeSafe(Actor.terminateAllSessionsCommand(), successBlock: { (val) -> Void in
-                    self.loadSessions()
-                })
-            }, tapNo: nil)
-
-            return true
-        }
-        
-        data.addSection(true)
-            .addCustomCells(44, countClosure: { [unowned self] () -> Int in
-                    return self.authSessions.count
-                }, closure: { (tableView, index, indexPath) -> UITableViewCell in
-                    let cell = tableView.dequeueReusableCellWithIdentifier(ACManagedTable.ReuseCommonCell, forIndexPath: indexPath) as! CommonCell
-                    let session = self.authSessions[indexPath.row]
-                    if session.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
-                        cell.style = .Normal
-                        cell.setContent(session.getDeviceTitle())
-                    } else {
-                        cell.style = .Hint
-                        cell.setContent("(Current) \(session.getDeviceTitle())")
-                    }
-                    return cell
-                })
-            .setAction { (index) -> Bool in
-                let session = self.authSessions[index]
-                if session.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
-                    self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { [unowned self] () -> () in
-                        // Terminating session and reload list
-                        self.executeSafe(Actor.terminateSessionCommandWithId(session.getId()), successBlock: { [unowned self] (val) -> Void in
+        section { (s) -> () in
+            
+            s.footerText = localized("PrivacyTerminateHint")
+            
+            s.danger("PrivacyTerminate") { (r) -> () in
+                r.selectAction = { () -> Bool in
+                    self.confirmDangerSheetUser("PrivacyTerminateAlert", tapYes: { [unowned self] () -> () in
+                        // Terminating all sessions and reload list
+                        self.executeSafe(Actor.terminateAllSessionsCommand(), successBlock: { (val) -> Void in
                             self.loadSessions()
                         })
-                    }, tapNo: nil)
+                        }, tapNo: nil)
+                    return true
                 }
-                return true
             }
+        }
         
-        // Starting to load sessions
+        section { (s) -> () in
+            self.sessionsCell = s.arrays() { (r: ACManagedArrayRows<ARApiAuthSession, CommonCell>) -> () in
+                r.bindData = { (c: CommonCell, d: ARApiAuthSession) -> () in
+                    if d.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
+                        c.style = .Normal
+                        c.setContent(d.getDeviceTitle())
+                    } else {
+                        c.style = .Hint
+                        c.setContent("(Current) \(d.getDeviceTitle())")
+                    }
+                }
+                
+                r.selectAction = { (d) -> Bool in
+                    if d.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
+                        self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { [unowned self] () -> () in
+                            // Terminating session and reload list
+                            self.executeSafe(Actor.terminateSessionCommandWithId(d.getId()), successBlock: { [unowned self] (val) -> Void in
+                                self.loadSessions()
+                                })
+                        }, tapNo: nil)
+                    }
+                    return true
+                }
+            }
+        }
+        
+        // Request sessions load
+        
         loadSessions()
     }
     
     private func loadSessions() {
         execute(Actor.loadSessionsCommand(), successBlock: { [unowned self] (val) -> Void in
-            let list = val as! JavaUtilList
-            self.authSessions = []
-            for i in 0..<list.size() {
-                self.authSessions.append(list.getWithInt(jint(i)) as! ARApiAuthSession)
-            }
-            self.tableView.reloadData()
+            self.sessionsCell!.data = (val as! JavaUtilList).toArray().toSwiftArray()
+            self.sessionsCell!.reload()
         }, failureBlock: nil)
     }
 }

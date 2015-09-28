@@ -25,7 +25,7 @@ class ACContentTableController: ACManagedTableController, ACManagedTableControll
     
     // DSL Implementation
     
-    func section(closure: (s: UASection) -> ()) {
+    func section(closure: (s: ACManagedSection) -> ()) {
         if !isInLoad {
             fatalError("Unable to change sections not during tableDidLoad method call")
         }
@@ -46,6 +46,12 @@ class ACContentTableController: ACManagedTableController, ACManagedTableControll
         if autoSections {
             managedTable.sections.last?.footerHeight = 30
         }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: nil, style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     // Implement it in subclass
