@@ -14,6 +14,14 @@
     {
       "type": "int64",
       "alias": "randomId"
+    },
+    {
+      "type": "int64",
+      "alias": "msec"
+    },
+    {
+      "type": "int32",
+      "alias": "sec"
     }
   ],
   "sections": [
@@ -1133,6 +1141,14 @@
               {
                 "name": "Email",
                 "id": 2
+              },
+              {
+                "name": "Web",
+                "id": 3
+              },
+              {
+                "name": "Social",
+                "id": 4
               }
             ]
           }
@@ -1148,6 +1164,12 @@
                 "argument": "type",
                 "category": "full",
                 "description": "  Record type"
+              },
+              {
+                "type": "reference",
+                "argument": "typeSpec",
+                "category": "hidden",
+                "description": "  Value for specification type of contact, for example 'mobile/standalone/office' for phones or 'vk/fb/telegram' for extenrnal networks."
               },
               {
                 "type": "reference",
@@ -1183,6 +1205,14 @@
                 },
                 "id": 1,
                 "name": "type"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "typeSpec"
               },
               {
                 "type": {
@@ -1290,6 +1320,12 @@
                 "argument": "isBot",
                 "category": "full",
                 "description": "  Is user actually bot. By default is false."
+              },
+              {
+                "type": "reference",
+                "argument": "external",
+                "category": "full",
+                "description": "  If not null, is user come from outer network"
               }
             ],
             "expandable": "true",
@@ -1382,6 +1418,14 @@
                 },
                 "id": 14,
                 "name": "about"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 15,
+                "name": "external"
               }
             ]
           }
@@ -6360,7 +6404,7 @@
                 "type": "reference",
                 "argument": "timeout",
                 "category": "full",
-                "description": "timeout of online state"
+                "description": "timeout of online state in milliseconds"
               }
             ],
             "attributes": [
@@ -6370,7 +6414,10 @@
                 "name": "isOnline"
               },
               {
-                "type": "int64",
+                "type": {
+                  "type": "alias",
+                  "childType": "msec"
+                },
                 "id": 2,
                 "name": "timeout"
               }
@@ -6787,7 +6834,10 @@
                   "name": "url"
                 },
                 {
-                  "type": "int32",
+                  "type": {
+                    "type": "alias",
+                    "childType": "sec"
+                  },
                   "id": 2,
                   "name": "timeout"
                 }
@@ -6966,429 +7016,6 @@
       ]
     },
     {
-      "title": "Calls",
-      "package": "calls",
-      "doc": [
-        "Performing voice calls with WebRTC and SIP"
-      ],
-      "items": [
-        {
-          "type": "update",
-          "content": {
-            "name": "CallRing",
-            "header": 49,
-            "doc": [
-              "Update about phone ring",
-              {
-                "type": "reference",
-                "argument": "user",
-                "category": "hidden",
-                "description": "  Calling User"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "User"
-                },
-                "id": 1,
-                "name": "user"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "callId"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "CallEnd",
-            "header": 83,
-            "doc": [
-              "Update about phone call end"
-            ],
-            "attributes": [
-              {
-                "type": "string",
-                "id": 2,
-                "name": "callId"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "InitVoxSupport",
-            "header": 130,
-            "response": {
-              "type": "anonymous",
-              "header": 129,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "userName",
-                  "category": "full",
-                  "description": "  User Name for authentication"
-                },
-                {
-                  "type": "reference",
-                  "argument": "password",
-                  "category": "full",
-                  "description": "  Password for authentication"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": "string",
-                  "id": 1,
-                  "name": "userName"
-                },
-                {
-                  "type": "string",
-                  "id": 2,
-                  "name": "password"
-                }
-              ]
-            },
-            "doc": [
-              "Initialization VoxImplant support on client"
-            ],
-            "attributes": []
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "GetVoxUser",
-            "header": 131,
-            "response": {
-              "type": "anonymous",
-              "header": 132,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "callNumber",
-                  "category": "full",
-                  "description": "  Call number"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": "string",
-                  "id": 1,
-                  "name": "callNumber"
-                }
-              ]
-            },
-            "doc": [
-              "Get Vox user name for VoxImplant",
-              {
-                "type": "reference",
-                "argument": "userPeer",
-                "category": "full",
-                "description": "Destination peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "UserOutPeer"
-                },
-                "id": 1,
-                "name": "userPeer"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "title": "llectro",
-      "package": "llectro",
-      "doc": [
-        "llectro Advertisment API"
-      ],
-      "items": [
-        {
-          "type": "struct",
-          "content": {
-            "name": "Interest",
-            "doc": [
-              "User interests",
-              {
-                "type": "reference",
-                "argument": "id",
-                "category": "full",
-                "description": "  Interest Id"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "full",
-                "description": "  Interest title"
-              },
-              {
-                "type": "reference",
-                "argument": "childInterests",
-                "category": "full",
-                "description": "  Child Interests"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "id"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "title"
-              },
-              {
-                "type": "bool",
-                "id": 4,
-                "name": "isSelected"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Interest"
-                  }
-                },
-                "id": 3,
-                "name": "childInterests"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "InitLlectro",
-            "header": 163,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Init Llectro support",
-              {
-                "type": "reference",
-                "argument": "screenWidth",
-                "category": "full",
-                "description": "Screen width"
-              },
-              {
-                "type": "reference",
-                "argument": "screenHeight",
-                "category": "full",
-                "description": "Screen height"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "screenWidth"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "screenHeight"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "GetAvailableInterests",
-            "header": 152,
-            "response": {
-              "type": "anonymous",
-              "header": 153,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "rootInterests",
-                  "category": "compact",
-                  "description": "  Root interests list"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Interest"
-                    }
-                  },
-                  "id": 1,
-                  "name": "rootInterests"
-                }
-              ]
-            },
-            "doc": [
-              "Getting all available interests"
-            ],
-            "attributes": []
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "EnableInterests",
-            "header": 157,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Enabling interest for current user",
-              {
-                "type": "reference",
-                "argument": "interests",
-                "category": "full",
-                "description": "Ids of enabled interests"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "list",
-                  "childType": "int32"
-                },
-                "id": 1,
-                "name": "interests"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "DisableInterests",
-            "header": 158,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Disabling interest for current user",
-              {
-                "type": "reference",
-                "argument": "interests",
-                "category": "full",
-                "description": "Ids of disabled interests"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "list",
-                  "childType": "int32"
-                },
-                "id": 1,
-                "name": "interests"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "NotifyBannerView",
-            "header": 162,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Notify about banner view",
-              {
-                "type": "reference",
-                "argument": "bannerId",
-                "category": "full",
-                "description": "Banner id"
-              },
-              {
-                "type": "reference",
-                "argument": "viewDuration",
-                "category": "full",
-                "description": "viewDuration in miliseconds"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "bannerId"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "viewDuration"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "NotifyBannerClick",
-            "header": 166,
-            "response": {
-              "type": "reference",
-              "name": "Void"
-            },
-            "doc": [
-              "Notify about banner click",
-              "param visible bannerId Banner id"
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "bannerId"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "GetBalance",
-            "header": 164,
-            "response": {
-              "type": "anonymous",
-              "header": 165,
-              "attributes": [
-                {
-                  "type": "string",
-                  "id": 1,
-                  "name": "balance"
-                }
-              ]
-            },
-            "doc": [
-              "Get current balance"
-            ],
-            "attributes": []
-          }
-        }
-      ]
-    },
-    {
       "title": "Config sync",
       "package": "configs",
       "doc": [
@@ -7536,6 +7163,158 @@
                 },
                 "id": 2,
                 "name": "value"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Wallpappers",
+      "package": "wallpappers",
+      "doc": [
+        "Wallpappers support"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "Wallpapper",
+            "doc": [
+              "Wallpapper structure",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Wallpapper id"
+              },
+              {
+                "type": "reference",
+                "argument": "w",
+                "category": "full",
+                "description": "  Image width"
+              },
+              {
+                "type": "reference",
+                "argument": "h",
+                "category": "full",
+                "description": "  Image height"
+              },
+              {
+                "type": "reference",
+                "argument": "fileSize",
+                "category": "full",
+                "description": "  Image file size"
+              },
+              {
+                "type": "reference",
+                "argument": "file",
+                "category": "full",
+                "description": "  Image file reference"
+              },
+              {
+                "type": "reference",
+                "argument": "thumb",
+                "category": "full",
+                "description": "  Image thumb"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 7,
+                "name": "id"
+              },
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "w"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "h"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "fileSize"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 5,
+                "name": "file"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FastThumb"
+                },
+                "id": 6,
+                "name": "thumb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadWallpappers",
+            "header": 231,
+            "response": {
+              "type": "anonymous",
+              "header": 232,
+              "doc": [
+                "Loaded Wallpappers",
+                {
+                  "type": "reference",
+                  "argument": "wallpappers",
+                  "category": "full",
+                  "description": "  Available wallpapper list"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Wallpapper"
+                    }
+                  },
+                  "id": 1,
+                  "name": "wallpappers"
+                }
+              ]
+            },
+            "doc": [
+              "Load available wallpappers",
+              {
+                "type": "reference",
+                "argument": "maxWidth",
+                "category": "full",
+                "description": "Maximum width of wallpapper"
+              },
+              {
+                "type": "reference",
+                "argument": "maxHeight",
+                "category": "full",
+                "description": "Maximum height of wallpapper"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "maxWidth"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "maxHeight"
               }
             ]
           }
@@ -8727,6 +8506,150 @@
                 },
                 "id": 1,
                 "name": "config"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Webactions",
+      "package": "webactions",
+      "doc": [
+        "Web actions allow clients to visit some predefined web pages,",
+        "perform actions, and pass result on action completion"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InitWebaction",
+            "header": 116,
+            "response": {
+              "type": "anonymous",
+              "header": 117,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "uri",
+                  "category": "full",
+                  "description": "  Web action uri"
+                },
+                {
+                  "type": "reference",
+                  "argument": "regexp",
+                  "category": "full",
+                  "description": "  Regular expression. Required to match completion of web action"
+                },
+                {
+                  "type": "reference",
+                  "argument": "actionHash",
+                  "category": "danger",
+                  "description": "  Identifier of current web action. Required to complete it"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "uri"
+                },
+                {
+                  "type": "string",
+                  "id": 2,
+                  "name": "regexp"
+                },
+                {
+                  "type": "string",
+                  "id": 3,
+                  "name": "actionHash"
+                }
+              ]
+            },
+            "doc": [
+              "Initialize start of web action",
+              {
+                "type": "reference",
+                "argument": "actionName",
+                "category": "full",
+                "description": "Name of web action"
+              },
+              {
+                "type": "reference",
+                "argument": "params",
+                "category": "full",
+                "description": "Additional params required to make action's uri"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "actionName"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MapValue"
+                },
+                "id": 2,
+                "name": "params"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CompleteWebaction",
+            "header": 123,
+            "response": {
+              "type": "anonymous",
+              "header": 124,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "result",
+                  "category": "full",
+                  "description": "  Reslut of web action completion"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  },
+                  "id": 1,
+                  "name": "result"
+                }
+              ]
+            },
+            "doc": [
+              "Complete started web action",
+              {
+                "type": "reference",
+                "argument": "actionHash",
+                "category": "danger",
+                "description": "Identifier of given web action"
+              },
+              {
+                "type": "reference",
+                "argument": "completeUri",
+                "category": "full",
+                "description": "Final uri of web action"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "actionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "completeUri"
               }
             ]
           }
