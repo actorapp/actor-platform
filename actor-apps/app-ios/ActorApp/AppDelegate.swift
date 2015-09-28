@@ -56,7 +56,7 @@ import Crashlytics
         MainAppTheme.applyAppearance(application)
 
         // Bind Messenger LifeCycle
-        binder.bind(Actor.getAppState().getIsSyncing(), closure: { (value: JavaLangBoolean?) -> () in
+        binder.bind(Actor.getAppState().isSyncing, closure: { (value: JavaLangBoolean?) -> () in
             if value!.booleanValue() {
                 if self.syncTask == nil {
                     self.syncTask = application.beginBackgroundTaskWithName("Background Sync", expirationHandler: { () -> Void in
@@ -109,7 +109,7 @@ import Crashlytics
         window?.addSubview(badgeView)
         
         // Bind badge counter
-        binder.bind(Actor.getAppState().getGlobalCounter(), closure: { (value: JavaLangInteger?) -> () in
+        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
             self.badgeCount = Int((value!).integerValue)
             application.applicationIconBadgeNumber = self.badgeCount
             badgeText.text = "\(self.badgeCount)"
@@ -144,7 +144,7 @@ import Crashlytics
             rootController = splitController
         } else {
             let tabController = MainTabViewController(isAfterLogin: isAfterLogin)
-            binder.bind(Actor.getAppState().getIsAppLoaded(), valueModel2: Actor.getAppState().getIsAppEmpty()) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
+            binder.bind(Actor.getAppState().isAppLoaded, valueModel2: Actor.getAppState().isAppEmpty) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
                 if (empty!.booleanValue()) {
                     if (loaded!.booleanValue()) {
                         tabController.showAppIsEmptyPlaceholder()

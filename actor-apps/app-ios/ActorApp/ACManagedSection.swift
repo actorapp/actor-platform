@@ -12,19 +12,19 @@ class UASection {
     var headerText: String? = nil
     var footerText: String? = nil
     
-    var index: Int
+    let index: Int
     
     var autoSeparatorTopOffset: Int = 0
     var autoSeparatorBottomOffset: Int = 0
     var autoSeparators: Bool = false
     var autoSeparatorsInset: CGFloat = 15.0
     
-    private var tableView: UITableView
+    unowned let managedTable: ACManagedTable
     
     var regions: [UARegion] = [UARegion]()
     
-    init(tableView: UITableView, index: Int) {
-        self.tableView = tableView
+    init(managedTable: ACManagedTable, index: Int) {
+        self.managedTable = managedTable
         self.index = index
     }
     
@@ -53,62 +53,6 @@ class UASection {
         return self
     }
     
-    func addActionCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
-        return addCommonCell()
-            .setContent(title)
-            .setAction(actionClosure)
-            .setStyle(.Action)
-    }
-    
-    func addDangerCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
-        return addCommonCell()
-            .setContent(title)
-            .setAction(actionClosure)
-            .setStyle(.Destructive)
-    }
-    
-    func addNavigationCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
-        return addCommonCell()
-            .setContent(title)
-            .setAction(actionClosure)
-            .setStyle(.Navigation)
-    }
-    
-    func addCommonCell(closure: (cell: CommonCell)->()) -> UACommonCellRegion {
-        let res = UACommonCellRegion(section: self, closure: closure)
-        regions.append(res)
-        return res
-    }
-    
-    func addCommonCell() -> UACommonCellRegion {
-        let res = UACommonCellRegion(section: self)
-        regions.append(res)
-        return res
-    }
-    
-    func addTextCell(title: String, text: String) -> UATextCellRegion {
-        let res = UATextCellRegion(title: title, text: text, section: self)
-        regions.append(res)
-        return res
-    }
-    
-    func addTitledCell(title: String, text: String) -> UATitledCellRegion {
-        let res = UATitledCellRegion(title: title, text: text, section: self)
-        regions.append(res)
-        return res
-    }
-    
-    func addCustomCell(closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellRegion {
-        let res = UACustomCellRegion(section: self, closure: closure)
-        regions.append(res)
-        return res
-    }
-    
-    func addCustomCells(height: CGFloat,countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellsRegion {
-        let res = UACustomCellsRegion(height:height, countClosure: countClosure, closure: closure, section: self)
-        regions.append(res)
-        return res
-    }
     
     func itemsCount() -> Int {
         var res = 0
@@ -181,5 +125,64 @@ class UASection {
     func copy(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) {
         let r = getRegion(indexPath)
         r.region.copy(r.index)
+    }
+}
+
+extension UASection {
+    func addActionCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
+        return addCommonCell()
+            .setContent(title)
+            .setAction(actionClosure)
+            .setStyle(.Action)
+    }
+    
+    func addDangerCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
+        return addCommonCell()
+            .setContent(title)
+            .setAction(actionClosure)
+            .setStyle(.Destructive)
+    }
+    
+    func addNavigationCell(title: String, actionClosure: (() -> Bool)) -> UACommonCellRegion {
+        return addCommonCell()
+            .setContent(title)
+            .setAction(actionClosure)
+            .setStyle(.Navigation)
+    }
+    
+    func addCommonCell(closure: (cell: CommonCell)->()) -> UACommonCellRegion {
+        let res = UACommonCellRegion(section: self, closure: closure)
+        regions.append(res)
+        return res
+    }
+    
+    func addCommonCell() -> UACommonCellRegion {
+        let res = UACommonCellRegion(section: self)
+        regions.append(res)
+        return res
+    }
+    
+    func addTextCell(title: String, text: String) -> UATextCellRegion {
+        let res = UATextCellRegion(title: title, text: text, section: self)
+        regions.append(res)
+        return res
+    }
+    
+    func addTitledCell(title: String, text: String) -> UATitledCellRegion {
+        let res = UATitledCellRegion(title: title, text: text, section: self)
+        regions.append(res)
+        return res
+    }
+    
+    func addCustomCell(closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellRegion {
+        let res = UACustomCellRegion(section: self, closure: closure)
+        regions.append(res)
+        return res
+    }
+    
+    func addCustomCells(height: CGFloat,countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellsRegion {
+        let res = UACustomCellsRegion(height:height, countClosure: countClosure, closure: closure, section: self)
+        regions.append(res)
+        return res
     }
 }

@@ -10,16 +10,19 @@ class ACManagedTable {
     static let ReuseTextCell = "_TextCell";
     static let ReuseTitledCell = "_TitledCell";
     
-    private let tableView: UITableView
     private var baseDelegate: AMBaseTableDelegate!
-    private var sections: [UASection] = [UASection]()
     
+    var sections: [UASection] = [UASection]()
+    
+    unowned let controller: UIViewController
+    unowned let tableView: UITableView
     var delegate: UITableViewDelegate { get { return baseDelegate } }
     var dataSource: UITableViewDataSource { get { return baseDelegate } }
+    
     var tableScrollClosure: ((tableView: UITableView) -> ())?
     
-    init(tableView: UITableView) {
-        
+    init(tableView: UITableView, controller: UIViewController) {
+        self.controller = controller
         self.tableView = tableView
         self.baseDelegate = tableView.style == .Plain ? AMPlainTableDelegate(data: self) : AMGrouppedTableDelegate(data: self)
 
@@ -38,7 +41,7 @@ class ACManagedTable {
     }
     
     func addSection(autoSeparator: Bool = false) -> UASection {
-        let res = UASection(tableView: tableView, index: sections.count)
+        let res = UASection(managedTable: self, index: sections.count)
         res.autoSeparators = autoSeparator
         sections.append(res)
         return res
@@ -89,7 +92,7 @@ private class AMGrouppedTableDelegate: AMBaseTableDelegate {
 
 private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
-    private let data: ACManagedTable
+    unowned private let data: ACManagedTable
     
     init(data: ACManagedTable) {
         self.data = data

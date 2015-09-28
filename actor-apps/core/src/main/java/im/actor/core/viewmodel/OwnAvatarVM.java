@@ -4,12 +4,15 @@
 
 package im.actor.core.viewmodel;
 
+import com.google.j2objc.annotations.Property;
+
 import im.actor.runtime.mvvm.ValueModel;
 
 /**
  * Current user Avatar View Model
  */
 public class OwnAvatarVM {
+    @Property("nonatomic, readonly")
     private ValueModel<AvatarUploadState> uploadState = new ValueModel<AvatarUploadState>(
             "avatar.my", new AvatarUploadState(null, false));
 

@@ -136,7 +136,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
                 } else {
                     let stateText = Actor.getFormatter().formatPresence(presence, withSex: user.getSex())
                     self.subtitleView.text = stateText;
-                    let state = UInt(presence!.getState().ordinal())
+                    let state = UInt(presence!.state.ordinal())
                     if (state == ACUserPresence_State.ONLINE.rawValue) {
                         self.subtitleView.textColor = Resources.PrimaryLightText
                     } else {

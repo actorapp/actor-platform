@@ -25,13 +25,13 @@ class SettingsPrivacyViewController: AATableViewController {
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
-        data = ACManagedTable(tableView: tableView)
+        data = ACManagedTable(tableView: tableView, controller: self)
         
         let header = data.addSection(true)
             .setFooterText("PrivacyTerminateHint")
         
-        header.addDangerCell("PrivacyTerminate") { () -> Bool in
-            self.confirmDangerSheetUser("PrivacyTerminateAlert", tapYes: { () -> () in
+        header.addDangerCell("PrivacyTerminate") { [unowned self] () -> Bool in
+            self.confirmDangerSheetUser("PrivacyTerminateAlert", tapYes: { [unowned self] () -> () in
                 
                 // Terminating all sessions and reload list
                 self.executeSafe(Actor.terminateAllSessionsCommand(), successBlock: { (val) -> Void in
@@ -43,7 +43,7 @@ class SettingsPrivacyViewController: AATableViewController {
         }
         
         data.addSection(true)
-            .addCustomCells(44, countClosure: { () -> Int in
+            .addCustomCells(44, countClosure: { [unowned self] () -> Int in
                     return self.authSessions.count
                 }, closure: { (tableView, index, indexPath) -> UITableViewCell in
                     let cell = tableView.dequeueReusableCellWithIdentifier(ACManagedTable.ReuseCommonCell, forIndexPath: indexPath) as! CommonCell
@@ -60,9 +60,9 @@ class SettingsPrivacyViewController: AATableViewController {
             .setAction { (index) -> Bool in
                 let session = self.authSessions[index]
                 if session.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
-                    self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { () -> () in
+                    self.confirmDangerSheetUser("PrivacyTerminateAlertSingle", tapYes: { [unowned self] () -> () in
                         // Terminating session and reload list
-                        self.executeSafe(Actor.terminateSessionCommandWithId(session.getId()), successBlock: { (val) -> Void in
+                        self.executeSafe(Actor.terminateSessionCommandWithId(session.getId()), successBlock: { [unowned self] (val) -> Void in
                             self.loadSessions()
                         })
                     }, tapNo: nil)
@@ -75,7 +75,7 @@ class SettingsPrivacyViewController: AATableViewController {
     }
     
     private func loadSessions() {
-        execute(Actor.loadSessionsCommand(), successBlock: { (val) -> Void in
+        execute(Actor.loadSessionsCommand(), successBlock: { [unowned self] (val) -> Void in
             let list = val as! JavaUtilList
             self.authSessions = []
             for i in 0..<list.size() {

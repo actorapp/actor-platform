@@ -5,6 +5,119 @@
 import Foundation
 
 
+// Cell automatic registration and dequeuing
+
+private var registeredCells = "cells!"
+
+extension ACManagedTable {
+    
+    private func cellTypeForClass<T where T: UITableViewCell>(cellClass: T.Type) -> String {
+        
+        let cellReuseId = "\(T.self)"
+        var registered: ([String])! = getAssociatedObject(tableView, associativeKey: &registeredCells)
+        var found = false
+        if registered != nil {
+            if registered.contains(cellReuseId) {
+                found = true
+            } else {
+                registered.append(cellReuseId)
+                setAssociatedObject(tableView, value: registered, associativeKey: &registeredCells)
+            }
+        } else {
+            setAssociatedObject(tableView, value: [cellReuseId], associativeKey: &registeredCells)
+        }
+        
+        if !found {
+            tableView.registerClass(T.self, forCellReuseIdentifier: cellReuseId)
+        }
+        
+        return cellReuseId
+    }
+    
+    func dequeueCell<T where T: UITableViewCell>(indexPath: NSIndexPath? = nil) -> T {
+        let reuseId = cellTypeForClass(T.self)
+        if indexPath != nil {
+            return self.tableView.dequeueReusableCellWithIdentifier(reuseId, forIndexPath: indexPath!) as! T
+        } else {
+            return self.tableView.dequeueReusableCellWithIdentifier(reuseId) as! T
+        }
+    }
+}
+
+// Cells
+
+extension ACManagedTable {
+    
+    func dequeueTextCell(indexPath: NSIndexPath? = nil) -> TextCell {
+        return dequeueCell(indexPath)
+    }
+    
+    func dequeueTitledCell(indexPath: NSIndexPath? = nil) -> TitledCell {
+        return dequeueCell(indexPath)
+    }
+    
+    func dequeueCommonCell(indexPath: NSIndexPath? = nil) -> CommonCell {
+        return dequeueCell(indexPath)
+    }
+}
+
+// Closure based implementations
+
+extension ACManagedTable {
+    func section(closure: (s: UASection) -> ()){
+        closure(s: addSection(true))
+    }
+}
+
+extension UASection {
+    
+    func actionNext(title: String, closure: () -> UIViewController) {
+        addActionCell(title) { [unowned self] () -> Bool in
+            self.managedTable.controller.navigateNext(closure())
+            return true
+        }
+    }
+    
+    func actionPresent(title: String, closure: () -> UIViewController) {
+        addActionCell(title) { [unowned self] () -> Bool in
+            self.managedTable.controller.presentViewController(closure(), animated: true, completion: nil)
+            return true
+        }
+    }
+    
+    func next(title: String, closure: () -> UIViewController) {
+        addNavigationCell(title) { [unowned self] () -> Bool in
+            self.managedTable.controller.navigateNext(closure())
+            return true
+        }
+    }
+    
+    func navigate(title: String, closure: () -> ()) {
+        addNavigationCell(title) { () -> Bool in
+            closure()
+            return false
+        }
+    }
+    
+    func url(title: String, url: String) {
+        addNavigationCell(title) { () -> Bool in
+            let nsurl = NSURL(string: url)
+            if nsurl != nil {
+                UIApplication.sharedApplication().openURL(nsurl!)
+            }
+            return false
+        }
+    }
+    
+    func hint(title: String) {
+        addCommonCell()
+            .setContent(title)
+            .setStyle(.Hint)
+    }
+}
+
+// Implemented regions
+
 class UASingleCellRegion : UARegion {
     
     private var copyData: String?
@@ -144,7 +257,7 @@ class UATextCellRegion: UASingleCellRegion {
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
-        let res = tableView.dequeueReusableCellWithIdentifier(ACManagedTable.ReuseTextCell, forIndexPath: indexPath) as! TextCell
+        let res = section.managedTable.dequeueTextCell(indexPath)
         res.setTitle(title, content: text)
         res.setAction(isAction)
         if enableNavigation {
@@ -172,7 +285,7 @@ class UATitledCellRegion: UASingleCellRegion {
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
-        let res = tableView.dequeueReusableCellWithIdentifier(ACManagedTable.ReuseTitledCell, forIndexPath: indexPath) as! TitledCell
+        let res = section.managedTable.dequeueTitledCell(indexPath)
         res.setTitle(title, content: text)
         return res
     }
@@ -278,7 +391,7 @@ class UACommonCellRegion : UARegion {
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
-        let res = tableView.dequeueReusableCellWithIdentifier(ACManagedTable.ReuseCommonCell, forIndexPath: indexPath) as! CommonCell
+        let res = section.managedTable.dequeueCommonCell(indexPath)
         
         res.selectionStyle = canSelect(index) ? UITableViewCellSelectionStyle.Blue : UITableViewCellSelectionStyle.None
         res.separatorInset = UIEdgeInsets(top: 0, left: CGFloat(leftInset), bottom: 0, right: 0)

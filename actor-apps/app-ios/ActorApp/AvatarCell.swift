@@ -32,6 +32,8 @@ class AvatarCell: UATableViewCell {
         contentView.addSubview(subtitleLabel)
         
         contentView.addSubview(progress)
+        
+        selectionStyle = .None
     }
     
     required init(coder aDecoder: NSCoder) {

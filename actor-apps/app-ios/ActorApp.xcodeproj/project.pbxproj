@@ -17,6 +17,7 @@
 		065AFDE21BB8872F0073E510 /* ACManagedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE11BB8872F0073E510 /* ACManagedSection.swift */; settings = {ASSET_TAGS = (); }; };
 		065AFDE41BB887BE0073E510 /* ACManagedRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */; settings = {ASSET_TAGS = (); }; };
 		065AFDE61BB887E60073E510 /* ACManagedTableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */; settings = {ASSET_TAGS = (); }; };
+		065AFDE81BB898470073E510 /* ACContentTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065AFDE71BB898470073E510 /* ACContentTableController.swift */; settings = {ASSET_TAGS = (); }; };
 		068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068505C71B9AB2E300819D16 /* CorePreviewController.swift */; };
 		068505CC1B9AB5CB00819D16 /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 068505CA1B9AB5CB00819D16 /* highlight-default.min.css */; };
 		068505CD1B9AB5CB00819D16 /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 068505CB1B9AB5CB00819D16 /* highlight.min.js */; };
@@ -183,6 +184,7 @@
 		065AFDE11BB8872F0073E510 /* ACManagedSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedSection.swift; sourceTree = "<group>"; };
 		065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedRegion.swift; sourceTree = "<group>"; };
 		065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableExtensions.swift; sourceTree = "<group>"; };
+		065AFDE71BB898470073E510 /* ACContentTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACContentTableController.swift; sourceTree = "<group>"; };
 		068505C71B9AB2E300819D16 /* CorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorePreviewController.swift; sourceTree = "<group>"; };
 		068505CA1B9AB5CB00819D16 /* highlight-default.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "highlight-default.min.css"; path = "Resources/Highlighter/highlight-default.min.css"; sourceTree = "<group>"; };
 		068505CB1B9AB5CB00819D16 /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = highlight.min.js; path = Resources/Highlighter/highlight.min.js; sourceTree = "<group>"; };
@@ -398,6 +400,7 @@
 				065AFDE31BB887BE0073E510 /* ACManagedRegion.swift */,
 				065AFDDE1BB87DD40073E510 /* ACManagedTableController.swift */,
 				065AFDE51BB887E60073E510 /* ACManagedTableExtensions.swift */,
+				065AFDE71BB898470073E510 /* ACContentTableController.swift */,
 			);
 			name = Managed;
 			sourceTree = "<group>";
@@ -1179,6 +1182,7 @@
 				06E7FAC51BAA3BA000177709 /* Extensions.swift in Sources */,
 				3BCA9C46B430D01167A6DCC17EA83FCC /* SettingsNotificationsViewController.swift in Sources */,
 				06FC5EA61BB5C5840071F153 /* WallpapperSettingsCell.swift in Sources */,
+				065AFDE81BB898470073E510 /* ACContentTableController.swift in Sources */,
 				F5519F4816CDF1EE728AAADA577E36BE /* SettingsPrivacyViewController.swift in Sources */,
 				72EA45B0F9C5492F1BAEAD337EE0465B /* SettingsViewController.swift in Sources */,
 				19393DA67238CB7DFE23D9D82CA71329 /* Strings.swift in Sources */,
