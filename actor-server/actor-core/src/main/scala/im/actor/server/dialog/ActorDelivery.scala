@@ -13,7 +13,7 @@ import slick.driver.PostgresDriver.api.Database
 import scala.concurrent.{ ExecutionContext, Future }
 
 //default extension
-class ActorDelivery()(implicit val system: ActorSystem) extends DeliveryExtension with UpdateCounters with PushText {
+private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) extends DeliveryExtension with UpdateCounters with PushText {
 
   implicit val ec: ExecutionContext = system.dispatcher
   implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
