@@ -7498,6 +7498,128 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="5D8Crj7jK_S" role="2m5lHt">
+      <property role="TrG5h" value="Webactions" />
+      <property role="3XOG$Z" value="webactions" />
+      <node concept="1Dx9M1" id="5D8Crj7jLFz" role="1Dx9rD">
+        <property role="1Dx9K7" value="Web actions allow clients to visit some predefined web pages," />
+      </node>
+      <node concept="1Dx9M1" id="5D8Crj7jWP7" role="1Dx9rD">
+        <property role="1Dx9K7" value="perform actions, and pass result on action completion" />
+      </node>
+      <node concept="2m6fVq" id="5D8Crj7jLFF" role="2m5mJr">
+        <property role="TrG5h" value="InitWebaction" />
+        <node concept="NXeRC" id="5D8Crj7jPzN" role="1GBnQ6">
+          <property role="NXePf" value="Initialize start of web action" />
+        </node>
+        <node concept="2m7Kf5" id="5D8Crj7jMLG" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="actionName" />
+          <node concept="2m5ndX" id="5D8Crj7jNkK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5D8Crj7jNkU" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="params" />
+          <node concept="2m5mGg" id="5D8Crj7jNSg" role="2m7DVh">
+            <ref role="2m5mJy" node="2WAO9Y$lCqr" resolve="MapValue" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5D8Crj7jLFG" role="NuuwV">
+          <property role="Nu42W" value="74" />
+        </node>
+        <node concept="2m1R6W" id="5D8Crj7jNkN" role="2m6efq">
+          <node concept="2m7Kf5" id="5D8Crj7jNSt" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="uri" />
+            <node concept="2m5ndX" id="5D8Crj7jNSx" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="5D8Crj7jNS$" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="regexp" />
+            <node concept="2m5ndX" id="5D8Crj7jPye" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="5D8Crj7jRKl" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="actionHash" />
+            <node concept="2m5ndX" id="5D8Crj7jRKt" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="5D8Crj7jNkO" role="NuuwV">
+            <property role="Nu42W" value="75" />
+          </node>
+          <node concept="NX1gA" id="5D8Crj7jVH0" role="1y2DgH">
+            <property role="NX6R2" value="Web action uri" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="5D8Crj7jNSt" resolve="uri" />
+          </node>
+          <node concept="NX1gA" id="5D8Crj7jVHb" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Regular expression. Required to match completion of web action" />
+            <ref role="NX6Kv" node="5D8Crj7jNS$" resolve="regexp" />
+          </node>
+          <node concept="NX1gA" id="5D8Crj7jVHj" role="1y2DgH">
+            <property role="1GSvIU" value="danger" />
+            <property role="NX6R2" value="Identifier of current web action. Required to complete it" />
+            <ref role="NX6Kv" node="5D8Crj7jRKl" resolve="actionHash" />
+          </node>
+        </node>
+        <node concept="NX1gA" id="5D8Crj7jNkS" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Name of web action" />
+          <ref role="NX6Kv" node="5D8Crj7jMLG" resolve="actionName" />
+        </node>
+        <node concept="NX1gA" id="5D8Crj7jQDG" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Additional params required to make action's uri" />
+          <ref role="NX6Kv" node="5D8Crj7jNkU" resolve="params" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="5D8Crj7jPyI" role="2m5mJr">
+        <property role="TrG5h" value="CompleteWebaction" />
+        <node concept="2m7Kf5" id="5D8Crj7jSRD" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="actionHash" />
+          <node concept="2m5ndX" id="5D8Crj7jTqZ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="5D8Crj7jWNu" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="completeUri" />
+          <node concept="2m5ndX" id="5D8Crj7jWN$" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="5D8Crj7jQDM" role="1GBnQ6">
+          <property role="NXePf" value="Complete started web action" />
+        </node>
+        <node concept="NX1gA" id="5D8Crj7jVGE" role="1GBnQ6">
+          <property role="1GSvIU" value="danger" />
+          <property role="NX6R2" value="Identifier of given web action" />
+          <ref role="NX6Kv" node="5D8Crj7jSRD" resolve="actionHash" />
+        </node>
+        <node concept="NX1gA" id="5D8Crj7jWNS" role="1GBnQ6">
+          <property role="NX6R2" value="Final uri of web action" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5D8Crj7jWNu" resolve="completeUri" />
+        </node>
+        <node concept="Nu42z" id="5D8Crj7jPyJ" role="NuuwV">
+          <property role="Nu42W" value="7B" />
+        </node>
+        <node concept="2m1R6W" id="5D8Crj7jWON" role="2m6efq">
+          <node concept="2m7Kf5" id="5D8Crj7jWOS" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="result" />
+            <node concept="2m5mGg" id="5D8Crj7jWOW" role="2m7DVh">
+              <ref role="2m5mJy" node="2WAO9Y$lCqr" resolve="MapValue" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="5D8Crj7jWOO" role="NuuwV">
+            <property role="Nu42W" value="7C" />
+          </node>
+          <node concept="NX1gA" id="5D8Crj7jZ2a" role="1y2DgH">
+            <property role="NX6R2" value="Reslut of web action completion" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="5D8Crj7jWOS" resolve="result" />
+          </node>
+        </node>
+      </node>
+    </node>
     <node concept="2m5mJO" id="2WAO9Y$lqDN" role="2m5lHt">
       <property role="TrG5h" value="Collections" />
       <property role="3XOG$Z" value="collections" />
