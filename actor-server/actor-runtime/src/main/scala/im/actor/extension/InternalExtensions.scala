@@ -10,8 +10,6 @@ trait InternalExtension
 
 object InternalExtensions {
 
-  val DialogExtensions = "enabled-modules.messaging.extensions"
-
   private val config = ActorConfig.load()
 
   def getId(path: String, name: String) = {

@@ -64,15 +64,16 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
 
   protected val db: Database = DbExtension(system).db
   protected val userExt = UserExtension(system)
+  protected val dialogExt = DialogExtension(system)
   protected implicit val socialRegion = SocialExtension(system).region
   protected implicit val timeout = Timeout(5.seconds)
 
-  protected val userDialogExtensions: scala.collection.mutable.Map[Int, DeliveryExtension] = scala.collection.mutable.Map.empty[Int, DeliveryExtension]
+  protected val userDeliveryExtensions: scala.collection.mutable.Map[Int, DeliveryExtension] = scala.collection.mutable.Map.empty[Int, DeliveryExtension]
 
   protected def deliveryExt(userId: Int, state: PrivateDialogState): DeliveryExtension = {
     val userExtensions = state(userId).extensions
-    val ext = userDialogExtensions.getOrElse(userId, getDeliveryExtension(userExtensions))
-    userDialogExtensions += (userId → ext)
+    val ext = userDeliveryExtensions.getOrElse(userId, dialogExt.getDeliveryExtension(userExtensions))
+    userDeliveryExtensions += (userId → ext)
     ext
   }
 
@@ -125,14 +126,14 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }
 
-  private[this] var tmpDialogState: Option[PrivateDialogState] = None
+  private[this] var recoveryState: Option[PrivateDialogState] = None
   override def receiveRecover = {
-    case created: Created      ⇒ tmpDialogState = Some(created.state)
-    case e: PrivateDialogEvent ⇒ tmpDialogState = tmpDialogState map (updatedState(e, _))
+    case created: Created      ⇒ recoveryState = Some(created.state)
+    case e: PrivateDialogEvent ⇒ recoveryState = recoveryState map (updatedState(e, _))
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
-      tmpDialogState match {
+      recoveryState match {
         case Some(dialogState) ⇒ context become working(dialogState)
         case None              ⇒ context become initializing
       }
@@ -141,21 +142,5 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   }
 
   override def persistenceId: String = self.path.parent.name + "_" + self.path.name
-
-  private[this] def getDeliveryExtension(extensions: Seq[ApiExtension])(implicit system: ActorSystem, timeout: Timeout): DeliveryExtension = {
-    extensions match {
-      case Seq() ⇒
-        log.debug("No delivery extensions, using default one")
-        new ActorDelivery()
-      case ext +: tail ⇒
-        log.debug("Got extensions: {}", extensions)
-        val idToName = InternalExtensions.extensions(InternalExtensions.DialogExtensions)
-        idToName.get(ext.id) flatMap { className ⇒
-          val extension = InternalExtensions.extensionOf[DeliveryExtension](className, system, ext.data).toOption
-          log.debug("Created delivery extension: {}", extension)
-          extension
-        } getOrElse new ActorDelivery()
-    }
-  }
 
 }

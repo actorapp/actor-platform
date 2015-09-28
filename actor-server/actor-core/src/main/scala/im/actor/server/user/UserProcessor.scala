@@ -1,17 +1,13 @@
 package im.actor.server.user
 
-import im.actor.api.rpc.misc.ApiExtension
-
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
-import im.actor.api.rpc.users.ApiSex
 import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
-import im.actor.server.file.Avatar
-import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
+import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import org.joda.time.DateTime
@@ -30,7 +26,7 @@ trait UserQuery {
   val userId: Int
 }
 
-private[user] object UserCreator {
+private[user] object UserBuilder {
   def apply(ts: DateTime, e: UserEvents.Created): User =
     User(
       id = e.userId,
@@ -100,7 +96,7 @@ object UserProcessor {
       12012 → classOf[UserEvents.AboutChanged],
       12013 → classOf[UserEvents.AvatarUpdated],
 
-      15000 → classOf[User]
+      13000 → classOf[User]
     )
 
   def props: Props =
@@ -135,7 +131,8 @@ private[user] final class UserProcessor
   override def updatedState(evt: TSEvent, state: User): User = {
     evt match {
       case TSEvent(_, UserEvents.AuthAdded(authId)) ⇒
-        state.copy(authIds = (state.authIds :+ authId).distinct)
+        val updAuthIds = if (state.authIds contains authId) state.authIds else state.authIds :+ authId
+        state.copy(authIds = updAuthIds)
       case TSEvent(_, UserEvents.AuthRemoved(authId)) ⇒
         state.copy(authIds = state.authIds filterNot (_ == authId))
       case TSEvent(_, UserEvents.CountryCodeChanged(countryCode)) ⇒
@@ -191,7 +188,7 @@ private[user] final class UserProcessor
 
   override def receiveRecover: Receive = {
     case TSEvent(ts, evt: UserEvents.Created) ⇒
-      userStateMaybe = Some(UserCreator(ts, evt))
+      userStateMaybe = Some(UserBuilder(ts, evt))
     case evt: TSEvent ⇒
       userStateMaybe = userStateMaybe map (updatedState(evt, _))
     case RecoveryFailure(e) ⇒
