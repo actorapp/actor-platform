@@ -6,7 +6,7 @@ import Foundation
 
 class UARegion {
     
-    private var section: UASection
+    unowned let section: UASection
     
     init(section: UASection) {
         self.section = section

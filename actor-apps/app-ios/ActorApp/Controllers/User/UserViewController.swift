@@ -12,7 +12,7 @@ class UserViewController: AATableViewController {
     let uid: Int
     var user: ACUserVM?
     var isBot: Bool!
-    var phones: JavaUtilArrayList?
+    var phones: ACArrayListUserPhone?
     var binder = Binder()
     
     var tableData: ACManagedTable!
@@ -39,7 +39,7 @@ class UserViewController: AATableViewController {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         
-        tableData = ACManagedTable(tableView: tableView)
+        tableData = ACManagedTable(tableView: tableView, controller: self)
         tableData.registerClass(AvatarCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         
@@ -108,12 +108,11 @@ class UserViewController: AATableViewController {
                 return 0
                 }) { (tableView, index, indexPath) -> UITableViewCell in
                     let cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
-                    if let phone = self.phones!.getWithInt(jint(index)) as? ACUserPhone {
-                        cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
-                    }
+                    let phone = self.phones!.getWithInt(jint(index))
+                    cell.setTitle(phone.title, content: "+\(phone.phone)")
                     return cell
             }.setAction { (index) -> Bool in
-                let phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
+                let phoneNumber = self.phones!.getWithInt(jint(index)).phone
                 let hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "telprompt://")!)
                 if (!hasPhone) {
                     UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
@@ -217,7 +216,7 @@ class UserViewController: AATableViewController {
                 if presenceText != nil {
                     if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AvatarCell {
                     
-                        if presence!.getState().ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
                             cell.subtitleLabel.applyStyle("user.online")
                         } else {
                             cell.subtitleLabel.applyStyle("user.offline")
@@ -228,7 +227,7 @@ class UserViewController: AATableViewController {
                 }
             })
         
-            binder.bind(user!.getPhonesModel(), closure: { (phones: JavaUtilArrayList?) -> () in
+            binder.bind(user!.getPhonesModel(), closure: { (phones: ACArrayListUserPhone?) -> () in
                 if phones != nil {
                     self.phones = phones
                     self.tableView.reloadData()

@@ -17,7 +17,7 @@ class AANavigationController: UINavigationController {
         self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
         self.setSecondaryColor(MainAppTheme.navigation.progressSecondary)
         
-        binder.bind(Actor.getAppState().getIsSyncing(), valueModel2: Actor.getAppState().getIsConnecting()) { (value1: JavaLangBoolean?, value2: JavaLangBoolean?) -> () in
+        binder.bind(Actor.getAppState().isSyncing, valueModel2: Actor.getAppState().isConnecting) { (value1: JavaLangBoolean?, value2: JavaLangBoolean?) -> () in
             if value1!.booleanValue() || value2!.booleanValue() {
                 self.showProgress()
                 self.setIndeterminate(true)

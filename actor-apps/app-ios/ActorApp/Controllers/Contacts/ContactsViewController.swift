@@ -91,7 +91,7 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
             actionTarget: self, actionSelector: Selector("showSmsInvitation"),
             action2title: nil,
             action2Selector: nil)
-        binder.bind(Actor.getAppState().getIsContactsEmpty(), closure: { (value: Any?) -> () in
+        binder.bind(Actor.getAppState().isContactsEmpty, closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
                     self.showPlaceholder()

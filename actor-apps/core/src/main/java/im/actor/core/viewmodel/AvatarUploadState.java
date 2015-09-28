@@ -4,11 +4,15 @@
 
 package im.actor.core.viewmodel;
 
+import com.google.j2objc.annotations.Property;
+
 /**
  * Avatar upload state
  */
 public class AvatarUploadState {
+    @Property("nonatomic, readonly")
     private String descriptor;
+    @Property("nonatomic, readonly")
     private boolean isUploading;
 
     public AvatarUploadState(String descriptor, boolean isUploading) {

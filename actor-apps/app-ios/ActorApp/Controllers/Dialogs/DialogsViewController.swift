@@ -22,7 +22,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
             image: UIImage(named: "TabIconChats")?.styled("tab.icon"),
             selectedImage: UIImage(named: "TabIconChatsHighlighted")?.styled("tab.icon.selected"))
         
-        binder.bind(Actor.getAppState().getGlobalCounter(), closure: { (value: JavaLangInteger?) -> () in
+        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
             if value != nil {
                 if value!.integerValue > 0 {
                     self.tabBarItem.badgeValue = "\(value!.integerValue)"
@@ -101,7 +101,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
             title: NSLocalizedString("Placeholder_Dialogs_Title", comment: "Placeholder Title"),
             subtitle: NSLocalizedString("Placeholder_Dialogs_Message", comment: "Placeholder Message"))
         
-        binder.bind(Actor.getAppState().getIsDialogsEmpty(), closure: { (value: Any?) -> () in
+        binder.bind(Actor.getAppState().isDialogsEmpty, closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
                     self.navigationItem.leftBarButtonItem = nil
