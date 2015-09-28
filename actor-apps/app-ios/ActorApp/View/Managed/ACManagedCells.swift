@@ -228,6 +228,7 @@ extension ACManagedSection {
 class ACCommonRow: ACManagedRow {
     
     var style: CommonCellStyle = .Normal
+    var hint: String?
     var content: String?
     var switchOn: Bool = false
     var switchAction: ((v: Bool) -> ())?
@@ -249,6 +250,7 @@ class ACCommonRow: ACManagedRow {
     func bindCell(res: CommonCell) {
         res.style = style
         res.setContent(content)
+        res.setHint(hint)
         res.switchBlock = switchAction
         res.setSwitcherOn(switchOn, animated: true)
     }
