@@ -14,6 +14,11 @@ const english = {
     // Toolbar
     'search': 'Search',
 
+    // Compose
+    'composeSendFile': 'Send file',
+    'composeSendPhote': 'Send photo',
+    'composeSend': 'Send',
+
     // Profiles
     'createdBy': 'сreated by',
     'addPeople': 'Add people',
@@ -34,8 +39,8 @@ const english = {
     'integrationTokenCopied': 'Integration link copied.',
     'members':
       '{numMembers, plural,' +
-        'zero {no Members}' +
-        'one {# Member}' +
+        '=0 {no Members}' +
+        '=1 {# Member}' +
         'other {# Members}' +
       '}',
 
