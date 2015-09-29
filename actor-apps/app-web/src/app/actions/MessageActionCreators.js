@@ -1,32 +1,26 @@
-import _ from 'lodash';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
 import ActorClient from 'utils/ActorClient';
-
 import mixpanel from 'utils/Mixpanel';
 import Markdown from 'utils/Markdown';
-import emojiCharacters from 'emoji-named-characters';
+import { emoji } from 'utils/EmojiUtils';
 
-var variants = _.map(Object.keys(emojiCharacters), function(name) {
-  return name.replace(/\+/g, '\\+');
-});
-
-var regexp = new RegExp('\\:(' + variants.join('|') + ')\\:', 'gi');
-
-var replaceNames = function(text) {
-  return text.replace(regexp, function(match, name) {
-    return emojiCharacters[name].character;
-  });
+const replaceColons = (text) => {
+  emoji.change_replace_mode('unified');
+  const replacedText = emoji.replace_colons(text);
+  return replacedText;
 };
 
 export default {
-
   setMessageShown: function(peer, message) {
     ActorClient.onMessageShown(peer, message);
   },
 
   sendTextMessage: function(peer, text) {
     mixpanel.track('Send Text');
-    ActorClient.sendTextMessage(peer, replaceNames(text));
+    ActorClient.sendTextMessage(peer, replaceColons(text));
   },
 
   sendFileMessage: function(peer, file) {

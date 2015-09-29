@@ -49,6 +49,11 @@
 
       white-space: nowrap;
       text-overflow: ellipsis;
+      .emoji-outer {
+        width: 20px;
+        height: 20px;
+        vertical-align: top;
+      }
     }
     &__presence {
       font-size: 14px;
@@ -64,7 +69,7 @@
 
   &__controls {
     box-sizing: border-box;
-    width: $activity-width;
+    //width: $activity-width;
     margin-top: 14px;
     &__search {
       position: relative;

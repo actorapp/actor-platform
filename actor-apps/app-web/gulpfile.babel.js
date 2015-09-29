@@ -69,8 +69,13 @@ gulp.task('webpack-dev-server', () => {
 });
 
 gulp.task('emoji', () => {
-  gulp.src(['./node_modules/emojify.js/dist/images/basic/*'])
-    .pipe(gulp.dest('./dist/assets/img/emoji'));
+  gulp.src([
+    './node_modules/emoji-data/**/*.png',
+    './node_modules/emoji-data/*.png',
+    '!./node_modules/emoji-data/build/',
+    '!./node_modules/emoji-data/build/**'
+  ], {base: './node_modules/emoji-data'})
+    .pipe(gulp.dest('./dist/assets/img/emoji/'));
 });
 
 gulp.task('push', () => {
@@ -79,7 +84,7 @@ gulp.task('push', () => {
 });
 
 gulp.task('assets', () => {
-  gulp.src(['src/assets/**/*', '!src/assets/img/svg'])
+  gulp.src(['src/assets/**/*', '!src/assets/img/svg/', '!src/assets/img/svg/**'])
     .pipe(gulp.dest('./dist/assets/'));
 });
 

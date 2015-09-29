@@ -10,6 +10,7 @@ import classnames from 'classnames';
 
 import ActorClient from 'utils/ActorClient';
 import confirm from 'utils/confirm'
+import { escapeWithEmoji } from 'utils/EmojiUtils'
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
@@ -78,9 +79,7 @@ class GroupProfile extends React.Component {
     }, 0);
   }
 
-  onAddMemberClick = group => {
-    InviteUserActions.show(group);
-  };
+  onAddMemberClick = group => InviteUserActions.show(group);
 
   onLeaveGroupClick = gid => {
     confirm('Do you really want to leave this conversation?').then(
@@ -94,13 +93,8 @@ class GroupProfile extends React.Component {
     DialogActionCreators.changeNotificationsEnabled(thisPeer, event.target.checked);
   };
 
-  onChange = () => {
-    this.setState(getStateFromStores(this.props.group.id));
-  };
-
-  selectToken = (event) => {
-    event.target.select();
-  };
+  onChange = () => this.setState(getStateFromStores(this.props.group.id));
+  selectToken = (event) => event.target.select();
 
   toggleMoreDropdown = () => {
     const { isMoreDropdownOpen } = this.state;
@@ -138,9 +132,7 @@ class GroupProfile extends React.Component {
     );
   };
 
-  onEditGroupClick = (gid) => {
-    EditGroupActionCreators.show(gid)
-  };
+  onEditGroupClick = (gid) => EditGroupActionCreators.show(gid);
 
   render() {
     const { group } = this.props;
@@ -193,14 +185,18 @@ class GroupProfile extends React.Component {
                     size="large"
                     title={group.name}/>
 
-        <h3 className="group_profile__meta__title">{group.name}</h3>
-
+        <h3 className="group_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/>
         <div className="group_profile__meta__created">
-          <FormattedMessage admin={admin.name} message={this.getIntlMessage('createdBy')}/>
+          <FormattedMessage message={this.getIntlMessage('createdBy')}/>
+          &nbsp;
+          <span dangerouslySetInnerHTML={{__html: escapeWithEmoji(admin.name)}}/>
         </div>
       </header>
     ,
-      group.about ? <div className="group_profile__meta__description">{group.about}</div> : null
+      group.about ? (
+        <div className="group_profile__meta__description"
+             dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.about).replace(/\n/g, '<br/>')}}/>
+      ) : null
     ];
 
     const token = (group.adminId === myId) ? (
@@ -241,15 +237,15 @@ class GroupProfile extends React.Component {
                     </button>
                     <ul className="dropdown__menu dropdown__menu--right">
                       {adminControls}
-                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                      <li className="dropdown__menu__item"
                           onClick={() => this.onLeaveGroupClick(group.id)}>
                         <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
                       </li>
-                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                      <li className="dropdown__menu__item"
                           onClick={() => this.onClearGroupClick(group.id)}>
                         <FormattedMessage message={this.getIntlMessage('clearGroup')}/>
                       </li>
-                      <li className="dropdown__menu__item dropdown__menu__item--light"
+                      <li className="dropdown__menu__item"
                           onClick={() => this.onDeleteGroupClick(group.id)}>
                         <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
                       </li>
