@@ -14,6 +14,11 @@ const russian = {
     // Toolbar
     'search': 'Поиск',
 
+    // Compose
+    'composeSendFile': 'Документ',
+    'composeSendPhote': 'Изображение',
+    'composeSend': 'Отправить',
+
     // Profiles
     'createdBy': 'создал',
     'addPeople': 'Пригласить',
@@ -34,10 +39,12 @@ const russian = {
     'integrationTokenCopied': 'Ссылка скопирована.',
     'members':
       '{numMembers, plural,' +
-        'zero {Нет участников}' +
-        'one {# участник}' +
-        'few {# участника}' +
-        'other {# участников}' +
+        '=0 {Нет участников}' +
+        '=1 {# участник}' +
+        '=2 {# участника}' +
+        '=3 {# участника}' +
+        '=4 {# участника}' +
+      'other {# участников}' +
       '}',
 
     // Modals
