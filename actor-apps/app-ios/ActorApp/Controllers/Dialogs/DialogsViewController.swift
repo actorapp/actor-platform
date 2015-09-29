@@ -122,6 +122,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     
     override func viewDidDisappear(animated: Bool) {
+        
         Actor.onDialogsClosed();
     }
     

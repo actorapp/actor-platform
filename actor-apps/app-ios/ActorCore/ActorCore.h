@@ -24,6 +24,7 @@
 
 #import "im/actor/core/CocoaMessenger.h"
 #import "im/actor/core/Messenger.h"
+#import "im/actor/core/ActorAnalytics.h"
 #import "im/actor/core/AnalyticsProvider.h"
 #import "im/actor/core/ApiConfiguration.h"
 #import "im/actor/core/PlatformType.h"
@@ -68,6 +69,9 @@
 #import "im/actor/core/entity/ContentDescription.h"
 #import "im/actor/core/entity/PublicGroup.h"
 #import "im/actor/core/entity/MentionFilterResult.h"
+
+#import "im/actor/core/analytics/Contents.h"
+#import "im/actor/core/analytics/ContentPage.h"
 
 #import "im/actor/core/viewmodel/UserVM.h"
 #import "im/actor/core/viewmodel/UserTypingVM.h"
