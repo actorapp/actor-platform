@@ -108,6 +108,22 @@ extension String {
     }
     
     var asNS: NSString { return (self as NSString) }
+    
+    func encodeText(key: Int32) -> String {
+        var res = ""
+        for i in 0..<length {
+            res += String(
+                Character(
+                UnicodeScalar(
+                    UInt32(
+                        Int32(
+                            (self[i] as String).unicodeScalars.first!.value) + key
+                    ))
+                )
+            )
+        }
+        return res
+    }
 }
 
 extension NSAttributedString {
