@@ -71,7 +71,7 @@ class SettingsPrivacyViewController: ACContentTableController {
     private func loadSessions() {
         execute(Actor.loadSessionsCommand(), successBlock: { [unowned self] (val) -> Void in
             self.sessionsCell!.data = (val as! JavaUtilList).toArray().toSwiftArray()
-            self.sessionsCell!.reload()
+            self.managedTable.tableView.reloadData()
         }, failureBlock: nil)
     }
 }
