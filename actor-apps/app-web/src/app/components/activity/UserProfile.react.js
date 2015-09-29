@@ -28,7 +28,8 @@ const getStateFromStores = (userId) => {
   };
 };
 
-@ReactMixin.decorate(IntlMixin) class UserProfile extends React.Component {
+@ReactMixin.decorate(IntlMixin)
+class UserProfile extends React.Component {
   static propTypes = {
     user: React.PropTypes.object.isRequired
   };
@@ -96,8 +97,7 @@ const getStateFromStores = (userId) => {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.clearChat(peer);
       },
-      () => {
-      }
+      () => {}
     );
   };
 
@@ -107,8 +107,7 @@ const getStateFromStores = (userId) => {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.deleteChat(peer);
       },
-      () => {
-      }
+      () => {}
     );
   };
 
@@ -132,9 +131,8 @@ const getStateFromStores = (userId) => {
     });
 
     const about = user.about ? (
-      <div className="user_profile__meta__about">
-        {user.about}
-      </div>
+      <div className="user_profile__meta__about"
+           dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.about).replace(/\n/g, '<br/>')}}/>
     ) : null;
 
     const nickname = user.nick ? (
@@ -173,7 +171,7 @@ const getStateFromStores = (userId) => {
                           size="large"
                           title={user.name}/>
 
-              <h3 className="user_profile__meta__title">{user.name}</h3>
+              <h3 className="user_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.name)}}/>
               <div className="user_profile__meta__presence">{user.presence}</div>
             </header>
             {about}
@@ -185,12 +183,10 @@ const getStateFromStores = (userId) => {
                 </button>
                 <ul className="dropdown__menu dropdown__menu--left">
                   {actions}
-                  <li className="dropdown__menu__item dropdown__menu__item--light"
-                      onClick={() => this.clearChat(user.id)}>
+                  <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
                     <FormattedMessage message={this.getIntlMessage('clearConversation')}/>
                   </li>
-                  <li className="dropdown__menu__item dropdown__menu__item--light"
-                      onClick={() => this.deleteChat(user.id)}>
+                  <li className="dropdown__menu__item" onClick={() => this.deleteChat(user.id)}>
                     <FormattedMessage message={this.getIntlMessage('deleteConversation')}/>
                   </li>
                 </ul>

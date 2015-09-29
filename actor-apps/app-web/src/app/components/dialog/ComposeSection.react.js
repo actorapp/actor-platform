@@ -8,6 +8,8 @@ import React from 'react';
 import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
 import addons from 'react/addons';
+import { IntlMixin } from 'react-intl';
+
 const {addons: { PureRenderMixin }} = addons;
 
 import ActorClient from 'utils/ActorClient';
@@ -35,6 +37,7 @@ let getStateFromStores = () => {
   };
 };
 
+@ReactMixin.decorate(IntlMixin)
 @ReactMixin.decorate(PureRenderMixin)
 class ComposeSection extends React.Component {
   static propTypes = {
@@ -169,7 +172,7 @@ class ComposeSection extends React.Component {
   render() {
     const { text, profile, mentions, isEmojiDropdownShow } = this.state;
 
-    const emojiOpenerClassName = classnames('emoji-opener material-icons hide', {
+    const emojiOpenerClassName = classnames('emoji-opener material-icons', {
       'emoji-opener--active': isEmojiDropdownShow
     });
 
@@ -199,16 +202,14 @@ class ComposeSection extends React.Component {
 
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.onSendFileClick}>
-            <i className="material-icons">attachment</i> Send file
+            <i className="material-icons">attachment</i> {this.getIntlMessage('composeSendFile')}
           </button>
           <button className="button attachment" onClick={this.onSendPhotoClick}>
-            <i className="material-icons">photo_camera</i> Send photo
+            <i className="material-icons">photo_camera</i> {this.getIntlMessage('composeSendPhote')}
           </button>
-
           <span className="col-xs"></span>
-
-          <button className="button button--lightblue" onClick={this.sendTextMessage}>Send</button>
-
+          <button className="button button--lightblue"
+                  onClick={this.sendTextMessage}>{this.getIntlMessage('composeSend')}</button>
         </footer>
 
         <form className="compose__hidden" ref="sendFileForm">

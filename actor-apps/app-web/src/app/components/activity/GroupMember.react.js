@@ -5,6 +5,8 @@
 import React from 'react';
 
 import confirm from 'utils/confirm'
+import { escapeWithEmoji } from 'utils/EmojiUtils'
+import ActorClient from 'utils/ActorClient'
 
 import { AsyncActionStates } from 'constants/ActorAppConstants';
 
@@ -15,8 +17,6 @@ import KickUserStore from 'stores/KickUserStore'
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import * as Stateful from 'components/common/Stateful.react';
-
-import ActorClient from 'utils/ActorClient'
 
 const getStateFromStore = (uid) => {
   const kickUserState = KickUserStore.getKickUserState(uid);
@@ -83,9 +83,8 @@ export default class GroupMember extends React.Component {
                       title={peerInfo.title}/>
         </a>
 
-        <a onClick={() => this.onClick(peerInfo.peer.id)}>
-          {peerInfo.title}
-        </a>
+        <a onClick={() => this.onClick(peerInfo.peer.id)}
+           dangerouslySetInnerHTML={{__html: escapeWithEmoji(peerInfo.title)}}/>
 
         {controls}
       </li>

@@ -22,7 +22,7 @@ public class JsDialog extends JavaScriptObject {
 
             boolean showSender = false;
             if (src.getPeer().getPeerType() == PeerType.GROUP) {
-                if (src.getMessageType() != ContentType.SERVICE && src.getMessageType() != ContentType.EMPTY) {
+                if (src.getMessageType() != ContentType.SERVICE && src.getMessageType() != ContentType.NONE) {
                     showSender = src.getSenderId() != 0;
                 }
             }
