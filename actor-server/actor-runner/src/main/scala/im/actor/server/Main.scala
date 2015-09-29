@@ -25,6 +25,7 @@ import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
+import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
@@ -138,7 +139,8 @@ object Main extends App {
       new ConfigsServiceImpl,
       new PushServiceImpl,
       new ProfileServiceImpl,
-      new IntegrationsServiceImpl(webappConfig)
+      new IntegrationsServiceImpl(webappConfig),
+      new WebactionsServiceImpl
     )
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
