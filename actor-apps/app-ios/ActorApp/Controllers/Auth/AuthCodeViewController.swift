@@ -36,6 +36,8 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailCom
         
         super.init()
         
+        self.content = ACAllEvents_Auth.AUTH_CODE()
+        
         grayBackground.backgroundColor = UIColor.RGB(0xf2f2f2)
         view.addSubview(grayBackground)
         

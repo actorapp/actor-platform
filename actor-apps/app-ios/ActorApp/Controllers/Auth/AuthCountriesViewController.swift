@@ -36,6 +36,8 @@ class AuthCountriesViewController: AATableViewController {
         
         let cancelButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("cancelButtonPressed")) // TODO: Localize
         self.navigationItem.setLeftBarButtonItem(cancelButtonItem, animated: false)
+        
+        self.content = ACAllEvents_Auth.AUTH_PICK_COUNTRY()
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -67,6 +69,7 @@ class AuthCountriesViewController: AATableViewController {
     // MARK: Methods
     
     func cancelButtonPressed() {
+
         dismiss()
     }
     

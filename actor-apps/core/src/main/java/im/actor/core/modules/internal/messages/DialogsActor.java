@@ -170,7 +170,7 @@ public class DialogsActor extends ModuleActor {
 
             // Update dialog
             addOrUpdateItem(new DialogBuilder(dialog)
-                    .setMessageType(ContentType.EMPTY)
+                    .setMessageType(ContentType.NONE)
                     .setText("")
                     .setTime(0)
                     .setUnreadCount(0)
