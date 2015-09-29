@@ -5,6 +5,8 @@
 import _ from 'lodash';
 
 import React from 'react';
+import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
@@ -24,6 +26,7 @@ const getStateFromStore = () => {
   };
 };
 
+@ReactMixin.decorate(IntlMixin)
 class RecentSection extends React.Component {
   constructor(props) {
     super(props);
@@ -70,7 +73,9 @@ class RecentSection extends React.Component {
           {dialogList}
         </ul>
         <footer>
-          <button className="button button--rised button--wide" onClick={this.openCreateGroup}>Create group</button>
+          <button className="button button--rised button--wide" onClick={this.openCreateGroup}>
+            {this.getIntlMessage('createGroupButton')}
+          </button>
           {createGroupModal}
         </footer>
       </section>
