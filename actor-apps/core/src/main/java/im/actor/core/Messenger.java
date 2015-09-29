@@ -21,6 +21,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PublicGroup;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
+import im.actor.core.entity.WebActionDescriptor;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.ModuleContext;
@@ -1548,6 +1549,33 @@ public class Messenger {
     @ObjectiveCName("terminateSessionCommandWithId:")
     public Command<Boolean> terminateSession(int id) {
         return modules.getSecurityModule().terminateSession(id);
+    }
+
+    //////////////////////////////////////
+    //          Web Actions
+    //////////////////////////////////////
+
+    /**
+     * Command for starting web action
+     *
+     * @param webAction web action name
+     * @return Command for execution
+     */
+    @ObjectiveCName("startWebAction:")
+    public Command<WebActionDescriptor> startWebAction(final String webAction) {
+        return modules.getExternalModule().startWebAction(webAction);
+    }
+
+    /**
+     * Command for completing web action
+     *
+     * @param actionHash web action name
+     * @param url        completion url
+     * @return Command for execution
+     */
+    @ObjectiveCName("completeWebActionWithHash:withUrl:")
+    public Command<Boolean> completeWebAction(final String actionHash, final String url) {
+        return modules.getExternalModule().completeWebAction(actionHash, url);
     }
 
     //////////////////////////////////////
