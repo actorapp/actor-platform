@@ -24,6 +24,7 @@
 		068C6E301BB9423200182516 /* ACManagedTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068C6E291BB9423200182516 /* ACManagedTableController.swift */; settings = {ASSET_TAGS = (); }; };
 		068C6E311BB9423200182516 /* ACManagedRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068C6E2A1BB9423200182516 /* ACManagedRange.swift */; settings = {ASSET_TAGS = (); }; };
 		068C6E481BBAB61300182516 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068C6E471BBAB61300182516 /* StatusBar.swift */; settings = {ASSET_TAGS = (); }; };
+		068C6E4A1BBB15BF00182516 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068C6E491BBB15BF00182516 /* Analytics.swift */; settings = {ASSET_TAGS = (); }; };
 		0697229ADDEB47FD0793551932F43DA6 /* CircullarLayerProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C0BB4D02D30127D1FBD0D44F43BAD8 /* CircullarLayerProgress.swift */; };
 		06E7FAC51BAA3BA000177709 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E7FAC41BAA3BA000177709 /* Extensions.swift */; settings = {ASSET_TAGS = (); }; };
 		06FC5E781BACB3130071F153 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FC5E771BACB3130071F153 /* Fonts.swift */; settings = {ASSET_TAGS = (); }; };
@@ -190,7 +191,8 @@
 		068C6E281BB9423200182516 /* ACContentTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ACContentTableController.swift; path = View/Managed/ACContentTableController.swift; sourceTree = "<group>"; };
 		068C6E291BB9423200182516 /* ACManagedTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ACManagedTableController.swift; path = View/Managed/ACManagedTableController.swift; sourceTree = "<group>"; };
 		068C6E2A1BB9423200182516 /* ACManagedRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ACManagedRange.swift; path = View/Managed/ACManagedRange.swift; sourceTree = "<group>"; };
-		068C6E471BBAB61300182516 /* StatusBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
+		068C6E471BBAB61300182516 /* StatusBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StatusBar.swift; path = ActorSwift/StatusBar.swift; sourceTree = "<group>"; };
+		068C6E491BBB15BF00182516 /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Analytics.swift; path = ActorCore/Analytics.swift; sourceTree = "<group>"; };
 		06E7FAC41BAA3BA000177709 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = ActorCore/Extensions.swift; sourceTree = "<group>"; };
 		06FC5E771BACB3130071F153 /* Fonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Fonts.swift; path = ActorSwift/Fonts.swift; sourceTree = "<group>"; };
 		06FC5E791BACBCCC0071F153 /* Localization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Localization.swift; path = ActorSwift/Localization.swift; sourceTree = "<group>"; };
@@ -661,6 +663,7 @@
 				96AEEE09EE154156E7009B6AF0A2DF79 /* Conversions.swift */,
 				3015DA92AE10E0E73AC78E4268204269 /* Wrappers.swift */,
 				06FC5E871BB22DAB0071F153 /* Tools.swift */,
+				068C6E491BBB15BF00182516 /* Analytics.swift */,
 			);
 			name = ActorCore;
 			sourceTree = "<group>";
@@ -1102,6 +1105,7 @@
 				F71CAF552B1B9055B0EF5BD707C1AF4D /* AuthPhoneViewController.swift in Sources */,
 				ED2A2902044923B528B19D6490ADB38C /* AuthRegisterViewController.swift in Sources */,
 				C31D285F0307F13832A80E828D4B059A /* AuthCodeViewController.swift in Sources */,
+				068C6E4A1BBB15BF00182516 /* Analytics.swift in Sources */,
 				068C6E301BB9423200182516 /* ACManagedTableController.swift in Sources */,
 				ED7E5318F3FF72926AC679F191E91953 /* AuthViewController.swift in Sources */,
 				CBAE73D23FE25BBC0A9EEA1D8CF94449 /* AutoCompleteCell.swift in Sources */,

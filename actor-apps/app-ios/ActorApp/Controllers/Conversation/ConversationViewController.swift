@@ -14,7 +14,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     // Internal state
     // Members for autocomplete
     var filteredMembers = [ACMentionFilterResult]()
-    let content: ACContentPage
+    let content: ACPage!
     
     // Views
     private let titleView: UILabel = UILabel()
@@ -27,7 +27,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
         
         // Data
         
-        self.content = ACContents.contentForChatWithACPeer(peer)
+        self.content = ACAllEvents_Chat_viewWithACPeer_(peer)
         
         // Create controller
         
@@ -198,7 +198,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
         }
         
         Actor.onConversationOpenWithPeer(peer)
-        Analytics.trackContentVisibleWithACContentPage(content)
+        Analytics.trackPageVisible(content)
     }
     
     override func viewWillLayoutSubviews() {
@@ -227,7 +227,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
         super.viewWillDisappear(animated)
         
         Actor.onConversationClosedWithPeer(peer)
-        Analytics.trackContentHiddenWithACContentPage(content)
+        Analytics.trackPageHidden(content)
         
         if !isIPad {
             (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()

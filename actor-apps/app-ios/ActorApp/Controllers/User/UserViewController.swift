@@ -13,7 +13,8 @@ class UserViewController: ACContentTableController {
         super.init(tableViewStyle: UITableViewStyle.Plain)
 
         self.uid = uid
-        self.trackProfileView = true
+        self.autoTrack = true
+        
         self.title = localized("ProfileTitle")
     }
     

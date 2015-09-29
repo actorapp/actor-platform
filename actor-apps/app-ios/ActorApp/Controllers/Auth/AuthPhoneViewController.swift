@@ -21,6 +21,8 @@ class AuthPhoneViewController: AuthViewController, UITextFieldDelegate, AuthCoun
     
     override init() {
         super.init()
+        
+        self.content = ACAllEvents_Auth.AUTH_PHONE()
     }
     
     required init(coder aDecoder: NSCoder) {

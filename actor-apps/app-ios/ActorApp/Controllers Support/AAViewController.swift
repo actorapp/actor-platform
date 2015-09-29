@@ -19,15 +19,18 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
     
     // Content type for view tracking
     
-    var content: ACContentPage?
+    var content: ACPage?
     
     // Data for views
     
-    var trackProfileView: Bool = false {
-        didSet(v) {
-            if self.uid != nil {
-                if v {
-                    content = ACContents.contentForChatWithACPeer(ACPeer_userWithInt_(jint(self.uid!)))
+    var autoTrack: Bool = false {
+        didSet {
+            if self.autoTrack {
+                if let u = self.uid {
+                    content = ACAllEvents_Profile_viewWithInt_(jint(u))
+                }
+                if let g = self.gid {
+                    content = ACAllEvents_Group_viewWithInt_(jint(g))
                 }
             }
         }
@@ -170,7 +173,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         super.viewWillAppear(animated)
         
         if let c = content {
-            Analytics.trackContentVisibleWithACContentPage(c)
+            Analytics.trackPageVisible(c)
         }
         if let u = uid {
             Actor.onProfileOpenWithUid(jint(u))
@@ -181,7 +184,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         super.viewWillDisappear(animated)
         
         if let c = content {
-            Analytics.trackContentHiddenWithACContentPage(c)
+            Analytics.trackPageHidden(c)
         }
         if let u = uid {
             Actor.onProfileClosedWithUid(jint(u))

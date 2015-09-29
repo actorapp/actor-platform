@@ -16,7 +16,7 @@ class SettingsNotificationsViewController: AATableViewController {
         
         title = NSLocalizedString("NotificationsTitle", comment: "Notifcations and Sounds")
         
-        content = ACContents_SETTINGS_NOTIFICATIONS_
+        content = ACAllEvents_Settings.NOTIFICATIONS()
     }
     
     required init(coder aDecoder: NSCoder) {
