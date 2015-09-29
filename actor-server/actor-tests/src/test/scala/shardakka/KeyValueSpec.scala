@@ -19,6 +19,7 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
   it should "set and get values" in setAndGet
   it should "get keys lsit" in keysList
   it should "restore state" in restoreState
+  it should "upsert and delete" in upsertAndDelete
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(5, Seconds))
@@ -72,6 +73,22 @@ final class KeyValueSpec extends ActorSuite(ActorSpecification.createSystem())
 
     whenReady(keyValueNew.get("key1")) { resp ⇒
       resp shouldBe Some("value")
+    }
+  }
+
+  def upsertAndDelete() = {
+    val keyValue = ext.simpleKeyValue("upsertAndDelete")
+
+    whenReady(keyValue.upsert("key1", "value"))(identity)
+
+    whenReady(keyValue.get("key1")) { resp ⇒
+      resp shouldBe Some("value")
+    }
+
+    whenReady(keyValue.delete("key1"))(identity)
+
+    whenReady(keyValue.get("key1")) { resp ⇒
+      resp shouldBe empty
     }
   }
 }
