@@ -29,6 +29,8 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     override func loadView() {
         super.loadView()
         
+        self.content = ACAllEvents_Auth.AUTH_SIGNUP()
+        
         view.backgroundColor = UIColor.whiteColor()
         
         grayBackground = UIView()

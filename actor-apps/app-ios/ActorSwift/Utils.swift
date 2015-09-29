@@ -6,7 +6,7 @@ import UIKit
 
 func dispatchOnUi(closure: () -> Void) {
     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-        NSLog("dispatchOnUi")
+        // NSLog("dispatchOnUi")
         closure()
     })
 }

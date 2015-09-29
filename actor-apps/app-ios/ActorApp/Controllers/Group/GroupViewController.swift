@@ -19,6 +19,7 @@ class GroupViewController: ACContentTableController {
         super.init(tableViewStyle: UITableViewStyle.Plain)
         
         self.gid = gid
+        self.autoTrack = true
         
         self.title = localized("ProfileTitle")
     }

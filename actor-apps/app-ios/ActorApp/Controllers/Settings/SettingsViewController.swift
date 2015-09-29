@@ -17,7 +17,8 @@ class SettingsViewController: ACContentTableController {
         super.init(tableViewStyle: UITableViewStyle.Plain)
         
         uid = Int(Actor.myUid())
-        trackProfileView = true
+        
+        content = ACAllEvents_Main.SETTINGS()
         
         tabBarItem = UITabBarItem(title: localized("TabSettings"),
             image: MainAppTheme.tab.createUnselectedIcon("TabIconSettings"),

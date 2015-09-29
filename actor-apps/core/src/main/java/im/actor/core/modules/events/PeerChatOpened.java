@@ -21,4 +21,9 @@ public class PeerChatOpened extends Event {
     public String getType() {
         return EVENT;
     }
+
+    @Override
+    public String toString() {
+        return EVENT + " {" + peer.toIdString() + "}";
+    }
 }

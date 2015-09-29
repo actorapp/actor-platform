@@ -17,6 +17,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     init() {
         super.init(contentSection: 0)
         
+        content = ACAllEvents_Main.RECENT()
+        
         tabBarItem = UITabBarItem(
             title: localized("TabMessages"),
             image: UIImage(named: "TabIconChats")?.styled("tab.icon"),
@@ -122,6 +124,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     
     override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
         
         Actor.onDialogsClosed();
     }
@@ -205,7 +208,6 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         
         if (cell == nil){
             cell = DialogCell(reuseIdentifier: reuseKey);
-            cell?.awakeFromNib();
         }
         
         return cell!;

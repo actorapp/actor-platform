@@ -196,18 +196,26 @@ import Crashlytics
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
-        createActor()
         
+        // Mark app as visible
         Actor.onAppVisible();
+        
+        // Notify analytics about visibilibty change
+        Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(true))
+        
         // Hack for resync phone book
         Actor.onPhoneBookChanged()
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
-        createActor()
         
+        // Mark app as hidden
         Actor.onAppHidden();
         
+        // Notify analytics about visibilibty change
+        Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(false))
+        
+        // Keep application running for 40 secs
         if Actor.isLoggedIn() {
             var completitionTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
             
@@ -224,8 +232,7 @@ import Crashlytics
         }
     }
     
-    // MARK: -
-    // MARK: Notifications
+    // Push notifications
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
@@ -236,10 +243,13 @@ import Crashlytics
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        
+        NSLog("Remote notification \(userInfo)")
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        
+        NSLog("Remote notification \(userInfo)")
+        
         createActor()
         
         if !Actor.isLoggedIn() {
@@ -257,41 +267,7 @@ import Crashlytics
             return
         }
         self.completionHandler = completionHandler
-    }
-    
-//    func execute(command: ACCommand) {
-//        execute(command, successBlock: nil, failureBlock: nil)
-//    }
-//    
-//    func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
-//        let hud = showProgress()
-//        command.startWithCallback(CocoaCallback(result: { (val:Any?) -> () in
-//            dispatchOnUi {
-//                hud.hide(true)
-//                successBlock?(val: val)
-//            }
-//            }, error: { (val) -> () in
-//                dispatchOnUi {
-//                    hud.hide(true)
-//                    failureBlock?(val: val)
-//                }
-//        }))
-//    }
-//    
-//    func executeRecoverable(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
-//        
-//    }
-//    
-//    private func showProgress() -> MBProgressHUD {
-//        let window = UIApplication.sharedApplication().windows[1]
-//        let hud = MBProgressHUD(window: window)
-//        hud.mode = MBProgressHUDMode.Indeterminate
-//        hud.removeFromSuperViewOnHide = true
-//        window.addSubview(hud)
-//        window.bringSubviewToFront(hud)
-//        hud.show(true)
-//        return hud
-//    }
+    } 
     
     func openChat(peer: ACPeer) {
         for i in UIApplication.sharedApplication().windows {
