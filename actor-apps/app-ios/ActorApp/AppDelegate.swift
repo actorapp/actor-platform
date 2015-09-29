@@ -15,6 +15,8 @@ import Crashlytics
     private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
     private let badgeView = UIImageView()
     
+    private var isVisible = false
+    
     private var badgeCount = 0
     private var isBadgeVisible = false
     
@@ -130,12 +132,13 @@ import Crashlytics
             badgeText.frame = self.badgeView.bounds
         })
         
+        checkAppState(application)
+        
         return true;
     }
     
     func onLoggedIn(isAfterLogin: Bool) {
         // Create root layout for app
-        Actor.onAppVisible()
         var rootController : UIViewController? = nil
         if (isIPad) {
             let splitController = MainSplitViewController()
@@ -195,25 +198,51 @@ import Crashlytics
         return false
     }
     
+    // Checking app visible state
+    
+    func checkAppState(application: UIApplication) {
+        if application.applicationState == .Active {
+            if !isVisible {
+                isVisible = true
+                
+                // Mark app as visible
+                Actor.onAppVisible();
+                
+                // Notify analytics about visibilibty change
+                Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(true))
+                
+                // Hack for resync phone book
+                Actor.onPhoneBookChanged()
+            }
+        } else {
+            if isVisible {
+                isVisible = false
+                
+                // Mark app as hidden
+                Actor.onAppHidden();
+                
+                // Notify analytics about visibilibty change
+                Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(false))
+            }
+        }
+    }
+
+    // Lifecycle
+    
+    func applicationDidFinishLaunching(application: UIApplication) {
+        checkAppState(application)
+    }
+    
+    func applicationDidBecomeActive(application: UIApplication) {
+        checkAppState(application)
+    }
+    
     func applicationWillEnterForeground(application: UIApplication) {
-        
-        // Mark app as visible
-        Actor.onAppVisible();
-        
-        // Notify analytics about visibilibty change
-        Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(true))
-        
-        // Hack for resync phone book
-        Actor.onPhoneBookChanged()
+        checkAppState(application)
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
-        
-        // Mark app as hidden
-        Actor.onAppHidden();
-        
-        // Notify analytics about visibilibty change
-        Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(false))
+        checkAppState(application)
         
         // Keep application running for 40 secs
         if Actor.isLoggedIn() {
@@ -232,6 +261,10 @@ import Crashlytics
         }
     }
     
+    func applicationWillResignActive(application: UIApplication) {
+        checkAppState(application)
+    }
+    
     // Push notifications
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
@@ -243,25 +276,20 @@ import Crashlytics
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        NSLog("Remote notification \(userInfo)")
+
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        
-        NSLog("Remote notification \(userInfo)")
-        
-        createActor()
         
         if !Actor.isLoggedIn() {
             completionHandler(UIBackgroundFetchResult.NoData)
             return
         }
+        
         self.completionHandler = completionHandler
     }
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        createActor()
-        
         if !Actor.isLoggedIn() {
             completionHandler(UIBackgroundFetchResult.NoData)
             return
