@@ -46,7 +46,18 @@ object ACLUtils {
   def authTransactionHash(accessSalt: String)(implicit s: ActorSystem): String =
     DigestUtils.sha1Hex(s"$accessSalt:${secretKey()}")
 
-  def nextAccessSalt(rng: ThreadLocalRandom): String = rng.nextLong().toString
+  def randomHash()(implicit s: ActorSystem): String =
+    DigestUtils.sha1Hex(s"${randomString()}:${secretKey()}")
+
+  def randomLong(): Long = randomLong(ThreadLocalRandom.current())
+
+  def randomLong(rng: ThreadLocalRandom): Long = rng.nextLong()
+
+  def randomString(): String = randomString(ThreadLocalRandom.current())
+
+  def randomString(rng: ThreadLocalRandom): String = rng.nextLong().toString
+
+  def nextAccessSalt(rng: ThreadLocalRandom): String = randomString(rng)
 
   def nextAccessSalt(): String = {
     nextAccessSalt(ThreadLocalRandom.current())
