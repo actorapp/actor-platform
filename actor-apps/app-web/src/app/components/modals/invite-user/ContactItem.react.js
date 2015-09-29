@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import addons from 'react/addons';
@@ -9,6 +13,8 @@ import { AsyncActionStates } from 'constants/ActorAppConstants';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import * as Stateful from 'components/common/Stateful.react';
+
+import { escapeWithEmoji } from 'utils/EmojiUtils';
 
 const {addons: { PureRenderMixin }} = addons;
 
@@ -40,10 +46,10 @@ class ContactItem extends React.Component {
   }
 
   onSelect = () => {
-    const { contact } = this.props;
+    const { contact, onSelect } = this.props;
 
     InviteUserStore.addChangeListener(this.onChange);
-    this.props.onSelect(contact);
+    onSelect(contact);
   };
 
   onChange = () => {
@@ -90,9 +96,7 @@ class ContactItem extends React.Component {
                     title={contact.name}/>
 
         <div className="col-xs">
-            <span className="title">
-              {contact.name}
-            </span>
+          <span className="title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(contact.name)}}/>
         </div>
 
         <div className="controls">
