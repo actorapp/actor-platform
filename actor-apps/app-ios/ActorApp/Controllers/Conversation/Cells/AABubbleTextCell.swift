@@ -95,9 +95,18 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             // Setting sender name if needed
             if isGroup && !isOut {
                 if let user = Actor.getUserWithUid(message.senderId) {
-                    senderNameLabel.text = user.getNameModel().get()
-                    let color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
-                    senderNameLabel.textColor = color
+                    
+                    if user.isBot() && user.getNameModel().get() == "Bot" {
+                        if let group = Actor.getGroupWithGid(self.peer.peerId) {
+                            senderNameLabel.text = group.getNameModel().get()
+                            let color = Resources.placeHolderColors[Int(abs(group.getId())) % Resources.placeHolderColors.count];
+                            senderNameLabel.textColor = color
+                        }
+                    } else {
+                        senderNameLabel.text = user.getNameModel().get()
+                        let color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
+                        senderNameLabel.textColor = color
+                    }
                 }
                 mainView.addSubview(senderNameLabel)
             } else {
