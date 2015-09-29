@@ -189,6 +189,11 @@ export const Path = {
 
 export const endpoints = app.endpoints;
 
+export const AddContactMessages = {
+  PHONE_NOT_REGISTERED: 1,
+  ALREADY_HAVE: 2
+};
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -212,5 +217,7 @@ export default {
 
   Support: Support,
 
-  Path: Path
+  Path: Path,
+
+  AddContactMessages
 };
