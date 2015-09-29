@@ -1,4 +1,7 @@
-import _ from 'lodash';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import mixpanel from 'utils/Mixpanel';
@@ -6,6 +9,7 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import ActorClient from 'utils/ActorClient';
+import { escapeWithEmoji } from 'utils/EmojiUtils'
 
 import MyProfileActions from 'actions/MyProfileActionCreators';
 import LoginActionCreators from 'actions/LoginActionCreators';
@@ -59,12 +63,14 @@ class HeaderSection extends Component {
 
     if (profile) {
 
-      let headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
+      const headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
         'sidebar__header--opened': isOpened
       });
-      let menuClass = classNames('dropdown', {
+      const menuClass = classNames('dropdown', {
         'dropdown--opened': isOpened
       });
+
+      const profileName = escapeWithEmoji(profile.name);
 
       return (
         <header className={headerClass}>
@@ -73,7 +79,8 @@ class HeaderSection extends Component {
                         placeholder={profile.placeholder}
                         size="tiny"
                         title={profile.name} />
-            <span className="sidebar__header__user__name col-xs">{profile.name}</span>
+            <span className="sidebar__header__user__name col-xs"
+                  dangerouslySetInnerHTML={{__html: profileName}}/>
             <div className={menuClass}>
               <span className="dropdown__button">
                 <i className="material-icons">arrow_drop_down</i>
