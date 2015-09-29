@@ -13,6 +13,8 @@ const processText = (text) => {
   const markedText = ActorClient.renderMarkdown(text);
   let emojifiedText = markedText;
 
+  emoji.include_title = true;
+  emoji.include_text = true;
   emoji.change_replace_mode('css');
   emojifiedText = emoji.replace_colons(emojifiedText);
   emojifiedText = emoji.replace_unified(emojifiedText);
