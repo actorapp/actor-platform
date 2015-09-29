@@ -7,11 +7,11 @@ import UIKit
 class AddParticipantViewController: ContactsBaseViewController {
     
     var tableView: UITableView!
-    let gid: Int
     
     init (gid: Int) {
-        self.gid = gid
         super.init(contentSection: 1)
+        
+        self.gid = gid
     }
 
     required init(coder aDecoder: NSCoder) {

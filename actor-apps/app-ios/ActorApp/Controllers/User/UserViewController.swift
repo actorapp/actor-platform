@@ -6,24 +6,15 @@ import UIKit
 
 class UserViewController: ACContentTableController {
     
-    private let UserInfoCellIdentifier = "UserInfoCellIdentifier"
-    private let TitledCellIdentifier = "TitledCellIdentifier"
-    
-    let uid: Int
-    let user: ACUserVM
-    let isBot: Bool
-    
     var headerRow: ACAvatarRow!
     var isContactRow: ACCommonRow!
 
     init(uid: Int) {
-        self.uid = uid
-        self.user = Actor.getUserWithUid(jint(uid))
-        self.isBot = user.isBot().boolValue
-
         super.init(tableViewStyle: UITableViewStyle.Plain)
-        
-        title = localized("ProfileTitle")
+
+        self.uid = uid
+        self.trackProfileView = true
+        self.title = localized("ProfileTitle")
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -225,15 +216,5 @@ class UserViewController: ACContentTableController {
                 self.isContactRow.reload()
             })
         }
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        Actor.onProfileOpenWithUid(jint(uid))
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        Actor.onProfileClosedWithUid(jint(uid))
     }
 }

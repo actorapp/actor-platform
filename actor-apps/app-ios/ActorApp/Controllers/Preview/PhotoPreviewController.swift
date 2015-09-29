@@ -34,7 +34,7 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
             }
             
             if p.file != nil  {
-                let desc = Actor.getDownloadedDescriptorWithFileId(p.file!.getFileId())
+                let desc = Actor.findDownloadedDescriptorWithFileId(p.file!.getFileId())
                 if desc != nil {
                     let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
                     if img != nil {
@@ -45,7 +45,7 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
             }
             
             if p.previewFile != nil {
-                let desc = Actor.getDownloadedDescriptorWithFileId(p.previewFile!.getFileId())
+                let desc = Actor.findDownloadedDescriptorWithFileId(p.previewFile!.getFileId())
                 if desc != nil {
                     var img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
                     if img != nil {
