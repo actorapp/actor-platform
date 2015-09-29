@@ -115,7 +115,7 @@ class MessageItem extends React.Component {
 
     switch (message.content.content) {
       case MessageContentTypes.SERVICE:
-        messageContent = <div className="message__content message__content--service">{message.content.text}</div>;
+        messageContent = <div className="message__content message__content--service" dangerouslySetInnerHTML={{__html: escapeWithEmoji(message.content.text)}}/>;
         break;
       case MessageContentTypes.TEXT:
         messageContent = (

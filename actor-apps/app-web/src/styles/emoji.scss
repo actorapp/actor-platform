@@ -12,10 +12,10 @@ $emoji-dropdown-width: 314px;
   width: $message-line-height;
   height: $message-line-height;
 
-  vertical-align: bottom;
+  vertical-align: middle;
 }
 .emoji-inner {
-  display: inline-block;
+  display: block;
 
   width: 100%;
   height: 100%;

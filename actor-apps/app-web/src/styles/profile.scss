@@ -92,8 +92,6 @@
       .emoji-outer {
         width: 20px;
         height: 20px;
-
-        vertical-align: baseline;
       }
     }
     &__presence {
@@ -109,6 +107,10 @@
       margin-top: 18px;
 
       color: $greyish-brown;
+      .emoji-outer {
+        width: 20px;
+        height: 20px;
+      }
     }
 
     footer {
@@ -212,8 +214,6 @@
       .emoji-outer {
         width: 20px;
         height: 20px;
-
-        vertical-align: baseline;
       }
     }
     &__created {
@@ -226,8 +226,6 @@
       .emoji-outer {
         width: 20px;
         height: 20px;
-
-        vertical-align: baseline;
       }
     }
     &__description {
@@ -287,8 +285,6 @@
         .emoji-outer {
           width: 20px;
           height: 20px;
-
-          vertical-align: baseline;
         }
       }
     }
