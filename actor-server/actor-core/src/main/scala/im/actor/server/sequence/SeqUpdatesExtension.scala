@@ -43,8 +43,8 @@ object SeqUpdatesExtension extends ExtensionId[SeqUpdatesExtension] with Extensi
 
   override def createExtension(system: ExtendedActorSystem) = {
     val applePushConfig = ApplePushManagerConfig.load(
-      Try(system.settings.config.getConfig("push.apple"))
-        .getOrElse(system.settings.config.getConfig("services.apple.push"))
+      Try(system.settings.config.getConfig("services.apple.push"))
+        .getOrElse(system.settings.config.getConfig("push.apple"))
     )
     val googlePushConfig = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
 
