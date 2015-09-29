@@ -54,8 +54,9 @@ class ACTitledRow: ACManagedRow {
         bindAction?(r: self)
         
         if let p = indexPath, let s = section {
-            let cell = s.table.tableView.cellForRowAtIndexPath(p) as! TitledCell
-            bindCell(cell)
+            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? TitledCell {
+                bindCell(cell)
+            }
         }
     }
 }
@@ -262,8 +263,9 @@ class ACCommonRow: ACManagedRow {
         bindAction?(r: self)
         
         if let p = indexPath, let s = section {
-            let cell = s.table.tableView.cellForRowAtIndexPath(p) as! CommonCell
-            bindCell(cell)
+            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? CommonCell {
+                bindCell(cell)
+            }
         }
     }
 }

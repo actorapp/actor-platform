@@ -24,18 +24,11 @@ class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, U
     init() {
         super.init(contentSection: 1)
         
-        var title = "";
-        if (MainAppTheme.tab.showText) {
-            title = NSLocalizedString("TabPeople", comment: "People Title")
-        }
+        content = ACAllEvents_Main.CONTACTS()
         
-        tabBarItem = UITabBarItem(title: title,
+        tabBarItem = UITabBarItem(title: localized("TabPeople"),
             image: MainAppTheme.tab.createUnselectedIcon("TabIconContacts"),
             selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconContactsHighlighted"));
-        
-        if (!MainAppTheme.tab.showText) {
-            tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
-        }
         
         tableView = UITableView()
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None

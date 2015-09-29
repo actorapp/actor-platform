@@ -13,7 +13,7 @@ class SettingsPrivacyViewController: ACContentTableController {
         
         navigationItem.title = localized("SecurityTitle")
         
-        content = ACContents_SETTINGS_PRIVACY_
+        content = ACAllEvents_Settings.PRIVACY()
     }
     
     required init(coder aDecoder: NSCoder) {

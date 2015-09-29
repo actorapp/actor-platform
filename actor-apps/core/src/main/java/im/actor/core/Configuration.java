@@ -23,8 +23,6 @@ public class Configuration {
 
     private ApiConfiguration apiConfiguration;
 
-    private AnalyticsProvider analyticsProvider;
-
     private DeviceCategory deviceCategory;
 
     private PlatformType platformType;
@@ -42,7 +40,6 @@ public class Configuration {
                   boolean enableContactsLogging,
                   boolean enableNetworkLogging,
                   boolean enableFilesLogging,
-                  AnalyticsProvider analyticsProvider,
                   DeviceCategory deviceCategory,
                   PlatformType platformType,
                   int minDelay,
@@ -55,7 +52,6 @@ public class Configuration {
         this.enableFilesLogging = enableFilesLogging;
         this.notificationProvider = notificationProvider;
         this.apiConfiguration = apiConfiguration;
-        this.analyticsProvider = analyticsProvider;
         this.deviceCategory = deviceCategory;
         this.platformType = platformType;
         this.minDelay = minDelay;
@@ -142,15 +138,6 @@ public class Configuration {
      */
     public ConnectionEndpoint[] getEndpoints() {
         return endpoints;
-    }
-
-    /**
-     * Get ActorAnalytics provider
-     *
-     * @return ActorAnalytics provider
-     */
-    public AnalyticsProvider getAnalyticsProvider() {
-        return analyticsProvider;
     }
 
     /**

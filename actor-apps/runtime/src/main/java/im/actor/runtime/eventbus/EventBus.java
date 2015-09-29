@@ -56,7 +56,7 @@ public class EventBus {
     }
 
     private synchronized void deliver(Event e, boolean isSticky) {
-        Log.d("EventBus", "Event: " + e.getType());
+        Log.d("EventBus", "Event: " + e);
 
         String eventType = e.getType();
         if (isSticky) {
