@@ -114,6 +114,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     settings = defaultSettings
   ).dependsOn(
     actorActivation,
+    actorBot,
     actorEnrich,
     actorEmail,
     actorFrontend,
@@ -132,6 +133,24 @@ object Build extends sbt.Build with Versioning with Releasing {
         scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
       )
   ).dependsOn(actorEmail, actorSms, actorPersist)
+
+  lazy val actorBot = Project(
+    id = "actor-bot",
+    base = file("actor-bot"),
+    settings = defaultSettings ++
+      Seq(
+        libraryDependencies ++= Dependencies.bot
+      )
+  ).dependsOn(actorBotMessages, shardakka, actorCore)
+
+  lazy val actorBotMessages = Project(
+    id = "actor-bot-messages",
+    base = file("actor-bot-messages"),
+    settings = defaultSettings ++
+      Seq(
+        libraryDependencies ++= Dependencies.botMessages
+      )
+  )
 
   lazy val actorCore = Project(
     id = "actor-core",
@@ -164,7 +183,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.httpApi
     )
-  ).dependsOn(actorCore, actorPersist, actorRuntime)
+  ).dependsOn(actorBot, actorCore, actorPersist, actorRuntime)
 
   lazy val actorOAuth = Project(
     id = "actor-oauth",
