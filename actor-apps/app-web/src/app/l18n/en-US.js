@@ -15,7 +15,7 @@ const english = {
     'search': 'Search',
 
     // Profiles
-    'createdBy': 'сreated by {admin}',
+    'createdBy': 'сreated by',
     'addPeople': 'Add people',
     'more': 'More',
     'actions': 'Actions',
