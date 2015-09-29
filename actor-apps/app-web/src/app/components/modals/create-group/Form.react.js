@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import Immutable from 'immutable';
 import keymirror from 'keymirror';
+import ReactMixin from 'react-mixin';
+import { IntlMixin, FormattedMessage } from 'react-intl';
 
 import React from 'react';
 import { Styles, TextField, FlatButton } from 'material-ui';
@@ -20,6 +22,7 @@ const STEPS = keymirror({
   CONTACTS_SELECTION: null
 });
 
+@ReactMixin.decorate(IntlMixin)
 class CreateGroupForm extends React.Component {
   static childContextTypes = {
     muiTheme: React.PropTypes.object
@@ -60,7 +63,7 @@ class CreateGroupForm extends React.Component {
 
             <div className="modal-new__body">
               <TextField className="login__form__input"
-                         floatingLabelText="Group name"
+                         floatingLabelText={this.getIntlMessage('createGroupGroupName')}
                          fullWidth
                          onChange={this.onNameChange}
                          value={this.state.name}/>
@@ -68,7 +71,7 @@ class CreateGroupForm extends React.Component {
             </div>
 
             <footer className="modal-new__footer text-right">
-              <button className="button button--lightblue" type="submit">Add members</button>
+              <button className="button button--lightblue" type="submit">{this.getIntlMessage('createGroupAddMembers')}</button>
             </footer>
 
           </form>
@@ -84,7 +87,9 @@ class CreateGroupForm extends React.Component {
         stepForm = (
           <form className="group-members" onSubmit={this.onMembersSubmit}>
 
-            <div className="count">{this.state.selectedUserIds.size} Members</div>
+            <div className="count">
+              <FormattedMessage message={this.getIntlMessage('members')} numMembers={this.state.selectedUserIds.size}/>
+            </div>
 
             <div className="modal-new__body">
               <ul className="contacts__list">
@@ -93,7 +98,7 @@ class CreateGroupForm extends React.Component {
             </div>
 
             <footer className="modal-new__footer text-right">
-              <button className="button button--lightblue" type="submit">Create group</button>
+              <button className="button button--lightblue" type="submit">{this.getIntlMessage('createGroupButton')}</button>
             </footer>
           </form>
         );

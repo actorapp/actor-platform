@@ -1,7 +1,7 @@
 const english = {
   'locales': 'en-US',
   'messages': {
-    // Sidebar menu
+    // Sidebar
     'setProfilePhoto': 'Set Profile Photo',
     'editProfile': 'Edit Profile',
     'configureIntegrations': 'Configure Integrations',
@@ -70,7 +70,18 @@ const english = {
     'preferencesSessionsCurrentSession': 'Current session',
     'preferencesSessionsAuthTime': 'Auth time',
     'preferencesSessionsTerminate': 'Kill',
-    'preferencesSessionsTerminateAll': 'Terminate all sessions'
+    'preferencesSessionsTerminateAll': 'Terminate all sessions',
+
+    'createGroupModalTitle': 'Create group',
+    'createGroupButton': 'Create group',
+    'createGroupGroupName': 'Group name',
+    'createGroupAddMembers': 'Add users',
+
+    'addContactModalTitle': 'Add contact',
+    'addContactPhoneNumber': 'Phone number',
+    'addContactAdd': 'Add',
+    'addContactNotRegistered': 'This phone is not registered in Actor.',
+    'addContactInContacts': 'You already have this user in contacts.'
   }
 };
 

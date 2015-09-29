@@ -1,7 +1,7 @@
 const russian = {
   'locales': 'ru-RU',
   'messages': {
-    // Sidebar menu
+    // Sidebar
     'setProfilePhoto': 'Установить аватар',
     'editProfile': 'Редактировать профиль',
     'configureIntegrations': 'Настройка интеграций',
@@ -71,7 +71,18 @@ const russian = {
     'preferencesSessionsCurrentSession': 'Текущий сеанс',
     'preferencesSessionsAuthTime': 'Авторизовано',
     'preferencesSessionsTerminate': 'Завершить',
-    'preferencesSessionsTerminateAll': 'Завершить все сеансы'
+    'preferencesSessionsTerminateAll': 'Завершить все сеансы',
+
+    'createGroupModalTitle': 'Создать группу',
+    'createGroupButton': 'Создать группу',
+    'createGroupGroupName': 'Название группы',
+    'createGroupAddMembers': 'Добавить пользователей',
+
+    'addContactModalTitle': 'Добавить контакт',
+    'addContactPhoneNumber': 'Номер телефона',
+    'addContactAdd': 'Добавить',
+    'addContactNotRegistered': 'Данный номер телефона не зарегистрирован в Actor.',
+    'addContactInContacts': 'Этот пользователь уже находится в ваших контактах.'
   }
 };
 
