@@ -1,4 +1,10 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import React from 'react';
+
+import { escapeWithEmoji } from 'utils/EmojiUtils';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 
@@ -6,37 +12,30 @@ class ContactItem extends React.Component {
   static propTypes = {
     contact: React.PropTypes.object,
     onToggle: React.PropTypes.func
-  }
+  };
 
   constructor(props) {
     super(props);
 
-    this.onToggle = this.onToggle.bind(this);
     this.state = {
       isSelected: false
     };
   }
 
-  onToggle() {
-    const isSelected = !this.state.isSelected;
+  onToggle = () => {
+    const { contact, onToggle } = this.props;
+    const { isSelected } = this.state;
 
-    this.setState({
-      isSelected: isSelected
-    });
+    this.setState({isSelected: !isSelected});
 
-    this.props.onToggle(this.props.contact, isSelected);
-  }
+    onToggle(contact, !isSelected);
+  };
 
   render() {
-    let contact = this.props.contact;
+    const { contact } = this.props;
+    const { isSelected } = this.state;
 
-    let icon;
-
-    if (this.state.isSelected) {
-      icon = 'check_box';
-    } else {
-      icon = 'check_box_outline_blank';
-    }
+    const icon = (isSelected) ? 'check_box' : 'check_box_outline_blank';
 
     return (
       <li className="contacts__list__item row">
@@ -46,9 +45,7 @@ class ContactItem extends React.Component {
                     title={contact.name}/>
 
         <div className="col-xs">
-          <span className="title">
-            {contact.name}
-          </span>
+          <span className="title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(contact.name)}}/>
         </div>
 
         <div className="controls">

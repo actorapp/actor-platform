@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
+import { find, assign, forEach } from 'lodash';
 
 import React from 'react';
 import Modal from 'react-modal';
@@ -29,14 +29,14 @@ const getStateFromStores = () => {
 };
 
 const hasMember = (group, userId) =>
-  undefined !== _.find(group.members, (c) => c.peerInfo.peer.id === userId);
+  undefined !== find(group.members, (c) => c.peerInfo.peer.id === userId);
 
 @ReactMixin.decorate(IntlMixin)
 class InviteUser extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = _.assign({
+    this.state = assign({
       search: ''
     }, getStateFromStores());
 
@@ -83,7 +83,7 @@ class InviteUser extends React.Component {
 
     if (isOpen) {
 
-      _.forEach(contacts, (contact, i) => {
+      forEach(contacts, (contact, i) => {
         const name = contact.name.toLowerCase();
         if (name.includes(search.toLowerCase())) {
           if (!hasMember(group, contact.uid)) {
