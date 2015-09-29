@@ -146,20 +146,20 @@ class SettingsViewController: ACContentTableController {
             }
         }
         
-        section { (s) -> () in
-            s.action("Connect VK", closure: { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    self.executeSafe(Actor.startWebAction("vkOAuth")) { (val) -> Void in
-                        if let d = val as? ACWebActionDescriptor {
-                            let controller = AANavigationController()
-                            controller.viewControllers = [WebActionController(desc: d)]
-                            self.presentViewController(controller, animated: true, completion: nil)
-                        }
-                    }
-                    return false
-                }
-            })
-        }
+//        section { (s) -> () in
+//            s.action("Connect VK", closure: { (r) -> () in
+//                r.selectAction = { () -> Bool in
+//                    self.executeSafe(Actor.startWebAction("vkOAuth")) { (val) -> Void in
+//                        if let d = val as? ACWebActionDescriptor {
+//                            let controller = AANavigationController()
+//                            controller.viewControllers = [WebActionController(desc: d)]
+//                            self.presentViewController(controller, animated: true, completion: nil)
+//                        }
+//                    }
+//                    return false
+//                }
+//            })
+//        }
         
         // Settings
         section { (s) -> () in
