@@ -9,7 +9,7 @@ object Dependencies {
     val scalaz = "7.1.1"
     val slick = "3.0.3"
     val scalatest = "2.2.4"
-    val catsVersion    = "0.1.2"
+    val catsVersion    = "0.2.0"
 
   }
 
@@ -30,8 +30,7 @@ object Dependencies {
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
-    val cats                    = "org.spire-math"                %% "cats-core"                     % V.catsVersion
-    val catsStd                 = "org.spire-math"                %% "cats-std"                      % V.catsVersion
+    val cats                    = "org.spire-math"                %% "cats"                          % V.catsVersion
 
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
 
@@ -39,6 +38,7 @@ object Dependencies {
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
 
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
+    val upickle                 = "com.lihaoyi"                   %% "upickle"                       % "0.3.6"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
@@ -102,6 +102,10 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
+  val bot = shared ++ Seq(upickle)
+
+  val botMessages = Seq(upickle)
+
   val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, caffeine, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
@@ -146,7 +150,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaContrib, slick)
 
-  val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, catsStd, concmap, jodaConvert, jodaTime, libPhoneNumber, scalazCore, akkaTestkit % "test", scalatest % "test")
+  val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalazCore, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 

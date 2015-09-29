@@ -24,8 +24,6 @@ object SessionStreamMessage {
 
   @SerialVersionUID(1L)
   case class SendProtoMessage(message: ProtoMessage with OutgoingProtoMessage) extends SessionStreamMessage
-
-  case class EnqueuedProtoMessage(message: ProtoMessage, reduceKey: Option[String]) extends SessionStreamMessage
 }
 
 private[session] object SessionStream {
