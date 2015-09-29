@@ -49,6 +49,11 @@
 
       white-space: nowrap;
       text-overflow: ellipsis;
+      .emoji-outer {
+        width: 20px;
+        height: 20px;
+        vertical-align: top;
+      }
     }
     &__presence {
       font-size: 14px;
