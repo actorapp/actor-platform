@@ -2,6 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { escape } from 'lodash';
 import emoji from 'js-emoji';
 import emojiDataCategories from 'emoji-data/build/emoji_categories';
 import { Path } from 'constants/ActorAppConstants';
@@ -82,9 +83,16 @@ export const emojiRegexp = /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00
 
 export const preloadEmojiSheet = () => (new Image()).src = emoji.img_sets[emoji.img_set].sheet;
 
+export const escapeWithEmoji = (text) => {
+  emoji.include_title = false;
+  emoji.include_text = false;
+  return emoji.replace_unified(escape(text));
+};
+
 export default {
   emoji,
   emojiRegexp,
   getEmojiCategories,
-  preloadEmojiSheet
+  preloadEmojiSheet,
+  escapeWithEmoji
 };
