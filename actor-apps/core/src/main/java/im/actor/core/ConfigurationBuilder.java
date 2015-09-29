@@ -66,9 +66,9 @@ public class ConfigurationBuilder {
     }
 
     /**
-     * Set Analytics Provider
+     * Set ActorAnalytics Provider
      *
-     * @param analyticsProvider the Analytics Provicer
+     * @param analyticsProvider the ActorAnalytics Provicer
      * @return this
      */
     @NotNull

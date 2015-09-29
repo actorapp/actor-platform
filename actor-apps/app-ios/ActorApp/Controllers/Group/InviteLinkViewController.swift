@@ -4,83 +4,83 @@
 
 import Foundation
 
-class InviteLinkViewController: AATableViewController {
+class InviteLinkViewController: ACContentTableController {
 
-    let gid: Int
-    var tableData: ACManagedTable!
+    // Data
+    
     var currentUrl: String?
-    // var urlCell: UACommonCellRegion!
+    
+    // Rows
+    
+    var urlRow: ACCommonRow!
     
     init(gid: Int) {
-        self.gid = gid
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(tableViewStyle: UITableViewStyle.Grouped)
         
-        title = NSLocalizedString("GroupInviteLinkPageTitle", comment: "Invite Link Title")
+        // Remove?
+        self.gid = gid
+        
+        self.title = NSLocalizedString("GroupInviteLinkPageTitle", comment: "Invite Link Title")
     }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        tableView.backgroundColor = MainAppTheme.list.backyardColor
+    override func tableDidLoad() {
         
         tableView.hidden = true
         
-        tableData = ACManagedTable(tableView: tableView, controller: self)
-//        urlCell = tableData.addSection()
-//            .setHeaderText(NSLocalizedString("GroupInviteLinkTitle", comment: "Link title"))
-//            .setFooterText(NSLocalizedString("GroupInviteLinkHint", comment: "Link hint"))
-//            .addCommonCell()
-//            .setStyle(.Normal)
-//        
-//        let section = tableData.addSection()
-//
-//        section.addActionCell("ActionCopyLink", actionClosure: { () -> Bool in
-//                UIPasteboard.generalPasteboard().string = self.currentUrl
-//                self.alertUser("AlertLinkCopied")
-//                return true
-//            })
-//            .showBottomSeparator(15)
-//            .showTopSeparator(0)
-//        
-//        section.addActionCell("ActionShareLink", actionClosure: { () -> Bool in
-//                UIApplication.sharedApplication().openURL(NSURL(string: self.currentUrl!)!)
-//                return true
-//            })
-//            .hideTopSeparator()
-//            .showBottomSeparator(0)
-//        
-//        tableData.addSection()
-//            .addActionCell("ActionRevokeLink", actionClosure: { () -> Bool in
-//                self.confirmAlertUser("GroupInviteLinkRevokeMessage", action: "GroupInviteLinkRevokeAction", tapYes: { () -> () in
-//                    self.reloadLink()
-//                })
-//                return true
-//            })
-//            .setStyle(.Destructive)
-//        
-//        execute(Actor.requestInviteLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
-//                self.currentUrl = val as? String
-//                self.urlCell.setContent(self.currentUrl!)
-//                self.tableView.hidden = false
-//                self.tableView.reloadData()
-//            }) { (val) -> Void in
-//                // TODO: Implement
-//        }
+        section { (s) -> () in
+            s.headerText = localized("GroupInviteLinkTitle")
+            s.footerText = localized("GroupInviteLinkHint")
+            
+            self.urlRow = s.common { (r) -> () in
+                r.bindAction = { (r) -> () in
+                    r.content = self.currentUrl
+                }
+            }
+        }
+        
+        section { (s) -> () in
+            s.action("ActionCopyLink") { (r) -> () in
+                r.selectAction = { () -> Bool in
+                    UIPasteboard.generalPasteboard().string = self.currentUrl
+                    self.alertUser("AlertLinkCopied")
+                    return true
+                }
+            }
+            s.action("ActionShareLink") { (r) -> () in
+                r.selectAction = { () -> Bool in
+                    UIApplication.sharedApplication().openURL(NSURL(string: self.currentUrl!)!)
+                    return true
+                }
+            }
+        }
+        
+        section { (s) -> () in
+            s.danger("ActionRevokeLink") { (r) -> () in
+                r.selectAction = { () -> Bool in
+                    self.confirmAlertUser("GroupInviteLinkRevokeMessage", action: "GroupInviteLinkRevokeAction", tapYes: { () -> () in
+                        self.reloadLink()
+                    })
+                    return true
+                }
+            }
+        }
+        
+        executeSafe(Actor.requestInviteLinkCommandWithGid(jint(gid))) { (val) -> Void in
+            self.currentUrl = val as? String
+            self.urlRow.reload()
+            self.tableView.hidden = false
+        }
     }
     
     func reloadLink() {
-//        execute(Actor.requestRevokeLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
-//                self.currentUrl = val as? String
-//                self.urlCell.setContent(self.currentUrl!)
-//                self.tableView.hidden = false
-//                self.tableView.reloadData()
-//            }) { (val) -> Void in
-//                // TODO: Implement
-//        }
+        executeSafe(Actor.requestRevokeLinkCommandWithGid(jint(gid))) { (val) -> Void in
+            self.currentUrl = val as? String
+            self.urlRow.reload()
+            self.tableView.hidden = false
+        }
     }
 }

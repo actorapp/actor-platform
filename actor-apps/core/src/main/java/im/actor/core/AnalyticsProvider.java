@@ -9,7 +9,7 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import java.util.HashMap;
 
 /**
- * Analytics event provider
+ * ActorAnalytics event provider
  */
 public interface AnalyticsProvider {
 

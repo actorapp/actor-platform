@@ -5,6 +5,7 @@
 import Foundation
 
 var Actor : ACCocoaMessenger!
+var Analytics: ACActorAnalytics!
 var AppConfig: Config!
 
 func createActor() {
@@ -45,4 +46,7 @@ func createActor() {
     
     // Creating messenger
     Actor = ACCocoaMessenger(configuration: builder.build())
+    
+    // Creating analytics
+    Analytics = ACActorAnalytics(ACMessenger: Actor)
 }

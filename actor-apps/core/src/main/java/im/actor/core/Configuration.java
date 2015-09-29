@@ -145,9 +145,9 @@ public class Configuration {
     }
 
     /**
-     * Get Analytics provider
+     * Get ActorAnalytics provider
      *
-     * @return Analytics provider
+     * @return ActorAnalytics provider
      */
     public AnalyticsProvider getAnalyticsProvider() {
         return analyticsProvider;
