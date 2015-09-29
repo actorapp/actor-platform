@@ -29,7 +29,7 @@ class AACollectionViewController: AAViewController, UICollectionViewDelegate, UI
         collectionView.dataSource = self
         view.addSubview(collectionView)
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment:"Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     override func viewWillLayoutSubviews() {
