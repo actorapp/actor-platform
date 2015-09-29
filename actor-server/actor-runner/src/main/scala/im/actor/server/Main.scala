@@ -113,7 +113,7 @@ object Main extends App {
           new EmailSender(emailConfig)
         )
       case "actor-activation" ⇒ new GateCodeActivation(gateConfig)
-      case _ ⇒ throw new Exception( """Invalid activation.default-service value provided: valid options: "internal", actor-activation""")
+      case _                  ⇒ throw new Exception("""Invalid activation.default-service value provided: valid options: "internal", actor-activation""")
     }
 
     implicit val sessionRegion = Session.startRegion(
@@ -146,10 +146,10 @@ object Main extends App {
     Frontend.start(serverConfig)
     HttpApiFrontend.start(serverConfig)
   } catch {
-    case e: ConfigException =>
+    case e: ConfigException ⇒
       system.log.error(e, "Failed to load server configuration")
       throw e
-    case e: Throwable =>
+    case e: Throwable ⇒
       system.log.error(e, "Server failed to start up")
       throw e
   }
