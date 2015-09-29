@@ -1,4 +1,10 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import React from 'react';
+import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl';
 
 import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
 import CreateGroupStore from 'stores/CreateGroupStore';
@@ -15,6 +21,7 @@ const getStateFromStores = () => {
   };
 };
 
+@ReactMixin.decorate(IntlMixin)
 class CreateGroup extends React.Component {
   constructor(props) {
     super(props);
@@ -42,7 +49,7 @@ class CreateGroup extends React.Component {
 
           <header className="modal-new__header">
             <a className="modal-new__header__close modal-new__header__icon material-icons" onClick={this.onClose}>clear</a>
-            <h3 className="modal-new__header__title">Create group</h3>
+            <h3 className="modal-new__header__title">{this.getIntlMessage('createGroupModalTitle')}</h3>
           </header>
 
           <CreateGroupForm/>

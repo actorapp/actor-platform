@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import { ActionTypes } from 'constants/ActorAppConstants';
+import { ActionTypes, AddContactMessages } from 'constants/ActorAppConstants';
 
 const CHANGE_EVENT = 'change';
 
@@ -52,11 +52,11 @@ AddContactStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
       AddContactStoreInstance.emitChange();
       break;
     case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED:
-      _message = 'This phone is not registered in Actor.';
+      _message = AddContactMessages.PHONE_NOT_REGISTERED;
       AddContactStoreInstance.emitChange();
       break;
     case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT:
-      _message = 'You already have this user in contacts.';
+      _message = AddContactMessages.ALREADY_HAVE;
       AddContactStoreInstance.emitChange();
       break;
     default:

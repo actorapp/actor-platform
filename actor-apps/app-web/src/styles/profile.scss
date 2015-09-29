@@ -89,6 +89,10 @@
       text-overflow: ellipsis;
 
       color: $dorado;
+      .emoji-outer {
+        width: 20px;
+        height: 20px;
+      }
     }
     &__presence {
       font-size: 14px;
@@ -103,6 +107,10 @@
       margin-top: 18px;
 
       color: $greyish-brown;
+      .emoji-outer {
+        width: 20px;
+        height: 20px;
+      }
     }
 
     footer {
@@ -203,12 +211,22 @@
       text-overflow: ellipsis;
 
       color: $dorado;
+      .emoji-outer {
+        width: 20px;
+        height: 20px;
+      }
     }
     &__created {
       font-size: 14px;
       line-height: 22px;
 
+      height: 22px;
+
       color: rgba(0, 0, 0, .3);
+      .emoji-outer {
+        width: 20px;
+        height: 20px;
+      }
     }
     &__description {
       font-size: 14px;
@@ -263,6 +281,10 @@
           a {
             color: $dark-sky-blue;
           }
+        }
+        .emoji-outer {
+          width: 20px;
+          height: 20px;
         }
       }
     }
