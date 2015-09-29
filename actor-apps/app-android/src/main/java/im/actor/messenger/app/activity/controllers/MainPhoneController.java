@@ -526,6 +526,9 @@ public class MainPhoneController extends MainBaseController {
                 default:
                 case 0:
                     DialogsFragment res1 = new DialogsFragment();
+                    Bundle arguments = new Bundle();
+                    arguments.putString("invite_url", joinGroupUrl);
+                    res1.setArguments(arguments);
                     res1.setHasOptionsMenu(false);
                     return res1;
                 case 1:
