@@ -28,19 +28,16 @@
       &__name {
         font-size: 16px;
         font-weight: 500;
-        line-height: 32px;
+        line-height: 22px;
 
         overflow-x: hidden;
 
-        margin: 14px 0;
+        margin: 19px 0;
 
         vertical-align: middle;
         text-overflow: ellipsis;
 
         color: white;
-        .emoji-outer {
-          vertical-align: baseline;
-        }
       }
       .dropdown__button {
         width: 24px;

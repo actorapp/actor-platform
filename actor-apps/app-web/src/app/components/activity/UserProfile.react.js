@@ -10,6 +10,7 @@ import classnames from 'classnames';
 
 import ActorClient from 'utils/ActorClient';
 import confirm from 'utils/confirm'
+import { escapeWithEmoji } from 'utils/EmojiUtils'
 
 import ContactActionCreators from 'actions/ContactActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
@@ -132,7 +133,7 @@ class UserProfile extends React.Component {
 
     const about = user.about ? (
       <div className="user_profile__meta__about"
-           dangerouslySetInnerHTML={{__html: user.about.replace(/\n/g, '<br/>')}}/>
+           dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.about).replace(/\n/g, '<br/>')}}/>
     ) : null;
     const nickname = user.nick ? (
       <li>
@@ -161,7 +162,7 @@ class UserProfile extends React.Component {
                           size="large"
                           title={user.name}/>
 
-              <h3 className="user_profile__meta__title">{user.name}</h3>
+              <h3 className="user_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.name)}}/>
               <div className="user_profile__meta__presence">{user.presence}</div>
             </header>
             {about}
