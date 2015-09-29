@@ -10,11 +10,11 @@ import im.actor.api.rpc.users.ApiUser
 import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
 import im.actor.server.db.DbExtension
-import im.actor.server.group.{ GroupExtension, GroupOffice, GroupViewRegion }
+import im.actor.server.group.GroupExtension
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.persist
 import im.actor.server.presences._
-import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
+import im.actor.server.user.UserExtension
 import org.joda.time.DateTime
 
 import scala.concurrent._
