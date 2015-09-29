@@ -800,7 +800,7 @@ final class AuthServiceSpec
       }
       whenReady(service.handleCompleteOAuth2(transactionHash, "wrongCode")) { resp ⇒
         inside(resp) {
-          case Error(AuthErrors.FailedToGetOAuth2Token) ⇒
+          case Error(AuthErrors.EmailCodeExpired) ⇒
         }
       }
 
