@@ -103,7 +103,6 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailCom
         super.viewDidAppear(animated)
         
         codeTextField.becomeFirstResponder()
-        Actor.trackAuthCodeOpen()
         
         updateTimerText()
         
@@ -119,8 +118,6 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailCom
             counterTimer.invalidate()
             counterTimer = nil
         }
-        
-        Actor.trackAuthCodeClosed()
     }
     
     override func viewWillLayoutSubviews() {
