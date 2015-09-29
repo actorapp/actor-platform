@@ -15,7 +15,7 @@ const russian = {
     'search': 'Поиск',
 
     // Profiles
-    'createdBy': 'создал {admin}',
+    'createdBy': 'создал',
     'addPeople': 'Пригласить',
     'more': 'Еще',
     'actions': 'Действия',

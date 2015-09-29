@@ -10,6 +10,7 @@ import classnames from 'classnames';
 
 import ActorClient from 'utils/ActorClient';
 import confirm from 'utils/confirm'
+import { escapeWithEmoji } from 'utils/EmojiUtils'
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
@@ -184,16 +185,17 @@ class GroupProfile extends React.Component {
                     size="large"
                     title={group.name}/>
 
-        <h3 className="group_profile__meta__title">{group.name}</h3>
-
+        <h3 className="group_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/>
         <div className="group_profile__meta__created">
-          <FormattedMessage admin={admin.name} message={this.getIntlMessage('createdBy')}/>
+          <FormattedMessage message={this.getIntlMessage('createdBy')}/>
+          &nbsp;
+          <span dangerouslySetInnerHTML={{__html: escapeWithEmoji(admin.name)}}/>
         </div>
       </header>
     ,
       group.about ? (
         <div className="group_profile__meta__description"
-             dangerouslySetInnerHTML={{__html: group.about.replace(/\n/g, '<br/>')}}/>
+             dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.about).replace(/\n/g, '<br/>')}}/>
       ) : null
     ];
 
