@@ -48,6 +48,7 @@
 #import "im/actor/core/entity/User.h"
 #import "im/actor/core/entity/Sex.h"
 #import "im/actor/core/entity/GroupMember.h"
+#import "im/actor/core/entity/WebActionDescriptor.h"
 #import "im/actor/core/entity/content/AbsContent.h"
 #import "im/actor/core/entity/content/TextContent.h"
 #import "im/actor/core/entity/content/DocumentContent.h"

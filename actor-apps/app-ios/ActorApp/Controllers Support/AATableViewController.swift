@@ -27,7 +27,7 @@ class AATableViewController: AAViewController, UITableViewDataSource, UITableVie
         tableView.dataSource = self
         view.addSubview(tableView)
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment:"Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
