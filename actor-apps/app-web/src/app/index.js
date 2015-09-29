@@ -40,6 +40,10 @@ Pace.start({
   restartOnPushState: false
 });
 
+// Preload emoji spritesheet
+import { preloadEmojiSheet } from 'utils/EmojiUtils'
+preloadEmojiSheet();
+
 const { DefaultRoute, Route, RouteHandler } = Router;
 
 const ActorInitEvent = 'concurrentActorInit';
