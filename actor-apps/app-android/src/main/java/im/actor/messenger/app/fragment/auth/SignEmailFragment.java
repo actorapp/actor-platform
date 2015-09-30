@@ -98,7 +98,6 @@ public class SignEmailFragment extends BaseAuthFragment {
     private void requestCode() {
         final String ACTION = "Request code email";
 
-        messenger().trackCodeRequest();
 
         if (emailEditText.getText().toString().trim().length() == 0) {
             String message = getString(R.string.auth_error_empty_email);
@@ -106,7 +105,6 @@ public class SignEmailFragment extends BaseAuthFragment {
                     .setMessage(R.string.auth_error_empty_email)
                     .setPositiveButton(R.string.dialog_ok, null)
                     .show();
-            messenger().trackActionError(ACTION, "LOCAL_EMPTY_EMAIL", message);
             return;
         }
 
@@ -118,7 +116,6 @@ public class SignEmailFragment extends BaseAuthFragment {
                     .setMessage(R.string.auth_error_empty_email)
                     .setPositiveButton(R.string.dialog_ok, null)
                     .show();
-            messenger().trackActionError(ACTION, "LOCAL_INCORRECT_EMAIL", message);
             return;
         }
         executeAuth(messenger().requestStartEmailAuth(rawEmail), ACTION);
