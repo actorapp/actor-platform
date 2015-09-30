@@ -144,6 +144,7 @@ object Main extends App {
       new WebactionsServiceImpl
     )
 
+    system.log.warning("Starting ActorBot")
     ActorBot.start()
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
