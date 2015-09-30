@@ -36,6 +36,7 @@ private[user] sealed trait Commands extends AuthCommands {
   def create(
     userId:      Int,
     accessSalt:  String,
+    nickname:    Option[String],
     name:        String,
     countryCode: String,
     sex:         ApiSex.ApiSex,
@@ -43,7 +44,7 @@ private[user] sealed trait Commands extends AuthCommands {
     extensions:  Seq[ApiExtension] = Seq.empty,
     external:    Option[String]    = None
   ): Future[CreateAck] =
-    (processorRegion.ref ? Create(userId, accessSalt, name, countryCode, sex, isBot, extensions, external)).mapTo[CreateAck]
+    (processorRegion.ref ? Create(userId, accessSalt, nickname, name, countryCode, sex, isBot, extensions, external)).mapTo[CreateAck]
 
   def addPhone(userId: Int, phone: Long): Future[Unit] = {
     (processorRegion.ref ? AddPhone(userId, phone)).mapTo[AddPhoneAck] map (_ ⇒ ())

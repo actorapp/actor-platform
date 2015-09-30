@@ -1,24 +1,33 @@
-package im.actor.server.api.http.bots
+package im.actor.server.bot
 
 import akka.actor.{ ActorLogging, Props }
+import akka.pattern.pipe
 import akka.stream.actor.ActorPublisher
+import akka.stream.scaladsl.Source
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessage }
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.bot.BotMessages
+import im.actor.bot.BotMessages.{ OutPeer, BotUpdate }
+import im.actor.server.acl.ACLUtils
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.sequence.{ UpdatesConsumer, WeakUpdatesManager }
 
 import scala.annotation.tailrec
 
-private[bots] object UpdatesSource {
+private[bot] object UpdatesSource {
+  def source(authId: Long) = Source.actorPublisher[BotUpdate](props(authId))
+
   def props(authId: Long) = Props(classOf[UpdatesSource], authId)
+
+  private final case class Enqueue(upd: BotUpdate)
 }
 
-private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.BotUpdate] with ActorLogging {
+private class UpdatesSource(authId: Long) extends ActorPublisher[BotUpdate] with ActorLogging {
 
-  import BotMessages.{ Peer, TextMessage }
+  import UpdatesSource._
+  import BotMessages.TextMessage
   import akka.stream.actor.ActorPublisherMessage._
   import context._
   import im.actor.server.sequence.NewUpdate
@@ -32,10 +41,10 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.Bot
   private var buf = Vector.empty[BotMessages.BotUpdate]
 
   def receive = {
+    case Enqueue(upd) ⇒ enqueue(upd)
     case NewUpdate(UpdateBox(bodyBytes), _) ⇒
       UpdateBoxCodec.decode(bodyBytes).require.value match {
         case SeqUpdate(_, _, header, body) ⇒
-
           header match {
             case UpdateMessage.header ⇒
               UpdateMessage.parseFrom(body) match {
@@ -43,17 +52,20 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.Bot
                   upd.message match {
                     case ApiTextMessage(message, _, _) ⇒
                       log.debug("Received ApiTextMessage")
-                      enqueue(TextMessage(
-                        peer = Peer(upd.peer.`type`.id, upd.peer.id),
+
+                      (for {
+                        apiOutPeer ← ACLUtils.getOutPeer(upd.peer, authId)
+                      } yield Enqueue(TextMessage(
+                        peer = OutPeer(apiOutPeer.`type`.id, apiOutPeer.id, apiOutPeer.accessHash),
                         senderUserId = upd.senderUserId,
                         date = upd.date,
                         randomId = upd.randomId,
-                        message = message
-                      ))
+                        text = message
+                      ))) pipeTo self
+
                     case _ ⇒
                       log.debug("Received non-text message, ignoring")
                   }
-
                 case Left(e) ⇒
                   log.error(e, "Failed to parse UpdateMessage")
               }
@@ -65,6 +77,7 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.Bot
     case Request(_) ⇒
       deliverBuf()
     case Cancel ⇒
+      log.warning("Cancelling")
       context.stop(self)
   }
 

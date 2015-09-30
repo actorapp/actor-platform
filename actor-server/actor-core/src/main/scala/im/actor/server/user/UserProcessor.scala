@@ -39,7 +39,7 @@ private[user] object UserBuilder {
       authIds = Seq.empty[Long],
       isDeleted = false,
       isBot = e.isBot,
-      nickname = None,
+      nickname = e.nickname,
       about = None,
       avatar = None,
       createdAt = ts.getMillis,
@@ -156,8 +156,8 @@ private[user] final class UserProcessor
   }
 
   override protected def handleInitCommand: Receive = {
-    case Create(_, accessSalt, name, countryCode, sex, isBot, extensions, external) ⇒
-      create(accessSalt, name, countryCode, sex, isBot, extensions, external)
+    case Create(_, accessSalt, nickName, name, countryCode, sex, isBot, extensions, external) ⇒
+      create(accessSalt, nickName, name, countryCode, sex, isBot, extensions, external)
   }
 
   override protected def handleCommand(state: User): Receive = {
