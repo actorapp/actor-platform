@@ -124,7 +124,7 @@ public class CoverAvatarView extends SimpleDraweeView {
                     public void onDownloaded(FileSystemReference reference) {
                         isLoaded = true;
                         if (bkgrnd != null && avatar != null && (avatar.getSmallImage() != null)) {
-                            String downloadedDescriptor = messenger().getDownloadedDescriptor(avatar.getSmallImage().getFileReference().getFileId());
+                            String downloadedDescriptor = messenger().findDownloadedDescriptor(avatar.getSmallImage().getFileReference().getFileId());
                             if (downloadedDescriptor != null && !downloadedDescriptor.isEmpty()) {
                                 Drawable d = Drawable.createFromPath(downloadedDescriptor);
                                 bkgrnd.setImageDrawable(d);
@@ -140,7 +140,7 @@ public class CoverAvatarView extends SimpleDraweeView {
 
     private boolean setCommon(Avatar avatar) {
         if (avatar != null && (avatar.getFullImage() != null || avatar.getSmallImage() != null)) {
-            String downloadedDescriptor = messenger().getDownloadedDescriptor(avatar.getFullImage() != null ? avatar.getFullImage().getFileReference().getFileId() : avatar.getSmallImage().getFileReference().getFileId());
+            String downloadedDescriptor = messenger().findDownloadedDescriptor(avatar.getFullImage() != null ? avatar.getFullImage().getFileReference().getFileId() : avatar.getSmallImage().getFileReference().getFileId());
             if (downloadedDescriptor != null && !downloadedDescriptor.isEmpty()) {
                 Drawable d = Drawable.createFromPath(downloadedDescriptor);
                 setScaleType(ScaleType.CENTER_CROP);

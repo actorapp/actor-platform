@@ -341,7 +341,6 @@ public class MyProfileFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        messenger().trackOwnProfileOpen();
     }
 
     @Override
@@ -366,7 +365,6 @@ public class MyProfileFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        messenger().trackOwnProfileClosed();
         avatarView.unbind();
     }
 

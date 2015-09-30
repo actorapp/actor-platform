@@ -61,14 +61,12 @@ public class SignUpFragment extends BaseAuthFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                messenger().trackAuthSignupNameType(s.toString());
             }
         });
 
         v.findViewById(R.id.pickAvatar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                messenger().trackAuthSignupPressedAvatar();
                 startActivityForResult(Intents.pickAvatar(avatarPath != null, getActivity()), REQUEST_AVATAR);
             }
         });
@@ -90,7 +88,6 @@ public class SignUpFragment extends BaseAuthFragment {
     @Override
     public void onResume() {
         super.onResume();
-        messenger().trackAuthSignupOpen();
         setTitle(R.string.auth_profile_title);
         focus(firstNameEditText);
         keyboardHelper.setImeVisibility(firstNameEditText, true);
@@ -104,14 +101,11 @@ public class SignUpFragment extends BaseAuthFragment {
                 if (res == Intents.RESULT_IMAGE) {
                     avatarPath = data.getStringExtra(Intents.EXTRA_IMAGE);
                     avatarView.bindRaw(avatarPath);
-                    messenger().trackAuthSignupAvatarPicked();
                 } else if (res == Intents.RESULT_DELETE) {
                     avatarPath = null;
                     avatarView.unbind();
-                    messenger().trackAuthSignupAvatarDeleted();
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                messenger().trackAuthSignupAvatarCanelled();
             }
         }
     }
@@ -127,6 +121,5 @@ public class SignUpFragment extends BaseAuthFragment {
     @Override
     public void onPause() {
         super.onPause();
-        messenger().trackAuthSignupClosed();
     }
 }

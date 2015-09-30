@@ -347,7 +347,7 @@ public class MessagesFragment extends DisplayListFragment<Message, MessageHolder
                                 boolean isDoc = !(m.getContent() instanceof PhotoContent || m.getContent() instanceof VideoContent);
                                 DocumentContent fileMessage = (DocumentContent) m.getContent();
                                 if (fileMessage.getSource() instanceof FileRemoteSource) {
-                                    i.putExtra("forward_doc_descriptor", messenger().getDownloadedDescriptor(((FileRemoteSource) fileMessage.getSource()).getFileReference().getFileId()));
+                                    i.putExtra("forward_doc_descriptor", messenger().findDownloadedDescriptor(((FileRemoteSource) fileMessage.getSource()).getFileReference().getFileId()));
                                 } else if (fileMessage.getSource() instanceof FileLocalSource) {
                                     String descriptor = ((FileLocalSource) fileMessage.getSource()).getFileDescriptor();
                                     i.putExtra("forward_doc_descriptor", descriptor);

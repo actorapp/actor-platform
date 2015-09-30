@@ -40,13 +40,11 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
     @Override
     protected void onResume() {
         super.onResume();
-        messenger().trackMainScreensOpen();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        messenger().trackMainScreensClosed();
     }
 
     public void onDialogClicked(Dialog item) {
