@@ -54,16 +54,18 @@ class ComposeSection extends React.Component {
     GroupStore.addChangeListener(this.onChange);
     ComposeStore.addChangeListener(this.onChange);
     PreferencesStore.addListener(this.onChange);
+
+    window.addEventListener('focus', this.onFocus);
   }
 
   componentWillUnmount() {
     GroupStore.removeChangeListener(this.onChange);
     ComposeStore.removeChangeListener(this.onChange);
+
+    window.removeEventListener('focus', this.onFocus);
   }
 
-  onChange = () => {
-    this.setState(getStateFromStores());
-  };
+  onChange = () => this.setState(getStateFromStores());
 
   onMessageChange = event => {
     const text = event.target.value;
@@ -168,6 +170,11 @@ class ComposeSection extends React.Component {
   };
   onEmojiDropdownClose = () => this.setState({isEmojiDropdownShow: false});
   onEmojiShowClick = () => this.setState({isEmojiDropdownShow: true});
+
+  onFocus = () => {
+    const composeArea = React.findDOMNode(this.refs.area);
+    composeArea.focus();
+  };
 
   render() {
     const { text, profile, mentions, isEmojiDropdownShow } = this.state;
