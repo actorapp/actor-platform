@@ -90,6 +90,7 @@ object Build extends sbt.Build with Versioning with Releasing {
     .aggregate(
       //      actorDashboard,
       actorCore,
+      actorBot,
       actorEmail,
       actorEnrich,
       actorFrontend,
@@ -141,7 +142,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       Seq(
         libraryDependencies ++= Dependencies.bot
       )
-  ).dependsOn(actorBotMessages, shardakka, actorCore)
+  ).dependsOn(actorBotMessages, shardakka, actorCore, actorTestkit % "test")
 
   lazy val actorBotMessages = Project(
     id = "actor-bot-messages",
@@ -224,7 +225,6 @@ object Build extends sbt.Build with Versioning with Releasing {
     actorActivation,
     actorCodecs,
     actorCore,
-    actorHttpApi, // FIXME: remove this dependency
     actorOAuth,
     actorPersist,
     actorPresences,
