@@ -3085,6 +3085,21 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "UnsupportedMessage",
+            "doc": [
+              "Explicit type for unsupported message"
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 5
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SendMessage",
