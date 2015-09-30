@@ -4,7 +4,6 @@ import im.actor.core.Configuration;
 import im.actor.core.Extension;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
-import im.actor.core.modules.internal.AnalyticsModule;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.internal.ContactsModule;
 import im.actor.core.modules.internal.DisplayLists;
@@ -76,8 +75,6 @@ public interface ModuleContext {
     SecurityModule getSecurityModule();
 
     SearchModule getSearchModule();
-
-    AnalyticsModule getAnalyticsModule();
 
     ExternalModule getExternalModule();
 

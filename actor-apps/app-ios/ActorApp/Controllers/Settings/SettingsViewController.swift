@@ -7,9 +7,6 @@ import MobileCoreServices
 
 class SettingsViewController: ACContentTableController {
     
-    private let uid: Int
-    private let user: ACUserVM
-    
     private var phonesCells: ACManagedArrayRows<ACUserPhone, TitledCell>!
     
     private var headerCell: ACAvatarRow!
@@ -17,16 +14,17 @@ class SettingsViewController: ACContentTableController {
     private var aboutCell: ACTextRow!
     
     init() {
-        uid = Int(Actor.myUid())
-        user = Actor.getUserWithUid(jint(uid))
         super.init(tableViewStyle: UITableViewStyle.Plain)
         
-        applyStyle("controller.settings")
+        uid = Int(Actor.myUid())
+        
+        content = ACAllEvents_Main.SETTINGS()
         
         tabBarItem = UITabBarItem(title: localized("TabSettings"),
             image: MainAppTheme.tab.createUnselectedIcon("TabIconSettings"),
             selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconSettingsHighlighted"))
         
+        applyStyle("controller.settings")
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -147,6 +145,21 @@ class SettingsViewController: ACContentTableController {
                 }
             }
         }
+        
+//        section { (s) -> () in
+//            s.action("Connect VK", closure: { (r) -> () in
+//                r.selectAction = { () -> Bool in
+//                    self.executeSafe(Actor.startWebAction("vkOAuth")) { (val) -> Void in
+//                        if let d = val as? ACWebActionDescriptor {
+//                            let controller = AANavigationController()
+//                            controller.viewControllers = [WebActionController(desc: d)]
+//                            self.presentViewController(controller, animated: true, completion: nil)
+//                        }
+//                    }
+//                    return false
+//                }
+//            })
+//        }
         
         // Settings
         section { (s) -> () in
@@ -342,17 +355,5 @@ class SettingsViewController: ACContentTableController {
             self.phonesCells.data = (phones?.toSwiftArray())!
             self.phonesCells.reload()
         })
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        Actor.onProfileOpenWithUid(jint(uid))
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        Actor.onProfileClosedWithUid(jint(uid))
     }
 }

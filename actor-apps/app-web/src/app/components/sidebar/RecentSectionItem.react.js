@@ -6,6 +6,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import PeerUtils from 'utils/PeerUtils';
+import { escapeWithEmoji } from 'utils/EmojiUtils';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 
@@ -52,7 +53,7 @@ class RecentSectionItem extends React.Component {
                     placeholder={dialog.peer.placeholder}
                     size="tiny"
                     title={dialog.peer.title}/>
-        <span className="col-xs title">{dialog.peer.title}</span>
+        <div className="title col-xs" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialog.peer.title)}}/>
         {counter}
         {/* <i className="material-icons delete" onClick={this.onDelete}>clear</i> */}
       </li>

@@ -6,7 +6,7 @@ import UIKit
 
 func dispatchOnUi(closure: () -> Void) {
     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-        NSLog("dispatchOnUi")
+        // NSLog("dispatchOnUi")
         closure()
     })
 }
@@ -114,5 +114,21 @@ class ObjectPool<T: AnyObject> {
     }
 }
 
-
-
+class Regex {
+    let internalExpression: NSRegularExpression
+    let pattern: String
+    
+    init(_ pattern: String) {
+        self.pattern = pattern
+        do {
+            self.internalExpression = try NSRegularExpression(pattern: pattern, options: .CaseInsensitive)
+        } catch {
+            fatalError("Incorrect regex: \(pattern)")
+        }
+    }
+    
+    func test(input: String) -> Bool {
+        let matches = self.internalExpression.matchesInString(input, options: NSMatchingOptions(), range:NSMakeRange(0, input.length))
+        return matches.count > 0
+    }
+}

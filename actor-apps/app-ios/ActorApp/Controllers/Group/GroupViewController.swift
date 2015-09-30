@@ -12,19 +12,16 @@ class GroupViewController: ACContentTableController {
         return lname < rname
     }
     
-    let gid: Int
-    let group: ACGroupVM
-    
     var headerRow: ACAvatarRow!
     var memberRows: ACManagedArrayRows<ACGroupMember, GroupMemberCell>!
     
     init (gid: Int) {
-        self.gid = gid
-        self.group = Actor.getGroupWithGid(jint(gid))
-        
         super.init(tableViewStyle: UITableViewStyle.Plain)
         
-        title = localized("ProfileTitle")
+        self.gid = gid
+        self.autoTrack = true
+        
+        self.title = localized("ProfileTitle")
     }
 
     required init(coder aDecoder: NSCoder) {

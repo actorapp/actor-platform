@@ -5,7 +5,7 @@
 package im.actor.core.entity;
 
 public enum ContentType {
-    TEXT(2), EMPTY(1),
+    TEXT(2), NONE(1),
     DOCUMENT(3),
     DOCUMENT_PHOTO(4),
     DOCUMENT_VIDEO(5),
@@ -35,7 +35,7 @@ public enum ContentType {
         switch (value) {
             default:
             case 1:
-                return EMPTY;
+                return NONE;
             case 2:
                 return TEXT;
             case 3:

@@ -17,8 +17,44 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
     
     var popover: UIPopoverController?
     
-    // MARK: -
-    // MARK: Constructors
+    // Content type for view tracking
+    
+    var content: ACPage?
+    
+    // Data for views
+    
+    var autoTrack: Bool = false {
+        didSet {
+            if self.autoTrack {
+                if let u = self.uid {
+                    content = ACAllEvents_Profile_viewWithInt_(jint(u))
+                }
+                if let g = self.gid {
+                    content = ACAllEvents_Group_viewWithInt_(jint(g))
+                }
+            }
+        }
+    }
+    
+    var uid: Int! {
+        didSet {
+            if self.uid != nil {
+                self.user = Actor.getUserWithUid(jint(self.uid))
+                self.isBot = user.isBot().boolValue
+            }
+        }
+    }
+    var user: ACUserVM!
+    var isBot: Bool!
+    
+    var gid: Int! {
+        didSet {
+            if self.gid != nil {
+                self.group = Actor.getGroupWithGid(jint(self.gid))
+            }
+        }
+    }
+    var group: ACGroupVM!
     
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -32,20 +68,15 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment: "Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
     }
-    
-    // MARK: -
-    // MARK: Placeholder
     
     func showPlaceholderWithImage(image: UIImage?, title: String?, subtitle: String?) {
         placeholder.setImage(image, title: title, subtitle: subtitle)
@@ -64,9 +95,6 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
             placeholder.removeFromSuperview()
         }
     }
-    
-    // MARK: -
-    // MARK: Methods
     
     func shakeView(view: UIView, originalX: CGFloat) {
         var r = view.frame
@@ -135,40 +163,37 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
     }
     
-    func previewAvatar(avatar: ACAvatar) {
-        if avatar.fullImage != nil {
-            var previewImage: UIImage?
-            
-            let descriptor = Actor.getDownloadedDescriptorWithFileId(avatar.smallImage.fileReference.getFileId())
-            if descriptor != nil {
-                previewImage = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(descriptor))
-            }
-            
-            if avatar.smallImage != nil {
-                let descriptor = Actor.getDownloadedDescriptorWithFileId(avatar.smallImage.fileReference.getFileId())
-                if descriptor != nil {
-                    previewImage = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(descriptor))
-                }
-            }
-        }
-    }
-    
-    // MARK: -
-    // MARK: Layout
-    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
         placeholder.frame = CGRectMake(0, 64, view.bounds.width, view.bounds.height - 64)
     }
     
-    // MARK: -
-    // MARK: Navigation
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let c = content {
+            Analytics.trackPageVisible(c)
+        }
+        if let u = uid {
+            Actor.onProfileOpenWithUid(jint(u))
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if let c = content {
+            Analytics.trackPageHidden(c)
+        }
+        if let u = uid {
+            Actor.onProfileClosedWithUid(jint(u))
+        }
+    }
     
     func dismiss() {
         dismissViewControllerAnimated(true, completion: nil)
     }
-
 }
 
 extension AAViewController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {

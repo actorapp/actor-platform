@@ -21,6 +21,8 @@ class AuthPhoneViewController: AuthViewController, UITextFieldDelegate, AuthCoun
     
     override init() {
         super.init()
+        
+        self.content = ACAllEvents_Auth.AUTH_PHONE()
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -161,7 +163,6 @@ class AuthPhoneViewController: AuthViewController, UITextFieldDelegate, AuthCoun
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         MainAppTheme.navigation.applyAuthStatusBar()
-        Actor.trackAuthPhoneOpen()
     }
     
     // Actions
@@ -209,7 +210,6 @@ class AuthPhoneViewController: AuthViewController, UITextFieldDelegate, AuthCoun
     // Events
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        Actor.trackAuthPhoneTypeWithValue(textField.text)
         return true
     }
 }

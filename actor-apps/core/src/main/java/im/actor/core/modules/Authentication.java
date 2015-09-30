@@ -97,7 +97,7 @@ public class Authentication {
             state = AuthState.LOGGED_IN;
             modules.onLoggedIn();
 
-            // Notify Analytics
+            // Notify ActorAnalytics
             User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
             ArrayList<Long> records = new ArrayList<Long>();
             for (ContactRecord contactRecord : user.getRecords()) {
@@ -105,13 +105,8 @@ public class Authentication {
                     records.add(Long.parseLong(contactRecord.getRecordData()));
                 }
             }
-            modules.getAnalyticsModule().onLoggedIn(Crypto.hex(deviceHash), user.getUid(),
-                    records.toArray(new Long[records.size()]), user.getName());
         } else {
             state = AuthState.AUTH_START;
-
-            // Notify Analytics
-            modules.getAnalyticsModule().onLoggedOut(Crypto.hex(deviceHash));
         }
     }
 
@@ -390,7 +385,7 @@ public class Authentication {
 
                 callback.onResult(state);
 
-                // Notify Analytics
+                // Notify ActorAnalytics
                 User user = modules.getUsersModule().getUsersStorage().getValue(myUid);
                 ArrayList<Long> records = new ArrayList<Long>();
                 for (ContactRecord contactRecord : user.getRecords()) {
@@ -398,9 +393,6 @@ public class Authentication {
                         records.add(Long.parseLong(contactRecord.getRecordData()));
                     }
                 }
-                modules.getAnalyticsModule().onLoggedInPerformed(Crypto.hex(deviceHash), user.getUid(),
-                        records.toArray(new Long[records.size()]), user.getName());
-
             }
         }), 500L);
     }

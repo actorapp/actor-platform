@@ -20,4 +20,9 @@ public class AppVisibleChanged extends Event {
     public String getType() {
         return EVENT;
     }
+
+    @Override
+    public String toString() {
+        return EVENT + " {" + isVisible + "}";
+    }
 }
