@@ -8,6 +8,19 @@ import scala.concurrent.Future
 import scala.collection.JavaConversions._
 import scala.util.Try
 
+sealed trait WebactionResult {
+  def isSuccess: Boolean
+  def content: ApiMapValue
+}
+
+case class WebactionSuccess(content: ApiMapValue) extends WebactionResult {
+  override def isSuccess: Boolean = true
+}
+
+case class WebactionFailure(content: ApiMapValue) extends WebactionResult {
+  override def isSuccess: Boolean = false
+}
+
 object Webaction {
 
   /**
@@ -32,20 +45,22 @@ object Webaction {
     constructor.newInstance(system).asInstanceOf[Webaction]
   }
 
-  def failure(error: String, optCause: Option[String]): ApiMapValue = {
+  def failure(error: String, optCause: Option[String]): WebactionFailure = {
     val m = ApiMapValueItem("error", ApiStringValue(error))
     val items = optCause map { cause ⇒
       Vector(m, ApiMapValueItem("cause", ApiStringValue(cause)))
     } getOrElse Vector(m)
-    ApiMapValue(items)
+    WebactionFailure(ApiMapValue(items))
   }
 
-  def success(message: String): ApiMapValue =
-    ApiMapValue(Vector(ApiMapValueItem("success", ApiStringValue(message))))
+  def success(message: String): WebactionSuccess =
+    success(ApiMapValue(Vector(ApiMapValueItem("success", ApiStringValue(message)))))
+
+  def success(map: ApiMapValue): WebactionSuccess = WebactionSuccess(map)
 }
 
 abstract class Webaction(system: ActorSystem) {
   def uri(params: ApiMapValue): String
   def regex: String
-  def complete(userId: Int, url: String): Future[ApiMapValue]
+  def complete(userId: Int, url: String): Future[WebactionResult]
 }
