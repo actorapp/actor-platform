@@ -95,7 +95,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
   def receiveCommand: Receive = {
     case m @ Migrate(accessSalt, name, countryCode, sex, isBot, createdAt, authIds, phones, emails, avatarOpt) ⇒
       log.info("Migrate: {}", m)
-      val created = TSEvent(createdAt, Created(userId, accessSalt, name, countryCode, ApiSex(sex.toInt), isBot))
+      val created = TSEvent(createdAt, Created(userId, accessSalt, None, name, countryCode, ApiSex(sex.toInt), isBot))
       val authAdded = authIds map (a ⇒ TSEvent(createdAt, AuthAdded(a)))
       val phoneAdded = phones map (p ⇒ TSEvent(createdAt, PhoneAdded(p.number)))
       val emailAdded = emails map (e ⇒ TSEvent(createdAt, EmailAdded(e.email)))

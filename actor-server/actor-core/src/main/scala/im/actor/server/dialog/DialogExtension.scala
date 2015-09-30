@@ -5,6 +5,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.messaging.ApiMessage
 import im.actor.api.rpc.misc.ApiExtension
+import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.peers.ApiPeerType._
 import im.actor.api.rpc.peers.ApiPeerType.ApiPeerType
 import im.actor.extension.InternalExtensions
@@ -28,7 +29,17 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
 
   implicit val s: ActorSystem = system
   implicit val ec: ExecutionContext = system.dispatcher
-  implicit val timeout: Timeout = Timeout(20.seconds) //TODO: configurable
+  implicit val timeout: Timeout = Timeout(20.seconds) // TODO: configurable
+
+  def sendMessage(
+    peer:         ApiPeer,
+    senderUserId: Int,
+    senderAuthId: Long,
+    randomId:     Long,
+    message:      ApiMessage,
+    isFat:        Boolean
+  ): Future[SeqStateDate] =
+    sendMessage(peer.`type`, peer.id, senderUserId, senderAuthId, randomId, message, isFat)
 
   def sendMessage(peerType: ApiPeerType, peerId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] = {
     (peerType match {
