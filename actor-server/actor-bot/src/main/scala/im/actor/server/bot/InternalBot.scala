@@ -11,6 +11,7 @@ import im.actor.server.dialog.DialogExtension
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.util.Failure
 
 private object InternalBot {
 
@@ -63,11 +64,17 @@ abstract class InternalBot(userId: Int, nickname: String, name: String) extends 
   }
 
   private def init() = {
+    log.warning("Initiating bot {} {} {}", userId, nickname, name)
+
     val existence = botExt.exists(userId) flatMap { exists ⇒
       if (exists) {
+        log.warning("Bot already exists")
         Future.successful(())
       } else {
-        botExt.create(userId, nickname, name) map (_ ⇒ ())
+        log.warning("Creating user {}", userId)
+        botExt.create(userId, nickname, name) map (_ ⇒ ()) andThen {
+          case Failure(e) => log.error(e, "Failed to create bot user")
+        }
       }
     }
 
