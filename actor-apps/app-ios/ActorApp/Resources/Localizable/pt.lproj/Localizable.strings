@@ -242,7 +242,7 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Segurança";
+"SecurityTitle" = "Segurança";
 
 "PrivacyTerminate" = "Encerrar todas as sessões";
 

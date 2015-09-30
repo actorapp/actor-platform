@@ -248,7 +248,7 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Безопасность";
+"SecurityTitle" = "Безопасность";
 
 "PrivacyTerminate" = "Удалить все другие сессии";
 
