@@ -8,7 +8,7 @@ public class AppStateActor extends Actor {
 
     private static final String TAG = "AppStateActor";
 
-    private static final int CLOSE_TIMEOUT = 1000;
+    private static final int CLOSE_TIMEOUT = 100;
 
     private final AndroidMessenger messenger;
 
