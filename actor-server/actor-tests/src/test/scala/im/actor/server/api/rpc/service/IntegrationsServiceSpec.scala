@@ -44,7 +44,7 @@ class IntegrationsServiceSpec
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
     private val config = HttpApiConfig("localhost", 9000, "http", "actor.im", "/dev/null", None)
-    val service = new IntegrationsServiceImpl(config)
+    val service = new IntegrationsServiceImpl(s"${config.scheme}://${config.host}")
 
     val (user1, user1AuthId1, _) = createUser()
     val user1AuthId2 = createAuthId(user1.id)
@@ -121,7 +121,7 @@ class IntegrationsServiceSpec
         inside(resp) {
           case Ok(ResponseIntegrationToken(token, url)) ⇒
             token shouldEqual groupToken
-            url shouldEqual makeUrl(config, groupToken)
+            url shouldEqual makeUrl(s"${config.scheme}://${config.host}", groupToken)
         }
       }
     }
@@ -166,7 +166,7 @@ class IntegrationsServiceSpec
         inside(resp) {
           case Ok(ResponseIntegrationToken(token, url)) ⇒
             token shouldEqual groupToken
-            url shouldEqual makeUrl(config, groupToken)
+            url shouldEqual makeUrl(s"${config.scheme}://${config.host}", groupToken)
         }
       }
 
@@ -177,7 +177,7 @@ class IntegrationsServiceSpec
           inside(resp) {
             case Ok(ResponseIntegrationToken(token, url)) ⇒
               token shouldEqual groupToken
-              url shouldEqual makeUrl(config, groupToken)
+              url shouldEqual makeUrl(s"${config.scheme}://${config.host}", groupToken)
           }
         }
       }

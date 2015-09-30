@@ -138,7 +138,7 @@ object Main extends App {
       new ConfigsServiceImpl,
       new PushServiceImpl,
       new ProfileServiceImpl,
-      new IntegrationsServiceImpl(webappConfig)
+      new IntegrationsServiceImpl(s"${webappConfig.scheme}://${webappConfig.host}")
     )
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
