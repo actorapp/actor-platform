@@ -36,6 +36,8 @@ class AuthCountriesViewController: AATableViewController {
         
         let cancelButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("cancelButtonPressed")) // TODO: Localize
         self.navigationItem.setLeftBarButtonItem(cancelButtonItem, animated: false)
+        
+        self.content = ACAllEvents_Auth.AUTH_PICK_COUNTRY()
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -57,18 +59,17 @@ class AuthCountriesViewController: AATableViewController {
         super.viewWillAppear(animated)
         
         MainAppTheme.navigation.applyStatusBar()
-        Actor.trackAuthCountryOpen()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        Actor.trackAuthCountryClosed()
     }
     
     // MARK: -
     // MARK: Methods
     
     func cancelButtonPressed() {
+
         dismiss()
     }
     
@@ -145,7 +146,6 @@ class AuthCountriesViewController: AATableViewController {
         if (delegate?.respondsToSelector(Selector("countriesController:didChangeCurrentIso:")) != nil) {
             let letter = letters()[indexPath.section] as! String
             let countryData = (countries().objectForKey(letter) as! NSArray)[indexPath.row] as! [String]
-            Actor.trackAuthCountryPickedWithCountry(countryData[1])
             delegate!.countriesController(self, didChangeCurrentIso: countryData[1])
         }
         dismiss()

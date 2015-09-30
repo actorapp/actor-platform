@@ -34,7 +34,7 @@ final class ValueActor(name: String) extends PersistentActor {
         sender() ! Ack()
       }
     case Delete(_) ⇒
-      if (value.isEmpty) {
+      if (value.isDefined) {
         persist(ValueDeleted()) { e ⇒
           value = None
           sender() ! Ack()

@@ -2,11 +2,12 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { escape } from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import addons from 'react/addons';
-
 import classnames from 'classnames';
+import { escapeWithEmoji } from 'utils/EmojiUtils';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
@@ -72,6 +73,8 @@ class MessageItem extends React.Component {
         visibilitySensor = null,
         leftBlock = null;
 
+    const messageSender = escapeWithEmoji(message.sender.title);
+
     const messageClassName = classnames('message row', {
       'message--same-sender': isSameSender
     });
@@ -102,7 +105,7 @@ class MessageItem extends React.Component {
       header = (
         <header className="message__header">
           <h3 className="message__sender">
-            <a onClick={this.onClick}>{message.sender.title}</a>
+            <a onClick={this.onClick} dangerouslySetInnerHTML={{__html: messageSender}}/>
           </h3>
           <time className="message__timestamp">{message.date}</time>
           <State message={message}/>
@@ -112,7 +115,7 @@ class MessageItem extends React.Component {
 
     switch (message.content.content) {
       case MessageContentTypes.SERVICE:
-        messageContent = <div className="message__content message__content--service">{message.content.text}</div>;
+        messageContent = <div className="message__content message__content--service" dangerouslySetInnerHTML={{__html: escapeWithEmoji(message.content.text)}}/>;
         break;
       case MessageContentTypes.TEXT:
         messageContent = (

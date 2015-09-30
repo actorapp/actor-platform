@@ -226,13 +226,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                 }, onDownloading: { (progress) -> () in
                     Actor.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                 }, onDownloaded: { (reference) -> () in
-                    let photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
-                    let controller = NYTPhotosViewController(photos: [photoInfo])
-                    controller.delegate = self
-                    
-                    (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
-                    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
-                    self.controller.presentViewController(controller, animated: true, completion: nil)
+                    if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference)) {
+                        let previewImage = PreviewImage(image: img)
+                        let previewController = PhotoPreviewController(photo: previewImage, fromView: self.preview)
+                        self.controller.presentViewController(previewController, animated: true, completion: nil)
+                    }
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
             let rid = bindedMessage!.rid
@@ -242,13 +240,12 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                 }, onUploading: { (progress) -> () in
                     Actor.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
-                    let photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-                    let controller = NYTPhotosViewController(photos: [photoInfo])
-                    controller.delegate = self
                     
-                    (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
-                    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Fade)
-                    self.controller.presentViewController(controller, animated: true, completion: nil)
+                    if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))) {
+                        let previewImage = PreviewImage(image: img)
+                        let previewController = PhotoPreviewController(photo: previewImage, fromView: self.preview)
+                        self.controller.presentViewController(previewController, animated: true, completion: nil)
+                    }
             }))
         }
     }

@@ -29,6 +29,8 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     override func loadView() {
         super.loadView()
         
+        self.content = ACAllEvents_Auth.AUTH_SIGNUP()
+        
         view.backgroundColor = UIColor.whiteColor()
         
         grayBackground = UIView()
@@ -135,16 +137,6 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
         super.viewWillAppear(animated)
         
         MainAppTheme.navigation.applyAuthStatusBar()
-        Actor.trackAuthSignupOpen()
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        Actor.trackAuthSignupClosed()
     }
     
     // MARK: -
@@ -213,7 +205,6 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     }
     
     func selectPhoto(supportDelete: Bool) {
-        Actor.trackAuthSignupPressedAvatar()
         var actionSheet = UIActionSheet(title: nil, delegate: self,
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
             destructiveButtonTitle: nil,
@@ -248,7 +239,6 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
             var action = "SignUp";
             
             execute(Actor.signUpCommandWithName(username, withSex: ACSexEnum.values().objectAtIndex(ACSex.UNKNOWN.rawValue) as! ACSexEnum, withAvatar: avatarPath), successBlock: { (val) -> Void in
-                Actor.trackActionSuccess(action)
                 self.onAuthenticated()
                 }, failureBlock: { (val) -> Void in
                     
@@ -272,8 +262,6 @@ class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
                     } else if let exception = val as? JavaLangException {
                         message = exception.getLocalizedMessage()
                     }
-                    
-                    Actor.trackActionError(action, withTag: tag, withMessage: message)
                     
                     var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                     alertView.show()
@@ -318,7 +306,6 @@ extension AuthRegisterViewController: UIActionSheetDelegate {
     
     func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
         if (buttonIndex == 0) {
-            Actor.trackAuthSignupAvatarDeleted()
             return
         }
         
@@ -331,59 +318,6 @@ extension AuthRegisterViewController: UIActionSheetDelegate {
         } else if (buttonIndex == 3) {
             avatarImageView.hidden = true
             avatarImageView.image = nil
-            Actor.trackAuthSignupAvatarDeleted()
         }
-    }
-    
+    }   
 }
-
-//// MARK: -
-//// MARK: UIImagePickerController Delegate
-//
-//extension AAAuthRegisterController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
-//    
-//    func cropImage(image: UIImage) {
-//        var cropController = PECropViewController()
-//        cropController.cropAspectRatio = 1.0
-//        cropController.keepingCropAspectRatio = true
-//        cropController.image = image
-//        cropController.delegate = self
-//        cropController.toolbarHidden = true
-//        navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
-//    }
-//    
-//    func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
-//        avatarImageView.image = croppedImage
-//        avatarImageView.hidden = false
-//        MSG.trackAuthSignupAvatarPicked()
-//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-//    }
-//    
-//    func cropViewControllerDidCancel(controller: PECropViewController!) {
-//        MSG.trackAuthSignupAvatarCanelled()
-//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-//    }
-//    
-//    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
-//        MainAppTheme.navigation.applyAuthStatusBar()
-//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-//        cropImage(image)
-//    }
-//    
-//    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-//        MainAppTheme.navigation.applyAuthStatusBar()
-//        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-//        cropImage(image)
-//    }
-//    
-//    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-//        MainAppTheme.navigation.applyAuthStatusBar()
-//        MSG.trackAuthSignupAvatarCanelled()
-//        self.dismissViewControllerAnimated(true, completion: nil)
-//    }
-//    
-//}
-
-// MARK: -
-// MARK: UINavigationController Delegate
