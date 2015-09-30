@@ -4,6 +4,8 @@
 
 import React from 'react';
 import classNames from 'classnames';
+import { emojiRegexp } from 'utils/EmojiUtils';
+
 
 class AvatarItem extends React.Component {
   static propTypes = {
@@ -33,10 +35,13 @@ class AvatarItem extends React.Component {
 
     const avatar = image ? <img alt={title} className="avatar__image" src={image}/> : null;
 
+    const emojiFirstChar = /([\uE000-\uF8FF]|\uD83C|\uD83D)/g;
+    const placeholderChar = title[0].match(emojiFirstChar) ? '#' : title[0];
+
     return (
       <div className={avatarClassName}>
         {avatar}
-        <span className={placeholderClassName}>{title[0]}</span>
+        <span className={placeholderClassName}>{placeholderChar}</span>
       </div>
     );
   }
