@@ -27,6 +27,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
+import im.actor.server.bot.ActorBot
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
 import im.actor.server.email.{ EmailConfig, EmailSender }
@@ -142,6 +143,8 @@ object Main extends App {
       new IntegrationsServiceImpl(s"${webappConfig.scheme}://${webappConfig.host}"),
       new WebactionsServiceImpl
     )
+
+    ActorBot.start()
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
