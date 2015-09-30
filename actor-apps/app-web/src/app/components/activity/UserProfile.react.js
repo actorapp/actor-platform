@@ -10,6 +10,7 @@ import classnames from 'classnames';
 
 import ActorClient from 'utils/ActorClient';
 import confirm from 'utils/confirm'
+import { escapeWithEmoji } from 'utils/EmojiUtils';
 
 import ContactActionCreators from 'actions/ContactActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
