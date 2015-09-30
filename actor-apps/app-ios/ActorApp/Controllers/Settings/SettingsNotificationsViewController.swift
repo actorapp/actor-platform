@@ -12,8 +12,11 @@ class SettingsNotificationsViewController: AATableViewController {
     private let CellIdentifier = "CellIdentifier"
     
     init() {
-        super.init(style:
-            UITableViewStyle.Grouped)
+        super.init(style:UITableViewStyle.Grouped)
+        
+        title = NSLocalizedString("NotificationsTitle", comment: "Notifcations and Sounds")
+        
+        content = ACAllEvents_Settings.NOTIFICATIONS()
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -24,8 +27,6 @@ class SettingsNotificationsViewController: AATableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationItem.title = NSLocalizedString("NotificationsTitle", comment: "Notifcations and Sounds")
         
         tableView.registerClass(CommonCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = MainAppTheme.list.backyardColor

@@ -29,8 +29,6 @@ public class ConfigurationBuilder {
 
     private ApiConfiguration apiConfiguration;
 
-    private AnalyticsProvider analyticsProvider;
-
     private PlatformType platformType = PlatformType.GENERIC;
 
     private DeviceCategory deviceCategory = DeviceCategory.UNKNOWN;
@@ -62,19 +60,6 @@ public class ConfigurationBuilder {
     @ObjectiveCName("setDeviceCategory:")
     public ConfigurationBuilder setDeviceCategory(@NotNull DeviceCategory deviceCategory) {
         this.deviceCategory = deviceCategory;
-        return this;
-    }
-
-    /**
-     * Set Analytics Provider
-     *
-     * @param analyticsProvider the Analytics Provicer
-     * @return this
-     */
-    @NotNull
-    @ObjectiveCName("setAnalyticsProvider:")
-    public ConfigurationBuilder setAnalyticsProvider(@NotNull AnalyticsProvider analyticsProvider) {
-        this.analyticsProvider = analyticsProvider;
         return this;
     }
 
@@ -272,7 +257,7 @@ public class ConfigurationBuilder {
         return new Configuration(endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 phoneBookProvider, notificationProvider,
                 apiConfiguration, enableContactsLogging, enableNetworkLogging,
-                enableFilesLogging, analyticsProvider, deviceCategory, platformType,
+                enableFilesLogging, deviceCategory, platformType,
                 minDelay, maxDelay, maxFailureCount);
     }
 }

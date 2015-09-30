@@ -392,9 +392,7 @@ public class ConversationActor extends ModuleActor {
         docs.clear();
         inPendingIndex.clear();
         outPendingIndex.clear();
-        if (!isHiddenPeer) {
-            dialogsActor.send(new DialogsActor.ChatClear(peer));
-        }
+        dialogsActor.send(new DialogsActor.ChatClear(peer));
     }
 
     @Verified
@@ -403,9 +401,7 @@ public class ConversationActor extends ModuleActor {
         docs.clear();
         inPendingIndex.clear();
         outPendingIndex.clear();
-        if (!isHiddenPeer) {
-            dialogsActor.send(new DialogsActor.ChatDelete(peer));
-        }
+        dialogsActor.send(new DialogsActor.ChatDelete(peer));
     }
 
     // History

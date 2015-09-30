@@ -6391,6 +6391,172 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="6u8NlnzqpWE" role="2m5lHt">
+      <property role="TrG5h" value="Stats" />
+      <property role="3XOG$Z" value="stats" />
+      <node concept="2m5naR" id="6u8NlnzqUWi" role="2m5mJr">
+        <property role="TrG5h" value="EventRecord" />
+        <node concept="2m7Kf5" id="6u8NlnzqUWV" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="6u8NlnzqUWZ" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6u8NlnzqUX2" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="event" />
+          <node concept="3BlaRf" id="6u8NlnzqVxj" role="2m7DVh">
+            <ref role="3BrLez" node="6u8NlnzqrBg" resolve="Event" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="6u8NlnzqW5x" role="NXodf">
+          <property role="NXePf" value="Record for stored event" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="6u8NlnzqqvZ" role="1Dx9rD">
+        <property role="1Dx9K7" value="Saving statistics information" />
+      </node>
+      <node concept="w93zz" id="6u8NlnzqrBg" role="2m5mJr">
+        <property role="TrG5h" value="Event" />
+        <property role="1FaRnq" value="true" />
+      </node>
+      <node concept="2m5naR" id="6u8NlnzqxKR" role="2m5mJr">
+        <property role="TrG5h" value="UntypedEvent" />
+        <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
+        <ref role="w4$XZ" node="6u8NlnzqrBg" resolve="Event" />
+        <node concept="2m7Kf5" id="6u8NlnzqxL7" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="eventType" />
+          <node concept="2m5ndX" id="6u8NlnzqxLb" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8NlnzqxLe" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="params" />
+          <node concept="2m5nlT" id="6u8NlnzqxLk" role="2m7DVh">
+            <node concept="3BlaRf" id="6u8NlnzqxLq" role="3GH5xg">
+              <ref role="3BrLez" node="2WAO9Y$lyRS" resolve="RawValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="6u8NlnzqxL5" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+        <node concept="NXeRC" id="6u8NlnzqxLt" role="NXodf">
+          <property role="NXePf" value="Untyped event" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzqyll" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Event type" />
+          <ref role="NX6Kv" node="6u8NlnzqxL7" resolve="eventType" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzqylt" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="optional params for event" />
+          <ref role="NX6Kv" node="6u8NlnzqxLe" resolve="params" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="6u8NlnzqsaQ" role="2m5mJr">
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <property role="TrG5h" value="ContentViewChanged" />
+        <ref role="w4$XZ" node="6u8NlnzqrBg" resolve="Event" />
+        <node concept="2m7Kf5" id="6u8NlnzqtPF" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="contentType" />
+          <node concept="2m5ndX" id="6u8NlnzqtPJ" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8NlnzqYmz" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="contentId" />
+          <node concept="2m5ndX" id="6u8NlnzqYmK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8NlnzqSCs" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="visible" />
+          <node concept="2m5ndN" id="6u8NlnzqSC_" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6u8NlnzquX9" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="params" />
+          <node concept="2m5nlT" id="6u8NlnzquXm" role="2m7DVh">
+            <node concept="3BlaRf" id="6u8NlnzquXs" role="3GH5xg">
+              <ref role="3BrLez" node="2WAO9Y$lyRS" resolve="RawValue" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="6u8Nlnzqti4" role="NXodf">
+          <property role="NXePf" value="Content view event" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzqvxd" role="NXodf">
+          <property role="NX6R2" value="unique content id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6u8NlnzqtPF" resolve="contentType" />
+        </node>
+        <node concept="NX1gA" id="6u8NlnzqTdh" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Is content visible" />
+          <ref role="NX6Kv" node="6u8NlnzqSCs" resolve="visible" />
+        </node>
+        <node concept="NX1gA" id="6u8NlnzqxcU" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="optional params for content view" />
+          <ref role="NX6Kv" node="6u8NlnzquX9" resolve="params" />
+        </node>
+        <node concept="Nu42z" id="6u8NlnzqsaU" role="3BtCOu">
+          <property role="Nu42W" value="02" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="6u8NlnzqRu4" role="2m5mJr">
+        <property role="TrG5h" value="AppVisibleChanged" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="6u8NlnzqrBg" resolve="Event" />
+        <node concept="2m7Kf5" id="6u8NlnzqTLq" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="visible" />
+          <node concept="2m5ndN" id="6u8NlnzqTLu" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6u8NlnzqRuI" role="3BtCOu">
+          <property role="Nu42W" value="04" />
+        </node>
+        <node concept="NXeRC" id="6u8NlnzqRuK" role="NXodf">
+          <property role="NXePf" value="On App Visible event" />
+        </node>
+        <node concept="NX1gA" id="6u8NlnzqUlD" role="NXodf">
+          <property role="NX6R2" value="Is app visible" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6u8NlnzqTLq" resolve="visible" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6u8NlnzqyTI" role="2m5mJr">
+        <property role="TrG5h" value="StoreEvents" />
+        <node concept="2m7Kf5" id="6u8NlnzqyUb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="events" />
+          <node concept="2m5nlk" id="6u8NlnzqyUf" role="2m7DVh">
+            <node concept="3BlaRf" id="6u8NlnzqyUl" role="3GJlyp">
+              <ref role="3BrLez" node="6u8NlnzqrBg" resolve="Event" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="6u8NlnzqyTJ" role="NuuwV">
+          <property role="Nu42W" value="F3" />
+        </node>
+        <node concept="2m1Rp1" id="6u8NlnzqyUo" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="6u8Nlnzqzum" role="1GBnQ6">
+          <property role="NXePf" value="Storing events on server" />
+        </node>
+        <node concept="NX1gA" id="6u8Nlnzq$Aj" role="1GBnQ6">
+          <property role="NX6R2" value="Events for storing" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6u8NlnzqyUb" resolve="events" />
+        </node>
+      </node>
+    </node>
     <node concept="2m5mJO" id="6u8NlnzpZhz" role="2m5lHt">
       <property role="TrG5h" value="Wallpappers" />
       <property role="3XOG$Z" value="wallpappers" />
@@ -6477,7 +6643,7 @@
           <node concept="2m5ndE" id="6u8Nlnzq5N9" role="2m7DVh" />
         </node>
         <node concept="Nu42z" id="6u8Nlnzq496" role="NuuwV">
-          <property role="Nu42W" value="E7" />
+          <property role="Nu42W" value="F1" />
         </node>
         <node concept="2m1R6W" id="6u8Nlnzq4a8" role="2m6efq">
           <node concept="2m7Kf5" id="6u8Nlnzq4ad" role="2m0hLx">
@@ -6490,7 +6656,7 @@
             </node>
           </node>
           <node concept="Nu42z" id="6u8Nlnzq4a9" role="NuuwV">
-            <property role="Nu42W" value="E8" />
+            <property role="Nu42W" value="F2" />
           </node>
           <node concept="NXeRC" id="6u8Nlnzq8xB" role="1y2DgH">
             <property role="NXePf" value="Loaded Wallpappers" />

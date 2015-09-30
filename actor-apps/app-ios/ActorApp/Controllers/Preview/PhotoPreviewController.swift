@@ -11,8 +11,6 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
     let controllerPhotos: [AAPhoto]
     var bind = [Int: CocoaDownloadCallback]()
     let fromView: UIView?
-    var startStatusBarStyle: UIStatusBarStyle!
-    var statusBarHidden: Bool?
     
     convenience init(photos: [PreviewImage], fromView: UIView?) {
         self.init(photos: photos, initialPhoto: 0, fromView: fromView)
@@ -36,7 +34,7 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
             }
             
             if p.file != nil  {
-                let desc = Actor.getDownloadedDescriptorWithFileId(p.file!.getFileId())
+                let desc = Actor.findDownloadedDescriptorWithFileId(p.file!.getFileId())
                 if desc != nil {
                     let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
                     if img != nil {
@@ -47,7 +45,7 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
             }
             
             if p.previewFile != nil {
-                let desc = Actor.getDownloadedDescriptorWithFileId(p.previewFile!.getFileId())
+                let desc = Actor.findDownloadedDescriptorWithFileId(p.previewFile!.getFileId())
                 if desc != nil {
                     var img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
                     if img != nil {
@@ -81,6 +79,9 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Setting tint color
+        navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        
         // Binding files
         for i in 0..<controllerPhotos.count {
             let cp = controllerPhotos[i]
@@ -104,19 +105,8 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
             }
         }
         
-        // Save Status Bar style
-        startStatusBarStyle = UIApplication.sharedApplication().statusBarStyle
-        statusBarHidden = UIApplication.sharedApplication().statusBarHidden
-        
-        // Changing to black
-        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
-        
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: .Fade)
+        // Hide Status bar
+        UIApplication.sharedApplication().animateStatusBarAppearance(.SlideUp, duration: 0.3)
     }
     
     func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
@@ -133,8 +123,7 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
         bind.removeAll()
         
         // Restoring status bar
-        UIApplication.sharedApplication().setStatusBarStyle(startStatusBarStyle, animated: true)
-        UIApplication.sharedApplication().setStatusBarHidden(statusBarHidden!, withAnimation: .None)
+        UIApplication.sharedApplication().animateStatusBarAppearance(.SlideDown, duration: 0.3)
     }
 }
 

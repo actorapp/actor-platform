@@ -14,6 +14,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     // Internal state
     // Members for autocomplete
     var filteredMembers = [ACMentionFilterResult]()
+    let content: ACPage!
     
     // Views
     private let titleView: UILabel = UILabel()
@@ -23,7 +24,14 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     private let backgroundView = UIImageView()
     
     override init(peer: ACPeer) {
-        super.init(peer: peer);
+        
+        // Data
+        
+        self.content = ACAllEvents_Chat_viewWithACPeer_(peer)
+        
+        // Create controller
+        
+        super.init(peer: peer)
         
         // Background
         
@@ -107,7 +115,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: nil, style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -190,6 +198,7 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
         }
         
         Actor.onConversationOpenWithPeer(peer)
+        Analytics.trackPageVisible(content)
     }
     
     override func viewWillLayoutSubviews() {
@@ -216,7 +225,9 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
         Actor.onConversationClosedWithPeer(peer)
+        Analytics.trackPageHidden(content)
         
         if !isIPad {
             (UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
@@ -266,7 +277,6 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     }
     
     override func didPressRightButton(sender: AnyObject!) {
-        Actor.trackTextSendWithPeer(peer)
         Actor.sendMessageWithMentionsDetect(peer, withText: textView.text)
         super.didPressRightButton(sender)
     }
@@ -449,7 +459,6 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
-        Actor.trackPhotoSendWithPeer(peer)
         Actor.sendUIImage(image, peer: peer)
     }
     

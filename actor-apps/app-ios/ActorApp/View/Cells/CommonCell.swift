@@ -97,6 +97,7 @@ class CommonCell: UATableViewCell {
             break
         case .Switch:
             titleLabel.textColor = MainAppTheme.list.textColor
+            titleLabel.textAlignment = NSTextAlignment.Left
             setupSwitchIfNeeded()
             switcher?.hidden = false
             accessoryType = UITableViewCellAccessoryType.None

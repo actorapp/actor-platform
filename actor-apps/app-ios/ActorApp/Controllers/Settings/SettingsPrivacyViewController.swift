@@ -12,6 +12,8 @@ class SettingsPrivacyViewController: ACContentTableController {
         super.init(tableViewStyle: UITableViewStyle.Grouped)
         
         navigationItem.title = localized("SecurityTitle")
+        
+        content = ACAllEvents_Settings.PRIVACY()
     }
     
     required init(coder aDecoder: NSCoder) {

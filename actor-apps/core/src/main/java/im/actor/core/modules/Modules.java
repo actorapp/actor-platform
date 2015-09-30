@@ -9,7 +9,6 @@ import im.actor.core.Extension;
 import im.actor.core.Extensions;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
-import im.actor.core.modules.internal.AnalyticsModule;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.internal.ContactsModule;
 import im.actor.core.modules.internal.DisplayLists;
@@ -48,7 +47,6 @@ public class Modules implements ModuleContext {
     private final ApiModule api;
 
     // Modules required before authentication
-    private final AnalyticsModule analytics;
     private final AppStateModule appStateModule;
     private final ExternalModule external;
     private final Authentication authentication;
@@ -89,9 +87,6 @@ public class Modules implements ModuleContext {
 
         timing.section("API");
         this.api = new ApiModule(this);
-
-        timing.section("Analytics");
-        this.analytics = new AnalyticsModule(this);
 
         timing.section("App State");
         this.appStateModule = new AppStateModule(this);
@@ -269,10 +264,6 @@ public class Modules implements ModuleContext {
 
     public Messenger getMessenger() {
         return messenger;
-    }
-
-    public AnalyticsModule getAnalyticsModule() {
-        return analytics;
     }
 
     public ExternalModule getExternalModule() {

@@ -1,9 +1,14 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 
 import React from 'react';
 import Modal from 'react-modal';
 import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl';
 
 import { Styles, TextField } from 'material-ui';
 
@@ -12,7 +17,7 @@ import AddContactActionCreators from 'actions/AddContactActionCreators';
 
 import classNames from 'classnames';
 
-import { KeyCodes } from 'constants/ActorAppConstants';
+import { KeyCodes, AddContactMessages } from 'constants/ActorAppConstants';
 import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
@@ -26,6 +31,7 @@ const getStateFromStores = () => {
 
 const {addons: { PureRenderMixin }} = addons;
 
+@ReactMixin.decorate(IntlMixin)
 @ReactMixin.decorate(PureRenderMixin)
 class AddContact extends React.Component {
   static childContextTypes = {
@@ -78,6 +84,17 @@ class AddContact extends React.Component {
       'error-message--shown': message
     });
 
+    let messageText;
+    switch (message) {
+      case AddContactMessages.PHONE_NOT_REGISTERED:
+        messageText = this.getIntlMessage('addContactNotRegistered');
+        break;
+      case AddContactMessages.ALREADY_HAVE:
+        messageText = this.getIntlMessage('addContactInContacts');
+        break;
+      default:
+    }
+
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--add-contact"
@@ -88,22 +105,23 @@ class AddContact extends React.Component {
           <header className="modal-new__header">
             <a className="modal-new__header__close modal-new__header__icon material-icons"
                onClick={this.onClose}>clear</a>
-            <h3 className="modal-new__header__title">Add contact</h3>
+            <h3 className="modal-new__header__title">{this.getIntlMessage('addContactModalTitle')}</h3>
           </header>
 
           <div className="modal-new__body">
             <TextField className="login__form__input"
-                       floatingLabelText="Phone number"
+                       floatingLabelText={this.getIntlMessage('addContactPhoneNumber')}
                        fullWidth
                        onChange={this.onPhoneChange}
-                       type="text"
                        value={phone}/>
           </div>
 
-          <span className={messageClassName}>{message}</span>
+          <span className={messageClassName}>{messageText}</span>
 
           <footer className="modal-new__footer text-right">
-            <button className="button button--lightblue" onClick={this.onAddContact} type="submit">Add</button>
+            <button className="button button--lightblue" onClick={this.onAddContact} type="submit">
+              {this.getIntlMessage('addContactAdd')}
+            </button>
           </footer>
 
         </Modal>
