@@ -26,6 +26,8 @@ import im.actor.server.user._
 import im.actor.util.misc.PhoneNumberUtils
 import im.actor.server.{ models, persist }
 
+import scalaz.EitherT
+
 class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   extends ContactsService {
 
@@ -161,28 +163,42 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleSearchContacts(rawNumber: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = {
+  override def jhandleSearchContacts(query: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = {
     val action =
       for {
         client ← authorizedClient(clientData)
-        clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
-        (clientPhones, _) ← fromFuture(userExt.getContactRecordsSet(client.userId))
-        optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption map (_.filterNot(p ⇒ clientPhones.contains(p.number))))
-        normalizedPhone ← point(PhoneNumberUtils.normalizeStr(rawNumber, clientUser.countryCode))
-
-        contactUsers ← if (optPhone.map(_.number) == normalizedPhone) point(Vector.empty[ApiUser])
-        else fromDBIO(DBIO.sequence(normalizedPhone.toVector.map { phone ⇒
-          implicit val c = client
-          for {
-            userPhones ← persist.UserPhone.findByPhoneNumber(phone)
-            users ← DBIO.from(Future.sequence(userPhones.map(_.userId).toSet map { userId: Int ⇒ userExt.getApiStruct(userId, client.userId, client.authId) }))
-          } yield {
-            userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
-            users.toVector
-          }
-        }) map (_.flatten))
-      } yield ResponseSearchContacts(contactUsers)
+        nicknameUsers ← findByNickname(query, client)
+        phoneUsers ← findByNumber(query, client)
+      } yield ResponseSearchContacts(nicknameUsers ++ phoneUsers)
     db.run(action.run)
+  }
+
+  private def findByNickname(nickname: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
+    for {
+      users ← fromDBIO(persist.User.findByNickname(nickname) map (_.toList))
+      structs ← fromFuture(Future.sequence(users map (user ⇒ userExt.getApiStruct(user.id, client.userId, client.authId))))
+    } yield structs.toVector
+  }
+
+  private def findByNumber(rawNumber: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
+    for {
+      clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
+      (clientPhones, _) ← fromFuture(userExt.getContactRecordsSet(client.userId))
+      optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption map (_.filterNot(p ⇒ clientPhones.contains(p.number))))
+      normalizedPhone ← point(PhoneNumberUtils.normalizeStr(rawNumber, clientUser.countryCode))
+
+      contactUsers ← if (optPhone.map(_.number) == normalizedPhone) point(Vector.empty[ApiUser])
+      else fromDBIO(DBIO.sequence(normalizedPhone.toVector.map { phone ⇒
+        implicit val c = client
+        for {
+          userPhones ← persist.UserPhone.findByPhoneNumber(phone)
+          users ← DBIO.from(Future.sequence(userPhones.map(_.userId).toSet map { userId: Int ⇒ userExt.getApiStruct(userId, client.userId, client.authId) }))
+        } yield {
+          userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
+          users.toVector
+        }
+      }) map (_.flatten))
+    } yield contactUsers
   }
 
   private def importEmails(user: models.User, optOwnEmail: Option[models.UserEmail], emails: Vector[ApiEmailToImport])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], Seq[Sequence])] = {

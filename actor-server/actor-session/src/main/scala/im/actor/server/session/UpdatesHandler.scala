@@ -2,10 +2,9 @@ package im.actor.server.session
 
 import akka.actor.{ ActorLogging, Props }
 import akka.stream.actor._
-import im.actor.server.mtproto.protocol.ProtoMessage
+import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.sequence._
-import im.actor.server.session.SessionStreamMessage.EnqueuedProtoMessage
 
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -26,7 +25,7 @@ private[session] class UpdatesHandler(authId: Long)(
   weakUpdManagerRegion:       WeakUpdatesManagerRegion,
   presenceManagerRegion:      PresenceManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion
-) extends ActorSubscriber with ActorPublisher[(ProtoMessage, Option[String])] with ActorLogging {
+) extends ActorSubscriber with ActorPublisher[(UpdateBox, Option[String])] with ActorLogging {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -62,7 +61,7 @@ private[session] class UpdatesHandler(authId: Long)(
   override val requestStrategy = WatermarkRequestStrategy(10) // TODO: configurable
 
   // Publisher-related
-  private[this] var messageQueue = immutable.Queue.empty[(ProtoMessage, Option[String])]
+  private[this] var messageQueue = immutable.Queue.empty[(UpdateBox, Option[String])]
 
   def publisher: Receive = {
     case NewUpdate(ub, reduceKey) ⇒ enqueueProtoMessage(ub, reduceKey)
@@ -70,7 +69,7 @@ private[session] class UpdatesHandler(authId: Long)(
     case Cancel                   ⇒ context.stop(self)
   }
 
-  private def enqueueProtoMessage(message: ProtoMessage, reduceKey: Option[String]): Unit = {
+  private def enqueueProtoMessage(message: UpdateBox, reduceKey: Option[String]): Unit = {
     if (messageQueue.isEmpty && totalDemand > 0) {
       onNext(message → reduceKey)
     } else {
