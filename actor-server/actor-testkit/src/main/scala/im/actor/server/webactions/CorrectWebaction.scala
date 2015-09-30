@@ -16,7 +16,10 @@ class CorrectWebaction(system: ActorSystem) extends Webaction(system) {
 
   override def uri(params: ApiMapValue): String = CorrectWebaction.uri
   override def regex: String = CorrectWebaction.regex
-  override def complete(userId: Int, url: String): Future[ApiMapValue] = Future {
-    ApiMapValue(Vector(ApiMapValueItem("userId", ApiInt32Value(userId)), ApiMapValueItem("url", ApiStringValue(url.reverse))))
+  override def complete(userId: Int, url: String): Future[WebactionResult] = Future {
+    Webaction.success(ApiMapValue(Vector(
+      ApiMapValueItem("userId", ApiInt32Value(userId)),
+      ApiMapValueItem("url", ApiStringValue(url.reverse))
+    )))
   }
 }

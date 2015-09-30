@@ -11,5 +11,5 @@ class WrongWebaction(system: ActorSystem) extends Webaction(system) {
 
   override def uri(params: ApiMapValue): String = ""
   override def regex: String = ""
-  override def complete(userId: Int, url: String): Future[ApiMapValue] = Future.successful(ApiMapValue(Vector()))
+  override def complete(userId: Int, url: String): Future[WebactionResult] = Future.successful(Webaction.failure("", None))
 }
