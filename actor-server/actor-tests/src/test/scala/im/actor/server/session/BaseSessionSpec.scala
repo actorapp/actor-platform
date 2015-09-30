@@ -46,7 +46,6 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
 
   protected implicit val timeout = Timeout(10.seconds)
 
-  protected implicit val materializer = ActorMaterializer()
   protected implicit val ec = system.dispatcher
 
   protected implicit val db: PostgresDriver.api.Database = DbExtension(_system).db

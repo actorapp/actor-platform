@@ -1,9 +1,11 @@
 package im.actor.server.bot
 
+import im.actor.api.rpc.contacts.ResponseSearchContacts
 import im.actor.api.rpc.messaging.{ ResponseLoadHistory, ApiTextMessage }
 import im.actor.api.rpc._
 import im.actor.server._
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.dialog.DialogExtension
 import org.scalatest.Inside._
 
@@ -15,14 +17,16 @@ final class ActorBotSpec
   with ImplicitAuthService
   with ImplicitSessionRegionProxy {
   it should "receive messages" in rcv
+  it should "be found by nickname" in nickname
 
   private lazy val dialogExt = DialogExtension(system)
   private lazy val msgService = MessagingServiceImpl()
+  private lazy val contactsService = new ContactsServiceImpl
+
+  ActorBot.start()
 
   def rcv() = {
     val (user, authId, _) = createUser()
-
-    ActorBot.start()
 
     Thread.sleep(1000)
 
@@ -47,6 +51,19 @@ final class ActorBotSpec
           history.length shouldBe (2)
           val tm = history.last.message.asInstanceOf[ApiTextMessage]
           tm.text.startsWith("Yay!") shouldBe (true)
+      }
+    }
+  }
+
+  def nickname() = {
+    val (user, authId, _) = createUser()
+
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(user.id))
+
+    whenReady(contactsService.handleSearchContacts("actor")) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseSearchContacts(users)) ⇒
+          users.length shouldBe (1)
       }
     }
   }
