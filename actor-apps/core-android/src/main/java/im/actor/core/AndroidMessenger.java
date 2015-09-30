@@ -334,13 +334,13 @@ public class AndroidMessenger extends im.actor.core.Messenger {
 
                         if (mimeType.startsWith("video/")) {
                             sendVideo(peer, picturePath, fileName);
-                            trackVideoSend(peer);
+//                            trackVideoSend(peer);
                         } else if (mimeType.startsWith("image/")) {
                             sendPhoto(peer, picturePath, new File(fileName).getName());
-                            trackPhotoSend(peer);
+//                            trackPhotoSend(peer);
                         } else {
                             sendDocument(peer, picturePath, new File(fileName).getName());
-                            trackDocumentSend(peer);
+//                            trackDocumentSend(peer);
                         }
 
                         callback.onResult(true);
