@@ -32,8 +32,13 @@ object Webaction {
     constructor.newInstance(system).asInstanceOf[Webaction]
   }
 
-  def failure(cause: String): ApiMapValue =
-    ApiMapValue(Vector(ApiMapValueItem("error", ApiStringValue(cause))))
+  def failure(error: String, optCause: Option[String]): ApiMapValue = {
+    val m = ApiMapValueItem("error", ApiStringValue(error))
+    val items = optCause map { cause ⇒
+      Vector(m, ApiMapValueItem("cause", ApiStringValue(cause)))
+    } getOrElse Vector(m)
+    ApiMapValue(items)
+  }
 
   def success(message: String): ApiMapValue =
     ApiMapValue(Vector(ApiMapValueItem("success", ApiStringValue(message))))
