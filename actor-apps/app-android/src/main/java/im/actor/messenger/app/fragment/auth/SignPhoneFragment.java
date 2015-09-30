@@ -77,7 +77,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
     public void onResume() {
         super.onResume();
 
-        messenger().trackAuthPhoneOpen();
 
         setTitle(R.string.auth_phone_title);
 
@@ -94,7 +93,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
         onClick(countrySelectButton, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messenger().trackAuthCountryOpen();
                 keyboardHelper.setImeVisibility(phoneNumberEditText, false);
                 startActivityForResult(new Intent(getActivity(), PickCountryActivity.class), REQUEST_COUNTRY);
             }
@@ -112,7 +110,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                messenger().trackAuthPhoneType(countryCodeEditText.getText() + " " + phoneNumberEditText.getText());
 
                 final Activity a = getActivity();
                 if (a != null) {
@@ -197,7 +194,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                messenger().trackAuthPhoneType(countryCodeEditText.getText() + " " + phoneNumberEditText.getText());
             }
         });
 
@@ -215,7 +211,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
         v.findViewById(R.id.button_why).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messenger().trackAuthPhoneInfoOpen();
                 new AlertDialog.Builder(getActivity())
                         .setMessage(R.string.auth_phone_why_description)
                         .setPositiveButton(R.string.auth_phone_why_done, null)
@@ -235,7 +230,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
     private void requestCode() {
         final String ACTION = "Request code";
 
-        messenger().trackCodeRequest();
 
         if (countryCodeEditText.getText().toString().trim().length() == 0 ||
                 phoneNumberEditText.getText().toString().trim().length() == 0) {
@@ -244,7 +238,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
                     .setMessage(R.string.auth_error_empty_phone)
                     .setPositiveButton(R.string.dialog_ok, null)
                     .show();
-            messenger().trackActionError(ACTION, "LOCAL_EMPTY_PHONE", message);
             return;
         }
 
@@ -257,7 +250,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
                     .setMessage(R.string.auth_error_empty_phone)
                     .setPositiveButton(R.string.dialog_ok, null)
                     .show();
-            messenger().trackActionError(ACTION, "LOCAL_INCORRECT_PHONE", message);
             return;
         }
 

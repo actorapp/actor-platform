@@ -171,7 +171,7 @@ public class ViewAvatarActivity extends BaseActivity {
             goneView(noPhoto);
 
             // Large image
-            String file = messenger().getDownloadedDescriptor(avatar.getFullImage().getFileReference().getFileId());
+            String file = messenger().findDownloadedDescriptor(avatar.getFullImage().getFileReference().getFileId());
             if (file != null) {
                 try {
                     Bitmap bitmap = ImageLoading.loadBitmapOptimized(file);
@@ -190,7 +190,7 @@ public class ViewAvatarActivity extends BaseActivity {
 
             // Trying to show preview first
             boolean isAppliedPreview = false;
-            String largeFile = messenger().getDownloadedDescriptor(avatar.getLargeImage().getFileReference().getFileId());
+            String largeFile = messenger().findDownloadedDescriptor(avatar.getLargeImage().getFileReference().getFileId());
             if (largeFile != null) {
                 try {
                     Bitmap bitmap = ImageLoading.loadBitmapOptimized(largeFile);
@@ -202,7 +202,7 @@ public class ViewAvatarActivity extends BaseActivity {
                 }
             }
             if (!isAppliedPreview) {
-                String smallFile = messenger().getDownloadedDescriptor(avatar.getSmallImage().getFileReference().getFileId());
+                String smallFile = messenger().findDownloadedDescriptor(avatar.getSmallImage().getFileReference().getFileId());
                 if (smallFile != null) {
                     try {
                         Bitmap bitmap = ImageLoading.loadBitmapOptimized(smallFile);

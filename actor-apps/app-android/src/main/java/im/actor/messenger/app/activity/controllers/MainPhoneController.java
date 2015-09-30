@@ -213,18 +213,14 @@ public class MainPhoneController extends MainBaseController {
             public void onPageSelected(int position) {
                 if (position == 0) {
                     if (position != prevPage) {
-                        messenger().trackDialogsOpen();
                     }
                     if (prevPage == 1) {
-                        messenger().trackContactsClosed();
                     }
                     prevPage = position;
                 } else if (position == 1) {
                     if (position != prevPage) {
-                        messenger().trackContactsOpen();
                     }
                     if (prevPage == 0) {
-                        messenger().trackDialogsClosed();
                     }
                     prevPage = position;
                 }
