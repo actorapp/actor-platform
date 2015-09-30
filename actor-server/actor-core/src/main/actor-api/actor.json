@@ -3085,6 +3085,21 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "UnsupportedMessage",
+            "doc": [
+              "Explicit type for unsupported message"
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 5
+            },
+            "expandable": "true",
+            "attributes": []
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SendMessage",
@@ -7170,6 +7185,214 @@
       ]
     },
     {
+      "title": "Stats",
+      "package": "stats",
+      "doc": [
+        "Saving statistics information"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "EventRecord",
+            "doc": [
+              "Record for stored event"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 1,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Event"
+                },
+                "id": 2,
+                "name": "event"
+              }
+            ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "Event",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "UntypedEvent",
+            "doc": [
+              "Untyped event",
+              {
+                "type": "reference",
+                "argument": "eventType",
+                "category": "full",
+                "description": "  Event type"
+              },
+              {
+                "type": "reference",
+                "argument": "params",
+                "category": "full",
+                "description": "  optional params for event"
+              }
+            ],
+            "trait": {
+              "name": "Event",
+              "key": 1
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "eventType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "RawValue"
+                  }
+                },
+                "id": 2,
+                "name": "params"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ContentViewChanged",
+            "doc": [
+              "Content view event",
+              {
+                "type": "reference",
+                "argument": "contentType",
+                "category": "full",
+                "description": "  unique content id"
+              },
+              {
+                "type": "reference",
+                "argument": "visible",
+                "category": "full",
+                "description": "  Is content visible"
+              },
+              {
+                "type": "reference",
+                "argument": "params",
+                "category": "full",
+                "description": "  optional params for content view"
+              }
+            ],
+            "trait": {
+              "name": "Event",
+              "key": 2
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "contentType"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "contentId"
+              },
+              {
+                "type": "bool",
+                "id": 3,
+                "name": "visible"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "RawValue"
+                  }
+                },
+                "id": 4,
+                "name": "params"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "AppVisibleChanged",
+            "doc": [
+              "On App Visible event",
+              {
+                "type": "reference",
+                "argument": "visible",
+                "category": "full",
+                "description": "  Is app visible"
+              }
+            ],
+            "trait": {
+              "name": "Event",
+              "key": 4
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "bool",
+                "id": 1,
+                "name": "visible"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "StoreEvents",
+            "header": 243,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Storing events on server",
+              {
+                "type": "reference",
+                "argument": "events",
+                "category": "full",
+                "description": "Events for storing"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Event"
+                  }
+                },
+                "id": 1,
+                "name": "events"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Wallpappers",
       "package": "wallpappers",
       "doc": [
@@ -7263,10 +7486,10 @@
           "type": "rpc",
           "content": {
             "name": "LoadWallpappers",
-            "header": 231,
+            "header": 241,
             "response": {
               "type": "anonymous",
-              "header": 232,
+              "header": 242,
               "doc": [
                 "Loaded Wallpappers",
                 {

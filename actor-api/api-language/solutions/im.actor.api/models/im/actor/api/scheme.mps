@@ -2976,6 +2976,18 @@
           <property role="Nu42W" value="04" />
         </node>
       </node>
+      <node concept="2m5naR" id="4HpmlHNv7Js" role="2m5mJr">
+        <property role="TrG5h" value="UnsupportedMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
+        <node concept="Nu42z" id="4HpmlHNv7PL" role="3BtCOu">
+          <property role="Nu42W" value="05" />
+        </node>
+        <node concept="NXeRC" id="4HpmlHNv9$k" role="NXodf">
+          <property role="NXePf" value="Explicit type for unsupported message" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBqzL" role="2m5mJr">
         <property role="TrG5h" value="SendMessage" />
         <node concept="2m7Kf5" id="GBscvBBqBa" role="2m0hLx">
