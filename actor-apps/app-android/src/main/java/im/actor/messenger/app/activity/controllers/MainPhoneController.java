@@ -213,18 +213,14 @@ public class MainPhoneController extends MainBaseController {
             public void onPageSelected(int position) {
                 if (position == 0) {
                     if (position != prevPage) {
-                        messenger().trackDialogsOpen();
                     }
                     if (prevPage == 1) {
-                        messenger().trackContactsClosed();
                     }
                     prevPage = position;
                 } else if (position == 1) {
                     if (position != prevPage) {
-                        messenger().trackContactsOpen();
                     }
                     if (prevPage == 0) {
-                        messenger().trackDialogsClosed();
                     }
                     prevPage = position;
                 }
@@ -526,6 +522,9 @@ public class MainPhoneController extends MainBaseController {
                 default:
                 case 0:
                     DialogsFragment res1 = new DialogsFragment();
+                    Bundle arguments = new Bundle();
+                    arguments.putString("invite_url", joinGroupUrl);
+                    res1.setArguments(arguments);
                     res1.setHasOptionsMenu(false);
                     return res1;
                 case 1:

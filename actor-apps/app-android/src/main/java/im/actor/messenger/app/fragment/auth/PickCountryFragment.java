@@ -37,7 +37,6 @@ public class PickCountryFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (adapter != null) {
                     final Country country = adapter.getItem(position);
-                    messenger().trackAuthCountryPicked(country.shortName);
                     getActivity().setResult(Activity.RESULT_OK, new Intent()
                             .putExtra("country_id", country.fullNameRes)
                             .putExtra("country_code", country.phoneCode)

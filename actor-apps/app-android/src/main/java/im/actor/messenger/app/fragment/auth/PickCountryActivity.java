@@ -24,6 +24,5 @@ public class PickCountryActivity extends BaseFragmentActivity {
     @Override
     public void finish() {
         super.finish();
-        messenger().trackAuthCountryClosed();
     }
 }
