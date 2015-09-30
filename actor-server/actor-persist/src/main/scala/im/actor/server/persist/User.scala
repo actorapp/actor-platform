@@ -35,6 +35,9 @@ object User {
   val byIdC = Compiled(byId _)
   val nameByIdC = Compiled(nameById _)
 
+  def byNickname(nickname: Rep[String]) = users filter (_.nickname === nickname)
+  val byNicknameC = Compiled(byNickname _)
+
   val activeHumanUsers =
     users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot)
 
@@ -63,6 +66,9 @@ object User {
   // TODO: #perf will it create prepared statement for each ids length?
   def findSalts(ids: Set[Int]) =
     users.filter(_.id inSet ids).map(u ⇒ (u.id, u.accessSalt)).result
+
+  def findByNickname(nickname: String) =
+    byNicknameC(nickname).result.headOption
 
   def setNickname(userId: Int, nickname: Option[String]) =
     byId(userId).map(_.nickname).update(nickname)

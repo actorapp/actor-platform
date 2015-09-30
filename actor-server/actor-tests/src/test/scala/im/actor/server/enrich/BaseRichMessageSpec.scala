@@ -9,8 +9,4 @@ import org.scalatest.{ FlatSpecLike, Matchers }
 import im.actor.server.ActorSpecification
 
 abstract class BaseRichMessageSpec(_system: ActorSystem = { ActorSpecification.createSystem() })
-  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers {
-
-  implicit val materializer = ActorMaterializer()
-
-}
+  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers
