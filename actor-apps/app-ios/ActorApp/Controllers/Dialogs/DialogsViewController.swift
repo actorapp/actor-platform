@@ -55,6 +55,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.rowHeight = 76
         tableView.backgroundColor = MainAppTheme.list.bgColor
+        view.backgroundColor = MainAppTheme.list.bgColor
         view.addSubview(tableView)
         // view = tableView
     }
