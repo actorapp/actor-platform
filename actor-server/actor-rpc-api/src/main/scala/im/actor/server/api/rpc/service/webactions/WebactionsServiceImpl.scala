@@ -21,7 +21,7 @@ object WebactionsErrors {
   val WebactionNotFound = RpcError(404, "WEBACTION_NOT_FOUND", "Web action not found", false, None)
   val FailedToCreateWebaction = RpcError(500, "FAILED_TO_CREATE_WEBACTION", "Failed to create webaction", true, None)
   val WrongActionHash = RpcError(400, "WRONG_WEBACTION_HASH", "Web action not found", false, None)
-
+  def actionFailed(message: String) = RpcError(500, "WEBACTION_FAILED", message, false, None)
 }
 
 private[rpc] object WebactionsKeyValues {
@@ -55,8 +55,9 @@ final class WebactionsServiceImpl(implicit actorSystem: ActorSystem) extends Web
         fqn ← fromOption(WebactionNotFound)(Webaction.list.get(actionName))
         webAction ← fromEither(createWebaction(fqn))
         response ← fromFuture(webAction.complete(client.userId, completeUri))
+        _ ← fromBoolean(actionFailed(response.content.toString))(response.isSuccess)
         _ ← fromFuture(actionHashUserKV.delete(actionHash))
-      } yield ResponseCompleteWebaction(response)).run
+      } yield ResponseCompleteWebaction(response.content)).run
     }
     db.run(toDBIOAction(authorizedAction map DBIO.from))
   }
