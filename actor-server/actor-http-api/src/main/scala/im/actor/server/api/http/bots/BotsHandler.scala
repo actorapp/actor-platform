@@ -7,8 +7,10 @@ import akka.http.scaladsl.server.Route
 import akka.stream.scaladsl.Flow
 import cats.data.OptionT
 import cats.std.future._
+import im.actor.bot.BotMessages.{ BotRequest, BotResponse, BotUpdate }
 import im.actor.server.api.http.RoutesHandler
-import im.actor.server.bot.BotExtension
+import im.actor.server.bot.{ BotBlueprint, BotExtension }
+import upickle.default._
 
 import scala.util.control.NoStackTrace
 
@@ -37,10 +39,14 @@ private[http] final class BotsHandler(system: ActorSystem) extends RoutesHandler
 
     Flow[Message]
       .collect {
-        case TextMessage.Strict(text) ⇒ text
+        case TextMessage.Strict(text) ⇒ read[BotRequest](text)
         case tm: TextMessage          ⇒ throw new RuntimeException("Streamed text message is not supported") with NoStackTrace
       }
       .via(bp.flow)
+      .map {
+        case rsp: BotResponse ⇒ write[BotResponse](rsp)
+        case upd: BotUpdate   ⇒ write[BotUpdate](upd)
+      }
       .map(TextMessage.Strict(_).asInstanceOf[Message])
   }
 }

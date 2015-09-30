@@ -111,7 +111,7 @@ object Dependencies {
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
 
   val rpcApi = shared ++ Seq(
-    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless
+    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless, akkaHttpPlayJson
   )
 
   val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, jodaTime, playJson)

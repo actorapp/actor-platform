@@ -3,6 +3,8 @@ package im.actor.bot
 import derive.key
 
 sealed trait BotMessage
+sealed trait BotMessageIn extends BotMessage
+sealed trait BotMessageOut extends BotMessage
 
 final object BotMessages {
   final object OutPeer {
@@ -14,20 +16,23 @@ final object BotMessages {
 
   sealed trait RequestBody
 
-  final case class BotRequest(id: Long, body: RequestBody) extends BotMessage
+  final case class BotRequest(id: Long, body: RequestBody) extends BotMessageIn
 
   @key("SendMessage")
   final case class SendTextMessage(peer: OutPeer, randomId: Long, message: String) extends RequestBody
 
   sealed trait ResponseBody
 
-  final case class BotResponse(id: Long, body: ResponseBody) extends BotMessage
+  final case class BotResponse(id: Long, body: ResponseBody) extends BotMessageOut
 
   @key("MessageSent")
   final case class MessageSent(date: Long) extends ResponseBody
 
-  sealed trait BotUpdate extends BotMessage
+  sealed trait BotUpdate extends BotMessageOut
 
   @key("TextMessage")
-  final case class TextMessage(peer: Peer, senderUserId: Int, date: Long, randomId: Long, message: String) extends BotUpdate
+  final case class TextMessage(peer: OutPeer, senderUserId: Int, date: Long, randomId: Long, text: String) extends BotUpdate
+
+  final def isPrivate(peer: OutPeer) = peer.`type` == 1
+  final def isGroup(peer: OutPeer) = peer.`type` == 2
 }
