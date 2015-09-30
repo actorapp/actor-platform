@@ -6,7 +6,6 @@ import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.integrtions.{ IntegrtionsService, ResponseIntegrationToken }
 import im.actor.api.rpc.peers.ApiOutPeer
-import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin }
@@ -16,7 +15,7 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
-class IntegrationsServiceImpl(config: HttpApiConfig)(implicit actorSystem: ActorSystem) extends IntegrtionsService with PeersImplicits {
+class IntegrationsServiceImpl(baseUrl: String)(implicit actorSystem: ActorSystem) extends IntegrtionsService with PeersImplicits {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(10.seconds)
@@ -29,7 +28,7 @@ class IntegrationsServiceImpl(config: HttpApiConfig)(implicit actorSystem: Actor
         for {
           optToken ← DBIO.from(groupExt.getIntegrationToken(groupOutPeer.groupId, client.userId))
         } yield {
-          val (token, url) = optToken map (t ⇒ t → makeUrl(config, t)) getOrElse ("" → "")
+          val (token, url) = optToken map (t ⇒ t → makeUrl(baseUrl, t)) getOrElse ("" → "")
           Ok(ResponseIntegrationToken(token, url))
         }
       }
@@ -44,7 +43,7 @@ class IntegrationsServiceImpl(config: HttpApiConfig)(implicit actorSystem: Actor
       withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
           token ← DBIO.from(groupExt.revokeIntegrationToken(groupOutPeer.groupId, client.userId))
-        } yield Ok(ResponseIntegrationToken(token, makeUrl(config, token)))
+        } yield Ok(ResponseIntegrationToken(token, makeUrl(baseUrl, token)))
       }
     }
     db.run(toDBIOAction(authorizedAction)) recover {

@@ -43,6 +43,7 @@ object AuthId {
 
   val activeByUserIdCompiled = Compiled((userId: Rep[Int]) ⇒ activeByUserId(userId))
   val activeIdByUserIdCompiled = Compiled((userId: Rep[Int]) ⇒ activeByUserId(userId) map (_.id))
+  val firstActiveIdByUserIdCompiled = Compiled((userId: Rep[Int]) ⇒ activeByUserId(userId) map (_.id) take (1))
 
   def activeIdByUserIds(userIds: Set[Int]) = activeAuthIds.filter(_.userId inSetBind userIds).map(_.id)
 
@@ -60,6 +61,9 @@ object AuthId {
 
   def findIdByUserId(userId: Int) =
     activeIdByUserIdCompiled(userId).result
+
+  def findFirstIdByUserId(userId: Int) =
+    firstActiveIdByUserIdCompiled(userId).result.headOption
 
   def findIdByUserIds(userIds: Set[Int]) =
     activeIdByUserIds(userIds).result

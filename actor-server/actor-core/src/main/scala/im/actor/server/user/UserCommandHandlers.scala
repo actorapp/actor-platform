@@ -2,6 +2,7 @@ package im.actor.server.user
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import akka.actor.Status
 import akka.pattern.pipe
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.messaging._
@@ -24,6 +25,13 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.util.control.NoStackTrace
+
+sealed trait UserException extends RuntimeException
+
+object UserExceptions {
+  final case object NicknameTaken extends RuntimeException with NoStackTrace
+}
 
 private object ServiceMessages {
   def contactRegistered(userId: Int) = ApiServiceMessage("Contact registered", Some(ApiServiceExContactRegistered(userId)))
@@ -34,26 +42,35 @@ private[user] trait UserCommandHandlers {
 
   import ImageUtils._
 
-  protected def create(accessSalt: String, name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension], external: Option[String]): Unit = {
+  protected def create(accessSalt: String, nickname: Option[String], name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension], external: Option[String]): Unit = {
     log.debug("Creating user {} {}", userId, name)
 
-    val ts = now()
-    val e = UserEvents.Created(userId, accessSalt, name, countryCode, sex, isBot, extensions, external)
-    val createEvent = TSEvent(ts, e)
-    val user = UserBuilder(ts, e)
+    val replyTo = sender()
 
-    persistStashingReply(createEvent, user) { evt ⇒
-      val user = models.User(
-        id = userId,
-        accessSalt = accessSalt,
-        name = name,
-        countryCode = countryCode,
-        sex = models.Sex.fromInt(sex.id),
-        state = models.UserState.Registered,
-        createdAt = LocalDateTime.now(ZoneOffset.UTC),
-        external = external
-      )
-      db.run(for (_ ← p.User.create(user)) yield CreateAck())
+    waitForFuture(checkNicknameExists(nickname)) { exists ⇒
+      if (!exists) {
+        val ts = now()
+        val e = UserEvents.Created(userId, accessSalt, nickname, name, countryCode, sex, isBot, extensions, external)
+        val createEvent = TSEvent(ts, e)
+        val user = UserBuilder(ts, e)
+
+        persistStashingReply(createEvent, user, replyTo) { evt ⇒
+          val user = models.User(
+            id = userId,
+            accessSalt = accessSalt,
+            nickname = nickname,
+            name = name,
+            countryCode = countryCode,
+            sex = models.Sex.fromInt(sex.id),
+            state = models.UserState.Registered,
+            createdAt = LocalDateTime.now(ZoneOffset.UTC),
+            external = external
+          )
+          db.run(for (_ ← p.User.create(user)) yield CreateAck())
+        }
+      } else {
+        replyTo ! Status.Failure(UserExceptions.NicknameTaken)
+      }
     }
   }
 
@@ -107,14 +124,23 @@ private[user] trait UserCommandHandlers {
       } yield AddEmailAck())
     }
 
-  protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
-    persistReply(TSEvent(now(), UserEvents.NicknameChanged(nickname)), user) { _ ⇒
-      val update = UpdateUserNickChanged(userId, nickname)
-      for {
-        _ ← db.run(p.User.setNickname(userId, nickname))
-        relatedUserIds ← getRelations(userId)
-        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
-      } yield seqstate
+  protected def changeNickname(user: User, clientAuthId: Long, nicknameOpt: Option[String]): Unit = {
+    val replyTo = sender()
+
+    waitForFuture(checkNicknameExists(nicknameOpt)) { exists ⇒
+      if (!exists) {
+        persistReply(TSEvent(now(), UserEvents.NicknameChanged(nicknameOpt)), user, replyTo) { _ ⇒
+          val update = UpdateUserNickChanged(userId, nicknameOpt)
+
+          for {
+            _ ← db.run(p.User.setNickname(userId, nicknameOpt))
+            relatedUserIds ← getRelations(userId)
+            (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
+          } yield seqstate
+        }
+      } else {
+        replyTo ! Status.Failure(UserExceptions.NicknameTaken)
+      }
     }
   }
 
@@ -142,6 +168,13 @@ private[user] trait UserCommandHandlers {
         relatedUserIds ← relationsF
         (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
+    }
+  }
+
+  private def checkNicknameExists(nicknameOpt: Option[String]): Future[Boolean] = {
+    nicknameOpt match {
+      case Some(nickname) ⇒ db.run(p.User.nicknameExists(nickname))
+      case None           ⇒ Future.successful(false)
     }
   }
 

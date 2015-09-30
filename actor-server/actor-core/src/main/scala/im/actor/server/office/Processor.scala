@@ -2,23 +2,26 @@ package im.actor.server.office
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{ ActorLogging, Status }
+import akka.actor.{ActorRef, Status}
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
+import im.actor.concurrent.ActorFutures
 import org.joda.time.DateTime
 
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.control.NoStackTrace
 import scala.util.{ Failure, Success }
 
+case object EntityNotFound extends RuntimeException with NoStackTrace
 case object StopOffice
 
 trait ProcessorState
 
-trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLogging {
+trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFutures {
 
   case class UnstashAndWork(evt: Event, state: State)
 
@@ -61,7 +64,11 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
 
   final def receiveCommand = initializing
 
-  protected final def initializing: Receive = handleInitCommand orElse stashingBehavior
+  protected final def initializing: Receive = handleInitCommand orElse {
+    case msg =>
+      log.debug("Entity not found while processing {}", msg)
+      sender() ! Status.Failure(EntityNotFound)
+  }
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
     case Work(newState) => context become working(newState)
@@ -87,11 +94,14 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
 
   protected final def stashing(state: State): Receive = handleQuery(state) orElse stashingBehavior
 
-  final def persistReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
+  final def persistReply[R](e: Event, state: State)(f: Event => Future[R]): Unit =
+    persistReply(e, state, sender())(f)
+
+  final def persistReply[R](e: Event, state: State, replyTo: ActorRef)(f: Event ⇒ Future[R]): Unit = {
     log.debug("[persistReply] {}", e)
 
     persist(e) { evt ⇒
-      f(evt) pipeTo sender() onComplete {
+      f(evt) pipeTo replyTo onComplete {
         case Success(_) ⇒
 
         case Failure(f) ⇒
@@ -125,9 +135,10 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorLoggin
     }
   }
 
-  final def persistStashingReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit = {
-    val replyTo = sender()
+  final def persistStashingReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit =
+    persistStashingReply(e, state, sender())(f)
 
+  final def persistStashingReply[R](e: Event, state: State, replyTo: ActorRef)(f: Event ⇒ Future[R]): Unit = {
     log.debug("[persistStashingReply], event {}", e)
     context become stashing(state)
 
