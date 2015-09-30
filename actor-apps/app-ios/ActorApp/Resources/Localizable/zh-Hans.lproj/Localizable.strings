@@ -246,7 +246,7 @@
  * Privacy
  */
 
-"PrivacyTitle" = "安全";
+"SecurityTitle" = "安全";
 
 "PrivacyTerminate" = "终止所有会话";
 
