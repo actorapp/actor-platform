@@ -47,14 +47,12 @@ public class AuthActivity extends BaseFragmentActivity {
 
     @Override
     public void onBackPressed() {
-        messenger().trackBackPressed();
         super.onBackPressed();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            messenger().trackUpPressed();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -120,7 +118,6 @@ public class AuthActivity extends BaseFragmentActivity {
                 showFragment(new SignUpFragment(), false, false);
                 break;
             case LOGGED_IN:
-                messenger().trackAuthSuccess();
                 finish();
                 startActivity(new Intent(this, MainActivity.class));
                 break;
@@ -138,7 +135,6 @@ public class AuthActivity extends BaseFragmentActivity {
             @Override
             public void onResult(final AuthState res) {
                 dismissProgress();
-                messenger().trackActionSuccess(action);
                 updateState(res);
             }
 
@@ -174,7 +170,6 @@ public class AuthActivity extends BaseFragmentActivity {
                     }
                 }
 
-                messenger().trackActionError(action, tag, message);
 
                 try {
                     if (canTryAgain) {
@@ -183,7 +178,6 @@ public class AuthActivity extends BaseFragmentActivity {
                                 .setPositiveButton(R.string.dialog_try_again, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        messenger().trackActionTryAgain(action);
                                         dismissAlert();
                                         executeAuth(command, action);
                                     }
@@ -191,7 +185,6 @@ public class AuthActivity extends BaseFragmentActivity {
                                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        messenger().trackActionCancel(action);
                                         dismissAlert();
                                         updateState(messenger().getAuthState());
                                     }
@@ -204,7 +197,6 @@ public class AuthActivity extends BaseFragmentActivity {
                                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        messenger().trackActionCancel(action);
                                         dismissAlert();
                                         updateState(messenger().getAuthState());
                                     }
