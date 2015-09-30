@@ -65,6 +65,10 @@ class ComposeSection extends React.Component {
     window.removeEventListener('focus', this.onFocus);
   }
 
+  componentWillReceiveProps() {
+    this.onFocus();
+  }
+
   onChange = () => this.setState(getStateFromStores());
 
   onMessageChange = event => {
