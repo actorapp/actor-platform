@@ -8,7 +8,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
 import scala.concurrent.{ Future, Promise }
-import scala.util.{ Failure, Success, Try }
+import scala.util.Try
 
 sealed trait SeqUpdatesExtension extends Extension {
   val region: SeqUpdatesManagerRegion
