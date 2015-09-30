@@ -75,7 +75,6 @@ public class SignInFragment extends BaseAuthFragment {
                 if (s.length() == 6) {
                     sendCode();
                 }
-                messenger().trackAuthCodeType(s.toString());
             }
 
             @Override
@@ -108,13 +107,11 @@ public class SignInFragment extends BaseAuthFragment {
         onClick(v, R.id.button_edit_phone, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messenger().trackAuthCodeWrongNumber();
                 new AlertDialog.Builder(getActivity())
                         .setMessage(authType.equals(AUTH_TYPE_EMAIL)?R.string.auth_code_email_change:R.string.auth_code_phone_change)
                         .setPositiveButton(R.string.auth_code_change_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                messenger().trackAuthCodeWrongNumberChange();
                                 messenger().resetAuth();
                                 updateState();
                             }
@@ -122,7 +119,6 @@ public class SignInFragment extends BaseAuthFragment {
                         .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                messenger().trackAuthCodeWrongNumberCancel();
                             }
                         })
                         .show()
@@ -146,12 +142,10 @@ public class SignInFragment extends BaseAuthFragment {
         setTitle(R.string.auth_code_title);
         keyboardHelper.setImeVisibility(codeEnterEditText, true);
         focus(codeEnterEditText);
-        messenger().trackAuthCodeOpen();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        messenger().trackAuthCodeClosed();
     }
 }
