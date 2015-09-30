@@ -4,6 +4,8 @@
 
 import Foundation
 
+private let ENABLE_LOGS = false
+
 /**
     Display list preprocessed list state
 */
@@ -61,7 +63,7 @@ class ListProcessor: NSObject, ARListProcessor {
             objs.append(msg)
         }
         
-        log("processing(items): \(CFAbsoluteTimeGetCurrent() - section)")
+        if ENABLE_LOGS { log("processing(items): \(CFAbsoluteTimeGetCurrent() - section)") }
         section = CFAbsoluteTimeGetCurrent()
         
         // Calculating cell settings
@@ -71,7 +73,7 @@ class ListProcessor: NSObject, ARListProcessor {
             settings.append(buildCellSetting(i, items: objs))
         }
         
-        log("processing(settings): \(CFAbsoluteTimeGetCurrent() - section)")
+        if ENABLE_LOGS { log("processing(settings): \(CFAbsoluteTimeGetCurrent() - section)") }
         section = CFAbsoluteTimeGetCurrent()
         
         // Building cell layouts
@@ -80,7 +82,7 @@ class ListProcessor: NSObject, ARListProcessor {
             layouts.append(buildLayout(objs[i], layoutCache: layoutCache))
         }
         
-        log("processing(layouts): \(CFAbsoluteTimeGetCurrent() - section)")
+        if ENABLE_LOGS { log("processing(layouts): \(CFAbsoluteTimeGetCurrent() - section)") }
         section = CFAbsoluteTimeGetCurrent()
         
         // Calculating force and simple updates
@@ -153,7 +155,7 @@ class ListProcessor: NSObject, ARListProcessor {
             }
         }
         
-        log("processing(updates): \(CFAbsoluteTimeGetCurrent() - section)")
+        if ENABLE_LOGS { log("processing(updates): \(CFAbsoluteTimeGetCurrent() - section)") }
         section = CFAbsoluteTimeGetCurrent()
         
         // Updating cell heights
@@ -165,9 +167,9 @@ class ListProcessor: NSObject, ARListProcessor {
             heights.append(height)
         }
         
-        log("processing(heights): \(CFAbsoluteTimeGetCurrent() - section)")
+        if ENABLE_LOGS { log("processing(heights): \(CFAbsoluteTimeGetCurrent() - section)") }
         
-        log("processing(all): \(CFAbsoluteTimeGetCurrent() - start)")
+        if ENABLE_LOGS { log("processing(all): \(CFAbsoluteTimeGetCurrent() - start)") }
         
         // Put everything together
         let res = PreprocessedList()

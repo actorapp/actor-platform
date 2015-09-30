@@ -6,7 +6,9 @@
   width: 16px;
   height: 16px;
 
-  &--penging {
+  user-select: none;
+
+  &--pending {
     color: $message-state-color;
   }
   &--sent {

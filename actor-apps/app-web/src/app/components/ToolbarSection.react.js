@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 import classnames from 'classnames';
+import { escapeWithEmoji } from 'utils/EmojiUtils';
 
 import ActivityActionCreators from 'actions/ActivityActionCreators';
 
@@ -42,9 +43,7 @@ class ToolbarSection extends React.Component {
     }
   };
 
-  onChange = () => {
-    this.setState(getStateFromStores());
-  };
+  onChange = () => this.setState(getStateFromStores());
 
   render() {
     const { dialogInfo, isActivityOpen } = this.state;
@@ -53,11 +52,13 @@ class ToolbarSection extends React.Component {
       'active': isActivityOpen
     });
 
+
+
     if (dialogInfo !== null) {
       return (
         <header className="toolbar row">
           <div className="toolbar__peer col-xs">
-            <span className="toolbar__peer__title">{dialogInfo.name}</span>
+            <span className="toolbar__peer__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialogInfo.name)}}/>
             <span className="toolbar__peer__presence">{dialogInfo.presence}</span>
           </div>
 

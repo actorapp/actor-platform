@@ -4,6 +4,8 @@
 
 import Foundation
 
+private let ENABLE_LOGS = false
+
 class MessagesFlowLayout : UICollectionViewLayout {
     
     var deletedIndexPaths = [NSIndexPath]()
@@ -117,7 +119,7 @@ class MessagesFlowLayout : UICollectionViewLayout {
                 deletedIndexPaths.append(update.indexPathBeforeUpdate)
             }
         }
-        print("prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
+        if ENABLE_LOGS { print("prepareForCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
     }
 
     override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
@@ -157,7 +159,7 @@ class MessagesFlowLayout : UICollectionViewLayout {
             }
         }
         
-        print("finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)")
+        if ENABLE_LOGS { print("finalizeCollectionViewUpdates: \(CFAbsoluteTimeGetCurrent() - start)") }
     }
 }
 

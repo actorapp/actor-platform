@@ -101,8 +101,7 @@ public class ContactsSyncActor extends ModuleActor {
         }
         String hashValue = Crypto.hex(Crypto.SHA256(hashData));
 
-        Log.d(TAG, "Performing sync with uids: " + hash);
-        Log.d(TAG, "Performing sync with hash: " + hashValue + ", hashData:" + hashData.length);
+        Log.d(TAG, "Performing sync with hash: " + hashValue);
 
         request(new RequestGetContacts(hashValue), new RpcCallback<ResponseGetContacts>() {
             @Override

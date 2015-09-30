@@ -36,6 +36,8 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailCom
         
         super.init()
         
+        self.content = ACAllEvents_Auth.AUTH_CODE()
+        
         grayBackground.backgroundColor = UIColor.RGB(0xf2f2f2)
         view.addSubview(grayBackground)
         
@@ -103,7 +105,6 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailCom
         super.viewDidAppear(animated)
         
         codeTextField.becomeFirstResponder()
-        Actor.trackAuthCodeOpen()
         
         updateTimerText()
         
@@ -119,8 +120,6 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailCom
             counterTimer.invalidate()
             counterTimer = nil
         }
-        
-        Actor.trackAuthCodeClosed()
     }
     
     override func viewWillLayoutSubviews() {

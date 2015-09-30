@@ -360,7 +360,7 @@ public class I18nEngine {
                 return getTemplateNamed(senderId, "ServiceGroupTitle");
             case SERVICE_JOINED:
                 return getTemplateNamed(senderId, "ServiceGroupJoined");
-            case EMPTY:
+            case NONE:
                 return "";
             default:
             case UNKNOWN_CONTENT:

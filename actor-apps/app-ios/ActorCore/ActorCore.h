@@ -24,7 +24,7 @@
 
 #import "im/actor/core/CocoaMessenger.h"
 #import "im/actor/core/Messenger.h"
-#import "im/actor/core/AnalyticsProvider.h"
+#import "im/actor/core/ActorAnalytics.h"
 #import "im/actor/core/ApiConfiguration.h"
 #import "im/actor/core/PlatformType.h"
 #import "im/actor/core/AuthState.h"
@@ -48,6 +48,7 @@
 #import "im/actor/core/entity/User.h"
 #import "im/actor/core/entity/Sex.h"
 #import "im/actor/core/entity/GroupMember.h"
+#import "im/actor/core/entity/WebActionDescriptor.h"
 #import "im/actor/core/entity/content/AbsContent.h"
 #import "im/actor/core/entity/content/TextContent.h"
 #import "im/actor/core/entity/content/DocumentContent.h"
@@ -68,6 +69,10 @@
 #import "im/actor/core/entity/ContentDescription.h"
 #import "im/actor/core/entity/PublicGroup.h"
 #import "im/actor/core/entity/MentionFilterResult.h"
+
+#import "im/actor/core/analytics/AllEvents.h"
+#import "im/actor/core/analytics/Event.h"
+#import "im/actor/core/analytics/Page.h"
 
 #import "im/actor/core/viewmodel/UserVM.h"
 #import "im/actor/core/viewmodel/UserTypingVM.h"

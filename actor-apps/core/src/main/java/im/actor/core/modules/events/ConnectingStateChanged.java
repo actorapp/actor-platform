@@ -20,4 +20,9 @@ public class ConnectingStateChanged extends Event {
     public String getType() {
         return EVENT;
     }
+
+    @Override
+    public String toString() {
+        return EVENT + " {" + isConnecting + "}";
+    }
 }
