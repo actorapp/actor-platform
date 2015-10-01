@@ -1,5 +1,5 @@
 export default {
-  'locales': 'en-US',
+  'locales': 'es-ES',
   'messages': {
     // Sidebar
     'setProfilePhoto': 'Set Profile Photo',
