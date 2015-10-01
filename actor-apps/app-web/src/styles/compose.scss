@@ -76,19 +76,49 @@
     opacity: 0;
   }
 
+  &__markdown-hint {
+    font-size: 12px;
+    line-height: 22px;
+
+    position: absolute;
+    top: -22px;
+    right: 32px;
+
+    cursor: default;
+    user-select: none;
+    transition: opacity $default-transition-duration/2;
+
+    opacity: 0;
+    color: rgba(0, 0, 0, .4);
+    //pointer-events: none;
+    code {
+      padding: 1px 2px;
+
+      border-radius: 2px;
+      background: rgba(0, 0, 0, .05);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+    }
+    &--active {
+      opacity: 1;
+    }
+  }
+
   .emoji-opener {
     position: absolute;
     top: 6px;
     right: 38px;
+
     cursor: pointer;
-    color: $greyish;
-    opacity: .8;
-    transform: scale(.9);
     transition: .2s;
+    transform: scale(.9);
+
+    opacity: .8;
+    color: $greyish;
     &--active,
     &:hover {
-      opacity: 1;
       transform: scale(1);
+
+      opacity: 1;
     }
   }
 
