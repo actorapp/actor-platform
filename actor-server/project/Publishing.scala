@@ -2,13 +2,18 @@ package im.actor
 
 import sbt.Keys._
 import sbt._
-import xerial.sbt.Sonatype.autoImport._
 
 trait Publishing {
   val publishSettings = Seq(
     organization := "im.actor",
-  
-    sonatypeProfileName := "org.xerial",
+
+    publishTo := {
+      val nexus = "https://oss.sonatype.org/"
+      if (isSnapshot.value)
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    },
 
     // To sync with Maven central, you need to supply the following information:
     pomExtra in Global :=
