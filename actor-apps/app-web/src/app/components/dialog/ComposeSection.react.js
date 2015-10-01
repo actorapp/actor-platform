@@ -27,6 +27,7 @@ import ComposeStore from 'stores/ComposeStore';
 import AvatarItem from 'components/common/AvatarItem.react';
 import MentionDropdown from 'components/common/MentionDropdown.react';
 import EmojiDropdown from 'components/common/EmojiDropdown.react';
+import DropZone from 'components/common/DropZone.react';
 
 let getStateFromStores = () => {
   return {
@@ -234,6 +235,8 @@ class ComposeSection extends React.Component {
                   value={text}
                   ref="area"/>
 
+        <DropZone onDropComplete={this.onDrop}/>
+
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.onSendFileClick}>
             <i className="material-icons">attachment</i> {this.getIntlMessage('composeSendFile')}
@@ -252,6 +255,10 @@ class ComposeSection extends React.Component {
         </form>
       </section>
     );
+  }
+
+  onDrop = (file) => {
+    console.debug(file);
   }
 }
 
