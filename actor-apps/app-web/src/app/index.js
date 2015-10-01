@@ -2,28 +2,27 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import babelPolyfill from 'babel/polyfill'; // eslint-disable-line
+import 'babel/polyfill';
 import RouterContainer from 'utils/RouterContainer';
 
 import crosstab from 'crosstab';
 
 import React, { Component } from 'react';
 import Router from 'react-router';
+import ReactMixin from 'react-mixin';
+
+import { intlData } from 'l18n';
+import { IntlMixin } from 'react-intl';
+
 import Raven from 'utils/Raven'; // eslint-disable-line
 import isMobile from 'utils/IsMobile';
-import ReactMixin from 'react-mixin';
 
 import { endpoints } from 'constants/ActorAppConstants'
 
-import Intl from 'intl'; // eslint-disable-line
-import LocaleData from 'intl/locale-data/jsonp/en-US'; // eslint-disable-line
-import { IntlMixin } from 'react-intl';
-
+import LoginActionCreators from 'actions/LoginActionCreators';
 
 import LoginStore from 'stores/LoginStore';
 import PreferencesStore from 'stores/PreferencesStore';
-
-import LoginActionCreators from 'actions/LoginActionCreators';
 
 import Deactivated from 'components/Deactivated.react';
 import Login from 'components/Login.react';
@@ -71,9 +70,6 @@ class App extends Component {
     return <RouteHandler/>;
   }
 }
-
-// Internationalisation
-const intlData = PreferencesStore.getLanguageData();
 
 const initReact = () => {
   const appRootElemet = document.getElementById('actor-web-app');
