@@ -105,9 +105,9 @@ object Dependencies {
 
   val bot = shared ++ Seq(upickle)
 
-  val botKit = Seq(akkaActor, akkaHttp, akkaSlf4j, sprayWebsocket, upickle)
+  val botkit = Seq(akkaActor, akkaHttp, akkaSlf4j, sprayWebsocket, upickle)
 
-  val botMessages = Seq(upickle)
+  val botShared = Seq(upickle)
 
   val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, caffeine, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
 
