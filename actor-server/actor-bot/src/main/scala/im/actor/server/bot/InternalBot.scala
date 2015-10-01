@@ -73,7 +73,7 @@ abstract class InternalBot(userId: Int, nickname: String, name: String) extends 
       } else {
         log.warning("Creating user {}", userId)
         botExt.create(userId, nickname, name) map (_ ⇒ ()) andThen {
-          case Failure(e) => log.error(e, "Failed to create bot user")
+          case Failure(e) ⇒ log.error(e, "Failed to create bot user")
         }
       }
     }

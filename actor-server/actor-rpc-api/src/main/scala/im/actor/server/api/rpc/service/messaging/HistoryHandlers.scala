@@ -8,6 +8,7 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
 import im.actor.server.history.HistoryUtils
+import im.actor.server.user.UserUtils
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio
@@ -230,7 +231,7 @@ trait HistoryHandlers {
     for {
       groups ← DBIO.from(Future.sequence(groupIds map (groupExt.getApiStruct(_, client.userId))))
       groupUserIds = groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
-      users ← DBIO.from(Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (userExt.getApiStruct(_, client.userId, client.authId))))
+      users ← DBIO.from(Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (UserUtils.safeGetUser(_, client.userId, client.authId)))) map (_.flatten)
     } yield (users, groups)
   }
 
@@ -240,6 +241,7 @@ trait HistoryHandlers {
       case ApiTextMessage(_, mentions, _) ⇒ mentions.toSet
       case ApiJsonMessage(_)              ⇒ Set.empty
       case _: ApiDocumentMessage          ⇒ Set.empty
+      case _: ApiUnsupportedMessage       ⇒ Set.empty
     }
   }
 

@@ -1,8 +1,10 @@
 package im.actor.server.user
 
+import akka.actor.ActorSystem
 import im.actor.api.rpc.users._
 import im.actor.server.models
 import im.actor.server.models.UserPhone
+import im.actor.server.office.EntityNotFound
 
 import scala.language.postfixOps
 
@@ -41,5 +43,15 @@ object UserUtils {
   def normalizeLocalName(name: Option[String]) = name match {
     case n @ Some(name) if name.nonEmpty ⇒ n
     case _                               ⇒ None
+  }
+
+  def safeGetUser(userId: Int, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem) = {
+    import system.dispatcher
+    UserExtension(system)
+      .getApiStruct(userId, clientUserId, clientAuthId)
+      .map(Some(_))
+      .recover {
+        case EntityNotFound ⇒ None
+      }
   }
 }
