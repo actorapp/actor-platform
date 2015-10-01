@@ -132,3 +132,30 @@
     }
   }
 }
+
+.dropzone {
+  position: absolute;
+  z-index: 2000;
+  top: 0;
+  right: 32px;
+  left: 87px;
+
+  display: flex;
+
+  height: 76px;
+
+  color: rgba(0, 0, 0, .3);
+  border: 2px dashed #e5e5e5;
+  border-radius: 2px;
+  background-color: white;
+  font-weight: 500;
+  font-size: 17px;
+
+  align-items: center;
+  justify-content: center;
+  transition: border $default-transition-duration/3, color $default-transition-duration/3;
+  &--hover {
+    border-color: $dark-sky-blue;
+    color: $dark-sky-blue;
+  }
+}
