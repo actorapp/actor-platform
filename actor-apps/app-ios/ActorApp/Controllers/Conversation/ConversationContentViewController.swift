@@ -5,7 +5,7 @@
 import Foundation
 import UIKit;
 
-class ConversationBaseViewController: SLKTextViewController, ARDisplayList_AppleChangeListener {
+class ConversationContentViewController: SLKTextViewController, ARDisplayList_AppleChangeListener {
 
     let peer: ACPeer
     
@@ -37,6 +37,8 @@ class ConversationBaseViewController: SLKTextViewController, ARDisplayList_Apple
     // Controller and UI lifecycle
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         if (self.displayList == nil) {
             self.displayList = displayListForController()
         }

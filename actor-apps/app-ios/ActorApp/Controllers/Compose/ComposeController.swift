@@ -4,121 +4,39 @@
 
 import UIKit
 
-class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISearchDisplayDelegate {
+class ComposeController: ContactsContentViewController, ContactsContentViewControllerDelegate {
 
-    
-    var searchView: UISearchBar!
-    var searchDisplay: UISearchDisplayController!
-    var searchSource: ContactsSearchSource!
-    var tableView = UITableView()
-    
-    init() {
-        super.init(contentSection: 1, nibName: nil, bundle: nil)
-        self.navigationItem.title = NSLocalizedString("ComposeTitle", comment: "Compose Title")
-        self.extendedLayoutIncludesOpaqueBars = true
+    override init() {
+        super.init()
+        
+        self.delegate = self
+        self.isSearchAutoHide = false
+        
+        self.navigationItem.title = localized("ComposeTitle")
     }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        view.backgroundColor = UIColor.whiteColor()
-        view.addSubview(tableView)
-        
-        bindTable(tableView, fade: true)
-        
-        searchView = UISearchBar()
-        searchView.delegate = self
-        searchView.frame = CGRectMake(0, 0, 0, 44)
-        searchView.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
-        
-        MainAppTheme.search.styleSearchBar(searchView)
-        
-        searchDisplay = UISearchDisplayController(searchBar: searchView, contentsController: self)
-        searchDisplay.searchResultsDelegate = self
-        searchDisplay.searchResultsTableView.rowHeight = 56
-        searchDisplay.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        searchDisplay.searchResultsTableView.backgroundColor = MainAppTheme.list.bgColor
-        searchDisplay.searchResultsTableView.frame = tableView.frame
-        
-        let header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-        header.addSubview(searchView)
-        tableView.tableHeaderView = header
- 
-        searchSource = ContactsSearchSource(searchDisplay: searchDisplay!)
-
-        super.viewDidLoad()
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 1) {
-            return super.tableView(tableView, numberOfRowsInSection: section)
-        } else {
-            return 1
-        }
-    }
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if (indexPath.section == 1) {
-            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
-        } else {
-            if (indexPath.row == 0) {
-                let reuseId = "create_group";
-                let res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_add_user",
-                    actionTitle: NSLocalizedString("CreateGroup", comment: "Create Group"),
-                    isLast: false)
-                return res
-            } else {
-                let reuseId = "find_public";
-                let res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_add_user",
-                    actionTitle: NSLocalizedString("Join public group", comment: "Create Group"),
-                    isLast: false)
-                return res
+    func willAddContacts(controller: ContactsContentViewController, section: ACManagedSection) {
+        section.custom { (r:ACCustomRow<ContactActionCell>) -> () in
+            
+            r.height = 56
+            
+            r.closure = { (cell) -> () in
+                cell.bind("ic_add_user", actionTitle: localized("CreateGroup"))
+            }
+            
+            r.selectAction = { () -> Bool in
+                self.navigateNext(GroupCreateViewController(), removeCurrent: true)
+                return false
             }
         }
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if (tableView == self.tableView) {
-            if (indexPath.section == 0) {
-                if (indexPath.row == 0) {
-                    navigateNext(GroupCreateViewController(), removeCurrent: true)
-                } else {
-                    navigateNext(DiscoverViewController(), removeCurrent: true)
-                }
-                MainAppTheme.navigation.applyStatusBar()
-            } else {
-                let contact = objectAtIndexPath(indexPath) as! ACContact
-                navigateToMessagesWithPeerId(contact.uid)
-            }
-        } else {
-            let contact = searchSource!.objectAtIndexPath(indexPath) as! ACContact
-            navigateToMessagesWithPeerId(contact.uid)
-        }
-    }
-    
-    // MARK: -
-    // MARK: Navigation
-    
-    private func navigateToMessagesWithPeerId(peerId: jint) {
-        navigateNext(ConversationViewController(peer: ACPeer.userWithInt(peerId)), removeCurrent: true)
-        MainAppTheme.navigation.applyStatusBar()
-    }
-    
-    func createGroup() {
-        navigateNext(GroupCreateViewController(), removeCurrent: true)
-        MainAppTheme.navigation.applyStatusBar()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
+    func contactDidTap(controller: ContactsContentViewController, contact: ACContact) -> Bool {
+        navigateNext(ConversationViewController(peer: ACPeer.userWithInt(contact.uid)), removeCurrent: true)
+        return false
     }
 }

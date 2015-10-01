@@ -144,6 +144,11 @@ func initStyles() {
     registerStyle("members.online", parent: "label") { (s) -> () in
         s.font = UIFont.systemFontOfSize(14.0)
     }
+    
+    registerStyle("members.admin", parent: "label") { (s) -> () in
+        s.font = UIFont.systemFontOfSize(14.0)
+        s.foregroundColor = UIColor.redColor()
+    }
 
     // List
     registerStyle("list.label", parent: "label") { (s) -> () in

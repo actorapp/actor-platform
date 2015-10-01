@@ -4,268 +4,170 @@
 
 import UIKit
 import MessageUI
+import Social
+import AddressBookUI
+import ContactsUI
 
-class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, UISearchDisplayDelegate {
+class ContactsViewController: ContactsContentViewController, ContactsContentViewControllerDelegate, UIAlertViewDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
     
-    // MARK: -
-    // MARK: Public vars
+    var inviteText: String {
+        get {
+            return localized("InviteText")
+                .replace("{link}", dest: AppConfig.appInviteUrl!)
+        }
+    }
     
-    var tableView: UITableView!
-    
-    var searchView: UISearchBar?
-    var searchDisplay: UISearchDisplayController?
-    var searchSource: ContactsSearchSource?
-    
-    var binder = Binder()
-    
-    // MARK: -
-    // MARK: Constructors
-    
-    init() {
-        super.init(contentSection: 1)
+    override init() {
+        super.init()
         
         content = ACAllEvents_Main.CONTACTS()
         
         tabBarItem = UITabBarItem(title: localized("TabPeople"),
             image: MainAppTheme.tab.createUnselectedIcon("TabIconContacts"),
-            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconContactsHighlighted"));
+            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconContactsHighlighted"))
         
-        tableView = UITableView()
-        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        tableView.rowHeight = 76
-        tableView.backgroundColor = MainAppTheme.list.backyardColor
-        self.extendedLayoutIncludesOpaqueBars = true
-        view.addSubview(tableView)
-        view.backgroundColor = MainAppTheme.list.bgColor
+        navigationItem.title = localized("TabPeople")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "findContact")
+        
+        delegate = self
     }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
+    func contactDidTap(controller: ContactsContentViewController, contact: ACContact) -> Bool {
+        navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(contact.uid)))
+        return true
+    }
     
-    override func viewDidLoad() {
-        self.extendedLayoutIncludesOpaqueBars = true
+    func willAddContacts(controller: ContactsContentViewController, section: ACManagedSection) {
         
-        bindTable(tableView, fade: false);
+        section.custom { (r: ACCustomRow<ContactActionCell>) -> () in
+            
+            r.height = 56
+            
+            r.closure = { (cell: ContactActionCell)->() in
+                cell.bind("ic_add_user", actionTitle: localized("ContactsActionAdd"))
+            }
+            
+            r.selectAction = { () -> Bool in
+                self.findContact()
+                return false
+            }
+        }
         
-        searchView = UISearchBar()
-        searchView!.delegate = self
-        searchView!.frame = CGRectMake(0, 0, 0, 44)
-        searchView!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
-        
-        MainAppTheme.search.styleSearchBar(searchView!)
-        
-        searchDisplay = UISearchDisplayController(searchBar: searchView!, contentsController: self)
-        searchDisplay?.searchResultsDelegate = self
-        searchDisplay?.searchResultsTableView.rowHeight = 56
-        searchDisplay?.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
-        searchDisplay?.searchResultsTableView.frame = tableView.frame
-        
-        let header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-        header.addSubview(searchView!)
-        tableView.tableHeaderView = header
-        
-        searchSource = ContactsSearchSource(searchDisplay: searchDisplay!)
-        
-        super.viewDidLoad();
-        
-        navigationItem.title = NSLocalizedString("TabPeople", comment: "People Title")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "doAddContact")
-        
-        placeholder.setImage(
-            UIImage(named: "contacts_list_placeholder"),
-            title:  NSLocalizedString("Placeholder_Contacts_Title", comment: "Placeholder Title"),
-            subtitle: NSLocalizedString("Placeholder_Contacts_Message", comment: "Placeholder Message"),
-            actionTitle: NSLocalizedString("Placeholder_Contacts_Action", comment: "Placeholder Action"),
-            subtitle2: NSLocalizedString("Placeholder_Contacts_Message2", comment: "Placeholder Message2"),
-            actionTarget: self, actionSelector: Selector("showSmsInvitation"),
-            action2title: nil,
-            action2Selector: nil)
-        binder.bind(Actor.getAppState().isContactsEmpty, closure: { (value: Any?) -> () in
-            if let empty = value as? JavaLangBoolean {
-                if Bool(empty.booleanValue()) == true {
-                    self.showPlaceholder()
-                } else {
-                    self.hidePlaceholder()
+        section.custom { (r: ACCustomRow<ContactActionCell>) -> () in
+            
+            r.height = 56
+            
+            r.closure = { (cell: ContactActionCell)->() in
+                cell.bind("ic_invite_user", actionTitle: localized("ContactsActionInvite"))
+            }
+            
+            r.selectAction = { () -> Bool in
+                
+                let builder = MenuBuilder()
+                
+                if MFMessageComposeViewController.canSendText() {
+                    builder.add("SMS") { () -> () in
+                        self.showSmsInvitation(nil)
+                    }
                 }
-            }
-        })
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        let selected = tableView.indexPathForSelectedRow
-        if (selected != nil){
-            tableView.deselectRowAtIndexPath(selected!, animated: animated);
-        }
-        
-        // SearchBar hack
-        let searchBar = searchDisplay!.searchBar
-        let superView = searchBar.superview
-        if !(superView is UITableView) {
-            searchBar.removeFromSuperview()
-            superView?.addSubview(searchBar)
-        }
-        
-        // Header hack
-        tableView.tableHeaderView?.setNeedsLayout()
-        tableView.tableFooterView?.setNeedsLayout()
-        
-        if (searchDisplay != nil && searchDisplay!.active){
-            MainAppTheme.search.applyStatusBar()
-        } else {
-            MainAppTheme.navigation.applyStatusBar()
-        }
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        searchDisplay?.setActive(false, animated: animated)
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 1) {
-            return super.tableView(tableView, numberOfRowsInSection: section)
-        } else {
-            return 2
-        }
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if (indexPath.section == 1) {
-            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
-        } else {
-            if (indexPath.row == 1) {
-                let reuseId = "cell_invite";
-                let res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_add_user",
-                    actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
-                    isLast: false)
-                return res
-            } else {
-                let reuseId = "cell_add";
-                let res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_invite_user",
-                    actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
-                    isLast: false)
-                return res
+                
+                if MFMailComposeViewController.canSendMail() {
+                    builder.add("Email") { () -> () in
+                        self.showEmailInvitation(nil)
+                    }    
+                }
+                
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTencentWeibo) {
+                    builder.add("Tencent Weibo") { () -> () in
+                        let vc = SLComposeViewController(forServiceType: SLServiceTypeTencentWeibo)
+                        vc.setInitialText(self.inviteText)
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    }
+                }
+                
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeSinaWeibo) {
+                    builder.add("Sina Weibo") { () -> () in
+                        let vc = SLComposeViewController(forServiceType: SLServiceTypeSinaWeibo)
+                        vc.setInitialText(self.inviteText)
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    }
+                }
+                
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+                    builder.add("Twitter") { () -> () in
+                        let vc = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
+                        vc.setInitialText(self.inviteText)
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    }
+                }
+                
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
+                    builder.add("Facebook") { () -> () in
+                        let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+                        vc.addURL(NSURL(string: AppConfig.appInviteUrl!))
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    }
+                }
+                
+                self.showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: UIView(), sourceRect: CGRectZero, tapClosure: builder.tapClosure)
+                
+                return true
             }
         }
     }
+ 
+    // Searching for contact
     
-    // MARK: -
-    // MARK: Methods
-    
-    
-    func doAddContact() {
-        let alertView = UIAlertView(
-            title: NSLocalizedString("ContactsAddHeader", comment: "Alert Title"),
-            message: NSLocalizedString("ContactsAddHint", comment: "Alert Hint"),
-            delegate: self,
-            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Alert Cancel"),
-            otherButtonTitles: NSLocalizedString("AlertNext", comment: "Alert Next"))
-        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
-        alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
-        alertView.show()
-    }
-    
-    func showSmsInvitation() {
-        showSmsInvitation(nil)
-    }
-    
-    // MARK: -
-    // MARK: UITableView Delegate
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func findContact() {
         
-        if (tableView == self.tableView && indexPath.section == 0) {
-            if (indexPath.row == 0) {
-                showSmsInvitation()
-            } else {
-                doAddContact()
-            }
-            let selected = tableView.indexPathForSelectedRow
-            if (selected != nil){
-                tableView.deselectRowAtIndexPath(selected!, animated: true);
-            }
-            return
-        }
-        
-        var contact: ACContact!;
-        
-        if (tableView == self.tableView) {
-            contact = objectAtIndexPath(indexPath) as! ACContact
-        } else {
-            contact = searchSource!.objectAtIndexPath(indexPath) as! ACContact
-        }
-        
-        navigateToMessagesWithUid(contact.uid)
-    }
-    
-    // MARK: -
-    // MARK: Navigation
-    
-    func showSmsInvitation(recipients: [String]?) {
-        if MFMessageComposeViewController.canSendText() {
+        startEditField { (c) -> () in
+            c.title = "FindTitle"
+            c.actionTitle = "NavigationFind"
             
-            if AppConfig.appInviteUrl == nil {
-                // Silently ignore if not configured
-                return
-            }
+            c.hint = "FindHint"
+            c.fieldHint = "FindFieldHint"
             
-            let messageComposeController = MFMessageComposeViewController()
-            messageComposeController.messageComposeDelegate = self
-            messageComposeController.body = localized("InviteText")
-                .replace("{link}", dest: AppConfig.appInviteUrl!)
-            messageComposeController.recipients = recipients
-            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-                MainAppTheme.navigation.applyStatusBarFast()
-            })
-        } else {
-             // TODO: Show or not to show?
-            UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK").show()
+            c.fieldAutocapitalizationType = .None
+            c.fieldAutocorrectionType = .No
+            c.fieldReturnKey = .Search
+            
+            c.didDoneTap = { (t, c) -> () in
+                
+                if t.length == 0 {
+                    return
+                }
+                
+                self.executeSafeOnlySuccess(Actor.findUsersCommandWithQuery(t), successBlock: { (val) -> Void in
+                    var user: ACUserVM? = nil
+                    if let users = val as? IOSObjectArray {
+                        if Int(users.length()) > 0 {
+                            if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+                                user = tempUser
+                            }
+                        }
+                    }
+                    
+                    if user != nil {
+                        c.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
+                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            c.dismiss()
+                        }, failureBlock: { (val) -> Void in
+                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            c.dismiss()
+                        })
+                    } else {
+                        c.alertUser("FindNotFound")
+                    }
+                })
+            }
         }
     }
-    
-    private func navigateToMessagesWithUid(uid: jint) {
-        let conversationController = ConversationViewController(peer: ACPeer.userWithInt(uid))
-        navigateDetail(conversationController)
-        MainAppTheme.navigation.applyStatusBar()
-    }    
-}
-
-// MARK: -
-// MARK: MFMessageComposeViewController Delegate
-
-extension ContactsViewController: MFMessageComposeViewControllerDelegate {
-    func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
-        controller.dismissViewControllerAnimated(true, completion: nil)
-    }
-}
-
-// MARK: -
-// MARK: UIAlertView Delegate
-
-extension ContactsViewController: UIAlertViewDelegate {
     
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        // TODO: Localize
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
             if textField.text?.length > 0 {
@@ -283,7 +185,7 @@ extension ContactsViewController: UIAlertViewDelegate {
                     }
                     if user != nil {
                         self.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
-                            self.navigateToMessagesWithUid(user!.getId())
+                            self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation([textField.text!])
                         })
@@ -295,5 +197,64 @@ extension ContactsViewController: UIAlertViewDelegate {
                 })
             }
         }
+    }
+    
+    // Email Invitation
+    
+    func showEmailInvitation(recipients: [String]?) {
+        if MFMailComposeViewController.canSendMail() {
+            
+            if AppConfig.appInviteUrl == nil {
+                // Silently ignore if not configured
+                return
+            }
+            
+            let messageComposeController = MFMailComposeViewController()
+            messageComposeController.mailComposeDelegate = self
+            
+            // Replace
+            messageComposeController.setSubject(inviteText)
+            
+            // Replace with bigger text
+            messageComposeController.setMessageBody(inviteText, isHTML: false)
+            messageComposeController.setToRecipients(recipients)
+            
+            // Hacking styles
+            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
+                MainAppTheme.navigation.applyStatusBarFast()
+            })
+        }
+    }
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // SMS Invitation
+    
+    func showSmsInvitation(recipients: [String]?) {
+        if MFMessageComposeViewController.canSendText() {
+            
+            if AppConfig.appInviteUrl == nil {
+                // Silently ignore if not configured
+                return
+            }
+            
+            let messageComposeController = MFMessageComposeViewController()
+            messageComposeController.messageComposeDelegate = self
+            messageComposeController.body = inviteText
+            messageComposeController.recipients = recipients
+            
+            // Hacking styles
+            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
+                MainAppTheme.navigation.applyStatusBarFast()
+            })
+        }
+    }
+    
+    func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
 }

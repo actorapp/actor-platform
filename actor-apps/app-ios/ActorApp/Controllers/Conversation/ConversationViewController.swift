@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class ConversationViewController: ConversationBaseViewController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ConversationViewController: ConversationContentViewController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // Data binder
     private let binder: Binder = Binder()
@@ -164,13 +164,13 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
                 self.avatarView.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
             })
             binder.bind(Actor.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
-//                if (!group.isMemberModel().get().booleanValue()) {
-//                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
-//                    self.textInputbar.hidden = true
-//                    return
-//                } else {
-//                    self.textInputbar.hidden = false
-//                }
+                if (!group.isMemberModel().get().booleanValue()) {
+                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
+                    self.setTextInputbarHidden(true, animated: true)
+                    return
+                } else {
+                    self.setTextInputbarHidden(false, animated: false)
+                }
             
                 if (typingValue != nil && typingValue!.length() > 0) {
                     self.subtitleView.textColor = Resources.PrimaryLightText
@@ -298,10 +298,8 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
             self.pickImage(.PhotoLibrary)
         }
         
-        if #available(iOS 8.0, *) {
-            builder.add("SendDocument") { () -> () in
-                self.pickDocument()
-            }
+        builder.add("SendDocument") { () -> () in
+            self.pickDocument()
         }
         
         if !isIPad {
@@ -369,33 +367,13 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        // Remove separator inset
-        if cell.respondsToSelector("setSeparatorInset:") {
-            cell.separatorInset = UIEdgeInsetsZero
-        }
-        
-        // Prevent the cell from inheriting the Table View's margin settings
-        if cell.respondsToSelector("setPreservesSuperviewLayoutMargins:") {
-            if #available(iOS 8.0, *) {
-                cell.preservesSuperviewLayoutMargins = false
-            } else {
-                // Fallback on earlier versions
-            }
-        }
-        
-        // Explictly set your cell's layout margins
-        if cell.respondsToSelector("setLayoutMargins:") {
-            if #available(iOS 8.0, *) {
-                cell.layoutMargins = UIEdgeInsetsZero
-            } else {
-                // Fallback on earlier versions
-            }
-        }
+        cell.separatorInset = UIEdgeInsetsZero
+        cell.preservesSuperviewLayoutMargins = false
+        cell.layoutMargins = UIEdgeInsetsZero
     }
     
     // Document picking
     
-    @available(iOS 8.0, *)
     func pickDocument() {
         let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
         documentPicker.view.backgroundColor = UIColor.clearColor()
@@ -403,13 +381,11 @@ class ConversationViewController: ConversationBaseViewController, UIDocumentMenu
         self.presentViewController(documentPicker, animated: true, completion: nil)
     }
     
-    @available(iOS 8.0, *)
     func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)
     }
     
-    @available(iOS 8.0, *)
     func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         
         // Loading path and file name

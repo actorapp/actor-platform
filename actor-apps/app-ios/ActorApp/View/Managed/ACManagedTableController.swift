@@ -6,9 +6,9 @@ import Foundation
 
 class ACManagedTableController: AAViewController {
     
-    private let tableViewStyle: UITableViewStyle
+    let style: ACContentTableStyle
     
-    var delegate: ACManagedTableControllerDelegate?
+    var managedTableDelegate: ACManagedTableControllerDelegate?
     
     let binder = Binder()
     
@@ -16,8 +16,12 @@ class ACManagedTableController: AAViewController {
     
     var managedTable: ACManagedTable!
     
-    init(tableViewStyle: UITableViewStyle) {
-        self.tableViewStyle = tableViewStyle
+    var unbindOnDissapear: Bool = false
+    
+    private var isBinded: Bool = false
+    
+    init(style: ACContentTableStyle) {
+        self.style = style
         super.init()
     }
 
@@ -30,39 +34,65 @@ class ACManagedTableController: AAViewController {
         
         // Creating tables
         
+        let tableViewStyle: UITableViewStyle
+        switch(style) {
+        case .Plain:
+            tableViewStyle = .Plain
+            break
+        case .SettingsPlain:
+            tableViewStyle = .Plain
+            break
+        case .SettingsGrouped:
+            tableViewStyle = .Grouped
+            break
+        }
+        
         tableView = UITableView(frame: view.bounds, style: tableViewStyle)
         
         // Disabling separators as we use manual separators handling
         tableView.separatorStyle = .None
         
         // Setting tableView and view bg color depends on table style
-        tableView.backgroundColor = MainAppTheme.list.backyardColor
+        tableView.backgroundColor = style == .Plain ? MainAppTheme.list.bgColor : MainAppTheme.list.backyardColor
         view.backgroundColor = tableView.backgroundColor
         
-        managedTable = ACManagedTable(tableView: tableView, controller: self)
+        managedTable = ACManagedTable(style: style, tableView: tableView, controller: self)
         view.addSubview(tableView)
         
         // Invoking table loading
         
-        if let d = delegate {
+        if let d = managedTableDelegate {
             d.managedTableLoad(self, table: managedTable)
         }
         
         // Initial load of Managed Table
         tableView.reloadData()
     }
-
+    
     override func viewWillAppear(animated: Bool) {
 
-        if let row = tableView.indexPathForSelectedRow {
-            tableView.deselectRowAtIndexPath(row, animated: animated)
+        if let t = tableView {
+            if let row = t.indexPathForSelectedRow {
+                t.deselectRowAtIndexPath(row, animated: animated)
+            }
         }
         
         super.viewWillAppear(animated)
         
-        // Performing data binding
-        if let d = delegate {
-            d.managedTableBind(self, table: managedTable, binder: binder)
+        if let m = managedTable {
+            
+            // Performing data binding
+            if let d = managedTableDelegate {
+                d.managedTableBind(self, table: m, binder: binder)
+            }
+            
+            if !isBinded {
+                // Binding rows
+                m.bind(binder)
+            }
+            
+            // Passing event to table
+            m.controllerViewWillAppear(animated)
         }
     }
     
@@ -70,11 +100,36 @@ class ACManagedTableController: AAViewController {
         super.viewWillDisappear(animated)
         
         // Stopping data binding here
-        if let d = delegate {
-            d.managedTableUnbind(self, table: managedTable, binder: binder)
+        if let m = managedTable {
+            if let d = managedTableDelegate {
+                d.managedTableUnbind(self, table: m, binder: binder)
+            }
+            
+            if unbindOnDissapear {
+                
+                if isBinded {
+                    // Unbinding rows
+                    m.unbind(binder)
+                    isBinded = false
+                }
+                
+                // Removing all bindings
+                binder.unbindAll()
+            }
+            
+            // Passing event to table
+            m.controllerViewWillDisappear(animated)
         }
-        // Removing all bindings
-        binder.unbindAll()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if let m = managedTable {
+            
+            // Passing event to table
+            m.controllerViewDidDisappear(animated)
+        }
     }
 }
 

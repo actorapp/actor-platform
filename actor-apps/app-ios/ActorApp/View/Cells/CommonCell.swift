@@ -10,6 +10,7 @@ enum CommonCellStyle {
     case Destructive
     case Switch
     case Action
+    case ActionCentered
     case Navigation
     case Hint
 }
@@ -22,6 +23,7 @@ class CommonCell: UATableViewCell {
     
     var style: CommonCellStyle = .Normal { didSet { updateCellStyle() } }
     var switchBlock: ((Bool) -> ())?
+    var contentInset: CGFloat = 15
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -108,6 +110,12 @@ class CommonCell: UATableViewCell {
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
+        case .ActionCentered:
+            titleLabel.textColor = MainAppTheme.list.actionColor
+            titleLabel.textAlignment = NSTextAlignment.Center
+            switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.None
+            break
         case .Navigation:
             titleLabel.textColor = MainAppTheme.list.textColor
             titleLabel.textAlignment = NSTextAlignment.Left
@@ -138,9 +146,9 @@ class CommonCell: UATableViewCell {
             hintLabel.sizeToFit()
             
             hintLabel.frame = CGRectMake(contentView.bounds.width - hintLabel.width, 0, hintLabel.width, 44)
-            titleLabel.frame = CGRectMake(15, 0, contentView.bounds.width - hintLabel.width - 20, 44)
+            titleLabel.frame = CGRectMake(contentInset, 0, contentView.bounds.width - hintLabel.width - contentInset - 5, 44)
         } else {
-            titleLabel.frame = CGRectMake(15, 0, contentView.bounds.width - 15, 44)
+            titleLabel.frame = CGRectMake(contentInset, 0, contentView.bounds.width - contentInset - 5, 44)
         }
         
         if switcher != nil {

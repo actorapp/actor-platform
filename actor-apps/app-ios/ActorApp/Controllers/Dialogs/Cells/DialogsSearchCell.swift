@@ -4,21 +4,20 @@
 
 import UIKit
 
-class DialogsSearchCell: UATableViewCell {
+class DialogsSearchCell: UATableViewCell, ACBindedSearchCell {
     
-    // MARK: -
-    // MARK: Private vars
+    typealias BindData = ACSearchEntity
     
-    private let avatarView: AvatarView = AvatarView(frameSize: 48, type: .Rounded);
-    private let titleView: UILabel = UILabel();
+    static func bindedCellHeight(item: BindData) -> CGFloat {
+        
+        return 76
+    }
     
-    private var bindedFile: jlong? = nil;
-    private var avatarCallback: CocoaDownloadCallback? = nil;
+    private let avatarView: AvatarView = AvatarView(frameSize: 48, type: .Rounded)
+    private let titleView: UILabel = UILabel()
     
-    // MARK: -
-    // MARK: Constructors
-    
-    init(reuseIdentifier:String) {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
         
         titleView.font = UIFont.mediumSystemFontOfSize(19)
@@ -32,30 +31,24 @@ class DialogsSearchCell: UATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
-    // MARK: Methods
-    
-    func bindSearchEntity(searchEntity: ACSearchEntity, isLast: Bool) {
-        avatarView.bind(searchEntity.title, id: searchEntity.peer.peerId, avatar: searchEntity.avatar)
-        titleView.text = searchEntity.title
-        
-        topSeparatorVisible = false
-        bottomSeparatorLeftInset = isLast ? 0 : 75
-        bottomSeparatorVisible = true
+    func bind(item: ACSearchEntity, search: String?) {
+        avatarView.bind(item.title, id: item.peer.peerId, avatar: item.avatar)
+        titleView.text = item.title
     }
     
-    // MARK: -
-    // MARK: Layout
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        avatarView.unbind()
+    }
     
     override func layoutSubviews() {
-        super.layoutSubviews();
+        super.layoutSubviews()
         
-        let width = self.contentView.frame.width;
-        let leftPadding = CGFloat(76);
-        let padding = CGFloat(14);
+        let width = self.contentView.frame.width
+        let leftPadding = CGFloat(76)
+        let padding = CGFloat(14)
         
-        avatarView.frame = CGRectMake(padding, padding, 48, 48);
-        titleView.frame = CGRectMake(leftPadding, 0, width - leftPadding - (padding + 50), contentView.bounds.size.height);
+        avatarView.frame = CGRectMake(padding, padding, 48, 48)
+        titleView.frame = CGRectMake(leftPadding, 0, width - leftPadding - (padding + 50), contentView.bounds.size.height)
     }
-
 }

@@ -6,23 +6,22 @@ import UIKit
 
 class AATableViewController: AAViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var tableView: UITableView!
-    var tableViewStyle: UITableViewStyle!
+    let tableView: UITableView
+    let tableViewStyle: UITableViewStyle
     
     init(style: UITableViewStyle) {
-        super.init()
-        
         tableViewStyle = style
+        tableView = UITableView(frame: CGRectZero, style: tableViewStyle)
+        super.init()
     }
 
     required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func loadView() {
         super.loadView()
         
-        tableView = UITableView(frame: view.bounds, style: tableViewStyle)
         tableView.delegate = self
         tableView.dataSource = self
         view.addSubview(tableView)
@@ -55,7 +54,7 @@ class AATableViewController: AAViewController, UITableViewDataSource, UITableVie
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 0
+        return 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

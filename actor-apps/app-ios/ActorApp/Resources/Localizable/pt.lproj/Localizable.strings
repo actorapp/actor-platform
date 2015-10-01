@@ -46,17 +46,33 @@
 
 "SettingsChangeName" = "Alterar Seu Nome";
 
+
+"SettingsEditHeader" = "Your name";
+
+"SettingsEditHint" = "Please, enter your real name to help people better understand who you are.";
+
+"SettingsEditFieldHint" = "Enter your name";
+
+
 "SettingsAboutNotSet" = "Set about me";
+
+"SettingsChangeAboutTitle" = "About me";
+
+"SettingsChangeAboutHint" = "Tell people anything you want about yourself";
+
 
 "SettingsUsernameNotSet" = "Set username";
 
-"SettingsUsernameTitle" = "Change your username";
+"SettingsUsernameTitle" = "Username";
+
+"SettingsUsernameHintField" = "Enter your Username";
+
+"SettingsUsernameHint" = "You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+
 
 "SettingsSecurity" = "Segurança";
 
 "SettingsWallpapers" = "Wallpapers";
-
-"SettingsEditHeader" = "Alterar seu nome";
 
 "SettingsNotifications" = "Alertas e Sons";
 
@@ -116,7 +132,9 @@
  * Group
  */
 
-"GroupEditHeader" = "Mudar o tema do grupo";
+"GroupEditHeader" = "Theme";
+
+"GroupEditHint" = "Enter group theme";
 
 "GroupSetPhoto" = "Definir Foto do Grupo";
 
@@ -134,7 +152,15 @@
 
 "GroupMembers" = "{0} MEMBROS";
 
+"GroupMemberAdmin" = "admin";
+
 "GroupMemberInfo" = "Perfil";
+
+"GroupMemberMakeAdmin" = "Make Group admin";
+
+"GroupMemberMakeMessage" = "Are you sure want to make {name} admin of this group?";
+
+"GroupMemberMakeAction" = "Yes";
 
 "GroupMemberKick" = "Remover do Grupo";
 
@@ -271,6 +297,18 @@
 "ChatNoGroupAccess" = "Você não é membro";
 
 /*
+ * Find
+ */
+
+"FindTitle" = "Find People";
+
+"FindFieldHint" = "phone number, email or nickname";
+
+"FindHint" = "Enter phone number, email or nickname and press search";
+
+"FindNotFound" = "Sorry, but we are unable to find person for this search query";
+
+/*
  * Placeholders
  */
 
@@ -366,6 +404,8 @@
 
 "NavigationSave" = "Salvar";
 
+"NavigationFind" = "Find";
+
 "AlertCancel" = "Cancelar";
 
 "AlertNext" = "Próximo";
@@ -383,6 +423,8 @@
 "AlertError" = "Error";
 
 "AlertTryAgain" = "Try Again";
+
+"AlertInvite" = "Invite";
 
 "UnsupportedContent" = "Mensagem não suportada nesta versão. Por favor espere por uma atualização para ver esta mensagem.";
 

@@ -176,6 +176,11 @@ extension UIViewController {
         })
     }
     
+    func executeSafeOnlySuccess(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
+        Executions.execute(command, type: .Safe, ignore: [], successBlock: successBlock, failureBlock: nil)
+    }
+
+    
     func executeHidden(command: ACCommand, successBlock: ((val: Any?) -> Void)? = nil) {
         Executions.execute(command, type: .Hidden, successBlock: successBlock, failureBlock: nil)
     }

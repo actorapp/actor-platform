@@ -211,6 +211,7 @@ class AppSearchBar {
     }
     
     func styleSearchBar(searchBar: UISearchBar) {
+
         // SearchBar Minimal Style
         searchBar.searchBarStyle = UISearchBarStyle.Default
         // SearchBar Transculent
@@ -230,6 +231,9 @@ class AppSearchBar {
         
         // SearchBar cancel color
         searchBar.tintColor = cancelColor
+        
+        // Apply keyboard color
+        searchBar.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
     }
 }
 

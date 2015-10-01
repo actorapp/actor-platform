@@ -366,7 +366,7 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
         this.creatorId = wrapped.getCreatorUid();
         this.members = new ArrayList<GroupMember>();
         for (ApiMember m : wrapped.getMembers()) {
-            this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == this.creatorId));
+            this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.isAdmin() != null ? m.isAdmin() : m.getUid() == this.creatorId));
         }
         this.isMember = wrapped.isMember();
         this.isHidden = wrapped.isHidden() != null ? wrapped.isHidden() : false;

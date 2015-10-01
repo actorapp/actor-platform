@@ -15,12 +15,11 @@ class InviteLinkViewController: ACContentTableController {
     var urlRow: ACCommonRow!
     
     init(gid: Int) {
-        super.init(tableViewStyle: UITableViewStyle.Grouped)
+        super.init(style: ACContentTableStyle.SettingsGrouped)
         
-        // Remove?
         self.gid = gid
         
-        self.title = NSLocalizedString("GroupInviteLinkPageTitle", comment: "Invite Link Title")
+        self.title = localized("GroupInviteLinkPageTitle")
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -52,7 +51,10 @@ class InviteLinkViewController: ACContentTableController {
             }
             s.action("ActionShareLink") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    UIApplication.sharedApplication().openURL(NSURL(string: self.currentUrl!)!)
+                    var sharingItems = [AnyObject]()
+                    sharingItems.append(self.currentUrl!)
+                    let activityViewController = UIActivityViewController(activityItems: sharingItems, applicationActivities: nil)
+                    self.presentViewController(activityViewController, animated: true, completion: nil)
                     return true
                 }
             }
@@ -61,7 +63,7 @@ class InviteLinkViewController: ACContentTableController {
         section { (s) -> () in
             s.danger("ActionRevokeLink") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    self.confirmAlertUser("GroupInviteLinkRevokeMessage", action: "GroupInviteLinkRevokeAction", tapYes: { () -> () in
+                    self.confirmDestructive(localized("GroupInviteLinkRevokeMessage"), action: localized("GroupInviteLinkRevokeAction"), yes: { () -> () in
                         self.reloadLink()
                     })
                     return true
