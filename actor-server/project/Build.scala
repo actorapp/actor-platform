@@ -75,7 +75,7 @@ object Build extends sbt.Build with Versioning with Releasing {
         Revolver.settings ++
         Seq(
           libraryDependencies ++= Dependencies.root,
-          Revolver.reStartArgs := Seq("im.actor.server.Main"),
+          //Revolver.reStartArgs := Seq("im.actor.server.Main"),
           mainClass in Revolver.reStart := Some("im.actor.server.Main"),
           mainClass in Compile := Some("im.actor.server.Main"),
           autoCompilerPlugins := true,
@@ -91,6 +91,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       //      actorDashboard,
       actorCore,
       actorBot,
+      actorBotKit,
       actorEmail,
       actorEnrich,
       actorFrontend,
@@ -106,7 +107,8 @@ object Build extends sbt.Build with Versioning with Releasing {
       shardakka
     )
     .settings(
-    aggregate in Docker := false
+    aggregate in Docker := false,
+    aggregate in Revolver.reStart := false
   )
 
   lazy val actorRunner = Project(
@@ -142,11 +144,19 @@ object Build extends sbt.Build with Versioning with Releasing {
       Seq(
         libraryDependencies ++= Dependencies.bot
       )
-  ).dependsOn(actorBotMessages, shardakka, actorCore, actorTestkit % "test")
+  ).dependsOn(actorBotShared, shardakka, actorCore, actorTestkit % "test")
 
-  lazy val actorBotMessages = Project(
-    id = "actor-bot-messages",
-    base = file("actor-bot-messages"),
+  lazy val actorBotKit = Project(
+    id = "actor-bot-kit",
+    base = file("actor-bot-kit"),
+    settings = defaultSettings ++ Revolver.settings ++ Seq(
+      libraryDependencies ++= Dependencies.botKit
+    )
+  ).dependsOn(actorBotShared)
+
+  lazy val actorBotShared = Project(
+    id = "actor-bot-shared",
+    base = file("actor-bot-shared"),
     settings = defaultSettings ++
       Seq(
         libraryDependencies ++= Dependencies.botMessages

@@ -10,7 +10,7 @@ import im.actor.server.sequence.SeqStateDate
 
 import scala.concurrent.Future
 
-final class BotBlueprint(botUserId: Int, botAuthId: Long, system: ActorSystem) {
+final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSystem) {
 
   import BotMessages._
   import akka.stream.scaladsl.FlowGraph.Implicits._

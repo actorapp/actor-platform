@@ -6,11 +6,10 @@ object Dependencies {
   object V {
     val akka = "2.3.13"
     val akkaExperimental = "1.0"
+    val cats = "0.2.0"
     val scalaz = "7.1.1"
     val slick = "3.0.3"
     val scalatest = "2.2.4"
-    val catsVersion    = "0.2.0"
-
   }
 
   object Compile {
@@ -23,6 +22,8 @@ object Dependencies {
     val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.0.0"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
+    val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
+
     val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.7"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
@@ -30,7 +31,7 @@ object Dependencies {
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
-    val cats                    = "org.spire-math"                %% "cats"                          % V.catsVersion
+    val cats                    = "org.spire-math"                %% "cats"                          % V.cats
 
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
 
@@ -103,6 +104,8 @@ object Dependencies {
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
   val bot = shared ++ Seq(upickle)
+
+  val botKit = Seq(akkaActor, akkaHttp, akkaSlf4j, sprayWebsocket, upickle)
 
   val botMessages = Seq(upickle)
 
