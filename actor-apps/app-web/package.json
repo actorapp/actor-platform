@@ -42,7 +42,6 @@
     "react-modal": "^0.3.0",
     "react-router": "^0.13.3",
     "react-scroll": "github:olegshilov/react-scroll.git#develop",
-    "react-tap-event-plugin": "^0.1.8",
     "react-visibility-sensor": "^2.1.0",
     "reflux": "^0.2.12"
   },
