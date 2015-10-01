@@ -1,11 +1,11 @@
-package im.actor.bot.remote
+package im.actor.botkit
 
 import java.net.URLEncoder
 
 import akka.actor._
-import akka.stream.scaladsl.{ Sink, Source }
-import akka.stream.{ ActorMaterializer, OverflowStrategy }
-import im.actor.bot.{ BotMessageOut, BotBase, BotMessages }
+import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.{ActorMaterializer, OverflowStrategy}
+import im.actor.bot.{BotBase, BotMessageOut, BotMessages}
 import upickle.default._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
