@@ -6,7 +6,7 @@ import spray.revolver.RevolverPlugin._
 import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport.Docker
 
-object Build extends sbt.Build with Versioning with Releasing {
+object Build extends sbt.Build with Versioning with Releasing with Publishing {
   val ScalaVersion = "2.11.7"
   val Version = getVersion
 
@@ -91,7 +91,7 @@ object Build extends sbt.Build with Versioning with Releasing {
       //      actorDashboard,
       actorCore,
       actorBot,
-      actorBotKit,
+      actorBotkit,
       actorEmail,
       actorEnrich,
       actorFrontend,
@@ -146,20 +146,22 @@ object Build extends sbt.Build with Versioning with Releasing {
       )
   ).dependsOn(actorBotShared, shardakka, actorCore, actorTestkit % "test")
 
-  lazy val actorBotKit = Project(
-    id = "actor-bot-kit",
-    base = file("actor-bot-kit"),
-    settings = defaultSettings ++ Revolver.settings ++ Seq(
-      libraryDependencies ++= Dependencies.botKit
+  lazy val actorBotkit = Project(
+    id = "actor-botkit",
+    base = file("actor-botkit"),
+    settings = defaultSettings ++ publishSettings ++ Revolver.settings ++ Seq(
+      libraryDependencies ++= Dependencies.botkit
     )
-  ).dependsOn(actorBotShared)
+  )
+    .dependsOn(actorBotShared)
+    .aggregate(actorBotShared)
 
   lazy val actorBotShared = Project(
     id = "actor-bot-shared",
     base = file("actor-bot-shared"),
-    settings = defaultSettings ++
+    settings = defaultSettings ++ publishSettings ++
       Seq(
-        libraryDependencies ++= Dependencies.botMessages
+        libraryDependencies ++= Dependencies.botShared
       )
   )
 
