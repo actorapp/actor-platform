@@ -4,6 +4,12 @@
 
 import Foundation
 
+enum ACContentTableStyle {
+    
+    case SettingsPlain
+    case SettingsGrouped
+    case Plain
+}
 
 class ACContentTableController: ACManagedTableController, ACManagedTableControllerDelegate {
     
@@ -13,10 +19,12 @@ class ACContentTableController: ACManagedTableController, ACManagedTableControll
     
     // Controller constructor
     
-    override init(tableViewStyle: UITableViewStyle) {
-        super.init(tableViewStyle: tableViewStyle)
+    override init(style: ACContentTableStyle) {
+        super.init(style: style)
         
-        self.delegate = self
+        self.managedTableDelegate = self
+        
+        self.autoSections = style != .Plain
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -42,16 +50,14 @@ class ACContentTableController: ACManagedTableController, ACManagedTableControll
         closure(s: s)
     }
     
+    func search<C where C: ACBindedSearchCell, C: UITableViewCell>(cell: C.Type, closure: (s: ACManagedSearchConfig<C>) -> ()) {
+        managedTable.search(cell, closure: closure)
+    }
+    
     func afterTableCreated() {
         if autoSections {
             managedTable.sections.last?.footerHeight = 30
         }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     // Implement it in subclass
@@ -72,7 +78,9 @@ class ACContentTableController: ACManagedTableController, ACManagedTableControll
     
     func managedTableLoad(controller: ACManagedTableController, table: ACManagedTable) {
         isInLoad = true
+        table.beginUpdates()
         tableDidLoad()
+        table.endUpdates()
         afterTableCreated()
         isInLoad = false
     }

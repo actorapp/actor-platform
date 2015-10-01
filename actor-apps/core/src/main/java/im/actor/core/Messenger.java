@@ -924,6 +924,19 @@ public class Messenger {
     }
 
     /**
+     * Make member admin of group
+     *
+     * @param gid group's id
+     * @param uid user's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("makeAdminCommandWithGid:withUid:")
+    public Command<Boolean> makeAdmin(final int gid, final int uid) {
+        return modules.getGroupsModule().makeAdmin(gid, uid);
+    }
+
+    /**
      * Request invite link for group
      *
      * @param gid group's id

@@ -22,6 +22,7 @@
 #import <M13ProgressSuite/UINavigationController+M13ProgressViewBar.h>
 #import <NYTPhotoViewer/NYTPhotosViewController.h>
 #import <NYTPhotoViewer/NYTPhoto.h>
+#import <SZTextView/SZTextView.h>
 
 #import <pop/Pop.h>
 #import <VBFPopFlatButton/VBFPopFlatButton.h>

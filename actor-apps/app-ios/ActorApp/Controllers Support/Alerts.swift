@@ -134,6 +134,20 @@ extension UIViewController {
         
         actionShit.showWithCompletion(nil)
     }
+    
+    func startEditText(closure: (EditTextControllerConfig) -> ()) {
+        let config = EditTextControllerConfig()
+        closure(config)
+        config.check()
+        self.presentViewController(AANavigationController(rootViewController: EditTextController(config: config)), animated: true, completion: nil)
+    }
+    
+    func startEditField(closure: (c: EditFieldControllerConfig) -> ()) {
+        let config = EditFieldControllerConfig()
+        closure(c: config)
+        config.check()
+        self.presentViewController(AANavigationController(rootViewController: EditFieldController(config: config)), animated: true, completion: nil)
+    }
 }
 
 class ActionShitDelegate: NSObject, ABActionShitDelegate {

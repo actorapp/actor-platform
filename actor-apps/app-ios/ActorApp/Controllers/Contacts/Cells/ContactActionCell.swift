@@ -4,32 +4,26 @@
 
 import Foundation
 
-class ContactActionCell: BasicCell {
+class ContactActionCell: UATableViewCell {
     
     let titleView = UILabel()
     let iconView = UIImageView()
     
-    init(reuseIdentifier:String) {
-        super.init(reuseIdentifier: reuseIdentifier, separatorPadding: 80)
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         titleView.font = UIFont.systemFontOfSize(18)
         titleView.textColor = MainAppTheme.list.actionColor
         iconView.contentMode = UIViewContentMode.Center
         self.contentView.addSubview(titleView)
         self.contentView.addSubview(iconView)
-        
-        backgroundColor = MainAppTheme.list.bgColor
-        
-        let selectedView = UIView()
-        selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
-        selectedBackgroundView = selectedView
     }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(icon: String, actionTitle: String, isLast: Bool){
-        hideSeparator(isLast)
+    func bind(icon: String, actionTitle: String) {
         titleView.text = actionTitle
         iconView.image = UIImage(named: icon)?.tintImage(MainAppTheme.list.actionColor)
     }

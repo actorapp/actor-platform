@@ -16,7 +16,7 @@ class GroupViewController: ACContentTableController {
     var memberRows: ACManagedArrayRows<ACGroupMember, GroupMemberCell>!
     
     init (gid: Int) {
-        super.init(tableViewStyle: UITableViewStyle.Plain)
+        super.init(style: ACContentTableStyle.SettingsPlain)
         
         self.gid = gid
         self.autoTrack = true
@@ -91,19 +91,28 @@ class GroupViewController: ACContentTableController {
             // Header: Change title
             s.action("GroupSetTitle") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    self.textInputAlert("GroupEditHeader", content: self.group.getNameModel().get(), action: "AlertSave") { (nval) -> () in
-                        if nval.length > 0 {
-                            self.confirmUser("GroupEditConfirm",
-                                action: "GroupEditConfirmAction",
-                                cancel: "AlertCancel",
-                                sourceView: self.view,
-                                sourceRect: self.view.bounds,
-                                tapYes: { () -> () in
-                                    self.execute(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: nval));
+                    self.startEditField { (c) -> () in
+                        
+                        c.title = "GroupEditHeader"
+                        
+                        c.fieldHint = "GroupEditHint"
+                        
+                        c.actionTitle = "NavigationSave"
+                        
+                        c.initialText = self.group.getNameModel().get()
+                        
+                        c.didDoneTap = { (t, c) -> () in
+                            
+                            if t.length == 0 {
+                                return
+                            }
+
+                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t), successBlock: { (val) -> Void in
+                                c.dismiss()
                             })
                         }
-                        
                     }
+                    
                     return true
                 }
             }
@@ -137,6 +146,23 @@ class GroupViewController: ACContentTableController {
             // Members: Header
             s.header(localized("GroupMembers").uppercaseString)
             
+            // Members: Add
+            s.action("GroupAddParticipant") { (r) -> () in
+                
+                r.contentInset = 65
+                
+                r.selectAction = { () -> Bool in
+                    let addParticipantController = AddParticipantViewController(gid: self.gid)
+                    let navigationController = AANavigationController(rootViewController: addParticipantController)
+                    if (isIPad) {
+                        navigationController.modalInPopover = true
+                        navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
+                    }
+                    self.presentViewController(navigationController, animated: true, completion: nil)
+                    return false
+                }
+            }
+            
             // Members: List
             self.memberRows = s.arrays { (r: ACManagedArrayRows<ACGroupMember, GroupMemberCell>) -> () in
                 r.height = 48
@@ -145,7 +171,7 @@ class GroupViewController: ACContentTableController {
                 
                 r.bindData = { (c, d) -> () in
                     if let user = Actor.getUserWithUid(d.uid) {
-                        c.bind(user)
+                        c.bind(user, isAdmin: d.isAdministrator)
                         
                         // Notify to request onlines
                         Actor.onUserVisibleWithUid(d.uid)
@@ -159,74 +185,88 @@ class GroupViewController: ACContentTableController {
                         }
                         
                         let name = user.getNameModel().get()
-                        self.showActionSheet(name,
-                            buttons: isIPhone ? ["GroupMemberInfo", "GroupMemberWrite", "GroupMemberCall"] : ["GroupMemberInfo", "GroupMemberWrite"],
-                            cancelButton: "Cancel",
-                            destructButton: d.uid != Actor.myUid() && (d.inviterUid == Actor.myUid() || self.group.creatorId == Actor.myUid())  ? "GroupMemberKick" : nil,
-                            sourceView: self.view,
-                            sourceRect: self.view.bounds,
-                            tapClosure: { (index) -> () in
-                                if (index == -2) {
-                                    self.confirmUser(NSLocalizedString("GroupMemberKickMessage", comment: "Button Title").stringByReplacingOccurrencesOfString("{name}", withString: name, options: NSStringCompareOptions(), range: nil),
-                                        action: "GroupMemberKickAction",
-                                        cancel: "AlertCancel",
+                        
+                        self.alertSheet { (a: AlertSetting) -> () in
+                            
+                            a.cancel = "AlertCancel"
+                            
+                            a.action("GroupMemberInfo") { () -> () in
+                                self.navigateNext(UserViewController(uid: Int(user.getId())), removeCurrent: false)
+                            }
+                         
+                            a.action("GroupMemberWrite") { () -> () in
+                                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                                self.popover?.dismissPopoverAnimated(true)
+                            }
+                            
+                            a.action("GroupMemberCall", closure: { () -> () in
+                                let phones = user.getPhonesModel().get()
+                                if phones.size() == 0 {
+                                    self.alertUser("GroupMemberCallNoPhones")
+                                } else if phones.size() == 1 {
+                                    let number = phones.getWithInt(0)
+                                    UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.phone)")!)
+                                } else {
+                                    
+                                    var numbers = [String]()
+                                    for i in 0..<phones.size() {
+                                        let p = phones.getWithInt(i)
+                                        numbers.append("\(p.title): +\(p.phone)")
+                                    }
+                                    self.showActionSheet(numbers,
+                                        cancelButton: "AlertCancel",
+                                        destructButton: nil,
                                         sourceView: self.view,
                                         sourceRect: self.view.bounds,
-                                        tapYes: { () -> () in
-                                            self.execute(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
-                                    })
-                                } else if (index >= 0) {
-                                    if (index == 0) {
-                                        self.navigateNext(UserViewController(uid: Int(user.getId())), removeCurrent: false)
-                                    } else if (index == 1) {
-                                        self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
-                                        self.popover?.dismissPopoverAnimated(true)
-                                    } else if (index == 2) {
-                                        let phones = user.getPhonesModel().get()
-                                        if phones.size() == 0 {
-                                            self.alertUser("GroupMemberCallNoPhones")
-                                        } else if phones.size() == 1 {
-                                            let number = phones.getWithInt(0)
-                                            UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.phone)")!)
-                                        } else {
-                                            var numbers = [String]()
-                                            for i in 0..<phones.size() {
-                                                let p = phones.getWithInt(i)
-                                                numbers.append("\(p.title): +\(p.phone)")
+                                        tapClosure: { (index) -> () in
+                                            if (index >= 0) {
+                                                let number = phones.getWithInt(jint(index))
+                                                UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.phone)")!)
                                             }
-                                            self.showActionSheet(numbers,
-                                                cancelButton: "AlertCancel",
-                                                destructButton: nil,
-                                                sourceView: self.view,
-                                                sourceRect: self.view.bounds,
-                                                tapClosure: { (index) -> () in
-                                                    if (index >= 0) {
-                                                        let number = phones.getWithInt(jint(index))
-                                                        UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.phone)")!)
-                                                    }
-                                            })
-                                        }
+                                    })
+                                }
+                            })
+
+                            // Detect if we are admin
+                            let members: [ACGroupMember] = self.group.members.get().toArray().toSwiftArray()
+                            var isAdmin = self.group.creatorId == Actor.myUid()
+                            if !isAdmin {
+                                for m in members {
+                                    if m.uid == Actor.myUid() {
+                                        isAdmin = m.isAdministrator
                                     }
                                 }
-                        })
+                            }
+                            
+                            // Can mark as admin
+                            let canMarkAdmin = isAdmin && !d.isAdministrator
+                            
+                            if canMarkAdmin {
+                                a.action("GroupMemberMakeAdmin") { () -> () in
+                                    
+                                    self.confirmDestructive(localized("GroupMemberMakeMessage").replace("{name}", dest: name), action: localized("GroupMemberMakeAction")) {
+
+                                        self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId())))
+                                    }
+                                }
+                            }
+                            
+                            // Can kick user
+                            let canKick = isAdmin || d.inviterUid == Actor.myUid()
+                            
+                            if canKick {
+                                a.destructive("GroupMemberKick") { () -> () in       
+                                    self.confirmDestructive(localized("GroupMemberKickMessage")
+                                        .replace("{name}", dest: name), action: localized("GroupMemberKickAction")) {
+
+                                        self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
+                                    }
+                                }
+                            }
+                        }
                     }
                     
                     return true
-                }
-            }
-            
-            // Members: Add
-            s.action("GroupAddParticipant") { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    let addParticipantController = AddParticipantViewController(gid: self.gid)
-                    let navigationController = AANavigationController(rootViewController: addParticipantController)
-                    if (isIPad) {
-                        navigationController.modalInPopover = true
-                        navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
-                    }
-                    self.presentViewController(navigationController, animated: true, completion: nil)
-                    
-                    return false
                 }
             }
         }
@@ -237,12 +277,11 @@ class GroupViewController: ACContentTableController {
                 r.content = localized("GroupLeave")
                 r.style = .DestructiveCentered
                 r.selectAction = { () -> Bool in
-                    self.confirmUser("GroupLeaveConfirm", action: "GroupLeaveConfirmAction", cancel: "AlertCancel",
-                        sourceView: self.view,
-                        sourceRect: self.view.bounds,
-                        tapYes: { () -> () in
-                            self.execute(Actor.leaveGroupCommandWithGid(jint(self.gid)))
+                    
+                    self.confirmDestructive(localized("GroupLeaveConfirm"), action: localized("GroupLeaveConfirmAction"), yes: { () -> () in
+                        self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid)))
                     })
+                    
                     return true
                 }
             })

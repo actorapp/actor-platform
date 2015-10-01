@@ -4,21 +4,54 @@
 
 import Foundation
 
+class EditTextControllerConfig {
+    
+    var title: String!
+    var hint: String!
+    var actionTitle: String!
+    var initialText: String!
+    
+    var didDismissTap: ((EditTextController) -> ())!
+    
+    var didCompleteTap: ((String, EditTextController) -> ())!
+    
+    func check() {
+        
+        if title == nil {
+            fatalError("Title not set")
+        }
+        if actionTitle == nil {
+            fatalError("Action Title not set")
+        }
+    }
+}
+
 class EditTextController: AAViewController {
     
-    private var textView =  UITextView()
-    private var completition: (String) -> ()
+    private let config: EditTextControllerConfig
     
-    init(title: String, actionTitle: String, content: String, completition: (String) -> ()) {
-        self.completition = completition
+    private var textView =  SZTextView()
+    
+    init(config: EditTextControllerConfig) {
+        
+        self.config = config
         
         super.init(nibName: nil, bundle: nil)
         
-        self.navigationItem.title = title
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: actionTitle, style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
+        self.navigationItem.title = localized(config.title)
+        
+        if config.actionTitle != nil {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized(config.actionTitle), style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
+        } else {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
+        }
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: localized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "doCancel")
         
-        self.textView.text = content
+        self.textView.fadeTime = 0
+        if let h = config.hint {
+            self.textView.placeholder = localized(h)
+        }
+        self.textView.text = config.initialText
         self.textView.font = UIFont.systemFontOfSize(18)
         
         self.view.backgroundColor = UIColor.whiteColor()
@@ -40,13 +73,22 @@ class EditTextController: AAViewController {
         self.textView.becomeFirstResponder()
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.textView.resignFirstResponder()
+    }
+    
     func doSave() {
-        self.completition(textView.text)
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.config.didCompleteTap?(textView.text, self)
     }
     
     func doCancel() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        if self.config.didDismissTap != nil {
+           self.config.didDismissTap!(self)
+        } else {
+            dismiss()
+        }
     }
     
     override func viewDidLayoutSubviews() {
