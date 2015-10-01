@@ -19,7 +19,6 @@ import Intl from 'intl'; // eslint-disable-line
 import LocaleData from 'intl/locale-data/jsonp/en-US'; // eslint-disable-line
 import { IntlMixin } from 'react-intl';
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import LoginStore from 'stores/LoginStore';
 import PreferencesStore from 'stores/PreferencesStore';
@@ -33,6 +32,7 @@ import JoinGroup from 'components/JoinGroup.react';
 import Install from 'components/Install.react';
 //import AppCache from 'utils/AppCache'; // eslint-disable-line
 
+// Loading progress
 import Pace from 'pace';
 Pace.start({
   ajax: false,
@@ -76,6 +76,8 @@ class App extends Component {
 const intlData = PreferencesStore.getLanguageData();
 
 const initReact = () => {
+  const appRootElemet = document.getElementById('actor-web-app');
+
   if (window.location.hash !== '#/deactivated') {
     if (crosstab.supported) {
       crosstab.broadcast(ActorInitEvent, {});
@@ -103,10 +105,7 @@ const initReact = () => {
 
   RouterContainer.set(router);
 
-  router.run((Root) => {
-    injectTapEventPlugin();
-    React.render(<Root {...intlData}/>, document.getElementById('actor-web-app'));
-  });
+  router.run((Root) => React.render(<Root {...intlData}/>, appRootElemet));
 
   if (window.location.hash !== '#/deactivated') {
     if (LoginStore.isLoggedIn()) {
