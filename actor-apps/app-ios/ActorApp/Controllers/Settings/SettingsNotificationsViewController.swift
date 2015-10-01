@@ -12,7 +12,7 @@ class SettingsNotificationsViewController: AATableViewController {
     private let CellIdentifier = "CellIdentifier"
     
     init() {
-        super.init(style:UITableViewStyle.Grouped)
+        super.init(style: UITableViewStyle.Grouped)
         
         title = NSLocalizedString("NotificationsTitle", comment: "Notifcations and Sounds")
         

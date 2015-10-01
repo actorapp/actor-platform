@@ -4,14 +4,13 @@
 
 import UIKit
 
-class AddParticipantViewController: ContactsBaseViewController {
-    
-    var tableView: UITableView!
-    
+class AddParticipantViewController: ContactsContentViewController, ContactsContentViewControllerDelegate {
+
     init (gid: Int) {
-        super.init(contentSection: 1)
+        super.init()
         
         self.gid = gid
+        self.delegate = self
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -19,60 +18,50 @@ class AddParticipantViewController: ContactsBaseViewController {
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         
         title = localized("GroupAddParticipantTitle")
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: localized("NavigationCancel"),
-            style: UIBarButtonItemStyle.Plain,
-            target: self, action: "dismiss")
-        
-        tableView = UITableView(frame: view.bounds, style: UITableViewStyle.Plain)
-        tableView.backgroundColor = UIColor.whiteColor()
-        view = tableView
-        
-        bindTable(tableView, fade: true);
-        
-        super.viewDidLoad();
+                    title: localized("NavigationCancel"),
+                    style: UIBarButtonItemStyle.Plain,
+                    target: self, action: "dismiss")
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 0) {
-            return 1
-        } else {
-            return super.tableView(tableView, numberOfRowsInSection: section)
+    func willAddContacts(controller: ContactsContentViewController, section: ACManagedSection) {
+        section.custom { (r:ACCustomRow<ContactActionCell>) -> () in
+            r.height = 56
+            r.closure = { (cell) -> () in
+                cell.bind("ic_invite_user", actionTitle: NSLocalizedString("GroupAddParticipantUrl", comment: "Action Title"))
+            }
+            r.selectAction = { () -> Bool in
+                self.navigateNext(InviteLinkViewController(gid: self.gid), removeCurrent: false)
+                return false
+            }
         }
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if (indexPath.section == 0) {
-            let reuseId = "cell_invite";
-            let res = ContactActionCell(reuseIdentifier: reuseId)
-            res.bind("ic_invite_user",
-                actionTitle: NSLocalizedString("GroupAddParticipantUrl", comment: "Action Title"),
-                isLast: false)
-            return res
-        } else {
-            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
-        }
+    func contactDidBind(controller: ContactsContentViewController, contact: ACContact, cell: ContactCell) {
+        cell.bindDisabled(isAlreadyMember(contact.uid))
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+    func contactDidTap(controller: ContactsContentViewController, contact: ACContact) -> Bool {
         
-        if indexPath.section == 0 {
-            navigateNext(InviteLinkViewController(gid: gid), removeCurrent: false)
-        } else {
-            let contact = objectAtIndexPath(indexPath) as! ACContact;
-            execute(Actor.inviteMemberCommandWithGid(jint(gid), withUid: contact.uid), successBlock: { (val) -> () in
-                    self.dismiss()
-                }, failureBlock: { (val) -> () in
-                    self.dismiss()
-                })
+        if !isAlreadyMember(contact.uid) {
+            self.executeSafeOnlySuccess(Actor.inviteMemberCommandWithGid(jint(gid), withUid: jint(contact.uid))) { (val) -> () in
+                self.dismiss()
+            }
         }
+        return true
+    }
+    
+    func isAlreadyMember(uid: jint) -> Bool {
+        let members: [ACGroupMember] = group.getMembersModel().get().toArray().toSwiftArray()
+        for m in members {
+            if m.uid == uid {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -11,6 +11,7 @@ class GroupMemberCell: UATableViewCell {
     var nameLabel = UILabel(style: "members.name")
     var onlineLabel = UILabel(style: "members.online")
     var avatarView = AvatarView(style: "avatar.round.small")
+    var adminLabel = UILabel(style: "members.admin")
     
     // Binder
     
@@ -21,9 +22,13 @@ class GroupMemberCell: UATableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(cellStyle: "members.cell", reuseIdentifier: reuseIdentifier)
         
+        adminLabel.text = localized("GroupMemberAdmin")
+        adminLabel.sizeToFit()
+        
         contentView.addSubview(avatarView)
         contentView.addSubview(nameLabel)
         contentView.addSubview(onlineLabel)
+        contentView.addSubview(adminLabel)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -36,12 +41,15 @@ class GroupMemberCell: UATableViewCell {
         nameLabel.text = username
     }
     
-    func bind(user: ACUserVM) {
+    func bind(user: ACUserVM, isAdmin: Bool) {
         
         // Bind name and avatar
         let name = user.getNameModel().get()
         nameLabel.text = name
         avatarView.bind(name, id: user.getId(), avatar: user.getAvatarModel().get())
+        
+        // Bind admin flag
+        adminLabel.hidden = !isAdmin
         
         // Bind onlines
         binder.bind(user.getPresenceModel()) { (value: ACUserPresence?) -> () in
@@ -74,8 +82,15 @@ class GroupMemberCell: UATableViewCell {
         let userAvatarViewFrameSize: CGFloat = CGFloat(avatarView.frameSize)
         avatarView.frame = CGRect(x: 14.0, y: (contentView.bounds.size.height - userAvatarViewFrameSize) / 2.0, width: userAvatarViewFrameSize, height: userAvatarViewFrameSize)
         
-        nameLabel.frame = CGRect(x: 65.0, y: 5, width: contentView.bounds.size.width - 65.0 - 15.0, height: 22)
-        onlineLabel.frame = CGRect(x: 65.0, y: 27, width: contentView.bounds.size.width - 65.0 - 15.0, height: 16)
+        var w: CGFloat = contentView.bounds.size.width - 65.0 - 8.0
+        
+        if !adminLabel.hidden {
+            adminLabel.frame = CGRect(x: contentView.width - adminLabel.width - 8, y: 5, width: adminLabel.width, height: 42)
+            w -= adminLabel.width + 8
+        }
+        
+        nameLabel.frame = CGRect(x: 65.0, y: 5, width: w, height: 22)
+        onlineLabel.frame = CGRect(x: 65.0, y: 27, width: w, height: 16)
     }
 
 }

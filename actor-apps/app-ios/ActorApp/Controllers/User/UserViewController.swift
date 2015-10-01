@@ -10,7 +10,7 @@ class UserViewController: ACContentTableController {
     var isContactRow: ACCommonRow!
 
     init(uid: Int) {
-        super.init(tableViewStyle: UITableViewStyle.Plain)
+        super.init(style: ACContentTableStyle.SettingsPlain)
 
         self.uid = uid
         self.autoTrack = true
@@ -173,14 +173,21 @@ class UserViewController: ACContentTableController {
                     r.selectAction = { () -> Bool in
                         
                         func renameUser() {
-                            self.textInputAlert("ProfileEditHeader",
-                                content: self.user.getNameModel().get(),
-                                action: "AlertSave",
-                                tapYes: { (nval) -> () in
-                                    if nval.length > 0 {
-                                        self.execute(Actor.editNameCommandWithUid(jint(self.uid), withName: nval))
+                            self.startEditField { (c) -> () in
+                                
+                                c.title = "ProfileEditHeader"
+                                c.initialText = self.user.getNameModel().get()
+                                
+                                c.didDoneTap = { (d, c) in
+                                    if d.length == 0 {
+                                        return
                                     }
-                            })
+                                    
+                                    c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d), successBlock: { (val) -> Void in
+                                        c.dismiss()
+                                    })
+                                }
+                            }
                         }
                         
                         if (!Actor.isRenameHintShown()) {

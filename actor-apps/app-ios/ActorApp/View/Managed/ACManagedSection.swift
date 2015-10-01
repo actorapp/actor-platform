@@ -53,19 +53,38 @@ class ACManagedSection {
             if let cell = res as? UATableViewCell {
                 
                 // Top separator
-                // Showing only for top cell
-                cell.topSeparatorLeftInset = 0
-                cell.topSeparatorVisible = indexPath.row == autoSeparatorTopOffset
+                
+                if managedTable.style == .Plain {
+                    
+                    // Don't show for plain style
+                    cell.topSeparatorVisible = false
+                } else {
+                    
+                    // Showing only for top cell
+                    cell.topSeparatorLeftInset = 0
+                    cell.topSeparatorVisible = indexPath.row == autoSeparatorTopOffset
+                }
+                
+                // Bottom separator
                 
                 if indexPath.row >= autoSeparatorTopOffset {
                     cell.bottomSeparatorVisible = true
-                    if indexPath.row == numberOfItems(managedTable) - 1 {
-                        cell.bottomSeparatorLeftInset = 0
-                    } else {
+                    
+                    if managedTable.style == .Plain {
+                        
+                        // Don't make last full line separator
                         cell.bottomSeparatorLeftInset = autoSeparatorsInset
+                    } else {
+                        
+                        if indexPath.row == numberOfItems(managedTable) - 1 {
+                            cell.bottomSeparatorLeftInset = 0
+                        } else {
+                            cell.bottomSeparatorLeftInset = autoSeparatorsInset
+                        }
                     }
                 } else {
-                    // too high
+                    
+                    // Too high
                     cell.bottomSeparatorVisible = false
                 }
                 
@@ -98,6 +117,33 @@ class ACManagedSection {
         r.cells.rangeCopy(managedTable, indexPath: r.index)
     }
     
+    // Deletion
+    
+    func canDelete(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
+        let r = findCell(managedTable, indexPath: indexPath)
+        return r.cells.rangeCanDelete(managedTable, indexPath: r.index)
+    }
+    
+    func delete(managedTable: ACManagedTable, indexPath: NSIndexPath) {
+        let r = findCell(managedTable, indexPath: indexPath)
+        r.cells.rangeDelete(managedTable, indexPath: r.index)
+    }
+
+    
+    // Binding
+    
+    func bind(managedTable: ACManagedTable, binder: Binder) {
+        for s in regions {
+            s.rangeBind(managedTable, binder: binder)
+        }
+    }
+    
+    func unbind(managedTable: ACManagedTable, binder: Binder) {
+        for s in regions {
+            s.rangeUnbind(managedTable, binder: binder)
+        }
+    }
+
     // Private Tools
     
     private func findCell(managedTable: ACManagedTable, indexPath: NSIndexPath) -> CellSearchResult {

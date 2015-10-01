@@ -32,6 +32,7 @@ import im.actor.core.api.rpc.RequestInviteUser;
 import im.actor.core.api.rpc.RequestJoinGroup;
 import im.actor.core.api.rpc.RequestKickUser;
 import im.actor.core.api.rpc.RequestLeaveGroup;
+import im.actor.core.api.rpc.RequestMakeUserAdmin;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
 import im.actor.core.api.rpc.ResponseCreateGroup;
@@ -40,9 +41,11 @@ import im.actor.core.api.rpc.ResponseGetPublicGroups;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
 import im.actor.core.api.rpc.ResponseInviteUrl;
 import im.actor.core.api.rpc.ResponseJoinGroup;
+import im.actor.core.api.rpc.ResponseMakeUserAdmin;
 import im.actor.core.api.rpc.ResponseSeqDate;
 import im.actor.core.api.updates.UpdateGroupAboutChanged;
 import im.actor.core.api.updates.UpdateGroupInvite;
+import im.actor.core.api.updates.UpdateGroupMembersUpdate;
 import im.actor.core.api.updates.UpdateGroupTitleChanged;
 import im.actor.core.api.updates.UpdateGroupTopicChanged;
 import im.actor.core.api.updates.UpdateGroupUserInvited;
@@ -236,11 +239,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -293,11 +296,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -347,11 +350,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -396,7 +399,7 @@ public class GroupsModule extends AbsModule {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        callback.onError(new RpcInternalException());
+                                        callback.onResult(true);
                                     }
                                 });
                             }
@@ -405,11 +408,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -462,11 +465,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -474,6 +477,59 @@ public class GroupsModule extends AbsModule {
             }
         };
     }
+
+    public Command<Boolean> makeAdmin(final int gid, final int uid) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                Group group = getGroups().getValue(gid);
+                User user = users().getValue(uid);
+                if (group == null || user == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+
+                request(new RequestMakeUserAdmin(new ApiGroupOutPeer(group.getGroupId(), group.getAccessHash()),
+                        new ApiUserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseMakeUserAdmin>() {
+                    @Override
+                    public void onResult(ResponseMakeUserAdmin response) {
+                        updates().onSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateGroupMembersUpdate(gid, response.getMembers()));
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(true);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
 
     public Command<Boolean> kickMember(final int gid, final int uid) {
         return new Command<Boolean>() {
@@ -521,11 +577,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -560,11 +616,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -599,11 +655,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -692,11 +748,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }
@@ -731,11 +787,11 @@ public class GroupsModule extends AbsModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onError(new RpcInternalException());
+                                callback.onError(e);
                             }
                         });
                     }

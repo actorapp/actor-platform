@@ -194,6 +194,12 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
     func dismiss() {
         dismissViewControllerAnimated(true, completion: nil)
     }
+    
+    func presentInNavigation(controller: UIViewController) {
+        var navigation = AANavigationController()
+        navigation.viewControllers = [controller]
+        presentViewController(navigation, animated: true, completion: nil)
+    }
 }
 
 extension AAViewController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {

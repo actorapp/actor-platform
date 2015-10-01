@@ -5,8 +5,12 @@
 import Foundation
 
 // Shorter helper for localized strings
-func localized(text: String) -> String {
-    return NSLocalizedString(text, comment: "")
+func localized(text: String?) -> String! {
+    if text == nil {
+        return nil
+    }
+    
+    return NSLocalizedString(text!, comment: "")
 }
 
 // Extensions on various UIView
