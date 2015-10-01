@@ -36,6 +36,7 @@ private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) ex
       randomId = randomId,
       message = message
     )
+
     for {
       receiverAuthIds ← userExt.getAuthIds(receiverUserId)
       _ ← receiverAuthIds match {
