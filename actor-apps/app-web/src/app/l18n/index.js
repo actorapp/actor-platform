@@ -12,6 +12,10 @@ if (!window.Intl) {
     case 'ru-ru':
       require('intl/locale-data/jsonp/ru');
       break;
+    case 'es':
+    case 'es-es':
+      require('intl/locale-data/jsonp/es');
+      break;
     case 'en':
     case 'en-us':
     default:
@@ -26,6 +30,10 @@ switch (language.toLowerCase()) {
   case 'ru':
   case 'ru-ru':
     intlData = require('./ru-RU');
+    break;
+  case 'es':
+  case 'es-es':
+    intlData = require('./es-ES');
     break;
   case 'en':
   case 'en-us':

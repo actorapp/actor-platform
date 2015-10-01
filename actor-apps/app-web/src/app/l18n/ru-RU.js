@@ -1,4 +1,4 @@
-const russian = {
+export default {
   'locales': 'ru-RU',
   'messages': {
     // Sidebar
@@ -92,5 +92,3 @@ const russian = {
     'addContactInContacts': 'Этот пользователь уже находится в ваших контактах.'
   }
 };
-
-export default russian;
