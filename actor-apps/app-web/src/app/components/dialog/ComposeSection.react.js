@@ -48,7 +48,8 @@ class ComposeSection extends React.Component {
     super(props);
 
     this.state = _.assign({
-      isEmojiDropdownShow: false
+      isEmojiDropdownShow: false,
+      isMardownHintShow: false
     }, getStateFromStores());
 
     GroupStore.addChangeListener(this.onChange);
@@ -67,6 +68,7 @@ class ComposeSection extends React.Component {
 
   componentWillReceiveProps() {
     this.onFocus();
+    this.setState({isMardownHintShow: false})
   }
 
   onChange = () => this.setState(getStateFromStores());
@@ -75,22 +77,32 @@ class ComposeSection extends React.Component {
     const text = event.target.value;
     const { peer } = this.props;
 
+    if (text.length >= 3) {
+      this.setState({isMardownHintShow: true})
+    } else {
+      this.setState({isMardownHintShow: false})
+    }
+
     ComposeActionCreators.onTyping(peer, text, this.getCaretPosition());
   };
 
   onKeyDown = event => {
     const { mentions, sendByEnter } = this.state;
 
+    const send = () => {
+      event.preventDefault();
+      this.sendTextMessage();
+      this.setState({isMardownHintShow: false})
+    };
+
     if (mentions === null) {
       if (sendByEnter === true) {
         if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
-          event.preventDefault();
-          this.sendTextMessage();
+          send();
         }
       } else {
         if (event.keyCode === KeyCodes.ENTER && event.metaKey) {
-          event.preventDefault();
-          this.sendTextMessage();
+          send();
         }
       }
     }
@@ -181,10 +193,13 @@ class ComposeSection extends React.Component {
   };
 
   render() {
-    const { text, profile, mentions, isEmojiDropdownShow } = this.state;
+    const { text, profile, mentions, isEmojiDropdownShow, isMardownHintShow } = this.state;
 
     const emojiOpenerClassName = classnames('emoji-opener material-icons', {
       'emoji-opener--active': isEmojiDropdownShow
+    });
+    const markdownHintClassName = classnames('compose__markdown-hint', {
+      'compose__markdown-hint--active': isMardownHintShow
     });
 
     return (
@@ -199,6 +214,14 @@ class ComposeSection extends React.Component {
                        onClose={this.onEmojiDropdownClose}/>
         <i className={emojiOpenerClassName}
            onClick={this.onEmojiShowClick}>insert_emoticon</i>
+
+        <div className={markdownHintClassName}>
+          <b>*bold*</b>
+          &nbsp;&nbsp;
+          <i>_italics_</i>
+          &nbsp;&nbsp;&nbsp;
+          <code>```preformatted```</code>
+        </div>
 
         <AvatarItem className="my-avatar"
                     image={profile.avatar}
