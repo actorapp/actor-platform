@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.sequence
 
+import im.actor.server.office.EntityNotFound
+
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Success
@@ -18,7 +20,7 @@ import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
 import im.actor.server.models
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.session._
-import im.actor.server.user.{ UserViewRegion, UserExtension, UserOffice }
+import im.actor.server.user.{ UserUtils, UserViewRegion, UserExtension, UserOffice }
 
 final class SequenceServiceImpl(config: SequenceServiceConfig)(
   implicit
@@ -133,7 +135,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       groups ← Future.sequence(groupIds map (GroupExtension(actorSystem).getApiStruct(_, client.userId)))
       // TODO: #perf optimize collection operations
       allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten + g.creatorUserId }
-      users ← Future.sequence(allUserIds map (UserExtension(actorSystem).getApiStruct(_, client.userId, client.authId)))
+      users ← Future.sequence(allUserIds map (UserUtils.safeGetUser(_, client.userId, client.authId))) map (_.flatten)
     } yield (users, groups))
   }
 }
