@@ -9,6 +9,7 @@ import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
 import com.typesafe.config.Config
 import im.actor.server.api.http.app.AppFilesHandler
+import im.actor.server.api.http.bots.BotsHandler
 import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
@@ -57,6 +58,7 @@ object HttpApiFrontend {
     val webhooks = new WebhooksHandler
     val groups = new GroupsHandler
     val status = new StatusHandler
+    val bots = new BotsHandler
     val app = new AppFilesHandler(config.staticFiles)
 
     // format: OFF
@@ -64,6 +66,7 @@ object HttpApiFrontend {
       app.routes ~
       pathPrefix("v1") {
         respondWithDefaultHeaders(corsHeaders) {
+          bots.routes ~
           status.routes ~
           groups.routes ~
           webhooks.routes

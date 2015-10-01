@@ -6,7 +6,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import im.actor.api.rpc.messaging.ApiTextMessage
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
-import im.actor.bot.BotMessages
+import im.actor.bot.{ BotBase, BotMessages }
 import im.actor.server.dialog.DialogExtension
 
 import scala.concurrent.Future
@@ -18,7 +18,7 @@ private object InternalBot {
   final case class Initialized(authId: Long)
 }
 
-abstract class InternalBot(userId: Int, nickname: String, name: String) extends Actor with ActorLogging {
+abstract class InternalBot(userId: Int, nickname: String, name: String) extends Actor with ActorLogging with BotBase {
 
   import BotMessages._
   import InternalBot._
@@ -31,9 +31,7 @@ abstract class InternalBot(userId: Int, nickname: String, name: String) extends 
 
   init()
 
-  def onTextMessage(tm: TextMessage): Unit
-
-  protected def sendTextMessage(peer: OutPeer, text: String): Unit = {
+  override protected def sendTextMessage(peer: OutPeer, text: String): Unit = {
     // FIXME: check access hash
     dialogExt.sendMessage(
       peer = ApiPeer(ApiPeerType(peer.`type`), peer.id),

@@ -9,12 +9,12 @@ import cats.data.OptionT
 import cats.std.future._
 import im.actor.bot.BotMessages.{ BotRequest, BotResponse, BotUpdate }
 import im.actor.server.api.http.RoutesHandler
-import im.actor.server.bot.{ BotBlueprint, BotExtension }
+import im.actor.server.bot.{ BotServerBlueprint, BotExtension }
 import upickle.default._
 
 import scala.util.control.NoStackTrace
 
-private[http] final class BotsHandler(system: ActorSystem) extends RoutesHandler {
+private[http] final class BotsHandler(implicit system: ActorSystem) extends RoutesHandler {
 
   import system._
 
@@ -26,7 +26,8 @@ private[http] final class BotsHandler(system: ActorSystem) extends RoutesHandler
       authId ← OptionT(botExt.getAuthId(token))
     } yield flow(userId, authId)).value map {
       case Some(r) ⇒ r
-      case None    ⇒ throw new RuntimeException("Wrong token") with NoStackTrace
+      case None ⇒
+        throw new RuntimeException("Wrong token") with NoStackTrace
     }
 
     onSuccess(flowFuture) {
@@ -35,7 +36,7 @@ private[http] final class BotsHandler(system: ActorSystem) extends RoutesHandler
   }
 
   private def flow(botUserId: Int, botAuthId: Long) = {
-    val bp = new BotBlueprint(botUserId, botAuthId, system)
+    val bp = new BotServerBlueprint(botUserId, botAuthId, system)
 
     Flow[Message]
       .collect {
@@ -44,8 +45,15 @@ private[http] final class BotsHandler(system: ActorSystem) extends RoutesHandler
       }
       .via(bp.flow)
       .map {
-        case rsp: BotResponse ⇒ write[BotResponse](rsp)
-        case upd: BotUpdate   ⇒ write[BotUpdate](upd)
+        case rsp: BotResponse ⇒
+          log.debug("Sending response {}", rsp)
+          write[BotResponse](rsp)
+        case upd: BotUpdate ⇒
+          log.debug("Sending update {}", upd)
+          write[BotUpdate](upd)
+        case unmatched ⇒
+          log.error("Unmatched {}", unmatched)
+          throw new RuntimeException(s"Unmatched BotMessage ${unmatched}")
       }
       .map(TextMessage.Strict(_).asInstanceOf[Message])
   }
