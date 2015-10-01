@@ -29,6 +29,18 @@ protocol ACManagedRange {
     func rangeCanCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool
     
     func rangeCopy(table: ACManagedTable, indexPath: ACRangeIndexPath)
+    
+    // Delete
+    
+    func rangeCanDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool
+    
+    func rangeDelete(table: ACManagedTable, indexPath: ACRangeIndexPath)
+    
+    // Binding
+    
+    func rangeBind(table: ACManagedTable, binder: Binder)
+    
+    func rangeUnbind(table: ACManagedTable, binder: Binder)
 }
 
 // Default implementations of ACManagedRangeDelegate
@@ -51,6 +63,23 @@ extension ACManagedRange {
     }
     
     func rangeCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) {
+        // Do nothing
+    }
+    
+    func rangeCanDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+        // Do nothing
+        return false
+    }
+    
+    func rangeDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) {
+        // Do nothing
+    }
+    
+    func rangeBind(table: ACManagedTable, binder: Binder) {
+        // Do nothing
+    }
+    
+    func rangeUnbind(table: ACManagedTable, binder: Binder) {
         // Do nothing
     }
 }

@@ -46,17 +46,31 @@
 
 "SettingsChangeName" = "修改名字";
 
+
+"SettingsEditHeader" = "Your name";
+
+"SettingsEditHint" = "Please, enter your real name to help people better understand who you are.";
+
+"SettingsEditFieldHint" = "Enter your name";
+
+
 "SettingsAboutNotSet" = "Set about me";
 
 "SettingsUsernameNotSet" = "Set username";
 
-"SettingsUsernameTitle" = "Change your username";
+"SettingsUsernameTitle" = "Username";
+
+"SettingsUsernameHintField" = "Enter your Username";
+
+"SettingsUsernameHint" = "You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+
+"SettingsChangeAboutTitle" = "About me";
+
+"SettingsChangeAboutHint" = "Tell people anything you want about yourself";
 
 "SettingsSecurity" = "安全";
 
 "SettingsWallpapers" = "Wallpapers";
-
-"SettingsEditHeader" = "修改名字";
 
 "SettingsNotifications" = "通知和声音";
 
@@ -116,7 +130,9 @@
  * Group
  */
 
-"GroupEditHeader" = "修改群模版";
+"GroupEditHeader" = "Theme";
+
+"GroupEditHint" = "Enter group theme";
 
 "GroupSetPhoto" = "设置群头像";
 
@@ -134,7 +150,15 @@
 
 "GroupMembers" = "{0} 个成员";
 
+"GroupMemberAdmin" = "admin";
+
 "GroupMemberInfo" = "成员信息";
+
+"GroupMemberMakeAdmin" = "Make Group admin";
+
+"GroupMemberMakeMessage" = "Are you sure want to make {name} admin of this group?";
+
+"GroupMemberMakeAction" = "Yes";
 
 "GroupMemberKick" = "移出群";
 
@@ -275,6 +299,18 @@
 "ChatNoGroupAccess" = "你不是群成员";
 
 /*
+ * Find
+ */
+
+"FindTitle" = "Find People";
+
+"FindFieldHint" = "phone number, email or nickname";
+
+"FindHint" = "Enter phone number, email or nickname and press search";
+
+"FindNotFound" = "Sorry, but we are unable to find person for this search query";
+
+/*
  * Placeholders
  */
 
@@ -370,6 +406,8 @@
 
 "NavigationSave" = "保存";
 
+"NavigationFind" = "Find";
+
 "AlertCancel" = "取消";
 
 "AlertNext" = "下一步";
@@ -387,6 +425,8 @@
 "AlertError" = "Error";
 
 "AlertTryAgain" = "Try Again";
+
+"AlertInvite" = "Invite";
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 

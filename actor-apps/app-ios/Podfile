@@ -21,8 +21,9 @@ target 'ActorApp' do
     pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
     pod 'JVFloatLabeledTextField'
     pod 'CLTokenInputView'
+    pod 'SZTextView'
 
-    pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
+    pod 'SlackTextViewController'#, :git => 'https://github.com/actorapp/SlackTextViewController'
 
     pod 'NYTPhotoViewer'
     pod 'PEPhotoCropEditor'

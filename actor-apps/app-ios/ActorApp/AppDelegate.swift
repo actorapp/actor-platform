@@ -15,12 +15,18 @@ import Crashlytics
     private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
     private let badgeView = UIImageView()
     
+    private var isInited = false
+    
     private var isVisible = false
     
     private var badgeCount = 0
     private var isBadgeVisible = false
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    func assumeInited() {
+        if isInited {
+            return
+        }
+        isInited = true
         
         // Apply crash logging
         
@@ -33,6 +39,11 @@ import Crashlytics
         
         // Creating app style
         initStyles()
+    }
+    
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+        
+        assumeInited()
         
         // Register hockey app
         if AppConfig.hockeyapp != nil {
@@ -166,6 +177,8 @@ import Crashlytics
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         
+        assumeInited()
+        
         if (url.scheme == "actor") {
             if (url.host == "invite") {
                 if (Actor.isLoggedIn()) {
@@ -230,18 +243,26 @@ import Crashlytics
     // Lifecycle
     
     func applicationDidFinishLaunching(application: UIApplication) {
+        assumeInited()
+        
         checkAppState(application)
     }
     
     func applicationDidBecomeActive(application: UIApplication) {
+        assumeInited()
+        
         checkAppState(application)
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
+        assumeInited()
+        
         checkAppState(application)
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
+        assumeInited()
+        
         checkAppState(application)
         
         // Keep application running for 40 secs
@@ -262,12 +283,16 @@ import Crashlytics
     }
     
     func applicationWillResignActive(application: UIApplication) {
+        assumeInited()
+        
         checkAppState(application)
     }
     
     // Push notifications
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        assumeInited()
+        
         let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
         
         if AppConfig.pushId != nil {
@@ -276,10 +301,12 @@ import Crashlytics
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-
+        assumeInited()
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        
+        assumeInited()
         
         if !Actor.isLoggedIn() {
             completionHandler(UIBackgroundFetchResult.NoData)
@@ -290,6 +317,8 @@ import Crashlytics
     }
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        assumeInited()
+        
         if !Actor.isLoggedIn() {
             completionHandler(UIBackgroundFetchResult.NoData)
             return

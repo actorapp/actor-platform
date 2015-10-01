@@ -120,7 +120,7 @@ class AABubbleCell: UICollectionViewCell {
     
     // Binded data
     var peer: ACPeer!
-    var controller: ConversationBaseViewController!
+    var controller: ConversationContentViewController!
     var isGroup: Bool = false
     var isFullSize: Bool!
     var bindedSetting: CellSetting?
@@ -180,7 +180,7 @@ class AABubbleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setConfig(peer: ACPeer, controller: ConversationBaseViewController) {
+    func setConfig(peer: ACPeer, controller: ConversationContentViewController) {
         self.peer = peer
         self.controller = controller
         if (peer.isGroup && !isFullSize) {

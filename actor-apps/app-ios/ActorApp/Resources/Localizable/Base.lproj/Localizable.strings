@@ -38,23 +38,39 @@
 
 "SettingsEdit" = "Edit";
 
+
 "SettingsSetPhoto" = "Set Profile Photo";
 
 "SettingsChangeName" = "Change Your Name";
 
-"SettingsAboutNotSet" = "Set about me";
+
+"SettingsEditHeader" = "Your name";
+
+"SettingsEditHint" = "Please, enter your real name to help people better understand who you are.";
+
+"SettingsEditFieldHint" = "Enter your name";
+
 
 "SettingsUsernameNotSet" = "Set username";
 
-"SettingsUsernameTitle" = "Change your username";
+"SettingsUsernameTitle" = "Username";
+
+"SettingsUsernameHintField" = "Enter your Username";
+
+"SettingsUsernameHint" = "You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+
+
+"SettingsAboutNotSet" = "Set about me";
 
 "SettingsChangeAboutTitle" = "About me";
+
+"SettingsChangeAboutHint" = "Tell people anything you want about yourself";
+
 
 "SettingsSecurity" = "Security";
 
 "SettingsWallpapers" = "Wallpapers";
 
-"SettingsEditHeader" = "Change your name";
 
 "SettingsNotifications" = "Notifications and Sounds";
 
@@ -114,7 +130,9 @@
  * Group
  */
 
-"GroupEditHeader" = "Change group theme";
+"GroupEditHeader" = "Theme";
+
+"GroupEditHint" = "Enter group theme";
 
 "GroupSetPhoto" = "Set Group Photo";
 
@@ -132,7 +150,15 @@
 
 "GroupMembers" = "{0} MEMBERS";
 
+"GroupMemberAdmin" = "admin";
+
 "GroupMemberInfo" = "Profile";
+
+"GroupMemberMakeAdmin" = "Make Group admin";
+
+"GroupMemberMakeMessage" = "Are you sure want to make {name} admin of this group?";
+
+"GroupMemberMakeAction" = "Yes";
 
 "GroupMemberKick" = "Kick from Group";
 
@@ -273,6 +299,18 @@
 "ChatNoGroupAccess" = "You is not member";
 
 /*
+ * Find
+ */
+
+"FindTitle" = "Find People";
+
+"FindFieldHint" = "phone number, email or nickname";
+
+"FindHint" = "Enter phone number, email or nickname and press search";
+
+"FindNotFound" = "Sorry, but we are unable to find person for this search query";
+
+/*
  * Placeholders
  */
 
@@ -368,6 +406,8 @@
 
 "NavigationSave" = "Save";
 
+"NavigationFind" = "Find";
+
 "AlertCancel" = "Cancel";
 
 "AlertNext" = "Next";
@@ -385,6 +425,8 @@
 "AlertError" = "Error";
 
 "AlertTryAgain" = "Try Again";
+
+"AlertInvite" = "Invite";
 
 "UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
 

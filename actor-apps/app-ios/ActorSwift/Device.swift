@@ -34,12 +34,7 @@ private class Device {
     let atLeastiOS9: Bool
     
     init() {
-        if #available(iOS 8.0, *) {
-            atLeastiOS8 = true
-            atLeastiOS9 = NSProcessInfo.processInfo().isOperatingSystemAtLeastVersion( NSOperatingSystemVersion(majorVersion: 9, minorVersion: 0, patchVersion: 0))
-        } else {
-            atLeastiOS9 = false
-            atLeastiOS8 = false
-        }
+        atLeastiOS8 = true
+        atLeastiOS9 = NSProcessInfo.processInfo().isOperatingSystemAtLeastVersion( NSOperatingSystemVersion(majorVersion: 9, minorVersion: 0, patchVersion: 0))
     }
 }

@@ -14,7 +14,7 @@ class SettingsViewController: ACContentTableController {
     private var aboutCell: ACTextRow!
     
     init() {
-        super.init(tableViewStyle: UITableViewStyle.Plain)
+        super.init(style: ACContentTableStyle.SettingsPlain)
         
         uid = Int(Actor.myUid())
         
@@ -119,27 +119,26 @@ class SettingsViewController: ACContentTableController {
             s.action("SettingsChangeName") { [unowned self] (r) -> () in
                 r.selectAction = { [unowned self] () -> Bool in
                     
-                    let alertView = UIAlertView(title: nil,
-                        message: NSLocalizedString("SettingsEditHeader", comment: "Title"),
-                        delegate: nil,
-                        cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
-                    
-                    alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
-                    alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
-                    alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
-                    alertView.textFieldAtIndex(0)!.text = self.user.getNameModel().get()
-                    alertView.textFieldAtIndex(0)?.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
-                    
-                    alertView.tapBlock = { [unowned self] (alertView, buttonIndex) -> () in
-                        if (buttonIndex == 1) {
-                            let textField = alertView.textFieldAtIndex(0)!
-                            if textField.text!.length > 0 {
-                                self.execute(Actor.editMyNameCommandWithName(textField.text))
+                    self.startEditField { (c) -> () in
+                        c.title = "SettingsEditHeader"
+                        c.hint = "SettingsEditHint"
+                        
+                        c.initialText = self.user.getNameModel().get()
+                        
+                        c.fieldAutocapitalizationType = .Words
+                        c.fieldHint = "SettingsEditFieldHint"
+                        
+                        c.didDoneTap = { (t, c) -> () in
+
+                            if t.length == 0 {
+                                return
+                            }
+                            
+                            c.executeSafeOnlySuccess(Actor.editMyNameCommandWithName(t)) { (val) -> Void in
+                                c.dismiss()
                             }
                         }
                     }
-                    
-                    alertView.show()
                     
                     return true
                 }
@@ -204,14 +203,33 @@ class SettingsViewController: ACContentTableController {
                 }
                 
                 r.selectAction = { [unowned self] () -> Bool in
-                    self.textInputAlert("SettingsUsernameTitle", content: self.user.getNickModel().get(), action: "AlertSave") { (nval) -> () in
-                        var nNick: String? = nval.trim()
-                        if nNick?.length == 0 {
-                            nNick = nil
+                    
+                    self.startEditField { (c) -> () in
+                        
+                        c.title = "SettingsUsernameTitle"
+                        c.actionTitle = "AlertSave"
+                        
+                        if let nick = self.user.getNickModel().get() {
+                            c.initialText = nick
                         }
-                        self.executeSafe(Actor.editMyNickCommandWithNick(nNick))
+                        
+                        c.fieldHint = "SettingsUsernameHintField"
+                        c.fieldAutocorrectionType = .No
+                        c.fieldAutocapitalizationType = .None
+                        c.hint = "SettingsUsernameHint"
+                        
+                        c.didDoneTap = { (t, c) -> () in
+                            var nNick: String? = t.trim()
+                            if nNick?.length == 0 {
+                                nNick = nil
+                            }
+                            c.executeSafeOnlySuccess(Actor.editMyNickCommandWithNick(nNick), successBlock: { (val) -> Void in
+                                c.dismiss()
+                            })
+                        }
                     }
-                    return true
+                    
+                    return false
                 }
             }
             
@@ -231,19 +249,26 @@ class SettingsViewController: ACContentTableController {
                 }
                 
                 r.selectAction = { [unowned self] () -> Bool in
-                    var text = self.user.getAboutModel().get()
-                    if text == nil {
-                        text = ""
-                    }
-                    let controller = EditTextController(title: localized("SettingsChangeAboutTitle"), actionTitle: localized("NavigationSave"), content: text, completition: { [unowned self] (newText) -> () in
-                        var updatedText: String? = newText.trim()
-                        if updatedText?.length == 0 {
-                            updatedText = nil
+                    
+                    self.startEditText { (config) -> () in
+                        
+                        config.title = "SettingsChangeAboutTitle"
+                        config.hint = "SettingsChangeAboutHint"
+                        config.actionTitle = "NavigationSave"
+                        
+                        config.initialText = self.user.getAboutModel().get()
+                        
+                        config.didCompleteTap = { (text, controller) -> () in
+                            
+                            var updatedText: String? = text.trim()
+                            if updatedText?.length == 0 {
+                                updatedText = nil
+                            }
+                            controller.executeSafeOnlySuccess(Actor.editMyAboutCommandWithNick(updatedText), successBlock: { (val) -> Void in
+                                controller.dismiss()
+                            })
                         }
-                        self.execute(Actor.editMyAboutCommandWithNick(updatedText))
-                    })
-                    let navigation = AANavigationController(rootViewController: controller)
-                    self.presentViewController(navigation, animated: true, completion: nil)
+                    }
                     
                     return false
                 }

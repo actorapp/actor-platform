@@ -4,6 +4,57 @@
 
 import Foundation
 
+// Edit Row
+
+class ACEditRow: ACManagedRow, UITextFieldDelegate {
+    
+    var text: String?
+    var placeholder: String?
+    var returnKeyType = UIReturnKeyType.Default
+    var autocorrectionType = UITextAutocorrectionType.Default
+    var autocapitalizationType = UITextAutocapitalizationType.Sentences
+    var returnAction: (()->())?
+    
+    override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+        return 44
+    }
+    
+    override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+        let res = table.dequeueCell(indexPath.indexPath) as EditCell
+        res.textField.text = text
+        res.textField.placeholder = placeholder
+        res.textField.returnKeyType = returnKeyType
+        res.textField.autocapitalizationType = autocapitalizationType
+        res.textField.delegate = self
+        res.textField.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
+        res.textField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
+        return res
+    }
+    
+    func textFieldDidChange(textField: UITextField) {
+        text = textField.text
+    }
+    
+    @objc func textFieldDidEndEditing(textField: UITextField) {
+        text = textField.text
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        returnAction?()
+        return false
+    }
+}
+
+extension ACManagedSection {
+    
+    func edit(closure: (r: ACEditRow) -> ()) -> ACEditRow {
+        let r = ACEditRow()
+        regions.append(r)
+        closure(r: r)
+        return r
+    }
+}
+
 // Titled Row
 
 class ACTitledRow: ACManagedRow {
@@ -23,7 +74,7 @@ class ACTitledRow: ACManagedRow {
     }
     
     override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
-        let res = table.dequeueTitledCell()
+        let res = table.dequeueTitledCell(indexPath.indexPath)
         bindCell(res)
         return res
     }
@@ -187,7 +238,7 @@ class ACHeaderRow: ACManagedRow {
     }
     
     override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
-        let res = table.dequeueCell() as HeaderCell
+        let res = table.dequeueCell(indexPath.indexPath) as HeaderCell
         
         if title == nil {
             res.titleView.hidden = true
@@ -236,6 +287,8 @@ class ACCommonRow: ACManagedRow {
     
     var bindAction: ((r: ACCommonRow)->())?
     
+    var contentInset: CGFloat = 15
+    
     // Cell
     
     override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
@@ -254,6 +307,13 @@ class ACCommonRow: ACManagedRow {
         res.setHint(hint)
         res.switchBlock = switchAction
         res.setSwitcherOn(switchOn, animated: true)
+        res.contentInset = contentInset
+        
+        if selectAction != nil {
+            res.selectionStyle = .Default
+        } else {
+            res.selectionStyle = .None
+        }
     }
     
     // Binding
@@ -548,7 +608,7 @@ class ACManagedArrayRows<T, R where R: UITableViewCell>: ACManagedRange {
     }
     
     func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
-        let res: R = table.dequeueCell()
+        let res: R = table.dequeueCell(indexPath.indexPath)
         rangeBindData(table, indexPath: indexPath, cell: res, item: data[indexPath.item])
         return res
     }
@@ -610,7 +670,7 @@ extension ACManagedSection {
 
 // Single item row
 
-class ACManagedRow: ACManagedRange {
+class ACManagedRow: NSObject, ACManagedRange {
     
     var selectAction: (() -> Bool)?
     

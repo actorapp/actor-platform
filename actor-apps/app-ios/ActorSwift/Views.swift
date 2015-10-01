@@ -122,3 +122,40 @@ class UIViewMeasure {
         return CGSizeMake(ceil(rect.width + 2), CGFloat(ceil(rect.height)))
     }
 }
+
+private var registeredCells = "cells!"
+
+extension UITableView {
+    private func cellTypeForClass(cellClass: AnyClass) -> String {
+        
+        let cellReuseId = "\(cellClass)"
+        var registered: ([String])! = getAssociatedObject(self, associativeKey: &registeredCells)
+        var found = false
+        if registered != nil {
+            if registered.contains(cellReuseId) {
+                found = true
+            } else {
+                registered.append(cellReuseId)
+                setAssociatedObject(self, value: registered, associativeKey: &registeredCells)
+            }
+        } else {
+            setAssociatedObject(self, value: [cellReuseId], associativeKey: &registeredCells)
+        }
+        
+        if !found {
+            registerClass(cellClass, forCellReuseIdentifier: cellReuseId)
+        }
+        
+        return cellReuseId
+    }
+    
+    func dequeueCell(cellClass: AnyClass, indexPath: NSIndexPath) -> UITableViewCell {
+        let reuseId = cellTypeForClass(cellClass)
+        return self.dequeueReusableCellWithIdentifier(reuseId, forIndexPath: indexPath)
+    }
+    
+    func dequeueCell<T where T: UITableViewCell>(indexPath: NSIndexPath) -> T {
+        let reuseId = cellTypeForClass(T.self)
+        return self.dequeueReusableCellWithIdentifier(reuseId, forIndexPath: indexPath) as! T
+    }
+}

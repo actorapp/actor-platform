@@ -9,7 +9,7 @@ class SettingsPrivacyViewController: ACContentTableController {
     private var sessionsCell: ACManagedArrayRows<ARApiAuthSession, CommonCell>?
     
     init() {
-        super.init(tableViewStyle: UITableViewStyle.Grouped)
+        super.init(style: ACContentTableStyle.SettingsGrouped)
         
         navigationItem.title = localized("SecurityTitle")
         

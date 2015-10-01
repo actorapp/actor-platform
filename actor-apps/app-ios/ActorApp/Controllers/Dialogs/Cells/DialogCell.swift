@@ -4,7 +4,18 @@
 
 import UIKit;
 
-class DialogCell: UATableViewCell {
+class DialogCell: UATableViewCell, ACBindedCell {
+    
+    // Binding data type
+    
+    typealias BindData = ACDialog
+    
+    // Hight of cell
+    
+    static func bindedCellHeight(table: ACManagedTable, item: ACDialog) -> CGFloat {
+        
+        return 76
+    }
     
     // Views
     
@@ -16,10 +27,8 @@ class DialogCell: UATableViewCell {
     let counterView: UILabel = UILabel(style: "dialogs.counter")
     let counterViewBg: UIImageView = UIImageView(style: "dialogs.counter.bg")
     
-    init(reuseIdentifier: String) {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(cellStyle: "dialogs.cell", reuseIdentifier: reuseIdentifier)
-        
-        // Registering all views
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(titleView)
@@ -34,34 +43,28 @@ class DialogCell: UATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bindDialog(dialog: ACDialog, isLast: Bool) {
+    func bind(item: ACDialog, table: ACManagedTable, index: Int, totalCount: Int) {
         
-        if isLast {
-            applyStyle("dialogs.cell.last")
-        } else {
-            applyStyle("dialogs.cell")
-        }
+        self.avatarView.bind(item.dialogTitle, id: item.peer.peerId, avatar: item.dialogAvatar)
         
-        self.avatarView.bind(dialog.dialogTitle, id: dialog.peer.peerId, avatar: dialog.dialogAvatar);
+        self.titleView.text = item.dialogTitle
         
-        self.titleView.text = dialog.dialogTitle;
-    
-        self.messageView.text = Actor.getFormatter().formatDialogText(dialog)
-        if dialog.messageType.ordinal() != jint(ACContentType.TEXT.rawValue) {
+        self.messageView.text = Actor.getFormatter().formatDialogText(item)
+        if item.messageType.ordinal() != jint(ACContentType.TEXT.rawValue) {
             self.messageView.applyStyle("dialog.message")
         } else {
             self.messageView.applyStyle("dialog.message.hightlight")
         }
         
-        if (dialog.date > 0) {
-            self.dateView.text = Actor.getFormatter().formatShortDate(dialog.date);
-            self.dateView.hidden = false;
+        if (item.date > 0) {
+            self.dateView.text = Actor.getFormatter().formatShortDate(item.date)
+            self.dateView.hidden = false
         } else {
-            self.dateView.hidden = true;
+            self.dateView.hidden = true
         }
         
-        if (dialog.unreadCount != 0) {
-            self.counterView.text = "\(dialog.unreadCount)"
+        if (item.unreadCount != 0) {
+            self.counterView.text = "\(item.unreadCount)"
             self.counterView.hidden = false
             self.counterViewBg.hidden = false
         } else {
@@ -69,30 +72,30 @@ class DialogCell: UATableViewCell {
             self.counterViewBg.hidden = true
         }
         
-        let messageState = UInt(dialog.status.ordinal());
+        let messageState = UInt(item.status.ordinal())
         
         if (messageState == ACMessageState.PENDING.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSending
-            self.statusView.image =  Resources.iconClock;
-            self.statusView.hidden = false;
+            self.statusView.image =  Resources.iconClock
+            self.statusView.hidden = false
         } else if (messageState == ACMessageState.READ.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogRead
-            self.statusView.image = Resources.iconCheck2;
-            self.statusView.hidden = false;
+            self.statusView.image = Resources.iconCheck2
+            self.statusView.hidden = false
         } else if (messageState == ACMessageState.RECEIVED.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogReceived
-            self.statusView.image = Resources.iconCheck2;
-            self.statusView.hidden = false;
+            self.statusView.image = Resources.iconCheck2
+            self.statusView.hidden = false
         } else if (messageState == ACMessageState.SENT.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSent
-            self.statusView.image = Resources.iconCheck1;
-            self.statusView.hidden = false;
+            self.statusView.image = Resources.iconCheck1
+            self.statusView.hidden = false
         } else if (messageState == ACMessageState.ERROR.rawValue) {
             self.statusView.tintColor = MainAppTheme.bubbles.statusDialogError
-            self.statusView.image = Resources.iconError;
-            self.statusView.hidden = false;
+            self.statusView.image = Resources.iconError
+            self.statusView.hidden = false
         } else {
-            self.statusView.hidden = true;
+            self.statusView.hidden = true
         }
         
         setNeedsLayout()
@@ -108,18 +111,18 @@ class DialogCell: UATableViewCell {
         super.layoutSubviews();
         
         // We expect height == 76;
-        let width = self.contentView.frame.width;
-        let leftPadding = CGFloat(76);
-        let padding = CGFloat(14);
+        let width = self.contentView.frame.width
+        let leftPadding = CGFloat(76)
+        let padding = CGFloat(14)
         
-        avatarView.frame = CGRectMake(padding, padding, 48, 48);
+        avatarView.frame = CGRectMake(padding, padding, 48, 48)
         
-        titleView.frame = CGRectMake(leftPadding, 16, width - leftPadding - /*paddingRight*/(padding + 50), 21);
+        titleView.frame = CGRectMake(leftPadding, 16, width - leftPadding - /*paddingRight*/(padding + 50), 21)
         
-        var messagePadding:CGFloat = 0;
+        var messagePadding:CGFloat = 0
         if (!self.statusView.hidden) {
-            messagePadding = 22;
-            statusView.frame = CGRectMake(leftPadding, 44, 20, 18);
+            messagePadding = 22
+            statusView.frame = CGRectMake(leftPadding, 44, 20, 18)
         }
         
         var unreadPadding = CGFloat(0)
@@ -132,8 +135,8 @@ class DialogCell: UATableViewCell {
             unreadPadding = unreadW
         }
 
-        messageView.frame = CGRectMake(leftPadding+messagePadding, 44, width - leftPadding - /*paddingRight*/padding - messagePadding - unreadPadding, 18);
+        messageView.frame = CGRectMake(leftPadding+messagePadding, 44, width - leftPadding - /*paddingRight*/padding - messagePadding - unreadPadding, 18)
         
-        dateView.frame = CGRectMake(width - /*width*/60 - /*paddingRight*/padding , 18, 60, 18);
+        dateView.frame = CGRectMake(width - /*width*/60 - /*paddingRight*/padding , 18, 60, 18)
     }
 }

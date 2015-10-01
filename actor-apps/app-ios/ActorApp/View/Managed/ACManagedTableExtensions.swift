@@ -5,56 +5,24 @@
 import Foundation
 
 
-// Cell automatic registration and dequeuing
-
-private var registeredCells = "cells!"
-
 extension ACManagedTable {
     
-    private func cellTypeForClass<T where T: UITableViewCell>(cellClass: T.Type) -> String {
-        
-        let cellReuseId = "\(T.self)"
-        var registered: ([String])! = getAssociatedObject(tableView, associativeKey: &registeredCells)
-        var found = false
-        if registered != nil {
-            if registered.contains(cellReuseId) {
-                found = true
-            } else {
-                registered.append(cellReuseId)
-                setAssociatedObject(tableView, value: registered, associativeKey: &registeredCells)
-            }
-        } else {
-            setAssociatedObject(tableView, value: [cellReuseId], associativeKey: &registeredCells)
-        }
-        
-        if !found {
-            tableView.registerClass(T.self, forCellReuseIdentifier: cellReuseId)
-        }
-        
-        return cellReuseId
-    }
-    
-    func dequeueCell<T where T: UITableViewCell>(indexPath: NSIndexPath? = nil) -> T {
-        let reuseId = cellTypeForClass(T.self)
-        if indexPath != nil {
-            return self.tableView.dequeueReusableCellWithIdentifier(reuseId, forIndexPath: indexPath!) as! T
-        } else {
-            return self.tableView.dequeueReusableCellWithIdentifier(reuseId) as! T
-        }
+    func dequeueCell<T where T: UITableViewCell>(indexPath: NSIndexPath) -> T {
+        return self.tableView.dequeueCell(indexPath)
     }
 }
 
 extension ACManagedTable {
     
-    func dequeueTextCell(indexPath: NSIndexPath? = nil) -> TextCell {
+    func dequeueTextCell(indexPath: NSIndexPath) -> TextCell {
         return dequeueCell(indexPath)
     }
     
-    func dequeueTitledCell(indexPath: NSIndexPath? = nil) -> TitledCell {
+    func dequeueTitledCell(indexPath: NSIndexPath) -> TitledCell {
         return dequeueCell(indexPath)
     }
     
-    func dequeueCommonCell(indexPath: NSIndexPath? = nil) -> CommonCell {
+    func dequeueCommonCell(indexPath: NSIndexPath) -> CommonCell {
         return dequeueCell(indexPath)
     }
 }
