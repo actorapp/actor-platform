@@ -9,10 +9,9 @@ import im.actor.bot.{ BotMessageOut, BotBase, BotMessages }
 import upickle.default._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.reflect.ClassTag
 
 object RemoteBot {
-  val DefaultEndpoint = "wss://front1-ws-mtproto-api-rev2-dev1.actor.im:443"
+  val DefaultEndpoint = "wss://api.actor.im"
 }
 
 abstract class RemoteBot(token: String, endpoint: String) extends BotBase with Actor with ActorLogging {
@@ -30,7 +29,7 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
       rqSource = initFlow()
     case Status.Failure(e) ⇒
       log.error(e, "Error in a stream, restarting")
-      throw e
+      rqSource = initFlow()
     case tm: TextMessage ⇒
       log.info("Received text message {}", tm)
       onTextMessage(tm)
