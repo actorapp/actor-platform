@@ -6,6 +6,8 @@ import xerial.sbt.Sonatype.autoImport._
 
 trait Publishing {
   val publishSettings = Seq(
+    organization := "im.actor",
+  
     sonatypeProfileName := "org.xerial",
 
     // To sync with Maven central, you need to supply the following information:
