@@ -2,7 +2,7 @@ package im.actor.bot.remote
 
 import java.net.URI
 
-import akka.actor.{ ActorLogging, ActorRefFactory, Props }
+import akka.actor._
 import akka.io.IO
 import akka.stream.actor._
 import akka.stream.scaladsl.{ Sink, Source }
@@ -13,6 +13,7 @@ import spray.http.{ HttpHeaders, HttpMethods, HttpRequest }
 import spray.io.ServerSSLEngineProvider
 
 import scala.annotation.tailrec
+import scala.util.control.NoStackTrace
 
 final case object ConnectionClosed
 
@@ -51,11 +52,16 @@ final class WebsocketClient(url: String)
       case _: Http.ConnectionClosed ⇒
         onClose()
         context.stop(self)
+      case e: Http.ConnectionException ⇒
+        onFailure(e)
+        context.stop(self)
     }
 
     def onMessage(frame: Frame): Unit
 
     def onClose(): Unit
+
+    def onFailure(e: Http.ConnectionException): Unit
   }
 
   val uri = new URI(url)
@@ -90,8 +96,13 @@ final class WebsocketClient(url: String)
       override def onClose() = {
         context.parent ! ConnectionClosed
       }
+
+      override def onFailure(e: Http.ConnectionException) = {
+        context.parent ! Status.Failure(e)
+      }
     }
-  ))
+  ), "connector")
+  context watch client
 
   private var receivedBuf = Vector.empty[String]
 
@@ -115,7 +126,9 @@ final class WebsocketClient(url: String)
       client ! textToSend
     case ConnectionClosed ⇒
       log.error("Connection closed")
-      onErrorThenStop(new RuntimeException("Connection closed"))
+      onErrorThenStop(new RuntimeException("Connection closed") with NoStackTrace)
+    case Terminated(`client`) ⇒
+      onErrorThenStop(new RuntimeException("Failed to connect") with NoStackTrace)
     case unmatched ⇒
       log.error("Unmatched {}", unmatched)
   }
