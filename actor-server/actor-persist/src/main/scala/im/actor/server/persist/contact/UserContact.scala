@@ -64,4 +64,7 @@ object UserContact {
 
   def delete(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.isDeleted).update(true)
+
+  def insertOrUpdate(contact: models.contact.UserContact) =
+    contacts.insertOrUpdate(contact)
 }

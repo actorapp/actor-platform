@@ -11,6 +11,7 @@ import scala.concurrent.duration._
 import akka.actor._
 import akka.util.Timeout
 import scodec.bits.BitVector
+import shapeless._, syntax.std.tuple._
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
@@ -141,12 +142,15 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
       } yield {
         (optUser, optNumber map (_.number))
       }) flatMap {
-        case (Some(user), Some(userPhoneNumber)) ⇒
+        case (Some(user), optPhoneNumber) ⇒
           if (accessHash == ACLUtils.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
             persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
               case None ⇒
                 for {
-                  _ ← addContact(client.userId, user.id, userPhoneNumber, None, user.accessSalt)
+                  _ ← optPhoneNumber match {
+                    case Some(phoneNumber) ⇒ addContact(client.userId, user.id, phoneNumber, None, user.accessSalt)
+                    case None              ⇒ addContact(client.userId, user.id, None, user.accessSalt)
+                  }
                   seqstate ← DBIO.from(userExt.broadcastClientUpdate(UpdateContactsAdded(Vector(user.id)), None, isFat = true))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               case Some(contact) ⇒
