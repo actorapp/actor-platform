@@ -199,7 +199,11 @@ class ComposeSection extends React.Component {
     const { peer } = this.props;
 
     forEach(files, (file) => {
-      MessageActionCreators.sendFileMessage(peer, file);
+      if (file.type === 'image/jpeg') {
+        MessageActionCreators.sendPhotoMessage(peer, file);
+      } else {
+        MessageActionCreators.sendFileMessage(peer, file);
+      }
     });
   };
 
