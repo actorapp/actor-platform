@@ -3,9 +3,9 @@ package im.actor.botkit
 import java.net.URLEncoder
 
 import akka.actor._
-import akka.stream.scaladsl.{Sink, Source}
-import akka.stream.{ActorMaterializer, OverflowStrategy}
-import im.actor.bot.{BotBase, BotMessageOut, BotMessages}
+import akka.stream.scaladsl.{ Sink, Source }
+import akka.stream.{ ActorMaterializer, OverflowStrategy }
+import im.actor.bot.{ BotBase, BotMessageOut, BotMessages }
 import upickle.default._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -37,7 +37,7 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
       onTextMessage(tm)
     case rsp: BotResponse ⇒
       log.info("Response: {}", rsp.body)
-    case NextRequest(body) =>
+    case NextRequest(body) ⇒
       rqSource ! nextRequest(body)
     case unmatched ⇒
       log.error("Unmatched {}", unmatched)

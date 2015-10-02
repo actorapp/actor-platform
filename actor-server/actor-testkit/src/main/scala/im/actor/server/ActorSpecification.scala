@@ -1,6 +1,7 @@
 package im.actor.server
 
 import akka.actor._
+import akka.stream.ActorMaterializer
 import akka.testkit._
 import com.typesafe.config._
 import im.actor.config.ActorConfig
@@ -48,6 +49,8 @@ abstract class ActorSuite(system: ActorSystem = { ActorSpecification.createSyste
   with BeforeAndAfterAll
   with Matchers
   with ScalaFutures {
+  protected implicit val mat = ActorMaterializer()(system)
+
   override def afterAll(): Unit = {
     TestKit.shutdownActorSystem(system)
     system.awaitTermination()

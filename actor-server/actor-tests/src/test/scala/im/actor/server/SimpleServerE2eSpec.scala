@@ -55,8 +55,6 @@ class SimpleServerE2eSpec extends ActorSuite(
 
     val serverConfig = system.settings.config
 
-    implicit val materializer = ActorMaterializer()
-
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     val sequenceConfig = SequenceServiceConfig.load.toOption.get
 

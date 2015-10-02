@@ -1,6 +1,6 @@
 package im.actor.botkit
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.{ ActorSystem, Props }
 import im.actor.bot.BotMessages.TextMessage
 
 object EchoBotApp extends App {
