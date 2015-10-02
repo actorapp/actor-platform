@@ -29,7 +29,7 @@ public class HelloBot extends RemoteBot {
             Future<Optional<String>> future = msgsKv
                     .get("last", timeout);
 
-            future.map(proc(s -> {
+            future.foreach(proc(s -> {
                 if (s.isPresent()) {
                     sendTextMessage(outPeer(tm.sender()), "Last message I received was: " + s.get());
                 } else {
