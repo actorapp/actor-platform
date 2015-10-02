@@ -8,7 +8,8 @@ import shardakka.ShardakkaExtension;
 import shardakka.keyvalue.SimpleKeyValueJava;
 
 import java.util.Optional;
-import static scala.compat.java8.JFunction.*;
+
+import static scala.compat.java8.JFunction.proc;
 
 public class HelloBot extends RemoteBot {
 
@@ -30,11 +31,10 @@ public class HelloBot extends RemoteBot {
                     .get("last", timeout);
 
             future.foreach(proc(s -> {
-                if (s.isPresent()) {
-                    sendTextMessage(outPeer(tm.sender()), "Last message I received was: " + s.get());
-                } else {
-                    sendTextMessage(outPeer(tm.sender()), "I'm alone :'(");
-                }
+                String msg = s
+                        .map(text -> "Last message I received was: " + text)
+                        .orElse("I'm alone :'(");
+                sendTextMessage(outPeer(tm.sender()), msg);
             }), context().dispatcher());
         } else {
             sendTextMessage(outPeer(tm.sender()), "Please, say hello");
