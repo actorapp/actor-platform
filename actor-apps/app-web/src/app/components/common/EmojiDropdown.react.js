@@ -128,25 +128,21 @@ export default class EmojiDropdown extends Component {
       'emoji-dropdown--opened': isOpen
     });
 
-    if (isOpen) {
-      return (
-        <div className={emojiDropdownClassName}>
-          <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
-            <header className="emoji-dropdown__header">
-              <p className="emoji-dropdown__header__title">{dropdownTitle}</p>
+    return (
+      <div className={emojiDropdownClassName}>
+        <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
+          <header className="emoji-dropdown__header">
+            <p className="emoji-dropdown__header__title">{dropdownTitle}</p>
 
-              <div className="emoji-dropdown__header__tabs pull-right">
-                {emojiTabs}
-              </div>
-            </header>
-            <div className="emoji-dropdown__body" id="emojiContainer">
-              {emojis}
+            <div className="emoji-dropdown__header__tabs pull-right">
+              {emojiTabs}
             </div>
+          </header>
+          <div className="emoji-dropdown__body" id="emojiContainer">
+            {emojis}
           </div>
         </div>
-      );
-    } else {
-      return null;
-    }
+      </div>
+    );
   }
 }
