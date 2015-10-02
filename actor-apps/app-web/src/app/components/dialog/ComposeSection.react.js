@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
+import { assign, forEach } from 'lodash';
 
 import React from 'react';
 import classnames from 'classnames';
@@ -50,7 +50,7 @@ class ComposeSection extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = _.assign({
+    this.state = assign({
       isEmojiDropdownShow: false,
       isMardownHintShow: false
     }, getStateFromStores());
@@ -153,7 +153,7 @@ class ComposeSection extends React.Component {
   onPaste = event => {
     let preventDefault = false;
 
-    _.forEach(event.clipboardData.items, (item) => {
+    forEach(event.clipboardData.items, (item) => {
       if (item.type.indexOf('image') !== -1) {
         preventDefault = true;
         MessageActionCreators.sendClipboardPhotoMessage(this.props.peer, item.getAsFile());
@@ -195,9 +195,13 @@ class ComposeSection extends React.Component {
     composeArea.focus();
   };
 
-  onDrop = (file) => {
-    console.debug(file);
-  }
+  onDrop = (files) => {
+    const { peer } = this.props;
+
+    forEach(files, (file) => {
+      MessageActionCreators.sendFileMessage(peer, file);
+    });
+  };
 
   render() {
     const { text, profile, mentions, isEmojiDropdownShow, isMardownHintShow } = this.state;
