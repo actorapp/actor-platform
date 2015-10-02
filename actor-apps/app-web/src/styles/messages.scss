@@ -292,14 +292,13 @@
           line-height: 24px;
 
           display: block;
-          overflow: hidden;
 
           vertical-align: middle;
-          white-space: nowrap;
           text-decoration: none;
-          text-overflow: ellipsis;
 
           color: $message-text-color;
+
+          @include text-elipsis();
         }
         &__meta {
           font-size: 14px;

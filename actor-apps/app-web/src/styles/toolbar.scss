@@ -42,16 +42,15 @@
       line-height: 20px;
 
       display: inline-block;
-      overflow: hidden;
 
       width: 100%;
       padding-top: 12px;
 
-      white-space: nowrap;
-      text-overflow: ellipsis;
+      @include text-elipsis();
       .emoji-outer {
         width: 20px;
         height: 20px;
+
         vertical-align: top;
       }
     }
