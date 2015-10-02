@@ -5,11 +5,11 @@ import java.net.URI
 import akka.actor._
 import akka.io.IO
 import akka.stream.actor._
-import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.scaladsl.{ Sink, Source }
 import spray.can.server.UHttp
-import spray.can.websocket.frame.{Frame, TextFrame}
-import spray.can.{Http, websocket}
-import spray.http.{HttpHeaders, HttpMethods, HttpRequest}
+import spray.can.websocket.frame.{ Frame, TextFrame }
+import spray.can.{ Http, websocket }
+import spray.http.{ HttpHeaders, HttpMethods, HttpRequest }
 import spray.io.ServerSSLEngineProvider
 
 import scala.annotation.tailrec
