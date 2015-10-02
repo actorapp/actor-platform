@@ -2,10 +2,13 @@ package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.ApiPhoneToImport
+import im.actor.api.rpc.users.ApiSex
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.user.UserExtension
+import im.actor.util.misc.IdUtils
+import org.scalatest.Inside._
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -31,6 +34,8 @@ class ContactsServiceSpec
 
   "ImportContacts handler" should "import contacts starting with 8 in RU" in (s.imprt.ru)
 
+  "AddContact handler" should "add contact without a phone" in (s.addremove.addWithoutPhone())
+
   object s {
     implicit val ec = system.dispatcher
 
@@ -38,12 +43,14 @@ class ContactsServiceSpec
 
     implicit val service = new contacts.ContactsServiceImpl
 
+    private implicit val userExt = UserExtension(system)
+
     def addContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
-      Await.result(service.handleAddContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)
+      Await.result(service.handleAddContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 5.seconds)
     }
 
     def removeContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
-      Await.result(service.handleRemoveContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)
+      Await.result(service.handleRemoveContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 5.seconds)
     }
 
     object getcontacts {
@@ -118,6 +125,18 @@ class ContactsServiceSpec
         whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp ⇒
           resp should matchPattern {
             case Ok(api.contacts.ResponseGetContacts(expectedUsers, false)) ⇒
+          }
+        }
+      }
+
+      def addWithoutPhone() = {
+        val userId = IdUtils.nextIntId()
+        whenReady(userExt.create(userId, ACLUtils.nextAccessSalt(), Some("nickname"), "Name", "us", ApiSex.Unknown, isBot = true))(identity)
+        whenReady(userExt.getAccessHash(userId, clientData.authId)) { accessSalt ⇒
+          whenReady(service.handleAddContact(userId, accessSalt)) { rsp ⇒
+            inside(rsp) {
+              case Ok(api.misc.ResponseSeq(_, _)) ⇒
+            }
           }
         }
       }
