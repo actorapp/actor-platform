@@ -37,10 +37,10 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
       onTextMessage(tm)
     case rsp: BotResponse ⇒
       log.info("Response: {}", rsp.body)
-    case unmatched ⇒
-      log.error("Unmatched {}", unmatched)
     case NextRequest(body) =>
       rqSource ! nextRequest(body)
+    case unmatched ⇒
+      log.error("Unmatched {}", unmatched)
   }
 
   override protected def sendTextMessage(peer: OutPeer, text: String): Unit = {
