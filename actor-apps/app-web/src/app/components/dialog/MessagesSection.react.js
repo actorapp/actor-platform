@@ -4,9 +4,9 @@
 
 import _ from 'lodash';
 
-import React from 'react';
-import ReactMixin from 'react-mixin';
-import addons from 'react/addons';
+import React, { Component } from 'react';
+import { Container } from 'flux/utils';
+
 import { MessageContentTypes } from 'constants/ActorAppConstants';
 
 import MessageActionCreators from 'actions/MessageActionCreators';
@@ -15,15 +15,10 @@ import VisibilityStore from 'stores/VisibilityStore';
 
 import MessageItem from './messages/MessageItem.react';
 
-const {addons: { PureRenderMixin }} = addons;
-
 let _delayed = [];
 
 let flushDelayed = () => {
-  _.forEach(_delayed, (p) => {
-    MessageActionCreators.setMessageShown(p.peer, p.message);
-  });
-
+  _.forEach(_delayed, (p) => MessageActionCreators.setMessageShown(p.peer, p.message));
   _delayed = [];
 };
 
@@ -32,21 +27,18 @@ let flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
 let lastMessageDate = null,
     lastMessageSenderId = null;
 
-@ReactMixin.decorate(PureRenderMixin)
-class MessagesSection extends React.Component {
+class MessagesSection extends Component {
   static propTypes = {
     messages: React.PropTypes.array.isRequired,
     peer: React.PropTypes.object.isRequired
   };
 
+  static getStores = () => [VisibilityStore];
+  static calculateState = () => {};
+
   constructor(props) {
     super(props);
-
-    VisibilityStore.addChangeListener(this.onAppVisibilityChange);
-  }
-
-  componentWillUnmount() {
-    VisibilityStore.removeChangeListener(this.onAppVisibilityChange);
+    VisibilityStore.addListener(this.onAppVisibilityChange);
   }
 
   getMessagesListItem = (message, index) => {
@@ -83,30 +75,32 @@ class MessagesSection extends React.Component {
   };
 
   onAppVisibilityChange = () => {
-    if (VisibilityStore.isVisible) {
+    if (VisibilityStore.isAppVisible()) {
       flushDelayed();
     }
   };
 
   onMessageVisibilityChange = (message, isVisible) => {
-    if (isVisible) {
-      _delayed.push({peer: this.props.peer, message: message});
+    const { peer } = this.props;
 
-      if (VisibilityStore.isVisible) {
+    if (isVisible) {
+      _delayed.push({peer, message});
+      if (VisibilityStore.isAppVisible()) {
         flushDelayedDebounced();
       }
     }
   };
 
   render() {
-    const messages = _.map(this.props.messages, this.getMessagesListItem);
+    const { messages } = this.props;
+    const messagesList = _.map(messages, this.getMessagesListItem);
 
     return (
       <ul className="messages__list">
-        {messages}
+        {messagesList}
       </ul>
     );
   }
 }
 
-export default MessagesSection;
+export default Container.create(MessagesSection);
