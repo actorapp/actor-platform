@@ -15,6 +15,18 @@ object ContactsUtils {
   def addContact(
     ownerUserId: Int,
     userId:      Int,
+    name:        Option[String],
+    accessSalt:  String
+  )(implicit ec: ExecutionContext, timeout: Timeout, system: ActorSystem): DBIO[Int] =
+    for {
+      _ ← DBIO.from(registerLocalName(ownerUserId, userId, name))
+      contact = models.contact.UserContact(ownerUserId, userId, name, accessSalt, isDeleted = false)
+      result ← persist.contact.UserContact.insertOrUpdate(contact)
+    } yield result
+
+  def addContact(
+    ownerUserId: Int,
+    userId:      Int,
     phoneNumber: Long,
     name:        Option[String],
     accessSalt:  String
