@@ -14,5 +14,6 @@ repositories {
 
 dependencies {
     compile group: 'im.actor', name: 'actor-botkit', version: '1.0.14'
+    compile group: 'im.actor', name: 'shardakka', version: '0.1.4'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
