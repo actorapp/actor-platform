@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
+import { assign, forEach } from 'lodash';
 
 import React from 'react';
 import classnames from 'classnames';
@@ -27,6 +27,7 @@ import ComposeStore from 'stores/ComposeStore';
 import AvatarItem from 'components/common/AvatarItem.react';
 import MentionDropdown from 'components/common/MentionDropdown.react';
 import EmojiDropdown from 'components/common/EmojiDropdown.react';
+import DropZone from 'components/common/DropZone.react';
 
 let getStateFromStores = () => {
   return {
@@ -37,6 +38,8 @@ let getStateFromStores = () => {
   };
 };
 
+
+export default
 @ReactMixin.decorate(IntlMixin)
 @ReactMixin.decorate(PureRenderMixin)
 class ComposeSection extends React.Component {
@@ -47,7 +50,7 @@ class ComposeSection extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = _.assign({
+    this.state = assign({
       isEmojiDropdownShow: false,
       isMardownHintShow: false
     }, getStateFromStores());
@@ -120,25 +123,28 @@ class ComposeSection extends React.Component {
 
   onSendFileClick = () => {
     const fileInput = React.findDOMNode(this.refs.composeFileInput);
+    fileInput.setAttribute('multiple', true);
     fileInput.click();
   };
 
   onSendPhotoClick = () => {
     const photoInput = React.findDOMNode(this.refs.composePhotoInput);
-    photoInput.accept = 'image/*';
+    photoInput.setAttribute('multiple', true);
+    photoInput.accept = 'image/jpeg,image/png';
     photoInput.click();
   };
 
   onFileInputChange = () => {
+    const { peer } = this.props;
     const fileInput = React.findDOMNode(this.refs.composeFileInput);
-    MessageActionCreators.sendFileMessage(this.props.peer, fileInput.files[0]);
+    forEach(fileInput.files, (file) => MessageActionCreators.sendFileMessage(peer, file));
     this.resetSendFileForm();
   };
 
   onPhotoInputChange = () => {
-    console.debug('onPhotoInputChange');
+    const { peer } = this.props;
     const photoInput = React.findDOMNode(this.refs.composePhotoInput);
-    MessageActionCreators.sendPhotoMessage(this.props.peer, photoInput.files[0]);
+    forEach(photoInput.files, (photo) => MessageActionCreators.sendPhotoMessage(peer, photo));
     this.resetSendFileForm();
   };
 
@@ -150,7 +156,7 @@ class ComposeSection extends React.Component {
   onPaste = event => {
     let preventDefault = false;
 
-    _.forEach(event.clipboardData.items, (item) => {
+    forEach(event.clipboardData.items, (item) => {
       if (item.type.indexOf('image') !== -1) {
         preventDefault = true;
         MessageActionCreators.sendClipboardPhotoMessage(this.props.peer, item.getAsFile());
@@ -192,6 +198,18 @@ class ComposeSection extends React.Component {
     composeArea.focus();
   };
 
+  onDrop = (files) => {
+    const { peer } = this.props;
+
+    forEach(files, (file) => {
+      if (file.type === 'image/jpeg') {
+        MessageActionCreators.sendPhotoMessage(peer, file);
+      } else {
+        MessageActionCreators.sendFileMessage(peer, file);
+      }
+    });
+  };
+
   render() {
     const { text, profile, mentions, isEmojiDropdownShow, isMardownHintShow } = this.state;
 
@@ -216,11 +234,11 @@ class ComposeSection extends React.Component {
            onClick={this.onEmojiShowClick}>insert_emoticon</i>
 
         <div className={markdownHintClassName}>
-          <b>*bold*</b>
+          <b>*{this.getIntlMessage('markdownHintBold')}*</b>
           &nbsp;&nbsp;
-          <i>_italics_</i>
+          <i>_{this.getIntlMessage('markdownHintItalic')}_</i>
           &nbsp;&nbsp;&nbsp;
-          <code>```preformatted```</code>
+          <code>```{this.getIntlMessage('markdownHintPreformatted')}```</code>
         </div>
 
         <AvatarItem className="my-avatar"
@@ -233,6 +251,8 @@ class ComposeSection extends React.Component {
                   onKeyDown={this.onKeyDown}
                   value={text}
                   ref="area"/>
+
+        <DropZone onDropComplete={this.onDrop}/>
 
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.onSendFileClick}>
@@ -254,5 +274,3 @@ class ComposeSection extends React.Component {
     );
   }
 }
-
-export default ComposeSection;
