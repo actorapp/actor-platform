@@ -86,7 +86,7 @@ object Dependencies {
   object Testing {
     val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka
 
-    val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2"
+    val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.5"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest
 
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1"
