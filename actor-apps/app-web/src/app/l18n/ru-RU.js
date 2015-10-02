@@ -18,6 +18,9 @@ export default {
     'composeSendFile': 'Документ',
     'composeSendPhote': 'Изображение',
     'composeSend': 'Отправить',
+    'markdownHintBold': 'жирный',
+    'markdownHintItalic': 'курсив',
+    'markdownHintPreformatted': 'форматированный',
 
     // Profiles
     'createdBy': 'создал',
