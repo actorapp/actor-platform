@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+
+// Clearfix
 @mixin clearfix() {
   &:after {
     content: '';
@@ -6,6 +12,15 @@
   }
 }
 
+// White placholder for inputs
 @mixin placeholder() {
   color: rgba(white, .3);
 }
+
+// Text overflow elipsis
+@mixin text-elipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
