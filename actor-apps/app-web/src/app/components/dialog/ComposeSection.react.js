@@ -38,6 +38,8 @@ let getStateFromStores = () => {
   };
 };
 
+
+export default
 @ReactMixin.decorate(IntlMixin)
 @ReactMixin.decorate(PureRenderMixin)
 class ComposeSection extends React.Component {
@@ -193,6 +195,10 @@ class ComposeSection extends React.Component {
     composeArea.focus();
   };
 
+  onDrop = (file) => {
+    console.debug(file);
+  }
+
   render() {
     const { text, profile, mentions, isEmojiDropdownShow, isMardownHintShow } = this.state;
 
@@ -217,11 +223,11 @@ class ComposeSection extends React.Component {
            onClick={this.onEmojiShowClick}>insert_emoticon</i>
 
         <div className={markdownHintClassName}>
-          <b>*bold*</b>
+          <b>*{this.getIntlMessage('markdownHintBold')}*</b>
           &nbsp;&nbsp;
-          <i>_italics_</i>
+          <i>_{this.getIntlMessage('markdownHintItalic')}_</i>
           &nbsp;&nbsp;&nbsp;
-          <code>```preformatted```</code>
+          <code>```{this.getIntlMessage('markdownHintPreformatted')}```</code>
         </div>
 
         <AvatarItem className="my-avatar"
@@ -256,10 +262,4 @@ class ComposeSection extends React.Component {
       </section>
     );
   }
-
-  onDrop = (file) => {
-    console.debug(file);
-  }
 }
-
-export default ComposeSection;
