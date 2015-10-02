@@ -12,10 +12,12 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 
 object RemoteBot {
   val DefaultEndpoint = "wss://api.actor.im"
+  private final case class NextRequest(body: BotMessages.RequestBody)
 }
 
 abstract class RemoteBot(token: String, endpoint: String) extends BotBase with Actor with ActorLogging {
 
+  import RemoteBot._
   import BotMessages._
 
   private implicit val mat = ActorMaterializer()
@@ -37,12 +39,14 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
       log.info("Response: {}", rsp.body)
     case unmatched ⇒
       log.error("Unmatched {}", unmatched)
+    case NextRequest(body) =>
+      rqSource ! nextRequest(body)
   }
 
   override protected def sendTextMessage(peer: OutPeer, text: String): Unit = {
     log.info("Sending message, peer: {}, text: {}", peer, text)
     log.info("rqSource {}", rqSource)
-    rqSource ! nextRequest(SendTextMessage(peer, ThreadLocalRandom.current().nextLong(), text))
+    self ! NextRequest(SendTextMessage(peer, ThreadLocalRandom.current().nextLong(), text))
   }
 
   private def nextRequest(body: RequestBody): BotRequest = {
