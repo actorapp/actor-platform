@@ -81,14 +81,11 @@
       font-weight: 500;
       line-height: 38px;
 
-      overflow: hidden;
-
       margin: 0;
 
-      white-space: nowrap;
-      text-overflow: ellipsis;
-
       color: $dorado;
+
+      @include text-elipsis();
       .emoji-outer {
         width: 20px;
         height: 20px;
@@ -99,6 +96,7 @@
       line-height: 22px;
 
       color: rgba(0, 0, 0, .3);
+      @include text-elipsis();
     }
     &__about {
       font-size: 15px;
@@ -203,14 +201,11 @@
       font-weight: 500;
       line-height: 38px;
 
-      overflow: hidden;
-
       margin: 0;
 
-      white-space: nowrap;
-      text-overflow: ellipsis;
-
       color: $dorado;
+
+      @include text-elipsis();
       .emoji-outer {
         width: 20px;
         height: 20px;
