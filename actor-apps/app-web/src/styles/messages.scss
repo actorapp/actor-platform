@@ -39,6 +39,9 @@
     height: 20px;
     margin: 0 0 4px;
   }
+  &__body {
+    overflow: auto;
+  }
   &__sender {
     font-size: 15px;
     font-weight: 500;
@@ -256,14 +259,17 @@
       .document {
         line-height: 18px;
 
+        max-width: 100%;
         padding: 8px 10px 8px 8px;
 
         transition: background $default-transition-duration $default-transition-timing;
-        //text-decoration: none;
 
         border-radius: 3px;
         background-color: rgba(darken($body-base-color, 0), .07);
 
+        .col-xs {
+          overflow: hidden;
+        }
         &__icon {
           display: block;
 
@@ -285,10 +291,13 @@
           font-weight: 500;
           line-height: 24px;
 
-          display: inline-block;
+          display: block;
+          overflow: hidden;
 
           vertical-align: middle;
+          white-space: nowrap;
           text-decoration: none;
+          text-overflow: ellipsis;
 
           color: $message-text-color;
         }
