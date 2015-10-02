@@ -123,25 +123,28 @@ class ComposeSection extends React.Component {
 
   onSendFileClick = () => {
     const fileInput = React.findDOMNode(this.refs.composeFileInput);
+    fileInput.setAttribute('multiple', true);
     fileInput.click();
   };
 
   onSendPhotoClick = () => {
     const photoInput = React.findDOMNode(this.refs.composePhotoInput);
-    photoInput.accept = 'image/*';
+    photoInput.setAttribute('multiple', true);
+    photoInput.accept = 'image/jpeg,image/png';
     photoInput.click();
   };
 
   onFileInputChange = () => {
+    const { peer } = this.props;
     const fileInput = React.findDOMNode(this.refs.composeFileInput);
-    MessageActionCreators.sendFileMessage(this.props.peer, fileInput.files[0]);
+    forEach(fileInput.files, (file) => MessageActionCreators.sendFileMessage(peer, file));
     this.resetSendFileForm();
   };
 
   onPhotoInputChange = () => {
-    console.debug('onPhotoInputChange');
+    const { peer } = this.props;
     const photoInput = React.findDOMNode(this.refs.composePhotoInput);
-    MessageActionCreators.sendPhotoMessage(this.props.peer, photoInput.files[0]);
+    forEach(photoInput.files, (photo) => MessageActionCreators.sendPhotoMessage(peer, photo));
     this.resetSendFileForm();
   };
 
