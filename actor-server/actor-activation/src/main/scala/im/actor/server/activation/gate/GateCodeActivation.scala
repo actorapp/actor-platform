@@ -27,14 +27,16 @@ class GateCodeActivation(config: GateConfig)(
   private[this] val http = Http()
 
   override def send(optTransactionHash: Option[String], code: Code): DBIO[String \/ Unit] = {
+    val request = HttpRequest(
+      method = POST,
+      uri = s"${config.uri}/v1/codes/send",
+      entity = Json.toJson(code).toString)
+
+
+        system.log.debug("Requesting code send with {}", request)
+
     val codeResponse: Future[CodeResponse] = for {
-      resp ← http.singleRequest(
-        HttpRequest(
-          method = POST,
-          uri = s"${config.uri}/v1/codes/send",
-          entity = Json.toJson(code).toString
-        ).withHeaders(`X-Auth-Token`(config.authToken))
-      )
+      resp ← http.singleRequest(request.withHeaders(`X-Auth-Token`(config.authToken)))
       codeResp ← Unmarshal(resp).to[CodeResponse]
     } yield codeResp
 
@@ -56,8 +58,11 @@ class GateCodeActivation(config: GateConfig)(
       optCodeHash ← persist.auth.GateAuthCode.find(transactionHash)
       validationResponse ← DBIO.from(optCodeHash map { codeHash ⇒
         val validationUri = Uri(s"${config.uri}/v1/codes/validate/${codeHash.codeHash}").withQuery("code" → code)
+        val request = HttpRequest(GET, validationUri)
+        system.log.debug("Requesting code validation with {}", request)
+
         for {
-          response ← http.singleRequest(HttpRequest(GET, validationUri).withHeaders(`X-Auth-Token`(config.authToken)))
+          response ← http.singleRequest(request.withHeaders(`X-Auth-Token`(config.authToken)))
           vr ← Unmarshal(response).to[ValidationResponse]
         } yield vr
       } getOrElse Future.successful(InvalidHash))
