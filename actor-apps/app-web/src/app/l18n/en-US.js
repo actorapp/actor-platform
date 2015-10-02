@@ -18,6 +18,9 @@ export default {
     'composeSendFile': 'Send file',
     'composeSendPhote': 'Send photo',
     'composeSend': 'Send',
+    'markdownHintBold': 'bold',
+    'markdownHintItalic': 'italics',
+    'markdownHintPreformatted': 'preformatted',
 
     // Profiles
     'createdBy': 'сreated by',
