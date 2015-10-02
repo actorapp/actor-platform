@@ -10,6 +10,7 @@ import { IntlMixin, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import ActorClient from 'utils/ActorClient';
 import { escapeWithEmoji } from 'utils/EmojiUtils'
+import confirm from 'utils/confirm'
 
 import MyProfileActions from 'actions/MyProfileActionCreators';
 import LoginActionCreators from 'actions/LoginActionCreators';
@@ -51,12 +52,17 @@ class HeaderSection extends Component {
   };
 
 
-  setLogout = () => LoginActionCreators.setLoggedOut();
   openMyProfile = () => MyProfileActions.show();
   openHelpDialog = () => HelpActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.openModal();
   onSettingsOpen = () => PreferencesActionCreators.show();
   openTwitter = () => window.open('https://twitter.com/actorapp');
+  setLogout = () => {
+    confirm('Do you really want to leave?').then(
+      () => LoginActionCreators.setLoggedOut(),
+      () => {}
+    );
+  };
 
   render() {
     const { profile, isOpened } = this.state;
