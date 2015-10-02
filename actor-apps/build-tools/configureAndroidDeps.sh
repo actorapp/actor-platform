@@ -32,7 +32,7 @@ if [ ! -d "${SDK_DIR}" ]; then
 		unzip -q "${BUILD_DIRECTORY}/android_sdk.zip" -d "${DIST_DIR}"
 		rm "${BUILD_DIRECTORY}/android_sdk.zip"
 	elif $IS_LINUX; then 
-		tar zxvf "${BUILD_DIRECTORY}/android_sdk.tgz"
+		tar zxvf "${BUILD_DIRECTORY}/android_sdk.tgz" -C "${DIST_DIR}"
 		rm "${BUILD_DIRECTORY}/android_sdk.tgz"
 	else
 		exit 1
