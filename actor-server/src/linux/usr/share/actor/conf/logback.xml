@@ -12,6 +12,7 @@
     <logger name="im.actor.server.session.ReSender" level="WARN"/>
     <logger name="im.actor.server.session.SessionMessagePublisher" level="WARN"/>
     <logger name="im.actor.server.peermanagers.GroupPeerManager" level="INFO"/>
+    <logger name="akka.contrib.pattern.ShardRegion" level="INFO"/>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/server.log</file>
