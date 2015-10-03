@@ -25,7 +25,28 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
   private var rqSource = initFlow()
   private var rqCounter: Long = 0
 
-  def receive: Receive = {
+  def onReceive(message: Object): Unit = {}
+
+  def receive = internalReceive orElse {
+    case message =>
+      onReceive(message.asInstanceOf[Object])
+  }
+
+  @throws[Exception](classOf[Exception])
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    val prefix = "Actor will restart."
+
+    message match {
+      case Some(msg) =>
+        log.error(reason, prefix + " Last message received: {}", msg)
+      case None =>
+        log.error(reason, prefix)
+    }
+
+    super.preRestart(reason, message)
+  }
+
+  private final def internalReceive: Receive = {
     case ConnectionClosed ⇒
       log.warning("Disconnected, reinitiating flow")
       rqSource = initFlow()
