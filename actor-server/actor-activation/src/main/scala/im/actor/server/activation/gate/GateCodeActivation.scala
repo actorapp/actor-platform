@@ -30,10 +30,10 @@ class GateCodeActivation(config: GateConfig)(
     val request = HttpRequest(
       method = POST,
       uri = s"${config.uri}/v1/codes/send",
-      entity = Json.toJson(code).toString)
+      entity = Json.toJson(code).toString
+    )
 
-
-        system.log.debug("Requesting code send with {}", request)
+    system.log.debug("Requesting code send with {}", request)
 
     val codeResponse: Future[CodeResponse] = for {
       resp ← http.singleRequest(request.withHeaders(`X-Auth-Token`(config.authToken)))

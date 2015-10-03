@@ -70,13 +70,14 @@ private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) ex
       randomId = randomId,
       message = message
     )
+
+    val senderAuthIdUpdate = UpdateMessageSent(peer, randomId, timestamp)
+
     for {
       senderAuthIds ← userExt.getAuthIds(senderUserId) map (_.toSet)
       _ ← SeqUpdatesManager.persistAndPushUpdates(senderAuthIds filterNot (_ == senderAuthId), senderUpdate, None, isFat, deliveryId = Some(s"msg_${peer.toString}_${randomId}"))
-    } yield ()
-
-    val senderAuthIdUpdate = UpdateMessageSent(peer, randomId, timestamp)
-    SeqUpdatesManager.persistAndPushUpdate(senderAuthId, senderAuthIdUpdate, None, isFat, deliveryId = Some(s"msgsent_${peer.toString}_${randomId}"))
+      seqstate ← SeqUpdatesManager.persistAndPushUpdate(senderAuthId, senderAuthIdUpdate, None, isFat, deliveryId = Some(s"msgsent_${peer.toString}_${randomId}"))
+    } yield seqstate
   }
 
   override def authorRead(readerUserId: Int, authorUserId: Int, date: Long, now: Long): Future[Unit] = {
