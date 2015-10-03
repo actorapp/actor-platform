@@ -6,14 +6,13 @@ import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.extension.InternalExtensions
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.dialog.privat.PrivateDialogEvents.PrivateDialogEvent
 import im.actor.server.office.ProcessorState
-import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesExtension }
+import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
-import im.actor.server.user.{ UserOffice, UserExtension, UserViewRegion }
+import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
 import slick.driver.PostgresDriver.api.Database
 
@@ -30,15 +29,22 @@ case class DialogState(
 )
 
 object PrivateDialogEvents {
+
   private[dialog] sealed trait PrivateDialogEvent
+
   private[dialog] case class Created(state: PrivateDialogState) extends PrivateDialogEvent
+
   private[dialog] case class LastMessageDate(date: Long, userId: Int) extends PrivateDialogEvent
+
   private[dialog] case class LastReceiveDate(date: Long, userId: Int) extends PrivateDialogEvent
+
   private[dialog] case class LastReadDate(date: Long, userId: Int) extends PrivateDialogEvent
+
 }
 
 case class PrivateDialogState(private val state: Map[Int, DialogState]) extends ProcessorState {
   def apply(userId: Int): DialogState = state(userId)
+
   def updated(userId: Int, dialogState: DialogState): PrivateDialogState = PrivateDialogState(state.updated(userId, dialogState))
 }
 
@@ -68,13 +74,11 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   protected implicit val socialRegion = SocialExtension(system).region
   protected implicit val timeout = Timeout(5.seconds)
 
-  protected val userDeliveryExtensions: scala.collection.mutable.Map[Int, DeliveryExtension] = scala.collection.mutable.Map.empty[Int, DeliveryExtension]
+  protected val userDeliveryExtensions = scala.collection.concurrent.TrieMap.empty[Int, DeliveryExtension]
 
   protected def deliveryExt(userId: Int, state: PrivateDialogState): DeliveryExtension = {
     val userExtensions = state(userId).extensions
-    val ext = userDeliveryExtensions.getOrElse(userId, dialogExt.getDeliveryExtension(userExtensions))
-    userDeliveryExtensions += (userId → ext)
-    ext
+    userDeliveryExtensions.getOrElseUpdate(userId, dialogExt.getDeliveryExtension(userExtensions))
   }
 
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
@@ -127,6 +131,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   }
 
   private[this] var recoveryState: Option[PrivateDialogState] = None
+
   override def receiveRecover = {
     case created: Created      ⇒ recoveryState = Some(created.state)
     case e: PrivateDialogEvent ⇒ recoveryState = recoveryState map (updatedState(e, _))
