@@ -10,7 +10,13 @@ let targetCollection = [];
 
 export default class DropZone extends Component {
   static propTypes = {
-    onDropComplete: React.PropTypes.func.isRequired
+    children: React.PropTypes.array,
+    onDropComplete: React.PropTypes.func.isRequired,
+
+    // Callbacks
+    onDragEnterCallback: React.PropTypes.func,
+    onDragLeaveCallback: React.PropTypes.func,
+    onDropCallback: React.PropTypes.func,
   };
 
   constructor(props) {
@@ -39,6 +45,7 @@ export default class DropZone extends Component {
 
     if (targetCollection.length === 0) {
       this.setState({isActive: true});
+      this.props.onDragEnterCallback();
     }
 
     targetCollection = union(targetCollection, [event.target]);
@@ -51,6 +58,7 @@ export default class DropZone extends Component {
 
     if (targetCollection.length === 0) {
       this.setState({isActive: false});
+      this.props.onDragLeaveCallback();
     }
   };
 
@@ -59,6 +67,7 @@ export default class DropZone extends Component {
   onDrop = (event) => {
     this.onDragLeave();
     this.onWindowDragLeave(event);
+    this.props.onDropCallback();
     this.props.onDropComplete(event.dataTransfer.files);
   };
 
@@ -75,7 +84,7 @@ export default class DropZone extends Component {
              onDragEnter={this.onDragEnter}
              onDragLeave={this.onDragLeave}
              onDrop={this.onDrop}>
-          Drop your files here.
+          {this.props.children || 'Drop here'}
         </div>
       );
     } else {
