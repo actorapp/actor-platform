@@ -163,6 +163,7 @@ class Login extends React.Component {
               Actor Messenger © 2015
             </div>
             <div className="pull-right">
+              <a href="//actorapp.ghost.io/desktop-apps">Desktop</a>
               <a href="//actor.im/ios">iPhone</a>
               <a href="//actor.im/android">Android</a>
             </div>
