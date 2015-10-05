@@ -237,7 +237,7 @@ class ComposeSection extends React.Component {
           <b>*{this.getIntlMessage('markdownHintBold')}*</b>
           &nbsp;&nbsp;
           <i>_{this.getIntlMessage('markdownHintItalic')}_</i>
-          &nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;
           <code>```{this.getIntlMessage('markdownHintPreformatted')}```</code>
         </div>
 
@@ -252,7 +252,7 @@ class ComposeSection extends React.Component {
                   value={text}
                   ref="area"/>
 
-        <DropZone onDropComplete={this.onDrop}/>
+        <DropZone onDropComplete={this.onDrop}>Drop your files here.</DropZone>
 
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.onSendFileClick}>
