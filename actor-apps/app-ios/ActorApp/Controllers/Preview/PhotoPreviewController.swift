@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import NYTPhotoViewer
 
 class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDelegate {
     
@@ -49,7 +50,7 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
                 if desc != nil {
                     var img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(desc))
                     if img != nil {
-                        img = img!.applyBlur(4)
+                        // img = img!.applyBlur(4)
                         if p.size != nil {
                             img = img!.resize(p.size!.width, h: p.size!.height)
                         }

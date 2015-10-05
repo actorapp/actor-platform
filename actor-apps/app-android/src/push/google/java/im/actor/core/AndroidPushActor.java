@@ -6,7 +6,6 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 
-import im.actor.core.modules.Modules;
 import im.actor.messenger.app.core.Core;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;

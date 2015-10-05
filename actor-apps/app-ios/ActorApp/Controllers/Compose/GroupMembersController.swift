@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import CLTokenInputView
 
 class GroupMembersController: ContactsContentViewController, ContactsContentViewControllerDelegate, CLTokenInputViewDelegate {
 
