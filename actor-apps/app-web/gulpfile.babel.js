@@ -13,6 +13,7 @@ import minimist from 'minimist';
 import svgSprite from 'gulp-svg-sprite';
 import image from 'gulp-image';
 import gulpif from 'gulp-if';
+import path from 'path';
 
 const argv = minimist(process.argv.slice(2));
 const isProduction = argv.release || false;
@@ -45,6 +46,12 @@ gulp.task('webpack:build', (callback) => {
 gulp.task('webpack-dev-server', () => {
   // modify some webpack config options
   assign(webpackConfig, {
+    resolve: {
+      modulesDirectories: ['node_modules'],
+      root: [
+        path.join(__dirname, 'src/app')
+      ]
+    },
     plugins: [
       new webpack.ResolverPlugin([
         new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
