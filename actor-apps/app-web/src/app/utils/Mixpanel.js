@@ -33,7 +33,7 @@ import { Mixpanel } from 'constants/ActorAppConstants';
     };
     b.__SV = 1.2;
 
-    require('mixpanel-js');
+    require('mixpanel-browser/build/mixpanel.umd');
 
   }
 })(document, window.mixpanel || []);
