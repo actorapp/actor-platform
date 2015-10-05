@@ -46,7 +46,8 @@ class UserViewController: ACContentTableController {
                             r.subtitleStyle = "user.offline"
                         }
                     } else {
-                        r.subtitle = nil
+                        r.subtitleStyle = "user.online"
+                        r.subtitle = "bot"
                     }
                     
                 }
@@ -143,30 +144,32 @@ class UserViewController: ACContentTableController {
             }
         }
         
-        if !self.isBot {
-            // Edit contact
-            section { (s) -> () in
+        
+        // Edit contact
+        section { (s) -> () in
                 
-                // Edit contact: Add/Remove
-                self.isContactRow = s.common { (r) -> () in
-                    r.bindAction = { (r) -> () in
-                        if self.user.isContactModel().get().booleanValue() {
-                            r.content = localized("ProfileRemoveFromContacts")
-                            r.style = .Destructive
-                        } else {
-                            r.content = localized("ProfileAddToContacts")
-                            r.style = .Action
-                        }
-                    }
-                    r.selectAction = { () -> Bool in
-                        if (self.user.isContactModel().get().booleanValue()) {
-                            self.execute(Actor.removeContactCommandWithUid(jint(self.uid)))
-                        } else {
-                            self.execute(Actor.addContactCommandWithUid(jint(self.uid)))
-                        }
-                        return true
+            // Edit contact: Add/Remove
+            self.isContactRow = s.common { (r) -> () in
+                r.bindAction = { (r) -> () in
+                    if self.user.isContactModel().get().booleanValue() {
+                        r.content = localized("ProfileRemoveFromContacts")
+                        r.style = .Destructive
+                    } else {
+                        r.content = localized("ProfileAddToContacts")
+                        r.style = .Action
                     }
                 }
+                r.selectAction = { () -> Bool in
+                    if (self.user.isContactModel().get().booleanValue()) {
+                        self.execute(Actor.removeContactCommandWithUid(jint(self.uid)))
+                    } else {
+                        self.execute(Actor.addContactCommandWithUid(jint(self.uid)))
+                    }
+                    return true
+                }
+            }
+            
+            if !self.isBot {
                 
                 // Edit contact: Renaming
                 s.action("ProfileRename") { (r) -> () in
@@ -203,7 +206,9 @@ class UserViewController: ACContentTableController {
                     }
                 }
             }
+
         }
+        
     }
     
     override func tableWillBind(binder: Binder) {
