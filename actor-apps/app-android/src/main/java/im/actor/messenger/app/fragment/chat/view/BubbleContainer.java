@@ -16,6 +16,7 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.core.viewmodel.UserVM;
 
+import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.users;
 
 /**
@@ -152,12 +153,20 @@ public class BubbleContainer extends ViewGroup {
     }
 
     public void makeInboundBubble(boolean showAvatar, final int uid) {
+        makeInboundBubble(showAvatar, uid, 0);
+    }
+
+    public void makeInboundBubble(boolean showAvatar, final int uid, final int gid) {
         mode = MODE_LEFT;
         this.showAvatar = showAvatar;
         if (showAvatar) {
             UserVM u = users().get(uid);
             avatarView.setVisibility(VISIBLE);
-            avatarView.bind(u);
+            if(gid!=0){
+                avatarView.bind(groups().get(gid));
+            }else{
+                avatarView.bind(u);
+            }
             avatarView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
