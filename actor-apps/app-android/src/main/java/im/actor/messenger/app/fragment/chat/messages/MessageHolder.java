@@ -2,6 +2,7 @@ package im.actor.messenger.app.fragment.chat.messages;
 
 import android.view.View;
 
+import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.runtime.android.view.BindedViewHolder;
@@ -9,7 +10,9 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 
+import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.myUid;
+import static im.actor.messenger.app.core.Core.users;
 
 public abstract class MessageHolder extends BindedViewHolder
         implements BubbleContainer.OnAvatarClickListener, BubbleContainer.OnAvatarLongClickListener, View.OnClickListener, View.OnLongClickListener {
@@ -72,7 +75,8 @@ public abstract class MessageHolder extends BindedViewHolder
             if (message.getSenderId() == myUid()) {
                 container.makeOutboundBubble();
             } else {
-                container.makeInboundBubble(getPeer().getPeerType() == PeerType.GROUP, message.getSenderId());
+                boolean isGroupBot = getPeer().getPeerType().equals(PeerType.GROUP) && users().get(message.getSenderId()).getName().get().equals("Bot");
+                container.makeInboundBubble(getPeer().getPeerType() == PeerType.GROUP, message.getSenderId(), isGroupBot ? getPeer().getPeerId() : 0);
             }
         }
 
