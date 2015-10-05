@@ -6,14 +6,14 @@ BUILD_DIR = $(CONFIGURATION_BUILD_DIR)/build
 PRODUCT_DIR = $(BUILT_PRODUCTS_DIR)
 ARCHFLAGS = $(ARCHS:%=-arch %)
 SDKFLAGS = --sysroot $(SDKROOT)
-APPS_ROOT = $(abspath $(PROJECT_DIR)/..)
+SDK_ROOT = $(abspath $(PROJECT_DIR)/../actor-sdk)
 else
 # In command-line build
 BUILD_DIR = Build
 PRODUCT_DIR = $(BUILD_DIR)
 ARCHFLAGS =
 SDKFLAGS =
-APPS_ROOT = $(abspath ../..)
+SDK_ROOT = $(abspath ../..)
 endif
 
 ifdef OPTIMIZATION_LEVEL
@@ -34,7 +34,7 @@ endif
 null :=
 space := ${null} ${null}
 
-J2OBJC_DISTRIBUTION = $(APPS_ROOT)/build-tools/dist/j2objc-0.9.8.2
+J2OBJC_DISTRIBUTION = $(SDK_ROOT)/build-tools/dist/j2objc-0.9.8.2.1
 J2OBJC = $(J2OBJC_DISTRIBUTION)/j2objc
 J2OBJCC = $(J2OBJC_DISTRIBUTION)/j2objcc
 J2OBJC_ARGS = -use-arc --generate-deprecated --doc-comments -g --static-accessor-methods
@@ -48,20 +48,20 @@ CC_I386 = -arch i386 --sysroot=$(IOS_SIMULATOR_SDK_ROOT)
 LIBRARY_NAME = libactor.so
 
 SOURCE_ROOTS = \
-	$(APPS_ROOT)/runtime/src/main/java \
-	$(APPS_ROOT)/runtime/src/generic/java \
-	$(APPS_ROOT)/runtime-cocoa/src/main/java \
-	$(APPS_ROOT)/core/src/main/java \
-    $(APPS_ROOT)/core/src/ext/java \
-	$(APPS_ROOT)/core-cocoa/src/main/java
+	$(SDK_ROOT)/runtime/main/src/main/java \
+	$(SDK_ROOT)/runtime/main/src/generic/java \
+	$(SDK_ROOT)/runtime/cocoa/src/main/java \
+	$(SDK_ROOT)/core/main/src/main/java \
+    $(SDK_ROOT)/core/main/src/ext/java \
+	$(SDK_ROOT)/core/cocoa/src/main/java
 
 EXCLUDED_CLASSES = \
 	com.google.j2objc.annotations.ObjectiveCName \
     com.google.j2objc.annotations.Propery
 
 PREFIXES = \
-	--prefixes $(APPS_ROOT)/runtime-cocoa/src/main/prefixes.properties \
-	--prefixes $(APPS_ROOT)/core-cocoa/src/main/prefixes.properties
+    --prefixes $(SDK_ROOT)/runtime/cocoa/prefixes.properties \
+	--prefixes $(SDK_ROOT)/core/cocoa/prefixes.properties
 
 SOURCES_DIR = Sources
 

@@ -4,6 +4,7 @@
 
 import Foundation
 import UIKit;
+import SlackTextViewController
 
 class ConversationContentViewController: SLKTextViewController, ARDisplayList_AppleChangeListener {
 

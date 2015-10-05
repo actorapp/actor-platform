@@ -1,0 +1,24 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       'src/ext/java',
+                       '../../runtime/main/src/main/java',
+                       '../../runtime/main/src/template/java']
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+dependencies {
+    testCompile "junit:junit:4.11"
+}

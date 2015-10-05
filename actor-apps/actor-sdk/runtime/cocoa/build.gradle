@@ -1,0 +1,54 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       '../main/src/main/java',
+                       '../main/src/generic/java']
+        }
+    }
+}
+
+task cycleFinder() {
+
+    doFirst {
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        exec {
+
+            executable "${properties.get("j2objcDir")}/cycle_finder"
+
+            def srcFiles = fileTree("${projectDir}/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../runtime/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../runtime/src/generic/java").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+        }
+    }
+}
+
+cycleFinder.dependsOn compileJava
+build.dependsOn cycleFinder

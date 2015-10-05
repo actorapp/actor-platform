@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import TTTAttributedLabel
 
 class AutoCompleteCell: UITableViewCell {
     
