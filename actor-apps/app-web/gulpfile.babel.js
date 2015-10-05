@@ -85,7 +85,7 @@ gulp.task('push', () => {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('assets', ['sounds', 'images']);
+gulp.task('assets', ['sounds', 'images', 'locale-data']);
 
 gulp.task('sounds', () => {
   gulp.src(['src/assets/sound/**/*'])
@@ -132,6 +132,11 @@ gulp.task('emoji', () => {
 gulp.task('html', () => {
   gulp.src(['src/index.html'])
     .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('locale-data', () => {
+  gulp.src(['node_modules/intl/locale-data/json/**/*'])
+    .pipe(gulp.dest('./dist/assets/locale-data'));
 });
 
 gulp.task('lib:build', shell.task(['cd ../ && ./gradlew :core-js:buildPackage']));
