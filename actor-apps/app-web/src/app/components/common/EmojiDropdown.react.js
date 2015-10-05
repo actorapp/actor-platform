@@ -13,50 +13,6 @@ import { Element, Link } from 'react-scroll';
 let emojiTabs = [];
 let emojis = [];
 
-const fillEmoji = () => {
-  console.debug('fillEmoji');
-  const emojiCategories = getEmojiCategories();
-
-  for (let category of emojiCategories) {
-    let currentCategoryEmojis = [];
-
-    emoji.change_replace_mode('css');
-    const categoryIcon = emoji.replace_colons(category.icon);
-
-    emojiTabs.push(
-      <Link to={category.title}
-            spy smooth
-            offset={30}
-            duration={250}
-            onSetActive={() => this.changeDropdownTitle(category.title)}
-            containerId="emojiContainer"
-            className="emoji-dropdown__header__tabs__tab"
-            activeClass="emoji-dropdown__header__tabs__tab--active">
-        <span dangerouslySetInnerHTML={{__html: categoryIcon}}/>
-      </Link>
-    );
-
-    for (let emojiChar of category.data) {
-      emoji.change_replace_mode('css');
-      const convertedChar = emoji.replace_unified(emojiChar);
-      emoji.colons_mode = true;
-      const emojiColon = emoji.replace_unified(emojiChar);
-      emoji.colons_mode = false;
-
-      currentCategoryEmojis.push(
-        <a onClick={() => this.onSelect(emojiColon)} dangerouslySetInnerHTML={{__html: convertedChar}}/>
-      );
-    }
-
-    emojis.push(
-      <Element name={category.title}>
-        <p>{category.title}</p>
-        {currentCategoryEmojis}
-      </Element>
-    );
-  }
-};
-
 export default class EmojiDropdown extends Component {
   static propTypes = {
     isOpen: React.PropTypes.bool.isRequired,
@@ -67,7 +23,46 @@ export default class EmojiDropdown extends Component {
   constructor(props) {
     super(props);
 
-    fillEmoji();
+    const emojiCategories = getEmojiCategories();
+
+    for (let category of emojiCategories) {
+      let currentCategoryEmojis = [];
+
+      emoji.change_replace_mode('css');
+      const categoryIcon = emoji.replace_colons(category.icon);
+
+      emojiTabs.push(
+        <Link to={category.title}
+              spy smooth
+              offset={30}
+              duration={250}
+              onSetActive={() => this.changeDropdownTitle(category.title)}
+              containerId="emojiContainer"
+              className="emoji-dropdown__header__tabs__tab"
+              activeClass="emoji-dropdown__header__tabs__tab--active">
+          <span dangerouslySetInnerHTML={{__html: categoryIcon}}/>
+        </Link>
+      );
+
+      for (let emojiChar of category.data) {
+        emoji.change_replace_mode('css');
+        const convertedChar = emoji.replace_unified(emojiChar);
+        emoji.colons_mode = true;
+        const emojiColon = emoji.replace_unified(emojiChar);
+        emoji.colons_mode = false;
+
+        currentCategoryEmojis.push(
+          <a onClick={() => this.onSelect(emojiColon)} dangerouslySetInnerHTML={{__html: convertedChar}}/>
+        );
+      }
+
+      emojis.push(
+        <Element name={category.title}>
+          <p>{category.title}</p>
+          {currentCategoryEmojis}
+        </Element>
+      );
+    }
 
     this.state = {
       isOpen: props.isOpen,
