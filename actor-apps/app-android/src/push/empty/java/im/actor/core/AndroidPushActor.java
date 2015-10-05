@@ -2,7 +2,6 @@ package im.actor.core;
 
 import android.content.Context;
 
-import im.actor.core.modules.Modules;
 import im.actor.runtime.actors.Actor;
 
 /**

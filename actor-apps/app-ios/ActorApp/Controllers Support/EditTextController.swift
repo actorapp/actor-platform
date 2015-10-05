@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import SZTextView
 
 class EditTextControllerConfig {
     

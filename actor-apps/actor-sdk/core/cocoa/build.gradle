@@ -1,0 +1,55 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       '../main/src/main/java']
+        }
+    }
+}
+
+dependencies {
+    compile project(':runtime:cocoa')
+}
+
+task cycleFinder() {
+    doFirst {
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        delete "${projectDir}/src/gen/objc/"
+
+        exec {
+
+            executable "${properties.get("j2objcDir")}/cycle_finder"
+
+            def srcFiles = fileTree("${projectDir}/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../core/src/ext/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../core/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+        }
+    }
+}

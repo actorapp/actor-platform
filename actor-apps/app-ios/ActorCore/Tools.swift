@@ -3,7 +3,7 @@
 //
 
 import Foundation
-
+import zipzap
 
 class Tools {
     class func copyFileCommand(from: String, to: String) -> ACCommand {

@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import VBFPopFlatButton
 
 class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControllerDelegate {
     

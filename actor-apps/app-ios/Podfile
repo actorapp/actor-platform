@@ -1,4 +1,4 @@
-platform :ios, '7.0'
+platform :ios, '8.0'
 workspace 'ActorApp'
 xcodeproj 'ActorApp.xcodeproj'
 inhibit_all_warnings!
@@ -7,8 +7,10 @@ target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
     # Core
-    pod 'FMDB', :git => 'https://github.com/ccgus/fmdb'
+    
+    use_frameworks!
     pod 'RegexKitLite'
+    
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
 
