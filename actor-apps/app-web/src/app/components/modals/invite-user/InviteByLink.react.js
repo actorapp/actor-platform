@@ -66,7 +66,7 @@ class InviteByLink extends React.Component {
 
           <header className="modal-new__header">
             <svg className="modal-new__header__icon icon icon--blue"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#back"/>'}}
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#back"/>'}}
                  onClick={this.onBackClick}/>
 
             <h3 className="modal-new__header__title">
