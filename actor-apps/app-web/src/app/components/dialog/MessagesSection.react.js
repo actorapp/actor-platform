@@ -44,10 +44,8 @@ class MessagesSection extends Component {
   getMessagesListItem = (message, index) => {
     let date = new Date(message.fullDate);
 
-    const month = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+    const dateDeviderFormatOptions = { month: 'long', day: 'numeric' };
+    const dateDeviderContent = new Intl.DateTimeFormat(undefined, dateDeviderFormatOptions).format(date);
 
     if (lastMessageDate === null) {
       lastMessageDate = new Date(message.fullDate);
@@ -56,7 +54,7 @@ class MessagesSection extends Component {
     const isFirstMessage = index === 0;
     const isNewDay = date.getDate() !== lastMessageDate.getDate();
 
-    const dateDivider = isNewDay ? <li className="date-divider">{month[date.getMonth()]} {date.getDate()}</li> : null;
+    const dateDivider = isNewDay ? <li className="date-divider">{dateDeviderContent}</li> : null;
     const isSameSender = message.sender.peer.id === lastMessageSenderId && !isFirstMessage && !isNewDay;
 
     const messageItem = (
