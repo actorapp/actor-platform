@@ -133,7 +133,12 @@ public class ChatListProcessor implements ListProcessor<Message> {
                         String name;
                         UserVM userModel = users().get(msg.getSenderId());
                         if (userModel != null) {
-                            name = userModel.getName().get();
+                            String userName = userModel.getName().get();
+                            if(userName.equals("Bot")){
+                                name = group.getName().get();
+                            }else{
+                                name = userName;
+                            }
                         } else {
                             name = "???";
                         }
