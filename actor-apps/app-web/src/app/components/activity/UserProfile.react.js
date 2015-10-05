@@ -139,7 +139,7 @@ class UserProfile extends React.Component {
     const nickname = user.nick ? (
       <li>
         <svg className="icon icon--pink"
-             dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#username"/>'}}/>
+             dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#username"/>'}}/>
         <span className="title">{user.nick}</span>
         <span className="description">nickname</span>
       </li>
