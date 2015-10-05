@@ -59,6 +59,8 @@
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
     "gulp": "^3.9.0",
+    "gulp-if": "^2.0.0",
+    "gulp-image": "^1.0.6",
     "gulp-manifest": "0.0.10",
     "gulp-shell": "^0.4.2",
     "gulp-svg-sprite": "^1.2.10",
