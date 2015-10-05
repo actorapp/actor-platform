@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import RMUniversalAlert
 
 private var pickDocumentClosure = "_pick_document_closure"
 private var actionShitReference = "_action_shit"

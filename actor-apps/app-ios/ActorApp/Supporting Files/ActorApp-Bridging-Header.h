@@ -9,11 +9,15 @@
 #import <CommonCrypto/CommonDigest.h>
 
 // Cocoa Pods
-#import <FMDB/FMDB.h>
+#import "FMDatabase.h"
+#import "FMResultSet.h"
+#import "FMDatabaseAdditions.h"
+#import "FMDatabaseQueue.h"
+
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <ZipZap/ZipZap.h>
 
-#import "SLKTextViewController.h"
+#import <SlackTextViewController/SLKTextViewController.h>
 #import <LTNavigationBar/UINavigationBar+Awesome.h>
 #import <CLTokenInputView/CLTokenInputView.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
@@ -30,9 +34,9 @@
 #import <PSTAlertController/PSTAlertController.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <RMUniversalAlert/RMUniversalAlert.h>
-#import <UIAlertView+Blocks/UIAlertView+Blocks.h>
-#import <UIActionSheet+Blocks/UIActionSheet+Blocks.h>
-#import <UIAlertController+Blocks/UIAlertController+Blocks.h>
+#import <UIAlertView_Blocks/UIAlertView+Blocks.h>
+#import <UIActionSheet_Blocks/UIActionSheet+Blocks.h>
+#import <UIAlertController_Blocks/UIAlertController+Blocks.h>
 
 #import <HockeySDK/HockeySDK.h>
 #import <AddressBook/AddressBook.h>

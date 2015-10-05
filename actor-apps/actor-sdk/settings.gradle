@@ -1,0 +1,14 @@
+
+// Runtime library
+include ':runtime'
+include ':runtime:main'
+include ':runtime:android'
+include ':runtime:js'
+include ':runtime:cocoa'
+
+// Core library
+include ':core'
+include ':core:main'
+include ':core:android'
+include ':core:js'
+include ':core:cocoa'

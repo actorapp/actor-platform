@@ -4,6 +4,7 @@
 
 import UIKit
 import MobileCoreServices
+import PEPhotoCropEditor
 
 class AAViewController: UIViewController, UINavigationControllerDelegate {
     
