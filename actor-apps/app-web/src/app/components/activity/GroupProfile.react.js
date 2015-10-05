@@ -156,7 +156,7 @@ class GroupProfile extends React.Component {
       ,
         <li className="dropdown__menu__item hide">
           <svg className="icon icon--dropdown"
-               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
+               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#integration"/>'}}/>
           <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
         </li>
       ,
@@ -175,7 +175,7 @@ class GroupProfile extends React.Component {
 
     const iconElement = (
       <svg className="icon icon--green"
-           dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#members"/>'}}/>
+           dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#members"/>'}}/>
     );
 
     const groupMeta = [

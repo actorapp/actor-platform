@@ -107,7 +107,7 @@ class HeaderSection extends Component {
                 <li className="dropdown__menu__separator"></li>
                 <li className="dropdown__menu__item hide">
                   <svg className="icon icon--dropdown"
-                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
+                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#integration"/>'}}/>
                   <FormattedMessage message={this.getIntlMessage('configureIntegrations')}/>
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
@@ -117,7 +117,7 @@ class HeaderSection extends Component {
                 <li className="dropdown__menu__item" onClick={this.openTwitter}>
                   <svg className="icon icon--dropdown"
                        style={{marginLeft: -34}}
-                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#twitter"/>'}}/>
+                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#twitter"/>'}}/>
                   <FormattedMessage message={this.getIntlMessage('twitter')}/>
                 </li>
                 <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
