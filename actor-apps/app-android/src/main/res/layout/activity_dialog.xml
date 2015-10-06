@@ -94,6 +94,7 @@
             android:gravity="left|center_vertical"
             android:hint="@string/chat_message_hint"
             android:inputType="text|textCapSentences|textAutoCorrect|textMultiLine"
+            android:imeOptions="flagNoExtractUi"
             android:maxLines="4"
             android:paddingBottom="10dp"
             android:paddingLeft="56dp"
