@@ -199,14 +199,6 @@ export default {
     return window.messenger.getGroupPeer(gid);
   },
 
-  isNotificationsEnabled(peer) {
-    return window.messenger.isNotificationsEnabled(peer);
-  },
-
-  changeNotificationsEnabled(peer, isEnabled) {
-    window.messenger.changeNotificationsEnabled(peer, isEnabled);
-  },
-
   findUsers(phone) {
     return window.messenger.findUsers(phone.toString());
   },

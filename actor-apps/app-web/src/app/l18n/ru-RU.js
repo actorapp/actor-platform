@@ -16,15 +16,17 @@ export default {
       }
     },
 
-    // Sidebar
-    'setProfilePhoto': 'Установить аватар',
-    'editProfile': 'Редактировать профиль',
-    'configureIntegrations': 'Настройка интеграций',
-    'helpAndFeedback': 'Помощь и обратная связь',
-    'preferences': 'Настройки',
-    'signOut': 'Выход',
-    'addContact': 'Добавить контакт',
-    'twitter': 'Наш твиттер',
+    // Menus
+    'menu': {
+      // Sidebar menu
+      'editProfile': 'Редактировать профиль',
+      'addToContacts': 'Добавить контакт',
+      'configureIntegrations': 'Настройка интеграций',
+      'helpAndFeedback': 'Помощь и обратная связь',
+      'twitter': 'Наш твиттер',
+      'preferences': 'Настройки',
+      'signOut': 'Выход'
+    },
 
     // Buttons
     'button': {
@@ -33,7 +35,8 @@ export default {
       'done': 'Готово',
       'requestCode': 'Запросить код',
       'checkCode': 'Проверить код',
-      'signUp': 'Регистрация'
+      'signUp': 'Регистрация',
+      'add': 'Добавить'
     },
 
     // Messages
