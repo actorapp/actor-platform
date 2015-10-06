@@ -234,11 +234,11 @@ class ComposeSection extends React.Component {
            onClick={this.onEmojiShowClick}>insert_emoticon</i>
 
         <div className={markdownHintClassName}>
-          <b>*{this.getIntlMessage('markdownHintBold')}*</b>
+          <b>*{this.getIntlMessage('compose.markdown.bold')}*</b>
           &nbsp;&nbsp;
-          <i>_{this.getIntlMessage('markdownHintItalic')}_</i>
+          <i>_{this.getIntlMessage('compose.markdown.italic')}_</i>
           &nbsp;&nbsp;
-          <code>```{this.getIntlMessage('markdownHintPreformatted')}```</code>
+          <code>```{this.getIntlMessage('compose.markdown.preformatted')}```</code>
         </div>
 
         <AvatarItem className="my-avatar"
@@ -256,14 +256,14 @@ class ComposeSection extends React.Component {
 
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.onSendFileClick}>
-            <i className="material-icons">attachment</i> {this.getIntlMessage('composeSendFile')}
+            <i className="material-icons">attachment</i> {this.getIntlMessage('compose.sendFile')}
           </button>
           <button className="button attachment" onClick={this.onSendPhotoClick}>
-            <i className="material-icons">photo_camera</i> {this.getIntlMessage('composeSendPhote')}
+            <i className="material-icons">photo_camera</i> {this.getIntlMessage('compose.sendPhoto')}
           </button>
           <span className="col-xs"></span>
           <button className="button button--lightblue"
-                  onClick={this.sendTextMessage}>{this.getIntlMessage('composeSend')}</button>
+                  onClick={this.sendTextMessage}>{this.getIntlMessage('compose.send')}</button>
         </footer>
 
         <form className="compose__hidden" ref="sendFileForm">

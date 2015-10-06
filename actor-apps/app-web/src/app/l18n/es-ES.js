@@ -49,12 +49,16 @@ export default {
     'search': 'Search',
 
     // Compose
-    'composeSendFile': 'Send file',
-    'composeSendPhote': 'Send photo',
-    'composeSend': 'Send',
-    'markdownHintBold': 'bold',
-    'markdownHintItalic': 'italics',
-    'markdownHintPreformatted': 'preformatted',
+    'compose': {
+      'sendFile': 'Enviar archivo',
+      'sendPhoto': 'Enviar foto',
+      'send': 'Enviar',
+      'markdown': {
+        'bold': 'negrita',
+        'italic': 'cursiva',
+        'preformatted': 'preformateado'
+      }
+    },
 
     // Profiles
     'createdBy': 'сreado por',
