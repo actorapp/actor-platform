@@ -62,8 +62,7 @@ export default {
         test: /\.js$/,
         loaders: [
           'react-hot',
-          'babel?optional[]=strict' +
-            '&optional[]=es7.classProperties' +
+          'babel?optional[]=es7.classProperties' +
             '&optional[]=es7.decorators'
         ],
         exclude: /(node_modules)/
