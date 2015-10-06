@@ -36,10 +36,10 @@ trait PrivateDialogHandlers extends UpdateCounters {
     deferStashingReply(LastMessageDate(dateMillis, userState.peerId), dialogState) { e ⇒
       withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
         for {
-          SeqState(seq, state) ← deliveryExt(senderUserId, dialogState).senderDelivery(senderUserId, senderAuthId, privatePeerStruct(userState.peerId), randomId, dateMillis, message, isFat)
+          SeqState(seq, state) ← deliveryExt(senderUserId).senderDelivery(senderUserId, senderAuthId, privatePeerStruct(userState.peerId), randomId, dateMillis, message, isFat)
           _ = recordRelation(senderUserId, userState.peerId)
           _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userState.peerId), date, randomId, message.header, message.toByteArray))
-          _ ← deliveryExt(userState.peerId, dialogState).receiverDelivery(userState.peerId, senderUserId, privatePeerStruct(senderUserId), randomId, dateMillis, message, isFat)
+          _ ← deliveryExt(userState.peerId).receiverDelivery(userState.peerId, senderUserId, privatePeerStruct(senderUserId), randomId, dateMillis, message, isFat)
         } yield SeqStateDate(seq, state, dateMillis)
       } recover {
         case e ⇒
@@ -84,8 +84,8 @@ trait PrivateDialogHandlers extends UpdateCounters {
 
       for {
         _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userState.peerId), new DateTime(date)))
-        _ ← deliveryExt(userState.peerId, state).authorRead(readerUserId, userState.peerId, date, now)
-        _ ← deliveryExt(readerUserId, state).readerRead(readerUserId, readerAuthId, userState.peerId, date)
+        _ ← deliveryExt(userState.peerId).authorRead(readerUserId, userState.peerId, date, now)
+        _ ← deliveryExt(readerUserId).readerRead(readerUserId, readerAuthId, userState.peerId, date)
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
