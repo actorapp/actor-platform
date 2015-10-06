@@ -49,12 +49,16 @@ export default {
     'search': 'Поиск',
 
     // Compose
-    'composeSendFile': 'Документ',
-    'composeSendPhote': 'Изображение',
-    'composeSend': 'Отправить',
-    'markdownHintBold': 'жирный',
-    'markdownHintItalic': 'курсив',
-    'markdownHintPreformatted': 'форматированный',
+    'compose': {
+      'sendFile': 'Документ',
+      'sendPhoto': 'Изображение',
+      'send': 'Отправить',
+      'markdown': {
+        'bold': 'жирный',
+        'italic': 'курсив',
+        'preformatted': 'форматированный'
+      }
+    },
 
     // Profiles
     'createdBy': 'создал',
