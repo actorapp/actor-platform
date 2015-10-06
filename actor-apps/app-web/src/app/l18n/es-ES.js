@@ -16,15 +16,17 @@ export default {
       }
     },
 
-    // Sidebar
-    'setProfilePhoto': 'Set Profile Photo',
-    'editProfile': 'Edit Profile',
-    'configureIntegrations': 'Configure Integrations',
-    'helpAndFeedback': 'Help & Feedback',
-    'preferences': 'Preferences',
-    'signOut': 'Sign Out',
-    'addContact': 'Add contact',
-    'twitter': 'Our twitter',
+    // Menus
+    'menu': {
+      // Sidebar menu
+      'editProfile': 'Editar perfil',
+      'addToContacts': 'Añadir contacto',
+      'configureIntegrations': 'Configurar Integraciones',
+      'helpAndFeedback': 'Ayuda',
+      'twitter': 'Our twitter',
+      'preferences': 'Preferencias',
+      'signOut': 'Salir'
+    },
 
     // Buttons
     'button': {
@@ -33,7 +35,8 @@ export default {
       'done': 'Hecho',
       'requestCode': 'Solicitar código',
       'checkCode': 'Comprobar código',
-      'signUp': 'Registrarse'
+      'signUp': 'Registrarse',
+      'add': 'Añadir'
     },
 
     // Messages
@@ -54,41 +57,41 @@ export default {
     'markdownHintPreformatted': 'preformatted',
 
     // Profiles
-    'createdBy': 'сreated by',
-    'addPeople': 'Add people',
-    'more': 'More',
-    'actions': 'Actions',
-    'addToContacts': 'Add To Contacts',
-    'removeFromContacts': 'Remove From Contacts',
-    'setGroupPhoto': 'Set Group Photo',
-    'addIntegration': 'Add a Service Integration',
-    'editGroup': 'Edit Group',
-    'clearGroup': 'Clear Group',
-    'deleteGroup': 'Delete Group',
-    'clearConversation': 'Clear Conversation',
-    'deleteConversation': 'Delete Conversation',
-    'leaveGroup': 'Leave Group',
-    'sharedMedia': 'Shared Media',
-    'notifications': 'Notifications',
-    'integrationTokenCopied': 'Integration link copied.',
+    'createdBy': 'сreado por',
+    'addPeople': 'Añadir personas',
+    'more': 'Más',
+    'actions': 'Acciones',
+    'addToContacts': 'Añadir contactos',
+    'removeFromContacts': 'Eliminar de los contactos',
+    'setGroupPhoto': 'Establecer foto de Grupo',
+    'addIntegration': 'Añadir Integración de Servicios',
+    'editGroup': 'Editar grupo',
+    'clearGroup': 'Limpiar grupo',
+    'deleteGroup': 'Eliminar grupo',
+    'clearConversation': 'Limpiar Conversación',
+    'deleteConversation': 'Eliminar Conversación',
+    'leaveGroup': 'Abandonar grupo',
+    'sharedMedia': 'Medios compartidos',
+    'notifications': 'Notificationes',
+    'integrationTokenCopied': 'Enlace Integración copiado.',
     'members': '{numMembers, plural,' +
-    '=0 {no Members}' +
-    '=1 {# Member}' +
-    'other {# Members}' +
+      '=0 {Sin Miembros}' +
+      '=1 {# Miembro}' +
+      'other {# Miembros}' +
     '}',
 
     // Modals
-    'inviteModalTitle': 'Add More People',
-    'inviteModalSearch': 'Search for contacts or usernames',
-    'inviteModalNotFound': 'Sorry, no users found.',
-    'inviteByLink': 'Invite to group by link',
-    'inviteByLinkModalTitle': 'Invite by link',
-    'inviteByLinkModalDescription': 'Anyone on the web will be able to join ”{groupName}” by opening this link:',
-    'inviteByLinkModalCopyButton': 'Copy link',
-    'inviteByLinkModalRevokeButton': 'Revoke link',
-    'inviteLinkCopied': 'Invitation link copied.',
+    'inviteModalTitle': 'Añadir más personas',
+    'inviteModalSearch': 'Búsqueda de contactos o nombres de usuario',
+    'inviteModalNotFound': 'Lo sentimos, no hay usuarios localizados.',
+    'inviteByLink': 'Invitar al grupo por enlace',
+    'inviteByLinkModalTitle': 'Invitar por enlace',
+    'inviteByLinkModalDescription': 'Cualquier persona en la web será capaz de unirse a ”{groupName}” abriendo este enlace:',
+    'inviteByLinkModalCopyButton': 'Copiar enlace',
+    'inviteByLinkModalRevokeButton': 'Revocar enlace',
+    'inviteLinkCopied': 'Enlace Invitación copiado.',
 
-    'preferencesModalTitle': 'Preferences',
+    'preferencesModalTitle': 'Preferencias',
     'preferencesGeneralTab': 'General',
     'preferencesNotificationsTab': 'Notifications & Sounds',
     'preferencesSecurityTab': 'Security',
