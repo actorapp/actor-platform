@@ -21,7 +21,6 @@ import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
 case class DialogState(
-  extensions:      Seq[ApiExtension],
   peerId:          Int,
   lastMessageDate: Option[Long],
   lastReceiveDate: Option[Long],
@@ -29,6 +28,8 @@ case class DialogState(
 )
 
 object PrivateDialogEvents {
+
+  private[dialog] case class Extensions(leftExt: Seq[ApiExtension], rightExt: Seq[ApiExtension])
 
   private[dialog] sealed trait PrivateDialogEvent
 
@@ -77,8 +78,14 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   private[this] var leftDeliveryExt: DeliveryExtension = _
   private[this] var rightDeliveryExt: DeliveryExtension = _
 
-  protected def deliveryExt(userId: Int): DeliveryExtension =
-    if (userId == left) leftDeliveryExt else rightDeliveryExt
+  protected def deliveryExt(userId: Int): DeliveryExtension = userId match {
+    case `left`  ⇒ leftDeliveryExt
+    case `right` ⇒ rightDeliveryExt
+    case _ ⇒
+      val ex = new Exception(s"Unable to get delivery extension for user: ${userId} in dialog: ${self.path.name}")
+      log.error(ex, "Wrong user in private dialog")
+      throw ex
+  }
 
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
@@ -98,28 +105,27 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
     case msg ⇒
       log.debug("Stashing while initializing, message: {}", msg)
       stash()
-      context become stashingBehavior
+      context become (waitForExtensions orElse stashingBehavior)
 
       val u1 = userExt.getUser(left)
       val u2 = userExt.getUser(right)
-      val stateFuture = for {
-        l ← u1
-        r ← u2
-      } yield {
-        leftDeliveryExt = dialogExt.getDeliveryExtension(l.internalExtensions)
-        rightDeliveryExt = dialogExt.getDeliveryExtension(r.internalExtensions)
-        PrivateDialogState(Map(
-          left → DialogState(l.internalExtensions, right, None, None, None),
-          right → DialogState(r.internalExtensions, left, None, None, None)
-        ))
-      }
+      val stateFuture = for (l ← u1; r ← u2) yield Extensions(l.internalExtensions, r.internalExtensions)
 
       stateFuture onComplete {
-        case Success(state) ⇒
-          unstashAndWork(Created(state), state)
-        case Failure(e) ⇒
-          throw new Exception("Failed to initialize dialog")
+        case Success(exts) ⇒ self ! exts
+        case Failure(e)    ⇒ throw new Exception("Failed to initialize dialog")
       }
+  }
+
+  private def waitForExtensions: Receive = {
+    case Extensions(leftExt, rightExt) ⇒
+      leftDeliveryExt = dialogExt.getDeliveryExtension(leftExt)
+      rightDeliveryExt = dialogExt.getDeliveryExtension(rightExt)
+      val state = PrivateDialogState(Map(
+        left → DialogState(right, None, None, None),
+        right → DialogState(left, None, None, None)
+      ))
+      unstashAndWork(Created(state), state)
   }
 
   override protected def handleCommand(state: PrivateDialogState): Receive = {
