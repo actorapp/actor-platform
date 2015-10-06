@@ -1,7 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import _ from 'lodash';
 
 import React from 'react';
 import classNames from 'classnames';
+import ReactMixin from 'react-mixin';
+import { IntlMixin, FormattedMessage } from 'react-intl';
 import { Styles, TextField } from 'material-ui';
 
 import { AuthSteps } from 'constants/ActorAppConstants';
@@ -25,6 +31,7 @@ let getStateFromStores = function () {
   });
 };
 
+@ReactMixin.decorate(IntlMixin)
 class Login extends React.Component {
   static contextTypes = {
     router: React.PropTypes.func
@@ -70,21 +77,10 @@ class Login extends React.Component {
 
   }
 
-  onChange = () => {
-    this.setState(getStateFromStores());
-  }
-
-  onPhoneChange = event => {
-    this.setState({phone: event.target.value});
-  }
-
-  onCodeChange = event => {
-    this.setState({code: event.target.value});
-  }
-
-  onNameChange = event => {
-    this.setState({name: event.target.value});
-  }
+  onChange = () => this.setState(getStateFromStores());
+  onPhoneChange = event => this.setState({phone: event.target.value});
+  onCodeChange = event => this.setState({code: event.target.value});
+  onNameChange = event => this.setState({name: event.target.value});
 
   onRequestSms = event => {
     event.preventDefault();
@@ -172,47 +168,47 @@ class Login extends React.Component {
 
         <div className="login-new__form col-xs-6 col-md-4 row center-xs middle-xs">
           <div>
-            <h1 className="login-new__heading">Sign in</h1>
+            <h1 className="login-new__heading">{this.getIntlMessage('login.signIn')}</h1>
             <form className={requestFormClassName} onSubmit={this.onRequestSms}>
-              <a className="wrong" onClick={this.onWrongNumberClick}>Wrong?</a>
+              <a className="wrong" onClick={this.onWrongNumberClick}>{this.getIntlMessage('login.wrong')}</a>
               <TextField className="login__form__input"
                          disabled={this.state.step > AuthSteps.PHONE_WAIT}
                          errorText={this.state.errors.phone}
-                         floatingLabelText="Phone number"
+                         floatingLabelText={this.getIntlMessage('login.phone')}
                          onChange={this.onPhoneChange}
                          ref="phone"
                          type="text"
                          value={this.state.phone}/>
 
               <footer className="text-center">
-                <button className="button button--rised" type="submit">Request code</button>
+                <button className="button button--rised" type="submit">{this.getIntlMessage('button.requestCode')}</button>
               </footer>
             </form>
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
               <TextField className="login__form__input"
                          disabled={this.state.step > AuthSteps.CODE_WAIT}
                          errorText={this.state.errors.code}
-                         floatingLabelText="Auth code"
+                         floatingLabelText={this.getIntlMessage('login.authCode')}
                          onChange={this.onCodeChange}
                          ref="code"
                          type="text"
                          value={this.state.code}/>
 
               <footer className="text-center">
-                <button className="button button--rised" type="submit">Check code</button>
+                <button className="button button--rised" type="submit">{this.getIntlMessage('button.checkСode')}</button>
               </footer>
             </form>
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
               <TextField className="login__form__input"
                          errorText={this.state.errors.signup}
-                         floatingLabelText="Your name"
+                         floatingLabelText={this.getIntlMessage('login.yourName')}
                          onChange={this.onNameChange}
                          ref="name"
                          type="text"
                          value={this.state.name}/>
 
               <footer className="text-center">
-                <button className="button button--rised" type="submit">Sign up</button>
+                <button className="button button--rised" type="submit">{this.getIntlMessage('button.signUp')}</button>
               </footer>
             </form>
           </div>
