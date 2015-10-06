@@ -1,6 +1,21 @@
 export default {
   'locales': 'ru-RU',
   'messages': {
+    // Login
+    'login': {
+      'signIn': 'Вход',
+      'wrong': 'Ошиблись?',
+      'phone': 'Номер телефона',
+      'authCode': 'Код авторизации',
+      'yourName': 'Ваше имя',
+      'errors': {
+        'numberInvalid': 'Неправильный номер',
+        'nameInvalid': ' Неправильное имя',
+        'codeInvalid': 'Неправильный код',
+        'codeExpired': 'Время действия кода истекло'
+      }
+    },
+
     // Sidebar
     'setProfilePhoto': 'Установить аватар',
     'editProfile': 'Редактировать профиль',
@@ -10,6 +25,22 @@ export default {
     'signOut': 'Выход',
     'addContact': 'Добавить контакт',
     'twitter': 'Наш твиттер',
+
+    // Buttons
+    'button': {
+      'ok': 'Ok',
+      'cancel': 'Отмена',
+      'done': 'Готово',
+      'requestCode': 'Запросить код',
+      'checkCode': 'Проверить код',
+      'signUp': 'Регистрация'
+    },
+
+    // Messages
+    'message': {
+      'download': 'Скачать',
+      'delete': 'Удалить'
+    },
 
     // Toolbar
     'search': 'Поиск',
