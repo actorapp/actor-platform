@@ -4,6 +4,7 @@
 
 import Foundation
 import RMUniversalAlert
+import ActorSDK
 
 private var pickDocumentClosure = "_pick_document_closure"
 private var actionShitReference = "_action_shit"

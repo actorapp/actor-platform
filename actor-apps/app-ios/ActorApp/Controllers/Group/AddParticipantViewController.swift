@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import j2objc
 
 class AddParticipantViewController: ContactsContentViewController, ContactsContentViewControllerDelegate {
 

@@ -5,6 +5,7 @@
 import Foundation
 import NYTPhotoViewer
 import VBFPopFlatButton
+import ActorSDK
 
 class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
     

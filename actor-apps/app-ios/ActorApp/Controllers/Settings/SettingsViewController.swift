@@ -3,7 +3,8 @@
 //
 
 import UIKit
-import MobileCoreServices 
+import MobileCoreServices
+import j2objc
 
 class SettingsViewController: ACContentTableController {
     

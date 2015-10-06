@@ -3,6 +3,8 @@
 //
 
 import Foundation
+import j2objc
+
 class CocoaHttpRuntime: NSObject, ARHttpRuntime {
     
     let queue:NSOperationQueue = NSOperationQueue()

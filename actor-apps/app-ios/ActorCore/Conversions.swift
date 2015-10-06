@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import j2objc
 
 extension NSData {
     func toJavaBytes() -> IOSByteArray {
@@ -92,6 +93,7 @@ extension jint {
         return NSNumber(int: self)
     }
 }
+
 extension JavaLangLong {
     func toNSNumber() -> NSNumber {
         return NSNumber(longLong: self.longLongValue())

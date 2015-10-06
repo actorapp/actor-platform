@@ -5,6 +5,7 @@
 import Foundation
 
 private let ENABLE_LOGS = false
+import j2objc
 
 class MessagesFlowLayout : UICollectionViewLayout {
     

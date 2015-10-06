@@ -4,6 +4,7 @@
 
 import UIKit
 import CLTokenInputView
+import j2objc
 
 class GroupMembersController: ContactsContentViewController, ContactsContentViewControllerDelegate, CLTokenInputViewDelegate {
 
