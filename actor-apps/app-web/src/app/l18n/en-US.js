@@ -16,15 +16,17 @@ export default {
       }
     },
 
-    // Sidebar
-    'setProfilePhoto': 'Set Profile Photo',
-    'editProfile': 'Edit Profile',
-    'configureIntegrations': 'Configure Integrations',
-    'helpAndFeedback': 'Help & Feedback',
-    'preferences': 'Preferences',
-    'signOut': 'Sign Out',
-    'addContact': 'Add contact',
-    'twitter': 'Our twitter',
+    // Menus
+    'menu': {
+      // Sidebar menu
+      'editProfile': 'Edit Profile',
+      'addToContacts': 'Add contact',
+      'configureIntegrations': 'Configure Integrations',
+      'helpAndFeedback': 'Help & Feedback',
+      'twitter': 'Our twitter',
+      'preferences': 'Preferences',
+      'signOut': 'Sign Out'
+    },
 
     // Buttons
     'button': {
@@ -33,7 +35,8 @@ export default {
       'done': 'Done',
       'requestCode': 'Request code',
       'checkCode': 'Check code',
-      'signUp': 'Sign up'
+      'signUp': 'Sign up',
+      'add': 'Add'
     },
 
     // Messages
