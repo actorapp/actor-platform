@@ -71,10 +71,16 @@ public class HtmlMarkdownUtils {
     }
 
     private static String urlElement(MDUrl url) {
+        String href = UriUtils.sanitizeUri(url.getUrl());
+
+        if (href != "#" && !href.contains("://")) {
+            href = "http://" + href;
+        }
+
         return "<a " +
                 "target=\"_blank\" " +
                 "onClick=\"window.messenger.handleLinkClick(event)\" " +
-                "href=\"" + UriUtils.sanitizeUri(url.getUrl()) + "\">" +
+                "href=\"" + href + "\">" +
                 SafeHtmlUtils.htmlEscape(url.getUrlTitle()) +
                 "</a>";
     }
