@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import j2objc
 
 protocol ACBindedCell {
     

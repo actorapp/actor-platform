@@ -3,3 +3,8 @@
 //
 
 import Foundation
+import SlackTextViewController
+
+public class ActorSDK {
+
+}

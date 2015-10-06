@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import j2objc
 
 class Cache<T> {
     private var cache = HashMap<T>()

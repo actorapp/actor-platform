@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import ActorSDK
 
 class AuthPhoneViewController: AuthViewController, UITextFieldDelegate, AuthCountriesViewControllerDelegate {
     

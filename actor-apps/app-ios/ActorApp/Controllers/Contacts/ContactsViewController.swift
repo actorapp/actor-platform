@@ -7,6 +7,7 @@ import MessageUI
 import Social
 import AddressBookUI
 import ContactsUI
+import j2objc
 
 class ContactsViewController: ContactsContentViewController, ContactsContentViewControllerDelegate, UIAlertViewDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
     

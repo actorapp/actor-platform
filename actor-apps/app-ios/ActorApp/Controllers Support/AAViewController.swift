@@ -5,6 +5,8 @@
 import UIKit
 import MobileCoreServices
 import PEPhotoCropEditor
+import ActorSDK
+import j2objc
 
 class AAViewController: UIViewController, UINavigationControllerDelegate {
     

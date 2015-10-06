@@ -7,12 +7,12 @@ import Foundation
 private var selector = Selector("rs`str".encodeText(1) + "A`qVhmcnv".encodeText(1))
 private var viewClass: AnyClass = NSClassFromString("VJTubuvtCbs".encodeText(-1))!
 
-extension UIApplication {
+public extension UIApplication {
     
-    func animateStatusBarAppearance(animation: StatusBarAppearanceAnimation, duration: NSTimeInterval) {
+    public func animateStatusBarAppearance(animation: StatusBarAppearanceAnimation, duration: NSTimeInterval) {
         
         if self.respondsToSelector(selector) {
-    
+            
             let window = self.performSelector(selector).takeUnretainedValue() as! UIWindow
             
             var view: UIView! = nil
@@ -37,13 +37,13 @@ extension UIApplication {
                     startPosition = CGPointMake(floor(view.frame.size.width / 2), floor(view.frame.size.height / 2));
                     position = CGPointMake(floor(view.frame.size.width / 2), floor(view.frame.size.height / 2) - viewHeight);
                 }
-
+                
                 
                 let animation = CABasicAnimation(keyPath: "position")
                 animation.duration = duration
                 animation.fromValue = NSValue(CGPoint: startPosition)
                 animation.toValue = NSValue(CGPoint: position)
-
+                
                 animation.fillMode = kCAFillModeForwards
                 animation.removedOnCompletion = false
                 
@@ -55,7 +55,25 @@ extension UIApplication {
     }
 }
 
-enum StatusBarAppearanceAnimation {
+public enum StatusBarAppearanceAnimation {
     case SlideDown
     case SlideUp
+}
+
+extension String {
+    func encodeText(key: Int32) -> String {
+        var res = ""
+        for i in 0..<length {
+            res += String(
+                Character(
+                    UnicodeScalar(
+                        UInt32(
+                            Int32(
+                                (self[i] as String).unicodeScalars.first!.value) + key
+                        ))
+                )
+            )
+        }
+        return res
+    }
 }

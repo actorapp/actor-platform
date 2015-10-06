@@ -6,6 +6,8 @@ import Foundation
 
 import Fabric
 import Crashlytics
+import ActorSDK
+import j2objc
 
 @objc class AppDelegate : UIResponder,  UIApplicationDelegate {
     

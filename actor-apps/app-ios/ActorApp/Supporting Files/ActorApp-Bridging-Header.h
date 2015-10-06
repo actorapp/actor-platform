@@ -14,6 +14,7 @@
 #import "FMDatabaseAdditions.h"
 #import "FMDatabaseQueue.h"
 
+#import <ActorSDK/ActorSDK.h>
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <ZipZap/ZipZap.h>
 

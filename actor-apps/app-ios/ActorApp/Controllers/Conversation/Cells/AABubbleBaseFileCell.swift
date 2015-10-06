@@ -3,6 +3,8 @@
 //
 
 import Foundation
+import j2objc
+
 class AABubbleBaseFileCell: AABubbleCell {
     
     var bindGeneration = 0;
