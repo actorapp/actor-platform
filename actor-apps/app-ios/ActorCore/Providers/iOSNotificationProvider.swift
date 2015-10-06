@@ -5,6 +5,7 @@
 import Foundation
 import AVFoundation
 import AudioToolbox.AudioServices
+import j2objc
 
 @objc class iOSNotificationProvider: NSObject, ACNotificationProvider {
 

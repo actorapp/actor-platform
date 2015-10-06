@@ -2,15 +2,20 @@ platform :ios, '8.0'
 workspace 'ActorApp'
 xcodeproj 'ActorApp.xcodeproj'
 inhibit_all_warnings!
+use_frameworks!
+
+target 'ActorSDK' do
+    xcodeproj '../actor-sdk/sdk-ios/ActorSDK.xcodeproj'
+    pod 'SlackTextViewController'
+    pod 'J2ObjC-Framework'
+end
 
 target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
     # Core
     
-    use_frameworks!
     pod 'RegexKitLite'
-    
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
 
@@ -25,7 +30,7 @@ target 'ActorApp' do
     pod 'CLTokenInputView'
     pod 'SZTextView'
 
-    pod 'SlackTextViewController'#, :git => 'https://github.com/actorapp/SlackTextViewController'
+    pod 'SlackTextViewController'
 
     pod 'NYTPhotoViewer'
     pod 'PEPhotoCropEditor'

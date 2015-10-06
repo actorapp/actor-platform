@@ -17,21 +17,6 @@ func dispatchBackground(closure: () -> Void) {
     })
 }
 
-class Utils: NSObject {
-    
-    class func isRetina() -> Bool {
-        return UIScreen.mainScreen().scale > 1
-    }
-    
-    class func retinaPixel() -> CGFloat {
-        if Utils.isRetina() {
-            return 0.5
-        }
-        return 1.0
-    }
-    
-}
-
 extension Array {
     func contains<T where T : Equatable>(obj: T) -> Bool {
         return self.filter({$0 as? T == obj}).count > 0
@@ -65,28 +50,28 @@ func log(text:String) {
     NSLog(text)
 }
 
-typealias cancellable_closure = (() -> ())?
-
-func dispatch_after(seconds:Double, queue: dispatch_queue_t = dispatch_get_main_queue(), closure:()->()) -> cancellable_closure {
-    var cancelled = false
-    let cancel_closure: cancellable_closure = {
-        cancelled = true
-    }
-    
-    dispatch_after(
-        dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC))), queue, {
-            if !cancelled {
-                closure()
-            }
-        }
-    )
-    
-    return cancel_closure
-}
-
-func cancel_dispatch_after(cancel_closure: cancellable_closure) {
-    cancel_closure?()
-}
+//typealias cancellable_closure = (() -> ())?
+//
+//func dispatch_after(seconds:Double, queue: dispatch_queue_t = dispatch_get_main_queue(), closure:()->()) -> cancellable_closure {
+//    var cancelled = false
+//    let cancel_closure: cancellable_closure = {
+//        cancelled = true
+//    }
+//    
+//    dispatch_after(
+//        dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC))), queue, {
+//            if !cancelled {
+//                closure()
+//            }
+//        }
+//    )
+//    
+//    return cancel_closure
+//}
+//
+//func cancel_dispatch_after(cancel_closure: cancellable_closure) {
+//    cancel_closure?()
+//}
 
 class ObjectPool<T: AnyObject> {
     

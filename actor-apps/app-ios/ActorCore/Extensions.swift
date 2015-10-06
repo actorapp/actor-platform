@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import j2objc
 
 extension ACCocoaMessenger {
     func sendUIImage(image: UIImage, peer: ACPeer) {

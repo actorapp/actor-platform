@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import j2objc
 
 // Public methods for working with files
 class CocoaFiles {

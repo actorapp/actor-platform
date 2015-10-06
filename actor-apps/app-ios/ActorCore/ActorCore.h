@@ -6,21 +6,21 @@
 #define ActorApp_ActorCore_h
 
 // J2OBJC
-
-#import "J2ObjC_header.h"
-#import "IOSClass.h"
-
-#import "java/lang/Exception.h"
-#import "java/lang/Runnable.h"
-#import "java/lang/Boolean.h"
-#import "java/lang/Long.h"
-#import "java/lang/Integer.h"
-#import "java/util/List.h"
-#import "java/util/ArrayList.h"
-#import "java/util/HashSet.h"
-#import "java/util/Map.h"
-#import "java/util/HashMap.h"
-#import "java/math/BigInteger.h"
+//
+//#import "J2ObjC_header.h"
+//#import "IOSClass.h"
+//
+//#import "java/lang/Exception.h"
+//#import "java/lang/Runnable.h"
+//#import "java/lang/Boolean.h"
+//#import "java/lang/Long.h"
+//#import "java/lang/Integer.h"
+//#import "java/util/List.h"
+//#import "java/util/ArrayList.h"
+//#import "java/util/HashSet.h"
+//#import "java/util/Map.h"
+//#import "java/util/HashMap.h"
+//#import "java/math/BigInteger.h"
 
 #import "im/actor/core/CocoaMessenger.h"
 #import "im/actor/core/Messenger.h"

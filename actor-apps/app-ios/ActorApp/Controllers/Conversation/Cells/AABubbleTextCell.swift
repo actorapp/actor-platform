@@ -5,6 +5,7 @@
 import Foundation
 import UIKit
 import TTTAttributedLabel
+import ActorSDK
 
 class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     

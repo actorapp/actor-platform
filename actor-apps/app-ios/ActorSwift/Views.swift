@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import ActorSDK
 
 private var targetReference = "target"
 extension UITapGestureRecognizer {

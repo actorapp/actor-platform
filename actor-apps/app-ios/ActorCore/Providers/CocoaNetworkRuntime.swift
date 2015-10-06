@@ -4,6 +4,7 @@
 
 import Foundation
 import CocoaAsyncSocket
+import j2objc
 
 class CocoaNetworkRuntime : ARManagedNetworkProvider {
     

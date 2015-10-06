@@ -4,6 +4,8 @@
 
 import UIKit
 import VBFPopFlatButton
+import ActorSDK
+import j2objc
 
 class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControllerDelegate {
     
