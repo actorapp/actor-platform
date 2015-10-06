@@ -1,6 +1,21 @@
 export default {
   'locales': 'en-US',
   'messages': {
+    // Login
+    'login': {
+      'signIn': 'Sign in',
+      'wrong': 'Wrong?',
+      'phone': 'Phone number',
+      'authCode': 'Auth code',
+      'yourName': 'Your name',
+      'errors': {
+        'numberInvalid': 'Invalid number',
+        'nameInvalid': 'Invalid name',
+        'codeInvalid': 'Invalid code',
+        'codeExpired': 'Phone code is expired'
+      }
+    },
+
     // Sidebar
     'setProfilePhoto': 'Set Profile Photo',
     'editProfile': 'Edit Profile',
@@ -10,6 +25,22 @@ export default {
     'signOut': 'Sign Out',
     'addContact': 'Add contact',
     'twitter': 'Our twitter',
+
+    // Buttons
+    'button': {
+      'ok': 'Ok',
+      'cancel': 'Cancel',
+      'done': 'Done',
+      'requestCode': 'Request code',
+      'checkCode': 'Check code',
+      'signUp': 'Sign up'
+    },
+
+    // Messages
+    'message': {
+      'download': 'Download',
+      'delete': 'Delete'
+    },
 
     // Toolbar
     'search': 'Search',
@@ -40,12 +71,11 @@ export default {
     'sharedMedia': 'Shared Media',
     'notifications': 'Notifications',
     'integrationTokenCopied': 'Integration link copied.',
-    'members':
-      '{numMembers, plural,' +
-        '=0 {no Members}' +
-        '=1 {# Member}' +
-        'other {# Members}' +
-      '}',
+    'members': '{numMembers, plural,' +
+    '=0 {no Members}' +
+    '=1 {# Member}' +
+    'other {# Members}' +
+    '}',
 
     // Modals
     'inviteModalTitle': 'Add More People',

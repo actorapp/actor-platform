@@ -1,6 +1,21 @@
 export default {
   'locales': 'es-ES',
   'messages': {
+    // Login
+    'login': {
+      'signIn': 'Sign in',
+      'wrong': '¿Equivocado?',
+      'phone': 'Número de móvil',
+      'authCode': 'Código verificación',
+      'yourName': 'Your name',
+      'errors': {
+        'numberInvalid': 'Número no válido',
+        'nameInvalid': 'Nombre no válido',
+        'codeInvalid': 'Código no válido',
+        'codeExpired': 'Phone code is expired'
+      }
+    },
+
     // Sidebar
     'setProfilePhoto': 'Set Profile Photo',
     'editProfile': 'Edit Profile',
@@ -11,6 +26,22 @@ export default {
     'addContact': 'Add contact',
     'twitter': 'Our twitter',
 
+    // Buttons
+    'button': {
+      'ok': 'Ok',
+      'cancel': 'Cancelar',
+      'done': 'Hecho',
+      'requestCode': 'Solicitar código',
+      'checkCode': 'Comprobar código',
+      'signUp': 'Registrarse'
+    },
+
+    // Messages
+    'message': {
+      'download': 'Descargar',
+      'delete': 'Delete'
+    },
+
     // Toolbar
     'search': 'Search',
 
@@ -18,6 +49,9 @@ export default {
     'composeSendFile': 'Send file',
     'composeSendPhote': 'Send photo',
     'composeSend': 'Send',
+    'markdownHintBold': 'bold',
+    'markdownHintItalic': 'italics',
+    'markdownHintPreformatted': 'preformatted',
 
     // Profiles
     'createdBy': 'сreated by',
@@ -37,12 +71,11 @@ export default {
     'sharedMedia': 'Shared Media',
     'notifications': 'Notifications',
     'integrationTokenCopied': 'Integration link copied.',
-    'members':
-      '{numMembers, plural,' +
-        '=0 {no Members}' +
-        '=1 {# Member}' +
-        'other {# Members}' +
-      '}',
+    'members': '{numMembers, plural,' +
+    '=0 {no Members}' +
+    '=1 {# Member}' +
+    'other {# Members}' +
+    '}',
 
     // Modals
     'inviteModalTitle': 'Add More People',
