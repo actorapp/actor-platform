@@ -74,12 +74,11 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   protected implicit val socialRegion = SocialExtension(system).region
   protected implicit val timeout = Timeout(5.seconds)
 
-  protected val userDeliveryExtensions = scala.collection.concurrent.TrieMap.empty[Int, DeliveryExtension]
+  private[this] var leftDeliveryExt: DeliveryExtension = _
+  private[this] var rightDeliveryExt: DeliveryExtension = _
 
-  protected def deliveryExt(userId: Int, state: PrivateDialogState): DeliveryExtension = {
-    val userExtensions = state(userId).extensions
-    userDeliveryExtensions.getOrElseUpdate(userId, dialogExt.getDeliveryExtension(userExtensions))
-  }
+  protected def deliveryExt(userId: Int): DeliveryExtension =
+    if (userId == left) leftDeliveryExt else rightDeliveryExt
 
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
@@ -106,10 +105,14 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
       val stateFuture = for {
         l ← u1
         r ← u2
-      } yield PrivateDialogState(Map(
-        left → DialogState(l.internalExtensions, right, None, None, None),
-        right → DialogState(r.internalExtensions, left, None, None, None)
-      ))
+      } yield {
+        leftDeliveryExt = dialogExt.getDeliveryExtension(l.internalExtensions)
+        rightDeliveryExt = dialogExt.getDeliveryExtension(r.internalExtensions)
+        PrivateDialogState(Map(
+          left → DialogState(l.internalExtensions, right, None, None, None),
+          right → DialogState(r.internalExtensions, left, None, None, None)
+        ))
+      }
 
       stateFuture onComplete {
         case Success(state) ⇒
