@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import j2objc
 
 @objc class FMDBKeyValue: NSObject, ARKeyValueStorage {
     var db :FMDatabase?;

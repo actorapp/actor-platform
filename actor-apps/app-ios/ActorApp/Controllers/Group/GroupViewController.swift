@@ -3,6 +3,8 @@
 //
 
 import UIKit
+import ActorSDK
+import j2objc
 
 class GroupViewController: ACContentTableController {
     

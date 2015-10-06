@@ -5,6 +5,7 @@
 import Foundation
 import UIKit
 import MessageUI
+import j2objc
 
 class MainTabViewController : UITabBarController {
     

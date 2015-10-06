@@ -5,6 +5,8 @@
 import Foundation
 import UIKit;
 import SlackTextViewController
+import ActorSDK
+import j2objc
 
 class ConversationContentViewController: SLKTextViewController, ARDisplayList_AppleChangeListener {
 

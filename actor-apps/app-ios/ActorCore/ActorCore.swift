@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import j2objc
 
 var Actor : ACCocoaMessenger!
 var Analytics: CocoaAnalytics!

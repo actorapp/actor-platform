@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import j2objc
 
 private let ENABLE_LOGS = false
 

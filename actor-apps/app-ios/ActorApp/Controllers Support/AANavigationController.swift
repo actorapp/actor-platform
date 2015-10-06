@@ -17,14 +17,14 @@ class AANavigationController: UINavigationController {
         self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
         self.setSecondaryColor(MainAppTheme.navigation.progressSecondary)
         
-        binder.bind(Actor.getAppState().isSyncing, valueModel2: Actor.getAppState().isConnecting) { (value1: JavaLangBoolean?, value2: JavaLangBoolean?) -> () in
-            if value1!.booleanValue() || value2!.booleanValue() {
-                self.showProgress()
-                self.setIndeterminate(true)
-            } else {
-                self.finishProgress()
-            }
-        }
+//        binder.bind(Actor.getAppState().isSyncing, valueModel2: Actor.getAppState().isConnecting) { (value1: JavaLangBoolean?, value2: JavaLangBoolean?) -> () in
+//            if value1!.booleanValue() || value2!.booleanValue() {
+//                self.showProgress()
+//                self.setIndeterminate(true)
+//            } else {
+//                self.finishProgress()
+//            }
+//        }
     }
     
     func makeBarTransparent() {

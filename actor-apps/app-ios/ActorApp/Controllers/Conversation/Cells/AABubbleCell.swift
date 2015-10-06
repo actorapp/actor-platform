@@ -3,7 +3,9 @@
 //
 
 import Foundation
-import UIKit;
+import UIKit
+import ActorSDK
+import j2objc
 
 /**
     Bubble types

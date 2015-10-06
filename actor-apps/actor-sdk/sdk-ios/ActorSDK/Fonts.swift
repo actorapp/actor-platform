@@ -4,8 +4,8 @@
 
 import Foundation
 
-extension UIFont {
-    class func thinSystemFontOfSize(size: CGFloat) -> UIFont {
+public extension UIFont {
+    public class func thinSystemFontOfSize(size: CGFloat) -> UIFont {
         if #available(iOS 8.2, *) {
             return UIFont.systemFontOfSize(size, weight: UIFontWeightThin)
         } else {
@@ -13,7 +13,7 @@ extension UIFont {
         }
     }
     
-    class func lightSystemFontOfSize(size: CGFloat) -> UIFont {
+    public class func lightSystemFontOfSize(size: CGFloat) -> UIFont {
         if #available(iOS 8.2, *) {
             return UIFont.systemFontOfSize(size, weight: UIFontWeightLight)
         } else {
@@ -21,7 +21,7 @@ extension UIFont {
         }
     }
     
-    class func mediumSystemFontOfSize(size: CGFloat) -> UIFont {
+    public class func mediumSystemFontOfSize(size: CGFloat) -> UIFont {
         if #available(iOS 8.2, *) {
             return UIFont.systemFontOfSize(size, weight: UIFontWeightMedium)
         } else {
@@ -31,15 +31,15 @@ extension UIFont {
     
     // Texts
     
-    class func textFontOfSize(size: CGFloat) -> UIFont {
+    public class func textFontOfSize(size: CGFloat) -> UIFont {
         return UIFont(name: "HelveticaNeue", size: size)!
     }
     
-    class func italicTextFontOfSize(size: CGFloat) -> UIFont {
+    public class func italicTextFontOfSize(size: CGFloat) -> UIFont {
         return UIFont(name: "HelveticaNeue-Italic", size: size)!
     }
     
-    class func boldTextFontOfSize(size: CGFloat) -> UIFont {
+    public class func boldTextFontOfSize(size: CGFloat) -> UIFont {
         return UIFont(name: "HelveticaNeue-Medium", size: size)!
     }
 }
