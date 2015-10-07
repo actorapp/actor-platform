@@ -7,7 +7,7 @@ import _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
 import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { IntlMixin } from 'react-intl';
 import { Styles, TextField } from 'material-ui';
 
 import { AuthSteps } from 'constants/ActorAppConstants';
