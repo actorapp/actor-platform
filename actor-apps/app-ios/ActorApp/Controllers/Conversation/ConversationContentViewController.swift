@@ -5,7 +5,6 @@
 import Foundation
 import UIKit;
 import SlackTextViewController
-import ActorSDK
 import j2objc
 import ActorCore
 

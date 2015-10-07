@@ -1,9 +1,8 @@
 .SUFFIXES: .java .m
 
 # Reading configuration from XCode
-WORKING_DIR = $(BUILD_DIR)/j2objc
-OBJ_DIR = $(OBJROOT)
-PRODUCT_DIR = $(WORKING_DIR)
+WORKING_DIR = $(CONFIGURATION_TEMP_DIR)/j2objc
+OBJ_DIR = $(WORKING_DIR)/Objects
 ARCHFLAGS = $(ARCHS:%=-arch %)
 SDKFLAGS = --sysroot $(SDKROOT)
 SDK_ROOT = $(abspath $(PROJECT_DIR)/..)
@@ -69,7 +68,7 @@ default: | translate build
 
 # Translating files
 
-translate: | $(SOURCES_DIR) $(WORKING_DIR) pre_translate $(OBJC_FILES)
+translate: | $(SOURCES_DIR) $(WORKING_DIR) $(OBJ_DIR) pre_translate $(OBJC_FILES)
 	@if [ `cat $(UPDATED_SOURCES) | wc -l` -ge 1 ] ; then \
 	$(J2OBJC) $(J2OBJC_ARGS) $(PREFIXES) -sourcepath $(SOURCE_PATHS) -d $(SOURCES_DIR) \
 	`cat $(UPDATED_SOURCES)` ; \
@@ -97,10 +96,13 @@ $(OBJ_DIR)/%.o: $(SOURCES_DIR)/%.m
 
 # Dirs
 $(WORKING_DIR):
-	@mkdir $(WORKING_DIR)
+	@mkdir -p $(WORKING_DIR)
 
 $(SOURCES_DIR):
-	@mkdir $(SOURCES_DIR)
+	@mkdir -p $(SOURCES_DIR)
+
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
 
 clean:
 	@rm -rf $(SOURCES_DIR) $(WORKING_DIR)
