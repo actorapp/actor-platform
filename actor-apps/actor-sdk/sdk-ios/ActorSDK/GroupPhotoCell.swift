@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class GroupPhotoCell: CommonCell {
+public class GroupPhotoCell: AACommonCell {
     
     // MARK: -
     // MARK: Public vars

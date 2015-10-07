@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class AvatarCell: UATableViewCell {
+public class AvatarCell: AATableViewCell {
     
     public var titleLabel = UILabel()
     public var subtitleLabel = UILabel()
