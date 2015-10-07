@@ -1,23 +1,87 @@
-const russian = {
+export default {
   'locales': 'ru-RU',
   'messages': {
-    // Sidebar
-    'setProfilePhoto': 'Установить аватар',
-    'editProfile': 'Редактировать профиль',
-    'configureIntegrations': 'Настройка интеграций',
-    'helpAndFeedback': 'Помощь и обратная связь',
-    'preferences': 'Настройки',
-    'signOut': 'Выход',
-    'addContact': 'Добавить контакт',
-    'twitter': 'Наш твиттер',
+    // Login
+    'login': {
+      'signIn': 'Вход',
+      'wrong': 'Ошиблись?',
+      'phone': 'Номер телефона',
+      'authCode': 'Код авторизации',
+      'yourName': 'Ваше имя',
+      'errors': {
+        'numberInvalid': 'Неправильный номер',
+        'nameInvalid': ' Неправильное имя',
+        'codeInvalid': 'Неправильный код',
+        'codeExpired': 'Время действия кода истекло'
+      }
+    },
+
+    // Menus
+    'menu': {
+      // Sidebar menu
+      'editProfile': 'Редактировать профиль',
+      'addToContacts': 'Добавить контакт',
+      'configureIntegrations': 'Настройка интеграций',
+      'helpAndFeedback': 'Помощь и обратная связь',
+      'twitter': 'Наш твиттер',
+      'preferences': 'Настройки',
+      'signOut': 'Выход'
+    },
+
+    // Buttons
+    'button': {
+      'ok': 'Ok',
+      'cancel': 'Отмена',
+      'done': 'Готово',
+      'requestCode': 'Запросить код',
+      'checkCode': 'Проверить код',
+      'signUp': 'Регистрация',
+      'add': 'Добавить'
+    },
+
+    // Messages
+    'message': {
+      'download': 'Скачать',
+      'delete': 'Удалить'
+    },
 
     // Toolbar
     'search': 'Поиск',
 
     // Compose
-    'composeSendFile': 'Документ',
-    'composeSendPhote': 'Изображение',
-    'composeSend': 'Отправить',
+    'compose': {
+      'sendFile': 'Документ',
+      'sendPhoto': 'Изображение',
+      'send': 'Отправить',
+      'markdown': {
+        'bold': 'жирный',
+        'italic': 'курсив',
+        'preformatted': 'форматированный'
+      }
+    },
+
+    // Modals
+    'modal': {
+      'profile': {
+        'title': 'Профиль',
+        'name': 'Ваше имя',
+        'nick': 'Никнейм',
+        'phone': 'Номер телефона',
+        'about': 'О себе',
+        'avatarChange': 'Изменить аватар',
+        'avatarRemove': 'Удалить'
+      },
+      'group': {
+        'title': 'Редактировать группу',
+        'name': 'Название группы',
+        'about': 'Описание',
+        'avatarChange': 'Изменить аватар',
+        'avatarRemove': 'Удалить'
+      },
+      'crop': {
+        'title': 'Кадрирование'
+      }
+    },
 
     // Profiles
     'createdBy': 'создал',
@@ -37,15 +101,14 @@ const russian = {
     'sharedMedia': 'Вложения',
     'notifications': 'Уведомления',
     'integrationTokenCopied': 'Ссылка скопирована.',
-    'members':
-      '{numMembers, plural,' +
-        '=0 {Нет участников}' +
-        '=1 {# участник}' +
-        '=2 {# участника}' +
-        '=3 {# участника}' +
-        '=4 {# участника}' +
+    'members': '{numMembers, plural,' +
+      '=0 {Нет участников}' +
+      '=1 {# участник}' +
+      '=2 {# участника}' +
+      '=3 {# участника}' +
+      '=4 {# участника}' +
       'other {# участников}' +
-      '}',
+    '}',
 
     // Modals
     'inviteModalTitle': 'Пригласить людей в группу',
@@ -92,5 +155,3 @@ const russian = {
     'addContactInContacts': 'Этот пользователь уже находится в ваших контактах.'
   }
 };
-
-export default russian;

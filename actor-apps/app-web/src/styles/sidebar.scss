@@ -30,14 +30,13 @@
         font-weight: 500;
         line-height: 22px;
 
-        overflow-x: hidden;
-
         margin: 19px 0;
 
         vertical-align: middle;
-        text-overflow: ellipsis;
 
         color: white;
+
+        @include text-elipsis();
       }
       .dropdown__button {
         width: 24px;
@@ -187,9 +186,7 @@
         filter: saturate(.4) contrast(.6);
       }
       .title {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        @include text-elipsis();
         .emoji-outer {
           width: 20px;
           height: 20px;
