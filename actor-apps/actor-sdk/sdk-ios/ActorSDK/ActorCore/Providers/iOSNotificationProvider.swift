@@ -5,7 +5,6 @@
 import Foundation
 import AVFoundation
 import AudioToolbox.AudioServices
-import ActorCore
 
 @objc class iOSNotificationProvider: NSObject, ACNotificationProvider {
 

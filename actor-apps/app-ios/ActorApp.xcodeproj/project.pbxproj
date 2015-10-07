@@ -22,7 +22,6 @@
 		066A51D71BC4DAA0000E606E /* Months_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 066A51CD1BC4DAA0000E606E /* Months_Ru.properties */; settings = {ASSET_TAGS = (); }; };
 		066A51D81BC4DAA0000E606E /* Months.properties in Resources */ = {isa = PBXBuildFile; fileRef = 066A51CE1BC4DAA0000E606E /* Months.properties */; settings = {ASSET_TAGS = (); }; };
 		066A51FD1BC4E08E000E606E /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51F61BC4E069000E606E /* ActorSDK.framework */; };
-		066A51FE1BC4E091000E606E /* ActorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51FC1BC4E06E000E606E /* ActorCore.framework */; };
 		068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068505C71B9AB2E300819D16 /* CorePreviewController.swift */; };
 		068505CC1B9AB5CB00819D16 /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 068505CA1B9AB5CB00819D16 /* highlight-default.min.css */; };
 		068505CD1B9AB5CB00819D16 /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 068505CB1B9AB5CB00819D16 /* highlight.min.js */; };
@@ -321,7 +320,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				066A51FE1BC4E091000E606E /* ActorCore.framework in Frameworks */,
 				066A51FD1BC4E08E000E606E /* ActorSDK.framework in Frameworks */,
 				4403E543C36C1FDC89DD4E00 /* Pods_ActorApp.framework in Frameworks */,
 			);

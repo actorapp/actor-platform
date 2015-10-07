@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import ActorCore
 
 extension NSData {
     func toJavaBytes() -> IOSByteArray {

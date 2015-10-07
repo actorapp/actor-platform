@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import ActorCore
 import AddressBook
 
 class PhoneBookProvider: NSObject, ACPhoneBookProvider {
