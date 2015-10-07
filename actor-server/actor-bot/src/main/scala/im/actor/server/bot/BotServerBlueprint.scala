@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.scaladsl.{ Flow, Merge, Source }
 import im.actor.api.rpc.messaging.ApiTextMessage
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.bot.{ BotMessageOut, BotMessages }
+import im.actor.bots.{ BotMessageOut, BotMessages }
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.sequence.SeqStateDate
 

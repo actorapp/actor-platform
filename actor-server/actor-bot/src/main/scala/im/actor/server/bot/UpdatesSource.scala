@@ -7,7 +7,7 @@ import akka.stream.scaladsl.Source
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessage }
 import im.actor.api.rpc.sequence.SeqUpdate
-import im.actor.bot.BotMessages
+import im.actor.bots.BotMessages
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.protocol.UpdateBox
@@ -24,14 +24,14 @@ private[bot] object UpdatesSource {
   private case class Initialized(userId: Int)
   private case object AuthIdNotAuthorized
 
-  def source(authId: Long) = Source.actorPublisher[BotUpdate](props(authId))
+  def source(authId: Long) = Source.actorPublisher[BotSeqUpdate](props(authId))
 
   def props(authId: Long) = Props(classOf[UpdatesSource], authId)
 
-  private final case class Enqueue(upd: BotUpdate)
+  private final case class Enqueue(upd: BotSeqUpdate)
 }
 
-private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.BotUpdate] with ActorLogging with Stash {
+private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.BotSeqUpdate] with ActorLogging with Stash {
 
   import UpdatesSource._
   import BotMessages._
@@ -47,7 +47,7 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.Bot
 
   context.actorOf(UpdatesConsumer.props(authId, self), "updatesConsumer")
 
-  private var buf = Vector.empty[BotMessages.BotUpdate]
+  private var buf = Vector.empty[BotMessages.BotSeqUpdate]
 
   db.run(persist.AuthId.findUserId(authId)).map {
     case Some(userId) ⇒ Initialized(userId)
@@ -68,7 +68,7 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.Bot
     case Enqueue(upd) ⇒ enqueue(upd)
     case NewUpdate(UpdateBox(bodyBytes), _) ⇒
       UpdateBoxCodec.decode(bodyBytes).require.value match {
-        case SeqUpdate(_, _, header, body) ⇒
+        case SeqUpdate(seq, _, header, body) ⇒
           header match {
             case UpdateMessage.header ⇒
               UpdateMessage.parseFrom(body) match {
@@ -80,13 +80,13 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.Bot
                         (for {
                           apiOutPeer ← ACLUtils.getOutPeer(upd.peer, authId)
                           senderAccessHash ← userExt.getAccessHash(upd.senderUserId, authId)
-                        } yield Enqueue(TextMessage(
+                        } yield Enqueue(BotSeqUpdate(seq, TextMessage(
                           peer = OutPeer(apiOutPeer.`type`.id, apiOutPeer.id, apiOutPeer.accessHash),
                           sender = UserOutPeer(upd.senderUserId, senderAccessHash),
                           date = upd.date,
                           randomId = upd.randomId,
                           text = message
-                        ))) pipeTo self
+                        )))) pipeTo self
                       } else {
                         log.debug("Message from self, ignoring")
                       }
@@ -108,7 +108,7 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[BotMessages.Bot
       context.stop(self)
   }
 
-  private def enqueue(upd: BotMessages.BotUpdate): Unit = {
+  private def enqueue(upd: BotMessages.BotSeqUpdate): Unit = {
     if (buf.isEmpty && totalDemand > 0) {
       onNext(upd)
     } else {
