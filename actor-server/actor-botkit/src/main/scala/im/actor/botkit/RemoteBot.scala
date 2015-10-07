@@ -36,8 +36,8 @@ abstract class RemoteBot(token: String, endpoint: String) extends RemoteBotBase 
   private var rqSource = initFlow()
   private var rqCounter: Long = 0
   private var requests = Map.empty[Long, Promise[ResponseBody]]
-  private var users = TrieMap.empty[Int, User]
-  private var groups = TrieMap.empty[Int, Group]
+  private val users = TrieMap.empty[Int, User]
+  private val groups = TrieMap.empty[Int, Group]
 
   def onReceive(message: Object): Unit = {}
 
@@ -46,7 +46,6 @@ abstract class RemoteBot(token: String, endpoint: String) extends RemoteBotBase 
       onReceive(message.asInstanceOf[Object])
   }
 
-  @throws[Exception](classOf[Exception])
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     val prefix = "Actor will restart."
 
