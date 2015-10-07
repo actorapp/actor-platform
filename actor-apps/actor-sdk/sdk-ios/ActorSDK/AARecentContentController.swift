@@ -4,12 +4,12 @@
 
 import Foundation
 
-public class AARecentContentViewController: ACContentTableController, UISearchBarDelegate, UISearchDisplayDelegate {
+public class AARecentContentController: ACContentTableController, UISearchBarDelegate, UISearchDisplayDelegate {
     
     public var enableDeletion: Bool = true
     public var enableSearch: Bool = true
     
-    public var delegate: AARecentContentViewControllerDelegate!
+    public var delegate: AARecentContentControllerDelegate!
     
     public init() {
         super.init(style: .Plain)
@@ -22,7 +22,7 @@ public class AARecentContentViewController: ACContentTableController, UISearchBa
     public override func tableDidLoad() {
         
         if enableSearch {
-            search(AADialogsSearchCell.self) { (s) -> () in
+            search(AADialogSearchCell.self) { (s) -> () in
             
                 s.searchList = Actor.buildSearchDisplayList()
             
