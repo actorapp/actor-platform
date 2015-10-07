@@ -5,6 +5,8 @@
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
+import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl';
 import { Styles, TextField } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
 
@@ -21,6 +23,7 @@ import CropAvatarModal from './CropAvatar.react.js';
 
 const ThemeManager = new Styles.ThemeManager();
 
+@ReactMixin.decorate(IntlMixin)
 class EditGroup extends Component {
   static childContextTypes = {
     muiTheme: React.PropTypes.object
@@ -125,25 +128,24 @@ class EditGroup extends Component {
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">edit</a>
-            <h4 className="modal-new__header__title">Edit group</h4>
+            <h3 className="modal-new__header__title">{this.getIntlMessage('modal.group.title')}</h3>
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onSave}>Done</button>
+              <button className="button button--lightblue" onClick={this.onSave}>{this.getIntlMessage('button.done')}</button>
             </div>
           </header>
 
           <div className="modal-new__body row">
             <div className="col-xs">
               <TextField className="login__form__input"
-                         floatingLabelText="Group title"
+                         floatingLabelText={this.getIntlMessage('modal.group.name')}
                          fullWidth
                          onChange={this.onTitleChange}
                          type="text"
                          value={title}/>
 
               <div className="about">
-                <label htmlFor="about">Group about</label>
-                <textarea className="textarea" value={about} onChange={this.onAboutChange} id="about"
-                          placeholder="Some description"/>
+                <label htmlFor="about">{this.getIntlMessage('modal.group.about')}</label>
+                <textarea className="textarea" value={about} onChange={this.onAboutChange} id="about"/>
               </div>
             </div>
             <div className="profile-picture text-center">
@@ -153,12 +155,11 @@ class EditGroup extends Component {
                             size="big"
                             title={group.name}/>
                 <a onClick={this.onChangeAvatarClick}>
-                  <span>Change</span>
-                  <span>avatar</span>
+                  <span>{this.getIntlMessage('modal.group.avatarChange')}</span>
                 </a>
               </div>
               <div className="profile-picture__controls">
-                <a onClick={this.onProfilePictureRemove}>Remove</a>
+                <a onClick={this.onProfilePictureRemove}>{this.getIntlMessage('modal.group.avatarRemove')}</a>
               </div>
               <form className="hide" ref="imageForm">
                 <input onChange={this.onProfilePictureInputChange} ref="imageInput" type="file"/>

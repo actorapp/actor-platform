@@ -3,11 +3,11 @@ export default {
   'messages': {
     // Login
     'login': {
-      'signIn': 'Sign in',
+      'signIn': 'Registrarse',
       'wrong': '¿Equivocado?',
       'phone': 'Número de móvil',
       'authCode': 'Código verificación',
-      'yourName': 'Your name',
+      'yourName': 'Su nombre',
       'errors': {
         'numberInvalid': 'Número no válido',
         'nameInvalid': 'Nombre no válido',
@@ -42,7 +42,7 @@ export default {
     // Messages
     'message': {
       'download': 'Descargar',
-      'delete': 'Delete'
+      'delete': 'Eliminar'
     },
 
     // Toolbar
@@ -64,12 +64,22 @@ export default {
     'modal': {
       'profile': {
         'title': 'Perfil',
-        'fullName': 'Nombre completo',
-        'nickName': 'Nick usuario',
-        'phoneNumber': 'Número de móvil',
+        'name': 'Nombre completo',
+        'nick': 'Nick usuario',
+        'phone': 'Número de móvil',
         'about': 'Estado',
-        'changeAvatar': 'Change avatar',
-        'removeAvatar': 'Eliminar'
+        'avatarChange': 'Cambiar avatar',
+        'avatarRemove': 'Eliminar'
+      },
+      'group': {
+        'title': 'Editar grupo',
+        'name': 'Nombre del grupo',
+        'about': 'Grupo acerca de',
+        'avatarChange': 'Cambiar avatar',
+        'avatarRemove': 'Eliminar'
+      },
+      'crop': {
+        'title': 'Recortar la imagen'
       }
     },
 

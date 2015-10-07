@@ -101,7 +101,7 @@ class InviteUser extends React.Component {
       if (contactList.length === 0) {
         contactList.push(
           <li className="contacts__list__item contacts__list__item--empty text-center">
-            <FormattedMessage message={this.getIntlMessage('inviteModalNotFound')}/>
+            {this.getIntlMessage('inviteModalNotFound')}
           </li>
         );
       }
@@ -110,16 +110,14 @@ class InviteUser extends React.Component {
         <Modal className="modal-new modal-new--invite contacts"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 400}}>
+               style={{width: 440}}>
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person_add</a>
-            <h4 className="modal-new__header__title">
-              <FormattedMessage message={this.getIntlMessage('inviteModalTitle')}/>
-            </h4>
+            <h3 className="modal-new__header__title">{this.getIntlMessage('inviteModalTitle')}</h3>
 
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onClose}>Done</button>
+              <button className="button button--lightblue" onClick={this.onClose}>{this.getIntlMessage('button.done')}</button>
             </div>
           </header>
 
