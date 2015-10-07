@@ -12,7 +12,7 @@ import im.actor.server.acl.ACLUtils.accessToken
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension }
 import im.actor.server.group.{ GroupCommands, GroupErrors, GroupExtension }
-import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
+import im.actor.server.presences.GroupPresenceExtension
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
 import im.actor.server.{ models, persist }
@@ -23,11 +23,7 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
-final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
-  implicit
-  groupPresenceManagerRegion: GroupPresenceManagerRegion,
-  actorSystem:                ActorSystem
-) extends GroupsService {
+final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit actorSystem: ActorSystem) extends GroupsService {
 
   import FileHelpers._
   import GroupCommands._
@@ -40,6 +36,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   private val groupExt = GroupExtension(actorSystem)
   private val userExt = UserExtension(actorSystem)
   private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
+  private val groupPresenceExt = GroupPresenceExtension(actorSystem)
 
   override def jhandleEditGroupAvatar(groupOutPeer: ApiGroupOutPeer, randomId: Long, fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -90,7 +87,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           //todo: get rid of DBIO.from
           SeqStateDate(seq, state, date) ← DBIO.from(groupExt.kickUser(fullGroup.id, userOutPeer.userId, randomId))
         } yield {
-          GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, userOutPeer.userId)
+          groupPresenceExt.notifyGroupUserRemoved(fullGroup.id, userOutPeer.userId)
           Ok(ResponseSeqDate(seq, state.toByteArray, date))
         }
       }
@@ -104,7 +101,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
         for {
           SeqStateDate(seq, state, date) ← DBIO.from(groupExt.leaveGroup(fullGroup.id, randomId))
         } yield {
-          GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, client.userId)
+          groupPresenceExt.notifyGroupUserRemoved(fullGroup.id, client.userId)
           Ok(ResponseSeqDate(seq, state.toByteArray, date))
         }
       }
@@ -145,7 +142,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           for {
             res ← DBIO.from(groupExt.inviteToGroup(fullGroup.id, userOutPeer.userId, randomId))
           } yield {
-            GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
+            groupPresenceExt.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
             Ok(ResponseSeqDate(res.seq, res.state.toByteArray, res.date))
           }
         }
