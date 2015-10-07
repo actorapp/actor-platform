@@ -8,8 +8,6 @@ import { ActionTypes, AsyncActionStates } from 'constants/ActorAppConstants';
 
 import ActorClient from 'utils/ActorClient';
 
-import { english, russian } from 'l18n';
-
 let _isOpen = false,
     _languageData = null,
     _sessions = [],
@@ -39,19 +37,6 @@ class PreferencesStore extends Store {
 
   isShowNotificationsTextEnabled() {
     return ActorClient.isShowNotificationsTextEnabled();
-  }
-
-  getLanguageData() {
-    switch (navigator.language) {
-      case 'ru-RU':
-      case 'ru':
-        _languageData = russian;
-        break;
-      default:
-        _languageData = english;
-        break;
-    }
-    return _languageData;
   }
 
   getSessions() {
@@ -118,7 +103,6 @@ class PreferencesStore extends Store {
         _terminateSessionState[action.id] = AsyncActionStates.FAILURE;
         this.__emitChange();
         break;
-
 
       default:
     }

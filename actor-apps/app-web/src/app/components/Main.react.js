@@ -1,6 +1,10 @@
-import React from 'react';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import {PeerTypes} from 'constants/ActorAppConstants';
+import React, { Component } from 'react';
+
+import { PeerTypes } from 'constants/ActorAppConstants';
 
 import requireAuth from 'utils/require-auth';
 import ActorClient from 'utils/ActorClient';
@@ -15,17 +19,7 @@ import DialogSection from 'components/DialogSection.react';
 import Banner from 'components/common/Banner.react';
 import Favicon from 'components/common/Favicon.react';
 
-const visibilitychange = 'visibilitychange';
-
-const onVisibilityChange = () => {
-  if (!document.hidden) {
-    VisibilityActionCreators.createAppVisible();
-  } else {
-    VisibilityActionCreators.createAppHidden();
-  }
-};
-
-class Main extends React.Component {
+class Main extends Component {
   static contextTypes = {
     router: React.PropTypes.func
   };
@@ -38,14 +32,13 @@ class Main extends React.Component {
     super(props);
 
     const { params } = props;
+    const peer = PeerUtils.stringToPeer(params.id);
 
-    document.addEventListener(visibilitychange, onVisibilityChange);
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
 
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
     }
-
-    const peer = PeerUtils.stringToPeer(params.id);
 
     if (peer) {
       // It is needed to prevent failure on opening dialog while library didn't load dialogs (right after auth)
@@ -64,6 +57,14 @@ class Main extends React.Component {
       }
     }
   }
+
+  onVisibilityChange = () => {
+    if (!document.hidden) {
+      VisibilityActionCreators.createAppVisible();
+    } else {
+      VisibilityActionCreators.createAppHidden();
+    }
+  };
 
   render() {
     const { params } = this.props;

@@ -1,23 +1,87 @@
-const english = {
+export default {
   'locales': 'en-US',
   'messages': {
-    // Sidebar
-    'setProfilePhoto': 'Set Profile Photo',
-    'editProfile': 'Edit Profile',
-    'configureIntegrations': 'Configure Integrations',
-    'helpAndFeedback': 'Help & Feedback',
-    'preferences': 'Preferences',
-    'signOut': 'Sign Out',
-    'addContact': 'Add contact',
-    'twitter': 'Our twitter',
+    // Login
+    'login': {
+      'signIn': 'Sign in',
+      'wrong': 'Wrong?',
+      'phone': 'Phone number',
+      'authCode': 'Auth code',
+      'yourName': 'Your name',
+      'errors': {
+        'numberInvalid': 'Invalid number',
+        'nameInvalid': 'Invalid name',
+        'codeInvalid': 'Invalid code',
+        'codeExpired': 'Phone code is expired'
+      }
+    },
+
+    // Menus
+    'menu': {
+      // Sidebar menu
+      'editProfile': 'Edit Profile',
+      'addToContacts': 'Add contact',
+      'configureIntegrations': 'Configure Integrations',
+      'helpAndFeedback': 'Help & Feedback',
+      'twitter': 'Our twitter',
+      'preferences': 'Preferences',
+      'signOut': 'Sign Out'
+    },
+
+    // Buttons
+    'button': {
+      'ok': 'Ok',
+      'cancel': 'Cancel',
+      'done': 'Done',
+      'requestCode': 'Request code',
+      'checkCode': 'Check code',
+      'signUp': 'Sign up',
+      'add': 'Add'
+    },
+
+    // Messages
+    'message': {
+      'download': 'Download',
+      'delete': 'Delete'
+    },
 
     // Toolbar
     'search': 'Search',
 
     // Compose
-    'composeSendFile': 'Send file',
-    'composeSendPhote': 'Send photo',
-    'composeSend': 'Send',
+    'compose': {
+      'sendFile': 'Send file',
+      'sendPhoto': 'Send photo',
+      'send': 'Send',
+      'markdown': {
+        'bold': 'bold',
+        'italic': 'italics',
+        'preformatted': 'preformatted'
+      }
+    },
+
+    // Modals
+    'modal': {
+      'profile': {
+        'title': 'Profile',
+        'name': 'Full name',
+        'nick': 'Nickname',
+        'phone': 'Phone number',
+        'about': 'About',
+        'avatarChange': 'Change avatar',
+        'avatarRemove': 'Remove'
+      },
+      'group': {
+        'title': 'Edit group',
+        'name': 'Group title',
+        'about': 'Group about',
+        'avatarChange': 'Change avatar',
+        'avatarRemove': 'Remove'
+      },
+      'crop': {
+        'title': 'Crop picture'
+      }
+    },
 
     // Profiles
     'createdBy': 'сreated by',
@@ -37,12 +101,11 @@ const english = {
     'sharedMedia': 'Shared Media',
     'notifications': 'Notifications',
     'integrationTokenCopied': 'Integration link copied.',
-    'members':
-      '{numMembers, plural,' +
-        '=0 {no Members}' +
-        '=1 {# Member}' +
-        'other {# Members}' +
-      '}',
+    'members': '{numMembers, plural,' +
+      '=0 {no Members}' +
+      '=1 {# Member}' +
+      'other {# Members}' +
+    '}',
 
     // Modals
     'inviteModalTitle': 'Add More People',
@@ -89,5 +152,3 @@ const english = {
     'addContactInContacts': 'You already have this user in contacts.'
   }
 };
-
-export default english;
