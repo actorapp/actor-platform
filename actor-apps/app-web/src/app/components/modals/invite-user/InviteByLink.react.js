@@ -8,6 +8,7 @@ import Modal from 'react-modal';
 import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
+import { escapeWithEmoji } from 'utils/EmojiUtils'
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
@@ -55,26 +56,26 @@ class InviteByLink extends React.Component {
   render() {
     const { group, inviteUrl, isOpen } = this.state;
 
-    const groupName = (group !== null) ? <b>{group.name}</b> : null;
+    const groupName = (group !== null) ? <b dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/> : null;
 
     if (isOpen) {
       return (
         <Modal className="modal-new modal-new--invite-by-link"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 400}}>
+               style={{width: 440}}>
 
           <header className="modal-new__header">
             <svg className="modal-new__header__icon icon icon--blue"
-                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#back"/>'}}
+                 dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#back"/>'}}
                  onClick={this.onBackClick}/>
 
             <h3 className="modal-new__header__title">
-              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
+              {this.getIntlMessage('inviteByLinkModalTitle')}
             </h3>
 
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onClose}>Done</button>
+              <button className="button button--lightblue" onClick={this.onClose}>{this.getIntlMessage('button.done')}</button>
             </div>
           </header>
 
@@ -85,10 +86,10 @@ class InviteByLink extends React.Component {
 
           <footer className="modal-new__footer">
             <button className="button button--rised pull-left hide">
-              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
+              {this.getIntlMessage('inviteByLinkModalRevokeButton')}
             </button>
             <button className="button button--rised pull-right hide">
-              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
+              {this.getIntlMessage('inviteByLinkModalCopyButton')}
             </button>
           </footer>
         </Modal>

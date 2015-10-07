@@ -151,18 +151,18 @@ class GroupProfile extends React.Component {
       adminControls = [
         <li className="dropdown__menu__item hide">
           <i className="material-icons">photo_camera</i>
-          <FormattedMessage message={this.getIntlMessage('setGroupPhoto')}/>
+          {this.getIntlMessage('setGroupPhoto')}
         </li>
       ,
         <li className="dropdown__menu__item hide">
           <svg className="icon icon--dropdown"
-               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
-          <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
+               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#integration"/>'}}/>
+          {this.getIntlMessage('addIntegration')}
         </li>
       ,
         <li className="dropdown__menu__item" onClick={() => this.onEditGroupClick(group.id)}>
           <i className="material-icons">mode_edit</i>
-          <FormattedMessage message={this.getIntlMessage('editGroup')}/>
+          {this.getIntlMessage('editGroup')}
         </li>
       ];
     }
@@ -175,7 +175,7 @@ class GroupProfile extends React.Component {
 
     const iconElement = (
       <svg className="icon icon--green"
-           dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#members"/>'}}/>
+           dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#members"/>'}}/>
     );
 
     const groupMeta = [
@@ -187,7 +187,7 @@ class GroupProfile extends React.Component {
 
         <h3 className="group_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/>
         <div className="group_profile__meta__created">
-          <FormattedMessage message={this.getIntlMessage('createdBy')}/>
+          {this.getIntlMessage('createdBy')}
           &nbsp;
           <span dangerouslySetInnerHTML={{__html: escapeWithEmoji(admin.name)}}/>
         </div>
@@ -203,9 +203,11 @@ class GroupProfile extends React.Component {
       <li className="profile__list__item group_profile__integration no-p">
         <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
           <div className="info info--light">
-            If you have programming chops, or know someone who does,
-            this integration token allow the most flexibility and communication
-            with your own systems.
+            <p>
+              If you have programming chops, or know someone who does,
+              this integration token allow the most flexibility and communication
+              with your own systems.
+            </p>
             <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
           </div>
           <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
@@ -224,7 +226,7 @@ class GroupProfile extends React.Component {
                   <button className="button button--flat button--wide"
                           onClick={() => this.onAddMemberClick(group)}>
                     <i className="material-icons">person_add</i>
-                    <FormattedMessage message={this.getIntlMessage('addPeople')}/>
+                    {this.getIntlMessage('addPeople')}
                   </button>
                 </div>
                 <div style={{width: 10}}/>
@@ -233,21 +235,21 @@ class GroupProfile extends React.Component {
                     <button className="dropdown__button button button--flat button--wide"
                             onClick={this.toggleMoreDropdown}>
                       <i className="material-icons">more_horiz</i>
-                      <FormattedMessage message={this.getIntlMessage('more')}/>
+                      {this.getIntlMessage('more')}
                     </button>
                     <ul className="dropdown__menu dropdown__menu--right">
                       {adminControls}
                       <li className="dropdown__menu__item"
                           onClick={() => this.onLeaveGroupClick(group.id)}>
-                        <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
+                        {this.getIntlMessage('leaveGroup')}
                       </li>
                       <li className="dropdown__menu__item"
                           onClick={() => this.onClearGroupClick(group.id)}>
-                        <FormattedMessage message={this.getIntlMessage('clearGroup')}/>
+                        {this.getIntlMessage('clearGroup')}
                       </li>
                       <li className="dropdown__menu__item"
                           onClick={() => this.onDeleteGroupClick(group.id)}>
-                        <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
+                        {this.getIntlMessage('deleteGroup')}
                       </li>
                     </ul>
                   </div>
@@ -268,7 +270,7 @@ class GroupProfile extends React.Component {
             <li className="profile__list__item group_profile__notifications no-p">
               <label htmlFor="notifications">
                 <i className="material-icons icon icon--squash">notifications_none</i>
-                <FormattedMessage message={this.getIntlMessage('notifications')}/>
+                {this.getIntlMessage('notifications')}
 
                 <div className="switch pull-right">
                   <input checked={isNotificationsEnabled}

@@ -30,6 +30,7 @@ export default {
     sourceMapFilename: '[name].map'
   },
   resolve: {
+    packageAlias: false,
     modulesDirectories: ['node_modules'],
     root: [
       path.join(__dirname, 'src/app')

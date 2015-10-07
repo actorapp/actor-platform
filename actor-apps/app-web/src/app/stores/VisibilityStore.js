@@ -1,40 +1,31 @@
-import { EventEmitter } from 'events';
-import assign from 'object-assign';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { Store } from 'flux/utils';
+import Dispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 
-const CHANGE_EVENT = 'change';
+let isVisible = false;
 
-const VisibilityStore = assign({}, EventEmitter.prototype, {
-  isVisible: false,
+class VisibilityStore extends Store {
+  isAppVisible = () => {
+    return isVisible;
+  };
 
-  emitChange() {
-    this.emit(CHANGE_EVENT);
-  },
-
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+  __onDispatch = (action) => {
+    switch (action.type) {
+      case ActionTypes.APP_VISIBLE:
+        isVisible = true;
+        this.__emitChange();
+        break;
+      case ActionTypes.APP_HIDDEN:
+        isVisible = false;
+        this.__emitChange();
+        break;
+      default:
+    }
   }
-});
+}
 
-VisibilityStore.dispatchToken = ActorAppDispatcher.register(action => {
-  switch(action.type) {
-    case ActionTypes.APP_VISIBLE:
-      VisibilityStore.isVisible = true;
-      VisibilityStore.emitChange();
-      break;
-    case ActionTypes.APP_HIDDEN:
-      VisibilityStore.isVisible = false;
-      VisibilityStore.emitChange();
-      break;
-    default:
-
-  }
-});
-
-export default VisibilityStore;
+export default new VisibilityStore(Dispatcher);

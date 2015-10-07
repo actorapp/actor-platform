@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { IntlMixin } from 'react-intl';
 
 import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
@@ -36,7 +36,7 @@ class SessionItem extends Component {
     const { terminateSessionState } = this.state;
 
     const currentDevice = (holder === 'THIS_DEVICE') ? (
-      <small><FormattedMessage message={this.getIntlMessage('preferencesSessionsCurrentSession')}/></small>
+      <small>{this.getIntlMessage('preferencesSessionsCurrentSession')}</small>
     ) : null;
 
     return (
@@ -47,13 +47,13 @@ class SessionItem extends Component {
         </div>
 
         <small>
-          <b><FormattedMessage message={this.getIntlMessage('preferencesSessionsAuthTime')}/>:</b> {authTime.toString()}
+          <b>{this.getIntlMessage('preferencesSessionsAuthTime')}:</b> {authTime.toString()}
         </small>
 
         <Stateful.Root currentState={terminateSessionState}>
           <Stateful.Pending>
             <a className="session-list__session__terminate link--blue" onClick={this.onTerminate}>
-              <FormattedMessage message={this.getIntlMessage('preferencesSessionsTerminate')}/>
+              {this.getIntlMessage('preferencesSessionsTerminate')}
             </a>
           </Stateful.Pending>
           <Stateful.Processing>

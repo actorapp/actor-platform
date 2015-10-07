@@ -1,6 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import ActorClient from 'utils/ActorClient';
 import Raven from 'utils/Raven';
 import mixpanel from 'utils/Mixpanel';
+import { intlData } from 'l18n';
 
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, AuthSteps } from 'constants/ActorAppConstants';
@@ -58,7 +63,7 @@ var LoginStore = assign({}, EventEmitter.prototype, {
 
 const processPhoneExpired = () => {
   errors.name = null;
-  errors.phone = 'Phone code is expired';
+  errors.phone = intlData.messages.login.errors.codeExpired;
   step = AuthSteps.PHONE_WAIT;
   LoginStore.emitChange();
 };
@@ -74,7 +79,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.AUTH_SMS_REQUEST_FAILURE:
       switch (action.error) {
         case 'PHONE_NUMBER_INVALID':
-          errors.phone = 'Invalid number';
+          errors.phone = intlData.messages.login.errors.numberInvalid;
           break;
         default:
           errors.phone = action.error;
@@ -96,7 +101,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.SEND_CODE_FAILURE:
       switch (action.error) {
         case 'PHONE_CODE_INVALID':
-          errors.code = 'Invalid code';
+          errors.code = intlData.messages.login.errors.codeInvalid;
           mixpanel.track('Invalid code');
           break;
         case 'PHONE_CODE_EXPIRED':
@@ -119,7 +124,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.SEND_SIGNUP_FAILURE:
       switch (action.error) {
         case 'NAME_INVALID':
-          errors.signup = 'Invalid name';
+          errors.signup = intlData.messages.login.errors.nameInvalid;
           break;
         case 'PHONE_CODE_EXPIRED':
           errors.signup = null;
@@ -149,7 +154,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.SET_LOGGED_OUT:
       Raven.setUserContext();
       mixpanel.track('Log out');
-      mixpanel.cookie.clear();
+      //mixpanel.cookie.clear();
       localStorage.clear();
       location.reload();
       break;
