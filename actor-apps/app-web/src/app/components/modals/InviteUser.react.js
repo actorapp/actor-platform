@@ -7,7 +7,7 @@ import { find, assign, forEach } from 'lodash';
 import React from 'react';
 import Modal from 'react-modal';
 import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { IntlMixin } from 'react-intl';
 
 import ActorClient from 'utils/ActorClient';
 import { KeyCodes } from 'constants/ActorAppConstants';
