@@ -6,8 +6,10 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import im.actor.api.rpc.messaging.ApiTextMessage
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
-import im.actor.bot.{ BotBase, BotMessages }
+import im.actor.bots.BotMessages
+import im.actor.bots.macros.BotInterface
 import im.actor.server.dialog.DialogExtension
+import im.actor.server.sequence.SeqStateDate
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -18,10 +20,13 @@ private object InternalBot {
   final case class Initialized(authId: Long)
 }
 
-abstract class InternalBot(userId: Int, nickname: String, name: String) extends Actor with ActorLogging with BotBase {
+@BotInterface
+private[bot] abstract class InternalBotBase extends Actor with ActorLogging
 
-  import BotMessages._
+abstract class InternalBot(userId: Int, nickname: String, name: String) extends InternalBotBase {
+
   import InternalBot._
+  import BotMessages._
 
   private implicit val mat = ActorMaterializer()
   import context._
@@ -31,16 +36,18 @@ abstract class InternalBot(userId: Int, nickname: String, name: String) extends 
 
   init()
 
-  override protected def sendTextMessage(peer: OutPeer, text: String): Unit = {
-    // FIXME: check access hash
-    dialogExt.sendMessage(
-      peer = ApiPeer(ApiPeerType(peer.`type`), peer.id),
-      senderUserId = userId,
-      randomId = ThreadLocalRandom.current().nextLong(),
-      senderAuthId = 0,
-      message = ApiTextMessage(text, Vector.empty, None),
-      isFat = false
-    )
+  override def request[T <: RequestBody](body: T): Future[body.Response] = body match {
+    case SendTextMessage(peer, randomId, text) ⇒
+      for {
+        SeqStateDate(_, _, date) ← dialogExt.sendMessage(
+          peer = ApiPeer(ApiPeerType(peer.`type`), peer.id),
+          senderUserId = userId,
+          randomId = randomId,
+          senderAuthId = 0,
+          message = ApiTextMessage(text, Vector.empty, None),
+          isFat = false
+        )
+      } yield MessageSent(date).asInstanceOf[body.Response]
   }
 
   def receive = {
@@ -53,13 +60,14 @@ abstract class InternalBot(userId: Int, nickname: String, name: String) extends 
   }
 
   private final def working(flowRef: ActorRef): Receive = {
-    case tm: TextMessage ⇒
-      log.debug("TextMessage {}", tm)
-
-      onTextMessage(tm)
+    case upd: BotSeqUpdate ⇒
+      log.debug("Update {}", upd)
+      onUpdate(upd.body)
     case unmatched ⇒
       log.warning("Unmatched {}", unmatched)
   }
+
+  //override def onTextMessage(tm: TextMessage): Unit = {}
 
   private def init() = {
     log.warning("Initiating bot {} {} {}", userId, nickname, name)
@@ -81,4 +89,6 @@ abstract class InternalBot(userId: Int, nickname: String, name: String) extends 
       authId ← botExt.getAuthId(userId)
     } yield Initialized(authId)) pipeTo self
   }
+
+  protected def nextRandomId() = ThreadLocalRandom.current().nextLong()
 }
