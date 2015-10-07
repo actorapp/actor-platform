@@ -129,7 +129,7 @@ class MyProfile extends Component {
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person</a>
-            <h4 className="modal-new__header__title">{this.getIntlMessage('modal.profile.title')}</h4>
+            <h3 className="modal-new__header__title">{this.getIntlMessage('modal.profile.title')}</h3>
             <div className="pull-right">
               <button className="button button--lightblue" onClick={this.onSave}>{this.getIntlMessage('button.done')}</button>
             </div>
@@ -138,7 +138,7 @@ class MyProfile extends Component {
             <div className="col-xs">
               <div className="name">
                 <TextField className="login__form__input"
-                           floatingLabelText={this.getIntlMessage('modal.profile.fullName')}
+                           floatingLabelText={this.getIntlMessage('modal.profile.name')}
                            fullWidth
                            onChange={this.onNameChange}
                            type="text"
@@ -146,7 +146,7 @@ class MyProfile extends Component {
               </div>
               <div className="nick">
                 <TextField className="login__form__input"
-                           floatingLabelText={this.getIntlMessage('modal.profile.nickName')}
+                           floatingLabelText={this.getIntlMessage('modal.profile.nick')}
                            fullWidth
                            onChange={this.onNicknameChange}
                            type="text"
@@ -155,7 +155,7 @@ class MyProfile extends Component {
               <div className="phone">
                 <TextField className="login__form__input"
                            disabled
-                           floatingLabelText={this.getIntlMessage('modal.profile.phoneNumber')}
+                           floatingLabelText={this.getIntlMessage('modal.profile.phone')}
                            fullWidth
                            type="tel"
                            value={(profile.phones[0] || {}).number}/>
@@ -165,7 +165,6 @@ class MyProfile extends Component {
                 <textarea className="textarea"
                           id="about"
                           onChange={this.onAboutChange}
-                          placeholder="Few words about you"
                           value={about}/>
               </div>
             </div>
@@ -177,12 +176,12 @@ class MyProfile extends Component {
                             title={profile.name}/>
                 <a onClick={this.onChangeAvatarClick}>
                   <span>
-                    {this.getIntlMessage('modal.profile.changeAvatar')}
+                    {this.getIntlMessage('modal.profile.avatarChange')}
                   </span>
                 </a>
               </div>
               <div className="profile-picture__controls">
-                <a onClick={this.onProfilePictureRemove}>{this.getIntlMessage('modal.profile.removeAvatar')}</a>
+                <a onClick={this.onProfilePictureRemove}>{this.getIntlMessage('modal.profile.avatarRemove')}</a>
               </div>
               <form className="hide" ref="imageForm">
                 <input onChange={this.onProfilePictureInputChange} ref="imageInput" type="file"/>

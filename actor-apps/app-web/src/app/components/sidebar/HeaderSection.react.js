@@ -76,8 +76,6 @@ class HeaderSection extends Component {
         'dropdown--opened': isOpened
       });
 
-      const profileName = escapeWithEmoji(profile.name);
-
       return (
         <header className={headerClass}>
           <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
@@ -86,7 +84,7 @@ class HeaderSection extends Component {
                         size="tiny"
                         title={profile.name} />
             <span className="sidebar__header__user__name col-xs"
-                  dangerouslySetInnerHTML={{__html: profileName}}/>
+                  dangerouslySetInnerHTML={{__html: escapeWithEmoji(profile.name)}}/>
             <div className={menuClass}>
               <span className="dropdown__button">
                 <i className="material-icons">arrow_drop_down</i>
