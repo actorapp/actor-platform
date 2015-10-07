@@ -9,8 +9,10 @@ import akka.stream.{ActorMaterializer, OverflowStrategy}
 import im.actor.bots.BotMessages.ResponseBody
 import im.actor.bots.{BotMessageOut, BotMessages}
 import im.actor.bots.macros.BotInterface
+import im.actor.concurrent.ActorFutures
 import upickle.default._
 
+import scala.collection.concurrent.TrieMap
 import scala.concurrent.{Future, Promise}
 
 object RemoteBot {
@@ -21,7 +23,7 @@ object RemoteBot {
 }
 
 @BotInterface
-private[botkit] abstract class RemoteBotBase extends Actor with ActorLogging
+private[botkit] abstract class RemoteBotBase extends Actor with ActorLogging with ActorFutures
 
 abstract class RemoteBot(token: String, endpoint: String) extends RemoteBotBase {
 
@@ -34,6 +36,8 @@ abstract class RemoteBot(token: String, endpoint: String) extends RemoteBotBase 
   private var rqSource = initFlow()
   private var rqCounter: Long = 0
   private var requests = Map.empty[Long, Promise[ResponseBody]]
+  private var users = TrieMap.empty[Int, User]
+  private var groups = TrieMap.empty[Int, Group]
 
   def onReceive(message: Object): Unit = {}
 
@@ -66,8 +70,21 @@ abstract class RemoteBot(token: String, endpoint: String) extends RemoteBotBase 
     case rsp: BotResponse ⇒
       log.info("Response #{}: {}", rsp.id, rsp.body)
       requests.get(rsp.id) foreach (_.success(rsp.body))
-    case upd: BotSeqUpdate =>
+    case upd: BotUpdate =>
       log.info("Update: {}", upd)
+
+      upd match {
+        case BotFatSeqUpdate(_, _, users, groups) =>
+          users foreach {
+            case (id, user) => this.users.putIfAbsent(id, user)
+          }
+
+          groups foreach {
+            case (id, group) => this.groups.putIfAbsent(id, group)
+          }
+        case _ =>
+      }
+
       onUpdate(upd.body)
     case NextRequest(body, responsePromise) ⇒
       log.info("Request #{}: {}", rqCounter, body)
@@ -83,6 +100,10 @@ abstract class RemoteBot(token: String, endpoint: String) extends RemoteBotBase 
     self ! NextRequest(body, promise)
     promise.future map (_.asInstanceOf[body.Response])
   }
+
+  protected def getUser(id: Int) = this.users.get(id).getOrElse(throw new RuntimeException(s"User $id not found"))
+
+  protected def getGroup(id: Int) = this.groups.get(id).getOrElse(throw new RuntimeException(s"Group $id not found"))
 
   protected def nextRandomId(): Long = ThreadLocalRandom.current().nextLong()
 
