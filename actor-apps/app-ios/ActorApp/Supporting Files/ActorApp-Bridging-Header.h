@@ -29,7 +29,6 @@
 #import <NYTPhotoViewer/NYTPhoto.h>
 #import <SZTextView/SZTextView.h>
 
-#import <pop/Pop.h>
 #import <VBFPopFlatButton/VBFPopFlatButton.h>
 
 #import <PSTAlertController/PSTAlertController.h>
@@ -48,8 +47,5 @@
 #import "ABPhoneField.h"
 #import "UIAppearance+Swift.h"
 #import "UIBarAppearance+Swift.h"
-
-// Actor Core
-#import "ActorCore.h"
 
 #endif

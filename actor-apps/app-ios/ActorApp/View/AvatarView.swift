@@ -4,6 +4,7 @@
 
 import UIKit
 import j2objc
+import ActorCore
 
 enum AvatarType {
     case Rounded

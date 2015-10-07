@@ -6,6 +6,7 @@ import UIKit
 import MobileCoreServices
 import ActorSDK
 import j2objc
+import ActorCore
 
 class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     

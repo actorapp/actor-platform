@@ -10,6 +10,11 @@ target 'ActorSDK' do
     pod 'J2ObjC-Framework'
 end
 
+target 'ActorCore' do
+    xcodeproj '../actor-sdk/sdk-ios/ActorCore.xcodeproj'
+    pod 'J2ObjC-Framework'
+end
+
 target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
@@ -18,9 +23,9 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'J2ObjC-Framework'
 
     # UI
-    pod 'pop'
     pod 'VBFPopFlatButton'
     pod 'MBProgressHUD'
     pod 'PSTAlertController'
@@ -29,8 +34,6 @@ target 'ActorApp' do
     pod 'JVFloatLabeledTextField'
     pod 'CLTokenInputView'
     pod 'SZTextView'
-
-    pod 'SlackTextViewController'
 
     pod 'NYTPhotoViewer'
     pod 'PEPhotoCropEditor'

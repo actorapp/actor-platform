@@ -4,6 +4,7 @@
 
 import Foundation
 import zipzap
+import ActorCore
 
 class Tools {
     class func copyFileCommand(from: String, to: String) -> ACCommand {

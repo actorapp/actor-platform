@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import ActorCore
 
 protocol AuthCountriesViewControllerDelegate : NSObjectProtocol {
     

@@ -6,6 +6,7 @@ import Foundation
 import UIKit
 import ActorSDK
 import j2objc
+import ActorCore
 
 /**
     Bubble types
