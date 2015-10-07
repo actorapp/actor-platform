@@ -5,7 +5,6 @@
 import UIKit
 import MobileCoreServices
 import PEPhotoCropEditor
-import ActorSDK
 import j2objc
 import ActorCore
 

@@ -4,7 +4,6 @@
 
 import Foundation
 import MBProgressHUD
-import ActorSDK
 import ActorCore
 
 enum ExecutionType {
@@ -113,7 +112,7 @@ class Executions {
                 delegate: d,
                 cancelButtonTitle: localized("AlertCancel"),
                 otherButtonTitles: localized("AlertTryAgain"))
-            setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
+            // setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
             alert.show()
         } else {
             let d = UIAlertViewBlock(clickedClosure: { (index) -> () in
@@ -123,7 +122,7 @@ class Executions {
                 message: message,
                 delegate: d,
                 cancelButtonTitle: localized("AlertOk"))
-            setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
+            // setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
             alert.show()
         }
     }

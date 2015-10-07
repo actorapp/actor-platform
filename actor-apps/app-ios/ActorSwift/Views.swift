@@ -3,14 +3,13 @@
 //
 
 import Foundation
-import ActorSDK
 
 private var targetReference = "target"
 extension UITapGestureRecognizer {
     convenience init(closure: ()->()){
         let target = ClosureTarget(closure: closure)
         self.init(target: target, action: "invoke")
-        setAssociatedObject(self, value: target, associativeKey: &targetReference)
+        // setAssociatedObject(self, value: target, associativeKey: &targetReference)
     }
 }
 
@@ -129,25 +128,26 @@ private var registeredCells = "cells!"
 extension UITableView {
     private func cellTypeForClass(cellClass: AnyClass) -> String {
         
-        let cellReuseId = "\(cellClass)"
-        var registered: ([String])! = getAssociatedObject(self, associativeKey: &registeredCells)
-        var found = false
-        if registered != nil {
-            if registered.contains(cellReuseId) {
-                found = true
-            } else {
-                registered.append(cellReuseId)
-                setAssociatedObject(self, value: registered, associativeKey: &registeredCells)
-            }
-        } else {
-            setAssociatedObject(self, value: [cellReuseId], associativeKey: &registeredCells)
-        }
-        
-        if !found {
-            registerClass(cellClass, forCellReuseIdentifier: cellReuseId)
-        }
-        
-        return cellReuseId
+//        let cellReuseId = "\(cellClass)"
+//        var registered: ([String])! = getAssociatedObject(self, associativeKey: &registeredCells)
+//        var found = false
+//        if registered != nil {
+//            if registered.contains(cellReuseId) {
+//                found = true
+//            } else {
+//                registered.append(cellReuseId)
+//                setAssociatedObject(self, value: registered, associativeKey: &registeredCells)
+//            }
+//        } else {
+//            setAssociatedObject(self, value: [cellReuseId], associativeKey: &registeredCells)
+//        }
+//        
+//        if !found {
+//            registerClass(cellClass, forCellReuseIdentifier: cellReuseId)
+//        }
+//        
+//        return cellReuseId
+        return "!"
     }
     
     func dequeueCell(cellClass: AnyClass, indexPath: NSIndexPath) -> UITableViewCell {

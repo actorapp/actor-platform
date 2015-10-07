@@ -174,7 +174,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -ev\n\necho $CONFIGURATION_BUILD_DIR\n\ncd ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_BUILD_DIR}/build/\"\npython \"${PROJECT_DIR}/ActorCore/convert.py\"";
+			shellScript = "set -ev\n\necho \"${CONFIGURATION_TEMP_DIR}\"\n\ncd ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorCore/convert.py\"";
 		};
 		066A509B1BC46F10000E606E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -187,7 +187,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -ev\n\n# rm -fr \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/Headers\"\ncp -a \"${CONFIGURATION_BUILD_DIR}/build/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/Headers/\"";
+			shellScript = "set -ev\n\n# rm -fr \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/Headers\"\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/Headers/\"";
 		};
 		066A50A51BC491A7000E606E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -200,7 +200,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp \"${OBJROOT}/libactor.so\" \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/ActorCore\"";
+			shellScript = "cp \"${CONFIGURATION_TEMP_DIR}/j2objc/Objects/libactor.so\" \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/ActorCore\"";
 		};
 		1A62A7939A397D9E09E8B050 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -352,7 +352,6 @@
 					"-l\"z\"",
 					"-framework",
 					"\"j2objc\"",
-					"-l\"actor\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -379,7 +378,6 @@
 					"-l\"z\"",
 					"-framework",
 					"\"j2objc\"",
-					"-l\"actor\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
