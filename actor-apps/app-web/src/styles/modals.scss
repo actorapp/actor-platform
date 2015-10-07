@@ -90,6 +90,10 @@
     .button {
       margin-top: -6px;
     }
+
+    .pull-right {
+      margin-left: 16px;
+    }
   }
 
   &__body {
@@ -242,8 +246,9 @@
           span {
             display: block;
 
-            opacity: 0;
             padding: 0 16px;
+
+            opacity: 0;
             //transition: 200ms;
             //transform: translateY(-5px);
           }
@@ -636,6 +641,8 @@
             text-shadow: 0 0 4px rgba(black, .7);
             span {
               display: block;
+
+              padding: 0 16px;
 
               opacity: 0;
               //transition: 200ms;

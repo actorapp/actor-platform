@@ -64,12 +64,22 @@ export default {
     'modal': {
       'profile': {
         'title': 'Profile',
-        'fullName': 'Full name',
-        'nickName': 'Nickname',
-        'phoneNumber': 'Phone number',
+        'name': 'Full name',
+        'nick': 'Nickname',
+        'phone': 'Phone number',
         'about': 'About',
-        'changeAvatar': 'Change avatar',
-        'removeAvatar': 'Remove'
+        'avatarChange': 'Change avatar',
+        'avatarRemove': 'Remove'
+      },
+      'group': {
+        'title': 'Edit group',
+        'name': 'Group title',
+        'about': 'Group about',
+        'avatarChange': 'Change avatar',
+        'avatarRemove': 'Remove'
+      },
+      'crop': {
+        'title': 'Crop picture'
       }
     },
 
@@ -92,9 +102,9 @@ export default {
     'notifications': 'Notifications',
     'integrationTokenCopied': 'Integration link copied.',
     'members': '{numMembers, plural,' +
-    '=0 {no Members}' +
-    '=1 {# Member}' +
-    'other {# Members}' +
+      '=0 {no Members}' +
+      '=1 {# Member}' +
+      'other {# Members}' +
     '}',
 
     // Modals
