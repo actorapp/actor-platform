@@ -101,7 +101,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaStream
   )
 
-  val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
+  val activation = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, playJson)
 
   val bot = shared ++ Seq(upickle)
 
