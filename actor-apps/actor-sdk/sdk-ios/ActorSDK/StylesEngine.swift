@@ -181,7 +181,7 @@ extension UITableViewCell: UIViewStylable {
             backgroundColor = v
         }
         
-        if let ua = self as? UATableViewCell {
+        if let ua = self as? AATableViewCell {
             
             if let v = s.cellSeparatorsVisible {
                 ua.topSeparatorVisible = v

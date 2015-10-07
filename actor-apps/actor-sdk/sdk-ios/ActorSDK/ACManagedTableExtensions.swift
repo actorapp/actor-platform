@@ -13,15 +13,15 @@ public extension ACManagedTable {
 
 public extension ACManagedTable {
     
-    public func dequeueTextCell(indexPath: NSIndexPath) -> TextCell {
+    public func dequeueTextCell(indexPath: NSIndexPath) -> AATextCell {
         return dequeueCell(indexPath)
     }
     
-    public func dequeueTitledCell(indexPath: NSIndexPath) -> TitledCell {
+    public func dequeueTitledCell(indexPath: NSIndexPath) -> AATitledCell {
         return dequeueCell(indexPath)
     }
     
-    public func dequeueCommonCell(indexPath: NSIndexPath) -> CommonCell {
+    public func dequeueCommonCell(indexPath: NSIndexPath) -> AACommonCell {
         return dequeueCell(indexPath)
     }
 }

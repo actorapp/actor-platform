@@ -79,7 +79,7 @@ public class ACTitledRow: ACManagedRow {
         return res
     }
     
-    public func bindCell(res: TitledCell) {
+    public func bindCell(res: AATitledCell) {
         res.titleLabel.text = title
         res.contentLabel.text = subtitle
         res.accessoryType = accessoryType
@@ -105,7 +105,7 @@ public class ACTitledRow: ACManagedRow {
         bindAction?(r: self)
         
         if let p = indexPath, let s = section {
-            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? TitledCell {
+            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? AATitledCell {
                 bindCell(cell)
             }
         }
@@ -159,7 +159,7 @@ public class ACTextRow: ACManagedRow {
     // Cell
     
     public override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
-        return TextCell.measure(content!, width: table.tableView.width, enableNavigation: navigate)
+        return AATextCell.measure(content!, width: table.tableView.width, enableNavigation: navigate)
     }
     
     public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
@@ -301,7 +301,7 @@ public class ACCommonRow: ACManagedRow {
         return res
     }
     
-    public func bindCell(res: CommonCell) {
+    public func bindCell(res: AACommonCell) {
         res.style = style
         res.setContent(content)
         res.setHint(hint)
@@ -323,7 +323,7 @@ public class ACCommonRow: ACManagedRow {
         bindAction?(r: self)
         
         if let p = indexPath, let s = section {
-            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? CommonCell {
+            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? AACommonCell {
                 bindCell(cell)
             }
         }
