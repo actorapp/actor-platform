@@ -4,7 +4,7 @@
 
 import UIKit
 import MessageUI
-import ActorCore
+import ActorSDK
 
 class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailComposeViewControllerDelegate {
 
