@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import j2objc
 import ActorCore
 
 var Actor : ACCocoaMessenger!
