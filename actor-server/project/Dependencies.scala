@@ -4,6 +4,7 @@ import sbt._
 
 object Dependencies {
   object V {
+    val actorCommons = "0.0.6"
     val akka = "2.3.13"
     val akkaExperimental = "1.0"
     val cats = "0.2.0"
@@ -13,6 +14,8 @@ object Dependencies {
   }
 
   object Compile {
+    val actorConcurrent         = "im.actor"                      %% "actor-concurrent"              % V.actorCommons
+
     val akkaActor               = "com.typesafe.akka"             %% "akka-actor"                    % V.akka exclude("com.google.protobuf", "protobuf-java")
     val akkaPersistence         = "com.typesafe.akka"             %% "akka-persistence-experimental" % V.akka exclude("com.google.protobuf", "protobuf-java")
     val akkaContrib             = "com.typesafe.akka"             %% "akka-contrib"                  % V.akka exclude("com.google.protobuf", "protobuf-java")
@@ -105,11 +108,23 @@ object Dependencies {
 
   val bot = shared ++ Seq(upickle)
 
-  val botkit = Seq(akkaActor, akkaHttp, akkaSlf4j, sprayWebsocket, upickle)
+  val botkit = Seq(actorConcurrent, akkaActor, akkaHttp, akkaSlf4j, sprayWebsocket, upickle)
 
   val botShared = Seq(upickle)
 
-  val core = shared ++ Seq(akkaActor, akkaContrib, amazonaws, awsWrap, caffeine, gcmServer, pushy, jodaTime, postgresJdbc, slick, scrImageCore)
+  val core = shared ++ Seq(
+    actorConcurrent,
+    akkaActor,
+    akkaContrib,
+    amazonaws,
+    awsWrap,
+    caffeine,
+    gcmServer,
+    pushy,
+    jodaTime,
+    postgresJdbc,
+    slick,
+    scrImageCore)
 
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
 
