@@ -8,12 +8,6 @@
 // Common include
 #import <CommonCrypto/CommonDigest.h>
 
-// Cocoa Pods
-#import "FMDatabase.h"
-#import "FMResultSet.h"
-#import "FMDatabaseAdditions.h"
-#import "FMDatabaseQueue.h"
-
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <ZipZap/ZipZap.h>
 
@@ -44,7 +38,5 @@
 // ObjC classes
 #import "ABActionShit.h"
 #import "ABPhoneField.h"
-#import "UIAppearance+Swift.h"
-#import "UIBarAppearance+Swift.h"
 
 #endif

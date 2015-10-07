@@ -4,7 +4,7 @@
 
 import Foundation
 import MBProgressHUD
-import ActorCore
+import ActorSDK
 
 enum ExecutionType {
     case Normal

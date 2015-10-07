@@ -4,8 +4,7 @@
 
 import UIKit
 import CLTokenInputView
-import j2objc
-import ActorCore
+import ActorSDK
 
 class GroupMembersController: ContactsContentViewController, ContactsContentViewControllerDelegate, CLTokenInputViewDelegate {
 

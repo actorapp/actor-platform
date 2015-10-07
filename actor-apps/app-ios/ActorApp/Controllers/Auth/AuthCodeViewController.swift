@@ -33,7 +33,8 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailCom
     init(phoneNumber: String) {
         
         self.phoneNumber = phoneNumber
-        self.supportEnabled = AppConfig.activationEmail != nil || AppConfig.supportEmail != nil
+        self.supportEnabled = true
+        // self.supportEnabled = AppConfig.activationEmail != nil || AppConfig.supportEmail != nil
         
         super.init()
         
@@ -233,13 +234,13 @@ class AuthCodeViewController: AuthViewController, UIAlertViewDelegate, MFMailCom
     func noCodeDidPressed() {
         let emailController = MFMailComposeViewController()
         emailController.setSubject("Activation code problem (\(phoneNumber))")
-        if AppConfig.activationEmail != nil {
-            emailController.setToRecipients([AppConfig.activationEmail!])
-        } else if AppConfig.supportEmail != nil {
-            emailController.setToRecipients([AppConfig.supportEmail!])
-        } else {
-            fatalError("Support emails not set")
-        }
+//        if AppConfig.activationEmail != nil {
+//            emailController.setToRecipients([AppConfig.activationEmail!])
+//        } else if AppConfig.supportEmail != nil {
+//            emailController.setToRecipients([AppConfig.supportEmail!])
+//        } else {
+//            fatalError("Support emails not set")
+//        }
         emailController.setMessageBody("Hello, Dear Support!\n\nI can't receive any activation codes to the phone: \(phoneNumber).\n\nHope, you will answer soon. Thank you!", isHTML: false)
         emailController.delegate = self
         presentViewController(emailController, animated: true, completion: nil)

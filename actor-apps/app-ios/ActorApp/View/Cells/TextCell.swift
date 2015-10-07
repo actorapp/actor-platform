@@ -3,7 +3,7 @@
 //
 
 import Foundation
-
+import ActorSDK
 
 class TextCell: UATableViewCell {
 

@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import j2objc
+import ActorSDK
 
 class InviteLinkViewController: ACContentTableController {
 

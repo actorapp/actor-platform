@@ -7,8 +7,8 @@ import j2objc
 import ActorCore
 
 // Public methods for working with files
-class CocoaFiles {
-    class func pathFromDescriptor(path: String) -> String {
+public class CocoaFiles {
+    public class func pathFromDescriptor(path: String) -> String {
         var documentsFolders = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
         if (documentsFolders.count > 0) {
             let appPath = documentsFolders[0].asNS.stringByDeletingLastPathComponent
@@ -135,7 +135,8 @@ class CocoaOutputFile : NSObject, AROutputFile {
     func writeWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset dataOffset: jint, withLength dataLen: jint) -> Bool {
         let toWrite = NSMutableData(length: Int(dataLen))!;
         var srcBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
-        var destBuffer = UnsafeMutablePointer<UInt8>(toWrite.bytes);
+
+        var destBuffer = UnsafeMutablePointer<UInt8>(toWrite.toBytes());
         for _ in 0..<dataLen {
             destBuffer.memory = srcBuffer.memory;
             destBuffer++;
@@ -168,7 +169,7 @@ class CocoaInputFile :NSObject, ARInputFile {
             self.fileHandle.seekToFileOffset(UInt64(fileOffset));
             let readed:NSData = self.fileHandle.readDataOfLength(Int(len));
             
-            var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes);
+            var srcBuffer = UnsafeMutablePointer<UInt8>(readed.toBytes());
             var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
             let len = min(Int(len), Int(readed.length));
             for _ in offset..<offset+len {

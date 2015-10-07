@@ -1,16 +1,25 @@
 platform :ios, '8.0'
+use_frameworks!
+
 workspace 'ActorApp'
 xcodeproj 'ActorApp.xcodeproj'
+xcodeproj '../actor-sdk/sdk-ios/ActorSDK.xcodeproj'
+xcodeproj '../actor-sdk/sdk-ios/ActorCore.xcodeproj'
+
 inhibit_all_warnings!
-use_frameworks!
 
 target 'ActorSDK' do
     xcodeproj '../actor-sdk/sdk-ios/ActorSDK.xcodeproj'
+    
+    pod 'RegexKitLite'
+    pod 'CocoaAsyncSocket'
+    
     pod 'J2ObjC-Framework'
 end
 
 target 'ActorCore' do
     xcodeproj '../actor-sdk/sdk-ios/ActorCore.xcodeproj'
+    
     pod 'J2ObjC-Framework'
 end
 
@@ -19,10 +28,7 @@ target 'ActorApp' do
 
     # Core
     
-    pod 'RegexKitLite'
-    pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'J2ObjC-Framework'
 
     # UI
     pod 'VBFPopFlatButton'

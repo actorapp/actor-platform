@@ -3,8 +3,8 @@
 //
 
 import Foundation
-import j2objc
 import ActorCore
+import AddressBook
 
 class PhoneBookProvider: NSObject, ACPhoneBookProvider {
     

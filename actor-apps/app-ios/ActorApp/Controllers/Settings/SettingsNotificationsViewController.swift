@@ -3,7 +3,7 @@
 //
 
 import UIKit
-import ActorCore
+import ActorSDK
 
 class SettingsNotificationsViewController: AATableViewController {
     
