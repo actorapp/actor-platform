@@ -177,21 +177,21 @@ class UserViewController: ACContentTableController {
                     r.selectAction = { () -> Bool in
                         
                         func renameUser() {
-                            self.startEditField { (c) -> () in
-                                
-                                c.title = "ProfileEditHeader"
-                                c.initialText = self.user.getNameModel().get()
-                                
-                                c.didDoneTap = { (d, c) in
-                                    if d.length == 0 {
-                                        return
-                                    }
-                                    
-                                    c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d), successBlock: { (val) -> Void in
-                                        c.dismiss()
-                                    })
-                                }
-                            }
+//                            self.startEditField { (c) -> () in
+//                                
+//                                c.title = "ProfileEditHeader"
+//                                c.initialText = self.user.getNameModel().get()
+//                                
+//                                c.didDoneTap = { (d, c) in
+//                                    if d.length == 0 {
+//                                        return
+//                                    }
+//                                    
+//                                    c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d), successBlock: { (val) -> Void in
+//                                        c.dismiss()
+//                                    })
+//                                }
+//                            }
                         }
                         
                         if (!Actor.isRenameHintShown()) {

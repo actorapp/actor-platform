@@ -4,7 +4,7 @@
 
 import UIKit
 
-class UserPhotoCell: CommonCell {
+public class UserPhotoCell: CommonCell {
     
     // MARK: -
     // MARK: Private vars
@@ -17,12 +17,12 @@ class UserPhotoCell: CommonCell {
     // MARK: -
     // MARK: Public vars
     
-    var userAvatarView: AvatarView!
+    public var userAvatarView: AvatarView!
     
     // MARK: -
     // MARK: Constructors
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = UITableViewCellSelectionStyle.None
@@ -57,24 +57,24 @@ class UserPhotoCell: CommonCell {
         contentView.addSubview(progress)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: -
     // MARK: Setters
     
-    func setUsername(username: String) {
+    public func setUsername(username: String) {
         usernameLabel.text = username
         setNeedsLayout()
     }
     
-    func setPresence(presence: String) {
+    public func setPresence(presence: String) {
         presenceLabel.text = presence
         setNeedsLayout()
     }
     
-    func setProgress(isLoading: Bool) {
+    public func setProgress(isLoading: Bool) {
         if (isLoading) {
             progress.startAnimating()
             progress.showView()
@@ -87,7 +87,7 @@ class UserPhotoCell: CommonCell {
     // MARK: -
     // MARK: Layout
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         userAvatarView.frame = CGRect(x: 0.0, y: -1.0, width: contentView.bounds.width, height: contentView.bounds.height + 1.0)

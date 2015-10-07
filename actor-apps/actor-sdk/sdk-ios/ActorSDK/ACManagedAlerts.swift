@@ -3,11 +3,10 @@
 //
 
 import Foundation
-import ActorSDK
 
-extension UIViewController {
+public extension UIViewController {
 
-    func alertSheet(closure: (a: AlertSetting) -> ()) {
+    public func alertSheet(closure: (a: AlertSetting) -> ()) {
         
         let s = AlertSetting()
         
@@ -26,7 +25,7 @@ extension UIViewController {
         presentViewController(controller, animated: true, completion: nil)
     }
     
-    func confirmDestructive(message: String, action: String, yes: ()->()) {
+    public func confirmDestructive(message: String, action: String, yes: ()->()) {
         let controller = UIAlertController(title: nil, message: message, preferredStyle: .Alert)
         controller.addAction(UIAlertAction(title: action, style: .Destructive, handler: { (act) -> Void in
             yes()
@@ -36,22 +35,22 @@ extension UIViewController {
     }
 }
 
-class AlertSetting {
+public class AlertSetting {
     
-    var cancel: String!
-    var title: String!
-    var message: String!
+    public var cancel: String!
+    public var title: String!
+    public var message: String!
     
     private var actions = [AlertActions]()
     
-    func action(title: String, closure: ()->()) {
+    public func action(title: String, closure: ()->()) {
         let a = AlertActions()
         a.title = title
         a.closure = closure
         actions.append(a)
     }
     
-    func destructive(title: String, closure: ()->()) {
+    public func destructive(title: String, closure: ()->()) {
         let a = AlertActions()
         a.title = title
         a.closure = closure

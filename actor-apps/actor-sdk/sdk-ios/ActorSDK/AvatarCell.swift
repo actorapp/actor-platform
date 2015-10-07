@@ -3,17 +3,16 @@
 //
 
 import Foundation
-import Foundation
 
-class AvatarCell: UATableViewCell {
+public class AvatarCell: UATableViewCell {
     
-    var titleLabel = UILabel()
-    var subtitleLabel = UILabel()
-    var avatarView = AvatarView(frameSize: Int(64), type: .Rounded, placeholderImage: UIImage())
-    var progress = UIActivityIndicatorView(activityIndicatorStyle: .White)
-    var didTap: ((view: UIView)->())?
+    public var titleLabel = UILabel()
+    public var subtitleLabel = UILabel()
+    public var avatarView = AvatarView(frameSize: Int(64), type: .Rounded, placeholderImage: UIImage())
+    public var progress = UIActivityIndicatorView(activityIndicatorStyle: .White)
+    public var didTap: ((view: UIView)->())?
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         avatarView = AvatarView(frameSize: Int(64), type: .Rounded)
@@ -36,7 +35,7 @@ class AvatarCell: UATableViewCell {
         selectionStyle = .None
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -44,7 +43,7 @@ class AvatarCell: UATableViewCell {
         didTap?(view: avatarView)
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         avatarView.frame = CGRect(x: 14, y: 14, width: 64, height: 64)

@@ -9,13 +9,13 @@
 import Foundation
 import VBFPopFlatButton
 
-class CircullarLayerProgress: UIView {
+public class CircullarLayerProgress: UIView {
 
     private let circlePathLayer = CAShapeLayer()
     private let backgroundPathLayer = CAShapeLayer()
     private var progressButton: VBFPopFlatButton!
     
-    init(size: CGSize) {
+    public init(size: CGSize) {
         super.init(frame: CGRectMake(0, 0, size.width, size.height))
 
         self.backgroundColor = UIColor.clearColor()
@@ -55,11 +55,11 @@ class CircullarLayerProgress: UIView {
 //        circlePathLayer.addAnimation(rotationAnimation, forKey: "rotationAnimation")
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setButtonType(type: FlatButtonType, animated: Bool) {
+    public func setButtonType(type: FlatButtonType, animated: Bool) {
         if progressButton != nil && animated {
             progressButton.animateToType(type)
         } else {
@@ -73,15 +73,15 @@ class CircullarLayerProgress: UIView {
         }
     }
     
-    func setProgress(value: Double) {
+    public func setProgress(value: Double) {
         circlePathLayer.strokeEnd = CGFloat(value)
     }
     
-    func hideProgress() {
+    public func hideProgress() {
         circlePathLayer.strokeEnd = 0
     }
     
-    func hideButton() {
+    public func hideButton() {
         if progressButton != nil {
             progressButton.removeFromSuperview()
             progressButton = nil

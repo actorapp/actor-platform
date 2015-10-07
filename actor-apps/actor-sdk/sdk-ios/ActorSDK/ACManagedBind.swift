@@ -3,9 +3,8 @@
 //
 
 import Foundation
-import ActorSDK
 
-protocol ACBindedCell {
+public protocol ACBindedCell {
     
     typealias BindData
     
@@ -14,7 +13,7 @@ protocol ACBindedCell {
     func bind(item: BindData, table: ACManagedTable, index: Int, totalCount: Int)
 }
 
-protocol ACBindedSearchCell {
+public protocol ACBindedSearchCell {
     typealias BindData
     
     static func bindedCellHeight(item: BindData) -> CGFloat
@@ -22,36 +21,36 @@ protocol ACBindedSearchCell {
     func bind(item: BindData, search: String?)
 }
 
-class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: ACBindedCell>: NSObject, ACManagedRange, ARDisplayList_AppleChangeListener {
+public class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: ACBindedCell>: NSObject, ACManagedRange, ARDisplayList_AppleChangeListener {
     
-    var displayList: ARBindedDisplayList!
+    public var displayList: ARBindedDisplayList!
     
-    var selectAction: ((BindCell.BindData) -> Bool)?
+    public var selectAction: ((BindCell.BindData) -> Bool)?
     
-    var canEditAction: ((BindCell.BindData) -> Bool)?
+    public var canEditAction: ((BindCell.BindData) -> Bool)?
     
-    var editAction: ((BindCell.BindData) -> ())?
+    public var editAction: ((BindCell.BindData) -> ())?
     
-    var didBind: ((BindCell, BindCell.BindData) -> ())?
+    public var didBind: ((BindCell, BindCell.BindData) -> ())?
     
-    var autoHide = true
+    public var autoHide = true
     
     private var table: ACManagedTable!
     
     // Total items count
     
-    func rangeNumberOfItems(table: ACManagedTable) -> Int {
+    public func rangeNumberOfItems(table: ACManagedTable) -> Int {
         return Int(displayList.size())
     }
     
     // Cells
     
-    func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
         let data = displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData
         return BindCell.self.bindedCellHeight(table, item: data)
     }
     
-    func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
         let data = displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData
         let cell = table.dequeueCell(indexPath.indexPath) as BindCell
         cell.bind(data, table: table, index: indexPath.item, totalCount: rangeNumberOfItems(table))
@@ -62,32 +61,32 @@ class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: ACBindedC
     
     // Select
     
-    func rangeCanSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
         
         return selectAction != nil
     }
     
-    func rangeSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
         
         return selectAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
     }
     
     // Delete
     
-    func rangeCanDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
         if canEditAction != nil {
             return canEditAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
         }
         return false
     }
     
-    func rangeDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) {
+    public func rangeDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) {
         editAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
     }
     
     // Binding
     
-    func rangeBind(table: ACManagedTable, binder: Binder) {
+    public func rangeBind(table: ACManagedTable, binder: Binder) {
         
         self.table = table
 
@@ -96,7 +95,7 @@ class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: ACBindedC
         updateVisibility()
     }
     
-    @objc func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
+    @objc public func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
         
         let tableView = self.table.tableView
         let section = 0
@@ -162,7 +161,7 @@ class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: ACBindedC
         }
     }
     
-    func updateVisibility() {
+    public func updateVisibility() {
         if autoHide {
             if displayList.size() == 0 {
                 table.hideTable()
@@ -172,14 +171,14 @@ class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: ACBindedC
         }
     }
     
-    func rangeUnbind(table: ACManagedTable, binder: Binder) {
+    public func rangeUnbind(table: ACManagedTable, binder: Binder) {
         
         self.table = nil
         
         displayList.removeAppleListener(self)
     }
     
-    func filter(text: String) {
+    public func filter(text: String) {
         if (text.length == 0) {
             self.displayList.initTopWithRefresh(false)
         } else {
@@ -195,9 +194,9 @@ class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: ACBindedC
 }
 
 
-extension ACManagedSection {
+public extension ACManagedSection {
     
-    func binded<T where T: UITableViewCell, T: ACBindedCell>(closure: (r: ACBindedRows<T>) -> ()) -> ACBindedRows<T> {
+    public func binded<T where T: UITableViewCell, T: ACBindedCell>(closure: (r: ACBindedRows<T>) -> ()) -> ACBindedRows<T> {
         let r = ACBindedRows<T>()
         regions.append(r)
         closure(r: r)

@@ -92,27 +92,27 @@ class GroupViewController: ACContentTableController {
             // Header: Change title
             s.action("GroupSetTitle") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    self.startEditField { (c) -> () in
-                        
-                        c.title = "GroupEditHeader"
-                        
-                        c.fieldHint = "GroupEditHint"
-                        
-                        c.actionTitle = "NavigationSave"
-                        
-                        c.initialText = self.group.getNameModel().get()
-                        
-                        c.didDoneTap = { (t, c) -> () in
-                            
-                            if t.length == 0 {
-                                return
-                            }
-
-                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t), successBlock: { (val) -> Void in
-                                c.dismiss()
-                            })
-                        }
-                    }
+//                    self.startEditField { (c) -> () in
+//                        
+//                        c.title = "GroupEditHeader"
+//                        
+//                        c.fieldHint = "GroupEditHint"
+//                        
+//                        c.actionTitle = "NavigationSave"
+//                        
+//                        c.initialText = self.group.getNameModel().get()
+//                        
+//                        c.didDoneTap = { (t, c) -> () in
+//                            
+//                            if t.length == 0 {
+//                                return
+//                            }
+//
+//                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t), successBlock: { (val) -> Void in
+//                                c.dismiss()
+//                            })
+//                        }
+//                    }
                     
                     return true
                 }
