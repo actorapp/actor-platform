@@ -1,9 +1,5 @@
 //
-//  ActorSDK.h
-//  ActorSDK
-//
-//  Created by Steve Kite on 07.10.15.
-//  Copyright © 2015 Steve Kite. All rights reserved.
+//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
 //
 
 #import <UIKit/UIKit.h>

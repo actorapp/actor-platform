@@ -6,7 +6,6 @@ import Foundation
 import Darwin
 import UIKit
 import Accelerate
-import NYTPhotoViewer
 
 public extension UIImage {
     
