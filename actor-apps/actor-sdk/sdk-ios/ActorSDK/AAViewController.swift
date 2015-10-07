@@ -6,7 +6,7 @@ import UIKit
 import MobileCoreServices
 import PEPhotoCropEditor
 
-public class AAViewController: UIViewController, UINavigationControllerDelegate {
+public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PECropViewControllerDelegate  {
     
     // MARK: -
     // MARK: Public vars
@@ -121,42 +121,13 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate 
         }
     }
     
-    public func applyScrollUi(tableView: UITableView, cell: UITableViewCell?) {
-        let offset = min(tableView.contentOffset.y, avatarHeight)
-        
-        if let userCell = cell as? UserPhotoCell {
-            userCell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, avatarHeight - offset)
-        } else if let groupCell = cell as? GroupPhotoCell {
-            groupCell.groupAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, avatarHeight - offset)
-        }
-        
-        var fraction: Double = 0
-        if (offset > 0) {
-            if (offset > avatarHeight - 64) {
-                fraction = 1
-            } else {
-                fraction = Double(offset) / (Double(avatarHeight) - 64)
-            }
-        }
-        
-        // navigationController?.navigationBar.lt_setBackgroundColor(MainAppTheme.navigation.barSolidColor.alpha(fraction))
-    }
-    
-    public func applyScrollUi(tableView: UITableView) {
-        applyScrollUi(tableView, indexPath: NSIndexPath(forRow: 0, inSection: 0))
-    }
-    
-    public func applyScrollUi(tableView: UITableView, indexPath: NSIndexPath) {
-        applyScrollUi(tableView, cell: tableView.cellForRowAtIndexPath(indexPath))
-    }
-    
     public func pickAvatar(takePhoto:Bool, closure: (image: UIImage) -> ()) {
         self.pendingPickClosure = closure
         
         let pickerController = AAImagePickerController()
         pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
         pickerController.mediaTypes = [kUTTypeImage as String]
-        pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+        pickerController.view.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
         pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
         pickerController.delegate = self
         pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
@@ -201,9 +172,6 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate 
         navigation.viewControllers = [controller]
         presentViewController(navigation, animated: true, completion: nil)
     }
-}
-
-extension AAViewController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
     
     public func cropImage(image: UIImage) {
         let cropController = PECropViewController()
@@ -249,6 +217,4 @@ extension AAViewController: UIImagePickerControllerDelegate, PECropViewControlle
         MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
-    
 }
-

@@ -424,7 +424,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
         pickerController.mediaTypes = [kUTTypeImage as String]
-        pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+        pickerController.view.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
         pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
         pickerController.delegate = self
         pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor

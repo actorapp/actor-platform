@@ -8,26 +8,13 @@ import MessageUI
 
 public class AARootTabViewController : UITabBarController, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate {
     
-    // MARK: -
-    // MARK: Private vars
-    
     private var appEmptyContainer = UIView()
     private var appIsSyncingPlaceholder = BigPlaceholderView(topOffset: 44 + 20)
     private var appIsEmptyPlaceholder = BigPlaceholderView(topOffset: 44 + 20)
-
-    // MARK: -
-    // MARK: Public vars
     
-    public var centerButton:UIButton? = nil
-    public var isInited = false
-    public var isAfterLogin = false
-    
-    // MARK: -
-    // MARK: Constructors
-    
-    public init(isAfterLogin: Bool) {
-        super.init(nibName: nil, bundle: nil);
-        self.isAfterLogin = isAfterLogin
+    public init() {
+        super.init(nibName: nil, bundle: nil)
+        
         self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
         self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
     }
@@ -35,8 +22,6 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
     public required init(coder aDecoder: NSCoder) {
         fatalError("Not implemented")
     }
-    
-    // MARK: -
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,26 +48,6 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         
         view.addSubview(appEmptyContainer)
         view.backgroundColor = UIColor.whiteColor()
-    }
-    
-    
-    public override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if (!isInited) {
-            if (Actor.isLoggedIn()) {
-                isInited = true
-                
-//                let contactsNavigation = AANavigationController(rootViewController: ContactsViewController())
-//                let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
-//                let settingsNavigation = AANavigationController(rootViewController: SettingsViewController())
-                
-//                viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation]
-
-                selectedIndex = 0;
-                selectedIndex = 1;
-            }
-        }
     }
     
     public func showAppIsSyncingPlaceholder() {

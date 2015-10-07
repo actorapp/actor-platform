@@ -45,7 +45,7 @@ public func initStyles() {
     // Cell style
     
     registerStyle("cell") { (s) -> () in
-        s.backgroundColor = MainAppTheme.list.bgColor
+        s.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
         // s.selectedColor = MainAppTheme.list.bgSelectedColor
         s.cellTopSeparatorVisible = false
         s.cellBottomSeparatorVisible = true
@@ -158,7 +158,7 @@ public func initStyles() {
     // Controllers
     
     registerStyle("controller.settings") { (s) -> () in
-        s.backgroundColor = MainAppTheme.list.bgColor
+        s.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
         s.title = localized("TabSettings")
     }
 }
