@@ -4,7 +4,6 @@
 
 import Foundation
 import RMUniversalAlert
-import ActorSDK
 
 private var pickDocumentClosure = "_pick_document_closure"
 private var actionShitReference = "_action_shit"
@@ -132,7 +131,7 @@ extension UIViewController {
         actionShit.delegate = shitDelegate
         
         // Convert from weak to strong reference
-        setAssociatedObject(actionShit, value: shitDelegate, associativeKey: &actionShitReference, policy: objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        // setAssociatedObject(actionShit, value: shitDelegate, associativeKey: &actionShitReference)
         
         actionShit.showWithCompletion(nil)
     }

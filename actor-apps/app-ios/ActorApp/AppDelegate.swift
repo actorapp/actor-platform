@@ -6,7 +6,6 @@ import Foundation
 
 import Fabric
 import Crashlytics
-import ActorSDK
 import j2objc
 import ActorCore
 
