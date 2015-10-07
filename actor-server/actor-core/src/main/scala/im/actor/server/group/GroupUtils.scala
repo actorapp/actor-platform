@@ -6,7 +6,7 @@ import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.pubgroups.ApiPublicGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.file.ImageUtils
-import im.actor.server.user.UserExtension
+import im.actor.server.user.{ UserUtils, UserExtension }
 import im.actor.server.{ models, persist }
 import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
@@ -52,7 +52,7 @@ object GroupUtils {
     for {
       groups ← Future.sequence(groupIds map (GroupExtension(system).getApiStruct(_, clientUserId)))
       memberIds = getUserIds(groups)
-      users ← Future.sequence((userIds.toSet ++ memberIds.toSet) map (UserExtension(system).getApiStruct(_, clientUserId, clientAuthId)))
+      users ← Future.sequence((userIds.toSet ++ memberIds.toSet) map (UserUtils.safeGetUser(_, clientUserId, clientAuthId))) map (_.flatten)
     } yield (groups, users.toSeq)
   }
 }

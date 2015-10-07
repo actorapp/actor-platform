@@ -24,6 +24,8 @@ object EchoBot {
 
 final class EchoBot(token: String, endpoint: String) extends RemoteBot(token, endpoint) {
   override def onTextMessage(tm: TextMessage): Unit = {
-    requestSendTextMessage(tm.sender.asOutPeer, nextRandomId(), s"Hey, here is your reply: ${tm.text}")
+    val name = getUser(tm.sender.id).name
+
+    requestSendTextMessage(tm.sender.asOutPeer, nextRandomId(), s"Hey $name, here is your reply: ${tm.text}")
   }
 }

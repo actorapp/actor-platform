@@ -7,7 +7,6 @@ import akka.http.scaladsl.server.Route
 import akka.stream.scaladsl.Flow
 import cats.data.OptionT
 import cats.std.future._
-import im.actor.bots.BotMessages.{ BotRequest, BotResponse, BotSeqUpdate }
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.bot.{ BotServerBlueprint, BotExtension }
 import upickle.default._
@@ -17,6 +16,7 @@ import scala.util.control.NoStackTrace
 private[http] final class BotsHandler(implicit system: ActorSystem) extends RoutesHandler {
 
   import system._
+  import im.actor.bots.BotMessages.{ BotUpdate, BotRequest, BotResponse }
 
   private val botExt = BotExtension(system)
 
@@ -48,9 +48,9 @@ private[http] final class BotsHandler(implicit system: ActorSystem) extends Rout
         case rsp: BotResponse ⇒
           log.debug("Sending response {}", rsp)
           write[BotResponse](rsp)
-        case upd: BotSeqUpdate ⇒
+        case upd: BotUpdate ⇒
           log.debug("Sending update {}", upd)
-          write[BotSeqUpdate](upd)
+          write[BotUpdate](upd)
         case unmatched ⇒
           log.error("Unmatched {}", unmatched)
           throw new RuntimeException(s"Unmatched BotMessage ${unmatched}")
