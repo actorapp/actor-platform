@@ -6,7 +6,7 @@ import Foundation
 
 // Base Range 
 
-protocol ACManagedRange {
+public protocol ACManagedRange {
     
     // Total items count
     
@@ -45,53 +45,53 @@ protocol ACManagedRange {
 
 // Default implementations of ACManagedRangeDelegate
 
-extension ACManagedRange {
+public extension ACManagedRange {
     
-    func rangeCanSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
         // Do nothing
         return false
     }
     
-    func rangeSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
         // Do nothing
         return false
     }
     
-    func rangeCanCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
         // Do nothing
         return false
     }
     
-    func rangeCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) {
+    public func rangeCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) {
         // Do nothing
     }
     
-    func rangeCanDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
         // Do nothing
         return false
     }
     
-    func rangeDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) {
+    public func rangeDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) {
         // Do nothing
     }
     
-    func rangeBind(table: ACManagedTable, binder: Binder) {
+    public func rangeBind(table: ACManagedTable, binder: Binder) {
         // Do nothing
     }
     
-    func rangeUnbind(table: ACManagedTable, binder: Binder) {
+    public func rangeUnbind(table: ACManagedTable, binder: Binder) {
         // Do nothing
     }
 }
 
-class ACRangeIndexPath {
+public class ACRangeIndexPath {
     
-    let section: Int
-    let range: Int
-    let item: Int
-    let indexPath: NSIndexPath
+    public let section: Int
+    public let range: Int
+    public let item: Int
+    public let indexPath: NSIndexPath
     
-    init(section: Int, range: Int, item: Int, indexPath: NSIndexPath) {
+    public init(section: Int, range: Int, item: Int, indexPath: NSIndexPath) {
         self.section = section
         self.range = range
         self.item = item

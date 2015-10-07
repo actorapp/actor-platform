@@ -3,14 +3,13 @@
 //
 
 import UIKit
-import ActorSDK
 
-enum AvatarType {
+public enum AvatarType {
     case Rounded
     case Square
 }
 
-class AvatarView: UIImageView {
+public class AvatarView: UIImageView {
     
     // MARK: -
     // MARK: Private vars
@@ -21,33 +20,33 @@ class AvatarView: UIImageView {
     // MARK: -
     // MARK: Public vars
     
-    var frameSize: Int = 0;
-    var avatarType: AvatarType = .Rounded
-    var placeholderImage: UIImage?
+    public var frameSize: Int = 0;
+    public var avatarType: AvatarType = .Rounded
+    public var placeholderImage: UIImage?
     
-    var bindedFileId: jlong! = nil;
-    var bindedTitle: String! = nil;
-    var bindedId: jint! = nil;
+    public var bindedFileId: jlong! = nil;
+    public var bindedTitle: String! = nil;
+    public var bindedId: jint! = nil;
     
-    var requestId: Int = 0;
-    var callback: CocoaDownloadCallback? = nil;
+    public var requestId: Int = 0;
+    public var callback: CocoaDownloadCallback? = nil;
     
-    var enableAnimation: Bool = true
+    public var enableAnimation: Bool = true
     
     // MARK: -
     // MARK: Constructors
     
-    init() {
+    public init() {
         super.init(image: nil)
     }
     
-    init(frameSize: Int) {
+    public init(frameSize: Int) {
         self.frameSize = frameSize
         
         super.init(image: nil)
     }
     
-    init(frameSize: Int, type: AvatarType) {
+    public init(frameSize: Int, type: AvatarType) {
         self.frameSize = frameSize
         self.avatarType = type
         
@@ -58,7 +57,7 @@ class AvatarView: UIImageView {
         }
     }
     
-    init(frameSize: Int, type: AvatarType, placeholderImage: UIImage?) {
+    public init(frameSize: Int, type: AvatarType, placeholderImage: UIImage?) {
         self.frameSize = frameSize
         self.avatarType = type
         self.placeholderImage = placeholderImage
@@ -70,7 +69,7 @@ class AvatarView: UIImageView {
         }
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
         
         self.frameSize = Int(min(frame.width, frame.height))
@@ -101,7 +100,7 @@ class AvatarView: UIImageView {
     // MARK: -
     // MARK: Bind
     
-    func bind(var title: String, id: jint, fileName: String?) {
+    public func bind(var title: String, id: jint, fileName: String?) {
         unbind()
         
         title = title.smallValue()
@@ -126,11 +125,11 @@ class AvatarView: UIImageView {
         }
     }
     
-    func bind(title: String, id: jint, avatar: ACAvatar!) {
+    public func bind(title: String, id: jint, avatar: ACAvatar!) {
         self.bind(title, id: id, avatar: avatar, clearPrev: true)
     }
     
-    func bind(var title: String, id: jint, avatar: ACAvatar!, clearPrev: Bool) {
+    public func bind(var title: String, id: jint, avatar: ACAvatar!, clearPrev: Bool) {
         
         title = title.smallValue()
         
@@ -246,11 +245,11 @@ class AvatarView: UIImageView {
         Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
     }
     
-    func unbind() {
+    public func unbind() {
         self.unbind(true)
     }
     
-    func unbind(clearPrev: Bool) {
+    public func unbind(clearPrev: Bool) {
         if (clearPrev) {
             self.image = (self.placeholderImage != nil) ? self.placeholderImage : nil
         }
@@ -265,19 +264,4 @@ class AvatarView: UIImageView {
         }
     }
 
-}
-
-class BarAvatarView : AvatarView {
-    
-    override init(frameSize: Int, type: AvatarType) {
-        super.init(frameSize: frameSize, type: type)
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func alignmentRectInsets() -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 8)
-    }
 }
