@@ -2,31 +2,29 @@ package im.actor.server.session
 
 import java.util.concurrent.TimeUnit
 
-import scala.collection.immutable
-import scala.concurrent.ExecutionContext
-import scala.concurrent.duration._
-
 import akka.actor._
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.contrib.pattern.{ ClusterSharding, DistributedPubSubMediator, ShardRegion }
 import akka.pattern.pipe
-import akka.stream.Materializer
+import akka.stream.ActorMaterializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import com.typesafe.config.Config
-import scodec.DecodeResult
-import scodec.bits.BitVector
-import slick.driver.PostgresDriver.api._
-
 import im.actor.api.rpc.ClientData
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
-import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
-import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesManagerRegion }
-import im.actor.server.user.{ UserExtension, AuthEvents }
+import im.actor.server.sequence.SeqUpdatesExtension
+import im.actor.server.user.{ AuthEvents, UserExtension }
 import im.actor.server.{ models, persist }
+import scodec.DecodeResult
+import scodec.bits.BitVector
+import slick.driver.PostgresDriver.api._
+
+import scala.collection.immutable
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 
 case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
 
@@ -61,34 +59,11 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
 
-  def props(mediator: ActorRef)(
-    implicit
-    config:                     SessionConfig,
-    weakUpdManagerRegion:       WeakUpdatesManagerRegion,
-    presenceManagerRegion:      PresenceManagerRegion,
-    groupPresenceManagerRegion: GroupPresenceManagerRegion,
-    materializer:               Materializer
-  ): Props =
-    Props(
-      classOf[Session],
-      mediator,
-      config,
-      weakUpdManagerRegion,
-      presenceManagerRegion,
-      groupPresenceManagerRegion,
-      materializer
-    )
+  def props(mediator: ActorRef)(implicit config: SessionConfig): Props =
+    Props(classOf[Session], mediator, config)
 }
 
-class Session(mediator: ActorRef)(
-  implicit
-  config:                     SessionConfig,
-  weakUpdManagerRegion:       WeakUpdatesManagerRegion,
-  presenceManagerRegion:      PresenceManagerRegion,
-  groupPresenceManagerRegion: GroupPresenceManagerRegion,
-  materializer:               Materializer
-)
-  extends Actor with ActorLogging with MessageIdHelper with Stash {
+class Session(mediator: ActorRef)(implicit config: SessionConfig) extends Actor with ActorLogging with MessageIdHelper with Stash {
 
   import SessionEnvelope.Payload
 
@@ -96,6 +71,7 @@ class Session(mediator: ActorRef)(
 
   private implicit val db: Database = DbExtension(context.system).db
   private implicit val seqUpdManagerRegion = SeqUpdatesExtension(context.system).region
+  private implicit val materializer = ActorMaterializer()
 
   private[this] var optUserId: Option[Int] = None
   private[this] var clients = immutable.Set.empty[ActorRef]

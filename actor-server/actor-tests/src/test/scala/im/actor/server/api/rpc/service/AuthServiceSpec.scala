@@ -3,37 +3,32 @@ package im.actor.server.api.rpc.service
 import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
-import im.actor.server.user.ContactsUtils
-import shardakka.ShardakkaExtension
-
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.Random
-import scalaz.\/
-
-import akka.contrib.pattern.DistributedPubSubExtension
-import com.google.protobuf.{ ByteString, CodedInputStream }
-import org.scalatest.Inside._
-
+import com.google.protobuf.ByteString
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
-import im.actor.api.rpc.contacts.{ ResponseGetContacts, ApiPhoneToImport, UpdateContactRegistered }
+import im.actor.api.rpc.contacts.{ ApiPhoneToImport, ResponseGetContacts, UpdateContactRegistered }
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ApiContactRecord, ApiContactType, ApiSex }
+import im.actor.server._
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthErrors
-import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
+import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.models.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransaction
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
-import im.actor.server._
+import im.actor.server.user.ContactsUtils
+import org.scalatest.Inside._
+import shardakka.ShardakkaExtension
+
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.Random
+import scalaz.\/
 
 final class AuthServiceSpec
   extends BaseAppSuite
@@ -112,10 +107,6 @@ final class AuthServiceSpec
 
   object s {
     implicit val ec = system.dispatcher
-
-    implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-    implicit val presenceManagerRegion = PresenceManager.startRegion()
-    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))

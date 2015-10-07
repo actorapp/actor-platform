@@ -6,10 +6,10 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.api.rpc.weak.{ UpdateUserOnline, UpdateUserOffline }
+import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
 import im.actor.server.ActorSpecification
 import im.actor.server.mtproto.protocol._
-import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesExtension }
 
 import scala.concurrent.duration._
 import scala.util.Random
@@ -34,6 +34,8 @@ class SessionResendSpec extends BaseSessionSpec(
   it should "not resend messages when another came with the same reduceKey" in Sessions().reduceKey
 
   case class Sessions() {
+    val weakUpdatesExt = WeakUpdatesExtension(system)
+
     def e1() = {
       implicit val probe = TestProbe()
 
@@ -187,12 +189,12 @@ class SessionResendSpec extends BaseSessionSpec(
       val upd2second = UpdateUserOffline(2)
       val upd3 = UpdateUserOffline(3)
 
-      WeakUpdatesManager.pushUpdate(authId, upd1, Some("reduceKey 1 (uniq)"))
+      weakUpdatesExt.pushUpdate(authId, upd1, Some("reduceKey 1 (uniq)"))
 
-      WeakUpdatesManager.pushUpdate(authId, upd2first, Some("reduceKey 2 (same)"))
-      WeakUpdatesManager.pushUpdate(authId, upd2second, Some("reduceKey 2 (same)"))
+      weakUpdatesExt.pushUpdate(authId, upd2first, Some("reduceKey 2 (same)"))
+      weakUpdatesExt.pushUpdate(authId, upd2second, Some("reduceKey 2 (same)"))
 
-      WeakUpdatesManager.pushUpdate(authId, upd3, Some("reduceKey 3 (uniq)"))
+      weakUpdatesExt.pushUpdate(authId, upd3, Some("reduceKey 3 (uniq)"))
 
       expectUserOffline(authId, sessionId, 1)
 
