@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import ActorSDK
 
 extension UIViewController {
     func navigateDetail(controller: UIViewController) {

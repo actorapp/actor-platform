@@ -108,7 +108,7 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
         }
         
         // Hide Status bar
-        UIApplication.sharedApplication().animateStatusBarAppearance(.SlideUp, duration: 0.3)
+        // UIApplication.sharedApplication().animateStatusBarAppearance(.SlideUp, duration: 0.3)
     }
     
     func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
@@ -125,7 +125,7 @@ class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDe
         bind.removeAll()
         
         // Restoring status bar
-        UIApplication.sharedApplication().animateStatusBarAppearance(.SlideDown, duration: 0.3)
+        // UIApplication.sharedApplication().animateStatusBarAppearance(.SlideDown, duration: 0.3)
     }
 }
 
