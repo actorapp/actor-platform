@@ -13,6 +13,7 @@ target 'ActorSDK' do
     
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
+    pod 'zipzap'
     
     pod 'J2ObjC-Framework'
 end
@@ -25,10 +26,6 @@ end
 
 target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
-
-    # Core
-    
-    pod 'zipzap'
 
     # UI
     pod 'VBFPopFlatButton'
