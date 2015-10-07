@@ -10,6 +10,9 @@ import { emoji, getEmojiCategories } from 'utils/EmojiUtils';
 
 import { Element, Link } from 'react-scroll';
 
+let emojiTabs = [];
+let emojis = [];
+
 export default class EmojiDropdown extends Component {
   static propTypes = {
     isOpen: React.PropTypes.bool.isRequired,
@@ -20,10 +23,50 @@ export default class EmojiDropdown extends Component {
   constructor(props) {
     super(props);
 
+    const emojiCategories = getEmojiCategories();
+
+    for (let category of emojiCategories) {
+      let currentCategoryEmojis = [];
+
+      emoji.change_replace_mode('css');
+      const categoryIcon = emoji.replace_colons(category.icon);
+
+      emojiTabs.push(
+        <Link to={category.title}
+              spy smooth
+              offset={30}
+              duration={250}
+              onSetActive={() => this.changeDropdownTitle(category.title)}
+              containerId="emojiContainer"
+              className="emoji-dropdown__header__tabs__tab"
+              activeClass="emoji-dropdown__header__tabs__tab--active">
+          <span dangerouslySetInnerHTML={{__html: categoryIcon}}/>
+        </Link>
+      );
+
+      for (let emojiChar of category.data) {
+        emoji.change_replace_mode('css');
+        const convertedChar = emoji.replace_unified(emojiChar);
+        emoji.colons_mode = true;
+        const emojiColon = emoji.replace_unified(emojiChar);
+        emoji.colons_mode = false;
+
+        currentCategoryEmojis.push(
+          <a onClick={() => this.onSelect(emojiColon)} dangerouslySetInnerHTML={{__html: convertedChar}}/>
+        );
+      }
+
+      emojis.push(
+        <Element name={category.title}>
+          <p>{category.title}</p>
+          {currentCategoryEmojis}
+        </Element>
+      );
+    }
+
     this.state = {
       isOpen: props.isOpen,
-      dropdownTitle: 'Emoji',
-      emojiCategories: getEmojiCategories()
+      dropdownTitle: 'Emoji'
     };
   }
 
@@ -37,6 +80,7 @@ export default class EmojiDropdown extends Component {
     } else {
       document.removeEventListener('click', this.onDocumentClick, false);
       document.removeEventListener('keydown', this.onKeyDown, false);
+      this.setState({dropdownTitle: 'Emoji'});
     }
   }
 
@@ -78,73 +122,27 @@ export default class EmojiDropdown extends Component {
   changeDropdownTitle = (title) => this.setState({dropdownTitle: title});
 
   render() {
-    const { isOpen, emojiCategories, dropdownTitle } = this.state;
+    const { isOpen, dropdownTitle } = this.state;
 
     const emojiDropdownClassName = classnames('emoji-dropdown', {
       'emoji-dropdown--opened': isOpen
     });
 
-    let emojiTabs = [];
-    let emojis = [];
+    return (
+      <div className={emojiDropdownClassName}>
+        <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
+          <header className="emoji-dropdown__header">
+            <p className="emoji-dropdown__header__title">{dropdownTitle}</p>
 
-    for (let category of emojiCategories) {
-      let currentCategoryEmojis = [];
-
-      emoji.change_replace_mode('css');
-      const categoryIcon = emoji.replace_colons(category.icon);
-
-      emojiTabs.push(
-        <Link to={category.title}
-              spy smooth
-              offset={30}
-              duration={250}
-              onSetActive={() => this.changeDropdownTitle(category.title)}
-              containerId="emojiContainer"
-              className="emoji-dropdown__header__tabs__tab"
-              activeClass="emoji-dropdown__header__tabs__tab--active">
-          <span dangerouslySetInnerHTML={{__html: categoryIcon}}/>
-        </Link>
-      );
-
-      for (let emojiChar of category.data) {
-        emoji.change_replace_mode('css');
-        const convertedChar = emoji.replace_unified(emojiChar);
-        emoji.colons_mode = true;
-        const emojiColon = emoji.replace_unified(emojiChar);
-        emoji.colons_mode = false;
-
-        currentCategoryEmojis.push(
-          <a onClick={() => this.onSelect(emojiColon)} dangerouslySetInnerHTML={{__html: convertedChar}}/>
-        );
-      }
-
-      emojis.push(
-        <Element name={category.title}>
-          <p>{category.title}</p>
-          {currentCategoryEmojis}
-        </Element>
-      );
-    }
-
-    if (isOpen) {
-      return (
-        <div className={emojiDropdownClassName}>
-          <div className="emoji-dropdown__wrapper" ref="emojiDropdown">
-            <header className="emoji-dropdown__header">
-              <p className="emoji-dropdown__header__title">{dropdownTitle}</p>
-
-              <div className="emoji-dropdown__header__tabs pull-right">
-                {emojiTabs}
-              </div>
-            </header>
-            <div className="emoji-dropdown__body" id="emojiContainer">
-              {emojis}
+            <div className="emoji-dropdown__header__tabs pull-right">
+              {emojiTabs}
             </div>
+          </header>
+          <div className="emoji-dropdown__body" id="emojiContainer">
+            {emojis}
           </div>
         </div>
-      );
-    } else {
-      return null;
-    }
+      </div>
+    );
   }
 }

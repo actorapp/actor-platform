@@ -1,24 +1,19 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import { dispatch } from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import ActorAppConstants from 'constants/ActorAppConstants';
-
-var ActionTypes = ActorAppConstants.ActionTypes;
-
 export default {
-  createAppVisible: function() {
+  createAppVisible: () => {
     ActorClient.onAppVisible();
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.APP_VISIBLE
-    });
+    dispatch(ActionTypes.APP_VISIBLE);
   },
 
-  createAppHidden: function() {
+  createAppHidden: () => {
     ActorClient.onAppHidden();
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.APP_HIDDEN
-    });
+    dispatch(ActionTypes.APP_HIDDEN);
   }
 };

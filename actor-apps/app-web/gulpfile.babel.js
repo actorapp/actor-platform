@@ -8,9 +8,15 @@ import gulp from 'gulp';
 import gutil from 'gulp-util';
 import manifest from 'gulp-manifest';
 import shell from 'gulp-shell';
-//import minimist from 'minimist';
+import minimist from 'minimist';
 //import asar from  'asar';
 import svgSprite from 'gulp-svg-sprite';
+import image from 'gulp-image';
+import gulpif from 'gulp-if';
+import path from 'path';
+
+const argv = minimist(process.argv.slice(2));
+const isProduction = argv.release || false;
 
 gulp.task('webpack:build', (callback) => {
   // modify some webpack config options
@@ -40,6 +46,12 @@ gulp.task('webpack:build', (callback) => {
 gulp.task('webpack-dev-server', () => {
   // modify some webpack config options
   assign(webpackConfig, {
+    resolve: {
+      modulesDirectories: ['node_modules'],
+      root: [
+        path.join(__dirname, 'src/app')
+      ]
+    },
     plugins: [
       new webpack.ResolverPlugin([
         new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
@@ -68,24 +80,22 @@ gulp.task('webpack-dev-server', () => {
     });
 });
 
-gulp.task('emoji', () => {
-  gulp.src([
-    './node_modules/emoji-data/**/*.png',
-    './node_modules/emoji-data/*.png',
-    '!./node_modules/emoji-data/build/',
-    '!./node_modules/emoji-data/build/**'
-  ], {base: './node_modules/emoji-data'})
-    .pipe(gulp.dest('./dist/assets/img/emoji/'));
-});
-
 gulp.task('push', () => {
   gulp.src(['./push/*'])
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('assets', () => {
-  gulp.src(['src/assets/**/*', '!src/assets/img/svg/', '!src/assets/img/svg/**'])
-    .pipe(gulp.dest('./dist/assets/'));
+gulp.task('assets', ['sounds', 'images', 'locale-data']);
+
+gulp.task('sounds', () => {
+  gulp.src(['src/assets/sound/**/*'])
+    .pipe(gulp.dest('./dist/assets/sound'));
+});
+
+gulp.task('images', ['sprite', 'emoji'], () => {
+  gulp.src(['src/assets/img/**/*', '!src/assets/img/svg/', '!src/assets/img/svg/**'])
+    .pipe(gulpif(isProduction, image()))
+    .pipe(gulp.dest('./dist/assets/img'));
 });
 
 gulp.task('sprite', () => {
@@ -105,12 +115,28 @@ gulp.task('sprite', () => {
         }
       }
     }))
-    .pipe(gulp.dest('./dist/assets/'));
+    .pipe(gulp.dest('./dist/assets/img'));
+});
+
+gulp.task('emoji', () => {
+  gulp.src([
+    './node_modules/emoji-data/sheet_apple_32.png'
+    //'./node_modules/emoji-data/sheet_emojione_32.png',
+    //'./node_modules/emoji-data/sheet_google_32.png',
+    //'./node_modules/emoji-data/sheet_twitter_32*.png',
+  ], {base: './node_modules/emoji-data'})
+    .pipe(gulpif(isProduction, image()))
+    .pipe(gulp.dest('./dist/assets/img/emoji'));
 });
 
 gulp.task('html', () => {
   gulp.src(['src/index.html'])
     .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('locale-data', () => {
+  gulp.src(['node_modules/intl/locale-data/json/**/*'])
+    .pipe(gulp.dest('./dist/assets/locale-data'));
 });
 
 gulp.task('lib:build', shell.task(['cd ../ && ./gradlew :core-js:buildPackage']));
@@ -146,7 +172,7 @@ gulp.task('electron:app', () => {
 
 gulp.task('electron', ['electron:prepare', 'electron:app'], shell.task(['asar pack electron_dist/app electron_dist/app.asar']));
 
-const staticTasksBase = ['html', 'assets', 'sprite', 'push', 'emoji'];
+const staticTasksBase = ['html', 'assets', 'push'];
 const staticTasks = staticTasksBase.concat(['lib']);
 const staticTasksDev = staticTasksBase.concat(['lib:dev']);
 

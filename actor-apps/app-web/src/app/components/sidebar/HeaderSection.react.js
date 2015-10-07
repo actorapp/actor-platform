@@ -6,10 +6,11 @@ import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import mixpanel from 'utils/Mixpanel';
 import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
-import classNames from 'classnames';
+import { IntlMixin } from 'react-intl';
+import classnames from 'classnames';
 import ActorClient from 'utils/ActorClient';
 import { escapeWithEmoji } from 'utils/EmojiUtils'
+import confirm from 'utils/confirm'
 
 import MyProfileActions from 'actions/MyProfileActionCreators';
 import LoginActionCreators from 'actions/LoginActionCreators';
@@ -51,26 +52,29 @@ class HeaderSection extends Component {
   };
 
 
-  setLogout = () => LoginActionCreators.setLoggedOut();
   openMyProfile = () => MyProfileActions.show();
   openHelpDialog = () => HelpActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.openModal();
   onSettingsOpen = () => PreferencesActionCreators.show();
   openTwitter = () => window.open('https://twitter.com/actorapp');
+  setLogout = () => {
+    confirm('Do you really want to leave?').then(
+      () => LoginActionCreators.setLoggedOut(),
+      () => {}
+    );
+  };
 
   render() {
     const { profile, isOpened } = this.state;
 
     if (profile) {
 
-      const headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
+      const headerClass = classnames('sidebar__header', 'sidebar__header--clickable', {
         'sidebar__header--opened': isOpened
       });
-      const menuClass = classNames('dropdown', {
+      const menuClass = classnames('dropdown', {
         'dropdown--opened': isOpened
       });
-
-      const profileName = escapeWithEmoji(profile.name);
 
       return (
         <header className={headerClass}>
@@ -80,47 +84,38 @@ class HeaderSection extends Component {
                         size="tiny"
                         title={profile.name} />
             <span className="sidebar__header__user__name col-xs"
-                  dangerouslySetInnerHTML={{__html: profileName}}/>
+                  dangerouslySetInnerHTML={{__html: escapeWithEmoji(profile.name)}}/>
             <div className={menuClass}>
               <span className="dropdown__button">
                 <i className="material-icons">arrow_drop_down</i>
               </span>
               <ul className="dropdown__menu dropdown__menu--right">
-                <li className="dropdown__menu__item hide">
-                  <i className="material-icons">photo_camera</i>
-                  <FormattedMessage message={this.getIntlMessage('setProfilePhoto')}/>
-                </li>
                 <li className="dropdown__menu__item" onClick={this.openMyProfile}>
                   <i className="material-icons">edit</i>
-                  <FormattedMessage message={this.getIntlMessage('editProfile')}/>
+                  {this.getIntlMessage('menu.editProfile')}
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
                   <i className="material-icons">person_add</i>
-                  <FormattedMessage message={this.getIntlMessage('addContact')}/>
+                  {this.getIntlMessage('menu.addToContacts')}
                 </li>
                 <li className="dropdown__menu__separator"></li>
-                <li className="dropdown__menu__item hide">
-                  <svg className="icon icon--dropdown"
-                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
-                  <FormattedMessage message={this.getIntlMessage('configureIntegrations')}/>
-                </li>
                 <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
                   <i className="material-icons">help</i>
-                  <FormattedMessage message={this.getIntlMessage('helpAndFeedback')}/>
+                  {this.getIntlMessage('menu.helpAndFeedback')}
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openTwitter}>
                   <svg className="icon icon--dropdown"
                        style={{marginLeft: -34}}
-                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#twitter"/>'}}/>
-                  <FormattedMessage message={this.getIntlMessage('twitter')}/>
+                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#twitter"/>'}}/>
+                  {this.getIntlMessage('menu.twitter')}
                 </li>
                 <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
                   <i className="material-icons">settings</i>
-                  <FormattedMessage message={this.getIntlMessage('preferences')}/>
+                  {this.getIntlMessage('menu.preferences')}
                 </li>
                 <li className="dropdown__menu__separator"></li>
                 <li className="dropdown__menu__item" onClick={this.setLogout}>
-                  <FormattedMessage message={this.getIntlMessage('signOut')}/>
+                  {this.getIntlMessage('menu.signOut')}
                 </li>
               </ul>
             </div>
