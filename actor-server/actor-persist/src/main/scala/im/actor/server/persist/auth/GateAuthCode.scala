@@ -16,8 +16,8 @@ object GateAuthCode {
 
   val active = codes.filter(_.isDeleted === false)
 
-  def create(transactionHash: String, codeHash: String) =
-    codes += models.auth.GateAuthCode(transactionHash, codeHash)
+  def createOrUpdate(transactionHash: String, codeHash: String) =
+    codes.insertOrUpdate(models.auth.GateAuthCode(transactionHash, codeHash))
 
   def find(transactionHash: String) =
     active.filter(_.transactionHash === transactionHash).result.headOption
