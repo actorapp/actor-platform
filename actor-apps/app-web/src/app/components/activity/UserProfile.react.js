@@ -5,7 +5,7 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
-import { IntlMixin, FormattedMessage } from 'react-intl';
+import { IntlMixin } from 'react-intl';
 import classnames from 'classnames';
 
 import ActorClient from 'utils/ActorClient';
@@ -119,11 +119,11 @@ class UserProfile extends React.Component {
 
     const actions = (user.isContact === false) ? (
       <li className="dropdown__menu__item" onClick={this.addToContacts}>
-        <FormattedMessage message={this.getIntlMessage('addToContacts')}/>
+        {this.getIntlMessage('addToContacts')}
       </li>
     ) : (
       <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
-        <FormattedMessage message={this.getIntlMessage('removeFromContacts')}/>
+        {this.getIntlMessage('removeFromContacts')}
       </li>
     );
 
@@ -180,15 +180,15 @@ class UserProfile extends React.Component {
               <div className={dropdownClassNames}>
                 <button className="dropdown__button button button--flat" onClick={this.toggleActionsDropdown}>
                   <i className="material-icons">more_horiz</i>
-                  <FormattedMessage message={this.getIntlMessage('actions')}/>
+                  {this.getIntlMessage('actions')}
                 </button>
                 <ul className="dropdown__menu dropdown__menu--left">
                   {actions}
                   <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
-                    <FormattedMessage message={this.getIntlMessage('clearConversation')}/>
+                    {this.getIntlMessage('clearConversation')}
                   </li>
                   <li className="dropdown__menu__item" onClick={() => this.deleteChat(user.id)}>
-                    <FormattedMessage message={this.getIntlMessage('deleteConversation')}/>
+                    {this.getIntlMessage('deleteConversation')}
                   </li>
                 </ul>
               </div>
@@ -216,7 +216,7 @@ class UserProfile extends React.Component {
           <li className="profile__list__item user_profile__notifications no-p">
             <label htmlFor="notifications">
               <i className="material-icons icon icon--squash">notifications_none</i>
-              <FormattedMessage message={this.getIntlMessage('notifications')}/>
+              {this.getIntlMessage('notifications')}
               <div className="switch pull-right">
                 <input checked={isNotificationsEnabled}
                        id="notifications"
