@@ -75,7 +75,6 @@
 		066A52281BC4EEAC000E606E /* ACManagedTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521F1BC4EEAC000E606E /* ACManagedTableController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52291BC4EEAC000E606E /* ACManagedTableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52201BC4EEAC000E606E /* ACManagedTableExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		066A522A1BC4EEAC000E606E /* ACManagedAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52211BC4EEAC000E606E /* ACManagedAlerts.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52331BC4EEBA000E606E /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522B1BC4EEBA000E606E /* BasicCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52341BC4EEBA000E606E /* AACommonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522C1BC4EEBA000E606E /* AACommonCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52351BC4EEBA000E606E /* AATextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522D1BC4EEBA000E606E /* AATextCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522E1BC4EEBA000E606E /* AATitledCell.swift */; settings = {ASSET_TAGS = (); }; };
@@ -158,6 +157,7 @@
 		066A53331BC534F5000E606E /* FileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53311BC534F5000E606E /* FileTypes.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53341BC534F5000E606E /* Images2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53321BC534F5000E606E /* Images2.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53391BC5456B000E606E /* ActorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53381BC5456B000E606E /* ActorStyle.swift */; settings = {ASSET_TAGS = (); }; };
 		EBCE6C5E37CD1B8624E9BCE8 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -232,7 +232,6 @@
 		066A521F1BC4EEAC000E606E /* ACManagedTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableController.swift; sourceTree = "<group>"; };
 		066A52201BC4EEAC000E606E /* ACManagedTableExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableExtensions.swift; sourceTree = "<group>"; };
 		066A52211BC4EEAC000E606E /* ACManagedAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedAlerts.swift; sourceTree = "<group>"; };
-		066A522B1BC4EEBA000E606E /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BasicCell.swift; path = View/Cells/BasicCell.swift; sourceTree = "<group>"; };
 		066A522C1BC4EEBA000E606E /* AACommonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACommonCell.swift; path = View/Cells/AACommonCell.swift; sourceTree = "<group>"; };
 		066A522D1BC4EEBA000E606E /* AATextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATextCell.swift; path = View/Cells/AATextCell.swift; sourceTree = "<group>"; };
 		066A522E1BC4EEBA000E606E /* AATitledCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATitledCell.swift; path = View/Cells/AATitledCell.swift; sourceTree = "<group>"; };
@@ -315,6 +314,7 @@
 		066A53311BC534F5000E606E /* FileTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTypes.swift; sourceTree = "<group>"; };
 		066A53321BC534F5000E606E /* Images2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images2.swift; sourceTree = "<group>"; };
 		066A53361BC537CA000E606E /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
+		066A53381BC5456B000E606E /* ActorStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorStyle.swift; sourceTree = "<group>"; };
 		079B47D38B709F8F27B8DCBB /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		15FA41B0E82C4111ADC31278 /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -361,6 +361,7 @@
 				066A511D1BC4B4BD000E606E /* ActorCore */,
 				066A51201BC4B53C000E606E /* SwiftExtensions */,
 				066A51571BC4C112000E606E /* Utils */,
+				066A53381BC5456B000E606E /* ActorStyle.swift */,
 				066A50E11BC4AF9F000E606E /* ActorSDK.swift */,
 				066A525B1BC502EB000E606E /* ActorSDKDelegate.swift */,
 				066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */,
@@ -523,7 +524,6 @@
 		066A52321BC4EEBA000E606E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				066A522B1BC4EEBA000E606E /* BasicCell.swift */,
 				066A522C1BC4EEBA000E606E /* AACommonCell.swift */,
 				066A522D1BC4EEBA000E606E /* AATextCell.swift */,
 				066A522E1BC4EEBA000E606E /* AATitledCell.swift */,
@@ -547,14 +547,14 @@
 		066A525F1BC50E53000E606E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				066A53351BC537BF000E606E /* Conversation */,
-				066A530C1BC5330D000E606E /* Preview */,
 				066A53051BC5317B000E606E /* Dialogs */,
 				066A53021BC53171000E606E /* Contacts */,
-				066A52F91BC52FA0000E606E /* Compose */,
+				066A53351BC537BF000E606E /* Conversation */,
 				066A52EB1BC52AF8000E606E /* Settings */,
 				066A53091BC53197000E606E /* User */,
 				066A52E11BC52A16000E606E /* Group */,
+				066A52F91BC52FA0000E606E /* Compose */,
+				066A530C1BC5330D000E606E /* Preview */,
 				066A52601BC50E6B000E606E /* Auth */,
 				066A52C41BC521D5000E606E /* Content */,
 				066A527B1BC51EC6000E606E /* Root */,
@@ -1072,7 +1072,6 @@
 				066A51561BC4BEF5000E606E /* Localization.swift in Sources */,
 				066A51441BC4BBAF000E606E /* Strings.swift in Sources */,
 				066A53331BC534F5000E606E /* FileTypes.swift in Sources */,
-				066A52331BC4EEBA000E606E /* BasicCell.swift in Sources */,
 				066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */,
 				066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */,
 				066A52241BC4EEAC000E606E /* ACManagedRange.swift in Sources */,
@@ -1102,6 +1101,7 @@
 				066A51691BC4C366000E606E /* Tools.swift in Sources */,
 				066A53201BC533F5000E606E /* BubbleBackgroundProcessor.swift in Sources */,
 				066A52661BC50E7B000E606E /* AAAuthCountriesViewController.swift in Sources */,
+				066A53391BC5456B000E606E /* ActorStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -23,11 +23,11 @@ public class ActorSDK {
     /// Main Messenger object
     public var messenger : ACCocoaMessenger!
     
-    /// Is Actor Started
-    private(set) public var isStarted = false
+    // Actor Style
+    public let style = ActorStyle()
     
     /// SDK Delegate
-    public var delegate: ActorSDKDelegate?
+    public var delegate: ActorSDKDelegate = ActorSDKDelegateDefault()
     
     //
     //  Configuration
@@ -61,14 +61,19 @@ public class ActorSDK {
     /// Disable this if you want manually handle online states
     public var automaticOnlineHandling = true
 
-    
     //
     // Internal State
     //
     
+    /// Is Actor Started
+    private(set) public var isStarted = false
+    
     private var binder = Binder()
     private var syncTask: UIBackgroundTaskIdentifier?
     private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
+    
+    // View Binding info
+    private var bindedToWindow: UIWindow!
     
     //
     // Initialization
@@ -154,7 +159,7 @@ public class ActorSDK {
             requestPush()
         }
         
-        // TODO: Move UI
+        bindedToWindow.rootViewController = delegate.actorControllerForStart()
     }
     
     //
@@ -186,16 +191,24 @@ public class ActorSDK {
     //
     
     public func presentMessengerInWindow(window: UIWindow) {
-        
         if !isStarted {
             fatalError("Messenger not started")
         }
         
+        self.bindedToWindow = window
+        
         if messenger.isLoggedIn() {
-            window.rootViewController = delegate!.actorControllerForStart()
+            window.rootViewController = delegate.actorControllerForStart()
         } else {
-            window.rootViewController = delegate!.actorControllerForAuthStart()
+            window.rootViewController = delegate.actorControllerForAuthStart()
         }
+    }
+    
+    public func presentMessengerInNewWindow() {
+        let window = UIWindow(frame: UIScreen.mainScreen().bounds);
+        window.backgroundColor = UIColor.whiteColor()
+        presentMessengerInWindow(window)
+        window.makeKeyAndVisible()
     }
     
     //
@@ -203,6 +216,7 @@ public class ActorSDK {
     //
     
     public func didBecameOnline() {
+        
         if automaticOnlineHandling {
             fatalError("Manual Online handling not enabled!")
         }

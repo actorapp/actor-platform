@@ -5,17 +5,6 @@
 import Foundation
 import ObjectiveC
 
-final class Lifted<T> {
-    let value: T
-    init(_ x: T) {
-        value = x
-    }
-}
-
-private func lift<T>(x: T) -> Lifted<T>  {
-    return Lifted(x)
-}
-
 public func setAssociatedObject<T>(object: AnyObject, value: T, associativeKey: UnsafePointer<Void>, policy: objc_AssociationPolicy = objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) {
     if let v: AnyObject = value as? AnyObject {
         objc_setAssociatedObject(object, associativeKey, v,  policy)
@@ -35,4 +24,15 @@ public func getAssociatedObject<T>(object: AnyObject, associativeKey: UnsafePoin
     else {
         return nil
     }
+}
+
+final class Lifted<T> {
+    let value: T
+    init(_ x: T) {
+        value = x
+    }
+}
+
+private func lift<T>(x: T) -> Lifted<T>  {
+    return Lifted(x)
 }

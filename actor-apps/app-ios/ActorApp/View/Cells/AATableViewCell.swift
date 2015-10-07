@@ -12,8 +12,8 @@ public class AATableViewCell: UITableViewCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        bottomSeparator.backgroundColor = MainAppTheme.list.separatorColor
-        topSeparator.backgroundColor = MainAppTheme.list.separatorColor
+        bottomSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
+        topSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
         
         applyStyle("cell")
     }
@@ -29,8 +29,8 @@ public class AATableViewCell: UITableViewCell {
             applyStyle(style!)
         }
         
-        bottomSeparator.backgroundColor = MainAppTheme.list.separatorColor
-        topSeparator.backgroundColor = MainAppTheme.list.separatorColor
+        bottomSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
+        topSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
     }
 
     
@@ -102,8 +102,8 @@ public class AATableViewCell: UITableViewCell {
         super.setHighlighted(highlighted, animated: animated)
         
         if !highlighted {
-            topSeparator.backgroundColor = MainAppTheme.list.separatorColor
-            bottomSeparator.backgroundColor = MainAppTheme.list.separatorColor
+            topSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
+            bottomSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
         }
     }
     
@@ -111,8 +111,8 @@ public class AATableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         if !selected {
-            topSeparator.backgroundColor = MainAppTheme.list.separatorColor
-            bottomSeparator.backgroundColor = MainAppTheme.list.separatorColor
+            topSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
+            bottomSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
         }
     }
 }
