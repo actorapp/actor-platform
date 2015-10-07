@@ -28,7 +28,7 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
   def onReceive(message: Object): Unit = {}
 
   def receive = internalReceive orElse {
-    case message =>
+    case message ⇒
       onReceive(message.asInstanceOf[Object])
   }
 
@@ -37,9 +37,9 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
     val prefix = "Actor will restart."
 
     message match {
-      case Some(msg) =>
+      case Some(msg) ⇒
         log.error(reason, prefix + " Last message received: {}", msg)
-      case None =>
+      case None ⇒
         log.error(reason, prefix)
     }
 

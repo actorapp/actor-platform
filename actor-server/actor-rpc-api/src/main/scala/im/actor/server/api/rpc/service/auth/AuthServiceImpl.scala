@@ -150,20 +150,16 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       normalizedPhone ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeLong(phoneNumber).headOption)
       optAuthTransaction ← fromDBIO(persist.auth.AuthPhoneTransaction.findByPhoneAndDeviceHash(normalizedPhone, deviceHash))
       transactionHash ← optAuthTransaction match {
-        case Some(transaction) ⇒
-          val hash = transaction.transactionHash
-          for {
-            _ ← fromDBIO(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(hash)))
-          } yield hash
+        case Some(transaction) ⇒ point(transaction.transactionHash)
         case None ⇒
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
           val phoneAuthTransaction = models.AuthPhoneTransaction(normalizedPhone, transactionHash, appId, apiKey, deviceHash, deviceTitle, accessSalt)
           for {
             _ ← fromDBIO(persist.auth.AuthPhoneTransaction.create(phoneAuthTransaction))
-            _ ← fromDBIO(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
           } yield transactionHash
       }
+      _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
       isRegistered ← fromDBIO(persist.UserPhone.exists(normalizedPhone))
     } yield ResponseStartPhoneAuth(transactionHash, isRegistered)
     db.run(action.run)
@@ -173,7 +169,8 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val action = for {
       tx ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.auth.AuthPhoneTransaction.find(transactionHash))
       code ← fromDBIO(persist.AuthCode.findByTransactionHash(tx.transactionHash) map (_ map (_.code) getOrElse (genSmsCode(tx.phoneNumber))))
-      _ ← fromDBIO(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), Some(transactionHash), PhoneNumberUtils.normalizeWithCountry(tx.phoneNumber).headOption.map(_._2).getOrElse("en")))
+      lang = PhoneNumberUtils.normalizeWithCountry(tx.phoneNumber).headOption.map(_._2).getOrElse("en")
+      _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), Some(transactionHash), lang))
     } yield ResponseVoid
 
     db.run(action.run)
@@ -228,7 +225,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           activationType match {
             case CODE ⇒
               for {
-                _ ← fromDBIO(sendEmailCode(email, genCode(), hash))
+                _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendEmailCode(email, genCode(), hash))
               } yield hash
             case OAUTH2 ⇒
               point(hash)
@@ -241,7 +238,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
             case CODE ⇒
               for {
                 _ ← fromDBIO(persist.auth.AuthEmailTransaction.create(emailAuthTransaction))
-                _ ← fromDBIO(sendEmailCode(email, genCode(), transactionHash))
+                _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendEmailCode(email, genCode(), transactionHash))
               } yield transactionHash
             case OAUTH2 ⇒
               for {
