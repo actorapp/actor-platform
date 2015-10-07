@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import j2objc
+import ActorCore
 
 class CocoaCallback: NSObject, ACCommandCallback {
     

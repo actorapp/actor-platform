@@ -6,6 +6,7 @@ import Foundation
 import UIKit
 import MessageUI
 import j2objc
+import ActorCore
 
 class MainTabViewController : UITabBarController {
     

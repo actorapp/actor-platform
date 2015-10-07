@@ -4,6 +4,7 @@
 
 import UIKit
 import ActorSDK
+import ActorCore
 
 class AuthPhoneViewController: AuthViewController, UITextFieldDelegate, AuthCountriesViewControllerDelegate {
     

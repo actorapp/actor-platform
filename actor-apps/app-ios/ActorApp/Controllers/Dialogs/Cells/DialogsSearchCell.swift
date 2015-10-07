@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import ActorCore
 
 class DialogsSearchCell: UATableViewCell, ACBindedSearchCell {
     

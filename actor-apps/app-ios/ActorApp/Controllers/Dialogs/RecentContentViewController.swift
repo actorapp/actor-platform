@@ -4,6 +4,7 @@
 
 import Foundation
 import j2objc
+import ActorCore
 
 class RecentContentViewController: ACContentTableController, UISearchBarDelegate, UISearchDisplayDelegate {
     

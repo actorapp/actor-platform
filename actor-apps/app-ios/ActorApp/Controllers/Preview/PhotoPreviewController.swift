@@ -4,6 +4,7 @@
 
 import Foundation
 import NYTPhotoViewer
+import ActorCore
 
 class PhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDelegate {
     
