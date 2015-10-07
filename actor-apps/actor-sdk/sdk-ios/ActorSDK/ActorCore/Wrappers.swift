@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import ActorCore
 
 public class CocoaCallback: NSObject, ACCommandCallback {
     

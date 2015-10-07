@@ -3,7 +3,7 @@
 //
 
 import Foundation
-import ActorCore
+import ActorSDK
 
 protocol RecentContentViewControllerDelegate {
     

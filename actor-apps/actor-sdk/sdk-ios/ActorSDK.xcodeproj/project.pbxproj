@@ -51,26 +51,17 @@
 		066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51891BC4C383000E606E /* CocoaNetworkRuntime.swift */; settings = {ASSET_TAGS = (); }; };
 		066A51911BC4C383000E606E /* CocoaHttpRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A518A1BC4C383000E606E /* CocoaHttpRuntime.swift */; settings = {ASSET_TAGS = (); }; };
 		066A51921BC4C383000E606E /* CocoaFileSystemRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A518B1BC4C383000E606E /* CocoaFileSystemRuntime.swift */; settings = {ASSET_TAGS = (); }; };
-		066A51931BC4C383000E606E /* SwiftTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A518C1BC4C383000E606E /* SwiftTimer.swift */; settings = {ASSET_TAGS = (); }; };
 		066A519A1BC4C390000E606E /* FMDBList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51951BC4C390000E606E /* FMDBList.swift */; settings = {ASSET_TAGS = (); }; };
 		066A519B1BC4C390000E606E /* FMDBKeyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51961BC4C390000E606E /* FMDBKeyValue.swift */; settings = {ASSET_TAGS = (); }; };
 		066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51971BC4C390000E606E /* FMDBIndex.swift */; settings = {ASSET_TAGS = (); }; };
 		066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51981BC4C390000E606E /* UDPreferencesStorage.swift */; settings = {ASSET_TAGS = (); }; };
 		066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51991BC4C390000E606E /* FMDBExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */; };
-		066A52021BC4E6ED000E606E /* ActorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51EE1BC4E045000E606E /* ActorCore.framework */; };
+		066A52061BC4E962000E606E /* ActorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 066A52031BC4E962000E606E /* ActorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		066A52071BC4E962000E606E /* convert.py in Resources */ = {isa = PBXBuildFile; fileRef = 066A52041BC4E962000E606E /* convert.py */; settings = {ASSET_TAGS = (); }; };
+		066A52081BC4E962000E606E /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 066A52051BC4E962000E606E /* Makefile */; settings = {ASSET_TAGS = (); }; };
 		EBCE6C5E37CD1B8624E9BCE8 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		066A51ED1BC4E045000E606E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 066A51E91BC4E045000E606E /* ActorCore.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 066A50821BC45D71000E606E;
-			remoteInfo = ActorCore;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		066A50D21BC4AE63000E606E /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,14 +110,15 @@
 		066A51891BC4C383000E606E /* CocoaNetworkRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaNetworkRuntime.swift; path = ActorCore/Providers/CocoaNetworkRuntime.swift; sourceTree = "<group>"; };
 		066A518A1BC4C383000E606E /* CocoaHttpRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaHttpRuntime.swift; path = ActorCore/Providers/CocoaHttpRuntime.swift; sourceTree = "<group>"; };
 		066A518B1BC4C383000E606E /* CocoaFileSystemRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CocoaFileSystemRuntime.swift; path = ActorCore/Providers/CocoaFileSystemRuntime.swift; sourceTree = "<group>"; };
-		066A518C1BC4C383000E606E /* SwiftTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftTimer.swift; path = ActorCore/Providers/SwiftTimer.swift; sourceTree = "<group>"; };
 		066A51951BC4C390000E606E /* FMDBList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FMDBList.swift; path = ActorCore/Providers/Storage/FMDBList.swift; sourceTree = "<group>"; };
 		066A51961BC4C390000E606E /* FMDBKeyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FMDBKeyValue.swift; path = ActorCore/Providers/Storage/FMDBKeyValue.swift; sourceTree = "<group>"; };
 		066A51971BC4C390000E606E /* FMDBIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FMDBIndex.swift; path = ActorCore/Providers/Storage/FMDBIndex.swift; sourceTree = "<group>"; };
 		066A51981BC4C390000E606E /* UDPreferencesStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UDPreferencesStorage.swift; path = ActorCore/Providers/Storage/UDPreferencesStorage.swift; sourceTree = "<group>"; };
 		066A51991BC4C390000E606E /* FMDBExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FMDBExtensions.swift; path = ActorCore/Providers/Storage/FMDBExtensions.swift; sourceTree = "<group>"; };
-		066A51E91BC4E045000E606E /* ActorCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ActorCore.xcodeproj; sourceTree = "<group>"; };
 		066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		066A52031BC4E962000E606E /* ActorCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorCore.h; sourceTree = "<group>"; };
+		066A52041BC4E962000E606E /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
+		066A52051BC4E962000E606E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		079B47D38B709F8F27B8DCBB /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		15FA41B0E82C4111ADC31278 /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -137,7 +129,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				066A52021BC4E6ED000E606E /* ActorCore.framework in Frameworks */,
 				066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */,
 				EBCE6C5E37CD1B8624E9BCE8 /* Pods_ActorSDK.framework in Frameworks */,
 			);
@@ -188,6 +179,9 @@
 				066A51671BC4C366000E606E /* Conversions.swift */,
 				066A51681BC4C366000E606E /* Extensions.swift */,
 				066A511E1BC4B4E5000E606E /* ActorCore.swift */,
+				066A52031BC4E962000E606E /* ActorCore.h */,
+				066A52041BC4E962000E606E /* convert.py */,
+				066A52051BC4E962000E606E /* Makefile */,
 			);
 			name = ActorCore;
 			sourceTree = "<group>";
@@ -253,7 +247,6 @@
 				066A51891BC4C383000E606E /* CocoaNetworkRuntime.swift */,
 				066A518A1BC4C383000E606E /* CocoaHttpRuntime.swift */,
 				066A518B1BC4C383000E606E /* CocoaFileSystemRuntime.swift */,
-				066A518C1BC4C383000E606E /* SwiftTimer.swift */,
 			);
 			name = Providers;
 			sourceTree = "<group>";
@@ -270,19 +263,10 @@
 			name = Storage;
 			sourceTree = "<group>";
 		};
-		066A51EA1BC4E045000E606E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				066A51EE1BC4E045000E606E /* ActorCore.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */,
-				066A51E91BC4E045000E606E /* ActorCore.xcodeproj */,
 				F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */,
 			);
 			name = Frameworks;
@@ -305,6 +289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				066A51831BC4C373000E606E /* FMResultSet.h in Headers */,
+				066A52061BC4E962000E606E /* ActorCore.h in Headers */,
 				066A51601BC4C2A0000E606E /* UIAppearance+Swift.h in Headers */,
 				066A51621BC4C2A0000E606E /* UIBarAppearance+Swift.h in Headers */,
 				066A517D1BC4C373000E606E /* FMDatabaseAdditions.h in Headers */,
@@ -324,9 +309,10 @@
 			buildConfigurationList = 066A50DA1BC4AE63000E606E /* Build configuration list for PBXNativeTarget "ActorSDK" */;
 			buildPhases = (
 				842CC4516DA967714D224C37 /* Check Pods Manifest.lock */,
+				066A52091BC4EA95000E606E /* ShellScript */,
 				066A50CD1BC4AE63000E606E /* Sources */,
-				066A50CE1BC4AE63000E606E /* Frameworks */,
 				066A50CF1BC4AE63000E606E /* Headers */,
+				066A50CE1BC4AE63000E606E /* Frameworks */,
 				066A50D01BC4AE63000E606E /* Resources */,
 				F4220B52087237D3242F0CEC /* Copy Pods Resources */,
 			);
@@ -364,12 +350,6 @@
 			mainGroup = 066A50C81BC4AE63000E606E;
 			productRefGroup = 066A50D31BC4AE63000E606E /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 066A51EA1BC4E045000E606E /* Products */;
-					ProjectRef = 066A51E91BC4E045000E606E /* ActorCore.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				066A50D11BC4AE63000E606E /* ActorSDK */,
@@ -377,27 +357,31 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		066A51EE1BC4E045000E606E /* ActorCore.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ActorCore.framework;
-			remoteRef = 066A51ED1BC4E045000E606E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
 		066A50D01BC4AE63000E606E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				066A52071BC4E962000E606E /* convert.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		066A52091BC4EA95000E606E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -ev\n\necho \"${CONFIGURATION_TEMP_DIR}\"\n\ncd ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/convert.py\"\n\n# rm -fr \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/Headers\"\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"";
+		};
 		842CC4516DA967714D224C37 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -447,6 +431,7 @@
 				066A51221BC4B55C000E606E /* Device.swift in Sources */,
 				066A51521BC4BE34000E606E /* Logs.swift in Sources */,
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
+				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A516A1BC4C366000E606E /* Analytics.swift in Sources */,
 				066A51501BC4BE06000E606E /* Regex.swift in Sources */,
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
@@ -464,7 +449,6 @@
 				066A51821BC4C373000E606E /* FMDatabaseQueue.m in Sources */,
 				066A51841BC4C373000E606E /* FMResultSet.m in Sources */,
 				066A514E1BC4BDE4000E606E /* Numbers.swift in Sources */,
-				066A51931BC4C383000E606E /* SwiftTimer.swift in Sources */,
 				066A51561BC4BEF5000E606E /* Localization.swift in Sources */,
 				066A51441BC4BBAF000E606E /* Strings.swift in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
@@ -585,6 +569,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"icucore\"",
@@ -596,6 +581,7 @@
 					"-framework",
 					"\"j2objc\"",
 					"-ObjC",
+					"-l\"actor\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = ActorSDK;
@@ -618,6 +604,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"icucore\"",
@@ -629,6 +616,7 @@
 					"-framework",
 					"\"j2objc\"",
 					"-ObjC",
+					"-l\"actor\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = ActorSDK;

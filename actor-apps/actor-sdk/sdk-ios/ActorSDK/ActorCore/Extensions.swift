@@ -3,8 +3,6 @@
 //
 
 import Foundation
-import j2objc
-import ActorCore
 
 public extension ACCocoaMessenger {
     public func sendUIImage(image: UIImage, peer: ACPeer) {

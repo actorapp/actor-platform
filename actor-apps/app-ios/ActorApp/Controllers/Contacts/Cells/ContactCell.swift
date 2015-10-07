@@ -4,7 +4,7 @@
 
 import Foundation
 import UIKit
-import ActorCore
+import ActorSDK
 
 class ContactCell : UATableViewCell, ACBindedCell, ACBindedSearchCell {
     
