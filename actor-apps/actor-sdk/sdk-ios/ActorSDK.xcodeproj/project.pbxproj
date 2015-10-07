@@ -76,12 +76,12 @@
 		066A52291BC4EEAC000E606E /* ACManagedTableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52201BC4EEAC000E606E /* ACManagedTableExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		066A522A1BC4EEAC000E606E /* ACManagedAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52211BC4EEAC000E606E /* ACManagedAlerts.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52331BC4EEBA000E606E /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522B1BC4EEBA000E606E /* BasicCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52341BC4EEBA000E606E /* CommonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522C1BC4EEBA000E606E /* CommonCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52351BC4EEBA000E606E /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522D1BC4EEBA000E606E /* TextCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52361BC4EEBA000E606E /* TitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522E1BC4EEBA000E606E /* TitledCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52371BC4EEBA000E606E /* UATableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522F1BC4EEBA000E606E /* UATableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52381BC4EEBA000E606E /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52301BC4EEBA000E606E /* HeaderCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52391BC4EEBA000E606E /* EditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52311BC4EEBA000E606E /* EditCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52341BC4EEBA000E606E /* AACommonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522C1BC4EEBA000E606E /* AACommonCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52351BC4EEBA000E606E /* AATextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522D1BC4EEBA000E606E /* AATextCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522E1BC4EEBA000E606E /* AATitledCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52371BC4EEBA000E606E /* AATableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522F1BC4EEBA000E606E /* AATableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52301BC4EEBA000E606E /* AAHeaderCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52391BC4EEBA000E606E /* AAEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52311BC4EEBA000E606E /* AAEditCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52401BC4EECD000E606E /* BigPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523A1BC4EECD000E606E /* BigPlaceholderView.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52411BC4EECD000E606E /* GroupPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523B1BC4EECD000E606E /* GroupPhotoCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52421BC4EECD000E606E /* TableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523C1BC4EECD000E606E /* TableViewHeader.swift */; settings = {ASSET_TAGS = (); }; };
@@ -98,6 +98,66 @@
 		066A52581BC4EF61000E606E /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52511BC4EF61000E606E /* Alerts.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52591BC4EF61000E606E /* Executions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52521BC4EF61000E606E /* Executions.swift */; settings = {ASSET_TAGS = (); }; };
 		066A525A1BC4EF61000E606E /* Navigations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52531BC4EF61000E606E /* Navigations.swift */; settings = {ASSET_TAGS = (); }; };
+		066A525C1BC502EB000E606E /* ActorSDKDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A525B1BC502EB000E606E /* ActorSDKDelegate.swift */; settings = {ASSET_TAGS = (); }; };
+		066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52661BC50E7B000E606E /* AAAuthCountriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52621BC50E7B000E606E /* AAAuthPhoneViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52681BC50E7B000E606E /* AAAuthCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52631BC50E7B000E606E /* AAAuthCodeViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52691BC50E7B000E606E /* AAAuthRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52641BC50E7B000E606E /* AAAuthRegisterViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A526A1BC50E7B000E606E /* AAAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52651BC50E7B000E606E /* AAAuthViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A526D1BC50E8B000E606E /* AAAuthCountryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A526C1BC50E8B000E606E /* AAAuthCountryCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52731BC5101A000E606E /* ABPhoneField.h in Headers */ = {isa = PBXBuildFile; fileRef = 066A526F1BC5101A000E606E /* ABPhoneField.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		066A52741BC5101A000E606E /* ABPhoneField.m in Sources */ = {isa = PBXBuildFile; fileRef = 066A52701BC5101A000E606E /* ABPhoneField.m */; settings = {ASSET_TAGS = (); }; };
+		066A52751BC5101A000E606E /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 066A52711BC5101A000E606E /* ABPhoneFieldCodes.txt */; settings = {ASSET_TAGS = (); }; };
+		066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A527C1BC51ED0000E606E /* AARootSplitViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52801BC51ED0000E606E /* AARootTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A527D1BC51ED0000E606E /* AARootTabViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A527E1BC51ED0000E606E /* AANoSelectionViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52C71BC521EA000E606E /* AAEditTextController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52C51BC521EA000E606E /* AAEditTextController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52C81BC521EA000E606E /* AAEditFieldController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52C61BC521EA000E606E /* AAEditFieldController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52CC1BC521FA000E606E /* AARecentContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52CA1BC521FA000E606E /* AARecentContentViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52CD1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52CB1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52D11BC52204000E606E /* AADialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52CF1BC52204000E606E /* AADialogCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52D21BC52204000E606E /* AADialogsSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D01BC52204000E606E /* AADialogsSearchCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52D61BC52378000E606E /* AAContactsContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D41BC52378000E606E /* AAContactsContentViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52D71BC52378000E606E /* AAContactsContentViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D51BC52378000E606E /* AAContactsContentViewControllerDelegate.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52DB1BC52385000E606E /* AAContactActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D91BC52385000E606E /* AAContactActionCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52DC1BC52385000E606E /* AAContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52DA1BC52385000E606E /* AAContactCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52DF1BC5241F000E606E /* AAWebActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52DE1BC5241F000E606E /* AAWebActionController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52E51BC52A20000E606E /* AAGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52E21BC52A20000E606E /* AAGroupViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52E61BC52A20000E606E /* AAAddParticipantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52E41BC52A20000E606E /* AAInviteLinkViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52EA1BC52A2B000E606E /* AAGroupMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52E91BC52A2B000E606E /* AAGroupMemberCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52EC1BC52B02000E606E /* AASettingsViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52F11BC52B02000E606E /* AASettingsNotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52ED1BC52B02000E606E /* AASettingsNotificationsViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52EE1BC52B02000E606E /* AASettingsPrivacyViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52F31BC52B02000E606E /* AASettingsWallpapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52EF1BC52B02000E606E /* AASettingsWallpapper.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52F71BC52B13000E606E /* AAWallpapperPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52F51BC52B13000E606E /* AAWallpapperPreviewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52F81BC52B13000E606E /* AAWallpapperSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52F61BC52B13000E606E /* AAWallpapperSettingsCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52FD1BC52FA8000E606E /* AAComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52FA1BC52FA8000E606E /* AAComposeController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52FB1BC52FA8000E606E /* AAGroupCreateViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52FF1BC52FA9000E606E /* AAGroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52FC1BC52FA8000E606E /* AAGroupMembersController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53041BC53177000E606E /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53031BC53177000E606E /* ContactsViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53071BC53183000E606E /* DialogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53061BC53183000E606E /* DialogsViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A530B1BC531A2000E606E /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530A1BC531A2000E606E /* UserViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53101BC53317000E606E /* WallpapperPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530D1BC53317000E606E /* WallpapperPreviewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53111BC53317000E606E /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530E1BC53317000E606E /* CorePreviewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53121BC53317000E606E /* PhotoPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530F1BC53317000E606E /* PhotoPreviewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53151BC533D5000E606E /* ConversationContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53141BC533D5000E606E /* ConversationContentViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53171BC533DD000E606E /* Bubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53161BC533DD000E606E /* Bubbles.swift */; settings = {ASSET_TAGS = (); }; };
+		066A531A1BC533E7000E606E /* AutoCompleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53191BC533E7000E606E /* AutoCompleteCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53201BC533F5000E606E /* BubbleBackgroundProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531C1BC533F5000E606E /* BubbleBackgroundProcessor.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53211BC533F5000E606E /* BubbleLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531D1BC533F5000E606E /* BubbleLayouts.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53221BC533F5000E606E /* MessagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531E1BC533F5000E606E /* MessagesFlowLayout.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53231BC533F5000E606E /* Caches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531F1BC533F5000E606E /* Caches.swift */; settings = {ASSET_TAGS = (); }; };
+		066A532B1BC53406000E606E /* AABubbleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53251BC53406000E606E /* AABubbleCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A532C1BC53406000E606E /* AABubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53261BC53406000E606E /* AABubbleTextCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A532D1BC53406000E606E /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53271BC53406000E606E /* AABubbleServiceCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53291BC53406000E606E /* AABubbleMediaCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53301BC53406000E606E /* AABubbleDocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53331BC534F5000E606E /* FileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53311BC534F5000E606E /* FileTypes.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53341BC534F5000E606E /* Images2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53321BC534F5000E606E /* Images2.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		EBCE6C5E37CD1B8624E9BCE8 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -173,12 +233,12 @@
 		066A52201BC4EEAC000E606E /* ACManagedTableExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableExtensions.swift; sourceTree = "<group>"; };
 		066A52211BC4EEAC000E606E /* ACManagedAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedAlerts.swift; sourceTree = "<group>"; };
 		066A522B1BC4EEBA000E606E /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BasicCell.swift; path = View/Cells/BasicCell.swift; sourceTree = "<group>"; };
-		066A522C1BC4EEBA000E606E /* CommonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonCell.swift; path = View/Cells/CommonCell.swift; sourceTree = "<group>"; };
-		066A522D1BC4EEBA000E606E /* TextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextCell.swift; path = View/Cells/TextCell.swift; sourceTree = "<group>"; };
-		066A522E1BC4EEBA000E606E /* TitledCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TitledCell.swift; path = View/Cells/TitledCell.swift; sourceTree = "<group>"; };
-		066A522F1BC4EEBA000E606E /* UATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UATableViewCell.swift; path = View/Cells/UATableViewCell.swift; sourceTree = "<group>"; };
-		066A52301BC4EEBA000E606E /* HeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HeaderCell.swift; path = View/Cells/HeaderCell.swift; sourceTree = "<group>"; };
-		066A52311BC4EEBA000E606E /* EditCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditCell.swift; sourceTree = "<group>"; };
+		066A522C1BC4EEBA000E606E /* AACommonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACommonCell.swift; path = View/Cells/AACommonCell.swift; sourceTree = "<group>"; };
+		066A522D1BC4EEBA000E606E /* AATextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATextCell.swift; path = View/Cells/AATextCell.swift; sourceTree = "<group>"; };
+		066A522E1BC4EEBA000E606E /* AATitledCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATitledCell.swift; path = View/Cells/AATitledCell.swift; sourceTree = "<group>"; };
+		066A522F1BC4EEBA000E606E /* AATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATableViewCell.swift; path = View/Cells/AATableViewCell.swift; sourceTree = "<group>"; };
+		066A52301BC4EEBA000E606E /* AAHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAHeaderCell.swift; path = View/Cells/AAHeaderCell.swift; sourceTree = "<group>"; };
+		066A52311BC4EEBA000E606E /* AAEditCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEditCell.swift; sourceTree = "<group>"; };
 		066A523A1BC4EECD000E606E /* BigPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BigPlaceholderView.swift; sourceTree = "<group>"; };
 		066A523B1BC4EECD000E606E /* GroupPhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupPhotoCell.swift; sourceTree = "<group>"; };
 		066A523C1BC4EECD000E606E /* TableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewHeader.swift; sourceTree = "<group>"; };
@@ -195,6 +255,66 @@
 		066A52511BC4EF61000E606E /* Alerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 		066A52521BC4EF61000E606E /* Executions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Executions.swift; sourceTree = "<group>"; };
 		066A52531BC4EF61000E606E /* Navigations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigations.swift; sourceTree = "<group>"; };
+		066A525B1BC502EB000E606E /* ActorSDKDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKDelegate.swift; sourceTree = "<group>"; };
+		066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorApplicationDelegate.swift; sourceTree = "<group>"; };
+		066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthCountriesViewController.swift; sourceTree = "<group>"; };
+		066A52621BC50E7B000E606E /* AAAuthPhoneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthPhoneViewController.swift; sourceTree = "<group>"; };
+		066A52631BC50E7B000E606E /* AAAuthCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthCodeViewController.swift; sourceTree = "<group>"; };
+		066A52641BC50E7B000E606E /* AAAuthRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthRegisterViewController.swift; sourceTree = "<group>"; };
+		066A52651BC50E7B000E606E /* AAAuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthViewController.swift; sourceTree = "<group>"; };
+		066A526C1BC50E8B000E606E /* AAAuthCountryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthCountryCell.swift; sourceTree = "<group>"; };
+		066A526F1BC5101A000E606E /* ABPhoneField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABPhoneField.h; sourceTree = "<group>"; };
+		066A52701BC5101A000E606E /* ABPhoneField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABPhoneField.m; sourceTree = "<group>"; };
+		066A52711BC5101A000E606E /* ABPhoneFieldCodes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ABPhoneFieldCodes.txt; sourceTree = "<group>"; };
+		066A527C1BC51ED0000E606E /* AARootSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARootSplitViewController.swift; sourceTree = "<group>"; };
+		066A527D1BC51ED0000E606E /* AARootTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARootTabViewController.swift; sourceTree = "<group>"; };
+		066A527E1BC51ED0000E606E /* AANoSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AANoSelectionViewController.swift; sourceTree = "<group>"; };
+		066A52C51BC521EA000E606E /* AAEditTextController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEditTextController.swift; sourceTree = "<group>"; };
+		066A52C61BC521EA000E606E /* AAEditFieldController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEditFieldController.swift; sourceTree = "<group>"; };
+		066A52CA1BC521FA000E606E /* AARecentContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARecentContentViewController.swift; sourceTree = "<group>"; };
+		066A52CB1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARecentContentViewControllerDelegate.swift; sourceTree = "<group>"; };
+		066A52CF1BC52204000E606E /* AADialogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AADialogCell.swift; sourceTree = "<group>"; };
+		066A52D01BC52204000E606E /* AADialogsSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AADialogsSearchCell.swift; sourceTree = "<group>"; };
+		066A52D41BC52378000E606E /* AAContactsContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAContactsContentViewController.swift; sourceTree = "<group>"; };
+		066A52D51BC52378000E606E /* AAContactsContentViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAContactsContentViewControllerDelegate.swift; sourceTree = "<group>"; };
+		066A52D91BC52385000E606E /* AAContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAContactActionCell.swift; sourceTree = "<group>"; };
+		066A52DA1BC52385000E606E /* AAContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAContactCell.swift; sourceTree = "<group>"; };
+		066A52DE1BC5241F000E606E /* AAWebActionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWebActionController.swift; sourceTree = "<group>"; };
+		066A52E21BC52A20000E606E /* AAGroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupViewController.swift; sourceTree = "<group>"; };
+		066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAddParticipantViewController.swift; sourceTree = "<group>"; };
+		066A52E41BC52A20000E606E /* AAInviteLinkViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAInviteLinkViewController.swift; sourceTree = "<group>"; };
+		066A52E91BC52A2B000E606E /* AAGroupMemberCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupMemberCell.swift; sourceTree = "<group>"; };
+		066A52EC1BC52B02000E606E /* AASettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsViewController.swift; sourceTree = "<group>"; };
+		066A52ED1BC52B02000E606E /* AASettingsNotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsNotificationsViewController.swift; sourceTree = "<group>"; };
+		066A52EE1BC52B02000E606E /* AASettingsPrivacyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsPrivacyViewController.swift; sourceTree = "<group>"; };
+		066A52EF1BC52B02000E606E /* AASettingsWallpapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AASettingsWallpapper.swift; sourceTree = "<group>"; };
+		066A52F51BC52B13000E606E /* AAWallpapperPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWallpapperPreviewCell.swift; sourceTree = "<group>"; };
+		066A52F61BC52B13000E606E /* AAWallpapperSettingsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWallpapperSettingsCell.swift; sourceTree = "<group>"; };
+		066A52FA1BC52FA8000E606E /* AAComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAComposeController.swift; sourceTree = "<group>"; };
+		066A52FB1BC52FA8000E606E /* AAGroupCreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupCreateViewController.swift; sourceTree = "<group>"; };
+		066A52FC1BC52FA8000E606E /* AAGroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupMembersController.swift; sourceTree = "<group>"; };
+		066A53031BC53177000E606E /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
+		066A53061BC53183000E606E /* DialogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogsViewController.swift; sourceTree = "<group>"; };
+		066A530A1BC531A2000E606E /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
+		066A530D1BC53317000E606E /* WallpapperPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WallpapperPreviewController.swift; sourceTree = "<group>"; };
+		066A530E1BC53317000E606E /* CorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorePreviewController.swift; sourceTree = "<group>"; };
+		066A530F1BC53317000E606E /* PhotoPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoPreviewController.swift; sourceTree = "<group>"; };
+		066A53141BC533D5000E606E /* ConversationContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationContentViewController.swift; sourceTree = "<group>"; };
+		066A53161BC533DD000E606E /* Bubbles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bubbles.swift; sourceTree = "<group>"; };
+		066A53191BC533E7000E606E /* AutoCompleteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCompleteCell.swift; sourceTree = "<group>"; };
+		066A531C1BC533F5000E606E /* BubbleBackgroundProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleBackgroundProcessor.swift; sourceTree = "<group>"; };
+		066A531D1BC533F5000E606E /* BubbleLayouts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleLayouts.swift; sourceTree = "<group>"; };
+		066A531E1BC533F5000E606E /* MessagesFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesFlowLayout.swift; sourceTree = "<group>"; };
+		066A531F1BC533F5000E606E /* Caches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Caches.swift; sourceTree = "<group>"; };
+		066A53251BC53406000E606E /* AABubbleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleCell.swift; sourceTree = "<group>"; };
+		066A53261BC53406000E606E /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
+		066A53271BC53406000E606E /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
+		066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBaseFileCell.swift; sourceTree = "<group>"; };
+		066A53291BC53406000E606E /* AABubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleMediaCell.swift; sourceTree = "<group>"; };
+		066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleDocumentCell.swift; sourceTree = "<group>"; };
+		066A53311BC534F5000E606E /* FileTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTypes.swift; sourceTree = "<group>"; };
+		066A53321BC534F5000E606E /* Images2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images2.swift; sourceTree = "<group>"; };
+		066A53361BC537CA000E606E /* ConversationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		079B47D38B709F8F27B8DCBB /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		15FA41B0E82C4111ADC31278 /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -234,6 +354,7 @@
 		066A50D41BC4AE63000E606E /* ActorSDK */ = {
 			isa = PBXGroup;
 			children = (
+				066A525F1BC50E53000E606E /* Controllers */,
 				066A52181BC4EE9A000E606E /* Managed Controller */,
 				066A52131BC4EDEB000E606E /* Views */,
 				066A520A1BC4ECB9000E606E /* Syling */,
@@ -241,6 +362,8 @@
 				066A51201BC4B53C000E606E /* SwiftExtensions */,
 				066A51571BC4C112000E606E /* Utils */,
 				066A50E11BC4AF9F000E606E /* ActorSDK.swift */,
+				066A525B1BC502EB000E606E /* ActorSDKDelegate.swift */,
+				066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */,
 				066A50D51BC4AE63000E606E /* ActorSDK.h */,
 				066A50D71BC4AE63000E606E /* Info.plist */,
 			);
@@ -292,6 +415,8 @@
 		066A51571BC4C112000E606E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				066A53311BC534F5000E606E /* FileTypes.swift */,
+				066A53321BC534F5000E606E /* Images2.swift */,
 				066A51581BC4C14A000E606E /* LruCache.swift */,
 				066A515A1BC4C178000E606E /* HashMap.swift */,
 			);
@@ -399,12 +524,12 @@
 			isa = PBXGroup;
 			children = (
 				066A522B1BC4EEBA000E606E /* BasicCell.swift */,
-				066A522C1BC4EEBA000E606E /* CommonCell.swift */,
-				066A522D1BC4EEBA000E606E /* TextCell.swift */,
-				066A522E1BC4EEBA000E606E /* TitledCell.swift */,
-				066A522F1BC4EEBA000E606E /* UATableViewCell.swift */,
-				066A52301BC4EEBA000E606E /* HeaderCell.swift */,
-				066A52311BC4EEBA000E606E /* EditCell.swift */,
+				066A522C1BC4EEBA000E606E /* AACommonCell.swift */,
+				066A522D1BC4EEBA000E606E /* AATextCell.swift */,
+				066A522E1BC4EEBA000E606E /* AATitledCell.swift */,
+				066A522F1BC4EEBA000E606E /* AATableViewCell.swift */,
+				066A52301BC4EEBA000E606E /* AAHeaderCell.swift */,
+				066A52311BC4EEBA000E606E /* AAEditCell.swift */,
 			);
 			name = Cells;
 			path = "../../../app-ios/ActorApp";
@@ -417,6 +542,269 @@
 			);
 			name = Progress;
 			path = "../../../app-ios/ActorApp";
+			sourceTree = "<group>";
+		};
+		066A525F1BC50E53000E606E /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				066A53351BC537BF000E606E /* Conversation */,
+				066A530C1BC5330D000E606E /* Preview */,
+				066A53051BC5317B000E606E /* Dialogs */,
+				066A53021BC53171000E606E /* Contacts */,
+				066A52F91BC52FA0000E606E /* Compose */,
+				066A52EB1BC52AF8000E606E /* Settings */,
+				066A53091BC53197000E606E /* User */,
+				066A52E11BC52A16000E606E /* Group */,
+				066A52601BC50E6B000E606E /* Auth */,
+				066A52C41BC521D5000E606E /* Content */,
+				066A527B1BC51EC6000E606E /* Root */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		066A52601BC50E6B000E606E /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				066A526E1BC51007000E606E /* Views */,
+				066A526B1BC50E83000E606E /* Cells */,
+				066A52611BC50E7B000E606E /* AAAuthCountriesViewController.swift */,
+				066A52621BC50E7B000E606E /* AAAuthPhoneViewController.swift */,
+				066A52631BC50E7B000E606E /* AAAuthCodeViewController.swift */,
+				066A52641BC50E7B000E606E /* AAAuthRegisterViewController.swift */,
+				066A52651BC50E7B000E606E /* AAAuthViewController.swift */,
+			);
+			name = Auth;
+			sourceTree = "<group>";
+		};
+		066A526B1BC50E83000E606E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				066A526C1BC50E8B000E606E /* AAAuthCountryCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		066A526E1BC51007000E606E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				066A526F1BC5101A000E606E /* ABPhoneField.h */,
+				066A52701BC5101A000E606E /* ABPhoneField.m */,
+				066A52711BC5101A000E606E /* ABPhoneFieldCodes.txt */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		066A527B1BC51EC6000E606E /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				066A527C1BC51ED0000E606E /* AARootSplitViewController.swift */,
+				066A527D1BC51ED0000E606E /* AARootTabViewController.swift */,
+				066A527E1BC51ED0000E606E /* AANoSelectionViewController.swift */,
+			);
+			name = Root;
+			sourceTree = "<group>";
+		};
+		066A52C41BC521D5000E606E /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				066A52C91BC521F1000E606E /* Recents */,
+				066A52D31BC5236B000E606E /* Contacts */,
+				066A52E01BC52422000E606E /* Input */,
+				066A53131BC533C5000E606E /* Conversation */,
+				066A52DD1BC52419000E606E /* WebActions */,
+			);
+			name = Content;
+			sourceTree = "<group>";
+		};
+		066A52C91BC521F1000E606E /* Recents */ = {
+			isa = PBXGroup;
+			children = (
+				066A52CE1BC521FD000E606E /* Cells */,
+				066A52CA1BC521FA000E606E /* AARecentContentViewController.swift */,
+				066A52CB1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift */,
+			);
+			name = Recents;
+			sourceTree = "<group>";
+		};
+		066A52CE1BC521FD000E606E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				066A52CF1BC52204000E606E /* AADialogCell.swift */,
+				066A52D01BC52204000E606E /* AADialogsSearchCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		066A52D31BC5236B000E606E /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				066A52D81BC5237B000E606E /* Cells */,
+				066A52D41BC52378000E606E /* AAContactsContentViewController.swift */,
+				066A52D51BC52378000E606E /* AAContactsContentViewControllerDelegate.swift */,
+			);
+			name = Contacts;
+			sourceTree = "<group>";
+		};
+		066A52D81BC5237B000E606E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				066A52D91BC52385000E606E /* AAContactActionCell.swift */,
+				066A52DA1BC52385000E606E /* AAContactCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		066A52DD1BC52419000E606E /* WebActions */ = {
+			isa = PBXGroup;
+			children = (
+				066A52DE1BC5241F000E606E /* AAWebActionController.swift */,
+			);
+			name = WebActions;
+			sourceTree = "<group>";
+		};
+		066A52E01BC52422000E606E /* Input */ = {
+			isa = PBXGroup;
+			children = (
+				066A52C51BC521EA000E606E /* AAEditTextController.swift */,
+				066A52C61BC521EA000E606E /* AAEditFieldController.swift */,
+			);
+			name = Input;
+			sourceTree = "<group>";
+		};
+		066A52E11BC52A16000E606E /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				066A52E81BC52A25000E606E /* Cells */,
+				066A52E21BC52A20000E606E /* AAGroupViewController.swift */,
+				066A52E31BC52A20000E606E /* AAAddParticipantViewController.swift */,
+				066A52E41BC52A20000E606E /* AAInviteLinkViewController.swift */,
+			);
+			name = Group;
+			sourceTree = "<group>";
+		};
+		066A52E81BC52A25000E606E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				066A52E91BC52A2B000E606E /* AAGroupMemberCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		066A52EB1BC52AF8000E606E /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				066A52F41BC52B09000E606E /* Cells */,
+				066A52EC1BC52B02000E606E /* AASettingsViewController.swift */,
+				066A52ED1BC52B02000E606E /* AASettingsNotificationsViewController.swift */,
+				066A52EE1BC52B02000E606E /* AASettingsPrivacyViewController.swift */,
+				066A52EF1BC52B02000E606E /* AASettingsWallpapper.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		066A52F41BC52B09000E606E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				066A52F51BC52B13000E606E /* AAWallpapperPreviewCell.swift */,
+				066A52F61BC52B13000E606E /* AAWallpapperSettingsCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		066A52F91BC52FA0000E606E /* Compose */ = {
+			isa = PBXGroup;
+			children = (
+				066A52FA1BC52FA8000E606E /* AAComposeController.swift */,
+				066A52FB1BC52FA8000E606E /* AAGroupCreateViewController.swift */,
+				066A52FC1BC52FA8000E606E /* AAGroupMembersController.swift */,
+			);
+			name = Compose;
+			sourceTree = "<group>";
+		};
+		066A53021BC53171000E606E /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				066A53031BC53177000E606E /* ContactsViewController.swift */,
+			);
+			name = Contacts;
+			sourceTree = "<group>";
+		};
+		066A53051BC5317B000E606E /* Dialogs */ = {
+			isa = PBXGroup;
+			children = (
+				066A53061BC53183000E606E /* DialogsViewController.swift */,
+			);
+			name = Dialogs;
+			sourceTree = "<group>";
+		};
+		066A53091BC53197000E606E /* User */ = {
+			isa = PBXGroup;
+			children = (
+				066A530A1BC531A2000E606E /* UserViewController.swift */,
+			);
+			name = User;
+			sourceTree = "<group>";
+		};
+		066A530C1BC5330D000E606E /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				066A530D1BC53317000E606E /* WallpapperPreviewController.swift */,
+				066A530E1BC53317000E606E /* CorePreviewController.swift */,
+				066A530F1BC53317000E606E /* PhotoPreviewController.swift */,
+			);
+			name = Preview;
+			sourceTree = "<group>";
+		};
+		066A53131BC533C5000E606E /* Conversation */ = {
+			isa = PBXGroup;
+			children = (
+				066A53241BC533FD000E606E /* Cell */,
+				066A531B1BC533EB000E606E /* Layouting */,
+				066A53181BC533E0000E606E /* Suggestion */,
+				066A53141BC533D5000E606E /* ConversationContentViewController.swift */,
+				066A53161BC533DD000E606E /* Bubbles.swift */,
+			);
+			name = Conversation;
+			sourceTree = "<group>";
+		};
+		066A53181BC533E0000E606E /* Suggestion */ = {
+			isa = PBXGroup;
+			children = (
+				066A53191BC533E7000E606E /* AutoCompleteCell.swift */,
+			);
+			name = Suggestion;
+			sourceTree = "<group>";
+		};
+		066A531B1BC533EB000E606E /* Layouting */ = {
+			isa = PBXGroup;
+			children = (
+				066A531C1BC533F5000E606E /* BubbleBackgroundProcessor.swift */,
+				066A531D1BC533F5000E606E /* BubbleLayouts.swift */,
+				066A531E1BC533F5000E606E /* MessagesFlowLayout.swift */,
+				066A531F1BC533F5000E606E /* Caches.swift */,
+			);
+			name = Layouting;
+			sourceTree = "<group>";
+		};
+		066A53241BC533FD000E606E /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				066A53251BC53406000E606E /* AABubbleCell.swift */,
+				066A53261BC53406000E606E /* AABubbleTextCell.swift */,
+				066A53271BC53406000E606E /* AABubbleServiceCell.swift */,
+				066A53281BC53406000E606E /* AABubbleBaseFileCell.swift */,
+				066A53291BC53406000E606E /* AABubbleMediaCell.swift */,
+				066A532A1BC53406000E606E /* AABubbleDocumentCell.swift */,
+			);
+			name = Cell;
+			sourceTree = "<group>";
+		};
+		066A53351BC537BF000E606E /* Conversation */ = {
+			isa = PBXGroup;
+			children = (
+				066A53361BC537CA000E606E /* ConversationViewController.swift */,
+			);
+			name = Conversation;
 			sourceTree = "<group>";
 		};
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
@@ -454,6 +842,7 @@
 				066A517A1BC4C373000E606E /* FMDatabase.h in Headers */,
 				066A50D61BC4AE63000E606E /* ActorSDK.h in Headers */,
 				066A517C1BC4C373000E606E /* FMDatabase+Private.h in Headers */,
+				066A52731BC5101A000E606E /* ABPhoneField.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,6 +907,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				066A52751BC5101A000E606E /* ABPhoneFieldCodes.txt in Resources */,
 				066A52071BC4E962000E606E /* convert.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -575,65 +965,116 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				066A52F81BC52B13000E606E /* AAWallpapperSettingsCell.swift in Sources */,
 				066A51591BC4C14A000E606E /* LruCache.swift in Sources */,
 				066A52101BC4ECCC000E606E /* AppTheme.swift in Sources */,
+				066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */,
+				066A53101BC53317000E606E /* WallpapperPreviewController.swift in Sources */,
+				066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */,
+				066A532E1BC53406000E606E /* AABubbleBaseFileCell.swift in Sources */,
 				066A514A1BC4BCE0000E606E /* Dispatch.swift in Sources */,
 				066A52401BC4EECD000E606E /* BigPlaceholderView.swift in Sources */,
-				066A52351BC4EEBA000E606E /* TextCell.swift in Sources */,
+				066A52FF1BC52FA9000E606E /* AAGroupMembersController.swift in Sources */,
+				066A53301BC53406000E606E /* AABubbleDocumentCell.swift in Sources */,
+				066A52FD1BC52FA8000E606E /* AAComposeController.swift in Sources */,
+				066A52351BC4EEBA000E606E /* AATextCell.swift in Sources */,
 				066A51461BC4BBC3000E606E /* Fonts.swift in Sources */,
 				066A52271BC4EEAC000E606E /* ACContentTableController.swift in Sources */,
 				066A51411BC4BB5C000E606E /* AssosiatedObject.swift in Sources */,
+				066A52E51BC52A20000E606E /* AAGroupViewController.swift in Sources */,
 				066A52251BC4EEAC000E606E /* ACManagedBind.swift in Sources */,
+				066A532B1BC53406000E606E /* AABubbleCell.swift in Sources */,
+				066A52C71BC521EA000E606E /* AAEditTextController.swift in Sources */,
 				066A518E1BC4C383000E606E /* iOSNotificationProvider.swift in Sources */,
+				066A52681BC50E7B000E606E /* AAAuthCodeViewController.swift in Sources */,
 				066A51631BC4C2A0000E606E /* UIBarAppearance+Swift.m in Sources */,
 				066A516B1BC4C366000E606E /* Wrappers.swift in Sources */,
+				066A52CC1BC521FA000E606E /* AARecentContentViewController.swift in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
+				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
+				066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */,
 				066A52481BC4EED5000E606E /* CircullarLayerProgress.swift in Sources */,
 				066A51921BC4C383000E606E /* CocoaFileSystemRuntime.swift in Sources */,
+				066A52DC1BC52385000E606E /* AAContactCell.swift in Sources */,
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
-				066A52361BC4EEBA000E606E /* TitledCell.swift in Sources */,
+				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
+				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
+				066A53071BC53183000E606E /* DialogsViewController.swift in Sources */,
+				066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */,
 				066A52431BC4EECD000E606E /* TableViewSeparator.swift in Sources */,
-				066A52341BC4EEBA000E606E /* CommonCell.swift in Sources */,
+				066A53341BC534F5000E606E /* Images2.swift in Sources */,
+				066A52341BC4EEBA000E606E /* AACommonCell.swift in Sources */,
+				066A52DF1BC5241F000E606E /* AAWebActionController.swift in Sources */,
 				066A51221BC4B55C000E606E /* Device.swift in Sources */,
+				066A532D1BC53406000E606E /* AABubbleServiceCell.swift in Sources */,
+				066A52F11BC52B02000E606E /* AASettingsNotificationsViewController.swift in Sources */,
 				066A524C1BC4EF49000E606E /* Binder.swift in Sources */,
-				066A52381BC4EEBA000E606E /* HeaderCell.swift in Sources */,
+				066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */,
 				066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */,
 				066A51521BC4BE34000E606E /* Logs.swift in Sources */,
+				066A52D71BC52378000E606E /* AAContactsContentViewControllerDelegate.swift in Sources */,
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
+				066A53171BC533DD000E606E /* Bubbles.swift in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A516A1BC4C366000E606E /* Analytics.swift in Sources */,
+				066A53231BC533F5000E606E /* Caches.swift in Sources */,
+				066A52691BC50E7B000E606E /* AAAuthRegisterViewController.swift in Sources */,
 				066A51501BC4BE06000E606E /* Regex.swift in Sources */,
 				066A520C1BC4ECC0000E606E /* Styles.swift in Sources */,
+				066A52F71BC52B13000E606E /* AAWallpapperPreviewCell.swift in Sources */,
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
+				066A52801BC51ED0000E606E /* AARootTabViewController.swift in Sources */,
 				066A522A1BC4EEAC000E606E /* ACManagedAlerts.swift in Sources */,
 				066A52411BC4EECD000E606E /* GroupPhotoCell.swift in Sources */,
 				066A52451BC4EECD000E606E /* AvatarCell.swift in Sources */,
-				066A52371BC4EEBA000E606E /* UATableViewCell.swift in Sources */,
+				066A52D21BC52204000E606E /* AADialogsSearchCell.swift in Sources */,
+				066A52371BC4EEBA000E606E /* AATableViewCell.swift in Sources */,
 				066A51481BC4BBF4000E606E /* Views.swift in Sources */,
+				066A53151BC533D5000E606E /* ConversationContentViewController.swift in Sources */,
 				066A52151BC4EE04000E606E /* AvatarView.swift in Sources */,
 				066A52591BC4EF61000E606E /* Executions.swift in Sources */,
 				066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */,
+				066A52DB1BC52385000E606E /* AAContactActionCell.swift in Sources */,
+				066A53111BC53317000E606E /* CorePreviewController.swift in Sources */,
 				066A519B1BC4C390000E606E /* FMDBKeyValue.swift in Sources */,
+				066A52F31BC52B02000E606E /* AASettingsWallpapper.swift in Sources */,
+				066A53041BC53177000E606E /* ContactsViewController.swift in Sources */,
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
+				066A530B1BC531A2000E606E /* UserViewController.swift in Sources */,
 				066A52441BC4EECD000E606E /* UserPhotoCell.swift in Sources */,
+				066A531A1BC533E7000E606E /* AutoCompleteCell.swift in Sources */,
 				066A517B1BC4C373000E606E /* FMDatabase.m in Sources */,
 				066A52561BC4EF61000E606E /* AATableViewController.swift in Sources */,
+				066A52D61BC52378000E606E /* AAContactsContentViewController.swift in Sources */,
 				066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */,
+				066A52E61BC52A20000E606E /* AAAddParticipantViewController.swift in Sources */,
+				066A52C81BC521EA000E606E /* AAEditFieldController.swift in Sources */,
+				066A532C1BC53406000E606E /* AABubbleTextCell.swift in Sources */,
 				066A52261BC4EEAC000E606E /* ACManagedCells.swift in Sources */,
+				066A53221BC533F5000E606E /* MessagesFlowLayout.swift in Sources */,
+				066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */,
+				066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */,
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
 				066A515B1BC4C178000E606E /* HashMap.swift in Sources */,
 				066A511F1BC4B4E5000E606E /* ActorCore.swift in Sources */,
+				066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */,
 				066A52281BC4EEAC000E606E /* ACManagedTableController.swift in Sources */,
-				066A52391BC4EEBA000E606E /* EditCell.swift in Sources */,
+				066A53121BC53317000E606E /* PhotoPreviewController.swift in Sources */,
+				066A52391BC4EEBA000E606E /* AAEditCell.swift in Sources */,
+				066A526D1BC50E8B000E606E /* AAAuthCountryCell.swift in Sources */,
 				066A51911BC4C383000E606E /* CocoaHttpRuntime.swift in Sources */,
+				066A53211BC533F5000E606E /* BubbleLayouts.swift in Sources */,
 				066A51821BC4C373000E606E /* FMDatabaseQueue.m in Sources */,
 				066A525A1BC4EF61000E606E /* Navigations.swift in Sources */,
 				066A51841BC4C373000E606E /* FMResultSet.m in Sources */,
 				066A514E1BC4BDE4000E606E /* Numbers.swift in Sources */,
 				066A51561BC4BEF5000E606E /* Localization.swift in Sources */,
 				066A51441BC4BBAF000E606E /* Strings.swift in Sources */,
+				066A53331BC534F5000E606E /* FileTypes.swift in Sources */,
 				066A52331BC4EEBA000E606E /* BasicCell.swift in Sources */,
+				066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */,
+				066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */,
 				066A52241BC4EEAC000E606E /* ACManagedRange.swift in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
 				066A516D1BC4C366000E606E /* Extensions.swift in Sources */,
@@ -641,19 +1082,26 @@
 				066A519A1BC4C390000E606E /* FMDBList.swift in Sources */,
 				066A52171BC4EE3F000E606E /* Placeholders.swift in Sources */,
 				066A52221BC4EEAC000E606E /* ACManagedTable.swift in Sources */,
+				066A52EA1BC52A2B000E606E /* AAGroupMemberCell.swift in Sources */,
 				066A516C1BC4C366000E606E /* Conversions.swift in Sources */,
 				066A52291BC4EEAC000E606E /* ACManagedTableExtensions.swift in Sources */,
 				066A514C1BC4BD05000E606E /* Collections.swift in Sources */,
 				066A52121BC4ECD0000E606E /* Resouces.swift in Sources */,
+				066A526A1BC50E7B000E606E /* AAAuthViewController.swift in Sources */,
 				066A52541BC4EF61000E606E /* AAImagePickerController.swift in Sources */,
+				066A525C1BC502EB000E606E /* ActorSDKDelegate.swift in Sources */,
 				066A52551BC4EF61000E606E /* AANavigationController.swift in Sources */,
 				066A52421BC4EECD000E606E /* TableViewHeader.swift in Sources */,
 				066A51611BC4C2A0000E606E /* UIAppearance+Swift.m in Sources */,
 				066A520E1BC4ECC7000E606E /* StylesEngine.swift in Sources */,
+				066A52CD1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift in Sources */,
 				066A52231BC4EEAC000E606E /* ACManagedSection.swift in Sources */,
+				066A52D11BC52204000E606E /* AADialogCell.swift in Sources */,
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,
 				066A52581BC4EF61000E606E /* Alerts.swift in Sources */,
 				066A51691BC4C366000E606E /* Tools.swift in Sources */,
+				066A53201BC533F5000E606E /* BubbleBackgroundProcessor.swift in Sources */,
+				066A52661BC50E7B000E606E /* AAAuthCountriesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
