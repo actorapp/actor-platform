@@ -126,47 +126,47 @@ class ContactsViewController: ContactsContentViewController, ContactsContentView
     
     func findContact() {
         
-        startEditField { (c) -> () in
-            c.title = "FindTitle"
-            c.actionTitle = "NavigationFind"
-            
-            c.hint = "FindHint"
-            c.fieldHint = "FindFieldHint"
-            
-            c.fieldAutocapitalizationType = .None
-            c.fieldAutocorrectionType = .No
-            c.fieldReturnKey = .Search
-            
-            c.didDoneTap = { (t, c) -> () in
-                
-                if t.length == 0 {
-                    return
-                }
-                
-                self.executeSafeOnlySuccess(Actor.findUsersCommandWithQuery(t), successBlock: { (val) -> Void in
-                    var user: ACUserVM? = nil
-                    if let users = val as? IOSObjectArray {
-                        if Int(users.length()) > 0 {
-                            if let tempUser = users.objectAtIndex(0) as? ACUserVM {
-                                user = tempUser
-                            }
-                        }
-                    }
-                    
-                    if user != nil {
-                        c.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
-                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
-                            c.dismiss()
-                        }, failureBlock: { (val) -> Void in
-                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
-                            c.dismiss()
-                        })
-                    } else {
-                        c.alertUser("FindNotFound")
-                    }
-                })
-            }
-        }
+//        startEditField { (c) -> () in
+//            c.title = "FindTitle"
+//            c.actionTitle = "NavigationFind"
+//            
+//            c.hint = "FindHint"
+//            c.fieldHint = "FindFieldHint"
+//            
+//            c.fieldAutocapitalizationType = .None
+//            c.fieldAutocorrectionType = .No
+//            c.fieldReturnKey = .Search
+//            
+//            c.didDoneTap = { (t, c) -> () in
+//                
+//                if t.length == 0 {
+//                    return
+//                }
+//                
+//                self.executeSafeOnlySuccess(Actor.findUsersCommandWithQuery(t), successBlock: { (val) -> Void in
+//                    var user: ACUserVM? = nil
+//                    if let users = val as? IOSObjectArray {
+//                        if Int(users.length()) > 0 {
+//                            if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+//                                user = tempUser
+//                            }
+//                        }
+//                    }
+//                    
+//                    if user != nil {
+//                        c.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
+//                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+//                            c.dismiss()
+//                        }, failureBlock: { (val) -> Void in
+//                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+//                            c.dismiss()
+//                        })
+//                    } else {
+//                        c.alertUser("FindNotFound")
+//                    }
+//                })
+//            }
+//        }
     }
     
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {

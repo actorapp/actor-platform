@@ -4,13 +4,13 @@
 
 import UIKit
 
-class GroupPhotoCell: CommonCell {
+public class GroupPhotoCell: CommonCell {
     
     // MARK: -
     // MARK: Public vars
     
-    var groupNameLabel: UILabel!
-    var groupAvatarView: AvatarView!
+    public var groupNameLabel: UILabel!
+    public var groupAvatarView: AvatarView!
     
     private let shadow = UIImageView()
     
@@ -38,14 +38,14 @@ class GroupPhotoCell: CommonCell {
         contentView.addSubview(groupNameLabel)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: -
     // MARK: Setters
     
-    func setGroupName(groupName: String) {
+    public func setGroupName(groupName: String) {
         groupNameLabel.text = groupName
         setNeedsLayout()
     }
@@ -53,14 +53,14 @@ class GroupPhotoCell: CommonCell {
     // MARK: -
     // MARK: Getters
     
-    func groupName() -> String {
+    public func groupName() -> String {
         return groupNameLabel.text!
     }
     
     // MARK: -
     // MARK: Layout subviews 
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         groupAvatarView.frame = CGRect(x: 0.0, y: -1.0, width: contentView.bounds.width, height: contentView.bounds.height + 1.0)

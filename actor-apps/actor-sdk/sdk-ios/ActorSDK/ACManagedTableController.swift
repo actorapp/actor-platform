@@ -4,32 +4,32 @@
 
 import Foundation
 
-class ACManagedTableController: AAViewController {
+public class ACManagedTableController: AAViewController {
     
-    let style: ACContentTableStyle
+    public let style: ACContentTableStyle
     
-    var managedTableDelegate: ACManagedTableControllerDelegate?
+    public var managedTableDelegate: ACManagedTableControllerDelegate?
     
-    let binder = Binder()
+    public let binder = Binder()
     
-    var tableView: UITableView!
+    public var tableView: UITableView!
     
-    var managedTable: ACManagedTable!
+    public var managedTable: ACManagedTable!
     
-    var unbindOnDissapear: Bool = false
+    public var unbindOnDissapear: Bool = false
     
     private var isBinded: Bool = false
     
-    init(style: ACContentTableStyle) {
+    public init(style: ACContentTableStyle) {
         self.style = style
         super.init()
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         // Creating tables
@@ -69,7 +69,7 @@ class ACManagedTableController: AAViewController {
         tableView.reloadData()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
 
         if let t = tableView {
             if let row = t.indexPathForSelectedRow {
@@ -96,7 +96,7 @@ class ACManagedTableController: AAViewController {
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Stopping data binding here
@@ -122,7 +122,7 @@ class ACManagedTableController: AAViewController {
         }
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    public override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
         if let m = managedTable {
@@ -133,23 +133,23 @@ class ACManagedTableController: AAViewController {
     }
 }
 
-protocol ACManagedTableControllerDelegate {
+public protocol ACManagedTableControllerDelegate {
     func managedTableLoad(controller: ACManagedTableController, table: ACManagedTable)
     func managedTableBind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder)
     func managedTableUnbind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder)
 }
 
-extension ACManagedTableControllerDelegate {
+public extension ACManagedTableControllerDelegate {
     
-    func managedTableLoad(controller: ACManagedTableController, table: ACManagedTable) {
+    public func managedTableLoad(controller: ACManagedTableController, table: ACManagedTable) {
         // Do nothing
     }
     
-    func managedTableBind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder) {
+    public func managedTableBind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder) {
         // Do nothing
     }
     
-    func managedTableUnbind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder) {
+    public func managedTableUnbind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder) {
         // Do nothing
     }
 }

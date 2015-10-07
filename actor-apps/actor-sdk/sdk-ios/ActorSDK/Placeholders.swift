@@ -3,11 +3,10 @@
 //
 
 import Foundation
-import j2objc
 
-class Placeholders {
+public class Placeholders {
     
-    class func avatarPlaceholder(index: jint, size: Int, title: NSString, rounded: Bool) -> UIImage {
+    public class func avatarPlaceholder(index: jint, size: Int, title: NSString, rounded: Bool) -> UIImage {
         let color = MainAppTheme.common.placeholders[Int(abs(index)) % MainAppTheme.common.placeholders.count].CGColor;
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: size, height: size), false, UIScreen.mainScreen().scale);

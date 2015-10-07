@@ -4,18 +4,18 @@
 
 import UIKit
 
-class AANavigationController: UINavigationController {
+public class AANavigationController: UINavigationController {
     
     private let binder = Binder()
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         navigationBar.hideBottomHairline()
         view.backgroundColor = MainAppTheme.list.backyardColor
         
         // Enabling app state sync progress
-        self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
-        self.setSecondaryColor(MainAppTheme.navigation.progressSecondary)
+//        self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
+//        self.setSecondaryColor(MainAppTheme.navigation.progressSecondary)
         
 //        binder.bind(Actor.getAppState().isSyncing, valueModel2: Actor.getAppState().isConnecting) { (value1: JavaLangBoolean?, value2: JavaLangBoolean?) -> () in
 //            if value1!.booleanValue() || value2!.booleanValue() {
@@ -27,24 +27,24 @@ class AANavigationController: UINavigationController {
 //        }
     }
     
-    func makeBarTransparent() {
+    public func makeBarTransparent() {
         navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
         navigationBar.shadowImage = UIImage()
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
     }
 }
 
-extension UINavigationBar {
+public extension UINavigationBar {
     
-    func hideBottomHairline() {
+    public func hideBottomHairline() {
         let navigationBarImageView = hairlineImageViewInNavigationBar(self)
         navigationBarImageView!.hidden = true
     }
     
-    func showBottomHairline() {
+    public func showBottomHairline() {
         let navigationBarImageView = hairlineImageViewInNavigationBar(self)
         navigationBarImageView!.hidden = false
     }

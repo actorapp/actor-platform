@@ -4,21 +4,20 @@
 
 import Foundation
 import MBProgressHUD
-import ActorSDK
 
-enum ExecutionType {
+public enum ExecutionType {
     case Normal
     case Hidden
     case Safe
 }
 
-class MenuBuilder {
+public class MenuBuilder {
     
-    var tapClosure: ((index: Int) -> ())!
-    var items = [String]()
-    var closures: [(()->())?] = []
+    public var tapClosure: ((index: Int) -> ())!
+    public var items = [String]()
+    public var closures: [(()->())?] = []
     
-    init() {
+    public init() {
         
         tapClosure = { (index) -> () in
             if index >= 0 && index <= self.closures.count {
@@ -27,19 +26,19 @@ class MenuBuilder {
         }
     }
     
-    func add(title: String, closure: (()->())?) {
+    public func add(title: String, closure: (()->())?) {
         items.append(title)
         closures.append(closure)
     }
 }
 
-class Executions {
+public class Executions {
     
-    class func execute(command: ACCommand) {
+    public class func execute(command: ACCommand) {
         execute(command, successBlock: nil, failureBlock: nil)
     }
     
-    class func execute(command: ACCommand, type: ExecutionType = .Normal, ignore: [String] = [], successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
+    public class func execute(command: ACCommand, type: ExecutionType = .Normal, ignore: [String] = [], successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         
         var hud: MBProgressHUD?
         if type != .Hidden {
@@ -90,15 +89,15 @@ class Executions {
         }))
     }
     
-    class func errorWithError(e: AnyObject, rep:(()->())? = nil, cancel:(()->())? = nil) {
+    public class func errorWithError(e: AnyObject, rep:(()->())? = nil, cancel:(()->())? = nil) {
         error(Actor.getFormatter().formatErrorTextWithError(e), rep: rep, cancel: cancel)
     }
     
-    class func errorWithTag(tag: String, rep:(()->())? = nil, cancel:(()->())? = nil) {
+    public class func errorWithTag(tag: String, rep:(()->())? = nil, cancel:(()->())? = nil) {
         error(Actor.getFormatter().formatErrorTextWithTag(tag), rep: rep, cancel: cancel)
     }
     
-    class func error(message: String, rep:(()->())? = nil, cancel:(()->())? = nil) {
+    public class func error(message: String, rep:(()->())? = nil, cancel:(()->())? = nil) {
         if rep != nil {
             let d = UIAlertViewBlock(clickedClosure: { (index) -> () in
                 if index > 0 {
@@ -158,32 +157,32 @@ private var alertViewBlockReference = "_block_reference"
     }
 }
 
-extension UIViewController {
+public extension UIViewController {
     
-    func execute(command: ACCommand) {
+    public func execute(command: ACCommand) {
         Executions.execute(command)
     }
     
-    func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
+    public func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         Executions.execute(command, successBlock: successBlock, failureBlock: failureBlock)
     }
     
-    func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
+    public func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
         Executions.execute(command, successBlock: successBlock, failureBlock: nil)
     }
     
-    func executeSafe(command: ACCommand, ignore: [String] = [], successBlock: ((val: Any?) -> Void)? = nil) {
+    public func executeSafe(command: ACCommand, ignore: [String] = [], successBlock: ((val: Any?) -> Void)? = nil) {
         Executions.execute(command, type: .Safe, ignore: ignore, successBlock: successBlock, failureBlock: { (val) -> () in
             successBlock?(val: nil)
         })
     }
     
-    func executeSafeOnlySuccess(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
+    public func executeSafeOnlySuccess(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
         Executions.execute(command, type: .Safe, ignore: [], successBlock: successBlock, failureBlock: nil)
     }
 
     
-    func executeHidden(command: ACCommand, successBlock: ((val: Any?) -> Void)? = nil) {
+    public func executeHidden(command: ACCommand, successBlock: ((val: Any?) -> Void)? = nil) {
         Executions.execute(command, type: .Hidden, successBlock: successBlock, failureBlock: nil)
     }
 }

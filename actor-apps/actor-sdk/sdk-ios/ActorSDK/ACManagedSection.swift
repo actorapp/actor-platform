@@ -4,33 +4,33 @@
 
 import Foundation
 
-class ACManagedSection {
+public class ACManagedSection {
     
-    var headerHeight: Double = 0
-    var footerHeight: Double = 0
+    public var headerHeight: Double = 0
+    public var footerHeight: Double = 0
     
-    var headerText: String? = nil
-    var footerText: String? = nil
+    public var headerText: String? = nil
+    public var footerText: String? = nil
     
-    let index: Int
+    public let index: Int
     
-    var autoSeparatorTopOffset: Int = 0
-    var autoSeparatorBottomOffset: Int = 0
-    var autoSeparators: Bool = false
-    var autoSeparatorsInset: CGFloat = 15.0
+    public var autoSeparatorTopOffset: Int = 0
+    public var autoSeparatorBottomOffset: Int = 0
+    public var autoSeparators: Bool = false
+    public var autoSeparatorsInset: CGFloat = 15.0
     
-    var regions: [ACManagedRange] = [ACManagedRange]()
+    public var regions: [ACManagedRange] = [ACManagedRange]()
     
-    unowned let table: ACManagedTable
+    public unowned let table: ACManagedTable
     
-    init(table: ACManagedTable, index: Int) {
+    public init(table: ACManagedTable, index: Int) {
         self.index = index
         self.table = table
     }
     
     // Items count
     
-    func numberOfItems(managedTable: ACManagedTable) -> Int {
+    public func numberOfItems(managedTable: ACManagedTable) -> Int {
         var res = 0
         for r in regions {
             res += r.rangeNumberOfItems(managedTable)
@@ -40,12 +40,12 @@ class ACManagedSection {
     
     // Cells
     
-    func cellHeightForItem(managedTable: ACManagedTable, indexPath: NSIndexPath) -> CGFloat {
+    public func cellHeightForItem(managedTable: ACManagedTable, indexPath: NSIndexPath) -> CGFloat {
         let r = findCell(managedTable, indexPath: indexPath)
         return r.cells.rangeCellHeightForItem(managedTable, indexPath: r.index)
     }
     
-    func cellForItem(managedTable: ACManagedTable, indexPath: NSIndexPath) -> UITableViewCell {
+    public func cellForItem(managedTable: ACManagedTable, indexPath: NSIndexPath) -> UITableViewCell {
         let r = findCell(managedTable, indexPath: indexPath)
         
         let res = r.cells.rangeCellForItem(managedTable, indexPath: r.index)
@@ -95,36 +95,36 @@ class ACManagedSection {
 
     // Selection
     
-    func canSelect(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
+    public func canSelect(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
         let r = findCell(managedTable, indexPath: indexPath)
         return r.cells.rangeCanSelect(managedTable, indexPath: r.index)
     }
     
-    func select(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
+    public func select(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
         let r = findCell(managedTable, indexPath: indexPath)
         return r.cells.rangeSelect(managedTable, indexPath: r.index)
     }
     
     // Copying
     
-    func canCopy(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
+    public func canCopy(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
         let r = findCell(managedTable, indexPath: indexPath)
         return r.cells.rangeCanCopy(managedTable, indexPath: r.index)
     }
     
-    func copy(managedTable: ACManagedTable, indexPath: NSIndexPath) {
+    public func copy(managedTable: ACManagedTable, indexPath: NSIndexPath) {
         let r = findCell(managedTable, indexPath: indexPath)
         r.cells.rangeCopy(managedTable, indexPath: r.index)
     }
     
     // Deletion
     
-    func canDelete(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
+    public func canDelete(managedTable: ACManagedTable, indexPath: NSIndexPath) -> Bool {
         let r = findCell(managedTable, indexPath: indexPath)
         return r.cells.rangeCanDelete(managedTable, indexPath: r.index)
     }
     
-    func delete(managedTable: ACManagedTable, indexPath: NSIndexPath) {
+    public func delete(managedTable: ACManagedTable, indexPath: NSIndexPath) {
         let r = findCell(managedTable, indexPath: indexPath)
         r.cells.rangeDelete(managedTable, indexPath: r.index)
     }
@@ -132,13 +132,13 @@ class ACManagedSection {
     
     // Binding
     
-    func bind(managedTable: ACManagedTable, binder: Binder) {
+    public func bind(managedTable: ACManagedTable, binder: Binder) {
         for s in regions {
             s.rangeBind(managedTable, binder: binder)
         }
     }
     
-    func unbind(managedTable: ACManagedTable, binder: Binder) {
+    public func unbind(managedTable: ACManagedTable, binder: Binder) {
         for s in regions {
             s.rangeUnbind(managedTable, binder: binder)
         }
@@ -173,29 +173,29 @@ class ACManagedSection {
 
 // Obsolete Setters
 
-extension ACManagedSection {
+public extension ACManagedSection {
     
-    func setSeparatorsTopOffset(offset: Int) -> ACManagedSection {
+    public func setSeparatorsTopOffset(offset: Int) -> ACManagedSection {
         self.autoSeparatorTopOffset = offset
         return self
     }
     
-    func setFooterText(footerText: String) -> ACManagedSection {
+    public func setFooterText(footerText: String) -> ACManagedSection {
         self.footerText = footerText
         return self
     }
     
-    func setHeaderText(headerText: String) -> ACManagedSection {
+    public func setHeaderText(headerText: String) -> ACManagedSection {
         self.headerText = headerText
         return self
     }
     
-    func setFooterHeight(footerHeight: Double) -> ACManagedSection {
+    public func setFooterHeight(footerHeight: Double) -> ACManagedSection {
         self.footerHeight = footerHeight
         return self
     }
     
-    func setHeaderHeight(headerHeight: Double) -> ACManagedSection {
+    public func setHeaderHeight(headerHeight: Double) -> ACManagedSection {
         self.headerHeight = headerHeight
         return self
     }

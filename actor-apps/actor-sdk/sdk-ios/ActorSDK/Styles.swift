@@ -3,9 +3,8 @@
 //
 
 import Foundation
-import ActorSDK
 
-func initStyles() {
+public func initStyles() {
     
     // Text root styles
     

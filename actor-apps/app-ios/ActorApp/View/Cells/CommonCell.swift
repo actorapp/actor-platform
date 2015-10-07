@@ -4,7 +4,7 @@
 
 import UIKit
 
-enum CommonCellStyle {
+public enum CommonCellStyle {
     case Normal
     case DestructiveCentered
     case Destructive
@@ -15,17 +15,17 @@ enum CommonCellStyle {
     case Hint
 }
 
-class CommonCell: UATableViewCell {
+public class CommonCell: UATableViewCell {
     
     private var switcher: UISwitch?
     private var titleLabel = UILabel()
     private var hintLabel = UILabel()
     
-    var style: CommonCellStyle = .Normal { didSet { updateCellStyle() } }
-    var switchBlock: ((Bool) -> ())?
-    var contentInset: CGFloat = 15
+    public var style: CommonCellStyle = .Normal { didSet { updateCellStyle() } }
+    public var switchBlock: ((Bool) -> ())?
+    public var contentInset: CGFloat = 15
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         titleLabel.font = UIFont.systemFontOfSize(17.0)
@@ -36,17 +36,17 @@ class CommonCell: UATableViewCell {
         contentView.addSubview(hintLabel)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // Setting text content
     
-    func setContent(content: String?) {
+    public func setContent(content: String?) {
         titleLabel.text = content
     }
     
-    func setHint(hint: String?) {
+    public func setHint(hint: String?) {
         if hint == nil {
             hintLabel.hidden = true
         } else {
@@ -57,15 +57,15 @@ class CommonCell: UATableViewCell {
     
     // Setting switcher content
     
-    func setSwitcherOn(on: Bool) {
+    public func setSwitcherOn(on: Bool) {
         setSwitcherOn(on, animated: false)
     }
     
-    func setSwitcherOn(on: Bool, animated: Bool) {
+    public func setSwitcherOn(on: Bool, animated: Bool) {
         switcher?.setOn(on, animated: animated)
     }
     
-    func setSwitcherEnabled(enabled: Bool) {
+    public func setSwitcherEnabled(enabled: Bool) {
         switcher?.enabled = enabled
     }
     
@@ -138,7 +138,7 @@ class CommonCell: UATableViewCell {
         }
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         if hintLabel.text != nil {

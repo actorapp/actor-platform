@@ -5,19 +5,19 @@
 import Foundation
 import UIKit
 
-class TableViewSeparator : UIView {
+public class TableViewSeparator : UIView {
 
-    init(color: UIColor) {
+    public init(color: UIColor) {
         super.init(frame: CGRectZero)
         
         super.backgroundColor = color
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override var backgroundColor: UIColor? {
+    public override var backgroundColor: UIColor? {
         get {
             return super.backgroundColor
         }

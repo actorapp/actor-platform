@@ -60,6 +60,44 @@
 		066A52061BC4E962000E606E /* ActorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 066A52031BC4E962000E606E /* ActorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		066A52071BC4E962000E606E /* convert.py in Resources */ = {isa = PBXBuildFile; fileRef = 066A52041BC4E962000E606E /* convert.py */; settings = {ASSET_TAGS = (); }; };
 		066A52081BC4E962000E606E /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 066A52051BC4E962000E606E /* Makefile */; settings = {ASSET_TAGS = (); }; };
+		066A520C1BC4ECC0000E606E /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A520B1BC4ECC0000E606E /* Styles.swift */; settings = {ASSET_TAGS = (); }; };
+		066A520E1BC4ECC7000E606E /* StylesEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A520D1BC4ECC7000E606E /* StylesEngine.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52101BC4ECCC000E606E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A520F1BC4ECCC000E606E /* AppTheme.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52121BC4ECD0000E606E /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52111BC4ECD0000E606E /* Resouces.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52151BC4EE04000E606E /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52141BC4EE04000E606E /* AvatarView.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52171BC4EE3F000E606E /* Placeholders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52161BC4EE3F000E606E /* Placeholders.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52221BC4EEAC000E606E /* ACManagedTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52191BC4EEAC000E606E /* ACManagedTable.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52231BC4EEAC000E606E /* ACManagedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521A1BC4EEAC000E606E /* ACManagedSection.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52241BC4EEAC000E606E /* ACManagedRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521B1BC4EEAC000E606E /* ACManagedRange.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52251BC4EEAC000E606E /* ACManagedBind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521C1BC4EEAC000E606E /* ACManagedBind.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52261BC4EEAC000E606E /* ACManagedCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521D1BC4EEAC000E606E /* ACManagedCells.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52271BC4EEAC000E606E /* ACContentTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521E1BC4EEAC000E606E /* ACContentTableController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52281BC4EEAC000E606E /* ACManagedTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521F1BC4EEAC000E606E /* ACManagedTableController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52291BC4EEAC000E606E /* ACManagedTableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52201BC4EEAC000E606E /* ACManagedTableExtensions.swift */; settings = {ASSET_TAGS = (); }; };
+		066A522A1BC4EEAC000E606E /* ACManagedAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52211BC4EEAC000E606E /* ACManagedAlerts.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52331BC4EEBA000E606E /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522B1BC4EEBA000E606E /* BasicCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52341BC4EEBA000E606E /* CommonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522C1BC4EEBA000E606E /* CommonCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52351BC4EEBA000E606E /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522D1BC4EEBA000E606E /* TextCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52361BC4EEBA000E606E /* TitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522E1BC4EEBA000E606E /* TitledCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52371BC4EEBA000E606E /* UATableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A522F1BC4EEBA000E606E /* UATableViewCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52381BC4EEBA000E606E /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52301BC4EEBA000E606E /* HeaderCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52391BC4EEBA000E606E /* EditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52311BC4EEBA000E606E /* EditCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52401BC4EECD000E606E /* BigPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523A1BC4EECD000E606E /* BigPlaceholderView.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52411BC4EECD000E606E /* GroupPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523B1BC4EECD000E606E /* GroupPhotoCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52421BC4EECD000E606E /* TableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523C1BC4EECD000E606E /* TableViewHeader.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52431BC4EECD000E606E /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523D1BC4EECD000E606E /* TableViewSeparator.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52441BC4EECD000E606E /* UserPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523E1BC4EECD000E606E /* UserPhotoCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52451BC4EECD000E606E /* AvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523F1BC4EECD000E606E /* AvatarCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52481BC4EED5000E606E /* CircullarLayerProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52461BC4EED5000E606E /* CircullarLayerProgress.swift */; settings = {ASSET_TAGS = (); }; };
+		066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52491BC4EF49000E606E /* AAViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A524C1BC4EF49000E606E /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A524A1BC4EF49000E606E /* Binder.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52541BC4EF61000E606E /* AAImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A524D1BC4EF61000E606E /* AAImagePickerController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52551BC4EF61000E606E /* AANavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A524E1BC4EF61000E606E /* AANavigationController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52561BC4EF61000E606E /* AATableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A524F1BC4EF61000E606E /* AATableViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52501BC4EF61000E606E /* AACollectionViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52581BC4EF61000E606E /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52511BC4EF61000E606E /* Alerts.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52591BC4EF61000E606E /* Executions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52521BC4EF61000E606E /* Executions.swift */; settings = {ASSET_TAGS = (); }; };
+		066A525A1BC4EF61000E606E /* Navigations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52531BC4EF61000E606E /* Navigations.swift */; settings = {ASSET_TAGS = (); }; };
 		EBCE6C5E37CD1B8624E9BCE8 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -119,6 +157,44 @@
 		066A52031BC4E962000E606E /* ActorCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorCore.h; sourceTree = "<group>"; };
 		066A52041BC4E962000E606E /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		066A52051BC4E962000E606E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		066A520B1BC4ECC0000E606E /* Styles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
+		066A520D1BC4ECC7000E606E /* StylesEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StylesEngine.swift; sourceTree = "<group>"; };
+		066A520F1BC4ECCC000E606E /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		066A52111BC4ECD0000E606E /* Resouces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resouces.swift; sourceTree = "<group>"; };
+		066A52141BC4EE04000E606E /* AvatarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
+		066A52161BC4EE3F000E606E /* Placeholders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Placeholders.swift; sourceTree = "<group>"; };
+		066A52191BC4EEAC000E606E /* ACManagedTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTable.swift; sourceTree = "<group>"; };
+		066A521A1BC4EEAC000E606E /* ACManagedSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedSection.swift; sourceTree = "<group>"; };
+		066A521B1BC4EEAC000E606E /* ACManagedRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedRange.swift; sourceTree = "<group>"; };
+		066A521C1BC4EEAC000E606E /* ACManagedBind.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedBind.swift; sourceTree = "<group>"; };
+		066A521D1BC4EEAC000E606E /* ACManagedCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedCells.swift; sourceTree = "<group>"; };
+		066A521E1BC4EEAC000E606E /* ACContentTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACContentTableController.swift; sourceTree = "<group>"; };
+		066A521F1BC4EEAC000E606E /* ACManagedTableController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableController.swift; sourceTree = "<group>"; };
+		066A52201BC4EEAC000E606E /* ACManagedTableExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTableExtensions.swift; sourceTree = "<group>"; };
+		066A52211BC4EEAC000E606E /* ACManagedAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedAlerts.swift; sourceTree = "<group>"; };
+		066A522B1BC4EEBA000E606E /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BasicCell.swift; path = View/Cells/BasicCell.swift; sourceTree = "<group>"; };
+		066A522C1BC4EEBA000E606E /* CommonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommonCell.swift; path = View/Cells/CommonCell.swift; sourceTree = "<group>"; };
+		066A522D1BC4EEBA000E606E /* TextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextCell.swift; path = View/Cells/TextCell.swift; sourceTree = "<group>"; };
+		066A522E1BC4EEBA000E606E /* TitledCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TitledCell.swift; path = View/Cells/TitledCell.swift; sourceTree = "<group>"; };
+		066A522F1BC4EEBA000E606E /* UATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UATableViewCell.swift; path = View/Cells/UATableViewCell.swift; sourceTree = "<group>"; };
+		066A52301BC4EEBA000E606E /* HeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HeaderCell.swift; path = View/Cells/HeaderCell.swift; sourceTree = "<group>"; };
+		066A52311BC4EEBA000E606E /* EditCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditCell.swift; sourceTree = "<group>"; };
+		066A523A1BC4EECD000E606E /* BigPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BigPlaceholderView.swift; sourceTree = "<group>"; };
+		066A523B1BC4EECD000E606E /* GroupPhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupPhotoCell.swift; sourceTree = "<group>"; };
+		066A523C1BC4EECD000E606E /* TableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewHeader.swift; sourceTree = "<group>"; };
+		066A523D1BC4EECD000E606E /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
+		066A523E1BC4EECD000E606E /* UserPhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPhotoCell.swift; sourceTree = "<group>"; };
+		066A523F1BC4EECD000E606E /* AvatarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarCell.swift; sourceTree = "<group>"; };
+		066A52461BC4EED5000E606E /* CircullarLayerProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircullarLayerProgress.swift; path = View/Progress/CircullarLayerProgress.swift; sourceTree = "<group>"; };
+		066A52491BC4EF49000E606E /* AAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAViewController.swift; sourceTree = "<group>"; };
+		066A524A1BC4EF49000E606E /* Binder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
+		066A524D1BC4EF61000E606E /* AAImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAImagePickerController.swift; sourceTree = "<group>"; };
+		066A524E1BC4EF61000E606E /* AANavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AANavigationController.swift; sourceTree = "<group>"; };
+		066A524F1BC4EF61000E606E /* AATableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATableViewController.swift; sourceTree = "<group>"; };
+		066A52501BC4EF61000E606E /* AACollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACollectionViewController.swift; sourceTree = "<group>"; };
+		066A52511BC4EF61000E606E /* Alerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
+		066A52521BC4EF61000E606E /* Executions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Executions.swift; sourceTree = "<group>"; };
+		066A52531BC4EF61000E606E /* Navigations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigations.swift; sourceTree = "<group>"; };
 		079B47D38B709F8F27B8DCBB /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		15FA41B0E82C4111ADC31278 /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,6 +234,9 @@
 		066A50D41BC4AE63000E606E /* ActorSDK */ = {
 			isa = PBXGroup;
 			children = (
+				066A52181BC4EE9A000E606E /* Managed Controller */,
+				066A52131BC4EDEB000E606E /* Views */,
+				066A520A1BC4ECB9000E606E /* Syling */,
 				066A511D1BC4B4BD000E606E /* ActorCore */,
 				066A51201BC4B53C000E606E /* SwiftExtensions */,
 				066A51571BC4C112000E606E /* Utils */,
@@ -261,6 +340,83 @@
 				066A51991BC4C390000E606E /* FMDBExtensions.swift */,
 			);
 			name = Storage;
+			sourceTree = "<group>";
+		};
+		066A520A1BC4ECB9000E606E /* Syling */ = {
+			isa = PBXGroup;
+			children = (
+				066A52161BC4EE3F000E606E /* Placeholders.swift */,
+				066A52111BC4ECD0000E606E /* Resouces.swift */,
+				066A520F1BC4ECCC000E606E /* AppTheme.swift */,
+				066A520D1BC4ECC7000E606E /* StylesEngine.swift */,
+				066A520B1BC4ECC0000E606E /* Styles.swift */,
+			);
+			name = Syling;
+			sourceTree = "<group>";
+		};
+		066A52131BC4EDEB000E606E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				066A52471BC4EED5000E606E /* Progress */,
+				066A52321BC4EEBA000E606E /* Cells */,
+				066A52141BC4EE04000E606E /* AvatarView.swift */,
+				066A523A1BC4EECD000E606E /* BigPlaceholderView.swift */,
+				066A523B1BC4EECD000E606E /* GroupPhotoCell.swift */,
+				066A523C1BC4EECD000E606E /* TableViewHeader.swift */,
+				066A523D1BC4EECD000E606E /* TableViewSeparator.swift */,
+				066A523E1BC4EECD000E606E /* UserPhotoCell.swift */,
+				066A523F1BC4EECD000E606E /* AvatarCell.swift */,
+				066A52491BC4EF49000E606E /* AAViewController.swift */,
+				066A524A1BC4EF49000E606E /* Binder.swift */,
+				066A524D1BC4EF61000E606E /* AAImagePickerController.swift */,
+				066A524E1BC4EF61000E606E /* AANavigationController.swift */,
+				066A524F1BC4EF61000E606E /* AATableViewController.swift */,
+				066A52501BC4EF61000E606E /* AACollectionViewController.swift */,
+				066A52511BC4EF61000E606E /* Alerts.swift */,
+				066A52521BC4EF61000E606E /* Executions.swift */,
+				066A52531BC4EF61000E606E /* Navigations.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		066A52181BC4EE9A000E606E /* Managed Controller */ = {
+			isa = PBXGroup;
+			children = (
+				066A52191BC4EEAC000E606E /* ACManagedTable.swift */,
+				066A521A1BC4EEAC000E606E /* ACManagedSection.swift */,
+				066A521B1BC4EEAC000E606E /* ACManagedRange.swift */,
+				066A521C1BC4EEAC000E606E /* ACManagedBind.swift */,
+				066A521D1BC4EEAC000E606E /* ACManagedCells.swift */,
+				066A521E1BC4EEAC000E606E /* ACContentTableController.swift */,
+				066A521F1BC4EEAC000E606E /* ACManagedTableController.swift */,
+				066A52201BC4EEAC000E606E /* ACManagedTableExtensions.swift */,
+				066A52211BC4EEAC000E606E /* ACManagedAlerts.swift */,
+			);
+			name = "Managed Controller";
+			sourceTree = "<group>";
+		};
+		066A52321BC4EEBA000E606E /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				066A522B1BC4EEBA000E606E /* BasicCell.swift */,
+				066A522C1BC4EEBA000E606E /* CommonCell.swift */,
+				066A522D1BC4EEBA000E606E /* TextCell.swift */,
+				066A522E1BC4EEBA000E606E /* TitledCell.swift */,
+				066A522F1BC4EEBA000E606E /* UATableViewCell.swift */,
+				066A52301BC4EEBA000E606E /* HeaderCell.swift */,
+				066A52311BC4EEBA000E606E /* EditCell.swift */,
+			);
+			name = Cells;
+			path = "../../../app-ios/ActorApp";
+			sourceTree = "<group>";
+		};
+		066A52471BC4EED5000E606E /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				066A52461BC4EED5000E606E /* CircullarLayerProgress.swift */,
+			);
+			name = Progress;
+			path = "../../../app-ios/ActorApp";
 			sourceTree = "<group>";
 		};
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
@@ -380,7 +536,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -ev\n\necho \"${CONFIGURATION_TEMP_DIR}\"\n\ncd ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/convert.py\"\n\n# rm -fr \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/Headers\"\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"";
+			shellScript = "set -ev\n\necho \"${CONFIGURATION_TEMP_DIR}\"\n\ncd ActorSDK\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/convert.py\"\n\n# rm -fr \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/Headers\"\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"";
 		};
 		842CC4516DA967714D224C37 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -420,45 +576,83 @@
 			buildActionMask = 2147483647;
 			files = (
 				066A51591BC4C14A000E606E /* LruCache.swift in Sources */,
+				066A52101BC4ECCC000E606E /* AppTheme.swift in Sources */,
 				066A514A1BC4BCE0000E606E /* Dispatch.swift in Sources */,
+				066A52401BC4EECD000E606E /* BigPlaceholderView.swift in Sources */,
+				066A52351BC4EEBA000E606E /* TextCell.swift in Sources */,
 				066A51461BC4BBC3000E606E /* Fonts.swift in Sources */,
+				066A52271BC4EEAC000E606E /* ACContentTableController.swift in Sources */,
 				066A51411BC4BB5C000E606E /* AssosiatedObject.swift in Sources */,
+				066A52251BC4EEAC000E606E /* ACManagedBind.swift in Sources */,
 				066A518E1BC4C383000E606E /* iOSNotificationProvider.swift in Sources */,
 				066A51631BC4C2A0000E606E /* UIBarAppearance+Swift.m in Sources */,
 				066A516B1BC4C366000E606E /* Wrappers.swift in Sources */,
+				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
+				066A52481BC4EED5000E606E /* CircullarLayerProgress.swift in Sources */,
 				066A51921BC4C383000E606E /* CocoaFileSystemRuntime.swift in Sources */,
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
+				066A52361BC4EEBA000E606E /* TitledCell.swift in Sources */,
+				066A52431BC4EECD000E606E /* TableViewSeparator.swift in Sources */,
+				066A52341BC4EEBA000E606E /* CommonCell.swift in Sources */,
 				066A51221BC4B55C000E606E /* Device.swift in Sources */,
+				066A524C1BC4EF49000E606E /* Binder.swift in Sources */,
+				066A52381BC4EEBA000E606E /* HeaderCell.swift in Sources */,
+				066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */,
 				066A51521BC4BE34000E606E /* Logs.swift in Sources */,
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A516A1BC4C366000E606E /* Analytics.swift in Sources */,
 				066A51501BC4BE06000E606E /* Regex.swift in Sources */,
+				066A520C1BC4ECC0000E606E /* Styles.swift in Sources */,
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
+				066A522A1BC4EEAC000E606E /* ACManagedAlerts.swift in Sources */,
+				066A52411BC4EECD000E606E /* GroupPhotoCell.swift in Sources */,
+				066A52451BC4EECD000E606E /* AvatarCell.swift in Sources */,
+				066A52371BC4EEBA000E606E /* UATableViewCell.swift in Sources */,
 				066A51481BC4BBF4000E606E /* Views.swift in Sources */,
+				066A52151BC4EE04000E606E /* AvatarView.swift in Sources */,
+				066A52591BC4EF61000E606E /* Executions.swift in Sources */,
 				066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */,
 				066A519B1BC4C390000E606E /* FMDBKeyValue.swift in Sources */,
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
+				066A52441BC4EECD000E606E /* UserPhotoCell.swift in Sources */,
 				066A517B1BC4C373000E606E /* FMDatabase.m in Sources */,
+				066A52561BC4EF61000E606E /* AATableViewController.swift in Sources */,
 				066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */,
+				066A52261BC4EEAC000E606E /* ACManagedCells.swift in Sources */,
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
 				066A515B1BC4C178000E606E /* HashMap.swift in Sources */,
 				066A511F1BC4B4E5000E606E /* ActorCore.swift in Sources */,
+				066A52281BC4EEAC000E606E /* ACManagedTableController.swift in Sources */,
+				066A52391BC4EEBA000E606E /* EditCell.swift in Sources */,
 				066A51911BC4C383000E606E /* CocoaHttpRuntime.swift in Sources */,
 				066A51821BC4C373000E606E /* FMDatabaseQueue.m in Sources */,
+				066A525A1BC4EF61000E606E /* Navigations.swift in Sources */,
 				066A51841BC4C373000E606E /* FMResultSet.m in Sources */,
 				066A514E1BC4BDE4000E606E /* Numbers.swift in Sources */,
 				066A51561BC4BEF5000E606E /* Localization.swift in Sources */,
 				066A51441BC4BBAF000E606E /* Strings.swift in Sources */,
+				066A52331BC4EEBA000E606E /* BasicCell.swift in Sources */,
+				066A52241BC4EEAC000E606E /* ACManagedRange.swift in Sources */,
 				066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */,
 				066A516D1BC4C366000E606E /* Extensions.swift in Sources */,
 				066A517E1BC4C373000E606E /* FMDatabaseAdditions.m in Sources */,
 				066A519A1BC4C390000E606E /* FMDBList.swift in Sources */,
+				066A52171BC4EE3F000E606E /* Placeholders.swift in Sources */,
+				066A52221BC4EEAC000E606E /* ACManagedTable.swift in Sources */,
 				066A516C1BC4C366000E606E /* Conversions.swift in Sources */,
+				066A52291BC4EEAC000E606E /* ACManagedTableExtensions.swift in Sources */,
 				066A514C1BC4BD05000E606E /* Collections.swift in Sources */,
+				066A52121BC4ECD0000E606E /* Resouces.swift in Sources */,
+				066A52541BC4EF61000E606E /* AAImagePickerController.swift in Sources */,
+				066A52551BC4EF61000E606E /* AANavigationController.swift in Sources */,
+				066A52421BC4EECD000E606E /* TableViewHeader.swift in Sources */,
 				066A51611BC4C2A0000E606E /* UIAppearance+Swift.m in Sources */,
+				066A520E1BC4ECC7000E606E /* StylesEngine.swift in Sources */,
+				066A52231BC4EEAC000E606E /* ACManagedSection.swift in Sources */,
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,
+				066A52581BC4EF61000E606E /* Alerts.swift in Sources */,
 				066A51691BC4C366000E606E /* Tools.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

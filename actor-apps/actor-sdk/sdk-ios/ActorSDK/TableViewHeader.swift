@@ -4,8 +4,8 @@
 
 import Foundation
 
-class TableViewHeader: UIView {
-    override func layoutSubviews() {
+public class TableViewHeader: UIView {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         for view in self.subviews {
             view.frame = CGRectMake(view.frame.minX, view.frame.minY, self.frame.width, view.frame.height)
