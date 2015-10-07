@@ -169,6 +169,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     )
   )
     .dependsOn(actorBotsShared)
+    .aggregate(actorBotsShared)
 
   lazy val actorCore = Project(
     id = "actor-core",
