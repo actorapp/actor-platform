@@ -60,6 +60,19 @@ export default {
       }
     },
 
+    // Modals
+    'modal': {
+      'profile': {
+        'title': 'Profile',
+        'fullName': 'Full name',
+        'nickName': 'Nickname',
+        'phoneNumber': 'Phone number',
+        'about': 'About',
+        'changeAvatar': 'Change avatar',
+        'removeAvatar': 'Remove'
+      }
+    },
+
     // Profiles
     'createdBy': 'сreated by',
     'addPeople': 'Add people',

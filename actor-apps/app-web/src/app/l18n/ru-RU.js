@@ -60,6 +60,19 @@ export default {
       }
     },
 
+    // Modals
+    'modal': {
+      'profile': {
+        'title': 'Профиль',
+        'fullName': 'Ваше имя',
+        'nickName': 'Никнейм',
+        'phoneNumber': 'Номер телефона',
+        'about': 'О себе',
+        'changeAvatar': 'Изменить аватар',
+        'removeAvatar': 'Удалить'
+      }
+    },
+
     // Profiles
     'createdBy': 'создал',
     'addPeople': 'Пригласить',
