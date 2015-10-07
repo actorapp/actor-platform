@@ -22,6 +22,12 @@ class ContactsViewController: AAContactsContentViewController, AAContactsContent
         super.init()
         
         content = ACAllEvents_Main.CONTACTS()
+        tabBarItem = UITabBarItem(title: localized("TabPeople"),
+            image: MainAppTheme.tab.createUnselectedIcon("TabIconContacts"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconContactsHighlighted"))
+        
+        navigationItem.title = localized("TabPeople")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "findContact")
         
         delegate = self
     }
@@ -33,9 +39,7 @@ class ContactsViewController: AAContactsContentViewController, AAContactsContent
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tabBarItem = UITabBarItem(title: localized("TabPeople"),
-            image: MainAppTheme.tab.createUnselectedIcon("TabIconContacts"),
-            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconContactsHighlighted"))
+        
         
        
     }
@@ -43,8 +47,7 @@ class ContactsViewController: AAContactsContentViewController, AAContactsContent
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationItem.title = localized("TabPeople")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "findContact")
+
     }
     
     func contactDidTap(controller: AAContactsContentViewController, contact: ACContact) -> Bool {
