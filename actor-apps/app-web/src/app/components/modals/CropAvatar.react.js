@@ -5,6 +5,8 @@
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import classnames from 'classnames';
+import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl';
 import { dataURItoBlob } from 'utils/ImageUtils';
 
 import Modal from 'react-modal';
@@ -17,6 +19,7 @@ import CropAvatarStore from 'stores/CropAvatarStore'
 
 const minCropSize = 100;
 
+@ReactMixin.decorate(IntlMixin)
 class CropAvatarModal extends Component {
   static propTypes = {
     onCropFinish: React.PropTypes.func.isRequired
@@ -249,9 +252,9 @@ class CropAvatarModal extends Component {
 
           <div className="modal-new__header">
             <i className="modal-new__header__icon material-icons">crop</i>
-            <h3 className="modal-new__header__title">Crop picture</h3>
+            <h3 className="modal-new__header__title">{this.getIntlMessage('modal.crop.title')}</h3>
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onCrop}>Done</button>
+              <button className="button button--lightblue" onClick={this.onCrop}>{this.getIntlMessage('button.done')}</button>
             </div>
           </div>
 

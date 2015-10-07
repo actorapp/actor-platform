@@ -64,12 +64,22 @@ export default {
     'modal': {
       'profile': {
         'title': 'Профиль',
-        'fullName': 'Ваше имя',
-        'nickName': 'Никнейм',
-        'phoneNumber': 'Номер телефона',
+        'name': 'Ваше имя',
+        'nick': 'Никнейм',
+        'phone': 'Номер телефона',
         'about': 'О себе',
-        'changeAvatar': 'Изменить аватар',
-        'removeAvatar': 'Удалить'
+        'avatarChange': 'Изменить аватар',
+        'avatarRemove': 'Удалить'
+      },
+      'group': {
+        'title': 'Редактировать группу',
+        'name': 'Название группы',
+        'about': 'Описание',
+        'avatarChange': 'Изменить аватар',
+        'avatarRemove': 'Удалить'
+      },
+      'crop': {
+        'title': 'Кадрирование'
       }
     },
 
@@ -91,15 +101,14 @@ export default {
     'sharedMedia': 'Вложения',
     'notifications': 'Уведомления',
     'integrationTokenCopied': 'Ссылка скопирована.',
-    'members':
-      '{numMembers, plural,' +
-        '=0 {Нет участников}' +
-        '=1 {# участник}' +
-        '=2 {# участника}' +
-        '=3 {# участника}' +
-        '=4 {# участника}' +
+    'members': '{numMembers, plural,' +
+      '=0 {Нет участников}' +
+      '=1 {# участник}' +
+      '=2 {# участника}' +
+      '=3 {# участника}' +
+      '=4 {# участника}' +
       'other {# участников}' +
-      '}',
+    '}',
 
     // Modals
     'inviteModalTitle': 'Пригласить людей в группу',

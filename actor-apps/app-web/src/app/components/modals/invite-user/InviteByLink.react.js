@@ -63,7 +63,7 @@ class InviteByLink extends React.Component {
         <Modal className="modal-new modal-new--invite-by-link"
                closeTimeoutMS={150}
                isOpen={isOpen}
-               style={{width: 400}}>
+               style={{width: 440}}>
 
           <header className="modal-new__header">
             <svg className="modal-new__header__icon icon icon--blue"
@@ -71,11 +71,11 @@ class InviteByLink extends React.Component {
                  onClick={this.onBackClick}/>
 
             <h3 className="modal-new__header__title">
-              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
+              {this.getIntlMessage('inviteByLinkModalTitle')}
             </h3>
 
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onClose}>Done</button>
+              <button className="button button--lightblue" onClick={this.onClose}>{this.getIntlMessage('button.done')}</button>
             </div>
           </header>
 
@@ -86,10 +86,10 @@ class InviteByLink extends React.Component {
 
           <footer className="modal-new__footer">
             <button className="button button--rised pull-left hide">
-              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
+              {this.getIntlMessage('inviteByLinkModalRevokeButton')}
             </button>
             <button className="button button--rised pull-right hide">
-              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
+              {this.getIntlMessage('inviteByLinkModalCopyButton')}
             </button>
           </footer>
         </Modal>
