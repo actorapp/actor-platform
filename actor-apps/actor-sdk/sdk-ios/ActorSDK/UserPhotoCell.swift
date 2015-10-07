@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class UserPhotoCell: CommonCell {
+public class UserPhotoCell: AACommonCell {
     
     // MARK: -
     // MARK: Private vars

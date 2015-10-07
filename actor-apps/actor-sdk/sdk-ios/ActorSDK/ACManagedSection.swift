@@ -50,7 +50,7 @@ public class ACManagedSection {
         
         let res = r.cells.rangeCellForItem(managedTable, indexPath: r.index)
         if autoSeparators {
-            if let cell = res as? UATableViewCell {
+            if let cell = res as? AATableViewCell {
                 
                 // Top separator
                 
