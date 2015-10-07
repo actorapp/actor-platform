@@ -10,13 +10,16 @@ let targetCollection = [];
 
 export default class DropZone extends Component {
   static propTypes = {
-    children: React.PropTypes.array,
+    children: React.PropTypes.oneOfType([
+      React.PropTypes.array,
+      React.PropTypes.element
+    ]),
     onDropComplete: React.PropTypes.func.isRequired,
 
     // Callbacks
     onDragEnterCallback: React.PropTypes.func,
     onDragLeaveCallback: React.PropTypes.func,
-    onDropCallback: React.PropTypes.func,
+    onDropCallback: React.PropTypes.func
   };
 
   constructor(props) {
@@ -45,7 +48,7 @@ export default class DropZone extends Component {
 
     if (targetCollection.length === 0) {
       this.setState({isActive: true});
-      this.props.onDragEnterCallback();
+      this.props.onDragEnterCallback && this.props.onDragEnterCallback();
     }
 
     targetCollection = union(targetCollection, [event.target]);
@@ -58,7 +61,7 @@ export default class DropZone extends Component {
 
     if (targetCollection.length === 0) {
       this.setState({isActive: false});
-      this.props.onDragLeaveCallback();
+      this.props.onDragLeaveCallback && this.props.onDragLeaveCallback();
     }
   };
 
@@ -67,7 +70,7 @@ export default class DropZone extends Component {
   onDrop = (event) => {
     this.onDragLeave();
     this.onWindowDragLeave(event);
-    this.props.onDropCallback();
+    this.props.onDropCallback && this.props.onDropCallback();
     this.props.onDropComplete(event.dataTransfer.files);
   };
 
