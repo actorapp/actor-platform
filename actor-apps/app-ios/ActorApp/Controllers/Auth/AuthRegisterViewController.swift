@@ -4,8 +4,7 @@
 
 import UIKit
 import MobileCoreServices
-import j2objc
-import ActorCore
+import ActorSDK
 
 class AuthRegisterViewController: AuthViewController, UIAlertViewDelegate {
     

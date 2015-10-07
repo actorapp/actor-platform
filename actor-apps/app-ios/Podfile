@@ -4,11 +4,10 @@ xcodeproj 'ActorApp.xcodeproj'
 inhibit_all_warnings!
 use_frameworks!
 
-#target 'ActorSDK' do
-#    xcodeproj '../actor-sdk/sdk-ios/ActorSDK.xcodeproj'
-#    pod 'SlackTextViewController'
-#    pod 'J2ObjC-Framework'
-#end
+target 'ActorSDK' do
+    xcodeproj '../actor-sdk/sdk-ios/ActorSDK.xcodeproj'
+    pod 'J2ObjC-Framework'
+end
 
 target 'ActorCore' do
     xcodeproj '../actor-sdk/sdk-ios/ActorCore.xcodeproj'
