@@ -5,6 +5,9 @@
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
+import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl';
+
 import ActorClient from 'utils/ActorClient';
 import { KeyCodes } from 'constants/ActorAppConstants';
 
@@ -22,6 +25,7 @@ import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 
+@ReactMixin.decorate(IntlMixin)
 class MyProfile extends Component {
   static childContextTypes = {
     muiTheme: React.PropTypes.object
@@ -125,16 +129,16 @@ class MyProfile extends Component {
 
           <header className="modal-new__header">
             <a className="modal-new__header__icon material-icons">person</a>
-            <h4 className="modal-new__header__title">Profile</h4>
+            <h4 className="modal-new__header__title">{this.getIntlMessage('modal.profile.title')}</h4>
             <div className="pull-right">
-              <button className="button button--lightblue" onClick={this.onSave}>Done</button>
+              <button className="button button--lightblue" onClick={this.onSave}>{this.getIntlMessage('button.done')}</button>
             </div>
           </header>
           <div className="modal-new__body row">
             <div className="col-xs">
               <div className="name">
                 <TextField className="login__form__input"
-                           floatingLabelText="Full name"
+                           floatingLabelText={this.getIntlMessage('modal.profile.fullName')}
                            fullWidth
                            onChange={this.onNameChange}
                            type="text"
@@ -142,7 +146,7 @@ class MyProfile extends Component {
               </div>
               <div className="nick">
                 <TextField className="login__form__input"
-                           floatingLabelText="Nickname"
+                           floatingLabelText={this.getIntlMessage('modal.profile.nickName')}
                            fullWidth
                            onChange={this.onNicknameChange}
                            type="text"
@@ -151,13 +155,13 @@ class MyProfile extends Component {
               <div className="phone">
                 <TextField className="login__form__input"
                            disabled
-                           floatingLabelText="Phone number"
+                           floatingLabelText={this.getIntlMessage('modal.profile.phoneNumber')}
                            fullWidth
                            type="tel"
                            value={(profile.phones[0] || {}).number}/>
               </div>
               <div className="about">
-                <label htmlFor="about">About</label>
+                <label htmlFor="about">{this.getIntlMessage('modal.profile.about')}</label>
                 <textarea className="textarea"
                           id="about"
                           onChange={this.onAboutChange}
@@ -172,12 +176,13 @@ class MyProfile extends Component {
                             size="big"
                             title={profile.name}/>
                 <a onClick={this.onChangeAvatarClick}>
-                  <span>Change</span>
-                  <span>avatar</span>
+                  <span>
+                    {this.getIntlMessage('modal.profile.changeAvatar')}
+                  </span>
                 </a>
               </div>
               <div className="profile-picture__controls">
-                <a onClick={this.onProfilePictureRemove}>Remove</a>
+                <a onClick={this.onProfilePictureRemove}>{this.getIntlMessage('modal.profile.removeAvatar')}</a>
               </div>
               <form className="hide" ref="imageForm">
                 <input onChange={this.onProfilePictureInputChange} ref="imageInput" type="file"/>
