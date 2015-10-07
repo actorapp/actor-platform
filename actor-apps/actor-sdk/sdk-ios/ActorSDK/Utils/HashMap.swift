@@ -4,15 +4,15 @@
 
 import Foundation
 
-struct HashMap<T> {
+public struct HashMap<T> {
     var table = Array<SinglyLinkedList<T>?>()
-    init() {
+    public init() {
         for _ in 0...99 {
             table.append(SinglyLinkedList<T>())
         }
     }
     
-    mutating func setKey(key: Int64, withValue val: T?) {
+    public mutating func setKey(key: Int64, withValue val: T?) {
         let hashedString = Int(abs(key) % 10)
         if let collisionList = table[hashedString] {
             collisionList.upsertNodeWithKey(key, AndValue: val)
@@ -21,7 +21,7 @@ struct HashMap<T> {
             table[hashedString]!.upsertNodeWithKey(key, AndValue: val)
         }
     }
-    func getValueAtKey(key: Int64) -> T? {
+    public func getValueAtKey(key: Int64) -> T? {
         let hashedString = Int(abs(key) % 10)
         if let collisionList = table[hashedString] {
             return collisionList.findNodeWithKey(key)?.value

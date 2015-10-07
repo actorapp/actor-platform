@@ -96,6 +96,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             
             // Setting sender name if needed
             if isGroup && !isOut {
+
                 if let user = Actor.getUserWithUid(message.senderId) {
                     
                     if user.isBot() && user.getNameModel().get() == "Bot" {

@@ -5,8 +5,7 @@
 import Foundation
 import UIKit
 import MessageUI
-import j2objc
-import ActorCore
+import ActorSDK
 
 class MainTabViewController : UITabBarController {
     
@@ -128,22 +127,22 @@ class MainTabViewController : UITabBarController {
     func showSmsInvitation(phone: String?) {
         if MFMessageComposeViewController.canSendText() {
 
-            // Silently ignore if not configured
-            if AppConfig.appInviteUrl == nil {
-                return
-            }
-            
-            let messageComposeController = MFMessageComposeViewController()
-            messageComposeController.messageComposeDelegate = self
-            if (phone != nil) {
-                 messageComposeController.recipients = [phone!]
-            }
-            messageComposeController.body = localized("InviteText")
-                .replace("{link}", dest: AppConfig.appInviteUrl!)
-            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-                MainAppTheme.navigation.applyStatusBarFast()
-            })
+//            // Silently ignore if not configured
+//            if AppConfig.appInviteUrl == nil {
+//                return
+//            }
+//            
+//            let messageComposeController = MFMessageComposeViewController()
+//            messageComposeController.messageComposeDelegate = self
+//            if (phone != nil) {
+//                 messageComposeController.recipients = [phone!]
+//            }
+//            messageComposeController.body = localized("InviteText")
+//                .replace("{link}", dest: AppConfig.appInviteUrl!)
+//            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+//            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
+//                MainAppTheme.navigation.applyStatusBarFast()
+//            })
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK").show()
         }

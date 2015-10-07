@@ -6,12 +6,13 @@ import Foundation
 import zipzap
 import ActorCore
 
-class Tools {
-    class func copyFileCommand(from: String, to: String) -> ACCommand {
+public class Tools {
+    
+    public class func copyFileCommand(from: String, to: String) -> ACCommand {
         return CopyCommand(from: from, to: to)
     }
     
-    class func zipDirectoryCommand(from: String, to: String) -> ACCommand {
+    public class func zipDirectoryCommand(from: String, to: String) -> ACCommand {
         return ZipCommand(dir: from, to: to)
     }
 }

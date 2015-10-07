@@ -5,6 +5,7 @@
 import Foundation
 
 public extension UIFont {
+    
     public class func thinSystemFontOfSize(size: CGFloat) -> UIFont {
         if #available(iOS 8.2, *) {
             return UIFont.systemFontOfSize(size, weight: UIFontWeightThin)

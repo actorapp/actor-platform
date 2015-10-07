@@ -6,8 +6,6 @@ import Foundation
 
 import Fabric
 import Crashlytics
-import j2objc
-import ActorCore
 import ActorSDK
 
 @objc class AppDelegate : UIResponder,  UIApplicationDelegate {
@@ -49,13 +47,13 @@ import ActorSDK
         assumeInited()
         
         // Register hockey app
-        if AppConfig.hockeyapp != nil {
-            BITHockeyManager.sharedHockeyManager().configureWithIdentifier(AppConfig.hockeyapp!)
-            BITHockeyManager.sharedHockeyManager().disableCrashManager = true
-            BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
-            BITHockeyManager.sharedHockeyManager().startManager()
-            BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
-        }
+//        if AppConfig.hockeyapp != nil {
+//            BITHockeyManager.sharedHockeyManager().configureWithIdentifier(AppConfig.hockeyapp!)
+//            BITHockeyManager.sharedHockeyManager().disableCrashManager = true
+//            BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
+//            BITHockeyManager.sharedHockeyManager().startManager()
+//            BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
+//        }
         
         // Register notifications
         // Register always even when not enabled in build for local notifications
@@ -298,9 +296,9 @@ import ActorSDK
         
         let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
         
-        if AppConfig.pushId != nil {
-            Actor.registerApplePushWithApnsId(jint(AppConfig.pushId!), withToken: tokenString)
-        }
+//        if AppConfig.pushId != nil {
+//            Actor.registerApplePushWithApnsId(jint(AppConfig.pushId!), withToken: tokenString)
+//        }
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {

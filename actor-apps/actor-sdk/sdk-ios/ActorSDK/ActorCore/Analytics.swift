@@ -3,28 +3,27 @@
 //
 
 import Foundation
-import Crashlytics
 import ActorCore
 
-class CocoaAnalytics {
+public class CocoaAnalytics {
     
     private let internalAnalytics: ACActorAnalytics
     
-    init(internalAnalytics: ACActorAnalytics) {
+    public init(internalAnalytics: ACActorAnalytics) {
         self.internalAnalytics = internalAnalytics
     }
     
-    func trackPageVisible(page: ACPage) {
+    public func trackPageVisible(page: ACPage) {
 
         // Notify Fabric stats
         // TODO: Pass all ids
-        Answers.logContentViewWithName(page.getContentTypeDisplay(), contentType: page.getContentType(), contentId: page.getContentId(), customAttributes: nil)
+//        Answers.logContentViewWithName(page.getContentTypeDisplay(), contentType: page.getContentType(), contentId: page.getContentId(), customAttributes: nil)
         
         // Notify internal stats
         internalAnalytics.trackContentVisibleWithACPage(page)
     }
     
-    func trackPageHidden(page: ACPage) {
+    public func trackPageHidden(page: ACPage) {
 
         // Unsupported in Fabric
         
@@ -32,11 +31,11 @@ class CocoaAnalytics {
         internalAnalytics.trackContentHiddenWithACPage(page)
     }
     
-    func track(event: ACEvent) {
+    public func track(event: ACEvent) {
 
         // Notify Fabric stats
         // TODO: Pass all ids
-        Answers.logCustomEventWithName(event.getActionType(), customAttributes: ["type": event.getActionId()])
+//        Answers.logCustomEventWithName(event.getActionType(), customAttributes: ["type": event.getActionId()])
         
         // Notify internal stats
         internalAnalytics.trackEventWithACEvent(event)
