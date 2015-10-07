@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		066A509D1BC474BE000E606E /* ActorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 066A50851BC45D71000E606E /* ActorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		066A50A31BC47F6F000E606E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A50A21BC47F6F000E606E /* UIKit.framework */; };
+		066A50C71BC4AC74000E606E /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 066A50C61BC4AC74000E606E /* README.txt */; settings = {ASSET_TAGS = (); }; };
 		0BCD7275866F9FD2FF59A6DE /* Pods_ActorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9403D94E53BDBC27F410C9 /* Pods_ActorCore.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -19,6 +20,7 @@
 		066A50941BC460C6000E606E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		066A50961BC46136000E606E /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		066A50A21BC47F6F000E606E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		066A50C61BC4AC74000E606E /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		6E2520B0170D8233AA0DCDE4 /* Pods-ActorCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorCore.debug.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorCore/Pods-ActorCore.debug.xcconfig"; sourceTree = "<group>"; };
 		EA9403D94E53BDBC27F410C9 /* Pods_ActorCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F40FA431256E3848962E516D /* Pods-ActorCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorCore.release.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorCore/Pods-ActorCore.release.xcconfig"; sourceTree = "<group>"; };
@@ -58,10 +60,11 @@
 		066A50841BC45D71000E606E /* ActorCore */ = {
 			isa = PBXGroup;
 			children = (
-				066A50961BC46136000E606E /* convert.py */,
 				066A50851BC45D71000E606E /* ActorCore.h */,
 				066A50871BC45D71000E606E /* Info.plist */,
+				066A50961BC46136000E606E /* convert.py */,
 				066A50941BC460C6000E606E /* Makefile */,
+				066A50C61BC4AC74000E606E /* README.txt */,
 			);
 			path = ActorCore;
 			sourceTree = "<group>";
@@ -157,6 +160,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				066A50C71BC4AC74000E606E /* README.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
