@@ -203,9 +203,11 @@ class GroupProfile extends React.Component {
       <li className="profile__list__item group_profile__integration no-p">
         <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
           <div className="info info--light">
-            If you have programming chops, or know someone who does,
-            this integration token allow the most flexibility and communication
-            with your own systems.
+            <p>
+              If you have programming chops, or know someone who does,
+              this integration token allow the most flexibility and communication
+              with your own systems.
+            </p>
             <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
           </div>
           <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
