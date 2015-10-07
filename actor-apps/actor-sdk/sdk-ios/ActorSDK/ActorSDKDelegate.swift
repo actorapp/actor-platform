@@ -19,6 +19,9 @@ public protocol ActorSDKDelegate {
     /// User profile controller
     func actorControllerForGroup(gid: Int) -> UIViewController
     
+    /// Conversation controller
+    func actorControllerForConversation(peer: ACPeer) -> UIViewController
+    
     /// Navigate to Next controller
     func navigateNext(controller: UIViewController)
     
@@ -44,7 +47,7 @@ public extension ActorSDKDelegate {
         let tab = AARootTabViewController()
         tab.viewControllers = [
             AANavigationController(rootViewController: ContactsViewController()),
-            AANavigationController(rootViewController: DialogsViewController()),
+            AANavigationController(rootViewController: AARecentViewController()),
             AANavigationController(rootViewController: AASettingsViewController())]
         tab.selectedIndex = 0
         tab.selectedIndex = 1
@@ -77,6 +80,10 @@ public extension ActorSDKDelegate {
     
     func actorControllerForGroup(gid: Int) -> UIViewController {
         return AAGroupViewController(gid: gid)
+    }
+    
+    func actorControllerForConversation(peer: ACPeer) -> UIViewController {
+        return ConversationViewController(peer: peer)
     }
     
     public func navigateNext(controller: UIViewController) {

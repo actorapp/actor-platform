@@ -4,9 +4,9 @@
 
 import UIKit
 
-class DialogsViewController: AARecentContentViewController, AARecentContentViewControllerDelegate {
+public class AARecentViewController: AARecentContentController, AARecentContentControllerDelegate {
 
-    override init() {
+    public override init() {
         
         super.init()
         
@@ -19,11 +19,11 @@ class DialogsViewController: AARecentContentViewController, AARecentContentViewC
         self.delegate = self
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         // Setting UITabBarItem
@@ -55,7 +55,7 @@ class DialogsViewController: AARecentContentViewController, AARecentContentViewC
     
     // Implemention of editing
     
-    override func setEditing(editing: Bool, animated: Bool) {
+    public override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
         
@@ -79,30 +79,30 @@ class DialogsViewController: AARecentContentViewController, AARecentContentViewC
         }
     }
     
-    func compose() {
+    public func compose() {
         navigateNext(AAComposeController())
     }
     
     // Tracking app state
     
-    override func viewDidAppear(animated: Bool) {
+    public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         Actor.onDialogsOpen()
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    public override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         Actor.onDialogsClosed()
     }
     
     // Handling selections
     
-    func recentsDidTap(controller: AARecentContentViewController, dialog: ACDialog) -> Bool {
+    public func recentsDidTap(controller: AARecentContentController, dialog: ACDialog) -> Bool {
         // navigateDetail(ConversationViewController(peer: dialog.peer))
         return false
     }
     
-    func searchDidTap(controller: AARecentContentViewController, entity: ACSearchEntity) {
+    public func searchDidTap(controller: AARecentContentController, entity: ACSearchEntity) {
         // navigateDetail(ConversationViewController(peer: entity.peer))
     }
 }
