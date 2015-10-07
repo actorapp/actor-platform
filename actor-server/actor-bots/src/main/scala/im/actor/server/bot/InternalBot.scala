@@ -60,7 +60,7 @@ abstract class InternalBot(userId: Int, nickname: String, name: String) extends 
   }
 
   private final def working(flowRef: ActorRef): Receive = {
-    case upd: BotSeqUpdate ⇒
+    case upd: BotUpdate ⇒
       log.debug("Update {}", upd)
       onUpdate(upd.body)
     case unmatched ⇒

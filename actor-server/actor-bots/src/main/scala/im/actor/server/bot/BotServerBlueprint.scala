@@ -2,11 +2,12 @@ package im.actor.server.bot
 
 import akka.actor.ActorSystem
 import akka.stream.scaladsl.{ Flow, Merge, Source }
+import im.actor.api.rpc.Update
 import im.actor.api.rpc.messaging.ApiTextMessage
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.bots.{ BotMessageOut, BotMessages }
 import im.actor.server.dialog.DialogExtension
-import im.actor.server.sequence.SeqStateDate
+import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesManager }
 
 import scala.concurrent.Future
 
@@ -17,10 +18,16 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
   import system._
 
   private lazy val dialogExt = DialogExtension(system)
+  private lazy val updBuilder = new BotUpdateBuilder(botUserId, botAuthId, system)
 
   val flow: Flow[BotRequest, BotMessageOut, Unit] = {
     val updSource =
-      Source.actorPublisher[BotMessageOut](UpdatesSource.props(botAuthId))
+      Source.actorPublisher[(Int, Update)](UpdatesSource.props(botAuthId))
+        .mapAsync(1) {
+          case (seq, update) ⇒ updBuilder(seq, update)
+        }.collect {
+          case Some(upd) ⇒ upd
+        }
 
     val rqrspFlow = Flow[BotRequest]
       .mapAsync(1)(r ⇒ handleRequest(r.id, r.body))
