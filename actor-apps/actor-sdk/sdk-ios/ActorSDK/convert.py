@@ -39,7 +39,7 @@ for root, directories, filenames in os.walk('Sources/'):
                         if includedFile != 'objc/runtime.h':
                             localIncludePath = os.path.join("Sources/", includedFile)
                             if os.path.exists(localIncludePath):
-                                line = line[0:start] + "<ActorCore/" + includedFile + ">" + line[end+1:]
+                                line = line[0:start] + "<ActorSDK/" + includedFile + ">" + line[end+1:]
                             else:
                                 line = line[0:start] + "<j2objc/" + includedFile + ">" + line[end+1:]
 

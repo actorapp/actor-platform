@@ -3,8 +3,6 @@
 //
 
 import Foundation
-import j2objc
-import ActorCore
 
 @objc class FMDBKeyValue: NSObject, ARKeyValueStorage {
     var db :FMDatabase?;
