@@ -47,7 +47,7 @@ private[user] trait UserCommandHandlers {
 
     val replyTo = sender()
 
-    waitForFuture(checkNicknameExists(nickname)) { exists ⇒
+    onSuccess(checkNicknameExists(nickname)) { exists ⇒
       if (!exists) {
         val ts = now()
         val e = UserEvents.Created(userId, accessSalt, nickname, name, countryCode, sex, isBot, extensions, external)
@@ -127,7 +127,7 @@ private[user] trait UserCommandHandlers {
   protected def changeNickname(user: User, clientAuthId: Long, nicknameOpt: Option[String]): Unit = {
     val replyTo = sender()
 
-    waitForFuture(checkNicknameExists(nicknameOpt)) { exists ⇒
+    onSuccess(checkNicknameExists(nicknameOpt)) { exists ⇒
       if (!exists) {
         persistReply(TSEvent(now(), UserEvents.NicknameChanged(nicknameOpt)), user, replyTo) { _ ⇒
           val update = UpdateUserNickChanged(userId, nicknameOpt)
