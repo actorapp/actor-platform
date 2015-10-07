@@ -4,12 +4,12 @@
 
 import Foundation
 
-class UATableViewCell: UITableViewCell {
+public class UATableViewCell: UITableViewCell {
     
     private var topSeparator: UIView = UIView()
     private var bottomSeparator: UIView = UIView()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         bottomSeparator.backgroundColor = MainAppTheme.list.separatorColor
@@ -18,7 +18,7 @@ class UATableViewCell: UITableViewCell {
         applyStyle("cell")
     }
     
-    init(cellStyle: String, reuseIdentifier: String?) {
+    public init(cellStyle: String, reuseIdentifier: String?) {
         
         let style = pickStyle(cellStyle)
         let st: UITableViewCellStyle = (style != nil && style!.cellStyle != nil) ? style!.cellStyle! : .Default
@@ -34,23 +34,23 @@ class UATableViewCell: UITableViewCell {
     }
 
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     
-    var topSeparatorLeftInset: CGFloat = 0.0 {
+    public var topSeparatorLeftInset: CGFloat = 0.0 {
         didSet {
             setNeedsLayout()
         }
     }
-    var bottomSeparatorLeftInset: CGFloat = 0.0 {
+    public var bottomSeparatorLeftInset: CGFloat = 0.0 {
         didSet {
             setNeedsLayout()
         }
     }
     
-    var topSeparatorVisible: Bool = false {
+    public var topSeparatorVisible: Bool = false {
         didSet {
             if topSeparatorVisible == oldValue {
                 return
@@ -67,7 +67,7 @@ class UATableViewCell: UITableViewCell {
         }
     }
     
-    var bottomSeparatorVisible: Bool = false {
+    public var bottomSeparatorVisible: Bool = false {
         didSet {
             if bottomSeparatorVisible == oldValue {
                 return
@@ -84,7 +84,7 @@ class UATableViewCell: UITableViewCell {
         }
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         if topSeparatorVisible {
@@ -98,7 +98,7 @@ class UATableViewCell: UITableViewCell {
         }
     }
     
-    override func setHighlighted(highlighted: Bool, animated: Bool) {
+    public override func setHighlighted(highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         
         if !highlighted {
@@ -107,7 +107,7 @@ class UATableViewCell: UITableViewCell {
         }
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
+    public override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
         if !selected {

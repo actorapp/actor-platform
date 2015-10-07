@@ -6,53 +6,53 @@ import Foundation
 
 private var styles = [String: Style]()
 
-class Style {
+public class Style {
     
     // Colors
     
-    var foregroundColor: UIColor?
-    var backgroundColor: UIColor?
-    var selectedColor: UIColor?
-    var tintColor: UIColor?
-    var onTintColor: UIColor?
+    public var foregroundColor: UIColor?
+    public var backgroundColor: UIColor?
+    public var selectedColor: UIColor?
+    public var tintColor: UIColor?
+    public var onTintColor: UIColor?
     
     // Font
     
-    var font: UIFont?
+    public var font: UIFont?
     
     // Alignment
     
-    var contentMode: UIViewContentMode?
-    var textAlignment: NSTextAlignment?
+    public var contentMode: UIViewContentMode?
+    public var textAlignment: NSTextAlignment?
     
     // Cell
     
-    var cellStyle: UITableViewCellStyle?
-    var cellSeparatorsLeftInset: CGFloat?
-    var cellTopSeparatorLeftInset: CGFloat?
-    var cellBottomSeparatorLeftInset: CGFloat?
-    var cellSeparatorsVisible: Bool?
-    var cellTopSeparatorVisible: Bool?
-    var cellBottomSeparatorVisible: Bool?
+    public var cellStyle: UITableViewCellStyle?
+    public var cellSeparatorsLeftInset: CGFloat?
+    public var cellTopSeparatorLeftInset: CGFloat?
+    public var cellBottomSeparatorLeftInset: CGFloat?
+    public var cellSeparatorsVisible: Bool?
+    public var cellTopSeparatorVisible: Bool?
+    public var cellBottomSeparatorVisible: Bool?
     
     // Avatar
     
-    var avatarSize: Int?
-    var avatarType: AvatarType?
+    public var avatarSize: Int?
+    public var avatarType: AvatarType?
     
     // Image
     
-    var image: UIImage?
+    public var image: UIImage?
     
     // Title
 
-    var title: String?
+    public var title: String?
     
-    init() {
+    public init() {
         
     }
     
-    init(base: Style) {
+    public init(base: Style) {
         self.foregroundColor = base.foregroundColor
         self.backgroundColor = base.backgroundColor
         self.selectedColor = base.selectedColor
@@ -76,39 +76,39 @@ class Style {
     }
 }
 
-func pickStyle(key: String) -> Style? {
+public func pickStyle(key: String) -> Style? {
     return styles[key]
 }
 
-func registerStyle(key: String, closure: (s: Style) -> ()) {
+public func registerStyle(key: String, closure: (s: Style) -> ()) {
     let style = Style()
     closure(s: style)
     styles[key] = style
 }
 
-func registerStyle(key: String, parent: String, closure: (s: Style) -> ()) {
+public func registerStyle(key: String, parent: String, closure: (s: Style) -> ()) {
     let style = Style(base: styles[parent]!)
     closure(s: style)
     styles[key] = style
 }
 
-func registerStyle(key: String, parent: String) {
+public func registerStyle(key: String, parent: String) {
     styles[key] = Style(base: styles[parent]!)
 }
 
-protocol UIViewStylable {
+public protocol UIViewStylable {
     func applyStyle(s: Style)
 }
 
-extension UIViewStylable {
+public extension UIViewStylable {
     
-    func applyStyle(style: String) {
+    public func applyStyle(style: String) {
         if let s = styles[style] {
             applyStyle(s)
         }
     }
     
-    func applyStyles(styles: [String]) {
+    public func applyStyles(styles: [String]) {
         for s in styles {
             applyStyle(s)
         }
@@ -117,7 +117,7 @@ extension UIViewStylable {
 
 extension UILabel: UIViewStylable {
     
-    func applyStyle(s: Style) {
+    public func applyStyle(s: Style) {
         
         // Foreground color
         if let c = s.foregroundColor {
@@ -145,7 +145,7 @@ extension UILabel: UIViewStylable {
         }
     }
     
-    convenience init(style: String) {
+    public convenience init(style: String) {
         self.init()
         self.applyStyle(style)
     }
@@ -153,11 +153,11 @@ extension UILabel: UIViewStylable {
 
 extension UITableViewCell: UIViewStylable {
     
-    convenience init(reuseIdentifier: String) {
+    public convenience init(reuseIdentifier: String) {
         self.init(_style: "cell", reuseIdentifier: reuseIdentifier)
     }
     
-    convenience init(_style: String, reuseIdentifier: String) {
+    public convenience init(_style: String, reuseIdentifier: String) {
         if let s = styles[_style] {
             if let v = s.cellStyle {
                 self.init(style: v, reuseIdentifier: reuseIdentifier)
@@ -170,7 +170,7 @@ extension UITableViewCell: UIViewStylable {
         self.applyStyle(_style)
     }
     
-    func applyStyle(s: Style) {
+    public func applyStyle(s: Style) {
         if let v = s.selectedColor {
             let selectedView = UIView()
             selectedView.backgroundColor = v
@@ -214,12 +214,12 @@ extension UITableViewCell: UIViewStylable {
 
 extension UIImageView: UIViewStylable {
     
-    convenience init(style: String) {
+    public convenience init(style: String) {
         self.init()
         applyStyle(style)
     }
     
-    func applyStyle(s: Style) {
+    public func applyStyle(s: Style) {
         
         // Background color
         if let v = s.backgroundColor {
@@ -243,9 +243,9 @@ extension UIImageView: UIViewStylable {
     }
 }
 
-extension AvatarView {
+public extension AvatarView {
 
-    convenience init(style: String) {
+    public convenience init(style: String) {
         if let s = styles[style] {
             if let size = s.avatarSize, let type = s.avatarType {
                 self.init(frameSize: size, type: type)
@@ -258,8 +258,8 @@ extension AvatarView {
     }
 }
 
-extension UIImage {
-    func styled(style: String) -> UIImage {
+public extension UIImage {
+    public func styled(style: String) -> UIImage {
         let style = pickStyle(style)!
         var res = self
         if let v = style.foregroundColor {
@@ -269,14 +269,14 @@ extension UIImage {
     }
 }
 
-extension UIColor {
-    class func style(style: String) -> UIColor {
+public extension UIColor {
+    public class func style(style: String) -> UIColor {
         return pickStyle(style)!.foregroundColor!
     }
 }
 
 extension UIViewController: UIViewStylable {
-    func applyStyle(s: Style) {
+    public func applyStyle(s: Style) {
         if let v = s.title {
             self.navigationItem.title = v
         }

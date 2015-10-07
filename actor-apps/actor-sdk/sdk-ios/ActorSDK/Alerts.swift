@@ -8,9 +8,9 @@ import RMUniversalAlert
 private var pickDocumentClosure = "_pick_document_closure"
 private var actionShitReference = "_action_shit"
 
-extension UIViewController {
+public extension UIViewController {
     
-    func alertUser(message: String) {
+    public func alertUser(message: String) {
         RMUniversalAlert.showAlertInViewController(self,
             withTitle: nil,
             message: NSLocalizedString(message, comment: "Message"),
@@ -20,7 +20,7 @@ extension UIViewController {
             tapBlock: nil)
     }
     
-    func confirmDangerSheetUser(action: String, tapYes: ()->(), tapNo: (()->())?) {
+    public func confirmDangerSheetUser(action: String, tapYes: ()->(), tapNo: (()->())?) {
         showActionSheet(nil, buttons: [], cancelButton: "AlertCancel", destructButton: action, sourceView: UIView(), sourceRect: CGRectZero) { (index) -> () in
             if index == -2 {
                 tapYes()
@@ -30,7 +30,7 @@ extension UIViewController {
         }
     }
     
-    func confirmAlertUser(message: String, action: String, tapYes: ()->(), tapNo: (()->())? = nil) {
+    public func confirmAlertUser(message: String, action: String, tapYes: ()->(), tapNo: (()->())? = nil) {
         RMUniversalAlert.showAlertInViewController(self,
             withTitle: nil,
             message: NSLocalizedString(message, comment: "Message"),
@@ -46,7 +46,7 @@ extension UIViewController {
         })
     }
     
-    func textInputAlert(message: String, content: String?, action:String, tapYes: (nval: String)->()) {
+    public func textInputAlert(message: String, content: String?, action:String, tapYes: (nval: String)->()) {
         let alertView = UIAlertView(
             title: nil,
             message: NSLocalizedString(message, comment: "Title"),
@@ -57,15 +57,15 @@ extension UIViewController {
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = content
         alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
-        alertView.tapBlock = { (alert: UIAlertView, buttonIndex) -> () in
-            if (buttonIndex != alert.cancelButtonIndex) {
-                tapYes(nval: alert.textFieldAtIndex(0)!.text!)
-            }
-        }
+//        alertView.tapBlock = { (alert: UIAlertView, buttonIndex) -> () in
+//            if (buttonIndex != alert.cancelButtonIndex) {
+//                tapYes(nval: alert.textFieldAtIndex(0)!.text!)
+//            }
+//        }
         alertView.show()
     }
     
-    func confirmUser(message: String, action: String, cancel: String, sourceView: UIView, sourceRect: CGRect, tapYes: ()->()) {
+    public func confirmUser(message: String, action: String, cancel: String, sourceView: UIView, sourceRect: CGRect, tapYes: ()->()) {
         RMUniversalAlert.showActionSheetInViewController(
             self,
             withTitle: nil,
@@ -84,7 +84,7 @@ extension UIViewController {
         })
     }
     
-    func showActionSheet(title: String?, buttons: [String], cancelButton: String?, destructButton: String?, sourceView: UIView, sourceRect: CGRect, tapClosure: (index: Int) -> ()) {
+    public func showActionSheet(title: String?, buttons: [String], cancelButton: String?, destructButton: String?, sourceView: UIView, sourceRect: CGRect, tapClosure: (index: Int) -> ()) {
         var convertedButtons:[String] = [String]()
         for b in buttons {
             convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
@@ -117,55 +117,55 @@ extension UIViewController {
         showActionSheet(nil, buttons:buttons, cancelButton: cancelButton, destructButton: destructButton, sourceView: sourceView, sourceRect:sourceRect,  tapClosure: tapClosure)
     }
     
-    func showActionSheetFast(buttons: [String], cancelButton: String, tapClosure: (index: Int) -> ()) {
-        let actionShit = ABActionShit()
-        
-        var convertedButtons:[String] = [String]()
-        for b in buttons {
-            convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
-        }
-        
-        actionShit.buttonTitles = convertedButtons
-        actionShit.cancelButtonTitle = NSLocalizedString(cancelButton,comment: "Cancel")
-        let shitDelegate = ActionShitDelegate(tapClosure: tapClosure)
-        actionShit.delegate = shitDelegate
-        
-        // Convert from weak to strong reference
-        // setAssociatedObject(actionShit, value: shitDelegate, associativeKey: &actionShitReference)
-        
-        actionShit.showWithCompletion(nil)
+    public func showActionSheetFast(buttons: [String], cancelButton: String, tapClosure: (index: Int) -> ()) {
+//        let actionShit = ABActionShit()
+//        
+//        var convertedButtons:[String] = [String]()
+//        for b in buttons {
+//            convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
+//        }
+//        
+//        actionShit.buttonTitles = convertedButtons
+//        actionShit.cancelButtonTitle = NSLocalizedString(cancelButton,comment: "Cancel")
+//        let shitDelegate = ActionShitDelegate(tapClosure: tapClosure)
+//        actionShit.delegate = shitDelegate
+//        
+//        // Convert from weak to strong reference
+//        // setAssociatedObject(actionShit, value: shitDelegate, associativeKey: &actionShitReference)
+//        
+//        actionShit.showWithCompletion(nil)
     }
-    
-    func startEditText(closure: (EditTextControllerConfig) -> ()) {
-        let config = EditTextControllerConfig()
-        closure(config)
-        config.check()
-        self.presentViewController(AANavigationController(rootViewController: EditTextController(config: config)), animated: true, completion: nil)
-    }
-    
-    func startEditField(closure: (c: EditFieldControllerConfig) -> ()) {
-        let config = EditFieldControllerConfig()
-        closure(c: config)
-        config.check()
-        self.presentViewController(AANavigationController(rootViewController: EditFieldController(config: config)), animated: true, completion: nil)
-    }
+//    
+//    func startEditText(closure: (EditTextControllerConfig) -> ()) {
+//        let config = EditTextControllerConfig()
+//        closure(config)
+//        config.check()
+//        self.presentViewController(AANavigationController(rootViewController: EditTextController(config: config)), animated: true, completion: nil)
+//    }
+//    
+//    func startEditField(closure: (c: EditFieldControllerConfig) -> ()) {
+//        let config = EditFieldControllerConfig()
+//        closure(c: config)
+//        config.check()
+//        self.presentViewController(AANavigationController(rootViewController: EditFieldController(config: config)), animated: true, completion: nil)
+//    }
 }
 
-class ActionShitDelegate: NSObject, ABActionShitDelegate {
-    
-    let tapClosure: (index: Int) -> ()
-    
-    init (tapClosure: (index: Int) -> ()) {
-        self.tapClosure = tapClosure
-    }
-    
-    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
-        tapClosure(index: buttonIndex)
-    }
-    
-    func actionShitClickedCancelButton(actionShit: ABActionShit!) {
-        tapClosure(index: -1)
-    }
-}
+//class ActionShitDelegate: NSObject, ABActionShitDelegate {
+//    
+//    let tapClosure: (index: Int) -> ()
+//    
+//    init (tapClosure: (index: Int) -> ()) {
+//        self.tapClosure = tapClosure
+//    }
+//    
+//    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
+//        tapClosure(index: buttonIndex)
+//    }
+//    
+//    func actionShitClickedCancelButton(actionShit: ABActionShit!) {
+//        tapClosure(index: -1)
+//    }
+//}
 
 

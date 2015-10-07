@@ -8,21 +8,21 @@
 
 import Foundation
 
-class AACollectionViewController: AAViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+public class AACollectionViewController: AAViewController, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    var collectionView:UICollectionView!
+    public var collectionView:UICollectionView!
     
-    init(collectionLayout: UICollectionViewLayout) {
+    public init(collectionLayout: UICollectionViewLayout) {
         super.init()
         
         collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionLayout)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func loadView() {
+    public override func loadView() {
         super.loadView()
         
         collectionView.delegate = self
@@ -32,17 +32,17 @@ class AACollectionViewController: AAViewController, UICollectionViewDelegate, UI
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
-    override func viewWillLayoutSubviews() {
+    public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
         collectionView.frame = view.bounds;
     }
 
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         fatalError("Not implemented!")
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         fatalError("Not implemented!")
     }
 }

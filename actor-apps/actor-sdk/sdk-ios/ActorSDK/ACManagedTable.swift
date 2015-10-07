@@ -3,38 +3,37 @@
 //
 
 import Foundation
-import ActorSDK
 
-class ACManagedTable {
+public class ACManagedTable {
     
     //------------------------------------------------------------------------//
     
     // Controller of table
     
-    let controller: UIViewController
+    public let controller: UIViewController
     
     // Table view
     
-    let style: ACContentTableStyle
-    let tableView: UITableView
-    var tableViewDelegate: UITableViewDelegate { get { return baseDelegate } }
-    var tableViewDataSource: UITableViewDataSource { get { return baseDelegate } }
+    public let style: ACContentTableStyle
+    public let tableView: UITableView
+    public var tableViewDelegate: UITableViewDelegate { get { return baseDelegate } }
+    public var tableViewDataSource: UITableViewDataSource { get { return baseDelegate } }
     
     // Scrolling closure
     
-    var tableScrollClosure: ((tableView: UITableView) -> ())?
+    public var tableScrollClosure: ((tableView: UITableView) -> ())?
     
     // Is fade in/out animated
     
-    var fadeShowing = false
+    public var fadeShowing = false
     
     // Sections of table
     
-    var sections: [ACManagedSection] = [ACManagedSection]()
+    public var sections: [ACManagedSection] = [ACManagedSection]()
     
     // Is Table in editing mode
     
-    var isEditing: Bool {
+    public var isEditing: Bool {
         get {
             return tableView.editing
         }
@@ -56,7 +55,7 @@ class ACManagedTable {
     
     //------------------------------------------------------------------------//
     
-    init(style: ACContentTableStyle, tableView: UITableView, controller: UIViewController) {
+    public init(style: ACContentTableStyle, tableView: UITableView, controller: UIViewController) {
         self.style = style
         self.controller = controller
         self.tableView = tableView
@@ -71,14 +70,14 @@ class ACManagedTable {
     
     // Entry point to adding
     
-    func beginUpdates() {
+    public func beginUpdates() {
         if isUpdating {
             fatalError("Already updating table")
         }
         isUpdating = true
     }
     
-    func addSection(autoSeparator: Bool = false) -> ACManagedSection {
+    public func addSection(autoSeparator: Bool = false) -> ACManagedSection {
         if !isUpdating {
             fatalError("Table is not in updating mode")
         }
@@ -89,7 +88,7 @@ class ACManagedTable {
         return res
     }
     
-    func search<C where C: ACBindedSearchCell, C: UITableViewCell>(cell: C.Type, closure: (s: ACManagedSearchConfig<C>) -> ()) {
+    public func search<C where C: ACBindedSearchCell, C: UITableViewCell>(cell: C.Type, closure: (s: ACManagedSearchConfig<C>) -> ()) {
         
         if !isUpdating {
             fatalError("Table is not in updating mode")
@@ -115,7 +114,7 @@ class ACManagedTable {
         self.isSearchAutoHide = config.isSearchAutoHide
     }
     
-    func endUpdates() {
+    public func endUpdates() {
         if !isUpdating {
             fatalError("Table is not in editable mode")
         }
@@ -124,23 +123,23 @@ class ACManagedTable {
     
     // Reloading table
     
-    func reload() {
+    public func reload() {
         self.tableView.reloadData()
     }
     
-    func reload(section: Int) {
+    public func reload(section: Int) {
         self.tableView.reloadSections(NSIndexSet(index: section), withRowAnimation: .Automatic)
     }
     
     // Binding methods
     
-    func bind(binder: Binder) {
+    public func bind(binder: Binder) {
         for s in sections {
             s.bind(self, binder: binder)
         }
     }
     
-    func unbind(binder: Binder) {
+    public func unbind(binder: Binder) {
         for s in sections {
             s.unbind(self, binder: binder)
         }
@@ -148,7 +147,7 @@ class ACManagedTable {
     
     // Show/hide table
     
-    func showTable() {
+    public func showTable() {
         if isUpdating || !fadeShowing {
             self.tableView.alpha = 1
         } else {
@@ -158,7 +157,7 @@ class ACManagedTable {
         }
     }
     
-    func hideTable() {
+    public func hideTable() {
         if isUpdating || !fadeShowing {
             self.tableView.alpha = 0
         } else {
@@ -170,7 +169,7 @@ class ACManagedTable {
     
     // Controller callbacks
     
-    func controllerViewWillDisappear(animated: Bool) {
+    public func controllerViewWillDisappear(animated: Bool) {
         
         // Auto close search on leaving controller
         if isSearchAutoHide {
@@ -180,14 +179,14 @@ class ACManagedTable {
         }
     }
     
-    func controllerViewDidDisappear(animated: Bool) {
+    public func controllerViewDidDisappear(animated: Bool) {
         
         // Auto close search on leaving controller
 //        searchDisplayController?.setActive(false, animated: animated)
     }
 
     
-    func controllerViewWillAppear(animated: Bool) {
+    public func controllerViewWillAppear(animated: Bool) {
         
         // Search bar dissapear fixing
 
@@ -223,9 +222,9 @@ class ACManagedTable {
 
 // Closure based extension
 
-extension ACManagedTable {
+public extension ACManagedTable {
     
-    func section(closure: (s: ACManagedSection) -> ()){
+    public func section(closure: (s: ACManagedSection) -> ()){
         closure(s: addSection(true))
     }
 }
@@ -372,21 +371,21 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     }
 }
 
-class ACManagedSearchConfig<BindCell where BindCell: ACBindedSearchCell, BindCell: UITableViewCell> {
+public class ACManagedSearchConfig<BindCell where BindCell: ACBindedSearchCell, BindCell: UITableViewCell> {
     
-    var searchList: ARBindedDisplayList!
-    var selectAction: ((BindCell.BindData) -> ())?
-    var isSearchAutoHide: Bool = true
-    var didBind: ((c: BindCell, d: BindCell.BindData) -> ())?
+    public var searchList: ARBindedDisplayList!
+    public var selectAction: ((BindCell.BindData) -> ())?
+    public var isSearchAutoHide: Bool = true
+    public var didBind: ((c: BindCell, d: BindCell.BindData) -> ())?
 }
 
-class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCell, BindCell: UITableViewCell>: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, ARDisplayList_Listener {
+public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCell, BindCell: UITableViewCell>: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, ARDisplayList_Listener {
     
-    let config: ACManagedSearchConfig<BindCell>
-    let displayList: ARBindedDisplayList
-    let searchDisplay: UISearchDisplayController
+    public let config: ACManagedSearchConfig<BindCell>
+    public let displayList: ARBindedDisplayList
+    public let searchDisplay: UISearchDisplayController
     
-    init(config: ACManagedSearchConfig<BindCell>, controller: UIViewController, tableView: UITableView) {
+    public init(config: ACManagedSearchConfig<BindCell>, controller: UIViewController, tableView: UITableView) {
         
         self.config = config
         
@@ -424,33 +423,33 @@ class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCell, Bin
     // Model
     
     
-    func objectAtIndexPath(indexPath: NSIndexPath) -> BindCell.BindData {
+    public func objectAtIndexPath(indexPath: NSIndexPath) -> BindCell.BindData {
         return displayList.itemWithIndex(jint(indexPath.row)) as! BindCell.BindData
     }
     
-    func onCollectionChanged() {
+    public func onCollectionChanged() {
         searchDisplay.searchResultsTableView.reloadData()
     }
     
     // Table view data
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Int(displayList.size());
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let item = objectAtIndexPath(indexPath)
         return BindCell.self.bindedCellHeight(item)
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let item = objectAtIndexPath(indexPath)
         let cell = tableView.dequeueCell(BindCell.self, indexPath: indexPath) as! BindCell
         cell.bind(item, search: nil)
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let item = objectAtIndexPath(indexPath)
         config.selectAction!(item)
         MainAppTheme.navigation.applyStatusBar()
@@ -458,7 +457,7 @@ class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCell, Bin
     
     // Search updating
     
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    public func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         let normalized = searchText.trim().lowercaseString
         if (normalized.length > 0) {
             displayList.initSearchWithQuery(normalized, withRefresh: false)
@@ -469,15 +468,15 @@ class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCell, Bin
     
     // Search styling
     
-    func searchDisplayControllerWillBeginSearch(controller: UISearchDisplayController) {
+    public func searchDisplayControllerWillBeginSearch(controller: UISearchDisplayController) {
         MainAppTheme.search.applyStatusBar()
     }
     
-    func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
+    public func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
         MainAppTheme.navigation.applyStatusBar()
     }
     
-    func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {
+    public func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {
         for v in tableView.subviews {
             if (v is UIImageView) {
                 (v as! UIImageView).alpha = 0;

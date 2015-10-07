@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import ActorSDK
 
 class AuthViewController: AAViewController {
     func onAuthenticated() {

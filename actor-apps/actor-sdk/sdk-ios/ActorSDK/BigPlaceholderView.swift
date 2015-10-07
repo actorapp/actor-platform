@@ -4,7 +4,7 @@
 
 import UIKit
 
-class BigPlaceholderView: UIView {
+public class BigPlaceholderView: UIView {
     
     // MARK: -
     // MARK: Private vars
@@ -25,7 +25,7 @@ class BigPlaceholderView: UIView {
     // MARK: -
     // MARK: Constructors
     
-    init(topOffset: CGFloat!) {
+    public init(topOffset: CGFloat!) {
         super.init(frame: CGRectZero)
         
         self.topOffset = topOffset
@@ -75,18 +75,18 @@ class BigPlaceholderView: UIView {
         contentView.addSubview(action2Button)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: -
     // MARK: Setters
     
-    func setImage(image: UIImage?, title: String?, subtitle: String?) {
+    public func setImage(image: UIImage?, title: String?, subtitle: String?) {
         setImage(image, title: title, subtitle: subtitle, actionTitle: nil,  subtitle2: nil, actionTarget: nil, actionSelector: nil, action2title: nil, action2Selector: nil)
     }
     
-    func setImage(image: UIImage?, title: String?, subtitle: String?, actionTitle: String?, subtitle2: String?, actionTarget: AnyObject?, actionSelector: Selector?, action2title: String?, action2Selector: Selector?) {
+    public func setImage(image: UIImage?, title: String?, subtitle: String?, actionTitle: String?, subtitle2: String?, actionTarget: AnyObject?, actionSelector: Selector?, action2title: String?, action2Selector: Selector?) {
         
         if image != nil {
             imageView.image = image!
@@ -157,7 +157,7 @@ class BigPlaceholderView: UIView {
     // MARK: -
     // MARK: Layout
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         var contentHeight: CGFloat = 0

@@ -3,10 +3,9 @@
 //
 
 import Foundation
-import ActorSDK
 
-extension UIViewController {
-    func navigateDetail(controller: UIViewController) {
+public extension UIViewController {
+    public func navigateDetail(controller: UIViewController) {
         if (isIPad) {
             let split = UIApplication.sharedApplication().keyWindow?.rootViewController as! UISplitViewController;
             let master = split.viewControllers[0]
@@ -20,8 +19,8 @@ extension UIViewController {
     }
 }
 
-extension UIViewController {
-    func navigateNext(controller: UIViewController, removeCurrent: Bool = false) {
+public extension UIViewController {
+    public func navigateNext(controller: UIViewController, removeCurrent: Bool = false) {
         if let aaC = controller as? AAViewController, let aaSelf = self as? AAViewController  {
             aaC.popover = aaSelf.popover
         }
@@ -42,7 +41,7 @@ extension UIViewController {
         }
     }
     
-    func navigateBack() {
+    public func navigateBack() {
         if (self.navigationController!.viewControllers.last != nil) {
             if (self.navigationController!.viewControllers.last! == self) {
                 self.navigationController!.popViewControllerAnimated(true)

@@ -5,27 +5,26 @@
 import UIKit
 import MobileCoreServices
 import PEPhotoCropEditor
-import ActorSDK
 
-class AAViewController: UIViewController, UINavigationControllerDelegate {
+public class AAViewController: UIViewController, UINavigationControllerDelegate {
     
     // MARK: -
     // MARK: Public vars
     
-    var placeholder = BigPlaceholderView(topOffset: 0)
-    var pendingPickClosure: ((image: UIImage) -> ())?
+    public var placeholder = BigPlaceholderView(topOffset: 0)
+    public var pendingPickClosure: ((image: UIImage) -> ())?
     
-    var avatarHeight: CGFloat = DeviceType.IS_IPHONE_6P ? 336.0 : 256.0
+    public var avatarHeight: CGFloat = DeviceType.IS_IPHONE_6P ? 336.0 : 256.0
     
-    var popover: UIPopoverController?
+    public var popover: UIPopoverController?
     
     // Content type for view tracking
     
-    var content: ACPage?
+    public var content: ACPage?
     
     // Data for views
     
-    var autoTrack: Bool = false {
+    public var autoTrack: Bool = false {
         didSet {
             if self.autoTrack {
                 if let u = self.uid {
@@ -38,7 +37,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         }
     }
     
-    var uid: Int! {
+    public var uid: Int! {
         didSet {
             if self.uid != nil {
                 self.user = Actor.getUserWithUid(jint(self.uid))
@@ -46,59 +45,59 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
             }
         }
     }
-    var user: ACUserVM!
-    var isBot: Bool!
+    public var user: ACUserVM!
+    public var isBot: Bool!
     
-    var gid: Int! {
+    public var gid: Int! {
         didSet {
             if self.gid != nil {
                 self.group = Actor.getGroupWithGid(jint(self.gid))
             }
         }
     }
-    var group: ACGroupVM!
+    public var group: ACGroupVM!
     
-    init() {
+    public init() {
         super.init(nibName: nil, bundle: nil)
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
     }
     
-    func showPlaceholderWithImage(image: UIImage?, title: String?, subtitle: String?) {
+    public func showPlaceholderWithImage(image: UIImage?, title: String?, subtitle: String?) {
         placeholder.setImage(image, title: title, subtitle: subtitle)
         showPlaceholder()
     }
     
-    func showPlaceholder() {
+    public func showPlaceholder() {
         if placeholder.superview == nil {
             placeholder.frame = view.bounds
             view.addSubview(placeholder)
         }
     }
     
-    func hidePlaceholder() {
+    public func hidePlaceholder() {
         if placeholder.superview != nil {
             placeholder.removeFromSuperview()
         }
     }
     
-    func shakeView(view: UIView, originalX: CGFloat) {
+    public func shakeView(view: UIView, originalX: CGFloat) {
         var r = view.frame
         r.origin.x = originalX
         let originalFrame = r
@@ -122,7 +121,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         }
     }
     
-    func applyScrollUi(tableView: UITableView, cell: UITableViewCell?) {
+    public func applyScrollUi(tableView: UITableView, cell: UITableViewCell?) {
         let offset = min(tableView.contentOffset.y, avatarHeight)
         
         if let userCell = cell as? UserPhotoCell {
@@ -140,18 +139,18 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
             }
         }
         
-        navigationController?.navigationBar.lt_setBackgroundColor(MainAppTheme.navigation.barSolidColor.alpha(fraction))
+        // navigationController?.navigationBar.lt_setBackgroundColor(MainAppTheme.navigation.barSolidColor.alpha(fraction))
     }
     
-    func applyScrollUi(tableView: UITableView) {
+    public func applyScrollUi(tableView: UITableView) {
         applyScrollUi(tableView, indexPath: NSIndexPath(forRow: 0, inSection: 0))
     }
     
-    func applyScrollUi(tableView: UITableView, indexPath: NSIndexPath) {
+    public func applyScrollUi(tableView: UITableView, indexPath: NSIndexPath) {
         applyScrollUi(tableView, cell: tableView.cellForRowAtIndexPath(indexPath))
     }
     
-    func pickAvatar(takePhoto:Bool, closure: (image: UIImage) -> ()) {
+    public func pickAvatar(takePhoto:Bool, closure: (image: UIImage) -> ()) {
         self.pendingPickClosure = closure
         
         let pickerController = AAImagePickerController()
@@ -165,13 +164,13 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
     }
     
-    override func viewWillLayoutSubviews() {
+    public override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
         placeholder.frame = CGRectMake(0, 64, view.bounds.width, view.bounds.height - 64)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         if let c = content {
@@ -182,7 +181,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         if let c = content {
@@ -193,11 +192,11 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
         }
     }
     
-    func dismiss() {
+    public func dismiss() {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func presentInNavigation(controller: UIViewController) {
+    public func presentInNavigation(controller: UIViewController) {
         var navigation = AANavigationController()
         navigation.viewControllers = [controller]
         presentViewController(navigation, animated: true, completion: nil)
@@ -206,7 +205,7 @@ class AAViewController: UIViewController, UINavigationControllerDelegate {
 
 extension AAViewController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
     
-    func cropImage(image: UIImage) {
+    public func cropImage(image: UIImage) {
         let cropController = PECropViewController()
         cropController.cropAspectRatio = 1.0
         cropController.keepingCropAspectRatio = true
@@ -216,7 +215,7 @@ extension AAViewController: UIImagePickerControllerDelegate, PECropViewControlle
         navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
     }
     
-    func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
+    public func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
         if (pendingPickClosure != nil){
             pendingPickClosure!(image: croppedImage)
         }
@@ -224,20 +223,20 @@ extension AAViewController: UIImagePickerControllerDelegate, PECropViewControlle
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func cropViewControllerDidCancel(controller: PECropViewController!) {
+    public func cropViewControllerDidCancel(controller: PECropViewController!) {
         pendingPickClosure = nil
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }
     
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         MainAppTheme.navigation.applyStatusBar()
         navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
             self.cropImage(image)
         })
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
@@ -245,7 +244,7 @@ extension AAViewController: UIImagePickerControllerDelegate, PECropViewControlle
         })
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         pendingPickClosure = nil
         MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)

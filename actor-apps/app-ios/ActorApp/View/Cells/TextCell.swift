@@ -3,14 +3,13 @@
 //
 
 import Foundation
-import ActorSDK
 
-class TextCell: UATableViewCell {
+public class TextCell: UATableViewCell {
 
-    var titleLabel: UILabel = UILabel()
-    var contentLabel: UILabel = UILabel()
+    public var titleLabel: UILabel = UILabel()
+    public var contentLabel: UILabel = UILabel()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         titleLabel.font = UIFont.systemFontOfSize(14.0)
@@ -28,16 +27,16 @@ class TextCell: UATableViewCell {
         contentView.addSubview(contentLabel)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setTitle(title: String?, content: String?) {
+    public func setTitle(title: String?, content: String?) {
         titleLabel.text = title
         contentLabel.text = content
     }
     
-    func setAction(isAction: Bool) {
+    public func setAction(isAction: Bool) {
         if isAction {
             contentLabel.textColor = MainAppTheme.list.actionColor
         } else {
@@ -45,7 +44,7 @@ class TextCell: UATableViewCell {
         }
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         titleLabel.frame = CGRect(x: 15, y: 7, width: contentView.bounds.width - 30, height: titleLabel.bounds.height)
@@ -53,7 +52,7 @@ class TextCell: UATableViewCell {
         contentLabel.sizeToFit()
     }
     
-    class func measure(text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
+    public class func measure(text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
         let size = UIViewMeasure.measureText(text, width: width - 30 - (enableNavigation ? 30 : 0), fontSize: 17)
         return CGFloat(size.height + 36)
     }

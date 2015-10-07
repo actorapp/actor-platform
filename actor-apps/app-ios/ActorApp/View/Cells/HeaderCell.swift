@@ -4,12 +4,12 @@
 
 import Foundation
 
-class HeaderCell: UATableViewCell {
+public class HeaderCell: UATableViewCell {
     
-    var titleView = UILabel()
-    var iconView = UIImageView()
+    public var titleView = UILabel()
+    public var iconView = UIImageView()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.backgroundColor = MainAppTheme.list.backyardColor
@@ -28,11 +28,11 @@ class HeaderCell: UATableViewCell {
         contentView.addSubview(iconView)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         
         let height = self.contentView.bounds.height
