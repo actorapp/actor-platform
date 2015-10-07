@@ -1,7 +1,7 @@
 package im.actor;
 
 import akka.util.Timeout;
-import im.actor.bot.BotMessages;
+import im.actor.bots.BotMessages;
 import im.actor.botkit.RemoteBot;
 import scala.concurrent.Future;
 import shardakka.ShardakkaExtension;
@@ -24,9 +24,12 @@ public class HelloBot extends RemoteBot {
 
     @Override
     public void onTextMessage(BotMessages.TextMessage tm) {
-        if (tm.text().startsWith("hello")) {
-            sendTextMessage(outPeer(tm.sender()), "Hi there!");
-        } else if (tm.text().startsWith("last")) {
+        if (tm.getText().startsWith("hello")) {
+            requestSendTextMessage(
+                    tm.getSender().asOutPeer(),
+                    nextRandomId(),
+                    "Hi, " + getUser(tm.getSender().getId()).getName() + "!");
+        } else if (tm.getText().startsWith("last")) {
             Future<Optional<String>> future = msgsKv
                     .get("last", timeout);
 
@@ -34,12 +37,12 @@ public class HelloBot extends RemoteBot {
                 String msg = s
                         .map(text -> "Last message I received was: " + text)
                         .orElse("I'm alone :'(");
-                sendTextMessage(outPeer(tm.sender()), msg);
+                requestSendTextMessage(tm.getSender().asOutPeer(), nextRandomId(), msg);
             }), context().dispatcher());
         } else {
-            sendTextMessage(outPeer(tm.sender()), "Please, say hello");
+            requestSendTextMessage(tm.getSender().asOutPeer(), nextRandomId(), "Please, say hello");
         }
 
-        msgsKv.upsert("last", tm.text(), timeout);
+        msgsKv.upsert("last", tm.getText(), timeout);
     }
 }
