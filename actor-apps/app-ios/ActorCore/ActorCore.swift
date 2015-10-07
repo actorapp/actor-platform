@@ -4,6 +4,7 @@
 
 import Foundation
 import j2objc
+import ActorCore
 
 var Actor : ACCocoaMessenger!
 var Analytics: CocoaAnalytics!
@@ -13,7 +14,7 @@ func createActor() {
     if Actor != nil {
         return
     }
-    
+
     ARCocoaStorageProxyProvider.setStorageRuntime(CocoaStorageRuntime())
     ARCocoaHttpProxyProvider.setHttpRuntime(CocoaHttpRuntime())
     ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())

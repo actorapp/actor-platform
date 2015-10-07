@@ -4,6 +4,7 @@
 
 import Foundation
 import UIKit
+import ActorCore
 
 class ContactCell : UATableViewCell, ACBindedCell, ACBindedSearchCell {
     
