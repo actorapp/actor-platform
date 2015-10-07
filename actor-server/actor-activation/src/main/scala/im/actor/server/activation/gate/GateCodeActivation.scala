@@ -1,15 +1,17 @@
 package im.actor.server.activation.gate
 
+import akka.http.scaladsl.marshalling.Marshal
+import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
+
 import scala.concurrent.{ ExecutionContext, Future }
 import scalaz.{ -\/, \/, \/- }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods.{ GET, POST }
-import akka.http.scaladsl.model.{ HttpRequest, Uri }
+import akka.http.scaladsl.model.{ RequestEntity, HttpRequest, Uri }
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
-import play.api.libs.json.Json
 import slick.dbio.DBIO
 
 import im.actor.server.activation.Activation.Code
@@ -22,21 +24,18 @@ class GateCodeActivation(config: GateConfig)(
   system:           ActorSystem,
   val materializer: Materializer,
   ec:               ExecutionContext
-) extends CodeActivation with JsonImplicits {
+) extends CodeActivation with JsonImplicits with PlayJsonSupport {
 
   private[this] val http = Http()
 
   override def send(optTransactionHash: Option[String], code: Code): DBIO[String \/ Unit] = {
-    val request = HttpRequest(
-      method = POST,
-      uri = s"${config.uri}/v1/codes/send",
-      entity = Json.toJson(code).toString
-    )
-
-    system.log.debug("Requesting code send with {}", request)
-
     val codeResponse: Future[CodeResponse] = for {
-      resp ← http.singleRequest(request.withHeaders(`X-Auth-Token`(config.authToken)))
+      entity ← Marshal(code).to[RequestEntity]
+      request = HttpRequest(method = POST, uri = s"${config.uri}/v1/codes/send")
+        .withEntity(entity)
+        .withHeaders(`X-Auth-Token`(config.authToken))
+      _ = system.log.debug("Requesting code send with {}", request)
+      resp ← http.singleRequest(request)
       codeResp ← Unmarshal(resp).to[CodeResponse]
     } yield codeResp
 
@@ -45,7 +44,7 @@ class GateCodeActivation(config: GateConfig)(
       result ← codeResponse match {
         case CodeHash(hash) ⇒
           optTransactionHash.map { transactionHash ⇒
-            for (_ ← persist.auth.GateAuthCode.create(transactionHash, hash)) yield \/-(())
+            for (_ ← persist.auth.GateAuthCode.createOrUpdate(transactionHash, hash)) yield \/-(())
           } getOrElse DBIO.successful(\/-(()))
         case CodeError(message) ⇒
           DBIO.successful(-\/(message))
