@@ -28,7 +28,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = MainAppTheme.list.bgColor
+        view.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
         view.addSubview(addPhotoButton)
         view.addSubview(avatarImageView)
         view.addSubview(hint)
@@ -70,7 +70,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         addPhotoLabelSecond.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelSecond.frame.size.width) / 2, 22 + 22, addPhotoLabelSecond.frame.size.width, addPhotoLabelSecond.frame.size.height));
         
 //        groupName.backgroundColor = UIColor.whiteColor()
-        groupName.backgroundColor = MainAppTheme.list.bgColor
+        groupName.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
         groupName.textColor = MainAppTheme.list.textColor
         groupName.font = UIFont.systemFontOfSize(20)
         groupName.keyboardType = UIKeyboardType.Default
@@ -80,7 +80,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         groupName.autocapitalizationType = UITextAutocapitalizationType.Words
         
-        groupNameFieldSeparator.backgroundColor = MainAppTheme.list.separatorColor
+        groupNameFieldSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
         
         hint.text = localized("CreateGroupHint")
         hint.font = UIFont.systemFontOfSize(15)

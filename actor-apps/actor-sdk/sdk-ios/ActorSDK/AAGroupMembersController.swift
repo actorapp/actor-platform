@@ -35,7 +35,7 @@ public class GroupMembersController: AAContactsContentViewController, AAContacts
         super.tableDidLoad()
         
         tokenView.delegate = self
-        tokenView.backgroundColor = MainAppTheme.list.backyardColor
+        tokenView.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
         tokenView.fieldName = ""
         tokenView.placeholderText = localized("CreateGroupMembersPlaceholders")
         

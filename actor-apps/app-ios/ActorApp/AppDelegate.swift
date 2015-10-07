@@ -10,8 +10,6 @@ import ActorSDK
 
 class AppDelegate : ActorApplicationDelegate {
     
-    var window : UIWindow!
-    
     // Badge
     
 //    private var binder = Binder()
@@ -41,11 +39,7 @@ class AppDelegate : ActorApplicationDelegate {
 //            BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
 //        }
         
-        // Creating main window
-        window = UIWindow(frame: UIScreen.mainScreen().bounds);
-        window.backgroundColor = UIColor.whiteColor()
-        ActorSDK.sharedActor().presentMessengerInWindow(window)
-        window.makeKeyAndVisible()
+        ActorSDK.sharedActor().presentMessengerInNewWindow()
         
         // Badge
         

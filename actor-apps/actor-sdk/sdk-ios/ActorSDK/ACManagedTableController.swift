@@ -53,7 +53,7 @@ public class ACManagedTableController: AAViewController {
         tableView.separatorStyle = .None
         
         // Setting tableView and view bg color depends on table style
-        tableView.backgroundColor = style == .Plain ? MainAppTheme.list.bgColor : MainAppTheme.list.backyardColor
+        tableView.backgroundColor = style == .Plain ? ActorSDK.sharedActor().style.tableBgColor : ActorSDK.sharedActor().style.tableBackyardColor
         view.backgroundColor = tableView.backgroundColor
         
         managedTable = ACManagedTable(style: style, tableView: tableView, controller: self)

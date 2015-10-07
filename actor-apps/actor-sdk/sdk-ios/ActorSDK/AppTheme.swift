@@ -158,11 +158,11 @@ public class ChatBubbles {
 
 public class AppList {
     public var actionColor : UIColor { get { return UIColor.RGB(0x5085CB) } }
-    public var bgColor: UIColor { get { return UIColor.whiteColor() } }
+
     public var bgSelectedColor : UIColor { get { return UIColor.RGB(0xd9d9d9) } }
     
-    public var backyardColor : UIColor { get { return UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1) } }
-    public var separatorColor : UIColor { get { return UIColor.RGB(0xd4d4d4) } }
+//    public var backyardColor : UIColor { get { return UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1) } }
+//    public var separatorColor : UIColor { get { return UIColor.RGB(0xd4d4d4) } }
     
     public var textColor : UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
     public var hintColor : UIColor { get { return UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1) } }
