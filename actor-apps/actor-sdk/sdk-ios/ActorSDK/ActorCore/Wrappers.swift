@@ -5,12 +5,12 @@
 import Foundation
 import ActorCore
 
-class CocoaCallback: NSObject, ACCommandCallback {
+public class CocoaCallback: NSObject, ACCommandCallback {
     
-    var resultClosure: ((val: AnyObject!) -> ())?;
-    var errorClosure: ((val:JavaLangException!) -> ())?;
+    public var resultClosure: ((val: AnyObject!) -> ())?;
+    public var errorClosure: ((val:JavaLangException!) -> ())?;
     
-    init<T>(result: ((val:T?) -> ())?, error: ((val:JavaLangException!) -> ())?) {
+    public init<T>(result: ((val:T?) -> ())?, error: ((val:JavaLangException!) -> ())?) {
         super.init()
         self.resultClosure = { (val: AnyObject!) -> () in
             result?(val: val as? T)
@@ -18,87 +18,87 @@ class CocoaCallback: NSObject, ACCommandCallback {
         self.errorClosure = error
     }
     
-    func onResult(res: AnyObject!) {
+    public func onResult(res: AnyObject!) {
         resultClosure?(val: res)
     }
     
-    func onError(e: JavaLangException!) {
+    public func onError(e: JavaLangException!) {
         errorClosure?(val: e)
     }
 }
 
-class CocoaDownloadCallback : NSObject, ACFileCallback {
+public class CocoaDownloadCallback : NSObject, ACFileCallback {
     
-    let notDownloaded: (()->())?
-    let onDownloading: ((progress: Double) -> ())?
-    let onDownloaded: ((fileName: String) -> ())?
+    public let notDownloaded: (()->())?
+    public let onDownloading: ((progress: Double) -> ())?
+    public let onDownloaded: ((fileName: String) -> ())?
     
-    init(notDownloaded: (()->())?, onDownloading: ((progress: Double) -> ())?, onDownloaded: ((reference: String) -> ())?) {
+    public init(notDownloaded: (()->())?, onDownloading: ((progress: Double) -> ())?, onDownloaded: ((reference: String) -> ())?) {
         self.notDownloaded = notDownloaded;
         self.onDownloading = onDownloading;
         self.onDownloaded = onDownloaded;
     }
     
-    init(onDownloaded: (reference: String) -> ()) {
+    public init(onDownloaded: (reference: String) -> ()) {
         self.notDownloaded = nil;
         self.onDownloading = nil;
         self.onDownloaded = onDownloaded;
     }
     
-    func onNotDownloaded() {
+    public func onNotDownloaded() {
         self.notDownloaded?();
     }
     
-    func onDownloading(progress: jfloat) {
+    public func onDownloading(progress: jfloat) {
         self.onDownloading?(progress: Double(progress));
     }
     
-    func onDownloaded(reference: ARFileSystemReference!) {
+    public func onDownloaded(reference: ARFileSystemReference!) {
         self.onDownloaded?(fileName: reference!.getDescriptor());
     }
 }
 
-class CocoaUploadCallback : NSObject, ACUploadFileCallback {
+public class CocoaUploadCallback : NSObject, ACUploadFileCallback {
     
-    let notUploaded: (()->())?
-    let onUploading: ((progress: Double) -> ())?
-    let onUploadedClosure: (() -> ())?
+    public let notUploaded: (()->())?
+    public let onUploading: ((progress: Double) -> ())?
+    public let onUploadedClosure: (() -> ())?
     
-    init(notUploaded: (()->())?, onUploading: ((progress: Double) -> ())?, onUploadedClosure: (() -> ())?) {
+    public init(notUploaded: (()->())?, onUploading: ((progress: Double) -> ())?, onUploadedClosure: (() -> ())?) {
         self.onUploading = onUploading
         self.notUploaded = notUploaded
         self.onUploadedClosure = onUploadedClosure;
     }
     
-    func onNotUploading() {
+    public func onNotUploading() {
         self.notUploaded?();
     }
     
-    func onUploaded() {
+    public func onUploaded() {
         self.onUploadedClosure?()
     }
     
-    func onUploading(progress: jfloat) {
+    public func onUploading(progress: jfloat) {
         self.onUploading?(progress: Double(progress))
     }
 }
 
-class MDFormattedText {
+public class MDFormattedText {
     
-    let isTrivial: Bool
-    let attributedText: NSAttributedString
-    let code: [String]
+    public let isTrivial: Bool
+    public let attributedText: NSAttributedString
+    public let code: [String]
     
-    init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
+    public init(attributedText: NSAttributedString, isTrivial: Bool, code: [String]) {
         self.attributedText = attributedText
         self.code = code
         self.isTrivial = isTrivial
     }
 }
 
-extension ARMarkdownParser {
+public extension ARMarkdownParser {
     
-    func parse(text: String, textColor: UIColor, fontSize: CGFloat) -> MDFormattedText {
+    public func parse(text: String, textColor: UIColor, fontSize: CGFloat) -> MDFormattedText {
         
         let doc = self.processDocumentWithNSString(text)
         if doc.isTrivial() {

@@ -20,3 +20,14 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 // Importing Actor Core libraries
 #import <ActorCore/ActorCore.h>
 
+// View extensions
+
+#import <ActorSDK/UIAppearance+Swift.h>
+#import <ActorSDK/UIBarAppearance+Swift.h>
+
+// FMDB include. FMDB Doesn't support frameworks yet, so we included it to app itself
+
+#import <ActorSDK/FMDatabase.h>
+#import <ActorSDK/FMResultSet.h>
+#import <ActorSDK/FMDatabaseAdditions.h>
+#import <ActorSDK/FMDatabaseQueue.h>

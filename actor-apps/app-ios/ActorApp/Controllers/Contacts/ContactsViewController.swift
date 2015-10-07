@@ -7,15 +7,15 @@ import MessageUI
 import Social
 import AddressBookUI
 import ContactsUI
-import j2objc
-import ActorCore
+import ActorSDK
 
 class ContactsViewController: ContactsContentViewController, ContactsContentViewControllerDelegate, UIAlertViewDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
     
     var inviteText: String {
         get {
-            return localized("InviteText")
-                .replace("{link}", dest: AppConfig.appInviteUrl!)
+            return ""
+//            return localized("InviteText")
+//                .replace("{link}", dest: AppConfig.appInviteUrl!)
         }
     }
     
@@ -106,14 +106,14 @@ class ContactsViewController: ContactsContentViewController, ContactsContentView
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
                 }
-                
-                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
-                    builder.add("Facebook") { () -> () in
-                        let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
-                        vc.addURL(NSURL(string: AppConfig.appInviteUrl!))
-                        self.presentViewController(vc, animated: true, completion: nil)
-                    }
-                }
+//                
+//                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
+//                    builder.add("Facebook") { () -> () in
+//                        let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+//                        vc.addURL(NSURL(string: AppConfig.appInviteUrl!))
+//                        self.presentViewController(vc, animated: true, completion: nil)
+//                    }
+//                }
                 
                 self.showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: UIView(), sourceRect: CGRectZero, tapClosure: builder.tapClosure)
                 
@@ -206,10 +206,10 @@ class ContactsViewController: ContactsContentViewController, ContactsContentView
     func showEmailInvitation(recipients: [String]?) {
         if MFMailComposeViewController.canSendMail() {
             
-            if AppConfig.appInviteUrl == nil {
-                // Silently ignore if not configured
-                return
-            }
+//            if AppConfig.appInviteUrl == nil {
+//                // Silently ignore if not configured
+//                return
+//            }
             
             let messageComposeController = MFMailComposeViewController()
             messageComposeController.mailComposeDelegate = self
@@ -238,10 +238,10 @@ class ContactsViewController: ContactsContentViewController, ContactsContentView
     func showSmsInvitation(recipients: [String]?) {
         if MFMessageComposeViewController.canSendText() {
             
-            if AppConfig.appInviteUrl == nil {
-                // Silently ignore if not configured
-                return
-            }
+//            if AppConfig.appInviteUrl == nil {
+//                // Silently ignore if not configured
+//                return
+//            }
             
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self

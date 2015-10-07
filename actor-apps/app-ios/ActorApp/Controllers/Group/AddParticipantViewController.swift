@@ -3,8 +3,7 @@
 //
 
 import UIKit
-import j2objc
-import ActorCore
+import ActorSDK
 
 class AddParticipantViewController: ContactsContentViewController, ContactsContentViewControllerDelegate {
 

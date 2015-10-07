@@ -3,8 +3,7 @@
 //
 
 import UIKit
-import j2objc
-import ActorCore
+import ActorSDK
 
 enum AvatarType {
     case Rounded

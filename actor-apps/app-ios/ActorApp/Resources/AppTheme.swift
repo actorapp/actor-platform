@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import ActorSDK
 
 var MainAppTheme = AppTheme()
 

@@ -4,6 +4,7 @@
 
 import Foundation
 import SZTextView
+import ActorSDK
 
 class EditTextControllerConfig {
     
