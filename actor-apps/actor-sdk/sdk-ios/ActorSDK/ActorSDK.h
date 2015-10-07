@@ -14,7 +14,7 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 #import <j2objc/j2objc.h>
 
 // Importing Actor Core libraries
-#import <ActorCore/ActorCore.h>
+#import <ActorSDK/ActorCore.h>
 
 // View extensions
 

@@ -3,8 +3,6 @@
 //
 
 import Foundation
-import j2objc
-import ActorCore
 
 // Public methods for working with files
 public class CocoaFiles {

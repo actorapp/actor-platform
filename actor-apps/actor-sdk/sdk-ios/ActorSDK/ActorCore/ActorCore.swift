@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import ActorCore
 
 public var Actor : ACCocoaMessenger {
     get {

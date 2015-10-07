@@ -3,8 +3,6 @@
 //
 
 import Foundation
-import j2objc
-import ActorCore
 
 class CocoaHttpRuntime: NSObject, ARHttpRuntime {
     

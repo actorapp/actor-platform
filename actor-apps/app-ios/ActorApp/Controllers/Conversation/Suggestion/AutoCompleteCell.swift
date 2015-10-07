@@ -4,7 +4,7 @@
 
 import Foundation
 import TTTAttributedLabel
-import ActorCore
+import ActorSDK
 
 class AutoCompleteCell: UITableViewCell {
     

@@ -1,1 +1,0 @@
-DO NOT ADD OTHER FILES exept ActorCore. Project is hacky way to include static library as framework to project. We build and replace compiled binary manually and copy all required header files to output framework.
