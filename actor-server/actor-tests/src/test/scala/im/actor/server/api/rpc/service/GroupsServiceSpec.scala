@@ -10,7 +10,6 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
 import im.actor.server.group.GroupServiceMessages
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import org.scalatest.Inside._
 import slick.dbio.DBIO
 
@@ -79,9 +78,6 @@ class GroupsServiceSpec
   "Kick user" should "mark messages read in kicked user dialog" in e26
 
   "Kick user" should "mark messages read in public group" in e27
-
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

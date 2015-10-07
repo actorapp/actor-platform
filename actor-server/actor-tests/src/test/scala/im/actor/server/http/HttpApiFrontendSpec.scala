@@ -3,29 +3,26 @@ package im.actor.server.http
 import java.nio.file.Paths
 
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpMethods.{ DELETE, POST, GET }
+import akka.http.scaladsl.model.HttpMethods.{ DELETE, GET, POST }
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.unmarshalling._
 import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
+import akka.http.scaladsl.unmarshalling._
 import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.ClientData
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.api.http.json.AvatarUrls
-import im.actor.server.api.http.json._
+import im.actor.server.api.http.json.JsonFormatters._
+import im.actor.server.api.http.json.{ AvatarUrls, _ }
 import im.actor.server.api.http.webhooks.OutgoingHooksErrors
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.file.ImageUtils
-import im.actor.server.group.GroupOffice
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import org.scalatest.Inside._
 import play.api.libs.json._
-import JsonFormatters._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
@@ -77,9 +74,6 @@ class HttpApiFrontendSpec
   it should "not allow path traversal" in t.pathTraversal()
 
   it should "serve correct file path" in t.filesCorrect()
-
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

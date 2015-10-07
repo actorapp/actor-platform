@@ -1,24 +1,20 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.rpc.messaging.{ UpdateMessageContentChanged, ApiTextMessage }
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-
-import scala.concurrent.{ Future, Await }
-import scala.concurrent.duration._
-
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 import com.typesafe.config.ConfigFactory
-import org.scalatest.Inside._
-import slick.dbio.DBIO
-
 import im.actor.api.rpc._
+import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessageContentChanged }
 import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference }
-import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
-import im.actor.server.presences.PresenceManager
-import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server._
+import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
+import im.actor.server.sequence.SeqUpdatesManager
+import org.scalatest.Inside._
+
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 
 class SequenceServiceSpec extends BaseAppSuite({
   ActorSpecification.createSystem(
@@ -35,8 +31,6 @@ class SequenceServiceSpec extends BaseAppSuite({
   it should "get state" in e1
   it should "get difference" in e2
   it should "get difference if there is one update bigger than difference size limit" in e3
-
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
 
   val bucketName = "actor-uploads-test"
 
