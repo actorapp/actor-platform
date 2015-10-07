@@ -91,7 +91,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     .aggregate(
       //      actorDashboard,
       actorCore,
-      actorBot,
+      actorBots,
       actorBotkit,
       actorEmail,
       actorEnrich,
@@ -118,7 +118,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     settings = defaultSettings
   ).dependsOn(
     actorActivation,
-    actorBot,
+    actorBots,
     actorEnrich,
     actorEmail,
     actorFrontend,
@@ -138,21 +138,21 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       )
   ).dependsOn(actorEmail, actorSms, actorPersist)
 
-  lazy val actorBot = Project(
-    id = "actor-bot",
-    base = file("actor-bot"),
+  lazy val actorBots = Project(
+    id = "actor-bots",
+    base = file("actor-bots"),
     settings = defaultSettings ++
       Seq(
         libraryDependencies ++= Dependencies.bot,
         addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
       )
   )
-    .dependsOn(actorBotShared, shardakka, actorCore, actorTestkit % "test")
-    .aggregate(actorBotShared)
+    .dependsOn(actorBotsShared, shardakka, actorCore, actorTestkit % "test")
+    .aggregate(actorBotsShared)
 
-  lazy val actorBotShared = Project(
-    id = "actor-bot-shared",
-    base = file("actor-bot-shared"),
+  lazy val actorBotsShared = Project(
+    id = "actor-bots-shared",
+    base = file("actor-bots-shared"),
     settings = defaultSettings ++ publishSettings ++ Seq(
       libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _),
       libraryDependencies ++= Dependencies.botShared,
@@ -168,7 +168,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
     )
   )
-    .dependsOn(actorBotShared)
+    .dependsOn(actorBotsShared)
 
   lazy val actorCore = Project(
     id = "actor-core",
@@ -201,7 +201,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.httpApi
     )
-  ).dependsOn(actorBot, actorCore, actorPersist, actorRuntime)
+  ).dependsOn(actorBots, actorCore, actorPersist, actorRuntime)
 
   lazy val actorOAuth = Project(
     id = "actor-oauth",
