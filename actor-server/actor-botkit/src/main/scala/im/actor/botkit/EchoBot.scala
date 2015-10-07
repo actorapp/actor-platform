@@ -1,15 +1,16 @@
 package im.actor.botkit
 
 import akka.actor.{ ActorSystem, Props }
-import im.actor.bot.BotMessages.TextMessage
+import im.actor.bots.BotMessages.TextMessage
 
 object EchoBotApp extends App {
   implicit val system = ActorSystem()
 
-  val token = "68d336e59a378d405e652274c36f383835e9b21f"
+  val token = "dccac82e017ba4f2d267303e795ca689e5b2d1e8"
 
   system.actorOf(
-    EchoBot.props(token, RemoteBot.DefaultEndpoint),
+    //EchoBot.props(token, RemoteBot.DefaultEndpoint),
+    EchoBot.props(token, "ws://localhost:9090"),
     "EchoBot"
   )
 
@@ -22,7 +23,7 @@ object EchoBot {
 }
 
 final class EchoBot(token: String, endpoint: String) extends RemoteBot(token, endpoint) {
-  override protected def onTextMessage(tm: TextMessage): Unit = {
-    sendTextMessage(outPeer(tm.sender), s"Hey, here is your reply: ${tm.text}")
+  override def onTextMessage(tm: TextMessage): Unit = {
+    requestSendTextMessage(tm.sender.asOutPeer, nextRandomId(), s"Hey, here is your reply: ${tm.text}")
   }
 }

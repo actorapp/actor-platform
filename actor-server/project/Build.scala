@@ -30,6 +30,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     "-Ybackend:GenBCode",
     "-Ydelambdafy:method",
     "-Yopt:l:classpath",
+    //"-Ymacro-debug-lite",
     "-encoding", "UTF-8",
     "-deprecation",
     "-unchecked",
@@ -142,28 +143,32 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     base = file("actor-bot"),
     settings = defaultSettings ++
       Seq(
-        libraryDependencies ++= Dependencies.bot
+        libraryDependencies ++= Dependencies.bot,
+        addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
       )
-  ).dependsOn(actorBotShared, shardakka, actorCore, actorTestkit % "test")
-
-  lazy val actorBotkit = Project(
-    id = "actor-botkit",
-    base = file("actor-botkit"),
-    settings = defaultSettings ++ publishSettings ++ Revolver.settings ++ Seq(
-      libraryDependencies ++= Dependencies.botkit
-    )
   )
-    .dependsOn(actorBotShared)
+    .dependsOn(actorBotShared, shardakka, actorCore, actorTestkit % "test")
     .aggregate(actorBotShared)
 
   lazy val actorBotShared = Project(
     id = "actor-bot-shared",
     base = file("actor-bot-shared"),
-    settings = defaultSettings ++ publishSettings ++
-      Seq(
-        libraryDependencies ++= Dependencies.botShared
-      )
+    settings = defaultSettings ++ publishSettings ++ Seq(
+      libraryDependencies <+= (scalaVersion)("org.scala-lang" % "scala-reflect" % _),
+      libraryDependencies ++= Dependencies.botShared,
+      addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+    )
   )
+
+  lazy val actorBotkit = Project(
+    id = "actor-botkit",
+    base = file("actor-botkit"),
+    settings = defaultSettings ++ publishSettings ++ Revolver.settings ++ Seq(
+      libraryDependencies ++= Dependencies.botkit,
+      addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
+    )
+  )
+    .dependsOn(actorBotShared)
 
   lazy val actorCore = Project(
     id = "actor-core",
