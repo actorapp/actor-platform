@@ -2,9 +2,6 @@
 //  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
 //
 
-#ifndef ActorApp_ActorCore_h
-#define ActorApp_ActorCore_h
-
 // J2OBJC
 
 #import <j2objc/j2objc.h>
@@ -171,5 +168,3 @@
 #import <ActorCore/im/actor/runtime/markdown/MDSection.h>
 #import <ActorCore/im/actor/runtime/markdown/MDSpan.h>
 #import <ActorCore/im/actor/runtime/markdown/MDUrl.h>
-
-#endif
