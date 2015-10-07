@@ -8,6 +8,7 @@ import Modal from 'react-modal';
 import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
+import { escapeWithEmoji } from 'utils/EmojiUtils'
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
@@ -55,7 +56,7 @@ class InviteByLink extends React.Component {
   render() {
     const { group, inviteUrl, isOpen } = this.state;
 
-    const groupName = (group !== null) ? <b>{group.name}</b> : null;
+    const groupName = (group !== null) ? <b dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/> : null;
 
     if (isOpen) {
       return (
