@@ -2,7 +2,7 @@ package im.actor.server.bot
 
 import akka.actor.{ Props, ActorSystem }
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
-import im.actor.bot.BotMessages
+import im.actor.bots.BotMessages
 import im.actor.server.user.UserExceptions
 import im.actor.util.misc.IdUtils
 
@@ -29,7 +29,7 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
   import context._
 
   override def onTextMessage(tm: TextMessage): Unit = {
-    if (isPrivate(tm.peer) && tm.text.startsWith(NewCmd)) {
+    if (tm.peer.isPrivate && tm.text.startsWith(NewCmd)) {
       tm.text.drop(NewCmd.length + 1).trim.split(" ").map(_.trim).toList match {
         case xs if xs.length == 2 ⇒
           val nickname = xs(0)
@@ -41,14 +41,14 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
 
           botExt.create(userId, nickname, name) onComplete {
             case Success(token) ⇒
-              sendTextMessage(tm.peer, s"Yay! Bot created, here is your token: ${token}")
+              requestSendTextMessage(tm.peer, nextRandomId(), s"Yay! Bot created, here is your token: ${token}")
             case Failure(UserExceptions.NicknameTaken) ⇒
-              sendTextMessage(tm.peer, "Nickname already taken")
+              requestSendTextMessage(tm.peer, nextRandomId(), "Nickname already taken")
             case Failure(e) ⇒
               log.error(e, "Failed to create bot")
-              sendTextMessage(tm.peer, "There was a problem on our side. Please, try again a bit later.")
+              requestSendTextMessage(tm.peer, nextRandomId(), "There was a problem on our side. Please, try again a bit later.")
           }
-        case _ ⇒ sendTextMessage(tm.peer, "Command format is: /bot new <nickname> <name>")
+        case _ ⇒ requestSendTextMessage(tm.peer, nextRandomId(), "Command format is: /bot new <nickname> <name>")
       }
     }
   }
