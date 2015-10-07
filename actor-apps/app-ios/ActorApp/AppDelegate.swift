@@ -8,6 +8,7 @@ import Fabric
 import Crashlytics
 import j2objc
 import ActorCore
+import ActorSDK
 
 @objc class AppDelegate : UIResponder,  UIApplicationDelegate {
     
