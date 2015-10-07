@@ -2,6 +2,7 @@ package im.actor
 
 import sbt.Keys._
 import sbt._
+import xerial.sbt.Sonatype.SonatypeKeys._
 
 trait Publishing {
   val publishSettings = Seq(
@@ -14,6 +15,8 @@ trait Publishing {
       else
         Some("releases"  at nexus + "service/local/staging/deploy/maven2")
     },
+
+    sonatypeProfileName := "im.actor",
 
     // To sync with Maven central, you need to supply the following information:
     pomExtra in Global :=
