@@ -195,7 +195,7 @@ class Login extends React.Component {
                          value={this.state.code}/>
 
               <footer className="text-center">
-                <button className="button button--rised" type="submit">{this.getIntlMessage('button.checkСode')}</button>
+                <button className="button button--rised" type="submit">{this.getIntlMessage('button.checkCode')}</button>
               </footer>
             </form>
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
