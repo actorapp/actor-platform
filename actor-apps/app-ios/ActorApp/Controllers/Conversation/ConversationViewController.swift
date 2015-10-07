@@ -7,6 +7,7 @@ import UIKit
 import MobileCoreServices
 import ActorSDK
 import j2objc
+import ActorCore
 
 class ConversationViewController: ConversationContentViewController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     

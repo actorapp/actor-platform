@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06C306761BC32C2C00E9AD54 /* ActorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 06C306721BC329CE00E9AD54 /* ActorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06C32A441BC3351700E9AD54 /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C32A431BC3351700E9AD54 /* StatusBar.swift */; settings = {ASSET_TAGS = (); }; };
 		06C32A471BC3356100E9AD54 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C32A461BC3356100E9AD54 /* Fonts.swift */; settings = {ASSET_TAGS = (); }; };
 		06C32A491BC3359F00E9AD54 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C32A481BC3359F00E9AD54 /* Strings.swift */; settings = {ASSET_TAGS = (); }; };
@@ -32,7 +31,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		06C306721BC329CE00E9AD54 /* ActorCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActorCore.h; sourceTree = "<group>"; };
 		06C32A431BC3351700E9AD54 /* StatusBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
 		06C32A461BC3356100E9AD54 /* Fonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		06C32A481BC3359F00E9AD54 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
@@ -99,7 +97,6 @@
 				06C3F59E1BC31E7900E9AD54 /* ActorSDK.h */,
 				06C3F5A01BC31E7900E9AD54 /* Info.plist */,
 				06C3F5B21BC31EE600E9AD54 /* ActorSDK.swift */,
-				06C306721BC329CE00E9AD54 /* ActorCore.h */,
 			);
 			path = ActorSDK;
 			sourceTree = "<group>";
@@ -130,7 +127,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				06C3F59F1BC31E7900E9AD54 /* ActorSDK.h in Headers */,
-				06C306761BC32C2C00E9AD54 /* ActorCore.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,7 +284,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -330,7 +326,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -359,6 +355,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -385,6 +382,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				USER_HEADER_SEARCH_PATHS = "";
 				USE_HEADERMAP = YES;

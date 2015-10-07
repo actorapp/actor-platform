@@ -5,6 +5,7 @@
 import UIKit
 import MobileCoreServices
 import j2objc
+import ActorCore
 
 class SettingsViewController: ACContentTableController {
     

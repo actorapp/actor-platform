@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import ActorCore
 
 @objc class CocoaStorageRuntime : NSObject, ARStorageRuntime {
     

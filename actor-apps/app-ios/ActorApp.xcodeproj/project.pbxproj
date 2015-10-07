@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		017FA9031F79FFBEA86351F2F3ADB8D3 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = C1F71913295A69A58640BA813FA3F8B6 /* Makefile */; };
 		0224F1E3828DAA4189723FDA24F29984 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */; };
 		057AECBA478DD3D127189E50F10243A8 /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51407CFA80BA5C7F30CB1D2507FA116C /* AABubbleMediaCell.swift */; };
 		0600225E1BB64FE0004C2C1A /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0600225D1BB64FE0004C2C1A /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
 		06049FE21BA5E26400BF8553 /* Bubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06049FE11BA5E26400BF8553 /* Bubbles.swift */; settings = {ASSET_TAGS = (); }; };
-		066A50771BC45A5E000E606E /* j2objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A50761BC45A5E000E606E /* j2objc.framework */; };
+		066A50911BC45E90000E606E /* j2objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A50761BC45A5E000E606E /* j2objc.framework */; };
+		066A50A91BC496B1000E606E /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A50A81BC496B1000E606E /* ActorSDK.framework */; };
+		066A50AB1BC496B5000E606E /* ActorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A50AA1BC496B5000E606E /* ActorCore.framework */; };
 		068505C81B9AB2E300819D16 /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068505C71B9AB2E300819D16 /* CorePreviewController.swift */; };
 		068505CC1B9AB5CB00819D16 /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 068505CA1B9AB5CB00819D16 /* highlight-default.min.css */; };
 		068505CD1B9AB5CB00819D16 /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 068505CB1B9AB5CB00819D16 /* highlight.min.js */; };
@@ -28,7 +29,6 @@
 		068C6E4D1BBB339400182516 /* WebActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068C6E4C1BBB339400182516 /* WebActionController.swift */; settings = {ASSET_TAGS = (); }; };
 		068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
 		0697229ADDEB47FD0793551932F43DA6 /* CircullarLayerProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C0BB4D02D30127D1FBD0D44F43BAD8 /* CircullarLayerProgress.swift */; };
-		06C32A411BC3342600E9AD54 /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C32A401BC3342600E9AD54 /* ActorSDK.framework */; };
 		06C3E7491BBC70BF00E9AD54 /* RecentContentViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C3E7481BBC70BF00E9AD54 /* RecentContentViewControllerDelegate.swift */; settings = {ASSET_TAGS = (); }; };
 		06C3E74B1BBC729E00E9AD54 /* RecentContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C3E74A1BBC729E00E9AD54 /* RecentContentViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		06C3E7531BBCC12E00E9AD54 /* ACManagedBind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C3E7511BBCC12E00E9AD54 /* ACManagedBind.swift */; settings = {ASSET_TAGS = (); }; };
@@ -184,6 +184,8 @@
 		0600225D1BB64FE0004C2C1A /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = bg_1.jpg; path = Resources/Backgrounds/bg_1.jpg; sourceTree = "<group>"; };
 		06049FE11BA5E26400BF8553 /* Bubbles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Bubbles.swift; path = Controllers/Conversation/Bubbles.swift; sourceTree = "<group>"; };
 		066A50761BC45A5E000E606E /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
+		066A50A81BC496B1000E606E /* ActorSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActorSDK.framework; path = "../actor-sdk/sdk-ios/build/Debug-iphoneos/ActorSDK.framework"; sourceTree = "<group>"; };
+		066A50AA1BC496B5000E606E /* ActorCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActorCore.framework; path = "../../../../Library/Developer/Xcode/DerivedData/ActorApp-byegozftwxvqacbpifplaglvajfr/Build/Products/Debug-iphoneos/ActorCore.framework"; sourceTree = "<group>"; };
 		068505C71B9AB2E300819D16 /* CorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CorePreviewController.swift; path = Controllers/Preview/CorePreviewController.swift; sourceTree = "<group>"; };
 		068505CA1B9AB5CB00819D16 /* highlight-default.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = "highlight-default.min.css"; path = "Resources/Highlighter/highlight-default.min.css"; sourceTree = "<group>"; };
 		068505CB1B9AB5CB00819D16 /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = highlight.min.js; path = Resources/Highlighter/highlight.min.js; sourceTree = "<group>"; };
@@ -197,7 +199,6 @@
 		068C6E491BBB15BF00182516 /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Analytics.swift; path = ActorCore/Analytics.swift; sourceTree = "<group>"; };
 		068C6E4C1BBB339400182516 /* WebActionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebActionController.swift; sourceTree = "<group>"; };
 		068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Supporting Files/Launch Screen.storyboard"; sourceTree = "<group>"; };
-		06C32A401BC3342600E9AD54 /* ActorSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActorSDK.framework; path = "../actor-sdk/sdk-ios/build/Debug-iphoneos/ActorSDK.framework"; sourceTree = "<group>"; };
 		06C3E7481BBC70BF00E9AD54 /* RecentContentViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentContentViewControllerDelegate.swift; sourceTree = "<group>"; };
 		06C3E74A1BBC729E00E9AD54 /* RecentContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentContentViewController.swift; sourceTree = "<group>"; };
 		06C3E7511BBCC12E00E9AD54 /* ACManagedBind.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedBind.swift; sourceTree = "<group>"; };
@@ -333,9 +334,7 @@
 		B99C439A29E8D0BF18680CA79BC497A4 /* MessagesFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessagesFlowLayout.swift; path = Controllers/Conversation/Layouting/MessagesFlowLayout.swift; sourceTree = "<group>"; };
 		BD734DC2F94B5BA2E1F57606538CA6E0 /* titan.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = titan.caf; path = Resources/Sounds/titan.caf; sourceTree = "<group>"; };
 		C0EC862FED3E5C71444B3ABAE28A5476 /* AutoCompleteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AutoCompleteCell.swift; path = Controllers/Conversation/Suggestion/AutoCompleteCell.swift; sourceTree = "<group>"; };
-		C1513ACE780E7173AF25A06574B81542 /* ActorCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ActorCore.h; path = ActorCore/ActorCore.h; sourceTree = "<group>"; };
 		C1B62AB706C51EDEB616B70C706CAB59 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
-		C1F71913295A69A58640BA813FA3F8B6 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = ActorCore/Makefile; sourceTree = "<group>"; };
 		C2B6C6E80470E6DD466291C179E05100 /* AANavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AANavigationController.swift; path = "Controllers Support/AANavigationController.swift"; sourceTree = "<group>"; };
 		C36CE703BBF72624C46093055091BECF /* MixpanelProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MixpanelProvider.swift; path = ../ActorCore/Providers/MixpanelProvider.swift; sourceTree = "<group>"; };
 		C3B1707BE978450E8DC7222BCB23792E /* notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = notification.caf; path = Resources/Sounds/notification.caf; sourceTree = "<group>"; };
@@ -378,8 +377,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				066A50771BC45A5E000E606E /* j2objc.framework in Frameworks */,
-				06C32A411BC3342600E9AD54 /* ActorSDK.framework in Frameworks */,
+				066A50AB1BC496B5000E606E /* ActorCore.framework in Frameworks */,
+				066A50A91BC496B1000E606E /* ActorSDK.framework in Frameworks */,
+				066A50911BC45E90000E606E /* j2objc.framework in Frameworks */,
 				4403E543C36C1FDC89DD4E00 /* Pods_ActorApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -737,10 +737,8 @@
 			isa = PBXGroup;
 			children = (
 				06C3F5641BC3176900E9AD54 /* FMDB */,
-				C1F71913295A69A58640BA813FA3F8B6 /* Makefile */,
 				4606FA79DDC82FEF13B8E00E5C99C882 /* Providers */,
 				06C3E76F1BC2FF4900E9AD54 /* Resources */,
-				C1513ACE780E7173AF25A06574B81542 /* ActorCore.h */,
 				813A92FF9D43B8EA0F3FD45E18FF4A14 /* ActorCore.swift */,
 				06E7FAC41BAA3BA000177709 /* Extensions.swift */,
 				96AEEE09EE154156E7009B6AF0A2DF79 /* Conversions.swift */,
@@ -754,8 +752,9 @@
 		86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				066A50AA1BC496B5000E606E /* ActorCore.framework */,
+				066A50A81BC496B1000E606E /* ActorSDK.framework */,
 				066A50761BC45A5E000E606E /* j2objc.framework */,
-				06C32A401BC3342600E9AD54 /* ActorSDK.framework */,
 				E2F298FBF1BB3C0A84996ED3 /* Pods_ActorApp.framework */,
 			);
 			name = Frameworks;
@@ -966,7 +965,6 @@
 			buildConfigurationList = 58731A67470ABB64477A86D26A0C38CA /* Build configuration list for PBXNativeTarget "ActorApp" */;
 			buildPhases = (
 				E70FC928CCCB317D8650ACE6917F2950 /* Check Pods Manifest.lock */,
-				9DF7E53479C759B9670BD6A7B31A635D /* ShellScript */,
 				50CB7471D350DF82230B74B5952FA7BD /* Sources */,
 				4533F91FE5E247335BA76B35E6FC28C1 /* Frameworks */,
 				B094A1F03E91E4354C789DE8702D2FB4 /* Resources */,
@@ -1114,19 +1112,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9DF7E53479C759B9670BD6A7B31A635D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd ActorCore\nmake translate\nmake build -j3";
-		};
 		E70FC928CCCB317D8650ACE6917F2950 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1240,7 +1225,6 @@
 				068C6E2C1BB9423200182516 /* ACManagedSection.swift in Sources */,
 				5B390BB56CF35C7E70BA1B14BF9A8DC3 /* MainSplitViewController.swift in Sources */,
 				F6F5EC11D803F893088AF8F8267055ED /* MainTabViewController.swift in Sources */,
-				017FA9031F79FFBEA86351F2F3ADB8D3 /* Makefile in Sources */,
 				E53FAE1C8969DECE56280C942CED0F57 /* MessagesFlowLayout.swift in Sources */,
 				BE591031FF67D3E4E6D9D92D0757AFCA /* MixpanelProvider.swift in Sources */,
 				132FAF64C7A06E5D6578B49E5DD6EBC9 /* Navigations.swift in Sources */,
@@ -1336,7 +1320,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				J2OBJC_VERSION = 0.9.8.2.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1381,7 +1365,6 @@
 					"\"UIKit\"",
 					"-framework",
 					"\"WebKit\"",
-					"-lactor",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1389,7 +1372,7 @@
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				USER_HEADER_SEARCH_PATHS = ActorCore/Sources2;
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
 		};
@@ -1423,7 +1406,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1453,7 +1436,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				J2OBJC_VERSION = 0.9.8.2.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1497,7 +1480,6 @@
 					"\"UIKit\"",
 					"-framework",
 					"\"WebKit\"",
-					"-lactor",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1505,7 +1487,7 @@
 				SDK_PATH = "../actor-sdk";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				USER_HEADER_SEARCH_PATHS = ActorCore/Sources2;
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
 		};
@@ -1545,7 +1527,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
