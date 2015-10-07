@@ -113,10 +113,10 @@
 		066A52811BC51ED0000E606E /* AANoSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A527E1BC51ED0000E606E /* AANoSelectionViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52C71BC521EA000E606E /* AAEditTextController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52C51BC521EA000E606E /* AAEditTextController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52C81BC521EA000E606E /* AAEditFieldController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52C61BC521EA000E606E /* AAEditFieldController.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52CC1BC521FA000E606E /* AARecentContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52CA1BC521FA000E606E /* AARecentContentViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52CD1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52CB1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52CC1BC521FA000E606E /* AARecentContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52CA1BC521FA000E606E /* AARecentContentController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52CD1BC521FA000E606E /* AARecentContentControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52CB1BC521FA000E606E /* AARecentContentControllerDelegate.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52D11BC52204000E606E /* AADialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52CF1BC52204000E606E /* AADialogCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52D21BC52204000E606E /* AADialogsSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D01BC52204000E606E /* AADialogsSearchCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52D21BC52204000E606E /* AADialogSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D01BC52204000E606E /* AADialogSearchCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52D61BC52378000E606E /* AAContactsContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D41BC52378000E606E /* AAContactsContentViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52D71BC52378000E606E /* AAContactsContentViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D51BC52378000E606E /* AAContactsContentViewControllerDelegate.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52DB1BC52385000E606E /* AAContactActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52D91BC52385000E606E /* AAContactActionCell.swift */; settings = {ASSET_TAGS = (); }; };
@@ -136,7 +136,7 @@
 		066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52FB1BC52FA8000E606E /* AAGroupCreateViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52FF1BC52FA9000E606E /* AAGroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52FC1BC52FA8000E606E /* AAGroupMembersController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53041BC53177000E606E /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53031BC53177000E606E /* ContactsViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		066A53071BC53183000E606E /* DialogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53061BC53183000E606E /* DialogsViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53071BC53183000E606E /* AARecentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53061BC53183000E606E /* AARecentViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A530B1BC531A2000E606E /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530A1BC531A2000E606E /* UserViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53101BC53317000E606E /* WallpapperPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530D1BC53317000E606E /* WallpapperPreviewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53111BC53317000E606E /* CorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530E1BC53317000E606E /* CorePreviewController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -270,10 +270,10 @@
 		066A527E1BC51ED0000E606E /* AANoSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AANoSelectionViewController.swift; sourceTree = "<group>"; };
 		066A52C51BC521EA000E606E /* AAEditTextController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEditTextController.swift; sourceTree = "<group>"; };
 		066A52C61BC521EA000E606E /* AAEditFieldController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEditFieldController.swift; sourceTree = "<group>"; };
-		066A52CA1BC521FA000E606E /* AARecentContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARecentContentViewController.swift; sourceTree = "<group>"; };
-		066A52CB1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARecentContentViewControllerDelegate.swift; sourceTree = "<group>"; };
+		066A52CA1BC521FA000E606E /* AARecentContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARecentContentController.swift; sourceTree = "<group>"; };
+		066A52CB1BC521FA000E606E /* AARecentContentControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARecentContentControllerDelegate.swift; sourceTree = "<group>"; };
 		066A52CF1BC52204000E606E /* AADialogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AADialogCell.swift; sourceTree = "<group>"; };
-		066A52D01BC52204000E606E /* AADialogsSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AADialogsSearchCell.swift; sourceTree = "<group>"; };
+		066A52D01BC52204000E606E /* AADialogSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AADialogSearchCell.swift; sourceTree = "<group>"; };
 		066A52D41BC52378000E606E /* AAContactsContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAContactsContentViewController.swift; sourceTree = "<group>"; };
 		066A52D51BC52378000E606E /* AAContactsContentViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAContactsContentViewControllerDelegate.swift; sourceTree = "<group>"; };
 		066A52D91BC52385000E606E /* AAContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAContactActionCell.swift; sourceTree = "<group>"; };
@@ -293,7 +293,7 @@
 		066A52FB1BC52FA8000E606E /* AAGroupCreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupCreateViewController.swift; sourceTree = "<group>"; };
 		066A52FC1BC52FA8000E606E /* AAGroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAGroupMembersController.swift; sourceTree = "<group>"; };
 		066A53031BC53177000E606E /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
-		066A53061BC53183000E606E /* DialogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogsViewController.swift; sourceTree = "<group>"; };
+		066A53061BC53183000E606E /* AARecentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AARecentViewController.swift; sourceTree = "<group>"; };
 		066A530A1BC531A2000E606E /* UserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		066A530D1BC53317000E606E /* WallpapperPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WallpapperPreviewController.swift; sourceTree = "<group>"; };
 		066A530E1BC53317000E606E /* CorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorePreviewController.swift; sourceTree = "<group>"; };
@@ -547,7 +547,7 @@
 		066A525F1BC50E53000E606E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				066A53051BC5317B000E606E /* Dialogs */,
+				066A53051BC5317B000E606E /* Recent */,
 				066A53021BC53171000E606E /* Contacts */,
 				066A53351BC537BF000E606E /* Conversation */,
 				066A52EB1BC52AF8000E606E /* Settings */,
@@ -620,8 +620,8 @@
 			isa = PBXGroup;
 			children = (
 				066A52CE1BC521FD000E606E /* Cells */,
-				066A52CA1BC521FA000E606E /* AARecentContentViewController.swift */,
-				066A52CB1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift */,
+				066A52CA1BC521FA000E606E /* AARecentContentController.swift */,
+				066A52CB1BC521FA000E606E /* AARecentContentControllerDelegate.swift */,
 			);
 			name = Recents;
 			sourceTree = "<group>";
@@ -630,7 +630,7 @@
 			isa = PBXGroup;
 			children = (
 				066A52CF1BC52204000E606E /* AADialogCell.swift */,
-				066A52D01BC52204000E606E /* AADialogsSearchCell.swift */,
+				066A52D01BC52204000E606E /* AADialogSearchCell.swift */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -729,12 +729,12 @@
 			name = Contacts;
 			sourceTree = "<group>";
 		};
-		066A53051BC5317B000E606E /* Dialogs */ = {
+		066A53051BC5317B000E606E /* Recent */ = {
 			isa = PBXGroup;
 			children = (
-				066A53061BC53183000E606E /* DialogsViewController.swift */,
+				066A53061BC53183000E606E /* AARecentViewController.swift */,
 			);
-			name = Dialogs;
+			name = Recent;
 			sourceTree = "<group>";
 		};
 		066A53091BC53197000E606E /* User */ = {
@@ -989,7 +989,7 @@
 				066A52681BC50E7B000E606E /* AAAuthCodeViewController.swift in Sources */,
 				066A51631BC4C2A0000E606E /* UIBarAppearance+Swift.m in Sources */,
 				066A516B1BC4C366000E606E /* Wrappers.swift in Sources */,
-				066A52CC1BC521FA000E606E /* AARecentContentViewController.swift in Sources */,
+				066A52CC1BC521FA000E606E /* AARecentContentController.swift in Sources */,
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
 				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
 				066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */,
@@ -999,7 +999,7 @@
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
 				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
-				066A53071BC53183000E606E /* DialogsViewController.swift in Sources */,
+				066A53071BC53183000E606E /* AARecentViewController.swift in Sources */,
 				066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */,
 				066A52431BC4EECD000E606E /* TableViewSeparator.swift in Sources */,
 				066A53341BC534F5000E606E /* Images2.swift in Sources */,
@@ -1027,7 +1027,7 @@
 				066A522A1BC4EEAC000E606E /* ACManagedAlerts.swift in Sources */,
 				066A52411BC4EECD000E606E /* GroupPhotoCell.swift in Sources */,
 				066A52451BC4EECD000E606E /* AvatarCell.swift in Sources */,
-				066A52D21BC52204000E606E /* AADialogsSearchCell.swift in Sources */,
+				066A52D21BC52204000E606E /* AADialogSearchCell.swift in Sources */,
 				066A52371BC4EEBA000E606E /* AATableViewCell.swift in Sources */,
 				066A51481BC4BBF4000E606E /* Views.swift in Sources */,
 				066A53151BC533D5000E606E /* ConversationContentViewController.swift in Sources */,
@@ -1093,7 +1093,7 @@
 				066A52421BC4EECD000E606E /* TableViewHeader.swift in Sources */,
 				066A51611BC4C2A0000E606E /* UIAppearance+Swift.m in Sources */,
 				066A520E1BC4ECC7000E606E /* StylesEngine.swift in Sources */,
-				066A52CD1BC521FA000E606E /* AARecentContentViewControllerDelegate.swift in Sources */,
+				066A52CD1BC521FA000E606E /* AARecentContentControllerDelegate.swift in Sources */,
 				066A52231BC4EEAC000E606E /* ACManagedSection.swift in Sources */,
 				066A52D11BC52204000E606E /* AADialogCell.swift in Sources */,
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,

@@ -93,7 +93,7 @@ public class AATableViewCell: UITableViewCell {
         }
         
         if bottomSeparatorVisible {
-            bottomSeparator.frame = CGRect(x: bottomSeparatorLeftInset, y: contentView.bounds.height - 1, width: bounds.width - bottomSeparatorLeftInset, height: 0.5)
+            bottomSeparator.frame = CGRect(x: bottomSeparatorLeftInset, y: contentView.bounds.height - 0.5, width: bounds.width - bottomSeparatorLeftInset, height: 0.5)
             contentView.bringSubviewToFront(bottomSeparator)
         }
     }
