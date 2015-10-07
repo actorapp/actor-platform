@@ -57,8 +57,8 @@
 		066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51971BC4C390000E606E /* FMDBIndex.swift */; settings = {ASSET_TAGS = (); }; };
 		066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51981BC4C390000E606E /* UDPreferencesStorage.swift */; settings = {ASSET_TAGS = (); }; };
 		066A519E1BC4C390000E606E /* FMDBExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51991BC4C390000E606E /* FMDBExtensions.swift */; settings = {ASSET_TAGS = (); }; };
-		066A51EF1BC4E04B000E606E /* ActorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51EE1BC4E045000E606E /* ActorCore.framework */; };
 		066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */; };
+		066A52021BC4E6ED000E606E /* ActorCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51EE1BC4E045000E606E /* ActorCore.framework */; };
 		EBCE6C5E37CD1B8624E9BCE8 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F67C25DB7E31958C92137F3B /* Pods_ActorSDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -137,8 +137,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				066A52021BC4E6ED000E606E /* ActorCore.framework in Frameworks */,
 				066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */,
-				066A51EF1BC4E04B000E606E /* ActorCore.framework in Frameworks */,
 				EBCE6C5E37CD1B8624E9BCE8 /* Pods_ActorSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -580,6 +580,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_LINK_WITH_DYNAMIC_LIBRARIES = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/ActorSDK/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -612,6 +613,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_LINK_WITH_DYNAMIC_LIBRARIES = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/ActorSDK/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

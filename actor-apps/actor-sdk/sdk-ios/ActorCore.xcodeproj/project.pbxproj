@@ -218,7 +218,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp \"${CONFIGURATION_TEMP_DIR}/j2objc/Objects/libactor.so\" \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/ActorCore\"\n\ncp -a \"${PROJECT_DIR}/../core/main/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/\"";
+			shellScript = "# cp \"${CONFIGURATION_TEMP_DIR}/j2objc/Objects/libactor.so\" \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/ActorCore\"\n\ncp -a \"${PROJECT_DIR}/../core/main/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/\"";
 		};
 		1A62A7939A397D9E09E8B050 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -364,6 +364,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -373,6 +374,7 @@
 					"\"j2objc\"",
 					"-framework",
 					"\"Security\"",
+					"-lactor",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -393,6 +395,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -402,6 +405,7 @@
 					"\"j2objc\"",
 					"-framework",
 					"\"Security\"",
+					"-lactor",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
