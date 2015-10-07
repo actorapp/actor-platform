@@ -29,7 +29,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
         super.viewDidLoad()
         
         tableView.registerClass(AACommonCell.self, forCellReuseIdentifier: CellIdentifier)
-        tableView.backgroundColor = MainAppTheme.list.backyardColor
+        tableView.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     }
     

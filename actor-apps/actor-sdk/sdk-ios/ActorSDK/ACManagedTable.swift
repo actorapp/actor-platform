@@ -407,7 +407,7 @@ public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCe
         // Styling search list
         
         self.searchDisplay.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        self.searchDisplay.searchResultsTableView.backgroundColor = MainAppTheme.list.bgColor
+        self.searchDisplay.searchResultsTableView.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
         
         // Adding search to table header
         

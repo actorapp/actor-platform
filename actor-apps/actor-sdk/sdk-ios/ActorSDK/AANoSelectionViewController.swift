@@ -8,7 +8,7 @@ public class AANoSelectionViewController: UIViewController {
     
     public init() {
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = MainAppTheme.list.backyardColor
+        view.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
     }
 
     public required init(coder aDecoder: NSCoder) {

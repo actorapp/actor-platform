@@ -15,8 +15,8 @@ public class AASettingsWallpapper: AACollectionViewController, UICollectionViewD
         
         collectionView.registerClass(AAWallpapperPreviewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.contentInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-        collectionView.backgroundColor = MainAppTheme.list.bgColor
-        view.backgroundColor = MainAppTheme.list.bgColor
+        collectionView.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
+        view.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
     }
 
     public required init(coder aDecoder: NSCoder) {

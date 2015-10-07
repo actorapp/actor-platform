@@ -11,7 +11,7 @@ public class AANavigationController: UINavigationController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         navigationBar.hideBottomHairline()
-        view.backgroundColor = MainAppTheme.list.backyardColor
+        view.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
         
         // Enabling app state sync progress
 //        self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
