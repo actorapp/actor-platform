@@ -3,8 +3,7 @@
 //
 
 import Foundation
-import j2objc
-import ActorCore
+import ActorSDK
 
 private let ENABLE_LOGS = false
 

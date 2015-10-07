@@ -4,8 +4,7 @@
 
 import UIKit
 import MobileCoreServices
-import j2objc
-import ActorCore
+import ActorSDK
 
 class SettingsViewController: ACContentTableController {
     
@@ -308,35 +307,35 @@ class SettingsViewController: ACContentTableController {
         // Support
         section { (s) -> () in
 
-            // Support: Ask Question
-            if let account = AppConfig.supportAccount {
-                s.navigate("SettingsAskQuestion", closure: { (r) -> () in
-                    r.selectAction = { () -> Bool in
-                        self.executeSafe(Actor.findUsersCommandWithQuery(account)) { (val) -> Void in
-                            var user:ACUserVM!
-                            if let users = val as? IOSObjectArray {
-                                if Int(users.length()) > 0 {
-                                    if let tempUser = users.objectAtIndex(0) as? ACUserVM {
-                                        user = tempUser
-                                    }
-                                }
-                            }
-                            self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
-                        }
-                        return true
-                    }
-                })
-            }
-            
-            // Support: Twitter
-            if let twitter = AppConfig.appTwitter {
-                s.url("SettingsTwitter", url: "https://twitter.com/\(twitter)")
-            }
-            
-            // Support: Home page
-            if let homePage = AppConfig.appHomePage {
-                s.url("SettingsAbout", url: homePage)
-            }
+//            // Support: Ask Question
+//            if let account = AppConfig.supportAccount {
+//                s.navigate("SettingsAskQuestion", closure: { (r) -> () in
+//                    r.selectAction = { () -> Bool in
+//                        self.executeSafe(Actor.findUsersCommandWithQuery(account)) { (val) -> Void in
+//                            var user:ACUserVM!
+//                            if let users = val as? IOSObjectArray {
+//                                if Int(users.length()) > 0 {
+//                                    if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+//                                        user = tempUser
+//                                    }
+//                                }
+//                            }
+//                            self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+//                        }
+//                        return true
+//                    }
+//                })
+//            }
+//            
+//            // Support: Twitter
+//            if let twitter = AppConfig.appTwitter {
+//                s.url("SettingsTwitter", url: "https://twitter.com/\(twitter)")
+//            }
+//            
+//            // Support: Home page
+//            if let homePage = AppConfig.appHomePage {
+//                s.url("SettingsAbout", url: homePage)
+//            }
 
             // Support: App version
             let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String

@@ -7,7 +7,7 @@
 
 // J2OBJC
 
-// #import <j2objc/j2objc.h>
+#import <j2objc/j2objc.h>
 
 #import <ActorCore/im/actor/core/CocoaMessenger.h>
 #import <ActorCore/im/actor/core/Messenger.h>

@@ -90,7 +90,7 @@ class LinkedList<K, V> {
 }
 
 
-class SwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
+public class SwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
     
     let capacity: Int
     var length = 0
@@ -101,14 +101,14 @@ class SwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
     /**
     Least Recently Used "LRU" Cache, capacity is the number of elements to keep in the Cache.
     */
-    init(capacity: Int) {
+    public init(capacity: Int) {
         self.capacity = capacity
         
         self.queue = LinkedList()
         self.hashtable = [K : Node<K, V>](minimumCapacity: self.capacity)
     }
     
-    subscript (key: K) -> V? {
+    public subscript (key: K) -> V? {
         get {
             if let node = self.hashtable[key] {
                 self.queue.remove(node)
@@ -149,7 +149,7 @@ class SwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
         }
     }
     
-    var description : String {
+    public var description : String {
         return "SwiftlyLRU Cache(\(self.length)) \n" + self.queue.display()
     }
 }

@@ -6,8 +6,8 @@ import Foundation
 import j2objc
 import ActorCore
 
-extension ACCocoaMessenger {
-    func sendUIImage(image: UIImage, peer: ACPeer) {
+public extension ACCocoaMessenger {
+    public func sendUIImage(image: UIImage, peer: ACPeer) {
         let thumb = image.resizeSquare(90, maxH: 90);
         let resized = image.resizeOptimize(1200 * 1200);
         
@@ -30,19 +30,19 @@ extension ACCocoaMessenger {
         return res
     }
     
-    func changeOwnAvatar(image: UIImage) {
+    public func changeOwnAvatar(image: UIImage) {
         changeMyAvatarWithDescriptor(prepareAvatar(image))
     }
     
-    func changeGroupAvatar(gid: jint, image: UIImage) {
+    public func changeGroupAvatar(gid: jint, image: UIImage) {
         changeGroupAvatarWithGid(gid, withDescriptor: prepareAvatar(image))
     }
     
-    func requestFileState(fileId: jlong, notDownloaded: (()->())?, onDownloading: ((progress: Double) -> ())?, onDownloaded: ((reference: String) -> ())?) {
+    public func requestFileState(fileId: jlong, notDownloaded: (()->())?, onDownloading: ((progress: Double) -> ())?, onDownloaded: ((reference: String) -> ())?) {
         Actor.requestStateWithFileId(fileId, withCallback: CocoaDownloadCallback(notDownloaded: notDownloaded, onDownloading: onDownloading, onDownloaded: onDownloaded))
     }
     
-    func requestFileState(fileId: jlong, onDownloaded: ((reference: String) -> ())?) {
+    public func requestFileState(fileId: jlong, onDownloaded: ((reference: String) -> ())?) {
         Actor.requestStateWithFileId(fileId, withCallback: CocoaDownloadCallback(notDownloaded: nil, onDownloading: nil, onDownloaded: onDownloaded))
     }
 }

@@ -28,7 +28,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
-        timeBg.image = Imaging.imageWithColor(MainAppTheme.bubbles.mediaDateBg, size: CGSize(width: 1, height: 1))
+        timeBg.image = nil // Imaging.imageWithColor(MainAppTheme.bubbles.mediaDateBg, size: CGSize(width: 1, height: 1))
 
         timeLabel.font = UIFont.italicSystemFontOfSize(11)
         timeLabel.textColor = MainAppTheme.bubbles.mediaDate

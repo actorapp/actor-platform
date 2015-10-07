@@ -21,6 +21,7 @@
 		066A50961BC46136000E606E /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		066A50A21BC47F6F000E606E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		066A50C61BC4AC74000E606E /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		066A51AF1BC4D169000E606E /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "../../app-ios/Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
 		6E2520B0170D8233AA0DCDE4 /* Pods-ActorCore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorCore.debug.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorCore/Pods-ActorCore.debug.xcconfig"; sourceTree = "<group>"; };
 		EA9403D94E53BDBC27F410C9 /* Pods_ActorCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F40FA431256E3848962E516D /* Pods-ActorCore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorCore.release.xcconfig"; path = "../../app-ios/Pods/Target Support Files/Pods-ActorCore/Pods-ActorCore.release.xcconfig"; sourceTree = "<group>"; };
@@ -72,6 +73,7 @@
 		18CF614D1472C8C186BB6936 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				066A51AF1BC4D169000E606E /* j2objc.framework */,
 				066A50A21BC47F6F000E606E /* UIKit.framework */,
 				EA9403D94E53BDBC27F410C9 /* Pods_ActorCore.framework */,
 			);
