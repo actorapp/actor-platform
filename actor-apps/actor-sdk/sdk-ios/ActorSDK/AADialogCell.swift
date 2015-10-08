@@ -19,7 +19,7 @@ public class AADialogCell: AATableViewCell, ACBindedCell {
     
     // Views
     
-    public let avatarView = AvatarView(frameSize: 48)
+    public let avatarView = AAAvatarView(frameSize: 48)
     public let titleView = UILabel()
     public let messageView = UILabel()
     public let dateView = UILabel()

@@ -8,14 +8,14 @@ public class AAAvatarCell: AATableViewCell {
     
     public var titleLabel = UILabel()
     public var subtitleLabel = UILabel()
-    public var avatarView = AvatarView(frameSize: Int(64), type: .Rounded, placeholderImage: UIImage())
+    public var avatarView = AAAvatarView(frameSize: Int(64), type: .Rounded, placeholderImage: UIImage())
     public var progress = UIActivityIndicatorView(activityIndicatorStyle: .White)
     public var didTap: ((view: UIView)->())?
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        avatarView = AvatarView(frameSize: Int(64), type: .Rounded)
+        avatarView = AAAvatarView(frameSize: Int(64), type: .Rounded)
         avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "avatarDidTap"))
         avatarView.userInteractionEnabled = true
         contentView.addSubview(avatarView)

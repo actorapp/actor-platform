@@ -52,7 +52,7 @@ public class AAGroupViewController: ACContentTableController {
                         let small = avatar.smallImage.fileReference
                         let size = CGSize(width: Int(avatar.fullImage.width), height: Int(avatar.fullImage.height))
                         
-//                        self.presentViewController(PhotoPreviewController(file: full, previewFile: small, size: size, fromView: view), animated: true, completion: nil)
+                        self.presentViewController(AAPhotoPreviewController(file: full, previewFile: small, size: size, fromView: view), animated: true, completion: nil)
                     }
                 }
             }
@@ -91,27 +91,27 @@ public class AAGroupViewController: ACContentTableController {
             // Header: Change title
             s.action("GroupSetTitle") { (r) -> () in
                 r.selectAction = { () -> Bool in
-//                    self.startEditField { (c) -> () in
-//                        
-//                        c.title = "GroupEditHeader"
-//                        
-//                        c.fieldHint = "GroupEditHint"
-//                        
-//                        c.actionTitle = "NavigationSave"
-//                        
-//                        c.initialText = self.group.getNameModel().get()
-//                        
-//                        c.didDoneTap = { (t, c) -> () in
-//                            
-//                            if t.length == 0 {
-//                                return
-//                            }
-//
-//                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t), successBlock: { (val) -> Void in
-//                                c.dismiss()
-//                            })
-//                        }
-//                    }
+                    self.startEditField { (c) -> () in
+                        
+                        c.title = "GroupEditHeader"
+                        
+                        c.fieldHint = "GroupEditHint"
+                        
+                        c.actionTitle = "NavigationSave"
+                        
+                        c.initialText = self.group.getNameModel().get()
+                        
+                        c.didDoneTap = { (t, c) -> () in
+                            
+                            if t.length == 0 {
+                                return
+                            }
+
+                            c.executeSafeOnlySuccess(Actor.editGroupTitleCommandWithGid(jint(self.gid), withTitle: t), successBlock: { (val) -> Void in
+                                c.dismiss()
+                            })
+                        }
+                    }
                     
                     return true
                 }
@@ -191,11 +191,11 @@ public class AAGroupViewController: ACContentTableController {
                             a.cancel = "AlertCancel"
                             
                             a.action("GroupMemberInfo") { () -> () in
-//                                self.navigateNext(UserViewController(uid: Int(user.getId())), removeCurrent: false)
+                                self.navigateNext(AAUserViewController(uid: Int(user.getId())), removeCurrent: false)
                             }
                          
                             a.action("GroupMemberWrite") { () -> () in
-//                                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                                self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
                                 self.popover?.dismissPopoverAnimated(true)
                             }
                             

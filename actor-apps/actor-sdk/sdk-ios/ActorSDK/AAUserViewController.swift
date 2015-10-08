@@ -60,7 +60,7 @@ class AAUserViewController: ACContentTableController {
                         let small = avatar.smallImage.fileReference
                         let size = CGSize(width: Int(avatar.fullImage.width), height: Int(avatar.fullImage.height))
                         
-                        // self.presentViewController(PhotoPreviewController(file: full, previewFile: small, size: size, fromView: view), animated: true, completion: nil)
+                        self.presentViewController(AAPhotoPreviewController(file: full, previewFile: small, size: size, fromView: view), animated: true, completion: nil)
                     }
                 }
             }
@@ -68,7 +68,7 @@ class AAUserViewController: ACContentTableController {
             // Profile: Send messages
             s.action("ProfileSendMessage") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    // self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
+                     self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(jint(self.uid))))
                     self.popover?.dismissPopoverAnimated(true)
                     return false
                 }
@@ -93,7 +93,7 @@ class AAUserViewController: ACContentTableController {
                     r.height = 55
                     r.data = self.user.getPhonesModel().get().toSwiftArray()
                     r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
-                        c.setTitle(d.title, content: "+\(d.phone)")
+                        c.setContent(d.title, content: "+\(d.phone)", isAction: false)
                     }
                     r.bindCopy = { (d: ACUserPhone) -> String? in
                         return "+\(d.phone)"
@@ -176,21 +176,21 @@ class AAUserViewController: ACContentTableController {
                     r.selectAction = { () -> Bool in
                         
                         func renameUser() {
-//                            self.startEditField { (c) -> () in
-//                                
-//                                c.title = "ProfileEditHeader"
-//                                c.initialText = self.user.getNameModel().get()
-//                                
-//                                c.didDoneTap = { (d, c) in
-//                                    if d.length == 0 {
-//                                        return
-//                                    }
-//                                    
-//                                    c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d), successBlock: { (val) -> Void in
-//                                        c.dismiss()
-//                                    })
-//                                }
-//                            }
+                            self.startEditField { (c) -> () in
+                                
+                                c.title = "ProfileEditHeader"
+                                c.initialText = self.user.getNameModel().get()
+                                
+                                c.didDoneTap = { (d, c) in
+                                    if d.length == 0 {
+                                        return
+                                    }
+                                    
+                                    c.executeSafeOnlySuccess(Actor.editNameCommandWithUid(jint(self.uid), withName: d), successBlock: { (val) -> Void in
+                                        c.dismiss()
+                                    })
+                                }
+                            }
                         }
                         
                         if (!Actor.isRenameHintShown()) {

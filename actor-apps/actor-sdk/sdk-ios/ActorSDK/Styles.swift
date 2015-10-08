@@ -29,33 +29,4 @@ public func initStyles() {
     registerStyle("user.online", parent: "root.accent")
     
     registerStyle("user.offline", parent: "hint")
-    
-    // Avatars
-    
-    registerStyle("avatar.round") { (s) -> () in
-        s.avatarType = .Rounded
-    }
-    
-    registerStyle("avatar.square") { (s) -> () in
-        s.avatarType = .Square
-    }
-    
-    registerStyle("avatar.round.small", parent: "avatar.round") { (s) -> () in
-        s.avatarSize = 40
-    }
-        
-    // Members
-    
-    registerStyle("members.name", parent: "label") { (s) -> () in
-        s.font = UIFont.systemFontOfSize(18.0)
-    }
-    
-    registerStyle("members.online", parent: "label") { (s) -> () in
-        s.font = UIFont.systemFontOfSize(14.0)
-    }
-    
-    registerStyle("members.admin", parent: "label") { (s) -> () in
-        s.font = UIFont.systemFontOfSize(14.0)
-        s.foregroundColor = UIColor.redColor()
-    }
 }

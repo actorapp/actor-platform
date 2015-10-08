@@ -21,7 +21,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
     private let titleView: UILabel = UILabel()
     private let subtitleView: UILabel = UILabel()
     private let navigationView: UIView = UIView()
-    private let avatarView = AvatarView(frameSize: 36, type: .Rounded)
+    private let avatarView = AAAvatarView(frameSize: 36, type: .Rounded)
     private let backgroundView = UIImageView()
     
     override init(peer: ACPeer) {
@@ -244,27 +244,27 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
     // Chat avatar tap
     
     func onAvatarTap() {
-//        let id = Int(peer.peerId)
-//        var controller: AAViewController
-//        if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
-//            controller = UserViewController(uid: id)
-//        } else if (UInt(peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue) {
-//            controller = AAGroupViewController(gid: id)
-//        } else {
-//            return
-//        }
-//        
-//        if (isIPad) {
-//            let navigation = AANavigationController()
-//            navigation.viewControllers = [controller]
-//            let popover = UIPopoverController(contentViewController:  navigation)
-//            controller.popover = popover
-//            popover.presentPopoverFromBarButtonItem(navigationItem.rightBarButtonItem!,
-//                permittedArrowDirections: UIPopoverArrowDirection.Up,
-//                animated: true)
-//        } else {
-//            navigateNext(controller, removeCurrent: false)
-//        }
+        let id = Int(peer.peerId)
+        var controller: AAViewController
+        if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
+            controller = AAUserViewController(uid: id)
+        } else if (UInt(peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue) {
+            controller = AAGroupViewController(gid: id)
+        } else {
+            return
+        }
+        
+        if (isIPad) {
+            let navigation = AANavigationController()
+            navigation.viewControllers = [controller]
+            let popover = UIPopoverController(contentViewController:  navigation)
+            controller.popover = popover
+            popover.presentPopoverFromBarButtonItem(navigationItem.rightBarButtonItem!,
+                permittedArrowDirections: UIPopoverArrowDirection.Up,
+                animated: true)
+        } else {
+            navigateNext(controller, removeCurrent: false)
+        }
     }
     
     // Text bar actions
@@ -301,15 +301,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
             self.pickDocument()
         }
         
-        if !isIPad {
-            
-            // For iPhone fast action sheet
-            showActionSheetFast(builder.items, cancelButton: "AlertCancel", tapClosure: builder.tapClosure)
-        } else {
-            
-            // For iPad use old action sheet
-            showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
-        }
+        showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: builder.tapClosure)
     }
  
     // Completition
