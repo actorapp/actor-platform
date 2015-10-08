@@ -12,19 +12,14 @@ public class HeaderCell: AATableViewCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        //contentView.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
+        contentView.backgroundColor = appStyle.vcBackyardColor
         selectionStyle = UITableViewCellSelectionStyle.None
         
-        //titleView.textColor = MainAppTheme.list.sectionColor
+        titleView.textColor = appStyle.cellHeaderColor
         titleView.font = UIFont.systemFontOfSize(14)
         contentView.addSubview(titleView)
         
         iconView.contentMode = UIViewContentMode.ScaleAspectFill
-        
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: "iconDidTap")
-        iconView.addGestureRecognizer(tapRecognizer)
-        iconView.userInteractionEnabled = true
-        
         contentView.addSubview(iconView)
     }
     
@@ -40,9 +35,5 @@ public class HeaderCell: AATableViewCell {
         
         titleView.frame = CGRectMake(15, height - 28, width - 48, 24)
         iconView.frame = CGRectMake(width - 18 - 15, height - 18 - 4, 18, 18)
-    }
-    
-    func iconDidTap() {
-        UIAlertView(title: nil, message: "Tap", delegate: nil, cancelButtonTitle: nil).show()
     }
 }

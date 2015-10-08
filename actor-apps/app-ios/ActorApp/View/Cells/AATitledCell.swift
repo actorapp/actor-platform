@@ -6,7 +6,6 @@ import UIKit
 
 public class AATitledCell: AATableViewCell {
     
-//    private var copyData: String?
     private var isAction: Bool = false
     public let titleLabel: UILabel = UILabel()
     public let contentLabel: UILabel = UILabel()
@@ -14,6 +13,7 @@ public class AATitledCell: AATableViewCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        titleLabel.textColor = appStyle.cellTintColor
         contentView.addSubview(titleLabel)
         contentView.addSubview(contentLabel)
     }
@@ -22,34 +22,14 @@ public class AATitledCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-//        if action == "copy:" {
-//            return copyData != nil && !isAction
-//        }
-//        return false
-//    }
-//    
-//    override func copy(sender: AnyObject?) {
-//        UIPasteboard.generalPasteboard().string = copyData
-//    }
-//    
-    public func setTitle(title: String, content: String) {
+    public func setContent(title: String, content: String, isAction: Bool) {
         titleLabel.text = title
         contentLabel.text = content
-//        copyData = content
-    }
-    
-    public func setAction(isAction: Bool) {
-        self.isAction = isAction
         if isAction {
-            //contentLabel.textColor = MainAppTheme.list.actionColor
+            contentLabel.textColor = appStyle.cellTintColor
         } else {
-           // contentLabel.textColor = MainAppTheme.list.textColor
+            contentLabel.textColor = appStyle.cellTextColor
         }
-    }
-    
-    public func enableNavigationIcon() {
-        accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
     }
     
     public override func layoutSubviews() {

@@ -1,15 +1,11 @@
 //
-//  CircullarLayerProgress.swift
-//  ActorApp
-//
-//  Created by Stepan Korshakov on 21.08.15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
+//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
 //
 
 import Foundation
 import VBFPopFlatButton
 
-public class CircullarLayerProgress: UIView {
+public class AAProgressView: UIView {
 
     private let circlePathLayer = CAShapeLayer()
     private let backgroundPathLayer = CAShapeLayer()

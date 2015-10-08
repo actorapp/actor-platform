@@ -135,20 +135,20 @@ public extension UIViewController {
 //        
 //        actionShit.showWithCompletion(nil)
     }
-//    
-//    func startEditText(closure: (EditTextControllerConfig) -> ()) {
-//        let config = EditTextControllerConfig()
-//        closure(config)
-//        config.check()
-//        self.presentViewController(AANavigationController(rootViewController: EditTextController(config: config)), animated: true, completion: nil)
-//    }
-//    
-//    func startEditField(closure: (c: EditFieldControllerConfig) -> ()) {
-//        let config = EditFieldControllerConfig()
-//        closure(c: config)
-//        config.check()
-//        self.presentViewController(AANavigationController(rootViewController: EditFieldController(config: config)), animated: true, completion: nil)
-//    }
+    
+    func startEditText(closure: (AAEditTextControllerConfig) -> ()) {
+        let config = AAEditTextControllerConfig()
+        closure(config)
+        config.check()
+        self.presentViewController(AANavigationController(rootViewController: AAEditTextController(config: config)), animated: true, completion: nil)
+    }
+    
+    func startEditField(closure: (c: AAEditFieldControllerConfig) -> ()) {
+        let config = AAEditFieldControllerConfig()
+        closure(c: config)
+        config.check()
+        self.presentViewController(AANavigationController(rootViewController: AAEditFieldController(config: config)), animated: true, completion: nil)
+    }
 }
 
 //class ActionShitDelegate: NSObject, ABActionShitDelegate {

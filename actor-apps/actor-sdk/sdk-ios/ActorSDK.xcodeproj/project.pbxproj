@@ -61,7 +61,7 @@
 		066A520C1BC4ECC0000E606E /* Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A520B1BC4ECC0000E606E /* Styles.swift */; settings = {ASSET_TAGS = (); }; };
 		066A520E1BC4ECC7000E606E /* StylesEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A520D1BC4ECC7000E606E /* StylesEngine.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52101BC4ECCC000E606E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A520F1BC4ECCC000E606E /* AppTheme.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52151BC4EE04000E606E /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52141BC4EE04000E606E /* AvatarView.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52141BC4EE04000E606E /* AAAvatarView.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52221BC4EEAC000E606E /* ACManagedTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52191BC4EEAC000E606E /* ACManagedTable.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52231BC4EEAC000E606E /* ACManagedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521A1BC4EEAC000E606E /* ACManagedSection.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52241BC4EEAC000E606E /* ACManagedRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521B1BC4EEAC000E606E /* ACManagedRange.swift */; settings = {ASSET_TAGS = (); }; };
@@ -78,10 +78,10 @@
 		066A52381BC4EEBA000E606E /* AAHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52301BC4EEBA000E606E /* AAHeaderCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52391BC4EEBA000E606E /* AAEditCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52311BC4EEBA000E606E /* AAEditCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52401BC4EECD000E606E /* BigPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523A1BC4EECD000E606E /* BigPlaceholderView.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52421BC4EECD000E606E /* TableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523C1BC4EECD000E606E /* TableViewHeader.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52431BC4EECD000E606E /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523D1BC4EECD000E606E /* TableViewSeparator.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52421BC4EECD000E606E /* AATableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523C1BC4EECD000E606E /* AATableViewHeader.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52431BC4EECD000E606E /* AATableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523D1BC4EECD000E606E /* AATableViewSeparator.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52451BC4EECD000E606E /* AAAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A523F1BC4EECD000E606E /* AAAvatarCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A52481BC4EED5000E606E /* CircullarLayerProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52461BC4EED5000E606E /* CircullarLayerProgress.swift */; settings = {ASSET_TAGS = (); }; };
+		066A52481BC4EED5000E606E /* AAProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52461BC4EED5000E606E /* AAProgressView.swift */; settings = {ASSET_TAGS = (); }; };
 		066A524B1BC4EF49000E606E /* AAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52491BC4EF49000E606E /* AAViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A524C1BC4EF49000E606E /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A524A1BC4EF49000E606E /* Binder.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52541BC4EF61000E606E /* AAImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A524D1BC4EF61000E606E /* AAImagePickerController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -216,7 +216,7 @@
 		066A520B1BC4ECC0000E606E /* Styles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Styles.swift; sourceTree = "<group>"; };
 		066A520D1BC4ECC7000E606E /* StylesEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StylesEngine.swift; sourceTree = "<group>"; };
 		066A520F1BC4ECCC000E606E /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
-		066A52141BC4EE04000E606E /* AvatarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
+		066A52141BC4EE04000E606E /* AAAvatarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAvatarView.swift; sourceTree = "<group>"; };
 		066A52191BC4EEAC000E606E /* ACManagedTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedTable.swift; sourceTree = "<group>"; };
 		066A521A1BC4EEAC000E606E /* ACManagedSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedSection.swift; sourceTree = "<group>"; };
 		066A521B1BC4EEAC000E606E /* ACManagedRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ACManagedRange.swift; sourceTree = "<group>"; };
@@ -233,10 +233,10 @@
 		066A52301BC4EEBA000E606E /* AAHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAHeaderCell.swift; path = View/Cells/AAHeaderCell.swift; sourceTree = "<group>"; };
 		066A52311BC4EEBA000E606E /* AAEditCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAEditCell.swift; sourceTree = "<group>"; };
 		066A523A1BC4EECD000E606E /* BigPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BigPlaceholderView.swift; sourceTree = "<group>"; };
-		066A523C1BC4EECD000E606E /* TableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewHeader.swift; sourceTree = "<group>"; };
-		066A523D1BC4EECD000E606E /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
+		066A523C1BC4EECD000E606E /* AATableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATableViewHeader.swift; sourceTree = "<group>"; };
+		066A523D1BC4EECD000E606E /* AATableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATableViewSeparator.swift; sourceTree = "<group>"; };
 		066A523F1BC4EECD000E606E /* AAAvatarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAvatarCell.swift; path = "../../actor-sdk/sdk-ios/ActorSDK/AAAvatarCell.swift"; sourceTree = "<group>"; };
-		066A52461BC4EED5000E606E /* CircullarLayerProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircullarLayerProgress.swift; path = View/Progress/CircullarLayerProgress.swift; sourceTree = "<group>"; };
+		066A52461BC4EED5000E606E /* AAProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAProgressView.swift; sourceTree = "<group>"; };
 		066A52491BC4EF49000E606E /* AAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAViewController.swift; sourceTree = "<group>"; };
 		066A524A1BC4EF49000E606E /* Binder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
 		066A524D1BC4EF61000E606E /* AAImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAImagePickerController.swift; sourceTree = "<group>"; };
@@ -469,16 +469,12 @@
 		066A52131BC4EDEB000E606E /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				066A52471BC4EED5000E606E /* Progress */,
 				066A52321BC4EEBA000E606E /* Cells */,
-				066A52141BC4EE04000E606E /* AvatarView.swift */,
+				066A52141BC4EE04000E606E /* AAAvatarView.swift */,
+				066A52461BC4EED5000E606E /* AAProgressView.swift */,
 				066A523A1BC4EECD000E606E /* BigPlaceholderView.swift */,
-				066A523C1BC4EECD000E606E /* TableViewHeader.swift */,
-				066A523D1BC4EECD000E606E /* TableViewSeparator.swift */,
-				066A524A1BC4EF49000E606E /* Binder.swift */,
-				066A52511BC4EF61000E606E /* Alerts.swift */,
-				066A52521BC4EF61000E606E /* Executions.swift */,
-				066A52531BC4EF61000E606E /* Navigations.swift */,
+				066A523C1BC4EECD000E606E /* AATableViewHeader.swift */,
+				066A523D1BC4EECD000E606E /* AATableViewSeparator.swift */,
 				065974A61BC62B3600B8C7DF /* ViewExtensions.swift */,
 			);
 			name = Views;
@@ -501,6 +497,10 @@
 				066A521F1BC4EEAC000E606E /* ACManagedTableController.swift */,
 				066A52201BC4EEAC000E606E /* ACManagedTableExtensions.swift */,
 				066A52211BC4EEAC000E606E /* ACManagedAlerts.swift */,
+				066A524A1BC4EF49000E606E /* Binder.swift */,
+				066A52511BC4EF61000E606E /* Alerts.swift */,
+				066A52521BC4EF61000E606E /* Executions.swift */,
+				066A52531BC4EF61000E606E /* Navigations.swift */,
 			);
 			name = "Managed Controller";
 			sourceTree = "<group>";
@@ -517,15 +517,6 @@
 				066A52311BC4EEBA000E606E /* AAEditCell.swift */,
 			);
 			name = Cells;
-			path = "../../../app-ios/ActorApp";
-			sourceTree = "<group>";
-		};
-		066A52471BC4EED5000E606E /* Progress */ = {
-			isa = PBXGroup;
-			children = (
-				066A52461BC4EED5000E606E /* CircullarLayerProgress.swift */,
-			);
-			name = Progress;
 			path = "../../../app-ios/ActorApp";
 			sourceTree = "<group>";
 		};
@@ -981,7 +972,7 @@
 				066A52571BC4EF61000E606E /* AACollectionViewController.swift in Sources */,
 				066A532F1BC53406000E606E /* AABubbleMediaCell.swift in Sources */,
 				066A527F1BC51ED0000E606E /* AARootSplitViewController.swift in Sources */,
-				066A52481BC4EED5000E606E /* CircullarLayerProgress.swift in Sources */,
+				066A52481BC4EED5000E606E /* AAProgressView.swift in Sources */,
 				066A51921BC4C383000E606E /* CocoaFileSystemRuntime.swift in Sources */,
 				066A52DC1BC52385000E606E /* AAContactCell.swift in Sources */,
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
@@ -989,7 +980,7 @@
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
 				066A53071BC53183000E606E /* AARecentViewController.swift in Sources */,
 				066A52361BC4EEBA000E606E /* AATitledCell.swift in Sources */,
-				066A52431BC4EECD000E606E /* TableViewSeparator.swift in Sources */,
+				066A52431BC4EECD000E606E /* AATableViewSeparator.swift in Sources */,
 				066A53341BC534F5000E606E /* Images2.swift in Sources */,
 				066A52341BC4EEBA000E606E /* AACommonCell.swift in Sources */,
 				066A52DF1BC5241F000E606E /* AAWebActionController.swift in Sources */,
@@ -1019,7 +1010,7 @@
 				066A52371BC4EEBA000E606E /* AATableViewCell.swift in Sources */,
 				066A51481BC4BBF4000E606E /* Views.swift in Sources */,
 				066A53151BC533D5000E606E /* ConversationContentViewController.swift in Sources */,
-				066A52151BC4EE04000E606E /* AvatarView.swift in Sources */,
+				066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */,
 				066A52591BC4EF61000E606E /* Executions.swift in Sources */,
 				066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */,
 				066A52DB1BC52385000E606E /* AAContactActionCell.swift in Sources */,
@@ -1075,7 +1066,7 @@
 				066A52541BC4EF61000E606E /* AAImagePickerController.swift in Sources */,
 				066A525C1BC502EB000E606E /* ActorSDKDelegate.swift in Sources */,
 				066A52551BC4EF61000E606E /* AANavigationController.swift in Sources */,
-				066A52421BC4EECD000E606E /* TableViewHeader.swift in Sources */,
+				066A52421BC4EECD000E606E /* AATableViewHeader.swift in Sources */,
 				066A520E1BC4ECC7000E606E /* StylesEngine.swift in Sources */,
 				066A52CD1BC521FA000E606E /* AADialogsListContentControllerDelegate.swift in Sources */,
 				066A52231BC4EEAC000E606E /* ACManagedSection.swift in Sources */,

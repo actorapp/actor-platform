@@ -13,6 +13,7 @@ public class EditCell: AATableViewCell {
         
         textField.autocapitalizationType = .None
         textField.autocorrectionType = .No
+        textField.textColor = appStyle.cellTextColor
         
         contentView.addSubview(textField)
     }

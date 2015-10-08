@@ -78,7 +78,7 @@ public class AASettingsViewController: ACContentTableController {
                         let small = avatar.smallImage.fileReference
                         let size = CGSize(width: Int(avatar.fullImage.width), height: Int(avatar.fullImage.height))
                         
-//                        self.presentViewController(PhotoPreviewController(file: full, previewFile: small, size: size, fromView: view), animated: true, completion: nil)
+                        self.presentViewController(AAPhotoPreviewController(file: full, previewFile: small, size: size, fromView: view), animated: true, completion: nil)
                     }
                 }
             }
@@ -117,26 +117,26 @@ public class AASettingsViewController: ACContentTableController {
             s.action("SettingsChangeName") { [unowned self] (r) -> () in
                 r.selectAction = { [unowned self] () -> Bool in
                     
-//                    self.startEditField { (c) -> () in
-//                        c.title = "SettingsEditHeader"
-//                        c.hint = "SettingsEditHint"
-//                        
-//                        c.initialText = self.user.getNameModel().get()
-//                        
-//                        c.fieldAutocapitalizationType = .Words
-//                        c.fieldHint = "SettingsEditFieldHint"
-//                        
-//                        c.didDoneTap = { (t, c) -> () in
-//
-//                            if t.length == 0 {
-//                                return
-//                            }
-//                            
-//                            c.executeSafeOnlySuccess(Actor.editMyNameCommandWithName(t)) { (val) -> Void in
-//                                c.dismiss()
-//                            }
-//                        }
-//                    }
+                    self.startEditField { (c) -> () in
+                        c.title = "SettingsEditHeader"
+                        c.hint = "SettingsEditHint"
+                        
+                        c.initialText = self.user.getNameModel().get()
+                        
+                        c.fieldAutocapitalizationType = .Words
+                        c.fieldHint = "SettingsEditFieldHint"
+                        
+                        c.didDoneTap = { (t, c) -> () in
+
+                            if t.length == 0 {
+                                return
+                            }
+                            
+                            c.executeSafeOnlySuccess(Actor.editMyNameCommandWithName(t)) { (val) -> Void in
+                                c.dismiss()
+                            }
+                        }
+                    }
                     
                     return true
                 }
@@ -172,7 +172,7 @@ public class AASettingsViewController: ACContentTableController {
                 r.height = 230
                 r.closure = { [unowned self] (cell) -> () in
                     cell.wallpapperDidTap = { [unowned self] (name) -> () in
-//                        self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
+                        self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
                     }
                 }
 //                r.selectAction = { [unowned self] () -> Bool in
@@ -202,30 +202,30 @@ public class AASettingsViewController: ACContentTableController {
                 
                 r.selectAction = { [unowned self] () -> Bool in
                     
-//                    self.startEditField { (c) -> () in
-//                        
-//                        c.title = "SettingsUsernameTitle"
-//                        c.actionTitle = "AlertSave"
-//                        
-//                        if let nick = self.user.getNickModel().get() {
-//                            c.initialText = nick
-//                        }
-//                        
-//                        c.fieldHint = "SettingsUsernameHintField"
-//                        c.fieldAutocorrectionType = .No
-//                        c.fieldAutocapitalizationType = .None
-//                        c.hint = "SettingsUsernameHint"
-//                        
-//                        c.didDoneTap = { (t, c) -> () in
-//                            var nNick: String? = t.trim()
-//                            if nNick?.length == 0 {
-//                                nNick = nil
-//                            }
-//                            c.executeSafeOnlySuccess(Actor.editMyNickCommandWithNick(nNick), successBlock: { (val) -> Void in
-//                                c.dismiss()
-//                            })
-//                        }
-//                    }
+                    self.startEditField { (c) -> () in
+                        
+                        c.title = "SettingsUsernameTitle"
+                        c.actionTitle = "AlertSave"
+                        
+                        if let nick = self.user.getNickModel().get() {
+                            c.initialText = nick
+                        }
+                        
+                        c.fieldHint = "SettingsUsernameHintField"
+                        c.fieldAutocorrectionType = .No
+                        c.fieldAutocapitalizationType = .None
+                        c.hint = "SettingsUsernameHint"
+                        
+                        c.didDoneTap = { (t, c) -> () in
+                            var nNick: String? = t.trim()
+                            if nNick?.length == 0 {
+                                nNick = nil
+                            }
+                            c.executeSafeOnlySuccess(Actor.editMyNickCommandWithNick(nNick), successBlock: { (val) -> Void in
+                                c.dismiss()
+                            })
+                        }
+                    }
                     
                     return false
                 }
@@ -248,25 +248,25 @@ public class AASettingsViewController: ACContentTableController {
                 
                 r.selectAction = { [unowned self] () -> Bool in
                     
-//                    self.startEditText { (config) -> () in
-//                        
-//                        config.title = "SettingsChangeAboutTitle"
-//                        config.hint = "SettingsChangeAboutHint"
-//                        config.actionTitle = "NavigationSave"
-//                        
-//                        config.initialText = self.user.getAboutModel().get()
-//                        
-//                        config.didCompleteTap = { (text, controller) -> () in
-//                            
-//                            var updatedText: String? = text.trim()
-//                            if updatedText?.length == 0 {
-//                                updatedText = nil
-//                            }
-//                            controller.executeSafeOnlySuccess(Actor.editMyAboutCommandWithNick(updatedText), successBlock: { (val) -> Void in
-//                                controller.dismiss()
-//                            })
-//                        }
-//                    }
+                    self.startEditText { (config) -> () in
+                        
+                        config.title = "SettingsChangeAboutTitle"
+                        config.hint = "SettingsChangeAboutHint"
+                        config.actionTitle = "NavigationSave"
+                        
+                        config.initialText = self.user.getAboutModel().get()
+                        
+                        config.didCompleteTap = { (text, controller) -> () in
+                            
+                            var updatedText: String? = text.trim()
+                            if updatedText?.length == 0 {
+                                updatedText = nil
+                            }
+                            controller.executeSafeOnlySuccess(Actor.editMyAboutCommandWithNick(updatedText), successBlock: { (val) -> Void in
+                                controller.dismiss()
+                            })
+                        }
+                    }
                     
                     return false
                 }
@@ -280,7 +280,7 @@ public class AASettingsViewController: ACContentTableController {
                 r.data = self.user.getPhonesModel().get().toSwiftArray()
                 
                 r.bindData = { [unowned self] (c: AATitledCell, d: ACUserPhone) -> () in
-                    c.setTitle(d.title, content: "+\(d.phone)")
+                    c.setContent(d.title, content: "+\(d.phone)", isAction: false)
                     c.accessoryType = .None
                 }
                 

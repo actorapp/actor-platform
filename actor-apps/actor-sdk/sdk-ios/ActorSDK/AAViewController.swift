@@ -134,7 +134,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         let pickerController = AAImagePickerController()
         pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
         pickerController.mediaTypes = [kUTTypeImage as String]
-        pickerController.view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
+        pickerController.delegate = self
 //        pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
 //        pickerController.delegate = self
 //        pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor

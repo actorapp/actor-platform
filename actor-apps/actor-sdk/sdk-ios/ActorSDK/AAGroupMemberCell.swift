@@ -8,9 +8,9 @@ public class AAGroupMemberCell: AATableViewCell {
 
     // Views
     
-    public var nameLabel = UILabel(style: "members.name")
-    public var onlineLabel = UILabel(style: "members.online")
-    public var avatarView = AvatarView(style: "avatar.round.small")
+    public var nameLabel = UILabel()
+    public var onlineLabel = UILabel()
+    public var avatarView = AAAvatarView(frameSize: 40, type: .Rounded)
     public var adminLabel = UILabel(style: "members.admin")
     
     // Binder
@@ -26,8 +26,16 @@ public class AAGroupMemberCell: AATableViewCell {
         adminLabel.sizeToFit()
         
         contentView.addSubview(avatarView)
+        
+        nameLabel.font = UIFont.systemFontOfSize(18.0)
+        nameLabel.textColor = appStyle.cellTextColor
         contentView.addSubview(nameLabel)
+        
+        onlineLabel.font = UIFont.systemFontOfSize(14.0)
         contentView.addSubview(onlineLabel)
+        
+        adminLabel.font = UIFont.systemFontOfSize(14.0)
+        adminLabel.textColor = appStyle.cellDestructiveColor
         contentView.addSubview(adminLabel)
     }
     
@@ -58,9 +66,9 @@ public class AAGroupMemberCell: AATableViewCell {
                 self.onlineLabel.showView()
                 self.onlineLabel.text = Actor.getFormatter().formatPresence(value!, withSex: user.getSex())
                 if value!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
-                    self.onlineLabel.applyStyle("user.online")
+                    self.onlineLabel.textColor = self.appStyle.cellTintColor
                 } else {
-                    self.onlineLabel.applyStyle("user.offline")
+                    self.onlineLabel.textColor = self.appStyle.cellHintColor
                 }
             } else {
                 self.onlineLabel.alpha = 0
