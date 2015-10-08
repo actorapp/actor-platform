@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AAAddParticipantViewController: AAContactsContentViewController, AAContactsContentViewControllerDelegate {
+public class AAAddParticipantViewController: AAContactsListContentController, AAContactsListContentControllerDelegate {
 
     public init (gid: Int) {
         super.init()
@@ -28,7 +28,7 @@ public class AAAddParticipantViewController: AAContactsContentViewController, AA
                     target: self, action: "dismiss")
     }
     
-    public func willAddContacts(controller: AAContactsContentViewController, section: ACManagedSection) {
+    public func willAddContacts(controller: AAContactsListContentController, section: ACManagedSection) {
         section.custom { (r:ACCustomRow<AAContactActionCell>) -> () in
             r.height = 56
             r.closure = { (cell) -> () in
@@ -41,11 +41,11 @@ public class AAAddParticipantViewController: AAContactsContentViewController, AA
         }
     }
     
-    public func contactDidBind(controller: AAContactsContentViewController, contact: ACContact, cell: AAContactCell) {
+    public func contactDidBind(controller: AAContactsListContentController, contact: ACContact, cell: AAContactCell) {
         cell.bindDisabled(isAlreadyMember(contact.uid))
     }
     
-    public func contactDidTap(controller: AAContactsContentViewController, contact: ACContact) -> Bool {
+    public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
         
         if !isAlreadyMember(contact.uid) {
             self.executeSafeOnlySuccess(Actor.inviteMemberCommandWithGid(jint(gid), withUid: jint(contact.uid))) { (val) -> () in

@@ -5,6 +5,8 @@
 import Foundation
 
 public class AAAuthViewController: AAViewController {
+    
+    /// Call this method when authentication successful
     public func onAuthenticated() {
         ActorSDK.sharedActor().didLoggedIn()
     }

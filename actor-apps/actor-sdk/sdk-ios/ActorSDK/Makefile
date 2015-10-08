@@ -29,7 +29,7 @@ J2OBJC_DISTRIBUTION = $(SDK_ROOT)/build-tools/dist/j2objc-0.9.8.2.1
 J2OBJC = $(J2OBJC_DISTRIBUTION)/j2objc
 J2OBJCC = $(J2OBJC_DISTRIBUTION)/j2objcc
 J2OBJC_ARGS = -use-arc --generate-deprecated --doc-comments -g --static-accessor-methods
-J2OBJCC_ARGS = -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include
+J2OBJCC_ARGS = -shared -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include
 
 LIBRARY_NAME = libactor.so
 

@@ -107,27 +107,27 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         if (isOut) {
             switch(UInt(message.messageState.ordinal())) {
             case ACMessageState.PENDING.rawValue:
-                self.statusView.image = Resources.iconClock
+                self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
                 break
             case ACMessageState.SENT.rawValue:
-                self.statusView.image = Resources.iconCheck1
+                self.statusView.image = appStyle.chatIconCheck1
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSent
                 break
             case ACMessageState.RECEIVED.rawValue:
-                self.statusView.image = Resources.iconCheck2
+                self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = MainAppTheme.bubbles.statusReceived
                 break
             case ACMessageState.READ.rawValue:
-                self.statusView.image = Resources.iconCheck2
+                self.statusView.image = appStyle.chatIconCheck2
                 self.statusView.tintColor = MainAppTheme.bubbles.statusRead
                 break
             case ACMessageState.ERROR.rawValue:
-                self.statusView.image = Resources.iconError
+                self.statusView.image = appStyle.chatIconError
                 self.statusView.tintColor = MainAppTheme.bubbles.statusError
                 break
             default:
-                self.statusView.image = Resources.iconClock
+                self.statusView.image = appStyle.chatIconClock
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
                 break
             }

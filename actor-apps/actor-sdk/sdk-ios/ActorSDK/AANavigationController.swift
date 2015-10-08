@@ -10,8 +10,14 @@ public class AANavigationController: UINavigationController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        navigationBar.hideBottomHairline()
-        view.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
+        
+        // Style navigation bar
+        
+        navigationBar.titleTextAttributes =
+            [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.navigationTitleColor]
+        navigationBar.tintColor = ActorSDK.sharedActor().style.navigationTintColor
+        navigationBar.barTintColor = ActorSDK.sharedActor().style.navigationBgColor
+        navigationBar.hairlineHidden = true
         
         // Enabling app state sync progress
 //        self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
@@ -27,40 +33,10 @@ public class AANavigationController: UINavigationController {
 //        }
     }
     
-    public func makeBarTransparent() {
-        navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        navigationBar.shadowImage = UIImage()
-    }
-    
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarColor, animated: true)
     }
 }
 
-public extension UINavigationBar {
-    
-    public func hideBottomHairline() {
-        let navigationBarImageView = hairlineImageViewInNavigationBar(self)
-        navigationBarImageView!.hidden = true
-    }
-    
-    public func showBottomHairline() {
-        let navigationBarImageView = hairlineImageViewInNavigationBar(self)
-        navigationBarImageView!.hidden = false
-    }
-    
-    private func hairlineImageViewInNavigationBar(view: UIView) -> UIImageView? {
-        if view.isKindOfClass(UIImageView) && view.bounds.height <= 1.0 {
-            return (view as! UIImageView)
-        }
-        
-        for subview: UIView in view.subviews {
-            if let imageView: UIImageView = hairlineImageViewInNavigationBar(subview) {
-                return imageView
-            }
-        }
-        
-        return nil
-    }
-    
-}

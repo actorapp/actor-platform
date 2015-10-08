@@ -211,11 +211,11 @@ public class ACManagedTable {
         if (searchDisplayController != nil && searchDisplayController!.active) {
             
             // If search is active: apply search status bar style
-            MainAppTheme.search.applyStatusBar()
+            // MainAppTheme.search.applyStatusBar()
         } else {
             
             // If search is not active: apply main status bar style
-            MainAppTheme.navigation.applyStatusBar()
+            // MainAppTheme.navigation.applyStatusBar()
         }
     }
 }
@@ -262,12 +262,12 @@ private class AMPlainTableDelegate: AMBaseTableDelegate {
 private class AMGrouppedTableDelegate: AMBaseTableDelegate {
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel!.textColor = MainAppTheme.list.sectionColor
+        header.textLabel!.textColor = ActorSDK.sharedActor().style.cellHeaderColor
     }
     
     func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel!.textColor = MainAppTheme.list.sectionHintColor
+        header.textLabel!.textColor = ActorSDK.sharedActor().style.cellFooterColor
     }
 }
 
@@ -407,7 +407,7 @@ public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCe
         // Styling search list
         
         self.searchDisplay.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        self.searchDisplay.searchResultsTableView.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
+        self.searchDisplay.searchResultsTableView.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
         
         // Adding search to table header
         
@@ -452,7 +452,7 @@ public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCe
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let item = objectAtIndexPath(indexPath)
         config.selectAction!(item)
-        MainAppTheme.navigation.applyStatusBar()
+        // MainAppTheme.navigation.applyStatusBar()
     }
     
     // Search updating
@@ -473,7 +473,7 @@ public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCe
     }
     
     public func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
-        MainAppTheme.navigation.applyStatusBar()
+        // MainAppTheme.navigation.applyStatusBar()
     }
     
     public func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {

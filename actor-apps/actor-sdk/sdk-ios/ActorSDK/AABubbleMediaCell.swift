@@ -95,27 +95,27 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             statusView.hidden = false
             switch(UInt(message.messageState.ordinal())) {
             case ACMessageState.PENDING.rawValue:
-                self.statusView.image = Resources.iconClock;
+                self.statusView.image = appStyle.chatIconClock;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSending
                 break;
             case ACMessageState.SENT.rawValue:
-                self.statusView.image = Resources.iconCheck1;
+                self.statusView.image = appStyle.chatIconCheck1;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSent
                 break;
             case ACMessageState.RECEIVED.rawValue:
-                self.statusView.image = Resources.iconCheck2;
+                self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaReceived
                 break;
             case ACMessageState.READ.rawValue:
-                self.statusView.image = Resources.iconCheck2;
+                self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaRead
                 break;
             case ACMessageState.ERROR.rawValue:
-                self.statusView.image = Resources.iconError;
+                self.statusView.image = appStyle.chatIconError;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaError
                 break
             default:
-                self.statusView.image = Resources.iconClock;
+                self.statusView.image = appStyle.chatIconClock;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSending
                 break;
             }
@@ -230,7 +230,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                 }, onDownloaded: { (reference) -> () in
                     if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference)) {
                         let previewImage = PreviewImage(image: img)
-                        let previewController = PhotoPreviewController(photo: previewImage, fromView: self.preview)
+                        let previewController = AAPhotoPreviewController(photo: previewImage, fromView: self.preview)
                         self.controller.presentViewController(previewController, animated: true, completion: nil)
                     }
             }))
@@ -245,7 +245,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
                     
                     if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))) {
                         let previewImage = PreviewImage(image: img)
-                        let previewController = PhotoPreviewController(photo: previewImage, fromView: self.preview)
+                        let previewController = AAPhotoPreviewController(photo: previewImage, fromView: self.preview)
                         self.controller.presentViewController(previewController, animated: true, completion: nil)
                     }
             }))

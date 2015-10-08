@@ -26,6 +26,8 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        tabBar.barTintColor = ActorSDK.sharedActor().style.tabBgColor
+        
         appEmptyContainer.hidden = true
         appIsEmptyPlaceholder.hidden = true
         appIsEmptyPlaceholder.setImage(
@@ -47,7 +49,6 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         appEmptyContainer.addSubview(appIsSyncingPlaceholder)
         
         view.addSubview(appEmptyContainer)
-        view.backgroundColor = UIColor.whiteColor()
     }
     
     public func showAppIsSyncingPlaceholder() {

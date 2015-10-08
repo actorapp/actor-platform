@@ -13,7 +13,7 @@ public class AAContactActionCell: AATableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         titleView.font = UIFont.systemFontOfSize(18)
-        titleView.textColor = MainAppTheme.list.actionColor
+        titleView.textColor = ActorSDK.sharedActor().style.cellTintColor
         iconView.contentMode = UIViewContentMode.Center
         self.contentView.addSubview(titleView)
         self.contentView.addSubview(iconView)
@@ -25,7 +25,7 @@ public class AAContactActionCell: AATableViewCell {
     
     public func bind(icon: String, actionTitle: String) {
         titleView.text = actionTitle
-        iconView.image = UIImage(named: icon)?.tintImage(MainAppTheme.list.actionColor)
+        iconView.image = UIImage(named: icon)?.tintImage(ActorSDK.sharedActor().style.cellTintColor)
     }
     
     public override func layoutSubviews() {

@@ -16,10 +16,10 @@ class AutoCompleteCell: UITableViewCell {
         
         avatarView.enableAnimation = false
         nickView.font = UIFont.systemFontOfSize(14)
-        nickView.textColor = MainAppTheme.list.textColor
+        nickView.textColor = ActorSDK.sharedActor().style.cellTextColor
         
         nameView.font = UIFont.systemFontOfSize(14)
-        nameView.textColor = MainAppTheme.list.hintColor
+        nameView.textColor = ActorSDK.sharedActor().style.cellHintColor
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(nickView)
@@ -47,10 +47,10 @@ class AutoCompleteCell: UITableViewCell {
         let nameAttrs = NSMutableAttributedString(string: nameText)
         
         nickAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nickText.length))
-        nickAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.textColor, range: NSMakeRange(0, nickText.length))
+        nickAttrs.addAttribute(NSForegroundColorAttributeName, value: ActorSDK.sharedActor().style.cellTextColor, range: NSMakeRange(0, nickText.length))
         
         nameAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nameText.length))
-        nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.list.hintColor, range: NSMakeRange(0, nameText.length))
+        nameAttrs.addAttribute(NSForegroundColorAttributeName, value: ActorSDK.sharedActor().style.cellHintColor, range: NSMakeRange(0, nameText.length))
         
         for i in 0..<user.mentionMatches.size() {
             let match = user.mentionMatches.getWithInt(i) as! ACStringMatch

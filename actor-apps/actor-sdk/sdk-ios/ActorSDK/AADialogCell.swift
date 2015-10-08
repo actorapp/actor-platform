@@ -19,23 +19,42 @@ public class AADialogCell: AATableViewCell, ACBindedCell {
     
     // Views
     
-    public let avatarView = AvatarView(style: "dialogs.avatar")
-    public let titleView: UILabel = UILabel(style: "dialogs.title")
-    public let messageView: UILabel = UILabel(style: "dialogs.message")
-    public let dateView: UILabel = UILabel(style: "dialogs.date")
-    public let statusView: UIImageView = UIImageView(style: "dialogs.status")
-    public let counterView: UILabel = UILabel(style: "dialogs.counter")
-    public let counterViewBg: UIImageView = UIImageView(style: "dialogs.counter.bg")
+    public let avatarView = AvatarView(frameSize: 48)
+    public let titleView = UILabel()
+    public let messageView = UILabel()
+    public let dateView = UILabel()
+    public let statusView = UIImageView()
+    public let counterView = UILabel()
+    public let counterViewBg = UIImageView()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(cellStyle: "dialogs.cell", reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         self.contentView.addSubview(avatarView)
+        
+        titleView.font = UIFont.mediumSystemFontOfSize(17)
+        titleView.textColor = appStyle.dialogTitleColor
         self.contentView.addSubview(titleView)
+        
+        messageView.font = UIFont.systemFontOfSize(16)
+        messageView.textColor = appStyle.dialogTextColor
         self.contentView.addSubview(messageView)
+        
+        dateView.font = UIFont.systemFontOfSize(14)
+        dateView.textColor = appStyle.dialogDateColor
+        dateView.textAlignment = .Right
         self.contentView.addSubview(dateView)
+        
+        statusView.contentMode = .Center
         self.contentView.addSubview(statusView)
+        
+        counterViewBg.image = Imaging.imageWithColor(appStyle.dialogCounterBgColor, size: CGSizeMake(18, 18))
+            .roundImage(18).resizableImageWithCapInsets(UIEdgeInsetsMake(9, 9, 9, 9))
         self.contentView.addSubview(counterViewBg)
+        
+        counterView.font = UIFont.systemFontOfSize(14)
+        counterView.textColor = appStyle.dialogCounterColor
+        counterView.textAlignment = .Center
         self.contentView.addSubview(counterView)
     }
 
@@ -51,9 +70,9 @@ public class AADialogCell: AATableViewCell, ACBindedCell {
         
         self.messageView.text = Actor.getFormatter().formatDialogText(item)
         if item.messageType.ordinal() != jint(ACContentType.TEXT.rawValue) {
-            self.messageView.applyStyle("dialog.message")
+            self.messageView.textColor = appStyle.dialogTextActiveColor
         } else {
-            self.messageView.applyStyle("dialog.message.hightlight")
+            self.messageView.textColor = appStyle.dialogTextColor
         }
         
         if (item.date > 0) {
@@ -75,24 +94,24 @@ public class AADialogCell: AATableViewCell, ACBindedCell {
         let messageState = UInt(item.status.ordinal())
         
         if (messageState == ACMessageState.PENDING.rawValue) {
-            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSending
-            self.statusView.image =  Resources.iconClock
+            self.statusView.tintColor = appStyle.dialogStatusSending
+            self.statusView.image = appStyle.chatIconClock
             self.statusView.hidden = false
         } else if (messageState == ACMessageState.READ.rawValue) {
-            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogRead
-            self.statusView.image = Resources.iconCheck2
+            self.statusView.tintColor = appStyle.dialogStatusRead
+            self.statusView.image = appStyle.chatIconCheck2
             self.statusView.hidden = false
         } else if (messageState == ACMessageState.RECEIVED.rawValue) {
-            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogReceived
-            self.statusView.image = Resources.iconCheck2
+            self.statusView.tintColor = appStyle.dialogStatusReceived
+            self.statusView.image = appStyle.chatIconCheck2
             self.statusView.hidden = false
         } else if (messageState == ACMessageState.SENT.rawValue) {
-            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSent
-            self.statusView.image = Resources.iconCheck1
+            self.statusView.tintColor = appStyle.dialogStatusSent
+            self.statusView.image = appStyle.chatIconCheck1
             self.statusView.hidden = false
         } else if (messageState == ACMessageState.ERROR.rawValue) {
-            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogError
-            self.statusView.image = Resources.iconError
+            self.statusView.tintColor = appStyle.dialogStatusError
+            self.statusView.image = appStyle.chatIconError
             self.statusView.hidden = false
         } else {
             self.statusView.hidden = true

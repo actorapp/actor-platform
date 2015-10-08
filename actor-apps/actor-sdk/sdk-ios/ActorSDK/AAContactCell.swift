@@ -22,14 +22,14 @@ public class AAContactCell : AATableViewCell, ACBindedCell, ACBindedSearchCell {
     public let titleView = UILabel();
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(cellStyle: "cell", reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         titleView.font = UIFont.systemFontOfSize(18)
-        titleView.textColor = MainAppTheme.list.contactsTitle
+        titleView.textColor = appStyle.contactTitleColor
         
         shortNameView.font = UIFont.boldSystemFontOfSize(18)
         shortNameView.textAlignment = NSTextAlignment.Center
-        shortNameView.textColor = MainAppTheme.list.contactsShortTitle
+        shortNameView.textColor = appStyle.contactTitleColor
         
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(shortNameView)
