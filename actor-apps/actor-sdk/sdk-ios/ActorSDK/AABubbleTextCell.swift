@@ -98,16 +98,16 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
 
                 if let user = Actor.getUserWithUid(message.senderId) {
                     
+                    let colors = ActorSDK.sharedActor().style.nameColors
+                    
                     if user.isBot() && user.getNameModel().get() == "Bot" {
                         if let group = Actor.getGroupWithGid(self.peer.peerId) {
                             senderNameLabel.text = group.getNameModel().get()
-                            let color = Resources.placeHolderColors[Int(abs(group.getId())) % Resources.placeHolderColors.count];
-                            senderNameLabel.textColor = color
+                            senderNameLabel.textColor = colors[Int(abs(group.getId())) % colors.count]
                         }
                     } else {
                         senderNameLabel.text = user.getNameModel().get()
-                        let color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
-                        senderNameLabel.textColor = color
+                        senderNameLabel.textColor = colors[Int(abs(user.getId())) % colors.count]
                     }
                 }
                 mainView.addSubview(senderNameLabel)
@@ -155,27 +155,27 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         if (isOut) {
             switch(self.messageState) {
             case ACMessageState.PENDING.rawValue:
-                self.statusView.image = Resources.iconClock;
+                self.statusView.image = appStyle.chatIconClock;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
                 break;
             case ACMessageState.SENT.rawValue:
-                self.statusView.image = Resources.iconCheck1;
+                self.statusView.image = appStyle.chatIconCheck1;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSent
                 break;
             case ACMessageState.RECEIVED.rawValue:
-                self.statusView.image = Resources.iconCheck2;
+                self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusReceived
                 break;
             case ACMessageState.READ.rawValue:
-                self.statusView.image = Resources.iconCheck2;
+                self.statusView.image = appStyle.chatIconCheck2;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusRead
                 break;
             case ACMessageState.ERROR.rawValue:
-                self.statusView.image = Resources.iconError;
+                self.statusView.image = appStyle.chatIconError;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusError
                 break
             default:
-                self.statusView.image = Resources.iconClock;
+                self.statusView.image = appStyle.chatIconClock;
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
                 break;
             }
@@ -215,7 +215,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             let path = url.path!
             let index = Int(path.substringFromIndex(path.startIndex.advancedBy(1)))!
             let code = self.cellLayout.sources[index]
-            self.controller.navigateNext(CodePreviewController(code: code), removeCurrent: false)
+            self.controller.navigateNext(AACodePreviewController(code: code), removeCurrent: false)
         } else {
             UIApplication.sharedApplication().openURL(url)
         }

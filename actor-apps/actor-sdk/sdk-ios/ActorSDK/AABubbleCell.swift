@@ -131,6 +131,12 @@ class AABubbleCell: UICollectionViewCell {
     var isShowDate: Bool = false
     var isShowNewMessages: Bool = false
     
+    var appStyle: ActorStyle {
+        get {
+            return ActorSDK.sharedActor().style
+        }
+    }
+    
     // MARK: -
     // MARK: Constructors
 

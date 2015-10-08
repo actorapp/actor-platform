@@ -20,9 +20,7 @@ public class AASettingsViewController: ACContentTableController {
         
         content = ACAllEvents_Main.SETTINGS()
         
-        tabBarItem = UITabBarItem(title: localized("TabSettings"),
-            image: MainAppTheme.tab.createUnselectedIcon("TabIconSettings"),
-            selectedImage: MainAppTheme.tab.createSelectedIcon("TabIconSettingsHighlighted"))
+        tabBarItem = UITabBarItem(title: "TabSettings", img: "TabIconSettings", selImage: "TabIconSettingsHighlighted")
         
         applyStyle("controller.settings")
     }

@@ -9,30 +9,18 @@ public class AATableViewCell: UITableViewCell {
     private var topSeparator: UIView = UIView()
     private var bottomSeparator: UIView = UIView()
     
+    var appStyle: ActorStyle {
+        get {
+            return ActorSDK.sharedActor().style
+        }
+    }
+    
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        bottomSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
-        topSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
-        
-        applyStyle("cell")
+        bottomSeparator.backgroundColor = appStyle.vcSeparatorColor
+        topSeparator.backgroundColor = appStyle.vcSeparatorColor
     }
-    
-    public init(cellStyle: String, reuseIdentifier: String?) {
-        
-        let style = pickStyle(cellStyle)
-        let st: UITableViewCellStyle = (style != nil && style!.cellStyle != nil) ? style!.cellStyle! : .Default
-        
-        super.init(style: st, reuseIdentifier: reuseIdentifier)
-        
-        if style != nil {
-            applyStyle(style!)
-        }
-        
-        bottomSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
-        topSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
-    }
-
     
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -102,8 +90,8 @@ public class AATableViewCell: UITableViewCell {
         super.setHighlighted(highlighted, animated: animated)
         
         if !highlighted {
-            topSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
-            bottomSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
+            topSeparator.backgroundColor = appStyle.vcSeparatorColor
+            bottomSeparator.backgroundColor = appStyle.vcSeparatorColor
         }
     }
     
@@ -111,8 +99,8 @@ public class AATableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         
         if !selected {
-            topSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
-            bottomSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
+            topSeparator.backgroundColor = appStyle.vcSeparatorColor
+            bottomSeparator.backgroundColor = appStyle.vcSeparatorColor
         }
     }
 }

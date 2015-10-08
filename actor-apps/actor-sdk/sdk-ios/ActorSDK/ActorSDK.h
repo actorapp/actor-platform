@@ -18,11 +18,6 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 
 #import <ActorSDK/ActorCore.h>
 
-// View extensions
-
-#import <ActorSDK/UIAppearance+Swift.h>
-#import <ActorSDK/UIBarAppearance+Swift.h>
-
 // Phone Input
 
 #import <ActorSDK/ABPhoneField.h>

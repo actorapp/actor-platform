@@ -4,11 +4,12 @@
 
 import Foundation
 
-public class AANoSelectionViewController: UIViewController {
+public class AANoSelectionViewController: AAViewController {
     
-    public init() {
+    public override init() {
         super.init(nibName: nil, bundle: nil)
-        view.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
+        
+        view.backgroundColor = appStyle.vcBackyardColor
     }
 
     public required init(coder aDecoder: NSCoder) {

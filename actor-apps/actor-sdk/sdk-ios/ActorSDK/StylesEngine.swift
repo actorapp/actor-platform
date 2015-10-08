@@ -151,66 +151,66 @@ extension UILabel: UIViewStylable {
     }
  }
 
-extension UITableViewCell: UIViewStylable {
-    
-    public convenience init(reuseIdentifier: String) {
-        self.init(_style: "cell", reuseIdentifier: reuseIdentifier)
-    }
-    
-    public convenience init(_style: String, reuseIdentifier: String) {
-        if let s = styles[_style] {
-            if let v = s.cellStyle {
-                self.init(style: v, reuseIdentifier: reuseIdentifier)
-            } else {
-                self.init(style: .Default, reuseIdentifier: reuseIdentifier)
-            }
-        } else {
-            self.init(style: .Default, reuseIdentifier: reuseIdentifier)
-        }
-        self.applyStyle(_style)
-    }
-    
-    public func applyStyle(s: Style) {
-        if let v = s.selectedColor {
-            let selectedView = UIView()
-            selectedView.backgroundColor = v
-            selectedBackgroundView = selectedView
-        }
-        
-        if let v = s.backgroundColor {
-            backgroundColor = v
-        }
-        
-        if let ua = self as? AATableViewCell {
-            
-            if let v = s.cellSeparatorsVisible {
-                ua.topSeparatorVisible = v
-                ua.bottomSeparatorVisible = v
-            }
-            
-            if let v = s.cellTopSeparatorVisible {
-                ua.topSeparatorVisible = v
-            }
-            
-            if let v = s.cellBottomSeparatorVisible {
-                ua.bottomSeparatorVisible = v
-            }
-            
-            if let v = s.cellSeparatorsLeftInset {
-                ua.topSeparatorLeftInset = v
-                ua.bottomSeparatorLeftInset = v
-            }
-            
-            if let v = s.cellTopSeparatorLeftInset {
-                ua.topSeparatorLeftInset = v
-            }
-            
-            if let v = s.cellBottomSeparatorLeftInset {
-                ua.bottomSeparatorLeftInset = v
-            }
-        }
-    }
-}
+//extension UITableViewCell: UIViewStylable {
+//    
+//    public convenience init(reuseIdentifier: String) {
+//        self.init(_style: "cell", reuseIdentifier: reuseIdentifier)
+//    }
+//    
+//    public convenience init(_style: String, reuseIdentifier: String) {
+//        if let s = styles[_style] {
+//            if let v = s.cellStyle {
+//                self.init(style: v, reuseIdentifier: reuseIdentifier)
+//            } else {
+//                self.init(style: .Default, reuseIdentifier: reuseIdentifier)
+//            }
+//        } else {
+//            self.init(style: .Default, reuseIdentifier: reuseIdentifier)
+//        }
+//        self.applyStyle(_style)
+//    }
+//    
+//    public func applyStyle(s: Style) {
+//        if let v = s.selectedColor {
+//            let selectedView = UIView()
+//            selectedView.backgroundColor = v
+//            selectedBackgroundView = selectedView
+//        }
+//        
+//        if let v = s.backgroundColor {
+//            backgroundColor = v
+//        }
+//        
+//        if let ua = self as? AATableViewCell {
+//            
+//            if let v = s.cellSeparatorsVisible {
+//                ua.topSeparatorVisible = v
+//                ua.bottomSeparatorVisible = v
+//            }
+//            
+//            if let v = s.cellTopSeparatorVisible {
+//                ua.topSeparatorVisible = v
+//            }
+//            
+//            if let v = s.cellBottomSeparatorVisible {
+//                ua.bottomSeparatorVisible = v
+//            }
+//            
+//            if let v = s.cellSeparatorsLeftInset {
+//                ua.topSeparatorLeftInset = v
+//                ua.bottomSeparatorLeftInset = v
+//            }
+//            
+//            if let v = s.cellTopSeparatorLeftInset {
+//                ua.topSeparatorLeftInset = v
+//            }
+//            
+//            if let v = s.cellBottomSeparatorLeftInset {
+//                ua.bottomSeparatorLeftInset = v
+//            }
+//        }
+//    }
+//}
 
 extension UIImageView: UIViewStylable {
     

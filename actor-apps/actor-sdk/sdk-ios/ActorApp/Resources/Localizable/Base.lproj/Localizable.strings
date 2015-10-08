@@ -1,0 +1,451 @@
+//
+//  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
+//
+
+/*
+ * Main Screen
+ */
+
+"TabMessages" = "Messages";
+
+"TabPeople" = "People";
+
+"TabSettings" = "Settings";
+
+"TabDiscover" = "Discover";
+
+/*
+ * Contacts
+ */
+
+"ContactsAddHeader" = "Add Contact";
+
+"ContactsAddHint" = "Please, specify phone number";
+
+"ContactsActionInvite" = "Tell Friends about Actor";
+
+"ContactsActionAdd" = "Add Friend";
+
+/*
+ * Dialogs
+ */
+
+"DialogsHint" = "Swipe for more options";
+
+/*
+ * Settings
+ */
+
+"SettingsEdit" = "Edit";
+
+
+"SettingsSetPhoto" = "Set Profile Photo";
+
+"SettingsChangeName" = "Change Your Name";
+
+
+"SettingsEditHeader" = "Your name";
+
+"SettingsEditHint" = "Please, enter your real name to help people better understand who you are.";
+
+"SettingsEditFieldHint" = "Enter your name";
+
+
+"SettingsUsernameNotSet" = "Set username";
+
+"SettingsUsernameTitle" = "Username";
+
+"SettingsUsernameHintField" = "Enter your Username";
+
+"SettingsUsernameHint" = "You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+
+
+"SettingsAboutNotSet" = "Set about me";
+
+"SettingsChangeAboutTitle" = "About me";
+
+"SettingsChangeAboutHint" = "Tell people anything you want about yourself";
+
+
+"SettingsSecurity" = "Security";
+
+"SettingsWallpapers" = "Wallpapers";
+
+
+"SettingsNotifications" = "Notifications and Sounds";
+
+"SettingsAskQuestion" = "Ask Question";
+
+"SettingsTwitter" = "App Twitter";
+
+"SettingsAbout" = "App Homepage";
+
+"SettingsVersion" = "Version {version}";
+
+/*
+ * Profile
+ */
+
+"ProfileEditHeader" = "Change name";
+
+"ProfileSendMessage" = "Send Message";
+
+"ProfileNotifications" = "Notifications";
+
+"ProfileNotificationsWarring" = "Are you sure want to turn off notifications for this person? This may cause relationship problems in the nearest future.";
+
+"ProfileNotificationsWarringAction" = "Turn off";
+
+"ProfileAddToContacts" = "Add to Contacts";
+
+"ProfileRemoveFromContacts" = "Remove from Contacts";
+
+"ProfileRename" = "Rename Contact";
+
+"ProfileRenameMessage" = "You can rename contacts for organizing your contact list. Changes will be visible only to you.";
+
+"ProfileRenameAction" = "Rename";
+
+"ProfileAbout" = "about";
+
+"ProfilePhone" = "phone";
+
+"ProfileUsername" = "username";
+
+"ProfileTitle" = "Info";
+
+"CallNumber" = "Call Number";
+
+"CopyNumber" = "Copy Number";
+
+"NumberCopied" = "Phone number copied to clipboard";
+
+/*
+ * Publics
+ */
+
+"JoinAlertMessage" = "Do you want to join this group?";
+
+/*
+ * Group
+ */
+
+"GroupEditHeader" = "Theme";
+
+"GroupEditHint" = "Enter group theme";
+
+"GroupSetPhoto" = "Set Group Photo";
+
+"GroupSetTitle" = "Set Group Title";
+
+"GroupEditConfirm" = "Are you sure want to change group title?";
+
+"GroupEditConfirmAction" = "Change Theme";
+
+"GroupNotifications" = "Notifications";
+
+"GroupSettings" = "SETTINGS";
+
+"GroupIntegrations" = "Integrations";
+
+"GroupMembers" = "{0} MEMBERS";
+
+"GroupMemberAdmin" = "admin";
+
+"GroupMemberInfo" = "Profile";
+
+"GroupMemberMakeAdmin" = "Make Group admin";
+
+"GroupMemberMakeMessage" = "Are you sure want to make {name} admin of this group?";
+
+"GroupMemberMakeAction" = "Yes";
+
+"GroupMemberKick" = "Kick from Group";
+
+"GroupMemberKickMessage" = "Are you sure want to kick {name} from group?";
+
+"GroupMemberKickAction" = "Kick";
+
+"GroupMemberWrite" = "Write Message";
+
+"GroupMemberCall" = "Phone Call";
+
+"GroupMemberCallNoPhones" = "No phone number available for user.";
+
+"GroupAddParticipant" = "Add Prticipant...";
+
+"GroupAddParticipantTitle" = "Contacts";
+
+"GroupAddParticipantUrl" = "Invite to Group via Link";
+
+"GroupLeave" = "Leave group";
+
+"GroupLeaveConfirm" = "Are you sure want to leave group?";
+
+"GroupLeaveConfirmAction" = "Leave";
+
+"GroupInviteLinkPageTitle" = "Invite Link";
+
+"GroupInviteLinkTitle" = "LINK";
+
+"GroupInviteLinkHint" = "You can invite people to this group by sending them this invitation link.";
+
+"GroupInviteLinkRevokeMessage" = "Are you sure want to revoke this link? Once you do, no one will be able to join the group using it.";
+
+"GroupInviteLinkRevokeAction" = "Revoke";
+
+"GroupIntegrationPageTitle" = "Integration API";
+
+"GroupIntegrationLinkTitle" = "LINK";
+
+"GroupIntegrationLinkHint" = "You can use this link to send message from any external system.";
+
+"GroupIntegrationDoc" = "Open Documentation";
+
+"GroupIntegrationLinkRevokeMessage" = "Are you sure want to revoke this link? Once you do, no one will be able to send messages to the group using it.";
+
+"GroupIntegrationLinkRevokeAction" = "Revoke";
+
+"GroupJoinMessage" = "Are you sure want to join group?";
+
+"GroupJoinAction" = "Join";
+
+"GroupMembers" = "MEMBERS";
+
+/*
+ * Compose
+ */
+
+"ComposeTitle" = "New Message";
+
+"CreateGroup" = "Create Group";
+
+"CreateGroupTitle" = "Create Group";
+
+"CreateGroupHint" = "Please provide group subject and optional group icon";
+
+"CreateGroupNamePlaceholder" = "Group Subject";
+
+"CreateGroupMembersTitle" = "Invite members";
+
+"CreateGroupMembersPlaceholders" = "Enter Names";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Notifications and Sounds";
+
+"NotificationsEffectsTitle" = "Effects";
+
+"NotificationsMobileTitle" = "Mobile notifications";
+
+"NotificationsInAppTitle" = "In-App notifications";
+
+"NotificationsNotificationHint" = "You can disable notifications for specific users or groups on their info pages.";
+
+"NotificationsPrivacyTitle" = "Privacy";
+
+"NotificationsSoundEffects" = "Sound Effects";
+
+"NotificationsEnable" = "Enable";
+
+"NotificationsSound" = "Sound";
+
+"NotificationsVibration" = "Vibration";
+
+"NotificationsPreview" = "Message Preview";
+
+"NotificationsPreviewHint" = "Remove message text from notifications.";
+
+"NotificationSecretMessage" = "New Message";
+
+"NotificationsGroups" = "Group Notifications";
+
+"NotificationsOnlyMentions" = "Only Mentions";
+
+"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
+
+/*
+ * Privacy
+ */
+
+"SecurityTitle" = "Security";
+
+"PrivacyTerminate" = "Terminate all other sessions";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
+
+"PrivacyTerminateHint" = "Logs out all devices except for this one.";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Wallpapers";
+
+"WallpapersPhoto" = "Photo Library";
+
+/*
+ * Chat
+ */
+
+"ChatPlaceholder" = "Enter text...";
+
+"ChatSend" = "Send";
+
+"ChatNoGroupAccess" = "You is not member";
+
+/*
+ * Find
+ */
+
+"FindTitle" = "Find People";
+
+"FindFieldHint" = "phone number, email or nickname";
+
+"FindHint" = "Enter phone number, email or nickname and press search";
+
+"FindNotFound" = "Sorry, but we are unable to find person for this search query";
+
+/*
+ * Placeholders
+ */
+
+"Placeholder_Empty_Title" = "Invite your friends";
+
+"Placeholder_Empty_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
+
+"Placeholder_Empty_Action" = "TELL A FRIEND";
+
+"Placeholder_Empty_Message2" = "or manually add contact";
+
+"Placeholder_Empty_Action2" = "ADD CONTACT";
+
+"Placeholder_Loading_Title" = "Sync in progress";
+
+"Placeholder_Loading_Message" = "Please, wait couple minutes while we enable your app.";
+
+"Placeholder_Contacts_Title" = "Invite your friends";
+
+"Placeholder_Contacts_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
+
+"Placeholder_Contacts_Action" = "TELL A FRIEND";
+
+"Placeholder_Contacts_Message2" = "or manually add contact with plus button at upper right corner";
+
+"Placeholder_Dialogs_Title" = "Start messaging";
+
+"Placeholder_Dialogs_Message" = "Pick a contact from your contacts list or press write button at upper right corner to start the conversation right now.";
+
+"Placeholder_Group_Title" = "Not a member";
+
+"Placeholder_Group_Message" = "Unfortunately, you are not a member of this group.";
+
+/*
+ * Auth
+ */
+
+"AuthPhoneTitle" = "Your Phone";
+
+"AuthPhoneNumberHint" = "Your phone number";
+
+"AuthPhoneHint" = "Please condifm your country code and enter your phone number.";
+
+"AuthPhoneTooShort" = "Phone number too short";
+
+"AuthCodeFieldHint" = "Code";
+
+"AuthCodeHint" = "We have sent you an SMS with the code.";
+
+"AuthCallHint" = "Actor will call you in {time}";
+
+"AuthCallDoneHint" = "Actor dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
+"AuthProfileTitle" = "Your Info";
+
+"AuthProfileAddPhoto1" = "add";
+
+"AuthProfileAddPhoto2" = "photo";
+
+"AuthProfileNameHint" = "Your name";
+
+"AuthProfileHint" = "Enter your name and add a pofile picture";
+
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "En";
+
+"InviteText" = "Hi! Let's switch to Actor! {link}";
+
+"PhotoRemove" = "Delete Photo";
+
+"PhotoRemoveGroupMessage" = "Are you sure want to remove group photo? Some members will be disappointed.";
+
+"PhotoCamera" = "Take Photo";
+
+"PhotoLibrary" = "Media Library";
+
+"SendDocument" = "Document";
+
+"NavigationEdit" = "Edit";
+
+"NavigationDone" = "Done";
+
+"NavigationCancel" = "Cancel";
+
+"NavigationBack" = "";
+
+"NavigationNext" = "Next";
+
+"NavigationSave" = "Save";
+
+"NavigationFind" = "Find";
+
+"AlertCancel" = "Cancel";
+
+"AlertNext" = "Next";
+
+"AlertSave" = "Save";
+
+"AlertSet" = "Set";
+
+"AlertOk" = "OK";
+
+"AlertYes" = "Yes";
+
+"AlertNo" = "No";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
+
+"AlertInvite" = "Invite";
+
+"UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
+
+"ActionCopyLink" = "Copy Link";
+
+"ActionRevokeLink" = "Revoke Link";
+
+"ActionShareLink" = "Share Link";
+
+"AlertLinkCopied" = "Link copied to clipboard.";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Entered phone number is invalid. Please try again.";
+
+"ErrorCodeExpired" = "Code expired. Please, start authentication again.";
+
+"ErrorAlreadyJoined" = "You are already member of group";
+
+"ErrorUnableToJoin" = "Unable to join to group";

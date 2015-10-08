@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AARecentViewController: AARecentContentController, AARecentContentControllerDelegate {
+public class AARecentViewController: AADialogsListContentController, AADialogsListContentControllerDelegate {
 
     public override init() {
         
@@ -28,10 +28,7 @@ public class AARecentViewController: AARecentContentController, AARecentContentC
         
         // Setting UITabBarItem
         
-        tabBarItem = UITabBarItem(
-            title: localized("TabMessages"),
-            image: UIImage(named: "TabIconChats")?.styled("tab.icon"),
-            selectedImage: UIImage(named: "TabIconChatsHighlighted")?.styled("tab.icon.selected"))
+        tabBarItem = UITabBarItem(title: "TabMessages", img: "TabIconChats", selImage: "TabIconChatsHighlighted")
         
         binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
             if value != nil {
@@ -97,12 +94,12 @@ public class AARecentViewController: AARecentContentController, AARecentContentC
     
     // Handling selections
     
-    public func recentsDidTap(controller: AARecentContentController, dialog: ACDialog) -> Bool {
-        // navigateDetail(ConversationViewController(peer: dialog.peer))
+    public func recentsDidTap(controller: AADialogsListContentController, dialog: ACDialog) -> Bool {
+        navigateDetail(ConversationViewController(peer: dialog.peer))
         return false
     }
     
-    public func searchDidTap(controller: AARecentContentController, entity: ACSearchEntity) {
-        // navigateDetail(ConversationViewController(peer: entity.peer))
+    public func searchDidTap(controller: AADialogsListContentController, entity: ACSearchEntity) {
+        navigateDetail(ConversationViewController(peer: entity.peer))
     }
 }

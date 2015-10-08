@@ -15,12 +15,12 @@ public class AATextCell: AATableViewCell {
         titleLabel.font = UIFont.systemFontOfSize(14.0)
         titleLabel.text = " "
         titleLabel.sizeToFit()
-        titleLabel.textColor = MainAppTheme.list.actionColor
+       // titleLabel.textColor = MainAppTheme.list.actionColor
         contentView.addSubview(titleLabel)
         
         contentLabel.font = UIFont.systemFontOfSize(17.0)
         contentLabel.text = " "
-        contentLabel.textColor = MainAppTheme.list.textColor
+       // contentLabel.textColor = MainAppTheme.list.textColor
         contentLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         contentLabel.numberOfLines = 0
         contentLabel.sizeToFit()
@@ -38,9 +38,9 @@ public class AATextCell: AATableViewCell {
     
     public func setAction(isAction: Bool) {
         if isAction {
-            contentLabel.textColor = MainAppTheme.list.actionColor
+            //contentLabel.textColor = MainAppTheme.list.actionColor
         } else {
-            contentLabel.textColor = MainAppTheme.list.textColor
+           // contentLabel.textColor = MainAppTheme.list.textColor
         }
     }
     

@@ -12,10 +12,10 @@ public class HeaderCell: AATableViewCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        contentView.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
+        //contentView.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
         selectionStyle = UITableViewCellSelectionStyle.None
         
-        titleView.textColor = MainAppTheme.list.sectionColor
+        //titleView.textColor = MainAppTheme.list.sectionColor
         titleView.font = UIFont.systemFontOfSize(14)
         contentView.addSubview(titleView)
         

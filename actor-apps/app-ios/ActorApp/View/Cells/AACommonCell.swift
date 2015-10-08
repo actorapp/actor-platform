@@ -32,7 +32,7 @@ public class AACommonCell: AATableViewCell {
         contentView.addSubview(titleLabel)
         
         hintLabel.font = UIFont.systemFontOfSize(17.0)
-        hintLabel.textColor = MainAppTheme.list.hintColor
+        // hintLabel.textColor = MainAppTheme.list.hintColor
         contentView.addSubview(hintLabel)
     }
     
@@ -74,13 +74,13 @@ public class AACommonCell: AATableViewCell {
     private func updateCellStyle() {
         switch (style) {
         case .Normal:
-            titleLabel.textColor = MainAppTheme.list.textColor
+            //titleLabel.textColor = MainAppTheme.list.textColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Hint:
-            titleLabel.textColor = MainAppTheme.list.hintColor
+            //titleLabel.textColor = MainAppTheme.list.hintColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
@@ -98,26 +98,26 @@ public class AACommonCell: AATableViewCell {
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Switch:
-            titleLabel.textColor = MainAppTheme.list.textColor
+            //titleLabel.textColor = MainAppTheme.list.textColor
             titleLabel.textAlignment = NSTextAlignment.Left
             setupSwitchIfNeeded()
             switcher?.hidden = false
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Action:
-            titleLabel.textColor = MainAppTheme.list.actionColor
+            //titleLabel.textColor = MainAppTheme.list.actionColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .ActionCentered:
-            titleLabel.textColor = MainAppTheme.list.actionColor
+            //titleLabel.textColor = MainAppTheme.list.actionColor
             titleLabel.textAlignment = NSTextAlignment.Center
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Navigation:
-            titleLabel.textColor = MainAppTheme.list.textColor
+            //titleLabel.textColor = MainAppTheme.list.textColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.DisclosureIndicator

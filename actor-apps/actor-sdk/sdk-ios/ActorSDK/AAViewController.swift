@@ -12,9 +12,8 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     // MARK: Public vars
     
     public var placeholder = BigPlaceholderView(topOffset: 0)
-    public var pendingPickClosure: ((image: UIImage) -> ())?
     
-    public var avatarHeight: CGFloat = DeviceType.IS_IPHONE_6P ? 336.0 : 256.0
+    public var pendingPickClosure: ((image: UIImage) -> ())?
     
     public var popover: UIPopoverController?
     
@@ -56,6 +55,14 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         }
     }
     public var group: ACGroupVM!
+    
+    // Style
+    
+    public var appStyle: ActorStyle {
+        get {
+            return ActorSDK.sharedActor().style
+        }
+    }
     
     public init() {
         super.init(nibName: nil, bundle: nil)
@@ -127,11 +134,11 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         let pickerController = AAImagePickerController()
         pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
         pickerController.mediaTypes = [kUTTypeImage as String]
-        pickerController.view.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
-        pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
-        pickerController.delegate = self
-        pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
+        pickerController.view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
+//        pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
+//        pickerController.delegate = self
+//        pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+//        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
         self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
     }
     
@@ -168,10 +175,12 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     }
     
     public func presentInNavigation(controller: UIViewController) {
-        var navigation = AANavigationController()
+        let navigation = AANavigationController()
         navigation.viewControllers = [controller]
         presentViewController(navigation, animated: true, completion: nil)
     }
+    
+    // Image pick and crop
     
     public func cropImage(image: UIImage) {
         let cropController = PECropViewController()
@@ -198,14 +207,12 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     
     
     public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-        MainAppTheme.navigation.applyStatusBar()
         navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
             self.cropImage(image)
         })
     }
     
     public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        MainAppTheme.navigation.applyStatusBar()
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
             self.cropImage(image)
@@ -214,7 +221,6 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     
     public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         pendingPickClosure = nil
-        MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

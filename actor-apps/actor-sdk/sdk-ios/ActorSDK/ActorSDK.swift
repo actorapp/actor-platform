@@ -51,6 +51,9 @@ public class ActorSDK {
     /// Push token registration id. Required for sending push tokens
     public let apiPushId: Int? = nil
     
+    /// Invitation URL for apps
+    public let inviteUrl: String = "https://actor.im/dl"
+    
     //
     // User Onlines
     //
