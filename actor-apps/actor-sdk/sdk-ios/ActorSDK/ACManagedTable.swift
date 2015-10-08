@@ -59,9 +59,13 @@ public class ACManagedTable {
         self.style = style
         self.controller = controller
         self.tableView = tableView
-        self.baseDelegate = tableView.style == .Plain ? AMPlainTableDelegate(data: self) : AMGrouppedTableDelegate(data: self)
-
-        // Init table view
+        
+        if style == .SettingsGrouped {
+            self.baseDelegate = AMGrouppedTableDelegate(data: self)
+        } else {
+            self.baseDelegate = AMPlainTableDelegate(data: self)
+        }
+        
         self.tableView.dataSource = self.baseDelegate
         self.tableView.delegate = self.baseDelegate
     }
@@ -260,12 +264,13 @@ private class AMPlainTableDelegate: AMBaseTableDelegate {
 }
 
 private class AMGrouppedTableDelegate: AMBaseTableDelegate {
-    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    
+    @objc func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel!.textColor = ActorSDK.sharedActor().style.cellHeaderColor
     }
     
-    func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+    @objc func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel!.textColor = ActorSDK.sharedActor().style.cellFooterColor
     }
@@ -411,7 +416,7 @@ public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCe
         
         // Adding search to table header
         
-        let header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        let header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
         header.addSubview(self.searchDisplay.searchBar)
         tableView.tableHeaderView = header
         

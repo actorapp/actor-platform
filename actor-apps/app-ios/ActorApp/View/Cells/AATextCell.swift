@@ -15,12 +15,12 @@ public class AATextCell: AATableViewCell {
         titleLabel.font = UIFont.systemFontOfSize(14.0)
         titleLabel.text = " "
         titleLabel.sizeToFit()
-       // titleLabel.textColor = MainAppTheme.list.actionColor
+        titleLabel.textColor = appStyle.cellTintColor
         contentView.addSubview(titleLabel)
         
         contentLabel.font = UIFont.systemFontOfSize(17.0)
         contentLabel.text = " "
-       // contentLabel.textColor = MainAppTheme.list.textColor
+        contentLabel.textColor = appStyle.cellTextColor
         contentLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         contentLabel.numberOfLines = 0
         contentLabel.sizeToFit()
@@ -31,16 +31,13 @@ public class AATextCell: AATableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func setTitle(title: String?, content: String?) {
+    public func setContent(title: String?, content: String?, isAction: Bool) {
         titleLabel.text = title
         contentLabel.text = content
-    }
-    
-    public func setAction(isAction: Bool) {
         if isAction {
-            //contentLabel.textColor = MainAppTheme.list.actionColor
+            contentLabel.textColor = appStyle.cellTintColor
         } else {
-           // contentLabel.textColor = MainAppTheme.list.textColor
+            contentLabel.textColor = appStyle.cellTextColor
         }
     }
     

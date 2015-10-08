@@ -101,14 +101,14 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
                 }
-//                
-//                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
-//                    builder.add("Facebook") { () -> () in
-//                        let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
-//                        vc.addURL(NSURL(string: AppConfig.appInviteUrl!))
-//                        self.presentViewController(vc, animated: true, completion: nil)
-//                    }
-//                }
+                
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
+                    builder.add("Facebook") { () -> () in
+                        let vc = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+                        vc.addURL(NSURL(string: ActorSDK.sharedActor().inviteUrl))
+                        self.presentViewController(vc, animated: true, completion: nil)
+                    }
+                }
                 
                 self.showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: UIView(), sourceRect: CGRectZero, tapClosure: builder.tapClosure)
                 
@@ -121,47 +121,47 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     func findContact() {
         
-//        startEditField { (c) -> () in
-//            c.title = "FindTitle"
-//            c.actionTitle = "NavigationFind"
-//            
-//            c.hint = "FindHint"
-//            c.fieldHint = "FindFieldHint"
-//            
-//            c.fieldAutocapitalizationType = .None
-//            c.fieldAutocorrectionType = .No
-//            c.fieldReturnKey = .Search
-//            
-//            c.didDoneTap = { (t, c) -> () in
-//                
-//                if t.length == 0 {
-//                    return
-//                }
-//                
-//                self.executeSafeOnlySuccess(Actor.findUsersCommandWithQuery(t), successBlock: { (val) -> Void in
-//                    var user: ACUserVM? = nil
-//                    if let users = val as? IOSObjectArray {
-//                        if Int(users.length()) > 0 {
-//                            if let tempUser = users.objectAtIndex(0) as? ACUserVM {
-//                                user = tempUser
-//                            }
-//                        }
-//                    }
-//                    
-//                    if user != nil {
-//                        c.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
-//                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
-//                            c.dismiss()
-//                        }, failureBlock: { (val) -> Void in
-//                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
-//                            c.dismiss()
-//                        })
-//                    } else {
-//                        c.alertUser("FindNotFound")
-//                    }
-//                })
-//            }
-//        }
+        startEditField { (c) -> () in
+            c.title = "FindTitle"
+            c.actionTitle = "NavigationFind"
+            
+            c.hint = "FindHint"
+            c.fieldHint = "FindFieldHint"
+            
+            c.fieldAutocapitalizationType = .None
+            c.fieldAutocorrectionType = .No
+            c.fieldReturnKey = .Search
+            
+            c.didDoneTap = { (t, c) -> () in
+                
+                if t.length == 0 {
+                    return
+                }
+                
+                self.executeSafeOnlySuccess(Actor.findUsersCommandWithQuery(t), successBlock: { (val) -> Void in
+                    var user: ACUserVM? = nil
+                    if let users = val as? IOSObjectArray {
+                        if Int(users.length()) > 0 {
+                            if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+                                user = tempUser
+                            }
+                        }
+                    }
+                    
+                    if user != nil {
+                        c.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
+                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            c.dismiss()
+                        }, failureBlock: { (val) -> Void in
+                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            c.dismiss()
+                        })
+                    } else {
+                        c.alertUser("FindNotFound")
+                    }
+                })
+            }
+        }
     }
     
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
@@ -182,7 +182,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                     }
                     if user != nil {
                         self.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
-                            // self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                                self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation([textField.text!])
                         })
@@ -207,15 +207,10 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
             // Replace
             messageComposeController.setSubject(inviteText)
             
-            // Replace with bigger text
+            // TODO: Replace with bigger text
             messageComposeController.setMessageBody(inviteText, isHTML: false)
             messageComposeController.setToRecipients(recipients)
-            
-            // Hacking styles
-//            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-//                MainAppTheme.navigation.applyStatusBarFast()
-            })
+            presentViewController(messageComposeController, animated: true, completion: nil)
         }
     }
     
@@ -227,17 +222,11 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     func showSmsInvitation(recipients: [String]?) {
         if MFMessageComposeViewController.canSendText() {
-            
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
             messageComposeController.body = inviteText
             messageComposeController.recipients = recipients
-            
-            // Hacking styles
-//            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-//                MainAppTheme.navigation.applyStatusBarFast()
-            })
+            presentViewController(messageComposeController, animated: true, completion: nil)
         }
     }
     

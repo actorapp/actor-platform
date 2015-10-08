@@ -134,7 +134,7 @@ class CocoaOutputFile : NSObject, AROutputFile {
         let toWrite = NSMutableData(length: Int(dataLen))!;
         var srcBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
 
-        var destBuffer = UnsafeMutablePointer<UInt8>(toWrite.toBytes());
+        var destBuffer = UnsafeMutablePointer<UInt8>(toWrite.bytes);
         for _ in 0..<dataLen {
             destBuffer.memory = srcBuffer.memory;
             destBuffer++;
@@ -167,7 +167,7 @@ class CocoaInputFile :NSObject, ARInputFile {
             self.fileHandle.seekToFileOffset(UInt64(fileOffset));
             let readed:NSData = self.fileHandle.readDataOfLength(Int(len));
             
-            var srcBuffer = UnsafeMutablePointer<UInt8>(readed.toBytes());
+            var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes);
             var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
             let len = min(Int(len), Int(readed.length));
             for _ in offset..<offset+len {

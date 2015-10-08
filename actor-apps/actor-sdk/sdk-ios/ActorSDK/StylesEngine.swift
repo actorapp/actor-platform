@@ -38,7 +38,6 @@ public class Style {
     // Avatar
     
     public var avatarSize: Int?
-    public var avatarType: AvatarType?
     
     // Image
     
@@ -69,7 +68,6 @@ public class Style {
         self.cellBottomSeparatorVisible = base.cellBottomSeparatorVisible
         
         self.avatarSize = base.avatarSize
-        self.avatarType = base.avatarType
         
         self.image = base.image
         self.title = base.title
@@ -239,21 +237,6 @@ extension UIImageView: UIViewStylable {
         // Content Mode
         if let v = s.contentMode {
             self.contentMode = v
-        }
-    }
-}
-
-public extension AvatarView {
-
-    public convenience init(style: String) {
-        if let s = styles[style] {
-            if let size = s.avatarSize, let type = s.avatarType {
-                self.init(frameSize: size, type: type)
-            } else {
-                fatalError("Unknown style \(style)")
-            }
-        } else {
-            fatalError("Unknown style \(style)")
         }
     }
 }

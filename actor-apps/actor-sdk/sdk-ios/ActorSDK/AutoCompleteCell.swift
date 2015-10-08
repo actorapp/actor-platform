@@ -7,7 +7,7 @@ import TTTAttributedLabel
 
 class AutoCompleteCell: UITableViewCell {
     
-    var avatarView = AvatarView(frameSize: 32)
+    var avatarView = AAAvatarView(frameSize: 32)
     var nickView = TTTAttributedLabel(frame: CGRectZero)
     var nameView = TTTAttributedLabel(frame: CGRectZero)
     

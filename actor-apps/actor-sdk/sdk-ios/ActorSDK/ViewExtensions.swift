@@ -19,18 +19,3 @@ extension UITabBarItem {
         setTitleTextAttributes([NSForegroundColorAttributeName: selectedText], forState: UIControlState.Selected)
     }
 }
-
-public protocol UIConfigurable {
-    
-}
-
-public extension UIConfigurable {
-    func configure(closure: (s: Self)->()) -> Self {
-        closure(s: self)
-        return self
-    }
-}
-
-extension UIView: UIConfigurable {
-    
-}

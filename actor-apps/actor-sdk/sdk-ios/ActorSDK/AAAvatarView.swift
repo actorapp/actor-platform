@@ -4,12 +4,12 @@
 
 import UIKit
 
-public enum AvatarType {
+public enum AAAvatarType {
     case Rounded
     case Square
 }
 
-public class AvatarView: UIImageView {
+public class AAAvatarView: UIImageView {
     
     // MARK: -
     // MARK: Private vars
@@ -21,7 +21,7 @@ public class AvatarView: UIImageView {
     // MARK: Public vars
     
     public var frameSize: Int = 0;
-    public var avatarType: AvatarType = .Rounded
+    public var avatarType: AAAvatarType = .Rounded
     public var placeholderImage: UIImage?
     
     public var bindedFileId: jlong! = nil;
@@ -46,7 +46,7 @@ public class AvatarView: UIImageView {
         super.init(image: nil)
     }
     
-    public init(frameSize: Int, type: AvatarType) {
+    public init(frameSize: Int, type: AAAvatarType) {
         self.frameSize = frameSize
         self.avatarType = type
         
@@ -57,7 +57,7 @@ public class AvatarView: UIImageView {
         }
     }
     
-    public init(frameSize: Int, type: AvatarType, placeholderImage: UIImage?) {
+    public init(frameSize: Int, type: AAAvatarType, placeholderImage: UIImage?) {
         self.frameSize = frameSize
         self.avatarType = type
         self.placeholderImage = placeholderImage
@@ -268,9 +268,9 @@ public class AvatarView: UIImageView {
 
 
 
-public class Placeholders {
+class Placeholders {
     
-    public class func avatarPlaceholder(index: jint, size: Int, title: NSString, rounded: Bool) -> UIImage {
+    class func avatarPlaceholder(index: jint, size: Int, title: NSString, rounded: Bool) -> UIImage {
         let colors = ActorSDK.sharedActor().style.avatarColors
         let color = colors[Int(abs(index)) % colors.count].CGColor
         

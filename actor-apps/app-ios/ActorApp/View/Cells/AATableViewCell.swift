@@ -20,6 +20,12 @@ public class AATableViewCell: UITableViewCell {
         
         bottomSeparator.backgroundColor = appStyle.vcSeparatorColor
         topSeparator.backgroundColor = appStyle.vcSeparatorColor
+        
+        backgroundColor = appStyle.cellBgColor
+        
+        let bgView = UIView()
+        bgView.backgroundColor = appStyle.cellBgSelectedColor
+        selectedBackgroundView = bgView
     }
     
     public required init(coder aDecoder: NSCoder) {

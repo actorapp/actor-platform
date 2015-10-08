@@ -7,7 +7,7 @@ import VBFPopFlatButton
 
 class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControllerDelegate {
     
-    private let progress = CircullarLayerProgress(size: CGSizeMake(48, 48))
+    private let progress = AAProgressView(size: CGSizeMake(48, 48))
     private let fileIcon = UIImageView()
     
     private let titleLabel = UILabel()
