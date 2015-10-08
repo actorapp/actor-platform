@@ -20,7 +20,7 @@ public class AAGroupMemberCell: AATableViewCell {
     // Contstructors
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(cellStyle: "members.cell", reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         adminLabel.text = localized("GroupMemberAdmin")
         adminLabel.sizeToFit()

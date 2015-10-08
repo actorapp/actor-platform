@@ -1,0 +1,23 @@
+{
+    "endpoints":[
+                 "tls:\/\/front1-mtproto-api-rev2.actor.im",
+                 "tls:\/\/front2-mtproto-api-rev2.actor.im"
+                 ],
+    "hockeyapp":null,
+    "build_title":null,
+    "build_type":null,
+    "push_id":255052,
+    "info":{
+        "about":{
+            "invite":"https://actor.im/dl",
+            "web":null,
+            "twitter":null
+        },
+        "title":"Actor",
+        "support":{
+            "email":null,
+            "activation-email":null,
+            "in-app":null
+        }
+    }
+}

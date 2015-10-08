@@ -85,9 +85,9 @@ public class ACTitledRow: ACManagedRow {
         res.accessoryType = accessoryType
         
         if isAction {
-            res.contentLabel.textColor = MainAppTheme.list.actionColor
+            res.contentLabel.textColor = ActorSDK.sharedActor().style.cellTintColor
         } else {
-            res.contentLabel.textColor = MainAppTheme.list.textColor
+            res.contentLabel.textColor = ActorSDK.sharedActor().style.cellTextColor
         }
 
     }
@@ -251,7 +251,7 @@ public class ACHeaderRow: ACManagedRow {
             res.iconView.hidden = true
         } else {
             res.iconView.hidden = false
-            res.iconView.image = icon!.tintImage(MainAppTheme.list.sectionColor)
+            res.iconView.image = icon!.tintImage(ActorSDK.sharedActor().style.cellHeaderColor)
         }
         
         return res
@@ -515,12 +515,12 @@ public class ACAvatarRow: ACManagedRow {
     }
     
     public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
-        let res: AvatarCell = table.dequeueCell(indexPath.indexPath)
+        let res: AAAvatarCell = table.dequeueCell(indexPath.indexPath)
         bindCell(res)
         return res
     }
     
-    public func bindCell(res: AvatarCell) {
+    public func bindCell(res: AAAvatarCell) {
         res.titleLabel.text = title
         
         if subtitle != nil {
@@ -556,7 +556,7 @@ public class ACAvatarRow: ACManagedRow {
         bindAction?(r: self)
         
         if let p = indexPath, let s = section {
-            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? AvatarCell {
+            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? AAAvatarCell {
                 bindCell(cell)
             }
         }

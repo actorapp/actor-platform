@@ -1,0 +1,36 @@
+//
+//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//
+
+import Foundation
+
+extension UITabBarItem {
+    
+    convenience init(title: String, img: String, selImage: String) {
+        
+        let unselectedIcon = ActorSDK.sharedActor().style.tabUnselectedIconColor
+        let unselectedText = ActorSDK.sharedActor().style.tabUnselectedTextColor
+        let selectedIcon = ActorSDK.sharedActor().style.tabSelectedIconColor
+        let selectedText = ActorSDK.sharedActor().style.tabSelectedTextColor
+        
+        self.init(title: localized(title), image: UIImage.tinted(img, color: unselectedIcon), selectedImage: UIImage.tinted(selImage, color: selectedIcon))
+        
+        setTitleTextAttributes([NSForegroundColorAttributeName: unselectedText], forState: UIControlState.Normal)
+        setTitleTextAttributes([NSForegroundColorAttributeName: selectedText], forState: UIControlState.Selected)
+    }
+}
+
+public protocol UIConfigurable {
+    
+}
+
+public extension UIConfigurable {
+    func configure(closure: (s: Self)->()) -> Self {
+        closure(s: self)
+        return self
+    }
+}
+
+extension UIView: UIConfigurable {
+    
+}

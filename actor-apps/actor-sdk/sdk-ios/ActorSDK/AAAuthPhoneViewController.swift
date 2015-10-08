@@ -160,11 +160,6 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         phoneTextField.becomeFirstResponder()
     }
     
-    public override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        MainAppTheme.navigation.applyAuthStatusBar()
-    }
-    
     // Actions
     
     public func nextButtonPressed() {

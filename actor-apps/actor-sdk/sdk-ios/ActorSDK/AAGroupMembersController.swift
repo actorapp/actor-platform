@@ -5,7 +5,7 @@
 import UIKit
 import CLTokenInputView
 
-public class GroupMembersController: AAContactsContentViewController, AAContactsContentViewControllerDelegate, CLTokenInputViewDelegate {
+public class GroupMembersController: AAContactsListContentController, AAContactsListContentControllerDelegate, CLTokenInputViewDelegate {
 
     private var groupTitle: String!
     private var groupImage: UIImage?
@@ -35,7 +35,7 @@ public class GroupMembersController: AAContactsContentViewController, AAContacts
         super.tableDidLoad()
         
         tokenView.delegate = self
-        tokenView.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
+        tokenView.backgroundColor = appStyle.vcBgColor
         tokenView.fieldName = ""
         tokenView.placeholderText = localized("CreateGroupMembersPlaceholders")
         
@@ -44,7 +44,7 @@ public class GroupMembersController: AAContactsContentViewController, AAContacts
         tableView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
     }
     
-    public func contactDidTap(controller: AAContactsContentViewController, contact: ACContact) -> Bool {
+    public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
         
         for i in 0..<selected.count {
             let n = selected[i]
@@ -81,17 +81,17 @@ public class GroupMembersController: AAContactsContentViewController, AAContacts
     
     // Handling token input updates
     
-    public func tokenInputView(view: CLTokenInputView!, didChangeText text: String!) {
-        contactRows.filter(text)
+    public func tokenInputView(view: CLTokenInputView, didChangeText text: String?) {
+        contactRows.filter(text!)
     }
     
-    public func tokenInputView(view: CLTokenInputView!, didChangeHeightTo height: CGFloat) {
+    public func tokenInputView(view: CLTokenInputView, didChangeHeightTo height: CGFloat) {
         tokenViewHeight = height
         
         self.view.setNeedsLayout()
     }
     
-    public func tokenInputView(view: CLTokenInputView!, didRemoveToken token: CLToken!) {
+    public func tokenInputView(view: CLTokenInputView, didRemoveToken token: CLToken) {
         for i in 0..<selected.count {
             let n = selected[i]
             if (n.token == token) {

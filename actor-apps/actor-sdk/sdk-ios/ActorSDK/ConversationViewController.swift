@@ -15,6 +15,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
     // Members for autocomplete
     var filteredMembers = [ACMentionFilterResult]()
     let content: ACPage!
+    var appStyle: ActorStyle { get { return ActorSDK.sharedActor().style } }
     
     // Views
     private let titleView: UILabel = UILabel()
@@ -77,14 +78,12 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         
         titleView.font = UIFont.mediumSystemFontOfSize(17)
         titleView.adjustsFontSizeToFitWidth = false;
-        titleView.textColor = Resources.PrimaryLightText
         titleView.textAlignment = NSTextAlignment.Center;
         titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
         
         subtitleView.font = UIFont.systemFontOfSize(13);
         subtitleView.adjustsFontSizeToFitWidth = true;
-        subtitleView.textColor = Resources.SecondaryLightText
         subtitleView.textAlignment = NSTextAlignment.Center;
         subtitleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         subtitleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
@@ -140,15 +139,15 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = Actor.getFormatter().formatTyping();
-                    self.subtitleView.textColor = Resources.PrimaryLightText
+                    // self.subtitleView.textColor = Resources.PrimaryLightText
                 } else {
                     let stateText = Actor.getFormatter().formatPresence(presence, withSex: user.getSex())
                     self.subtitleView.text = stateText;
                     let state = UInt(presence!.state.ordinal())
                     if (state == ACUserPresence_State.ONLINE.rawValue) {
-                        self.subtitleView.textColor = Resources.PrimaryLightText
+                        // self.subtitleView.textColor = Resources.PrimaryLightText
                     } else {
-                        self.subtitleView.textColor = Resources.SecondaryLightText
+                        // self.subtitleView.textColor = Resources.SecondaryLightText
                     }
                 }
             })
@@ -173,7 +172,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
                 }
             
                 if (typingValue != nil && typingValue!.length() > 0) {
-                    self.subtitleView.textColor = Resources.PrimaryLightText
+                    // self.subtitleView.textColor = Resources.PrimaryLightText
                     if (typingValue!.length() == 1) {
                         let uid = typingValue!.intAtIndex(0);
                         let user = Actor.getUserWithUid(uid)
@@ -184,13 +183,13 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
                 } else {
                     var membersString = Actor.getFormatter().formatGroupMembers(members!.size())
                     if (onlineCount == nil || onlineCount!.integerValue == 0) {
-                        self.subtitleView.textColor = Resources.SecondaryLightText
+                        // self.subtitleView.textColor = Resources.SecondaryLightText
                         self.subtitleView.text = membersString;
                     } else {
                         membersString = membersString + ", ";
                         let onlineString = Actor.getFormatter().formatGroupOnline(onlineCount!.intValue());
                         let attributedString = NSMutableAttributedString(string: (membersString + onlineString))
-                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.length, onlineString.length))
+//                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.length, onlineString.length))
                         self.subtitleView.attributedText = attributedString
                     }
                 }
@@ -424,29 +423,35 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         let pickerController = AAImagePickerController()
         pickerController.sourceType = source
         pickerController.mediaTypes = [kUTTypeImage as String]
-        pickerController.view.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
-        pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
+
+        // Style controller bg
+        pickerController.view.backgroundColor = appStyle.vcBgColor
+        
+        // Style navigation bar
+        pickerController.navigationBar.barTintColor = appStyle.navigationBgColor
+        pickerController.navigationBar.tintColor = appStyle.navigationTintColor
+        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: appStyle.navigationTitleColor]
+
         pickerController.delegate = self
-        pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
+
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-        MainAppTheme.navigation.applyStatusBar()
+//        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         Actor.sendUIImage(image, peer: peer)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        MainAppTheme.navigation.applyStatusBar()
+//        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         
         Actor.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        MainAppTheme.navigation.applyStatusBar()
+//        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
 }

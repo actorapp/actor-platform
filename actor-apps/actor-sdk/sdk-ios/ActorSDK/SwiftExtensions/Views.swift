@@ -237,3 +237,36 @@ extension String {
         return res
     }
 }
+
+// Navigation Bar
+
+extension UINavigationBar {
+
+    func setTransparentBackground() {
+        setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        shadowImage = UIImage()
+    }
+    
+    var hairlineHidden: Bool {
+        get {
+            return hairlineImageViewInNavigationBar(self)!.hidden
+        }
+        set(v) {
+            hairlineImageViewInNavigationBar(self)!.hidden = v
+        }
+    }
+    
+    private func hairlineImageViewInNavigationBar(view: UIView) -> UIImageView? {
+        if view.isKindOfClass(UIImageView) && view.bounds.height <= 1.0 {
+            return (view as! UIImageView)
+        }
+        
+        for subview: UIView in view.subviews {
+            if let imageView: UIImageView = hairlineImageViewInNavigationBar(subview) {
+                return imageView
+            }
+        }
+        
+        return nil
+    }
+}

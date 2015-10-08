@@ -40,7 +40,7 @@ public class BigPlaceholderView: UIView {
         imageView.hidden = true
         
         bgView = UIView()
-        bgView.backgroundColor = MainAppTheme.navigation.barSolidColor
+        bgView.backgroundColor = ActorSDK.sharedActor().style.placeholderBgColor
         contentView.addSubview(bgView)
         contentView.addSubview(imageView)
         

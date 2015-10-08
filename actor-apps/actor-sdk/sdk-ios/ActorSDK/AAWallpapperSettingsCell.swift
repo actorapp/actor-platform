@@ -15,7 +15,7 @@ public class AAWallpapperSettingsCell: AATableViewCell {
     public var wallpapperDidTap: ((name: String) -> ())?
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(cellStyle: "cell", reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         wallpapper1.image = UIImage(named: "bg_1.jpg")!
         wallpapper1.clipsToBounds = true
@@ -30,7 +30,7 @@ public class AAWallpapperSettingsCell: AATableViewCell {
         wallpapper3.contentMode = .ScaleAspectFill
         wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_3.jpg") }
         label.font = UIFont.systemFontOfSize(17)
-        label.applyStyle("label")
+        label.textColor = appStyle.cellTextColor
         label.text = localized("SettingsWallpapers")
         disclose.image = UIImage(named: "ios_disclose")
         

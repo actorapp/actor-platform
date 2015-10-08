@@ -21,7 +21,7 @@ public class AADialogSearchCell: AATableViewCell, ACBindedSearchCell {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
         
         titleView.font = UIFont.mediumSystemFontOfSize(19)
-        titleView.textColor = MainAppTheme.list.textColor
+        titleView.textColor = ActorSDK.sharedActor().style.dialogTextColor
         
         contentView.addSubview(avatarView)
         contentView.addSubview(titleView)

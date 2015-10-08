@@ -9,6 +9,14 @@ import Accelerate
 
 public extension UIImage {
     
+    class func tinted(named: String, color: UIColor) -> UIImage {
+        return UIImage(named: named)!.tintImage(color)
+    }
+    
+    class func templated(named: String) -> UIImage {
+        return UIImage(named: named)!.imageWithRenderingMode(.AlwaysTemplate)
+    }
+    
     public func tintImage(color:UIColor) -> UIImage{
         UIGraphicsBeginImageContextWithOptions(self.size,false,UIScreen.mainScreen().scale);
         
@@ -29,7 +37,7 @@ public extension UIImage {
             return image.resizableImageWithCapInsets(capInsets, resizingMode: resizingMode)
         }
         
-        return image;
+        return image.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
     }
     
     public func tintBgImage(color: UIColor) -> UIImage {
