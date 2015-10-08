@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0224F1E3828DAA4189723FDA24F29984 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */; };
 		0600225E1BB64FE0004C2C1A /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0600225D1BB64FE0004C2C1A /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
+		065974B41BC6771800B8C7DF /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51F61BC4E069000E606E /* ActorSDK.framework */; };
+		065974B51BC6771800B8C7DF /* ActorSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51F61BC4E069000E606E /* ActorSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		066A51CF1BC4DAA0000E606E /* AppText_Ar.properties in Resources */ = {isa = PBXBuildFile; fileRef = 066A51C51BC4DAA0000E606E /* AppText_Ar.properties */; settings = {ASSET_TAGS = (); }; };
 		066A51D01BC4DAA0000E606E /* AppText_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 066A51C61BC4DAA0000E606E /* AppText_Cn.properties */; settings = {ASSET_TAGS = (); }; };
 		066A51D11BC4DAA0000E606E /* AppText_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 066A51C71BC4DAA0000E606E /* AppText_Pt.properties */; settings = {ASSET_TAGS = (); }; };
@@ -19,7 +21,6 @@
 		066A51D61BC4DAA0000E606E /* Months_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 066A51CC1BC4DAA0000E606E /* Months_Pt.properties */; settings = {ASSET_TAGS = (); }; };
 		066A51D71BC4DAA0000E606E /* Months_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 066A51CD1BC4DAA0000E606E /* Months_Ru.properties */; settings = {ASSET_TAGS = (); }; };
 		066A51D81BC4DAA0000E606E /* Months.properties in Resources */ = {isa = PBXBuildFile; fileRef = 066A51CE1BC4DAA0000E606E /* Months.properties */; settings = {ASSET_TAGS = (); }; };
-		066A51FD1BC4E08E000E606E /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066A51F61BC4E069000E606E /* ActorSDK.framework */; };
 		066A52781BC514B4000E606E /* PhoneFormats.dat in Resources */ = {isa = PBXBuildFile; fileRef = 066A52771BC514B4000E606E /* PhoneFormats.dat */; settings = {ASSET_TAGS = (); }; };
 		066A527A1BC51530000E606E /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 066A52791BC51530000E606E /* ABPhoneFieldCodes.txt */; settings = {ASSET_TAGS = (); }; };
 		068505CC1B9AB5CB00819D16 /* highlight-default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 068505CA1B9AB5CB00819D16 /* highlight-default.min.css */; };
@@ -51,6 +52,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		065974B61BC6771900B8C7DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 066A51F11BC4E069000E606E /* ActorSDK.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 066A50D11BC4AE63000E606E;
+			remoteInfo = ActorSDK;
+		};
 		066A51F51BC4E069000E606E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 066A51F11BC4E069000E606E /* ActorSDK.xcodeproj */;
@@ -66,6 +74,20 @@
 			remoteInfo = ActorCore;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		065974B81BC6771900B8C7DF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				065974B51BC6771800B8C7DF /* ActorSDK.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0600225D1BB64FE0004C2C1A /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = bg_1.jpg; path = Resources/Backgrounds/bg_1.jpg; sourceTree = "<group>"; };
@@ -131,8 +153,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				066A51FD1BC4E08E000E606E /* ActorSDK.framework in Frameworks */,
 				4403E543C36C1FDC89DD4E00 /* Pods_ActorApp.framework in Frameworks */,
+				065974B41BC6771800B8C7DF /* ActorSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,10 +344,12 @@
 				06FC5E741BAB2DCC0071F153 /* ShellScript */,
 				16DA98FD27E0766A88C46CBB /* Embed Pods Frameworks */,
 				066A51C41BC4DA45000E606E /* ShellScript */,
+				065974B81BC6771900B8C7DF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				065974B71BC6771900B8C7DF /* PBXTargetDependency */,
 			);
 			name = ActorApp;
 			productName = ActorApp;
@@ -534,6 +558,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		065974B71BC6771900B8C7DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ActorSDK;
+			targetProxy = 065974B61BC6771900B8C7DF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -569,6 +601,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -631,11 +664,10 @@
 					"-framework",
 					"\"WebKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
-				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -687,6 +719,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -747,11 +780,10 @@
 					"-framework",
 					"\"WebKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
-				STRIP_BITCODE_FROM_COPIED_FILES = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				USER_HEADER_SEARCH_PATHS = "";

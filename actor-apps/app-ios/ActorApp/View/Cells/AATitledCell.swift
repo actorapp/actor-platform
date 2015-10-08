@@ -8,11 +8,11 @@ public class AATitledCell: AATableViewCell {
     
 //    private var copyData: String?
     private var isAction: Bool = false
-    public let titleLabel: UILabel = UILabel(style: "cell.titled.title")
-    public let contentLabel: UILabel = UILabel(style: "cell.titled.content")
+    public let titleLabel: UILabel = UILabel()
+    public let contentLabel: UILabel = UILabel()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(cellStyle: "cell.titled", reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.addSubview(titleLabel)
         contentView.addSubview(contentLabel)
@@ -42,9 +42,9 @@ public class AATitledCell: AATableViewCell {
     public func setAction(isAction: Bool) {
         self.isAction = isAction
         if isAction {
-            contentLabel.textColor = MainAppTheme.list.actionColor
+            //contentLabel.textColor = MainAppTheme.list.actionColor
         } else {
-            contentLabel.textColor = MainAppTheme.list.textColor
+           // contentLabel.textColor = MainAppTheme.list.textColor
         }
     }
     

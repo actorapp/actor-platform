@@ -35,18 +35,14 @@ public extension ActorSDKDelegate {
     
     /// Default phone activation
     public func actorControllerForAuthStart() -> UIViewController {
-        let phoneController = AAAuthPhoneViewController()
-        let loginNavigation = AANavigationController(rootViewController: phoneController)
-        loginNavigation.navigationBar.tintColor = MainAppTheme.navigation.barColor
-        loginNavigation.makeBarTransparent()
-        return loginNavigation
+        return AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
     }
     
     /// Default app layout
     public func actorControllerForStart() -> UIViewController {
         let tab = AARootTabViewController()
         tab.viewControllers = [
-            AANavigationController(rootViewController: ContactsViewController()),
+            AANavigationController(rootViewController: AAContactsViewController()),
             AANavigationController(rootViewController: AARecentViewController()),
             AANavigationController(rootViewController: AASettingsViewController())]
         tab.selectedIndex = 0

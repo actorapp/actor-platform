@@ -136,7 +136,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        MainAppTheme.navigation.applyAuthStatusBar()
+        // MainAppTheme.navigation.applyAuthStatusBar()
     }
     
     // MARK: -
@@ -273,14 +273,6 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         if (Actor.getAuthState() != ACAuthState.SIGN_UP.rawValue) {
             navigateBack()
         }
-    }
-    
-    public func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        MainAppTheme.navigation.applyStatusBar()
-    }
-    
-    public func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
-        MainAppTheme.navigation.applyStatusBar()
     }
     
     public func textFieldShouldReturn(textField: UITextField) -> Bool {

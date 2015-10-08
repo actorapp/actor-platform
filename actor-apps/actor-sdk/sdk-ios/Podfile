@@ -1,0 +1,50 @@
+platform :ios, '8.0'
+use_frameworks!
+
+workspace 'ActorApp'
+xcodeproj 'ActorSDK.xcodeproj'
+xcodeproj 'ActorApp.xcodeproj'
+
+inhibit_all_warnings!
+
+link_with 'ActorApp'
+
+target 'ActorApp' do
+    xcodeproj 'ActorApp.xcodeproj'
+    
+    # Tracking
+    pod 'HockeySDK', '~> 3.8-RC'
+    pod 'Fabric'
+    pod 'Crashlytics'
+    
+end
+
+target 'ActorSDK' do
+    xcodeproj 'ActorSDK.xcodeproj'
+    
+    pod 'J2ObjC-Framework'
+    
+    pod 'RegexKitLite'
+    pod 'CocoaAsyncSocket'
+    pod 'zipzap'
+    
+    # UI
+    pod 'VBFPopFlatButton'
+    pod 'MBProgressHUD'
+    pod 'PSTAlertController'
+    pod 'DZNPhotoPickerController'
+    pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
+    pod 'JVFloatLabeledTextField'
+    pod 'CLTokenInputView'
+    pod 'SZTextView'
+    pod 'SlackTextViewController'
+    
+    pod 'NYTPhotoViewer'
+    pod 'PEPhotoCropEditor'
+    pod 'LTNavigationBar'
+    pod 'BlockAlertsAnd-ActionSheets'
+    pod 'RMUniversalAlert'
+    pod 'PSTAlertController'
+    pod 'TTTAttributedLabel'
+    pod 'M13ProgressSuite'
+end

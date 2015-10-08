@@ -28,7 +28,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
+        view.backgroundColor = appStyle.vcBgColor
         view.addSubview(addPhotoButton)
         view.addSubview(avatarImageView)
         view.addSubview(hint)
@@ -70,23 +70,23 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         addPhotoLabelSecond.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelSecond.frame.size.width) / 2, 22 + 22, addPhotoLabelSecond.frame.size.width, addPhotoLabelSecond.frame.size.height));
         
 //        groupName.backgroundColor = UIColor.whiteColor()
-        groupName.backgroundColor = ActorSDK.sharedActor().style.tableBgColor
-        groupName.textColor = MainAppTheme.list.textColor
+        groupName.backgroundColor = appStyle.vcBgColor
+        groupName.textColor = ActorSDK.sharedActor().style.cellTextColor
         groupName.font = UIFont.systemFontOfSize(20)
         groupName.keyboardType = UIKeyboardType.Default
         groupName.returnKeyType = UIReturnKeyType.Next
-        groupName.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("CreateGroupNamePlaceholder", comment: "Enter group title"), attributes: [NSForegroundColorAttributeName: MainAppTheme.list.hintColor])
+        groupName.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("CreateGroupNamePlaceholder", comment: "Enter group title"), attributes: [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.vcHintColor])
         groupName.delegate = self
         groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         groupName.autocapitalizationType = UITextAutocapitalizationType.Words
         
-        groupNameFieldSeparator.backgroundColor = ActorSDK.sharedActor().style.tableSeparatorColor
+        groupNameFieldSeparator.backgroundColor = appStyle.vcSeparatorColor
         
         hint.text = localized("CreateGroupHint")
         hint.font = UIFont.systemFontOfSize(15)
         hint.lineBreakMode = .ByWordWrapping
         hint.numberOfLines = 0
-        hint.textColor = MainAppTheme.list.hintColor
+        hint.textColor = ActorSDK.sharedActor().style.vcHintColor
     }
     
     public override func viewDidLayoutSubviews() {

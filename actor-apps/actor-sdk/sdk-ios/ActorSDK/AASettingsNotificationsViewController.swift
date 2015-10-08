@@ -29,8 +29,10 @@ public class AASettingsNotificationsViewController: AATableViewController {
         super.viewDidLoad()
         
         tableView.registerClass(AACommonCell.self, forCellReuseIdentifier: CellIdentifier)
-        tableView.backgroundColor = ActorSDK.sharedActor().style.tableBackyardColor
+        tableView.backgroundColor = appStyle.vcBackyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        
+        view.backgroundColor = tableView.backgroundColor
     }
     
     // MARK: - 
@@ -307,12 +309,12 @@ public class AASettingsNotificationsViewController: AATableViewController {
     
     public func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel!.textColor = MainAppTheme.list.sectionColor
+        header.textLabel!.textColor = ActorSDK.sharedActor().style.cellFooterColor
     }
     
     public func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        header.textLabel!.textColor = MainAppTheme.list.sectionHintColor
+        header.textLabel!.textColor = ActorSDK.sharedActor().style.cellFooterColor
     }
     
 

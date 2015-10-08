@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AAComposeController: AAContactsContentViewController, AAContactsContentViewControllerDelegate {
+public class AAComposeController: AAContactsListContentController, AAContactsListContentControllerDelegate {
 
     public override init() {
         super.init()
@@ -19,7 +19,7 @@ public class AAComposeController: AAContactsContentViewController, AAContactsCon
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func willAddContacts(controller: AAContactsContentViewController, section: ACManagedSection) {
+    public func willAddContacts(controller: AAContactsListContentController, section: ACManagedSection) {
         section.custom { (r:ACCustomRow<AAContactActionCell>) -> () in
             
             r.height = 56
@@ -35,7 +35,7 @@ public class AAComposeController: AAContactsContentViewController, AAContactsCon
         }
     }
     
-    public func contactDidTap(controller: AAContactsContentViewController, contact: ACContact) -> Bool {
+    public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
         // navigateNext(ConversationViewController(peer: ACPeer.userWithInt(contact.uid)), removeCurrent: true)
         return false
     }
