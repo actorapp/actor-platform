@@ -13,7 +13,7 @@ public class AADialogSearchCell: AATableViewCell, ACBindedSearchCell {
         return 76
     }
     
-    private let avatarView: AvatarView = AvatarView(frameSize: 48, type: .Rounded)
+    private let avatarView: AAAvatarView = AAAvatarView(frameSize: 48, type: .Rounded)
     private let titleView: UILabel = UILabel()
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

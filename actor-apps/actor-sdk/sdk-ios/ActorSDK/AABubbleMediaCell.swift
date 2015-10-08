@@ -11,7 +11,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     // Views
     
     let preview = UIImageView()
-    let progress = CircullarLayerProgress(size: CGSizeMake(64, 64))
+    let progress = AAProgressView(size: CGSizeMake(64, 64))
     let timeBg = UIImageView()
     let timeLabel = UILabel()
     let statusView = UIImageView()

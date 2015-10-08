@@ -4,7 +4,7 @@
 
 import UIKit
 
-public enum CommonCellStyle {
+public enum AACommonCellStyle {
     case Normal
     case DestructiveCentered
     case Destructive
@@ -21,7 +21,7 @@ public class AACommonCell: AATableViewCell {
     private var titleLabel = UILabel()
     private var hintLabel = UILabel()
     
-    public var style: CommonCellStyle = .Normal { didSet { updateCellStyle() } }
+    public var style: AACommonCellStyle = .Normal { didSet { updateCellStyle() } }
     public var switchBlock: ((Bool) -> ())?
     public var contentInset: CGFloat = 15
     
@@ -32,7 +32,7 @@ public class AACommonCell: AATableViewCell {
         contentView.addSubview(titleLabel)
         
         hintLabel.font = UIFont.systemFontOfSize(17.0)
-        // hintLabel.textColor = MainAppTheme.list.hintColor
+        hintLabel.textColor = appStyle.cellHintColor
         contentView.addSubview(hintLabel)
     }
     
@@ -74,50 +74,50 @@ public class AACommonCell: AATableViewCell {
     private func updateCellStyle() {
         switch (style) {
         case .Normal:
-            //titleLabel.textColor = MainAppTheme.list.textColor
+            titleLabel.textColor = appStyle.cellTextColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Hint:
-            //titleLabel.textColor = MainAppTheme.list.hintColor
+            titleLabel.textColor = appStyle.cellHintColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .DestructiveCentered:
-            titleLabel.textColor = UIColor.redColor()
+            titleLabel.textColor = appStyle.cellDestructiveColor
             titleLabel.textAlignment = NSTextAlignment.Center
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Destructive:
-            titleLabel.textColor = UIColor.redColor()
+            titleLabel.textColor = appStyle.cellDestructiveColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Switch:
-            //titleLabel.textColor = MainAppTheme.list.textColor
+            titleLabel.textColor = appStyle.cellTextColor
             titleLabel.textAlignment = NSTextAlignment.Left
             setupSwitchIfNeeded()
             switcher?.hidden = false
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Action:
-            //titleLabel.textColor = MainAppTheme.list.actionColor
+            titleLabel.textColor = appStyle.cellTintColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .ActionCentered:
-            //titleLabel.textColor = MainAppTheme.list.actionColor
+            titleLabel.textColor = appStyle.cellTintColor
             titleLabel.textAlignment = NSTextAlignment.Center
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Navigation:
-            //titleLabel.textColor = MainAppTheme.list.textColor
+            titleLabel.textColor = appStyle.cellTextColor
             titleLabel.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
@@ -128,6 +128,8 @@ public class AACommonCell: AATableViewCell {
         if switcher == nil {
             switcher = UISwitch()
             switcher!.addTarget(self, action: Selector("switcherSwitched"), forControlEvents: UIControlEvents.ValueChanged)
+            switcher!.onTintColor = appStyle.vcSwitchOn
+            switcher!.tintColor = appStyle.vcSwitchOff
             contentView.addSubview(switcher!)
         }
     }

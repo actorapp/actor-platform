@@ -5,7 +5,7 @@
 import Foundation
 import UIKit
 
-public class TableViewSeparator : UIView {
+public class AATableViewSeparator : UIView {
 
     public init(color: UIColor) {
         super.init(frame: CGRectZero)

@@ -87,7 +87,7 @@ class AABubbleCell: UICollectionViewCell {
     
     // Views
     let mainView = UIView()
-    let avatarView = AvatarView(frameSize: 39)
+    let avatarView = AAAvatarView(frameSize: 39)
     var avatarAdded: Bool = false
     
     let bubble = UIImageView()

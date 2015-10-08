@@ -17,7 +17,7 @@ public class AAContactCell : AATableViewCell, ACBindedCell, ACBindedSearchCell {
         return 56
     }
     
-    public let avatarView = AvatarView(frameSize: 40, type: .Rounded);
+    public let avatarView = AAAvatarView(frameSize: 40, type: .Rounded);
     public let shortNameView = UILabel();
     public let titleView = UILabel();
     

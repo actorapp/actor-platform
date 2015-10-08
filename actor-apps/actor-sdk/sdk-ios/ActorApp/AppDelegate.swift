@@ -59,6 +59,7 @@ class AppDelegate : ActorApplicationDelegate {
         
         style.vcBackyardColor = UIColor(rgb: 0x272422)
         style.vcBgColor = UIColor(rgb: 0x322d28)
+        style.vcPanelBgColor = UIColor(rgb: 0x272422)
         
         style.vcTextColor = UIColor(rgb: 0xe6ce94)
         style.vcHintColor = UIColor(rgb: 0x575045)
@@ -74,7 +75,6 @@ class AppDelegate : ActorApplicationDelegate {
         style.cellHeaderColor = UIColor(rgb: 0x7c7365)
         style.cellFooterColor = UIColor(rgb: 0x7c7365)
         
-        style.tabBgColor = UIColor(rgb: 0x272422)
         style.tabSelectedIconColor = UIColor(rgb: 0xf3eadf)
         style.tabUnselectedIconColor = UIColor(rgb: 0x7c7365)
         style.tabSelectedTextColor = UIColor(rgb: 0xf3eadf)

@@ -164,8 +164,7 @@ public class ACTextRow: ACManagedRow {
     
     public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
         let res = table.dequeueTextCell(indexPath.indexPath)
-        res.setTitle(title, content: content)
-        res.setAction(isAction)
+        res.setContent(title, content: content, isAction: isAction)
         if navigate {
             res.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         } else {
@@ -279,7 +278,7 @@ public extension ACManagedSection {
 
 public class ACCommonRow: ACManagedRow {
     
-    public var style: CommonCellStyle = .Normal
+    public var style: AACommonCellStyle = .Normal
     public var hint: String?
     public var content: String?
     public var switchOn: Bool = false

@@ -22,7 +22,7 @@ class AAWallpapperPreviewController: AAViewController {
         cancelButton.addTarget(self, action: "cancelDidTap", forControlEvents: .TouchUpInside)
         cancelButton.setTitle(localized("AlertCancel"), forState: .Normal)
         cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
-        setButton.backgroundColor = appStyle.tabBgColor
+        setButton.backgroundColor = appStyle.vcPanelBgColor
         setButton.addTarget(self, action: "setDidTap", forControlEvents: .TouchUpInside)
         setButton.setTitle(localized("AlertSet"), forState: .Normal)
         setButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
