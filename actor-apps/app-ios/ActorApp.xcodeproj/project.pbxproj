@@ -1290,7 +1290,7 @@
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.2/lib";
+				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.2.1/lib";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1343,7 +1343,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8.2/include";
+				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8.2.1/include";
 			};
 			name = Debug;
 		};
@@ -1402,7 +1402,7 @@
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.2/lib";
+				LIBRARY_SEARCH_PATHS = "../build-tools/dist/j2objc-0.9.8.2.1/lib";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1454,7 +1454,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorApp/Supporting Files/ActorApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8.2/include";
+				USER_HEADER_SEARCH_PATHS = "ActorCore/Sources ../build-tools/dist/j2objc-0.9.8.2.1/include";
 			};
 			name = Release;
 		};
