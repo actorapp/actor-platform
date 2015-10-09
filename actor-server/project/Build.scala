@@ -91,6 +91,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       //      actorDashboard,
       actorCore,
       actorBots,
+      actorBotsShared,
       actorBotkit,
       actorEmail,
       actorEnrich,
