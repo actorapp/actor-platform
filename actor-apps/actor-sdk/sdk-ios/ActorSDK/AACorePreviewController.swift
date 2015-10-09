@@ -34,7 +34,7 @@ public class AACodePreviewController: AAViewController {
             "</body>\n" +
             "</html>"
 
-        let bundle = NSBundle.mainBundle()
+        let bundle = NSBundle.framework
         let path = bundle.pathForResource("highlight.min", ofType: "js")!
         
         webView.loadHTMLString(data, baseURL: NSURL(fileURLWithPath: path))

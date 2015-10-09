@@ -17,22 +17,22 @@ public class AAWallpapperSettingsCell: AATableViewCell {
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        wallpapper1.image = UIImage(named: "bg_1.jpg")!
+        wallpapper1.image = UIImage.bundled("bg_1.jpg")!
         wallpapper1.clipsToBounds = true
         wallpapper1.contentMode = .ScaleAspectFill
         wallpapper1.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_1.jpg") }
-        wallpapper2.image = UIImage(named: "bg_2.jpg")!
+        wallpapper2.image = UIImage.bundled("bg_2.jpg")!
         wallpapper2.clipsToBounds = true
         wallpapper2.contentMode = .ScaleAspectFill
         wallpapper2.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_2.jpg") }
-        wallpapper3.image = UIImage(named: "bg_3.jpg")!
+        wallpapper3.image = UIImage.bundled("bg_3.jpg")!
         wallpapper3.clipsToBounds = true
         wallpapper3.contentMode = .ScaleAspectFill
         wallpapper3.viewDidTap = { [unowned self] () -> () in self.wallpapperDidTap?(name: "bg_3.jpg") }
         label.font = UIFont.systemFontOfSize(17)
         label.textColor = appStyle.cellTextColor
         label.text = AALocalized("SettingsWallpapers")
-        disclose.image = UIImage(named: "ios_disclose")
+        disclose.image = UIImage.bundled("ios_disclose")
         
         self.contentView.addSubview(wallpapper1)
         self.contentView.addSubview(wallpapper2)

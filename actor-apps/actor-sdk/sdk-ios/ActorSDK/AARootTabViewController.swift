@@ -33,7 +33,7 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         appEmptyContainer.hidden = true
         appIsEmptyPlaceholder.hidden = true
         appIsEmptyPlaceholder.setImage(
-            UIImage(named: "contacts_list_placeholder"),
+            UIImage.bundled("contacts_list_placeholder"),
             title: AALocalized("Placeholder_Empty_Title"),
             subtitle: AALocalized("Placeholder_Empty_Message"),
             actionTitle: AALocalized("Placeholder_Empty_Action"),
@@ -45,7 +45,7 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         
         appIsSyncingPlaceholder.hidden = true
         appIsSyncingPlaceholder.setImage(
-            UIImage(named: "chat_list_placeholder"),
+            UIImage.bundled("chat_list_placeholder"),
             title: AALocalized("Placeholder_Loading_Title"),
             subtitle: AALocalized("Placeholder_Loading_Message"))
         appEmptyContainer.addSubview(appIsSyncingPlaceholder)
