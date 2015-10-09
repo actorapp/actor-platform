@@ -11,6 +11,12 @@ public func AALocalized(text: String!) -> String! {
         return nil
     }
     
+    let appRes = NSLocalizedString(text, comment: "")
+    
+    if (appRes != text) {
+        return appRes
+    }
+    
     for t in tables {
         let res = NSLocalizedString(text, tableName: t.table, bundle: t.bundle, value: text, comment: "")
         if (res != text) {
@@ -18,7 +24,7 @@ public func AALocalized(text: String!) -> String! {
         }
     }
     
-    return NSLocalizedString(text, comment: "")
+    return NSLocalizedString(text, tableName: nil, bundle: NSBundle.framework, value: text, comment: "")
 }
 
 // Registration localization table

@@ -67,7 +67,7 @@ public class AAContactsListContentController: AAContentTableController {
         }
         
         placeholder.setImage(
-            UIImage(named: "contacts_list_placeholder"),
+            UIImage.bundled("contacts_list_placeholder"),
             title:  AALocalized("Placeholder_Contacts_Title"),
             subtitle: AALocalized("Placeholder_Contacts_Message"),
             actionTitle: AALocalized("Placeholder_Contacts_Action"),

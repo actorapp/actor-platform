@@ -43,7 +43,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         // Custom background if available
         if let bg = Actor.getSelectedWallpaper() {
             if bg.startsWith("local:") {
-                backgroundView.image = UIImage(named: bg.skip(6))
+                backgroundView.image = UIImage.bundled(bg.skip(6))
             }
         }
         
