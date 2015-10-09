@@ -5,7 +5,7 @@
 import UIKit
 import VBFPopFlatButton
 
-class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControllerDelegate {
+public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControllerDelegate {
     
     private let progress = AAProgressView(size: CGSizeMake(48, 48))
     private let fileIcon = UIImageView()
@@ -18,7 +18,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
     
     private var bindedLayout: DocumentCellLayout!
     
-    init(frame: CGRect) {
+    public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
         dateLabel.font = UIFont.italicSystemFontOfSize(11)
@@ -26,18 +26,17 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         dateLabel.numberOfLines = 1
         dateLabel.contentMode = UIViewContentMode.TopLeft
         dateLabel.textAlignment = NSTextAlignment.Right
-        dateLabel.textColor = MainAppTheme.bubbles.textDateOut
         
         statusView.contentMode = UIViewContentMode.Center
         
         titleLabel.font = UIFont.systemFontOfSize(16.0)
-        titleLabel.textColor = MainAppTheme.bubbles.textOut
+        titleLabel.textColor = appStyle.chatTextOutColor
         titleLabel.text = " "
         titleLabel.sizeToFit()
         titleLabel.lineBreakMode = NSLineBreakMode.ByTruncatingTail
         
         sizeLabel.font = UIFont.systemFontOfSize(13.0)
-        sizeLabel.textColor = MainAppTheme.bubbles.textOut
+        sizeLabel.textColor = appStyle.chatTextOutColor
         sizeLabel.text = " "
         sizeLabel.sizeToFit()
         
@@ -56,14 +55,14 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         self.bubble.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "documentDidTap"))
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: -
     // MARK: Bind
     
-    override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
 
         self.bindedLayout = cellLayout as! DocumentCellLayout
         
@@ -78,11 +77,11 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         if (!reuse) {
             if (isOut) {
                 bindBubbleType(.MediaOut, isCompact: false)
-                dateLabel.textColor = MainAppTheme.bubbles.textDateOut
+                dateLabel.textColor = appStyle.chatTextDateOutColor
                 self.statusView.hidden = false
             } else {
                 bindBubbleType(.MediaIn, isCompact: false)
-                dateLabel.textColor = MainAppTheme.bubbles.textDateIn
+                dateLabel.textColor = appStyle.chatTextDateInColor
                 self.statusView.hidden = true
             }
             
@@ -108,33 +107,33 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
             switch(UInt(message.messageState.ordinal())) {
             case ACMessageState.PENDING.rawValue:
                 self.statusView.image = appStyle.chatIconClock
-                self.statusView.tintColor = MainAppTheme.bubbles.statusSending
+                self.statusView.tintColor = appStyle.chatStatusSending
                 break
             case ACMessageState.SENT.rawValue:
                 self.statusView.image = appStyle.chatIconCheck1
-                self.statusView.tintColor = MainAppTheme.bubbles.statusSent
+                self.statusView.tintColor = appStyle.chatStatusSent
                 break
             case ACMessageState.RECEIVED.rawValue:
                 self.statusView.image = appStyle.chatIconCheck2
-                self.statusView.tintColor = MainAppTheme.bubbles.statusReceived
+                self.statusView.tintColor = appStyle.chatStatusReceived
                 break
             case ACMessageState.READ.rawValue:
                 self.statusView.image = appStyle.chatIconCheck2
-                self.statusView.tintColor = MainAppTheme.bubbles.statusRead
+                self.statusView.tintColor = appStyle.chatStatusRead
                 break
             case ACMessageState.ERROR.rawValue:
                 self.statusView.image = appStyle.chatIconError
-                self.statusView.tintColor = MainAppTheme.bubbles.statusError
+                self.statusView.tintColor = appStyle.chatStatusError
                 break
             default:
                 self.statusView.image = appStyle.chatIconClock
-                self.statusView.tintColor = MainAppTheme.bubbles.statusSending
+                self.statusView.tintColor = appStyle.chatStatusSending
                 break
             }
         }
     }
     
-    func documentDidTap() {
+    public func documentDidTap() {
         let content = bindedMessage!.content as! ACDocumentContent
         if let fileSource = content.getSource() as? ACFileRemoteSource {
             Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: AAFileCallback(
@@ -162,7 +161,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         }
     }
     
-    override func fileUploadPaused(reference: String, selfGeneration: Int) {
+    public override func fileUploadPaused(reference: String, selfGeneration: Int) {
         self.runOnUiThread(selfGeneration) { () -> () in
             self.fileIcon.hideView()
             
@@ -172,7 +171,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         }
     }
     
-    override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
+    public override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
         self.runOnUiThread(selfGeneration) { () -> () in
             self.fileIcon.hideView()
             
@@ -182,7 +181,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         }
     }
     
-    override func fileDownloadPaused(selfGeneration: Int) {
+    public override func fileDownloadPaused(selfGeneration: Int) {
         self.runOnUiThread(selfGeneration) { () -> () in
             self.fileIcon.hideView()
             
@@ -192,7 +191,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         }
     }
     
-    override func fileDownloading(progress: Double, selfGeneration: Int) {
+    public override func fileDownloading(progress: Double, selfGeneration: Int) {
         self.runOnUiThread(selfGeneration) { () -> () in
             self.fileIcon.hideView()
             
@@ -202,7 +201,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         }
     }
     
-    override func fileReady(reference: String, selfGeneration: Int) {
+    public override func fileReady(reference: String, selfGeneration: Int) {
         self.runOnUiThread(selfGeneration) { () -> () in
             
             self.fileIcon.image = self.bindedLayout.icon
@@ -213,7 +212,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         }
     }
     
-    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+    public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
         let insets = fullContentInsets
         
         let contentWidth = self.contentView.frame.width
@@ -244,38 +243,38 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         }
     }
 
-    func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController {
+    public func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController {
         return self.controller
     }
 }
 
-class AABubbleDocumentCellLayout: AABubbleLayouter {
+public class AABubbleDocumentCellLayout: AABubbleLayouter {
     
-    func isSuitable(message: ACMessage) -> Bool {
+    public func isSuitable(message: ACMessage) -> Bool {
         return message.content is ACDocumentContent
     }
     
-    func buildLayout(peer: ACPeer, message: ACMessage) -> CellLayout {
+    public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
         return DocumentCellLayout(message: message)
     }
     
-    func cellClass() -> AnyClass {
+    public func cellClass() -> AnyClass {
         return AABubbleDocumentCell.self
     }
 }
 
-class DocumentCellLayout: CellLayout {
+public class DocumentCellLayout: AACellLayout {
     
-    let fileName: String
-    let fileExt: String
-    let fileSize: String
+    public let fileName: String
+    public let fileExt: String
+    public let fileSize: String
     
-    let icon: UIImage
-    let fastThumb: NSData?
+    public let icon: UIImage
+    public let fastThumb: NSData?
     
-    let autoDownload: Bool
+    public let autoDownload: Bool
     
-    init(fileName: String, fileExt: String, fileSize: Int, fastThumb: ACFastThumb?, date: Int64, autoDownload: Bool) {
+    public init(fileName: String, fileExt: String, fileSize: Int, fastThumb: ACFastThumb?, date: Int64, autoDownload: Bool) {
         
         // File metadata
         self.fileName = fileName
@@ -335,11 +334,11 @@ class DocumentCellLayout: CellLayout {
         super.init(height: 66, date: date, key: "document")
     }
     
-    convenience init(document: ACDocumentContent, date: Int64) {
+    public convenience init(document: ACDocumentContent, date: Int64) {
         self.init(fileName: document.getName(), fileExt: document.getExt(), fileSize: Int(document.getSource().getSize()), fastThumb: document.getFastThumb(), date: date, autoDownload: (document.getSource().getSize() < 1024 * 1025 * 1024))
     }
     
-    convenience init(message: ACMessage) {
+    public convenience init(message: ACMessage) {
         self.init(document: message.content as! ACDocumentContent, date: Int64(message.date))
     }
 }

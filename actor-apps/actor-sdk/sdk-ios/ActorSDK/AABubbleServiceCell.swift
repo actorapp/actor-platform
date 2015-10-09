@@ -4,9 +4,7 @@
 
 import Foundation
 
-// MARK: -
-
-class AABubbleServiceCell : AABubbleCell {
+public class AABubbleServiceCell : AABubbleCell {
     
     private static let serviceBubbleFont = UIFont.boldSystemFontOfSize(12)
     private static let maxServiceTextWidth: CGFloat = 260
@@ -15,14 +13,14 @@ class AABubbleServiceCell : AABubbleCell {
     
     private var bindedLayout: ServiceCellLayout!
     
-    init(frame: CGRect) {
+    public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: true)
        
         // Configuring service label
         serviceText.font = AABubbleServiceCell.serviceBubbleFont;
         serviceText.lineBreakMode = .ByWordWrapping;
         serviceText.numberOfLines = 0;
-        serviceText.textColor = UIColor.whiteColor()
+        serviceText.textColor = appStyle.chatServiceTextColor
         serviceText.contentMode = UIViewContentMode.Center
         serviceText.textAlignment = NSTextAlignment.Center
         mainView.addSubview(serviceText)
@@ -35,11 +33,11 @@ class AABubbleServiceCell : AABubbleCell {
         bindBubbleType(.Service, isCompact: false)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         self.bindedLayout = cellLayout as! ServiceCellLayout
         
         if (!reuse) {
@@ -47,7 +45,7 @@ class AABubbleServiceCell : AABubbleCell {
         }
     }
     
-    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+    public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
 
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
@@ -60,12 +58,12 @@ class AABubbleServiceCell : AABubbleCell {
     }
 }
 
-class ServiceCellLayout: CellLayout {
+public class ServiceCellLayout: AACellLayout {
 
     var text: String
     var textSize: CGSize
     
-    init(text: String, date: Int64) {
+    public init(text: String, date: Int64) {
         
         // Saving text size
         self.text = text
@@ -78,19 +76,19 @@ class ServiceCellLayout: CellLayout {
     }
 }
 
-class AABubbleServiceCellLayouter: AABubbleLayouter {
+public class AABubbleServiceCellLayouter: AABubbleLayouter {
     
-    func isSuitable(message: ACMessage) -> Bool {
+    public func isSuitable(message: ACMessage) -> Bool {
         return message.content is ACServiceContent
     }
     
-    func buildLayout(peer: ACPeer, message: ACMessage) -> CellLayout {
-        var serviceText = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
+    public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
+        let serviceText = Actor.getFormatter().formatFullServiceMessageWithSenderId(message.senderId, withContent: message.content as! ACServiceContent)
         
         return ServiceCellLayout(text: serviceText, date: Int64(message.date))
     }
     
-    func cellClass() -> AnyClass {
+    public func cellClass() -> AnyClass {
         return AABubbleServiceCell.self
     }
 }

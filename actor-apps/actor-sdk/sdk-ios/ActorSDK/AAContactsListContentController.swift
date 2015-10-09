@@ -68,10 +68,10 @@ public class AAContactsListContentController: AAContentTableController {
         
         placeholder.setImage(
             UIImage(named: "contacts_list_placeholder"),
-            title:  NSLocalizedString("Placeholder_Contacts_Title", comment: "Placeholder Title"),
-            subtitle: NSLocalizedString("Placeholder_Contacts_Message", comment: "Placeholder Message"),
-            actionTitle: NSLocalizedString("Placeholder_Contacts_Action", comment: "Placeholder Action"),
-            subtitle2: NSLocalizedString("Placeholder_Contacts_Message2", comment: "Placeholder Message2"),
+            title:  AALocalized("Placeholder_Contacts_Title"),
+            subtitle: AALocalized("Placeholder_Contacts_Message"),
+            actionTitle: AALocalized("Placeholder_Contacts_Action"),
+            subtitle2: AALocalized("Placeholder_Contacts_Message2"),
             actionTarget: self, actionSelector: Selector("showSmsInvitation"),
             action2title: nil,
             action2Selector: nil)

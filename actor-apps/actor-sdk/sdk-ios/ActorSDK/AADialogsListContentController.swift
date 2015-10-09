@@ -61,8 +61,8 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
         
         placeholder.setImage(
             UIImage(named: "chat_list_placeholder"),
-            title: NSLocalizedString("Placeholder_Dialogs_Title", comment: "Placeholder Title"),
-            subtitle: NSLocalizedString("Placeholder_Dialogs_Message", comment: "Placeholder Message"))
+            title: AALocalized("Placeholder_Dialogs_Title"),
+            subtitle: AALocalized("Placeholder_Dialogs_Message"))
         
         binder.bind(Actor.getAppState().isDialogsEmpty, closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {

@@ -4,7 +4,7 @@
 
 import Foundation
 
-class Cache<T> {
+class AACache<T> {
     private var cache = AAHashMap<T>()
     
     func pick(id: Int64) -> T? {
@@ -21,13 +21,13 @@ class Cache<T> {
 
 }
 
-struct CachedSetting {
+struct AACachedSetting {
     
     let prevId: jlong?
     let nextId: jlong?
-    let cached: CellSetting
+    let cached: AACellSetting
     
-    init(cached: CellSetting, prevId: jlong?, nextId: jlong?) {
+    init(cached: AACellSetting, prevId: jlong?, nextId: jlong?) {
         self.prevId = prevId
         self.nextId = nextId
         self.cached = cached
@@ -46,11 +46,11 @@ struct CachedSetting {
     }
 }
 
-class LayoutCache : Cache<CellLayout> {
+class AALayoutCache : AACache<AACellLayout> {
 
 }
 
-class FastThumbCache {
+class AAFastThumbCache {
     private var thumbs = AAHashMap<UIImage>()
     
     func pick(id: Int64) -> UIImage? {

@@ -8,6 +8,8 @@ import MessageUI
 
 public class AARootTabViewController : UITabBarController, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate {
     
+    private let binder = AABinder()
+    
     private var appEmptyContainer = UIView()
     private var appIsSyncingPlaceholder = AABigPlaceholderView(topOffset: 44 + 20)
     private var appIsEmptyPlaceholder = AABigPlaceholderView(topOffset: 44 + 20)
@@ -32,23 +34,35 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
         appIsEmptyPlaceholder.hidden = true
         appIsEmptyPlaceholder.setImage(
             UIImage(named: "contacts_list_placeholder"),
-            title: NSLocalizedString("Placeholder_Empty_Title", comment: "Placeholder Title"),
-            subtitle: NSLocalizedString("Placeholder_Empty_Message", comment: "Placeholder Message"),
-            actionTitle: NSLocalizedString("Placeholder_Empty_Action", comment: "Placeholder Action"),
-            subtitle2: NSLocalizedString("Placeholder_Empty_Message2", comment: "Placeholder Message2"),
+            title: AALocalized("Placeholder_Empty_Title"),
+            subtitle: AALocalized("Placeholder_Empty_Message"),
+            actionTitle: AALocalized("Placeholder_Empty_Action"),
+            subtitle2: AALocalized("Placeholder_Empty_Message2"),
             actionTarget: self, actionSelector: Selector("showSmsInvitation"),
-            action2title: NSLocalizedString("Placeholder_Empty_Action2", comment: "Placeholder Action2"),
+            action2title: AALocalized("Placeholder_Empty_Action2"),
             action2Selector: Selector("doAddContact"))
         appEmptyContainer.addSubview(appIsEmptyPlaceholder)
         
         appIsSyncingPlaceholder.hidden = true
         appIsSyncingPlaceholder.setImage(
             UIImage(named: "chat_list_placeholder"),
-            title: NSLocalizedString("Placeholder_Loading_Title", comment: "Placeholder Title"),
-            subtitle: NSLocalizedString("Placeholder_Loading_Message", comment: "Placeholder Message"))
+            title: AALocalized("Placeholder_Loading_Title"),
+            subtitle: AALocalized("Placeholder_Loading_Message"))
         appEmptyContainer.addSubview(appIsSyncingPlaceholder)
         
         view.addSubview(appEmptyContainer)
+        
+        binder.bind(Actor.getAppState().isAppLoaded, valueModel2: Actor.getAppState().isAppEmpty) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
+            if (empty!.booleanValue()) {
+                if (loaded!.booleanValue()) {
+                    self.showAppIsEmptyPlaceholder()
+                } else {
+                    self.showAppIsSyncingPlaceholder()
+                }
+            } else {
+                self.hidePlaceholders()
+            }
+        }
     }
     
     public func showAppIsSyncingPlaceholder() {
@@ -97,11 +111,11 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
     
     public func doAddContact() {
         let alertView = UIAlertView(
-            title: NSLocalizedString("ContactsAddHeader", comment: "Alert Title"),
-            message: NSLocalizedString("ContactsAddHint", comment: "Alert Hint"),
+            title: AALocalized("ContactsAddHeader"),
+            message: AALocalized("ContactsAddHint"),
             delegate: self,
-            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Alert Cancel"),
-            otherButtonTitles: NSLocalizedString("AlertNext", comment: "Alert Next"))
+            cancelButtonTitle: AALocalized("AlertCancel"),
+            otherButtonTitles: AALocalized("AlertNext"))
         
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.show()

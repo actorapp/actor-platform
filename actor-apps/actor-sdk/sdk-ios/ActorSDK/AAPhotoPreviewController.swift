@@ -5,27 +5,26 @@
 import Foundation
 import NYTPhotoViewer
 
-class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDelegate {
+public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDelegate {
     
-    // let binder = Binder()
     let photos: [PreviewImage]
     let controllerPhotos: [AAPhoto]
     var bind = [Int: AAFileCallback]()
     let fromView: UIView?
     
-    convenience init(photos: [PreviewImage], fromView: UIView?) {
+    public convenience init(photos: [PreviewImage], fromView: UIView?) {
         self.init(photos: photos, initialPhoto: 0, fromView: fromView)
     }
     
-    convenience init(photo: PreviewImage, fromView: UIView?) {
+    public convenience init(photo: PreviewImage, fromView: UIView?) {
         self.init(photos: [photo], fromView: fromView)
     }
     
-    convenience init(file: ACFileReference, previewFile: ACFileReference?, size: CGSize?, fromView: UIView?) {
+    public convenience init(file: ACFileReference, previewFile: ACFileReference?, size: CGSize?, fromView: UIView?) {
         self.init(photos: [PreviewImage(file: file, previewFile: previewFile, size: size)], fromView: fromView)
     }
     
-    init(photos: [PreviewImage], initialPhoto: Int, fromView: UIView?) {
+    public init(photos: [PreviewImage], initialPhoto: Int, fromView: UIView?) {
         
         var converted = [AAPhoto]()
         for p in photos {
@@ -73,11 +72,11 @@ class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewController
         self.delegate = self
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         // Setting tint color
@@ -107,14 +106,14 @@ class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewController
         }
         
         // Hide Status bar
-        // UIApplication.sharedApplication().animateStatusBarAppearance(.SlideUp, duration: 0.3)
+        UIApplication.sharedApplication().animateStatusBarAppearance(.SlideUp, duration: 0.3)
     }
     
-    func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
+    public func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
         return self.fromView
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Unbind all
@@ -124,11 +123,11 @@ class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewController
         bind.removeAll()
         
         // Restoring status bar
-        // UIApplication.sharedApplication().animateStatusBarAppearance(.SlideDown, duration: 0.3)
+        UIApplication.sharedApplication().animateStatusBarAppearance(.SlideDown, duration: 0.3)
     }
 }
 
-class PreviewImage {
+public class PreviewImage {
     
     let preview: UIImage?
     var image: UIImage?

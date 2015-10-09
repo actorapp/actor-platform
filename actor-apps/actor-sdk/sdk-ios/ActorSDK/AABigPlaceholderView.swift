@@ -40,7 +40,7 @@ class AABigPlaceholderView: UIView {
         contentView.addSubview(imageView)
         
         titleLabel = UILabel()
-        titleLabel.textColor = MainAppTheme.placeholder.textTitle
+        titleLabel.textColor = ActorSDK.sharedActor().style.placeholderTitleColor
         titleLabel.font = UIFont.systemFontOfSize(22)
         titleLabel.textAlignment = NSTextAlignment.Center
         titleLabel.text = " "
@@ -48,7 +48,7 @@ class AABigPlaceholderView: UIView {
         contentView.addSubview(titleLabel)
         
         subtitleLabel = UILabel()
-        subtitleLabel.textColor = MainAppTheme.placeholder.textHint
+        subtitleLabel.textColor = ActorSDK.sharedActor().style.placeholderHintColor
         subtitleLabel.font = UIFont.systemFontOfSize(16.0)
         subtitleLabel.textAlignment = NSTextAlignment.Center
         subtitleLabel.numberOfLines = 0
@@ -59,7 +59,7 @@ class AABigPlaceholderView: UIView {
         contentView.addSubview(actionButton)
         
         subtitle2Label = UILabel()
-        subtitle2Label.textColor = MainAppTheme.placeholder.textHint
+        subtitle2Label.textColor = ActorSDK.sharedActor().style.placeholderHintColor
         subtitle2Label.font = UIFont.systemFontOfSize(16.0)
         subtitle2Label.textAlignment = NSTextAlignment.Center
         subtitle2Label.numberOfLines = 0
