@@ -2,6 +2,7 @@ package im.actor.server
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.contrib.pattern.DistributedPubSubExtension
+import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
@@ -140,7 +141,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   def buildRpcApiService(services: Seq[im.actor.api.rpc.Service])(implicit system: ActorSystem, db: Database) =
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
-  def buildSessionRegion(rpcApiService: ActorRef)(implicit system: ActorSystem) = {
+  def buildSessionRegion(rpcApiService: ActorRef)(implicit system: ActorSystem, materializer: Materializer) = {
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))
   }
