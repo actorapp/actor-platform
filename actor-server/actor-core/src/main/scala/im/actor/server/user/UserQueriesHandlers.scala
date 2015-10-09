@@ -31,7 +31,7 @@ private[user] trait UserQueriesHandlers {
         avatar = state.avatar,
         phone = state.phones.headOption.orElse(Some(0)),
         isBot = Some(state.isBot),
-        contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector),
+        contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector, state.socialContacts.toVector),
         nick = state.nickname,
         about = state.about,
         external = state.external,

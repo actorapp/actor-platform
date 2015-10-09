@@ -63,6 +63,10 @@ private[user] sealed trait Commands extends AuthCommands {
   def addEmail(userId: Int, email: String): Future[Unit] =
     (processorRegion.ref ? AddEmail(userId, email)).mapTo[AddEmailAck] map (_ ⇒ ())
 
+  def addSocialContact(userId: Int, contact: SocialContact): Future[Unit] = {
+    (processorRegion.ref ? AddSocialContact(userId, contact)).mapTo[AddSocialContactAck] map (_ ⇒ ())
+  }
+
   def delete(userId: Int): Future[Unit] =
     (processorRegion.ref ? Delete(userId)).mapTo[DeleteAck] map (_ ⇒ ())
 
