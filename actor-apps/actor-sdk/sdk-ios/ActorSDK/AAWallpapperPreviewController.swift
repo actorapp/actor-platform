@@ -4,7 +4,7 @@
 
 import Foundation
 
-class AAWallpapperPreviewController: AAViewController {
+public class AAWallpapperPreviewController: AAViewController {
     
     private let imageView = UIImageView()
     private let cancelButton = UIButton()
@@ -12,7 +12,7 @@ class AAWallpapperPreviewController: AAViewController {
     
     private let imageName: String
     
-    init(imageName: String) {
+    public init(imageName: String) {
         self.imageName = imageName
         super.init()
         imageView.image = UIImage(named: imageName)!
@@ -28,11 +28,11 @@ class AAWallpapperPreviewController: AAViewController {
         setButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         self.edgesForExtendedLayout = UIRectEdge.Top
@@ -42,7 +42,7 @@ class AAWallpapperPreviewController: AAViewController {
         view.addSubview(setButton)
     }
     
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         imageView.frame = view.bounds

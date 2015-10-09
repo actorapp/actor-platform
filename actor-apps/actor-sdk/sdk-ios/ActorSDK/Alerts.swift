@@ -13,8 +13,8 @@ public extension UIViewController {
     public func alertUser(message: String) {
         RMUniversalAlert.showAlertInViewController(self,
             withTitle: nil,
-            message: NSLocalizedString(message, comment: "Message"),
-            cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"),
+            message: AALocalized(message),
+            cancelButtonTitle: AALocalized("AlertOk"),
             destructiveButtonTitle: nil,
             otherButtonTitles: nil,
             tapBlock: nil)
@@ -33,10 +33,10 @@ public extension UIViewController {
     public func confirmAlertUser(message: String, action: String, tapYes: ()->(), tapNo: (()->())? = nil) {
         RMUniversalAlert.showAlertInViewController(self,
             withTitle: nil,
-            message: NSLocalizedString(message, comment: "Message"),
-            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
+            message: AALocalized(message),
+            cancelButtonTitle: AALocalized("AlertCancel"),
             destructiveButtonTitle: nil,
-            otherButtonTitles: [NSLocalizedString(action, comment: "Cancel")],
+            otherButtonTitles: [AALocalized(action)],
             tapBlock: { (alert, buttonIndex) -> Void in
                 if (buttonIndex >= alert.firstOtherButtonIndex) {
                     tapYes()
@@ -49,14 +49,14 @@ public extension UIViewController {
     public func textInputAlert(message: String, content: String?, action:String, tapYes: (nval: String)->()) {
         let alertView = UIAlertView(
             title: nil,
-            message: NSLocalizedString(message, comment: "Title"),
+            message: AALocalized(message),
             delegate: self,
-            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
-        alertView.addButtonWithTitle(NSLocalizedString(action, comment: "Action Title"))
+            cancelButtonTitle: AALocalized("AlertCancel"))
+        alertView.addButtonWithTitle(AALocalized(action))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = content
-        alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
+        alertView.textFieldAtIndex(0)!.keyboardAppearance = ActorSDK.sharedActor().style.isDarkApp ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
 //        alertView.tapBlock = { (alert: UIAlertView, buttonIndex) -> () in
 //            if (buttonIndex != alert.cancelButtonIndex) {
 //                tapYes(nval: alert.textFieldAtIndex(0)!.text!)
@@ -69,9 +69,9 @@ public extension UIViewController {
         RMUniversalAlert.showActionSheetInViewController(
             self,
             withTitle: nil,
-            message: NSLocalizedString(message, comment: "Message"),
-            cancelButtonTitle: NSLocalizedString(cancel, comment: "Cancel Title"),
-            destructiveButtonTitle: NSLocalizedString(action, comment: "Destruct Title"),
+            message: AALocalized(message),
+            cancelButtonTitle: AALocalized(cancel),
+            destructiveButtonTitle: AALocalized(action),
             otherButtonTitles: nil,
             popoverPresentationControllerBlock: { (popover: RMPopoverPresentationController) -> Void in
                 popover.sourceView = sourceView
@@ -87,15 +87,15 @@ public extension UIViewController {
     public func showActionSheet(title: String?, buttons: [String], cancelButton: String?, destructButton: String?, sourceView: UIView, sourceRect: CGRect, tapClosure: (index: Int) -> ()) {
         var convertedButtons:[String] = [String]()
         for b in buttons {
-            convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
+            convertedButtons.append(AALocalized(b))
         }
         
         RMUniversalAlert.showActionSheetInViewController(
             self,
             withTitle: nil,
             message: title,
-            cancelButtonTitle: cancelButton != nil ? NSLocalizedString(cancelButton!, comment: "Cancel") : nil,
-            destructiveButtonTitle: destructButton != nil ? NSLocalizedString(destructButton!, comment: "Destruct") : nil,
+            cancelButtonTitle: cancelButton != nil ? AALocalized(cancelButton!) : nil,
+            destructiveButtonTitle: destructButton != nil ? AALocalized(destructButton!) : nil,
             otherButtonTitles: convertedButtons,
             popoverPresentationControllerBlock: { (popover: RMPopoverPresentationController) -> Void in
                 popover.sourceView = sourceView
@@ -117,25 +117,6 @@ public extension UIViewController {
         showActionSheet(nil, buttons:buttons, cancelButton: cancelButton, destructButton: destructButton, sourceView: sourceView, sourceRect:sourceRect,  tapClosure: tapClosure)
     }
     
-    public func showActionSheetFast(buttons: [String], cancelButton: String, tapClosure: (index: Int) -> ()) {
-//        let actionShit = ABActionShit()
-//        
-//        var convertedButtons:[String] = [String]()
-//        for b in buttons {
-//            convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
-//        }
-//        
-//        actionShit.buttonTitles = convertedButtons
-//        actionShit.cancelButtonTitle = NSLocalizedString(cancelButton,comment: "Cancel")
-//        let shitDelegate = ActionShitDelegate(tapClosure: tapClosure)
-//        actionShit.delegate = shitDelegate
-//        
-//        // Convert from weak to strong reference
-//        // setAssociatedObject(actionShit, value: shitDelegate, associativeKey: &actionShitReference)
-//        
-//        actionShit.showWithCompletion(nil)
-    }
-    
     func startEditText(@noescape closure: (AAEditTextControllerConfig) -> ()) {
         let config = AAEditTextControllerConfig()
         closure(config)
@@ -150,22 +131,4 @@ public extension UIViewController {
         self.presentViewController(AANavigationController(rootViewController: AAEditFieldController(config: config)), animated: true, completion: nil)
     }
 }
-
-//class ActionShitDelegate: NSObject, ABActionShitDelegate {
-//    
-//    let tapClosure: (index: Int) -> ()
-//    
-//    init (tapClosure: (index: Int) -> ()) {
-//        self.tapClosure = tapClosure
-//    }
-//    
-//    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
-//        tapClosure(index: buttonIndex)
-//    }
-//    
-//    func actionShitClickedCancelButton(actionShit: ABActionShit!) {
-//        tapClosure(index: -1)
-//    }
-//}
-
 

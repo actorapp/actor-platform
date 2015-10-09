@@ -17,7 +17,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
 
     public override init(){
         super.init(nibName: nil, bundle: nil)
-        self.navigationItem.title = NSLocalizedString("CreateGroupTitle", comment: "Compose Title")
+        self.navigationItem.title = AALocalized("CreateGroupTitle")
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
     }
 
@@ -37,9 +37,9 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 110, height: 110), false, 0.0);
         let context = UIGraphicsGetCurrentContext();
-        CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor);
+        CGContextSetFillColorWithColor(context, appStyle.composeAvatarBgColor.CGColor);
         CGContextFillEllipseInRect(context, CGRectMake(0.0, 0.0, 110.0, 110.0));
-        CGContextSetStrokeColorWithColor(context, UIColor(rgb: 0xd9d9d9).CGColor);
+        CGContextSetStrokeColorWithColor(context, appStyle.composeAvatarBorderColor.CGColor);
         CGContextSetLineWidth(context, 1.0);
         CGContextStrokeEllipseInRect(context, CGRectMake(0.5, 0.5, 109.0, 109.0));
         let buttonImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -50,17 +50,17 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         addPhotoButton.addTarget(self, action: "photoTap", forControlEvents: UIControlEvents.TouchUpInside)
         
         let addPhotoLabelFirst = UILabel()
-        addPhotoLabelFirst.text = NSLocalizedString("AuthProfileAddPhoto1", comment: "Title")
+        addPhotoLabelFirst.text = AALocalized("AuthProfileAddPhoto1")
         addPhotoLabelFirst.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelFirst.backgroundColor = UIColor.clearColor()
-        addPhotoLabelFirst.textColor = UIColor(rgb: 0xd9d9d9)
+        addPhotoLabelFirst.textColor = appStyle.composeAvatarTextColor
         addPhotoLabelFirst.sizeToFit()
         
         let addPhotoLabelSecond = UILabel()
-        addPhotoLabelSecond.text = NSLocalizedString("AuthProfileAddPhoto2", comment: "Title")
+        addPhotoLabelSecond.text = AALocalized("AuthProfileAddPhoto2")
         addPhotoLabelSecond.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelSecond.backgroundColor = UIColor.clearColor()
-        addPhotoLabelSecond.textColor = UIColor(rgb: 0xd9d9d9)
+        addPhotoLabelSecond.textColor = appStyle.composeAvatarTextColor
         addPhotoLabelSecond.sizeToFit()
         
         addPhotoButton.addSubview(addPhotoLabelFirst)
@@ -69,13 +69,12 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         addPhotoLabelFirst.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelFirst.frame.size.width) / 2, 22, addPhotoLabelFirst.frame.size.width, addPhotoLabelFirst.frame.size.height));
         addPhotoLabelSecond.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelSecond.frame.size.width) / 2, 22 + 22, addPhotoLabelSecond.frame.size.width, addPhotoLabelSecond.frame.size.height));
         
-//        groupName.backgroundColor = UIColor.whiteColor()
         groupName.backgroundColor = appStyle.vcBgColor
         groupName.textColor = ActorSDK.sharedActor().style.cellTextColor
         groupName.font = UIFont.systemFontOfSize(20)
         groupName.keyboardType = UIKeyboardType.Default
         groupName.returnKeyType = UIReturnKeyType.Next
-        groupName.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("CreateGroupNamePlaceholder", comment: "Enter group title"), attributes: [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.vcHintColor])
+        groupName.attributedPlaceholder = NSAttributedString(string: AALocalized("CreateGroupNamePlaceholder"), attributes: [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.vcHintColor])
         groupName.delegate = self
         groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         groupName.autocapitalizationType = UITextAutocapitalizationType.Words
@@ -99,7 +98,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         hint.frame = CGRectMake(120, 20 + 66, screenSize.width - 140, 80)
         
         groupName.frame = CGRectMake(20, 106 + 66, screenSize.width - 20, 56.0)
-        groupNameFieldSeparator.frame = CGRectMake(20, 156 + 66, screenSize.width - 20, 1)
+        groupNameFieldSeparator.frame = CGRectMake(20, 156 + 66, screenSize.width - 20, 0.5)
     }
     
     public func photoTap() {

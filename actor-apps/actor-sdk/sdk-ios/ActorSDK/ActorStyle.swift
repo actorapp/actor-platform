@@ -24,7 +24,7 @@ public class ActorStyle {
     
     public var vcHintColor = UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1)
     
-    public var vcStatusBarColor = UIStatusBarStyle.LightContent
+    public var vcStatusBarStyle = UIStatusBarStyle.LightContent
     
     public var vcSeparatorColor = UIColor(rgb: 0xd4d4d4)
     
@@ -62,9 +62,60 @@ public class ActorStyle {
     
     private var _navigationSubtitleColor: UIColor?
     public var navigationSubtitleColor: UIColor {
-        get { return _navigationSubtitleColor != nil ? _navigationSubtitleColor! : navigationTitleColor }
+        get { return _navigationSubtitleColor != nil ? _navigationSubtitleColor! : navigationTitleColor.alpha(0.8) }
         set(v) { _navigationSubtitleColor = v }
     }
+    
+    private var _navigationSubtitleActiveColor: UIColor?
+    public var navigationSubtitleActiveColor: UIColor {
+        get { return _navigationSubtitleActiveColor != nil ? _navigationSubtitleActiveColor! : navigationTitleColor }
+        set(v) { _navigationSubtitleActiveColor = v }
+    }
+
+    
+    //
+    // Token Field
+    //
+    
+    private var _vcTokenFieldTextColor: UIColor?
+    public var vcTokenFieldTextColor: UIColor {
+        get { return _vcTokenFieldTextColor != nil ? _vcTokenFieldTextColor! : vcTextColor }
+        set(v) { _vcTokenFieldTextColor = v }
+    }
+    
+    private var _vcTokenFieldBgColor: UIColor?
+    public var vcTokenFieldBgColor: UIColor {
+        get { return _vcTokenFieldBgColor != nil ? _vcTokenFieldBgColor! : vcBgColor }
+        set(v) { _vcTokenFieldBgColor = v }
+    }
+    
+    private var _vcTokenTintColor: UIColor?
+    public var vcTokenTintColor: UIColor {
+        get { return _vcTokenTintColor != nil ? _vcTokenTintColor! : vcTintColor }
+        set(v) { _vcTokenTintColor = v }
+    }
+    
+    //
+    // Search style
+    //
+    
+    public var searchStatusBarStyle = UIStatusBarStyle.Default
+
+    private var _searchBackgroundColor: UIColor?
+    public var searchBackgroundColor: UIColor {
+        get { return _searchBackgroundColor != nil ? _searchBackgroundColor! : UIColor(rgb: 0xf1f1f1)  }
+        set(v) { _searchBackgroundColor = v }
+    }
+
+    private var _searchCancelColor: UIColor?
+    public var searchCancelColor: UIColor {
+        get { return _searchCancelColor != nil ? _searchCancelColor! : vcTintColor }
+        set(v) { _searchCancelColor = v }
+    }
+
+    public var searchFieldBgColor = UIColor.whiteColor()
+    
+    public var searchFieldTextColor = UIColor.blackColor().alpha(0.56)
     
     //
     // Tab View style
@@ -84,13 +135,13 @@ public class ActorStyle {
     
     private var _tabUnselectedTextColor: UIColor?
     public var tabUnselectedTextColor: UIColor {
-        get { return _tabUnselectedTextColor != nil ? _tabUnselectedTextColor! : vcTextColor }
+        get { return _tabUnselectedTextColor != nil ? _tabUnselectedTextColor! : vcHintColor }
         set(v) { _tabUnselectedTextColor = v }
     }
     
     private var _tabUnselectedIconColor: UIColor?
     public var tabUnselectedIconColor: UIColor {
-        get { return _tabUnselectedIconColor != nil ? _tabUnselectedIconColor! : vcTextColor }
+        get { return _tabUnselectedIconColor != nil ? _tabUnselectedIconColor! : vcHintColor }
         set(v) { _tabUnselectedIconColor = v }
     }
     
@@ -156,8 +207,24 @@ public class ActorStyle {
     // Full screen placeholder style
     //
     
-    public var placeholderBgColor = UIColor(rgb: 0x5085CB)
+    private var _placeholderBgColor: UIColor?
+    public var placeholderBgColor: UIColor {
+        get { return _placeholderBgColor != nil ? _placeholderBgColor! : navigationBgColor.fromTransparentBar() }
+        set(v) { _placeholderBgColor = v }
+    }
     
+    private var _placeholderTitleColor: UIColor?
+    public var placeholderTitleColor: UIColor {
+        get { return _placeholderTitleColor != nil ? _placeholderTitleColor! : vcTextColor }
+        set(v) { _placeholderTitleColor = v }
+    }
+
+    private var _placeholderHintColor: UIColor?
+    public var placeholderHintColor: UIColor {
+        get { return _placeholderHintColor != nil ? _placeholderHintColor! : vcHintColor }
+        set(v) { _placeholderHintColor = v }
+    }
+
     //
     // Avatar Placeholder and name colors
     //
@@ -228,7 +295,78 @@ public class ActorStyle {
     //
     // Bubble styles
     //
+    
+    // Text colors
+    
+    private var _chatTextColor: UIColor?
+    public var chatTextColor: UIColor {
+        get { return _chatTextColor != nil ? _chatTextColor! : vcTextColor }
+        set(v) { _chatTextColor = v }
+    }
+    
+    private var _chatTextUnsupportedColor: UIColor?
+    public var chatTextUnsupportedColor: UIColor {
+        get { return _chatTextUnsupportedColor != nil ? _chatTextUnsupportedColor! : vcTintColor.alpha(0.54) }
+        set(v) { _chatTextUnsupportedColor = v }
+    }
+    
+    private var _chatTextOutColor: UIColor?
+    public var chatTextOutColor: UIColor {
+        get { return _chatTextOutColor != nil ? _chatTextOutColor! : chatTextColor }
+        set(v) { _chatTextOutColor = v }
+    }
+    
+    private var _chatTextInColor: UIColor?
+    public var chatTextInColor: UIColor {
+        get { return _chatTextInColor != nil ? _chatTextInColor! : chatTextColor }
+        set(v) { _chatTextInColor = v }
+    }
 
+    private var _chatTextOutUnsupportedColor: UIColor?
+    public var chatTextOutUnsupportedColor: UIColor {
+        get { return _chatTextOutUnsupportedColor != nil ? _chatTextOutUnsupportedColor! : chatTextUnsupportedColor }
+        set(v) { _chatTextOutUnsupportedColor = v }
+    }
+    
+    private var _chatTextInUnsupportedColor: UIColor?
+    public var chatTextInUnsupportedColor: UIColor {
+        get { return _chatTextInUnsupportedColor != nil ? _chatTextInUnsupportedColor! : chatTextUnsupportedColor }
+        set(v) { _chatTextInUnsupportedColor = v }
+    }
+
+    public var chatDateTextColor = UIColor.whiteColor()
+    
+    public var chatServiceTextColor = UIColor.whiteColor()
+    
+    public var chatUnreadTextColor = UIColor.whiteColor()
+    
+    // Date colors
+
+    public var chatTextDateOutColor = UIColor.alphaBlack(0.27)
+    public var chatTextDateInColor = UIColor(rgb: 0x979797)
+
+    public var chatMediaDateColor = UIColor.whiteColor()
+    public var chatMediaDateBgColor = UIColor(rgb: 0x2D394A, alpha: 0.54)
+    
+    // Bubble Colors
+    
+    public var chatTextBubbleOutColor = UIColor(rgb: 0xD2FEFD)
+    public var chatTextBubbleOutBorderColor = UIColor(rgb: 0x99E4E3)
+    
+    public var chatTextBubbleInColor = UIColor.whiteColor()
+    public var chatTextBubbleInBorderColor = UIColor(rgb: 0xCCCCCC)
+    
+    public var chatMediaBubbleColor = UIColor.whiteColor()
+    public var chatMediaBubbleBorderColor = UIColor(rgb: 0xCCCCCC)
+
+    public var chatDateBubbleColor = UIColor(rgb: 0x2D394A, alpha: 0.56)
+    
+    public var chatServiceBubbleColor = UIColor(rgb: 0x2D394A, alpha: 0.56)
+    
+    public var chatUnreadBgColor = UIColor.alphaBlack(0.3)
+
+    // Status Colors
+    
     public var chatIconCheck1 = UIImage.templated("msg_check_1")
     public var chatIconCheck2 = UIImage.templated("msg_check_2")
     public var chatIconError = UIImage.templated("msg_error")
@@ -251,6 +389,24 @@ public class ActorStyle {
     public var chatStatusDanger: UIColor {
         get { return _chatStatusDanger != nil ? _chatStatusDanger! : vcDestructiveColor }
         set(v) { _chatStatusDanger = v }
+    }
+    
+    private var _chatStatusMediaActive: UIColor?
+    public var chatStatusMediaActive: UIColor {
+        get { return _chatStatusMediaActive != nil ? _chatStatusMediaActive! : chatStatusActive }
+        set(v) { _chatStatusMediaActive = v }
+    }
+
+    private var _chatStatusMediaPassive: UIColor?
+    public var chatStatusMediaPassive: UIColor {
+        get { return _chatStatusMediaPassive != nil ? _chatStatusMediaPassive! : UIColor.whiteColor() }
+        set(v) { _chatStatusMediaPassive = v }
+    }
+    
+    private var _chatStatusMediaDanger: UIColor?
+    public var chatStatusMediaDanger: UIColor {
+        get { return _chatStatusMediaDanger != nil ? _chatStatusMediaDanger! : chatStatusDanger }
+        set(v) { _chatStatusMediaDanger = v }
     }
     
     private var _chatStatusSending: UIColor?
@@ -282,6 +438,70 @@ public class ActorStyle {
         get { return _chatStatusError != nil ? _chatStatusError! : chatStatusDanger }
         set(v) { _chatStatusError = v }
     }
+    
+    private var _chatStatusMediaSending: UIColor?
+    public var chatStatusMediaSending: UIColor {
+        get { return _chatStatusMediaSending != nil ? _chatStatusMediaSending! : chatStatusMediaPassive }
+        set(v) { _chatStatusMediaSending = v }
+    }
+    
+    private var _chatStatusMediaSent: UIColor?
+    public var chatStatusMediaSent: UIColor {
+        get { return _chatStatusMediaSent != nil ? _chatStatusMediaSent! : chatStatusMediaPassive }
+        set(v) { _chatStatusMediaSent = v }
+    }
+    
+    private var _chatStatusMediaReceived: UIColor?
+    public var chatStatusMediaReceived: UIColor {
+        get { return _chatStatusMediaReceived != nil ? _chatStatusMediaReceived! : chatStatusMediaPassive }
+        set(v) { _chatStatusMediaReceived = v }
+    }
+    
+    private var _chatStatusMediaRead: UIColor?
+    public var chatStatusMediaRead: UIColor {
+        get { return _chatStatusMediaRead != nil ? _chatStatusMediaRead! : chatStatusMediaActive }
+        set(v) { _chatStatusMediaRead = v }
+    }
+    
+    private var _chatStatusMediaError: UIColor?
+    public var chatStatusMediaError: UIColor {
+        get { return _chatStatusMediaError != nil ? _chatStatusMediaError! : chatStatusMediaDanger }
+        set(v) { _chatStatusMediaError = v }
+    }
+
+    // Chat screen
+    
+    private var _chatInputField: UIColor?
+    public var chatInputFieldBgColor: UIColor {
+        get { return _chatInputField != nil ? _chatInputField! : vcPanelBgColor }
+        set(v) { _chatInputField = v }
+    }
+    
+    private var _chatAttachColor: UIColor?
+    public var chatAttachColor: UIColor {
+        get { return _chatAttachColor != nil ? _chatAttachColor! : vcTintColor }
+        set(v) { _chatAttachColor = v }
+    }
+    
+    private var _chatSendColor: UIColor?
+    public var chatSendColor: UIColor {
+        get { return _chatSendColor != nil ? _chatSendColor! : vcTintColor }
+        set(v) { _chatSendColor = v }
+    }
+
+    private var _chatSendDisabledColor: UIColor?
+    public var chatSendDisabledColor: UIColor {
+        get { return _chatSendDisabledColor != nil ? _chatSendDisabledColor! : vcTintColor.alpha(0.64) }
+        set(v) { _chatSendDisabledColor = v }
+    }
+    
+    private var _chatAutocompleteHighlight: UIColor?
+    public var chatAutocompleteHighlight: UIColor {
+        get { return _chatAutocompleteHighlight != nil ? _chatAutocompleteHighlight! : vcTintColor }
+        set(v) { _chatAutocompleteHighlight = v }
+    }
+    
+    public var chatBgColor = UIColor(patternImage: UIImage(named: "bg_foggy_birds")!.tintBgImage(UIColor(rgb: 0xe7e0c4)))
     
     //
     // Dialogs styles
@@ -371,5 +591,56 @@ public class ActorStyle {
     public var contactTitleColor: UIColor {
         get { return _contactTitleColor != nil ? _contactTitleColor! : vcTextColor }
         set(v) { _contactTitleColor = v }
-    }    
+    }
+    
+    //
+    // Online styles
+    //
+    
+    private var _userOnlineColor: UIColor?
+    public var userOnlineColor: UIColor {
+        get { return _userOnlineColor != nil ? _userOnlineColor! : vcTintColor }
+        set(v) { _userOnlineColor = v }
+    }
+    
+    private var _userOfflineColor: UIColor?
+    public var userOfflineColor: UIColor {
+        get { return _userOfflineColor != nil ? _userOfflineColor! : vcTextColor.alpha(0.54) }
+        set(v) { _userOfflineColor = v }
+    }
+
+    private var _userOnlineNavigationColor: UIColor?
+    public var userOnlineNavigationColor: UIColor {
+        get { return _userOnlineNavigationColor != nil ? _userOnlineNavigationColor! : userOnlineColor }
+        set(v) { _userOnlineNavigationColor = v }
+    }
+    
+    private var _userOfflineNavigationColor: UIColor?
+    public var userOfflineNavigationColor: UIColor {
+        get { return _userOfflineNavigationColor != nil ? _userOfflineNavigationColor! : navigationSubtitleColor }
+        set(v) { _userOfflineNavigationColor = v }
+    }
+    
+    //
+    // Compose styles
+    //
+    
+    private var _composeAvatarBgColor: UIColor?
+    public var composeAvatarBgColor: UIColor {
+        get { return _composeAvatarBgColor != nil ? _composeAvatarBgColor! : vcBgColor }
+        set(v) { _composeAvatarBgColor = v }
+    }
+
+    private var _composeAvatarBorderColor: UIColor?
+    public var composeAvatarBorderColor: UIColor {
+        get { return _composeAvatarBorderColor != nil ? _composeAvatarBorderColor! : vcSeparatorColor }
+        set(v) { _composeAvatarBorderColor = v }
+    }
+    
+    private var _composeAvatarTextColor: UIColor?
+    public var composeAvatarTextColor: UIColor {
+        get { return _composeAvatarTextColor != nil ? _composeAvatarTextColor! : vcHintColor }
+        set(v) { _composeAvatarTextColor = v }
+    }
+
 }

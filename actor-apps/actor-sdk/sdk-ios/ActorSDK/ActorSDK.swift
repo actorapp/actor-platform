@@ -46,13 +46,31 @@ public class ActorSDK {
     public let apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
     
     /// Push registration mode
-    public var autoPushMode = AutoPush.None
+    public var autoPushMode = AAAutoPush.None
     
     /// Push token registration id. Required for sending push tokens
     public let apiPushId: Int? = nil
     
     /// Invitation URL for apps
-    public let inviteUrl: String = "https://actor.im/dl"
+    public var inviteUrl: String = "https://actor.im/dl"
+    
+    /// Support email
+    public var supportEmail: String? = nil
+    
+    /// Support email
+    public var supportActivationEmail: String? = nil
+    
+    /// Support account
+    public var supportAccount: String? = nil
+    
+    /// Support home page
+    public var supportHomepage: String? = "https://actor.im"
+
+    /// Support account
+    public var supportTwitter: String? = "actorapp"
+
+    /// Invite url scheme
+    public var inviteUrlScheme: String? = nil
     
     //
     // User Onlines
@@ -116,10 +134,10 @@ public class ActorSDK {
         // Creating messenger
         messenger = ACCocoaMessenger(configuration: builder.build())
         
-        checkAppState()
+        // Configure bubbles
+        AABubbles.layouters = delegate.actorConfigureBubbleLayouters(AABubbles.builtInLayouters)
         
-        // Apply styles
-        MainAppTheme.applyAppearance(UIApplication.sharedApplication())
+        checkAppState()
         
         // Bind Messenger LifeCycle
         
@@ -140,6 +158,12 @@ public class ActorSDK {
                     self.completionHandler = nil
                 }
             }
+        })
+        
+        // Bind badge counter
+        
+        binder.bind(Actor.getAppState().globalCounter, closure: { (value: JavaLangInteger?) -> () in
+            UIApplication.sharedApplication().applicationIconBadgeNumber = Int((value!).integerValue)
         })
         
         // Push registration
@@ -356,9 +380,46 @@ public class ActorSDK {
         }
         self.completionHandler = completionHandler
     }
+    
+    //
+    // Handling invite url
+    //
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        
+        if (url.scheme == "actor") {
+            if (url.host == "invite") {
+                if (Actor.isLoggedIn()) {
+                    let token = url.query?.componentsSeparatedByString("=")[1]
+                    if token != nil {
+//                        UIAlertView.showWithTitle(nil, message: AALocalized("GroupJoinMessage"), cancelButtonTitle: localized("AlertNo"), otherButtonTitles: [AALocalized("GroupJoinAction")], tapBlock: { (view, index) -> Void in
+//                            if (index == view.firstOtherButtonIndex) {
+//                                Executions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
+//                                    let groupId = val as! JavaLangInteger
+//                                    self.openChat(ACPeer.groupWithInt(groupId.intValue))
+//                                    }, failureBlock: { (val) -> Void in
+//                                        
+//                                        if let res = val as? ACRpcException {
+//                                            if res.getTag() == "USER_ALREADY_INVITED" {
+//                                                UIAlertView.showWithTitle(nil, message: localized("ErrorAlreadyJoined"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
+//                                                return
+//                                            }
+//                                        }
+//                                        
+//                                        UIAlertView.showWithTitle(nil, message: localized("ErrorUnableToJoin"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
+//                                })
+//                            }
+//                        })
+                    }
+                }
+                
+                return true
+            }
+        }
+        return false
+    }
 }
 
-public enum AutoPush {
+public enum AAAutoPush {
     case None
     case FromStart
     case AfterLogin

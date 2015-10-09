@@ -9,7 +9,7 @@ private let ENABLE_LOGS = false
 /**
     Display list preprocessed list state
 */
-class PreprocessedList: NSObject {
+class AAPreprocessedList: NSObject {
 
     // Array of items in list
     var items: [ACMessage]!
@@ -18,10 +18,10 @@ class PreprocessedList: NSObject {
     var indexMap: [jlong: Int]!
     
     // Current settings of cell look and feel
-    var cellSettings: [CellSetting]!
+    var cellSettings: [AACellSetting]!
     
     // Prepared layouts of cells
-    var layouts: [CellLayout]!
+    var layouts: [AACellLayout]!
     
     // Height of item
     var heights: [CGFloat]!
@@ -37,11 +37,11 @@ class PreprocessedList: NSObject {
     Display list preprocessor. Used for performing all required calculations
     before collection is updated
 */
-class ListProcessor: NSObject, ARListProcessor {
+class AAListProcessor: NSObject, ARListProcessor {
     
-    let layoutCache: LayoutCache = LayoutCache()
+    let layoutCache = AALayoutCache()
     
-    let settingsCache = Cache<CachedSetting>()
+    let settingsCache = AACache<AACachedSetting>()
     
     let peer: ACPeer
     
@@ -68,7 +68,7 @@ class ListProcessor: NSObject, ARListProcessor {
         
         // Calculating cell settings
         // TODO: Cache and avoid recalculation of whole list
-        var settings = [CellSetting]()
+        var settings = [AACellSetting]()
         for i in 0..<objs.count {
             settings.append(buildCellSetting(i, items: objs))
         }
@@ -77,7 +77,7 @@ class ListProcessor: NSObject, ARListProcessor {
         section = CFAbsoluteTimeGetCurrent()
         
         // Building cell layouts
-        var layouts = [CellLayout]()
+        var layouts = [AACellLayout]()
         for i in 0..<objs.count {
             layouts.append(buildLayout(objs[i], layoutCache: layoutCache))
         }
@@ -88,7 +88,7 @@ class ListProcessor: NSObject, ARListProcessor {
         // Calculating force and simple updates
         var forceUpdates = [Bool]()
         var updates = [Bool]()
-        if let prevList = previous as? PreprocessedList {
+        if let prevList = previous as? AAPreprocessedList {
             for i in 0..<objs.count {
                 var isForced = false
                 var isUpdated = false
@@ -172,7 +172,7 @@ class ListProcessor: NSObject, ARListProcessor {
         if ENABLE_LOGS { log("processing(all): \(CFAbsoluteTimeGetCurrent() - start)") }
         
         // Put everything together
-        let res = PreprocessedList()
+        let res = AAPreprocessedList()
         res.items = objs
         res.cellSettings = settings
         res.layouts = layouts
@@ -187,14 +187,14 @@ class ListProcessor: NSObject, ARListProcessor {
         Building Cell Setting: Information about decorators like date separator 
         and clenching of bubbles
     */
-    func buildCellSetting(index: Int, items: [ACMessage]) -> CellSetting {
+    func buildCellSetting(index: Int, items: [ACMessage]) -> AACellSetting {
         
         let current = items[index]
         let id = Int64(current.rid)
         let next: ACMessage! = index > 0 ? items[index - 1] : nil
         let prev: ACMessage! = index + 1 < items.count ? items[index + 1] : nil
         
-        let cached: CachedSetting! = settingsCache.pick(id)
+        let cached: AACachedSetting! = settingsCache.pick(id)
         if cached != nil {
             if cached.isValid(prev, next: next) {
                 return cached.cached
@@ -202,7 +202,6 @@ class ListProcessor: NSObject, ARListProcessor {
         }
         
         var isShowDate = true
-        var isShowDateNext = true
         var clenchTop = false
         var clenchBottom = false
         
@@ -219,9 +218,9 @@ class ListProcessor: NSObject, ARListProcessor {
             }
         }
         
-        let res = CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom)
+        let res = AACellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom)
         
-        settingsCache.cache(id, value: CachedSetting(cached: res, prevId: prev?.rid, nextId: next?.rid))
+        settingsCache.cache(id, value: AACachedSetting(cached: res, prevId: prev?.rid, nextId: next?.rid))
         
         return res
     }
@@ -261,7 +260,7 @@ class ListProcessor: NSObject, ARListProcessor {
         return false
     }
     
-    func measureHeight(message: ACMessage, setting: CellSetting, layout: CellLayout) -> CGFloat {
+    func measureHeight(message: ACMessage, setting: AACellSetting, layout: AACellLayout) -> CGFloat {
         
         let content = message.content!
         
@@ -282,13 +281,13 @@ class ListProcessor: NSObject, ARListProcessor {
         return height
     }
     
-    func buildLayout(message: ACMessage, layoutCache: LayoutCache) -> CellLayout {
+    func buildLayout(message: ACMessage, layoutCache: AALayoutCache) -> AACellLayout {
         
-        var layout: CellLayout! = layoutCache.pick(message.rid)
+        var layout: AACellLayout! = layoutCache.pick(message.rid)
         
         if (layout == nil) {
             // Usually never happens
-            layout = Bubbles.buildLayout(peer, message: message)
+            layout = AABubbles.buildLayout(peer, message: message)
             layoutCache.cache(message.rid, value: layout!)
         }
         

@@ -45,4 +45,13 @@ public extension UIColor {
         self.getRed(&r, green: &g, blue: &b, alpha: &a)
         return UIColor(red: max(0, r - 40/256.0), green: max(0, g - 40/256.0), blue: max(0, b - 40/256.0), alpha: a)
     }
+    
+    public func fromTransparentBar() -> UIColor {
+        var r:CGFloat = 0
+        var g:CGFloat = 0
+        var b:CGFloat = 0
+        var a:CGFloat = 0
+        self.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return UIColor(red: min(255, r + 40/256.0), green: min(255, g + 40/256.0), blue: min(255, b + 40/256.0), alpha: a)
+    }
 }

@@ -139,6 +139,40 @@ public extension UITableView {
     }
 }
 
+public extension UICollectionView {
+    private func cellTypeForClass(cellClass: AnyClass) -> String {
+        let cellReuseId = "\(cellClass)"
+        var registered: ([String])! = getAssociatedObject(self, associativeKey: &registeredCells)
+        var found = false
+        if registered != nil {
+            if registered.contains(cellReuseId) {
+                found = true
+            } else {
+                registered.append(cellReuseId)
+                setAssociatedObject(self, value: registered, associativeKey: &registeredCells)
+            }
+        } else {
+            setAssociatedObject(self, value: [cellReuseId], associativeKey: &registeredCells)
+        }
+        
+        if !found {
+            registerClass(cellClass, forCellWithReuseIdentifier: cellReuseId)
+        }
+        
+        return cellReuseId
+    }
+    
+    public func dequeueCell(cellClass: AnyClass, indexPath: NSIndexPath) -> UICollectionViewCell {
+        let reuseId = cellTypeForClass(cellClass)
+        return self.dequeueReusableCellWithReuseIdentifier(reuseId, forIndexPath: indexPath)
+    }
+    
+    public func dequeueCell<T where T: UICollectionViewCell>(indexPath: NSIndexPath) -> T {
+        let reuseId = cellTypeForClass(T.self)
+        return self.dequeueReusableCellWithReuseIdentifier(reuseId, forIndexPath: indexPath) as! T
+    }
+}
+
 // Status bar and navigation bar heights
 
 public extension UIViewController {

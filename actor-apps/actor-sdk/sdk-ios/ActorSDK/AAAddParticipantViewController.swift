@@ -32,7 +32,7 @@ public class AAAddParticipantViewController: AAContactsListContentController, AA
         section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
             r.height = 56
             r.closure = { (cell) -> () in
-                cell.bind("ic_invite_user", actionTitle: NSLocalizedString("GroupAddParticipantUrl", comment: "Action Title"))
+                cell.bind("ic_invite_user", actionTitle: AALocalized("GroupAddParticipantUrl"))
             }
             r.selectAction = { () -> Bool in
                 self.navigateNext(AAInviteLinkViewController(gid: self.gid), removeCurrent: false)

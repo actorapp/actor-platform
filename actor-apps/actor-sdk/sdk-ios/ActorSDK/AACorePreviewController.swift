@@ -4,21 +4,21 @@
 
 import Foundation
 
-class AACodePreviewController: AAViewController {
+public class AACodePreviewController: AAViewController {
     
     var webView = UIWebView()
     let code: String
     
-    init(code: String) {
+    public init(code: String) {
         self.code = code
         super.init()
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.title = "Source Code"
@@ -42,7 +42,7 @@ class AACodePreviewController: AAViewController {
         view.addSubview(webView)
     }
     
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
         webView.frame = view.bounds

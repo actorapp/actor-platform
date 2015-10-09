@@ -36,7 +36,7 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
     }
     
     public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
-        // navigateNext(ConversationViewController(peer: ACPeer.userWithInt(contact.uid)), removeCurrent: true)
+        navigateNext(ConversationViewController(peer: ACPeer.userWithInt(contact.uid)), removeCurrent: true)
         return false
     }
 }
