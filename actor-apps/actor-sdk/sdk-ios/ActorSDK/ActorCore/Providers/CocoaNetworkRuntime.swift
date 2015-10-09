@@ -111,3 +111,18 @@ class CocoaTcpConnection: ARAsyncConnection, GCDAsyncSocketDelegate {
         gcdSocket?.writeData(data.toNSData(), withTimeout: -1, tag: 0)
     }
 }
+
+private extension NSData {
+    
+    func readUInt32() -> UInt32 {
+        var raw: UInt32 = 0;
+        self.getBytes(&raw, length: 4)
+        return raw.bigEndian
+    }
+    
+    func readUInt32(offset: Int) -> UInt32 {
+        var raw: UInt32 = 0;
+        self.getBytes(&raw, range: NSMakeRange(offset, 4))
+        return raw.bigEndian
+    }
+}

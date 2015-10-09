@@ -34,28 +34,28 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         view.backgroundColor = UIColor.whiteColor()
         
         grayBackground = UIView()
-        grayBackground.backgroundColor = UIColor.RGB(0xf2f2f2)
+        grayBackground.backgroundColor = UIColor(rgb: 0xf2f2f2)
         view.addSubview(grayBackground)
         
         titleLabel = UILabel()
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textColor = UIColor.blackColor()
         titleLabel.textAlignment = NSTextAlignment.Center
-        titleLabel.font = isIPad
+        titleLabel.font = AADevice.isiPad
             ? UIFont.thinSystemFontOfSize(50)
             : UIFont.lightSystemFontOfSize(30)
         titleLabel.text = NSLocalizedString("AuthProfileTitle", comment: "Title")
         grayBackground.addSubview(titleLabel)
         
         navigationBarSeparator = UIView()
-        navigationBarSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
+        navigationBarSeparator.backgroundColor = UIColor(rgb: 0xc8c7cc)
         view.addSubview(navigationBarSeparator)
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 110, height: 110), false, 0.0);
-        var context = UIGraphicsGetCurrentContext();
+        let context = UIGraphicsGetCurrentContext();
         CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor);
         CGContextFillEllipseInRect(context, CGRectMake(0.0, 0.0, 110.0, 110.0));
-        CGContextSetStrokeColorWithColor(context, UIColor.RGB(0xd9d9d9).CGColor);
+        CGContextSetStrokeColorWithColor(context, UIColor(rgb: 0xd9d9d9).CGColor);
         CGContextSetLineWidth(context, 1.0);
         CGContextStrokeEllipseInRect(context, CGRectMake(0.5, 0.5, 109.0, 109.0));
         let buttonImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -78,18 +78,18 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         avatarImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: Selector("askChangePhoto")))
         view.addSubview(avatarImageView)
         
-        var addPhotoLabelFirst = UILabel()
+        let addPhotoLabelFirst = UILabel()
         addPhotoLabelFirst.text = NSLocalizedString("AuthProfileAddPhoto1", comment: "Title")
         addPhotoLabelFirst.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelFirst.backgroundColor = UIColor.clearColor()
-        addPhotoLabelFirst.textColor = UIColor.RGB(0xd9d9d9)
+        addPhotoLabelFirst.textColor = UIColor(rgb: 0xd9d9d9)
         addPhotoLabelFirst.sizeToFit()
         
-        var addPhotoLabelSecond = UILabel()
+        let addPhotoLabelSecond = UILabel()
         addPhotoLabelSecond.text = NSLocalizedString("AuthProfileAddPhoto2", comment: "Title")
         addPhotoLabelSecond.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelSecond.backgroundColor = UIColor.clearColor()
-        addPhotoLabelSecond.textColor = UIColor.RGB(0xd9d9d9)
+        addPhotoLabelSecond.textColor = UIColor(rgb: 0xd9d9d9)
         addPhotoLabelSecond.sizeToFit()
     
         addPhotoButton.addSubview(addPhotoLabelFirst)
@@ -110,7 +110,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         view.addSubview(firstNameField)
         
         firstNameFieldSeparator = UIView()
-        firstNameFieldSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
+        firstNameFieldSeparator.backgroundColor = UIColor(rgb: 0xc8c7cc)
         view.addSubview(firstNameFieldSeparator)
         
         let screenSize = UIScreen.mainScreen().bounds.size
@@ -120,7 +120,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
             hintLabel = UILabel()
             hintLabel.backgroundColor = UIColor.whiteColor()
             hintLabel.font = UIFont.systemFontOfSize(17.0)
-            hintLabel.textColor = UIColor.RGB(0x999999)
+            hintLabel.textColor = UIColor(rgb: 0x999999)
             hintLabel.text = NSLocalizedString("AuthProfileHint", comment: "Title")
             hintLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
             hintLabel.textAlignment = NSTextAlignment.Center
@@ -129,7 +129,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
             view.addSubview(hintLabel)
         }
         
-        var nextBarButton = UIBarButtonItem(title: NSLocalizedString("NavigationNext", comment: "Next"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed"))
+        let nextBarButton = UIBarButtonItem(title: NSLocalizedString("NavigationNext", comment: "Next"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed"))
         navigationItem.rightBarButtonItem = nextBarButton
     }
     
@@ -153,13 +153,13 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         let isWidescreen = screenSize.width > 320 || screenSize.height > 480
         let isPortraint = screenSize.width < screenSize.height
         
-        let bgSize : CGFloat = isIPad
+        let bgSize : CGFloat = AADevice.isiPad
             ? (isPortraint ? 304.0: 140)
             : (isWidescreen ? 131.0 : 90.0)
         
         grayBackground.frame = CGRect(x: 0.0, y: 0.0, width: screenSize.width, height: bgSize)
         
-        let padding = isIPad
+        let padding = AADevice.isiPad
             ? (isPortraint ? 48 : 20)
             : (20)
         titleLabel.sizeToFit()
@@ -167,7 +167,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         
         navigationBarSeparator.frame = CGRect(x: 0.0, y: grayBackground.bounds.size.height, width: screenSize.width, height: 0.5)
         
-        let fieldWidth : CGFloat = isIPad
+        let fieldWidth : CGFloat = AADevice.isiPad
             ? (520)
             : (screenSize.width)
         
@@ -180,7 +180,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         firstNameFieldSeparator.frame = CGRect(x: (screenSize.width - fieldWidth)/2+134.0, y: firstNameField.frame.origin.y + firstNameField.bounds.size.height, width: fieldWidth - 134.0 - 8.0, height: 0.5)
         
         if (hintLabel != nil) {
-            let hintPadding : CGFloat = isIPad
+            let hintPadding : CGFloat = AADevice.isiPad
                 ? (isPortraint ? 460.0 : 274.0)
                 : 274.0
             
@@ -205,7 +205,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
     }
     
     public func selectPhoto(supportDelete: Bool) {
-        var actionSheet = UIActionSheet(title: nil, delegate: self,
+        let actionSheet = UIActionSheet(title: nil, delegate: self,
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
             destructiveButtonTitle: nil,
             otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Library"))
@@ -221,7 +221,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         
         if username?.length == 0 {
             let screenSize = UIScreen.mainScreen().bounds.size
-            let fieldWidth : CGFloat = isIPad
+            let fieldWidth : CGFloat = AADevice.isiPad
                 ? (520)
                 : (screenSize.width)
             shakeView(firstNameField, originalX: (screenSize.width - fieldWidth)/2+135.0)
@@ -230,13 +230,13 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
             
             if avatarImageView.image != nil {
                 avatarPath = "/tmp/avatar_" + NSUUID().UUIDString + ".jpg"
-                var avatarFilePath = CocoaFiles.pathFromDescriptor(avatarPath!)
-                var image = avatarImageView.image
-                var thumb = image?.resizeSquare(600, maxH: 600);
+                let avatarFilePath = CocoaFiles.pathFromDescriptor(avatarPath!)
+                let image = avatarImageView.image
+                let thumb = image?.resizeSquare(600, maxH: 600);
                 UIImageJPEGRepresentation(thumb!, 0.8)!.writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
             }
             
-            var action = "SignUp";
+            let action = "SignUp";
             
             execute(Actor.signUpCommandWithName(username, withSex: ACSexEnum.values().objectAtIndex(ACSex.UNKNOWN.rawValue) as! ACSexEnum, withAvatar: avatarPath), successBlock: { (val) -> Void in
                 self.onAuthenticated()
@@ -251,7 +251,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
                             message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
                         } else if (tag == "NAME_INVALID") {
                             let screenSize = UIScreen.mainScreen().bounds.size
-                            let fieldWidth : CGFloat = isIPad
+                            let fieldWidth : CGFloat = AADevice.isiPad
                                 ? (520)
                                 : (screenSize.width)
                             self.shakeView(self.firstNameField, originalX: (screenSize.width - fieldWidth)/2+135.0)
@@ -263,7 +263,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
                         message = exception.getLocalizedMessage()
                     }
                     
-                    var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
+                    let alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                     alertView.show()
             })
         }

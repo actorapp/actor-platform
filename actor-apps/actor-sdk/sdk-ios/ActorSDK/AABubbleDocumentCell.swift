@@ -71,9 +71,9 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
         
         self.bubbleInsets = UIEdgeInsets(
             top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
-            left: 10 + (isIPad ? 16 : 0),
+            left: 10 + (AADevice.isiPad ? 16 : 0),
             bottom: setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom,
-            right: 10 + (isIPad ? 16 : 0))
+            right: 10 + (AADevice.isiPad ? 16 : 0))
         
         if (!reuse) {
             if (isOut) {
@@ -137,7 +137,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
     func documentDidTap() {
         let content = bindedMessage!.content as! ACDocumentContent
         if let fileSource = content.getSource() as? ACFileRemoteSource {
-            Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
+            Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: AAFileCallback(
                 notDownloaded: { () -> () in
                     Actor.startDownloadingWithReference(fileSource.getFileReference())
                 }, onDownloading: { (progress) -> () in
@@ -149,7 +149,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionControlle
             }))
         } else if let fileSource = content.getSource() as? ACFileLocalSource {
             let rid = bindedMessage!.rid
-            Actor.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
+            Actor.requestUploadStateWithRid(rid, withCallback: AAUploadFileCallback(
                 notUploaded: { () -> () in
                     Actor.resumeUploadWithRid(rid)
                 }, onUploading: { (progress) -> () in
@@ -290,39 +290,39 @@ class DocumentCellLayout: CellLayout {
         
         // File icon
         var fileName = "file_unknown"
-        if (FileTypes[self.fileExt] != nil) {
-            switch(FileTypes[self.fileExt]!) {
-            case FileType.Music:
+        if (AAFileTypes[self.fileExt] != nil) {
+            switch(AAFileTypes[self.fileExt]!) {
+            case AAFileType.Music:
                 fileName = "file_music"
                 break
-            case FileType.Doc:
+            case AAFileType.Doc:
                 fileName = "file_doc"
                 break
-            case FileType.Spreadsheet:
+            case AAFileType.Spreadsheet:
                 fileName = "file_xls"
                 break
-            case FileType.Video:
+            case AAFileType.Video:
                 fileName = "file_video"
                 break
-            case FileType.Presentation:
+            case AAFileType.Presentation:
                 fileName = "file_ppt"
                 break
-            case FileType.PDF:
+            case AAFileType.PDF:
                 fileName = "file_pdf"
                 break
-            case FileType.APK:
+            case AAFileType.APK:
                 fileName = "file_apk"
                 break
-            case FileType.RAR:
+            case AAFileType.RAR:
                 fileName = "file_rar"
                 break
-            case FileType.ZIP:
+            case AAFileType.ZIP:
                 fileName = "file_zip"
                 break
-            case FileType.CSV:
+            case AAFileType.CSV:
                 fileName = "file_csv"
                 break
-            case FileType.HTML:
+            case AAFileType.HTML:
                 fileName = "file_html"
                 break
             default:

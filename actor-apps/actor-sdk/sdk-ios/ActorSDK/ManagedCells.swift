@@ -6,7 +6,7 @@ import Foundation
 
 // Edit Row
 
-public class ACEditRow: ACManagedRow, UITextFieldDelegate {
+public class AAEditRow: AAManagedRow, UITextFieldDelegate {
     
     public var text: String?
     public var placeholder: String?
@@ -15,12 +15,12 @@ public class ACEditRow: ACManagedRow, UITextFieldDelegate {
     public var autocapitalizationType = UITextAutocapitalizationType.Sentences
     public var returnAction: (()->())?
     
-    public override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 44
     }
     
-    public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
-        let res = table.dequeueCell(indexPath.indexPath) as EditCell
+    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+        let res = table.dequeueCell(indexPath.indexPath) as AAEditCell
         res.textField.text = text
         res.textField.placeholder = placeholder
         res.textField.returnKeyType = returnKeyType
@@ -45,10 +45,10 @@ public class ACEditRow: ACManagedRow, UITextFieldDelegate {
     }
 }
 
-public extension ACManagedSection {
+public extension AAManagedSection {
     
-    public func edit(closure: (r: ACEditRow) -> ()) -> ACEditRow {
-        let r = ACEditRow()
+    public func edit(@noescape closure: (r: AAEditRow) -> ()) -> AAEditRow {
+        let r = AAEditRow()
         regions.append(r)
         closure(r: r)
         return r
@@ -57,7 +57,7 @@ public extension ACManagedSection {
 
 // Titled Row
 
-public class ACTitledRow: ACManagedRow {
+public class AATitledRow: AAManagedRow {
     
     public var title: String?
     public var subtitle: String?
@@ -65,15 +65,15 @@ public class ACTitledRow: ACManagedRow {
     public var isAction: Bool = false
     public var accessoryType = UITableViewCellAccessoryType.None
     
-    public var bindAction: ((r: ACTitledRow)->())?
+    public var bindAction: ((r: AATitledRow)->())?
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 55
     }
     
-    public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueTitledCell(indexPath.indexPath)
         bindCell(res)
         return res
@@ -94,7 +94,7 @@ public class ACTitledRow: ACManagedRow {
     
     // Copy
     
-    public override func rangeCopyData(table: ACManagedTable, indexPath: ACRangeIndexPath) -> String? {
+    public override func rangeCopyData(table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
         return isAction ? nil : subtitle
     }
     
@@ -112,10 +112,10 @@ public class ACTitledRow: ACManagedRow {
     }
 }
 
-public extension ACManagedSection {
+public extension AAManagedSection {
     
-    private func titled() -> ACTitledRow {
-        let r = ACTitledRow()
+    private func titled() -> AATitledRow {
+        let r = AATitledRow()
         let itemsCount = numberOfItems(table)
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
@@ -123,22 +123,22 @@ public extension ACManagedSection {
         return r
     }
 
-    public func titled(closure: (r: ACTitledRow) -> ()) -> ACTitledRow {
+    public func titled(@noescape closure: (r: AATitledRow) -> ()) -> AATitledRow {
         let r = titled()
         closure(r: r)
         return r
     }
     
-    public func titled(title: String, closure: (r: ACTitledRow) -> ()) -> ACTitledRow {
+    public func titled(title: String, @noescape closure: (r: AATitledRow) -> ()) -> AATitledRow {
         let r = titled()
-        r.title = localized(title)
+        r.title = AALocalized(title)
         closure(r: r)
         return r
     }
     
-    public func titled(title: String, content: String) -> ACTitledRow {
+    public func titled(title: String, content: String) -> AATitledRow {
         let r = titled()
-        r.title = localized(title)
+        r.title = AALocalized(title)
         r.subtitle = content
         return r
     }
@@ -146,7 +146,7 @@ public extension ACManagedSection {
 
 // Text Row
 
-public class ACTextRow: ACManagedRow {
+public class AATextRow: AAManagedRow {
     
     public var title: String?
     public var content: String?
@@ -154,15 +154,15 @@ public class ACTextRow: ACManagedRow {
     public var isAction: Bool = false
     public var navigate: Bool = false
     
-    public var bindAction: ((r: ACTextRow)->())?
+    public var bindAction: ((r: AATextRow)->())?
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return AATextCell.measure(content!, width: table.tableView.width, enableNavigation: navigate)
     }
     
-    public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueTextCell(indexPath.indexPath)
         res.setContent(title, content: content, isAction: isAction)
         if navigate {
@@ -175,7 +175,7 @@ public class ACTextRow: ACManagedRow {
     
     // Copy
     
-    public override func rangeCopyData(table: ACManagedTable, indexPath: ACRangeIndexPath) -> String? {
+    public override func rangeCopyData(table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
         return isAction ? nil : content
     }
     
@@ -189,10 +189,10 @@ public class ACTextRow: ACManagedRow {
     }
 }
 
-public extension ACManagedSection {
+public extension AAManagedSection {
     
-    private func text() -> ACTextRow {
-        let r = ACTextRow()
+    private func text() -> AATextRow {
+        let r = AATextRow()
         let itemsCount = numberOfItems(table)
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
@@ -200,24 +200,24 @@ public extension ACManagedSection {
         return r
     }
     
-    public func text(closure: (r: ACTextRow) -> ()) -> ACTextRow {
+    public func text(@noescape closure: (r: AATextRow) -> ()) -> AATextRow {
         let r = text()
         closure(r: r)
         r.bindAction?(r: r)
         return r
     }
     
-    public func text(title: String, closure: (r: ACTextRow) -> ()) -> ACTextRow {
+    public func text(title: String, @noescape closure: (r: AATextRow) -> ()) -> AATextRow {
         let r = text()
-        r.title = localized(title)
+        r.title = AALocalized(title)
         closure(r: r)
         r.bindAction?(r: r)
         return r
     }
     
-    public func text(title: String, content: String) -> ACTextRow {
+    public func text(title: String, content: String) -> AATextRow {
         let r = text()
-        r.title = localized(title)
+        r.title = AALocalized(title)
         r.content = content
         return r
     }
@@ -226,18 +226,18 @@ public extension ACManagedSection {
 
 // Header Row
 
-public class ACHeaderRow: ACManagedRow {
+public class AAHeaderRow: AAManagedRow {
     
     public var height: CGFloat = 40
     public var title: String?
     public var icon: UIImage?
     
-    public override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return height
     }
     
-    public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
-        let res = table.dequeueCell(indexPath.indexPath) as HeaderCell
+    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
+        let res = table.dequeueCell(indexPath.indexPath) as AAHeaderCell
         
         if title == nil {
             res.titleView.hidden = true
@@ -257,16 +257,16 @@ public class ACHeaderRow: ACManagedRow {
     }
 }
 
-public extension ACManagedSection {
+public extension AAManagedSection {
     
-    private func header() -> ACHeaderRow {
-        let r = ACHeaderRow()
+    private func header() -> AAHeaderRow {
+        let r = AAHeaderRow()
         regions.append(r)
         r.section = self
         return r
     }
     
-    public func header(title: String) -> ACHeaderRow {
+    public func header(title: String) -> AAHeaderRow {
         let r = header()
         r.title = title
         return r
@@ -276,7 +276,7 @@ public extension ACManagedSection {
 
 // Common Row
 
-public class ACCommonRow: ACManagedRow {
+public class AACommonRow: AAManagedRow {
     
     public var style: AACommonCellStyle = .Normal
     public var hint: String?
@@ -284,17 +284,17 @@ public class ACCommonRow: ACManagedRow {
     public var switchOn: Bool = false
     public var switchAction: ((v: Bool) -> ())?
     
-    public var bindAction: ((r: ACCommonRow)->())?
+    public var bindAction: ((r: AACommonRow)->())?
     
     public var contentInset: CGFloat = 15
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 44
     }
     
-    public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueCommonCell(indexPath.indexPath)
         bindCell(res)
         return res
@@ -329,12 +329,12 @@ public class ACCommonRow: ACManagedRow {
     }
 }
 
-public extension ACManagedSection {
+public extension AAManagedSection {
 
     // Common cell
     
-    private func common() -> ACCommonRow {
-        let r = ACCommonRow()
+    private func common() -> AACommonRow {
+        let r = AACommonRow()
         let itemsCount = numberOfItems(table)
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
@@ -342,7 +342,7 @@ public extension ACManagedSection {
         return r
     }
     
-    public func common(closure: (r: ACCommonRow) -> ()) -> ACCommonRow {
+    public func common(@noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
         closure(r: r)
         r.bindAction?(r: r)
@@ -351,7 +351,7 @@ public extension ACManagedSection {
     
     // Action cell
     
-    public func action(closure: (r: ACCommonRow) -> ()) -> ACCommonRow {
+    public func action(@noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
         r.style = .Action
         closure(r: r)
@@ -359,9 +359,9 @@ public extension ACManagedSection {
         return r
     }
     
-    public func action(content: String, closure: (r: ACCommonRow) -> ()) -> ACCommonRow {
+    public func action(content: String, @noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
-        r.content = localized(content)
+        r.content = AALocalized(content)
         r.style = .Action
         closure(r: r)
         r.bindAction?(r: r)
@@ -370,7 +370,7 @@ public extension ACManagedSection {
     
     // Navigation cell
     
-    public func navigate(closure: (r: ACCommonRow) -> ()) -> ACCommonRow {
+    public func navigate(@noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
         r.style = .Navigation
         closure(r: r)
@@ -378,18 +378,18 @@ public extension ACManagedSection {
         return r
     }
     
-    public func navigate(content: String, closure: (r: ACCommonRow) -> ()) -> ACCommonRow {
+    public func navigate(content: String, @noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
-        r.content = localized(content)
+        r.content = AALocalized(content)
         r.style = .Navigation
         closure(r: r)
         r.bindAction?(r: r)
         return r
     }
     
-    public func navigate(content: String, controller: UIViewController.Type) -> ACCommonRow {
+    public func navigate(content: String, controller: UIViewController.Type) -> AACommonRow {
         let r = common()
-        r.content = localized(content)
+        r.content = AALocalized(content)
         r.style = .Navigation
         r.selectAction = { () -> Bool in
             self.table.controller.navigateNext(controller.init())
@@ -401,9 +401,9 @@ public extension ACManagedSection {
     
     // Danger
     
-    public func danger(content: String, closure: (r: ACCommonRow) -> ()) -> ACCommonRow {
+    public func danger(content: String, @noescape closure: (r: AACommonRow) -> ()) -> AACommonRow {
         let r = common()
-        r.content = localized(content)
+        r.content = AALocalized(content)
         r.style = .Destructive
         closure(r: r)
         r.bindAction?(r: r)
@@ -412,9 +412,9 @@ public extension ACManagedSection {
     
     // Content
     
-    func url(content: String, url: String) -> ACCommonRow {
+    func url(content: String, url: String) -> AACommonRow {
         let r = common()
-        r.content = localized(content)
+        r.content = AALocalized(content)
         r.style = .Navigation
         r.selectAction = { () -> Bool in
             if let u = NSURL(string: url) {
@@ -425,9 +425,9 @@ public extension ACManagedSection {
         return r
     }
     
-    public func hint(content: String) -> ACCommonRow {
+    public func hint(content: String) -> AACommonRow {
         let r = common()
-        r.content = localized(content)
+        r.content = AALocalized(content)
         r.style = .Hint
         r.bindAction?(r: r)
         return r
@@ -437,26 +437,26 @@ public extension ACManagedSection {
 
 // Custom cell
 
-public class ACCustomRow<T where T: UITableViewCell>: ACManagedRow {
+public class AACustomRow<T where T: UITableViewCell>: AAManagedRow {
     
     public var height: CGFloat = 44
     public var closure: ((cell: T) -> ())?
     
-    public var bindAction: ((r: ACCustomRow<T>)->())?
+    public var bindAction: ((r: AACustomRow<T>)->())?
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return height
     }
     
-    public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res: T = table.dequeueCell(indexPath.indexPath)
         rangeBindCellForItem(table, indexPath: indexPath, cell: res)
         return res
     }
     
-    public func rangeBindCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath, cell: T) {
+    public func rangeBindCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath, cell: T) {
         closure?(cell: cell)
     }
     
@@ -470,10 +470,10 @@ public class ACCustomRow<T where T: UITableViewCell>: ACManagedRow {
     }
 }
 
-public extension ACManagedSection {
+public extension AAManagedSection {
     
-    private func custom<T where T: UITableViewCell>() -> ACCustomRow<T> {
-        let r = ACCustomRow<T>()
+    private func custom<T where T: UITableViewCell>() -> AACustomRow<T> {
+        let r = AACustomRow<T>()
         let itemsCount = numberOfItems(table)
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
@@ -481,8 +481,8 @@ public extension ACManagedSection {
         return r
     }
     
-    public func custom<T where T: UITableViewCell>(closure: (r: ACCustomRow<T>) -> ()) -> ACCustomRow<T> {
-        let r: ACCustomRow<T> = custom()
+    public func custom<T where T: UITableViewCell>(@noescape closure: (r: AACustomRow<T>) -> ()) -> AACustomRow<T> {
+        let r: AACustomRow<T> = custom()
         closure(r: r)
         r.bindAction?(r: r)
         return r
@@ -491,7 +491,7 @@ public extension ACManagedSection {
 
 // Avatar Row
 
-public class ACAvatarRow: ACManagedRow {
+public class AAAvatarRow: AAManagedRow {
     
     public var id: Int?
     public var title: String?
@@ -501,19 +501,18 @@ public class ACAvatarRow: ACManagedRow {
     public var avatarLoading: Bool = false
     
     public var subtitle: String?
-    public var subtitleStyle: String?
     
-    public var bindAction: ((r: ACAvatarRow)->())?
+    public var bindAction: ((r: AAAvatarRow)->())?
     
     public var avatarDidTap: ((view: UIView) -> ())?
     
     // Cell
     
-    public override func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public override func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 92
     }
     
-    public override func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res: AAAvatarCell = table.dequeueCell(indexPath.indexPath)
         bindCell(res)
         return res
@@ -524,9 +523,6 @@ public class ACAvatarRow: ACManagedRow {
         
         if subtitle != nil {
             res.subtitleLabel.text = subtitle
-            if subtitleStyle != nil {
-                res.subtitleLabel.applyStyle(subtitleStyle!)
-            }
             res.subtitleLabel.hidden = false
         } else {
             res.subtitleLabel.hidden = true
@@ -562,10 +558,10 @@ public class ACAvatarRow: ACManagedRow {
     }
 }
 
-public extension ACManagedSection {
+public extension AAManagedSection {
     
-    private func addAvatar() -> ACAvatarRow {
-        let r = ACAvatarRow()
+    private func addAvatar() -> AAAvatarRow {
+        let r = AAAvatarRow()
         let itemsCount = numberOfItems(table)
         regions.append(r)
         r.indexPath = NSIndexPath(forRow: itemsCount, inSection: index)
@@ -573,8 +569,8 @@ public extension ACManagedSection {
         return r
     }
     
-    public func avatar(closure: (r: ACAvatarRow) -> ()) -> ACAvatarRow {
-        let r: ACAvatarRow = addAvatar()
+    public func avatar(@noescape closure: (r: AAAvatarRow) -> ()) -> AAAvatarRow {
+        let r: AAAvatarRow = addAvatar()
         closure(r: r)
         r.bindAction?(r: r)
         return r
@@ -583,12 +579,12 @@ public extension ACManagedSection {
 
 // Arrays
 
-public class ACManagedArrayRows<T, R where R: UITableViewCell>: ACManagedRange {
+public class AAManagedArrayRows<T, R where R: UITableViewCell>: AAManagedRange {
     
     public var height: CGFloat = 44
     public var selectAction: ((t: T) -> Bool)?
     public var bindCopy: ((t: T) -> String?)?
-    public var section: ACManagedSection?
+    public var section: AAManagedSection?
     
     public var bindData: ((cell: R, item: T) -> ())?
     
@@ -596,46 +592,46 @@ public class ACManagedArrayRows<T, R where R: UITableViewCell>: ACManagedRange {
     
     // Number of items
     
-    public func rangeNumberOfItems(table: ACManagedTable) -> Int {
+    public func rangeNumberOfItems(table: AAManagedTable) -> Int {
         return data.count
     }
     
     // Cells
     
-    public func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return height
     }
     
-    public func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res: R = table.dequeueCell(indexPath.indexPath)
         rangeBindData(table, indexPath: indexPath, cell: res, item: data[indexPath.item])
         return res
     }
     
-    public func rangeBindData(table: ACManagedTable, indexPath: ACRangeIndexPath, cell: R, item: T) {
+    public func rangeBindData(table: AAManagedTable, indexPath: AARangeIndexPath, cell: R, item: T) {
         bindData?(cell: cell, item: item)
     }
     
     // Selection
     
-    public func rangeCanSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return selectAction != nil
     }
     
-    public func rangeSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return selectAction!(t: data[indexPath.item])
     }
     
     // Copy
     
-    public func rangeCanCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanCopy(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         if bindCopy != nil {
             return bindCopy!(t: data[indexPath.item]) != nil
         }
         return false
     }
     
-    public func rangeCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) {
+    public func rangeCopy(table: AAManagedTable, indexPath: AARangeIndexPath) {
         if let s = bindCopy!(t: data[indexPath.item]) {
             UIPasteboard.generalPasteboard().string = s
         }
@@ -650,17 +646,17 @@ public class ACManagedArrayRows<T, R where R: UITableViewCell>: ACManagedRange {
     }
 }
 
-public extension ACManagedSection {
+public extension AAManagedSection {
     
-    private func addArrays<T, R where R: UITableViewCell>() -> ACManagedArrayRows<T, R> {
-        let r = ACManagedArrayRows<T, R>()
+    private func addArrays<T, R where R: UITableViewCell>() -> AAManagedArrayRows<T, R> {
+        let r = AAManagedArrayRows<T, R>()
         regions.append(r)
         r.section = self
         return r
     }
     
-    public func arrays<T, R where R: UITableViewCell>(closure: (r: ACManagedArrayRows<T,R>) -> ()) -> ACManagedArrayRows<T, R> {
-        let res: ACManagedArrayRows<T, R> = addArrays()
+    public func arrays<T, R where R: UITableViewCell>(@noescape closure: (r: AAManagedArrayRows<T,R>) -> ()) -> AAManagedArrayRows<T, R> {
+        let res: AAManagedArrayRows<T, R> = addArrays()
         closure(r: res)
         return res
     }
@@ -669,50 +665,50 @@ public extension ACManagedSection {
 
 // Single item row
 
-public class ACManagedRow: NSObject, ACManagedRange {
+public class AAManagedRow: NSObject, AAManagedRange {
     
     public var selectAction: (() -> Bool)?
     
-    public var section: ACManagedSection?
+    public var section: AAManagedSection?
     public var indexPath: NSIndexPath?
     
     // Number of items
     
-    public func rangeNumberOfItems(table: ACManagedTable) -> Int {
+    public func rangeNumberOfItems(table: AAManagedTable) -> Int {
         return 1
     }
     
     // Cells
     
-    public func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         return 44
     }
     
-    public func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         fatalError("Not implemented")
     }
     
     // Selection
     
-    public func rangeCanSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return selectAction != nil
     }
     
-    public func rangeSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return selectAction!()
     }
     
     // Copying
     
-    public func rangeCanCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanCopy(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         return rangeCopyData(table, indexPath: indexPath) != nil
     }
     
-    public func rangeCopy(table: ACManagedTable, indexPath: ACRangeIndexPath) {
+    public func rangeCopy(table: AAManagedTable, indexPath: AARangeIndexPath) {
         UIPasteboard.generalPasteboard().string = rangeCopyData(table, indexPath: indexPath)
     }
     
-    public func rangeCopyData(table: ACManagedTable, indexPath: ACRangeIndexPath) -> String? {
+    public func rangeCopyData(table: AAManagedTable, indexPath: AARangeIndexPath) -> String? {
         return nil
     }
     

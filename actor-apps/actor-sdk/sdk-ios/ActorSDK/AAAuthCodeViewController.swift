@@ -39,23 +39,23 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
         
         self.content = ACAllEvents_Auth.AUTH_CODE()
         
-        grayBackground.backgroundColor = UIColor.RGB(0xf2f2f2)
+        grayBackground.backgroundColor = UIColor(rgb: 0xf2f2f2)
         view.addSubview(grayBackground)
         
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textColor = UIColor.blackColor()
         titleLabel.textAlignment = NSTextAlignment.Center
-        titleLabel.font =  isIPad
+        titleLabel.font =  AADevice.isiPad
             ? UIFont.thinSystemFontOfSize(50.0)
             : UIFont.systemFontOfSize(22.0)
         titleLabel.text = phoneNumber
         grayBackground.addSubview(titleLabel)
         
         navigationBarSeparator = UIView()
-        navigationBarSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
+        navigationBarSeparator.backgroundColor = UIColor(rgb: 0xc8c7cc)
         view.addSubview(navigationBarSeparator)
         
-        codeTextField.placeholder = localized("AuthCodeFieldHint")
+        codeTextField.placeholder = AALocalized("AuthCodeFieldHint")
         codeTextField.font = UIFont.systemFontOfSize(24.0)
         codeTextField.backgroundColor = UIColor.whiteColor()
         codeTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
@@ -64,7 +64,7 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
         view.addSubview(codeTextField)
         
         codeSeparator = UIView()
-        codeSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
+        codeSeparator.backgroundColor = UIColor(rgb: 0xc8c7cc)
         view.addSubview(codeSeparator)
         
         hintLabel.font = UIFont.systemFontOfSize(16.0)
@@ -85,15 +85,15 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
         view.addSubview(callHintLabel)
         
         callActionLabel.titleLabel?.font = UIFont.systemFontOfSize(16)
-        callActionLabel.setTitleColor(UIColor.RGB(0x5085CB), forState: .Normal)
-        callActionLabel.setTitle(localized("AuthNoCodeHint"), forState: .Normal)
+        callActionLabel.setTitleColor(UIColor(rgb: 0x5085CB), forState: .Normal)
+        callActionLabel.setTitle(AALocalized("AuthNoCodeHint"), forState: .Normal)
         callActionLabel.hidden = true
         callActionLabel.addTarget(self, action: "noCodeDidPressed", forControlEvents: .TouchUpInside)
         view.addSubview(callActionLabel)
         
         view.backgroundColor = UIColor.whiteColor()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized("NavigationNext"), style: UIBarButtonItemStyle.Done, target: self, action: "nextButtonPressed")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Done, target: self, action: "nextButtonPressed")
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -130,13 +130,13 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
         let isWidescreen = screenSize.width > 320 || screenSize.height > 480
         let isPortraint = screenSize.width < screenSize.height
         
-        let bgSize = isIPad
+        let bgSize = AADevice.isiPad
             ? (isPortraint ? 304.0: 140)
             : (isWidescreen ? 131.0 : 90.0)
         grayBackground.frame = CGRect(x: 0.0, y: 0.0, width: screenSize.width, height: CGFloat(bgSize))
         
         
-        let padding = isIPad
+        let padding = AADevice.isiPad
             ? (isPortraint ? 48 : 20)
             : (24)
         titleLabel.sizeToFit()
@@ -145,7 +145,7 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
         let separatorHeight: CGFloat = 0.5
         navigationBarSeparator.frame = CGRect(x: 0.0, y: grayBackground.bounds.size.height, width: screenSize.width, height: separatorHeight)
         
-        let fieldWidth : CGFloat = isIPad
+        let fieldWidth : CGFloat = AADevice.isiPad
             ? (520)
             : (screenSize.width)
         
@@ -190,7 +190,7 @@ public class AAAuthCodeViewController: AAAuthViewController, UIAlertViewDelegate
             let minFormatted = min.format("02")
             let secFormatted = sec.format("02")
             let time = "\(minFormatted):\(secFormatted)"
-            callHintLabel.text = localized("AuthCallHint")
+            callHintLabel.text = AALocalized("AuthCallHint")
                 .replace("{time}", dest: time)
             callActionLabel.hidden = true
         }

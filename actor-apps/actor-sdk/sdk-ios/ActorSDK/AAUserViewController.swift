@@ -4,18 +4,18 @@
 
 import UIKit
 
-class AAUserViewController: ACContentTableController {
+class AAUserViewController: AAContentTableController {
     
-    var headerRow: ACAvatarRow!
-    var isContactRow: ACCommonRow!
+    var headerRow: AAAvatarRow!
+    var isContactRow: AACommonRow!
 
     init(uid: Int) {
-        super.init(style: ACContentTableStyle.SettingsPlain)
+        super.init(style: AAContentTableStyle.SettingsPlain)
 
         self.uid = uid
         self.autoTrack = true
         
-        self.title = localized("ProfileTitle")
+        self.title = AALocalized("ProfileTitle")
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -40,14 +40,14 @@ class AAUserViewController: ACContentTableController {
                     
                     if !self.isBot {
                         r.subtitle = presenceText
-                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
-                            r.subtitleStyle = "user.online"
-                        } else {
-                            r.subtitleStyle = "user.offline"
-                        }
+//                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+//                            r.subtitleStyle = "user.online"
+//                        } else {
+//                            r.subtitleStyle = "user.offline"
+//                        }
                     } else {
-                        r.subtitleStyle = "user.online"
-                        r.subtitle = "bot"
+                        r.subtitle = "bot"                        
+//                        r.subtitleStyle = "user.online"
                     }
                     
                 }
@@ -89,7 +89,7 @@ class AAUserViewController: ACContentTableController {
                 }
                 
                 // Contact: Phones
-                s.arrays { (r: ACManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
+                s.arrays { (r: AAManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
                     r.height = 55
                     r.data = self.user.getPhonesModel().get().toSwiftArray()
                     r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
@@ -122,7 +122,7 @@ class AAUserViewController: ACContentTableController {
             s.common { (r) -> () in
                 let peer = ACPeer.userWithInt(jint(self.uid))
                 r.style = .Switch
-                r.content = localized("ProfileNotifications")
+                r.content = AALocalized("ProfileNotifications")
                 
                 r.bindAction = { (r) -> () in
                     r.switchOn = Actor.isNotificationsEnabledWithPeer(peer)
@@ -152,10 +152,10 @@ class AAUserViewController: ACContentTableController {
             self.isContactRow = s.common { (r) -> () in
                 r.bindAction = { (r) -> () in
                     if self.user.isContactModel().get().booleanValue() {
-                        r.content = localized("ProfileRemoveFromContacts")
+                        r.content = AALocalized("ProfileRemoveFromContacts")
                         r.style = .Destructive
                     } else {
-                        r.content = localized("ProfileAddToContacts")
+                        r.content = AALocalized("ProfileAddToContacts")
                         r.style = .Action
                     }
                 }
@@ -211,7 +211,7 @@ class AAUserViewController: ACContentTableController {
         
     }
     
-    override func tableWillBind(binder: Binder) {
+    override func tableWillBind(binder: AABinder) {
         binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
             self.headerRow.reload()
         })

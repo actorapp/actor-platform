@@ -9,8 +9,8 @@ import MessageUI
 public class AARootTabViewController : UITabBarController, MFMessageComposeViewControllerDelegate, UIAlertViewDelegate {
     
     private var appEmptyContainer = UIView()
-    private var appIsSyncingPlaceholder = BigPlaceholderView(topOffset: 44 + 20)
-    private var appIsEmptyPlaceholder = BigPlaceholderView(topOffset: 44 + 20)
+    private var appIsSyncingPlaceholder = AABigPlaceholderView(topOffset: 44 + 20)
+    private var appIsEmptyPlaceholder = AABigPlaceholderView(topOffset: 44 + 20)
     
     public init() {
         super.init(nibName: nil, bundle: nil)

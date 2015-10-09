@@ -5,7 +5,7 @@
 import Foundation
 
 class Cache<T> {
-    private var cache = HashMap<T>()
+    private var cache = AAHashMap<T>()
     
     func pick(id: Int64) -> T? {
         return cache.getValueAtKey(id)
@@ -51,7 +51,7 @@ class LayoutCache : Cache<CellLayout> {
 }
 
 class FastThumbCache {
-    private var thumbs = HashMap<UIImage>()
+    private var thumbs = AAHashMap<UIImage>()
     
     func pick(id: Int64) -> UIImage? {
         return thumbs.getValueAtKey(id)

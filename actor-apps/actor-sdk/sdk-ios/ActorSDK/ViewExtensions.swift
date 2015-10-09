@@ -13,7 +13,7 @@ extension UITabBarItem {
         let selectedIcon = ActorSDK.sharedActor().style.tabSelectedIconColor
         let selectedText = ActorSDK.sharedActor().style.tabSelectedTextColor
         
-        self.init(title: localized(title), image: UIImage.tinted(img, color: unselectedIcon), selectedImage: UIImage.tinted(selImage, color: selectedIcon))
+        self.init(title: AALocalized(title), image: UIImage.tinted(img, color: unselectedIcon), selectedImage: UIImage.tinted(selImage, color: selectedIcon))
         
         setTitleTextAttributes([NSForegroundColorAttributeName: unselectedText], forState: UIControlState.Normal)
         setTitleTextAttributes([NSForegroundColorAttributeName: selectedText], forState: UIControlState.Selected)

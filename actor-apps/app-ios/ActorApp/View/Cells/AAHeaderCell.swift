@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class HeaderCell: AATableViewCell {
+public class AAHeaderCell: AATableViewCell {
     
     public var titleView = UILabel()
     public var iconView = UIImageView()

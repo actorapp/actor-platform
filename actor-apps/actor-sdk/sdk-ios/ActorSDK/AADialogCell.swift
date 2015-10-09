@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AADialogCell: AATableViewCell, ACBindedCell {
+public class AADialogCell: AATableViewCell, AABindedCell {
     
     // Binding data type
     
@@ -12,7 +12,7 @@ public class AADialogCell: AATableViewCell, ACBindedCell {
     
     // Hight of cell
     
-    public static func bindedCellHeight(table: ACManagedTable, item: ACDialog) -> CGFloat {
+    public static func bindedCellHeight(table: AAManagedTable, item: ACDialog) -> CGFloat {
         
         return 76
     }
@@ -62,7 +62,7 @@ public class AADialogCell: AATableViewCell, ACBindedCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func bind(item: ACDialog, table: ACManagedTable, index: Int, totalCount: Int) {
+    public func bind(item: ACDialog, table: AAManagedTable, index: Int, totalCount: Int) {
         
         self.avatarView.bind(item.dialogTitle, id: item.peer.peerId, avatar: item.dialogAvatar)
         

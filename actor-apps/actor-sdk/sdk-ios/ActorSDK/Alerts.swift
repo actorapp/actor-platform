@@ -136,14 +136,14 @@ public extension UIViewController {
 //        actionShit.showWithCompletion(nil)
     }
     
-    func startEditText(closure: (AAEditTextControllerConfig) -> ()) {
+    func startEditText(@noescape closure: (AAEditTextControllerConfig) -> ()) {
         let config = AAEditTextControllerConfig()
         closure(config)
         config.check()
         self.presentViewController(AANavigationController(rootViewController: AAEditTextController(config: config)), animated: true, completion: nil)
     }
     
-    func startEditField(closure: (c: AAEditFieldControllerConfig) -> ()) {
+    func startEditField(@noescape closure: (c: AAEditFieldControllerConfig) -> ()) {
         let config = AAEditFieldControllerConfig()
         closure(c: config)
         config.check()

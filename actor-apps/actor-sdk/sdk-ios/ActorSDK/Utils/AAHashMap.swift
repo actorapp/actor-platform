@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct HashMap<T> {
+struct AAHashMap<T> {
     var table = Array<SinglyLinkedList<T>?>()
     public init() {
         for _ in 0...99 {

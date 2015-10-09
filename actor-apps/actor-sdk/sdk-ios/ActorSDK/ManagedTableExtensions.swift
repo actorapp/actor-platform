@@ -4,14 +4,14 @@
 
 import Foundation
 
-public extension ACManagedTable {
+public extension AAManagedTable {
     
     public func dequeueCell<T where T: UITableViewCell>(indexPath: NSIndexPath) -> T {
         return self.tableView.dequeueCell(indexPath)
     }
 }
 
-public extension ACManagedTable {
+public extension AAManagedTable {
     
     public func dequeueTextCell(indexPath: NSIndexPath) -> AATextCell {
         return dequeueCell(indexPath)
