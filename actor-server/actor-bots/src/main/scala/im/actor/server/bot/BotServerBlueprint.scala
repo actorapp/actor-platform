@@ -3,22 +3,22 @@ package im.actor.server.bot
 import akka.actor.ActorSystem
 import akka.stream.scaladsl.{ Flow, Merge, Source }
 import im.actor.api.rpc.Update
-import im.actor.api.rpc.messaging.ApiTextMessage
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.bots.{ BotMessageOut, BotMessages }
-import im.actor.server.dialog.DialogExtension
-import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesManager }
+import im.actor.bots.BotMessages
+import im.actor.server.bot.services.{ KeyValueService, MessagingService }
+import upickle.Js
 
 import scala.concurrent.Future
 
 final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSystem) {
 
   import BotMessages._
+  import BotService._
   import akka.stream.scaladsl.FlowGraph.Implicits._
-  import system._
+  import system.dispatcher
 
-  private lazy val dialogExt = DialogExtension(system)
   private lazy val updBuilder = new BotUpdateBuilder(botUserId, botAuthId, system)
+  private val msgService = new MessagingService(system)
+  private val kvService = new KeyValueService(system)
 
   val flow: Flow[BotRequest, BotMessageOut, Unit] = {
     val updSource =
@@ -30,7 +30,9 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
         }
 
     val rqrspFlow = Flow[BotRequest]
-      .mapAsync(1)(r ⇒ handleRequest(r.id, r.body))
+      .mapAsync(1) {
+        case BotRequest(id, service, body) ⇒ handleRequest(id, service, body)
+      }
       .map(_.asInstanceOf[BotMessageOut])
 
     Flow() { implicit b ⇒
@@ -45,26 +47,23 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
     }
   }
 
-  private def handleRequest(id: Long, body: RequestBody): Future[BotResponse] =
-    for {
-      response ← handleRequestBody(body)
-    } yield BotResponse(id, response)
+  private def handleRequest(id: Long, service: String, body: RequestBody): Future[BotResponse] = {
+    val resultFuture =
+      if (services.isDefinedAt(service)) {
+        val handlers = services(service).handlers
 
-  private def handleRequestBody(body: RequestBody): Future[ResponseBody] = body match {
-    case SendTextMessage(peer, randomId, message) ⇒ sendTextMessage(peer, randomId, message)
+        if (handlers.isDefinedAt(body)) {
+          for {
+            response ← handlers(body).handle(botUserId, botAuthId)
+          } yield response
+        } else Future.successful(BotError(400, "REQUEST_NOT_SUPPORTED", Js.Obj(), None))
+      } else Future.successful(BotError(400, "SERVICE_NOT_REGISTERED", Js.Obj(), None))
+
+    resultFuture map (BotResponse(id, _))
   }
 
-  private def sendTextMessage(peer: OutPeer, randomId: Long, message: String): Future[ResponseBody] = {
-    // FIXME: check access hash
-    for {
-      SeqStateDate(_, _, date) ← dialogExt.sendMessage(
-        peer = ApiPeer(ApiPeerType(peer.`type`), peer.id),
-        senderUserId = botUserId,
-        senderAuthId = 0L,
-        randomId = randomId,
-        message = ApiTextMessage(message, Vector.empty, None),
-        isFat = false
-      )
-    } yield MessageSent(date)
+  private val services: PartialFunction[String, BotService] = {
+    case "keyvalue"  ⇒ kvService
+    case "messaging" ⇒ msgService
   }
 }
