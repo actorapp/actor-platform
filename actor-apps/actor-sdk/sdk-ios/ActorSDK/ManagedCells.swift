@@ -22,7 +22,15 @@ public class AAEditRow: AAManagedRow, UITextFieldDelegate {
     public override func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let res = table.dequeueCell(indexPath.indexPath) as AAEditCell
         res.textField.text = text
-        res.textField.placeholder = placeholder
+        
+        if placeholder != nil {
+            let placeholderText = NSMutableAttributedString(string: placeholder!)
+            placeholderText.addAttribute(NSForegroundColorAttributeName, value: ActorSDK.sharedActor().style.cellHintColor, range:  NSMakeRange(0, placeholder!.length))
+            res.textField.attributedPlaceholder = placeholderText
+        } else {
+            res.textField.placeholder = nil
+        }
+    
         res.textField.returnKeyType = returnKeyType
         res.textField.autocapitalizationType = autocapitalizationType
         res.textField.delegate = self
@@ -501,6 +509,7 @@ public class AAAvatarRow: AAManagedRow {
     public var avatarLoading: Bool = false
     
     public var subtitle: String?
+    public var subtitleColor: UIColor?
     
     public var bindAction: ((r: AAAvatarRow)->())?
     
@@ -532,6 +541,12 @@ public class AAAvatarRow: AAManagedRow {
             res.avatarView.bind(title!, id: jint(id!), fileName: avatarPath!)
         } else {
             res.avatarView.bind(title!, id: jint(id!), avatar: avatar, clearPrev: false)
+        }
+        
+        if subtitleColor != nil {
+            res.subtitleLabel.textColor = subtitleColor!
+        } else {
+            res.subtitleLabel.textColor = ActorSDK.sharedActor().style.cellTextColor
         }
         
         res.progress.hidden = !avatarLoading

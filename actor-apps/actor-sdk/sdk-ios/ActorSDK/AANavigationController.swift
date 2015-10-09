@@ -19,6 +19,7 @@ public class AANavigationController: UINavigationController {
         navigationBar.barTintColor = ActorSDK.sharedActor().style.navigationBgColor
         navigationBar.hairlineHidden = true
         
+        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
         // Enabling app state sync progress
 //        self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
 //        self.setSecondaryColor(MainAppTheme.navigation.progressSecondary)
@@ -36,7 +37,7 @@ public class AANavigationController: UINavigationController {
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarColor, animated: true)
+        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
     }
 }
 

@@ -6,19 +6,19 @@ import Foundation
 
 private let ENABLE_LOGS = false
 
-class MessagesFlowLayout : UICollectionViewLayout {
+class AAMessagesFlowLayout : UICollectionViewLayout {
     
     var deletedIndexPaths = [NSIndexPath]()
     var insertedIndexPaths = [NSIndexPath]()
-    var items = [LayoutItem]()
+    var items = [AALayoutItem]()
     var frames = [CGRect]()
     var disableAutoScroll: Bool = false
     
     var contentHeight: CGFloat = 0.0
-    var currentItems = [CachedLayout]()
+    var currentItems = [AACachedLayout]()
     var isScrolledToEnd: Bool = false
     
-    var list: PreprocessedList?
+    var list: AAPreprocessedList?
     var unread: jlong?
     
     override init() {
@@ -29,7 +29,7 @@ class MessagesFlowLayout : UICollectionViewLayout {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func beginUpdates(disableAutoScroll: Bool, list: PreprocessedList?, unread: jlong?) {
+    func beginUpdates(disableAutoScroll: Bool, list: AAPreprocessedList?, unread: jlong?) {
         self.disableAutoScroll = disableAutoScroll
         self.list = list
         self.unread = unread
@@ -42,7 +42,7 @@ class MessagesFlowLayout : UICollectionViewLayout {
             let index = indexPath.item
             let topOffset = items[index].attrs.frame.origin.y - currentOffset
             let id = items[index].id
-            currentItems.append(CachedLayout(id: id, offset: topOffset))
+            currentItems.append(AACachedLayout(id: id, offset: topOffset))
         }
         
         isScrolledToEnd = self.collectionView!.contentOffset.y < 8
@@ -76,7 +76,7 @@ class MessagesFlowLayout : UICollectionViewLayout {
                 let itemSize = CGSizeMake(self.collectionView!.bounds.width, height)
                 
                 let frame = CGRect(origin: CGPointMake(0, contentHeight), size: itemSize)
-                var item = LayoutItem(id: itemId)
+                var item = AALayoutItem(id: itemId)
                 
                 item.size = itemSize
                 
@@ -163,7 +163,7 @@ class MessagesFlowLayout : UICollectionViewLayout {
     }
 }
 
-struct LayoutItem {
+struct AALayoutItem {
     
     var id: Int64
     var invalidated: Bool = true
@@ -175,7 +175,7 @@ struct LayoutItem {
     }
 }
 
-struct CachedLayout {
+struct AACachedLayout {
     var id: Int64
     var offset: CGFloat
     
@@ -185,7 +185,7 @@ struct CachedLayout {
     }
 }
 
-@objc enum MessageGravity: Int {
+@objc enum AAMessageGravity: Int {
     case Left
     case Right
     case Center

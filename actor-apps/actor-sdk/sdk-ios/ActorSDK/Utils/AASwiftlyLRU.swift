@@ -100,14 +100,14 @@ class AASwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
     /**
     Least Recently Used "LRU" Cache, capacity is the number of elements to keep in the Cache.
     */
-    public init(capacity: Int) {
+    init(capacity: Int) {
         self.capacity = capacity
         
         self.queue = LinkedList()
         self.hashtable = [K : Node<K, V>](minimumCapacity: self.capacity)
     }
     
-    public subscript (key: K) -> V? {
+    subscript (key: K) -> V? {
         get {
             if let node = self.hashtable[key] {
                 self.queue.remove(node)
@@ -148,7 +148,7 @@ class AASwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
         }
     }
     
-    public var description : String {
+    var description : String {
         return "SwiftlyLRU Cache(\(self.length)) \n" + self.queue.display()
     }
 }

@@ -40,16 +40,15 @@ class AAUserViewController: AAContentTableController {
                     
                     if !self.isBot {
                         r.subtitle = presenceText
-//                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
-//                            r.subtitleStyle = "user.online"
-//                        } else {
-//                            r.subtitleStyle = "user.offline"
-//                        }
+                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                            r.subtitleColor = self.appStyle.userOnlineColor
+                        } else {
+                            r.subtitleColor = self.appStyle.userOfflineColor
+                        }
                     } else {
-                        r.subtitle = "bot"                        
-//                        r.subtitleStyle = "user.online"
+                        r.subtitle = "bot"
+                        r.subtitleColor = self.appStyle.userOnlineColor
                     }
-                    
                 }
                 
                 r.avatarDidTap = { [unowned self] (view: UIView) -> () in

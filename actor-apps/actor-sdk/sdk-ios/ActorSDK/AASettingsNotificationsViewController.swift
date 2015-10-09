@@ -14,7 +14,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     public init() {
         super.init(style: UITableViewStyle.Grouped)
         
-        title = NSLocalizedString("NotificationsTitle", comment: "Notifcations and Sounds")
+        title = AALocalized("NotificationsTitle")
         
         content = ACAllEvents_Settings.NOTIFICATIONS()
     }
@@ -58,13 +58,13 @@ public class AASettingsNotificationsViewController: AATableViewController {
     
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if (section == 0) {
-            return NSLocalizedString("NotificationsEffectsTitle", comment: "Effects")
+            return AALocalized("NotificationsEffectsTitle")
         } else if (section == 1) {
-            return NSLocalizedString("NotificationsMobileTitle", comment: "Mobile Notifications")
+            return AALocalized("NotificationsMobileTitle")
         } else if (section == 2) {
-            return NSLocalizedString("NotificationsGroups", comment: "Group Notifications")
+            return AALocalized("NotificationsGroups")
         } else if (section == 3) {
-            return NSLocalizedString("NotificationsPrivacyTitle", comment: "Privacy")
+            return AALocalized("NotificationsPrivacyTitle")
         }
         
         return nil
@@ -72,11 +72,11 @@ public class AASettingsNotificationsViewController: AATableViewController {
     
     public func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if (section == 1) {
-            return NSLocalizedString("NotificationsNotificationHint", comment: "Disable hint")
+            return AALocalized("NotificationsNotificationHint")
         } else if (section == 2) {
-            return NSLocalizedString("NotificationsOnlyMentionsHint", comment: "Only Mentions hint")
+            return AALocalized("NotificationsOnlyMentionsHint")
         } else if (section == 3) {
-            return NSLocalizedString("NotificationsPreviewHint", comment: "Preview hint")
+            return AALocalized("NotificationsPreviewHint")
         }
         
         return nil
@@ -85,7 +85,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func notificationsTonesCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsSoundEffects", comment: "Sound Effects"))
+        cell.setContent(AALocalized("NotificationsSoundEffects"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
@@ -104,7 +104,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func notificationsEnableCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
+        cell.setContent(AALocalized("NotificationsEnable"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
@@ -131,7 +131,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func notificationsAlertCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsSound", comment: "Sound"))
+        cell.setContent(AALocalized("NotificationsSound"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
@@ -152,7 +152,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func groupEnabledCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
+        cell.setContent(AALocalized("NotificationsEnable"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.topSeparatorVisible = true
@@ -179,7 +179,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func groupEnabledMentionsCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsOnlyMentions", comment: "Mentions"))
+        cell.setContent(AALocalized("NotificationsOnlyMentions"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
@@ -199,7 +199,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func inAppAlertCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
+        cell.setContent(AALocalized("NotificationsEnable"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
@@ -226,7 +226,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func inAppSoundCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsSound", comment: "Sound"))
+        cell.setContent(AALocalized("NotificationsSound"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
@@ -248,7 +248,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func inAppVibrateCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsVibration", comment: "Vibration"))
+        cell.setContent(AALocalized("NotificationsVibration"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
@@ -269,7 +269,7 @@ public class AASettingsNotificationsViewController: AATableViewController {
     private func notificationsPreviewCell(indexPath: NSIndexPath) -> AACommonCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AACommonCell
         
-        cell.setContent(NSLocalizedString("NotificationsPreview", comment: "Message Preview"))
+        cell.setContent(AALocalized("NotificationsPreview"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.bottomSeparatorVisible = true
@@ -316,9 +316,4 @@ public class AASettingsNotificationsViewController: AATableViewController {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel!.textColor = ActorSDK.sharedActor().style.cellFooterColor
     }
-    
-
-    // MARK: -
-    // MARK: UITableView Delegate
-
 }

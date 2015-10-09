@@ -44,7 +44,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         titleLabel.font = AADevice.isiPad
             ? UIFont.thinSystemFontOfSize(50)
             : UIFont.lightSystemFontOfSize(30)
-        titleLabel.text = NSLocalizedString("AuthProfileTitle", comment: "Title")
+        titleLabel.text = AALocalized("AuthProfileTitle")
         grayBackground.addSubview(titleLabel)
         
         navigationBarSeparator = UIView()
@@ -79,14 +79,14 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         view.addSubview(avatarImageView)
         
         let addPhotoLabelFirst = UILabel()
-        addPhotoLabelFirst.text = NSLocalizedString("AuthProfileAddPhoto1", comment: "Title")
+        addPhotoLabelFirst.text = AALocalized("AuthProfileAddPhoto1")
         addPhotoLabelFirst.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelFirst.backgroundColor = UIColor.clearColor()
         addPhotoLabelFirst.textColor = UIColor(rgb: 0xd9d9d9)
         addPhotoLabelFirst.sizeToFit()
         
         let addPhotoLabelSecond = UILabel()
-        addPhotoLabelSecond.text = NSLocalizedString("AuthProfileAddPhoto2", comment: "Title")
+        addPhotoLabelSecond.text = AALocalized("AuthProfileAddPhoto2")
         addPhotoLabelSecond.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelSecond.backgroundColor = UIColor.clearColor()
         addPhotoLabelSecond.textColor = UIColor(rgb: 0xd9d9d9)
@@ -103,7 +103,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
         firstNameField.font = UIFont.systemFontOfSize(20)
         firstNameField.keyboardType = UIKeyboardType.Default
         firstNameField.returnKeyType = UIReturnKeyType.Next
-        firstNameField.placeholder = NSLocalizedString("AuthProfileNameHint", comment: "Title")
+        firstNameField.placeholder = AALocalized("AuthProfileNameHint")
         firstNameField.delegate = self
         firstNameField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         firstNameField.autocapitalizationType = UITextAutocapitalizationType.Words
@@ -121,7 +121,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
             hintLabel.backgroundColor = UIColor.whiteColor()
             hintLabel.font = UIFont.systemFontOfSize(17.0)
             hintLabel.textColor = UIColor(rgb: 0x999999)
-            hintLabel.text = NSLocalizedString("AuthProfileHint", comment: "Title")
+            hintLabel.text = AALocalized("AuthProfileHint")
             hintLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
             hintLabel.textAlignment = NSTextAlignment.Center
             hintLabel.contentMode = UIViewContentMode.Center
@@ -129,7 +129,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
             view.addSubview(hintLabel)
         }
         
-        let nextBarButton = UIBarButtonItem(title: NSLocalizedString("NavigationNext", comment: "Next"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed"))
+        let nextBarButton = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed"))
         navigationItem.rightBarButtonItem = nextBarButton
     }
     
@@ -206,11 +206,11 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
     
     public func selectPhoto(supportDelete: Bool) {
         let actionSheet = UIActionSheet(title: nil, delegate: self,
-            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
+            cancelButtonTitle: AALocalized("AlertCancel"),
             destructiveButtonTitle: nil,
-            otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Library"))
+            otherButtonTitles: AALocalized("PhotoCamera"), AALocalized("PhotoLibrary"))
         if (avatarImageView.image != nil) {
-            actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
+            actionSheet.addButtonWithTitle(AALocalized("PhotoRemove"))
             actionSheet.destructiveButtonIndex = 3
         }
         actionSheet.showInView(view)
@@ -236,8 +236,6 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
                 UIImageJPEGRepresentation(thumb!, 0.8)!.writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
             }
             
-            let action = "SignUp";
-            
             execute(Actor.signUpCommandWithName(username, withSex: ACSexEnum.values().objectAtIndex(ACSex.UNKNOWN.rawValue) as! ACSexEnum, withAvatar: avatarPath), successBlock: { (val) -> Void in
                 self.onAuthenticated()
                 }, failureBlock: { (val) -> Void in
@@ -248,7 +246,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
                     if let exception = val as? ACRpcException {
                         tag = exception.getTag()
                         if (tag == "PHONE_CODE_EXPIRED") {
-                            message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
+                            message = AALocalized("ErrorCodeExpired")
                         } else if (tag == "NAME_INVALID") {
                             let screenSize = UIScreen.mainScreen().bounds.size
                             let fieldWidth : CGFloat = AADevice.isiPad
@@ -263,7 +261,7 @@ public class AAAuthRegisterViewController: AAAuthViewController, UIAlertViewDele
                         message = exception.getLocalizedMessage()
                     }
                     
-                    let alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
+                    let alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: AALocalized("AlertOk"))
                     alertView.show()
             })
         }

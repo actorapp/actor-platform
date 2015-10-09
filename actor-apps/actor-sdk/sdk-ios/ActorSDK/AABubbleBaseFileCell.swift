@@ -4,17 +4,17 @@
 
 import Foundation
 
-class AABubbleBaseFileCell: AABubbleCell {
+public class AABubbleBaseFileCell: AABubbleCell {
     
-    var bindGeneration = 0;
+    private var bindGeneration = 0;
     
-    var bindedDownloadFile: jlong? = nil
-    var bindedDownloadCallback: AAFileCallback? = nil
+    private var bindedDownloadFile: jlong? = nil
+    private var bindedDownloadCallback: AAFileCallback? = nil
     
-    var bindedUploadFile: jlong? = nil
-    var bindedUploadCallback: AAUploadFileCallback? = nil
+    private var bindedUploadFile: jlong? = nil
+    private var bindedUploadCallback: AAUploadFileCallback? = nil
     
-    func fileBind(message: ACMessage, autoDownload: Bool) {
+    public func fileBind(message: ACMessage, autoDownload: Bool) {
         if let doc = message.content as? ACDocumentContent {
             
             // Next generation of binding
@@ -77,27 +77,27 @@ class AABubbleBaseFileCell: AABubbleCell {
         }
     }
     
-    func fileUploadPaused(reference: String, selfGeneration: Int) {
+    public func fileUploadPaused(reference: String, selfGeneration: Int) {
         
     }
     
-    func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
+    public func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
         
     }
     
-    func fileDownloadPaused(selfGeneration: Int) {
+    public func fileDownloadPaused(selfGeneration: Int) {
         
     }
     
-    func fileDownloading(progress: Double, selfGeneration: Int) {
+    public func fileDownloading(progress: Double, selfGeneration: Int) {
         
     }
     
-    func fileReady(reference: String, selfGeneration: Int) {
+    public func fileReady(reference: String, selfGeneration: Int) {
         
     }
     
-    func runOnUiThread(selfGeneration: Int, closure: ()->()){
+    public func runOnUiThread(selfGeneration: Int, closure: ()->()){
         if (selfGeneration != self.bindGeneration) {
             return
         }
@@ -110,7 +110,7 @@ class AABubbleBaseFileCell: AABubbleCell {
         }
     }
     
-    func fileUnbind() {
+    public func fileUnbind() {
         if (bindedDownloadFile != nil && bindedDownloadCallback != nil) {
             Actor.unbindRawFileWithFileId(bindedDownloadFile!, autoCancel: false, withCallback: bindedDownloadCallback)
             bindedDownloadFile = nil

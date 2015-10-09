@@ -5,7 +5,7 @@
 import Foundation
 import TTTAttributedLabel
 
-class AutoCompleteCell: UITableViewCell {
+class AAAutoCompleteCell: AATableViewCell {
     
     var avatarView = AAAvatarView(frameSize: 32)
     var nickView = TTTAttributedLabel(frame: CGRectZero)
@@ -55,14 +55,14 @@ class AutoCompleteCell: UITableViewCell {
         for i in 0..<user.mentionMatches.size() {
             let match = user.mentionMatches.getWithInt(i) as! ACStringMatch
             let nsRange = NSMakeRange(Int(match.getStart()), Int(match.getLength()))
-            nickAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.chat.autocompleteHighlight, range: nsRange)
+            nickAttrs.addAttribute(NSForegroundColorAttributeName, value: appStyle.chatAutocompleteHighlight, range: nsRange)
         }
         
         if user.originalString != nil {
             for i in 0..<user.originalMatches.size() {
                 let match = user.originalMatches.getWithInt(i) as! ACStringMatch
                 let nsRange = NSMakeRange(Int(match.getStart()) + 3, Int(match.getLength()))
-                nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.chat.autocompleteHighlight, range: nsRange)
+                nameAttrs.addAttribute(NSForegroundColorAttributeName, value: appStyle.chatAutocompleteHighlight, range: nsRange)
             }
         }
         

@@ -34,7 +34,7 @@ import AudioToolbox.AudioServices
         
         var message = messenger.getFormatter().formatNotificationText(n)
         if (!messenger.isShowNotificationsText()) {
-            message = NSLocalizedString("NotificationSecretMessage", comment: "New Message")
+            message = AALocalized("NotificationSecretMessage")
         }
         let senderUser = messenger.getUserWithUid(n.sender)
         var sender = senderUser.getNameModel().get()

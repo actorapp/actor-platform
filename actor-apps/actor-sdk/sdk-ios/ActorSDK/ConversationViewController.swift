@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class ConversationViewController: ConversationContentViewController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // Data binder
     private let binder = AABinder()
@@ -38,8 +38,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         
         backgroundView.contentMode = .ScaleAspectFill
         backgroundView.clipsToBounds = true
-        backgroundView.backgroundColor = UIColor(
-            patternImage:UIImage(named: "bg_foggy_birds")!.tintBgImage(MainAppTheme.bubbles.chatBgTint))
+        backgroundView.backgroundColor = appStyle.chatBgColor
         
         // Custom background if available
         if let bg = Actor.getSelectedWallpaper() {
@@ -52,51 +51,48 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
 
         // Text Input
         
-        self.textInputbar.backgroundColor = MainAppTheme.chat.chatField
+        self.textInputbar.backgroundColor = appStyle.chatInputFieldBgColor
         self.textInputbar.autoHideRightButton = false;
-        self.textView.placeholder = NSLocalizedString("ChatPlaceholder",comment: "Placeholder")
-        self.rightButton.setTitle(NSLocalizedString("ChatSend", comment: "Send"), forState: UIControlState.Normal)
-        self.rightButton.setTitleColor(MainAppTheme.chat.sendEnabled, forState: UIControlState.Normal)
-        self.rightButton.setTitleColor(MainAppTheme.chat.sendDisabled, forState: UIControlState.Disabled)
+        self.textView.placeholder = AALocalized("ChatPlaceholder")
+        self.rightButton.setTitle(AALocalized("ChatSend"), forState: UIControlState.Normal)
+        self.rightButton.setTitleColor(appStyle.chatSendColor, forState: UIControlState.Normal)
+        self.rightButton.setTitleColor(appStyle.chatSendDisabledColor, forState: UIControlState.Disabled)
         
         self.keyboardPanningEnabled = true
         
         self.registerPrefixesForAutoCompletion(["@"])
         
-        self.textView.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
+        self.textView.keyboardAppearance = ActorSDK.sharedActor().style.isDarkApp ? .Dark : .Light
 
-        self.leftButton.setImage(UIImage(named: "conv_attach")!
-            .tintImage(MainAppTheme.chat.attachColor)
-            .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
-            forState: UIControlState.Normal)
-        
+        self.leftButton.setImage(UIImage.tinted("conv_attach", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
         
         // Navigation Title
         
-        navigationView.frame = CGRectMake(0, 0, 200, 44);
-        navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
+        navigationView.frame = CGRectMake(0, 0, 200, 44)
+        navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
         
         titleView.font = UIFont.mediumSystemFontOfSize(17)
-        titleView.adjustsFontSizeToFitWidth = false;
-        titleView.textAlignment = NSTextAlignment.Center;
-        titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
-        titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
+        titleView.adjustsFontSizeToFitWidth = false
+        titleView.textAlignment = NSTextAlignment.Center
+        titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+        titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
+        titleView.textColor = appStyle.navigationTitleColor
         
-        subtitleView.font = UIFont.systemFontOfSize(13);
-        subtitleView.adjustsFontSizeToFitWidth = true;
-        subtitleView.textAlignment = NSTextAlignment.Center;
-        subtitleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
-        subtitleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
+        subtitleView.font = UIFont.systemFontOfSize(13)
+        subtitleView.adjustsFontSizeToFitWidth = true
+        subtitleView.textAlignment = NSTextAlignment.Center
+        subtitleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+        subtitleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
         
         navigationView.addSubview(titleView)
         navigationView.addSubview(subtitleView)
         
-        self.navigationItem.titleView = navigationView;
+        self.navigationItem.titleView = navigationView
         
         // Navigation Avatar
         
         avatarView.frame = CGRectMake(0, 0, 36, 36)
-        let avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap");
+        let avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap")
         avatarTapGesture.numberOfTapsRequired = 1
         avatarTapGesture.numberOfTouchesRequired = 1
         avatarView.addGestureRecognizer(avatarTapGesture)
@@ -138,16 +134,16 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
             binder.bind(Actor.getTypingWithUid(peer.peerId)!, valueModel2: user.getPresenceModel()!, closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
                 
                 if (typing != nil && typing!.booleanValue()) {
-                    self.subtitleView.text = Actor.getFormatter().formatTyping();
-                    // self.subtitleView.textColor = Resources.PrimaryLightText
+                    self.subtitleView.text = Actor.getFormatter().formatTyping()
+                    self.subtitleView.textColor = self.appStyle.navigationSubtitleActiveColor
                 } else {
                     let stateText = Actor.getFormatter().formatPresence(presence, withSex: user.getSex())
                     self.subtitleView.text = stateText;
                     let state = UInt(presence!.state.ordinal())
                     if (state == ACUserPresence_State.ONLINE.rawValue) {
-                        // self.subtitleView.textColor = Resources.PrimaryLightText
+                        self.subtitleView.textColor = self.appStyle.userOnlineColor
                     } else {
-                        // self.subtitleView.textColor = Resources.SecondaryLightText
+                        self.subtitleView.textColor = self.appStyle.userOfflineColor
                     }
                 }
             })
@@ -164,7 +160,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
             })
             binder.bind(Actor.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
                 if (!group.isMemberModel().get().booleanValue()) {
-                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
+                    self.subtitleView.text = AALocalized("ChatNoGroupAccess")
                     self.setTextInputbarHidden(true, animated: true)
                     return
                 } else {
@@ -172,7 +168,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
                 }
             
                 if (typingValue != nil && typingValue!.length() > 0) {
-                    // self.subtitleView.textColor = Resources.PrimaryLightText
+                    self.subtitleView.textColor = self.appStyle.navigationSubtitleActiveColor
                     if (typingValue!.length() == 1) {
                         let uid = typingValue!.intAtIndex(0);
                         let user = Actor.getUserWithUid(uid)
@@ -182,14 +178,14 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
                     }
                 } else {
                     var membersString = Actor.getFormatter().formatGroupMembers(members!.size())
+                    self.subtitleView.textColor = self.appStyle.navigationSubtitleColor
                     if (onlineCount == nil || onlineCount!.integerValue == 0) {
-                        // self.subtitleView.textColor = Resources.SecondaryLightText
                         self.subtitleView.text = membersString;
                     } else {
                         membersString = membersString + ", ";
                         let onlineString = Actor.getFormatter().formatGroupOnline(onlineCount!.intValue());
                         let attributedString = NSMutableAttributedString(string: (membersString + onlineString))
-//                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.length, onlineString.length))
+                        attributedString.addAttribute(NSForegroundColorAttributeName, value: self.appStyle.userOnlineNavigationColor, range: NSMakeRange(membersString.length, onlineString.length))
                         self.subtitleView.attributedText = attributedString
                     }
                 }
@@ -211,14 +207,14 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-//        if !isIPad {
-//            //(UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
-//        }
-        
         if navigationController!.viewControllers.count > 2 {
             let firstController = navigationController!.viewControllers[0]
             let currentController = navigationController!.viewControllers[navigationController!.viewControllers.count - 1]
             navigationController!.setViewControllers([firstController, currentController], animated: false)
+        }
+        
+        if !AADevice.isiPad {
+            AANavigationBadge.showBadge()
         }
     }
     
@@ -227,10 +223,10 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         
         Actor.onConversationClosedWithPeer(peer)
 //        Analytics.trackPageHidden(content)
-//        
-//        if !isIPad {
-//            //(UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
-//        }
+
+        if !AADevice.isiPad {
+            AANavigationBadge.hideBadge()
+        }
     }
 
     override func viewDidDisappear(animated: Bool) {
@@ -247,9 +243,9 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         let id = Int(peer.peerId)
         var controller: AAViewController
         if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
-            controller = AAUserViewController(uid: id)
+            controller = ActorSDK.sharedActor().delegate.actorControllerForUser(id)
         } else if (UInt(peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue) {
-            controller = AAGroupViewController(gid: id)
+            controller = ActorSDK.sharedActor().delegate.actorControllerForGroup(id)
         } else {
             return
         }
@@ -336,7 +332,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let res = AutoCompleteCell(style: UITableViewCellStyle.Default, reuseIdentifier: "user_name")
+        let res = AAAutoCompleteCell(style: UITableViewCellStyle.Default, reuseIdentifier: "user_name")
         res.bindData(filteredMembers[indexPath.row], highlightWord: foundWord)
         return res
     }
@@ -416,13 +412,13 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         pickerController.sourceType = source
         pickerController.mediaTypes = [kUTTypeImage as String]
 
-        // Style controller bg
-        pickerController.view.backgroundColor = appStyle.vcBgColor
-        
-        // Style navigation bar
-        pickerController.navigationBar.barTintColor = appStyle.navigationBgColor
-        pickerController.navigationBar.tintColor = appStyle.navigationTintColor
-        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: appStyle.navigationTitleColor]
+//        // Style controller bg
+//        pickerController.view.backgroundColor = appStyle.vcBgColor
+//        
+//        // Style navigation bar
+//        pickerController.navigationBar.barTintColor = appStyle.navigationBgColor
+//        pickerController.navigationBar.tintColor = appStyle.navigationTintColor
+//        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: appStyle.navigationTitleColor]
 
         pickerController.delegate = self
 
@@ -430,20 +426,16 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-//        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         Actor.sendUIImage(image, peer: peer)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-//        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
-        
         Actor.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-//        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
 }
