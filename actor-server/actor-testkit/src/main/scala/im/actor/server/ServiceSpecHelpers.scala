@@ -2,18 +2,15 @@ package im.actor.server
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.contrib.pattern.DistributedPubSubExtension
-import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
-import im.actor.api.rpc.peers.{ ApiPeerType, ApiOutPeer }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.api.{ rpc ⇒ rpcapi }
-import im.actor.server.api.rpc.service.auth
 import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.api.rpc.service.auth
 import im.actor.server.oauth.GoogleProvider
-import im.actor.server.presences.{ PresenceManagerRegion, GroupPresenceManagerRegion }
-import im.actor.server.sequence.WeakUpdatesManagerRegion
-import im.actor.server.session.{ SessionRegion, Session, SessionConfig }
-import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
+import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
+import im.actor.server.user.UserExtension
 import org.scalatest.Suite
 import slick.driver.PostgresDriver.api._
 
@@ -41,8 +38,6 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   protected lazy val mediator: ActorRef = DistributedPubSubExtension(system).mediator
 
   protected val fairy = Fairy.create()
-
-  import system._
 
   def buildPhone(): Long = {
     75550000000L + scala.util.Random.nextInt(999999)
@@ -145,14 +140,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   def buildRpcApiService(services: Seq[im.actor.api.rpc.Service])(implicit system: ActorSystem, db: Database) =
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
-  def buildSessionRegion(rpcApiService: ActorRef)(
-    implicit
-    weakUpdManagerRegion:       WeakUpdatesManagerRegion,
-    presenceManagerRegion:      PresenceManagerRegion,
-    groupPresenceManagerRegion: GroupPresenceManagerRegion,
-    system:                     ActorSystem,
-    materializer:               Materializer
-  ) = {
+  def buildSessionRegion(rpcApiService: ActorRef)(implicit system: ActorSystem) = {
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))
   }

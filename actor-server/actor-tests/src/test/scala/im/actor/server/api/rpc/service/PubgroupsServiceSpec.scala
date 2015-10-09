@@ -4,12 +4,11 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.pubgroups.ResponseGetPublicGroups
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
+import im.actor.server.acl.ACLUtils.userAccessHash
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import ACLUtils.userAccessHash
 import org.scalatest.Inside._
 
 class PubgroupsServiceSpec
@@ -27,9 +26,6 @@ class PubgroupsServiceSpec
   it should "sort pubgroups by friends count and members count" in t.e3
 
   it should "show number of members and friends to any non-member" in t.e4
-
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
   val sequenceConfig = SequenceServiceConfig.load().toOption.get

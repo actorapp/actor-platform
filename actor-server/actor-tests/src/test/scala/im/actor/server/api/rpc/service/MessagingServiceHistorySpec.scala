@@ -11,7 +11,6 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.group.GroupExtension
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -39,9 +38,6 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   it should "mark messages read and send updates" in s.historyGroup.markRead
 
   it should "Load all history in public groups" in s.public
-
-  implicit private val presenceManagerRegion = PresenceManager.startRegion()
-  implicit private val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   private val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
