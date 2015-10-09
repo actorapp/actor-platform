@@ -172,6 +172,11 @@ private[user] trait UserCommandHandlers {
       }
     }
 
+  protected def addSocialContact(user: User, contact: SocialContact): Unit =
+    persistReply(TSEvent(now(), UserEvents.SocialContactAdded(contact)), user) { _ ⇒
+      Future.successful(AddSocialContactAck())
+    }
+
   protected def changeNickname(user: User, clientAuthId: Long, nicknameOpt: Option[String]): Unit = {
     val replyTo = sender()
 
