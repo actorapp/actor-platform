@@ -304,6 +304,12 @@ public class ActorStyle {
         set(v) { _chatTextColor = v }
     }
     
+    private var _chatUrlColor: UIColor?
+    public var chatUrlColor: UIColor {
+        get { return _chatUrlColor != nil ? _chatUrlColor! : vcTintColor }
+        set(v) { _chatUrlColor = v }
+    }
+    
     private var _chatTextUnsupportedColor: UIColor?
     public var chatTextUnsupportedColor: UIColor {
         get { return _chatTextUnsupportedColor != nil ? _chatTextUnsupportedColor! : vcTintColor.alpha(0.54) }
@@ -501,7 +507,7 @@ public class ActorStyle {
         set(v) { _chatAutocompleteHighlight = v }
     }
     
-    public var chatBgColor = UIColor(patternImage: UIImage(named: "bg_foggy_birds")!.tintBgImage(UIColor(rgb: 0xe7e0c4)))
+    public var chatBgColor = UIColor(patternImage: UIImage.bundled("bg_foggy_birds")!.tintBgImage(UIColor(rgb: 0xe7e0c4)))
     
     //
     // Dialogs styles

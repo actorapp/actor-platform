@@ -50,8 +50,8 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         titleLabel.textLocalized = "AuthPhoneTitle"
         grayBackground.addSubview(titleLabel)
         
-        let countryImage: UIImage! = UIImage(named: "ModernAuthCountryButton")
-        let countryImageHighlighted: UIImage! = UIImage(named: "ModernAuthCountryButtonHighlighted")
+        let countryImage = UIImage.bundled("ModernAuthCountryButton")!
+        let countryImageHighlighted = UIImage.bundled("ModernAuthCountryButtonHighlighted")!
         
         countryButton = UIButton()
         countryButton.setBackgroundImage(countryImage
@@ -65,7 +65,7 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         countryButton.addTarget(self, action: "showCountriesList", forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(countryButton)
         
-        let phoneImage: UIImage! = UIImage(named: "ModernAuthPhoneBackground")
+        let phoneImage = UIImage.bundled("ModernAuthPhoneBackground")!
         phoneBackgroundView = UIImageView(image: phoneImage.stretchableImageWithLeftCapWidth(Int(phoneImage.size.width / 2), topCapHeight: 0))
         view.addSubview(phoneBackgroundView)
         
@@ -134,10 +134,10 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
             ? (520)
             : (screenSize.width)
         
-        let countryImage: UIImage! = UIImage(named: "ModernAuthCountryButton")
+        let countryImage: UIImage! = UIImage.bundled("ModernAuthCountryButton")
         countryButton.frame = CGRect(x: (screenSize.width - fieldWidth) / 2, y: grayBackground.frame.origin.y + grayBackground.bounds.size.height, width: fieldWidth, height: countryImage.size.height)
         
-        let phoneImage: UIImage! = UIImage(named: "ModernAuthPhoneBackground")
+        let phoneImage: UIImage! = UIImage.bundled("ModernAuthPhoneBackground")
         phoneBackgroundView.frame = CGRect(x: (screenSize.width - fieldWidth) / 2, y: countryButton.frame.origin.y + 57, width: fieldWidth, height: phoneImage.size.height)
         
         let countryCodeLabelTopSpacing: CGFloat = 3.0

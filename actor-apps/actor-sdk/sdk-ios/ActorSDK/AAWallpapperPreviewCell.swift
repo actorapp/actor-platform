@@ -22,7 +22,7 @@ class AAWallpapperPreviewCell: UICollectionViewCell {
     }
     
     func bind(index: Int) {
-        imageView.image = UIImage(named: "bg_\(index + 1).jpg")
+        imageView.image = UIImage.bundled("bg_\(index + 1).jpg")
     }
     
     override func layoutSubviews() {

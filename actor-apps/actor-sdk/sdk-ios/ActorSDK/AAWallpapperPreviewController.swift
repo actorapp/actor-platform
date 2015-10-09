@@ -15,7 +15,7 @@ public class AAWallpapperPreviewController: AAViewController {
     public init(imageName: String) {
         self.imageName = imageName
         super.init()
-        imageView.image = UIImage(named: imageName)!
+        imageView.image = UIImage.bundled(imageName)!
         imageView.contentMode = .ScaleAspectFill
         imageView.clipsToBounds = true
         cancelButton.backgroundColor = appStyle.vcPanelBgColor

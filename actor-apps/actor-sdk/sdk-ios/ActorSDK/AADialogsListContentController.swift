@@ -60,7 +60,7 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
         // Binding empty dialogs placeholder
         
         placeholder.setImage(
-            UIImage(named: "chat_list_placeholder"),
+            UIImage.bundled("chat_list_placeholder"),
             title: AALocalized("Placeholder_Dialogs_Title"),
             subtitle: AALocalized("Placeholder_Dialogs_Message"))
         

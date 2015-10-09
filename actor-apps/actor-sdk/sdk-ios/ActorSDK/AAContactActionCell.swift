@@ -25,7 +25,7 @@ public class AAContactActionCell: AATableViewCell {
     
     public func bind(icon: String, actionTitle: String) {
         titleView.text = actionTitle
-        iconView.image = UIImage(named: icon)?.tintImage(ActorSDK.sharedActor().style.cellTintColor)
+        iconView.image = UIImage.bundled(icon)?.tintImage(ActorSDK.sharedActor().style.cellTintColor)
     }
     
     public override func layoutSubviews() {

@@ -10,11 +10,11 @@ import Accelerate
 public extension UIImage {
     
     class func tinted(named: String, color: UIColor) -> UIImage {
-        return UIImage(named: named)!.tintImage(color)
+        return UIImage.bundled(named)!.tintImage(color)
     }
     
     class func templated(named: String) -> UIImage {
-        return UIImage(named: named)!.imageWithRenderingMode(.AlwaysTemplate)
+        return UIImage.bundled(named)!.imageWithRenderingMode(.AlwaysTemplate)
     }
     
     public func tintImage(color:UIColor) -> UIImage{
