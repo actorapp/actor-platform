@@ -33,22 +33,22 @@ public class AppText {
 }
 
 public class AppPlaceholder {
-    public var textTitle: UIColor { get { return UIColor.RGB(0x5085CB) } }
+    public var textTitle: UIColor { get { return UIColor(rgb: 0x5085CB) } }
     public var textHint: UIColor { get { return UIColor(red: 80/255.0, green: 80/255.0, blue: 80/255.0, alpha: 1.0) } }
 }
 
 public class AppChat {
     public var chatField: UIColor { get { return UIColor.whiteColor() } }
     
-    public var attachColor: UIColor { get { return UIColor.RGB(0x5085CB) } }
+    public var attachColor: UIColor { get { return UIColor(rgb: 0x5085CB) } }
     
-    public var sendEnabled: UIColor { get { return UIColor.RGB(0x50A1D6) } }
+    public var sendEnabled: UIColor { get { return UIColor(rgb: 0x50A1D6) } }
     
     public var sendDisabled: UIColor { get { return UIColor.alphaBlack(0.56) } }
     
-    public var profileBgTint: UIColor { get { return UIColor.RGB(0x5085CB) } }
+    public var profileBgTint: UIColor { get { return UIColor(rgb: 0x5085CB) } }
     
-    public var autocompleteHighlight: UIColor { get { return UIColor.RGB(0x5085CB) } }
+    public var autocompleteHighlight: UIColor { get { return UIColor(rgb: 0x5085CB) } }
 }
 
 public class AppCommon {
@@ -56,27 +56,27 @@ public class AppCommon {
     
     public var tokenFieldText: UIColor { get { return UIColor.alphaBlack(0xDE/255.0) } }
     public var tokenFieldTextSelected: UIColor { get { return UIColor.alphaBlack(0xDE/255.0) } }
-    public var tokenFieldBg: UIColor { get { return UIColor.RGB(0x5085CB) } }
+    public var tokenFieldBg: UIColor { get { return UIColor(rgb: 0x5085CB) } }
 }
 
 public class ChatBubbles {
     
     // Basic colors
-    public var text : UIColor { get { return UIColor.RGB(0x141617) } }
-    public var textUnsupported : UIColor { get { return UIColor.RGB(0x50b1ae) } }
+    public var text : UIColor { get { return UIColor(rgb: 0x141617) } }
+    public var textUnsupported : UIColor { get { return UIColor(rgb: 0x50b1ae) } }
 
-    public var bgOut: UIColor { get { return UIColor.RGB(0xD2FEFD) } }
-    public var bgOutBorder: UIColor { get { return UIColor.RGB(0x99E4E3) } }
+    public var bgOut: UIColor { get { return UIColor(rgb: 0xD2FEFD) } }
+    public var bgOutBorder: UIColor { get { return UIColor(rgb: 0x99E4E3) } }
     
     public var bgIn : UIColor { get { return UIColor.whiteColor() } }
-    public var bgInBorder:UIColor { get { return  UIColor.RGB(0xCCCCCC) } }
+    public var bgInBorder:UIColor { get { return  UIColor(rgb: 0xCCCCCC) } }
     
-    public var statusActive : UIColor { get { return UIColor.RGB(0x3397f9) } }
+    public var statusActive : UIColor { get { return UIColor(rgb: 0x3397f9) } }
     public var statusPassive : UIColor { get { return UIColor.alphaBlack(0.27) } }
     // TODO: Fix
     public var statusDanger : UIColor { get { return UIColor.redColor() } }
     
-    public var statusMediaActive : UIColor { get { return UIColor.RGB(0x1ed2f9) } }
+    public var statusMediaActive : UIColor { get { return UIColor(rgb: 0x1ed2f9) } }
     public var statusMediaPassive : UIColor { get { return UIColor.whiteColor() } }
     // TODO: Fix
     public var statusMediaDanger : UIColor { get { return UIColor.redColor() } }
@@ -94,7 +94,7 @@ public class ChatBubbles {
     public var textBgInBorder : UIColor { get { return bgInBorder } }
     
     public var textDateOut : UIColor { get { return UIColor.alphaBlack(0.27) } }
-    public var textDateIn : UIColor { get { return UIColor.RGB(0x979797) } }
+    public var textDateIn : UIColor { get { return UIColor(rgb: 0x979797) } }
     
     public var textOut : UIColor { get { return text } }
     public var textIn : UIColor { get { return text } }
@@ -111,22 +111,22 @@ public class ChatBubbles {
     public var statusMediaError : UIColor { get { return statusMediaDanger } }
     
     public var mediaBgOut: UIColor { get { return UIColor.whiteColor() } }
-    public var mediaBgOutBorder: UIColor { get { return UIColor.RGB(0xCCCCCC) } }
+    public var mediaBgOutBorder: UIColor { get { return UIColor(rgb: 0xCCCCCC) } }
     public var mediaBgIn: UIColor { get { return mediaBgOut } }
     public var mediaBgInBorder: UIColor { get { return mediaBgOutBorder } }
-    public var mediaDateBg: UIColor { get { return UIColor.RGB(0x2D394A, alpha: 0.54) } }
+    public var mediaDateBg: UIColor { get { return UIColor(rgb: 0x2D394A, alpha: 0.54) } }
     public var mediaDate: UIColor { get { return UIColor.whiteColor() } }
     
     // Service-based bubble colors
-    public var serviceBg: UIColor { get { return UIColor.RGB(0x2D394A, alpha: 0.56) } }
+    public var serviceBg: UIColor { get { return UIColor(rgb: 0x2D394A, alpha: 0.56) } }
     
-    public var chatBgTint: UIColor { get { return UIColor.RGB(0xe7e0c4) } }
+    public var chatBgTint: UIColor { get { return UIColor(rgb: 0xe7e0c4) } }
 }
 
 public class AppSearchBar {
     public var statusBarLightContent : Bool { get { return false } }
-    public var backgroundColor : UIColor { get { return UIColor.RGB(0xf1f1f1) } }
-    public var cancelColor : UIColor { get { return UIColor.RGB(0x8E8E93) } }
+    public var backgroundColor : UIColor { get { return UIColor(rgb: 0xf1f1f1) } }
+    public var cancelColor : UIColor { get { return UIColor(rgb: 0x8E8E93) } }
     public var fieldBackgroundColor: UIColor { get { return UIColor.whiteColor() } }
     public var fieldTextColor: UIColor { get { return UIColor.blackColor().alpha(0.56) } }
     

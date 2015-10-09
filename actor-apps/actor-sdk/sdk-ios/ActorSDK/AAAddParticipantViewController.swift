@@ -20,16 +20,16 @@ public class AAAddParticipantViewController: AAContactsListContentController, AA
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = localized("GroupAddParticipantTitle")
+        title = AALocalized("GroupAddParticipantTitle")
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-                    title: localized("NavigationCancel"),
+                    title: AALocalized("NavigationCancel"),
                     style: UIBarButtonItemStyle.Plain,
                     target: self, action: "dismiss")
     }
     
-    public func willAddContacts(controller: AAContactsListContentController, section: ACManagedSection) {
-        section.custom { (r:ACCustomRow<AAContactActionCell>) -> () in
+    public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
+        section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
             r.height = 56
             r.closure = { (cell) -> () in
                 cell.bind("ic_invite_user", actionTitle: NSLocalizedString("GroupAddParticipantUrl", comment: "Action Title"))

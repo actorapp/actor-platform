@@ -89,8 +89,7 @@ class LinkedList<K, V> {
     }
 }
 
-
-public class SwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
+class AASwiftlyLRU<K : Hashable, V> : CustomStringConvertible {
     
     let capacity: Int
     var length = 0

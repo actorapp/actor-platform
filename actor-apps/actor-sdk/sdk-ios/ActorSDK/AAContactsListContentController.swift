@@ -4,11 +4,11 @@
 
 import Foundation
 
-public class AAContactsListContentController: ACContentTableController {
+public class AAContactsListContentController: AAContentTableController {
     
     public var delegate: AAContactsListContentControllerDelegate?
     public var isSearchAutoHide: Bool = true
-    public var contactRows: ACBindedRows<AAContactCell>!
+    public var contactRows: AABindedRows<AAContactCell>!
     public var searchEnabled: Bool = true
     
     public init() {
@@ -44,7 +44,7 @@ public class AAContactsListContentController: ACContentTableController {
                 d.willAddContacts(self, section: s)
             }
             
-            self.contactRows = s.binded { (r: ACBindedRows<AAContactCell>) -> () in
+            self.contactRows = s.binded { (r: AABindedRows<AAContactCell>) -> () in
                 r.displayList = Actor.buildContactsDisplayList()
                 
                 r.selectAction = { (contact) -> Bool in

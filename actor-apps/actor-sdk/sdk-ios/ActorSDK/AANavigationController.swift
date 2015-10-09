@@ -6,7 +6,7 @@ import UIKit
 
 public class AANavigationController: UINavigationController {
     
-    private let binder = Binder()
+    private let binder = AABinder()
     
     public override func viewDidLoad() {
         super.viewDidLoad()

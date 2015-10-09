@@ -44,9 +44,9 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         
         // Setting navigation item
         
-        navigationItem.title = localized("TabMessages")
+        navigationItem.title = AALocalized("TabMessages")
         navigationItem.leftBarButtonItem = editButtonItem()
-        navigationItem.leftBarButtonItem!.title = localized("NavigationEdit")
+        navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "compose")
     }
     
@@ -57,13 +57,13 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         tableView.setEditing(editing, animated: animated)
         
         if (editing) {
-            self.navigationItem.leftBarButtonItem!.title = localized("NavigationDone")
+            self.navigationItem.leftBarButtonItem!.title = AALocalized("NavigationDone")
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Done
             
             navigationItem.rightBarButtonItem = nil
         }
         else {
-            self.navigationItem.leftBarButtonItem!.title = localized("NavigationEdit")
+            self.navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Plain
             
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "compose")

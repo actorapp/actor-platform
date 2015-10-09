@@ -164,26 +164,26 @@ public class ActorStyle {
     
     public var avatarTextColor = UIColor.whiteColor()
     
-    public var avatarLightBlue = UIColor.RGB(0x59b7d3)
-    public var nameLightBlue = UIColor.RGB(0x59b7d3)
+    public var avatarLightBlue = UIColor(rgb: 0x59b7d3)
+    public var nameLightBlue = UIColor(rgb: 0x59b7d3)
     
-    public var avatarDarkBlue = UIColor.RGB(0x1d4e6f)
-    public var nameDarkBlue = UIColor.RGB(0x1d4e6f)
+    public var avatarDarkBlue = UIColor(rgb: 0x1d4e6f)
+    public var nameDarkBlue = UIColor(rgb: 0x1d4e6f)
     
-    public var avatarPurple = UIColor.RGB(0x995794)
-    public var namePurple = UIColor.RGB(0x995794)
+    public var avatarPurple = UIColor(rgb: 0x995794)
+    public var namePurple = UIColor(rgb: 0x995794)
     
-    public var avatarPink = UIColor.RGB(0xff506c)
-    public var namePink = UIColor.RGB(0xff506c)
+    public var avatarPink = UIColor(rgb: 0xff506c)
+    public var namePink = UIColor(rgb: 0xff506c)
     
-    public var avatarOrange = UIColor.RGB(0xf99341)
-    public var nameOrange = UIColor.RGB(0xf99341)
+    public var avatarOrange = UIColor(rgb: 0xf99341)
+    public var nameOrange = UIColor(rgb: 0xf99341)
     
-    public var avatarYellow = UIColor.RGB(0xe4d027)
-    public var nameYellow = UIColor.RGB(0xe4d027)
+    public var avatarYellow = UIColor(rgb: 0xe4d027)
+    public var nameYellow = UIColor(rgb: 0xe4d027)
 
-    public var avatarGreen = UIColor.RGB(0xe4d027)
-    public var nameGreen = UIColor.RGB(0xe4d027)
+    public var avatarGreen = UIColor(rgb: 0xe4d027)
+    public var nameGreen = UIColor(rgb: 0xe4d027)
     
     private var _avatarColors: [UIColor]?
     public var avatarColors: [UIColor] {
@@ -295,7 +295,7 @@ public class ActorStyle {
     
     private var _dialogTextColor: UIColor?
     public var dialogTextColor: UIColor {
-        get { return _dialogTextColor != nil ? _dialogTextColor! : vcHintColor }
+        get { return _dialogTextColor != nil ? _dialogTextColor! : dialogTitleColor.alpha(0.64) }
         set(v) { _dialogTextColor = v }
     }
     

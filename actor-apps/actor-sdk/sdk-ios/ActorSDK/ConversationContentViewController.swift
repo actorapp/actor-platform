@@ -11,7 +11,7 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
     public let peer: ACPeer
     
     private var displayList: ARBindedDisplayList!
-    private var isStarted: Bool = isIPad
+    private var isStarted: Bool = AADevice.isiPad
     private var isUpdating: Bool = false
     private var isVisible: Bool = false
     private var isLoaded: Bool = false

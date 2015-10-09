@@ -9,7 +9,7 @@ import MobileCoreServices
 class ConversationViewController: ConversationContentViewController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     // Data binder
-    private let binder: Binder = Binder()
+    private let binder = AABinder()
     
     // Internal state
     // Members for autocomplete
@@ -197,7 +197,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         }
         
         Actor.onConversationOpenWithPeer(peer)
-        Analytics.trackPageVisible(content)
+        // Analytics.trackPageVisible(content)
     }
     
     override func viewWillLayoutSubviews() {
@@ -211,9 +211,9 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if !isIPad {
-            //(UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
-        }
+//        if !isIPad {
+//            //(UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
+//        }
         
         if navigationController!.viewControllers.count > 2 {
             let firstController = navigationController!.viewControllers[0]
@@ -226,11 +226,11 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         super.viewWillDisappear(animated)
         
         Actor.onConversationClosedWithPeer(peer)
-        Analytics.trackPageHidden(content)
-        
-        if !isIPad {
-            //(UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
-        }
+//        Analytics.trackPageHidden(content)
+//        
+//        if !isIPad {
+//            //(UIApplication.sharedApplication().delegate as! AppDelegate).hideBadge()
+//        }
     }
 
     override func viewDidDisappear(animated: Bool) {
@@ -254,7 +254,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
             return
         }
         
-        if (isIPad) {
+        if (AADevice.isiPad) {
             let navigation = AANavigationController()
             navigation.viewControllers = [controller]
             let popover = UIPopoverController(contentViewController:  navigation)
@@ -285,7 +285,7 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         
         let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         
-        let builder = MenuBuilder()
+        let builder = AAMenuBuilder()
         
         if hasCamera {
             builder.add("PhotoCamera") { () -> () in
@@ -397,13 +397,13 @@ class ConversationViewController: ConversationContentViewController, UIDocumentM
         if isDir {
             
             // Zipping contents and sending
-            execute(Tools.zipDirectoryCommand(path, to: destPath)) { (val) -> Void in
+            execute(AATools.zipDirectoryCommand(path, to: destPath)) { (val) -> Void in
                 Actor.sendDocumentWithPeer(self.peer, withName: fileName, withMime: "application/zip", withDescriptor: descriptor)
             }
         } else {
             
             // Sending file itself
-            execute(Tools.copyFileCommand(path, to: destPath)) { (val) -> Void in
+            execute(AATools.copyFileCommand(path, to: destPath)) { (val) -> Void in
                 Actor.sendDocumentWithPeer(self.peer, withName: fileName, withMime: "application/octet-stream", withDescriptor: descriptor)
             }
         }

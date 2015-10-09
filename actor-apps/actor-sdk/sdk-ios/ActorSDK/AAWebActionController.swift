@@ -6,14 +6,14 @@ import Foundation
 
 public class AAWebActionController: AAViewController, UIWebViewDelegate {
     
-    public var webView = UIWebView()
+    private var webView = UIWebView()
     
-    public let regex: Regex
-    public let desc: ACWebActionDescriptor
+    private let regex: AARegex
+    private let desc: ACWebActionDescriptor
     
     public init(desc: ACWebActionDescriptor) {
         self.desc = desc
-        self.regex = Regex(desc.getRegexp())
+        self.regex = AARegex(desc.getRegexp())
         super.init()
     }
 

@@ -4,6 +4,6 @@
 
 import UIKit
 
-public func log(text:String) {
+func log(text:String) {
     NSLog(text)
 }

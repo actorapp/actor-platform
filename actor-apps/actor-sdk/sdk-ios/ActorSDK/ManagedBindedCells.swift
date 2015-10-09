@@ -4,16 +4,16 @@
 
 import Foundation
 
-public protocol ACBindedCell {
+public protocol AABindedCell {
     
     typealias BindData
     
-    static func bindedCellHeight(table: ACManagedTable, item: BindData) -> CGFloat
+    static func bindedCellHeight(table: AAManagedTable, item: BindData) -> CGFloat
     
-    func bind(item: BindData, table: ACManagedTable, index: Int, totalCount: Int)
+    func bind(item: BindData, table: AAManagedTable, index: Int, totalCount: Int)
 }
 
-public protocol ACBindedSearchCell {
+public protocol AABindedSearchCell {
     typealias BindData
     
     static func bindedCellHeight(item: BindData) -> CGFloat
@@ -21,7 +21,7 @@ public protocol ACBindedSearchCell {
     func bind(item: BindData, search: String?)
 }
 
-public class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: ACBindedCell>: NSObject, ACManagedRange, ARDisplayList_AppleChangeListener {
+public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AABindedCell>: NSObject, AAManagedRange, ARDisplayList_AppleChangeListener {
     
     public var displayList: ARBindedDisplayList!
     
@@ -35,22 +35,22 @@ public class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: AC
     
     public var autoHide = true
     
-    private var table: ACManagedTable!
+    private var table: AAManagedTable!
     
     // Total items count
     
-    public func rangeNumberOfItems(table: ACManagedTable) -> Int {
+    public func rangeNumberOfItems(table: AAManagedTable) -> Int {
         return Int(displayList.size())
     }
     
     // Cells
     
-    public func rangeCellHeightForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> CGFloat {
+    public func rangeCellHeightForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> CGFloat {
         let data = displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData
         return BindCell.self.bindedCellHeight(table, item: data)
     }
     
-    public func rangeCellForItem(table: ACManagedTable, indexPath: ACRangeIndexPath) -> UITableViewCell {
+    public func rangeCellForItem(table: AAManagedTable, indexPath: AARangeIndexPath) -> UITableViewCell {
         let data = displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData
         let cell = table.dequeueCell(indexPath.indexPath) as BindCell
         cell.bind(data, table: table, index: indexPath.item, totalCount: rangeNumberOfItems(table))
@@ -61,32 +61,32 @@ public class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: AC
     
     // Select
     
-    public func rangeCanSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         
         return selectAction != nil
     }
     
-    public func rangeSelect(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeSelect(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         
         return selectAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
     }
     
     // Delete
     
-    public func rangeCanDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) -> Bool {
+    public func rangeCanDelete(table: AAManagedTable, indexPath: AARangeIndexPath) -> Bool {
         if canEditAction != nil {
             return canEditAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
         }
         return false
     }
     
-    public func rangeDelete(table: ACManagedTable, indexPath: ACRangeIndexPath) {
+    public func rangeDelete(table: AAManagedTable, indexPath: AARangeIndexPath) {
         editAction!(displayList.itemWithIndex(jint(indexPath.item)) as! BindCell.BindData)
     }
     
     // Binding
     
-    public func rangeBind(table: ACManagedTable, binder: Binder) {
+    public func rangeBind(table: AAManagedTable, binder: AABinder) {
         
         self.table = table
 
@@ -171,7 +171,7 @@ public class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: AC
         }
     }
     
-    public func rangeUnbind(table: ACManagedTable, binder: Binder) {
+    public func rangeUnbind(table: AAManagedTable, binder: AABinder) {
         
         self.table = nil
         
@@ -194,10 +194,10 @@ public class ACBindedRows<BindCell where BindCell: UITableViewCell, BindCell: AC
 }
 
 
-public extension ACManagedSection {
+public extension AAManagedSection {
     
-    public func binded<T where T: UITableViewCell, T: ACBindedCell>(closure: (r: ACBindedRows<T>) -> ()) -> ACBindedRows<T> {
-        let r = ACBindedRows<T>()
+    public func binded<T where T: UITableViewCell, T: AABindedCell>(@noescape closure: (r: AABindedRows<T>) -> ()) -> AABindedRows<T> {
+        let r = AABindedRows<T>()
         regions.append(r)
         closure(r: r)
         r.checkInstallation()

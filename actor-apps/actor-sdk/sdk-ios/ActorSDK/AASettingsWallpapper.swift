@@ -11,7 +11,7 @@ public class AASettingsWallpapper: AACollectionViewController, UICollectionViewD
     public init() {
         super.init(collectionLayout: UICollectionViewFlowLayout())
         
-        navigationItem.title = localized("WallpapersTitle")
+        navigationItem.title = AALocalized("WallpapersTitle")
         
         collectionView.registerClass(AAWallpapperPreviewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.contentInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)

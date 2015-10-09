@@ -11,11 +11,11 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     // MARK: -
     // MARK: Public vars
     
-    public var placeholder = BigPlaceholderView(topOffset: 0)
+    var placeholder = AABigPlaceholderView(topOffset: 0)
     
-    public var pendingPickClosure: ((image: UIImage) -> ())?
+    var pendingPickClosure: ((image: UIImage) -> ())?
     
-    public var popover: UIPopoverController?
+    var popover: UIPopoverController?
     
     // Content type for view tracking
     
@@ -135,10 +135,6 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
         pickerController.mediaTypes = [kUTTypeImage as String]
         pickerController.delegate = self
-//        pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
-//        pickerController.delegate = self
-//        pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-//        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
         self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
     }
     
@@ -152,7 +148,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         super.viewWillAppear(animated)
         
         if let c = content {
-            Analytics.trackPageVisible(c)
+            // Analytics.trackPageVisible(c)
         }
         if let u = uid {
             Actor.onProfileOpenWithUid(jint(u))
@@ -163,7 +159,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         super.viewWillDisappear(animated)
         
         if let c = content {
-            Analytics.trackPageHidden(c)
+            // Analytics.trackPageHidden(c)
         }
         if let u = uid {
             Actor.onProfileClosedWithUid(jint(u))

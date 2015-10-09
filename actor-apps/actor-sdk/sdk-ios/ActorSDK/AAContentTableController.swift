@@ -4,14 +4,14 @@
 
 import Foundation
 
-public enum ACContentTableStyle {
+public enum AAContentTableStyle {
     
     case SettingsPlain
     case SettingsGrouped
     case Plain
 }
 
-public class ACContentTableController: ACManagedTableController, ACManagedTableControllerDelegate {
+public class AAContentTableController: AAManagedTableController, AAManagedTableControllerDelegate {
     
     private var isInLoad: Bool = false
     
@@ -19,7 +19,7 @@ public class ACContentTableController: ACManagedTableController, ACManagedTableC
     
     // Controller constructor
     
-    public override init(style: ACContentTableStyle) {
+    public override init(style: AAContentTableStyle) {
         super.init(style: style)
         
         self.managedTableDelegate = self
@@ -33,7 +33,7 @@ public class ACContentTableController: ACManagedTableController, ACManagedTableC
     
     // DSL Implementation
     
-    public func section(closure: (s: ACManagedSection) -> ()) {
+    public func section(closure: (s: AAManagedSection) -> ()) {
         if !isInLoad {
             fatalError("Unable to change sections not during tableDidLoad method call")
         }
@@ -50,7 +50,7 @@ public class ACContentTableController: ACManagedTableController, ACManagedTableC
         closure(s: s)
     }
     
-    public func search<C where C: ACBindedSearchCell, C: UITableViewCell>(cell: C.Type, closure: (s: ACManagedSearchConfig<C>) -> ()) {
+    public func search<C where C: AABindedSearchCell, C: UITableViewCell>(cell: C.Type, @noescape closure: (s: AAManagedSearchConfig<C>) -> ()) {
         managedTable.search(cell, closure: closure)
     }
     
@@ -66,17 +66,17 @@ public class ACContentTableController: ACManagedTableController, ACManagedTableC
         
     }
     
-    public func tableWillBind(binder: Binder) {
+    public func tableWillBind(binder: AABinder) {
         
     }
     
-    public func tableWillUnbind(binder: Binder) {
+    public func tableWillUnbind(binder: AABinder) {
         
     }
     
     // Delegate implementation
     
-    public func managedTableLoad(controller: ACManagedTableController, table: ACManagedTable) {
+    public func managedTableLoad(controller: AAManagedTableController, table: AAManagedTable) {
         isInLoad = true
         table.beginUpdates()
         tableDidLoad()
@@ -85,11 +85,11 @@ public class ACContentTableController: ACManagedTableController, ACManagedTableC
         isInLoad = false
     }
     
-    public func managedTableBind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder) {
+    public func managedTableBind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         tableWillBind(binder)
     }
     
-    public func managedTableUnbind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder) {
+    public func managedTableUnbind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         tableWillUnbind(binder)
     }
 }

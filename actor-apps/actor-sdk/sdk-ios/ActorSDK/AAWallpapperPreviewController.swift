@@ -20,11 +20,11 @@ class AAWallpapperPreviewController: AAViewController {
         imageView.clipsToBounds = true
         cancelButton.backgroundColor = appStyle.vcPanelBgColor
         cancelButton.addTarget(self, action: "cancelDidTap", forControlEvents: .TouchUpInside)
-        cancelButton.setTitle(localized("AlertCancel"), forState: .Normal)
+        cancelButton.setTitle(AALocalized("AlertCancel"), forState: .Normal)
         cancelButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
         setButton.backgroundColor = appStyle.vcPanelBgColor
         setButton.addTarget(self, action: "setDidTap", forControlEvents: .TouchUpInside)
-        setButton.setTitle(localized("AlertSet"), forState: .Normal)
+        setButton.setTitle(AALocalized("AlertSet"), forState: .Normal)
         setButton.setTitleColor(appStyle.tabUnselectedTextColor, forState: .Normal)
     }
 

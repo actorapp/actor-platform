@@ -1,9 +1,5 @@
 //
-//  AACollectionViewController.swift
-//  ActorApp
-//
-//  Created by Steve Kite on 24.09.15.
-//  Copyright © 2015 Actor LLC. All rights reserved.
+//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
 //
 
 import Foundation

@@ -39,18 +39,18 @@ public class AAEditTextController: AAViewController {
         
         super.init(nibName: nil, bundle: nil)
         
-        self.navigationItem.title = localized(config.title)
+        self.navigationItem.title = AALocalized(config.title)
         
         if config.actionTitle != nil {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized(config.actionTitle), style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized(config.actionTitle), style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
         } else {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: "doSave")
         }
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: localized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "doCancel")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "doCancel")
         
         self.textView.fadeTime = 0
         if let h = config.hint {
-            self.textView.placeholder = localized(h)
+            self.textView.placeholder = AALocalized(h)
         }
         self.textView.text = config.initialText
         self.textView.font = UIFont.systemFontOfSize(18)

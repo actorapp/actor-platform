@@ -11,18 +11,18 @@ public class AAGroupMemberCell: AATableViewCell {
     public var nameLabel = UILabel()
     public var onlineLabel = UILabel()
     public var avatarView = AAAvatarView(frameSize: 40, type: .Rounded)
-    public var adminLabel = UILabel(style: "members.admin")
+    public var adminLabel = UILabel()
     
     // Binder
     
-    public var binder = Binder()
+    public var binder = AABinder()
     
     // Contstructors
     
     public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        adminLabel.text = localized("GroupMemberAdmin")
+        adminLabel.text = AALocalized("GroupMemberAdmin")
         adminLabel.sizeToFit()
         
         contentView.addSubview(avatarView)

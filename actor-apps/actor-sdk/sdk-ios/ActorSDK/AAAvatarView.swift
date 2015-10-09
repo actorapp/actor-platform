@@ -11,30 +11,21 @@ public enum AAAvatarType {
 
 public class AAAvatarView: UIImageView {
     
-    // MARK: -
-    // MARK: Private vars
+    var frameSize: Int = 0
+    var avatarType: AAAvatarType = .Rounded
+    var placeholderImage: UIImage?
+
+    var enableAnimation: Bool = false
     
-    private let cacheSize = 10;
-    private var avatarCache = Dictionary<Int, SwiftlyLRU<Int64, UIImage>>()
+    private let cacheSize = 10
+    private var avatarCache = Dictionary<Int, AASwiftlyLRU<Int64, UIImage>>()
     
-    // MARK: -
-    // MARK: Public vars
+    private var bindedFileId: jlong! = nil
+    private var bindedTitle: String! = nil
+    private var bindedId: jint! = nil
     
-    public var frameSize: Int = 0;
-    public var avatarType: AAAvatarType = .Rounded
-    public var placeholderImage: UIImage?
-    
-    public var bindedFileId: jlong! = nil;
-    public var bindedTitle: String! = nil;
-    public var bindedId: jint! = nil;
-    
-    public var requestId: Int = 0;
-    public var callback: CocoaDownloadCallback? = nil;
-    
-    public var enableAnimation: Bool = true
-    
-    // MARK: -
-    // MARK: Constructors
+    private var requestId: Int = 0
+    private var callback: AAFileCallback? = nil
     
     public init() {
         super.init(image: nil)
@@ -75,30 +66,9 @@ public class AAAvatarView: UIImageView {
         self.frameSize = Int(min(frame.width, frame.height))
     }
     
-    // MARK: -
-    // MARK: Cache
-    
-    private func checkCache(size: Int, id: Int64) -> UIImage? {
-        if let cache = avatarCache[size] {
-            if let img = cache[id] {
-                return img
-            }
-        }
-        return nil
-    }
-    
-    private func putToCache(size: Int, id: Int64, image: UIImage) {
-        if let cache = avatarCache[size] {
-            cache[id] = image
-        } else {
-            let cache = SwiftlyLRU<jlong, UIImage>(capacity: cacheSize);
-            cache[id] = image
-            avatarCache.updateValue(cache, forKey: size)
-        }
-    }
-    
-    // MARK: -
-    // MARK: Bind
+    //
+    // Databinding
+    //
     
     public func bind(var title: String, id: jint, fileName: String?) {
         unbind()
@@ -210,7 +180,7 @@ public class AAAvatarView: UIImageView {
         
         let callbackRequestId = requestId
         self.bindedFileId = fileLocation?.getFileId()
-        self.callback = CocoaDownloadCallback(onDownloaded: { (reference) -> () in
+        self.callback = AAFileCallback(onDownloaded: { (reference) -> () in
             
             if (callbackRequestId != self.requestId) {
                 return;
@@ -232,14 +202,13 @@ public class AAAvatarView: UIImageView {
                 }
                 
                 self.putToCache(self.frameSize, id: Int64(self.bindedFileId!), image: image!)
-//                if (self.enableAnimation) {
-//                    UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
-//                        self.image = image;
-//                    }, completion: nil)
-//                } else {
-//                    self.image = image;
-//                }
-                self.image = image;
+                if (self.enableAnimation) {
+                    UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
+                        self.image = image;
+                    }, completion: nil)
+                } else {
+                    self.image = image;
+                }
             }
         });
         Actor.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
@@ -263,10 +232,30 @@ public class AAAvatarView: UIImageView {
             requestId++;
         }
     }
+    
+    //
+    // Caching
+    //
 
+    private func checkCache(size: Int, id: Int64) -> UIImage? {
+        if let cache = avatarCache[size] {
+            if let img = cache[id] {
+                return img
+            }
+        }
+        return nil
+    }
+    
+    private func putToCache(size: Int, id: Int64, image: UIImage) {
+        if let cache = avatarCache[size] {
+            cache[id] = image
+        } else {
+            let cache = AASwiftlyLRU<jlong, UIImage>(capacity: cacheSize);
+            cache[id] = image
+            avatarCache.updateValue(cache, forKey: size)
+        }
+    }
 }
-
-
 
 class Placeholders {
     

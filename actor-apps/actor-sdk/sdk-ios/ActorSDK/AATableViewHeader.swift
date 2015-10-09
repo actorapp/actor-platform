@@ -5,6 +5,7 @@
 import Foundation
 
 public class AATableViewHeader: UIView {
+    
     public override func layoutSubviews() {
         super.layoutSubviews()
         for view in self.subviews {
@@ -19,6 +20,5 @@ public class AATableViewHeader: UIView {
                 }
             }
         }
-        
     }
 }

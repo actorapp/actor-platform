@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class EditCell: AATableViewCell {
+public class AAEditCell: AATableViewCell {
     
     public let textField = UITextField()
     

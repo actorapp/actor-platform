@@ -25,7 +25,7 @@ class AppDelegate : ActorApplicationDelegate {
         Fabric.with([Crashlytics.self()])
         
         // Creating Actor
-        createActor()
+        ActorSDK.sharedActor().createActor()
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
@@ -163,24 +163,24 @@ class AppDelegate : ActorApplicationDelegate {
                 if (Actor.isLoggedIn()) {
                     let token = url.query?.componentsSeparatedByString("=")[1]
                     if token != nil {
-                        UIAlertView.showWithTitle(nil, message: localized("GroupJoinMessage"), cancelButtonTitle: localized("AlertNo"), otherButtonTitles: [localized("GroupJoinAction")], tapBlock: { (view, index) -> Void in
-                            if (index == view.firstOtherButtonIndex) {
-                                Executions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
-                                    let groupId = val as! JavaLangInteger
-                                    self.openChat(ACPeer.groupWithInt(groupId.intValue))
-                                    }, failureBlock: { (val) -> Void in
-                                        
-                                        if let res = val as? ACRpcException {
-                                            if res.getTag() == "USER_ALREADY_INVITED" {
-                                                UIAlertView.showWithTitle(nil, message: localized("ErrorAlreadyJoined"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
-                                                return
-                                            }
-                                        }
-                                        
-                                        UIAlertView.showWithTitle(nil, message: localized("ErrorUnableToJoin"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
-                                })
-                            }
-                        })
+//                        UIAlertView.showWithTitle(nil, message: localized("GroupJoinMessage"), cancelButtonTitle: localized("AlertNo"), otherButtonTitles: [localized("GroupJoinAction")], tapBlock: { (view, index) -> Void in
+//                            if (index == view.firstOtherButtonIndex) {
+//                                Executions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
+//                                    let groupId = val as! JavaLangInteger
+//                                    self.openChat(ACPeer.groupWithInt(groupId.intValue))
+//                                    }, failureBlock: { (val) -> Void in
+//                                        
+//                                        if let res = val as? ACRpcException {
+//                                            if res.getTag() == "USER_ALREADY_INVITED" {
+//                                                UIAlertView.showWithTitle(nil, message: localized("ErrorAlreadyJoined"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
+//                                                return
+//                                            }
+//                                        }
+//                                        
+//                                        UIAlertView.showWithTitle(nil, message: localized("ErrorUnableToJoin"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
+//                                })
+//                            }
+//                        })
                     }
                 }
                 
