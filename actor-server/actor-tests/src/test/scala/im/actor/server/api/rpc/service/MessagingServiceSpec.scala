@@ -13,7 +13,6 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.Events
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -41,9 +40,6 @@ class MessagingServiceSpec
 
   object s {
     implicit val ec = system.dispatcher
-
-    implicit val presenceManagerRegion = PresenceManager.startRegion()
-    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

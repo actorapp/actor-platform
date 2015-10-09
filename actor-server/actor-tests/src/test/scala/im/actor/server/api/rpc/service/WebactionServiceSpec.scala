@@ -1,10 +1,9 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.rpc.collections.{ ApiStringValue, ApiInt32Value, ApiMapValueItem, ApiMapValue }
+import im.actor.api.rpc.collections.{ ApiInt32Value, ApiMapValue, ApiMapValueItem, ApiStringValue }
 import im.actor.api.rpc.webactions.{ ResponseCompleteWebaction, ResponseInitWebaction }
-import im.actor.api.rpc.{ Ok, ClientData, Error }
-import im.actor.server.api.rpc.service.webactions.{ WebactionsKeyValues, WebactionsErrors, WebactionsServiceImpl }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
+import im.actor.api.rpc.{ ClientData, Error, Ok }
+import im.actor.server.api.rpc.service.webactions.{ WebactionsErrors, WebactionsKeyValues, WebactionsServiceImpl }
 import im.actor.server.webactions.CorrectWebaction
 import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegionProxy }
 import org.scalatest.Inside._
@@ -25,9 +24,6 @@ class WebactionServiceSpec
   "Complete webaction" should "response with WRONG_WEBACTION_HASH to wrong action hash" in t.e4
 
   it should "response with ApiMapValue to correct action hash and remove action hash from key value" in t.e5
-
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val service = new WebactionsServiceImpl()
 

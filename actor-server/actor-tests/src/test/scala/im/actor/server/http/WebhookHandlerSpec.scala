@@ -1,11 +1,10 @@
 package im.actor.server.http
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.unmarshalling.{ Unmarshaller, Unmarshal, FromRequestUnmarshaller }
+import akka.http.scaladsl.unmarshalling.{ FromRequestUnmarshaller, Unmarshal, Unmarshaller }
 import akka.stream.Materializer
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import im.actor.api.rpc.PeersImplicits
-import im.actor.api.rpc.ClientData
+import im.actor.api.rpc.{ ClientData, PeersImplicits }
 import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeq
@@ -13,11 +12,10 @@ import im.actor.server._
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.{ CommandParser, ReverseHooksListener }
 import im.actor.server.api.rpc.service.messaging
+import im.actor.server.api.rpc.service.messaging.{ CommandParser, ReverseHooksListener }
 import im.actor.server.group.{ GroupExtension, GroupServiceMessages }
 import im.actor.server.migrations.IntegrationTokenMigrator
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import play.api.libs.json.Json
 import shardakka.{ IntCodec, ShardakkaExtension }
 
@@ -42,9 +40,6 @@ class WebhookHandlerSpec
   "Integration Token Migrator" should "migrate integration tokens to key value" in t.tokenMigration()
 
   "Reverse hooks listener" should "forward text messages in group to registered webhook" in t.reverseHooks()
-
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
@@ -179,8 +174,8 @@ class WebhookHandlerSpec
     import akka.http.scaladsl.Http
     import akka.http.scaladsl.server.Directives._
     import akka.http.scaladsl.server.Route
-    import im.actor.server.api.rpc.service.messaging.ReverseHooksWorker._
     import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
+    import im.actor.server.api.rpc.service.messaging.ReverseHooksWorker._
 
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val toMessage: FromRequestUnmarshaller[MessageToWebhook] = Unmarshaller { implicit ec ⇒ req ⇒
