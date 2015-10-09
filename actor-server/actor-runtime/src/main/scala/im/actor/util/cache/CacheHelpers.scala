@@ -1,8 +1,8 @@
 package im.actor.util.cache
 
-import com.github.benmanes.caffeine.cache.{Caffeine, Cache}
+import com.github.benmanes.caffeine.cache.{ Caffeine, Cache }
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 object CacheHelpers {
 
@@ -21,7 +21,7 @@ object CacheHelpers {
         cache.put(key, result)
 
         result recover {
-          case e =>
+          case e ⇒
             cache.invalidate(key)
             throw e
         }

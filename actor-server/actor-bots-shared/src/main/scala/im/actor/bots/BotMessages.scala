@@ -18,33 +18,33 @@ object BotMessages {
   }
 
   final case class FileLocation(
-                                 fileId: Long,
-                                 accessHash: Long
-                               )
+    fileId:     Long,
+    accessHash: Long
+  )
 
   final case class AvatarImage(
-                                fileLocation: FileLocation,
-                                width: Int,
-                                height: Int,
-                                fileSize: Int
-                              )
+    fileLocation: FileLocation,
+    width:        Int,
+    height:       Int,
+    fileSize:     Int
+  )
 
   final case class Avatar(
-                           smallImage: Option[AvatarImage],
-                           largeImage: Option[AvatarImage],
-                           fullImage: Option[AvatarImage]
-                         )
+    smallImage: Option[AvatarImage],
+    largeImage: Option[AvatarImage],
+    fullImage:  Option[AvatarImage]
+  )
 
   final case class User(
-                         id: Int,
-                         accessHash: Long,
-                         name: String,
-                         sex: Option[Int],
-                         about: Option[String],
-                         avatar: Option[Avatar],
-                         username: Option[String],
-                         isBot: Option[Boolean]
-                       ) {
+    id:         Int,
+    accessHash: Long,
+    name:       String,
+    sex:        Option[Int],
+    about:      Option[String],
+    avatar:     Option[Avatar],
+    username:   Option[String],
+    isBot:      Option[Boolean]
+  ) {
     def isMale = sex.contains(1)
 
     def isFemale = sex.contains(2)
@@ -53,22 +53,22 @@ object BotMessages {
   }
 
   final case class GroupMember(
-                                userId: Int,
-                                inviterUserId: Int,
-                                memberSince: Long,
-                                isAdmin: Option[Boolean]
-                              )
+    userId:        Int,
+    inviterUserId: Int,
+    memberSince:   Long,
+    isAdmin:       Option[Boolean]
+  )
 
   final case class Group(
-                          id: Int,
-                          accessHash: Long,
-                          title: String,
-                          about: Option[String],
-                          avatar: Option[Avatar],
-                          isMember: Boolean,
-                          creatorUserId: Int,
-                          members: Seq[GroupMember]
-                        )
+    id:            Int,
+    accessHash:    Long,
+    title:         String,
+    about:         Option[String],
+    avatar:        Option[Avatar],
+    isMember:      Boolean,
+    creatorUserId: Int,
+    members:       Seq[GroupMember]
+  )
 
   final object OutPeer {
     def privat(id: Int, accessHash: Long) = OutPeer(1, id, accessHash)
@@ -79,10 +79,10 @@ object BotMessages {
   }
 
   final case class OutPeer(
-                            `type`: Int,
-                            id: Int,
-                            accessHash: Long
-                          ) {
+    `type`:     Int,
+    id:         Int,
+    accessHash: Long
+  ) {
     final def isPrivate = `type` == 1
 
     final def isUser = isPrivate
@@ -91,16 +91,16 @@ object BotMessages {
   }
 
   final case class UserOutPeer(
-                                id: Int,
-                                accessHash: Long
-                              ) {
+    id:         Int,
+    accessHash: Long
+  ) {
     val asOutPeer = OutPeer(1, id, accessHash)
   }
 
   final case class Peer(
-                         `type`: Int,
-                         id: Int
-                       )
+    `type`: Int,
+    id:     Int
+  )
 
   sealed trait RequestBody {
     type Response <: ResponseBody
@@ -113,16 +113,16 @@ object BotMessages {
 
   @key("Request")
   final case class BotRequest(
-                               id: Long,
-                               service: String,
-                               body: RequestBody
-                             ) extends BotMessageIn
+    id:      Long,
+    service: String,
+    body:    RequestBody
+  ) extends BotMessageIn
 
   @key("Response")
   final case class BotResponse(
-                                id: Long,
-                                body: BotResponseBody
-                              ) extends BotMessageOut
+    id:   Long,
+    body: BotResponseBody
+  ) extends BotMessageOut
 
   sealed trait BotResponseBody
 
@@ -135,17 +135,17 @@ object BotMessages {
 
   @key("SeqUpdate")
   final case class BotSeqUpdate(
-                                 seq: Int,
-                                 body: UpdateBody
-                               ) extends BotUpdate
+    seq:  Int,
+    body: UpdateBody
+  ) extends BotUpdate
 
   @key("FatSeqUpdate")
   final case class BotFatSeqUpdate(
-                                    seq: Int,
-                                    body: UpdateBody,
-                                    users: Map[Int, User],
-                                    groups: Map[Int, Group]
-                                  ) extends BotUpdate
+    seq:    Int,
+    body:   UpdateBody,
+    users:  Map[Int, User],
+    groups: Map[Int, Group]
+  ) extends BotUpdate
 
   @key("Error")
   case class BotError(code: Int, tag: String, data: Js.Obj, retryIn: Option[Int]) extends RuntimeException with BotResponseBody
@@ -154,28 +154,28 @@ object BotMessages {
   case class BotSuccess(obj: Js.Obj) extends BotResponseBody
 
   implicit val objWriter = Writer[Js.Obj] {
-    case obj => obj
+    case obj ⇒ obj
   }
 
   implicit val objReader = Reader[Js.Obj] {
-    case obj: Js.Obj => obj
+    case obj: Js.Obj ⇒ obj
   }
 
   implicit val botSuccessWriter = upickle.default.Writer[BotSuccess] {
-    case BotSuccess(obj) => obj
+    case BotSuccess(obj) ⇒ obj
   }
 
   implicit val botSuccessReader = upickle.default.Reader[BotSuccess] {
-    case obj: Js.Obj => BotSuccess(obj)
+    case obj: Js.Obj ⇒ BotSuccess(obj)
   }
 
   implicit val botErrorWriter = upickle.default.Writer[BotError] {
-    case BotError(code, tag, data, retryInOpt) =>
+    case BotError(code, tag, data, retryInOpt) ⇒
       Js.Obj(
-        "code" -> Js.Num(code.toDouble),
-        "tag" -> Js.Str(tag),
-        "data" -> data,
-        "retryIn" -> retryInOpt.map(n => Js.Num(n.toDouble)).getOrElse(Js.Null)
+        "code" → Js.Num(code.toDouble),
+        "tag" → Js.Str(tag),
+        "data" → data,
+        "retryIn" → retryInOpt.map(n ⇒ Js.Num(n.toDouble)).getOrElse(Js.Null)
       )
   }
 
@@ -186,19 +186,19 @@ object BotMessages {
   final case object Void extends Void
 
   implicit val voidReader = upickle.default.Reader[Void] {
-    case Js.Obj() => Void
+    case Js.Obj() ⇒ Void
   }
 
   implicit val voidWriter = upickle.default.Writer[Void] {
-    case _ => Js.Obj()
+    case _ ⇒ Js.Obj()
   }
 
   @key("SendMessage")
   final case class SendTextMessage(
-                                    peer: OutPeer,
-                                    randomId: Long,
-                                    text: String
-                                  ) extends RequestBody {
+    peer:     OutPeer,
+    randomId: Long,
+    text:     String
+  ) extends RequestBody {
     override type Response = MessageSent
     override val service = Services.Messaging
 
@@ -207,10 +207,10 @@ object BotMessages {
 
   @key("SetValue")
   final case class SetValue(
-                             keyspace: String,
-                             key: String,
-                             value: String
-                           ) extends RequestBody {
+    keyspace: String,
+    key:      String,
+    value:    String
+  ) extends RequestBody {
     override type Response = Void
     override val service = Services.KeyValue
 
@@ -219,9 +219,9 @@ object BotMessages {
 
   @key("GetValue")
   final case class GetValue(
-                             keyspace: String,
-                             key: String
-                           ) extends RequestBody {
+    keyspace: String,
+    key:      String
+  ) extends RequestBody {
     override type Response = Container[Option[String]]
     override val service = Services.KeyValue
 
@@ -230,9 +230,9 @@ object BotMessages {
 
   @key("DeleteValue")
   final case class DeleteValue(
-                                keyspace: String,
-                                key: String
-                              ) extends RequestBody {
+    keyspace: String,
+    key:      String
+  ) extends RequestBody {
     override type Response = Void
     override val service = Services.KeyValue
 
@@ -251,11 +251,11 @@ object BotMessages {
 
   @key("TextMessage")
   final case class TextMessage(
-                                peer: OutPeer,
-                                sender: UserOutPeer,
-                                date: Long,
-                                randomId: Long,
-                                text: String
-                              ) extends UpdateBody
+    peer:     OutPeer,
+    sender:   UserOutPeer,
+    date:     Long,
+    randomId: Long,
+    text:     String
+  ) extends UpdateBody
 
 }
