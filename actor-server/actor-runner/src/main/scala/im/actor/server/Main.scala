@@ -18,7 +18,7 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.{ ReverseHooksListener, MessagingServiceImpl }
+import im.actor.server.api.rpc.service.messaging.{ MessagingServiceImpl, ReverseHooksListener }
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
@@ -35,7 +35,7 @@ import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
 import im.actor.server.migrations.{ GroupCreatorMemberMigrator, IntegrationTokenMigrator, LocalNamesMigrator }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
+import im.actor.server.presences.{ GroupPresenceExtension, PresenceExtension }
 import im.actor.server.sequence._
 import im.actor.server.session.{ Session, SessionConfig, SessionMessage }
 import im.actor.server.sms.{ TelesignCallEngine, TelesignClient, TelesignSmsEngine }
@@ -90,9 +90,9 @@ object Main extends App {
     LocalNamesMigrator.migrate()
     GroupCreatorMemberMigrator.migrate()
 
-    implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-    implicit val presenceManagerRegion = PresenceManager.startRegion()
-    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+    val weakUpdatesExt = WeakUpdatesExtension(system)
+    val presenceExt = PresenceExtension(system)
+    val groupPresenceExt = GroupPresenceExtension(system)
     implicit val socialManagerRegion = SocialExtension(system).region
     implicit val userProcessorRegion = UserExtension(system).processorRegion
     implicit val userViewRegion = UserExtension(system).viewRegion

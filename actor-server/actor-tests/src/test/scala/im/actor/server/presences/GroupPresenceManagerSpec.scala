@@ -1,16 +1,14 @@
 package im.actor.server.presences
 
 import akka.actor.PoisonPill
+import akka.testkit.TestProbe
+import akka.util.Timeout
+import im.actor.server.ActorSuite
+import im.actor.server.db.DbExtension
+import org.scalatest.time.{ Seconds, Span }
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
-
-import akka.testkit.TestProbe
-import akka.util.Timeout
-import org.scalatest.time.{ Seconds, Span }
-
-import im.actor.server.ActorSuite
-import im.actor.server.db.DbExtension
 
 class GroupPresenceManagerSpec extends ActorSuite {
   behavior of "GroupPresenceManager"
@@ -18,8 +16,6 @@ class GroupPresenceManagerSpec extends ActorSuite {
   it should "subscribe/unsubscribe to group presences" in e1
   it should "not consider presence change on second device online when first is online" in e2
   it should "not consider presence change on second device offline when first is online" in e3
-
-  import GroupPresenceManager._
 
   implicit val ec: ExecutionContext = system.dispatcher
 
@@ -29,23 +25,23 @@ class GroupPresenceManagerSpec extends ActorSuite {
   DbExtension(system).clean()
   DbExtension(system).migrate()
 
-  implicit val userPresenceRegion = PresenceManager.startRegion()
-  implicit val region = GroupPresenceManager.startRegion()
+  implicit val presenceExt = PresenceExtension(system)
+  implicit val groupPresenceExt = GroupPresenceExtension(system)
 
   def e1() = {
-    val userId = util.Random.nextInt
-    val groupId = util.Random.nextInt
+    val userId = scala.util.Random.nextInt
+    val groupId = scala.util.Random.nextInt
     val probe = TestProbe()
 
-    whenReady(subscribe(groupId, probe.ref)) { _ ⇒ }
+    whenReady(groupPresenceExt.subscribe(groupId, probe.ref)) { _ ⇒ }
 
     probe.expectMsgPF() {
       case GroupPresenceState(g, 0) if g == groupId ⇒
     }
 
-    GroupPresenceManager.notifyGroupUserAdded(groupId, userId)
+    groupPresenceExt.notifyGroupUserAdded(groupId, userId)
 
-    PresenceManager.presenceSetOnline(userId, 1L, 1000)
+    presenceExt.presenceSetOnline(userId, 1L, 1000)
 
     probe.expectMsgPF() {
       case GroupPresenceState(g, 1) if g == groupId ⇒
@@ -55,32 +51,32 @@ class GroupPresenceManagerSpec extends ActorSuite {
       case GroupPresenceState(g, 0) if g == groupId ⇒
     }
 
-    whenReady(unsubscribe(groupId, probe.ref)) { _ ⇒ }
+    whenReady(groupPresenceExt.unsubscribe(groupId, probe.ref)) { _ ⇒ }
     probe.expectNoMsg()
 
     probe.ref ! PoisonPill
   }
 
   def e2() = {
-    val userId = util.Random.nextInt
-    val groupId = util.Random.nextInt
+    val userId = scala.util.Random.nextInt
+    val groupId = scala.util.Random.nextInt
     val probe = TestProbe()
 
-    GroupPresenceManager.notifyGroupUserAdded(groupId, userId)
+    groupPresenceExt.notifyGroupUserAdded(groupId, userId)
 
-    whenReady(subscribe(groupId, probe.ref)) { _ ⇒ }
+    whenReady(groupPresenceExt.subscribe(groupId, probe.ref)) { _ ⇒ }
 
     probe.expectMsgPF() {
       case GroupPresenceState(g, 0) if g == groupId ⇒
     }
 
-    PresenceManager.presenceSetOnline(userId, 1L, 300)
+    presenceExt.presenceSetOnline(userId, 1L, 300)
 
     probe.expectMsgPF() {
       case GroupPresenceState(g, 1) if g == groupId ⇒
     }
 
-    PresenceManager.presenceSetOnline(userId, 2L, 600)
+    presenceExt.presenceSetOnline(userId, 2L, 600)
 
     probe.expectNoMsg(400.millis)
 
@@ -90,26 +86,26 @@ class GroupPresenceManagerSpec extends ActorSuite {
   }
 
   def e3() = {
-    val userId = util.Random.nextInt
-    val groupId = util.Random.nextInt
+    val userId = scala.util.Random.nextInt
+    val groupId = scala.util.Random.nextInt
     val probe = TestProbe()
 
-    GroupPresenceManager.notifyGroupUserAdded(groupId, userId)
+    groupPresenceExt.notifyGroupUserAdded(groupId, userId)
 
-    whenReady(subscribe(groupId, probe.ref)) { _ ⇒ }
+    whenReady(groupPresenceExt.subscribe(groupId, probe.ref)) { _ ⇒ }
 
     probe.expectMsgPF() {
       case GroupPresenceState(g, 0) if g == groupId ⇒
     }
 
-    PresenceManager.presenceSetOnline(userId, 1L, 300)
+    presenceExt.presenceSetOnline(userId, 1L, 300)
 
     probe.expectMsgPF() {
       case GroupPresenceState(g, 1) if g == groupId ⇒
     }
 
-    PresenceManager.presenceSetOnline(userId, 2L, 300)
-    PresenceManager.presenceSetOffline(userId, 2L, 300)
+    presenceExt.presenceSetOnline(userId, 2L, 300)
+    presenceExt.presenceSetOffline(userId, 2L, 300)
 
     // should not consuder user offline as the first device is still online
     probe.expectNoMsg(200.millis)
