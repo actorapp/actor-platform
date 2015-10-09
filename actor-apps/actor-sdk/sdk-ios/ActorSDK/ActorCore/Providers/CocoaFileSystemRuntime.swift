@@ -5,8 +5,8 @@
 import Foundation
 
 // Public methods for working with files
-public class CocoaFiles {
-    public class func pathFromDescriptor(path: String) -> String {
+class CocoaFiles {
+    class func pathFromDescriptor(path: String) -> String {
         var documentsFolders = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
         if (documentsFolders.count > 0) {
             let appPath = documentsFolders[0].asNS.stringByDeletingLastPathComponent

@@ -6,9 +6,9 @@ import Foundation
 
 public protocol AAContactsListContentControllerDelegate {
     
-    func willAddContacts(controller: AAContactsListContentController, section: ACManagedSection)
+    func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection)
     
-    func didAddContacts(controller: AAContactsListContentController, section: ACManagedSection)
+    func didAddContacts(controller: AAContactsListContentController, section: AAManagedSection)
     
     func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool
     
@@ -18,11 +18,11 @@ public protocol AAContactsListContentControllerDelegate {
 
 public extension AAContactsListContentControllerDelegate {
     
-    public func willAddContacts(controller: AAContactsListContentController, section: ACManagedSection) {
+    public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
         // Do Nothing
     }
     
-    public func didAddContacts(controller: AAContactsListContentController, section: ACManagedSection) {
+    public func didAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
         // Do Nothing
     }
     

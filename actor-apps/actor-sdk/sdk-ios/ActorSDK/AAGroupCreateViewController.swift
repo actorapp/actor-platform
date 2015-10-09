@@ -18,7 +18,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
     public override init(){
         super.init(nibName: nil, bundle: nil)
         self.navigationItem.title = NSLocalizedString("CreateGroupTitle", comment: "Compose Title")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -39,7 +39,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         let context = UIGraphicsGetCurrentContext();
         CGContextSetFillColorWithColor(context, UIColor.whiteColor().CGColor);
         CGContextFillEllipseInRect(context, CGRectMake(0.0, 0.0, 110.0, 110.0));
-        CGContextSetStrokeColorWithColor(context, UIColor.RGB(0xd9d9d9).CGColor);
+        CGContextSetStrokeColorWithColor(context, UIColor(rgb: 0xd9d9d9).CGColor);
         CGContextSetLineWidth(context, 1.0);
         CGContextStrokeEllipseInRect(context, CGRectMake(0.5, 0.5, 109.0, 109.0));
         let buttonImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -53,14 +53,14 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         addPhotoLabelFirst.text = NSLocalizedString("AuthProfileAddPhoto1", comment: "Title")
         addPhotoLabelFirst.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelFirst.backgroundColor = UIColor.clearColor()
-        addPhotoLabelFirst.textColor = UIColor.RGB(0xd9d9d9)
+        addPhotoLabelFirst.textColor = UIColor(rgb: 0xd9d9d9)
         addPhotoLabelFirst.sizeToFit()
         
         let addPhotoLabelSecond = UILabel()
         addPhotoLabelSecond.text = NSLocalizedString("AuthProfileAddPhoto2", comment: "Title")
         addPhotoLabelSecond.font = UIFont.systemFontOfSize(15.0)
         addPhotoLabelSecond.backgroundColor = UIColor.clearColor()
-        addPhotoLabelSecond.textColor = UIColor.RGB(0xd9d9d9)
+        addPhotoLabelSecond.textColor = UIColor(rgb: 0xd9d9d9)
         addPhotoLabelSecond.sizeToFit()
         
         addPhotoButton.addSubview(addPhotoLabelFirst)
@@ -82,7 +82,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         
         groupNameFieldSeparator.backgroundColor = appStyle.vcSeparatorColor
         
-        hint.text = localized("CreateGroupHint")
+        hint.text = AALocalized("CreateGroupHint")
         hint.font = UIFont.systemFontOfSize(15)
         hint.lineBreakMode = .ByWordWrapping
         hint.numberOfLines = 0

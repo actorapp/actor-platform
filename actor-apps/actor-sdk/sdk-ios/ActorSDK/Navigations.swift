@@ -6,7 +6,7 @@ import Foundation
 
 public extension UIViewController {
     public func navigateDetail(controller: UIViewController) {
-        if (isIPad) {
+        if (AADevice.isiPad) {
             let split = UIApplication.sharedApplication().keyWindow?.rootViewController as! UISplitViewController;
             let master = split.viewControllers[0]
             let detail = AANavigationController()

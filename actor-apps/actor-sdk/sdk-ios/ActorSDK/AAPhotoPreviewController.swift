@@ -10,7 +10,7 @@ class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewController
     // let binder = Binder()
     let photos: [PreviewImage]
     let controllerPhotos: [AAPhoto]
-    var bind = [Int: CocoaDownloadCallback]()
+    var bind = [Int: AAFileCallback]()
     let fromView: UIView?
     
     convenience init(photos: [PreviewImage], fromView: UIView?) {
@@ -89,7 +89,7 @@ class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewController
             let p = photos[i]
             
             if cp.image == nil {
-                let callback = CocoaDownloadCallback(notDownloaded: { () -> () in
+                let callback = AAFileCallback(notDownloaded: { () -> () in
                     
                     }, onDownloading: { (progress) -> () in
                         
@@ -150,5 +150,30 @@ class PreviewImage {
         self.image = image
         self.previewFile = nil
         self.size = nil
+    }
+}
+
+class AAPhoto: NSObject, NYTPhoto {
+    
+    var image: UIImage?
+    var placeholderImage: UIImage?
+    let attributedCaptionTitle: NSAttributedString?
+    let attributedCaptionSummary: NSAttributedString?
+    let attributedCaptionCredit: NSAttributedString?
+    
+    init(image: UIImage?) {
+        self.image = image
+        self.placeholderImage = nil
+        self.attributedCaptionTitle = nil
+        self.attributedCaptionSummary = nil
+        self.attributedCaptionCredit = nil
+    }
+    
+    init(image: UIImage?, placeholderImage: UIImage?, attributedCaptionTitle: NSAttributedString?, attributedCaptionSummary: NSAttributedString?, attributedCaptionCredit: NSAttributedString?) {
+        self.image = image
+        self.placeholderImage = placeholderImage
+        self.attributedCaptionTitle = attributedCaptionTitle
+        self.attributedCaptionSummary = attributedCaptionSummary
+        self.attributedCaptionCredit = attributedCaptionCredit
     }
 }

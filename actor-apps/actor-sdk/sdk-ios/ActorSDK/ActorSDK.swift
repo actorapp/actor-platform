@@ -71,7 +71,7 @@ public class ActorSDK {
     /// Is Actor Started
     private(set) public var isStarted = false
     
-    private var binder = Binder()
+    private var binder = AABinder()
     private var syncTask: UIBackgroundTaskIdentifier?
     private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
     
@@ -89,10 +89,7 @@ public class ActorSDK {
         }
         isStarted = true
         
-        ARCocoaStorageProxyProvider.setStorageRuntime(CocoaStorageRuntime())
-        ARCocoaHttpProxyProvider.setHttpRuntime(CocoaHttpRuntime())
-        ARCocoaFileSystemProxyProvider.setFileSystemRuntime(CocoaFileSystemRuntime())
-        ARCocoaNetworkProxyProvider.setNetworkRuntime(CocoaNetworkRuntime())
+        AAActorRuntime.configureRuntime()
         
         let builder = ACConfigurationBuilder()
         
@@ -120,8 +117,6 @@ public class ActorSDK {
         messenger = ACCocoaMessenger(configuration: builder.build())
         
         checkAppState()
-        
-        initStyles()
         
         // Apply styles
         MainAppTheme.applyAppearance(UIApplication.sharedApplication())
@@ -259,10 +254,10 @@ public class ActorSDK {
                 isUserOnline = true
                 
                 // Mark app as visible
-                Actor.onAppVisible()
+                messenger.onAppVisible()
                 
                 // Notify analytics about visibilibty change
-                Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(true))
+                // Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(true))
                 
                 // Hack for resync phone book
                 Actor.onPhoneBookChanged()
@@ -272,10 +267,10 @@ public class ActorSDK {
                 isUserOnline = false
                 
                 // Mark app as hidden
-                Actor.onAppHidden()
+                messenger.onAppHidden()
                 
                 // Notify analytics about visibilibty change
-                Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(false))
+                // Analytics.track(ACAllEvents.APP_VISIBLEWithBoolean(false))
             }
         }
     }

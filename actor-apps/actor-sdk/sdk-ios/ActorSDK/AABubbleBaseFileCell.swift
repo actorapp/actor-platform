@@ -9,10 +9,10 @@ class AABubbleBaseFileCell: AABubbleCell {
     var bindGeneration = 0;
     
     var bindedDownloadFile: jlong? = nil
-    var bindedDownloadCallback: CocoaDownloadCallback? = nil
+    var bindedDownloadCallback: AAFileCallback? = nil
     
     var bindedUploadFile: jlong? = nil
-    var bindedUploadCallback: CocoaUploadCallback? = nil
+    var bindedUploadCallback: AAUploadFileCallback? = nil
     
     func fileBind(message: ACMessage, autoDownload: Bool) {
         if let doc = message.content as? ACDocumentContent {
@@ -20,16 +20,16 @@ class AABubbleBaseFileCell: AABubbleCell {
             // Next generation of binding
             bindGeneration++
             // Saving generation to new binding
-            var selfGeneration = bindGeneration;
+            let selfGeneration = bindGeneration;
             
             // Remove old bindings
             fileUnbind()
             
             if let source = doc.getSource() as? ACFileRemoteSource {
-                var fileReference = source.getFileReference();
+                let fileReference = source.getFileReference()
             
                 bindedDownloadFile = fileReference.getFileId()
-                bindedDownloadCallback = CocoaDownloadCallback(notDownloaded: { () -> () in
+                bindedDownloadCallback = AAFileCallback(notDownloaded: { () -> () in
                     if (self.bindGeneration != selfGeneration) {
                         return
                     }
@@ -48,10 +48,10 @@ class AABubbleBaseFileCell: AABubbleCell {
             
                 Actor.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
             } else if let source = doc.getSource() as? ACFileLocalSource {
-                var fileReference = source.getFileDescriptor();
+                let fileReference = source.getFileDescriptor()
             
                 bindedUploadFile = message.rid;
-                bindedUploadCallback = CocoaUploadCallback(notUploaded: { () -> () in
+                bindedUploadCallback = AAUploadFileCallback(notUploaded: { () -> () in
                     if (self.bindGeneration != selfGeneration) {
                         return
                     }

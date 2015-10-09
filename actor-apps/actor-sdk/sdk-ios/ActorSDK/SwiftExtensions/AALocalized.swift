@@ -6,7 +6,7 @@ import Foundation
 
 // Shorter helper for localized strings
 
-public func localized(text: String!) -> String! {
+public func AALocalized(text: String!) -> String! {
     if text == nil {
         return nil
     }
@@ -23,7 +23,7 @@ public func localized(text: String!) -> String! {
 
 // Registration localization table
 
-public func registerLocalizationTable(table: String, bundle: NSBundle) {
+public func AARegisterLocalizedBundle(table: String, bundle: NSBundle) {
     tables.append(LocTable(table: table, bundle: bundle))
 }
 
@@ -52,7 +52,7 @@ public extension UILabel {
         
         set (value) {
             if value != nil {
-                self.text = localized(value!)
+                self.text = AALocalized(value!)
             } else {
                 self.text = nil
             }

@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AADialogSearchCell: AATableViewCell, ACBindedSearchCell {
+public class AADialogSearchCell: AATableViewCell, AABindedSearchCell {
     
     public typealias BindData = ACSearchEntity
     

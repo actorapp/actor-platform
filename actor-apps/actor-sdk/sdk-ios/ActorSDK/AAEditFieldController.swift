@@ -26,9 +26,9 @@ public class AAEditFieldControllerConfig {
     }
 }
 
-public class AAEditFieldController: ACContentTableController {
+public class AAEditFieldController: AAContentTableController {
     
-    public var fieldCell: ACEditRow!
+    public var fieldCell: AAEditRow!
     
     public let config: AAEditFieldControllerConfig
     
@@ -38,13 +38,13 @@ public class AAEditFieldController: ACContentTableController {
         
         super.init(style: .SettingsGrouped)
         
-        navigationItem.title = localized(config.title)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: localized("NavigationCancel"), style: .Plain, target: self, action: "doDismiss")
+        navigationItem.title = AALocalized(config.title)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: .Plain, target: self, action: "doDismiss")
         
         if config.actionTitle != nil {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized(config.actionTitle), style: .Done, target: self, action: "doAction")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized(config.actionTitle), style: .Done, target: self, action: "doAction")
         } else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized("NavigationDone"), style: .Done, target: self, action: "doAction")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: .Done, target: self, action: "doAction")
         }
     }
     
@@ -57,13 +57,13 @@ public class AAEditFieldController: ACContentTableController {
         section { (s) -> () in
             
             if self.config.hint != nil {
-                s.footerText = localized(self.config.hint)
+                s.footerText = AALocalized(self.config.hint)
             }
             
             self.fieldCell = s.edit { (r) -> () in
                 
                 if self.config.fieldHint != nil {
-                    r.placeholder = localized(self.config.fieldHint)
+                    r.placeholder = AALocalized(self.config.fieldHint)
                 }
                 r.autocapitalizationType = self.config.fieldAutocapitalizationType
                 r.autocorrectionType = self.config.fieldAutocorrectionType
@@ -97,7 +97,7 @@ public class AAEditFieldController: ACContentTableController {
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let c = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? EditCell {
+        if let c = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAEditCell {
             c.textField.becomeFirstResponder()
         }
     }
@@ -105,7 +105,7 @@ public class AAEditFieldController: ACContentTableController {
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if let c = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? EditCell {
+        if let c = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAEditCell {
             c.textField.resignFirstResponder()
         }
     }

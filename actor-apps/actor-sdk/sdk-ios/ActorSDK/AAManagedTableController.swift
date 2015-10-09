@@ -4,23 +4,23 @@
 
 import Foundation
 
-public class ACManagedTableController: AAViewController {
+public class AAManagedTableController: AAViewController {
     
-    public let style: ACContentTableStyle
+    public let style: AAContentTableStyle
     
-    public var managedTableDelegate: ACManagedTableControllerDelegate?
+    public var managedTableDelegate: AAManagedTableControllerDelegate?
     
-    public let binder = Binder()
+    public let binder = AABinder()
     
     public var tableView: UITableView!
     
-    public var managedTable: ACManagedTable!
+    public var managedTable: AAManagedTable!
     
     public var unbindOnDissapear: Bool = false
     
     private var isBinded: Bool = false
     
-    public init(style: ACContentTableStyle) {
+    public init(style: AAContentTableStyle) {
         self.style = style
         super.init()
     }
@@ -56,7 +56,7 @@ public class ACManagedTableController: AAViewController {
         tableView.backgroundColor = style == .Plain ? appStyle.vcBgColor : appStyle.vcBackyardColor
         view.backgroundColor = tableView.backgroundColor
         
-        managedTable = ACManagedTable(style: style, tableView: tableView, controller: self)
+        managedTable = AAManagedTable(style: style, tableView: tableView, controller: self)
         view.addSubview(tableView)
         
         // Invoking table loading
@@ -133,23 +133,23 @@ public class ACManagedTableController: AAViewController {
     }
 }
 
-public protocol ACManagedTableControllerDelegate {
-    func managedTableLoad(controller: ACManagedTableController, table: ACManagedTable)
-    func managedTableBind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder)
-    func managedTableUnbind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder)
+public protocol AAManagedTableControllerDelegate {
+    func managedTableLoad(controller: AAManagedTableController, table: AAManagedTable)
+    func managedTableBind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder)
+    func managedTableUnbind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder)
 }
 
-public extension ACManagedTableControllerDelegate {
+public extension AAManagedTableControllerDelegate {
     
-    public func managedTableLoad(controller: ACManagedTableController, table: ACManagedTable) {
+    public func managedTableLoad(controller: AAManagedTableController, table: AAManagedTable) {
         // Do nothing
     }
     
-    public func managedTableBind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder) {
+    public func managedTableBind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         // Do nothing
     }
     
-    public func managedTableUnbind(controller: ACManagedTableController, table: ACManagedTable, binder: Binder) {
+    public func managedTableUnbind(controller: AAManagedTableController, table: AAManagedTable, binder: AABinder) {
         // Do nothing
     }
 }

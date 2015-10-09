@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class AAInviteLinkViewController: ACContentTableController {
+public class AAInviteLinkViewController: AAContentTableController {
 
     // Data
     
@@ -12,14 +12,14 @@ public class AAInviteLinkViewController: ACContentTableController {
     
     // Rows
     
-    public var urlRow: ACCommonRow!
+    public var urlRow: AACommonRow!
     
     public init(gid: Int) {
-        super.init(style: ACContentTableStyle.SettingsGrouped)
+        super.init(style: AAContentTableStyle.SettingsGrouped)
         
         self.gid = gid
         
-        self.title = localized("GroupInviteLinkPageTitle")
+        self.title = AALocalized("GroupInviteLinkPageTitle")
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -31,8 +31,8 @@ public class AAInviteLinkViewController: ACContentTableController {
         tableView.hidden = true
         
         section { (s) -> () in
-            s.headerText = localized("GroupInviteLinkTitle")
-            s.footerText = localized("GroupInviteLinkHint")
+            s.headerText = AALocalized("GroupInviteLinkTitle")
+            s.footerText = AALocalized("GroupInviteLinkHint")
             
             self.urlRow = s.common { (r) -> () in
                 r.bindAction = { (r) -> () in
@@ -63,7 +63,7 @@ public class AAInviteLinkViewController: ACContentTableController {
         section { (s) -> () in
             s.danger("ActionRevokeLink") { (r) -> () in
                 r.selectAction = { () -> Bool in
-                    self.confirmDestructive(localized("GroupInviteLinkRevokeMessage"), action: localized("GroupInviteLinkRevokeAction"), yes: { () -> () in
+                    self.confirmDestructive(AALocalized("GroupInviteLinkRevokeMessage"), action: AALocalized("GroupInviteLinkRevokeAction"), yes: { () -> () in
                         self.reloadLink()
                     })
                     return true

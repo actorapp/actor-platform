@@ -4,10 +4,7 @@
 
 import UIKit
 
-public class BigPlaceholderView: UIView {
-    
-    // MARK: -
-    // MARK: Private vars
+class AABigPlaceholderView: UIView {
     
     private var contentView: UIView!
     private var bgView: UIView!
@@ -19,13 +16,11 @@ public class BigPlaceholderView: UIView {
     private var subtitle2Label: UILabel!
     private var action2Button: UIButton!
     
-    // MARK: -
-    // MARK: Public vars
-
-    // MARK: -
-    // MARK: Constructors
+    //
+    // Constructors
+    //
     
-    public init(topOffset: CGFloat!) {
+    init(topOffset: CGFloat!) {
         super.init(frame: CGRectZero)
         
         self.topOffset = topOffset
@@ -75,18 +70,19 @@ public class BigPlaceholderView: UIView {
         contentView.addSubview(action2Button)
     }
 
-    public required init(coder aDecoder: NSCoder) {
+    required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
-    // MARK: Setters
+    //
+    // Setting image
+    //
     
-    public func setImage(image: UIImage?, title: String?, subtitle: String?) {
+    func setImage(image: UIImage?, title: String?, subtitle: String?) {
         setImage(image, title: title, subtitle: subtitle, actionTitle: nil,  subtitle2: nil, actionTarget: nil, actionSelector: nil, action2title: nil, action2Selector: nil)
     }
     
-    public func setImage(image: UIImage?, title: String?, subtitle: String?, actionTitle: String?, subtitle2: String?, actionTarget: AnyObject?, actionSelector: Selector?, action2title: String?, action2Selector: Selector?) {
+    func setImage(image: UIImage?, title: String?, subtitle: String?, actionTitle: String?, subtitle2: String?, actionTarget: AnyObject?, actionSelector: Selector?, action2title: String?, action2Selector: Selector?) {
         
         if image != nil {
             imageView.image = image!
@@ -154,10 +150,11 @@ public class BigPlaceholderView: UIView {
         setNeedsLayout()
     }
     
-    // MARK: -
-    // MARK: Layout
-    
-    public override func layoutSubviews() {
+    //
+    // Layouting
+    //
+
+    override func layoutSubviews() {
         super.layoutSubviews()
         
         var contentHeight: CGFloat = 0
@@ -220,8 +217,6 @@ public class BigPlaceholderView: UIView {
             contentHeight += actionButtonTitleLabelSize.height
         }
         
-//        contentView.frame = CGRect(x: (bounds.size.width - maxContentWidth) / 2.0, y: (bounds.size.height - contentHeight) / 2.0, width: maxContentWidth, height: contentHeight)
-
         contentView.frame = CGRect(x: 0, y: 0, width: maxContentWidth, height: contentHeight)
     }
 

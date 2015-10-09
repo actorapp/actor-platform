@@ -49,7 +49,7 @@ public extension ActorSDKDelegate {
         tab.selectedIndex = 1
         
         let rootController : UIViewController
-        if (isIPad) {
+        if (AADevice.isiPad) {
             let splitController = AARootSplitViewController()
             splitController.viewControllers = [tab, AANoSelectionViewController()]
             rootController = splitController

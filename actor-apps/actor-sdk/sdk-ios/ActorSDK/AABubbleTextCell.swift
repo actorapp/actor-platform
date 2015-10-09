@@ -10,7 +10,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     // TODO: Better max width calculations
     
-    static let fontSize: CGFloat = isIPad ? 17 : 16
+    static let fontSize: CGFloat = AADevice.isiPad ? 17 : 16
     static let fontRegular = UIFont.textFontOfSize(fontSize)
     static let fontItalic = UIFont.italicTextFontOfSize(fontSize)
     static let fontBold = UIFont.boldTextFontOfSize(fontSize)
@@ -123,9 +123,9 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
-                left: 0 + (isIPad ? 16 : 0),
+                left: 0 + (AADevice.isiPad ? 16 : 0),
                 bottom: (isClanchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
-                right: (isClanchBottom ? 10 : 4) + (isIPad ? 16 : 0))
+                right: (isClanchBottom ? 10 : 4) + (AADevice.isiPad ? 16 : 0))
             contentInsets = UIEdgeInsets(
                 top: AABubbleCell.bubbleContentTop,
                 left: 10,
@@ -137,9 +137,9 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
-                left: (isClanchBottom ? 10 : 4) + (isIPad ? 16 : 0),
+                left: (isClanchBottom ? 10 : 4) + (AADevice.isiPad ? 16 : 0),
                 bottom: (isClanchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
-                right: 0 + (isIPad ? 16 : 0))
+                right: 0 + (AADevice.isiPad ? 16 : 0))
             contentInsets = UIEdgeInsets(
                 top: (isGroup ? 18 : 0) + AABubbleCell.bubbleContentTop,
                 left: (isClanchBottom ? 11 : 17),
@@ -267,7 +267,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
 class TextCellLayout: CellLayout {
     
     private class func maxTextWidth(isOut: Bool, peer: ACPeer) -> CGFloat {
-        if isIPad {
+        if AADevice.isiPad {
             return 400
         } else {
             if peer.isGroup {

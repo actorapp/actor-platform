@@ -12,7 +12,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     var inviteText: String {
         get {
-            return localized("InviteText").replace("{link}", dest: ActorSDK.sharedActor().inviteUrl)
+            return AALocalized("InviteText").replace("{link}", dest: ActorSDK.sharedActor().inviteUrl)
         }
     }
     
@@ -23,7 +23,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         
         tabBarItem = UITabBarItem(title: "TabPeople", img: "TabIconContacts", selImage: "TabIconContactsHighlighted")
         
-        navigationItem.title = localized("TabPeople")
+        navigationItem.title = AALocalized("TabPeople")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "findContact")
         
         delegate = self
@@ -38,14 +38,14 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         return true
     }
     
-    func willAddContacts(controller: AAContactsListContentController, section: ACManagedSection) {
+    func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
         
-        section.custom { (r: ACCustomRow<AAContactActionCell>) -> () in
+        section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
             
             r.height = 56
             
             r.closure = { (cell: AAContactActionCell)->() in
-                cell.bind("ic_add_user", actionTitle: localized("ContactsActionAdd"))
+                cell.bind("ic_add_user", actionTitle: AALocalized("ContactsActionAdd"))
             }
             
             r.selectAction = { () -> Bool in
@@ -54,17 +54,17 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
             }
         }
         
-        section.custom { (r: ACCustomRow<AAContactActionCell>) -> () in
+        section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
             
             r.height = 56
             
             r.closure = { (cell: AAContactActionCell)->() in
-                cell.bind("ic_invite_user", actionTitle: localized("ContactsActionInvite"))
+                cell.bind("ic_invite_user", actionTitle: AALocalized("ContactsActionInvite"))
             }
             
             r.selectAction = { () -> Bool in
                 
-                let builder = MenuBuilder()
+                let builder = AAMenuBuilder()
                 
                 if MFMessageComposeViewController.canSendText() {
                     builder.add("SMS") { () -> () in
