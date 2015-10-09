@@ -24,6 +24,7 @@ object Formatting {
       .setPreference(RewriteArrowSymbols, true)
       .setPreference(AlignParameters, true)
       .setPreference(AlignSingleLineCaseStatements, true)
+      .setPreference(SpacesAroundMultiImports, true)
   }
 
   def docFormattingPreferences = {
