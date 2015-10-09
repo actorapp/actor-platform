@@ -329,7 +329,7 @@ public class DocumentCellLayout: AACellLayout {
                 break
             }
         }
-        self.icon = UIImage(named: fileName)!
+        self.icon = UIImage.bundled(fileName)!
         
         super.init(height: 66, date: date, key: "document")
     }

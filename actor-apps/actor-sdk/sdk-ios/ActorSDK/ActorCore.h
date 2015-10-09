@@ -105,6 +105,7 @@
 #import <ActorSDK/im/actor/runtime/FileSystemRuntime.h>
 #import <ActorSDK/im/actor/runtime/HttpRuntime.h>
 #import <ActorSDK/im/actor/runtime/NetworkRuntime.h>
+#import <ActorSDK/im/actor/runtime/AssetsRuntime.h>
 #import <ActorSDK/im/actor/runtime/mtproto/ManagedConnection.h>
 #import <ActorSDK/im/actor/runtime/mtproto/ManagedNetworkProvider.h>
 #import <ActorSDK/im/actor/runtime/mtproto/AsyncConnection.h>
@@ -115,6 +116,7 @@
 #import <ActorSDK/im/actor/runtime/cocoa/CocoaStorageProxyProvider.h>
 #import <ActorSDK/im/actor/runtime/cocoa/CocoaFileSystemProxyProvider.h>
 #import <ActorSDK/im/actor/runtime/cocoa/CocoaNetworkProxyProvider.h>
+#import <ActorSDK/im/actor/runtime/cocoa/CocoaAssetsProxyProvider.h>
 
 #import <ActorSDK/im/actor/runtime/http/FileDownloadCallback.h>
 #import <ActorSDK/im/actor/runtime/http/FileUploadCallback.h>

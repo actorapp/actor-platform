@@ -318,7 +318,7 @@ public class AAGroupViewController: AAContentTableController {
                     self.hidePlaceholder()
                 } else {
                     self.showPlaceholderWithImage(
-                        UIImage(named: "contacts_list_placeholder"),
+                        UIImage.bundled("contacts_list_placeholder"),
                         title: AALocalized("Placeholder_Group_Title"),
                         subtitle: AALocalized("Placeholder_Group_Message"))
                 }

@@ -24,13 +24,6 @@ public protocol ActorSDKDelegate {
     
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
-    
-    /// Navigate to Next controller
-    func navigateNext(controller: UIViewController)
-    
-    /// Navigate to Detail controller. On iPhone navigate next, 
-    /// on iPad change detail controller in split view.
-    func navigateDetail(controller: UIViewController)
 }
 
 /// Default values of SDK Delegate
@@ -72,14 +65,6 @@ public extension ActorSDKDelegate {
     
     func actorControllerForConversation(peer: ACPeer) -> UIViewController {
         return ConversationViewController(peer: peer)
-    }
-    
-    public func navigateNext(controller: UIViewController) {
-        
-    }
-    
-    public func navigateDetail(controller: UIViewController) {
-        
     }
     
     public func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter] {

@@ -43,10 +43,10 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         messageText.numberOfLines = 0
         messageText.userInteractionEnabled = true
         messageText.delegate = self
-//        messageText.linkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
-//            kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
-//        messageText.activeLinkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
-//            kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
+        messageText.linkAttributes = [kCTForegroundColorAttributeName: appStyle.chatUrlColor,
+            kCTUnderlineStyleAttributeName: NSNumber(bool: false)]
+        messageText.activeLinkAttributes = [kCTForegroundColorAttributeName: appStyle.chatUrlColor,
+            kCTUnderlineStyleAttributeName: NSNumber(bool: false)]
         messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Center
         
         dateText.font = AABubbleTextCell.dateFont
@@ -217,7 +217,7 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             let code = self.cellLayout.sources[index]
             self.controller.navigateNext(AACodePreviewController(code: code), removeCurrent: false)
         } else {
-            UIApplication.sharedApplication().openURL(url)
+           UIApplication.sharedApplication().openURL(url)
         }
     }
     
