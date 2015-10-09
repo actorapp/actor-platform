@@ -109,7 +109,7 @@ private[botkit] final class WebsocketClient(url: String)
   def receive = {
     case TextFrame(text) ⇒
       val str = text.decodeString("UTF-8")
-      log.info("Received {}", str)
+      log.info("<< {}", str)
       if (receivedBuf.isEmpty && totalDemand > 0)
         onNext(str)
       else {
@@ -123,6 +123,7 @@ private[botkit] final class WebsocketClient(url: String)
     case ActorPublisherMessage.Cancel ⇒
       context.stop(self)
     case ActorSubscriberMessage.OnNext(textToSend: String) ⇒
+      log.info(">> {}", textToSend)
       client ! textToSend
     case ConnectionClosed ⇒
       log.error("Connection closed")

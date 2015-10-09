@@ -48,8 +48,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
       PB.includePaths in PB.protobufConfig ++= Seq(
         file("actor-runtime/src/main/protobuf"),
-        file("actor-core/src/main/protobuf"),
-        file("shardakka/src/main/protobuf")
+        file("actor-core/src/main/protobuf")
       ),
       PB.runProtoc in PB.protobufConfig := (args =>
         com.github.os72.protocjar.Protoc.runProtoc("-v300" +: args.toArray))
@@ -104,8 +103,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       actorSession,
       actorRpcApi,
       actorTests,
-      actorRuntime,
-      shardakka
+      actorRuntime
     )
     .settings(
     aggregate in Docker := false,
@@ -142,13 +140,9 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     id = "actor-bots",
     base = file("actor-bots"),
     settings = defaultSettings ++
-      Seq(
-        libraryDependencies ++= Dependencies.bot,
-        addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0-M5" cross CrossVersion.full)
-      )
+      Seq(libraryDependencies ++= Dependencies.bots)
   )
-    .dependsOn(actorBotsShared, shardakka, actorCore, actorTestkit % "test")
-    .aggregate(actorBotsShared)
+    .dependsOn(actorBotkit, actorCore, actorTestkit % "test")
 
   lazy val actorBotsShared = Project(
     id = "actor-bots-shared",
@@ -177,7 +171,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     settings = defaultSettings ++ SbtActorApi.settings ++ Seq(
       libraryDependencies ++= Dependencies.core
     )
-  ).dependsOn(actorCodecs, actorModels, actorPersist, actorPresences, actorSocial, actorRuntime, shardakka)
+  ).dependsOn(actorCodecs, actorModels, actorPersist, actorPresences, actorSocial, actorRuntime)
 
   lazy val actorEmail = Project(
     id = "actor-email",
@@ -361,15 +355,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       actorOAuth,
       actorPersist,
       actorRpcApi,
-      actorSession,
-      shardakka
+      actorSession
     )
-
-  lazy val shardakka = Project(
-    id = "shardakka",
-    base = file("shardakka"),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.shardakka
-    )
-  ).dependsOn(actorRuntime)
 }

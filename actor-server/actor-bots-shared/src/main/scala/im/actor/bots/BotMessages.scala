@@ -1,65 +1,74 @@
 package im.actor.bots
 
 import derive.key
-
-import scala.beans.BeanProperty
-
-sealed trait BotMessage
-sealed trait BotMessageIn extends BotMessage
-sealed trait BotMessageOut extends BotMessage
+import upickle.Js
+import upickle.default._
 
 object BotMessages {
 
+  sealed trait BotMessage
+
+  sealed trait BotMessageIn extends BotMessage
+
+  sealed trait BotMessageOut extends BotMessage
+
+  object Services {
+    val KeyValue = "keyvalue"
+    val Messaging = "messaging"
+  }
+
   final case class FileLocation(
-    @BeanProperty fileId:     Long,
-    @BeanProperty accessHash: Long
-  )
+                                 fileId: Long,
+                                 accessHash: Long
+                               )
 
   final case class AvatarImage(
-    @BeanProperty fileLocation: FileLocation,
-    @BeanProperty width:        Int,
-    @BeanProperty height:       Int,
-    @BeanProperty fileSize:     Int
-  )
+                                fileLocation: FileLocation,
+                                width: Int,
+                                height: Int,
+                                fileSize: Int
+                              )
 
   final case class Avatar(
-    @BeanProperty smallImage: Option[AvatarImage],
-    @BeanProperty largeImage: Option[AvatarImage],
-    @BeanProperty fullImage:  Option[AvatarImage]
-  )
+                           smallImage: Option[AvatarImage],
+                           largeImage: Option[AvatarImage],
+                           fullImage: Option[AvatarImage]
+                         )
 
   final case class User(
-    @BeanProperty id:         Int,
-    @BeanProperty accessHash: Long,
-    @BeanProperty name:       String,
-    @BeanProperty sex:        Option[Int],
-    @BeanProperty about:      Option[String],
-    @BeanProperty avatar:     Option[Avatar],
-    @BeanProperty username:   Option[String],
-    @BeanProperty isBot:      Option[Boolean]
-  ) {
+                         id: Int,
+                         accessHash: Long,
+                         name: String,
+                         sex: Option[Int],
+                         about: Option[String],
+                         avatar: Option[Avatar],
+                         username: Option[String],
+                         isBot: Option[Boolean]
+                       ) {
     def isMale = sex.contains(1)
+
     def isFemale = sex.contains(2)
+
     def isABot = isBot.contains(true)
   }
 
   final case class GroupMember(
-    @BeanProperty userId:        Int,
-    @BeanProperty inviterUserId: Int,
-    @BeanProperty memberSince:   Long,
-    @BeanProperty isAdmin:       Option[Boolean]
-  )
+                                userId: Int,
+                                inviterUserId: Int,
+                                memberSince: Long,
+                                isAdmin: Option[Boolean]
+                              )
 
   final case class Group(
-    @BeanProperty id:            Int,
-    @BeanProperty accessHash:    Long,
-    @BeanProperty title:         String,
-    @BeanProperty about:         Option[String],
-    @BeanProperty avatar:        Option[Avatar],
-    @BeanProperty isMember:      Boolean,
-    @BeanProperty creatorUserId: Int,
-    @BeanProperty members:       Seq[GroupMember]
-  )
+                          id: Int,
+                          accessHash: Long,
+                          title: String,
+                          about: Option[String],
+                          avatar: Option[Avatar],
+                          isMember: Boolean,
+                          creatorUserId: Int,
+                          members: Seq[GroupMember]
+                        )
 
   final object OutPeer {
     def privat(id: Int, accessHash: Long) = OutPeer(1, id, accessHash)
@@ -70,10 +79,10 @@ object BotMessages {
   }
 
   final case class OutPeer(
-    @BeanProperty `type`:     Int,
-    @BeanProperty id:         Int,
-    @BeanProperty accessHash: Long
-  ) {
+                            `type`: Int,
+                            id: Int,
+                            accessHash: Long
+                          ) {
     final def isPrivate = `type` == 1
 
     final def isUser = isPrivate
@@ -82,92 +91,171 @@ object BotMessages {
   }
 
   final case class UserOutPeer(
-    @BeanProperty id:         Int,
-    @BeanProperty accessHash: Long
-  ) {
+                                id: Int,
+                                accessHash: Long
+                              ) {
     val asOutPeer = OutPeer(1, id, accessHash)
   }
 
   final case class Peer(
-    @BeanProperty `type`: Int,
-    @BeanProperty id:     Int
-  )
+                         `type`: Int,
+                         id: Int
+                       )
 
   sealed trait RequestBody {
-    type Response
+    type Response <: ResponseBody
+    val service: String
+
+    def readResponse(obj: Js.Obj): Response
   }
 
-  sealed trait ResponseBody
+  trait ResponseBody
 
   @key("Request")
   final case class BotRequest(
-    @BeanProperty id:   Long,
-    @BeanProperty body: RequestBody
-  ) extends BotMessageIn
-
-  @key("SendMessage")
-  final case class SendTextMessage(
-    @BeanProperty peer:     OutPeer,
-    @BeanProperty randomId: Long,
-    @BeanProperty text:     String
-  ) extends RequestBody {
-    override type Response = MessageSent
-  }
+                               id: Long,
+                               service: String,
+                               body: RequestBody
+                             ) extends BotMessageIn
 
   @key("Response")
   final case class BotResponse(
-    @BeanProperty id:   Long,
-    @BeanProperty body: ResponseBody
-  ) extends BotMessageOut
+                                id: Long,
+                                body: BotResponseBody
+                              ) extends BotMessageOut
 
-  /*
-  @key("SetValue")
-  final case class SetValue(name: String, key: String, value: String) extends RequestBody
-
-  @key("GetValue")
-  final case class GetValue(name: String, key: String) extends RequestBody
-
-  @key("DeleteValue")
-  final case class DeleteValue(name: String, key: String) extends RequestBody
-
-  @key("GetKeys")
-  final case class GetKeys(name: String) extends RequestBody
-
-  @key("GetKeysResponse")
-  final case class GetKeysResponse(keys: Seq[String]) extends ResponseBody
-*/
-
-  @key("MessageSent")
-  final case class MessageSent(@BeanProperty date: Long) extends ResponseBody
+  sealed trait BotResponseBody
 
   sealed trait BotUpdate extends BotMessageOut {
     val seq: Int
     val body: UpdateBody
   }
 
+  sealed trait UpdateBody
+
   @key("SeqUpdate")
   final case class BotSeqUpdate(
-    @BeanProperty seq:  Int,
-    @BeanProperty body: UpdateBody
-  ) extends BotUpdate
+                                 seq: Int,
+                                 body: UpdateBody
+                               ) extends BotUpdate
 
   @key("FatSeqUpdate")
   final case class BotFatSeqUpdate(
-    @BeanProperty seq:    Int,
-    @BeanProperty body:   UpdateBody,
-    @BeanProperty users:  Map[Int, User],
-    @BeanProperty groups: Map[Int, Group]
-  ) extends BotUpdate
+                                    seq: Int,
+                                    body: UpdateBody,
+                                    users: Map[Int, User],
+                                    groups: Map[Int, Group]
+                                  ) extends BotUpdate
 
-  sealed trait UpdateBody
+  @key("Error")
+  case class BotError(code: Int, tag: String, data: Js.Obj, retryIn: Option[Int]) extends RuntimeException with BotResponseBody
+
+  @key("Success")
+  case class BotSuccess(obj: Js.Obj) extends BotResponseBody
+
+  implicit val objWriter = Writer[Js.Obj] {
+    case obj => obj
+  }
+
+  implicit val objReader = Reader[Js.Obj] {
+    case obj: Js.Obj => obj
+  }
+
+  implicit val botSuccessWriter = upickle.default.Writer[BotSuccess] {
+    case BotSuccess(obj) => obj
+  }
+
+  implicit val botSuccessReader = upickle.default.Reader[BotSuccess] {
+    case obj: Js.Obj => BotSuccess(obj)
+  }
+
+  implicit val botErrorWriter = upickle.default.Writer[BotError] {
+    case BotError(code, tag, data, retryInOpt) =>
+      Js.Obj(
+        "code" -> Js.Num(code.toDouble),
+        "tag" -> Js.Str(tag),
+        "data" -> data,
+        "retryIn" -> retryInOpt.map(n => Js.Num(n.toDouble)).getOrElse(Js.Null)
+      )
+  }
+
+  final case class Container[T](value: T) extends ResponseBody
+
+  trait Void extends ResponseBody
+
+  final case object Void extends Void
+
+  implicit val voidReader = upickle.default.Reader[Void] {
+    case Js.Obj() => Void
+  }
+
+  implicit val voidWriter = upickle.default.Writer[Void] {
+    case _ => Js.Obj()
+  }
+
+  @key("SendMessage")
+  final case class SendTextMessage(
+                                    peer: OutPeer,
+                                    randomId: Long,
+                                    text: String
+                                  ) extends RequestBody {
+    override type Response = MessageSent
+    override val service = Services.Messaging
+
+    override def readResponse(obj: Js.Obj) = readJs[MessageSent](obj)
+  }
+
+  @key("SetValue")
+  final case class SetValue(
+                             keyspace: String,
+                             key: String,
+                             value: String
+                           ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.KeyValue
+
+    override def readResponse(obj: Js.Obj) = readJs[Void](obj)
+  }
+
+  @key("GetValue")
+  final case class GetValue(
+                             keyspace: String,
+                             key: String
+                           ) extends RequestBody {
+    override type Response = Container[Option[String]]
+    override val service = Services.KeyValue
+
+    override def readResponse(obj: Js.Obj) = readJs[Container[Option[String]]](obj)
+  }
+
+  @key("DeleteValue")
+  final case class DeleteValue(
+                                keyspace: String,
+                                key: String
+                              ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.KeyValue
+
+    override def readResponse(obj: Js.Obj) = readJs[Void](obj)
+  }
+
+  @key("GetKeys")
+  final case class GetKeys(keyspace: String) extends RequestBody {
+    override type Response = Container[Seq[String]]
+    override val service = Services.KeyValue
+
+    override def readResponse(obj: Js.Obj) = readJs[Container[Seq[String]]](obj)
+  }
+
+  final case class MessageSent(date: Long) extends ResponseBody
 
   @key("TextMessage")
   final case class TextMessage(
-    @BeanProperty peer:     OutPeer,
-    @BeanProperty sender:   UserOutPeer,
-    @BeanProperty date:     Long,
-    @BeanProperty randomId: Long,
-    @BeanProperty text:     String
-  ) extends UpdateBody
+                                peer: OutPeer,
+                                sender: UserOutPeer,
+                                date: Long,
+                                randomId: Long,
+                                text: String
+                              ) extends UpdateBody
 
 }

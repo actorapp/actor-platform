@@ -6,7 +6,7 @@ import im.actor.bots.BotMessages.TextMessage
 object EchoBotApp extends App {
   implicit val system = ActorSystem()
 
-  val token = "dccac82e017ba4f2d267303e795ca689e5b2d1e8"
+  val token = "d201a56591397a03b61a5f7a803cf5020d6661c7"
 
   system.actorOf(
     //EchoBot.props(token, RemoteBot.DefaultEndpoint),
