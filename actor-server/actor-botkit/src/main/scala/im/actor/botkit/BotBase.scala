@@ -1,6 +1,6 @@
 package im.actor.botkit
 
-import akka.actor.{Status, ActorRef, ActorLogging, Actor}
+import akka.actor.{ Status, ActorRef, ActorLogging, Actor }
 import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.bots.BotMessages
@@ -17,7 +17,6 @@ abstract class BotBase extends BotBaseBase {
   import BotMessages._
   import context.dispatcher
 
-
   protected implicit val timeout: Timeout
 
   private var requestCounter = 0L
@@ -32,37 +31,37 @@ abstract class BotBase extends BotBaseBase {
   protected def onStreamFailure(cause: Throwable): Unit
 
   protected final def workingBehavior(rqSource: ActorRef): Receive = {
-    case Status.Failure(cause) =>
+    case Status.Failure(cause) ⇒
       onStreamFailure(cause)
-    case rq: RequestBody =>
+    case rq: RequestBody ⇒
       requestCounter += 1
       val request = BotRequest(requestCounter, rq.service, rq)
-      requests += (requestCounter -> (sender() -> rq))
+      requests += (requestCounter → (sender() → rq))
       rqSource ! request
     case upd: BotUpdate ⇒
       log.debug("Update {}", upd)
 
       upd match {
-        case BotFatSeqUpdate(_, _, users, groups) =>
+        case BotFatSeqUpdate(_, _, users, groups) ⇒
           users foreach {
-            case (id, user) => this.users.putIfAbsent(id, user)
+            case (id, user) ⇒ this.users.putIfAbsent(id, user)
           }
 
           groups foreach {
-            case (id, group) => this.groups.putIfAbsent(id, group)
+            case (id, group) ⇒ this.groups.putIfAbsent(id, group)
           }
-        case _ =>
+        case _ ⇒
       }
 
       onUpdate(upd.body)
     case rsp: BotResponse ⇒
       log.info("Response #{}: {}", rsp.id, rsp.body)
       requests.get(rsp.id) foreach {
-        case (replyTo, rq) =>
+        case (replyTo, rq) ⇒
 
           val reply = rsp.body match {
-            case err: BotError => Status.Failure(err)
-            case BotSuccess(obj) => rq.readResponse(obj)
+            case err: BotError   ⇒ Status.Failure(err)
+            case BotSuccess(obj) ⇒ rq.readResponse(obj)
           }
           replyTo ! reply
       }

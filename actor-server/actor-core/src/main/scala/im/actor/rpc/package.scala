@@ -1,9 +1,9 @@
 package im.actor.api
 
-import slick.dbio.{DBIO, DBIOAction}
+import slick.dbio.{ DBIO, DBIOAction }
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.reflect._
 import scalaz.Scalaz._
 import scalaz._
