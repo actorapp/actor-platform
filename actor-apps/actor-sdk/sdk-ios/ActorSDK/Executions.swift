@@ -5,13 +5,13 @@
 import Foundation
 import MBProgressHUD
 
-public enum ExecutionType {
+public enum AAExecutionType {
     case Normal
     case Hidden
     case Safe
 }
 
-public class MenuBuilder {
+public class AAMenuBuilder {
     
     public var tapClosure: ((index: Int) -> ())!
     public var items = [String]()
@@ -32,20 +32,20 @@ public class MenuBuilder {
     }
 }
 
-public class Executions {
+public class AAExecutions {
     
     public class func execute(command: ACCommand) {
         execute(command, successBlock: nil, failureBlock: nil)
     }
     
-    public class func execute(command: ACCommand, type: ExecutionType = .Normal, ignore: [String] = [], successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
+    public class func execute(command: ACCommand, type: AAExecutionType = .Normal, ignore: [String] = [], successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         
         var hud: MBProgressHUD?
         if type != .Hidden {
             hud = showProgress()
         }
         
-        command.startWithCallback(CocoaCallback(result: { (val:Any?) -> () in
+        command.startWithCallback(AACommandCallback(result: { (val:Any?) -> () in
             dispatchOnUi {
                 hud?.hide(true)
                 successBlock?(val: val)
@@ -73,7 +73,7 @@ public class Executions {
                         // Showing alert
                         if tryAgain {
                             errorWithError(val, rep: { () -> () in
-                                Executions.execute(command, type: type, successBlock: successBlock, failureBlock: failureBlock)
+                                AAExecutions.execute(command, type: type, successBlock: successBlock, failureBlock: failureBlock)
                             }, cancel: { () -> () in
                                 failureBlock?(val: val)
                             })
@@ -106,11 +106,11 @@ public class Executions {
                     cancel?()
                 }
             })
-            let alert = UIAlertView(title: localized("AlertError"),
+            let alert = UIAlertView(title: AALocalized("AlertError"),
                 message: message,
                 delegate: d,
-                cancelButtonTitle: localized("AlertCancel"),
-                otherButtonTitles: localized("AlertTryAgain"))
+                cancelButtonTitle: AALocalized("AlertCancel"),
+                otherButtonTitles: AALocalized("AlertTryAgain"))
             // setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
             alert.show()
         } else {
@@ -120,7 +120,7 @@ public class Executions {
             let alert = UIAlertView(title: nil,
                 message: message,
                 delegate: d,
-                cancelButtonTitle: localized("AlertOk"))
+                cancelButtonTitle: AALocalized("AlertOk"))
             // setAssociatedObject(alert, value: d, associativeKey: &alertViewBlockReference)
             alert.show()
         }
@@ -160,29 +160,29 @@ private var alertViewBlockReference = "_block_reference"
 public extension UIViewController {
     
     public func execute(command: ACCommand) {
-        Executions.execute(command)
+        AAExecutions.execute(command)
     }
     
     public func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
-        Executions.execute(command, successBlock: successBlock, failureBlock: failureBlock)
+        AAExecutions.execute(command, successBlock: successBlock, failureBlock: failureBlock)
     }
     
     public func execute(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
-        Executions.execute(command, successBlock: successBlock, failureBlock: nil)
+        AAExecutions.execute(command, successBlock: successBlock, failureBlock: nil)
     }
     
     public func executeSafe(command: ACCommand, ignore: [String] = [], successBlock: ((val: Any?) -> Void)? = nil) {
-        Executions.execute(command, type: .Safe, ignore: ignore, successBlock: successBlock, failureBlock: { (val) -> () in
+        AAExecutions.execute(command, type: .Safe, ignore: ignore, successBlock: successBlock, failureBlock: { (val) -> () in
             successBlock?(val: nil)
         })
     }
     
     public func executeSafeOnlySuccess(command: ACCommand, successBlock: ((val: Any?) -> Void)?) {
-        Executions.execute(command, type: .Safe, ignore: [], successBlock: successBlock, failureBlock: nil)
+        AAExecutions.execute(command, type: .Safe, ignore: [], successBlock: successBlock, failureBlock: nil)
     }
 
     
     public func executeHidden(command: ACCommand, successBlock: ((val: Any?) -> Void)? = nil) {
-        Executions.execute(command, type: .Hidden, successBlock: successBlock, failureBlock: nil)
+        AAExecutions.execute(command, type: .Hidden, successBlock: successBlock, failureBlock: nil)
     }
 }

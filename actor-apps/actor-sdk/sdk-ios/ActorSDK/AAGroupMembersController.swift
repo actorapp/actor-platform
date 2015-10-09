@@ -23,8 +23,8 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         self.groupTitle = title
         self.groupImage = image
         
-        navigationItem.title = localized("CreateGroupMembersTitle")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: "doNext")
+        navigationItem.title = AALocalized("CreateGroupMembersTitle")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationDone"), style: UIBarButtonItemStyle.Done, target: self, action: "doNext")
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -37,7 +37,7 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         tokenView.delegate = self
         tokenView.backgroundColor = appStyle.vcBgColor
         tokenView.fieldName = ""
-        tokenView.placeholderText = localized("CreateGroupMembersPlaceholders")
+        tokenView.placeholderText = AALocalized("CreateGroupMembersPlaceholders")
         
         self.view.addSubview(tokenView)
         

@@ -4,14 +4,14 @@
 
 import UIKit
 
-public class AASettingsPrivacyViewController: ACContentTableController {
+public class AASettingsPrivacyViewController: AAContentTableController {
     
-    private var sessionsCell: ACManagedArrayRows<ARApiAuthSession, AACommonCell>?
+    private var sessionsCell: AAManagedArrayRows<ARApiAuthSession, AACommonCell>?
     
     public init() {
-        super.init(style: ACContentTableStyle.SettingsGrouped)
+        super.init(style: AAContentTableStyle.SettingsGrouped)
         
-        navigationItem.title = localized("SecurityTitle")
+        navigationItem.title = AALocalized("SecurityTitle")
         
         content = ACAllEvents_Settings.PRIVACY()
     }
@@ -24,7 +24,7 @@ public class AASettingsPrivacyViewController: ACContentTableController {
         
         section { (s) -> () in
             
-            s.footerText = localized("PrivacyTerminateHint")
+            s.footerText = AALocalized("PrivacyTerminateHint")
             
             s.danger("PrivacyTerminate") { (r) -> () in
                 r.selectAction = { () -> Bool in
@@ -40,7 +40,7 @@ public class AASettingsPrivacyViewController: ACContentTableController {
         }
         
         section { (s) -> () in
-            self.sessionsCell = s.arrays() { (r: ACManagedArrayRows<ARApiAuthSession, AACommonCell>) -> () in
+            self.sessionsCell = s.arrays() { (r: AAManagedArrayRows<ARApiAuthSession, AACommonCell>) -> () in
                 r.bindData = { (c: AACommonCell, d: ARApiAuthSession) -> () in
                     if d.getAuthHolder().ordinal() != jint(ARApiAuthHolder.THISDEVICE.rawValue) {
                         c.style = .Normal

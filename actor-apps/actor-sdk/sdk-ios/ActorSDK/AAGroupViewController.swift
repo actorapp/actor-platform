@@ -4,7 +4,7 @@
 
 import UIKit
 
-public class AAGroupViewController: ACContentTableController {
+public class AAGroupViewController: AAContentTableController {
     
     private let membersSort = { (left: ACGroupMember, right: ACGroupMember) -> Bool in
         let lname = Actor.getUserWithUid(left.uid).getNameModel().get()
@@ -12,16 +12,16 @@ public class AAGroupViewController: ACContentTableController {
         return lname < rname
     }
     
-    public var headerRow: ACAvatarRow!
-    public var memberRows: ACManagedArrayRows<ACGroupMember, AAGroupMemberCell>!
+    public var headerRow: AAAvatarRow!
+    public var memberRows: AAManagedArrayRows<ACGroupMember, AAGroupMemberCell>!
     
     public init (gid: Int) {
-        super.init(style: ACContentTableStyle.SettingsPlain)
+        super.init(style: AAContentTableStyle.SettingsPlain)
         
         self.gid = gid
         self.autoTrack = true
         
-        self.title = localized("ProfileTitle")
+        self.title = AALocalized("ProfileTitle")
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -124,7 +124,7 @@ public class AAGroupViewController: ACContentTableController {
                 let groupPeer: ACPeer! = ACPeer.groupWithInt(jint(self.gid))
                 
                 r.style = .Switch
-                r.content = localized("GroupNotifications")
+                r.content = AALocalized("GroupNotifications")
                 
                 r.bindAction = { (r) -> () in
                     r.switchOn = Actor.isNotificationsEnabledWithPeer(groupPeer)
@@ -144,7 +144,7 @@ public class AAGroupViewController: ACContentTableController {
             s.headerHeight = 0
             
             // Members: Header
-            s.header(localized("GroupMembers").uppercaseString)
+            s.header(AALocalized("GroupMembers").uppercaseString)
             
             // Members: Add
             s.action("GroupAddParticipant") { (r) -> () in
@@ -154,7 +154,7 @@ public class AAGroupViewController: ACContentTableController {
                 r.selectAction = { () -> Bool in
                     let addParticipantController = AAAddParticipantViewController(gid: self.gid)
                     let navigationController = AANavigationController(rootViewController: addParticipantController)
-                    if (isIPad) {
+                    if (AADevice.isiPad) {
                         navigationController.modalInPopover = true
                         navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
                     }
@@ -164,7 +164,7 @@ public class AAGroupViewController: ACContentTableController {
             }
             
             // Members: List
-            self.memberRows = s.arrays { (r: ACManagedArrayRows<ACGroupMember, AAGroupMemberCell>) -> () in
+            self.memberRows = s.arrays { (r: AAManagedArrayRows<ACGroupMember, AAGroupMemberCell>) -> () in
                 r.height = 48
                 r.data = self.group.members.get().toArray().toSwiftArray()
                 r.data.sortInPlace(self.membersSort)
@@ -186,7 +186,7 @@ public class AAGroupViewController: ACContentTableController {
                         
                         let name = user.getNameModel().get()
                         
-                        self.alertSheet { (a: AlertSetting) -> () in
+                        self.alertSheet { (a: AAAlertSetting) -> () in
                             
                             a.cancel = "AlertCancel"
                             
@@ -244,7 +244,7 @@ public class AAGroupViewController: ACContentTableController {
                             if canMarkAdmin {
                                 a.action("GroupMemberMakeAdmin") { () -> () in
                                     
-                                    self.confirmDestructive(localized("GroupMemberMakeMessage").replace("{name}", dest: name), action: localized("GroupMemberMakeAction")) {
+                                    self.confirmDestructive(AALocalized("GroupMemberMakeMessage").replace("{name}", dest: name), action: AALocalized("GroupMemberMakeAction")) {
 
                                         self.executeSafe(Actor.makeAdminCommandWithGid(jint(self.gid), withUid: jint(user.getId())))
                                     }
@@ -256,8 +256,8 @@ public class AAGroupViewController: ACContentTableController {
                             
                             if canKick {
                                 a.destructive("GroupMemberKick") { () -> () in       
-                                    self.confirmDestructive(localized("GroupMemberKickMessage")
-                                        .replace("{name}", dest: name), action: localized("GroupMemberKickAction")) {
+                                    self.confirmDestructive(AALocalized("GroupMemberKickMessage")
+                                        .replace("{name}", dest: name), action: AALocalized("GroupMemberKickAction")) {
 
                                         self.executeSafe(Actor.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
                                     }
@@ -274,11 +274,11 @@ public class AAGroupViewController: ACContentTableController {
         // Leave group
         section { (s) -> () in
             s.common({ (r) -> () in
-                r.content = localized("GroupLeave")
+                r.content = AALocalized("GroupLeave")
                 r.style = .DestructiveCentered
                 r.selectAction = { () -> Bool in
                     
-                    self.confirmDestructive(localized("GroupLeaveConfirm"), action: localized("GroupLeaveConfirmAction"), yes: { () -> () in
+                    self.confirmDestructive(AALocalized("GroupLeaveConfirm"), action: AALocalized("GroupLeaveConfirmAction"), yes: { () -> () in
                         self.executeSafe(Actor.leaveGroupCommandWithGid(jint(self.gid)))
                     })
                     
@@ -288,7 +288,7 @@ public class AAGroupViewController: ACContentTableController {
         }
     }
     
-    public override func tableWillBind(binder: Binder) {
+    public override func tableWillBind(binder: AABinder) {
         
         // Bind group info
         
@@ -319,8 +319,8 @@ public class AAGroupViewController: ACContentTableController {
                 } else {
                     self.showPlaceholderWithImage(
                         UIImage(named: "contacts_list_placeholder"),
-                        title: NSLocalizedString("Placeholder_Group_Title", comment: "Not a member Title"),
-                        subtitle: NSLocalizedString("Placeholder_Group_Message", comment: "Message Title"))
+                        title: AALocalized("Placeholder_Group_Title"),
+                        subtitle: AALocalized("Placeholder_Group_Message"))
                 }
             } else {
                 self.hidePlaceholder()

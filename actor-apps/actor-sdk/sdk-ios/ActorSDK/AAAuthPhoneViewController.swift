@@ -37,13 +37,13 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         view.backgroundColor = UIColor.whiteColor()
         
         grayBackground = UIView()
-        grayBackground.backgroundColor = UIColor.RGB(0xf2f2f2)
+        grayBackground.backgroundColor = UIColor(rgb: 0xf2f2f2)
         view.addSubview(grayBackground)
         
         titleLabel = UILabel()
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textColor = UIColor.blackColor()
-        titleLabel.font = isIPad
+        titleLabel.font = AADevice.isiPad
             ? UIFont.thinSystemFontOfSize(50.0)
             : UIFont.lightSystemFontOfSize(30)
         
@@ -78,19 +78,19 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         phoneTextField = ABPhoneField()
         phoneTextField.font = UIFont.systemFontOfSize(20.0)
         phoneTextField.backgroundColor = UIColor.whiteColor()
-        phoneTextField.placeholder = localized("AuthPhoneNumberHint")
+        phoneTextField.placeholder = AALocalized("AuthPhoneNumberHint")
         phoneTextField.keyboardType = UIKeyboardType.NumberPad;
         phoneTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         phoneTextField.delegate = self
         view.addSubview(phoneTextField)
         
         navigationBarSeparator = UIView()
-        navigationBarSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
+        navigationBarSeparator.backgroundColor = UIColor(rgb: 0xc8c7cc)
         view.addSubview(navigationBarSeparator)
         
         hintLabel = UILabel()
         hintLabel.font = UIFont.systemFontOfSize(17.0)
-        hintLabel.textColor = UIColor.RGB(0x999999)
+        hintLabel.textColor = UIColor(rgb: 0x999999)
         hintLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         hintLabel.backgroundColor = UIColor.whiteColor()
         hintLabel.textAlignment = NSTextAlignment.Center
@@ -107,7 +107,7 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         countryButton.setTitle(countryTitle, forState: UIControlState.Normal)
         
         // Configure navigation bar
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized("NavigationNext"), style: UIBarButtonItemStyle.Done, target: self, action: "nextButtonPressed")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationNext"), style: UIBarButtonItemStyle.Done, target: self, action: "nextButtonPressed")
     }
     
     public override func viewWillLayoutSubviews() {
@@ -117,12 +117,12 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         let isWidescreen = screenSize.width > 320 || screenSize.height > 480
         let isPortraint = screenSize.width < screenSize.height
         
-        let bgSize = isIPad
+        let bgSize = AADevice.isiPad
             ? (isPortraint ? 304.0: 140)
             : (isWidescreen ? 131.0 : 90.0)
         grayBackground.frame = CGRect(x: 0.0, y: 0.0, width: screenSize.width, height: CGFloat(bgSize))
         
-        let padding = isIPad
+        let padding = AADevice.isiPad
             ? (isPortraint ? 48 : 20)
             : (20)
         titleLabel.sizeToFit()
@@ -130,7 +130,7 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         
         navigationBarSeparator.frame = CGRect(x: 0, y: grayBackground.bounds.size.height, width: screenSize.width, height: 0.5)
         
-        let fieldWidth : CGFloat = isIPad
+        let fieldWidth : CGFloat = AADevice.isiPad
             ? (520)
             : (screenSize.width)
         
@@ -145,7 +145,7 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         
         phoneTextField.frame = CGRect(x: (screenSize.width - fieldWidth) / 2 + 96.0, y: phoneBackgroundView.frame.origin.y + 1, width: fieldWidth - 96.0 - 10.0, height: phoneBackgroundView.frame.size.height - 2)
         
-        let hintPadding : CGFloat = isIPad
+        let hintPadding : CGFloat = AADevice.isiPad
             ? (isPortraint ? 460.0: 274.0)
             : (isWidescreen ? 274.0 : 214.0)
         
@@ -171,7 +171,7 @@ public class AAAuthPhoneViewController: AAAuthViewController, UITextFieldDelegat
         if (numberLength < numberRequiredLength) {
             
             // Show error about incorrect phone
-            Executions.errorWithTag("LOCAL_INCORRECT_PHONE")
+            AAExecutions.errorWithTag("LOCAL_INCORRECT_PHONE")
         } else {
             
             // Safely executing command for starting activation

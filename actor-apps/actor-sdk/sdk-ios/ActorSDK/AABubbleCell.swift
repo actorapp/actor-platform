@@ -375,7 +375,7 @@ class AABubbleCell: UICollectionViewCell {
     
     func layoutAvatar() {
         let avatarSize = CGFloat(self.avatarView.frameSize)
-        avatarView.frame = CGRect(x: 5 + (isIPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 2 - bubbleInsets.bottom, width: avatarSize, height: avatarSize)
+        avatarView.frame = CGRect(x: 5 + (AADevice.isiPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 2 - bubbleInsets.bottom, width: avatarSize, height: avatarSize)
     }
     
     // Need to be called in child cells

@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class ACManagedTable {
+public class AAManagedTable {
     
     //------------------------------------------------------------------------//
     
@@ -14,7 +14,7 @@ public class ACManagedTable {
     
     // Table view
     
-    public let style: ACContentTableStyle
+    public let style: AAContentTableStyle
     public let tableView: UITableView
     public var tableViewDelegate: UITableViewDelegate { get { return baseDelegate } }
     public var tableViewDataSource: UITableViewDataSource { get { return baseDelegate } }
@@ -29,7 +29,7 @@ public class ACManagedTable {
     
     // Sections of table
     
-    public var sections: [ACManagedSection] = [ACManagedSection]()
+    public var sections: [AAManagedSection] = [AAManagedSection]()
     
     // Is Table in editing mode
     
@@ -55,7 +55,7 @@ public class ACManagedTable {
     
     //------------------------------------------------------------------------//
     
-    public init(style: ACContentTableStyle, tableView: UITableView, controller: UIViewController) {
+    public init(style: AAContentTableStyle, tableView: UITableView, controller: UIViewController) {
         self.style = style
         self.controller = controller
         self.tableView = tableView
@@ -81,18 +81,18 @@ public class ACManagedTable {
         isUpdating = true
     }
     
-    public func addSection(autoSeparator: Bool = false) -> ACManagedSection {
+    public func addSection(autoSeparator: Bool = false) -> AAManagedSection {
         if !isUpdating {
             fatalError("Table is not in updating mode")
         }
         
-        let res = ACManagedSection(table: self, index: sections.count)
+        let res = AAManagedSection(table: self, index: sections.count)
         res.autoSeparators = autoSeparator
         sections.append(res)
         return res
     }
     
-    public func search<C where C: ACBindedSearchCell, C: UITableViewCell>(cell: C.Type, closure: (s: ACManagedSearchConfig<C>) -> ()) {
+    public func search<C where C: AABindedSearchCell, C: UITableViewCell>(cell: C.Type, @noescape closure: (s: AAManagedSearchConfig<C>) -> ()) {
         
         if !isUpdating {
             fatalError("Table is not in updating mode")
@@ -106,13 +106,13 @@ public class ACManagedTable {
         
         // Configuring search source
         
-        let config = ACManagedSearchConfig<C>()
+        let config = AAManagedSearchConfig<C>()
         
         closure(s: config)
         
         // Creating search source
         
-        let searchSource = ACManagedSearchController<C>(config: config, controller: controller, tableView: tableView)
+        let searchSource = AAManagedSearchController<C>(config: config, controller: controller, tableView: tableView)
         self.searchDisplayController = searchSource.searchDisplay
         self.searchManagedController = searchSource
         self.isSearchAutoHide = config.isSearchAutoHide
@@ -137,13 +137,13 @@ public class ACManagedTable {
     
     // Binding methods
     
-    public func bind(binder: Binder) {
+    public func bind(binder: AABinder) {
         for s in sections {
             s.bind(self, binder: binder)
         }
     }
     
-    public func unbind(binder: Binder) {
+    public func unbind(binder: AABinder) {
         for s in sections {
             s.unbind(self, binder: binder)
         }
@@ -226,9 +226,9 @@ public class ACManagedTable {
 
 // Closure based extension
 
-public extension ACManagedTable {
+public extension AAManagedTable {
     
-    public func section(closure: (s: ACManagedSection) -> ()){
+    public func section(closure: (s: AAManagedSection) -> ()){
         closure(s: addSection(true))
     }
 }
@@ -278,9 +278,9 @@ private class AMGrouppedTableDelegate: AMBaseTableDelegate {
 
 private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
-    unowned private let data: ACManagedTable
+    unowned private let data: AAManagedTable
     
-    init(data: ACManagedTable) {
+    init(data: AAManagedTable) {
         self.data = data
     }
     
@@ -299,7 +299,7 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     @objc func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let text = data.sections[section].headerText
         if text != nil {
-            return localized(text!)
+            return AALocalized(text!)
         } else {
             return text
         }
@@ -308,7 +308,7 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     @objc func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         let text = data.sections[section].footerText
         if text != nil {
-            return localized(text!)
+            return AALocalized(text!)
         } else {
             return text
         }
@@ -376,7 +376,7 @@ private class AMBaseTableDelegate: NSObject, UITableViewDelegate, UITableViewDat
     }
 }
 
-public class ACManagedSearchConfig<BindCell where BindCell: ACBindedSearchCell, BindCell: UITableViewCell> {
+public class AAManagedSearchConfig<BindCell where BindCell: AABindedSearchCell, BindCell: UITableViewCell> {
     
     public var searchList: ARBindedDisplayList!
     public var selectAction: ((BindCell.BindData) -> ())?
@@ -384,13 +384,13 @@ public class ACManagedSearchConfig<BindCell where BindCell: ACBindedSearchCell, 
     public var didBind: ((c: BindCell, d: BindCell.BindData) -> ())?
 }
 
-public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCell, BindCell: UITableViewCell>: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, ARDisplayList_Listener {
+private class AAManagedSearchController<BindCell where BindCell: AABindedSearchCell, BindCell: UITableViewCell>: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITableViewDataSource, UITableViewDelegate, ARDisplayList_Listener {
     
-    public let config: ACManagedSearchConfig<BindCell>
-    public let displayList: ARBindedDisplayList
-    public let searchDisplay: UISearchDisplayController
+    let config: AAManagedSearchConfig<BindCell>
+    let displayList: ARBindedDisplayList
+    let searchDisplay: UISearchDisplayController
     
-    public init(config: ACManagedSearchConfig<BindCell>, controller: UIViewController, tableView: UITableView) {
+    init(config: AAManagedSearchConfig<BindCell>, controller: UIViewController, tableView: UITableView) {
         
         self.config = config
         
@@ -428,33 +428,33 @@ public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCe
     // Model
     
     
-    public func objectAtIndexPath(indexPath: NSIndexPath) -> BindCell.BindData {
+    func objectAtIndexPath(indexPath: NSIndexPath) -> BindCell.BindData {
         return displayList.itemWithIndex(jint(indexPath.row)) as! BindCell.BindData
     }
     
-    public func onCollectionChanged() {
+    @objc func onCollectionChanged() {
         searchDisplay.searchResultsTableView.reloadData()
     }
     
     // Table view data
     
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    @objc func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return Int(displayList.size());
     }
     
-    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    @objc func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let item = objectAtIndexPath(indexPath)
         return BindCell.self.bindedCellHeight(item)
     }
     
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    @objc func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let item = objectAtIndexPath(indexPath)
         let cell = tableView.dequeueCell(BindCell.self, indexPath: indexPath) as! BindCell
         cell.bind(item, search: nil)
         return cell
     }
     
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    @objc func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let item = objectAtIndexPath(indexPath)
         config.selectAction!(item)
         // MainAppTheme.navigation.applyStatusBar()
@@ -462,7 +462,7 @@ public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCe
     
     // Search updating
     
-    public func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    @objc func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         let normalized = searchText.trim().lowercaseString
         if (normalized.length > 0) {
             displayList.initSearchWithQuery(normalized, withRefresh: false)
@@ -473,15 +473,15 @@ public class ACManagedSearchController<BindCell where BindCell: ACBindedSearchCe
     
     // Search styling
     
-    public func searchDisplayControllerWillBeginSearch(controller: UISearchDisplayController) {
+    @objc func searchDisplayControllerWillBeginSearch(controller: UISearchDisplayController) {
         MainAppTheme.search.applyStatusBar()
     }
     
-    public func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
+    @objc func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
         // MainAppTheme.navigation.applyStatusBar()
     }
     
-    public func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {
+    @objc func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {
         for v in tableView.subviews {
             if (v is UIImageView) {
                 (v as! UIImageView).alpha = 0;

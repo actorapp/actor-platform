@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class AADialogsListContentController: ACContentTableController, UISearchBarDelegate, UISearchDisplayDelegate {
+public class AADialogsListContentController: AAContentTableController, UISearchBarDelegate, UISearchDisplayDelegate {
     
     public var enableDeletion: Bool = true
     public var enableSearch: Bool = true
@@ -36,7 +36,7 @@ public class AADialogsListContentController: ACContentTableController, UISearchB
             
             s.autoSeparatorsInset = 75
             
-            s.binded { (r:ACBindedRows<AADialogCell>) -> () in
+            s.binded { (r:AABindedRows<AADialogCell>) -> () in
                 
                 r.displayList = Actor.getDialogsDisplayList()
                 

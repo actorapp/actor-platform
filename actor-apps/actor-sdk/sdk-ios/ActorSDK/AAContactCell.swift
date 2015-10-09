@@ -5,11 +5,11 @@
 import Foundation
 import UIKit
 
-public class AAContactCell : AATableViewCell, ACBindedCell, ACBindedSearchCell {
+public class AAContactCell : AATableViewCell, AABindedCell, AABindedSearchCell {
     
     public typealias BindData = ACContact
     
-    public static func bindedCellHeight(table: ACManagedTable, item: BindData) -> CGFloat {
+    public static func bindedCellHeight(table: AAManagedTable, item: BindData) -> CGFloat {
         return 56
     }
     
@@ -44,7 +44,7 @@ public class AAContactCell : AATableViewCell, ACBindedCell, ACBindedSearchCell {
         bind(item)
     }
     
-    public func bind(item: ACContact, table: ACManagedTable, index: Int, totalCount: Int) {
+    public func bind(item: ACContact, table: AAManagedTable, index: Int, totalCount: Int) {
         bind(item)
     }
     

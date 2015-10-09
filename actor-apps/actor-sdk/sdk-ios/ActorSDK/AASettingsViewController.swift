@@ -5,24 +5,22 @@
 import UIKit
 import MobileCoreServices
 
-public class AASettingsViewController: ACContentTableController {
+public class AASettingsViewController: AAContentTableController {
     
-    private var phonesCells: ACManagedArrayRows<ACUserPhone, AATitledCell>!
+    private var phonesCells: AAManagedArrayRows<ACUserPhone, AATitledCell>!
     
-    private var headerCell: ACAvatarRow!
-    private var nicknameCell: ACTitledRow!
-    private var aboutCell: ACTextRow!
+    private var headerCell: AAAvatarRow!
+    private var nicknameCell: AATitledRow!
+    private var aboutCell: AATextRow!
     
     public init() {
-        super.init(style: ACContentTableStyle.SettingsPlain)
+        super.init(style: AAContentTableStyle.SettingsPlain)
         
         uid = Int(Actor.myUid())
         
         content = ACAllEvents_Main.SETTINGS()
         
         tabBarItem = UITabBarItem(title: "TabSettings", img: "TabIconSettings", selImage: "TabIconSettingsHighlighted")
-        
-        applyStyle("controller.settings")
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -60,11 +58,11 @@ public class AASettingsViewController: ACContentTableController {
                     
                     if presenceText != nil {
                         r.subtitle = presenceText
-                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
-                            r.subtitleStyle = "user.online"
-                        } else {
-                            r.subtitleStyle = "user.offline"
-                        }
+//                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+//                            r.subtitleStyle = "user.online"
+//                        } else {
+//                            r.subtitleStyle = "user.offline"
+//                        }
                     } else {
                         r.subtitle = ""
                     }
@@ -168,7 +166,7 @@ public class AASettingsViewController: ACContentTableController {
             s.navigate("SettingsSecurity", controller: AASettingsPrivacyViewController.self)
             
             // Settings: Wallpapper
-            s.custom({ [unowned self] (r: ACCustomRow<AAWallpapperSettingsCell>) -> () in
+            s.custom({ [unowned self] (r: AACustomRow<AAWallpapperSettingsCell>) -> () in
                 r.height = 230
                 r.closure = { [unowned self] (cell) -> () in
                     cell.wallpapperDidTap = { [unowned self] (name) -> () in
@@ -195,7 +193,7 @@ public class AASettingsViewController: ACContentTableController {
                         r.subtitle = "@\(nick)"
                         r.isAction = false
                     } else {
-                        r.subtitle = localized("SettingsUsernameNotSet")
+                        r.subtitle = AALocalized("SettingsUsernameNotSet")
                         r.isAction = true
                     }
                 }
@@ -241,7 +239,7 @@ public class AASettingsViewController: ACContentTableController {
                         r.content = about
                         r.isAction = false
                     } else {
-                        r.content = localized("SettingsAboutNotSet")
+                        r.content = AALocalized("SettingsAboutNotSet")
                         r.isAction = true
                     }
                 }
@@ -273,7 +271,7 @@ public class AASettingsViewController: ACContentTableController {
             }
  
             // Profile: Phones
-            self.phonesCells = s.arrays() { [unowned self] (r: ACManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
+            self.phonesCells = s.arrays() { [unowned self] (r: AAManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
 
                 r.height = 55
                 
@@ -340,7 +338,7 @@ public class AASettingsViewController: ACContentTableController {
         }
     }
 
-    public override func tableWillBind(binder: Binder) {
+    public override func tableWillBind(binder: AABinder) {
         
         // Header
         

@@ -5,13 +5,13 @@
 import Foundation
 import zipzap
 
-public class Tools {
+class AATools {
     
-    public class func copyFileCommand(from: String, to: String) -> ACCommand {
+    class func copyFileCommand(from: String, to: String) -> ACCommand {
         return CopyCommand(from: from, to: to)
     }
     
-    public class func zipDirectoryCommand(from: String, to: String) -> ACCommand {
+    class func zipDirectoryCommand(from: String, to: String) -> ACCommand {
         return ZipCommand(dir: from, to: to)
     }
 }

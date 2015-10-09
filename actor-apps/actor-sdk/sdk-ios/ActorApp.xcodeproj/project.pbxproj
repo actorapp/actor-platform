@@ -40,7 +40,6 @@
 		4403E543C36C1FDC89DD4E00 /* Pods_ActorApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2F298FBF1BB3C0A84996ED3 /* Pods_ActorApp.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		67509EE194F38C0359136465B90DF236 /* elara.caf in Resources */ = {isa = PBXBuildFile; fileRef = 48448FF015AAF39A18598B1AFE123AC4 /* elara.caf */; };
 		7A63122CF74402DEDBB64C0EA724169E /* tethys.caf in Resources */ = {isa = PBXBuildFile; fileRef = 93D54807547B73E0400144A3E457D295 /* tethys.caf */; };
-		986D6082C5488BF030361C212BE29983 /* ABActionShit.m in Sources */ = {isa = PBXBuildFile; fileRef = B0B4DC1F09685B50B75E32D772AA4419 /* ABActionShit.m */; };
 		9C44FD8722860C04A9D67A1E36FAABA5 /* europa.caf in Resources */ = {isa = PBXBuildFile; fileRef = 96C99B4AB6507A7D36CAB2CB6F0A9BC8 /* europa.caf */; };
 		A8103DF7DDC3036768022C4D130A9ED8 /* iapetus.caf in Resources */ = {isa = PBXBuildFile; fileRef = DA784348296CF1C8AD065E31394A4FB4 /* iapetus.caf */; };
 		BC86E9E96F91BE5D7DFAE1E94E786416 /* ceres.caf in Resources */ = {isa = PBXBuildFile; fileRef = D0A810DB727484570246944EE9A4A2ED /* ceres.caf */; };
@@ -86,7 +85,6 @@
 		068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Supporting Files/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		06FC5E9F1BB5BBFA0071F153 /* bg_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = bg_3.jpg; path = Resources/Backgrounds/bg_3.jpg; sourceTree = "<group>"; };
 		06FC5EA01BB5BBFA0071F153 /* bg_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = bg_2.jpg; path = Resources/Backgrounds/bg_2.jpg; sourceTree = "<group>"; };
-		08F86D72B75F036762AE29FCB370C5DA /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ABActionShit.h; path = View/ABActionShit/ABActionShit.h; sourceTree = "<group>"; };
 		148837AEB986AFDE519BEBD3686AB073 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "Supporting Files/main.m"; sourceTree = "<group>"; };
 		1A2C3094E55751F7D6DAA4E1160A0B08 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -107,7 +105,6 @@
 		A26C1FF1A5693F9F9CEDE81D65C7AD87 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A9FC927CB3E9E3C15BF7082E4AFDEA60 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		ABB53674A14E3D46A5B22DBAF8A27AA1 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
-		B0B4DC1F09685B50B75E32D772AA4419 /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ABActionShit.m; path = View/ABActionShit/ABActionShit.m; sourceTree = "<group>"; };
 		B430E43358239BE397051D0E0999641C /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BD734DC2F94B5BA2E1F57606538CA6E0 /* titan.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = titan.caf; path = Resources/Sounds/titan.caf; sourceTree = "<group>"; };
 		C1B62AB706C51EDEB616B70C706CAB59 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -185,15 +182,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		25D1DD55151021BDC2D921D839113F32 /* ABActionShit */ = {
-			isa = PBXGroup;
-			children = (
-				08F86D72B75F036762AE29FCB370C5DA /* ABActionShit.h */,
-				B0B4DC1F09685B50B75E32D772AA4419 /* ABActionShit.m */,
-			);
-			name = ABActionShit;
-			sourceTree = "<group>";
-		};
 		2AEB2E64E0CA52026B3999510B5914F4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -248,14 +236,6 @@
 			name = Sounds;
 			sourceTree = "<group>";
 		};
-		AA093A610DC72A6FA8155EEBC3E55AC4 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				25D1DD55151021BDC2D921D839113F32 /* ABActionShit */,
-			);
-			name = View;
-			sourceTree = "<group>";
-		};
 		C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -267,7 +247,6 @@
 		D0310FF36675D7510E52D86CDA8E2C6C /* ActorApp */ = {
 			isa = PBXGroup;
 			children = (
-				AA093A610DC72A6FA8155EEBC3E55AC4 /* View */,
 				75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */,
 				1ACEA023B930E6F261DAC0A6BDB410C1 /* Supporting Files */,
 				2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */,
@@ -479,7 +458,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				986D6082C5488BF030361C212BE29983 /* ABActionShit.m in Sources */,
 				DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */,
 				0224F1E3828DAA4189723FDA24F29984 /* Config.swift in Sources */,
 				34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */,
