@@ -6,7 +6,7 @@ import akka.actor._
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.contrib.pattern.{ ClusterSharding, DistributedPubSubMediator, ShardRegion }
 import akka.pattern.pipe
-import akka.stream.ActorMaterializer
+import akka.stream.{ Materializer, ActorMaterializer }
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import com.typesafe.config.Config
@@ -59,11 +59,11 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
 
-  def props(mediator: ActorRef)(implicit config: SessionConfig): Props =
-    Props(classOf[Session], mediator, config)
+  def props(mediator: ActorRef)(implicit config: SessionConfig, materializer: Materializer): Props =
+    Props(classOf[Session], mediator, config, materializer)
 }
 
-class Session(mediator: ActorRef)(implicit config: SessionConfig) extends Actor with ActorLogging with MessageIdHelper with Stash {
+class Session(mediator: ActorRef)(implicit config: SessionConfig, materializer: Materializer) extends Actor with ActorLogging with MessageIdHelper with Stash {
 
   import SessionEnvelope.Payload
 
@@ -71,7 +71,6 @@ class Session(mediator: ActorRef)(implicit config: SessionConfig) extends Actor 
 
   private implicit val db: Database = DbExtension(context.system).db
   private implicit val seqUpdManagerRegion = SeqUpdatesExtension(context.system).region
-  private implicit val materializer = ActorMaterializer()
 
   private[this] var optUserId: Option[Int] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
