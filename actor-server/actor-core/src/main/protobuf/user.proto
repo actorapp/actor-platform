@@ -32,8 +32,14 @@ message User {
     repeated bytes internal_extensions = 15 [(scalapb.field).type = "im.actor.api.rpc.misc.ApiExtension"];
     optional string external = 16;
     optional bool is_admin = 17;
+    repeated SocialContact social_contacts = 18;
     repeated string preferred_languages = 19;
     optional string time_zone = 20;
+}
+
+message SocialContact {
+    required string value = 1;
+    required string title = 2;
 }
 
 message UserCommands {
@@ -98,6 +104,15 @@ message UserCommands {
     }
 
     message AddEmailAck {}
+
+    message AddSocialContact {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+        required SocialContact contact = 2;
+    }
+
+    message AddSocialContactAck {}
 
     message Delete {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
@@ -337,6 +352,12 @@ message UserEvents {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
         required string email = 1;
+    }
+
+    message SocialContactAdded {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required SocialContact contact = 1;
     }
 
     message CountryCodeChanged {
