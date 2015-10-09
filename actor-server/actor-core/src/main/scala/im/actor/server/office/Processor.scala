@@ -2,7 +2,7 @@ package im.actor.server.office
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{ActorRef, Status}
+import akka.actor.{ ActorRef, Status }
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
@@ -65,21 +65,21 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   final def receiveCommand = initializing
 
   protected final def initializing: Receive = handleInitCommand orElse {
-    case msg =>
+    case msg ⇒
       log.debug("Entity not found while processing {}", msg)
       sender() ! Status.Failure(EntityNotFound)
   }
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
-    case Work(newState) => context become working(newState)
-    case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
+    case Work(newState) ⇒ context become working(newState)
+    case unmatched      ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
   }
 
   protected final def stashingBehavior: Receive = {
-    case UnstashAndWork(evt, s) =>
+    case UnstashAndWork(evt, s) ⇒
       context become working(updatedState(evt, s))
       unstashAll()
-    case UnstashAndWorkBatch(es, s) =>
+    case UnstashAndWorkBatch(es, s) ⇒
       val newState = es.foldLeft(s) {
         case (acc, e) ⇒
           log.debug("Updating state: {} with event: {}", acc, e)
@@ -94,7 +94,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
 
   protected final def stashing(state: State): Receive = handleQuery(state) orElse stashingBehavior
 
-  final def persistReply[R](e: Event, state: State)(f: Event => Future[R]): Unit =
+  final def persistReply[R](e: Event, state: State)(f: Event ⇒ Future[R]): Unit =
     persistReply(e, state, sender())(f)
 
   final def persistReply[R](e: Event, state: State, replyTo: ActorRef)(f: Event ⇒ Future[R]): Unit = {

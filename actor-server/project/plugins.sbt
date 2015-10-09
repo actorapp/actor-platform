@@ -19,7 +19,7 @@ addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.6.15")
 
 //addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.9")
 
-addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.4.0")
+addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.5.1")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.4")
 
