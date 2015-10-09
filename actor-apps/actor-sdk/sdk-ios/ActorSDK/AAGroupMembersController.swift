@@ -35,7 +35,9 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         super.tableDidLoad()
         
         tokenView.delegate = self
-        tokenView.backgroundColor = appStyle.vcBgColor
+        tokenView.fieldColor = appStyle.vcTokenFieldTextColor
+        tokenView.backgroundColor = appStyle.vcTokenFieldBgColor
+        tokenView.tintColor = appStyle.vcTokenTintColor
         tokenView.fieldName = ""
         tokenView.placeholderText = AALocalized("CreateGroupMembersPlaceholders")
         
@@ -75,7 +77,7 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
             if self.groupImage != nil {
                 Actor.changeGroupAvatar(gid, image: self.groupImage!)
             }
-            // self.navigateNext(AAConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: true)
+            self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: true)
         }
     }
     

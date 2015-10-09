@@ -11,6 +11,7 @@
 		065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A61BC62B3600B8C7DF /* ViewExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975011BC7534100B8C7DF /* FMDBBridge.swift */; settings = {ASSET_TAGS = (); }; };
 		065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975041BC757A300B8C7DF /* ActorRuntime.swift */; settings = {ASSET_TAGS = (); }; };
+		065975071BC7BB4000B8C7DF /* AANavigationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975061BC7BB4000B8C7DF /* AANavigationBadge.swift */; settings = {ASSET_TAGS = (); }; };
 		066A50D61BC4AE63000E606E /* ActorSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 066A50D51BC4AE63000E606E /* ActorSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		066A50E21BC4AF9F000E606E /* ActorSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A50E11BC4AF9F000E606E /* ActorSDK.swift */; settings = {ASSET_TAGS = (); }; };
 		066A51221BC4B55C000E606E /* AADevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A51211BC4B55C000E606E /* AADevice.swift */; settings = {ASSET_TAGS = (); }; };
@@ -56,7 +57,6 @@
 		066A52061BC4E962000E606E /* ActorCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 066A52031BC4E962000E606E /* ActorCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		066A52071BC4E962000E606E /* convert.py in Resources */ = {isa = PBXBuildFile; fileRef = 066A52041BC4E962000E606E /* convert.py */; settings = {ASSET_TAGS = (); }; };
 		066A52081BC4E962000E606E /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 066A52051BC4E962000E606E /* Makefile */; settings = {ASSET_TAGS = (); }; };
-		066A52101BC4ECCC000E606E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A520F1BC4ECCC000E606E /* AppTheme.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52141BC4EE04000E606E /* AAAvatarView.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52221BC4EEAC000E606E /* AAManagedTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A52191BC4EEAC000E606E /* AAManagedTable.swift */; settings = {ASSET_TAGS = (); }; };
 		066A52231BC4EEAC000E606E /* AAManagedSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A521A1BC4EEAC000E606E /* AAManagedSection.swift */; settings = {ASSET_TAGS = (); }; };
@@ -130,12 +130,12 @@
 		066A53101BC53317000E606E /* AAWallpapperPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530D1BC53317000E606E /* AAWallpapperPreviewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53111BC53317000E606E /* AACorePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530E1BC53317000E606E /* AACorePreviewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53121BC53317000E606E /* AAPhotoPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A530F1BC53317000E606E /* AAPhotoPreviewController.swift */; settings = {ASSET_TAGS = (); }; };
-		066A53151BC533D5000E606E /* ConversationContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53141BC533D5000E606E /* ConversationContentViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		066A53171BC533DD000E606E /* Bubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53161BC533DD000E606E /* Bubbles.swift */; settings = {ASSET_TAGS = (); }; };
-		066A531A1BC533E7000E606E /* AutoCompleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53191BC533E7000E606E /* AutoCompleteCell.swift */; settings = {ASSET_TAGS = (); }; };
-		066A53201BC533F5000E606E /* BubbleBackgroundProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531C1BC533F5000E606E /* BubbleBackgroundProcessor.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53151BC533D5000E606E /* AAConversationContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53141BC533D5000E606E /* AAConversationContentController.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53171BC533DD000E606E /* AABubbles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53161BC533DD000E606E /* AABubbles.swift */; settings = {ASSET_TAGS = (); }; };
+		066A531A1BC533E7000E606E /* AAAutoCompleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53191BC533E7000E606E /* AAAutoCompleteCell.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53201BC533F5000E606E /* AABubbleBackgroundProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531C1BC533F5000E606E /* AABubbleBackgroundProcessor.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53211BC533F5000E606E /* BubbleLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531D1BC533F5000E606E /* BubbleLayouts.swift */; settings = {ASSET_TAGS = (); }; };
-		066A53221BC533F5000E606E /* MessagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531E1BC533F5000E606E /* MessagesFlowLayout.swift */; settings = {ASSET_TAGS = (); }; };
+		066A53221BC533F5000E606E /* AAMessagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531E1BC533F5000E606E /* AAMessagesFlowLayout.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53231BC533F5000E606E /* Caches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A531F1BC533F5000E606E /* Caches.swift */; settings = {ASSET_TAGS = (); }; };
 		066A532B1BC53406000E606E /* AABubbleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53251BC53406000E606E /* AABubbleCell.swift */; settings = {ASSET_TAGS = (); }; };
 		066A532C1BC53406000E606E /* AABubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53261BC53406000E606E /* AABubbleTextCell.swift */; settings = {ASSET_TAGS = (); }; };
@@ -158,6 +158,7 @@
 		065974DB1BC6884700B8C7DF /* Pods.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods.framework; path = "Pods/../build/Debug-iphoneos/Pods.framework"; sourceTree = "<group>"; };
 		065975011BC7534100B8C7DF /* FMDBBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBBridge.swift; sourceTree = "<group>"; };
 		065975041BC757A300B8C7DF /* ActorRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorRuntime.swift; sourceTree = "<group>"; };
+		065975061BC7BB4000B8C7DF /* AANavigationBadge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AANavigationBadge.swift; sourceTree = "<group>"; };
 		066A50D21BC4AE63000E606E /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		066A50D51BC4AE63000E606E /* ActorSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActorSDK.h; sourceTree = "<group>"; };
 		066A50D71BC4AE63000E606E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -205,7 +206,6 @@
 		066A52031BC4E962000E606E /* ActorCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorCore.h; sourceTree = "<group>"; };
 		066A52041BC4E962000E606E /* convert.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = convert.py; sourceTree = "<group>"; };
 		066A52051BC4E962000E606E /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		066A520F1BC4ECCC000E606E /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		066A52141BC4EE04000E606E /* AAAvatarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAvatarView.swift; sourceTree = "<group>"; };
 		066A52191BC4EEAC000E606E /* AAManagedTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAManagedTable.swift; sourceTree = "<group>"; };
 		066A521A1BC4EEAC000E606E /* AAManagedSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAManagedSection.swift; sourceTree = "<group>"; };
@@ -279,12 +279,12 @@
 		066A530D1BC53317000E606E /* AAWallpapperPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAWallpapperPreviewController.swift; sourceTree = "<group>"; };
 		066A530E1BC53317000E606E /* AACorePreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AACorePreviewController.swift; sourceTree = "<group>"; };
 		066A530F1BC53317000E606E /* AAPhotoPreviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAPhotoPreviewController.swift; sourceTree = "<group>"; };
-		066A53141BC533D5000E606E /* ConversationContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationContentViewController.swift; sourceTree = "<group>"; };
-		066A53161BC533DD000E606E /* Bubbles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bubbles.swift; sourceTree = "<group>"; };
-		066A53191BC533E7000E606E /* AutoCompleteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCompleteCell.swift; sourceTree = "<group>"; };
-		066A531C1BC533F5000E606E /* BubbleBackgroundProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleBackgroundProcessor.swift; sourceTree = "<group>"; };
+		066A53141BC533D5000E606E /* AAConversationContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAConversationContentController.swift; sourceTree = "<group>"; };
+		066A53161BC533DD000E606E /* AABubbles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbles.swift; sourceTree = "<group>"; };
+		066A53191BC533E7000E606E /* AAAutoCompleteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAutoCompleteCell.swift; sourceTree = "<group>"; };
+		066A531C1BC533F5000E606E /* AABubbleBackgroundProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBackgroundProcessor.swift; sourceTree = "<group>"; };
 		066A531D1BC533F5000E606E /* BubbleLayouts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleLayouts.swift; sourceTree = "<group>"; };
-		066A531E1BC533F5000E606E /* MessagesFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesFlowLayout.swift; sourceTree = "<group>"; };
+		066A531E1BC533F5000E606E /* AAMessagesFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAMessagesFlowLayout.swift; sourceTree = "<group>"; };
 		066A531F1BC533F5000E606E /* Caches.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Caches.swift; sourceTree = "<group>"; };
 		066A53251BC53406000E606E /* AABubbleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleCell.swift; sourceTree = "<group>"; };
 		066A53261BC53406000E606E /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
@@ -337,7 +337,6 @@
 			children = (
 				066A525F1BC50E53000E606E /* Controllers */,
 				066A52131BC4EDEB000E606E /* Views */,
-				066A520A1BC4ECB9000E606E /* Syling */,
 				066A511D1BC4B4BD000E606E /* ActorCore */,
 				066A51201BC4B53C000E606E /* SwiftExtensions */,
 				066A51571BC4C112000E606E /* Utils */,
@@ -439,14 +438,6 @@
 				065975011BC7534100B8C7DF /* FMDBBridge.swift */,
 			);
 			name = Storage;
-			sourceTree = "<group>";
-		};
-		066A520A1BC4ECB9000E606E /* Syling */ = {
-			isa = PBXGroup;
-			children = (
-				066A520F1BC4ECCC000E606E /* AppTheme.swift */,
-			);
-			name = Syling;
 			sourceTree = "<group>";
 		};
 		066A52131BC4EDEB000E606E /* Views */ = {
@@ -721,8 +712,9 @@
 				066A53241BC533FD000E606E /* Cell */,
 				066A531B1BC533EB000E606E /* Layouting */,
 				066A53181BC533E0000E606E /* Suggestion */,
-				066A53141BC533D5000E606E /* ConversationContentViewController.swift */,
-				066A53161BC533DD000E606E /* Bubbles.swift */,
+				066A53141BC533D5000E606E /* AAConversationContentController.swift */,
+				066A53161BC533DD000E606E /* AABubbles.swift */,
+				065975061BC7BB4000B8C7DF /* AANavigationBadge.swift */,
 			);
 			name = Conversation;
 			sourceTree = "<group>";
@@ -730,7 +722,7 @@
 		066A53181BC533E0000E606E /* Suggestion */ = {
 			isa = PBXGroup;
 			children = (
-				066A53191BC533E7000E606E /* AutoCompleteCell.swift */,
+				066A53191BC533E7000E606E /* AAAutoCompleteCell.swift */,
 			);
 			name = Suggestion;
 			sourceTree = "<group>";
@@ -738,9 +730,9 @@
 		066A531B1BC533EB000E606E /* Layouting */ = {
 			isa = PBXGroup;
 			children = (
-				066A531C1BC533F5000E606E /* BubbleBackgroundProcessor.swift */,
+				066A531C1BC533F5000E606E /* AABubbleBackgroundProcessor.swift */,
+				066A531E1BC533F5000E606E /* AAMessagesFlowLayout.swift */,
 				066A531D1BC533F5000E606E /* BubbleLayouts.swift */,
-				066A531E1BC533F5000E606E /* MessagesFlowLayout.swift */,
 				066A531F1BC533F5000E606E /* Caches.swift */,
 			);
 			name = Layouting;
@@ -928,7 +920,6 @@
 			files = (
 				066A52F81BC52B13000E606E /* AAWallpapperSettingsCell.swift in Sources */,
 				066A51591BC4C14A000E606E /* AASwiftlyLRU.swift in Sources */,
-				066A52101BC4ECCC000E606E /* AppTheme.swift in Sources */,
 				066A525E1BC503BB000E606E /* ActorApplicationDelegate.swift in Sources */,
 				066A53101BC53317000E606E /* AAWallpapperPreviewController.swift in Sources */,
 				066A52F21BC52B02000E606E /* AASettingsPrivacyViewController.swift in Sources */,
@@ -956,6 +947,7 @@
 				066A52481BC4EED5000E606E /* AAProgressView.swift in Sources */,
 				066A51921BC4C383000E606E /* CocoaFileSystemRuntime.swift in Sources */,
 				066A52DC1BC52385000E606E /* AAContactCell.swift in Sources */,
+				065975071BC7BB4000B8C7DF /* AANavigationBadge.swift in Sources */,
 				066A518D1BC4C383000E606E /* CocoaStorageRuntime.swift in Sources */,
 				066A52F01BC52B02000E606E /* AASettingsViewController.swift in Sources */,
 				066A52741BC5101A000E606E /* ABPhoneField.m in Sources */,
@@ -973,7 +965,7 @@
 				066A51521BC4BE34000E606E /* Logs.swift in Sources */,
 				066A52D71BC52378000E606E /* AAContactsListContentControllerDelegate.swift in Sources */,
 				066A51241BC4B56D000E606E /* Colors.swift in Sources */,
-				066A53171BC533DD000E606E /* Bubbles.swift in Sources */,
+				066A53171BC533DD000E606E /* AABubbles.swift in Sources */,
 				066A52081BC4E962000E606E /* Makefile in Sources */,
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,
 				066A52691BC50E7B000E606E /* AAAuthRegisterViewController.swift in Sources */,
@@ -986,7 +978,7 @@
 				066A52D21BC52204000E606E /* AADialogSearchCell.swift in Sources */,
 				066A52371BC4EEBA000E606E /* AATableViewCell.swift in Sources */,
 				066A51481BC4BBF4000E606E /* Views.swift in Sources */,
-				066A53151BC533D5000E606E /* ConversationContentViewController.swift in Sources */,
+				066A53151BC533D5000E606E /* AAConversationContentController.swift in Sources */,
 				066A52151BC4EE04000E606E /* AAAvatarView.swift in Sources */,
 				066A52591BC4EF61000E606E /* Executions.swift in Sources */,
 				066A519C1BC4C390000E606E /* FMDBIndex.swift in Sources */,
@@ -998,7 +990,7 @@
 				066A51801BC4C373000E606E /* FMDatabasePool.m in Sources */,
 				066A518F1BC4C383000E606E /* iOSPhoneBookProvider.swift in Sources */,
 				066A530B1BC531A2000E606E /* AAUserViewController.swift in Sources */,
-				066A531A1BC533E7000E606E /* AutoCompleteCell.swift in Sources */,
+				066A531A1BC533E7000E606E /* AAAutoCompleteCell.swift in Sources */,
 				065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */,
 				066A517B1BC4C373000E606E /* FMDatabase.m in Sources */,
 				066A52561BC4EF61000E606E /* AATableViewController.swift in Sources */,
@@ -1009,7 +1001,7 @@
 				066A52C81BC521EA000E606E /* AAEditFieldController.swift in Sources */,
 				066A532C1BC53406000E606E /* AABubbleTextCell.swift in Sources */,
 				066A52261BC4EEAC000E606E /* ManagedCells.swift in Sources */,
-				066A53221BC533F5000E606E /* MessagesFlowLayout.swift in Sources */,
+				066A53221BC533F5000E606E /* AAMessagesFlowLayout.swift in Sources */,
 				066A52671BC50E7B000E606E /* AAAuthPhoneViewController.swift in Sources */,
 				066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */,
 				066A519D1BC4C390000E606E /* UDPreferencesStorage.swift in Sources */,
@@ -1050,7 +1042,7 @@
 				066A51901BC4C383000E606E /* CocoaNetworkRuntime.swift in Sources */,
 				066A52581BC4EF61000E606E /* Alerts.swift in Sources */,
 				066A51691BC4C366000E606E /* AATools.swift in Sources */,
-				066A53201BC533F5000E606E /* BubbleBackgroundProcessor.swift in Sources */,
+				066A53201BC533F5000E606E /* AABubbleBackgroundProcessor.swift in Sources */,
 				066A52661BC50E7B000E606E /* AAAuthCountriesViewController.swift in Sources */,
 				066A53391BC5456B000E606E /* ActorStyle.swift in Sources */,
 			);

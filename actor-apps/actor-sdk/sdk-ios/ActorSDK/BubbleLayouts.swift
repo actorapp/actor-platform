@@ -4,7 +4,7 @@
 
 import Foundation
 
-struct CellSetting: Equatable {
+public struct AACellSetting: Equatable {
     let showDate: Bool
     let clenchTop: Bool
     let clenchBottom: Bool
@@ -17,23 +17,23 @@ struct CellSetting: Equatable {
     
 }
 
-func ==(lhs: CellSetting, rhs: CellSetting) -> Bool {
+public func ==(lhs: AACellSetting, rhs: AACellSetting) -> Bool {
     return lhs.showDate == rhs.showDate && lhs.clenchTop == rhs.clenchTop && lhs.clenchBottom == rhs.clenchBottom
 }
 
-class CellLayout {
+public class AACellLayout {
     
     let key: String
     var height: CGFloat
     let date: String
     
-    init(height: CGFloat, date: Int64, key: String) {
-        self.date = CellLayout.formatDate(date)
+    public init(height: CGFloat, date: Int64, key: String) {
+        self.date = AACellLayout.formatDate(date)
         self.key = key
         self.height = height
     }
     
-    class func formatDate(date: Int64) -> String {
+    public class func formatDate(date: Int64) -> String {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "HH:mm"
         return dateFormatter.stringFromDate(NSDate(timeIntervalSince1970: NSTimeInterval(Double(date) / 1000.0)))

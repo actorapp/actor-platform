@@ -14,13 +14,16 @@ public protocol ActorSDKDelegate {
     func actorControllerForStart() -> UIViewController
     
     /// User profile controller
-    func actorControllerForUser(uid: Int) -> UIViewController
+    func actorControllerForUser(uid: Int) -> AAViewController
     
     /// User profile controller
-    func actorControllerForGroup(gid: Int) -> UIViewController
+    func actorControllerForGroup(gid: Int) -> AAViewController
     
     /// Conversation controller
     func actorControllerForConversation(peer: ACPeer) -> UIViewController
+    
+    /// Configuration of bubble cells
+    func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
     
     /// Navigate to Next controller
     func navigateNext(controller: UIViewController)
@@ -54,27 +57,16 @@ public extension ActorSDKDelegate {
             splitController.viewControllers = [tab, AANoSelectionViewController()]
             rootController = splitController
         } else {
-//            binder.bind(Actor.getAppState().isAppLoaded, valueModel2: Actor.getAppState().isAppEmpty) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
-//                if (empty!.booleanValue()) {
-//                    if (loaded!.booleanValue()) {
-//                        tabController.showAppIsEmptyPlaceholder()
-//                    } else {
-//                        tabController.showAppIsSyncingPlaceholder()
-//                    }
-//                } else {
-//                    tabController.hidePlaceholders()
-//                }
-//            }
             rootController = tab
         }
         return rootController
     }
     
-    public func actorControllerForUser(uid: Int) -> UIViewController {
+    public func actorControllerForUser(uid: Int) -> AAViewController {
         return AAUserViewController(uid: uid)
     }
     
-    func actorControllerForGroup(gid: Int) -> UIViewController {
+    func actorControllerForGroup(gid: Int) -> AAViewController {
         return AAGroupViewController(gid: gid)
     }
     
@@ -88,6 +80,10 @@ public extension ActorSDKDelegate {
     
     public func navigateDetail(controller: UIViewController) {
         
+    }
+    
+    public func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter] {
+        return builtIn
     }
 }
 

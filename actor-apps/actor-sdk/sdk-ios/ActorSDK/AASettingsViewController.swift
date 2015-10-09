@@ -58,11 +58,11 @@ public class AASettingsViewController: AAContentTableController {
                     
                     if presenceText != nil {
                         r.subtitle = presenceText
-//                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
-//                            r.subtitleStyle = "user.online"
-//                        } else {
-//                            r.subtitleStyle = "user.offline"
-//                        }
+                        if presence!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
+                            r.subtitleColor = ActorSDK.sharedActor().style.userOnlineColor
+                        } else {
+                            r.subtitleColor = ActorSDK.sharedActor().style.userOfflineColor
+                        }
                     } else {
                         r.subtitle = ""
                     }
@@ -102,7 +102,7 @@ public class AASettingsViewController: AAContentTableController {
                                 })
                             } else if index >= 0 {
                                 let takePhoto: Bool = (index == 0) && hasCamera
-                                self.pickAvatar(takePhoto, closure: { [unowned self] (image) -> () in
+                                self.pickAvatar(takePhoto, closure: { (image) -> () in
                                     Actor.changeOwnAvatar(image)
                                 })
                             }
@@ -173,10 +173,6 @@ public class AASettingsViewController: AAContentTableController {
                         self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
                     }
                 }
-//                r.selectAction = { [unowned self] () -> Bool in
-//                    self.navigateNext(SettingsWallpapper(), removeCurrent: false)
-//                    return false
-//                }
             })
         }
         
@@ -277,7 +273,7 @@ public class AASettingsViewController: AAContentTableController {
                 
                 r.data = self.user.getPhonesModel().get().toSwiftArray()
                 
-                r.bindData = { [unowned self] (c: AATitledCell, d: ACUserPhone) -> () in
+                r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
                     c.setContent(d.title, content: "+\(d.phone)", isAction: false)
                     c.accessoryType = .None
                 }
@@ -302,35 +298,35 @@ public class AASettingsViewController: AAContentTableController {
         // Support
         section { (s) -> () in
 
-//            // Support: Ask Question
-//            if let account = AppConfig.supportAccount {
-//                s.navigate("SettingsAskQuestion", closure: { (r) -> () in
-//                    r.selectAction = { () -> Bool in
-//                        self.executeSafe(Actor.findUsersCommandWithQuery(account)) { (val) -> Void in
-//                            var user:ACUserVM!
-//                            if let users = val as? IOSObjectArray {
-//                                if Int(users.length()) > 0 {
-//                                    if let tempUser = users.objectAtIndex(0) as? ACUserVM {
-//                                        user = tempUser
-//                                    }
-//                                }
-//                            }
-//                            self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
-//                        }
-//                        return true
-//                    }
-//                })
-//            }
-//            
-//            // Support: Twitter
-//            if let twitter = AppConfig.appTwitter {
-//                s.url("SettingsTwitter", url: "https://twitter.com/\(twitter)")
-//            }
-//            
-//            // Support: Home page
-//            if let homePage = AppConfig.appHomePage {
-//                s.url("SettingsAbout", url: homePage)
-//            }
+            // Support: Ask Question
+            if let account = ActorSDK.sharedActor().supportAccount {
+                s.navigate("SettingsAskQuestion", closure: { (r) -> () in
+                    r.selectAction = { () -> Bool in
+                        self.executeSafe(Actor.findUsersCommandWithQuery(account)) { (val) -> Void in
+                            var user:ACUserVM!
+                            if let users = val as? IOSObjectArray {
+                                if Int(users.length()) > 0 {
+                                    if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+                                        user = tempUser
+                                    }
+                                }
+                            }
+                            self.navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(user.getId())))
+                        }
+                        return true
+                    }
+                })
+            }
+
+            // Support: Twitter
+            if let twitter = ActorSDK.sharedActor().supportTwitter {
+                s.url("SettingsTwitter", url: "https://twitter.com/\(twitter)")
+            }
+
+            // Support: Home page
+            if let homePage = ActorSDK.sharedActor().supportHomepage {
+                s.url("SettingsAbout", url: homePage)
+            }
 
             // Support: App version
             let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String

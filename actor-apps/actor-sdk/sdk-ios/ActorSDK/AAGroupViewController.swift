@@ -191,7 +191,7 @@ public class AAGroupViewController: AAContentTableController {
                             a.cancel = "AlertCancel"
                             
                             a.action("GroupMemberInfo") { () -> () in
-                                self.navigateNext(AAUserViewController(uid: Int(user.getId())), removeCurrent: false)
+                                self.navigateNext(ActorSDK.sharedActor().delegate.actorControllerForUser(Int(user.getId())), removeCurrent: false)
                             }
                          
                             a.action("GroupMemberWrite") { () -> () in

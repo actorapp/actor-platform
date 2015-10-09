@@ -396,8 +396,33 @@ private class AAManagedSearchController<BindCell where BindCell: AABindedSearchC
         
         self.displayList = config.searchList
         
+        let style = ActorSDK.sharedActor().style
         let searchBar = UISearchBar()
-        MainAppTheme.search.styleSearchBar(searchBar)
+        
+        // Styling Search bar
+        searchBar.searchBarStyle = UISearchBarStyle.Default
+        searchBar.translucent = false
+        searchBar.placeholder = "" // SearchBar placeholder animation fix
+        
+        // SearchBar background color
+        searchBar.barTintColor = style.searchBackgroundColor.forTransparentBar()
+        searchBar.setBackgroundImage(Imaging.imageWithColor(style.searchBackgroundColor, size: CGSize(width: 1, height: 1)), forBarPosition: .Any, barMetrics: .Default)
+        searchBar.backgroundColor = style.searchBackgroundColor
+        
+        // SearchBar cancel color
+        searchBar.tintColor = style.searchCancelColor
+        
+        // Apply keyboard color
+        searchBar.keyboardAppearance = style.isDarkApp ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
+
+        // SearchBar field color
+        let fieldBg = Imaging.imageWithColor(style.searchFieldBgColor, size: CGSize(width: 14,height: 28))
+            .roundCorners(14, h: 28, roundSize: 4)
+        searchBar.setSearchFieldBackgroundImage(fieldBg.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
+        
+        // SearchBar field text color
+        // TODO
+
         self.searchDisplay = UISearchDisplayController(searchBar: searchBar, contentsController: controller)
         
         super.init()
@@ -474,11 +499,11 @@ private class AAManagedSearchController<BindCell where BindCell: AABindedSearchC
     // Search styling
     
     @objc func searchDisplayControllerWillBeginSearch(controller: UISearchDisplayController) {
-        MainAppTheme.search.applyStatusBar()
+        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.searchStatusBarStyle, animated: true)
     }
     
     @objc func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
-        // MainAppTheme.navigation.applyStatusBar()
+        UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
     }
     
     @objc func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {

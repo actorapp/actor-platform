@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import TTTAttributedLabel
 
-class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
+public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     // TODO: Better max width calculations
     
@@ -43,10 +43,10 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         messageText.numberOfLines = 0
         messageText.userInteractionEnabled = true
         messageText.delegate = self
-        messageText.linkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
-            kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
-        messageText.activeLinkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
-            kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
+//        messageText.linkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
+//            kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
+//        messageText.activeLinkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
+//            kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
         messageText.verticalAlignment = TTTAttributedLabelVerticalAlignment.Center
         
         dateText.font = AABubbleTextCell.dateFont
@@ -62,13 +62,13 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         mainView.addSubview(statusView)
     }
     
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // Data binding
     
-    override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         
         // Saving cell settings
         self.cellLayout = cellLayout as! TextCellLayout
@@ -119,7 +119,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         // Always update bubble insets
         if (isOut) {
             bindBubbleType(.TextOut, isCompact: isClanchBottom)
-            dateText.textColor = MainAppTheme.bubbles.textDateOut
+            dateText.textColor = appStyle.chatTextDateOutColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -133,7 +133,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 right: (isClanchBottom ? 4 : 10))
         } else {
             bindBubbleType(.TextIn, isCompact: isClanchBottom)
-            dateText.textColor = MainAppTheme.bubbles.textDateIn
+            dateText.textColor = appStyle.chatTextDateInColor
             
             bubbleInsets = UIEdgeInsets(
                 top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
@@ -156,27 +156,27 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             switch(self.messageState) {
             case ACMessageState.PENDING.rawValue:
                 self.statusView.image = appStyle.chatIconClock;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusSending
+                self.statusView.tintColor = appStyle.chatStatusSending
                 break;
             case ACMessageState.SENT.rawValue:
                 self.statusView.image = appStyle.chatIconCheck1;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusSent
+                self.statusView.tintColor = appStyle.chatStatusSent
                 break;
             case ACMessageState.RECEIVED.rawValue:
                 self.statusView.image = appStyle.chatIconCheck2;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusReceived
+                self.statusView.tintColor = appStyle.chatStatusReceived
                 break;
             case ACMessageState.READ.rawValue:
                 self.statusView.image = appStyle.chatIconCheck2;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusRead
+                self.statusView.tintColor = appStyle.chatStatusRead
                 break;
             case ACMessageState.ERROR.rawValue:
                 self.statusView.image = appStyle.chatIconError;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusError
+                self.statusView.tintColor = appStyle.chatStatusError
                 break
             default:
                 self.statusView.image = appStyle.chatIconClock;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusSending
+                self.statusView.tintColor = appStyle.chatStatusSending
                 break;
             }
         }
@@ -184,7 +184,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     // Menu for Text cell
     
-    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+    public override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
         if action == "copy:" {
             if (bindedMessage!.content is ACTextContent) {
                 return true
@@ -196,21 +196,21 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         return false
     }
     
-    override func copy(sender: AnyObject?) {
+    public override func copy(sender: AnyObject?) {
         UIPasteboard.generalPasteboard().string = (bindedMessage!.content as! ACTextContent).text
     }
     
     // Url open handling
     
-    func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
+    public func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
         openUrl(url)
     }
     
-    func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
+    public func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
         openUrl(url)
     }
     
-    func openUrl(url: NSURL) {
+    public func openUrl(url: NSURL) {
         if url.scheme == "source" {
             let path = url.path!
             let index = Int(path.substringFromIndex(path.startIndex.advancedBy(1)))!
@@ -223,7 +223,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     // Layouting
     
-    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+    public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
         // Convenience
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
@@ -264,7 +264,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
 /**
     Text cell layout
 */
-class TextCellLayout: CellLayout {
+public class TextCellLayout: AACellLayout {
     
     private class func maxTextWidth(isOut: Bool, peer: ACPeer) -> CGFloat {
         if AADevice.isiPad {
@@ -301,7 +301,7 @@ class TextCellLayout: CellLayout {
     /**
         Plain text layout
     */
-    init(text: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
+    public init(text: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
         
         // Setting text
         self.text = text
@@ -331,7 +331,7 @@ class TextCellLayout: CellLayout {
     /**
         NSAttributedString layout
     */
-    init(attributedText: NSAttributedString, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
+    public init(attributedText: NSAttributedString, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
         
         // Setting attributed text
         self.attrText = attributedText
@@ -362,7 +362,7 @@ class TextCellLayout: CellLayout {
     /**
         Formatted text layout. Automatically parse text and detect formatting.
     */
-    convenience init(formattedText: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
+    public convenience init(formattedText: String, textColor: UIColor, date: Int64, isOut: Bool, peer: ACPeer, layoutKey: String = TextCellLayout.textKey) {
         
         // Parsing markdown formatted text
         let text = TextCellLayout.parser.parse(formattedText, textColor: textColor, fontSize: AABubbleTextCell.fontSize)
@@ -386,13 +386,15 @@ class TextCellLayout: CellLayout {
     /**
         Creating text layout from message and peer
     */
-    convenience init(message: ACMessage, peer: ACPeer) {
+    public convenience init(message: ACMessage, peer: ACPeer) {
+        let style = ActorSDK.sharedActor().style
+        
         if let content = message.content as? ACTextContent {
             
             // Creating generic layout
             self.init(
                 formattedText: content.text,
-                textColor: message.isOut ? MainAppTheme.bubbles.textOut : MainAppTheme.bubbles.textIn,
+                textColor: message.isOut ? style.chatTextOutColor : style.chatTextInColor,
                 date: Int64(message.date),
                 isOut: message.isOut,
                 peer: peer,
@@ -401,11 +403,11 @@ class TextCellLayout: CellLayout {
         } else {
             
             // Creating unsupported layout
-            let unsupportedText = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
+            let unsupportedText = AALocalized("UnsupportedContent")
             
             self.init(
                 formattedText: "_\(unsupportedText)_",
-                textColor: MainAppTheme.bubbles.textUnsupported,
+                textColor: message.isOut ? style.chatTextOutUnsupportedColor : style.chatTextInUnsupportedColor,
                 date: Int64(message.date),
                 isOut: message.isOut,
                 peer: peer,
@@ -418,17 +420,17 @@ class TextCellLayout: CellLayout {
 /**
     Text cell layouter
 */
-class AABubbleTextCellLayouter: AABubbleLayouter {
+public class AABubbleTextCellLayouter: AABubbleLayouter {
     
-    func buildLayout(peer: ACPeer, message: ACMessage) -> CellLayout {
+    public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
         return TextCellLayout(message: message, peer: peer)
     }
     
-    func isSuitable(message: ACMessage) -> Bool {
-        return true
+    public func isSuitable(message: ACMessage) -> Bool {
+        return message.content is ACTextContent
     }
     
-    func cellClass() -> AnyClass {
+    public func cellClass() -> AnyClass {
         return AABubbleTextCell.self
     }
 }

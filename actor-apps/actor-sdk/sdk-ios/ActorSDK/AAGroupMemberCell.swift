@@ -66,9 +66,9 @@ public class AAGroupMemberCell: AATableViewCell {
                 self.onlineLabel.showView()
                 self.onlineLabel.text = Actor.getFormatter().formatPresence(value!, withSex: user.getSex())
                 if value!.state.ordinal() == jint(ACUserPresence_State.ONLINE.rawValue) {
-                    self.onlineLabel.textColor = self.appStyle.cellTintColor
+                    self.onlineLabel.textColor = self.appStyle.userOnlineColor
                 } else {
-                    self.onlineLabel.textColor = self.appStyle.cellHintColor
+                    self.onlineLabel.textColor = self.appStyle.userOfflineColor
                 }
             } else {
                 self.onlineLabel.alpha = 0

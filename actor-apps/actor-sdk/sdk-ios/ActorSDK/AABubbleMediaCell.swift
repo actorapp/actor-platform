@@ -6,7 +6,7 @@ import Foundation
 import NYTPhotoViewer
 import VBFPopFlatButton
 
-class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
+public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
     
     // Views
     
@@ -24,13 +24,13 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     
     // Constructors
     
-    init(frame: CGRect) {
+    public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
-        timeBg.image = nil // Imaging.imageWithColor(MainAppTheme.bubbles.mediaDateBg, size: CGSize(width: 1, height: 1))
+        timeBg.image = Imaging.imageWithColor(appStyle.chatMediaDateBgColor, size: CGSize(width: 1, height: 1))
 
         timeLabel.font = UIFont.italicSystemFontOfSize(11)
-        timeLabel.textColor = MainAppTheme.bubbles.mediaDate
+        timeLabel.textColor = appStyle.chatMediaDateColor
         
         statusView.contentMode = UIViewContentMode.Center
         
@@ -47,13 +47,13 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     // Binding
     
-    override func bind(message: ACMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+    public override func bind(message: ACMessage, reuse: Bool, cellLayout: AACellLayout, setting: AACellSetting) {
         self.bindedLayout = cellLayout as! MediaCellLayout
         
         bubbleInsets = UIEdgeInsets(
@@ -96,27 +96,27 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
             switch(UInt(message.messageState.ordinal())) {
             case ACMessageState.PENDING.rawValue:
                 self.statusView.image = appStyle.chatIconClock;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSending
+                self.statusView.tintColor = appStyle.chatStatusMediaSending
                 break;
             case ACMessageState.SENT.rawValue:
                 self.statusView.image = appStyle.chatIconCheck1;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSent
+                self.statusView.tintColor = appStyle.chatStatusMediaSent
                 break;
             case ACMessageState.RECEIVED.rawValue:
                 self.statusView.image = appStyle.chatIconCheck2;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaReceived
+                self.statusView.tintColor = appStyle.chatStatusMediaReceived
                 break;
             case ACMessageState.READ.rawValue:
                 self.statusView.image = appStyle.chatIconCheck2;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaRead
+                self.statusView.tintColor = appStyle.chatStatusMediaRead
                 break;
             case ACMessageState.ERROR.rawValue:
                 self.statusView.image = appStyle.chatIconError;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaError
+                self.statusView.tintColor = appStyle.chatStatusMediaError
                 break
             default:
                 self.statusView.image = appStyle.chatIconClock;
-                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSending
+                self.statusView.tintColor = appStyle.chatStatusMediaSending
                 break;
             }
         } else {
@@ -126,7 +126,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     
     // File state binding
     
-    override func fileUploadPaused(reference: String, selfGeneration: Int) {
+    public override func fileUploadPaused(reference: String, selfGeneration: Int) {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -136,7 +136,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
     }
     
-    override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
+    public override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -146,7 +146,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
     }
     
-    override func fileDownloadPaused(selfGeneration: Int) {
+    public override func fileDownloadPaused(selfGeneration: Int) {
         bgLoadThumb(selfGeneration)
 
         runOnUiThread(selfGeneration) { () -> () in
@@ -156,7 +156,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
     }
     
-    override func fileDownloading(progress: Double, selfGeneration: Int) {
+    public override func fileDownloading(progress: Double, selfGeneration: Int) {
         bgLoadThumb(selfGeneration)
 
         runOnUiThread(selfGeneration) { () -> () in
@@ -166,7 +166,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
     }
     
-    override func fileReady(reference: String, selfGeneration: Int) {
+    public override func fileReady(reference: String, selfGeneration: Int) {
         bgLoadReference(reference, selfGeneration: selfGeneration)
         
         runOnUiThread(selfGeneration) { () -> () in
@@ -175,7 +175,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
     }
     
-    func bgLoadThumb(selfGeneration: Int) {
+    public func bgLoadThumb(selfGeneration: Int) {
         if (thumbLoaded) {
             return
         }
@@ -193,7 +193,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         }
     }
     
-    func bgLoadReference(reference: String, selfGeneration: Int) {
+    public func bgLoadReference(reference: String, selfGeneration: Int) {
         if (contentLoaded) {
             return
         }
@@ -210,7 +210,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
         })
     }
     
-    func setPreviewImage(img: UIImage, fast: Bool){
+    public func setPreviewImage(img: UIImage, fast: Bool){
         if ((fast && self.preview.image == nil) || !fast) {
             self.preview.image = img;
             self.preview.showView()
@@ -219,7 +219,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     
     // Media Action
     
-    func mediaDidTap() {
+    public func mediaDidTap() {
         let content = bindedMessage!.content as! ACDocumentContent
         if let fileSource = content.getSource() as? ACFileRemoteSource {
             Actor.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: AAFileCallback(
@@ -254,7 +254,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     
     // Layouting
     
-    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+    public override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
         let insets = fullContentInsets
         let contentWidth = self.contentView.frame.width
         let contentHeight = self.contentView.frame.height
@@ -288,11 +288,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
     
     // Photo preview
     
-    func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
+    public func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
         return self.preview
     }
     
-    func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController!) {
+    public func photosViewControllerWillDismiss(photosViewController: NYTPhotosViewController!) {
         // (UIApplication.sharedApplication().delegate as! AppDelegate).showBadge()
         UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Fade)
     }
@@ -301,17 +301,17 @@ class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate 
 /**
     Media cell layout
 */
-class MediaCellLayout: CellLayout {
+public class MediaCellLayout: AACellLayout {
     
-    let fastThumb: NSData?
-    let contentSize: CGSize
-    let screenSize: CGSize
-    let autoDownload: Bool
+    public let fastThumb: NSData?
+    public let contentSize: CGSize
+    public let screenSize: CGSize
+    public let autoDownload: Bool
     
     /**
         Creting layout for media bubble
     */
-    init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, fastThumb: ACFastThumb?, autoDownload: Bool) {
+    public init(id: Int64, width: CGFloat, height:CGFloat, date: Int64, fastThumb: ACFastThumb?, autoDownload: Bool) {
         
         // Saving content size
         self.contentSize = CGSizeMake(width, height)
@@ -335,21 +335,21 @@ class MediaCellLayout: CellLayout {
     /**
         Creating layout for photo content
     */
-    convenience init(id: Int64, photoContent: ACPhotoContent, date: Int64) {
+    public convenience init(id: Int64, photoContent: ACPhotoContent, date: Int64) {
         self.init(id: id, width: CGFloat(photoContent.getW()), height: CGFloat(photoContent.getH()), date: date, fastThumb: photoContent.getFastThumb(), autoDownload: true)
     }
     
     /**
         Creating layout for video content
     */
-    convenience init(id: Int64, videoContent: ACVideoContent, date: Int64) {
+    public convenience init(id: Int64, videoContent: ACVideoContent, date: Int64) {
         self.init(id: id, width: CGFloat(videoContent.getW()), height: CGFloat(videoContent.getH()), date: date, fastThumb: videoContent.getFastThumb(),autoDownload: false)
     }
     
     /**
         Creating layout for message
     */
-    convenience init(message: ACMessage) {
+    public convenience init(message: ACMessage) {
         if let content = message.content as? ACPhotoContent {
             self.init(id: Int64(message.rid), photoContent: content, date: Int64(message.date))
         } else if let content = message.content as? ACVideoContent {
@@ -363,9 +363,9 @@ class MediaCellLayout: CellLayout {
 /**
     Layouter for media bubbles
 */
-class AABubbleMediaCellLayouter: AABubbleLayouter {
+public class AABubbleMediaCellLayouter: AABubbleLayouter {
     
-    func isSuitable(message: ACMessage) -> Bool {
+    public func isSuitable(message: ACMessage) -> Bool {
         if message.content is ACPhotoContent {
             return true
         } else if message.content is ACVideoContent {
@@ -374,11 +374,11 @@ class AABubbleMediaCellLayouter: AABubbleLayouter {
         return false
     }
     
-    func buildLayout(peer: ACPeer, message: ACMessage) -> CellLayout {
+    public func buildLayout(peer: ACPeer, message: ACMessage) -> AACellLayout {
         return MediaCellLayout(message: message)
     }
     
-    func cellClass() -> AnyClass {
+    public func cellClass() -> AnyClass {
         return AABubbleMediaCell.self
     }
 }

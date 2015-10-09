@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import SlackTextViewController
 
-public class ConversationContentViewController: SLKTextViewController, ARDisplayList_AppleChangeListener {
+public class AAConversationContentController: SLKTextViewController, ARDisplayList_AppleChangeListener {
 
     public let peer: ACPeer
     
@@ -17,7 +17,7 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
     private var isLoaded: Bool = false
     private var isLoadedAfter: Bool = false
     private var unreadIndex: Int? = nil
-    private let collectionViewLayout = MessagesFlowLayout()
+    private let collectionViewLayout = AAMessagesFlowLayout()
     private var prevCount: Int = 0
     private var unreadMessageId: jlong = 0
     
@@ -28,7 +28,6 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
         
         self.collectionView.backgroundColor = UIColor.clearColor()
         self.collectionView.alwaysBounceVertical = true
-        Bubbles.initCollectionView(self.collectionView)
     }
     
     public required init!(coder decoder: NSCoder!) {
@@ -57,7 +56,7 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
         
         if (isStarted) {
             self.willUpdate()
-            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? PreprocessedList, unread: unreadMessageId)
+            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: unreadMessageId)
             self.collectionView.reloadData()
             prevCount = getCount()
             self.displayList.addAppleListener(self)
@@ -79,7 +78,7 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
             })
             
             self.willUpdate()
-            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? PreprocessedList, unread: self.unreadMessageId)
+            self.collectionViewLayout.beginUpdates(false, list: self.displayList.getProcessedList() as? AAPreprocessedList, unread: self.unreadMessageId)
             self.collectionView.reloadData()
             self.prevCount = self.getCount()
             self.displayList.addAppleListener(self)
@@ -90,10 +89,8 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
     
     public func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
         let message = (item as! ACMessage)
-        let cellType = Bubbles.cellTypeForMessage(message)
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellType, forIndexPath: indexPath)
-            as! AABubbleCell
-        cell.setConfig(peer, controller: self)
+        let cell = collectionView.dequeueCell(AABubbles.cellClassForMessage(message), indexPath: indexPath)
+        (cell as! AABubbleCell).setConfig(peer, controller: self)
         return cell
     }
     
@@ -131,7 +128,7 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
         
     }
     
-    func getProcessedList() -> PreprocessedList? {
+    func getProcessedList() -> AAPreprocessedList? {
         if self.displayList == nil {
             return nil
         }
@@ -139,7 +136,7 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
             return nil
         }
         
-        return self.displayList.getProcessedList() as? PreprocessedList
+        return self.displayList.getProcessedList() as? AAPreprocessedList
     }
     
     public override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -151,8 +148,6 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
         let cell = buildCell(collectionView, cellForRowAtIndexPath:indexPath, item:item)
         bindCell(collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell)
         displayList.touchWithIndex(jint(indexPath.row))
-//        cell.contentView.transform = collectionView.transform
-//        cell.transform = collectionView.transform
         return cell
     }
     
@@ -170,7 +165,7 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
     func displayListForController() -> ARBindedDisplayList {
         let res = Actor.getMessageDisplayList(peer)
         if (res.getListProcessor() == nil) {
-            res.setListProcessor(ListProcessor(peer: peer))
+            res.setListProcessor(AAListProcessor(peer: peer))
         }
         return res
     }
@@ -191,15 +186,13 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
     }
     
     public func onCollectionChangedWithChanges(modification: ARAppleListUpdate!) {
-
-        let start = CFAbsoluteTimeGetCurrent()
         
         if modification.isLoadMore {
             UIView.setAnimationsEnabled(false)
         }
         
         self.willUpdate()
-        let list = self.displayList.getProcessedList() as? PreprocessedList
+        let list = self.displayList.getProcessedList() as? AAPreprocessedList
         self.collectionViewLayout.beginUpdates(modification.isLoadMore, list: list, unread: unreadMessageId)
         
         if modification.nonUpdateCount() > 0 {
@@ -296,8 +289,6 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
         if modification.isLoadMore {
             UIView.setAnimationsEnabled(true)
         }
-        
-        print("collectionChanged: \(CFAbsoluteTimeGetCurrent() - start)")
     }
     
     public func willUpdate() {
@@ -316,7 +307,7 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
                     if item.senderId != Actor.myUid() {
                         if readState < item.sortDate {
                             unreadIndex = ind
-                            setUnread(item.rid)
+                            unreadMessageId = item.rid
                             break
                         }
                     }
@@ -334,21 +325,17 @@ public class ConversationContentViewController: SLKTextViewController, ARDisplay
         }
     }
     
-    public func setUnread(rid: jlong) {
-        self.unreadMessageId = rid
-    }
-    
     public func onBubbleAvatarTap(view: UIView, uid: jint) {
-//        let controller = UserViewController(uid: Int(uid))
-//        if (isIPad) {
-//            let navigation = AANavigationController()
-//            navigation.viewControllers = [controller]
-//            let popover = UIPopoverController(contentViewController:  navigation)
-//            controller.popover = popover
-//            popover.presentPopoverFromRect(view.bounds, inView: view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
-//        } else {
-//            navigateNext(controller, removeCurrent: false)
-//        }
+        let controller = ActorSDK.sharedActor().delegate.actorControllerForUser(Int(uid))
+        if (AADevice.isiPad) {
+            let navigation = AANavigationController()
+            navigation.viewControllers = [controller]
+            let popover = UIPopoverController(contentViewController:  navigation)
+            controller.popover = popover
+            popover.presentPopoverFromRect(view.bounds, inView: view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
+        } else {
+            navigateNext(controller, removeCurrent: false)
+        }
     }
     
     public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
