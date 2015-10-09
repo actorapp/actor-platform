@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		065974E21BC6926C00B8C7DF /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 065974E11BC6926C00B8C7DF /* ActorSDK.framework */; };
-		065974E31BC6926C00B8C7DF /* ActorSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 065974E11BC6926C00B8C7DF /* ActorSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; };
+		06230F0A1BC7FF3500A4807B /* ActorSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		065975561BC7E22500B8C7DF /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 065975551BC7E22500B8C7DF /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
 		066A52781BC514B4000E606E /* PhoneFormats.dat in Resources */ = {isa = PBXBuildFile; fileRef = 066A52771BC514B4000E606E /* PhoneFormats.dat */; settings = {ASSET_TAGS = (); }; };
 		066A527A1BC51530000E606E /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 066A52791BC51530000E606E /* ABPhoneFieldCodes.txt */; settings = {ASSET_TAGS = (); }; };
 		068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
@@ -19,14 +20,31 @@
 		F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		06230F071BC7FF3000A4807B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 066A50D21BC4AE63000E606E;
+			remoteInfo = ActorSDK;
+		};
+		06230F0B1BC7FF3500A4807B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 066A50D11BC4AE63000E606E;
+			remoteInfo = ActorSDK;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
-		065974E41BC6926C00B8C7DF /* Embed Frameworks */ = {
+		06230F0D1BC7FF3500A4807B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				065974E31BC6926C00B8C7DF /* ActorSDK.framework in Embed Frameworks */,
+				06230F0A1BC7FF3500A4807B /* ActorSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -34,7 +52,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ActorSDK.xcodeproj; sourceTree = "<group>"; };
 		065974E11BC6926C00B8C7DF /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = ActorSDK.framework; path = "/Users/ex3ndr/Library/Developer/Xcode/DerivedData/ActorApp-clcqncodqhdxutfqgjvteqywzxue/Build/Products/Debug-iphoneos/ActorSDK.framework"; sourceTree = "<absolute>"; };
+		065975551BC7E22500B8C7DF /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1.jpg; sourceTree = "<group>"; };
 		066A50761BC45A5E000E606E /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
 		066A52771BC514B4000E606E /* PhoneFormats.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = PhoneFormats.dat; sourceTree = "<group>"; };
 		066A52791BC51530000E606E /* ABPhoneFieldCodes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ABPhoneFieldCodes.txt; sourceTree = "<group>"; };
@@ -61,13 +81,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				4403E543C36C1FDC89DD4E00 /* Pods_ActorApp.framework in Frameworks */,
-				065974E21BC6926C00B8C7DF /* ActorSDK.framework in Frameworks */,
+				06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		06230F041BC7FF2F00A4807B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				06230F081BC7FF3000A4807B /* ActorSDK.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		1ACEA023B930E6F261DAC0A6BDB410C1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +121,7 @@
 		75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				065975551BC7E22500B8C7DF /* bg_1.jpg */,
 				2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */,
 				13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */,
 				068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */,
@@ -103,6 +132,7 @@
 		86C48777C0FD262E78F8BEC9253C9914 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */,
 				066A50761BC45A5E000E606E /* j2objc.framework */,
 				E2F298FBF1BB3C0A84996ED3 /* Pods_ActorApp.framework */,
 				065974E11BC6926C00B8C7DF /* ActorSDK.framework */,
@@ -153,11 +183,12 @@
 				06FC5E741BAB2DCC0071F153 /* ShellScript */,
 				16DA98FD27E0766A88C46CBB /* Embed Pods Frameworks */,
 				066A51C41BC4DA45000E606E /* ShellScript */,
-				065974E41BC6926C00B8C7DF /* Embed Frameworks */,
+				06230F0D1BC7FF3500A4807B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				06230F0C1BC7FF3500A4807B /* PBXTargetDependency */,
 			);
 			name = ActorApp;
 			productName = ActorApp;
@@ -199,6 +230,12 @@
 			mainGroup = D873D85572C6C400293E0DF69DBA58DD;
 			productRefGroup = C83A7EEB1948C38ECEFC1D330C57A7B1 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 06230F041BC7FF2F00A4807B /* Products */;
+					ProjectRef = 06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				EA6B7348F8364542DDD264F741AAAA19 /* ActorApp */,
@@ -206,11 +243,22 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		06230F081BC7FF3000A4807B /* ActorSDK.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ActorSDK.framework;
+			remoteRef = 06230F071BC7FF3000A4807B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		B094A1F03E91E4354C789DE8702D2FB4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				065975561BC7E22500B8C7DF /* bg_1.jpg in Resources */,
 				2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */,
 				F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */,
 				068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */,
@@ -307,6 +355,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		06230F0C1BC7FF3500A4807B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ActorSDK;
+			targetProxy = 06230F0B1BC7FF3500A4807B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -335,6 +391,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -451,6 +508,7 @@
 				CODE_SIGN_ENTITLEMENTS = "ActorApp/Supporting Files/ActorApp.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FABRIC_BUILD_SECRET = "";
 				FRAMEWORK_SEARCH_PATHS = (
