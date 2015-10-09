@@ -84,7 +84,7 @@ endpoints: [
 # * enricher: enables encriching of messages 
 #   for example, downloading previews of images by URL, or
 #   loading gif images from Gliphy
-enabled-modules {
+modules {
 
   # Configuration for messaging module
   # messaging {

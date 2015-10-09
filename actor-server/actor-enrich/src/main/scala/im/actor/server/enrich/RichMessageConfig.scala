@@ -13,5 +13,5 @@ object RichMessageConfig {
     } yield RichMessageConfig(maxSize)
 
   def load(): Try[RichMessageConfig] =
-    load(ConfigFactory.load().getConfig("enabled-modules.enricher"))
+    load(ConfigFactory.load().getConfig("modules.enricher"))
 }
