@@ -59,10 +59,10 @@ object Main extends App {
     val activationConfig = ActivationConfig.load.get
     val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("services.email")).toOption.get
     val gateConfig = GateConfig.load.get
-    val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("enabled-modules.messaging.groups.invite"))
+    val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("modules.messaging.groups.invite"))
     val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
     val oauth2GoogleConfig = OAuth2GoogleConfig.load(serverConfig.getConfig("services.google.oauth"))
-    val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("enabled-modules.enricher")).get
+    val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("modules.enricher")).get
     val sequenceConfig = SequenceServiceConfig.load().get
     implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
 

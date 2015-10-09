@@ -31,7 +31,7 @@ object Webaction {
   def list(path: String): Map[String, String] =
     ActorConfig.load().getConfig(path).root.unwrapped.toMap map { case (k, v) ⇒ k → v.toString }
 
-  def list: Map[String, String] = list("enabled-modules.webactions")
+  def list: Map[String, String] = list("modules.webactions")
 
   /**
    * Instantiates webaction by fully qualified class name

@@ -13,5 +13,5 @@ object SequenceServiceConfig {
     } yield SequenceServiceConfig(maxDifferenceSize)
 
   def load(): Try[SequenceServiceConfig] =
-    load(ConfigFactory.load().getConfig("enabled-modules.sequence"))
+    load(ConfigFactory.load().getConfig("modules.sequence"))
 }
