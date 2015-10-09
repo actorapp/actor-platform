@@ -9,7 +9,7 @@ import im.actor.server.office.EntityNotFound
 import scala.language.postfixOps
 
 object UserUtils {
-  def defaultUserContactRecords(phones: Vector[Long], emails: Vector[String]): Vector[ApiContactRecord] = {
+  def defaultUserContactRecords(phones: Vector[Long], emails: Vector[String], socialContacts: Vector[SocialContact]): Vector[ApiContactRecord] = {
     val phoneRecords = phones map { phone ⇒
       ApiContactRecord(ApiContactType.Phone, stringValue = None, longValue = Some(phone), title = Some("Mobile phone"), subtitle = None, typeSpec = None)
     }
@@ -18,7 +18,11 @@ object UserUtils {
       ApiContactRecord(ApiContactType.Email, stringValue = Some(email), longValue = None, title = Some("Email"), subtitle = None, typeSpec = None)
     }
 
-    phoneRecords ++ emailRecords
+    val socialRecords = socialContacts map { contact ⇒
+      ApiContactRecord(ApiContactType.Social, stringValue = Some(contact.value), longValue = None, title = Some(contact.title), subtitle = None, typeSpec = None)
+    }
+
+    phoneRecords ++ emailRecords ++ socialRecords
   }
 
   def userContactRecords(phones: Vector[models.UserPhone], emails: Vector[models.UserEmail]): Vector[ApiContactRecord] = {
