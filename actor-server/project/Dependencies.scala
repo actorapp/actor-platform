@@ -11,10 +11,12 @@ object Dependencies {
     val scalaz = "7.1.1"
     val slick = "3.0.3"
     val scalatest = "2.2.4"
+    val shardakka = "0.1.8"
   }
 
   object Compile {
     val actorConcurrent         = "im.actor"                      %% "actor-concurrent"              % V.actorCommons
+    val shardakka               = "im.actor"                      %% "shardakka"                     % V.shardakka
 
     val akkaActor               = "com.typesafe.akka"             %% "akka-actor"                    % V.akka exclude("com.google.protobuf", "protobuf-java")
     val akkaPersistence         = "com.typesafe.akka"             %% "akka-persistence-experimental" % V.akka exclude("com.google.protobuf", "protobuf-java")
@@ -106,7 +108,7 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, playJson)
 
-  val bot = shared ++ Seq(upickle)
+  val bots = shared ++ Seq(upickle, shardakka)
 
   val botkit = Seq(actorConcurrent, akkaActor, akkaHttp, akkaSlf4j, javaCompat, sprayWebsocket, upickle)
 
@@ -123,6 +125,7 @@ object Dependencies {
     pushy,
     jodaTime,
     postgresJdbc,
+    shardakka,
     slick,
     scrImageCore)
 
@@ -147,8 +150,6 @@ object Dependencies {
   val persist = shared ++ Seq(akkaActor, apacheCommonsCodec, postgresJdbc, slick, slickJoda, slickPg, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaContrib
-
-  val shardakka = shared ++ Seq(akkaActor, akkaContrib, eaioUuid, protobuf)
 
   val sms = shared ++ Seq(akkaActor, akkaHttp, dispatch)
 
