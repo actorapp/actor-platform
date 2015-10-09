@@ -22,7 +22,7 @@ sealed trait DialogExtension extends Extension
 final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
   DialogProcessor.register()
 
-  val InternalDialogExtensions = "enabled-modules.messaging.extensions"
+  val InternalDialogExtensions = "modules.messaging.extensions"
 
   val privateRegion: PrivateDialogRegion = PrivateDialogRegion.start()(system)
   val groupRegion: GroupDialogRegion = GroupDialogRegion.start()(system)
