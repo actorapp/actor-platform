@@ -1,21 +1,19 @@
 package im.actor.server.bot
 
-import akka.actor.{ Stash, ActorLogging, Props }
+import akka.actor.{ ActorLogging, Props, Stash }
 import akka.pattern.pipe
 import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl.Source
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.codecs._
-import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessage }
+import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate }
 import im.actor.bots.BotMessages
-import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.protocol.UpdateBox
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.sequence.{ UpdateRefs, SeqUpdatesManager, UpdatesConsumer, WeakUpdatesManager }
-import im.actor.server.user.UserExtension
 import im.actor.server.persist
+import im.actor.server.presences.{ GroupPresenceExtension, PresenceExtension }
+import im.actor.server.sequence.{ UpdatesConsumer, WeakUpdatesExtension }
 
 import scala.annotation.tailrec
 
@@ -37,9 +35,9 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[(Int, Update)] 
   import context._
   import im.actor.server.sequence.NewUpdate
 
-  private implicit val weakUpdatesManagerRegion = WeakUpdatesManager.startRegionProxy()
-  private implicit val presenceManagerRegion = PresenceManager.startRegionProxy()
-  private implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegionProxy()
+  private val weakUpdatesExt = WeakUpdatesExtension(system) //???
+  private val presenceExt = PresenceExtension(system)
+  private val groupPresenceExt = GroupPresenceExtension(system) //???
   private val db = DbExtension(system).db
 
   context.actorOf(UpdatesConsumer.props(authId, self), "updatesConsumer")

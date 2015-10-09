@@ -3,7 +3,6 @@ package im.actor.server
 import java.net.InetSocketAddress
 
 import akka.contrib.pattern.DistributedPubSubExtension
-import akka.stream.ActorMaterializer
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc.auth._
@@ -21,8 +20,6 @@ import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.sequence._
 import im.actor.server.session.{ Session, SessionConfig }
 
 import scala.concurrent.ExecutionContext
@@ -57,10 +54,6 @@ class SimpleServerE2eSpec extends ActorSuite(
 
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     val sequenceConfig = SequenceServiceConfig.load.toOption.get
-
-    implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-    implicit val presenceManagerRegion = PresenceManager.startRegion()
-    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
     val mediator = DistributedPubSubExtension(system).mediator
 

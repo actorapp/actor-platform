@@ -2,14 +2,13 @@ package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.integrtions.ResponseIntegrationToken
-import im.actor.api.rpc.peers.{ ApiUserOutPeer, ApiOutPeer, ApiPeerType }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType, ApiUserOutPeer }
+import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server._
 import org.scalatest.Inside._
 
 class IntegrationsServiceSpec
@@ -35,9 +34,6 @@ class IntegrationsServiceSpec
 
     implicit val ec = system.dispatcher
     implicit val sessionRegion = buildSessionRegionProxy()
-
-    implicit val presenceManagerRegion = PresenceManager.startRegion()
-    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 

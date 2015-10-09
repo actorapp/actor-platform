@@ -1,24 +1,15 @@
 package im.actor.server.session
 
-import scala.concurrent.duration._
-import scala.concurrent.{ Await, Future, blocking }
-import scala.util.Random
-
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
-import akka.stream.ActorMaterializer
 import akka.testkit.TestProbe
 import akka.util.Timeout
 import com.google.protobuf.ByteString
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.{ Seconds, Span }
-import org.scalatest.{ FlatSpecLike, Matchers }
-import slick.driver.PostgresDriver
-
 import im.actor.api.rpc.RpcResult
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
 import im.actor.server
+import im.actor.server._
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
@@ -27,10 +18,15 @@ import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.MTPackage
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.sequence.WeakUpdatesManager
 import im.actor.server.session.SessionEnvelope.Payload
-import im.actor.server._
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{ Seconds, Span }
+import org.scalatest.{ FlatSpecLike, Matchers }
+import slick.driver.PostgresDriver
+
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future, blocking }
+import scala.util.Random
 
 abstract class BaseSessionSpec(_system: ActorSystem = {
                                  server.ActorSpecification.createSystem()
@@ -51,10 +47,6 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected implicit val db: PostgresDriver.api.Database = DbExtension(_system).db
   DbExtension(_system).clean()
   DbExtension(_system).migrate()
-
-  protected implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  protected implicit val presenceManagerRegion = PresenceManager.startRegion()
-  protected implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   protected val mediator = DistributedPubSubExtension(system).mediator
 
