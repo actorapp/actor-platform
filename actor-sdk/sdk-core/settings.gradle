@@ -1,14 +1,14 @@
 
 // Runtime library
 include ':runtime'
-include ':runtime:main'
+include ':runtime:shared'
 include ':runtime:android'
 include ':runtime:js'
 include ':runtime:cocoa'
 
 // Core library
 include ':core'
-include ':core:main'
+include ':core:shared'
 include ':core:android'
 include ':core:js'
 include ':core:cocoa'
