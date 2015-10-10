@@ -26,11 +26,11 @@ android {
         main {
             java {
                 srcDirs = ['src/main/java',
-                           '../main/src/main/java',
-                           '../main/src/ext/java']
+                           '../shared/src/main/java',
+                           '../shared/src/ext/java']
             }
             resources {
-                srcDirs = ['../main/src/main/resources']
+                srcDirs = ['../shared/src/main/resources']
             }
         }
 

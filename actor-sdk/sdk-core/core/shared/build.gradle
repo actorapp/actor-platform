@@ -9,9 +9,8 @@ sourceSets {
     main {
         java {
             srcDirs = ['src/main/java',
-                       'src/ext/java',
-                       '../../runtime/main/src/main/java',
-                       '../../runtime/main/src/template/java']
+                       '../../runtime/shared/src/main/java',
+                       '../../runtime/shared/src/template/java']
         }
         resources {
             srcDir 'src/main/resources'
