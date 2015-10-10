@@ -2,7 +2,7 @@
 set -e
 
 # Configuration
-J2OBJC_VERSION=0.9.8.2
+J2OBJC_VERSION=0.9.8.2.1
 BUILD_DIRECTORY="$1/build-tools"
 J2OBJC_DIR="${BUILD_DIRECTORY}/dist/"
 
