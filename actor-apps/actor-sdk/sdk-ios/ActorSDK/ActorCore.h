@@ -75,6 +75,8 @@
 #import <ActorSDK/im/actor/core/viewmodel/Command.h>
 #import <ActorSDK/im/actor/core/viewmodel/CommandCallback.h>
 
+#import <ActorSDK/im/actor/core/i18n/I18nEngine.h>
+
 #import <ActorSDK/im/actor/core/viewmodel/generics/StringValueModel.h>
 #import <ActorSDK/im/actor/core/viewmodel/generics/AvatarValueModel.h>
 #import <ActorSDK/im/actor/core/viewmodel/generics/BooleanValueModel.h>
@@ -82,8 +84,6 @@
 #import <ActorSDK/im/actor/core/viewmodel/generics/UserPhoneValueModel.h>
 #import <ActorSDK/im/actor/core/viewmodel/generics/UserPresenceValueModel.h>
 #import <ActorSDK/im/actor/core/viewmodel/generics/ArrayListUserPhone.h>
-
-#import <ActorSDK/im/actor/core/i18n/I18NEngine.h>
 
 #import <ActorSDK/im/actor/core/network/RpcException.h>
 
