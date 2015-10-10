@@ -4,8 +4,8 @@
 
 import Foundation
 
-import Fabric
-import Crashlytics
+//import Fabric
+//import Crashlytics
 import ActorSDK
 
 class AppDelegate : ActorApplicationDelegate {
@@ -22,25 +22,15 @@ class AppDelegate : ActorApplicationDelegate {
         
         // Even when Fabric/Crashlytics not configured
         // this method doesn't crash
-        Fabric.with([Crashlytics.self()])
+//        Fabric.with([Crashlytics.self()])
         
         // Creating Actor
-        createActor()
+        // createActor()
+        
+        ActorSDK.sharedActor().createActor()
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-        
-        // Register hockey app
-//        if AppConfig.hockeyapp != nil {
-//            BITHockeyManager.sharedHockeyManager().configureWithIdentifier(AppConfig.hockeyapp!)
-//            BITHockeyManager.sharedHockeyManager().disableCrashManager = true
-//            BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
-//            BITHockeyManager.sharedHockeyManager().startManager()
-//            BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
-//        }
-        
-//        ActorSDK.sharedActor().style.vcBgColor = UIColor.redColor()
-//        ActorSDK.sharedActor().style.vcBackyardColor = UIColor.greenColor()
         
         let style = ActorSDK.sharedActor().style
         
@@ -126,96 +116,5 @@ class AppDelegate : ActorApplicationDelegate {
 //        })
         
         return true;
-    }
-    
-//    override func actorDidLoggedIn(logInViewController: UIViewController?) {
-//        // Create root layout for app
-//        var rootController : UIViewController? = nil
-//        if (isIPad) {
-//            let splitController = MainSplitViewController()
-//            splitController.viewControllers = [MainTabViewController(isAfterLogin: logInViewController != nil), NoSelectionViewController()]
-//            
-//            rootController = splitController
-//        } else {
-//            let tabController = MainTabViewController(isAfterLogin: logInViewController != nil)
-//            binder.bind(Actor.getAppState().isAppLoaded, valueModel2: Actor.getAppState().isAppEmpty) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
-//                if (empty!.booleanValue()) {
-//                    if (loaded!.booleanValue()) {
-//                        tabController.showAppIsEmptyPlaceholder()
-//                    } else {
-//                        tabController.showAppIsSyncingPlaceholder()
-//                    }
-//                } else {
-//                    tabController.hidePlaceholders()
-//                }
-//            }
-//            rootController = tabController
-//        }
-//        
-//        window?.rootViewController = rootController!
-//
-//    }
-    
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        
-        if (url.scheme == "actor") {
-            if (url.host == "invite") {
-                if (Actor.isLoggedIn()) {
-                    let token = url.query?.componentsSeparatedByString("=")[1]
-                    if token != nil {
-                        UIAlertView.showWithTitle(nil, message: localized("GroupJoinMessage"), cancelButtonTitle: localized("AlertNo"), otherButtonTitles: [localized("GroupJoinAction")], tapBlock: { (view, index) -> Void in
-                            if (index == view.firstOtherButtonIndex) {
-                                Executions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
-                                    let groupId = val as! JavaLangInteger
-                                    self.openChat(ACPeer.groupWithInt(groupId.intValue))
-                                    }, failureBlock: { (val) -> Void in
-                                        
-                                        if let res = val as? ACRpcException {
-                                            if res.getTag() == "USER_ALREADY_INVITED" {
-                                                UIAlertView.showWithTitle(nil, message: localized("ErrorAlreadyJoined"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
-                                                return
-                                            }
-                                        }
-                                        
-                                        UIAlertView.showWithTitle(nil, message: localized("ErrorUnableToJoin"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
-                                })
-                            }
-                        })
-                    }
-                }
-                
-                return true
-            }
-        }
-        return false
-    }
-        
-    // Obsolete
-    
-    func openChat(peer: ACPeer) {
-//        for i in UIApplication.sharedApplication().windows {
-//            if let tab = i.rootViewController as? MainTabViewController {
-//                let controller = tab.viewControllers![tab.selectedIndex] as! AANavigationController
-//                let destController = ConversationViewController(peer: peer)
-//                destController.hidesBottomBarWhenPushed = true
-//                controller.pushViewController(destController, animated: true)
-//                return
-//            } else if let split = i.rootViewController as? MainSplitViewController {
-//                split.navigateDetail(ConversationViewController(peer: peer))
-//                return
-//            }
-//        }
-    }
-    
-    func showBadge() {
-//        isBadgeVisible = true
-//        if badgeCount > 0 {
-//            self.badgeView.showView()
-//        }
-    }
-    
-    func hideBadge() {
-//        isBadgeVisible = false
-//        self.badgeView.hideView()
     }
 }

@@ -7,21 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06230F311BC91A4E00A4807B /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F301BC91A4E00A4807B /* Pods_ActorSDK.framework */; };
 		065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */; settings = {ASSET_TAGS = (); }; };
 		065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A61BC62B3600B8C7DF /* ViewExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975011BC7534100B8C7DF /* FMDBBridge.swift */; settings = {ASSET_TAGS = (); }; };
 		065975051BC757A300B8C7DF /* ActorRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975041BC757A300B8C7DF /* ActorRuntime.swift */; settings = {ASSET_TAGS = (); }; };
 		065975071BC7BB4000B8C7DF /* AANavigationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975061BC7BB4000B8C7DF /* AANavigationBadge.swift */; settings = {ASSET_TAGS = (); }; };
-		065975131BC7C50100B8C7DF /* AppText_Ar.properties in Resources */ = {isa = PBXBuildFile; fileRef = 065975091BC7C50100B8C7DF /* AppText_Ar.properties */; settings = {ASSET_TAGS = (); }; };
-		065975141BC7C50100B8C7DF /* AppText_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 0659750A1BC7C50100B8C7DF /* AppText_Cn.properties */; settings = {ASSET_TAGS = (); }; };
-		065975151BC7C50100B8C7DF /* AppText_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 0659750B1BC7C50100B8C7DF /* AppText_Pt.properties */; settings = {ASSET_TAGS = (); }; };
-		065975161BC7C50100B8C7DF /* AppText_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 0659750C1BC7C50100B8C7DF /* AppText_Ru.properties */; settings = {ASSET_TAGS = (); }; };
-		065975171BC7C50100B8C7DF /* AppText.properties in Resources */ = {isa = PBXBuildFile; fileRef = 0659750D1BC7C50100B8C7DF /* AppText.properties */; settings = {ASSET_TAGS = (); }; };
-		065975181BC7C50100B8C7DF /* Months_Ar.properties in Resources */ = {isa = PBXBuildFile; fileRef = 0659750E1BC7C50100B8C7DF /* Months_Ar.properties */; settings = {ASSET_TAGS = (); }; };
-		065975191BC7C50100B8C7DF /* Months_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 0659750F1BC7C50100B8C7DF /* Months_Cn.properties */; settings = {ASSET_TAGS = (); }; };
-		0659751A1BC7C50100B8C7DF /* Months_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 065975101BC7C50100B8C7DF /* Months_Pt.properties */; settings = {ASSET_TAGS = (); }; };
-		0659751B1BC7C50100B8C7DF /* Months_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 065975111BC7C50100B8C7DF /* Months_Ru.properties */; settings = {ASSET_TAGS = (); }; };
-		0659751C1BC7C50100B8C7DF /* Months.properties in Resources */ = {isa = PBXBuildFile; fileRef = 065975121BC7C50100B8C7DF /* Months.properties */; settings = {ASSET_TAGS = (); }; };
 		065975211BC7C84E00B8C7DF /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0659751E1BC7C84E00B8C7DF /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
 		065975221BC7C84E00B8C7DF /* bg_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0659751F1BC7C84E00B8C7DF /* bg_3.jpg */; settings = {ASSET_TAGS = (); }; };
 		065975231BC7C84E00B8C7DF /* bg_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 065975201BC7C84E00B8C7DF /* bg_2.jpg */; settings = {ASSET_TAGS = (); }; };
@@ -166,11 +157,13 @@
 		066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53311BC534F5000E606E /* AAFileTypes.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53371BC537CA000E606E /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53361BC537CA000E606E /* ConversationViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		066A53391BC5456B000E606E /* ActorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 066A53381BC5456B000E606E /* ActorStyle.swift */; settings = {ASSET_TAGS = (); }; };
-		E65AAED29D6BB82A2A476F09 /* Pods_ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		02E2F146DCB2827E75A24D6E /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		06230F2C1BC91A2E00A4807B /* CLTokenInputView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CLTokenInputView.framework; path = "Pods/../build/Debug-iphoneos/CLTokenInputView.framework"; sourceTree = "<group>"; };
+		06230F2E1BC91A4200A4807B /* VBFPopFlatButton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VBFPopFlatButton.framework; path = "Pods/../build/Debug-iphoneos/VBFPopFlatButton.framework"; sourceTree = "<group>"; };
+		06230F301BC91A4E00A4807B /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods_ActorSDK.framework; path = "Pods/../build/Debug-iphoneos/Pods_ActorSDK.framework"; sourceTree = "<group>"; };
 		065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNavigationController.swift; sourceTree = "<group>"; };
 		065974A61BC62B3600B8C7DF /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		065974C51BC680AA00B8C7DF /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "../../app-ios/Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
@@ -178,16 +171,6 @@
 		065975011BC7534100B8C7DF /* FMDBBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBBridge.swift; sourceTree = "<group>"; };
 		065975041BC757A300B8C7DF /* ActorRuntime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorRuntime.swift; sourceTree = "<group>"; };
 		065975061BC7BB4000B8C7DF /* AANavigationBadge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AANavigationBadge.swift; sourceTree = "<group>"; };
-		065975091BC7C50100B8C7DF /* AppText_Ar.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AppText_Ar.properties; path = ActorApp/../../core/main/src/main/resources/AppText_Ar.properties; sourceTree = SOURCE_ROOT; };
-		0659750A1BC7C50100B8C7DF /* AppText_Cn.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AppText_Cn.properties; path = ActorApp/../../core/main/src/main/resources/AppText_Cn.properties; sourceTree = SOURCE_ROOT; };
-		0659750B1BC7C50100B8C7DF /* AppText_Pt.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AppText_Pt.properties; path = ActorApp/../../core/main/src/main/resources/AppText_Pt.properties; sourceTree = SOURCE_ROOT; };
-		0659750C1BC7C50100B8C7DF /* AppText_Ru.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AppText_Ru.properties; path = ActorApp/../../core/main/src/main/resources/AppText_Ru.properties; sourceTree = SOURCE_ROOT; };
-		0659750D1BC7C50100B8C7DF /* AppText.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AppText.properties; path = ActorApp/../../core/main/src/main/resources/AppText.properties; sourceTree = SOURCE_ROOT; };
-		0659750E1BC7C50100B8C7DF /* Months_Ar.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months_Ar.properties; path = ActorApp/../../core/main/src/main/resources/Months_Ar.properties; sourceTree = SOURCE_ROOT; };
-		0659750F1BC7C50100B8C7DF /* Months_Cn.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months_Cn.properties; path = ActorApp/../../core/main/src/main/resources/Months_Cn.properties; sourceTree = SOURCE_ROOT; };
-		065975101BC7C50100B8C7DF /* Months_Pt.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months_Pt.properties; path = ActorApp/../../core/main/src/main/resources/Months_Pt.properties; sourceTree = SOURCE_ROOT; };
-		065975111BC7C50100B8C7DF /* Months_Ru.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months_Ru.properties; path = ActorApp/../../core/main/src/main/resources/Months_Ru.properties; sourceTree = SOURCE_ROOT; };
-		065975121BC7C50100B8C7DF /* Months.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Months.properties; path = ActorApp/../../core/main/src/main/resources/Months.properties; sourceTree = SOURCE_ROOT; };
 		0659751E1BC7C84E00B8C7DF /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1.jpg; sourceTree = "<group>"; };
 		0659751F1BC7C84E00B8C7DF /* bg_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_3.jpg; sourceTree = "<group>"; };
 		065975201BC7C84E00B8C7DF /* bg_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_2.jpg; sourceTree = "<group>"; };
@@ -348,8 +331,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06230F311BC91A4E00A4807B /* Pods_ActorSDK.framework in Frameworks */,
 				066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */,
-				E65AAED29D6BB82A2A476F09 /* Pods_ActorSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,16 +347,6 @@
 				0659754A1BC7DBA000B8C7DF /* notification.caf */,
 				0659751D1BC7C84200B8C7DF /* Backgrounds */,
 				0659753A1BC7D22200B8C7DF /* Images.xcassets */,
-				065975091BC7C50100B8C7DF /* AppText_Ar.properties */,
-				0659750A1BC7C50100B8C7DF /* AppText_Cn.properties */,
-				0659750B1BC7C50100B8C7DF /* AppText_Pt.properties */,
-				0659750C1BC7C50100B8C7DF /* AppText_Ru.properties */,
-				0659750D1BC7C50100B8C7DF /* AppText.properties */,
-				0659750E1BC7C50100B8C7DF /* Months_Ar.properties */,
-				0659750F1BC7C50100B8C7DF /* Months_Cn.properties */,
-				065975101BC7C50100B8C7DF /* Months_Pt.properties */,
-				065975111BC7C50100B8C7DF /* Months_Ru.properties */,
-				065975121BC7C50100B8C7DF /* Months.properties */,
 				065975461BC7D34200B8C7DF /* Localizable.strings */,
 			);
 			name = Resources;
@@ -850,6 +823,9 @@
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06230F301BC91A4E00A4807B /* Pods_ActorSDK.framework */,
+				06230F2E1BC91A4200A4807B /* VBFPopFlatButton.framework */,
+				06230F2C1BC91A2E00A4807B /* CLTokenInputView.framework */,
 				065974DB1BC6884700B8C7DF /* Pods.framework */,
 				065974C51BC680AA00B8C7DF /* j2objc.framework */,
 				066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */,
@@ -954,23 +930,13 @@
 				065975511BC7DD3C00B8C7DF /* highlight-default.min.css in Resources */,
 				0659754B1BC7DBA000B8C7DF /* iapetus.caf in Resources */,
 				066A52751BC5101A000E606E /* ABPhoneFieldCodes.txt in Resources */,
-				065975181BC7C50100B8C7DF /* Months_Ar.properties in Resources */,
 				065975221BC7C84E00B8C7DF /* bg_3.jpg in Resources */,
-				065975151BC7C50100B8C7DF /* AppText_Pt.properties in Resources */,
-				065975191BC7C50100B8C7DF /* Months_Cn.properties in Resources */,
 				065975211BC7C84E00B8C7DF /* bg_1.jpg in Resources */,
 				0659753B1BC7D22200B8C7DF /* Images.xcassets in Resources */,
-				0659751C1BC7C50100B8C7DF /* Months.properties in Resources */,
-				0659751B1BC7C50100B8C7DF /* Months_Ru.properties in Resources */,
-				065975171BC7C50100B8C7DF /* AppText.properties in Resources */,
 				065975231BC7C84E00B8C7DF /* bg_2.jpg in Resources */,
 				065975521BC7DD3C00B8C7DF /* highlight.min.js in Resources */,
-				065975141BC7C50100B8C7DF /* AppText_Cn.properties in Resources */,
-				0659751A1BC7C50100B8C7DF /* Months_Pt.properties in Resources */,
 				065975441BC7D34200B8C7DF /* Localizable.strings in Resources */,
 				0659754C1BC7DBA000B8C7DF /* notification.caf in Resources */,
-				065975161BC7C50100B8C7DF /* AppText_Ru.properties in Resources */,
-				065975131BC7C50100B8C7DF /* AppText_Ar.properties in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -988,7 +954,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\ncd ActorSDK\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/convert.py\" \"${PROJECT_DIR}/ActorSDK/ActorCore.h\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"";
+			shellScript = "set -e\n\ncd ActorSDK\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/convert.py\" \"${PROJECT_DIR}/ActorSDK/ActorCore.h\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\ncp -a \"${PROJECT_DIR}/../core/main/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/include/\"";
 		};
 		842CC4516DA967714D224C37 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1268,6 +1234,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1288,6 +1255,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(CONFIGURATION_TEMP_DIR)/j2objc/Objects/";
 				MACH_O_TYPE = mh_dylib;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-lactor",
 					"$(inherited)",
@@ -1303,6 +1271,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
