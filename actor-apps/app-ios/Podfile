@@ -8,5 +8,5 @@ inhibit_all_warnings!
 
 target 'ActorApp' do
     xcodeproj 'ActorApp.xcodeproj'
-    pod ‘ActorSDK-iOS’
+    pod 'ActorSDK-iOS'
 end
