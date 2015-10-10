@@ -29,7 +29,7 @@ J2OBJC_DISTRIBUTION = $(SDK_ROOT)/build-tools/dist/j2objc-0.9.8.2.1
 J2OBJC = $(J2OBJC_DISTRIBUTION)/j2objc
 J2OBJCC = $(J2OBJC_DISTRIBUTION)/j2objcc
 J2OBJC_ARGS = -use-arc --generate-deprecated --doc-comments -g --static-accessor-methods
-J2OBJCC_ARGS = -shared -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include
+J2OBJCC_ARGS = -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include
 
 LIBRARY_NAME = libactor.so
 
@@ -59,6 +59,17 @@ SOURCE_PATHS = $(subst $(space),:,$(SOURCE_ROOTS))
 
 UPDATED_SOURCES = $(WORKING_DIR)/.sources.list
 
+# Helper to avoid "Argument list too long"
+define max_args
+  $(eval _args:=)
+  $(foreach obj,$3,$(eval _args+=$(obj))$(if $(word $2,$(_args)),$1$(_args)$(EOL)$(eval _args:=)))
+  $(if $(_args),$1$(_args))
+endef
+define EOL
+
+
+endef
+
 # Build Tasks
 
 # default:
@@ -85,6 +96,7 @@ endef
 $(foreach root,$(SOURCE_ROOTS),$(eval $(call SOURCE_ROOT_RULE,$(root))))
 
 # Compile files
+# $(call max_args,ar rcs $(OBJ_DIR)/$(LIBRARY_NAME),100,$(OBJECT_FILES))
 build: $(OBJ_DIR) $(OBJECT_FILES)
 	@rm -f $(OBJ_DIR)/$(LIBRARY_NAME)
 	@ar rcs $(OBJ_DIR)/$(LIBRARY_NAME) $(OBJECT_FILES)

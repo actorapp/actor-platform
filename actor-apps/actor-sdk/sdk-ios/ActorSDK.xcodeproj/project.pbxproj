@@ -988,7 +988,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -ev\n\necho \"${CONFIGURATION_TEMP_DIR}\"\n\ncd ActorSDK\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/convert.py\"\n\n# rm -fr \"${CONFIGURATION_BUILD_DIR}/ActorCore.framework/Headers\"\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"";
+			shellScript = "set -e\n\ncd ActorSDK\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/convert.py\" \"${PROJECT_DIR}/ActorSDK/ActorCore.h\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"";
 		};
 		842CC4516DA967714D224C37 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1281,6 +1281,7 @@
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_LINK_WITH_DYNAMIC_LIBRARIES = YES;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/ActorSDK/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1315,6 +1316,7 @@
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_LINK_WITH_DYNAMIC_LIBRARIES = YES;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/ActorSDK/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
