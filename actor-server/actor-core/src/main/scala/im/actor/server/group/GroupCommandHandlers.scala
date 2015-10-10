@@ -171,7 +171,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val replyTo = sender()
 
       persist(TSEvent(now(), GroupEvents.UserJoined(joiningUserId, invitingUserId))) { evt ⇒
-        val newState = workWith(evt, group)
+        workWith(evt, group)
 
         val memberIds = group.members.keySet
 
