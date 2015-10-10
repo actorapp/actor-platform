@@ -83,6 +83,4 @@ public interface ModuleContext {
     Messenger getMessenger();
 
     MentionsModule getMentions();
-
-    Extension findExtension(String key);
 }
