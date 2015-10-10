@@ -27,8 +27,6 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
 
   case class UnstashAndWorkBatch(es: immutable.Seq[Event], state: State)
 
-  case class Work(state: State)
-
   private val passivationIntervalMs = context.system.settings.config.getDuration("office.passivation-interval", TimeUnit.MILLISECONDS)
   private implicit val ec = context.dispatcher
 
@@ -45,9 +43,9 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   }
 
   protected def workWith(e: Event, s: State): State = {
-    val updated = updatedState(e, s)
-    self ! Work(updated)
-    updated
+    val newState = updatedState(e, s)
+    context become working(newState)
+    newState
   }
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
@@ -71,8 +69,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   }
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
-    case Work(newState) ⇒ context become working(newState)
-    case unmatched      ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
+    case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
   }
 
   protected final def stashingBehavior: Receive = {
