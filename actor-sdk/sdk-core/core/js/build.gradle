@@ -27,10 +27,10 @@ gwt {
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/java', '../main/src/main/java', '../main/src/ext/java', '../../runtime/main/src/main/java', '../../runtime/js/src/main/java']
+            srcDirs = ['src/main/java', '../shared/src/main/java', '../shared/src/ext/java', '../../runtime/shared/src/main/java', '../../runtime/js/src/main/java']
         }
         resources {
-            srcDirs = ['../main/src/main/resources']
+            srcDirs = ['../shared/src/main/resources']
         }
     }
 }

@@ -6,7 +6,6 @@ package im.actor.core.modules;
 
 import im.actor.core.Configuration;
 import im.actor.core.Extension;
-import im.actor.core.Extensions;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AppStateModule;
@@ -68,7 +67,6 @@ public class Modules implements ModuleContext {
     private volatile SecurityModule security;
     private volatile DisplayLists displayLists;
     private volatile MentionsModule mentions;
-    private volatile Extensions extensions;
 
     public Modules(Messenger messenger, Configuration configuration) {
         this.messenger = messenger;
@@ -135,9 +133,6 @@ public class Modules implements ModuleContext {
         mentions = new MentionsModule(this);
         timing.section("DisplayLists");
         displayLists = new DisplayLists(this);
-        timing.section("Extension");
-        extensions = new Extensions(this);
-        extensions.registerExtensions();
         timing.end();
 
 
@@ -158,8 +153,6 @@ public class Modules implements ModuleContext {
         messages.run();
         timing.section("Updates");
         updates.run();
-        timing.section("Extension");
-        extensions.runExtensions();
         timing.end();
 
         messenger.onLoggedIn();
@@ -276,11 +269,6 @@ public class Modules implements ModuleContext {
 
     public MentionsModule getMentions() {
         return mentions;
-    }
-
-    @Override
-    public Extension findExtension(String key) {
-        return extensions.findExtension(key);
     }
 
     public EventBus getEvents() {
