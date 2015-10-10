@@ -10,7 +10,7 @@ task assembleMainDist(dependsOn: ['copyMainJar', 'assembleMainSourcesJar']) {
 }
 
 task copyMainJar(type: Copy, dependsOn: 'main:jar') {
-    from file('main/build/libs/main.jar')
+    from file('shared/build/libs/main.jar')
     into file('build/dist/')
     rename ('main.jar', 'runtime.jar')
 }
@@ -19,7 +19,7 @@ task assembleMainSourcesJar(type: Zip) {
     baseName = 'runtime-sources'
     extension = 'jar'
     destinationDir = file('build/dist')
-    from fileTree('main/src/main/java')
+    from fileTree('shared/src/main/java')
 }
 
 // Cocoa Sources jar
@@ -37,8 +37,8 @@ task assembleCocoaJar(type: Zip) {
     baseName = 'runtime-sources'
     extension = 'jar'
     destinationDir = file('build/dist/cocoa')
-    from fileTree('main/src/main/java')
-    from fileTree('main/src/generic/java')
+    from fileTree('shared/src/main/java')
+    from fileTree('shared/src/generic/java')
     from fileTree('cocoa/src/main/java')
 }
 
@@ -58,7 +58,7 @@ task assembleJsJar(type: Zip) {
     baseName = 'runtime-sources'
     extension = 'jar'
     destinationDir = file('build/dist/js')
-    from fileTree('main/src/main/java')
+    from fileTree('shared/src/main/java')
     from fileTree('js/src/src/main/java')
 }
 
