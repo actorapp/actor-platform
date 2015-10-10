@@ -3,46 +3,10 @@ use_frameworks!
 
 workspace 'ActorApp'
 xcodeproj 'ActorApp.xcodeproj'
-xcodeproj '../actor-sdk/sdk-ios/ActorSDK.xcodeproj'
 
 inhibit_all_warnings!
 
-target 'ActorSDK' do
-    xcodeproj '../actor-sdk/sdk-ios/ActorSDK.xcodeproj'
-    
-end
-
-
 target 'ActorApp' do
-	xcodeproj 'ActorApp.xcodeproj'
-
-    # Tracking
-    pod 'HockeySDK', '~> 3.8-RC'
-    pod 'Fabric'
-    pod 'Crashlytics'
-    
-    pod 'RegexKitLite'
-    pod 'CocoaAsyncSocket'
-    pod 'zipzap'
-    pod 'J2ObjC-Framework'
-    
-    # UI
-    pod 'VBFPopFlatButton'
-    pod 'MBProgressHUD'
-    pod 'PSTAlertController'
-    pod 'DZNPhotoPickerController'
-    pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
-    pod 'JVFloatLabeledTextField'
-    pod 'CLTokenInputView'
-    pod 'SZTextView'
-    pod 'SlackTextViewController'
-    
-    pod 'NYTPhotoViewer'
-    pod 'PEPhotoCropEditor'
-    pod 'LTNavigationBar'
-    pod 'BlockAlertsAnd-ActionSheets'
-    pod 'RMUniversalAlert'
-    pod 'PSTAlertController'
-    pod 'TTTAttributedLabel'
-    pod 'M13ProgressSuite'
+    xcodeproj 'ActorApp.xcodeproj'
+    pod ‘ActorSDK-iOS’
 end
