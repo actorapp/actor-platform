@@ -1,0 +1,12 @@
+platform :ios, '8.0'
+use_frameworks!
+
+workspace 'ActorApp'
+xcodeproj 'ActorApp.xcodeproj'
+
+inhibit_all_warnings!
+
+target 'ActorApp' do
+    xcodeproj 'ActorApp.xcodeproj'
+    pod 'ActorSDK-iOS'
+end
