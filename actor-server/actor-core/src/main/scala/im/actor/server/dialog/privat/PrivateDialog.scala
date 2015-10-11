@@ -1,11 +1,12 @@
 package im.actor.server.dialog.privat
 
 import akka.actor._
-import akka.contrib.pattern.ShardRegion
-import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
+import akka.cluster.sharding.ShardRegion
+import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
+import im.actor.api.rpc.peers.ApiPeerType
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.dialog.privat.PrivateDialogEvents.PrivateDialogEvent
@@ -144,8 +145,6 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   override def receiveRecover = {
     case created: Created      ⇒ recoveryState = Some(created.state)
     case e: PrivateDialogEvent ⇒ recoveryState = recoveryState map (updatedState(e, _))
-    case RecoveryFailure(e) ⇒
-      log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
       recoveryState match {
         case Some(dialogState) ⇒ context become working(dialogState)
@@ -155,6 +154,6 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
       log.error("Unmatched recovery event {}", unmatched)
   }
 
-  override def persistenceId: String = self.path.parent.name + "_" + self.path.name
+  override def persistenceId: String = s"dialog_${ApiPeerType.Group.id}"
 
 }

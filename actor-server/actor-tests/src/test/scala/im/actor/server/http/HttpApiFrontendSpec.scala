@@ -77,7 +77,7 @@ class HttpApiFrontendSpec
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit val service = messaging.MessagingServiceImpl(mediator)
+  implicit val service = messaging.MessagingServiceImpl()
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   implicit val reverseHookResponseUnmarshaller: FromEntityUnmarshaller[ReverseHookResponse] = Unmarshaller { implicit ec ⇒ entity ⇒

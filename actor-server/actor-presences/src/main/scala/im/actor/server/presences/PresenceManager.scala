@@ -1,7 +1,7 @@
 package im.actor.server.presences
 
 import akka.actor._
-import akka.contrib.pattern.ShardRegion.Passivate
+import akka.cluster.sharding.ShardRegion.Passivate
 import im.actor.server.db.DbExtension
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
