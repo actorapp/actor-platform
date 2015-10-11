@@ -1,0 +1,7 @@
+{
+  "version": "0.1",
+  "scala-package": "im.actor.extension.api",
+  "java-package": "im.actor.extension.api",
+  "aliases": [],
+  "sections": []
+}

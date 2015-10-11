@@ -1,43 +1,12 @@
-platform :ios, '7.0'
+platform :ios, '8.0'
+use_frameworks!
+
 workspace 'ActorApp'
 xcodeproj 'ActorApp.xcodeproj'
+
 inhibit_all_warnings!
 
 target 'ActorApp' do
-	xcodeproj 'ActorApp.xcodeproj'
-
-    # Core
-    pod 'FMDB', :git => 'https://github.com/ccgus/fmdb'
-    pod 'RegexKitLite'
-    pod 'CocoaAsyncSocket'
-    pod 'zipzap'
-
-    # UI
-    pod 'pop'
-    pod 'VBFPopFlatButton'
-    pod 'MBProgressHUD'
-    pod 'PSTAlertController'
-    pod 'DZNPhotoPickerController'
-    pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
-    pod 'JVFloatLabeledTextField'
-    pod 'CLTokenInputView'
-    pod 'SZTextView'
-
-    pod 'SlackTextViewController'#, :git => 'https://github.com/actorapp/SlackTextViewController'
-
-    pod 'NYTPhotoViewer'
-    pod 'PEPhotoCropEditor'
-    # pod 'TWMessageBarManager'
-    pod 'LTNavigationBar'
-    pod 'BlockAlertsAnd-ActionSheets'
-    pod 'RMUniversalAlert'
-    pod 'PSTAlertController'
-    pod 'TTTAttributedLabel'
-    pod 'M13ProgressSuite'
-    # pod 'MDRadialProgress'
-
-    # Tracking
-    pod 'HockeySDK', '~> 3.8-RC'
-    pod 'Fabric'
-    pod 'Crashlytics'
+    xcodeproj 'ActorApp.xcodeproj'
+    pod 'ActorSDK-iOS'
 end
