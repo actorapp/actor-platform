@@ -22,7 +22,7 @@ object ActorBot {
   private def props = Props(classOf[ActorBot])
 }
 
-final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, ActorBot.Name) {
+final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, ActorBot.Name, isAdmin = true) {
   import BotMessages._
   import ActorBot._
 
@@ -31,15 +31,12 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
   override def onTextMessage(tm: TextMessage): Unit = {
     if (tm.peer.isPrivate && tm.text.startsWith(NewCmd)) {
       tm.text.drop(NewCmd.length + 1).trim.split(" ").map(_.trim).toList match {
-        case xs if xs.length == 2 ⇒
-          val nickname = xs(0)
-          val name = xs(1)
-
+        case nickname :: name :: Nil ⇒
           log.warning("Creating new bot")
 
           val userId = IdUtils.nextIntId()
 
-          botExt.create(userId, nickname, name) onComplete {
+          botExt.create(userId, nickname, name, isAdmin = false) onComplete {
             case Success(token) ⇒
               requestSendTextMessage(tm.peer, nextRandomId(), s"Yay! Bot created, here is your token: ${token}")
             case Failure(UserExceptions.NicknameTaken) ⇒

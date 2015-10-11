@@ -44,7 +44,8 @@ private[user] object UserBuilder {
       avatar = None,
       createdAt = ts.getMillis,
       internalExtensions = e.extensions,
-      external = e.external
+      external = e.external,
+      isAdmin = e.isAdmin
     )
 }
 
