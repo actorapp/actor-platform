@@ -37,7 +37,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     implicit val sessionRegion = Session.startRegionProxy()
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val service = new auth.AuthServiceImpl(new DummyCodeActivation, mediator)
+    implicit val service = new auth.AuthServiceImpl(new DummyCodeActivation)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
 
     object sendAuthCode {

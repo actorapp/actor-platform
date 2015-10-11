@@ -2,13 +2,13 @@ package im.actor.server.user
 
 import java.time.ZoneOffset
 
-import akka.actor.{ ActorLogging, ActorSystem, Props }
+import akka.actor.{ ActorSystem, Props }
 import akka.pattern.pipe
-import akka.persistence.{ PersistentActor, RecoveryCompleted, RecoveryFailure }
+import akka.persistence.RecoveryCompleted
 import im.actor.api.rpc.users.ApiSex
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
-import im.actor.server.migrations.Migration
+import im.actor.server.migrations.{ PersistentMigrator, Migration }
 import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver
@@ -50,7 +50,7 @@ object UserMigrator extends Migration {
   private def props(promise: Promise[Unit], userId: Int)(implicit db: Database) = Props(classOf[UserMigrator], promise, userId, db)
 }
 
-private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Database) extends PersistentActor with ActorLogging {
+private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Database) extends PersistentMigrator(promise) {
 
   import UserEvents._
 
@@ -115,9 +115,9 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
 
       val events: Vector[TSEvent] = (created +: (authAdded ++ phoneAdded ++ emailAdded ++ avatarUpdated)).toVector
 
-      persistAsync(events)(identity)
+      persistAllAsync(events)(identity)
 
-      defer(TSEvent(new DateTime(), "migrated")) { _ ⇒
+      deferAsync(TSEvent(new DateTime(), "migrated")) { _ ⇒
         log.info("Migrated")
         promise.success(())
         context stop self
@@ -134,9 +134,5 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
         promise.success(())
         context stop self
       }
-    case RecoveryFailure(e) ⇒
-      log.error(e, "Failed to recover user")
-      promise.failure(e)
-      context stop self
   }
 }

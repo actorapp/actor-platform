@@ -1,6 +1,5 @@
 package im.actor.server.dialog.privat
 
-import akka.actor.Status
 import akka.pattern.pipe
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageReceived }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
