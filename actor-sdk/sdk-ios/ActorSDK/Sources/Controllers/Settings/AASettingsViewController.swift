@@ -139,25 +139,16 @@ public class AASettingsViewController: AAContentTableController {
                     return true
                 }
             }
+            
+            ActorSDK.sharedActor().delegate.actorSettingsHeaderDidCreated(self, section: s)
         }
         
-        section { (s) -> () in
-            s.action("Connect VK", closure: { (r) -> () in
-                r.selectAction = { () -> Bool in
-                    self.executeSafe(Actor.startWebAction("vkOAuth")) { (val) -> Void in
-                        if let d = val as? ACWebActionDescriptor {
-                            let controller = AANavigationController()
-                            controller.viewControllers = [AAWebActionController(desc: d)]
-                            self.presentViewController(controller, animated: true, completion: nil)
-                        }
-                    }
-                    return false
-                }
-            })
-        }
+
         
         // Settings
         section { (s) -> () in
+            
+            ActorSDK.sharedActor().delegate.actorSettingsConfigurationWillCreated(self, section: s)
             
             // Settings: Notifications
             s.navigate("SettingsNotifications", controller: AASettingsNotificationsViewController.self)
@@ -174,6 +165,8 @@ public class AASettingsViewController: AAContentTableController {
                     }
                 }
             })
+            
+            ActorSDK.sharedActor().delegate.actorSettingsConfigurationDidCreated(self, section: s)
         }
         
         // Contacts
@@ -297,7 +290,9 @@ public class AASettingsViewController: AAContentTableController {
         
         // Support
         section { (s) -> () in
-
+            
+            ActorSDK.sharedActor().delegate.actorSettingsSupportWillCreated(self, section: s)
+            
             // Support: Ask Question
             if let account = ActorSDK.sharedActor().supportAccount {
                 s.navigate("SettingsAskQuestion", closure: { (r) -> () in
@@ -331,6 +326,8 @@ public class AASettingsViewController: AAContentTableController {
             // Support: App version
             let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
             s.hint(version.replace("{version}", dest: version))
+            
+            ActorSDK.sharedActor().delegate.actorSettingsSupportDidCreated(self, section: s)
         }
     }
 

@@ -12,6 +12,9 @@ public protocol ActorSDKDelegate {
     
     /// Create root logged in controller. With Navigation controller (if needed).
     func actorControllerForStart() -> UIViewController
+
+    /// Create root controller after controller. With Navigation controller (if needed).
+    func actorControllerAfterLogIn() -> UIViewController
     
     /// User profile controller
     func actorControllerForUser(uid: Int) -> AAViewController
@@ -24,6 +27,21 @@ public protocol ActorSDKDelegate {
     
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
+    
+    /// Called after header is created in settings page
+    func actorSettingsHeaderDidCreated(controller: AASettingsViewController, section: AAManagedSection)
+
+    /// Called after header is created in settings page
+    func actorSettingsConfigurationWillCreated(controller: AASettingsViewController, section: AAManagedSection)
+
+    /// Called after header is created in settings page
+    func actorSettingsConfigurationDidCreated(controller: AASettingsViewController, section: AAManagedSection)
+    
+    /// Called after header is created in settings page
+    func actorSettingsSupportWillCreated(controller: AASettingsViewController, section: AAManagedSection)
+    
+    /// Called after header is created in settings page
+    func actorSettingsSupportDidCreated(controller: AASettingsViewController, section: AAManagedSection)
 }
 
 /// Default values of SDK Delegate
@@ -69,6 +87,30 @@ public extension ActorSDKDelegate {
     
     public func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter] {
         return builtIn
+    }
+    
+    public func actorControllerAfterLogIn() -> UIViewController {
+        return actorControllerForStart()
+    }
+    
+    public func actorSettingsHeaderDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
+        
+    }
+    
+    public func actorSettingsConfigurationWillCreated(controller: AASettingsViewController, section: AAManagedSection) {
+        
+    }
+    
+    public func actorSettingsConfigurationDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
+        
+    }
+    
+    public func actorSettingsSupportWillCreated(controller: AASettingsViewController, section: AAManagedSection) {
+        
+    }
+    
+    public func actorSettingsSupportDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
+        
     }
 }
 
