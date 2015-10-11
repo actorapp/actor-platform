@@ -83,4 +83,6 @@ public interface ModuleContext {
     Messenger getMessenger();
 
     MentionsModule getMentions();
+
+    Extensions getExtensions();
 }

@@ -17,6 +17,7 @@ import im.actor.runtime.mtproto.ConnectionEndpoint;
  */
 public class ConfigurationBuilder {
 
+    private ArrayList<ConfigurationExtension> extensions = new ArrayList<ConfigurationExtension>();
     private ArrayList<ConnectionEndpoint> endpoints = new ArrayList<ConnectionEndpoint>();
 
     private PhoneBookProvider phoneBookProvider;
@@ -178,6 +179,18 @@ public class ConfigurationBuilder {
     }
 
     /**
+     * Adding app extension
+     *
+     * @param key       extension key
+     * @param extension extension
+     * @return this
+     */
+    public ConfigurationBuilder addExtension(String key, Extension extension) {
+        this.extensions.add(new ConfigurationExtension(key, extension));
+        return this;
+    }
+
+    /**
      * Adding Endpoint for API
      * Valid URLs are:
      * tcp://[host]:[port]
@@ -258,6 +271,7 @@ public class ConfigurationBuilder {
                 phoneBookProvider, notificationProvider,
                 apiConfiguration, enableContactsLogging, enableNetworkLogging,
                 enableFilesLogging, deviceCategory, platformType,
-                minDelay, maxDelay, maxFailureCount);
+                minDelay, maxDelay, maxFailureCount,
+                extensions.toArray(new ConfigurationExtension[extensions.size()]));
     }
 }
