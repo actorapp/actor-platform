@@ -1,30 +1,38 @@
 package im.actor.server.presences
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
-import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
 import im.actor.server.presences.GroupPresenceManager.Envelope
 
 object GroupPresenceManagerRegion {
-  private val idExtractor: ShardRegion.IdExtractor = {
+  private val extractEntityId: ShardRegion.ExtractEntityId = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
   }
 
-  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+  private val extractShardId: ShardRegion.ExtractShardId = msg ⇒ msg match {
     case Envelope(userId, _) ⇒ (userId % 32).toString // TODO: configurable
   }
 
-  private def startRegion(props: Option[Props])(implicit system: ActorSystem): GroupPresenceManagerRegion =
+  private val typeName = "GroupPresenceManager"
+
+  private def startRegion(props: Props)(implicit system: ActorSystem): GroupPresenceManagerRegion =
     GroupPresenceManagerRegion(ClusterSharding(system).start(
-      typeName = "GroupPresenceManager",
-      entryProps = props,
-      idExtractor = idExtractor,
-      shardResolver = shardResolver
+      typeName = typeName,
+      entityProps = props,
+      settings = ClusterShardingSettings(system),
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
     ))
 
-  def startRegion()(implicit system: ActorSystem): GroupPresenceManagerRegion = startRegion(Some(GroupPresenceManager.props))
+  def startRegion()(implicit system: ActorSystem): GroupPresenceManagerRegion = startRegion(GroupPresenceManager.props)
 
-  def startRegionProxy()(implicit system: ActorSystem): GroupPresenceManagerRegion = startRegion(None)
-
+  def startRegionProxy()(implicit system: ActorSystem): GroupPresenceManagerRegion =
+    GroupPresenceManagerRegion(ClusterSharding(system).startProxy(
+      typeName = typeName,
+      role = None,
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
+    ))
 }
 
 case class GroupPresenceManagerRegion(ref: ActorRef)

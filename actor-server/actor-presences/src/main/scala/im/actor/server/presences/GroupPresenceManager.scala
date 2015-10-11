@@ -1,7 +1,7 @@
 package im.actor.server.presences
 
 import akka.actor._
-import akka.contrib.pattern.ShardRegion.Passivate
+import akka.cluster.sharding.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.util.Timeout
 import im.actor.server.db.DbExtension
