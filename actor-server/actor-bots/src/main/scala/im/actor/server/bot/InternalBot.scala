@@ -18,7 +18,7 @@ private object InternalBot {
 
 }
 
-abstract class InternalBot(userId: Int, nickname: String, name: String) extends BotBase {
+abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin: Boolean) extends BotBase {
 
   import InternalBot._
 
@@ -55,7 +55,7 @@ abstract class InternalBot(userId: Int, nickname: String, name: String) extends 
         Future.successful(())
       } else {
         log.warning("Creating user {}", userId)
-        botExt.create(userId, nickname, name) map (_ ⇒ ()) andThen {
+        botExt.create(userId, nickname, name, isAdmin) map (_ ⇒ ()) andThen {
           case Failure(e) ⇒ log.error(e, "Failed to create bot user")
         }
       }
