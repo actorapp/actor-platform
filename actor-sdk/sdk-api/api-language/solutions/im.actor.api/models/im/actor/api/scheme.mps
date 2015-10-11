@@ -7928,5 +7928,11 @@
       </node>
     </node>
   </node>
+  <node concept="2m5nkH" id="5HzswaJYSei">
+    <property role="TrG5h" value="ActorApiExtension" />
+    <property role="u_6dX" value="0.1" />
+    <property role="3BlOl8" value="im.actor.extension.api" />
+    <property role="WhUdw" value="im.actor.extension.api" />
+  </node>
 </model>
 
