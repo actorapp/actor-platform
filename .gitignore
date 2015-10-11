@@ -115,3 +115,7 @@ actor-sdk/sdk-ios/Pods
 actor-sdk/sdk-ios/ActorSDK.xcodeproj/xcuserdata
 actor-sdk/sdk-ios/ActorSDK.xcworkspace
 actor-sdk/sdk-extension/ext/build
+actor-sdk/sdk-app/ios/ActorApp.xcodeproj/xcuserdata
+actor-sdk/sdk-app/ios/ActorApp.xcworkspace/xcuserdata
+actor-sdk/sdk-app/ios/Pods
+actor-sdk/sdk-app/ios/ActorApp.xcodeproj/project.xcworkspace/xcuserdata
