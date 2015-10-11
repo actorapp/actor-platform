@@ -1,0 +1,25 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/java']
+        }
+    }
+
+    generic {
+        java {
+            srcDirs = ['src/java']
+        }
+    }
+}
+
+dependencies {
+    testCompile "junit:junit:4.11"
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+}
