@@ -8,6 +8,7 @@ xcodebuild \
   -sdk iphoneos9.0 \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
+  -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
   build
 
 xcodebuild \
@@ -18,6 +19,7 @@ xcodebuild \
   -sdk iphonesimulator9.0 \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
+  -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
   build
 
 mkdir build/Output
