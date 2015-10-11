@@ -72,6 +72,9 @@ public class ActorSDK {
     /// Invite url scheme
     public var inviteUrlScheme: String? = nil
     
+    /// Extensions
+    private var extensions = [ActorExtension]()
+    
     //
     // User Onlines
     //
@@ -100,6 +103,10 @@ public class ActorSDK {
     // Initialization
     //
     
+    public func registerExtension(key: String, ext: ACExtension) {
+        extensions.append(ActorExtension(key: key, ext: ext))
+    }
+    
     public func createActor() {
         
         if isStarted {
@@ -127,6 +134,11 @@ public class ActorSDK {
         // Stats
         builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
         builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
+  
+        // Extensions
+        for ex in extensions {
+            builder.addExtensionWithNSString(ex.key, withACExtension: ex.ext)
+        }
         
         // Logs
         // builder.setEnableFilesLogging(true)
@@ -423,4 +435,14 @@ public enum AAAutoPush {
     case None
     case FromStart
     case AfterLogin
+}
+
+class ActorExtension {
+    let key: String
+    let ext: ACExtension
+    
+    init(key: String, ext: ACExtension) {
+        self.key = key
+        self.ext = ext
+    }
 }
