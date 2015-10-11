@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import im.actor.core.api.parser.RpcParser;
+import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.actors.Actor;
@@ -46,13 +47,14 @@ public class ApiBroker extends Actor {
     public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
                                final boolean isEnableLog, int id, final int minDelay,
                                final int maxDelay,
-                               final int maxFailureCount) {
+                               final int maxFailureCount,
+                               final ApiParserConfig parserConfig) {
         return ActorSystem.system().actorOf(Props.create(ApiBroker.class, new ActorCreator<ApiBroker>() {
             @Override
             public ApiBroker create() {
                 return new ApiBroker(endpoints, keyStorage, callback, isEnableLog, minDelay,
                         maxDelay,
-                        maxFailureCount);
+                        maxFailureCount, parserConfig);
             }
         }).changeDispatcher("network"), "api/broker#" + id);
     }
@@ -77,9 +79,12 @@ public class ApiBroker extends Actor {
 
     private ExponentialBackoff authIdBackOff;
 
+    private ApiParserConfig parserConfig;
+
     public ApiBroker(Endpoints endpoints, AuthKeyStorage keyStorage,
                      ActorApiCallback callback,
-                     boolean isEnableLog, int minDelay, int maxDelay, int maxFailureCount) {
+                     boolean isEnableLog, int minDelay, int maxDelay, int maxFailureCount,
+                     ApiParserConfig parserConfig) {
         this.isEnableLog = isEnableLog;
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
@@ -87,7 +92,8 @@ public class ApiBroker extends Actor {
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
-        authIdBackOff = new ExponentialBackoff(minDelay, maxDelay, maxFailureCount);
+        this.authIdBackOff = new ExponentialBackoff(minDelay, maxDelay, maxFailureCount);
+        this.parserConfig = parserConfig;
     }
 
     @Override
@@ -249,7 +255,7 @@ public class ApiBroker extends Actor {
 
             Response response;
             try {
-                response = (Response) new RpcParser().read(ok.responseType, ok.payload);
+                response = (Response) parserConfig.parseRpc(ok.responseType, ok.payload);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -337,7 +343,7 @@ public class ApiBroker extends Actor {
 
         RpcScope updateBox;
         try {
-            updateBox = new RpcParser().read(type, body);
+            updateBox = parserConfig.parseRpc(type, body);
         } catch (IOException e) {
             e.printStackTrace();
             Log.w(TAG, "Broken update box");

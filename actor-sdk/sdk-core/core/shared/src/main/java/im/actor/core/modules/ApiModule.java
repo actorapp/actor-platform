@@ -8,6 +8,7 @@ import im.actor.core.modules.utils.PreferenceApiStorage;
 import im.actor.core.network.ActorApi;
 import im.actor.core.network.ActorApiCallback;
 import im.actor.core.network.Endpoints;
+import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.core.network.parser.Request;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -21,6 +22,7 @@ public class ApiModule extends AbsModule implements BusSubscriber {
 
     private final ActorApi actorApi;
     private final ActorRef persistentRequests;
+    private final ApiParserConfig parserConfig = new ApiParserConfig();
 
     public ApiModule(Modules context) {
         super(context);
@@ -31,7 +33,7 @@ public class ApiModule extends AbsModule implements BusSubscriber {
                 context().getConfiguration().isEnableNetworkLogging(),
                 context().getConfiguration().getMinDelay(),
                 context().getConfiguration().getMaxDelay(),
-                context().getConfiguration().getMaxFailureCount());
+                context().getConfiguration().getMaxFailureCount(), parserConfig);
 
         context.getEvents().subscribe(this, AppVisibleChanged.EVENT);
 
@@ -43,9 +45,22 @@ public class ApiModule extends AbsModule implements BusSubscriber {
         }), "api/persistence");
     }
 
-
+    /**
+     * Get Actor API instance
+     *
+     * @return Actor API instance
+     */
     public ActorApi getActorApi() {
         return actorApi;
+    }
+
+    /**
+     * Get API Parser configuration
+     *
+     * @return Actor API parser config
+     */
+    public ApiParserConfig getParserConfig() {
+        return parserConfig;
     }
 
     /**

@@ -5,6 +5,7 @@
 package im.actor.core.network;
 
 import im.actor.core.api.ApiVersion;
+import im.actor.core.network.parser.ApiParserConfig;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.core.network.api.ApiBroker;
 import im.actor.core.network.parser.Request;
@@ -42,7 +43,8 @@ public class ActorApi {
     public ActorApi(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
                     boolean isEnableLog, int minDelay,
                     int maxDelay,
-                    int maxFailureCount) {
+                    int maxFailureCount,
+                    ApiParserConfig parserConfig) {
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
         this.callback = callback;
@@ -51,7 +53,7 @@ public class ActorApi {
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
         this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, isEnableLog,
-                NEXT_ID.get(), minDelay, maxDelay, maxFailureCount);
+                NEXT_ID.get(), minDelay, maxDelay, maxFailureCount, parserConfig);
     }
 
     /**

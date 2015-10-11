@@ -11,6 +11,8 @@ import im.actor.runtime.mtproto.ConnectionEndpoint;
  */
 public class Configuration {
 
+    private final ConfigurationExtension[] extensions;
+
     private final ConnectionEndpoint[] endpoints;
 
     private PhoneBookProvider phoneBookProvider;
@@ -44,7 +46,8 @@ public class Configuration {
                   PlatformType platformType,
                   int minDelay,
                   int maxDelay,
-                  int maxFailureCount) {
+                  int maxFailureCount,
+                  ConfigurationExtension[] extensions) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -57,6 +60,16 @@ public class Configuration {
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
+        this.extensions = extensions;
+    }
+
+    /**
+     * Get configured extensions
+     *
+     * @return extensions
+     */
+    public ConfigurationExtension[] getExtensions() {
+        return extensions;
     }
 
     /**
