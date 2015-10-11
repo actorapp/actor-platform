@@ -1,26 +1,29 @@
 package im.actor.server.sequence
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
-import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
 
 case class SeqUpdatesManagerRegion(ref: ActorRef)
 
 object SeqUpdatesManagerRegion {
 
-  private val idExtractor: ShardRegion.IdExtractor = {
+  private val extractEntityId: ShardRegion.ExtractEntityId = {
     case msg: SeqUpdatesManagerMessage ⇒ (msg.authId.toString, msg)
   }
 
-  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+  private val extractShardId: ShardRegion.ExtractShardId = msg ⇒ msg match {
     case msg: SeqUpdatesManagerMessage ⇒ (msg.authId % 32).toString // TODO: configurable
   }
 
-  private def start(props: Option[Props])(implicit system: ActorSystem): SeqUpdatesManagerRegion =
+  private val typeName = "SeqUpdatesManager"
+
+  private def start(props: Props)(implicit system: ActorSystem): SeqUpdatesManagerRegion =
     SeqUpdatesManagerRegion(ClusterSharding(system).start(
-      typeName = "SeqUpdatesManager",
-      entryProps = props,
-      idExtractor = idExtractor,
-      shardResolver = shardResolver
+      typeName = typeName,
+      entityProps = props,
+      settings = ClusterShardingSettings(system),
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
     ))
 
   def start()(
@@ -29,7 +32,13 @@ object SeqUpdatesManagerRegion {
     googlePushManager: GooglePushManager,
     applePushManager:  ApplePushManager
   ): SeqUpdatesManagerRegion =
-    start(Some(SeqUpdatesManagerActor.props))
+    start(SeqUpdatesManagerActor.props)
 
-  def startProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion = start(None)
+  def startProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion =
+    SeqUpdatesManagerRegion(ClusterSharding(system).startProxy(
+      typeName = typeName,
+      role = None,
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
+    ))
 }

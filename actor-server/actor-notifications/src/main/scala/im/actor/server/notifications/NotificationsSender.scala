@@ -1,7 +1,7 @@
 package im.actor.server.notifications
 
 import akka.actor._
-import akka.contrib.pattern.ClusterSingletonManager
+import akka.cluster.singleton.{ ClusterSingletonManagerSettings, ClusterSingletonManager }
 import akka.event.Logging
 import akka.http.scaladsl.{ Http, HttpExt }
 import akka.stream.Materializer
@@ -33,9 +33,8 @@ object NotificationsSender {
     system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = props(notificationsConfig, engine),
-        singletonName = singletonName,
         terminationMessage = PoisonPill,
-        role = None
+        settings = ClusterSingletonManagerSettings(system)
       ),
       name = s"${singletonName}Manager"
     )

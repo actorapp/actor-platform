@@ -3,8 +3,9 @@ package im.actor.server.session
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
-import akka.contrib.pattern.ShardRegion.Passivate
-import akka.contrib.pattern.{ ClusterSharding, DistributedPubSubMediator, ShardRegion }
+import akka.cluster.sharding.ShardRegion.Passivate
+import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
+import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.pattern.pipe
 import akka.stream.{ Materializer, ActorMaterializer }
 import akka.stream.actor._
@@ -39,36 +40,47 @@ object SessionConfig {
 
 object Session {
 
-  private[this] val idExtractor: ShardRegion.IdExtractor = {
+  private[this] val extractEntityId: ShardRegion.ExtractEntityId = {
     case env @ SessionEnvelope(authId, sessionId, payload) ⇒ (authId.toString + "-" + sessionId.toString, env)
   }
 
-  private[this] val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+  private[this] val extractShardId: ShardRegion.ExtractShardId = msg ⇒ msg match {
     case SessionEnvelope(authId, sessionId, _) ⇒ (authId % 32).toString // TODO: configurable
   }
 
-  def startRegion(props: Option[Props])(implicit system: ActorSystem): SessionRegion =
+  private val typeName = "Session"
+
+  def startRegion(props: Props)(implicit system: ActorSystem): SessionRegion =
     SessionRegion(
       ClusterSharding(system).start(
-        typeName = "Session",
-        entryProps = props,
-        idExtractor = idExtractor,
-        shardResolver = shardResolver
+        typeName = typeName,
+        entityProps = props,
+        settings = ClusterShardingSettings(system),
+        extractEntityId = extractEntityId,
+        extractShardId = extractShardId
       )
     )
 
-  def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): SessionRegion = SessionRegion(
+    ClusterSharding(system).startProxy(
+      typeName = typeName,
+      role = None,
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
+    )
+  )
 
-  def props(mediator: ActorRef)(implicit config: SessionConfig, materializer: Materializer): Props =
-    Props(classOf[Session], mediator, config, materializer)
+  def props(implicit config: SessionConfig, materializer: Materializer): Props =
+    Props(classOf[Session], config, materializer)
 }
 
-class Session(mediator: ActorRef)(implicit config: SessionConfig, materializer: Materializer) extends Actor with ActorLogging with MessageIdHelper with Stash {
+class Session(implicit config: SessionConfig, materializer: Materializer) extends Actor with ActorLogging with MessageIdHelper with Stash {
 
   import SessionEnvelope.Payload
 
   implicit val ec: ExecutionContext = context.dispatcher
 
+  private val mediator: ActorRef = DistributedPubSub(context.system).mediator
   private implicit val db: Database = DbExtension(context.system).db
   private implicit val seqUpdManagerRegion = SeqUpdatesExtension(context.system).region
 

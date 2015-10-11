@@ -81,7 +81,7 @@ class GroupsServiceSpec
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  val messagingService = messaging.MessagingServiceImpl(mediator)
+  val messagingService = messaging.MessagingServiceImpl()
   implicit val service = new GroupsServiceImpl(groupInviteConfig)
 
   def e1() = {

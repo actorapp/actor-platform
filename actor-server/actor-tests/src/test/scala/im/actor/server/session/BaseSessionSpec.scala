@@ -1,7 +1,6 @@
 package im.actor.server.session
 
 import akka.actor._
-import akka.contrib.pattern.DistributedPubSubExtension
 import akka.testkit.TestProbe
 import akka.util.Timeout
 import com.google.protobuf.ByteString
@@ -48,17 +47,15 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   DbExtension(_system).clean()
   DbExtension(_system).migrate()
 
-  protected val mediator = DistributedPubSubExtension(system).mediator
-
   protected implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
 
-  Session.startRegion(Some(Session.props(mediator)))
+  Session.startRegion(Session.props)
 
   protected implicit val sessionRegion = Session.startRegionProxy()
 
   protected val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   protected implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  protected val authService = new AuthServiceImpl(new DummyCodeActivation, mediator)
+  protected val authService = new AuthServiceImpl(new DummyCodeActivation)
   protected val sequenceConfig = SequenceServiceConfig.load.toOption.get
   protected val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
