@@ -147,7 +147,7 @@ public class AASettingsViewController: AAContentTableController {
                     self.executeSafe(Actor.startWebAction("vkOAuth")) { (val) -> Void in
                         if let d = val as? ACWebActionDescriptor {
                             let controller = AANavigationController()
-                            controller.viewControllers = [WebActionController(desc: d)]
+                            controller.viewControllers = [AAWebActionController(desc: d)]
                             self.presentViewController(controller, animated: true, completion: nil)
                         }
                     }
