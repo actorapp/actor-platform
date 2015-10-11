@@ -31,6 +31,7 @@ message User {
     required int64 created_at = 14;
     repeated bytes internal_extensions = 15 [(scalapb.field).type = "im.actor.api.rpc.misc.ApiExtension"];
     optional string external = 16;
+    optional bool is_admin = 17;
 }
 
 message UserCommands {
@@ -260,6 +261,7 @@ message UserEvents {
         required bool is_bot = 6;
         repeated bytes extensions = 8 [(scalapb.field).type = "im.actor.api.rpc.misc.ApiExtension"];
         optional string external = 9;
+        optional bool is_admin = 11;
     }
 
     message PhoneAdded {
