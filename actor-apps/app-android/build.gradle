@@ -141,7 +141,7 @@ android {
 
 dependencies {
 
-    compile project(':core-android')
+    compile project(':core:android')
 
     // UI
     compile 'com.droidkit:progress:0.5'

@@ -1,0 +1,77 @@
+task assembleDist(dependsOn: ['assembleMainDist', 'assembleCocoaDist',
+                              'assembleJsDist', 'assembleAndroidDist']) {
+
+}
+
+// Main Jar
+
+task assembleMainDist(dependsOn: ['copyMainJar', 'assembleMainSourcesJar']) {
+
+}
+
+task copyMainJar(type: Copy, dependsOn: 'main:jar') {
+    from file('shared/build/libs/main.jar')
+    into file('build/dist/')
+    rename ('main.jar', 'runtime.jar')
+}
+
+task assembleMainSourcesJar(type: Zip) {
+    baseName = 'runtime-sources'
+    extension = 'jar'
+    destinationDir = file('build/dist')
+    from fileTree('shared/src/main/java')
+}
+
+// Cocoa Sources jar
+
+task assembleCocoaDist(dependsOn: ['assembleCocoaJar', 'copyCocoaPrefixes']) {
+
+}
+
+task copyCocoaPrefixes(type: Copy) {
+    from file('cocoa/prefixes.properties')
+    into file('build/dist/cocoa/')
+}
+
+task assembleCocoaJar(type: Zip) {
+    baseName = 'runtime-sources'
+    extension = 'jar'
+    destinationDir = file('build/dist/cocoa')
+    from fileTree('shared/src/main/java')
+    from fileTree('shared/src/generic/java')
+    from fileTree('cocoa/src/main/java')
+}
+
+// Js Sources jar
+
+task assembleJsDist(dependsOn: ['assembleJsJar', 'copyJsJavaScript']) {
+
+}
+
+task copyJsJavaScript(type: Copy) {
+    destinationDir = file('build/dist/js')
+    from fileTree('js/src/main/javascript')
+    into file('build/dist/js/javascript')
+}
+
+task assembleJsJar(type: Zip) {
+    baseName = 'runtime-sources'
+    extension = 'jar'
+    destinationDir = file('build/dist/js')
+    from fileTree('shared/src/main/java')
+    from fileTree('js/src/src/main/java')
+}
+
+// Android sources jar
+
+task assembleAndroidDist(dependsOn: ['copyAndroidLib']) {
+
+}
+
+task copyAndroidLib(type: Copy, dependsOn: ['android:assemble']) {
+    from file('android/build/outputs/aar/android-release.aar')
+    from file('android/build/outputs/aar/android-debug.aar')
+    into file('build/dist/android')
+    rename ('android-release.aar', 'runtime-release.aar')
+    rename ('android-debug.aar', 'runtime-debug.aar')
+}
