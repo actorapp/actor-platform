@@ -1,0 +1,451 @@
+//
+//  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
+//
+
+/*
+ * Main Screen
+ */
+
+"TabMessages" = "消息";
+
+"TabPeople" = "联系人";
+
+"TabSettings" = "设置";
+
+"TabDiscover" = "发现";
+
+/*
+ * Contacts
+ */
+
+"ContactsAddHeader" = "添加联系人";
+
+"ContactsAddHint" = "请输入电话号码";
+
+"ContactsActionInvite" = "把Actor告诉朋友";
+
+"ContactsActionAdd" = "添加朋友";
+
+/*
+ * Dialogs
+ */
+
+"DialogsHint" = "向左滑动查看更多选项";
+
+/*
+ * Discover
+ */
+
+/*
+ * Settings
+ */
+
+"SettingsEdit" = "编辑";
+
+"SettingsSetPhoto" = "设置头像";
+
+"SettingsChangeName" = "修改名字";
+
+
+"SettingsEditHeader" = "Your name";
+
+"SettingsEditHint" = "Please, enter your real name to help people better understand who you are.";
+
+"SettingsEditFieldHint" = "Enter your name";
+
+
+"SettingsAboutNotSet" = "Set about me";
+
+"SettingsUsernameNotSet" = "Set username";
+
+"SettingsUsernameTitle" = "Username";
+
+"SettingsUsernameHintField" = "Enter your Username";
+
+"SettingsUsernameHint" = "You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+
+"SettingsChangeAboutTitle" = "About me";
+
+"SettingsChangeAboutHint" = "Tell people anything you want about yourself";
+
+"SettingsSecurity" = "安全";
+
+"SettingsWallpapers" = "Wallpapers";
+
+"SettingsNotifications" = "通知和声音";
+
+"SettingsAskQuestion" = "提问";
+
+"SettingsTwitter" = "App Twitter";
+
+"SettingsAbout" = "App Homepage";
+
+"SettingsVersion" = "版本 {version}";
+
+/*
+ * Profile
+ */
+
+"ProfileEditHeader" = "修改名字";
+
+"ProfileSendMessage" = "发送消息";
+
+"ProfileNotifications" = "通知";
+
+"ProfileNotificationsWarring" = "你要屏蔽针对这个人的推送提醒消息吗？这样可能会引起你和他（她）的关系哦。";
+
+"ProfileNotificationsWarringAction" = "屏蔽";
+
+"ProfileAddToContacts" = "添加到通讯录";
+
+"ProfileRemoveFromContacts" = "从通讯录中删除";
+
+"ProfileRename" = "修改联系名";
+
+"ProfileRenameMessage" = "你可以修改通讯录中的联系人名称，此修改只体现在你的通讯录中。";
+
+"ProfileRenameAction" = "改名";
+
+"ProfileAbout" = "about";
+
+"ProfilePhone" = "phone";
+
+"ProfileUsername" = "username";
+
+"ProfileTitle" = "Info";
+
+"CallNumber" = "拨打这个电话";
+
+"CopyNumber" = "复制电话号码";
+
+"NumberCopied" = "电话号码已经复制到剪贴板中";
+
+/*
+ * Publics
+ */
+
+"JoinAlertMessage" = "你要加入这个群吗？";
+
+/*
+ * Group
+ */
+
+"GroupEditHeader" = "Theme";
+
+"GroupEditHint" = "Enter group theme";
+
+"GroupSetPhoto" = "设置群头像";
+
+"GroupSetTitle" = "设置群标题";
+
+"GroupEditConfirm" = "确定要修改群标题？";
+
+"GroupEditConfirmAction" = "修改模版";
+
+"GroupNotifications" = "通知";
+
+"GroupSettings" = "设置";
+
+"GroupIntegrations" = "集成";
+
+"GroupMembers" = "{0} 个成员";
+
+"GroupMemberAdmin" = "admin";
+
+"GroupMemberInfo" = "成员信息";
+
+"GroupMemberMakeAdmin" = "Make Group admin";
+
+"GroupMemberMakeMessage" = "Are you sure want to make {name} admin of this group?";
+
+"GroupMemberMakeAction" = "Yes";
+
+"GroupMemberKick" = "移出群";
+
+"GroupMemberKickMessage" = "确定要把 {name} 移出群吗？";
+
+"GroupMemberKickAction" = "移出";
+
+"GroupMemberWrite" = "编辑消息";
+
+"GroupMemberCall" = "打电话";
+
+"GroupMemberCallNoPhones" = "此用户没有电话号码。";
+
+"GroupAddParticipant" = "添加参与者...";
+
+"GroupAddParticipantTitle" = "通讯录";
+
+"GroupAddParticipantUrl" = "通过URL链接邀请加入群";
+
+"GroupLeave" = "退出群";
+
+"GroupLeaveConfirm" = "你确定要退出群吗？";
+
+"GroupLeaveConfirmAction" = "退出";
+
+"GroupInviteLinkPageTitle" = "邀请链接";
+
+"GroupInviteLinkTitle" = "链接";
+
+"GroupInviteLinkHint" = "发送邀请链接即可邀请你的朋友加入此群。";
+
+"GroupInviteLinkRevokeMessage" = "确定要废除这个链接，废除后其他人将无法使用这个链接加入群。";
+
+"GroupInviteLinkRevokeAction" = "废除";
+
+"GroupIntegrationPageTitle" = "集成API";
+
+"GroupIntegrationLinkTitle" = "链接";
+
+"GroupIntegrationLinkHint" = "任何外部系统都可以利用这个链接向群发送消息。";
+
+"GroupIntegrationDoc" = "打开文档";
+
+"GroupIntegrationLinkRevokeMessage" = "确定要废除这个链接，废除后其他系统将无法使用这个链接发送消息。";
+
+"GroupIntegrationLinkRevokeAction" = "废除";
+
+"GroupJoinMessage" = "Are you sure want to join group?";
+
+"GroupJoinAction" = "Join";
+
+"GroupMembers" = "MEMBERS";
+
+/*
+ * Compose
+ */
+
+"ComposeTitle" = "新消息";
+
+"CreateGroup" = "创建群";
+
+"CreateGroupTitle" = "创建群";
+
+"CreateGroupNamePlaceholder" = "输入群名称";
+
+"CreateGroupHint" = "Please provide group subject and optional group icon";
+
+"CreateGroupMembersTitle" = "Invite members";
+
+"CreateGroupMembersPlaceholders" = "Enter Names";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "通知和声音";
+
+"NotificationsEffectsTitle" = "效果";
+
+"NotificationsMobileTitle" = "手机推送通知";
+
+"NotificationsInAppTitle" = "In-App通知";
+
+"NotificationsNotificationHint" = "在好友或群的信息页面，可以屏蔽指定好友或群的推送通知。";
+
+"NotificationsPrivacyTitle" = "隐私";
+
+"NotificationsSoundEffects" = "声音效果";
+
+"NotificationsEnable" = "打开";
+
+"NotificationsSound" = "声音";
+
+"NotificationsVibration" = "震动";
+
+"NotificationsPreview" = "消息预览";
+
+"NotificationsPreviewHint" = "在通知中不显示消息文本。";
+
+"NotificationSecretMessage" = "新消息";
+
+"NotificationsGroups" = "Group Notifications";
+
+"NotificationsOnlyMentions" = "Only Mentions";
+
+"NotificationsOnlyMentionsHint" = "You can enable notifications only for messages that contains your mention";
+
+/*
+ * Privacy
+ */
+
+"SecurityTitle" = "安全";
+
+"PrivacyTerminate" = "终止所有会话";
+
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
+
+"PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Wallpapers";
+
+"WallpapersPhoto" = "Photo Library";
+
+/*
+ * Chat
+ */
+
+"ChatPlaceholder" = "输入消息...";
+
+"ChatSend" = "发送";
+
+"ChatNoGroupAccess" = "你不是群成员";
+
+/*
+ * Find
+ */
+
+"FindTitle" = "Find People";
+
+"FindFieldHint" = "phone number, email or nickname";
+
+"FindHint" = "Enter phone number, email or nickname and press search";
+
+"FindNotFound" = "Sorry, but we are unable to find person for this search query";
+
+/*
+ * Placeholders
+ */
+
+"Placeholder_Empty_Title" = "邀请你的朋友";
+
+"Placeholder_Empty_Message" = "你的通讯录中没有人使用Actor，请点击下面按钮邀请他们。";
+
+"Placeholder_Empty_Action" = "告诉你的朋友";
+
+"Placeholder_Empty_Message2" = "或者手动添加好友";
+
+"Placeholder_Empty_Action2" = "添加好友";
+
+"Placeholder_Loading_Title" = "正在同步中";
+
+"Placeholder_Loading_Message" = "请等待几分钟，以便我们让你的app好用。";
+
+"Placeholder_Contacts_Title" = "邀请好友";
+
+"Placeholder_Contacts_Message" = "你的通讯录中没有人使用Actor，请点击下面按钮邀请他们。";
+
+"Placeholder_Contacts_Action" = "告诉好友";
+
+"Placeholder_Contacts_Message2" = "或者点击右上角的＋按钮手动添加好友";
+
+"Placeholder_Dialogs_Title" = "开始聊天";
+
+"Placeholder_Dialogs_Message" = "从你的通讯录中选择一个好友，或者点击右上角的编辑按钮立刻开始聊天";
+
+"Placeholder_Group_Title" = "不是一个群成员";
+
+"Placeholder_Group_Message" = "非常不幸，您不是群成员。";
+
+/*
+ * Auth
+ */
+
+"AuthPhoneTitle" = "你的电话";
+
+"AuthPhoneNumberHint" = "你的电话号码";
+
+"AuthPhoneHint" = "请选择你的国家并输入你的电话号码。";
+
+"AuthPhoneTooShort" = "电话号码太短";
+
+"AuthCodeFieldHint" = "验证码";
+
+"AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
+
+"AuthCallHint" = "Actor will call you in {time}";
+
+"AuthCallDoneHint" = "Actor dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
+"AuthProfileTitle" = "你的信息";
+
+"AuthProfileAddPhoto1" = "添加";
+
+"AuthProfileAddPhoto2" = "头像";
+
+"AuthProfileNameHint" = "你的名字";
+
+"AuthProfileHint" = "请输入你的名字并上传头像";
+
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "Cn";
+
+"InviteText" = "您好！让我们一起使用Actor安全开聊吧! {link}";
+
+"PhotoRemove" = "删除头像";
+
+"PhotoRemoveGroupMessage" = "确定要删除群头像吗？删除后很多群成员会很失望哦。";
+
+"PhotoCamera" = "拍照";
+
+"PhotoLibrary" = "相册";
+
+"SendDocument" = "文档";
+
+"NavigationEdit" = "编辑";
+
+"NavigationDone" = "完成";
+
+"NavigationCancel" = "取消";
+
+"NavigationBack" = "";
+
+"NavigationNext" = "下一步";
+
+"NavigationSave" = "保存";
+
+"NavigationFind" = "Find";
+
+"AlertCancel" = "取消";
+
+"AlertNext" = "下一步";
+
+"AlertSave" = "保存";
+
+"AlertSet" = "Set";
+
+"AlertOk" = "确定";
+
+"AlertYes" = "是";
+
+"AlertNo" = "否";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
+
+"AlertInvite" = "Invite";
+
+"UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
+
+"ActionCopyLink" = "复制链接";
+
+"ActionRevokeLink" = "废除链接";
+
+"ActionShareLink" = "分享链接";
+
+"AlertLinkCopied" = "链接已经被复制到剪贴板。";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "输入被邀请人的电话号码，再试一次。";
+
+"ErrorCodeExpired" = "验证码过期。请重新验证一次。";
+
+"ErrorAlreadyJoined" = "You are already member of group";
+
+"ErrorUnableToJoin" = "Unable to join to group";
