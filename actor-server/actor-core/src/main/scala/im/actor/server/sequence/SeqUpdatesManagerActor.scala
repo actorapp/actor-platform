@@ -10,7 +10,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
 import akka.actor._
-import akka.contrib.pattern.ShardRegion
+import akka.cluster.sharding.ShardRegion
 import akka.pattern.pipe
 import com.google.protobuf.ByteString
 

@@ -1,7 +1,7 @@
 package im.actor.server.group
 
 import java.time.ZoneOffset
-import im.actor.server.migrations.Migration
+import im.actor.server.migrations.{ PersistentMigrator, Migration }
 import slick.driver.PostgresDriver
 
 import scala.concurrent.duration._
@@ -39,7 +39,7 @@ object GroupMigrator extends Migration {
   private def props(promise: Promise[Unit], groupId: Int)(implicit db: Database) = Props(classOf[GroupMigrator], promise, groupId, db)
 }
 
-private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Database) extends PersistentActor with ActorLogging {
+private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Database) extends PersistentMigrator(promise) {
 
   import GroupEvents._
 
@@ -111,9 +111,9 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
 
       val events: Vector[TSEvent] = created +: (botAdded ++ becamePublic ++ userAdded ++ userJoined ++ avatarUpdated).toVector
 
-      persistAsync(events)(identity)
+      persistAllAsync(events)(identity)
 
-      defer(TSEvent(new DateTime, "migrated")) { _ ⇒
+      deferAsync(TSEvent(new DateTime, "migrated")) { _ ⇒
         log.info("Migrated")
         promise.success(())
         context stop self

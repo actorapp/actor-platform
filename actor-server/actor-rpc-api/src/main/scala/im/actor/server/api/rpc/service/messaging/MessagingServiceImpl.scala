@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service.messaging
 
 import akka.actor._
-import akka.contrib.pattern.{ DistributedPubSubExtension, DistributedPubSubMediator }
+import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
@@ -56,14 +56,11 @@ object MessagingService {
 }
 
 object MessagingServiceImpl {
-  def apply()(implicit actorSystem: ActorSystem): MessagingServiceImpl =
-    apply(DistributedPubSubExtension(actorSystem).mediator)
-
-  def apply(mediator: ActorRef)(
+  def apply()(
     implicit
     actorSystem: ActorSystem
   ): MessagingServiceImpl = {
-    val onMessage = (MessagingService.publish _).curried(mediator)
+    val onMessage = (MessagingService.publish _).curried(DistributedPubSub(actorSystem).mediator)
 
     new MessagingServiceImpl(onMessage)
   }

@@ -1,8 +1,8 @@
 package im.actor.server.user
 
 import akka.actor._
-import akka.contrib.pattern.ShardRegion
-import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
+import akka.cluster.sharding.ShardRegion
+import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
@@ -192,8 +192,6 @@ private[user] final class UserProcessor
       userStateMaybe = Some(UserBuilder(ts, evt))
     case evt: TSEvent ⇒
       userStateMaybe = userStateMaybe map (updatedState(evt, _))
-    case RecoveryFailure(e) ⇒
-      log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
       userStateMaybe match {
         case Some(state) ⇒

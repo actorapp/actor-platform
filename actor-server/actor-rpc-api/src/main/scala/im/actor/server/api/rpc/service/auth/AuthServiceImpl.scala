@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.auth
 import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor.{ ActorRef, ActorSystem }
+import akka.cluster.pubsub.DistributedPubSub
 import akka.event.Logging
 import akka.util.Timeout
 import im.actor.api.rpc.DBIOResult._
@@ -36,7 +37,7 @@ import scalaz._
 
 case class PubSubMediator(mediator: ActorRef)
 
-class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)(
+class AuthServiceImpl(val activationContext: CodeActivation)(
   implicit
   val sessionRegion: SessionRegion,
   val actorSystem:   ActorSystem,
@@ -60,7 +61,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
   private val maxGroupSize: Int = 300
 
-  implicit val mediatorWrap = PubSubMediator(mediator)
+  implicit val mediatorWrap = PubSubMediator(DistributedPubSub(actorSystem).mediator)
 
   implicit protected val timeout = Timeout(10 seconds)
 
