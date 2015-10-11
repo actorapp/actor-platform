@@ -122,3 +122,4 @@ actor-sdk/sdk-app/ios/ActorApp.xcodeproj/project.xcworkspace/xcuserdata
 actor-sdk/sdk-ios/build
 actor-sdk/sdk-app/shared/Sources
 actor-sdk/sdk
+actor-sdk/sdk-core/build-tools/codegen-java/build

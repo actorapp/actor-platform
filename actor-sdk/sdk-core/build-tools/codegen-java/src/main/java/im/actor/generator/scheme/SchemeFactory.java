@@ -17,6 +17,8 @@ public class SchemeFactory {
         SchemeDefinition definition = new SchemeDefinition();
 
         definition.setVersion(scheme.get("version").textValue());
+        definition.setJavaPackage(scheme.get("java-package").textValue());
+        definition.setScalaPackage(scheme.get("scala-package").textValue());
 
         for (JsonNode aliases : scheme.get("aliases")) {
             definition.getAliases().put(aliases.get("alias").textValue(), loadType(aliases.get("type")));
