@@ -43,7 +43,7 @@ class WebhookHandlerSpec
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
-  implicit val messagingService = messaging.MessagingServiceImpl(mediator)
+  implicit val messagingService = messaging.MessagingServiceImpl()
   private val groupExt = GroupExtension(system)
 
   object t {
@@ -130,7 +130,7 @@ class WebhookHandlerSpec
 
       val group = createGroup(s"Reverse hooks group", Set(user2.id)).groupPeer
 
-      ReverseHooksListener.startSingleton(mediator)
+      ReverseHooksListener.startSingleton()
 
       val token = whenReady(groupExt.getIntegrationToken(group.groupId)) { optToken ⇒
         optToken shouldBe defined
