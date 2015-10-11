@@ -97,7 +97,7 @@ public class ActorSDK {
     private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
     
     // View Binding info
-    private var bindedToWindow: UIWindow!
+    private(set) public var bindedToWindow: UIWindow!
     
     //
     // Initialization
@@ -193,7 +193,7 @@ public class ActorSDK {
             requestPush()
         }
         
-        bindedToWindow.rootViewController = delegate.actorControllerForStart()
+        bindedToWindow.rootViewController = delegate.actorControllerAfterLogIn()
     }
     
     //
@@ -232,6 +232,11 @@ public class ActorSDK {
         self.bindedToWindow = window
         
         if messenger.isLoggedIn() {
+            
+            if autoPushMode == .AfterLogin {
+                requestPush()
+            }
+            
             window.rootViewController = delegate.actorControllerForStart()
         } else {
             window.rootViewController = delegate.actorControllerForAuthStart()

@@ -114,36 +114,33 @@ public class SettingsModule extends AbsModule {
         }), "actor/settings");
     }
 
-    public void onUpdatedSetting(String key, String value) {
-        writeValue(key, value);
-    }
 
     // Sound Effects
 
     public boolean isConversationTonesEnabled() {
-        return loadValue(KEY_SOUND_EFFECTS, true);
+        return getBooleanValue(KEY_SOUND_EFFECTS, true);
     }
 
     public void changeConversationTonesEnabled(boolean val) {
-        changeValue(KEY_SOUND_EFFECTS, val);
+        setBooleanValue(KEY_SOUND_EFFECTS, val);
     }
 
     // Notifications
 
     public boolean isNotificationsEnabled() {
-        return loadValue(KEY_NOTIFICATION_ENABLED, true);
+        return getBooleanValue(KEY_NOTIFICATION_ENABLED, true);
     }
 
     public void changeNotificationsEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_ENABLED, val);
+        setBooleanValue(KEY_NOTIFICATION_ENABLED, val);
     }
 
     public boolean isNotificationSoundEnabled() {
-        return loadValue(KEY_NOTIFICATION_SOUND_ENABLED, true);
+        return getBooleanValue(KEY_NOTIFICATION_SOUND_ENABLED, true);
     }
 
     public void changeNotificationSoundEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_SOUND_ENABLED, val);
+        setBooleanValue(KEY_NOTIFICATION_SOUND_ENABLED, val);
     }
 
     public String getNotificationSound() {
@@ -151,95 +148,95 @@ public class SettingsModule extends AbsModule {
     }
 
     public void changeNotificationSound(String sound) {
-        changeValue(KEY_NOTIFICATION_SOUND, sound);
+        setStringValue(KEY_NOTIFICATION_SOUND, sound);
     }
 
     public boolean isVibrationEnabled() {
-        return loadValue(KEY_NOTIFICATION_VIBRATION, true);
+        return getBooleanValue(KEY_NOTIFICATION_VIBRATION, true);
     }
 
     public void changeNotificationVibrationEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_VIBRATION, val);
+        setBooleanValue(KEY_NOTIFICATION_VIBRATION, val);
     }
 
     public boolean isShowNotificationsText() {
-        return loadValue(KEY_NOTIFICATION_TEXT, true);
+        return getBooleanValue(KEY_NOTIFICATION_TEXT, true);
     }
 
     public void changeShowNotificationTextEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_TEXT, val);
+        setBooleanValue(KEY_NOTIFICATION_TEXT, val);
     }
 
     // Group Notifications
 
     public boolean isGroupNotificationsEnabled() {
-        return loadValue(KEY_NOTIFICATION_GROUP_ENABLED, true);
+        return getBooleanValue(KEY_NOTIFICATION_GROUP_ENABLED, true);
     }
 
     public void changeGroupNotificationsEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_GROUP_ENABLED, val);
+        setBooleanValue(KEY_NOTIFICATION_GROUP_ENABLED, val);
     }
 
     public boolean isGroupNotificationsOnlyMentionsEnabled() {
-        return loadValue(KEY_NOTIFICATION_GROUP_ONLY_MENTIONS, false);
+        return getBooleanValue(KEY_NOTIFICATION_GROUP_ONLY_MENTIONS, false);
     }
 
     public void changeGroupNotificationsOnlyMentionsEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_GROUP_ONLY_MENTIONS, val);
+        setBooleanValue(KEY_NOTIFICATION_GROUP_ONLY_MENTIONS, val);
     }
 
     // In-App notifications
 
     public boolean isInAppEnabled() {
-        return loadValue(KEY_NOTIFICATION_IN_APP_ENABLED, true);
+        return getBooleanValue(KEY_NOTIFICATION_IN_APP_ENABLED, true);
     }
 
     public void changeInAppEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_IN_APP_ENABLED, val);
+        setBooleanValue(KEY_NOTIFICATION_IN_APP_ENABLED, val);
     }
 
     public boolean isInAppSoundEnabled() {
-        return loadValue(KEY_NOTIFICATION_IN_APP_SOUND, true);
+        return getBooleanValue(KEY_NOTIFICATION_IN_APP_SOUND, true);
     }
 
     public void changeInAppSoundEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_IN_APP_SOUND, val);
+        setBooleanValue(KEY_NOTIFICATION_IN_APP_SOUND, val);
     }
 
     public boolean isInAppVibrationEnabled() {
-        return loadValue(KEY_NOTIFICATION_IN_APP_VIBRATION, true);
+        return getBooleanValue(KEY_NOTIFICATION_IN_APP_VIBRATION, true);
     }
 
     public void changeInAppVibrationEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_IN_APP_VIBRATION, val);
+        setBooleanValue(KEY_NOTIFICATION_IN_APP_VIBRATION, val);
     }
 
     // Chat settings
 
     public boolean isSendByEnterEnabled() {
-        return loadValue(KEY_CHAT_SEND_BY_ENTER, true);
+        return getBooleanValue(KEY_CHAT_SEND_BY_ENTER, true);
     }
 
     public void changeSendByEnter(boolean val) {
-        changeValue(KEY_CHAT_SEND_BY_ENTER, val);
+        setBooleanValue(KEY_CHAT_SEND_BY_ENTER, val);
     }
 
     public boolean isMarkdownEnabled() {
-        return loadValue(KEY_MARKDOWN_ENABLED, false);
+        return getBooleanValue(KEY_MARKDOWN_ENABLED, false);
     }
 
     public void changeMarkdown(boolean val) {
-        changeValue(KEY_MARKDOWN_ENABLED, val);
+        setBooleanValue(KEY_MARKDOWN_ENABLED, val);
     }
 
     // Peer settings
 
     public boolean isNotificationsEnabled(Peer peer) {
-        return loadValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".enabled", true);
+        return getBooleanValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".enabled", true);
     }
 
     public void changeNotificationsEnabled(Peer peer, boolean val) {
-        changeValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".enabled", val);
+        setBooleanValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".enabled", val);
     }
 
     public String getNotificationSound(Peer peer) {
@@ -247,15 +244,15 @@ public class SettingsModule extends AbsModule {
     }
 
     public void changeNotificationSound(Peer peer, String sound) {
-        changeValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".sound", sound);
+        setStringValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".sound", sound);
     }
 
     // Hint
 
     public boolean isRenameHintShown() {
-        boolean res = loadValue(KEY_RENAME_HINT_SHOWN, false);
+        boolean res = getBooleanValue(KEY_RENAME_HINT_SHOWN, false);
         if (!res) {
-            changeValue(KEY_RENAME_HINT_SHOWN, true);
+            setBooleanValue(KEY_RENAME_HINT_SHOWN, true);
         }
         return res;
     }
@@ -270,19 +267,9 @@ public class SettingsModule extends AbsModule {
         changeValue(KEY_WALLPAPPER, uri);
     }
 
-    // Private
+    // Common
 
-    private String getChatKey(Peer peer) {
-        if (peer.getPeerType() == PeerType.PRIVATE) {
-            return "PRIVATE_" + peer.getPeerId();
-        } else if (peer.getPeerType() == PeerType.GROUP) {
-            return "GROUP_" + peer.getPeerId();
-        } else {
-            throw new RuntimeException("Unsupported peer");
-        }
-    }
-
-    private boolean loadValue(String key, boolean defaultVal) {
+    public boolean getBooleanValue(String key, boolean defaultVal) {
         String sValue = readValue(key);
         boolean res = defaultVal;
         if (sValue != null) {
@@ -295,23 +282,56 @@ public class SettingsModule extends AbsModule {
         return res;
     }
 
-    private void changeValue(String key, boolean val) {
+    public boolean getBooleanValue(String key) {
+        return getBooleanValue(key, false);
+    }
+
+    public void setBooleanValue(String key, boolean val) {
         String sVal = val ? "true" : "false";
         changeValue(key, sVal);
     }
 
-    private void changeValue(String key, String val) {
-        writeValue(key, val);
-        settingsSync.send(new SettingsSyncActor.ChangeSettings(key, val));
+    public String getStringValue(String key, String defaultVal) {
+        String sValue = readValue(key);
+        if (sValue == null) {
+            return defaultVal;
+        }
+        return sValue;
     }
 
-    private void writeValue(String key, String val) {
-        preferences().putString(STORAGE_PREFIX + key, val);
+    public String getStringValue(String key) {
+        return getStringValue(key, null);
+    }
+
+    public void setStringValue(String key, String val) {
+        changeValue(key, val);
+    }
+
+    // Sync methods
+
+    private void changeValue(String key, String val) {
+        settingsSync.send(new SettingsSyncActor.ChangeSettings(key, val));
+        onUpdatedSetting(key, val);
     }
 
     private String readValue(String key) {
         return preferences().getString(STORAGE_PREFIX + key);
     }
+
+    public void onUpdatedSetting(String key, String value) {
+        preferences().putString(STORAGE_PREFIX + key, value);
+    }
+
+    private String getChatKey(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            return "PRIVATE_" + peer.getPeerId();
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            return "GROUP_" + peer.getPeerId();
+        } else {
+            throw new RuntimeException("Unsupported peer");
+        }
+    }
+
 
     public void resetModule() {
         // TODO: Implement
