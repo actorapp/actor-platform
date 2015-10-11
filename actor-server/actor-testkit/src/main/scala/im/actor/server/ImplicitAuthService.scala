@@ -1,6 +1,6 @@
 package im.actor.server
 
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.ActorSystem
 import akka.stream.Materializer
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -13,11 +13,9 @@ trait ImplicitAuthService {
   protected implicit val db: Database
   protected implicit val sessionRegion: SessionRegion
 
-  protected val mediator: ActorRef
-
   private val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   private implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
 
-  implicit val authService = new AuthServiceImpl(new DummyCodeActivation, mediator)
+  implicit val authService = new AuthServiceImpl(new DummyCodeActivation)
 
 }

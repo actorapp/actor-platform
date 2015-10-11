@@ -42,10 +42,10 @@ class RichMessageWorkerSpec
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-    implicit val service = messaging.MessagingServiceImpl(mediator)
+    implicit val service = messaging.MessagingServiceImpl()
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
-    RichMessageWorker.startWorker(RichMessageConfig(5 * 1024 * 1024), mediator)
+    RichMessageWorker.startWorker(RichMessageConfig(5 * 1024 * 1024))
 
     object privat {
       val (user1, authId, _) = createUser()

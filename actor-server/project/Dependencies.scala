@@ -4,15 +4,15 @@ import sbt._
 
 object Dependencies {
   object V {
-    val actorCommons = "0.0.6"
-    val akka = "2.3.13"
+    val actorCommons = "0.0.7"
+    val akka = "2.4.0"
     val akkaExperimental = "1.0"
     val cats = "0.2.0"
     val scalaz = "7.1.1"
     val slick = "3.0.3"
     val scalatest = "2.2.4"
-    val shardakka = "0.1.8"
-    val scalapbSer = "0.1.3"
+    val shardakka = "0.1.12"
+    val scalapbSer = "0.1.6"
   }
 
   object Compile {
@@ -20,9 +20,10 @@ object Dependencies {
     val shardakka               = "im.actor"                      %% "shardakka"                     % V.shardakka
     val scalapbSer              = "im.actor"                      %% "akka-scalapb-serialization"    % V.scalapbSer
 
-    val akkaActor               = "com.typesafe.akka"             %% "akka-actor"                    % V.akka exclude("com.google.protobuf", "protobuf-java")
-    val akkaPersistence         = "com.typesafe.akka"             %% "akka-persistence-experimental" % V.akka exclude("com.google.protobuf", "protobuf-java")
-    val akkaContrib             = "com.typesafe.akka"             %% "akka-contrib"                  % V.akka exclude("com.google.protobuf", "protobuf-java")
+    val akkaActor               = "com.typesafe.akka"             %% "akka-actor"                    % V.akka
+    val akkaPersistence         = "com.typesafe.akka"             %% "akka-persistence"              % V.akka
+    val akkaClusterTools        = "com.typesafe.akka"             %% "akka-cluster-tools"            % V.akka
+    val akkaClusterSharding     = "com.typesafe.akka"             %% "akka-cluster-sharding"         % V.akka
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
@@ -31,7 +32,7 @@ object Dependencies {
 
     val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
 
-    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.7"
+    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.2.0"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
     val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
@@ -119,7 +120,8 @@ object Dependencies {
   val core = shared ++ Seq(
     actorConcurrent,
     akkaActor,
-    akkaContrib,
+    akkaClusterTools,
+    akkaClusterSharding,
     amazonaws,
     awsWrap,
     caffeine,
@@ -151,11 +153,11 @@ object Dependencies {
 
   val persist = shared ++ Seq(akkaActor, apacheCommonsCodec, postgresJdbc, slick, slickJoda, slickPg, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
-  val presences = shared :+ akkaContrib
+  val presences = shared :+ akkaClusterSharding
 
   val sms = shared ++ Seq(akkaActor, akkaHttp, dispatch)
 
-  val social = shared :+ akkaContrib
+  val social = shared :+ akkaClusterSharding
 
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   
@@ -169,11 +171,11 @@ object Dependencies {
 
   val dashboard = shared :+ scalazCore
 
-  val notifications = shared ++ Seq(akkaContrib, slick)
+  val notifications = shared ++ Seq(akkaClusterTools, slick)
 
   val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
-  val tests = shared ++ Seq(akkaContrib, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
+  val tests = shared ++ Seq(akkaClusterSharding, jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit)
 }
