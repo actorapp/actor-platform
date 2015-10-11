@@ -120,3 +120,4 @@ actor-sdk/sdk-app/ios/ActorApp.xcworkspace/xcuserdata
 actor-sdk/sdk-app/ios/Pods
 actor-sdk/sdk-app/ios/ActorApp.xcodeproj/project.xcworkspace/xcuserdata
 actor-sdk/sdk-ios/build
+actor-sdk/sdk-app/shared/Sources
