@@ -5,6 +5,7 @@ import im.actor.generator.generators.doc.DocIndexGenerator;
 import im.actor.generator.generators.doc.DocUpdatesGenerator;
 import im.actor.generator.generators.java.*;
 import im.actor.generator.scheme.*;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -21,6 +22,9 @@ public class Main {
         System.out.println("Reading schema from file...");
         String workingDir = new File(args[0]).getParent();
         SchemeDefinition definition = SchemeFactory.fromFile(args[0]);
+
+        JavaConfig.PACKAGE = definition.getJavaPackage();
+        JavaConfig.PATH = StringJoin.join("/", definition.getJavaPackage().split("\\."));
 
         System.out.println("Generating java files...");
         String destJava = args[1];

@@ -11,6 +11,9 @@ public class SchemeDefinition {
 
     private String version;
 
+    private String javaPackage;
+    private String scalaPackage;
+
     private List<SchemeSection> sections = new ArrayList<SchemeSection>();
 
     private HashMap<String, SchemeType> aliases = new HashMap<String, SchemeType>();
@@ -29,6 +32,22 @@ public class SchemeDefinition {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getJavaPackage() {
+        return javaPackage;
+    }
+
+    public void setJavaPackage(String javaPackage) {
+        this.javaPackage = javaPackage;
+    }
+
+    public String getScalaPackage() {
+        return scalaPackage;
+    }
+
+    public void setScalaPackage(String scalaPackage) {
+        this.scalaPackage = scalaPackage;
     }
 
     public List<SchemeRpc> getAllRpc() {
