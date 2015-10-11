@@ -29,7 +29,7 @@ J2OBJC_DISTRIBUTION = $(PODS_ROOT)/J2ObjC-Framework/Distributive
 J2OBJC = $(J2OBJC_DISTRIBUTION)/j2objc
 J2OBJCC = $(J2OBJC_DISTRIBUTION)/j2objcc
 J2OBJC_ARGS = -use-arc --generate-deprecated --doc-comments -g --static-accessor-methods -classpath "$(EXTENSION_ROOT)/shared/libs/runtime-shared.jar"
-J2OBJCC_ARGS = -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include -I$(PODS_ROOT)/ActorSDK-iOS/Frameworks/ActorSDK.framework/Headers
+J2OBJCC_ARGS = -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initializers -g $(ARCHFLAGS) $(SDKFLAGS) -I$(J2OBJC_DISTRIBUTION)/include -I$(EXTENSION_ROOT)/shared/Sources
 
 LIBRARY_NAME = libactor_ext.so
 
