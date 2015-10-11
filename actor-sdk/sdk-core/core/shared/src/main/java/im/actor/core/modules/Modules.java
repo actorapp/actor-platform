@@ -5,7 +5,7 @@
 package im.actor.core.modules;
 
 import im.actor.core.Configuration;
-import im.actor.core.Extension;
+import im.actor.core.ConfigurationExtension;
 import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AppStateModule;
@@ -49,6 +49,7 @@ public class Modules implements ModuleContext {
     private final AppStateModule appStateModule;
     private final ExternalModule external;
     private final Authentication authentication;
+    private final Extensions extensions;
 
     // Modules for authenticated users
     private volatile Updates updates;
@@ -86,6 +87,9 @@ public class Modules implements ModuleContext {
         timing.section("API");
         this.api = new ApiModule(this);
 
+        timing.section("Extensions");
+        this.extensions = new Extensions(this);
+
         timing.section("App State");
         this.appStateModule = new AppStateModule(this);
 
@@ -94,6 +98,12 @@ public class Modules implements ModuleContext {
 
         timing.section("Pushes");
         this.pushes = new PushesModule(this);
+
+        timing.section("Extensions");
+        for (ConfigurationExtension e : configuration.getExtensions()) {
+            this.extensions.registerExtension(e.getKey(), e.getExtension());
+        }
+        this.extensions.registerExtensions();
 
         timing.section("Auth");
         this.authentication = new Authentication(this);
@@ -153,6 +163,8 @@ public class Modules implements ModuleContext {
         messages.run();
         timing.section("Updates");
         updates.run();
+        timing.section("Extensions");
+        extensions.runExtensions();
         timing.end();
 
         messenger.onLoggedIn();
@@ -269,6 +281,11 @@ public class Modules implements ModuleContext {
 
     public MentionsModule getMentions() {
         return mentions;
+    }
+
+    @Override
+    public Extensions getExtensions() {
+        return extensions;
     }
 
     public EventBus getEvents() {
