@@ -974,7 +974,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\ncd ActorSDK/Sources\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/Sources/convert.py\" \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore.h\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\ncp -a \"${PROJECT_DIR}/../sdk-core/core/shared/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/\"";
+			shellScript = "set -e\n\ncd ActorSDK/Sources/ActorCore\nmake translate\nmake build -j3\n\ncd \"${CONFIGURATION_TEMP_DIR}/j2objc/\"\npython \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore/convert.py\" \"${PROJECT_DIR}/ActorSDK/Sources/ActorCore.h\"\n\ncp -a \"${CONFIGURATION_TEMP_DIR}/j2objc/Public/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/Headers/\"\n\ncp -a \"${PROJECT_DIR}/../sdk-core/core/shared/src/main/resources/\" \"${CONFIGURATION_BUILD_DIR}/ActorSDK.framework/\"";
 		};
 		842CC4516DA967714D224C37 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
