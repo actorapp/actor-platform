@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		06230F091BC7FF3500A4807B /* ActorSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; };
 		06230F0A1BC7FF3500A4807B /* ActorSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06230F081BC7FF3000A4807B /* ActorSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		065975561BC7E22500B8C7DF /* bg_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 065975551BC7E22500B8C7DF /* bg_1.jpg */; settings = {ASSET_TAGS = (); }; };
 		068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */; settings = {ASSET_TAGS = (); }; };
 		2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */; };
 		34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 148837AEB986AFDE519BEBD3686AB073 /* main.m */; };
@@ -52,7 +51,6 @@
 /* Begin PBXFileReference section */
 		06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ActorSDK.xcodeproj; sourceTree = "<group>"; };
 		065974E11BC6926C00B8C7DF /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = ActorSDK.framework; path = "/Users/ex3ndr/Library/Developer/Xcode/DerivedData/ActorApp-clcqncodqhdxutfqgjvteqywzxue/Build/Products/Debug-iphoneos/ActorSDK.framework"; sourceTree = "<absolute>"; };
-		065975551BC7E22500B8C7DF /* bg_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1.jpg; sourceTree = "<group>"; };
 		066A50761BC45A5E000E606E /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
 		068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Supporting Files/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		148837AEB986AFDE519BEBD3686AB073 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "Supporting Files/main.m"; sourceTree = "<group>"; };
@@ -113,7 +111,6 @@
 		75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				065975551BC7E22500B8C7DF /* bg_1.jpg */,
 				2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */,
 				13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */,
 				068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */,
@@ -249,7 +246,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				065975561BC7E22500B8C7DF /* bg_1.jpg in Resources */,
 				2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */,
 				F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */,
 				068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */,
