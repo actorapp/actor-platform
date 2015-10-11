@@ -41,7 +41,7 @@ for root, directories, filenames in os.walk('Sources/'):
             destLines = ""
             
             with open(externalFile, 'w') as d:
-                d.write(destLines)
+                d.write(allLines)
             
             for line in allLines.splitlines():
                 if (line.startswith("#include") or line.startswith("#import")) and '\"' in line:
