@@ -3,6 +3,9 @@ package im.actor.botkit
 import akka.actor.{ ActorSystem, Props }
 import im.actor.bots.BotMessages.TextMessage
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 object EchoBotApp extends App {
   implicit val system = ActorSystem()
 
@@ -14,7 +17,7 @@ object EchoBotApp extends App {
     "EchoBot"
   )
 
-  system.awaitTermination()
+  Await.result(system.whenTerminated, Duration.Inf)
 }
 
 object EchoBot {

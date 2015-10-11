@@ -109,14 +109,14 @@ final class AuthServiceSpec
     implicit val ec = system.dispatcher
 
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
-    Session.startRegion(Some(Session.props(mediator)))
+    Session.startRegion(Session.props)
     implicit val sessionRegion = Session.startRegionProxy()
 
     val oauthGoogleConfig = DummyOAuth2Server.config
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     val activationConfig = ActivationConfig.load.get
     val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, null)
-    implicit val service = new auth.AuthServiceImpl(activationContext, mediator)
+    implicit val service = new auth.AuthServiceImpl(activationContext)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     implicit val contactService = new ContactsServiceImpl
 
