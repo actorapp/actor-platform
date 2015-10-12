@@ -139,7 +139,7 @@ public class AABubbleCell: UICollectionViewCell {
     // MARK: -
     // MARK: Constructors
 
-    init(frame: CGRect, isFullSize: Bool) {
+    public init(frame: CGRect, isFullSize: Bool) {
         super.init(frame: frame)
         
         self.isFullSize = isFullSize
