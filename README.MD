@@ -1,7 +1,6 @@
 # Actor Messaging platform
 
 [![Group On Actor](actor-resources/group_on_actor.png)](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4)
-[![Build Status](https://travis-ci.org/actorapp/actor-platform.svg)](https://travis-ci.org/actorapp/actor-platform)
 
 Actor is a platform for instant messaging. Actor provides features like large group chats; unlimited history storage; send/receive documents, photo, and video; authentication with one time password for phone number/email or OAuth2; easy integrations with external services.
 
