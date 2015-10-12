@@ -33,7 +33,7 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     private var messageState: UInt = ACMessageState.UNKNOWN.rawValue
     private var cellLayout: TextCellLayout!
     
-    init(frame: CGRect) {
+    public init(frame: CGRect) {
         super.init(frame: frame, isFullSize: false)
         
         senderNameLabel.font = AABubbleTextCell.senderFont
