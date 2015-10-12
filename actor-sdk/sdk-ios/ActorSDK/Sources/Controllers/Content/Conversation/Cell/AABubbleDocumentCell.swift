@@ -40,14 +40,14 @@ public class AABubbleDocumentCell: AABubbleBaseFileCell, UIDocumentInteractionCo
         sizeLabel.text = " "
         sizeLabel.sizeToFit()
         
-        mainView.addSubview(titleLabel)
-        mainView.addSubview(sizeLabel)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(sizeLabel)
         
-        mainView.addSubview(dateLabel)
-        mainView.addSubview(statusView)
+        contentView.addSubview(dateLabel)
+        contentView.addSubview(statusView)
         
-        mainView.addSubview(fileIcon)
-        mainView.addSubview(progress)
+        contentView.addSubview(fileIcon)
+        contentView.addSubview(progress)
         
         self.contentInsets = UIEdgeInsetsMake(0, 0, 0, 0)
         

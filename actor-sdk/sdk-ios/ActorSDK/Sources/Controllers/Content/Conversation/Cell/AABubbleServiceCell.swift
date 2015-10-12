@@ -23,7 +23,7 @@ public class AABubbleServiceCell : AABubbleCell {
         serviceText.textColor = appStyle.chatServiceTextColor
         serviceText.contentMode = UIViewContentMode.Center
         serviceText.textAlignment = NSTextAlignment.Center
-        mainView.addSubview(serviceText)
+        contentView.addSubview(serviceText)
         
         // Setting content and bubble insets
         contentInsets = UIEdgeInsets(top: 3, left: 8, bottom: 3, right: 8)
