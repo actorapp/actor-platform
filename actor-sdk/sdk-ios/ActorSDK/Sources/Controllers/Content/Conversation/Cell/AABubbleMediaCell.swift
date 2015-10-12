@@ -34,12 +34,12 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
         
         statusView.contentMode = UIViewContentMode.Center
         
-        mainView.addSubview(preview)
-        mainView.addSubview(progress)
+        contentView.addSubview(preview)
+        contentView.addSubview(progress)
         
-        mainView.addSubview(timeBg)
-        mainView.addSubview(timeLabel)
-        mainView.addSubview(statusView)
+        contentView.addSubview(timeBg)
+        contentView.addSubview(timeLabel)
+        contentView.addSubview(statusView)
         
         preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
         preview.userInteractionEnabled = true

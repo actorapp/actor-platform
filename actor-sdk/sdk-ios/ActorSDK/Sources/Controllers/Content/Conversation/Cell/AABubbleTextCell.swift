@@ -57,9 +57,9 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         statusView.contentMode = UIViewContentMode.Center
         
-        mainView.addSubview(messageText)
-        mainView.addSubview(dateText)
-        mainView.addSubview(statusView)
+        contentView.addSubview(messageText)
+        contentView.addSubview(dateText)
+        contentView.addSubview(statusView)
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -110,7 +110,7 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                         senderNameLabel.textColor = colors[Int(abs(user.getId())) % colors.count]
                     }
                 }
-                mainView.addSubview(senderNameLabel)
+                contentView.addSubview(senderNameLabel)
             } else {
                 senderNameLabel.removeFromSuperview()
             }

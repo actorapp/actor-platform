@@ -40,3 +40,9 @@ rm -f build/Output/ActorSDK.framework/Frameworks/*
 
 # Merging swift docs
 cp -a build/Build/Products/Release-iphonesimulator/ActorSDK.framework/Modules/ActorSDK.swiftmodule/* build/Output/ActorSDK.framework/Modules/ActorSDK.swiftmodule/
+
+cd build/Output/
+rm -f ActorSDK.framework.zip
+zip -r ActorSDK.framework.zip ActorSDK.framework
+
+shasum ActorSDK.framework.zip

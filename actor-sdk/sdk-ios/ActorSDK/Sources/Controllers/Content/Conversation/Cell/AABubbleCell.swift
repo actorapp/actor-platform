@@ -38,15 +38,15 @@ public protocol AABubbleLayouter  {
 */
 public class AABubbleCell: UICollectionViewCell {
     
-    static let bubbleContentTop: CGFloat = 6
-    static let bubbleContentBottom: CGFloat = 6
-    static let bubbleTop: CGFloat = 3
-    static let bubbleTopCompact: CGFloat = 1
-    static let bubbleBottom: CGFloat = 3
-    static let bubbleBottomCompact: CGFloat = 1
-    static let avatarPadding: CGFloat = 39
-    static let dateSize: CGFloat = 30
-    static let newMessageSize: CGFloat = 30
+    public static let bubbleContentTop: CGFloat = 6
+    public static let bubbleContentBottom: CGFloat = 6
+    public static let bubbleTop: CGFloat = 3
+    public static let bubbleTopCompact: CGFloat = 1
+    public static let bubbleBottom: CGFloat = 3
+    public static let bubbleBottomCompact: CGFloat = 1
+    public static let avatarPadding: CGFloat = 39
+    public static let dateSize: CGFloat = 30
+    public static let newMessageSize: CGFloat = 30
     
     //
     // Cached text bubble images
@@ -85,12 +85,11 @@ public class AABubbleCell: UICollectionViewCell {
     // MARK: Public vars
     
     // Views
-    let mainView = UIView()
-    let avatarView = AAAvatarView(frameSize: 39)
-    var avatarAdded: Bool = false
+    public let avatarView = AAAvatarView(frameSize: 39)
+    public var avatarAdded: Bool = false
     
-    let bubble = UIImageView()
-    let bubbleBorder = UIImageView()
+    public let bubble = UIImageView()
+    public let bubbleBorder = UIImageView()
     
     private let dateText = UILabel()
     private let dateBg = UIImageView()
@@ -98,9 +97,9 @@ public class AABubbleCell: UICollectionViewCell {
     private let newMessage = UILabel()
     
     // Layout
-    var contentInsets : UIEdgeInsets = UIEdgeInsets()
-    var bubbleInsets : UIEdgeInsets = UIEdgeInsets()
-    var fullContentInsets : UIEdgeInsets {
+    public var contentInsets : UIEdgeInsets = UIEdgeInsets()
+    public var bubbleInsets : UIEdgeInsets = UIEdgeInsets()
+    public var fullContentInsets : UIEdgeInsets {
         get {
             return UIEdgeInsets(
                 top: contentInsets.top + bubbleInsets.top + (isShowDate ? AABubbleCell.dateSize : 0) + (isShowNewMessages ? AABubbleCell.newMessageSize : 0),
@@ -109,26 +108,26 @@ public class AABubbleCell: UICollectionViewCell {
                 right: contentInsets.right + bubbleInsets.right)
         }
     }
-    var needLayout: Bool = true
+    public var needLayout: Bool = true
     
-    let groupContentInsetY = 20.0
-    let groupContentInsetX = 40.0
-    var bubbleVerticalSpacing: CGFloat = 6.0
-    let bubblePadding: CGFloat = 6;
-    let bubbleMediaPadding: CGFloat = 10;
+    public let groupContentInsetY = 20.0
+    public let groupContentInsetX = 40.0
+    public var bubbleVerticalSpacing: CGFloat = 6.0
+    public let bubblePadding: CGFloat = 6;
+    public let bubbleMediaPadding: CGFloat = 10;
     
     // Binded data
-    var peer: ACPeer!
-    var controller: AAConversationContentController!
-    var isGroup: Bool = false
-    var isFullSize: Bool!
-    var bindedSetting: AACellSetting?
+    public var peer: ACPeer!
+    public var controller: AAConversationContentController!
+    public var isGroup: Bool = false
+    public var isFullSize: Bool!
+    public var bindedSetting: AACellSetting?
     
-    var bindedMessage: ACMessage? = nil
-    var bubbleType:BubbleType? = nil
-    var isOut: Bool = false
-    var isShowDate: Bool = false
-    var isShowNewMessages: Bool = false
+    public var bindedMessage: ACMessage? = nil
+    public var bubbleType:BubbleType? = nil
+    public var isOut: Bool = false
+    public var isShowDate: Bool = false
+    public var isShowNewMessages: Bool = false
     
     var appStyle: ActorStyle {
         get {
@@ -157,15 +156,13 @@ public class AABubbleCell: UICollectionViewCell {
         newMessage.backgroundColor = appStyle.chatUnreadBgColor
         newMessage.text = "New Messages"
         
-        mainView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
+        contentView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         
-        mainView.addSubview(bubble)
-        mainView.addSubview(bubbleBorder)
-        mainView.addSubview(newMessage)
-        mainView.addSubview(dateBg)
-        mainView.addSubview(dateText)
-        
-        contentView.addSubview(mainView)
+        contentView.addSubview(bubble)
+        contentView.addSubview(bubbleBorder)
+        contentView.addSubview(newMessage)
+        contentView.addSubview(dateBg)
+        contentView.addSubview(dateText)
         
         avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "avatarDidTap"))
         avatarView.userInteractionEnabled = true
@@ -245,7 +242,7 @@ public class AABubbleCell: UICollectionViewCell {
                         }
                     }
                     if !avatarAdded {
-                        mainView.addSubview(avatarView)
+                        contentView.addSubview(avatarView)
                         avatarAdded = true
                     }
                 } else {
@@ -319,8 +316,6 @@ public class AABubbleCell: UICollectionViewCell {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        
-        mainView.frame = CGRectMake(0, 0, contentView.bounds.width, contentView.bounds.height)
         
 //        if (!needLayout) {
 //            return
