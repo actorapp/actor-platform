@@ -193,7 +193,28 @@ public class ActorSDK {
             requestPush()
         }
         
-        bindedToWindow.rootViewController = delegate.actorControllerAfterLogIn()
+        var controller: UIViewController! = delegate.actorControllerAfterLogIn()
+        if controller == nil {
+            controller = delegate.actorControllerForStart()
+        }
+        if controller == nil {
+            let tab = AARootTabViewController()
+            tab.viewControllers = [
+                AANavigationController(rootViewController: AAContactsViewController()),
+                AANavigationController(rootViewController: AARecentViewController()),
+                AANavigationController(rootViewController: AASettingsViewController())]
+            tab.selectedIndex = 0
+            tab.selectedIndex = 1
+            
+            if (AADevice.isiPad) {
+                let splitController = AARootSplitViewController()
+                splitController.viewControllers = [tab, AANoSelectionViewController()]
+                controller = splitController
+            } else {
+                controller = tab
+            }
+        }
+        bindedToWindow.rootViewController = controller!
     }
     
     //
@@ -237,9 +258,31 @@ public class ActorSDK {
                 requestPush()
             }
             
-            window.rootViewController = delegate.actorControllerForStart()
+            var controller: UIViewController! = delegate.actorControllerForStart()
+            if controller == nil {
+                let tab = AARootTabViewController()
+                tab.viewControllers = [
+                    AANavigationController(rootViewController: AAContactsViewController()),
+                    AANavigationController(rootViewController: AARecentViewController()),
+                    AANavigationController(rootViewController: AASettingsViewController())]
+                tab.selectedIndex = 0
+                tab.selectedIndex = 1
+                
+                if (AADevice.isiPad) {
+                    let splitController = AARootSplitViewController()
+                    splitController.viewControllers = [tab, AANoSelectionViewController()]
+                    controller = splitController
+                } else {
+                    controller = tab
+                }
+            }
+            window.rootViewController = controller!
         } else {
-            window.rootViewController = delegate.actorControllerForAuthStart()
+            var controller: UIViewController! = delegate.actorControllerForAuthStart()
+            if controller == nil {
+                controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+            }
+            window.rootViewController = controller!
         }
     }
     

@@ -34,7 +34,13 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     }
 
     func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
-        navigateDetail(ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(contact.uid)))
+        
+        if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(contact.uid)) {
+            navigateDetail(customController)
+        } else {
+            navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(contact.uid)))
+        }
+        
         return true
     }
     

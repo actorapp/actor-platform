@@ -4,7 +4,7 @@
 
 import Foundation
 
-public class ActorApplicationDelegate: NSObject, UIApplicationDelegate, ActorSDKDelegate {
+public class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDelegate {
     
     public override init() {
         super.init()
