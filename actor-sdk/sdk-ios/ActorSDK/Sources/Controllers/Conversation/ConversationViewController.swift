@@ -241,11 +241,17 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     func onAvatarTap() {
         let id = Int(peer.peerId)
-        var controller: AAViewController
+        var controller: AAViewController!
         if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
             controller = ActorSDK.sharedActor().delegate.actorControllerForUser(id)
+            if controller == nil {
+                controller = AAUserViewController(uid: id)
+            }
         } else if (UInt(peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue) {
             controller = ActorSDK.sharedActor().delegate.actorControllerForGroup(id)
+            if controller == nil {
+                controller = AAGroupViewController(gid: id)
+            }
         } else {
             return
         }

@@ -8,22 +8,22 @@ import Foundation
 public protocol ActorSDKDelegate {
     
     /// Create initial Auth contoller. With Navigation controller (if needed).
-    func actorControllerForAuthStart() -> UIViewController
+    func actorControllerForAuthStart() -> UIViewController?
     
     /// Create root logged in controller. With Navigation controller (if needed).
-    func actorControllerForStart() -> UIViewController
+    func actorControllerForStart() -> UIViewController?
 
     /// Create root controller after controller. With Navigation controller (if needed).
-    func actorControllerAfterLogIn() -> UIViewController
+    func actorControllerAfterLogIn() -> UIViewController?
     
     /// User profile controller
-    func actorControllerForUser(uid: Int) -> AAViewController
+    func actorControllerForUser(uid: Int) -> AAViewController?
     
     /// User profile controller
-    func actorControllerForGroup(gid: Int) -> AAViewController
+    func actorControllerForGroup(gid: Int) -> AAViewController?
     
     /// Conversation controller
-    func actorControllerForConversation(peer: ACPeer) -> UIViewController
+    func actorControllerForConversation(peer: ACPeer) -> UIViewController?
     
     /// Configuration of bubble cells
     func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter]
@@ -44,53 +44,35 @@ public protocol ActorSDKDelegate {
     func actorSettingsSupportDidCreated(controller: AASettingsViewController, section: AAManagedSection)
 }
 
-/// Default values of SDK Delegate
-public extension ActorSDKDelegate {
-    
-    /// Default phone activation
-    public func actorControllerForAuthStart() -> UIViewController {
-        return AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+/// Default empty implementation of SDK Delegate
+public class ActorSDKDelegateDefault: NSObject, ActorSDKDelegate {
+
+    public func actorControllerForAuthStart() -> UIViewController? {
+        return nil
     }
     
-    /// Default app layout
-    public func actorControllerForStart() -> UIViewController {
-        let tab = AARootTabViewController()
-        tab.viewControllers = [
-            AANavigationController(rootViewController: AAContactsViewController()),
-            AANavigationController(rootViewController: AARecentViewController()),
-            AANavigationController(rootViewController: AASettingsViewController())]
-        tab.selectedIndex = 0
-        tab.selectedIndex = 1
-        
-        let rootController : UIViewController
-        if (AADevice.isiPad) {
-            let splitController = AARootSplitViewController()
-            splitController.viewControllers = [tab, AANoSelectionViewController()]
-            rootController = splitController
-        } else {
-            rootController = tab
-        }
-        return rootController
+    public func actorControllerForStart() -> UIViewController? {
+        return nil
     }
     
-    public func actorControllerForUser(uid: Int) -> AAViewController {
-        return AAUserViewController(uid: uid)
+    public func actorControllerForUser(uid: Int) -> AAViewController? {
+        return nil
     }
     
-    func actorControllerForGroup(gid: Int) -> AAViewController {
-        return AAGroupViewController(gid: gid)
+    public func actorControllerForGroup(gid: Int) -> AAViewController? {
+        return nil
     }
     
-    func actorControllerForConversation(peer: ACPeer) -> UIViewController {
-        return ConversationViewController(peer: peer)
+    public func actorControllerForConversation(peer: ACPeer) -> UIViewController? {
+        return nil
     }
     
     public func actorConfigureBubbleLayouters(builtIn: [AABubbleLayouter]) -> [AABubbleLayouter] {
         return builtIn
     }
     
-    public func actorControllerAfterLogIn() -> UIViewController {
-        return actorControllerForStart()
+    public func actorControllerAfterLogIn() -> UIViewController? {
+        return nil
     }
     
     public func actorSettingsHeaderDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
@@ -112,9 +94,4 @@ public extension ActorSDKDelegate {
     public func actorSettingsSupportDidCreated(controller: AASettingsViewController, section: AAManagedSection) {
         
     }
-}
-
-/// Default empty implementation of SDK Delegate
-class ActorSDKDelegateDefault: ActorSDKDelegate {
-    
 }
