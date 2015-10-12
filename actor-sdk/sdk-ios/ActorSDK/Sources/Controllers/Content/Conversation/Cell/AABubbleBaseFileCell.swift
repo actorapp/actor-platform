@@ -17,57 +17,51 @@ public class AABubbleBaseFileCell: AABubbleCell {
     public func fileBind(message: ACMessage, autoDownload: Bool) {
         if let doc = message.content as? ACDocumentContent {
             
-            // Next generation of binding
-            bindGeneration++
-            // Saving generation to new binding
-            let selfGeneration = bindGeneration;
-            
-            // Remove old bindings
-            fileUnbind()
+            let selfGeneration = prepareBind()
             
             if let source = doc.getSource() as? ACFileRemoteSource {
-                let fileReference = source.getFileReference()
-            
+                let fileReference = source.getFileReference();
+                
                 bindedDownloadFile = fileReference.getFileId()
                 bindedDownloadCallback = AAFileCallback(notDownloaded: { () -> () in
                     if (self.bindGeneration != selfGeneration) {
                         return
                     }
                     self.fileDownloadPaused(selfGeneration)
-                }, onDownloading: { (progress) -> () in
-                    if (self.bindGeneration != selfGeneration) {
-                        return
-                    }
-                    self.fileDownloading(progress, selfGeneration: selfGeneration)
-                }, onDownloaded: { (reference) -> () in
-                    if (self.bindGeneration != selfGeneration) {
-                        return
-                    }
-                    self.fileReady(reference, selfGeneration: selfGeneration)
+                    }, onDownloading: { (progress) -> () in
+                        if (self.bindGeneration != selfGeneration) {
+                            return
+                        }
+                        self.fileDownloading(progress, selfGeneration: selfGeneration)
+                    }, onDownloaded: { (reference) -> () in
+                        if (self.bindGeneration != selfGeneration) {
+                            return
+                        }
+                        self.fileReady(reference, selfGeneration: selfGeneration)
                 })
-            
+                
                 Actor.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
             } else if let source = doc.getSource() as? ACFileLocalSource {
-                let fileReference = source.getFileDescriptor()
-            
+                let fileReference = source.getFileDescriptor();
+                
                 bindedUploadFile = message.rid;
                 bindedUploadCallback = AAUploadFileCallback(notUploaded: { () -> () in
                     if (self.bindGeneration != selfGeneration) {
                         return
                     }
                     self.fileUploadPaused(fileReference, selfGeneration: selfGeneration)
-                }, onUploading: { (progress) -> () in
-                    if (self.bindGeneration != selfGeneration) {
-                        return
-                    }
-                    self.fileUploading(fileReference, progress: progress, selfGeneration: selfGeneration)
-                }, onUploadedClosure: { () -> () in
-                    if (self.bindGeneration != selfGeneration) {
-                        return
-                    }
-                    self.fileReady(fileReference, selfGeneration: selfGeneration)
+                    }, onUploading: { (progress) -> () in
+                        if (self.bindGeneration != selfGeneration) {
+                            return
+                        }
+                        self.fileUploading(fileReference, progress: progress, selfGeneration: selfGeneration)
+                    }, onUploadedClosure: { () -> () in
+                        if (self.bindGeneration != selfGeneration) {
+                            return
+                        }
+                        self.fileReady(fileReference, selfGeneration: selfGeneration)
                 });
-            
+                
                 Actor.bindRawUploadFileWithRid(message.rid, withCallback: bindedUploadCallback)
             } else {
                 fatalError("Unsupported file source")
@@ -75,6 +69,44 @@ public class AABubbleBaseFileCell: AABubbleCell {
         } else {
             fatalError("Unsupported message type")
         }
+    }
+    
+    public func bindFile(fileReference: ACFileReference, autoDownload: Bool) {
+        
+        let selfGeneration = prepareBind()
+        
+        bindedDownloadFile = fileReference.getFileId()
+        bindedDownloadCallback = AAFileCallback(notDownloaded: { () -> () in
+            if (self.bindGeneration != selfGeneration) {
+                return
+            }
+            self.fileDownloadPaused(selfGeneration)
+            }, onDownloading: { (progress) -> () in
+                if (self.bindGeneration != selfGeneration) {
+                    return
+                }
+                self.fileDownloading(progress, selfGeneration: selfGeneration)
+            }, onDownloaded: { (reference) -> () in
+                if (self.bindGeneration != selfGeneration) {
+                    return
+                }
+                self.fileReady(reference, selfGeneration: selfGeneration)
+        })
+        
+        Actor.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
+    }
+    
+    private func prepareBind() -> Int {
+        
+        // Next generation of binding
+        bindGeneration++
+        // Saving generation to new binding
+        let selfGeneration = bindGeneration;
+        
+        // Remove old bindings
+        fileUnbind()
+        
+        return selfGeneration
     }
     
     public func fileUploadPaused(reference: String, selfGeneration: Int) {
