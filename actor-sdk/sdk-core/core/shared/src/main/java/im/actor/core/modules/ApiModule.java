@@ -1,5 +1,7 @@
 package im.actor.core.modules;
 
+import im.actor.core.api.parser.RpcParser;
+import im.actor.core.api.parser.UpdatesParser;
 import im.actor.core.modules.api.PersistentRequestsActor;
 import im.actor.core.modules.events.AppVisibleChanged;
 import im.actor.core.modules.events.ConnectingStateChanged;
@@ -9,6 +11,7 @@ import im.actor.core.network.ActorApi;
 import im.actor.core.network.ActorApiCallback;
 import im.actor.core.network.Endpoints;
 import im.actor.core.network.parser.ApiParserConfig;
+import im.actor.core.network.parser.ParsingExtension;
 import im.actor.core.network.parser.Request;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -26,6 +29,9 @@ public class ApiModule extends AbsModule implements BusSubscriber {
 
     public ApiModule(Modules context) {
         super(context);
+
+        // Register initial scheme parsers
+        this.parserConfig.addExtension(new ParsingExtension(new RpcParser(), new UpdatesParser()));
 
         this.actorApi = new ActorApi(new Endpoints(context().getConfiguration().getEndpoints()),
                 new PreferenceApiStorage(context().getPreferences()),

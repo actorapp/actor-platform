@@ -9,8 +9,6 @@ import im.actor.core.api.parser.UpdatesParser;
 
 public class ApiParserConfig {
 
-    private RpcParser rpcRarser = new RpcParser();
-    private UpdatesParser updatesParser = new UpdatesParser();
     private ArrayList<ParsingExtension> extensions = new ArrayList<ParsingExtension>();
 
     public void addExtension(ParsingExtension extension) {
@@ -26,6 +24,6 @@ public class ApiParserConfig {
             }
         }
 
-        return rpcRarser.read(header, content);
+        throw new IOException("Unknown package");
     }
 }
