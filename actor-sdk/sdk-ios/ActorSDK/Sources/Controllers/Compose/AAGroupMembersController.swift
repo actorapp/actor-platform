@@ -3,7 +3,6 @@
 //
 
 import UIKit
-import CLTokenInputView
 
 public class GroupMembersController: AAContactsListContentController, AAContactsListContentControllerDelegate, CLTokenInputViewDelegate {
 
@@ -36,10 +35,15 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
         
         tokenView.delegate = self
         tokenView.fieldColor = appStyle.vcTokenFieldTextColor
+        tokenView.fieldTextColor = appStyle.vcTokenFieldTextColor        
         tokenView.backgroundColor = appStyle.vcTokenFieldBgColor
         tokenView.tintColor = appStyle.vcTokenTintColor
         tokenView.fieldName = ""
-        tokenView.placeholderText = AALocalized("CreateGroupMembersPlaceholders")
+        
+        let placeholder = AALocalized("CreateGroupMembersPlaceholders")
+        let attributedPlaceholder = NSMutableAttributedString(string: placeholder)
+        attributedPlaceholder.addAttribute(NSForegroundColorAttributeName, value: appStyle.vcHintColor, range: NSRange(location: 0, length: placeholder.length))
+        tokenView.placeholderAttributedText = attributedPlaceholder
         
         self.view.addSubview(tokenView)
         

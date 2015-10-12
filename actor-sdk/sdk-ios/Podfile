@@ -17,6 +17,29 @@ target 'ActorApp' do
     pod 'Fabric'
     pod 'Crashlytics'
 
+    # Core Tools
+    pod 'RegexKitLite'
+    pod 'CocoaAsyncSocket'
+    pod 'zipzap'
+
+    # Main UI
+    pod 'SlackTextViewController'
+    pod 'NYTPhotoViewer'
+    pod 'TTTAttributedLabel'
+    pod 'RSKImageCropper'
+
+    # Small UI
+    pod 'VBFPopFlatButton'
+    pod 'SZTextView'
+        
+    # Progress
+    pod 'M13ProgressSuite'
+    pod 'MBProgressHUD'
+
+    # Alerts
+    pod 'BlockAlertsAnd-ActionSheets'
+    pod 'RMUniversalAlert'
+    pod 'PSTAlertController'
 end
 
 target 'ActorSDK' do
@@ -34,21 +57,18 @@ target 'ActorSDK' do
     pod 'SlackTextViewController'
     pod 'NYTPhotoViewer'
     pod 'TTTAttributedLabel'
+    pod 'RSKImageCropper'
 
     # Small UI
-    pod 'PEPhotoCropEditor'
     pod 'VBFPopFlatButton'
-    pod 'CLTokenInputView'
     pod 'SZTextView'
-    
+        
+    # Progress
+    pod 'M13ProgressSuite'
+    pod 'MBProgressHUD'
+
     # Alerts
-    # TODO: Cleanup
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
-    
-    # Progress
-    # TODO: Cleanup
-    pod 'M13ProgressSuite'
-    pod 'MBProgressHUD'
 end
