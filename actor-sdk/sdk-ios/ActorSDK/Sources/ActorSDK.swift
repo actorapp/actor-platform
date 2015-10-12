@@ -40,16 +40,16 @@ public class ActorSDK {
     ]
     
     /// API ID
-    public let apiId = 2
+    public var apiId = 2
     
     /// API Key
-    public let apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
+    public var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
     
     /// Push registration mode
     public var autoPushMode = AAAutoPush.None
     
     /// Push token registration id. Required for sending push tokens
-    public let apiPushId: Int? = nil
+    public var apiPushId: Int? = nil
     
     /// Invitation URL for apps
     public var inviteUrl: String = "https://actor.im/dl"
