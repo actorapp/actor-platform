@@ -6,13 +6,13 @@ import Foundation
 
 struct AAHashMap<T> {
     var table = Array<SinglyLinkedList<T>?>()
-    public init() {
+    init() {
         for _ in 0...99 {
             table.append(SinglyLinkedList<T>())
         }
     }
     
-    public mutating func setKey(key: Int64, withValue val: T?) {
+    mutating func setKey(key: Int64, withValue val: T?) {
         let hashedString = Int(abs(key) % 10)
         if let collisionList = table[hashedString] {
             collisionList.upsertNodeWithKey(key, AndValue: val)
@@ -21,7 +21,7 @@ struct AAHashMap<T> {
             table[hashedString]!.upsertNodeWithKey(key, AndValue: val)
         }
     }
-    public func getValueAtKey(key: Int64) -> T? {
+    func getValueAtKey(key: Int64) -> T? {
         let hashedString = Int(abs(key) % 10)
         if let collisionList = table[hashedString] {
             return collisionList.findNodeWithKey(key)?.value

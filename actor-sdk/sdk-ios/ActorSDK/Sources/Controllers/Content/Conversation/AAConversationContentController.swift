@@ -326,7 +326,10 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
     }
     
     public func onBubbleAvatarTap(view: UIView, uid: jint) {
-        let controller = ActorSDK.sharedActor().delegate.actorControllerForUser(Int(uid))
+        var controller: AAViewController! = ActorSDK.sharedActor().delegate.actorControllerForUser(Int(uid))
+        if controller == nil {
+            controller = AAUserViewController(uid: Int(uid))
+        }
         if (AADevice.isiPad) {
             let navigation = AANavigationController()
             navigation.viewControllers = [controller]
