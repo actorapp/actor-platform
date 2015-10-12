@@ -4,9 +4,9 @@
 
 import UIKit
 import MobileCoreServices
-import PEPhotoCropEditor
+import RSKImageCropper
 
-public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PECropViewControllerDelegate  {
+public class AAViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, RSKImageCropViewControllerDelegate  {
     
     // MARK: -
     // MARK: Public vars
@@ -179,16 +179,12 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     // Image pick and crop
     
     public func cropImage(image: UIImage) {
-        let cropController = PECropViewController()
-        cropController.cropAspectRatio = 1.0
-        cropController.keepingCropAspectRatio = true
-        cropController.image = image
+        let cropController = RSKImageCropViewController(image: image)
         cropController.delegate = self
-        cropController.toolbarHidden = true
         navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
     }
     
-    public func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
+    public func imageCropViewController(controller: RSKImageCropViewController!, didCropImage croppedImage: UIImage!, usingCropRect cropRect: CGRect) {
         if (pendingPickClosure != nil){
             pendingPickClosure!(image: croppedImage)
         }
@@ -196,7 +192,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    public func cropViewControllerDidCancel(controller: PECropViewController!) {
+    public func imageCropViewControllerDidCancelCrop(controller: RSKImageCropViewController!) {
         pendingPickClosure = nil
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }

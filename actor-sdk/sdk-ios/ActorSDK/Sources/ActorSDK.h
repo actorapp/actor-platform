@@ -29,3 +29,5 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 #import <ActorSDK/FMResultSet.h>
 #import <ActorSDK/FMDatabaseAdditions.h>
 #import <ActorSDK/FMDatabaseQueue.h>
+
+#import <ActorSDK/CLTokenInputView.h>

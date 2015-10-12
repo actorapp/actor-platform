@@ -78,6 +78,7 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         groupName.delegate = self
         groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         groupName.autocapitalizationType = UITextAutocapitalizationType.Words
+        groupName.keyboardAppearance = appStyle.isDarkApp ? .Dark : .Light
         
         groupNameFieldSeparator.backgroundColor = appStyle.vcSeparatorColor
         
@@ -122,11 +123,17 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
         })
     }
     
-    public override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         groupName.becomeFirstResponder()
     }
+    
+//    public override func viewDidAppear(animated: Bool) {
+//        super.viewDidAppear(animated)
+//        
+//        groupName.becomeFirstResponder()
+//    }
     
     public func textFieldShouldReturn(textField: UITextField) -> Bool {
         doNext()

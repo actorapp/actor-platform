@@ -69,7 +69,18 @@ for root, directories, filenames in os.walk('Sources/'):
                 with open(destFile, 'w') as d:
                     d.write(destLines)
 
-with open('Public/ActorCoreUmbrella.h', 'w') as d:
-    for line in allFiles:
-        d.write("#import <ActorSDK/" + line + ">\n")
+isUmbrellaChanged = True
+
+umbrellaContent = ""
+for line in allFiles:
+    umbrellaContent += "#import <ActorSDK/" + line + ">\n"
+
+if os.path.exists('Public/ActorCoreUmbrella.h'):
+    with open('Public/ActorCoreUmbrella.h', 'r') as d:
+        if d.read() == umbrellaContent:
+            isUmbrellaChanged = False
+
+if isUmbrellaChanged:
+    with open('Public/ActorCoreUmbrella.h', 'w') as d:
+        d.write(umbrellaContent)
 

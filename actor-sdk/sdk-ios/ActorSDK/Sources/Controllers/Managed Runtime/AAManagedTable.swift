@@ -421,7 +421,14 @@ private class AAManagedSearchController<BindCell where BindCell: AABindedSearchC
         searchBar.setSearchFieldBackgroundImage(fieldBg.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
         
         // SearchBar field text color
-        // TODO
+        for subView in searchBar.subviews {
+            for secondLevelSubview in subView.subviews {
+                if let tf = secondLevelSubview as? UITextField {
+                    tf.textColor = style.searchFieldTextColor
+                    break
+                }
+            }
+        }
 
         self.searchDisplay = UISearchDisplayController(searchBar: searchBar, contentsController: controller)
         

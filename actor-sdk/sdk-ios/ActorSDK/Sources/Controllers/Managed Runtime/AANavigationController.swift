@@ -20,10 +20,11 @@ public class AANavigationController: UINavigationController {
         navigationBar.hairlineHidden = true
         
         view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
-        // Enabling app state sync progress
+        
+//         Enabling app state sync progress
 //        self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
 //        self.setSecondaryColor(MainAppTheme.navigation.progressSecondary)
-        
+//        
 //        binder.bind(Actor.getAppState().isSyncing, valueModel2: Actor.getAppState().isConnecting) { (value1: JavaLangBoolean?, value2: JavaLangBoolean?) -> () in
 //            if value1!.booleanValue() || value2!.booleanValue() {
 //                self.showProgress()
@@ -38,6 +39,10 @@ public class AANavigationController: UINavigationController {
         super.viewWillAppear(animated)
         
         UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
+    }
+    
+    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
 }
 
