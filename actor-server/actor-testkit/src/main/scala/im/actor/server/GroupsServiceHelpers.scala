@@ -13,6 +13,8 @@ import scala.concurrent.Await
 import scala.util.Random
 
 trait GroupsServiceHelpers {
+  private def defaultOperationTimeout = 10.seconds
+
   protected def createGroup(title: String, userIds: Set[Int])(
     implicit
     clientData:  ClientData,
@@ -20,9 +22,9 @@ trait GroupsServiceHelpers {
     service:     GroupsService,
     actorSystem: ActorSystem
   ): ResponseCreateGroup = {
-    val users = Await.result(db.run(persist.User.findByIds(userIds)), 10.seconds)
+    val users = Await.result(db.run(persist.User.findByIds(userIds)), defaultOperationTimeout)
     val userPeers = users.map(user ⇒ ApiUserOutPeer(user.id, ACLUtils.userAccessHash(clientData.authId, user)))
-    val result = Await.result(service.handleCreateGroup(Random.nextLong(), title, userPeers.toVector), 10.seconds)
+    val result = Await.result(service.handleCreateGroup(Random.nextLong(), title, userPeers.toVector), defaultOperationTimeout)
     result.toOption.get
   }
 
@@ -39,7 +41,7 @@ trait GroupsServiceHelpers {
   }
 
   protected def extractToken(groupId: Int)(implicit system: ActorSystem): String = {
-    Await.result(GroupExtension(system).getIntegrationToken(groupId), 10.seconds).get
+    Await.result(GroupExtension(system).getIntegrationToken(groupId), defaultOperationTimeout).get
   }
 
 }
