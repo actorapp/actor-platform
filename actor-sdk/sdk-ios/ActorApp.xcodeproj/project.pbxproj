@@ -51,7 +51,6 @@
 /* Begin PBXFileReference section */
 		06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ActorSDK.xcodeproj; sourceTree = "<group>"; };
 		065974E11BC6926C00B8C7DF /* ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = ActorSDK.framework; path = "/Users/ex3ndr/Library/Developer/Xcode/DerivedData/ActorApp-clcqncodqhdxutfqgjvteqywzxue/Build/Products/Debug-iphoneos/ActorSDK.framework"; sourceTree = "<absolute>"; };
-		066A50761BC45A5E000E606E /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
 		068C6E4E1BBC4BF900182516 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "Supporting Files/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		148837AEB986AFDE519BEBD3686AB073 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "Supporting Files/main.m"; sourceTree = "<group>"; };
 		2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -122,7 +121,6 @@
 			isa = PBXGroup;
 			children = (
 				06230F031BC7FF2F00A4807B /* ActorSDK.xcodeproj */,
-				066A50761BC45A5E000E606E /* j2objc.framework */,
 				E2F298FBF1BB3C0A84996ED3 /* Pods_ActorApp.framework */,
 				065974E11BC6926C00B8C7DF /* ActorSDK.framework */,
 			);
@@ -169,7 +167,7 @@
 				4533F91FE5E247335BA76B35E6FC28C1 /* Frameworks */,
 				B094A1F03E91E4354C789DE8702D2FB4 /* Resources */,
 				8A6D3D9BB256B05E9E66DD2FD43B13B0 /* Copy Pods Resources */,
-				06FC5E741BAB2DCC0071F153 /* ShellScript */,
+				06FC5E741BAB2DCC0071F153 /* Configure Crashlytics */,
 				16DA98FD27E0766A88C46CBB /* Embed Pods Frameworks */,
 				06230F0D1BC7FF3500A4807B /* Embed Frameworks */,
 			);
@@ -255,13 +253,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		06FC5E741BAB2DCC0071F153 /* ShellScript */ = {
+		06FC5E741BAB2DCC0071F153 /* Configure Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Configure Crashlytics";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -369,6 +368,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/J2ObjC-Framework/Frameworks",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";
@@ -486,6 +486,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/J2ObjC-Framework/Frameworks",
+					"$(PROJECT_DIR)/build/Debug-iphoneos",
 				);
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "ActorApp/Supporting Files/Info.plist";

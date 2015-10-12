@@ -10,12 +10,16 @@ public class AAAuthNavigationController: UINavigationController {
         super.viewDidLoad()
         
         navigationBar.setTransparentBackground()
-        navigationBar.tintColor = UIColor.redColor()
+        navigationBar.tintColor = ActorSDK.sharedActor().style.authTintColor
     }
 
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         UIApplication.sharedApplication().setStatusBarStyle(.Default, animated: true)
+    }
+    
+    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .Default
     }
 }

@@ -23,6 +23,8 @@ public protocol AABindedSearchCell {
 
 public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AABindedCell>: NSObject, AAManagedRange, ARDisplayList_AppleChangeListener {
     
+    public var topOffset: Int = 0
+    
     public var displayList: ARBindedDisplayList!
     
     public var selectAction: ((BindCell.BindData) -> Bool)?
@@ -111,7 +113,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
             if modification.removedCount() > 0 {
                 var rows = [NSIndexPath]()
                 for i in 0..<modification.removedCount() {
-                    rows.append(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))), inSection: section))
+                    rows.append(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))) + topOffset, inSection: section))
                 }
                 tableView.deleteRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Automatic)
             }
@@ -120,7 +122,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
             if modification.addedCount() > 0 {
                 var rows = [NSIndexPath]()
                 for i in 0..<modification.addedCount() {
-                    rows.append(NSIndexPath(forRow: Int(modification.getAdded(jint(i))), inSection: section))
+                    rows.append(NSIndexPath(forRow: Int(modification.getAdded(jint(i)) + topOffset), inSection: section))
                 }
                 tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Automatic)
             }
@@ -129,7 +131,7 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
             if modification.movedCount() > 0 {
                 for i in 0..<modification.movedCount() {
                     let mov = modification.getMoved(jint(i))
-                    tableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()), inSection: section), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()), inSection: section))
+                    tableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()) + topOffset, inSection: section), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()) + topOffset, inSection: section))
                 }
             }
             
@@ -141,10 +143,10 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
             let visibleIndexes = tableView.indexPathsForVisibleRows!
             for i in 0..<modification.updatedCount() {
                 for visibleIndex in visibleIndexes {
-                    if (visibleIndex.row == Int(modification.getUpdated(jint(i))) && visibleIndex.section == section) {
+                    if (visibleIndex.row == Int(modification.getUpdated(jint(i))) + topOffset && visibleIndex.section == section) {
 
                         // Need to rebind manually because we need to keep cell reference same
-                        if let item = displayList.itemWithIndex(jint(visibleIndex.row)) as? BindCell.BindData,
+                        if let item = displayList.itemWithIndex(jint(visibleIndex.row - topOffset)) as? BindCell.BindData,
                             let cell = tableView.cellForRowAtIndexPath(visibleIndex) as? BindCell {
                                 
                             cell.bind(item, table: table, index: visibleIndex.row, totalCount: Int(displayList.size()))
@@ -197,7 +199,11 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
 public extension AAManagedSection {
     
     public func binded<T where T: UITableViewCell, T: AABindedCell>(@noescape closure: (r: AABindedRows<T>) -> ()) -> AABindedRows<T> {
+        
+        let topOffset = numberOfItems(self.table)
+        
         let r = AABindedRows<T>()
+        r.topOffset = topOffset
         regions.append(r)
         closure(r: r)
         r.checkInstallation()

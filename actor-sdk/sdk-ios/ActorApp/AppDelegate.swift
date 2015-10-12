@@ -27,45 +27,48 @@ import ActorSDK
         
         style.isDarkApp = true
         
+        style.vcStatusBarStyle = .LightContent
+        style.vcTintColor = UIColor(rgb: 0x4e88ff)
+        style.vcBgColor = UIColor(rgb: 0x282c34)
+        style.vcBackyardColor = UIColor(rgb: 0x21252b)
+        style.vcSeparatorColor = UIColor(rgb: 0x1e2128)
+        style.vcTextColor = UIColor(rgb: 0xa9b0bd)
+        style.vcHintColor = UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1)
+        style.vcSectionColor = UIColor.whiteColor()
+        style.vcDestructiveColor = UIColor(rgb: 0xff4848)
+        style.vcSelectedColor = UIColor(rgb: 0x4e88ff)
+        style.vcSwitchOn = UIColor(rgb: 0x95c174)
+        style.vcPanelBgColor = UIColor(rgb: 0x181a1f)
+        
         style.searchStatusBarStyle = .LightContent
-        style.searchBackgroundColor = UIColor(rgb: 0x272422)
-        style.searchFieldBgColor = UIColor(rgb: 0x322d28)
+        style.searchBackgroundColor = UIColor(rgb: 0x21252b)
+        style.searchFieldTextColor = UIColor(rgb: 0xa9b0bd)
+        style.searchFieldBgColor = UIColor(rgb: 0x282c34)
+        style.searchCancelColor = UIColor(rgb: 0x4e88ff)
         
-        style.avatarDarkBlue = UIColor(rgb: 0x0087fe)
-        style.avatarLightBlue = UIColor(rgb: 0x6494ed)
-        style.avatarGreen = UIColor(rgb: 0x94c247)
-        style.avatarOrange = UIColor(rgb: 0xdf7948)
-        style.avatarPink = UIColor(rgb: 0x9b5c3c)
-        style.avatarPurple = UIColor(rgb: 0x35875c)
-        style.avatarYellow = UIColor(rgb: 0xffb452)
+        style.navigationBgColor = UIColor(rgb: 0x1f2228)
+        style.navigationTitleColor = UIColor.whiteColor()
         
-        style.vcBackyardColor = UIColor(rgb: 0x272422)
-        style.vcBgColor = UIColor(rgb: 0x322d28)
-        style.vcPanelBgColor = UIColor(rgb: 0x272422)
+        style.cellFooterColor = style.vcHintColor
         
-        style.vcTextColor = UIColor(rgb: 0xe6ce94)
-        style.vcHintColor = UIColor(rgb: 0x575045)
-        style.vcTintColor = UIColor(rgb: 0x93c760)
-        style.vcDestructiveColor = UIColor(rgb: 0xe8440e)
+        style.chatTextBubbleOutColor = UIColor(rgb: 0x2385d8)
+        style.chatTextBubbleOutBorderColor = UIColor(rgb: 0x1c5591)
+        style.chatTextOutColor = UIColor.whiteColor()
+        style.chatTextOutUnsupportedColor = UIColor(rgb: 0x50b1ae)
+        style.chatTextDateOutColor = UIColor.alphaWhite(0.56)
         
-        style.vcSwitchOn = UIColor(rgb: 0x738c58)
-        style.vcSwitchOff = UIColor(rgb: 0x272422)
+        style.chatTextBubbleInColor =  UIColor.whiteColor()
+        style.chatTextBubbleInBorderColor = UIColor(rgb: 0x95959b)
+        style.chatTextInColor = UIColor(rgb: 0x141617)
+        style.chatTextInUnsupportedColor = UIColor(rgb: 0x50b1ae)
+        style.chatTextDateInColor = UIColor(rgb: 0x979797)
         
-        style.vcSeparatorColor = UIColor(rgb: 0x504a41)
-        style.vcSelectedColor = UIColor(rgb: 0x4b443b)
+        style.chatStatusActive = UIColor(rgb: 0x13f17b)
+        style.chatStatusPassive = UIColor.alphaWhite(0.4)
         
-        style.cellHeaderColor = UIColor(rgb: 0x7c7365)
-        style.cellFooterColor = UIColor(rgb: 0x7c7365)
+        // style.chatBgColor = UIColor(patternImage: UIImage(named: "bg_items")!)
         
-        style.tabSelectedIconColor = UIColor(rgb: 0xf3eadf)
-        style.tabUnselectedIconColor = UIColor(rgb: 0x7c7365)
-        style.tabSelectedTextColor = UIColor(rgb: 0xf3eadf)
-        style.tabUnselectedTextColor = UIColor(rgb: 0x7c7365)
-        
-        style.navigationBgColor = UIColor(rgb: 0x272422)
-        style.navigationTintColor = UIColor(rgb: 0xf3eadf)
-        style.navigationTitleColor = UIColor(rgb: 0xf3eadf)
-        style.navigationSubtitleColor = UIColor(rgb: 0x7c7365)
+        style.placeholderBgColor = UIColor(rgb: 0x313237)
         
         ActorSDK.sharedActor().presentMessengerInNewWindow()
         

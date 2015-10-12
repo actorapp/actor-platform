@@ -21,7 +21,7 @@ public class AAAuthCountriesViewController: AATableViewController {
         
         self.title = "Country" // TODO: Localize
         
-        let cancelButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss")) // TODO: Localize
+        let cancelButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismiss")
         self.navigationItem.setLeftBarButtonItem(cancelButtonItem, animated: false)
         
         self.content = ACAllEvents_Auth.AUTH_PICK_COUNTRY()
