@@ -641,5 +641,10 @@ public class ActorStyle {
         get { return _composeAvatarTextColor != nil ? _composeAvatarTextColor! : vcHintColor }
         set(v) { _composeAvatarTextColor = v }
     }
+    
+    //
+    // Auth Screen
+    //
 
+    public var authTintColor = UIColor(rgb: 0x007aff)
 }

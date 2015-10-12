@@ -14,6 +14,7 @@ public class AAEditCell: AATableViewCell {
         textField.autocapitalizationType = .None
         textField.autocorrectionType = .No
         textField.textColor = appStyle.cellTextColor
+        textField.keyboardAppearance = appStyle.isDarkApp ? .Dark : .Light
         
         contentView.addSubview(textField)
     }

@@ -45,6 +45,7 @@ public class AAContactsListContentController: AAContentTableController {
             }
             
             self.contactRows = s.binded { (r: AABindedRows<AAContactCell>) -> () in
+                
                 r.displayList = Actor.buildContactsDisplayList()
                 
                 r.selectAction = { (contact) -> Bool in
