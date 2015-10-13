@@ -32,6 +32,9 @@ public interface ListStorage {
     @ObjectiveCName("loadItemWithKey:")
     ListEngineRecord loadItem(long key);
 
+    @ObjectiveCName("loadAllItems")
+    List<ListEngineRecord> loadAllItems();
+
     @ObjectiveCName("isEmpty")
     boolean isEmpty();
 

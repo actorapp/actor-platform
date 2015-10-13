@@ -158,7 +158,7 @@ public class MVVMCollection<T extends BserObject & KeyValueItem, V extends BaseV
                 return cache.get(id);
             }
 
-            byte[] data = collectionStorage.getValue(id);
+            byte[] data = collectionStorage.loadItem(id);
 
             if (data != null) {
                 try {

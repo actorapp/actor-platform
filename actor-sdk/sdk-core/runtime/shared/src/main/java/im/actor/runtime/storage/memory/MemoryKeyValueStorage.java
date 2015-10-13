@@ -1,5 +1,6 @@
 package im.actor.runtime.storage.memory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,12 +36,33 @@ public class MemoryKeyValueStorage implements KeyValueStorage {
     }
 
     @Override
-    public void clear() {
-        records.clear();
+    public byte[] loadItem(long key) {
+        return records.get(key);
     }
 
     @Override
-    public byte[] getValue(long key) {
-        return records.get(key);
+    public List<KeyValueRecord> loadItems(long[] keys) {
+        ArrayList<KeyValueRecord> res = new ArrayList<KeyValueRecord>();
+        for (long id : keys) {
+            byte[] data = loadItem(id);
+            if (data != null) {
+                res.add(new KeyValueRecord(id, data));
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public List<KeyValueRecord> loadAllItems() {
+        ArrayList<KeyValueRecord> res = new ArrayList<KeyValueRecord>();
+        for (long id : records.keySet()) {
+            res.add(new KeyValueRecord(id, records.get(id)));
+        }
+        return res;
+    }
+
+    @Override
+    public void clear() {
+        records.clear();
     }
 }
