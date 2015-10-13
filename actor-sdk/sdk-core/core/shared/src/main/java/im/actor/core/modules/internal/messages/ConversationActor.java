@@ -44,6 +44,7 @@ public class ConversationActor extends ModuleActor {
     private IndexStorage outPendingIndex;
     private IndexStorage inPendingIndex;
     private ActorRef dialogsActor;
+    private ActorRef dialogsGroupedActor;
     private long inReadState;
     private long outReadState;
     private long outReceiveState;
@@ -62,6 +63,7 @@ public class ConversationActor extends ModuleActor {
         docs = context().getMessagesModule().getConversationDocsEngine(peer);
 
         dialogsActor = context().getMessagesModule().getDialogsActor();
+        dialogsGroupedActor = context().getMessagesModule().getDialogsGroupedActor();
         outPendingIndex = Storage.createIndex("out_pending_" + peer.getPeerType() + "_" + peer.getPeerId());
         inPendingIndex = Storage.createIndex("in_pending_" + peer.getPeerType() + "_" + peer.getPeerId());
 
@@ -135,6 +137,8 @@ public class ConversationActor extends ModuleActor {
         // Update dialogs
         if (topMessage != null) {
             if (!isHiddenPeer) {
+                dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
+                        topMessage.getSortDate()));
                 dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
             }
         }
@@ -185,6 +189,8 @@ public class ConversationActor extends ModuleActor {
 
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
+                dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
+                        message.getSortDate()));
             }
         }
     }
@@ -239,6 +245,8 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 // Updating dialog
                 dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inPendingIndex.getCount()));
+                dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
+                        updatedMsg.getSortDate()));
             }
 
             // Updating pending index
@@ -361,6 +369,7 @@ public class ConversationActor extends ModuleActor {
 
         if (!isHiddenPeer) {
             dialogsActor.send(new DialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
+            // TODO: Implement for grouped
         }
     }
 
@@ -402,6 +411,7 @@ public class ConversationActor extends ModuleActor {
         inPendingIndex.clear();
         outPendingIndex.clear();
         dialogsActor.send(new DialogsActor.ChatDelete(peer));
+        // TODO: Implement for grouped
     }
 
     // History
