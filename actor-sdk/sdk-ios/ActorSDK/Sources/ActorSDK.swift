@@ -294,6 +294,14 @@ public class ActorSDK {
     }
     
     //
+    // File System
+    //
+    
+    public func fullFilePathForDescriptor(descriptor: String) -> String {
+        return CocoaFiles.pathFromDescriptor(descriptor)
+    }
+    
+    //
     // Manual Online handling
     //
     
