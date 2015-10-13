@@ -12,6 +12,7 @@
 		06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 06230F401BC95BD200A4807B /* RMPhoneFormat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06230F451BC95C0E00A4807B /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */; settings = {ASSET_TAGS = (); }; };
 		06230F461BC95C0E00A4807B /* PhoneFormats.dat in Resources */ = {isa = PBXBuildFile; fileRef = 06230F441BC95C0E00A4807B /* PhoneFormats.dat */; settings = {ASSET_TAGS = (); }; };
+		063073DB1BCD5D400053DEAF /* AADebugController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063073DA1BCD5D400053DEAF /* AADebugController.swift */; settings = {ASSET_TAGS = (); }; };
 		065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */; settings = {ASSET_TAGS = (); }; };
 		065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A61BC62B3600B8C7DF /* ViewExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975011BC7534100B8C7DF /* FMDBBridge.swift */; settings = {ASSET_TAGS = (); }; };
@@ -179,6 +180,7 @@
 		06230F401BC95BD200A4807B /* RMPhoneFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMPhoneFormat.h; sourceTree = "<group>"; };
 		06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ABPhoneFieldCodes.txt; path = Resources/ABPhoneFieldCodes.txt; sourceTree = "<group>"; };
 		06230F441BC95C0E00A4807B /* PhoneFormats.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = PhoneFormats.dat; path = Resources/PhoneFormats.dat; sourceTree = "<group>"; };
+		063073DA1BCD5D400053DEAF /* AADebugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AADebugController.swift; sourceTree = "<group>"; };
 		065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNavigationController.swift; sourceTree = "<group>"; };
 		065974A61BC62B3600B8C7DF /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		065974C51BC680AA00B8C7DF /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "../../app-ios/Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
@@ -761,6 +763,7 @@
 			isa = PBXGroup;
 			children = (
 				066A53061BC53183000E606E /* AARecentViewController.swift */,
+				063073DA1BCD5D400053DEAF /* AADebugController.swift */,
 			);
 			path = Recent;
 			sourceTree = "<group>";
@@ -1157,6 +1160,7 @@
 				066A51561BC4BEF5000E606E /* AALocalized.swift in Sources */,
 				069CF4CF1BCB909A00C66E12 /* CLToken.m in Sources */,
 				066A51441BC4BBAF000E606E /* Strings.swift in Sources */,
+				063073DB1BCD5D400053DEAF /* AADebugController.swift in Sources */,
 				066A53331BC534F5000E606E /* AAFileTypes.swift in Sources */,
 				066A52FE1BC52FA9000E606E /* AAGroupCreateViewController.swift in Sources */,
 				066A52E71BC52A20000E606E /* AAInviteLinkViewController.swift in Sources */,

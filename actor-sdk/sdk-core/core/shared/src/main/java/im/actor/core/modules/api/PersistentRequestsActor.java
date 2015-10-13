@@ -30,7 +30,7 @@ public class PersistentRequestsActor extends ModuleActor {
         storage = Storage.createKeyValue(STORAGE);
 
         requestsStorage = new PersistentStorage();
-        byte[] data = storage.getValue(0);
+        byte[] data = storage.loadItem(0);
         if (data != null) {
             try {
                 requestsStorage = PersistentStorage.fromBytes(data);
