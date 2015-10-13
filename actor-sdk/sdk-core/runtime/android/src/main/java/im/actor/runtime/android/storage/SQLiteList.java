@@ -124,6 +124,11 @@ public class SQLiteList implements ListStorageDisplayEx {
         return null;
     }
 
+    @Override
+    public List<ListEngineRecord> loadAllItems() {
+        return null;
+    }
+
 
     public ListEngineRecord loadItemBySortKey(long key) {
         checkTable();

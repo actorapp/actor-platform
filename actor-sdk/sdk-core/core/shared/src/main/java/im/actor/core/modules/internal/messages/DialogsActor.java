@@ -50,7 +50,7 @@ public class DialogsActor extends ModuleActor {
         long start = im.actor.runtime.Runtime.getCurrentTime();
         PeerDesc peerDesc = buildPeerDesc(peer);
         if (peerDesc == null) {
-            Log.d("DialogsActor", "unknown peer desk");
+            Log.d("DialogsActor", "unknown peer desc");
             return;
         }
 
@@ -75,8 +75,11 @@ public class DialogsActor extends ModuleActor {
                     .setText(contentDescription.getText())
                     .setRelatedUid(contentDescription.getRelatedUser())
                     .setStatus(message.getMessageState())
-                    .setSenderId(message.getSenderId())
-                    .setUnreadCount(counter);
+                    .setSenderId(message.getSenderId());
+
+            if (counter >= 0) {
+                builder.setUnreadCount(counter);
+            }
 
             boolean forceUpdate = false;
 
