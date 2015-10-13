@@ -119,21 +119,9 @@ public class SQLiteKeyValue implements KeyValueStorage {
     }
 
     @Override
-    public void clear() {
+    public byte[] loadItem(long key) {
         checkSqlite();
-        db.beginTransaction();
-        try {
-            db.execSQL("DELETE FROM \"" + name + "\"");
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
-    }
-
-    @Override
-    public byte[] getValue(long id) {
-        checkSqlite();
-        Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"BYTES\""}, "\"ID\" = ?", new String[]{"" + id}, null, null, null);
+        Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"BYTES\""}, "\"ID\" = ?", new String[]{"" + key}, null, null, null);
         if (cursor == null) {
             return null;
         }
@@ -145,5 +133,27 @@ public class SQLiteKeyValue implements KeyValueStorage {
             cursor.close();
         }
         return null;
+    }
+
+    @Override
+    public List<KeyValueRecord> loadItems(long[] keys) {
+        return null;
+    }
+
+    @Override
+    public List<KeyValueRecord> loadAllItems() {
+        return null;
+    }
+
+    @Override
+    public void clear() {
+        checkSqlite();
+        db.beginTransaction();
+        try {
+            db.execSQL("DELETE FROM \"" + name + "\"");
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 }
