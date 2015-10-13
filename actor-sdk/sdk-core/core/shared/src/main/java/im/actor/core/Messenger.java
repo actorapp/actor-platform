@@ -41,6 +41,7 @@ import im.actor.core.util.ActorTrace;
 import im.actor.core.util.Timing;
 import im.actor.core.viewmodel.AppStateVM;
 import im.actor.core.viewmodel.Command;
+import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.core.viewmodel.FileCallback;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
@@ -313,6 +314,17 @@ public class Messenger {
     public GroupVM getGroup(int gid) {
         //noinspection ConstantConditions
         return getGroups().get(gid);
+    }
+
+    /**
+     * Get Dialog Groups
+     *
+     * @return dialog groups
+     */
+    @NotNull
+    @ObjectiveCName("getDialogGroupsVM")
+    public DialogGroupsVM getDialogGroupsVM() {
+        return modules.getMessagesModule().getDialogGroupsVM();
     }
 
     /**
