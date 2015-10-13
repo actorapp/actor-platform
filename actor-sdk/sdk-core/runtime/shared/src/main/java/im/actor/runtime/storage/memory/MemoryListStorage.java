@@ -1,14 +1,12 @@
 package im.actor.runtime.storage.memory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import im.actor.runtime.storage.ListEngineRecord;
 import im.actor.runtime.storage.ListStorage;
 
-/**
- * Created by ex3ndr on 28.07.15.
- */
 public class MemoryListStorage implements ListStorage {
 
     private HashMap<Long, Record> records = new HashMap<Long, Record>();
@@ -51,6 +49,16 @@ public class MemoryListStorage implements ListStorage {
                     record.getData());
         }
         return null;
+    }
+
+    @Override
+    public List<ListEngineRecord> loadAllItems() {
+        ArrayList<ListEngineRecord> res = new ArrayList<ListEngineRecord>();
+        for (long id : records.keySet()) {
+            Record record = records.get(id);
+            res.add(new ListEngineRecord(id, record.getOrder(), record.getQuery(), record.getData()));
+        }
+        return res;
     }
 
     @Override
