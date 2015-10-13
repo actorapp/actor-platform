@@ -99,18 +99,28 @@ object Dialog {
   def findLastReadBefore(date: DateTime, userId: Int) =
     dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result
 
-  def findByUser(userId: Int, dateOpt: Option[DateTime], limit: Int) = {
+  def findByUser(userId: Int, dateOpt: Option[DateTime], limit: Int)(implicit ec: ExecutionContext) = {
     val baseQuery = dialogs
       .filter(d ⇒ d.userId === userId)
+      .sortBy(_.lastMessageDate.desc)
 
-    val query = dateOpt match {
-      case Some(date) ⇒
-        baseQuery.filter(_.lastMessageDate <= date).sortBy(_.lastMessageDate.desc)
-      case None ⇒
-        baseQuery.sortBy(_.lastMessageDate.desc)
+    val limitedQuery = dateOpt match {
+      case Some(date) ⇒ baseQuery.filter(_.lastMessageDate <= date)
+      case None       ⇒ baseQuery
     }
 
-    query.take(limit).result
+    for {
+      limited ← limitedQuery.take(limit).result
+      // work-around for case when there are more than one dialog with the same lastMessageDate
+      result ← limited
+        .lastOption match {
+          case Some(last) ⇒
+            for {
+              sameDate ← baseQuery.filter(_.lastMessageDate === last.lastMessageDate).result
+            } yield limited.filterNot(_.lastMessageDate == last.lastMessageDate) ++ sameDate
+          case None ⇒ DBIO.successful(limited)
+        }
+    } yield result
   }
 
   def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
