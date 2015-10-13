@@ -21,6 +21,6 @@ public class SyncKeyValue {
     }
 
     public synchronized byte[] get(long key) {
-        return storage.getValue(key);
+        return storage.loadItem(key);
     }
 }
