@@ -35,6 +35,7 @@ import im.actor.core.modules.internal.messages.CursorReaderActor;
 import im.actor.core.modules.internal.messages.CursorReceiverActor;
 import im.actor.core.modules.internal.messages.DialogsActor;
 import im.actor.core.modules.internal.messages.DialogsHistoryActor;
+import im.actor.core.modules.internal.messages.GroupedDialogsActor;
 import im.actor.core.modules.internal.messages.MessageDeleteActor;
 import im.actor.core.modules.internal.messages.MessageShownActor;
 import im.actor.core.modules.internal.messages.MessageShownFilter;
@@ -46,6 +47,7 @@ import im.actor.core.network.RpcException;
 import im.actor.core.network.RpcInternalException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.core.viewmodel.DialogGroupsVM;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -62,8 +64,10 @@ import static im.actor.runtime.actors.ActorSystem.system;
 public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private ListEngine<Dialog> dialogs;
+
     private ActorRef dialogsActor;
     private ActorRef dialogsHistoryActor;
+    private ActorRef dialogsGroupedActor;
     private ActorRef ownReadActor;
     private ActorRef plainReadActor;
     private ActorRef plainReceiverActor;
@@ -78,6 +82,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     private final HashMap<Peer, ActorRef> messageShownFilter = new HashMap<Peer, ActorRef>();
 
     private final SyncKeyValue cursorStorage;
+
+    private final DialogGroupsVM dialogGroups = new DialogGroupsVM();
 
     public MessagesModule(final ModuleContext context) {
         super(context);
@@ -99,6 +105,14 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
                 return new DialogsHistoryActor(context());
             }
         }), "actor/dialogs/history");
+
+        this.dialogsGroupedActor = system().actorOf(Props.create(GroupedDialogsActor.class, new ActorCreator<GroupedDialogsActor>() {
+            @Override
+            public GroupedDialogsActor create() {
+                return new GroupedDialogsActor(context());
+            }
+        }), "actor/dialogs/grouped");
+
         this.ownReadActor = system().actorOf(Props.create(OwnReadActor.class, new ActorCreator<OwnReadActor>() {
             @Override
             public OwnReadActor create() {
@@ -137,6 +151,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         }), "actor/shown");
 
         context().getEvents().subscribe(this, PeerChatOpened.EVENT);
+    }
+
+    public DialogGroupsVM getDialogGroupsVM() {
+        return dialogGroups;
     }
 
     public ActorRef getSendMessageActor() {
@@ -219,6 +237,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public ActorRef getDialogsHistoryActor() {
         return dialogsHistoryActor;
+    }
+
+    public ActorRef getDialogsGroupedActor() {
+        return dialogsGroupedActor;
     }
 
     public ListEngine<Dialog> getDialogsEngine() {

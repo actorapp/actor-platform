@@ -199,6 +199,12 @@ class FMDBList : NSObject, ARListStorageDisplayEx {
         }
     }
     
+    func loadAllItems() -> JavaUtilList! {
+        let res = JavaUtilArrayList()
+        // TODO: Implement
+        return res
+    }
+    
     func loadForwardWithSortKey(sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         var result : FMResultSet? = nil;
