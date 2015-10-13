@@ -62,7 +62,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
 
   final def receiveCommand = initializing
 
-  protected final def initializing: Receive = handleInitCommand orElse {
+  protected final def initializing: Receive = handleInitCommand orElse unstashing orElse {
     case msg ⇒
       log.debug("Entity not found while processing {}", msg)
       sender() ! Status.Failure(EntityNotFound)
@@ -72,7 +72,13 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
     case unmatched ⇒ log.warning("Unmatched message: {}, sender: {}", unmatched, sender())
   }
 
-  protected final def stashingBehavior: Receive = {
+  protected final def stashingBehavior: Receive = unstashing orElse {
+    case msg ⇒
+      log.warning("Stashing: {}", msg)
+      stash()
+  }
+
+  private final def unstashing: Receive = {
     case UnstashAndWork(evt, s) ⇒
       context become working(updatedState(evt, s))
       unstashAll()
@@ -84,9 +90,6 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
       }
       context become working(newState)
       unstashAll()
-    case msg ⇒
-      log.warning("Stashing: {}", msg)
-      stash()
   }
 
   protected final def stashing(state: State): Receive = handleQuery(state) orElse stashingBehavior
