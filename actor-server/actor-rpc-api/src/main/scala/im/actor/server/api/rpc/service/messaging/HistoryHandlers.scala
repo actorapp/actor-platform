@@ -78,7 +78,7 @@ trait HistoryHandlers {
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.Dialog.findByUser(client.userId, endDateTimeFrom(endDate), Int.MaxValue) flatMap { dialogModels ⇒
+      persist.Dialog.findByUser(client.userId, endDateTimeFrom(endDate), limit) flatMap { dialogModels ⇒
         for {
           dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
           (users, groups) ← getDialogsUsersGroups(dialogs)
