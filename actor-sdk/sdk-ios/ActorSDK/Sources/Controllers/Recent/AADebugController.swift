@@ -6,7 +6,7 @@ import UIKit
 
 class AADebugController: AAContentTableController {
     
-    var debugData: AAManagedArrayRows<ACDialogDesc, AACommonCell>!
+    var debugData: AAManagedArrayRows<ACDialogSmall, AACommonCell>!
     
     init() {
         super.init(style: .Plain)
@@ -18,9 +18,10 @@ class AADebugController: AAContentTableController {
     
     override func tableDidLoad() {
         section { (s) -> () in
-            self.debugData = s.arrays { (r:AAManagedArrayRows<ACDialogDesc, AACommonCell>) -> () in
-                r.bindData = { (cell: AACommonCell, data: ACDialogDesc) -> () in
-                    cell.setContent(data.title)
+            self.debugData = s.arrays { (r:AAManagedArrayRows<ACDialogSmall, AACommonCell>) -> () in
+                r.bindData = { (cell: AACommonCell, data: ACDialogSmall) -> () in
+                    cell.setContent("\(data.counter) - \(data.title)")
+                    cell.style = .Normal
                 }
             }
         }
@@ -30,11 +31,11 @@ class AADebugController: AAContentTableController {
         binder.bind(ActorSDK.sharedActor().messenger.getDialogGroupsVM().getGroupsValueModel()) { (value: JavaUtilArrayList?) -> () in
             
             if value != nil {
-                var items = [ACDialogDesc]()
+                var items = [ACDialogSmall]()
                 
                 for i in  0..<value!.size() {
-                    for j in (value!.getWithInt(i) as! ACDialogGroup).getDialogs() {
-                        items.append(j as! ACDialogDesc)
+                    for j in (value!.getWithInt(i) as! ACDialogGroup).dialogs {
+                        items.append(j as! ACDialogSmall)
                     }
                 }
                 self.debugData.data = items
