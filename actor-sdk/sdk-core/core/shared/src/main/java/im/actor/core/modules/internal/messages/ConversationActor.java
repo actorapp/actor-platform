@@ -137,10 +137,10 @@ public class ConversationActor extends ModuleActor {
         // Update dialogs
         if (topMessage != null) {
             if (!isHiddenPeer) {
-                dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
-                        topMessage.getSortDate()));
                 dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
             }
+            dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
+                    topMessage.getSortDate()));
         }
     }
 
@@ -189,9 +189,9 @@ public class ConversationActor extends ModuleActor {
 
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
-                dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
-                        message.getSortDate()));
             }
+            dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
+                    message.getSortDate()));
         }
     }
 
@@ -276,6 +276,7 @@ public class ConversationActor extends ModuleActor {
                 dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
                         MessageState.ERROR));
             }
+            dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
     }
 
@@ -369,8 +370,8 @@ public class ConversationActor extends ModuleActor {
 
         if (!isHiddenPeer) {
             dialogsActor.send(new DialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
-            // TODO: Implement for grouped
         }
+        dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
     }
 
     // Deletions
@@ -402,6 +403,7 @@ public class ConversationActor extends ModuleActor {
         inPendingIndex.clear();
         outPendingIndex.clear();
         dialogsActor.send(new DialogsActor.ChatClear(peer));
+        // TODO: Implement for grouped
     }
 
     @Verified
