@@ -10,12 +10,14 @@ import im.actor.core.api.updates.UpdateUserAvatarChanged;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserNameChanged;
 import im.actor.core.api.updates.UpdateUserNickChanged;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.User;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.Processor;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.DialogsActor;
+import im.actor.core.modules.internal.messages.GroupedDialogsActor;
 import im.actor.runtime.annotations.Verified;
 
 import static im.actor.core.util.JavaUtil.equalsE;
@@ -193,6 +195,9 @@ public class UsersProcessor extends AbsModule implements Processor {
     private void onUserDescChanged(User u) {
         context().getMessagesModule().getDialogsActor().send(
                 new DialogsActor.UserChanged(u));
+        context().getMessagesModule().getDialogsGroupedActor().send(
+                new GroupedDialogsActor.PeerInformationChanged(Peer.user(u.getUid()),
+                        u.getName(), u.getAvatar()));
         context().getContactsModule().getContactSyncActor()
                 .send(new ContactsSyncActor.UserChanged(u));
     }

@@ -16,6 +16,7 @@ import im.actor.core.api.ApiMember;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
 import im.actor.core.entity.content.ServiceGroupTitleChanged;
@@ -25,6 +26,7 @@ import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.DialogsActor;
+import im.actor.core.modules.internal.messages.GroupedDialogsActor;
 import im.actor.core.modules.internal.messages.entity.EntityConverter;
 import im.actor.runtime.annotations.Verified;
 
@@ -298,5 +300,8 @@ public class GroupsProcessor extends AbsModule {
     private void onGroupDescChanged(Group group) {
         context().getMessagesModule().getDialogsActor()
                 .send(new DialogsActor.GroupChanged(group));
+        context().getMessagesModule().getDialogsGroupedActor().send(
+                new GroupedDialogsActor.PeerInformationChanged(Peer.group(group.getGroupId()),
+                        group.getTitle(), group.getAvatar()));
     }
 }
