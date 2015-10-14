@@ -78,7 +78,7 @@ trait HistoryHandlers {
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.Dialog.findNotHiddenByUser(client.userId, endDateTimeFrom(endDate), limit) flatMap { dialogModels ⇒
+      persist.Dialog.findNotArchivedByUser(client.userId, endDateTimeFrom(endDate), limit) flatMap { dialogModels ⇒
         for {
           dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
           (users, groups) ← getDialogsUsersGroups(dialogs)
@@ -90,6 +90,14 @@ trait HistoryHandlers {
           ))
         }
       }
+    }
+
+    db.run(toDBIOAction(authorizedAction))
+  }
+
+  override def jhandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] = {
+    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+      throw new RuntimeException("Not implemented yet")
     }
 
     db.run(toDBIOAction(authorizedAction))
