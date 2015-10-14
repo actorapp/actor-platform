@@ -10,6 +10,8 @@ import slick.profile.{ SqlAction, FixedSqlStreamingAction, FixedSqlAction }
 
 import im.actor.server.models
 
+import scala.util.matching.Regex.Groups
+
 class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 
   def userId = column[Int]("user_id", O.PrimaryKey)
@@ -28,12 +30,12 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 
   def ownerLastReadAt = column[DateTime]("owner_last_read_at")
 
-  def isHidden = column[Boolean]("is_hidden")
+  def isArchived = column[Boolean]("is_archived")
 
-  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isHidden) <> (applyDialog.tupled, unapplyDialog)
+  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived) <> (applyDialog.tupled, unapplyDialog)
 
   def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Boolean) ⇒ models.Dialog = {
-    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isHidden) ⇒
+    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived) ⇒
       models.Dialog(
         userId = userId,
         peer = models.Peer(models.PeerType.fromInt(peerType), peerId),
@@ -42,14 +44,14 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
         lastReadAt = lastReadAt,
         ownerLastReceivedAt = ownerLastReceivedAt,
         ownerLastReadAt = ownerLastReadAt,
-        isHidden = isHidden
+        isArchived = isArchived
       )
   }
 
   def unapplyDialog: models.Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Boolean)] = { dialog ⇒
     models.Dialog.unapply(dialog).map {
-      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isHidden) ⇒
-        (userId, peer.typ.toInt, peer.id, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isHidden)
+      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived) ⇒
+        (userId, peer.typ.toInt, peer.id, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived)
     }
   }
 }
@@ -77,6 +79,10 @@ object Dialog {
   val byPeerTypeC = Compiled(byPeerType _)
   val idByPeerTypeC = Compiled(idByPeerType _)
 
+  val notHiddenDialogs = Dialog.dialogs joinLeft Group.groups on (_.peerId === _.id) filter {
+    case (dialog, groupOpt) ⇒ dialog.isArchived === false && (groupOpt.map(!_.isHidden).getOrElse(true))
+  } map (_._1)
+
   def create(dialog: models.Dialog) =
     dialogs += dialog
 
@@ -102,9 +108,9 @@ object Dialog {
   def findLastReadBefore(date: DateTime, userId: Int) =
     dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result
 
-  def findNotHiddenByUser(userId: Int, dateOpt: Option[DateTime], limit: Int)(implicit ec: ExecutionContext) = {
-    val baseQuery = dialogs
-      .filter(d ⇒ d.userId === userId && d.isHidden === false)
+  def findNotArchivedByUser(userId: Int, dateOpt: Option[DateTime], limit: Int)(implicit ec: ExecutionContext) = {
+    val baseQuery = notHiddenDialogs
+      .filter(d ⇒ d.userId === userId)
       .sortBy(_.lastMessageDate.desc)
 
     val limitedQuery = dateOpt match {

@@ -99,7 +99,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               about = None,
               topic = None
             ),
-            randomId
+            randomId,
+            isHidden = false
           )
           _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
           _ ← HistoryUtils.writeHistoryMessage(
@@ -459,6 +460,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         about = None,
         topic = None
       ),
-      randomId
+      randomId,
+      state.isHidden
     )
 }
