@@ -4,42 +4,40 @@ import com.google.j2objc.annotations.Property;
 
 import java.io.IOException;
 
+import im.actor.runtime.bser.BserCreator;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
 import im.actor.runtime.storage.KeyValueItem;
 
-public class DialogDesc extends BserObject implements KeyValueItem {
+public class DialogSpec extends BserObject implements KeyValueItem {
+
+    public static BserCreator<DialogSpec> CREATOR = new BserCreator<DialogSpec>() {
+        @Override
+        public DialogSpec createInstance() {
+            return new DialogSpec();
+        }
+    };
 
     @Property("readonly, nonatomic")
     private Peer peer;
-    @Property("readonly, nonatomic")
-    private String title;
-    @Property("readonly, nonatomic")
-    private Avatar avatar;
     @Property("readonly, nonatomic")
     private boolean isUnread;
     @Property("readonly, nonatomic")
     private int counter;
 
-    public DialogDesc(Peer peer, String title, Avatar avatar, boolean isUnread, int counter) {
+    public DialogSpec(Peer peer, boolean isUnread, int counter) {
         this.peer = peer;
-        this.title = title;
-        this.avatar = avatar;
         this.isUnread = isUnread;
         this.counter = counter;
     }
 
+    private DialogSpec() {
+
+    }
+
     public Peer getPeer() {
         return peer;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Avatar getAvatar() {
-        return avatar;
     }
 
     public int getCounter() {
@@ -53,24 +51,15 @@ public class DialogDesc extends BserObject implements KeyValueItem {
     @Override
     public void parse(BserValues values) throws IOException {
         peer = Peer.fromBytes(values.getBytes(1));
-        title = values.getString(2);
-        byte[] av = values.getBytes(3);
-        if (av != null) {
-            avatar = new Avatar(av);
-        }
-        counter = values.getInt(4);
-        isUnread = values.getBool(5);
+        counter = values.getInt(2);
+        isUnread = values.getBool(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeObject(1, peer);
-        writer.writeString(2, title);
-        if (avatar != null) {
-            writer.writeObject(3, avatar);
-        }
-        writer.writeInt(4, counter);
-        writer.writeBool(5, isUnread);
+        writer.writeInt(2, counter);
+        writer.writeBool(3, isUnread);
     }
 
     @Override
