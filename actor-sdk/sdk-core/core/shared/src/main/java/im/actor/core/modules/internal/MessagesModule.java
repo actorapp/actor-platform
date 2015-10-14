@@ -20,6 +20,7 @@ import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
 import im.actor.core.entity.Dialog;
+import im.actor.core.entity.DialogSpec;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
@@ -48,6 +49,7 @@ import im.actor.core.network.RpcInternalException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.DialogGroupsVM;
+import im.actor.core.viewmodel.DialogSpecVM;
 import im.actor.runtime.Storage;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -56,6 +58,8 @@ import im.actor.runtime.actors.tools.BounceFilterActor;
 import im.actor.runtime.eventbus.BusSubscriber;
 import im.actor.runtime.eventbus.Event;
 import im.actor.runtime.files.FileSystemReference;
+import im.actor.runtime.mvvm.MVVMCollection;
+import im.actor.runtime.storage.KeyValueEngine;
 import im.actor.runtime.storage.ListEngine;
 import im.actor.runtime.storage.SyncKeyValue;
 
@@ -83,11 +87,14 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     private final SyncKeyValue cursorStorage;
 
+    private final MVVMCollection<DialogSpec, DialogSpecVM> dialogDescKeyValue;
+
     private final DialogGroupsVM dialogGroups = new DialogGroupsVM();
 
     public MessagesModule(final ModuleContext context) {
         super(context);
 
+        this.dialogDescKeyValue = Storage.createKeyValue(STORAGE_DIALOGS_DESC, DialogSpecVM.CREATOR, DialogSpec.CREATOR);
         this.cursorStorage = new SyncKeyValue(Storage.createKeyValue(STORAGE_CURSOR));
         this.dialogs = Storage.createList(STORAGE_DIALOGS, Dialog.CREATOR);
     }
@@ -155,6 +162,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public DialogGroupsVM getDialogGroupsVM() {
         return dialogGroups;
+    }
+
+    public MVVMCollection<DialogSpec, DialogSpecVM> getDialogDescKeyValue() {
+        return dialogDescKeyValue;
     }
 
     public ActorRef getSendMessageActor() {
