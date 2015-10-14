@@ -69,7 +69,7 @@ private[messaging] final class ReverseHooksListener(mediator: ActorRef) extends 
   private def fetchGroups(): Unit = {
     log.debug("Fetching groups to subscribe to reverse hooks")
 
-    for (groupIds ← db.run(persist.Group.allIds)) yield {
+    for (groupIds ← db.run(persist.Group.findAllIds)) yield {
       log.debug("Group ids to subscribe to reverse hooks {}", groupIds)
       self ! SubscribeGroups(groupIds.toSet)
     }

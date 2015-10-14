@@ -28,5 +28,5 @@ case class Dialog(
   lastReadAt:          DateTime,
   ownerLastReceivedAt: DateTime,
   ownerLastReadAt:     DateTime,
-  isHidden:            Boolean
+  isArchived:          Boolean
 )
