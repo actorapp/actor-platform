@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.core.entity.DialogSpec;
 import im.actor.core.entity.Peer;
-import im.actor.core.viewmodel.DialogSpecVM;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
-import im.actor.runtime.mvvm.MVVMCollection;
 
 public class GroupedStorage extends BserObject {
 
@@ -35,13 +32,13 @@ public class GroupedStorage extends BserObject {
     @Override
     public void parse(BserValues values) throws IOException {
         List<byte[]> rawPrivatePeers = values.getRepeatedBytes(1);
-        groupPeers.clear();
+        privatePeers.clear();
         for (byte[] b : rawPrivatePeers) {
-            groupPeers.add(Peer.fromBytes(b));
+            privatePeers.add(Peer.fromBytes(b));
         }
         List<byte[]> rawGroupPeers = values.getRepeatedBytes(2);
         for (byte[] b : rawGroupPeers) {
-            privatePeers.add(Peer.fromBytes(b));
+            groupPeers.add(Peer.fromBytes(b));
         }
     }
 
