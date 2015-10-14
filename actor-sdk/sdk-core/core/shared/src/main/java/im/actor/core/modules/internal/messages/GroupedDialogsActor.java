@@ -52,6 +52,13 @@ public class GroupedDialogsActor extends ModuleActor {
         DialogSpec spec = new DialogSpec(peer, false, counter);
         specs.getEngine().addOrUpdateItem(spec);
 
+        // Doesn't create dialogs for hidden groups
+        if (peer.getPeerType() == PeerType.GROUP) {
+            if (getGroup(peer.getPeerId()).isHidden()) {
+                return;
+            }
+        }
+
         boolean found = false;
         for (Peer p : storage.getPrivatePeers()) {
             if (p.equals(peer)) {
@@ -120,8 +127,55 @@ public class GroupedDialogsActor extends ModuleActor {
         context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
     }
 
+    private void onCounterChanged(Peer peer, int counter) {
+
+        DialogSpec spec = new DialogSpec(peer, false, counter);
+        specs.getEngine().addOrUpdateItem(spec);
+
+        // Hidden groups doesn't present in storage
+        // and there are no need to explicit checking
+
+        boolean found = false;
+        for (Peer p : storage.getPrivatePeers()) {
+            if (p.equals(peer)) {
+                found = true;
+                break;
+            }
+        }
+        for (Peer p : storage.getGroupPeers()) {
+            if (p.equals(peer)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            notifyVM();
+        }
+    }
+
     private void onPeerInfoChanged(Peer peer, String title, Avatar avatar) {
-        // TODO: Implement
+
+        // Hidden groups doesn't present in storage
+        // and there are no need to explicit checking
+
+        boolean found = false;
+        for (Peer p : storage.getPrivatePeers()) {
+            if (p.equals(peer)) {
+                found = true;
+                break;
+            }
+        }
+        for (Peer p : storage.getGroupPeers()) {
+            if (p.equals(peer)) {
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            notifyVM();
+        }
     }
 
 
@@ -139,6 +193,9 @@ public class GroupedDialogsActor extends ModuleActor {
         } else if (message instanceof NewMessage) {
             NewMessage newMessage = (NewMessage) message;
             onNewMessage(newMessage.peer, newMessage.sortDate, newMessage.counter);
+        } else if (message instanceof CounterChanged) {
+            CounterChanged counterChanged = (CounterChanged) message;
+            onCounterChanged(counterChanged.getPeer(), counterChanged.getCounter());
         } else {
             super.onReceive(message);
         }
@@ -188,7 +245,6 @@ public class GroupedDialogsActor extends ModuleActor {
     }
 
     public static class NewMessage {
-
         private Peer peer;
         private int counter;
         private long sortDate;
@@ -197,54 +253,6 @@ public class GroupedDialogsActor extends ModuleActor {
             this.peer = peer;
             this.counter = counter;
             this.sortDate = sortDate;
-        }
-    }
-
-    private class PeerGroup {
-
-        private String key;
-        private String title;
-        private ArrayList<PeerDesc> peers;
-
-        public PeerGroup(String key, String title) {
-            this.key = key;
-            this.title = title;
-            this.peers = new ArrayList<PeerDesc>();
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public ArrayList<PeerDesc> getPeers() {
-            return peers;
-        }
-    }
-
-    private class PeerDesc {
-
-        private Peer peer;
-        private int counter;
-
-        public PeerDesc(Peer peer, int counter) {
-            this.peer = peer;
-            this.counter = counter;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public int getCounter() {
-            return counter;
-        }
-
-        public void setCounter(int counter) {
-            this.counter = counter;
         }
     }
 }
