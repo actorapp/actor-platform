@@ -26,7 +26,7 @@ object IntegrationTokenMigrator extends Migration {
   ): Future[Unit] = {
     implicit val kv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
     implicit val viewRegion = GroupExtension(system).viewRegion
-    db.run(persist.Group.allIds) flatMap { ids ⇒
+    db.run(persist.Group.findAllIds) flatMap { ids ⇒
       system.log.debug("Going to migrate integration tokens for groups: {}", ids)
       Future.sequence(ids map (groupId ⇒ migrateSingle(groupId) recover {
         case NoBotFound ⇒
