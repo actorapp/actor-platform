@@ -1,5 +1,6 @@
 package im.actor.core.modules.internal.messages;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import im.actor.core.entity.Avatar;
@@ -19,6 +20,8 @@ import im.actor.runtime.mvvm.MVVMCollection;
 
 public class GroupedDialogsActor extends ModuleActor {
 
+    private static final String PREFERENCE_GROUPED = "dialogs.grouped";
+
     private GroupedStorage storage;
     private MVVMCollection<DialogSpec, DialogSpecVM> specs;
 
@@ -31,10 +34,16 @@ public class GroupedDialogsActor extends ModuleActor {
         super.preStart();
         specs = context().getMessagesModule().getDialogDescKeyValue();
         storage = new GroupedStorage();
-    }
 
-    private void onPeerInfoChanged(Peer peer, String title, Avatar avatar) {
-
+        byte[] data = preferences().getBytes(PREFERENCE_GROUPED);
+        if (data != null) {
+            try {
+                storage = new GroupedStorage(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        notifyVM();
     }
 
     private void onNewMessage(Peer peer, long sortDate, int counter) {
@@ -111,8 +120,13 @@ public class GroupedDialogsActor extends ModuleActor {
         context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
     }
 
-    private void saveStorage() {
+    private void onPeerInfoChanged(Peer peer, String title, Avatar avatar) {
         // TODO: Implement
+    }
+
+
+    private void saveStorage() {
+        preferences().putBytes(PREFERENCE_GROUPED, storage.toByteArray());
     }
 
     @Override
