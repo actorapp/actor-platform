@@ -1,16 +1,19 @@
 package im.actor.core.viewmodel;
 
-import java.util.ArrayList;
+import com.google.j2objc.annotations.Property;
 
-import im.actor.core.entity.DialogDesc;
+import im.actor.core.viewmodel.generics.ArrayListDialogSmall;
 
 public class DialogGroup {
 
+    @Property("readonly, nonatomic")
     private String title;
+    @Property("readonly, nonatomic")
     private String key;
-    private ArrayList<DialogDesc> dialogs;
+    @Property("readonly, nonatomic")
+    private ArrayListDialogSmall dialogs;
 
-    public DialogGroup(String title, String key, ArrayList<DialogDesc> dialogs) {
+    public DialogGroup(String title, String key, ArrayListDialogSmall dialogs) {
         this.title = title;
         this.key = key;
         this.dialogs = dialogs;
@@ -24,7 +27,7 @@ public class DialogGroup {
         return key;
     }
 
-    public ArrayList<DialogDesc> getDialogs() {
+    public ArrayListDialogSmall getDialogs() {
         return dialogs;
     }
 }
