@@ -20,9 +20,9 @@ trait GroupsServiceHelpers {
     service:     GroupsService,
     actorSystem: ActorSystem
   ): ResponseCreateGroup = {
-    val users = Await.result(db.run(persist.User.findByIds(userIds)), 5.seconds)
+    val users = Await.result(db.run(persist.User.findByIds(userIds)), 10.seconds)
     val userPeers = users.map(user ⇒ ApiUserOutPeer(user.id, ACLUtils.userAccessHash(clientData.authId, user)))
-    val result = Await.result(service.handleCreateGroup(Random.nextLong(), title, userPeers.toVector), 5.seconds)
+    val result = Await.result(service.handleCreateGroup(Random.nextLong(), title, userPeers.toVector), 10.seconds)
     result.toOption.get
   }
 
@@ -34,12 +34,12 @@ trait GroupsServiceHelpers {
     system:     ActorSystem
   ): ResponseCreateGroup = {
     val resp = createGroup(title, userIds)
-    Await.result(GroupExtension(system).makePublic(resp.groupPeer.groupId, description), 5.seconds)
+    Await.result(GroupExtension(system).makePublic(resp.groupPeer.groupId, description), 10.seconds)
     resp
   }
 
   protected def extractToken(groupId: Int)(implicit system: ActorSystem): String = {
-    Await.result(GroupExtension(system).getIntegrationToken(groupId), 5.seconds).get
+    Await.result(GroupExtension(system).getIntegrationToken(groupId), 10.seconds).get
   }
 
 }
