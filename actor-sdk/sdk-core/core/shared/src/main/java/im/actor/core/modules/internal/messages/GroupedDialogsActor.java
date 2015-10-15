@@ -2,7 +2,11 @@ package im.actor.core.modules.internal.messages;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
+import im.actor.core.api.ApiDialogGroup;
+import im.actor.core.api.rpc.RequestLoadGroupedDialogs;
+import im.actor.core.api.rpc.ResponseLoadGroupedDialogs;
 import im.actor.core.entity.Avatar;
 import im.actor.core.entity.DialogSpec;
 import im.actor.core.entity.Group;
@@ -12,6 +16,8 @@ import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.messages.entity.GroupedStorage;
 import im.actor.core.modules.utils.ModuleActor;
+import im.actor.core.network.RpcCallback;
+import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.DialogGroup;
 import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.DialogSpecVM;
@@ -21,7 +27,9 @@ import im.actor.runtime.mvvm.MVVMCollection;
 public class GroupedDialogsActor extends ModuleActor {
 
     private static final String PREFERENCE_GROUPED = "dialogs.grouped";
+    private static final String PREFERENCE_GROUPED_LOADED = "dialogs.grouped.loaded";
 
+    private boolean isLoaded = false;
     private GroupedStorage storage;
     private MVVMCollection<DialogSpec, DialogSpecVM> specs;
 
@@ -44,6 +52,30 @@ public class GroupedDialogsActor extends ModuleActor {
             }
         }
         notifyVM();
+
+        isLoaded = preferences().getBool(PREFERENCE_GROUPED_LOADED, false);
+
+        if (!isLoaded) {
+            request(new RequestLoadGroupedDialogs(), new RpcCallback<ResponseLoadGroupedDialogs>() {
+                @Override
+                public void onResult(final ResponseLoadGroupedDialogs response) {
+                    updates().executeRelatedResponse(response.getUsers(), response.getGroups(),
+                            self(),
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    List<ApiDialogGroup> dialogGroups = response.getDialogs();
+                                    storage.getGroupPeers().clear();
+                                }
+                            });
+                }
+
+                @Override
+                public void onError(RpcException e) {
+                    // Ignore
+                }
+            });
+        }
     }
 
     private void onNewMessage(Peer peer, long sortDate, int counter) {
