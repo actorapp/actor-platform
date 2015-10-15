@@ -13,6 +13,7 @@ import im.actor.core.api.base.SeqUpdate;
 import im.actor.core.modules.events.NewSessionCreated;
 import im.actor.core.modules.updates.SequenceActor;
 import im.actor.core.modules.updates.internal.ExecuteAfter;
+import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.network.parser.Update;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
@@ -65,6 +66,19 @@ public class Updates extends AbsModule implements BusSubscriber {
 
     public void executeAfter(int seq, Runnable runnable) {
         updateActor.send(new ExecuteAfter(seq, runnable));
+    }
+
+    public void executeRelatedResponse(List<ApiUser> users, List<ApiGroup> groups, Runnable runnable) {
+        updateActor.send(new RelatedResponse(users, groups, runnable));
+    }
+
+    public void executeRelatedResponse(List<ApiUser> users, List<ApiGroup> groups, final ActorRef ref, final Runnable runnable) {
+        updateActor.send(new RelatedResponse(users, groups, new Runnable() {
+            @Override
+            public void run() {
+                ref.send(runnable);
+            }
+        }));
     }
 
     public void resetModule() {
