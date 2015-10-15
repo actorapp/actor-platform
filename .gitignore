@@ -125,3 +125,5 @@ actor-sdk/sdk
 actor-sdk/sdk-core/build-tools/codegen-java/build
 actor-sdk/sdk-core/build-tools/dist
 npm-debug.log
+actor-deps/dist
+actor-sdk/sdk-core/core/core-js/build
