@@ -7,14 +7,14 @@ package im.actor.core.viewmodel.generics;
 import im.actor.runtime.mvvm.ValueModel;
 import im.actor.core.viewmodel.UserPresence;
 
-public class UserPresenceValueModel extends ValueModel<UserPresence> {
+public class ValueModelUserPresence extends ValueModel<UserPresence> {
     /**
      * Create ValueModel
      *
      * @param name         name of variable
      * @param defaultValue default value
      */
-    public UserPresenceValueModel(String name, UserPresence defaultValue) {
+    public ValueModelUserPresence(String name, UserPresence defaultValue) {
         super(name, defaultValue);
     }
 

@@ -11,14 +11,20 @@ public class ContactRecord {
     @Property("readonly, nonatomic")
     private final ContactRecordType recordType;
     @Property("readonly, nonatomic")
+    private final String recordTypeSpec;
+    @Property("readonly, nonatomic")
     private final String recordData;
     @Property("readonly, nonatomic")
     private final String recordTitle;
+    @Property("readonly, nonatomic")
+    private final String recordSubtitle;
 
-    public ContactRecord(ContactRecordType recordType, String recordData, String recordTitle) {
+    public ContactRecord(ContactRecordType recordType, String recordTypeSpec, String recordData, String recordTitle, String recordSubtitle) {
         this.recordType = recordType;
+        this.recordTypeSpec = recordTypeSpec;
         this.recordData = recordData;
         this.recordTitle = recordTitle;
+        this.recordSubtitle = recordSubtitle;
     }
 
     public ContactRecordType getRecordType() {
@@ -31,5 +37,13 @@ public class ContactRecord {
 
     public String getRecordTitle() {
         return recordTitle;
+    }
+
+    public String getRecordTypeSpec() {
+        return recordTypeSpec;
+    }
+
+    public String getRecordSubtitle() {
+        return recordSubtitle;
     }
 }
