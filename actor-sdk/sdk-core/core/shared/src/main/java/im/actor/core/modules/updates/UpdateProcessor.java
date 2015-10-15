@@ -55,6 +55,7 @@ import im.actor.core.modules.updates.internal.GroupCreated;
 import im.actor.core.modules.updates.internal.InternalUpdate;
 import im.actor.core.modules.updates.internal.LoggedIn;
 import im.actor.core.modules.updates.internal.MessagesHistoryLoaded;
+import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.modules.updates.internal.UsersFounded;
 import im.actor.core.network.parser.Update;
 import im.actor.core.viewmodel.UserVM;
@@ -132,6 +133,10 @@ public class UpdateProcessor extends AbsModule {
                     created.getCallback().onResult(created.getGroup().getId());
                 }
             });
+        } else if (update instanceof RelatedResponse) {
+            RelatedResponse relatedResponse = (RelatedResponse) update;
+            applyRelated(relatedResponse.getRelatedUsers(), relatedResponse.getRelatedGroups(), false);
+            relatedResponse.getAfterApply().run();
         }
     }
 
