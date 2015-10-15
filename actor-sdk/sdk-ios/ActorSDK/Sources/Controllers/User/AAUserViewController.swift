@@ -110,6 +110,22 @@ class AAUserViewController: AAContentTableController {
                     }
                 }
                 
+                // Contact: Emails
+                s.arrays { (r: AAManagedArrayRows<ACUserEmail, AATitledCell>) -> () in
+                    r.height = 55
+                    r.data = self.user.getEmailsModel().get().toSwiftArray()
+                    r.bindData = { (c: AATitledCell, d: ACUserEmail) -> () in
+                        c.setContent(d.title, content: d.email, isAction: false)
+                    }
+                    r.bindCopy = { (d: ACUserEmail) -> String? in
+                        return d.email
+                    }
+                    r.selectAction = { (c: ACUserEmail) -> Bool in
+                        UIApplication.sharedApplication().openURL(NSURL(string: "mailto:\(c.email)")!)
+                        return true
+                    }
+                }
+                
                 // Contact: About
                 if let a = about {
                     s.text("ProfileAbout", content: a)
