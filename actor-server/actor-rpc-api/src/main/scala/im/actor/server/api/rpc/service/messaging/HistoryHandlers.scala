@@ -5,8 +5,10 @@ import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
+import im.actor.api.rpc.peers.{ ApiPeer, ApiOutPeer, ApiPeerType }
+import im.actor.concurrent.FutureExt
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
+import im.actor.server.group.GroupUtils
 import im.actor.server.history.HistoryUtils
 import im.actor.server.user.UserUtils
 import im.actor.server.{ models, persist }
@@ -15,6 +17,7 @@ import slick.dbio
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
+import scala.language.postfixOps
 
 trait HistoryHandlers {
   self: MessagingServiceImpl ⇒
@@ -96,6 +99,34 @@ trait HistoryHandlers {
   }
 
   override def jhandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] = {
+    // TODO: #perf meh, not optimal
+    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+      persist.Dialog.findNotArchivedByUser(client.userId, None, Int.MaxValue) flatMap { dialogModels ⇒
+        val (groupModels, privateModels) = dialogModels.foldLeft((Vector.empty[models.Dialog], Vector.empty[models.Dialog])) {
+          case ((groupModels, privateModels), dialog) ⇒
+            if (dialog.peer.typ == models.PeerType.Group)
+              (groupModels :+ dialog, privateModels)
+            else
+              (groupModels, privateModels :+ dialog)
+        }
+
+        for {
+          groupDialogs ← DBIO.from(FutureExt.ftraverse(groupModels)(d ⇒ db.run(getDialogShort(d))))
+          privateDialogs ← DBIO.from(FutureExt.ftraverse(privateModels)(d ⇒ db.run((getDialogShort(d)))))
+          groupIds = groupDialogs.map(_.peer.id)
+          userIds = privateDialogs.map(_.peer.id)
+          (groups, users) ← DBIO.from(GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId))
+        } yield Ok(ResponseLoadGroupedDialogs(Vector(
+          ApiDialogGroup("Groups", "groups", groupDialogs.toVector),
+          ApiDialogGroup("Private", "privates", privateDialogs.toVector)
+        ), users.toVector, groups.toVector))
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction))
+  }
+
+  override def jhandleArchiveDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       throw new RuntimeException("Not implemented yet")
     }
@@ -212,6 +243,19 @@ trait HistoryHandlers {
           state = message.state
         )
       }
+    }
+  }
+
+  private def getDialogShort(dialogModel: models.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialogShort] = {
+    withHistoryOwner(dialogModel.peer) { historyOwner ⇒
+      for {
+        messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
+        unreadCount ← getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
+      } yield ApiDialogShort(
+        peer = ApiPeer(ApiPeerType(dialogModel.peer.typ.toInt), dialogModel.peer.id),
+        counter = unreadCount,
+        date = messageOpt.map(_.date.getMillis).getOrElse(0)
+      )
     }
   }
 
