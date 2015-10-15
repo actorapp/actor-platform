@@ -4487,6 +4487,36 @@
             ],
             "attributes": []
           }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ArchiveDialog",
+            "header": 227,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Archive dialog",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "dialog peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
         }
       ]
     },
