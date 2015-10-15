@@ -68,7 +68,7 @@ final class RpcApiService(services: Seq[Service]) extends Actor with ActorLoggin
                 }
                 .recover {
                   case e: Throwable ⇒
-                    log.error(e, "Failed to handle messageId:{} rpcRequest: {}", messageId, rpcRequest)
+                    log.error(e, "Failed to handle messageId: {} rpcRequest: {}", messageId, rpcRequest)
                     RpcInternalError(true, DefaultErrorDelay)
                 }
                 .map(result ⇒ RpcResponse(messageId, RpcResultCodec.encode(result).require))
@@ -78,6 +78,7 @@ final class RpcApiService(services: Seq[Service]) extends Actor with ActorLoggin
           }
         } catch {
           case e: Exception ⇒
+            log.error(e, "Failure in RpcApiService while handling messageId: {}", messageId)
             replyTo ! RpcResponse(messageId, RpcResultCodec.encode(RpcInternalError(true, DefaultErrorDelay)).require) // TODO: configurable delay
           case e: Throwable ⇒
             log.error(e, "Failed to handle {}", msg)
