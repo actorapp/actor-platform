@@ -127,8 +127,7 @@ object HistoryMessage {
 
   private val unreadTotalC = Compiled(unreadTotal _)
 
-  def getUnreadTotal(userId: Int): DBIO[Int] =
-    unreadTotalC(userId).result
+  def getUnreadTotal(userId: Int): DBIO[Int] = unreadTotalC(userId).result
 
   def haveMessagesBetween(userId: Int, peer: models.Peer, minDate: DateTime, maxDate: DateTime) =
     notDeletedMessages
