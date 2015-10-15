@@ -24,6 +24,7 @@ public abstract class ApiMessage extends BserObject {
             case 2: return Bser.parse(new ApiServiceMessage(), content);
             case 3: return Bser.parse(new ApiDocumentMessage(), content);
             case 4: return Bser.parse(new ApiJsonMessage(), content);
+            case 5: return Bser.parse(new ApiUnsupportedMessage(), content);
             default: return new ApiMessageUnsupported(key, content);
         }
     }
