@@ -1,17 +1,17 @@
 package im.actor.server.migrations
 
-import akka.actor.{ActorLogging, ActorSystem, PoisonPill, Props}
-import akka.persistence.{PersistentActor, RecoveryCompleted}
+import akka.actor.{ ActorLogging, ActorSystem, PoisonPill, Props }
+import akka.persistence.{ PersistentActor, RecoveryCompleted }
 import im.actor.concurrent.FutureExt._
 import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.group.GroupOffice
-import im.actor.server.{persist => p}
+import im.actor.server.{ persist ⇒ p }
 import slick.driver.PostgresDriver
 
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future, Promise}
-import scala.util.{Failure, Success}
+import scala.concurrent.{ ExecutionContext, Future, Promise }
+import scala.util.{ Failure, Success }
 
 object HiddenGroupMigrator extends Migration {
 
@@ -32,7 +32,7 @@ object HiddenGroupMigrator extends Migration {
     val promise = Promise[Unit]()
     system.actorOf(Props(new HiddenGroupMigrator(promise, id)), s"hidden_group_migrator_$id")
     promise.future onFailure {
-      case e => system.log.error(e, s"Failed to migrate $id")
+      case e ⇒ system.log.error(e, s"Failed to migrate $id")
     }
     promise.future
   }
@@ -53,10 +53,10 @@ private final class HiddenGroupMigrator(promise: Promise[Unit], groupId: Int) ex
   private def migrate(): Unit = {
     if (isHidden) {
       db.run(p.Group.makeHidden(groupId)) onComplete {
-        case Failure(e) =>
+        case Failure(e) ⇒
           promise.failure(e)
           self ! PoisonPill
-        case Success(_) =>
+        case Success(_) ⇒
           promise.success(())
           self ! PoisonPill
       }
@@ -67,14 +67,14 @@ private final class HiddenGroupMigrator(promise: Promise[Unit], groupId: Int) ex
   }
 
   def receiveCommand = {
-    case Migrate =>
+    case Migrate ⇒
       migrate()
   }
 
   def receiveRecover = {
-    case TSEvent(_, e: Created) =>
+    case TSEvent(_, e: Created) ⇒
       isHidden = e.isHidden.getOrElse(false)
-    case RecoveryCompleted =>
+    case RecoveryCompleted ⇒
       self ! Migrate
   }
 }
