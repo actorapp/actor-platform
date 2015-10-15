@@ -123,3 +123,4 @@ actor-sdk/sdk-ios/build
 actor-sdk/sdk-app/shared/Sources
 actor-sdk/sdk
 actor-sdk/sdk-core/build-tools/codegen-java/build
+npm-debug.log
