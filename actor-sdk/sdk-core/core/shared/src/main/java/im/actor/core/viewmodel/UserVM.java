@@ -16,12 +16,18 @@ import im.actor.core.entity.ContactRecordType;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.viewmodel.generics.ArrayListContactRecord;
+import im.actor.core.viewmodel.generics.ArrayListUserEmail;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
+import im.actor.core.viewmodel.generics.ArrayListUserLink;
 import im.actor.core.viewmodel.generics.AvatarValueModel;
 import im.actor.core.viewmodel.generics.BooleanValueModel;
+import im.actor.core.viewmodel.generics.ValueModelContactRecord;
 import im.actor.core.viewmodel.generics.StringValueModel;
-import im.actor.core.viewmodel.generics.UserPhoneValueModel;
-import im.actor.core.viewmodel.generics.UserPresenceValueModel;
+import im.actor.core.viewmodel.generics.ValueModelUserEmail;
+import im.actor.core.viewmodel.generics.ValueModelUserPhone;
+import im.actor.core.viewmodel.generics.ValueModelUserPresence;
+import im.actor.core.viewmodel.generics.ValueModelUserLink;
 import im.actor.runtime.Runtime;
 import im.actor.runtime.annotations.MainThread;
 import im.actor.runtime.mvvm.BaseValueModel;
@@ -64,11 +70,17 @@ public class UserVM extends BaseValueModel<User> {
     @NotNull
     private BooleanValueModel isContact;
     @NotNull
-    private UserPresenceValueModel presence;
+    private ValueModelUserPresence presence;
     private AbsTimerCompat presenceTimer;
 
     @NotNull
-    private UserPhoneValueModel phones;
+    private ValueModelUserPhone phones;
+    @NotNull
+    private ValueModelUserEmail emails;
+    @NotNull
+    private ValueModelUserLink links;
+    @NotNull
+    private ValueModelContactRecord contacts;
 
     @NotNull
     private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<ModelChangedListener<UserVM>>();
@@ -93,8 +105,11 @@ public class UserVM extends BaseValueModel<User> {
         about = new StringValueModel("user." + id + ".about", user.getAbout());
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
-        presence = new UserPresenceValueModel("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
-        phones = new UserPhoneValueModel("user." + id + ".phones", buildPhones(user.getRecords()));
+        presence = new ValueModelUserPresence("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
+        phones = new ValueModelUserPhone("user." + id + ".phones", buildPhones(user.getRecords()));
+        emails = new ValueModelUserEmail("user." + id + ".emails", buildEmails(user.getRecords()));
+        links = new ValueModelUserLink("user." + id + ".links", buildLinks(user.getRecords()));
+        contacts = new ValueModelContactRecord("user." + id + ".contacts", new ArrayListContactRecord(user.getRecords()));
 
         // Notify about presence change every minute as text representation can change
         presenceTimer = im.actor.runtime.Runtime.createTimer(new Runnable() {
@@ -115,7 +130,12 @@ public class UserVM extends BaseValueModel<User> {
         isChanged |= nick.change(rawObj.getNick());
         isChanged |= about.change(rawObj.getAbout());
         isChanged |= avatar.change(rawObj.getAvatar());
+
+        // TODO: better changed checking?
         isChanged |= phones.change(buildPhones(rawObj.getRecords()));
+        isChanged |= emails.change(buildEmails(rawObj.getRecords()));
+        isChanged |= links.change(buildLinks(rawObj.getRecords()));
+        isChanged |= contacts.change(new ArrayListContactRecord(rawObj.getRecords()));
 
         if (isChanged) {
             notifyChange();
@@ -237,7 +257,7 @@ public class UserVM extends BaseValueModel<User> {
      */
     @NotNull
     @ObjectiveCName("getPresenceModel")
-    public UserPresenceValueModel getPresence() {
+    public ValueModelUserPresence getPresence() {
         return presence;
     }
 
@@ -248,8 +268,41 @@ public class UserVM extends BaseValueModel<User> {
      */
     @NotNull
     @ObjectiveCName("getPhonesModel")
-    public UserPhoneValueModel getPhones() {
+    public ValueModelUserPhone getPhones() {
         return phones;
+    }
+
+    /**
+     * Get User Email addresses
+     *
+     * @return ValueModel of ArrayList of UserEmail
+     */
+    @NotNull
+    @ObjectiveCName("getEmailsModel")
+    public ValueModelUserEmail getEmails() {
+        return emails;
+    }
+
+    /**
+     * Get User web links
+     *
+     * @return ValueModel of ArrayList of UserLink
+     */
+    @NotNull
+    @ObjectiveCName("getLinksModel")
+    public ValueModelUserLink getLinks() {
+        return links;
+    }
+
+    /**
+     * Get User Contact records
+     *
+     * @return ValueModel of ArrayList of ContactRecord
+     */
+    @NotNull
+    @ObjectiveCName("getContactsModel")
+    public ValueModelContactRecord getContacts() {
+        return contacts;
     }
 
     /**
@@ -315,6 +368,28 @@ public class UserVM extends BaseValueModel<User> {
         for (ContactRecord r : records) {
             if (r.getRecordType() == ContactRecordType.PHONE) {
                 res.add(new UserPhone(Long.parseLong(r.getRecordData()), r.getRecordTitle()));
+            }
+        }
+        return res;
+    }
+
+    @NotNull
+    private ArrayListUserEmail buildEmails(@NotNull List<ContactRecord> records) {
+        ArrayListUserEmail res = new ArrayListUserEmail();
+        for (ContactRecord r : records) {
+            if (r.getRecordType() == ContactRecordType.EMAIL) {
+                res.add(new UserEmail(r.getRecordData(), r.getRecordTitle()));
+            }
+        }
+        return res;
+    }
+
+    @NotNull
+    private ArrayListUserLink buildLinks(@NotNull List<ContactRecord> records) {
+        ArrayListUserLink res = new ArrayListUserLink();
+        for (ContactRecord r : records) {
+            if (r.getRecordType() == ContactRecordType.WEB) {
+                res.add(new UserLink(r.getRecordData(), r.getRecordTitle()));
             }
         }
         return res;
