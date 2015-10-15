@@ -7,14 +7,14 @@ package im.actor.core.viewmodel.generics;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 
-public class UserPhoneValueModel extends ValueModel<ArrayListUserPhone> {
+public class ValueModelUserPhone extends ValueModel<ArrayListUserPhone> {
     /**
      * Create ValueModel
      *
      * @param name         name of variable
      * @param defaultValue default value
      */
-    public UserPhoneValueModel(String name, ArrayListUserPhone defaultValue) {
+    public ValueModelUserPhone(String name, ArrayListUserPhone defaultValue) {
         super(name, defaultValue);
     }
 

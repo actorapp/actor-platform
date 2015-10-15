@@ -5,5 +5,5 @@
 package im.actor.core.entity;
 
 public enum ContactRecordType {
-    PHONE, EMAIL
+    PHONE, EMAIL, WEB, SOCIAL
 }
