@@ -125,7 +125,7 @@
   </registry>
   <node concept="2m5nkH" id="22nuAqQwzAX">
     <property role="TrG5h" value="ActorApi" />
-    <property role="3BlOl8" value="im.actor.model.api" />
+    <property role="3BlOl8" value="im.actor.core.api" />
     <property role="WhUdw" value="im.actor.api.rpc" />
     <property role="u_6dX" value="1.6" />
     <node concept="wd7tA" id="55bmeIQ7$gx" role="3Bkp18">
