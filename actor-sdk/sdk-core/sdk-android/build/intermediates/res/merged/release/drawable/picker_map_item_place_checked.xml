@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:drawable="@drawable/picker_map_marker" />
-    <item android:state_activated="true" android:drawable="@drawable/picker_map_marker" />
-</selector><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/src/main/res/drawable/picker_map_item_place_checked.xml -->

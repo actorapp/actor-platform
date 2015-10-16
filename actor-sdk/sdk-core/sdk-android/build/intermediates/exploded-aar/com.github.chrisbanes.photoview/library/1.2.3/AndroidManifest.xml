@@ -1,6 +1,0 @@
-<!-- From: file:/Users/chris/Development/PhotoView/library/src/main/AndroidManifest.xml --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="122" android:versionName="1.2.2-SHAPSHOT" package="uk.co.senab.photoview">
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="19"/>
-
-    <application android:allowBackup="true" android:hardwareAccelerated="true"/>
-
-</manifest>

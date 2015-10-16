@@ -1,0 +1,213 @@
+apps:
+  actor:
+    info:
+      title: "Actor"
+      about:
+        invite: "https://actor.im/dl"
+        web: "https://actor.im"
+        twitter: "actorapp"
+      support:
+        email: "support@actor.im"
+        activation_email: "activation@actor.im"
+        in_app: "75551234567"
+
+    endpoints:
+      - "tls://front1-mtproto-api-rev2.actor.im"
+      - "tls://front2-mtproto-api-rev2.actor.im"
+
+    build:
+      fabric:
+        build_secret: "06fbd9f247c7cf07f3bc84f63054ca9d4b9bf508d2943984b096a97c89227cde"
+        api_key: "ce660b7ca79e52417a0cf34681913cb71520098f"
+
+    ios:
+      variants:
+        enterprise:
+          hockeyapp: "8eb459f9f555b0344ea2dff9f8afc1a7"
+          build_type: "actor-enterprise"
+          build_title: "Enterprise"
+          push_id: 854416
+          build:
+            key:
+              vendor: "mobium"
+              key: "enterprise"
+        appstore:
+          build_type: "actor-appstore"
+          build_title: "AppStore"
+          push_id: 622734
+          build:
+            key:
+              vendor: "actor"
+              key: "appstore"
+
+    android:
+      variants:
+        google_play:
+        enterprise:
+          hockeyapp: "48746ea78e12b511f4be45701b540996"
+
+    web:
+      variants:
+        master:
+        staging:
+
+  honeyhive:
+    info:
+      title: "HoneyHive"
+      about:
+        invite: "https://actor.im/dl"
+        web: "http://www.honeyhive.com/"
+        twitter: "honeyhiveapp"
+      support:
+        email: "support@honeyhiveapp.com"
+        activation_email: "activation@honeyhiveapp.com"
+        in_app: "+6282144111471"
+
+    endpoints:
+      - "tls://front1-mtproto-api-rev2.actor.im"
+      - "tls://front2-mtproto-api-rev2.actor.im"
+
+    build:
+      fabric:
+        api_key: "ce660b7ca79e52417a0cf34681913cb71520098f"
+        build_secret: "06fbd9f247c7cf07f3bc84f63054ca9d4b9bf508d2943984b096a97c89227cde"
+
+    ios:
+      variants:
+        adhoc:
+          hockeyapp: "94c2b1c1aeb74e3f61062029a1067a33"
+          build_type: "honehive-adhoc"
+          build_title: "AdHoc"
+          push_id: 384514
+          build:
+            key:
+              vendor: "actor"
+              key: "honeyhive_adhoc"
+        internal:
+          hockeyapp: "b9a9d0edb2259724caf77df6996ab960"
+          build_type: "honehive-internal"
+          build_title: "Internal"
+          push_id: 384514
+          build:
+            key:
+              vendor: "actor"
+              key: "honeyhive_adhoc"
+  masonic:
+    info:
+      title: "Masonic"
+      about:
+        invite: "https://actor.im/dl"
+        web: "https://actor.im"
+        twitter: "actorapp"
+      support:
+        email: "support@actor.im"
+        activation_email: "activation@actor.im"
+        in_app: "79313421248"
+
+    endpoints:
+      - "tls://front1-mtproto-api-rev2.actor.im"
+      - "tls://front2-mtproto-api-rev2.actor.im"
+
+    build:
+      fabric:
+        api_key: "ce660b7ca79e52417a0cf34681913cb71520098f"
+        build_secret: "06fbd9f247c7cf07f3bc84f63054ca9d4b9bf508d2943984b096a97c89227cde"
+
+    ios:
+      variants:
+        adhoc:
+          hockeyapp: "6d5be4451906819d5c29447aa7dd2df4"
+          build_type: "masonic-adhoc"
+          build_title: "AdHoc"
+          push_id: 611468
+          build:
+            key:
+              vendor: "actor"
+              key: "masonic_adhoc"
+
+  llectro:
+    info:
+      title: "Llectro"
+      about:
+        invite: "https://llectro.com/dl"
+        web: "https://llectro.com"
+        twitter: "llectroapp"
+      support:
+        email: "support@llectro.com"
+        activation_email: "activation@llectro.com"
+        in_app: "75551234567"
+
+    endpoints:
+      - "tls://front1-tcp.llectro.com"
+      - "tls://front2-tcp.llectro.com"
+
+    build:
+      fabric:
+        api_key: "3cad87d0767c322656ec08c0cd617403ebbcfa11"
+        build_secret: "16a22ebc8c718d95b3a447ca1e7f6e0e7e4d8fa085ae23cbb5749424fb1f7cbf"
+
+    ios:
+      variants:
+        adhoc:
+          hockeyapp: "84bdb765299282bd0992dac379b665ba"
+          build_type: "llectro-adhoc"
+          build_title: "AdHoc"
+          push_id: 716540
+          build:
+            key:
+              vendor: "llectro"
+              key: "adhoc"
+        appstore:
+          build_type: "llectro-appstore"
+          build_title: "AppStore"
+          push_id: 716540
+          build:
+            key:
+              vendor: "llectro"
+              key: "appstore"
+
+ios_signing:
+  actor:
+    certificate: "Actor/Production.p12"
+    identity: "iPhone Distribution: Andrey Kuznetsov (HVJR44Y5B6)"
+    keys:
+      appstore:
+        appstore: true
+        bundle: "im.actor.messenger"
+        provision: "Actor/apps/im.actor.messenger/appstore.mobileprovision"
+        entitlements: "Actor/apps/im.actor.messenger/entitlements.plist"
+      honeyhive_adhoc:
+        appstore: false
+        bundle: "im.actor.forget"
+        provision: "Actor/apps/im.actor.forget/adhoc.mobileprovision"
+        entitlements: "Actor/apps/im.actor.forget/entitlements.plist"
+      masonic_adhoc:
+        appstore: false
+        bundle: "im.actor.masonic"
+        provision: "Actor/apps/im.actor.masonic/adhoc.mobileprovision"
+        entitlements: "Actor/apps/im.actor.masonic/entitlements.plist"
+
+  mobium:
+    certificate: "Actor/Mobium.p12"
+    identity: "iPhone Distribution: Ekstradiya OOO"
+    keys:
+      enterprise:
+        appstore: false
+        bundle: "im.actor.business"
+        provision: "Actor/apps/im.actor.business/enterprise.mobileprovision"
+        entitlements: "Actor/apps/im.actor.business/entitlements.plist"
+
+  llectro:
+    certificate: "Llectro/Production.p12"
+    identity: "iPhone Distribution: iurii Osadchii (2Q2GG62525)"
+    keys:
+      adhoc:
+        appstore: false
+        bundle: "com.llectro.messenger"
+        provision: "Llectro/apps/com.llectro.messenger/adhoc.mobileprovision"
+        entitlements: "Llectro/apps/com.llectro.messenger/entitlements.plist"
+      appstore:
+        appstore: true
+        bundle: "com.llectro.messenger"
+        provision: "Llectro/apps/com.llectro.messenger/appstore.mobileprovision"
+        entitlements: "Llectro/apps/com.llectro.messenger/entitlements.plist"

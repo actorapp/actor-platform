@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/values-h600dp/values-h600dp.xml -->
-    <eat-comment/>
-    <dimen name="tour_card_message">16sp</dimen>
-    <dimen name="tour_card_title">21sp</dimen>
-    <integer name="gallery_items_count">6</integer>
-</resources>

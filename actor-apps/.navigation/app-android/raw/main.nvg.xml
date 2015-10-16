@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.group.GroupInfoActivity"/>
+      <point      
+        x = "500"      
+        y = "4240"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.settings.ChatSettingsActivity"/>
+      <point      
+        x = "550"      
+        y = "4290"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.group.JoinPublicGroupActivity"/>
+      <point      
+        x = "600"      
+        y = "4340"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.droidkit.pickers.file.FilePickerActivity"/>
+      <point      
+        x = "650"      
+        y = "4390"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.auth.AuthActivity"/>
+      <point      
+        x = "700"      
+        y = "4440"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.activity.MainActivity"/>
+      <point      
+        x = "3036"      
+        y = "100"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.settings.NotificationsActivity"/>
+      <point      
+        x = "750"      
+        y = "4490"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.activity.TakePhotoActivity"/>
+      <point      
+        x = "800"      
+        y = "4540"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.auth.PickCountryActivity"/>
+      <point      
+        x = "850"      
+        y = "4590"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.profile.ProfileActivity"/>
+      <point      
+        x = "500"      
+        y = "100"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "im.actor.messenger.app.fragment.profile.ProfileActivity"/>
+      <point      
+        x = "1768"      
+        y = "100"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.settings.EditNameActivity"/>
+      <point      
+        x = "900"      
+        y = "4640"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.chat.ChatActivity"/>
+      <point      
+        x = "500"      
+        y = "1480"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "im.actor.messenger.app.fragment.chat.ChatActivity"/>
+      <point      
+        x = "1768"      
+        y = "1480"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.preview.PictureActivity"/>
+      <point      
+        x = "950"      
+        y = "4690"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.group.AddMemberActivity"/>
+      <point      
+        x = "1000"      
+        y = "4740"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "net.hockeyapp.android.UpdateActivity"/>
+      <point      
+        x = "1050"      
+        y = "4790"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.preview.ViewAvatarActivity"/>
+      <point      
+        x = "500"      
+        y = "2860"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.MenuState"      
+        className = "im.actor.messenger.app.fragment.preview.ViewAvatarActivity"/>
+      <point      
+        x = "1768"      
+        y = "2860"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.mixpanel.android.surveys.SurveyActivity"/>
+      <point      
+        x = "1100"      
+        y = "4840"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.help.HelpActivity"/>
+      <point      
+        x = "1150"      
+        y = "4890"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.compose.CreateGroupActivity"/>
+      <point      
+        x = "1200"      
+        y = "4940"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.group.InviteLinkActivity"/>
+      <point      
+        x = "1248"      
+        y = "4988"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.group.IntegrationTokenActivity"/>
+      <point      
+        x = "1300"      
+        y = "5040"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.settings.SecuritySettingsActivity"/>
+      <point      
+        x = "1348"      
+        y = "5088"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.group.JoinGroupPopUpActivity"/>
+      <point      
+        x = "1400"      
+        y = "5140"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.soundcloud.android.crop.CropImageActivity"/>
+      <point      
+        x = "1450"      
+        y = "5190"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.settings.MyProfileActivity"/>
+      <point      
+        x = "1500"      
+        y = "5240"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.preview.CodePreviewActivity"/>
+      <point      
+        x = "1550"      
+        y = "5290"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.tour.TourActivity"/>
+      <point      
+        x = "1600"      
+        y = "5340"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.settings.EditAboutActivity"/>
+      <point      
+        x = "1648"      
+        y = "5388"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.activity.AddContactActivity"/>
+      <point      
+        x = "1700"      
+        y = "5440"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "im.actor.messenger.app.fragment.compose.ComposeActivity"/>
+      <point      
+        x = "1750"      
+        y = "5490"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>
