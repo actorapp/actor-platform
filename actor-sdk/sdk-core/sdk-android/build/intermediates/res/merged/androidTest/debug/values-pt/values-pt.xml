@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <plurals name="picker_time_minutes_ago">
+        <item quantity="one">%d minuto atrás</item>
+        <item quantity="two">%d minutos atrás</item>
+        <item quantity="few">%d minutos atrás</item>
+        <item quantity="many">%d minutos atrás</item>
+        <item quantity="other">%d músicas encontradas.</item>
+    </plurals>
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Navegar para a página inicial"</string>
+    <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
+    <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
+    <string msgid="1594238315039666878" name="abc_action_bar_up_description">"Navegar para cima"</string>
+    <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"Mais opções"</string>
+    <string msgid="4076576682505996667" name="abc_action_mode_done">"Concluído"</string>
+    <string msgid="7468859129482906941" name="abc_activity_chooser_view_see_all">"Ver tudo"</string>
+    <string msgid="2031811694353399454" name="abc_activitychooserview_choose_application">"Selecione um app"</string>
+    <string msgid="7723749260725869598" name="abc_search_hint">"Pesquisar..."</string>
+    <string msgid="3691816814315814921" name="abc_searchview_description_clear">"Limpar consulta"</string>
+    <string msgid="2550479030709304392" name="abc_searchview_description_query">"Consulta de pesquisa"</string>
+    <string msgid="8264924765203268293" name="abc_searchview_description_search">"Pesquisar"</string>
+    <string msgid="8928215447528550784" name="abc_searchview_description_submit">"Enviar consulta"</string>
+    <string msgid="893419373245838918" name="abc_searchview_description_voice">"Pesquisa por voz"</string>
+    <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Compartilhar com"</string>
+    <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Compartilhar com %s"</string>
+    <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Recolher"</string>
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string name="add_contact_bar_cancel">CANCELAR</string>
+    <string name="add_contact_bar_continue">CONTINUE</string>
+    <string name="add_contact_phone_hint">Insira o número do telefone</string>
+    <string name="add_contact_title">Adicionar contato</string>
+    <string name="alert_delete_all_messages_text">Você tem certeza que quer remover TODAS as mensagens desta conversa?</string>
+    <string name="alert_delete_all_messages_yes">Remover</string>
+    <string name="alert_delete_chat_message">Remover conversa com "%1$s"?</string>
+    <string name="alert_delete_chat_yes">Remover</string>
+    <string name="alert_delete_group_title">Remover "%1$s" grupo?</string>
+    <string name="alert_delete_group_yes">Remover</string>
+    <string name="alert_delete_messages_text">Você tem certeza que quer remover {0} mensagens?</string>
+    <string name="alert_delete_messages_yes">Remover</string>
+    <string name="alert_group_add_text">Você tem certeza que quer adicionar {0} ao grupo?</string>
+    <string name="alert_group_add_yes">Adicionar</string>
+    <string name="alert_group_remove_text">Você tem certeza que quer remover {0} do grupo?</string>
+    <string name="alert_group_remove_yes">Remover</string>
+    <string name="alert_invite_text">"{0}" não está registrado no Actor. Quer convidar?</string>
+    <string name="alert_invite_yes">Convidar</string>
+    <string name="alert_leave_group_message">Você tem certeza que quer sair do grupo "%1$s"?</string>
+    <string name="alert_leave_group_yes">Sair</string>
+    <string name="alert_remove_contact_text">Você tem certeza que quer remover {0} dos contatos?</string>
+    <string name="alert_remove_contact_yes">Remover</string>
+    <string name="alert_revoke_integration_token_message">Remover token?</string>
+    <string name="alert_revoke_integration_token_yes">Remover</string>
+    <string name="alert_revoke_link_message">Remover link?</string>
+    <string name="alert_revoke_link_yes">Remover</string>
+    <string name="app_locale">Pt</string>
+    <string name="app_name">Actor</string>
+    <string name="auth_code_change_yes">Alterar</string>
+    <string name="auth_code_done">FEITO</string>
+    <string name="auth_code_email_change">Você tem certeza que quer mudar seu e-mail?</string>
+    <string name="auth_code_email_hint">Nós lhe enviamos um e-mail com o código de ativação para {0}</string>
+    <string name="auth_code_phone_change">Você tem certeza que quer mudar seu número de telefone?</string>
+    <string name="auth_code_phone_hint">Nós lhe enviamos um SMS com o código de para o seu telefone {0}</string>
+    <string name="auth_code_sms_hint">Código SMS</string>
+    <string name="auth_code_title">Insira o código SMS</string>
+    <string name="auth_code_wrong_email">E-MAIL ERRADO?</string>
+    <string name="auth_code_wrong_number">NÚMERO DE TELEFONE ERRADO?</string>
+    <string name="auth_email_edit_text_hint">E-mail</string>
+    <string name="auth_email_get_code">CONFIRMAR E-MAIL</string>
+    <string name="auth_email_hint">Por favor insira seu e-mail.</string>
+    <string name="auth_email_title">Verificar e-mail</string>
+    <string name="auth_error_code_expired">O código expirou. Por favor reinicie o processo de validação.</string>
+    <string name="auth_error_code_invalid">Código inválido. Por favor tente de novo.</string>
+    <string name="auth_error_empty_email">por favor, insira seu e-mail</string>
+    <string name="auth_error_empty_phone">Por favor, insira seu número de telefone</string>
+    <string name="auth_error_failed_get_oauth2_token">Erro de autenticação. Por favor tente de novo.</string>
+    <string name="auth_phone_country_title">Selecione um país</string>
+    <string name="auth_phone_error_invalid_country">Código do país inválido</string>
+    <string name="auth_phone_get_code">CONFIRMAR NÚMERO</string>
+    <string name="auth_phone_hint">Por favor confirme o código do seu país e insira o número do seu telefone.</string>
+    <string name="auth_phone_number_hint">Número do telefone</string>
+    <string name="auth_phone_title">Verificar telefone</string>
+    <string name="auth_phone_why">PORQUE NÓS PRECISAMOS DO SEU NÚMERO?</string>
+    <string name="auth_phone_why_description">Nos usamos o telefone para autenticação por se tratar do método mais seguro atualmente.\n\nSenhas são fracas e e-mails podem ser invadidos.</string>
+    <string name="auth_phone_why_done">Consegui</string>
+    <string name="auth_profile_done">COMEÇAR A CONVERSAR</string>
+    <string name="auth_profile_hint">Por favor informe nome/apelido e uma foto.</string>
+    <string name="auth_profile_name_hint">Seu nome</string>
+    <string name="auth_profile_title">Perfil</string>
+    <string name="avatar_menu_edit">Editar</string>
+    <string name="avatar_menu_set_as">Definir como…</string>
+    <string name="avatar_no_photo">Sem foto</string>
+    <string name="avatar_title_group">Foto do grupo</string>
+    <string name="avatar_title_person">Foto</string>
+    <string name="avatar_title_your">Sua foto</string>
+    <string name="chat_add_to_contacts">Adicionar aos Contatos</string>
+    <string name="chat_add_to_contacts_progress">Adicionando contato…</string>
+    <string name="chat_attach_file">Arquivo</string>
+    <string name="chat_attach_gallery">Galeria</string>
+    <string name="chat_attach_place">Local</string>
+    <string name="chat_attach_take_photo">Tirar foto</string>
+    <string name="chat_attach_take_video">Fazer vídeo</string>
+    <string name="chat_doc_download">Baixar</string>
+    <string name="chat_doc_open">Abrir</string>
+    <string name="chat_doc_send">Enviar</string>
+    <string name="chat_doc_stop">Parar</string>
+    <string name="chat_menu_call">Chamar</string>
+    <string name="chat_menu_clear_chat">Limpar conversa</string>
+    <string name="chat_menu_files">Arquivos</string>
+    <string name="chat_menu_group_info">Informações do Grupo</string>
+    <string name="chat_menu_leave_group">Sair do grupo</string>
+    <string name="chat_menu_view_contact">Ver contato</string>
+    <string name="chat_message_hint">Sua mensagem…</string>
+    <string name="chat_new_messages">Nova mensagem</string>
+    <string name="chat_not_member">Você não é membro desse grupo</string>
+    <string name="chat_unsupported">Mensagem não suportada nesta versão. Por favor espere pela atualização da aplicação para ver a mensagem.</string>
+    <string name="choose_auth_type_hint">Por favor escolha tipo de autenticação.</string>
+    <string name="choose_auth_type_sign_in">Entrar</string>
+    <string name="choose_auth_type_sign_up">Registrar</string>
+    <string name="choose_auth_type_title">Escolha o tipo de autenticação</string>
+    <string name="choose_auth_type_using_email">com e-mail</string>
+    <string name="choose_auth_type_using_tel">com seu número de telefone</string>
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.5.0/res/values-pt/common_strings.xml -->
+    <eat-comment/>
+    <string msgid="6428604800157361567" name="common_android_wear_notification_needs_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> exige uma atualização para o app Android Wear."</string>
+    <string msgid="2453027084525739603" name="common_android_wear_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> só funciona com uma atualização para o app Android Wear."</string>
+    <string msgid="1366439133145190222" name="common_android_wear_update_title">"Atualizar o Android Wear"</string>
+    <string msgid="6534628256897874213" name="common_google_play_services_api_unavailable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> exige um ou mais Google Play Services que não estão disponíveis no momento. Entre em contato com o desenvolvedor para receber assistência."</string>
+    <string msgid="4181637455539816337" name="common_google_play_services_enable_button">"Ativar o Google Play Services"</string>
+    <string msgid="4896236883690196080" name="common_google_play_services_enable_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> só funciona com o Google Play Services ativado."</string>
+    <string msgid="529078775174559253" name="common_google_play_services_enable_title">"Ative o Google Play Services"</string>
+    <string msgid="2443362625939284971" name="common_google_play_services_error_notification_requested_by_msg">"Solicitado por <ns1:g id="APP_NAME">%1$s</ns1:g>"</string>
+    <string msgid="8515591849428043265" name="common_google_play_services_install_button">"Instalar o Google Play Services"</string>
+    <string msgid="8836325110837822534" name="common_google_play_services_install_text_phone">"<ns1:g id="APP_NAME">%1$s</ns1:g> não funciona sem o Google Play Services, o qual não está instalado no seu smartphone."</string>
+    <string msgid="542176290824754127" name="common_google_play_services_install_text_tablet">"<ns1:g id="APP_NAME">%1$s</ns1:g> não funciona sem o Google Play Services, o qual não está instalado no seu tablet."</string>
+    <string msgid="26645092511305524" name="common_google_play_services_install_title">"Instale o Google Play Services"</string>
+    <string msgid="4983316348021735578" name="common_google_play_services_invalid_account_text">"A conta especificada não existe no dispositivo. Escolha outra conta."</string>
+    <string msgid="1066672360770936753" name="common_google_play_services_invalid_account_title">"Conta inválida"</string>
+    <string msgid="2583358409598976717" name="common_google_play_services_needs_enabling_title">"Um app requer a ativação do Google Play Services."</string>
+    <string msgid="9038847255613537209" name="common_google_play_services_network_error_text">"É necessária uma conexão de dados para conectar ao Google Play Services."</string>
+    <string msgid="3827284619958211114" name="common_google_play_services_network_error_title">"Erro na rede"</string>
+    <string msgid="1388129345631079938" name="common_google_play_services_notification_needs_update_title">"Um app requer a atualização do Google Play Services."</string>
+    <string msgid="1852570676146674985" name="common_google_play_services_notification_ticker">"Erro do Google Play Services"</string>
+    <string msgid="5194079840165204725" name="common_google_play_services_sign_in_failed_text">"Erro ao fazer login na conta especificada. Escolha outra conta."</string>
+    <string msgid="8164948898147532159" name="common_google_play_services_sign_in_failed_title">"Falha de login"</string>
+    <string msgid="4762332809710093730" name="common_google_play_services_unknown_issue">"Problema desconhecido com o Google Play Services."</string>
+    <string msgid="7682982632307307938" name="common_google_play_services_unsupported_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> depende do Google Play Services, o qual não é compatível com seu dispositivo. Entre em contato com o fabricante para receber assistência."</string>
+    <string msgid="6334768798839376943" name="common_google_play_services_unsupported_title">"Play Services"</string>
+    <string msgid="8932944190611227642" name="common_google_play_services_update_button">"Atualizar"</string>
+    <string msgid="5709479369299147668" name="common_google_play_services_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> só funciona com uma versão atualizada do Google Play Services."</string>
+    <string msgid="6006316683626838685" name="common_google_play_services_update_title">"Atualize o Google Play Services"</string>
+    <string msgid="2201289642219771610" name="common_google_play_services_updating_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> não funciona sem o Google Play Services, o qual está sendo atualizado no momento."</string>
+    <string msgid="815008177440683245" name="common_google_play_services_updating_title">"Google Play Services em atualização"</string>
+    <string msgid="411506735369601515" name="common_open_on_phone">"Abrir no smartphone"</string>
+    <string msgid="9071884888741449141" name="common_signin_button_text">"Login"</string>
+    <string msgid="2429381841831957106" name="common_signin_button_text_long">"Fazer login com o Google"</string>
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string name="compose_title">Nova mensagem</string>
+    <string name="contacts_add">Adicionar amigo...</string>
+    <string name="contacts_empty_add_hint">ou adicione manualmente usando o botão abaixo.</string>
+    <string name="contacts_empty_invite_action">Avise um amigo</string>
+    <string name="contacts_empty_invite_hint">Nenhum dos seus contatos usa Actor. Use o botão abaixo para convidá-los.</string>
+    <string name="contacts_empty_short">Não há contatos</string>
+    <string name="contacts_empty_title">Convide seus amigos</string>
+    <string name="contacts_invite_via_link">Convidar via link</string>
+    <string name="contacts_menu_edit">Editar nome</string>
+    <string name="contacts_menu_remove">Removee {0} dos contatos</string>
+    <string name="contacts_menu_remove_progress">Removendo…</string>
+    <string name="contacts_share">Avise um amigo sobre o Actor</string>
+    <string name="contacts_title">Contatos</string>
+    <string name="create_group_done">Feito</string>
+    <string name="create_group_hint">Selecione o tema do grupo e uma foto opcional</string>
+    <string name="create_group_name_hint">Nome do grupo</string>
+    <string name="create_group_search_hint">Pesquisar por nome</string>
+    <string name="create_group_title">Criar grupo</string>
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/exploded-aar/com.soundcloud.android/android-crop/1.0.0/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string name="crop__cancel" ns1:ignore="ButtonCase">CANCELAR</string>
+    <string name="crop__done">FINALIZADO</string>
+    <string name="crop__pick_error">Sem fontes de imagem disponíveis</string>
+    <string name="crop__saving">Salvando imagem…</string>
+    <string name="crop__wait">Por favor, aguarde…</string>
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_no">Não</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_try_again">Tente de novo</string>
+    <string name="dialog_yes">Sim</string>
+    <string name="dialogs_empty">Selecione um contato da sua lista ou pressione o potão mais para começar a conversar agora mesmo.</string>
+    <string name="dialogs_empty_title">Iniciar conversas</string>
+    <string name="dialogs_hint">Pressione demoradamnete para opções adicionais</string>
+    <string name="dialogs_menu_contact_rename">Renomear contato</string>
+    <string name="dialogs_menu_contact_view">Ver contato</string>
+    <string name="dialogs_menu_conversation_delete">Remover conversa</string>
+    <string name="dialogs_menu_group_delete">Remover grupo</string>
+    <string name="dialogs_menu_group_leave">Sair do grupo</string>
+    <string name="dialogs_menu_group_rename">Renomear grupo</string>
+    <string name="dialogs_menu_group_view">Ver informações do grupo</string>
+    <string name="dialogs_title">Conversas</string>
+    <string name="documents_empty">Nenhum documento ainda</string>
+    <string name="documents_title">Documentos</string>
+    <string name="edit_name_cancel">CANCELAR</string>
+    <string name="edit_name_process">Alterando o nome…</string>
+    <string name="edit_name_save">SALVAR</string>
+    <string name="edit_name_title_contact">Insira o nome do contato</string>
+    <string name="edit_name_title_group">Insira o nome do grupo</string>
+    <string name="edit_name_title_you">Insira seu nome</string>
+    <string name="error_connection">Impossível conectar. Por favor verifique sua conexão com a Internet e tente de novo.
+        \n\nSe o problema persistir, por favor reinicie seu dispositivo.
+    </string>
+    <string name="error_unknown">Impossível realizar a operação.\n\nPor favor verifique seu dispositivo e reinicie se o
+        problema persistir.
+    </string>
+    <string name="error_view_url">Tipo de URL desconhecida</string>
+    <string name="example_action_settings">Configurações</string>
+    <string name="example_app_name">Escolha</string>
+    <string name="example_title_activity_test">TestaAtividade</string>
+    <string name="group_add_member">Adicionar um membro</string>
+    <string name="group_add_title">Adicionar membro</string>
+    <string name="group_adding">Adicionando ao grupo…</string>
+    <string name="group_admin">admin</string>
+    <string name="group_context_call">Chamar {0}</string>
+    <string name="group_context_message">Mensagem {0}</string>
+    <string name="group_context_remove">Remover {0} do grupo</string>
+    <string name="group_context_view">Ver {0}</string>
+    <string name="group_created_by">Criado por {0}</string>
+    <string name="group_created_by_you">Criado por você</string>
+    <string name="group_members_count">{0} de {1}</string>
+    <string name="group_members_header">Membros</string>
+    <string name="group_menu_add">Adicionar membro</string>
+    <string name="group_menu_change_photo">Alterar foto</string>
+    <string name="group_menu_change_theme">Alterar tema</string>
+    <string name="group_menu_integration_token">Integrar com token</string>
+    <string name="group_menu_leave">Sair do grupo</string>
+    <string name="group_not_member">Você não é membro desse grupo</string>
+    <string name="group_removing">Removendo do grupo…</string>
+    <string name="group_shared_files">Documentos</string>
+    <string name="group_shared_header">Compartilhado</string>
+    <string name="group_title">Informações do Grupo</string>
+    <string name="help_about_subtitle">Sobre aplicativos e serviços</string>
+    <string name="help_about_title">Sobre</string>
+    <string name="help_email_subject">Opinião</string>
+    <string name="help_email_title">Enviar e-mail</string>
+    <string name="help_faq_subtitle">Perguntas Mais Frequentes</string>
+    <string name="help_faq_title">FAQ</string>
+    <string name="help_feedback_subtitle">Nos dê sua opinião</string>
+    <string name="help_feedback_title">Opinião</string>
+    <string name="help_title">Ajuda</string>
+    <string name="help_version_copy">Versão da aplicação copiada para a área de transferência</string>
+    <string name="help_version_title">Versão da Aplicação</string>
+    <string name="integration_token_action_copy">Copiar token</string>
+    <string name="integration_token_action_revoke">Remover token</string>
+    <string name="integration_token_action_share">Compartilhar token</string>
+    <string name="integration_token_chooser_title">Enviar token</string>
+    <string name="integration_token_copied">Token copiado para área de transferência</string>
+    <string name="integration_token_empty_view">Carregano a integração com o token</string>
+    <string name="integration_token_error_get_token">Não foi possiver receber o token</string>
+    <string name="integration_token_error_revoke_link">Não foi possível remover o token</string>
+    <string name="integration_token_error_revoke_link_not_admin">Não foi possível remover o token - você não é o admin deste grupo</string>
+    <string name="integration_token_hint">Este token pode ser usado para configurar integrações com este grupo</string>
+    <string name="integration_token_title">Integração Token</string>
+    <string name="invite_link_action_copy">Copiar link</string>
+    <string name="invite_link_action_revoke">Remover link</string>
+    <string name="invite_link_action_share">Compartilhar link</string>
+    <string name="invite_link_chooser_title">Convidar para o grupo via link</string>
+    <string name="invite_link_copied">Link copiado para área de transferência</string>
+    <string name="invite_link_empty_view">Carregando o link do convite</string>
+    <string name="invite_link_error_get_link">Não foi possível obter link do convite</string>
+    <string name="invite_link_error_revoke_link">Não foi possível remover link do convite</string>
+    <string name="invite_link_hint">Qualquer um que tenha Actor instalado poderá entrar no seu grupo acessando esse link</string>
+    <string name="invite_link_title">Link do convite</string>
+    <string name="invite_message">Olá! Vamos mudar para o Actor! https://actor.im/dl</string>
+    <string name="join">ENTRAR</string>
+    <string name="join_public_group_all_groups">Todos os grupos</string>
+    <string name="join_public_group_friends_count">Amigos: </string>
+    <string name="join_public_group_members_count">Membros: </string>
+    <string name="join_public_group_title">Grupos públicos</string>
+    <string name="join_public_group_top_by_friends_subtitle">Principais conevrsas com seus amigos</string>
+    <string name="join_public_group_top_by_friends_title">Converse com seus amigos!</string>
+    <string name="join_public_group_top_subtitle">Olhe nossos pricipais chats públicos</string>
+    <string name="join_public_group_top_title">Ei!</string>
+    <string name="main_bar_chats">CONVERSAS</string>
+    <string name="main_bar_contacts">CONTATOS</string>
+    <string name="main_empty_add_action">ADICIONAR CONTATO</string>
+    <string name="main_empty_add_hint">ou adicione um contato manualmente</string>
+    <string name="main_empty_invite_action">AVISE UM AMIGO</string>
+    <string name="main_empty_invite_hint">Nenhum dos seus contatos usa Actor. Use o botão abaixo para convidá-los.</string>
+    <string name="main_empty_title">Convide seus amigos</string>
+    <string name="main_fab_add_contact">Adicionar contato</string>
+    <string name="main_fab_compose">Escrever</string>
+    <string name="main_fab_join_public_group">Entrar no grupo público</string>
+    <string name="main_fab_new_group">Criar grupo</string>
+    <string name="main_menu_help">Ajuda</string>
+    <string name="main_menu_search">Pesquisar</string>
+    <string name="main_search_empty">Nada encontrado</string>
+    <string name="main_search_hint">Insira algo para pesquisar</string>
+    <string name="main_sync_message">Por favor espere um pouco enquanto habilitamos seu aplicativo.</string>
+    <string name="main_sync_title">Sincronizando</string>
+    <string name="media">Midia</string>
+    <string formatted="false" name="media_pager">%d de %d</string>
+    <string name="media_picture">Imagens</string>
+    <string name="menu_next">Próximo</string>
+    <string name="menu_save">Salvar no Telefone</string>
+    <string name="menu_saved">Salvo</string>
+    <string name="menu_share">Compartilhar</string>
+    <string name="not_conv_tones">Toque da conversa</string>
+    <string name="not_conv_tones_subtitle">Tocar sons para mesnagens que chegam e que envio.</string>
+    <string name="not_show_text">Mostrar nome e mensagens</string>
+    <string name="not_show_text_subtitle">Mostrar texto da mensagem e o nome do contato no painel de notificações</string>
+    <string name="not_sound">Sons</string>
+    <string name="not_sound_subtitle">Ativar alertas sonoros</string>
+    <string name="not_title">Alertas</string>
+    <string name="not_vibration">Vibrar</string>
+    <string name="not_vibration_subtitle">Ativar aletas vibratórios</string>
+    <string name="open">ABRIR</string>
+    <string name="phone_menu_call">Chamar {0}</string>
+    <string name="phone_menu_copy">Copiar</string>
+    <string name="phone_menu_share">Compartilhar {0}</string>
+    <string name="phone_menu_sms">SMS {0}</string>
+    <string name="pick_downloading">Baixando</string>
+    <string name="pick_photo_camera">Bater foto</string>
+    <string name="pick_photo_gallery">Selecionar da galeria</string>
+    <string name="pick_photo_remove">Remover foto</string>
+    <string name="pick_user_title">Selecione um contato</string>
+    <string name="picker_bytes">%d bytes</string>
+    <string name="picker_cancel">Cancelar</string>
+    <string name="picker_empty">Nada aqui</string>
+    <string name="picker_file_activity_title">Selecione Arquivo</string>
+    <string name="picker_file_camera">Câmera</string>
+    <string name="picker_file_denied">Acesso negado</string>
+    <string name="picker_file_directory_empty">Nenhum arquivo aqui</string>
+    <string name="picker_file_header_main">Pastas Pricipais</string>
+    <string name="picker_file_header_recent">Arquivos recentes</string>
+    <string name="picker_file_memory_external">Memória Externa</string>
+    <string name="picker_file_memory_external_error">Cartão não inserido</string>
+    <string name="picker_file_memory_phone">Memória do Telefone</string>
+    <string name="picker_file_recent">Itens selecionados recentemente</string>
+    <string name="picker_file_recent_empty">Você não tem arquivos recentes</string>
+    <string name="picker_file_search_activity_title">Pesquisar</string>
+    <string name="picker_file_search_query_text">Pesquisar</string>
+    <string name="picker_file_sort_date">Organizar por data</string>
+    <string name="picker_file_sort_name">Organizar por nome</string>
+    <string name="picker_gbytes">GB</string>
+    <string name="picker_internalerror">Ocorreu um erro</string>
+    <string name="picker_kbytes">KB</string>
+    <string name="picker_loading">Carregando</string>
+    <string name="picker_map_activity_title">Escolha um lugar</string>
+    <string name="picker_map_nearby_empty">Não há lugares próximos</string>
+    <string name="picker_map_nearby_header">ou selecionar por proximidade</string>
+    <string name="picker_map_pick_my">Enviar minha localização</string>
+    <string name="picker_map_pick_my_accuracy">Precisão de %d metros</string>
+    <string name="picker_map_pick_my_fetching">Definindo…</string>
+    <string name="picker_map_pick_my_wait">Esperar até que a definição acabe</string>
+    <string name="picker_map_sory_notdefined">Nós temos que definir sua localização, então busque por lugares próximos.</string>
+    <string name="picker_mbytes">MB</string>
+    <string name="picker_pick">Escolha</string>
+    <string name="picker_pictures_activity_title">Selecione imagens</string>
+    <string name="picker_pictures_camera">Câmera</string>
+    <string name="picker_pictures_empty">Não há imagens no dispositivo</string>
+    <string name="picker_pictures_empty_folder">Esta pasta não contém imagens.</string>
+    <string name="picker_search">Pesquisar</string>
+    <string name="picker_time_at">%1$s em %2$s</string>
+    <string name="picker_time_hour_ago">1 hora atrás</string>
+    <string name="picker_time_minute_ago">1 minuto atrás</string>
+    <string name="picker_time_today_at">hoje às %s</string>
+    <string name="picker_time_yesterday_at">ontem às %s</string>
+    <string name="profile_adding">Adicionando aos Contatos…</string>
+    <string name="profile_cant_find_user">Não encontramos usuário</string>
+    <string name="profile_menu_add">Adicionar aos Contatos</string>
+    <string name="profile_menu_call">Chamar</string>
+    <string name="profile_menu_remove">Remover dos contatos</string>
+    <string name="profile_menu_rename">Renomear</string>
+    <string name="profile_menu_security">Segurança</string>
+    <string name="profile_removing">Removendo dos Contatos…</string>
+    <string name="profile_settings_header">Configurações</string>
+    <string name="profile_settings_notifications">Notificações</string>
+    <string name="profile_shared_files">Documentos</string>
+    <string name="profile_shared_header">Compartilhada</string>
+    <string name="profile_shared_media">Midia</string>
+    <string name="profile_title">Perfil</string>
+    <string name="progress_common">Carregando…</string>
+    <string name="security_authorized_header">Dispositivos e serviços autorizados</string>
+    <string name="security_authorized_loading">Carregando…</string>
+    <string name="security_terminate_message">Você tem certeza que quer sair de todos os outros dispositivos? Todas as informações serão perdidas neles.</string>
+    <string name="security_terminate_subtitle">Sair de todos os dispositivos</string>
+    <string name="security_terminate_title">Finalizar todas as sessões</string>
+    <string name="security_title">Segurança</string>
+    <string name="settings_ask">Perguntar</string>
+    <string name="settings_chat">Opções do Chat</string>
+    <string name="settings_chat_markdown">Markdown</string>
+    <string name="settings_chat_markdown_subtitle">Markdown está ativado</string>
+    <string name="settings_chat_send_enter">Enviar usando enter</string>
+    <string name="settings_chat_send_enter_subtitle">Pressionar a tecla enter envia a mensagem</string>
+    <string name="settings_chat_title">Configurações da conversa</string>
+    <string name="settings_header">Configurações</string>
+    <string name="settings_help">Ajuda</string>
+    <string name="settings_menu_change_photo">Mudar foto</string>
+    <string name="settings_menu_edit_profile">Editar perfil</string>
+    <string name="settings_notifications">Notificações</string>
+    <string name="settings_security">Segurança</string>
+    <string name="settings_share_profile_title">Enviar meu contato…</string>
+    <string name="settings_share_text">Meu número de telefone é {0}</string>
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
+    <!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string name="toast_already_member">Esse usuário já é membro do grupo</string>
+    <string name="toast_empty_name">O Nome não pode ficar em branco</string>
+    <string name="toast_messages_copied">Mensagens copiadas para área de transferência</string>
+    <string name="toast_no_sdcard">Sem Cartão SD</string>
+    <string name="toast_phone_copied">Número do telefone copiado para área de transferência</string>
+    <string name="toast_unable_add">Não foi possível adicionar usuário ao grupo</string>
+    <string name="toast_unable_change">Não foi possível alterar o nome</string>
+    <string name="toast_unable_kick">Não foi possível remover membro do grupo</string>
+    <string name="tour_back_to_top">Voltar ao topo</string>
+    <string name="tour_everywhere_text">Não importa se você está no metrô ou nas montanhas. Sua mensagem sempre chegará a pessoa certa.</string>
+    <string name="tour_everywhere_title">Funciona em todas as plataformas</string>
+    <string name="tour_groups_text">Grupos realmente grades de conversação. Mais de 300 usuários por grupo. Comunique-se com suas equipes e tomem decisões em conjunto.</string>
+    <string name="tour_groups_title">Grandes Grupos de Conversação</string>
+    <string name="tour_secure_text">Tenha certeza de que ninguém vai ler suas mensagens. Compartilhe documentos, arquivos e fotos sem medo de que elas terminem em mãos erradas.</string>
+    <string name="tour_secure_title">Seguro e Privado</string>
+    <string name="tour_sign_in">Entrar</string>
+    <string name="tour_sign_up">Registrar</string>
+    <string name="tour_sign_using_email">com e-mail</string>
+    <string name="tour_sign_using_oauth">com google</string>
+    <string name="tour_sign_using_tel">com número de telefone</string>
+    <string name="tour_welcome_subtitle">Mensagens seguras para Equipes e Amigos</string>
+    <string name="tour_welcome_title">Actor</string>
+    <string name="typing_group">{0} está digitando…</string>
+    <string name="typing_group_many">{0} pessoas estão digitando…</string>
+    <string name="typing_private">digitando…</string>
+</resources>

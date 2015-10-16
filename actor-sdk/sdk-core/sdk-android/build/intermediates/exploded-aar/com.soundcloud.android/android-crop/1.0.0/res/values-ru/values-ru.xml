@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <!-- From: file:/Users/James/dev/sc/android-crop/lib/src/main/res/values-ru/strings.xml -->
+    <eat-comment/>
+    <string name="crop__cancel" ns1:ignore="ButtonCase">ОТМЕНА</string>
+    <string name="crop__done">ГОТОВО</string>
+    <string name="crop__pick_error">Нет доступных изображений</string>
+    <string name="crop__saving">Изображение сохраняется…</string>
+    <string name="crop__wait">Пожалуйста, подождите…</string>
+</resources>

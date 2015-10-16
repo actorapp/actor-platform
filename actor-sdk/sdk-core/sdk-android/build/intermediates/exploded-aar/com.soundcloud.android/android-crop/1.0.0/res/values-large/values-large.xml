@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/Users/James/dev/sc/android-crop/lib/src/main/res/values-large/dimens.xml -->
+    <eat-comment/>
+    <dimen name="crop__bar_height">64dp</dimen>
+</resources>

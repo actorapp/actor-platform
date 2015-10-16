@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true" android:drawable="@drawable/picker_picture_selected_checked" />
+    <item android:drawable="@drawable/picker_picture_selected_default" />
+</selector><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/src/main/res/drawable/picker_picture_selected.xml --><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/drawable/picker_picture_selected.xml -->

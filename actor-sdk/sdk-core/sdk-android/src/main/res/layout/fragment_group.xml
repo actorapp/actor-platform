@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_backyard">
+
+    <ListView
+        android:id="@+id/groupList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_main"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@drawable/selector" />
+
+    <FrameLayout
+        android:id="@+id/notMember"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_main">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/group_not_member"
+            android:textColor="@color/text_primary"
+            android:textSize="21sp" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="top"
+        android:background="@drawable/profile_avatar_top_shadow" />
+</FrameLayout>

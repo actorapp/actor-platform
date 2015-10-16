@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/crop__tile"
+    android:tileMode="repeat" /><!-- From: file:/Users/James/dev/sc/android-crop/lib/src/main/res/drawable/crop__texture.xml -->

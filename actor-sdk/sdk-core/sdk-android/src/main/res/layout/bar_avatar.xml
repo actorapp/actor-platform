@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/selector_light"
+    android:clickable="true"
+    android:padding="8dp">
+
+    <im.actor.messenger.app.view.AvatarView
+        android:id="@+id/avatarView"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+</LinearLayout>

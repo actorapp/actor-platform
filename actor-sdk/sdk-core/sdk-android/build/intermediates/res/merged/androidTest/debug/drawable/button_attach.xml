@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <bitmap android:src="@drawable/conv_attach"/>
+    </item>
+    <item>
+        <bitmap android:src="@drawable/conv_attach"/>
+    </item>
+</selector><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/src/main/res/drawable/button_attach.xml --><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/drawable/button_attach.xml -->

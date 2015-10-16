@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/addUser"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selector"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="8dp">
+
+        <im.actor.messenger.app.view.TintImageView
+            android:layout_width="72dp"
+            android:layout_height="58dp"
+            app:src="@drawable/ic_person_add_white_24dp"
+            app:tintColor="@color/group_action_add_icon" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:singleLine="true"
+            android:text="@string/group_add_member"
+            android:textColor="@color/group_action_add_text"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:background="@color/bg_backyard">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_gravity="top"
+            android:background="@drawable/card_shadow_bottom" />
+
+    </FrameLayout>
+
+</LinearLayout>

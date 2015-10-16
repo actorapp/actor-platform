@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/picker_picture_item_selection_selected" />
+        </shape>
+    </item>
+</layer-list><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/src/main/res/drawable/picker_picture_selected_checked.xml --><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/drawable/picker_picture_selected_checked.xml -->

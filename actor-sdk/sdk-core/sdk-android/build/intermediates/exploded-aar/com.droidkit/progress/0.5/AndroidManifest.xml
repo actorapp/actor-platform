@@ -1,0 +1,7 @@
+<!-- From: file:/Users/ex3ndr/droidkit-progress/progress/src/main/AndroidManifest.xml --><manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="0.5" package="com.droidkit.progress">
+    <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="19"/>
+
+    <application>
+    </application>
+
+</manifest>

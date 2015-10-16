@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:drawable="@drawable/picker_searchfield_focused" />
+    <item android:state_selected="true" android:drawable="@drawable/picker_searchfield_selected" />
+    <item android:drawable="@drawable/picker_searchfield" />
+</selector><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/src/main/res/drawable/picker_search_text_box.xml --><!-- From: file:/C:/Users/badgr/Proj/actor-platform/actor-sdk/sdk-core/sdk-android/build/intermediates/bundles/debug/res/drawable/picker_search_text_box.xml -->

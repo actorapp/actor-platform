@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list>
+
+
+    <!--item android:left="78dp" android:top="54dp">
+        <shape>
+            <size android:height="1dp"/>
+            <solid android:color="@color/item_explorer_stroke"/>
+        </shape>
+    </item-->
+
+</layer-list>

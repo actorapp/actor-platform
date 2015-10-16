@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_backyard">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/collection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+
+    <FrameLayout
+        android:id="@+id/emptyDialogs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_main"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@color/primary" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:scaleType="centerInside"
+            android:src="@drawable/dialogs_empty_large" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="216dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/dialogs_empty_title"
+                android:textColor="@color/primary"
+                android:textSize="21sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.4"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:text="@string/dialogs_empty"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>
