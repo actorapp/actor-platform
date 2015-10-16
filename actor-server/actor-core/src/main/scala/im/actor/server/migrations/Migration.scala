@@ -2,14 +2,15 @@ package im.actor.server.migrations
 
 import java.time.Instant
 
-import akka.actor.ActorSystem
+import akka.actor.{ Actor, ActorLogging, ActorSystem }
+import akka.persistence.PersistentActor
 import akka.util.Timeout
 import im.actor.server.KeyValueMappings
 import shardakka.{ InstantCodec, ShardakkaExtension }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, ExecutionContext, Future }
+import scala.concurrent.{ Promise, Await, ExecutionContext, Future }
 
 trait Migration {
 
@@ -38,5 +39,19 @@ trait Migration {
         throw e
     }, migrationTimeout)
   }
+}
 
+abstract class Migrator(promise: Promise[Unit]) extends Actor with ActorLogging {
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    log.error(reason, "Migrator failure")
+    super.preRestart(reason, message)
+    promise.failure(reason)
+  }
+}
+
+abstract class PersistentMigrator(promise: Promise[Unit]) extends Migrator(promise) with PersistentActor {
+  override protected def onRecoveryFailure(cause: Throwable, event: Option[Any]): Unit = {
+    super.onRecoveryFailure(cause, event)
+    promise.failure(cause)
+  }
 }

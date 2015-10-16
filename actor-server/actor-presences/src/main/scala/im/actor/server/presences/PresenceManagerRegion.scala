@@ -1,31 +1,38 @@
 package im.actor.server.presences
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
-import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
 import im.actor.server.presences.PresenceManager.Envelope
 
 object PresenceManagerRegion {
-  private val idExtractor: ShardRegion.IdExtractor = {
+  private val extractEntityId: ShardRegion.ExtractEntityId = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
   }
 
-  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+  private val extractShardId: ShardRegion.ExtractShardId = msg ⇒ msg match {
     case Envelope(userId, _) ⇒ (userId % 32).toString // TODO: configurable
   }
 
   private val typeName = "PresenceManager"
 
-  private def startRegion(props: Option[Props])(implicit system: ActorSystem): PresenceManagerRegion =
+  private def startRegion(props: Props)(implicit system: ActorSystem): PresenceManagerRegion =
     PresenceManagerRegion(ClusterSharding(system).start(
       typeName = typeName,
-      entryProps = props,
-      idExtractor = idExtractor,
-      shardResolver = shardResolver
+      entityProps = props,
+      settings = ClusterShardingSettings(system),
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
     ))
 
-  def startRegion()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(Some(PresenceManager.props))
+  def startRegion()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(PresenceManager.props)
 
-  def startRegionProxy()(implicit system: ActorSystem): PresenceManagerRegion = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): PresenceManagerRegion =
+    PresenceManagerRegion(ClusterSharding(system).startProxy(
+      typeName = typeName,
+      role = None,
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
+    ))
 
 }
 

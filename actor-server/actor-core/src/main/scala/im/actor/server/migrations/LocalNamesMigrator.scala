@@ -41,7 +41,7 @@ object LocalNamesMigrator extends Migration {
     Props(classOf[LocalNamesMigrator], promise, ownerUserId, contactUserId, db)
 }
 
-private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int, contactUserId: Int, db: Database) extends Actor with ActorLogging {
+private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int, contactUserId: Int, db: Database) extends Migrator(promise) {
 
   private implicit val system: ActorSystem = context.system
   private implicit val ec: ExecutionContext = context.dispatcher

@@ -1,8 +1,8 @@
 package im.actor.server.dialog.group
 
 import akka.actor._
-import akka.contrib.pattern.ShardRegion
-import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
+import akka.cluster.sharding.ShardRegion
+import akka.persistence.RecoveryCompleted
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.db.DbExtension
@@ -86,14 +86,12 @@ private[group] final class GroupDialog extends DialogProcessor[GroupDialogState,
   private[this] var tmpDialogState: GroupDialogState = initState
   override def receiveRecover = {
     case e: GroupDialogEvent ⇒ tmpDialogState = updatedState(e, tmpDialogState)
-    case RecoveryFailure(e) ⇒
-      log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
       context become working(tmpDialogState)
     case unmatched ⇒
       log.error("Unmatched recovery event {}", unmatched)
   }
 
-  override def persistenceId: String = self.path.parent.name + "_" + self.path.name
+  override def persistenceId: String = s"dialog_${ApiPeerType.Group.id}"
 
 }

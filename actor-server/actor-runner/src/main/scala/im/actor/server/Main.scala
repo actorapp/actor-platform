@@ -4,7 +4,7 @@ import java.net.InetAddress
 
 import akka.actor._
 import akka.cluster.Cluster
-import akka.contrib.pattern.DistributedPubSubExtension
+import akka.cluster.pubsub.DistributedPubSub
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigException
 import im.actor.config.ActorConfig
@@ -104,8 +104,6 @@ object Main extends App {
 
     IntegrationTokenMigrator.migrate()
 
-    val mediator = DistributedPubSubExtension(system).mediator
-
     val activationContext = serverConfig.getString("services.activation.default-service") match {
       case "internal" ⇒
         val telesignClient = new TelesignClient(serverConfig.getConfig("services.telesign"))
@@ -119,19 +117,17 @@ object Main extends App {
       case _                  ⇒ throw new Exception("""Invalid activation.default-service value provided: valid options: "internal", actor-activation""")
     }
 
-    implicit val sessionRegion = Session.startRegion(
-      Some(Session.props(mediator))
-    )
+    implicit val sessionRegion = Session.startRegion(Session.props)
 
-    RichMessageWorker.startWorker(richMessageConfig, mediator)
-    ReverseHooksListener.startSingleton(mediator)
+    RichMessageWorker.startWorker(richMessageConfig)
+    ReverseHooksListener.startSingleton()
 
     implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
 
     val services = Seq(
-      new AuthServiceImpl(activationContext, mediator),
+      new AuthServiceImpl(activationContext),
       new ContactsServiceImpl,
-      MessagingServiceImpl(mediator),
+      MessagingServiceImpl(),
       new GroupsServiceImpl(groupInviteConfig),
       new PubgroupsServiceImpl,
       new SequenceServiceImpl(sequenceConfig),

@@ -31,7 +31,7 @@ class PubgroupsServiceSpec
   val sequenceConfig = SequenceServiceConfig.load().toOption.get
 
   val sequenceService = new SequenceServiceImpl(sequenceConfig)
-  val messagingService = messaging.MessagingServiceImpl(mediator)
+  val messagingService = messaging.MessagingServiceImpl()
   implicit val groupService = new GroupsServiceImpl(groupInviteConfig)
   val pubGroupService = new PubgroupsServiceImpl
   val contactService = new ContactsServiceImpl()

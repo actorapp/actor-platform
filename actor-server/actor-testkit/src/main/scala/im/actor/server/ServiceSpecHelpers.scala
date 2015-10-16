@@ -1,7 +1,7 @@
 package im.actor.server
 
 import akka.actor.{ ActorRef, ActorSystem }
-import akka.contrib.pattern.DistributedPubSubExtension
+import akka.cluster.pubsub.DistributedPubSub
 import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
@@ -36,7 +36,6 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   this: Suite ⇒
 
   protected val system: ActorSystem
-  protected lazy val mediator: ActorRef = DistributedPubSubExtension(system).mediator
 
   protected val fairy = Fairy.create()
 
@@ -143,7 +142,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
 
   def buildSessionRegion(rpcApiService: ActorRef)(implicit system: ActorSystem, materializer: Materializer) = {
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
-    Session.startRegion(Some(Session.props(mediator)))
+    Session.startRegion(Session.props)
   }
 
   def buildSessionRegionProxy()(implicit system: ActorSystem) = Session.startRegionProxy()
@@ -153,7 +152,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     sessionRegion: SessionRegion,
     oauth2Service: GoogleProvider,
     system:        ActorSystem
-  ) = new auth.AuthServiceImpl(new DummyCodeActivation, mediator)
+  ) = new auth.AuthServiceImpl(new DummyCodeActivation)
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
