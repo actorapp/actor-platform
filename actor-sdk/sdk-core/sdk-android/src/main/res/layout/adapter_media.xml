@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#000"
+    android:padding="1dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <im.actor.messenger.app.fragment.media.MediaPreview
+        android:id="@+id/image"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <ImageView
+        android:layout_centerInParent="true"
+        android:id="@+id/video"
+        android:background="@drawable/conv_progress_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/conv_video_play" />
+    <TextView
+        android:id="@+id/duration"
+        android:text="time"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/conv_bubble_media_date_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:includeFontPadding="false"
+        android:textColor="@android:color/white"
+        android:textSize="12sp" />
+</RelativeLayout>
