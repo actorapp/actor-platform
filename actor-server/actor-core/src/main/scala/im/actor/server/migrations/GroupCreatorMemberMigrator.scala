@@ -19,7 +19,7 @@ object GroupCreatorMemberMigrator extends Migration {
   protected override def migrationTimeout = 1.hour
 
   protected override def startMigration()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(persist.Group.allIds) flatMap { groupIds ⇒
+    db.run(persist.Group.findAllIds) flatMap { groupIds ⇒
       Future.sequence(groupIds map { groupId ⇒
         val promise = Promise[Unit]()
 

@@ -35,6 +35,8 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
 
   def avatarChangeRandomId = column[Long]("avatar_change_random_id")
 
+  def isHidden = column[Boolean]("is_hidden")
+
   def * =
     (
       id,
@@ -50,7 +52,8 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       titleChangeRandomId,
       avatarChangerUserId,
       avatarChangedAt,
-      avatarChangeRandomId
+      avatarChangeRandomId,
+      isHidden
     ) <> (models.FullGroup.tupled, models.FullGroup.unapply)
 
   def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, about, topic) <> ((models.Group.apply _).tupled, models.Group.unapply)
@@ -68,9 +71,9 @@ object Group {
   val groupByIdC = Compiled(groupById _)
   val titleByIdC = Compiled(titleById _)
 
-  val allIds = groups.map(_.id).result
+  val allIds = groups.map(_.id)
 
-  def create(group: models.Group, randomId: Long) = {
+  def create(group: models.Group, randomId: Long, isHidden: Boolean) = {
     groups += models.FullGroup(
       id = group.id,
       creatorUserId = group.creatorUserId,
@@ -85,12 +88,15 @@ object Group {
       titleChangeRandomId = randomId,
       avatarChangerUserId = group.creatorUserId,
       avatarChangedAt = group.createdAt,
-      avatarChangeRandomId = randomId
+      avatarChangeRandomId = randomId,
+      isHidden = isHidden
     )
   }
 
   def findPublic =
     groups.filter(_.isPublic === true).map(_.asGroup).result
+
+  def findAllIds = allIds.result
 
   def find(id: Int) =
     groupByIdC(id).result.headOption
@@ -113,4 +119,6 @@ object Group {
     byIdC.applied(id).map(_.about).update(about)
 
   def makePublic(id: Int) = byIdC.applied(id).map(_.isPublic).update(true)
+
+  def makeHidden(id: Int) = byIdC.applied(id).map(_.isHidden).update(true)
 }

@@ -17,18 +17,18 @@ if [ "$#" -ne 0 ]; then
 
 	for var in "$@"
 	do
-    	if [ "$var" == "android" ]; then
-    		INSTALL_ANDROID=true
-    	elif [ "$var" == "web" ]; then
+		if [ "$var" == "android" ]; then
+			INSTALL_ANDROID=true
+		elif [ "$var" == "web" ]; then
 			INSTALL_WEB=true
 		elif [ "$var" == "ios" ]; then
 			INSTALL_IOS=true
-		else 
+		else
 			echo_w "Unknown argument $var"
 			exit 1
-		fi			
+		fi
 	done
-fi	
+fi
 
 UPDATE_GRADLE_PROPERTIES=${INSTALL_ANDROID} || ${INSTALL_IOS}
 
@@ -36,14 +36,14 @@ if $INSTALL_ANDROID; then
 	"$SCRIPT_DIR/build-tools/configureAndroidDeps.sh" "${SCRIPT_DIR}"
 fi
 
-if $INSTALL_IOS; then 
+if $INSTALL_IOS; then
 	"$SCRIPT_DIR/build-tools/configureCocoaDeps.sh" "${SCRIPT_DIR}"
-fi	
+fi
 
-if $INSTALL_WEB; then 
+if $INSTALL_WEB; then
 	"$SCRIPT_DIR/build-tools/configureWebDeps.sh" "${SCRIPT_DIR}"
 fi
 
-if $UPDATE_GRADLE_PROPERTIES; then 
+if $UPDATE_GRADLE_PROPERTIES; then
 	"$SCRIPT_DIR/build-tools/configureGradleProps.sh" "${SCRIPT_DIR}"
 fi
