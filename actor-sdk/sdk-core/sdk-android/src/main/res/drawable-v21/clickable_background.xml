@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<ripple
+    android:color="@color/secondary"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+
+        <selector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:enterFadeDuration="300"
+            android:exitFadeDuration="300"
+            >
+            <item android:drawable="@color/secondary_pressed" android:state_pressed="true"/>
+        </selector>
+    </item>
+</ripple>
