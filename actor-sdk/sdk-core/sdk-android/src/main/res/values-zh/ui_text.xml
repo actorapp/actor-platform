@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <string name="app_name">优聆</string>
+    <string name="app_locale">Cn</string>
+
+    <string name="dialog_ok">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_yes">是</string>
+    <string name="dialog_no">否</string>
+    <string name="dialog_try_again">重试</string>
+
+    <string name="pick_photo_camera">拍照</string>
+    <string name="pick_photo_gallery">从相册中选择</string>
+    <string name="pick_photo_remove">删除照片</string>
+    <string name="pick_downloading">正在下载</string>
+
+    <string name="progress_common">加载中…</string>
+
+    <string name="toast_no_sdcard">没有SD存储卡</string>
+    <string name="toast_phone_copied">复制手机号码到剪贴板</string>
+    <string name="toast_messages_copied">复制消息到剪贴板</string>
+    <string name="toast_unable_kick">不能从群组中删除成员</string>
+    <string name="toast_unable_add">不能添加用户到群组中</string>
+    <string name="toast_already_member">用户已经是群组的成员</string>
+    <string name="toast_empty_name">名字不能空着</string>
+    <string name="toast_unable_change">不能修改名字</string>
+
+    <string name="menu_share">分享</string>
+    <string name="menu_save">保存到手机中</string>
+    <string name="menu_saved">保存</string>
+    <string name="menu_next">下一步</string>
+
+    <string name="invite_message">您好！让我们一起使用优聆安全开聊吧! https://actor.im/dl</string>
+
+    <!-- Tour -->
+    <string name="tour_sign_up">注册</string>
+    <string name="tour_sign_in">登录</string>
+    <string name="tour_sign_using_tel">(使用手机)</string>
+    <string name="tour_sign_using_email">(使用电子邮件)</string>
+    <string name="tour_sign_using_oauth">(使用谷歌)</string>
+    <string name="tour_back_to_top">返回顶部</string>
+
+    <string name="tour_welcome_title">优聆</string>
+    <string name="tour_welcome_subtitle">针对团队和朋友的安全交流工具</string>
+
+    <string name="tour_groups_title">超多人的群组</string>
+    <string name="tour_groups_text">难以置信的超多人群聊。每个群组可以超过300人。 团队可以一起交流和一起做决策。</string>
+
+    <string name="tour_everywhere_title">随处都可开展工作</string>
+    <string name="tour_everywhere_text">无论你是在地铁中还是在山中，都可把消息准确无误地传递到。</string>
+
+    <string name="tour_secure_title">安全与保密</string>
+    <string name="tour_secure_text">不必担心别人可以看到你的消息。共享的文档、文件、照片不用担心落入他人手中。</string>
+
+    <!-- Phone Sign Fragment -->
+    <string name="auth_phone_title">验证手机</string>
+    <string name="auth_phone_hint">请选择你的国家并输入你的手机号码。</string>
+    <string name="auth_phone_number_hint">你的手机号码</string>
+    <string name="auth_phone_get_code">确认</string>
+    <string name="auth_phone_why">为什么我们需要你的手机号码?</string>
+    <string name="auth_phone_why_description">使用手机短信进行安全认证是目前最安全的方法。\n\n密码通常都很简单，电子邮件可能被“黑”。</string>
+    <string name="auth_phone_why_done">了解</string>
+    <string name="auth_phone_country_title">选择国家</string>
+    <string name="auth_phone_error_invalid_country">国家代码不正确</string>
+
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">选择验证类型</string>
+    <string name="choose_auth_type_hint">请选择验证类型。</string>
+    <string name="choose_auth_type_sign_up">注册</string>
+    <string name="choose_auth_type_sign_in">登录</string>
+    <string name="choose_auth_type_using_tel">(使用手机)</string>
+    <string name="choose_auth_type_using_email">(使用电子邮件)</string>
+
+
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">验证邮件</string>
+    <string name="auth_email_hint">请输入你的电子邮件。</string>
+    <string name="auth_email_edit_text_hint">电子邮件</string>
+    <string name="auth_email_get_code">确认</string>
+
+    <!-- Sign In Fragment -->
+    <string name="auth_code_phone_hint">已经发送验证码到您的手机： {0}</string>
+    <string name="auth_code_email_hint">已经发送验证码到您的电子邮件： {0}</string>
+    <string name="auth_code_title">输入短信中的验证码</string>
+    <string name="auth_code_sms_hint">短信验证码</string>
+    <string name="auth_code_done">完成</string>
+    <string name="auth_code_wrong_number">手机号码错误?</string>
+    <string name="auth_code_wrong_email">电子邮件错误?</string>
+    <string name="auth_code_phone_change">确定要变更手机号码吗?</string>
+    <string name="auth_code_email_change">确定要变更电子邮件吗?</string>
+    <string name="auth_code_change_yes">变更</string>
+
+    <!-- Sign Up Fragment -->
+    <string name="auth_profile_title">个人信息</string>
+    <string name="auth_profile_hint">请提供您的名字和头像。</string>
+    <string name="auth_profile_name_hint">你的名字</string>
+    <string name="auth_profile_done">开始对话</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_empty_phone">请输入手机号码</string>
+    <string name="auth_error_empty_email">请输入电子邮件</string>
+    <string name="auth_error_code_expired">验证码已过期，请重新请求。</string>
+    au
+    <string name="auth_error_code_invalid">验证码不正确，请重试。</string>
+    <string name="auth_error_failed_get_oauth2_token">验证服务器发送异常，请重试。</string>
+
+    <!-- Typing -->
+    <string name="typing_private">正在输入…</string>
+    <string name="typing_group">{0} 正在输入…</string>
+    <string name="typing_group_many">{0} 个人正在输入…</string>
+
+    <!-- Main -->
+    <string name="main_search_hint">输入要检索的关键字</string>
+    <string name="main_search_empty">什么都没找到</string>
+    <string name="main_menu_help">帮助</string>
+    <string name="main_menu_search">检索</string>
+
+    <string name="main_bar_chats">消息</string>
+    <string name="main_bar_contacts">通讯录</string>
+
+    <string name="main_fab_compose">发消息</string>
+    <string name="main_fab_new_group">创建群组</string>
+    <string name="main_fab_join_public_group">加入公共群组</string>
+    <string name="main_fab_add_contact">添加好友</string>
+
+    <string name="main_sync_title">同步中</string>
+    <string name="main_sync_message">请稍等，应用马上可用</string>
+
+    <string name="main_empty_title">邀请好友</string>
+    <string name="main_empty_invite_hint">你的好友无人使用优聆，使用下面按钮邀请他们吧。</string>
+    <string name="main_empty_invite_action">告诉好友</string>
+    <string name="main_empty_add_hint">或者手动添加好友</string>
+    <string name="main_empty_add_action">添加好友</string>
+
+    <!-- Own profile/settings -->
+    <string name="settings_share_profile_title">发送我的联络方式…</string>
+    <string name="settings_share_text">我的电话号码是 {0}</string>
+    <string name="settings_menu_edit_profile">编辑个人信息</string>
+    <string name="settings_menu_change_photo">设置头像</string>
+    <string name="settings_header">设置</string>
+    <string name="settings_help">帮助</string>
+    <string name="settings_ask">提问</string>
+    <string name="settings_notifications">推送通知</string>
+    <string name="settings_chat">聊天设置</string>
+    <string name="settings_security">安全</string>
+
+    <!-- Profile controls -->
+    <string name="phone_menu_call">拨打 {0}</string>
+    <string name="phone_menu_sms">发短信给 {0}</string>
+    <string name="phone_menu_share">共享给 {0}</string>
+    <string name="phone_menu_copy">复制</string>
+
+    <!-- Dialogs -->
+    <string name="dialogs_title">聊天</string>
+    <string name="dialogs_hint">长按以查看更多选项</string>
+    <string name="dialogs_empty_title">开始对话</string>
+    <string name="dialogs_empty">从你的通讯录中选择一个好友或者按＋号按钮立刻开始对话。</string>
+
+    <string name="dialogs_menu_contact_view">查看好友信息</string>
+    <string name="dialogs_menu_contact_rename">设置好友昵称</string>
+    <string name="dialogs_menu_conversation_delete">删除对话</string>
+
+    <string name="dialogs_menu_group_view">查看群组信息</string>
+    <string name="dialogs_menu_group_rename">修改群组名称</string>
+    <string name="dialogs_menu_group_leave">退出群组</string>
+    <string name="dialogs_menu_group_delete">删除群组</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">好友</string>
+    <string name="contacts_empty_short">还没有任何好友</string>
+    <string name="contacts_share">把优聆告诉好友</string>
+    <string name="contacts_add">添加好友...</string>
+
+    <string name="contacts_empty_title">邀请好友</string>
+    <string name="contacts_empty_invite_hint">你的好友无人使用优聆，使用下面按钮邀请他们吧。</string>
+    <string name="contacts_empty_invite_action">告诉好友</string>
+    <string name="contacts_empty_add_hint">或者点击下面的＋号按钮手动添加好友。</string>
+
+    <string name="contacts_menu_remove">从通讯录中移除{0}</string>
+    <string name="contacts_menu_remove_progress">移除中…</string>
+    <string name="contacts_menu_edit">编辑名字</string>
+
+    <string name="contacts_invite_via_link">通过链接邀请</string>
+
+    <!-- Chat -->
+    <string name="chat_menu_group_info">群组信息</string>
+    <string name="chat_menu_view_contact">查看通讯录</string>
+    <string name="chat_menu_call">拨打</string>
+    <string name="chat_menu_files">文件</string>
+    <string name="chat_menu_clear_chat">清除聊天记录</string>
+    <string name="chat_menu_leave_group">退出群组</string>
+
+    <string name="chat_attach_place">位置</string>
+    <string name="chat_attach_file">文件</string>
+    <string name="chat_attach_take_video">拍视频</string>
+    <string name="chat_attach_take_photo">拍照</string>
+    <string name="chat_attach_gallery">相册</string>
+
+    <string name="chat_message_hint">输入消息…</string>
+
+    <string name="chat_new_messages">新消息</string>
+    <string name="chat_add_to_contacts">添加到通讯录</string>
+    <string name="chat_add_to_contacts_progress">正在添加到通讯录…</string>
+
+    <string name="chat_doc_open">打开</string>
+    <string name="chat_doc_send">发送</string>
+    <string name="chat_doc_stop">停止</string>
+    <string name="chat_doc_download">下载</string>
+
+    <string name="chat_not_member">你不是这个群组的成员</string>
+
+    <string name="chat_unsupported">这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。</string>
+
+    <!-- Profile -->
+    <string name="profile_title">个人信息</string>
+    <string name="profile_shared_header">我的分享</string>
+    <string name="profile_shared_files">文档</string>
+    <string name="profile_shared_media">媒体</string>
+    <string name="profile_settings_header">设置</string>
+    <string name="profile_settings_notifications">推送通知</string>
+
+    <string name="profile_adding">正在添加到通讯录…</string>
+    <string name="profile_removing">正从通讯录中移除…</string>
+
+    <string name="profile_menu_rename">修改称呼</string>
+    <string name="profile_menu_call">拨打</string>
+    <string name="profile_menu_remove">从通讯录中移除</string>
+    <string name="profile_menu_add">添加到通讯录</string>
+    <string name="profile_menu_security">安全</string>
+    <string name="profile_cant_find_user">无法找到此用户</string>
+
+    <!-- Group -->
+    <string name="group_title">群组信息</string>
+    <string name="group_members_header">成员</string>
+    <string name="group_members_count">{0}个，最多{1}个</string>
+
+    <string name="group_admin">管理员</string>
+
+    <string name="group_created_by">由{0}创建</string>
+    <string name="group_created_by_you">由你创建</string>
+
+    <string name="group_adding">正添加到群组…</string>
+    <string name="group_removing">从群组中移除…</string>
+
+    <string name="group_context_message">给{0}发消息</string>
+    <string name="group_context_call">给{0}打电话</string>
+    <string name="group_context_view">查看{0}</string>
+    <string name="group_context_remove">从群组中移除{0}</string>
+
+    <string name="group_menu_add">添加成员</string>
+    <string name="group_menu_leave">退出群组</string>
+    <string name="group_menu_change_theme">变更主题</string>
+    <string name="group_menu_change_photo">变更头像</string>
+    <string name="group_menu_integration_token">集成令牌</string>
+
+    <string name="group_shared_header">我的分享</string>
+    <string name="group_shared_files">文档</string>
+
+    <string name="group_add_member">添加成员</string>
+
+    <string name="group_not_member">你不是这个群组的成员</string>
+
+    <!-- Avatar -->
+    <string name="avatar_title_your">你的头像</string>
+    <string name="avatar_title_person">头像</string>
+    <string name="avatar_title_group">群组头像</string>
+    <string name="avatar_no_photo">未设置头像</string>
+    <string name="avatar_menu_edit">编辑</string>
+    <string name="avatar_menu_set_as">设置为…</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">添加好友</string>
+    <string name="add_contact_phone_hint">输入电话号码</string>
+    <string name="add_contact_bar_cancel">取消</string>
+    <string name="add_contact_bar_continue">确认</string>
+
+    <!-- Compose -->
+    <string name="compose_title">发消息</string>
+
+    <!-- Create Group -->
+    <string name="create_group_title">创建群组</string>
+    <string name="create_group_name_hint">为群组命名</string>
+    <string name="create_group_hint">进入群组主题设置群组图片</string>
+    <string name="create_group_search_hint">通过群名检索</string>
+    <string name="create_group_done">完成</string>
+
+    <!-- Group add -->
+    <string name="group_add_title">添加成员</string>
+
+    <!-- Join public group -->
+    <string name="join_public_group_title">公共群组</string>
+    <string name="join_public_group_members_count">成员: </string>
+    <string name="join_public_group_friends_count">好友: </string>
+    <string name="join">加入</string>
+    <string name="open">打开</string>
+    <string name="join_public_group_top_title">您好!</string>
+    <string name="join_public_group_top_subtitle">热门公共群组</string>
+    <string name="join_public_group_top_by_friends_title">与朋友一起聊!</string>
+    <string name="join_public_group_top_by_friends_subtitle">有朋友在的热门公共群组</string>
+    <string name="join_public_group_all_groups">所有公共群组</string>
+
+
+    <!-- Invite link-->
+    <string name="invite_link_title">邀请链接</string>
+    <string name="invite_link_hint">通过以下链接可以邀请已经安装优聆的用户加入你的群组</string>
+    <string name="invite_link_action_copy">复制链接</string>
+    <string name="invite_link_action_revoke">重置链接</string>
+    <string name="invite_link_action_share">分享链接</string>
+    <string name="invite_link_copied">链接已经复制到剪贴板</string>
+    <string name="invite_link_chooser_title">通过链接邀请加入群组</string>
+    <string name="invite_link_error_get_link">无法获取邀请链接</string>
+    <string name="invite_link_error_revoke_link">无法重置邀请链接</string>
+    <string name="invite_link_empty_view">正载入邀请链接</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">集成令牌</string>
+    <string name="integration_token_hint">此令牌可以用来设置与此群组的集成</string>
+    <string name="integration_token_action_copy">复制令牌</string>
+    <string name="integration_token_action_revoke">重置令牌</string>
+    <string name="integration_token_action_share">分享令牌</string>
+    <string name="integration_token_copied">令牌已经被复制到剪贴板</string>
+    <string name="integration_token_chooser_title">发送令牌</string>
+    <string name="integration_token_error_get_token">无法获取令牌</string>
+    <string name="integration_token_error_revoke_link">无法重置令牌</string>
+    <string name="integration_token_error_revoke_link_not_admin">你不是群组管理员，无法重置令牌</string>
+    <string name="integration_token_empty_view">正在载入集成令牌</string>
+
+    <!-- Documents -->
+    <string name="documents_title">文档</string>
+    <string name="documents_empty">还没有文档</string>
+
+    <!-- Edit name -->
+    <string name="edit_name_title_you">输入您的名称</string>
+    <string name="edit_name_title_contact">输入好友名称</string>
+    <string name="edit_name_title_group">输入群组名称</string>
+    <string name="edit_name_cancel">取消</string>
+    <string name="edit_name_save">保存</string>
+    <string name="edit_name_process">正在更改名称…</string>
+
+    <!-- Help -->
+    <string name="help_title">帮助</string>
+    <string name="help_about_title">关于</string>
+    <string name="help_about_subtitle">关于应用和服务</string>
+    <string name="help_faq_title">FAQ</string>
+    <string name="help_faq_subtitle">常见问题</string>
+    <string name="help_feedback_title">反馈</string>
+    <string name="help_feedback_subtitle">反馈您的意见</string>
+    <string name="help_version_title">应用版本</string>
+    <string name="help_version_copy">应用版本已经复制到剪贴板</string>
+    <string name="help_email_title">发送邮件</string>
+    <string name="help_email_subject">反馈</string>
+
+    <!-- Notifications -->
+    <string name="not_title">通知</string>
+    <string name="not_conv_tones">对话铃声</string>
+    <string name="not_conv_tones_subtitle">有消息进出时播放铃声。</string>
+    <string name="not_sound">声音</string>
+    <string name="not_sound_subtitle">推送通知到达时播放声音</string>
+    <string name="not_vibration">震动</string>
+    <string name="not_vibration_subtitle">推送通知到达时震动</string>
+    <string name="not_show_text">显示名称和消息</string>
+    <string name="not_show_text_subtitle">在通知面板中显示消息文本和发送者称呼</string>
+
+    <!-- Pick user -->
+    <string name="pick_user_title">选择一个用户</string>
+
+    <!-- Chat Settings -->
+    <string name="settings_chat_title">聊天设置</string>
+    <string name="settings_chat_send_enter">按回车键发送</string>
+    <string name="settings_chat_send_enter_subtitle">是否通过按下回车键发送你的消息</string>
+
+    <string name="settings_chat_markdown">支持标记语言(Markdown)</string>
+    <string name="settings_chat_markdown_subtitle">是否支持标志语言(Markdown)</string>
+
+    <!-- Security -->
+    <string name="security_title">安全</string>
+    <string name="security_terminate_title">关闭所有会话</string>
+    <string name="security_terminate_subtitle">退出所有设备</string>
+    <string name="security_terminate_message">确定要要退出其它所有设备吗？</string>
+    <string name="security_authorized_header">授权的设备和服务</string>
+    <string name="security_authorized_loading">正在载入…</string>
+
+    <!-- Alerts -->
+    <string name="alert_delete_messages_text">是否要删除这{0}条信息?</string>
+    <string name="alert_delete_messages_yes">删除</string>
+
+    <string name="alert_delete_all_messages_text">是否要删除这个聊天中的所有消息?</string>
+    <string name="alert_delete_all_messages_yes">删除</string>
+
+    <string name="alert_remove_contact_text">是否要从通讯录中移除{0}?</string>
+    <string name="alert_remove_contact_yes">移除</string>
+
+    <string name="alert_group_add_text">确认要添加{0}到群组中吗?</string>
+    <string name="alert_group_add_yes">添加</string>
+
+    <string name="alert_group_remove_text">确认要从群组中移除{0}吗?</string>
+    <string name="alert_group_remove_yes">移除</string>
+
+    <string name="alert_invite_text">"{0}"没有注册优聆。 邀请他使用优聆吗?</string>
+    <string name="alert_invite_yes">邀请</string>
+
+    <!-- Media -->
+    <string name="media">媒体</string>
+    <string name="media_picture">图片</string>
+    <string name="media_pager" formatted="false">第%d个，总共%d个</string>
+
+    <!-- Dialogs -->
+    <string name="alert_leave_group_message">确定要退出群组"%1$s"吗?</string>
+    <string name="alert_leave_group_yes">退出</string>
+
+    <string name="alert_delete_group_title">删除"%1$s"群组?</string>
+    <string name="alert_delete_group_yes">删除</string>
+
+    <string name="alert_delete_chat_message">删除"%1$s"的聊天记录吗?</string>
+    <string name="alert_delete_chat_yes">删除</string>
+
+    <string name="alert_revoke_link_message">重置链接吗?</string>
+    <string name="alert_revoke_link_yes">重置</string>
+
+    <string name="alert_revoke_integration_token_message">重置令牌吗?</string>
+    <string name="alert_revoke_integration_token_yes">重置</string>
+
+    <!-- Errors -->
+    <string name="error_connection">无法连接。请检查是否可以连接互联网并重试。\n\n如果连接问题一直无法解决，请重新启动手机。</string>
+    <string name="error_unknown">无法执行操作。\n\n如果无法解决问题，请重新启动手机。</string>
+    <string name="error_view_url">未知URL类型</string>
+</resources>

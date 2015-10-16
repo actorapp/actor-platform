@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="picker_controls_text_size">14sp</dimen>
+    <dimen name="picker_file_title_size">18sp</dimen>
+</resources>
