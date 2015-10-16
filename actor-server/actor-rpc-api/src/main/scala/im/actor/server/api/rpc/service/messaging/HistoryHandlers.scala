@@ -118,10 +118,29 @@ trait HistoryHandlers {
           groupIds = groupDialogs.map(_.peer.id)
           userIds = privateDialogs.map(_.peer.id)
           (groups, users) ← DBIO.from(GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId))
-        } yield Ok(ResponseLoadGroupedDialogs(Vector(
-          ApiDialogGroup("Groups", "groups", groupDialogs.toVector),
-          ApiDialogGroup("Private", "privates", privateDialogs.toVector)
-        ), users.toVector, groups.toVector))
+        } yield {
+          def sort(dialogs: Seq[ApiDialogShort], names: Map[Int, String]): Vector[ApiDialogShort] = {
+            dialogs.view
+              .map { d ⇒
+                names.get(d.peer.id).map(_ → d)
+              }
+              .collect { case Some(tp) ⇒ tp }
+              .sortBy(_._1)
+              .map(_._2)
+              .toVector
+          }
+
+          val groupTitles = groups.map(g ⇒ g.id → g.title).toMap
+          val userNames = users.map(u ⇒ u.id → u.localName.getOrElse(u.name)).toMap
+
+          val sortedGroupDialogs = sort(groupDialogs, groupTitles)
+          val sortedPrivateDialogs = sort(privateDialogs, userNames)
+
+          Ok(ResponseLoadGroupedDialogs(Vector(
+            ApiDialogGroup("Groups", "groups", sortedGroupDialogs),
+            ApiDialogGroup("Private", "privates", sortedPrivateDialogs)
+          ), users.toVector, groups.toVector))
+        }
       }
     }
 
