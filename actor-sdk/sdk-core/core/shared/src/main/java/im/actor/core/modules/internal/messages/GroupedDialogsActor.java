@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiDialogGroup;
+import im.actor.core.api.ApiDialogShort;
 import im.actor.core.api.rpc.RequestLoadGroupedDialogs;
 import im.actor.core.api.rpc.ResponseLoadGroupedDialogs;
 import im.actor.core.entity.Avatar;
@@ -14,6 +15,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.User;
 import im.actor.core.modules.ModuleContext;
+import im.actor.core.modules.internal.messages.entity.GroupedItem;
 import im.actor.core.modules.internal.messages.entity.GroupedStorage;
 import im.actor.core.modules.utils.ModuleActor;
 import im.actor.core.network.RpcCallback;
@@ -23,6 +25,8 @@ import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.DialogSpecVM;
 import im.actor.core.viewmodel.generics.ArrayListDialogSmall;
 import im.actor.runtime.mvvm.MVVMCollection;
+
+import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
 public class GroupedDialogsActor extends ModuleActor {
 
@@ -51,7 +55,6 @@ public class GroupedDialogsActor extends ModuleActor {
                 e.printStackTrace();
             }
         }
-        notifyVM();
 
         isLoaded = preferences().getBool(PREFERENCE_GROUPED_LOADED, false);
 
@@ -64,8 +67,9 @@ public class GroupedDialogsActor extends ModuleActor {
                             new Runnable() {
                                 @Override
                                 public void run() {
-                                    List<ApiDialogGroup> dialogGroups = response.getDialogs();
-                                    storage.getGroupPeers().clear();
+                                    applyGroups(response.getDialogs());
+                                    isLoaded = true;
+                                    preferences().putBool(PREFERENCE_GROUPED_LOADED, true);
                                 }
                             });
                 }
@@ -75,109 +79,35 @@ public class GroupedDialogsActor extends ModuleActor {
                     // Ignore
                 }
             });
+        } else {
+            notifyVM();
         }
-    }
-
-    private void onNewMessage(Peer peer, long sortDate, int counter) {
-
-        // Updating dialog spec
-        DialogSpec spec = new DialogSpec(peer, false, counter);
-        specs.getEngine().addOrUpdateItem(spec);
-
-        // Doesn't create dialogs for hidden groups
-        if (peer.getPeerType() == PeerType.GROUP) {
-            if (getGroup(peer.getPeerId()).isHidden()) {
-                return;
-            }
-        }
-
-        boolean found = false;
-        for (Peer p : storage.getPrivatePeers()) {
-            if (p.equals(peer)) {
-                found = true;
-                break;
-            }
-        }
-        for (Peer p : storage.getGroupPeers()) {
-            if (p.equals(peer)) {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            if (peer.getPeerType() == PeerType.PRIVATE) {
-                storage.getPrivatePeers().add(peer);
-            } else if (peer.getPeerType() == PeerType.GROUP) {
-                storage.getGroupPeers().add(peer);
-            } else {
-                return;
-            }
-        }
-
-        notifyVM();
-        saveStorage();
-    }
-
-    private void notifyVM() {
-        ArrayListDialogSmall groupSpecs = new ArrayListDialogSmall();
-        for (Peer p : storage.getGroupPeers()) {
-            DialogSpec spec = specs.getEngine().getValue(p.getUnuqueId());
-            if (p.getPeerType() == PeerType.GROUP) {
-                Group group = getGroup(p.getPeerId());
-                groupSpecs.add(new DialogSmall(p,
-                        group.getTitle(), group.getAvatar(),
-                        spec.getCounter()));
-            } else if (p.getPeerType() == PeerType.PRIVATE) {
-                User user = getUser(p.getPeerId());
-                groupSpecs.add(new DialogSmall(p,
-                        user.getName(), user.getAvatar(),
-                        spec.getCounter()));
-            }
-        }
-
-        ArrayListDialogSmall privateSpecs = new ArrayListDialogSmall();
-        for (Peer p : storage.getPrivatePeers()) {
-            DialogSpec spec = specs.getEngine().getValue(p.getUnuqueId());
-            if (p.getPeerType() == PeerType.GROUP) {
-                Group group = getGroup(p.getPeerId());
-                privateSpecs.add(new DialogSmall(p,
-                        group.getTitle(), group.getAvatar(),
-                        spec.getCounter()));
-            } else if (p.getPeerType() == PeerType.PRIVATE) {
-                User user = getUser(p.getPeerId());
-                privateSpecs.add(new DialogSmall(p,
-                        user.getName(), user.getAvatar(),
-                        spec.getCounter()));
-            }
-        }
-
-        ArrayList<DialogGroup> groups = new ArrayList<DialogGroup>();
-        groups.add(new DialogGroup("Groups", "groups", groupSpecs));
-        groups.add(new DialogGroup("Private", "private", privateSpecs));
-
-        context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
     }
 
     private void onCounterChanged(Peer peer, int counter) {
-
         DialogSpec spec = new DialogSpec(peer, false, counter);
         specs.getEngine().addOrUpdateItem(spec);
+        notifyVM(peer);
+    }
 
-        // Hidden groups doesn't present in storage
-        // and there are no need to explicit checking
+    private void onPeerInfoChanged(Peer peer) {
+        notifyVM(peer);
+    }
 
+    private void onGroupedChanged(List<ApiDialogGroup> groupedItems) {
+        applyGroups(groupedItems);
+    }
+
+    // Tools
+
+    private void notifyVM(Peer peer) {
         boolean found = false;
-        for (Peer p : storage.getPrivatePeers()) {
-            if (p.equals(peer)) {
-                found = true;
-                break;
-            }
-        }
-        for (Peer p : storage.getGroupPeers()) {
-            if (p.equals(peer)) {
-                found = true;
-                break;
+        for (GroupedItem i : storage.getGroups()) {
+            for (Peer p : i.getPeers()) {
+                if (p.equals(peer)) {
+                    found = true;
+                    break;
+                }
             }
         }
 
@@ -186,76 +116,109 @@ public class GroupedDialogsActor extends ModuleActor {
         }
     }
 
-    private void onPeerInfoChanged(Peer peer, String title, Avatar avatar) {
+    private void notifyVM() {
 
-        // Hidden groups doesn't present in storage
-        // and there are no need to explicit checking
+        ArrayList<DialogGroup> groups = new ArrayList<DialogGroup>();
+        for (GroupedItem i : storage.getGroups()) {
+            ArrayListDialogSmall dialogSmalls = new ArrayListDialogSmall();
+            for (Peer p : i.getPeers()) {
+                DialogSpec spec = specs.getEngine().getValue(p.getUnuqueId());
+                String title;
+                Avatar avatar;
+                if (p.getPeerType() == PeerType.GROUP) {
+                    Group group = getGroup(p.getPeerId());
+                    title = group.getTitle();
+                    avatar = group.getAvatar();
+                } else if (p.getPeerType() == PeerType.PRIVATE) {
+                    User user = getUser(p.getPeerId());
+                    title = user.getName();
+                    avatar = user.getAvatar();
+                } else {
+                    continue;
+                }
 
-        boolean found = false;
-        for (Peer p : storage.getPrivatePeers()) {
-            if (p.equals(peer)) {
-                found = true;
-                break;
+                dialogSmalls.add(new DialogSmall(p, title, avatar, spec.getCounter()));
             }
+            groups.add(new DialogGroup(i.getTitle(), i.getKey(), dialogSmalls));
         }
-        for (Peer p : storage.getGroupPeers()) {
-            if (p.equals(peer)) {
-                found = true;
-                break;
-            }
-        }
-
-        if (found) {
-            notifyVM();
-        }
+        context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel().change(groups);
     }
 
 
-    private void saveStorage() {
+    private void applyGroups(List<ApiDialogGroup> dialogGroups) {
+
+        // Writing missing specs
+
+        ArrayList<DialogSpec> updatedSpecs = new ArrayList<DialogSpec>();
+        for (ApiDialogGroup g : dialogGroups) {
+            for (ApiDialogShort s : g.getDialogs()) {
+                Peer peer = convert(s.getPeer());
+                if (specs.getEngine().getValue(peer.getUnuqueId()) == null) {
+                    updatedSpecs.add(new DialogSpec(peer, false, s.getCounter()));
+                }
+            }
+        }
+        specs.getEngine().addOrUpdateItems(updatedSpecs);
+
+        // Updating storage
+
+        storage.getGroups().clear();
+        for (ApiDialogGroup g : dialogGroups) {
+            ArrayList<Peer> peers = new ArrayList<Peer>();
+            for (ApiDialogShort s : g.getDialogs()) {
+                Peer peer = convert(s.getPeer());
+                peers.add(peer);
+            }
+            storage.getGroups().add(new GroupedItem(g.getKey(), g.getTitle(), peers));
+        }
         preferences().putBytes(PREFERENCE_GROUPED, storage.toByteArray());
+
+        // Updating VM
+
+        notifyVM();
     }
 
     @Override
     public void onReceive(Object message) {
         if (message instanceof PeerInformationChanged) {
             PeerInformationChanged informationChanged = (PeerInformationChanged) message;
-            onPeerInfoChanged(informationChanged.getPeer(),
-                    informationChanged.getTitle(),
-                    informationChanged.getAvatar());
-        } else if (message instanceof NewMessage) {
-            NewMessage newMessage = (NewMessage) message;
-            onNewMessage(newMessage.peer, newMessage.sortDate, newMessage.counter);
+            onPeerInfoChanged(informationChanged.getPeer());
         } else if (message instanceof CounterChanged) {
             CounterChanged counterChanged = (CounterChanged) message;
             onCounterChanged(counterChanged.getPeer(), counterChanged.getCounter());
+        } else if (message instanceof GroupedDialogsChanged) {
+            GroupedDialogsChanged g = (GroupedDialogsChanged) message;
+            onGroupedChanged(g.getItems());
         } else {
             super.onReceive(message);
+        }
+    }
+
+    public static class GroupedDialogsChanged {
+
+        private List<ApiDialogGroup> items;
+
+        public GroupedDialogsChanged(List<ApiDialogGroup> items) {
+            this.items = items;
+        }
+
+        public List<ApiDialogGroup> getItems() {
+            return items;
         }
     }
 
     public static class PeerInformationChanged {
 
         private Peer peer;
-        private String title;
-        private Avatar avatar;
 
-        public PeerInformationChanged(Peer peer, String title, Avatar avatar) {
+        public PeerInformationChanged(Peer peer) {
             this.peer = peer;
-            this.title = title;
-            this.avatar = avatar;
         }
 
         public Peer getPeer() {
             return peer;
         }
 
-        public String getTitle() {
-            return title;
-        }
-
-        public Avatar getAvatar() {
-            return avatar;
-        }
     }
 
     public static class CounterChanged {
@@ -273,18 +236,6 @@ public class GroupedDialogsActor extends ModuleActor {
 
         public int getCounter() {
             return counter;
-        }
-    }
-
-    public static class NewMessage {
-        private Peer peer;
-        private int counter;
-        private long sortDate;
-
-        public NewMessage(Peer peer, int counter, long sortDate) {
-            this.peer = peer;
-            this.counter = counter;
-            this.sortDate = sortDate;
         }
     }
 }
