@@ -6,6 +6,7 @@ package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.Event;
+
 import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.entity.MentionFilterResult;
@@ -28,6 +29,7 @@ import im.actor.runtime.js.mvvm.JsDisplayListCallback;
 import im.actor.runtime.js.utils.JsPromise;
 import im.actor.runtime.js.utils.JsPromiseExecutor;
 import im.actor.runtime.markdown.MarkdownParser;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -295,6 +297,22 @@ public class JsFacade implements Exportable {
             return;
         }
         messenger.getSharedDialogList().unsubscribe(callback);
+    }
+
+    public void bindGroupDialogs(JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
+        messenger.getDialogsGroupedList().subscribe(callback);
+    }
+
+    public void unbindGroupDialogs(JsBindedValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
+
+        messenger.getDialogsGroupedList().unsubscribe(callback);
     }
 
     // Contacts

@@ -4,6 +4,9 @@
 
 package im.actor.core.js.modules;
 
+import com.google.gwt.core.client.JsArray;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.core.entity.Avatar;
@@ -18,13 +21,18 @@ import im.actor.core.js.JsMessenger;
 import im.actor.core.js.entity.JsContact;
 import im.actor.core.js.entity.JsCounter;
 import im.actor.core.js.entity.JsDialog;
+import im.actor.core.js.entity.JsDialogGroup;
+import im.actor.core.js.entity.JsDialogShort;
 import im.actor.core.js.entity.JsGroup;
 import im.actor.core.js.entity.JsMessage;
+import im.actor.core.js.entity.JsPeerInfo;
 import im.actor.core.js.entity.JsTyping;
 import im.actor.core.js.entity.JsUser;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.viewmodel.AppStateVM;
+import im.actor.core.viewmodel.DialogGroup;
+import im.actor.core.viewmodel.DialogSmall;
 import im.actor.core.viewmodel.GroupTypingVM;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
@@ -52,12 +60,42 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
     private JsBindedValue<JsCounter> globalCounter;
     private JsBindedValue<JsCounter> tempGlobalCounter;
 
+    private JsBindedValue<JsArray<JsDialogGroup>> dialogsGroupedList;
+
     public JsBindingModule(JsMessenger messenger, JsFilesModule filesModule, Modules modules) {
         super(modules);
 
         this.filesModule = filesModule;
         this.messenger = messenger;
         this.filesModule.registerListener(this);
+    }
+
+    public JsBindedValue<JsArray<JsDialogGroup>> getDialogsGroupedList() {
+        if (dialogsGroupedList == null) {
+            ValueModel<ArrayList<DialogGroup>> dialogGroups =
+                    context().getMessagesModule().getDialogGroupsVM().getGroupsValueModel();
+            dialogsGroupedList = new JsBindedValue<JsArray<JsDialogGroup>>();
+            dialogGroups.subscribe(new ValueChangedListener<ArrayList<DialogGroup>>() {
+                @Override
+                public void onChanged(ArrayList<DialogGroup> val, Value<ArrayList<DialogGroup>> valueModel) {
+                    if (val == null) {
+                        dialogsGroupedList.changeValue(JsArray.createArray().<JsArray<JsDialogGroup>>cast());
+                    } else {
+                        JsArray<JsDialogGroup> res = JsArray.createArray().cast();
+                        for (DialogGroup g : val) {
+                            JsArray<JsDialogShort> resd = JsArray.createArray().cast();
+                            for (DialogSmall ds : g.getDialogs()) {
+                                resd.push(JsDialogShort.create(messenger.buildPeerInfo(ds.getPeer()), ds.getCounter()));
+                            }
+                            res.push(JsDialogGroup.create(g.getTitle(), g.getKey(), resd));
+                        }
+                        dialogsGroupedList.changeValue(res);
+                    }
+                }
+            });
+        }
+
+        return dialogsGroupedList;
     }
 
     public JsBindedValue<String> getOnlineStatus() {
