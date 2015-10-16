@@ -1,0 +1,28 @@
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:orientation="vertical"
+              tools:context="im.actor.messenger.app.activity.DevActivity">
+
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Reset contacts"
+            android:id="@+id/resetContactsSync"/>
+
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Export contacts log"
+            android:id="@+id/exportContactsLog"/>
+
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Clear contacts log"
+            android:id="@+id/clearContactsLog"/>
+
+</LinearLayout>

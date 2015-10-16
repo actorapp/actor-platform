@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/location"
+        android:icon="@drawable/conv_attach_location"
+        android:title="@string/chat_attach_place"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/file"
+        android:icon="@drawable/conv_attach_file"
+        android:title="@string/chat_attach_file" />
+
+    <item
+        android:id="@+id/takeVideo"
+        android:icon="@drawable/conv_attach_video"
+        android:title="@string/chat_attach_take_video" />
+
+    <item
+        android:id="@+id/gallery"
+        android:icon="@drawable/conv_attach_gallery"
+        android:title="@string/chat_attach_gallery" />
+
+    <item
+        android:id="@+id/takePhoto"
+        android:icon="@drawable/conv_attach_photo"
+        android:title="@string/chat_attach_take_photo" />
+</menu>

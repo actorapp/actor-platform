@@ -1,0 +1,16 @@
+<com.afollestad.materialdialogs.internal.MDRootLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/md_stub_titleframe" />
+
+    <FrameLayout
+        android:id="@+id/customViewFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include layout="@layout/md_stub_actionbuttons" />
+
+</com.afollestad.materialdialogs.internal.MDRootLayout><!-- From: file:/Users/afollestad/Projects/material-dialogs/library/src/main/res/layout/md_dialog_custom.xml -->

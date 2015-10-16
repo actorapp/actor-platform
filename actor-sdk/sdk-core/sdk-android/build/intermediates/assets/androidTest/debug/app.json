@@ -1,0 +1,9 @@
+{
+  "endpoints" : [ "tls://front1-mtproto-api-rev2.actor.im", "tls://front2-mtproto-api-rev2.actor.im" ],
+  "mixpanel" : null,
+  "mint" : null,
+  "hockeyapp" : null,
+  "base_version" : "1.0",
+  "push_id" : null,
+  "community" : false
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/crop__selector_pressed">
+  <item android:drawable="@color/crop__button_bar" />
+</ripple>
+<!-- From: file:/Users/James/dev/sc/android-crop/lib/src/main/res/drawable-v21/crop__selectable_background.xml -->

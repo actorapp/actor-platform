@@ -1,0 +1,168 @@
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:id="@+id/paralax"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <ImageView
+            android:id="@+id/paralax_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/intro_background" />
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/back_to_top_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_above="@+id/back_to_top"
+        android:layout_alignLeft="@+id/back_to_top"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@id/back_to_top"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="52dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/intro_arrow"
+        android:textColor="#fff" />
+
+    <ImageView
+        android:id="@+id/welcome_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/welcome_text"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/intro_logo" />
+
+    <LinearLayout
+        android:id="@+id/welcome_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tour_welcome_title"
+            android:textColor="@color/text_primary_inv"
+            android:textSize="21sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/tour_welcome_subtitle"
+            android:textColor="@color/text_primary_inv"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <im.actor.messenger.app.fragment.tour.PagerContainer
+        android:id="@+id/pager_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="-100dp">
+
+        <im.actor.messenger.app.fragment.tour.VerticalViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+    </im.actor.messenger.app.fragment.tour.PagerContainer>
+
+    <LinearLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/login_holder"
+        android:alpha="0"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/primary" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:background="@drawable/shadow_line_3_bottom" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/login_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:layout_below="@+id/welcome_text"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/signUpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/shadow_square_3"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/signUpButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_green"
+                android:gravity="center"
+                android:minWidth="88dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/tour_sign_up"
+                android:textColor="@color/text_primary_inv"
+                android:textSize="15sp" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/signIn"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:minWidth="88dp"
+            android:text="@string/tour_sign_in"
+            android:textAllCaps="true"
+            android:textColor="@color/text_primary_inv"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/back_to_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:alpha="0"
+        android:padding="16dp"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:text="@string/tour_back_to_top"
+        android:textColor="#fff" />
+
+</RelativeLayout>

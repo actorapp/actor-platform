@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <!-- From: file:/Users/James/dev/sc/android-crop/lib/src/main/res/values-ar/strings.xml -->
+    <eat-comment/>
+    <string name="crop__cancel" ns1:ignore="ButtonCase">الغاء</string>
+    <string name="crop__done">تم</string>
+    <string name="crop__pick_error">الصورة غير متاحة</string>
+    <string name="crop__saving">جارى حفظ الصورة …</string>
+    <string name="crop__wait">رجاء الأنتظار …</string>
+</resources>

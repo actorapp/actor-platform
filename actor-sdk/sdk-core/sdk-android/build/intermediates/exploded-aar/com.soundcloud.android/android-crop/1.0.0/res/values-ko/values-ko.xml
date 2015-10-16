@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <!-- From: file:/Users/James/dev/sc/android-crop/lib/src/main/res/values-ko/strings.xml -->
+    <eat-comment/>
+    <string name="crop__cancel" ns1:ignore="ButtonCase">취소</string>
+    <string name="crop__done">확인</string>
+    <string name="crop__pick_error">이미지가 존재하지 않습니다.</string>
+    <string name="crop__saving">사진을 저장중입니다…</string>
+    <string name="crop__wait">잠시만 기다려주세요…</string>
+</resources>
