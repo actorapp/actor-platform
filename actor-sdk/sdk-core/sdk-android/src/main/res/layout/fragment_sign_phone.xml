@@ -1,0 +1,127 @@
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:descendantFocusability="beforeDescendants"
+    android:fillViewport="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/email_login_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.1"
+            android:text="@string/auth_phone_hint"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/button_country_select"
+            android:background="@drawable/abc_textfield_default_mtrl_alpha"
+            android:textColor="@color/primary"
+            android:textSize="15sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp">
+
+            <TextView
+                android:layout_width="12dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="+"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/tv_country_code"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:imeOptions="actionGo"
+                android:inputType="phone"
+                android:maxLength="4"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/text_primary" />
+
+            <im.actor.messenger.app.fragment.auth.BackspaceKeyEditText
+                android:id="@+id/tv_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="12dp"
+                android:hint="@string/auth_phone_number_hint"
+                android:imeOptions="actionGo"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/text_primary"
+                android:textColorHint="#a6a6a6" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/button_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/shadow_square_1">
+
+            <TextView
+                android:id="@+id/button_continue_text"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_primary"
+                android:gravity="center"
+                android:minWidth="88dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="@string/auth_phone_get_code"
+                android:textColor="@color/text_primary_inv"
+                android:textSize="15sp" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/button_why"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@null"
+            android:paddingLeft="26dp"
+            android:paddingRight="26dp"
+            android:text="@string/auth_phone_why"
+            android:textColor="@color/primary"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+</ScrollView>
+
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="2dp" />
+    <solid android:color="@color/conv_date_bg" />
+    <padding
+         android:bottom="6dp"
+        android:left="8dp"
+        android:right="8dp"
+        android:top="6dp" />
+</shape>

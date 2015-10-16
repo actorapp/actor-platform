@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <string name="app_name">Actor</string>
+    <string name="app_locale">Ru</string>
+
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Отмена</string>
+    <string name="dialog_yes">Да</string>
+    <string name="dialog_no">Нет</string>
+    <string name="dialog_try_again">Повторить попытку</string>
+
+    <string name="pick_photo_camera">Сделать фотографию</string>
+    <string name="pick_photo_gallery">Выбрать из галереи</string>
+    <string name="pick_photo_remove">Удалить фото</string>
+    <string name="pick_downloading">Загрузка</string>
+
+    <string name="progress_common">Загрузка…</string>
+
+    <string name="toast_no_sdcard">Нет SD-карты</string>
+    <string name="toast_phone_copied">Телефон скопирован в буфер обмена</string>
+    <string name="toast_messages_copied">Сообщения скопированы в буфер обмена</string>
+    <string name="toast_unable_kick">Невозможно исключить участника из группы</string>
+    <string name="toast_unable_add">Невозможно добавить пользователя в группу</string>
+    <string name="toast_empty_name">Имя не может быть пустым</string>
+    <string name="toast_unable_change">Невозможно поменять имя</string>
+    <string name="toast_already_member">Пользователь уже участник группы</string>
+    <string name="toast_empty_about">О себе не может быть пустым</string>
+
+    <string name="menu_share">Поделиться</string>
+    <string name="menu_save">Сохранить на телефон</string>
+    <string name="menu_saved">Сохранено</string>
+    <string name="menu_next">Далее</string>
+
+    <string name="invite_message">Привет! Давай продолжим наше общение в Акторе https://actor.im/dl</string>
+
+    <!-- Tour -->
+    <string name="tour_sign_up">РЕГИСТРАЦИЯ</string>
+    <string name="tour_sign_in">ВХОД</string>
+    <string name="tour_sign_using_tel">используя номер телефона</string>
+    <string name="tour_sign_using_email">используя почту</string>
+    <string name="tour_sign_using_oauth">используя google</string>
+    <string name="tour_back_to_top">Вернуться назад</string>
+
+    <string name="tour_welcome_title">Actor</string>
+    <string name="tour_welcome_subtitle">Безопасное общение для команд и друзей</string>
+
+    <string name="tour_groups_title">Огромные группы</string>
+    <string name="tour_groups_text">Невероятно большие групповые чаты. Более 300 человек в группе. Общайтесь со своей командой и принимайте решения вместе.</string>
+
+    <string name="tour_everywhere_title">Работает везде</string>
+    <string name="tour_everywhere_text">Не важно где вы находитесь: в метро или в горах. Ваши сообщения всегда будут доставлены правильному человеку.</string>
+
+    <string name="tour_secure_title">Безопасен</string>
+    <string name="tour_secure_text">Не переживайте, никто не сможет прочитать ваши сообщения. Делитесь документами и фотографиями без страха того, что они попадут в не те руки.</string>
+
+    <!-- Phone Sign Fragment -->
+    <string name="auth_phone_title">Подтверждение телефона</string>
+    <string name="auth_phone_hint">Пожалуйста, подтвердите свою страну и введите свой номер телефона.</string>
+    <string name="auth_phone_number_hint">Номер телефона</string>
+    <string name="auth_phone_get_code">ПОДТВЕРДИТЬ НОМЕР</string>
+    <string name="auth_phone_why">ЗАЧЕМ НАМ НЕОБХОДИМ ВАШ НОМЕР?</string>
+    <string name="auth_phone_why_description">Мы используем телефон для входа поскольку это наиболее безопасный способ входа на данный момент.\n\nПароли обычно легко подбираются, а почту можно легко взломать.</string>
+    <string name="auth_phone_why_done">Понял!</string>
+    <string name="auth_phone_country_title">Выберите страну</string>
+    <string name="auth_phone_error_invalid_country">Неправильный код страны</string>
+
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">Выбор способа авторизации</string>
+    <string name="choose_auth_type_hint">Пожалуйста, выберите способ авторизации.</string>
+    <string name="choose_auth_type_sign_up">Регистрация</string>
+    <string name="choose_auth_type_sign_in">Вход</string>
+    <string name="choose_auth_type_using_tel">используя номер телефона</string>
+    <string name="choose_auth_type_using_email">используя почту</string>
+
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">Подтверждение почты</string>
+    <string name="auth_email_hint">Пожалуйста, введите ваш адресс электронной почты</string>
+    <string name="auth_email_edit_text_hint">Почта</string>
+    <string name="auth_email_get_code">ПОДТВЕРДИТЬ ПОЧТУ</string>
+
+    <!-- Sign Code Fragment -->
+    <string name="auth_code_title">Введите код активации</string>
+    <string name="auth_code_phone_hint">Мы отправили SMS с кодом активации на ваш телефон {0}</string>
+    <string name="auth_code_email_hint">Мы отправили письмо с кодом активации на ваш ящик {0}</string>
+    <string name="auth_code_sms_hint">Код активации</string>
+    <string name="auth_code_wrong_number">ОШИБЛИСЬ НОМЕРОМ?</string>
+    <string name="auth_code_wrong_email">ОШИБЛИСЬ ПОЧТОЙ?</string>
+    <string name="auth_code_done">ВВЕСТИ КОД</string>
+    <string name="auth_code_phone_change">Вы уверены, что хотите изменить ваш номер телефона?</string>
+    <string name="auth_code_email_change">Вы уверены, что хотите изменить ваш адресс электронной почты?</string>
+    <string name="auth_code_change_yes">Изменить</string>
+
+    <!-- Sign Up Fragment -->
+    <string name="auth_profile_title">Анкета</string>
+    <string name="auth_profile_hint">Пожалуйста укажите имя\nи, по желанию, свое фото.</string>
+    <string name="auth_profile_done">НАЧАТЬ ОБЩЕНИЕ</string>
+    <string name="auth_profile_name_hint">Ваше имя</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_empty_phone">Пожалуйста, введите свой номер телефона.</string>
+    <string name="auth_error_empty_email">Пожалуйста, введите свой адресс электронной почты.</string>
+    <string name="auth_error_code_expired">Код устарел. Пожалуйста, начните все с начала.</string>
+    <string name="auth_error_code_invalid">Неправильный код. Пожалуйста, повторите попытку.</string>
+    <string name="auth_error_failed_get_oauth2_token">Ошибка сервера авторизации. Пожалуйста, повторите попытку.</string>
+
+    <!-- Typing -->
+    <string name="typing_private">печатает…</string>
+    <string name="typing_group">{0} печатает…</string>
+    <string name="typing_group_many">{0} человек печатают…</string>
+
+    <!-- Main -->
+    <string name="main_search_hint">Начните набирать для поиска</string>
+    <string name="main_search_empty">Ничего не найдено</string>
+    <string name="main_menu_help">Помощь</string>
+    <string name="main_menu_search">Поиск</string>
+
+    <string name="main_bar_chats">СООБЩЕНИЯ</string>
+    <string name="main_bar_contacts">КОНТАКТЫ</string>
+
+    <string name="main_fab_compose">Написать</string>
+    <string name="main_fab_new_group">Новая группа</string>
+    <string name="main_fab_join_public_group">Найти публичную группу</string>
+    <string name="main_fab_add_contact">Добавить контакт</string>
+
+    <string name="main_sync_title">Синхронизируемся…</string>
+    <string name="main_sync_message">Пожалуйста, подождите пока мы инициализируем приложение.</string>
+
+    <string name="main_empty_title">Пригласите своих друзей</string>
+    <string name="main_empty_invite_hint">Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.</string>
+    <string name="main_empty_invite_action">РАССКАЗАТЬ ДРУЗЬЯМ</string>
+    <string name="main_empty_add_hint">или добавьте контакт вручную</string>
+    <string name="main_empty_add_action">ДОБАВИТЬ КОНТАКТ</string>
+
+    <!-- Own profile/settings -->
+    <string name="settings_share_profile_title">Отправить свои контакты…</string>
+    <string name="settings_share_text">Мой номер телефона {0}</string>
+    <string name="settings_menu_edit_profile">Изменить профиль</string>
+    <string name="settings_menu_change_photo">Изменить фотографию</string>
+    <string name="settings_header">Настройки</string>
+    <string name="settings_help">Помощь</string>
+    <string name="settings_ask">Задать вопрос</string>
+    <string name="settings_notifications">Оповещения</string>
+    <string name="settings_chat">Настройки чата</string>
+    <string name="settings_security">Безопасность</string>
+    <string name="nickname_empty">Добавить ник</string>
+    <string name="nickname">Ник</string>
+    <string name="nickname_change">Изменить ник</string>
+    <string name="about_user_me">Обо мне</string>
+    <string name="about_user">О пользователе</string>
+
+    <!-- Profile controls -->
+    <string name="phone_menu_call">Позвонить {0}</string>
+    <string name="phone_menu_sms">SMS {0}</string>
+    <string name="phone_menu_share">Отправить {0}</string>
+    <string name="phone_menu_copy">Скопировать</string>
+
+    <!-- Dialogs -->
+    <string name="dialogs_title">Беседы</string>
+    <string name="dialogs_hint">Нажмите и удерживайте для дополнительной информации</string>
+
+    <string name="dialogs_empty_title">Начать общение</string>
+    <string name="dialogs_empty">Выберите контакт из списка контактов или нажмине кнопку "плюс" для начала общения.</string>
+
+    <string name="dialogs_menu_contact_view">Посмотреть контакт</string>
+    <string name="dialogs_menu_contact_rename">Переименовать контакт</string>
+    <string name="dialogs_menu_conversation_delete">Удалить чат</string>
+
+    <string name="dialogs_menu_group_view">Информация о группе</string>
+    <string name="dialogs_menu_group_rename">Переименовать группу</string>
+    <string name="dialogs_menu_group_leave">Выйти из группы</string>
+    <string name="dialogs_menu_group_delete">Удалить группу</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">Контакты</string>
+    <string name="contacts_empty_short">Еще нет контактов</string>
+    <string name="contacts_share">Рассказать друзьям об Акторе</string>
+    <string name="contacts_add">Добавить друга...</string>
+
+    <string name="contacts_menu_remove">Удалить {0} из контактов</string>
+    <string name="contacts_menu_remove_progress">Удаление…</string>
+    <string name="contacts_menu_edit">Переименовать</string>
+
+    <string name="contacts_empty_title">Пригласите своих друзей</string>
+    <string name="contacts_empty_invite_hint">Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.</string>
+    <string name="contacts_empty_invite_action">РАССКАЗАТЬ ДРУЗЬЯМ</string>
+    <string name="contacts_empty_add_hint">или добавьте контакт вручную, нажав кнопку плюс ниже</string>
+
+    <string name="contacts_invite_via_link">Отправить ссылку</string>
+
+    <!-- Chat -->
+    <string name="chat_menu_group_info">Инф. о группе</string>
+    <string name="chat_menu_view_contact">Инф. о контакте</string>
+    <string name="chat_menu_call">Позвонить</string>
+    <string name="chat_menu_files">Файлы</string>
+    <string name="chat_menu_clear_chat">Очистить чат</string>
+    <string name="chat_menu_leave_group">Покинуть группу</string>
+
+    <string name="chat_attach_place">Мое место</string>
+    <string name="chat_attach_file">Файл</string>
+    <string name="chat_attach_take_video">Снять видео</string>
+    <string name="chat_attach_take_photo">Снять фото</string>
+    <string name="chat_attach_gallery">Галерея</string>
+
+    <string name="chat_message_hint">Ваше сообщение…</string>
+
+    <string name="chat_new_messages">Новые сообщения</string>
+    <string name="chat_add_to_contacts">Добавить в контакты</string>
+    <string name="chat_add_to_contacts_progress">Добавление контакт…</string>
+
+    <string name="chat_doc_open">Открыть</string>
+    <string name="chat_doc_send">Отправить</string>
+    <string name="chat_doc_stop">Отменить</string>
+    <string name="chat_doc_download">Загрузить</string>
+
+    <string name="chat_not_member">Вы не участник этой группы</string>
+
+    <string name="chat_unsupported">Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Профиль</string>
+    <string name="profile_shared_header">Общее</string>
+    <string name="profile_shared_files">Документы</string>
+    <string name="profile_shared_media">Медиа</string>
+    <string name="profile_settings_header">Настройки</string>
+    <string name="profile_settings_notifications">Оповещения</string>
+
+    <string name="profile_adding">Добавление в Контакты…</string>
+    <string name="profile_removing">Удаление из Контактов…</string>
+
+    <string name="profile_menu_rename">Переименовать</string>
+    <string name="profile_menu_call">Позвонить</string>
+    <string name="profile_menu_remove">Удалить из контактов</string>
+    <string name="profile_menu_add">Добавить в контакты</string>
+    <string name="profile_menu_security">Безопасность</string>
+    <string name="profile_cant_find_user">Пользователь не найден</string>
+
+    <!-- Group -->
+    <string name="group_title">Информация о группу</string>
+
+    <string name="group_members_header">Участники</string>
+    <string name="group_members_count">{0} из {1}</string>
+
+    <string name="group_admin">админ. группы</string>
+
+    <string name="group_created_by">Создан {0}</string>
+    <string name="group_created_by_you">Создан Вами</string>
+
+    <string name="group_adding">Добавление в группу…</string>
+    <string name="group_removing">Исключение из группы…</string>
+
+    <string name="group_context_message">Написать {0}</string>
+    <string name="group_context_call">Позвонить {0}</string>
+    <string name="group_context_view">Инф. о {0}</string>
+    <string name="group_context_remove">Исключить {0} из группы</string>
+
+    <string name="group_menu_add">Добавить пользователя</string>
+    <string name="group_menu_leave">Покинуть группу</string>
+    <string name="group_menu_change_theme">Изменить название</string>
+    <string name="group_menu_change_photo">Изменить фото</string>
+    <string name="group_menu_integration_token">Токен интеграции</string>
+
+    <string name="group_shared_header">Общее</string>
+    <string name="group_shared_files">Документы</string>
+
+    <string name="group_add_member">Добавить в группу</string>
+
+    <string name="group_not_member">Вы не участник данной группы</string>
+
+    <string name="about_group">О группе</string>
+    <string name="about_group_empty">Добавить описание группы</string>
+    <string name="theme_group">Тема группы</string>
+    <string name="theme_group_empty">Добавить тему группы</string>
+    <!-- Avatar -->
+    <string name="avatar_title_your">Ваше фото</string>
+    <string name="avatar_title_person">Фото</string>
+    <string name="avatar_title_group">Фото группы</string>
+    <string name="avatar_no_photo">Нет фото</string>
+    <string name="avatar_menu_edit">Изменить</string>
+    <string name="avatar_menu_set_as">Установить как…</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">Добавить контакт</string>
+    <string name="add_contact_phone_hint">Введите номер телефона</string>
+    <string name="add_contact_bar_cancel">ОТМЕНА</string>
+    <string name="add_contact_bar_continue">ДАЛЕЕ</string>
+
+    <!-- Compose -->
+    <string name="compose_title">New message</string>
+
+    <!-- Create Group -->
+    <string name="create_group_title">Создание группы</string>
+    <string name="create_group_name_hint">Название группы</string>
+    <string name="create_group_hint">Введите тему группы и при желании установите картинку группы</string>
+    <string name="create_group_search_hint">Поиск по имени</string>
+    <string name="create_group_done">Завершить</string>
+
+    <!-- Group add -->
+    <string name="group_add_title">Добавить в группу</string>
+
+    <!-- Join public group -->
+    <string name="join_public_group_title">Публичные группы</string>
+    <string name="join_public_group_members_count">Участников: </string>
+    <string name="join_public_group_friends_count">Друзей: </string>
+    <string name="join_public_group_top_title">Хей!</string>
+    <string name="join_public_group_top_subtitle">Зацени наш топ чатиков</string>
+    <string name="join">ВСТУПИТЬ</string>
+    <string name="open">ОТКРЫТЬ</string>
+    <string name="join_public_group_top_by_friends_title">Общайся с друзьями!</string>
+    <string name="join_public_group_top_by_friends_subtitle">Топ чатов с твоими друзьями</string>
+    <string name="join_public_group_all_groups">Все группы</string>
+
+    <!-- Invite link-->
+    <string name="invite_link_title">Пригласить по ссылке</string>
+    <string name="invite_link_hint">Все, у кого установлен Actor, смогут присоединиться к этой группе, перейдя по данной ссылке</string>
+    <string name="invite_link_action_copy">Копировать ссылку</string>
+    <string name="invite_link_action_revoke">Отозвать ссылку</string>
+    <string name="invite_link_action_share">Отправить ссылку</string>
+    <string name="invite_link_copied">Ссылка скопирована в буфер обмена</string>
+    <string name="invite_link_chooser_title">Пригласить в группу по ссылке</string>
+    <string name="invite_link_error_get_link">Невозможно получить ссылку</string>
+    <string name="invite_link_error_revoke_link">Невозможно отозвать ссылку</string>
+    <string name="invite_link_empty_view">Загрузка ссылки</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">Токен интеграции</string>
+    <string name="integration_token_hint">Этот токен может быть использован для настройки интегрций с данной группой</string>
+    <string name="integration_token_action_copy">Копировать токен</string>
+    <string name="integration_token_action_revoke">Отозвать токен</string>
+    <string name="integration_token_action_share">Отправить токен</string>
+    <string name="integration_token_copied">Токен скопирован в буфер обмена</string>
+    <string name="integration_token_chooser_title">Отправить токен</string>
+    <string name="integration_token_error_get_token">Невозможно получить токен</string>
+    <string name="integration_token_error_revoke_link">Невозможно отозвать токен</string>
+    <string name="integration_token_error_revoke_link_not_admin">Невозможно отозвать токен - вы не являетесь администратором этой группы</string>
+    <string name="integration_token_empty_view">Загрузка токена интеграции</string>
+
+    <!-- Documents -->
+    <string name="documents_title">Документы</string>
+    <string name="documents_empty">Еще нет документов</string>
+
+    <!-- Edit name -->
+    <string name="edit_name_title_you">Введите Ваше имя</string>
+    <string name="edit_name_title_contact">Введите имя контакта</string>
+    <string name="edit_name_title_group">Введите название группы</string>
+    <string name="edit_name_title_group_theme">Введите тему группы</string>
+    <string name="edit_name_cancel">ОТМЕНА</string>
+    <string name="edit_name_save">СОХРАНИТЬ</string>
+    <string name="edit_name_process">Смена имени…</string>
+    <string name="edit_about_process">Смена описания…</string>
+    <string name="edit_theme_process">Смена темы…</string>
+
+    <!-- Help -->
+    <string name="help_title">Помощь</string>
+    <string name="help_about_title">О программе</string>
+    <string name="help_about_subtitle">О программе и сервисе</string>
+    <string name="help_faq_title">ЧАВО</string>
+    <string name="help_faq_subtitle">Часто задаваемые вопросы</string>
+    <string name="help_feedback_title">Отзыв</string>
+    <string name="help_feedback_subtitle">Отправьте нам отзыв</string>
+    <string name="help_version_title">Версия приложения</string>
+    <string name="help_version_copy">Версия приложения скопирована в буфер обмена</string>
+    <string name="help_email_title">Отрпавить письмо</string>
+    <string name="help_email_subject">Отзыв</string>
+
+    <!-- Notifications -->
+    <string name="not_title">Оповещения</string>
+    <string name="not_conv_tones">Звук в чате</string>
+    <string name="not_conv_tones_subtitle">Воспроизведение звуков для сообщений.</string>
+    <string name="not_sound">Звук</string>
+    <string name="not_sound_subtitle">Включить звук оповещения</string>
+    <string name="not_vibration">Вибрация</string>
+    <string name="not_vibration_subtitle">Включить вибрацию оповещенияй</string>
+    <string name="not_show_text">Отображать имена и сообщения</string>
+    <string name="not_show_text_subtitle">Отображать текст и имя отправителя в оповещениях</string>
+
+    <!-- Pick user -->
+    <string name="pick_user_title">Выберите человека</string>
+
+    <!-- Chat Settings -->
+    <string name="settings_chat_title">Настройки чата</string>
+    <string name="settings_chat_send_enter">Отправка по вводу</string>
+    <string name="settings_chat_send_enter_subtitle">Отправление сообщения по клавише Enter</string>
+
+    <string name="settings_chat_markdown">Markdown</string>
+    <string name="settings_chat_markdown_subtitle">Использование разметки markdown</string>
+
+
+    <!-- Security -->
+    <string name="security_title">Безопасность</string>
+    <string name="security_terminate_title">Уничтожить все сессии</string>
+    <string name="security_terminate_subtitle">Произвести выход на всех устройствах</string>
+    <string name="security_terminate_message">Вы уверены, что хотите уничтожить сессии на всех устройствах? Все данные будут удалены.</string>
+    <string name="security_authorized_header">Авторизованные устройства и сервисы</string>
+    <string name="security_authorized_loading">Загрузка…</string>
+
+    <!-- Alerts -->
+    <string name="alert_delete_messages_text">Вы уверены, что хотите удалить {0} сообщений?</string>
+    <string name="alert_delete_messages_yes">Удалить</string>
+
+    <string name="alert_delete_all_messages_text">Вы уверены, что хотите удалить ВСЕ сообщения из этого чата?</string>
+    <string name="alert_delete_all_messages_yes">Удалить</string>
+
+    <string name="alert_remove_contact_text">Вы уверены, что хотите удалить {0} из контактов?</string>
+    <string name="alert_remove_contact_yes">Удалить</string>
+
+    <string name="alert_group_add_text">Вы уверены, что хотите добавить {0} в группу?</string>
+    <string name="alert_group_add_yes">Добавить</string>
+
+    <string name="alert_group_remove_text">Вы уверены, что хотите исключить {0} из группы?</string>
+    <string name="alert_group_remove_yes">Исключить</string>
+
+    <string name="alert_invite_text">"{0}" не зарегистрирован в Акторе. Выслать ему приглашение?</string>
+    <string name="alert_invite_yes">Пригласить</string>
+
+    <!-- Media -->
+    <string name="media">Медиа</string>
+    <string name="media_picture">Изображение</string>
+    <string name="media_pager" formatted="false">%d из %d</string>
+
+    <!-- Dialogs -->
+    <string name="alert_leave_group_message">Вы уверены, что хотите выйти из группы "%1$s"?</string>
+    <string name="alert_leave_group_yes">Выйти</string>
+
+    <string name="alert_delete_group_title">Вы уверены, что хотите удалить группу "%1$s"?</string>
+    <string name="alert_delete_group_yes">Удалить</string>
+
+    <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "%1$s"?</string>
+    <string name="alert_delete_chat_yes">Удалить</string>
+
+    <string name="alert_revoke_link_message">Вы уверены, что хотите отозвать ссылку?</string>
+    <string name="alert_revoke_link_yes">Отозвать</string>
+
+    <string name="alert_revoke_integration_token_message">Вы уверены, что хотите отозвать токен?</string>
+    <string name="alert_revoke_integration_token_yes">Отозвать</string>
+
+
+    <!-- Errors -->
+    <string name="error_connection">Невозможно подключиться к сети. Пожалуйста, проверьте, что вы подключены к интернету и
+        повторите попытку.\n\nЕсли проблема остается, попробуйте выключить и включить свой телефон.
+    </string>
+    <string name="error_unknown">Невозможно произвести операцию.\n\nПожалуйста, проверьте свой телефон и выключите и включите его, если проблема не будет решена.
+    </string>
+    <string name="error_view_url">Неизвестный тип ссылки</string>
+</resources>

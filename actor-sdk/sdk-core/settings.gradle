@@ -1,6 +1,6 @@
 
 // Runtime library
-include ':runtime'
+include ':runtime', ':app-android'
 include ':runtime:shared'
 include ':runtime:android'
 include ':runtime:js'
@@ -12,3 +12,6 @@ include ':core:shared'
 include ':core:android'
 include ':core:js'
 include ':core:cocoa'
+
+// Android-sdk library
+include ':sdk-android'
