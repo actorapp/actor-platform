@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.core.api.ApiDialog;
+import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiAppCounters;
@@ -28,6 +29,7 @@ import im.actor.core.modules.internal.messages.ConversationHistoryActor;
 import im.actor.core.modules.internal.messages.CursorReceiverActor;
 import im.actor.core.modules.internal.messages.DialogsActor;
 import im.actor.core.modules.internal.messages.DialogsHistoryActor;
+import im.actor.core.modules.internal.messages.GroupedDialogsActor;
 import im.actor.core.modules.internal.messages.OwnReadActor;
 import im.actor.core.modules.internal.messages.SenderActor;
 import im.actor.core.modules.internal.messages.entity.DialogHistory;
@@ -137,7 +139,7 @@ public class MessagesProcessor extends AbsModule {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)){
+        if (!isValidPeer(peer)) {
             return;
         }
 
@@ -150,7 +152,7 @@ public class MessagesProcessor extends AbsModule {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)){
+        if (!isValidPeer(peer)) {
             return;
         }
 
@@ -163,7 +165,7 @@ public class MessagesProcessor extends AbsModule {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)){
+        if (!isValidPeer(peer)) {
             return;
         }
 
@@ -176,7 +178,7 @@ public class MessagesProcessor extends AbsModule {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)){
+        if (!isValidPeer(peer)) {
             return;
         }
 
@@ -196,7 +198,7 @@ public class MessagesProcessor extends AbsModule {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)){
+        if (!isValidPeer(peer)) {
             return;
         }
 
@@ -217,7 +219,7 @@ public class MessagesProcessor extends AbsModule {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)){
+        if (!isValidPeer(peer)) {
             return;
         }
 
@@ -232,7 +234,7 @@ public class MessagesProcessor extends AbsModule {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)){
+        if (!isValidPeer(peer)) {
             return;
         }
 
@@ -247,7 +249,7 @@ public class MessagesProcessor extends AbsModule {
         Peer peer = convert(_peer);
 
         // We are not invalidating sequence because of this update
-        if (!isValidPeer(peer)){
+        if (!isValidPeer(peer)) {
             return;
         }
 
@@ -335,5 +337,18 @@ public class MessagesProcessor extends AbsModule {
 
     public void onCountersChanged(ApiAppCounters counters) {
         context().getAppStateModule().onCountersChanged(counters);
+    }
+
+    public void onChatArchived(Peer peer) {
+
+    }
+
+    public void onChatRestored(Peer peer) {
+
+    }
+
+    public void onChatGroupsChanged(List<ApiDialogGroup> groups) {
+        context().getMessagesModule().getDialogsGroupedActor()
+                .send(new GroupedDialogsActor.GroupedDialogsChanged(groups));
     }
 }
