@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/groupInfo"
+        android:title="@string/chat_menu_group_info" />
+    <item
+        android:id="@+id/contact"
+        android:title="@string/chat_menu_view_contact" />
+    <item
+        android:id="@+id/files"
+        android:title="@string/chat_menu_files" />
+    <item
+        android:id="@+id/clear"
+        android:title="@string/chat_menu_clear_chat" />
+    <item
+        android:id="@+id/leaveGroup"
+        android:title="@string/chat_menu_leave_group" />
+</menu>
