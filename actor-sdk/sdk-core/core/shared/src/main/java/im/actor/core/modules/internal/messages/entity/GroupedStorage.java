@@ -11,8 +11,7 @@ import im.actor.runtime.bser.BserWriter;
 
 public class GroupedStorage extends BserObject {
 
-    private ArrayList<Peer> groupPeers = new ArrayList<Peer>();
-    private ArrayList<Peer> privatePeers = new ArrayList<Peer>();
+    private ArrayList<GroupedItem> groups = new ArrayList<GroupedItem>();
 
     public GroupedStorage() {
     }
@@ -21,34 +20,21 @@ public class GroupedStorage extends BserObject {
         super.load(data);
     }
 
-    public ArrayList<Peer> getGroupPeers() {
-        return groupPeers;
-    }
-
-    public ArrayList<Peer> getPrivatePeers() {
-        return privatePeers;
+    public ArrayList<GroupedItem> getGroups() {
+        return groups;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<byte[]> rawPrivatePeers = values.getRepeatedBytes(1);
-        privatePeers.clear();
-        for (byte[] b : rawPrivatePeers) {
-            privatePeers.add(Peer.fromBytes(b));
-        }
-        List<byte[]> rawGroupPeers = values.getRepeatedBytes(2);
-        for (byte[] b : rawGroupPeers) {
-            groupPeers.add(Peer.fromBytes(b));
+        for (byte[] data : values.getRepeatedBytes(1)) {
+            groups.add(new GroupedItem(data));
         }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        for (Peer peer : privatePeers) {
-            writer.writeObject(1, peer);
-        }
-        for (Peer peer : groupPeers) {
-            writer.writeObject(2, peer);
+        for (GroupedItem g : groups) {
+            writer.writeObject(1, g);
         }
     }
 }
