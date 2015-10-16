@@ -4,7 +4,9 @@
 
 package im.actor.core.js;
 
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.user.client.Event;
+
 import im.actor.core.Configuration;
 import im.actor.core.Messenger;
 import im.actor.core.entity.Avatar;
@@ -16,6 +18,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.js.entity.JsCounter;
+import im.actor.core.js.entity.JsDialogGroup;
 import im.actor.core.js.modules.JsFilesModule;
 import im.actor.core.js.modules.JsBindingModule;
 import im.actor.core.js.modules.JsBindedValue;
@@ -205,6 +208,10 @@ public class JsMessenger extends Messenger {
 
     public JsDisplayList<JsMessage, Message> getSharedChatList(Peer peer) {
         return jsBindingModule.getSharedMessageList(peer);
+    }
+
+    public JsBindedValue<JsArray<JsDialogGroup>> getDialogsGroupedList() {
+        return jsBindingModule.getDialogsGroupedList();
     }
 
     private String getSmallAvatarUrl(Avatar avatar) {
