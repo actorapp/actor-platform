@@ -3100,6 +3100,106 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "DialogShort",
+            "doc": [
+              "Short Dialog from grouped conversation list",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Peer of conversation"
+              },
+              {
+                "type": "reference",
+                "argument": "counter",
+                "category": "full",
+                "description": "  Conversation unread count"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Conversation top message date"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "counter"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "DialogGroup",
+            "doc": [
+              "Grouped dialog list",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Title of group"
+              },
+              {
+                "type": "reference",
+                "argument": "key",
+                "category": "full",
+                "description": "  Key of group"
+              },
+              {
+                "type": "reference",
+                "argument": "dialogs",
+                "category": "full",
+                "description": "  Conversations in group"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "title"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "key"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "DialogShort"
+                  }
+                },
+                "id": 3,
+                "name": "dialogs"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SendMessage",
@@ -3837,6 +3937,87 @@
           }
         },
         {
+          "type": "update",
+          "content": {
+            "name": "ChatArchived",
+            "header": 65,
+            "doc": [
+              "Update about chat archive",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "ChatRestored",
+            "header": 66,
+            "doc": [
+              "Update about chat restore",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "ChatGroupsChanged",
+            "header": 1,
+            "doc": [
+              "Update about chat groups changed. Called only when adding, removing and reordering of grouped dialog.",
+              {
+                "type": "reference",
+                "argument": "dialogs",
+                "category": "full",
+                "description": "  New dialgos list"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "DialogGroup"
+                  }
+                },
+                "id": 1,
+                "name": "dialogs"
+              }
+            ]
+          }
+        },
+        {
           "type": "enum",
           "content": {
             "name": "MessageState",
@@ -4232,6 +4413,107 @@
                 "type": "int32",
                 "id": 2,
                 "name": "limit"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadGroupedDialogs",
+            "header": 225,
+            "response": {
+              "type": "anonymous",
+              "header": 226,
+              "doc": [
+                "Loaded grouped dialogs",
+                {
+                  "type": "reference",
+                  "argument": "dialogs",
+                  "category": "compact",
+                  "description": "  Loaded groups of dialogs"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "full",
+                  "description": "  Loaded groups"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "DialogGroup"
+                    }
+                  },
+                  "id": 1,
+                  "name": "dialogs"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 3,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Load all dialogs from grouped list"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ArchiveDialog",
+            "header": 227,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Archive dialog",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "dialog peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
               }
             ]
           }
