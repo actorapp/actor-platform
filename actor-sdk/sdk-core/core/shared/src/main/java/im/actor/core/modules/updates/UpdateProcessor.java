@@ -12,8 +12,11 @@ import im.actor.core.api.ApiGroup;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.rpc.ResponseLoadDialogs;
+import im.actor.core.api.updates.UpdateChatArchived;
 import im.actor.core.api.updates.UpdateChatClear;
 import im.actor.core.api.updates.UpdateChatDelete;
+import im.actor.core.api.updates.UpdateChatGroupsChanged;
+import im.actor.core.api.updates.UpdateChatRestored;
 import im.actor.core.api.updates.UpdateContactRegistered;
 import im.actor.core.api.updates.UpdateContactsAdded;
 import im.actor.core.api.updates.UpdateContactsRemoved;
@@ -59,6 +62,8 @@ import im.actor.core.modules.updates.internal.RelatedResponse;
 import im.actor.core.modules.updates.internal.UsersFounded;
 import im.actor.core.network.parser.Update;
 import im.actor.core.viewmodel.UserVM;
+
+import static im.actor.core.modules.internal.messages.entity.EntityConverter.convert;
 
 public class UpdateProcessor extends AbsModule {
 
@@ -295,6 +300,12 @@ public class UpdateProcessor extends AbsModule {
                     ((UpdateParameterChanged) update).getValue());
         } else if (update instanceof UpdateCountersChanged) {
             messagesProcessor.onCountersChanged(((UpdateCountersChanged) update).getCounters());
+        } else if (update instanceof UpdateChatGroupsChanged) {
+            messagesProcessor.onChatGroupsChanged(((UpdateChatGroupsChanged) update).getDialogs());
+        } else if (update instanceof UpdateChatArchived) {
+            messagesProcessor.onChatArchived(convert(((UpdateChatArchived) update).getPeer()));
+        } else if (update instanceof UpdateChatRestored) {
+            messagesProcessor.onChatRestored(convert(((UpdateChatRestored) update).getPeer()));
         }
     }
 
