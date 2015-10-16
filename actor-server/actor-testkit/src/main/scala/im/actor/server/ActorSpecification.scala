@@ -8,6 +8,9 @@ import im.actor.config.ActorConfig
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 object ActorSpecification {
   private[this] def defaultSystemName = "actor-server-test"
 
@@ -53,6 +56,6 @@ abstract class ActorSuite(system: ActorSystem = { ActorSpecification.createSyste
 
   override def afterAll(): Unit = {
     TestKit.shutdownActorSystem(system)
-    system.awaitTermination()
+    Await.result(system.whenTerminated, Duration.Inf)
   }
 }

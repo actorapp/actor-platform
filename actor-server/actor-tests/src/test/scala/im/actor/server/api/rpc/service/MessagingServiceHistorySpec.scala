@@ -41,7 +41,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
   private val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit private val service = messaging.MessagingServiceImpl(mediator)
+  implicit private val service = messaging.MessagingServiceImpl()
   implicit private val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   private object s {

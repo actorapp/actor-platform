@@ -1,7 +1,8 @@
 package im.actor.server.api.rpc.service.messaging
 
 import akka.actor._
-import akka.contrib.pattern.ClusterSingletonManager
+import akka.cluster.pubsub.DistributedPubSub
+import akka.cluster.singleton.{ ClusterSingletonManagerSettings, ClusterSingletonManager }
 import akka.event.Logging
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
@@ -18,31 +19,32 @@ object ReverseHooksListener {
 
   private val singletonName: String = "reverseHooksListener"
 
-  def startSingleton(mediator: ActorRef)(implicit system: ActorSystem): ActorRef =
+  def startSingleton()(implicit system: ActorSystem): ActorRef =
     system.actorOf(
       ClusterSingletonManager.props(
-        singletonProps = props(mediator),
-        singletonName = singletonName,
+        singletonProps = props,
         terminationMessage = PoisonPill,
-        role = None
+        settings = ClusterSingletonManagerSettings(system)
       ),
       name = s"${singletonName}Manager"
     )
 
-  def props(mediator: ActorRef): Props =
-    Props(classOf[ReverseHooksListener], mediator)
+  def props: Props =
+    Props(classOf[ReverseHooksListener])
 }
 
-private[messaging] final class ReverseHooksListener(mediator: ActorRef) extends Actor with ActorLogging with AnyRefLogSource {
+private[messaging] final class ReverseHooksListener extends Actor with ActorLogging with AnyRefLogSource {
 
   import ReverseHooksListener._
   import ReverseHooksWorker._
 
-  private[this] implicit val system: ActorSystem = context.system
+  private implicit val system: ActorSystem = context.system
   import system.dispatcher
 
-  private[this] val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute, self, RefetchGroups)
-  private[this] val db = DbExtension(system).db
+  private val mediator = DistributedPubSub(context.system).mediator
+
+  private val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute, self, RefetchGroups)
+  private val db = DbExtension(system).db
 
   private[this] var groups = Set.empty[Int]
 
