@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.messaging
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
+import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiOutPeer, ApiPeerType }
@@ -10,6 +11,7 @@ import im.actor.concurrent.FutureExt
 import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupUtils
 import im.actor.server.history.HistoryUtils
+import im.actor.server.sequence.{ SeqState, SeqUpdatesManager }
 import im.actor.server.user.UserUtils
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
@@ -128,7 +130,14 @@ trait HistoryHandlers {
 
   override def jhandleArchiveDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      throw new RuntimeException("Not implemented yet")
+      withOutPeer(peer) {
+        val update = UpdateChatArchived(peer.asPeer)
+
+        for {
+          _ ← persist.Dialog.makeArchived(client.userId, peer.asModel)
+          SeqState(seq, state) ← DBIO.from(userExt.broadcastClientUpdate(update, pushText = None))
+        } yield Ok(ResponseSeq(seq, state.toByteArray))
+      }
     }
 
     db.run(toDBIOAction(authorizedAction))
