@@ -1,13 +1,11 @@
 package im.actor.server
 
 import akka.actor.ActorSystem
-import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
 import slick.driver.PostgresDriver
-import slick.jdbc.JdbcDataSource
 
 import scala.concurrent.ExecutionContext
 

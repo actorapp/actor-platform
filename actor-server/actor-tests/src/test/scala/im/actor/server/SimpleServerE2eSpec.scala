@@ -2,7 +2,6 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
-import akka.contrib.pattern.DistributedPubSubExtension
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc.auth._
@@ -55,10 +54,8 @@ class SimpleServerE2eSpec extends ActorSuite(
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     val sequenceConfig = SequenceServiceConfig.load.toOption.get
 
-    val mediator = DistributedPubSubExtension(system).mediator
-
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
-    Session.startRegion(Some(Session.props(mediator)))
+    Session.startRegion(Session.props)
     implicit val sessionRegion = Session.startRegionProxy()
 
     implicit val transferManager = new TransferManager(awsCredentials)
@@ -66,9 +63,9 @@ class SimpleServerE2eSpec extends ActorSuite(
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
 
     val services = Seq(
-      new AuthServiceImpl(new DummyCodeActivation, mediator),
+      new AuthServiceImpl(new DummyCodeActivation),
       new ContactsServiceImpl,
-      MessagingServiceImpl(mediator),
+      MessagingServiceImpl(),
       new SequenceServiceImpl(sequenceConfig)
     )
 

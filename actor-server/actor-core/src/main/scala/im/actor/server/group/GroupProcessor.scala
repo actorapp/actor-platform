@@ -1,9 +1,9 @@
 package im.actor.server.group
 
 import akka.actor._
-import akka.contrib.pattern.ShardRegion
+import akka.cluster.sharding.ShardRegion
 import akka.pattern.pipe
-import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
+import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
@@ -245,8 +245,6 @@ private[group] final class GroupProcessor
       groupStateMaybe = Some(initState(ts, created))
     case evt: TSEvent ⇒
       groupStateMaybe = groupStateMaybe map (updatedState(evt, _))
-    case RecoveryFailure(e) ⇒
-      log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
       groupStateMaybe match {
         case Some(group) ⇒ context become working(group)

@@ -72,7 +72,7 @@ class SessionResendLargeSpec extends BaseSessionSpec(
 
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props(mediator))
+      val session = system.actorOf(Session.props)
       watchProbe watch session
 
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require

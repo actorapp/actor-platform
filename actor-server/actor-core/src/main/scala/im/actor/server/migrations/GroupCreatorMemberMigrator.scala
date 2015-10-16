@@ -1,7 +1,7 @@
 package im.actor.server.migrations
 
 import akka.actor.{ ActorLogging, Actor, Props, ActorSystem }
-import akka.persistence.{ RecoveryFailure, RecoveryCompleted, PersistentActor }
+import akka.persistence.{ RecoveryCompleted, PersistentActor }
 import im.actor.server.event.TSEvent
 import im.actor.server.group.{ GroupEvents, GroupOffice }
 import org.joda.time.DateTime
@@ -34,7 +34,7 @@ object GroupCreatorMemberMigrator extends Migration {
   }
 }
 
-private final class GroupCreatorMemberMigrator(promise: Promise[Unit], groupId: Int) extends PersistentActor with ActorLogging {
+private final class GroupCreatorMemberMigrator(promise: Promise[Unit], groupId: Int) extends PersistentMigrator(promise) {
   import GroupCreatorMemberMigrator._
   import GroupEvents._
 
@@ -61,8 +61,6 @@ private final class GroupCreatorMemberMigrator(promise: Promise[Unit], groupId: 
       }
     case RecoveryCompleted ⇒
       self ! Migrate
-    case RecoveryFailure(e) ⇒
-      log.error(e, "Failed to recover")
   }
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {

@@ -1,6 +1,6 @@
 package im.actor.server.api.rpc.service
 
-import akka.contrib.pattern.DistributedPubSubMediator
+import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.testkit.TestProbe
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
@@ -43,7 +43,7 @@ class MessagingServiceSpec
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-    implicit val service = messaging.MessagingServiceImpl(mediator)
+    implicit val service = messaging.MessagingServiceImpl()
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
     object privat {
@@ -284,6 +284,8 @@ class MessagingServiceSpec
     object pubsub {
 
       import DistributedPubSubMediator._
+
+      val mediator = DistributedPubSub(system).mediator
 
       val (user, authId, _) = createUser()
       val sessionId = createSessionId()
