@@ -1,5 +1,6 @@
 package im.actor.server.activation.internal
 
+import java.nio.file.{ Paths, Files }
 import java.time.temporal.ChronoUnit._
 import java.time.{ LocalDateTime, ZoneOffset }
 
@@ -94,6 +95,8 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
 
   private val sentCodes = new scala.collection.mutable.HashSet[Code]()
 
+  private val emailTemplate = new String(Files.readAllBytes(Paths.get("mail-template.html")))
+
   def codeWasNotSent(code: Code) = !sentCodes.contains(code)
 
   def rememberSentCode(code: Code) = sentCodes += code
@@ -119,7 +122,8 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
       (code match {
         case SmsCode(phone, c)            ⇒ smsEngine.sendCode(phone, c)
         case CallCode(phone, c, language) ⇒ callEngine.sendCode(phone, c, language)
-        case EmailCode(email, c)          ⇒ emailSender.send(Message(email, "Actor activation code", s"$c is your Actor code"))
+        case EmailCode(email, c) ⇒
+          emailSender.send(Message(email, "Actor activation code", emailTemplate.replace("$$CODE$$", c)))
       }) map { _ ⇒
         forgetSentCodeAfterDelay(code)
         \/-(())
