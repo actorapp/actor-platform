@@ -1,0 +1,16 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="picture_item_folder_size">178dp</dimen>
+    <dimen name="picker_picture_spacing">5dp</dimen>
+    <dimen name="picker_acionbar_height">40dp</dimen>
+    <dimen name="picker_file_subtitle_size">16sp</dimen>
+    <dimen name="picker_file_filetype_size">10sp</dimen>
+    <dimen name="picker_status_size">24sp</dimen>
+    <dimen name="picker_status_empty_size">16sp</dimen>
+    <dimen name="picker_map_header">14sp</dimen>
+    <dimen name="picker_map_place_title">18sp</dimen>
+    <dimen name="picker_map_place_subtitle">14sp</dimen>
+    <dimen name="picker_map_place_icon_size">38dp</dimen>
+    <dimen name="picker_map_controllers_title">18sp</dimen>
+    <dimen name="picker_map_controllers_subtitle">14sp</dimen>
+</resources>
