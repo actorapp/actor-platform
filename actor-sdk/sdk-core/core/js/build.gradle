@@ -67,7 +67,7 @@ task buildPackage(dependsOn: ['war']) {
 
         copy {
             into "$buildDir/package"
-            from "$projectDir/../runtime-js/src/main/javascript"
+            from "$projectDir/../../runtime/js/src/main/javascript"
         }
     }
 }
@@ -93,7 +93,7 @@ task buildPackageDev(dependsOn: ['draftWar']) {
 
         copy {
             into "$buildDir/package"
-            from "$projectDir/../runtime-js/src/main/javascript"
+            from "$projectDir/../../runtime/js/src/main/javascript"
         }
     }
 }
