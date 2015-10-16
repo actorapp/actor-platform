@@ -258,11 +258,17 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
         this.records = new ArrayList<ContactRecord>();
         for (ApiContactRecord record : wrapped.getContactInfo()) {
             if (record.getType() == ApiContactType.PHONE) {
-                this.records.add(new ContactRecord(ContactRecordType.PHONE, "" + record.getLongValue(),
-                        record.getTitle()));
+                this.records.add(new ContactRecord(ContactRecordType.PHONE, record.getTypeSpec(), "" + record.getLongValue(),
+                        record.getTitle(), record.getSubtitle()));
             } else if (record.getType() == ApiContactType.EMAIL) {
-                this.records.add(new ContactRecord(ContactRecordType.EMAIL, record.getStringValue(),
-                        record.getTitle()));
+                this.records.add(new ContactRecord(ContactRecordType.EMAIL, record.getTypeSpec(), record.getStringValue(),
+                        record.getTitle(), record.getSubtitle()));
+            } else if (record.getType() == ApiContactType.WEB) {
+                this.records.add(new ContactRecord(ContactRecordType.WEB, record.getTypeSpec(), record.getStringValue(),
+                        record.getTitle(), record.getSubtitle()));
+            } else if (record.getType() == ApiContactType.SOCIAL) {
+                this.records.add(new ContactRecord(ContactRecordType.SOCIAL, record.getTypeSpec(), record.getStringValue(),
+                        record.getTitle(), record.getSubtitle()));
             }
         }
 

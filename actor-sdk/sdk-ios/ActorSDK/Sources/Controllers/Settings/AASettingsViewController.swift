@@ -8,6 +8,7 @@ import MobileCoreServices
 public class AASettingsViewController: AAContentTableController {
     
     private var phonesCells: AAManagedArrayRows<ACUserPhone, AATitledCell>!
+    private var emailCells: AAManagedArrayRows<ACUserEmail, AATitledCell>!
     
     private var headerCell: AAAvatarRow!
     private var nicknameCell: AATitledRow!
@@ -260,7 +261,7 @@ public class AASettingsViewController: AAContentTableController {
             }
  
             // Profile: Phones
-            self.phonesCells = s.arrays() { [unowned self] (r: AAManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
+            self.phonesCells = s.arrays() { (r: AAManagedArrayRows<ACUserPhone, AATitledCell>) -> () in
 
                 r.height = 55
                 
@@ -286,6 +287,28 @@ public class AASettingsViewController: AAContentTableController {
                     return true
                 }
             }
+            
+            self.emailCells = s.arrays() { (r: AAManagedArrayRows<ACUserEmail, AATitledCell>) -> () in
+                
+                r.height = 55
+                
+                r.data = self.user.getEmailsModel().get().toSwiftArray()
+                
+                r.bindData = { (c: AATitledCell, d: ACUserEmail) -> () in
+                    c.setContent(d.title, content: d.email, isAction: false)
+                    c.accessoryType = .None
+                }
+                
+                r.bindCopy = { (d: ACUserEmail) -> String? in
+                    return d.email
+                }
+                
+                r.selectAction = { (d: ACUserEmail) -> Bool in
+                    UIApplication.sharedApplication().openURL(NSURL(string: "mailto:\(d.email)")!)
+                    return true
+                }
+            }
+
         }
         
         // Support
@@ -368,6 +391,13 @@ public class AASettingsViewController: AAContentTableController {
         binder.bind(user.getPhonesModel(), closure: { [unowned self] (phones: ACArrayListUserPhone?) -> () in
             self.phonesCells.data = (phones?.toSwiftArray())!
             self.phonesCells.reload()
+        })
+        
+        // Bind Email
+        
+        binder.bind(user.getEmailsModel(), closure: { [unowned self] (emails: ACArrayListUserEmail?) -> () in
+            self.emailCells.data = (emails?.toSwiftArray())!
+            self.emailCells.reload()
         })
     }
 }

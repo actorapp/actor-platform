@@ -1,6 +1,7 @@
 var app = require('app');  // Module to control application life.
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var Menu = require('menu');
+var Dialog = require('dialog');
 var MenuItem = require('menu-item');
 var ipc = require('ipc');
 
@@ -10,6 +11,9 @@ var ipc = require('ipc');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
 var mainWindow = null;
+
+// Disabling battery optimizations while in background
+app.commandLine.appendSwitch("disable-renderer-backgrounding");
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -40,6 +44,33 @@ function showWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  mainWindow.webContents.session.on('will-download', function(e, item) {
+
+    // By default electron doesn't
+    var dialog = require('dialog');
+    var savePath = dialog.showSaveDialog(mainWindow, { defaultPath: item.getFilename() });
+    if (savePath != undefined) {
+      item.setSavePath(savePath)
+    } else {
+      item.cancel()
+      return
+    }
+
+    console.log(item.getMimeType());
+    console.log(item.getFilename());
+    console.log(item.getTotalBytes());
+    item.on('updated', function() {
+      console.log('Received bytes: ' + item.getReceivedBytes());
+    });
+    item.on('done', function(e, state) {
+      if (state == "completed") {
+        console.log("Download successfully");
+      } else {
+        console.log("Download is cancelled or interrupted that can't be resumed");
+      }
+    })
+  })
 }
 
 // This method will be called when Electron has done everything

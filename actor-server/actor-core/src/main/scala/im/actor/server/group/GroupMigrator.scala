@@ -26,7 +26,7 @@ object GroupMigrator extends Migration {
   protected override def migrationTimeout: Duration = 1.hour
 
   protected override def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(p.Group.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
+    db.run(p.Group.findAllIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
   }
 
   private def migrateSingle(groupId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
