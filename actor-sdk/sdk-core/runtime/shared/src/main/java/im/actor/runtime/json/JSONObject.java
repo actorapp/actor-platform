@@ -1071,7 +1071,7 @@ public class JSONObject {
         char b = string.charAt(0);
         if ((b >= '0' && b <= '9') || b == '-') {
             try {
-                if (string.contains("") || string.contains("e")
+                if (string.contains(".") || string.contains("e")
                         || string.contains("E")) {
                     d = Double.valueOf(string);
                     if (!d.isInfinite() && !d.isNaN()) {

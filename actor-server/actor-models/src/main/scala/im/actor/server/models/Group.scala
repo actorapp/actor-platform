@@ -41,5 +41,6 @@ case class FullGroup(
   titleChangeRandomId:  Long,
   avatarChangerUserId:  Int,
   avatarChangedAt:      DateTime,
-  avatarChangeRandomId: Long
+  avatarChangeRandomId: Long,
+  isHidden:             Boolean
 )

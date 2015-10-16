@@ -73,11 +73,11 @@ gulp.task('webpack-dev-server', () => {
       colors: true
     }
   }).listen(3000, 'localhost', function(err) {
-      if (err) {
-        throw new gutil.PluginError('webpack-dev-server', err);
-      }
-      gutil.log('[webpack-dev-server]', 'http://localhost:3000');
-    });
+    if (err) {
+      throw new gutil.PluginError('webpack-dev-server', err);
+    }
+    gutil.log('[webpack-dev-server]', 'http://localhost:3000');
+  });
 });
 
 gulp.task('push', () => {
@@ -139,14 +139,16 @@ gulp.task('locale-data', () => {
     .pipe(gulp.dest('./dist/assets/locale-data'));
 });
 
-gulp.task('lib:build', shell.task(['cd ../ && ./gradlew :core-js:buildPackage']));
-gulp.task('lib:build:dev', shell.task(['cd ../ && ./gradlew :core-js:buildPackageDev']));
+gulp.task('lib:build', shell.task(['cd ../../actor-sdk/sdk-core/ && ./gradlew :core:js:buildPackage']));
+gulp.task('lib:build:dev', shell.task(['cd ../../actor-sdk/sdk-core/ && ./gradlew :core:js:buildPackageDev']));
 
 gulp.task('lib', ['lib:build'], () => {
-  return gulp.src('../core-js/build/package/*').pipe(gulp.dest('./dist/actor/'));
+  gulp.src('../../actor-sdk/sdk-core/core/js/build/package/*')
+    .pipe(gulp.dest('./dist/actor/'));
 });
 gulp.task('lib:dev', ['lib:build:dev'], () => {
-  return gulp.src('../core-js/build/package/*').pipe(gulp.dest('./dist/actor/'));
+  gulp.src('../../actor-sdk/sdk-core/core/js/build/package/*')
+    .pipe(gulp.dest('./dist/actor/'));
 });
 
 gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
