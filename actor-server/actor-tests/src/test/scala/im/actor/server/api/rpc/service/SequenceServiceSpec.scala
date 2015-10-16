@@ -38,7 +38,7 @@ class SequenceServiceSpec extends BaseAppSuite({
   val config = SequenceServiceConfig.load().get
 
   implicit val service = new sequence.SequenceServiceImpl(config)
-  implicit val msgService = messaging.MessagingServiceImpl(mediator)
+  implicit val msgService = messaging.MessagingServiceImpl()
 
   import SeqUpdatesManager._
 

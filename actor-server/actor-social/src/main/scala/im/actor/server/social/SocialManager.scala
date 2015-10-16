@@ -6,7 +6,7 @@ import scala.concurrent.duration._
 import scala.util.{ Success, Failure }
 
 import akka.actor._
-import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
@@ -51,27 +51,35 @@ object SocialManager {
   @SerialVersionUID(1L)
   private case class Initiated(userIds: Set[Int])
 
-  private val idExtractor: ShardRegion.IdExtractor = {
+  private val extractEntityId: ShardRegion.ExtractEntityId = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
   }
 
-  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+  private val extractShardId: ShardRegion.ExtractShardId = msg ⇒ msg match {
     case Envelope(userId, _) ⇒ (userId % 100).toString // TODO: configurable
   }
 
-  private def startRegion(props: Option[Props])(implicit system: ActorSystem): SocialManagerRegion =
+  private val typeName = "SocialManager"
+
+  private def startRegion(props: Props)(implicit system: ActorSystem): SocialManagerRegion =
     SocialManagerRegion(ClusterSharding(system).start(
-      typeName = "SocialManager",
-      entryProps = props,
-      idExtractor = idExtractor,
-      shardResolver = shardResolver
+      typeName = typeName,
+      entityProps = props,
+      settings = ClusterShardingSettings(system),
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
     ))
 
   def startRegion()(implicit system: ActorSystem, db: Database): SocialManagerRegion =
-    startRegion(Some(props))
+    startRegion(props)
 
   def startRegionProxy()(implicit system: ActorSystem): SocialManagerRegion =
-    startRegion(None)
+    SocialManagerRegion(ClusterSharding(system).startProxy(
+      typeName = typeName,
+      role = None,
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId
+    ))
 
   def props(implicit db: Database) = Props(classOf[SocialManager], db)
 

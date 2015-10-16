@@ -1,7 +1,7 @@
 package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem }
-import akka.contrib.pattern.DistributedPubSubExtension
+import akka.cluster.pubsub.DistributedPubSub
 import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.misc.ApiExtension
@@ -280,7 +280,7 @@ private[user] sealed trait AuthCommands {
   self: Queries ⇒
 
   import UserCommands._
-  import akka.contrib.pattern.DistributedPubSubMediator._
+  import akka.cluster.pubsub.DistributedPubSubMediator._
 
   implicit val system: ActorSystem
   import system.dispatcher
@@ -311,7 +311,7 @@ private[user] sealed trait AuthCommands {
     system.log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
 
     implicit val seqExt = SeqUpdatesExtension(system)
-    val mediator = DistributedPubSubExtension(system).mediator
+    val mediator = DistributedPubSub(system).mediator
 
     for {
       _ ← removeAuth(session.userId, session.authId)

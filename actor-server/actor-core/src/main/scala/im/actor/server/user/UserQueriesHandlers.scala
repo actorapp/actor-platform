@@ -16,7 +16,7 @@ private[user] trait UserQueriesHandlers {
   import UserQueries._
 
   protected def getAuthIds(state: User): Unit = {
-    sender() ! GetAuthIdsResponse(state.authIds.toSeq)
+    sender() ! GetAuthIdsResponse(state.authIds)
   }
 
   protected def getApiStruct(state: User, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {

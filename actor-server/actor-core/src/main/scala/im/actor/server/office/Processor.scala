@@ -3,7 +3,7 @@ package im.actor.server.office
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{ ActorRef, Status }
-import akka.contrib.pattern.ShardRegion.Passivate
+import akka.cluster.sharding.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
 import im.actor.concurrent.ActorFutures
@@ -130,7 +130,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   final def persistStashing[R](es: immutable.Seq[Event], state: State)(f: Event ⇒ Unit): Unit = {
     log.debug("[persistStashing], events {}", es)
     context become stashing(state)
-    defer(es) { _ ⇒
+    deferAsync(es) { _ ⇒
       unstashAndWorkBatch(es, state)
     }
   }
@@ -159,9 +159,9 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
     log.debug("[persistStashingReply], events {}", es)
     context become stashing(state)
 
-    persistAsync(es)(_ ⇒ ())
+    persistAllAsync(es)(_ ⇒ ())
 
-    defer(()) { _ ⇒
+    deferAsync(()) { _ ⇒
       f(es) pipeTo replyTo onComplete {
         case Success(_) ⇒
           unstashAndWorkBatch(es, state)

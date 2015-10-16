@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service.messaging
 
 import akka.actor._
-import akka.contrib.pattern.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
+import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 import akka.event.Logging
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, RequestEntity, StatusCodes }

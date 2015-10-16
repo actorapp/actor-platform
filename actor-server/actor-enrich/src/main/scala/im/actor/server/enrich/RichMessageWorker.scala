@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
 import akka.actor._
-import akka.contrib.pattern.DistributedPubSubMediator
+import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.event.Logging
 import akka.http.scaladsl.model.Uri
 import akka.stream.Materializer
@@ -26,14 +26,14 @@ import im.actor.server.api.rpc.service.messaging.MessagingService._
 object RichMessageWorker {
   val groupId = Some("RichMessageWorker")
 
-  def startWorker(config: RichMessageConfig, mediator: ActorRef)(
+  def startWorker(config: RichMessageConfig)(
     implicit
     system:       ActorSystem,
     materializer: Materializer
-  ): ActorRef = system.actorOf(Props(classOf[RichMessageWorker], config, mediator, materializer))
+  ): ActorRef = system.actorOf(Props(classOf[RichMessageWorker], config, materializer))
 }
 
-final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(implicit materializer: Materializer) extends Actor with ActorLogging {
+final class RichMessageWorker(config: RichMessageConfig)(implicit materializer: Materializer) extends Actor with ActorLogging {
 
   import DistributedPubSubMediator.SubscribeAck
 
@@ -46,6 +46,7 @@ final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(imp
   private implicit val timeout: Timeout = Timeout(10.seconds)
 
   private val db = DbExtension(system).db
+  private val mediator = DistributedPubSub(context.system).mediator
 
   private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
