@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <string name="US" translatable="false">USA</string>
+    <string name="CA" translatable="false">Canada</string>
+    <string name="DO" translatable="false">Dominican Rep.</string>
+    <string name="PR" translatable="false">Puerto Rico</string>
+    <string name="RU" translatable="false">Russian Federation</string>
+    <string name="KZ" translatable="false">Kazakhstan</string>
+    <string name="EG" translatable="false">Egypt</string>
+    <string name="ZA" translatable="false">South Africa</string>
+    <string name="GR" translatable="false">Greece</string>
+    <string name="NL" translatable="false">Netherlands</string>
+    <string name="BE" translatable="false">Belgium</string>
+    <string name="FR" translatable="false">France</string>
+    <string name="ES" translatable="false">Spain</string>
+    <string name="HU" translatable="false">Hungary</string>
+    <string name="IT" translatable="false">Italy</string>
+    <string name="RO" translatable="false">Romania</string>
+    <string name="CH" translatable="false">Switzerland</string>
+    <string name="YL" translatable="false">Y-land</string>
+    <string name="AT" translatable="false">Austria</string>
+    <string name="GB" translatable="false">United Kingdom</string>
+    <string name="DK" translatable="false">Denmark</string>
+    <string name="SE" translatable="false">Sweden</string>
+    <string name="NO" translatable="false">Norway</string>
+    <string name="PL" translatable="false">Poland</string>
+    <string name="DE" translatable="false">Germany</string>
+    <string name="PE" translatable="false">Peru</string>
+    <string name="MX" translatable="false">Mexico</string>
+    <string name="CU" translatable="false">Cuba</string>
+    <string name="AR" translatable="false">Argentina</string>
+    <string name="BR" translatable="false">Brazil</string>
+    <string name="CL" translatable="false">Chile</string>
+    <string name="CO" translatable="false">Colombia</string>
+    <string name="VE" translatable="false">Venezuela</string>
+    <string name="MY" translatable="false">Malaysia</string>
+    <string name="AU" translatable="false">Australia</string>
+    <string name="ID" translatable="false">Indonesia</string>
+    <string name="PH" translatable="false">Philippines</string>
+    <string name="NZ" translatable="false">New Zealand</string>
+    <string name="SG" translatable="false">Singapore</string>
+    <string name="TH" translatable="false">Thailand</string>
+    <string name="JP" translatable="false">Japan</string>
+    <string name="KR" translatable="false">South Korea</string>
+    <string name="VN" translatable="false">Vietnam</string>
+    <string name="CN" translatable="false">China</string>
+    <string name="TR" translatable="false">Turkey</string>
+    <string name="IN" translatable="false">India</string>
+    <string name="PK" translatable="false">Pakistan</string>
+    <string name="AF" translatable="false">Afghanistan</string>
+    <string name="LK" translatable="false">Sri Lanka</string>
+    <string name="MM" translatable="false">Myanmar</string>
+    <string name="IR" translatable="false">Iran</string>
+    <string name="SS" translatable="false">South Sudan</string>
+    <string name="MA" translatable="false">Morocco</string>
+    <string name="DZ" translatable="false">Algeria</string>
+    <string name="TN" translatable="false">Tunisia</string>
+    <string name="LY" translatable="false">Libya</string>
+    <string name="GM" translatable="false">Gambia</string>
+    <string name="SN" translatable="false">Senegal</string>
+    <string name="MR" translatable="false">Mauritania</string>
+    <string name="ML" translatable="false">Mali</string>
+    <string name="GN" translatable="false">Guinea</string>
+    <string name="CI" translatable="false">Côte d`Ivoire</string>
+    <string name="BF" translatable="false">Burkina Faso</string>
+    <string name="NE" translatable="false">Niger</string>
+    <string name="TG" translatable="false">Togo</string>
+    <string name="BJ" translatable="false">Benin</string>
+    <string name="MU" translatable="false">Mauritius</string>
+    <string name="LR" translatable="false">Liberia</string>
+    <string name="SL" translatable="false">Sierra Leone</string>
+    <string name="GH" translatable="false">Ghana</string>
+    <string name="NG" translatable="false">Nigeria</string>
+    <string name="TD" translatable="false">Chad</string>
+    <string name="CF" translatable="false">Central African Rep.</string>
+    <string name="CM" translatable="false">Cameroon</string>
+    <string name="CV" translatable="false">Cape Verde</string>
+    <string name="ST" translatable="false">São Tomé and Príncipe</string>
+    <string name="GQ" translatable="false">Equatorial Guinea</string>
+    <string name="GA" translatable="false">Gabon</string>
+    <string name="CG" translatable="false">Congo (Rep.)</string>
+    <string name="CD" translatable="false">Congo (Dem. Rep.)</string>
+    <string name="AO" translatable="false">Angola</string>
+    <string name="GW" translatable="false">Guinea-Bissau</string>
+    <string name="IO" translatable="false">Diego Garcia</string>
+    <string name="SH" translatable="false">Saint Helena</string>
+    <string name="SC" translatable="false">Seychelles</string>
+    <string name="SD" translatable="false">Sudan</string>
+    <string name="RW" translatable="false">Rwanda</string>
+    <string name="ET" translatable="false">Ethiopia</string>
+    <string name="SO" translatable="false">Somalia</string>
+    <string name="DJ" translatable="false">Djibouti</string>
+    <string name="KE" translatable="false">Kenya</string>
+    <string name="TZ" translatable="false">Tanzania</string>
+    <string name="UG" translatable="false">Uganda</string>
+    <string name="BI" translatable="false">Burundi</string>
+    <string name="MZ" translatable="false">Mozambique</string>
+    <string name="ZM" translatable="false">Zambia</string>
+    <string name="MG" translatable="false">Madagascar</string>
+    <string name="RE" translatable="false">Réunion</string>
+    <string name="ZW" translatable="false">Zimbabwe</string>
+    <string name="NA" translatable="false">Namibia</string>
+    <string name="MW" translatable="false">Malawi</string>
+    <string name="LS" translatable="false">Lesotho</string>
+    <string name="BW" translatable="false">Botswana</string>
+    <string name="SZ" translatable="false">Swaziland</string>
+    <string name="KM" translatable="false">Comoros</string>
+    <string name="ER" translatable="false">Eritrea</string>
+    <string name="AW" translatable="false">Aruba</string>
+    <string name="FO" translatable="false">Faroe Islands</string>
+    <string name="GL" translatable="false">Greenland</string>
+    <string name="GI" translatable="false">Gibraltar</string>
+    <string name="PT" translatable="false">Portugal</string>
+    <string name="LU" translatable="false">Luxembourg</string>
+    <string name="IE" translatable="false">Ireland</string>
+    <string name="IS" translatable="false">Iceland</string>
+    <string name="AL" translatable="false">Albania</string>
+    <string name="MT" translatable="false">Malta</string>
+    <string name="CY" translatable="false">Cyprus</string>
+    <string name="FI" translatable="false">Finland</string>
+    <string name="BG" translatable="false">Bulgaria</string>
+    <string name="LT" translatable="false">Lithuania</string>
+    <string name="LV" translatable="false">Latvia</string>
+    <string name="EE" translatable="false">Estonia</string>
+    <string name="MD" translatable="false">Moldova</string>
+    <string name="AM" translatable="false">Armenia</string>
+    <string name="BY" translatable="false">Belarus</string>
+    <string name="AD" translatable="false">Andorra</string>
+    <string name="MC" translatable="false">Monaco</string>
+    <string name="SM" translatable="false">San Marino</string>
+    <string name="UA" translatable="false">Ukraine</string>
+    <string name="RS" translatable="false">Serbia</string>
+    <string name="ME" translatable="false">Montenegro</string>
+    <string name="HR" translatable="false">Croatia</string>
+    <string name="SI" translatable="false">Slovenia</string>
+    <string name="BA" translatable="false">Bosnia and Herzegovina</string>
+    <string name="MK" translatable="false">Macedonia</string>
+    <string name="CZ" translatable="false">Czech Republic</string>
+    <string name="SK" translatable="false">Slovakia</string>
+    <string name="LI" translatable="false">Liechtenstein</string>
+    <string name="FK" translatable="false">Falkland Islands</string>
+    <string name="BZ" translatable="false">Belize</string>
+    <string name="GT" translatable="false">Guatemala</string>
+    <string name="SV" translatable="false">El Salvador</string>
+    <string name="HN" translatable="false">Honduras</string>
+    <string name="NI" translatable="false">Nicaragua</string>
+    <string name="CR" translatable="false">Costa Rica</string>
+    <string name="PA" translatable="false">Panama</string>
+    <string name="PM" translatable="false">Saint Pierre and Miquelon</string>
+    <string name="HT" translatable="false">Haiti</string>
+    <string name="GP" translatable="false">Guadeloupe</string>
+    <string name="BO" translatable="false">Bolivia</string>
+    <string name="GY" translatable="false">Guyana</string>
+    <string name="EC" translatable="false">Ecuador</string>
+    <string name="GF" translatable="false">French Guiana</string>
+    <string name="PY" translatable="false">Paraguay</string>
+    <string name="MQ" translatable="false">Martinique</string>
+    <string name="SR" translatable="false">Suriname</string>
+    <string name="UY" translatable="false">Uruguay</string>
+    <string name="CW" translatable="false">Curaçao</string>
+    <string name="BQ" translatable="false">Bonaire, Sint Eustatius and Saba</string>
+    <string name="TL" translatable="false">Timor-Leste</string>
+    <string name="NF" translatable="false">Norfolk Island</string>
+    <string name="BN" translatable="false">Brunei Darussalam</string>
+    <string name="NR" translatable="false">Nauru</string>
+    <string name="PG" translatable="false">Papua New Guinea</string>
+    <string name="TO" translatable="false">Tonga</string>
+    <string name="SB" translatable="false">Solomon Islands</string>
+    <string name="VU" translatable="false">Vanuatu</string>
+    <string name="FJ" translatable="false">Fiji</string>
+    <string name="PW" translatable="false">Palau</string>
+    <string name="WF" translatable="false">Wallis and Futuna</string>
+    <string name="CK" translatable="false">Cook Islands</string>
+    <string name="NU" translatable="false">Niue</string>
+    <string name="WS" translatable="false">Samoa</string>
+    <string name="KI" translatable="false">Kiribati</string>
+    <string name="NC" translatable="false">New Caledonia</string>
+    <string name="TV" translatable="false">Tuvalu</string>
+    <string name="PF" translatable="false">French Polynesia</string>
+    <string name="TK" translatable="false">Tokelau</string>
+    <string name="FM" translatable="false">Micronesia</string>
+    <string name="MH" translatable="false">Marshall Islands</string>
+    <string name="KP" translatable="false">North Korea</string>
+    <string name="HK" translatable="false">Hong Kong</string>
+    <string name="MO" translatable="false">Macau</string>
+    <string name="KH" translatable="false">Cambodia</string>
+    <string name="LA" translatable="false">Laos</string>
+    <string name="BD" translatable="false">Bangladesh</string>
+    <string name="TW" translatable="false">Taiwan</string>
+    <string name="MV" translatable="false">Maldives</string>
+    <string name="LB" translatable="false">Lebanon</string>
+    <string name="JO" translatable="false">Jordan</string>
+    <string name="SY" translatable="false">Syrian Arab Republic</string>
+    <string name="IQ" translatable="false">Iraq</string>
+    <string name="KW" translatable="false">Kuwait</string>
+    <string name="SA" translatable="false">Saudi Arabia</string>
+    <string name="YE" translatable="false">Yemen</string>
+    <string name="OM" translatable="false">Oman</string>
+    <string name="PS" translatable="false">Palestine</string>
+    <string name="AE" translatable="false">United Arab Emirates</string>
+    <string name="IL" translatable="false">Israel</string>
+    <string name="BH" translatable="false">Bahrain</string>
+    <string name="QA" translatable="false">Qatar</string>
+    <string name="BT" translatable="false">Bhutan</string>
+    <string name="MN" translatable="false">Mongolia</string>
+    <string name="NP" translatable="false">Nepal</string>
+    <string name="TJ" translatable="false">Tajikistan</string>
+    <string name="TM" translatable="false">Turkmenistan</string>
+    <string name="AZ" translatable="false">Azerbaijan</string>
+    <string name="GE" translatable="false">Georgia</string>
+    <string name="KG" translatable="false">Kyrgyzstan</string>
+    <string name="UZ" translatable="false">Uzbekistan</string>
+    <string name="BS" translatable="false">Bahamas</string>
+    <string name="BB" translatable="false">Barbados</string>
+    <string name="AI" translatable="false">Anguilla</string>
+    <string name="AG" translatable="false">Antigua and Barbuda</string>
+    <string name="VG" translatable="false">British Virgin Islands</string>
+    <string name="VI" translatable="false">US Virgin Islands</string>
+    <string name="KY" translatable="false">Cayman Islands</string>
+    <string name="BM" translatable="false">Bermuda</string>
+    <string name="GD" translatable="false">Grenada</string>
+    <string name="TC" translatable="false">Turks and Caicos Islands</string>
+    <string name="MS" translatable="false">Montserrat</string>
+    <string name="MP" translatable="false">Northern Mariana Islands</string>
+    <string name="GU" translatable="false">Guam</string>
+    <string name="AS" translatable="false">American Samoa</string>
+    <string name="SX" translatable="false">Sint Maarten</string>
+    <string name="LC" translatable="false">Saint Lucia</string>
+    <string name="DM" translatable="false">Dominica</string>
+    <string name="VC" translatable="false">Saint Vincent and the Grenadines</string>
+    <string name="TT" translatable="false">Trinidad and Tobago</string>
+    <string name="KN" translatable="false">Saint Kitts and Nevis</string>
+    <string name="JM" translatable="false">Jamaica</string>
+</resources>

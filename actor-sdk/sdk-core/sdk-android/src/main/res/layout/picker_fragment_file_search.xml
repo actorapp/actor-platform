@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/status"
+            android:textColor="#779"
+            android:text="Not implemented"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ProgressBar
+            android:visibility="gone"
+            android:id="@+id/progressBar"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            android:padding="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ListView
+            android:id="@+id/list"
+            android:divider="@null"
+            android:dividerHeight="-1dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+    <!--RelativeLayout
+        android:id="@+id/search_container"
+        android:background="@color/main_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="64dp">
+
+            <EditText
+                android:id="@+id/picker_search_text_box"
+                android:hint="Search here"
+                android:textColor="#ffffff"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textColorHint="#bbffffff"
+                android:background="@drawable/picker_search_text_box"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"/>
+            <Spinner
+
+                android:layout_marginTop="8dp"
+                android:background="@drawable/picker_search_text_box"
+                android:id="@+id/search_type_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"/>
+        </LinearLayout>
+
+    </RelativeLayout-->
+</RelativeLayout>

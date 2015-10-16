@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <translate android:fromXDelta="0%"
+               android:toXDelta="100%"
+               android:duration="@integer/activity_switch_time"/>
+
+</set>
