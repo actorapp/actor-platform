@@ -224,6 +224,9 @@ object Dialog {
     }
   }
 
+  def makeArchived(userId: Int, peer: models.Peer) =
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.isArchived).update(true)
+
   def delete(userId: Int, peer: models.Peer): FixedSqlAction[Int, NoStream, Write] =
     byPKC.applied((userId, peer.typ.toInt, peer.id)).delete
 }
