@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_backyard">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_main"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="248dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/avatar_bgrnd"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/img_profile_avatar_default"
+                            android:scaleType="centerCrop" />
+
+                        <im.actor.messenger.app.view.CoverAvatarView
+                            android:id="@+id/avatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="64dp"
+                            android:layout_gravity="bottom"
+                            android:gravity="center_vertical|left"
+                            android:orientation="vertical"
+                            android:paddingLeft="72dp"
+                            android:paddingRight="24dp">
+
+                            <TextView
+                                android:id="@+id/name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-2dp"
+                                android:ellipsize="end"
+                                android:includeFontPadding="false"
+                                android:lines="1"
+                                android:singleLine="true"
+                                android:textColor="@color/profile_title"
+                                android:textSize="26sp" />
+
+                            <TextView
+                                android:id="@+id/lastSeen"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="-2dp"
+                                android:textColor="@color/profile_subtitle"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/nickContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <include
+                        layout="@layout/contact_record"
+                        android:id="@+id/about" />
+
+                    <LinearLayout
+                        android:id="@+id/phoneContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+
+                    <FrameLayout
+                        android:id="@+id/phoneDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:background="@color/bg_backyard">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:layout_gravity="top"
+                            android:background="@drawable/card_shadow_bottom" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_gravity="bottom"
+                            android:background="@drawable/card_shadow_top" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sharedContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:gravity="center_vertical|left"
+                            android:paddingLeft="72dp"
+                            android:text="@string/profile_shared_header"
+                            android:textColor="@color/settings_main_title"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:id="@+id/mediaContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/clickable_background"
+                            android:paddingRight="8dp"
+                            android:visibility="gone">
+
+                            <im.actor.messenger.app.view.TintImageView
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                app:src="@drawable/conv_attach_gallery"
+                                app:tintColor="@color/settings_icon" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:text="@string/profile_shared_media"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp" />
+
+
+                            <TextView
+                                android:id="@+id/mediaCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="48dp"
+                                android:paddingRight="16dp"
+                                android:textColor="@color/text_hint"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/docsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/clickable_background"
+                            android:paddingRight="8dp">
+
+                            <im.actor.messenger.app.view.TintImageView
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                app:src="@drawable/conv_attach_file"
+                                app:tintColor="@color/settings_icon" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:text="@string/profile_shared_files"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp" />
+
+
+                            <TextView
+                                android:id="@+id/docCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="48dp"
+                                android:paddingRight="16dp"
+                                android:textColor="@color/text_hint"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="16dp"
+                            android:background="@color/bg_backyard">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="4dp"
+                                android:layout_gravity="top"
+                                android:background="@drawable/card_shadow_bottom" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_gravity="bottom"
+                                android:background="@drawable/card_shadow_top" />
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical|left"
+                        android:paddingLeft="72dp"
+                        android:text="@string/profile_settings_header"
+                        android:textColor="@color/settings_main_title"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:id="@+id/notificationsCont"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:paddingRight="8dp">
+
+                        <im.actor.messenger.app.view.TintImageView
+                            android:layout_width="72dp"
+                            android:layout_height="match_parent"
+                            app:src="@drawable/ic_notifications_white_18dp"
+                            app:tintColor="@color/settings_icon" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="@string/profile_settings_notifications"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp" />
+
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/enableNotifications"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:background="@color/bg_backyard">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:layout_gravity="top"
+                            android:background="@drawable/card_shadow_bottom" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/profileAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|top"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginTop="214dp"
+                    app:fab_colorNormal="@color/accent"
+                    app:fab_colorPressed="@color/accent_pressed"
+                    app:fab_icon="@drawable/ic_message_white_24dp" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="top"
+        android:background="@drawable/profile_avatar_top_shadow" />
+</FrameLayout>

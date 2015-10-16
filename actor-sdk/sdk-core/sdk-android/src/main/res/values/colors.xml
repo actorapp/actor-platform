@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+
+    <!-- Root colors -->
+
+    <color name="primary">#4d74a6</color>
+    <color name="primary_hovered">#3d5d85</color>
+    <color name="primary_pressed">#6b85a6</color>
+    <color name="primary_text">#ffffff</color>
+
+    <color name="primary_alt">#4ca665</color>
+    <color name="primary_alt_hovered">#ff3d8652</color>
+    <color name="primary_alt_pressed">#ff5cca7b</color>
+
+    <color name="accent">#d94335</color>
+    <color name="accent_hovered">#b3372c</color>
+    <color name="accent_pressed">#ca4a3f</color>
+
+    <color name="action">#588ed2</color>
+    <color name="action_hovered">#4d6d95</color>
+    <color name="action_pressed">#7b95b6</color>
+
+    <color name="secondary">#eeeeee</color>
+    <color name="secondary_selected">#33999999</color>
+    <color name="secondary_pressed">#66999999</color>
+
+    <color name="bg_main">#ffffff</color>
+    <color name="bg_backyard">#eeeeee</color>
+
+    <!-- Root text colors -->
+
+    <color name="text_primary">#DE000000</color>
+    <color name="text_secondary">#7A000000</color>
+    <color name="text_hint">#42000000</color>
+    <color name="text_subheader">#6F000000</color>
+
+    <color name="text_primary_inv">#DEffffff</color>
+    <color name="text_secondary_inv">#8Affffff</color>
+    <color name="text_hint_inv">#42ffffff</color>
+    <color name="text_subheader_inv">#8Fffffff</color>
+
+    <!-- Selector & divider colors -->
+
+    <color name="selector_selected">#66999999</color>
+    <color name="selector_hover">#33999999</color>
+    <color name="selector_ripple">#ffffffff</color>
+
+    <color name="selector_selected_inv">#40cccccc</color>
+    <color name="selector_hover_inv">#20cccccc</color>
+
+    <color name="selector_messages">#44000000</color>
+    <color name="selector_messages_selected">#66000000</color>
+
+    <color name="divider">#1e000000</color>
+    <color name="divider_inv">#1effffff</color>
+
+    <!-- Base UI colors -->
+
+    <color name="list_action">@color/primary</color>
+
+    <color name="section_title">@color/primary</color>
+    <color name="section_icon_small">#b5b6b7</color>
+    <color name="section_icon_large">@color/primary</color>
+
+    <!-- Main screen -->
+    <color name="main_tab_selected">#fffffc</color>
+    <color name="main_tab_divider">#15000000</color>
+    <color name="main_tab_text">@color/text_primary_inv</color>
+    <color name="main_fab_bg">#ccffffff</color>
+
+    <!-- Profile screen -->
+    <color name="upload_overlay">#8c000000</color>
+
+    <!-- Dialogs -->
+    <color name="chats_divider">@color/divider</color>
+    <color name="chats_title">@color/text_primary</color>
+    <color name="chats_text">@color/text_secondary</color>
+    <color name="chats_time">@color/text_secondary</color>
+    <color name="chats_counter">@color/text_primary_inv</color>
+    <color name="chats_counter_bg">@color/primary_alt</color>
+    <color name="chats_typing">@color/primary</color>
+
+    <color name="chats_state_pending">#40000000</color>
+    <color name="chats_state_sent">#40000000</color>
+    <color name="chats_state_delivered">#40000000</color>
+    <color name="chats_state_read">#ff7ea8ef</color>
+    <color name="chats_state_error">#d24a43</color>
+    <color name="chats_state_warring">#d24a43</color>
+
+    <!-- Contacts -->
+    <color name="contacts_fast">@color/primary</color>
+    <color name="contacts_action">@color/list_action</color>
+    <color name="contacts_action_share">@color/contacts_action</color>
+    <color name="contacts_action_add">@color/contacts_action</color>
+    <color name="contacts_divider">@color/divider</color>
+
+    <!-- Conversation -->
+    <color name="conv_send_enabled">@color/primary</color>
+    <color name="conv_send_disabled">#42000000</color>
+
+    <color name="conv_date_line">#14000000</color>
+    <color name="conv_date_text">#ffffff</color>
+    <color name="conv_date_bg">#99000000</color>
+
+    <color name="conv_text">@color/text_primary</color>
+    <color name="conv_time">#60000000</color>
+
+    <color name="conv_state_pending">#40000000</color>
+    <color name="conv_state_sent">#40000000</color>
+    <color name="conv_state_delivered">#40000000</color>
+    <color name="conv_state_read">#ff7ea8ef</color>
+    <color name="conv_state_error">#d24a43</color>
+    <color name="conv_state_warring">#d24a43</color>
+
+    <color name="conv_media_date_bg">#99000000</color>
+    <color name="conv_media_state_pending">#ffffff</color>
+    <color name="conv_media_state_sent">#ffffff</color>
+    <color name="conv_media_state_delivered">#ffffff</color>
+    <color name="conv_media_state_read">#ff7ea8ef</color>
+    <color name="conv_media_state_error">#ffed534b</color>
+    <color name="conv_media_state_warring">#ffed534b</color>
+
+    <!-- Settings -->
+    <color name="settings_main_title">@color/section_title</color>
+
+    <color name="settings_icon">@color/section_icon_small</color>
+    <color name="settings_title">@color/text_primary</color>
+    <color name="settings_subtitle">@color/text_secondary</color>
+
+    <!-- Profile -->
+    <color name="profile_title">@color/text_primary_inv</color>
+    <color name="profile_subtitle">@color/text_secondary_inv</color>
+    <color name="profile_icon">@color/section_icon_large</color>
+
+    <!-- Group Profile -->
+    <color name="group_admin">@color/accent</color>
+    <color name="group_action_add_icon">@color/list_action</color>
+    <color name="group_action_add_text">@color/list_action</color>
+
+
+    <bool name="default_circle_indicator_centered">true</bool>
+    <color name="default_circle_indicator_fill_color">#FFFFFFFF</color>
+    <color name="default_circle_indicator_page_color">#00000000</color>
+    <integer name="default_circle_indicator_orientation">0</integer>
+    <dimen name="default_circle_indicator_radius">3dp</dimen>
+    <bool name="default_circle_indicator_snap">false</bool>
+    <color name="default_circle_indicator_stroke_color">#FFDDDDDD</color>
+    <dimen name="default_circle_indicator_stroke_width">1dp</dimen>
+
+
+</resources>

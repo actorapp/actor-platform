@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <dimen name="tour_card_title">21sp</dimen>
+    <dimen name="tour_card_message">16sp</dimen>
+</resources>
