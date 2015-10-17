@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/main_bar_recent_active" android:state_selected="true" />
+    <item android:drawable="@drawable/main_bar_recent_active" android:state_pressed="true" />
+    <item android:drawable="@drawable/main_bar_recent_active" android:state_focused="true" />
+    <item android:drawable="@drawable/main_bar_recent_active" android:state_hovered="true" />
+    <item android:drawable="@drawable/main_bar_recent" />
+</selector>

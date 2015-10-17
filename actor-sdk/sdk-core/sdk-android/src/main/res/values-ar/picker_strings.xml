@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="example_title_activity_test">اختبار النشاط</string>
+    <string name="example_app_name">جامع</string>
+    <string name="example_action_settings">خيارات</string>
+
+    <string name="picker_empty">لا يوجد شي هنا</string>
+    <string name="picker_loading">جاري تحميل</string>
+    <string name="picker_internalerror">حدث خطأ</string>
+    <string name="picker_search">بحث</string>
+
+    <string name="picker_pick">اخذ</string>
+    <string name="picker_cancel">الغاء</string>
+
+    <!-- Files -->
+    <string name="picker_file_activity_title">اختر ملفا</string>
+    <string name="picker_file_memory_phone">الهاتف الذاكرة</string>
+    <string name="picker_file_memory_external">الذاكرة الخارجية</string>
+    <string name="picker_file_memory_external_error">لم يتم إدخال بطاقة</string>
+    <string name="picker_file_recent">لعناصر الحديثة مختارة</string>
+    <string name="picker_file_recent_empty">لا يوجد لديك الملفات الأخيرة</string>
+    <string name="picker_file_denied">تم الرفض</string>
+    <string name="picker_file_directory_empty">لا توجد ملفات هنا</string>
+    <string name="picker_file_search_activity_title">بحث</string>
+    <string name="picker_file_search_query_text">بحث</string>
+    <string name="picker_file_sort_name">الترتيب حسب الاسم</string>
+    <string name="picker_file_sort_date">الترتيب حسب التاريخ</string>
+    <string name="picker_file_camera">اكاميرا</string>
+    <string name="picker_file_header_recent">الملفات الأخيرة</string>
+    <string name="picker_file_header_main">المجلدات الرئيسية</string>
+
+    <!-- Images -->
+    <string name="picker_pictures_activity_title">اختر الصور</string>
+    <string name="picker_pictures_empty_folder">لا يحتوي هذا المجلد الصور.</string>
+    <string name="picker_pictures_empty">أي صور على هذا الجهاز</string>
+    <string name="picker_pictures_camera">كاميرا</string>
+
+
+    <!-- Map -->
+    <string name="picker_map_activity_title">اختيار مكان</string>
+    <string name="picker_map_sory_notdefined">لدينا لتحديد موقعك، ثم يضع البحث في مكان قريب.</string>
+    <string name="picker_map_pick_my">رسال موقعي الحالي</string>
+    <string name="picker_map_pick_my_fetching">جاري التعريف…</string>
+    <string name="picker_map_pick_my_accuracy">تدقيق الى %d امتار</string>
+    <string name="picker_map_pick_my_wait">الانتظار حتى تعريف هو نهاية</string>
+    <string name="picker_map_nearby_header">أو حدد من قريب</string>
+    <string name="picker_map_nearby_empty">لا يوجد الأماكن المجاورة</string>
+
+
+    <!-- Metrics -->
+    <plurals name="picker_time_minutes_ago">
+        <item quantity="one">%d من دقيقة</item>
+        <item quantity="two">%d من دقيقة</item>
+        <item quantity="few">%d من دقيقة</item>
+        <item quantity="many">%d من دقيقة</item>
+        <item quantity="other">%d يوجد اغاني.</item>
+    </plurals>
+
+
+    <string name="picker_time_yesterday_at">بالامس %s</string>
+    <string name="picker_time_today_at">اليوم at %s</string>
+    <string name="picker_time_hour_ago">من ساعة</string>
+    <string name="picker_time_minute_ago"> من دقيقة</string>
+    <string name="picker_time_at">%1$s at %2$s</string>
+
+    <string name="picker_bytes">%d bytes</string>
+    <string name="picker_kbytes">كيلو</string>
+    <string name="picker_mbytes">ميقا</string>
+    <string name="picker_gbytes">قيقا</string>
+</resources>
