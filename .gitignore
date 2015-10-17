@@ -127,3 +127,4 @@ actor-sdk/sdk-core/build-tools/dist
 actor-sdk/sdk-core/sdk-android/build
 actor-sdk/sdk-core/app-android/build
 npm-debug.log
+build
