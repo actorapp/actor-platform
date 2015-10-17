@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <integer name="activity_switch_time">300</integer>
+    <string name="messenger_domain" translatable="false">actor.cc</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:icon="@drawable/picker_bar_search"
+        android:id="@+id/search"
+        android:title="@string/picker_search"
+        android:enabled="true"
+        android:showAsAction="always" />
+</menu>

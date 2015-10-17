@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/forward"
+        android:icon="@drawable/ic_forward_white_36dp"
+        android:title="Quote" />
+
+    <item
+        android:id="@+id/quote"
+        android:icon="@drawable/ic_editor_format_quote_36dp"
+        android:title="Quote" />
+
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/ic_delete_white_36dp"
+        android:title="Delete" />
+
+    <item
+        android:id="@+id/copy"
+        android:icon="@drawable/ic_content_copy_white_36dp"
+        android:title="Copy" />
+
+    <!--<item-->
+    <!--android:id="@+id/forward"-->
+    <!--android:icon="@drawable/ic_forward_white_36dp"-->
+    <!--android:title="Forward" />-->
+
+</menu>

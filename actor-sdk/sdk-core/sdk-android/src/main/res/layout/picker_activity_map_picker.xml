@@ -1,0 +1,179 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/container"
+    tools:context="com.droidkit.pickers.map.MapPickerActivity">
+
+    <RelativeLayout
+        android:id="@+id/mapholder"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.MapFragment" />
+
+        <ImageButton
+            android:id="@+id/full"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/picker_map_fullscreen_icon"
+            android:background="@drawable/picker_map_controllers"
+            android:scaleType="center"
+            android:layout_margin="10dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <ImageButton
+            android:id="@+id/define_my_location"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/picker_map_halfscreen_icon"
+            android:background="@drawable/picker_map_controllers"
+            android:scaleType="center"
+            android:layout_margin="10dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <LinearLayout
+            android:clickable="true"
+            android:id="@+id/pick_current"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/picker_map_controllers"
+            android:layout_margin="15dp"
+            android:layout_alignParentBottom="true"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.droidkit.pickers.map.view.MediumTextView
+                android:textSize="@dimen/picker_map_controllers_title"
+                android:text="@string/picker_map_pick_my"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/accurance"
+                android:padding="1dp"
+                android:textSize="@dimen/picker_map_controllers_subtitle"
+                android:textColor="@color/picker_map_controller_subtitle"
+                android:text="@string/picker_map_pick_my_fetching"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/mapholder"
+        android:id="@+id/listNearbyHolder"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/picker_map_nearby_header"
+                android:textColor="@color/picker_map_nearby_header_color"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textSize="@dimen/picker_map_header"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:background="@drawable/picker_map_nearby"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:visibility="gone"
+                android:id="@+id/loading"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:id="@+id/status"
+                android:textSize="@dimen/picker_status_size"
+                android:textColor="@color/picker_status_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ListView
+                android:layout_above="@+id/controllers"
+                android:id="@+id/list"
+                android:dividerHeight="1px"
+                android:divider="@drawable/picker_map_nearby_divider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:background="#fff"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/controllers1"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <LinearLayout
+            android:padding="15dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="Степан упрт"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textColor="#888"
+                android:textSize="12sp"
+                android:text="Увозите тело"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <ImageView
+            android:scaleType="center"
+            android:background="@color/picker_map_nearby_header_color"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/picker_viewer_check"
+            android:layout_width="70dp"
+            android:layout_height="70dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/picker_controllers" />
+    </LinearLayout>
+</RelativeLayout>
