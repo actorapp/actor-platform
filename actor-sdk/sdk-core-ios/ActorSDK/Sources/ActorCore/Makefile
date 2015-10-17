@@ -34,19 +34,19 @@ J2OBJCC_ARGS = -ObjC -fobjc-arc -fembed-bitcode-marker -Wobjc-designated-initial
 LIBRARY_NAME = libactor.so
 
 SOURCE_ROOTS = \
-	$(SDK_ROOT)/sdk-core/runtime/shared/src/main/java \
-	$(SDK_ROOT)/sdk-core/runtime/shared/src/generic/java \
-	$(SDK_ROOT)/sdk-core/runtime/cocoa/src/main/java \
-	$(SDK_ROOT)/sdk-core/core/shared/src/main/java \
-	$(SDK_ROOT)/sdk-core/core/cocoa/src/main/java
+	$(SDK_ROOT)/sdk-core/runtime/runtime-shared/src/main/java \
+	$(SDK_ROOT)/sdk-core/runtime/runtime-generic/src/main/java \
+	$(SDK_ROOT)/sdk-core/runtime/runtime-cocoa/src/main/java \
+	$(SDK_ROOT)/sdk-core/core/core-shared/src/main/java \
+	$(SDK_ROOT)/sdk-core/core/core-cocoa/src/main/java
 
 EXCLUDED_CLASSES = \
 	com.google.j2objc.annotations.ObjectiveCName \
     com.google.j2objc.annotations.Propery
 
 PREFIXES = \
-    --prefixes $(SDK_ROOT)/sdk-core/runtime/cocoa/prefixes.properties \
-	--prefixes $(SDK_ROOT)/sdk-core/core/cocoa/prefixes.properties
+    --prefixes $(SDK_ROOT)/sdk-core/runtime/runtime-cocoa/prefixes.properties \
+	--prefixes $(SDK_ROOT)/sdk-core/core/core-cocoa/prefixes.properties
 
 SOURCES_DIR = $(WORKING_DIR)/Sources
 
