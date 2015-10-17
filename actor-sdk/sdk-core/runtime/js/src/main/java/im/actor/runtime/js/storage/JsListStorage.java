@@ -152,6 +152,12 @@ public class JsListStorage implements ListStorage {
     }
 
     @Override
+    public List<ListEngineRecord> loadAllItems() {
+        // TODO: Implement
+        return null;
+    }
+
+    @Override
     public boolean isEmpty() {
         return getCount() == 0;
     }
