@@ -130,3 +130,4 @@ npm-debug.log
 actor-deps/dist
 actor-sdk/sdk-core/core/core-js/build
 build
+actor-sdk/sdk-core/runtime/js/war
