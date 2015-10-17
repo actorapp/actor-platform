@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="example_title_activity_test">TestActivity</string>
+    <string name="example_app_name">Picker</string>
+    <string name="example_action_settings">Settings</string>
+
+    <string name="picker_empty">这什么都没有</string>
+    <string name="picker_loading">正在载入</string>
+    <string name="picker_internalerror">发生错误</string>
+    <string name="picker_search">Search</string>
+
+    <string name="picker_pick">选取</string>
+    <string name="picker_cancel">取消</string>
+
+    <!-- Files -->
+    <string name="picker_file_activity_title">选择文件</string>
+    <string name="picker_file_memory_phone">手机存储</string>
+    <string name="picker_file_memory_external">外部存储</string>
+    <string name="picker_file_memory_external_error">没有插入卡</string>
+    <string name="picker_file_recent">最近选择的</string>
+    <string name="picker_file_recent_empty">无最近选择文件</string>
+    <string name="picker_file_denied">禁止访问</string>
+    <string name="picker_file_directory_empty">无文件</string>
+    <string name="picker_file_search_activity_title">检索</string>
+    <string name="picker_file_search_query_text">检索</string>
+    <string name="picker_file_sort_name">按名称排序</string>
+    <string name="picker_file_sort_date">按日前排序</string>
+    <string name="picker_file_camera">相机</string>
+    <string name="picker_file_header_recent">最近文件</string>
+    <string name="picker_file_header_main">主文件夹</string>
+
+    <!-- Images -->
+    <string name="picker_pictures_activity_title">选择图片</string>
+    <string name="picker_pictures_empty_folder">此文件夹中没有图片。</string>
+    <string name="picker_pictures_empty">此设备没有图片</string>
+    <string name="picker_pictures_camera">相机</string>
+
+
+    <!-- Map -->
+    <string name="picker_map_activity_title">选择一个位置</string>
+    <string name="picker_map_sory_notdefined">需要定位你的位置，然后检索周边的地方。</string>
+    <string name="picker_map_pick_my">发送当前位置</string>
+    <string name="picker_map_pick_my_fetching">定位在…</string>
+    <string name="picker_map_pick_my_accuracy">精确到%d米</string>
+    <string name="picker_map_pick_my_wait">等待定位结束</string>
+    <string name="picker_map_nearby_header">或者从周边选择</string>
+    <string name="picker_map_nearby_empty">无周边信息</string>
+
+
+    <!-- Metrics -->
+    <plurals name="picker_time_minutes_ago">
+        <item quantity="one">%d分钟前</item>
+        <item quantity="two">%d分钟前</item>
+        <item quantity="few">%d分钟前</item>
+        <item quantity="many">%d分钟前</item>
+        <item quantity="other">发现%d首歌。</item>
+    </plurals>
+
+
+    <string name="picker_time_yesterday_at">昨天 %s</string>
+    <string name="picker_time_today_at">今天 %s</string>
+    <string name="picker_time_hour_ago">1小时前</string>
+    <string name="picker_time_minute_ago">一分钟前</string>
+    <string name="picker_time_at">%1$s %2$s</string>
+
+    <string name="picker_bytes">%d字节</string>
+    <string name="picker_kbytes">KB</string>
+    <string name="picker_mbytes">MB</string>
+    <string name="picker_gbytes">GB</string>
+</resources>
