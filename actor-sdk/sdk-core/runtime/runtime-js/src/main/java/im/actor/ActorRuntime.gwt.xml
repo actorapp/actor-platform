@@ -1,0 +1,24 @@
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
+    "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
+<module rename-to="actor">
+
+    <source path='runtime' />
+
+    <inherits name="org.bouncycastle.BouncyCastle" />
+
+    <inherits name="com.google.gwt.logging.Logging" />
+    <inherits name="com.google.gwt.storage.Storage" />
+    <inherits name="com.google.gwt.resources.Resources" />
+    <inherits name="com.google.gwt.http.HTTP"/>
+    <inherits name='org.timepedia.exporter.Exporter' />
+
+    <set-property name='gwt.logging.enabled' value='TRUE' />
+    <set-property name='gwt.logging.consoleHandler' value='ENABLED' />
+    <set-property name="export" value="yes" />
+
+    <inherits name="com.google.gwt.i18n.I18N"/>
+
+    <!-- Use browser-specified locale for i18n -->
+    <set-configuration-property name="locale.useragent" value="Y"/>
+
+</module>
