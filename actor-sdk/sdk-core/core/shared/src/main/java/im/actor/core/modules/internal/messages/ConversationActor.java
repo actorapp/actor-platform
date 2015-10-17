@@ -139,8 +139,7 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, topMessage, inPendingIndex.getCount()));
             }
-            dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
-                    topMessage.getSortDate()));
+            dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
     }
 
@@ -190,8 +189,7 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 dialogsActor.send(new DialogsActor.InMessage(peer, message, inPendingIndex.getCount()));
             }
-            dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
-                    message.getSortDate()));
+            dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
         }
     }
 
@@ -245,8 +243,7 @@ public class ConversationActor extends ModuleActor {
             if (!isHiddenPeer) {
                 // Updating dialog
                 dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inPendingIndex.getCount()));
-                dialogsGroupedActor.send(new GroupedDialogsActor.NewMessage(peer, inPendingIndex.getCount(),
-                        updatedMsg.getSortDate()));
+                dialogsGroupedActor.send(new GroupedDialogsActor.CounterChanged(peer, inPendingIndex.getCount()));
             }
 
             // Updating pending index

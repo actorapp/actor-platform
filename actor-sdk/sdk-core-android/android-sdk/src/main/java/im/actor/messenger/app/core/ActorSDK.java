@@ -14,7 +14,6 @@ import org.json.JSONException;
 import java.io.IOException;
 
 import im.actor.core.AndroidMessenger;
-import im.actor.core.AndroidPushActor;
 import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
@@ -23,7 +22,6 @@ import im.actor.core.entity.Group;
 import im.actor.core.entity.User;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.activity.ActorMainActivity;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
@@ -54,13 +52,13 @@ public class ActorSDK {
 
         Fresco.initialize(application);
 
-        // Keep Alive
-        if (BuildConfig.ENABLE_KEEP_ALIVE) {
-            Intent keepAliveService = new Intent(application, KeepAliveService.class);
-            PendingIntent pintent = PendingIntent.getService(application, 0, keepAliveService, 0);
-            AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
-            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pintent);
-        }
+//        // Keep Alive
+//        if (BuildConfig.ENABLE_KEEP_ALIVE) {
+//            Intent keepAliveService = new Intent(application, KeepAliveService.class);
+//            PendingIntent pintent = PendingIntent.getService(application, 0, keepAliveService, 0);
+//            AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
+//            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pintent);
+//        }
 
         // Helpers
         AppContext.setContext(application);
@@ -86,15 +84,14 @@ public class ActorSDK {
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
 
-        if (getGcmProjectId() != -1) {
-            androidPushesActor = system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
-                @Override
-                public AndroidPushActor create() {
-                    return new AndroidPushActor(application, sdk.messenger);
-                }
-            }), "actor/android/push");
-        }
-
+//        if (getGcmProjectId() != -1) {
+//            androidPushesActor = system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
+//                @Override
+//                public AndroidPushActor create() {
+//                    return new AndroidPushActor(application, sdk.messenger);
+//                }
+//            }), "actor/android/push");
+//        }
     }
 
     public static ActorSDK sharedActor() {

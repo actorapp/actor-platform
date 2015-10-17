@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 
@@ -46,18 +45,18 @@ public class HelpFragment extends BaseFragment {
             }
         });
 
-        final String versionName = BuildConfig.VERSION_TITLE;
-        ((TextView) res.findViewById(R.id.version)).setText(versionName);
-        res.findViewById(R.id.versionItem).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText("App version", versionName);
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(getActivity(), R.string.help_version_copy, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
+//        final String versionName = BuildConfig.VERSION_TITLE;
+//        ((TextView) res.findViewById(R.id.version)).setText(versionName);
+//        res.findViewById(R.id.versionItem).setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+//                android.content.ClipData clip = android.content.ClipData.newPlainText("App version", versionName);
+//                clipboard.setPrimaryClip(clip);
+//                Toast.makeText(getActivity(), R.string.help_version_copy, Toast.LENGTH_SHORT).show();
+//                return true;
+//            }
+//        });
         return res;
     }
 }
