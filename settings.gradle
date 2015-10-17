@@ -1,0 +1,40 @@
+//
+// SDK Core
+//
+include ":actor-sdk:sdk-core"
+include ":actor-sdk:sdk-core:core:"
+include ":actor-sdk:sdk-core:core:shared"
+include ":actor-sdk:sdk-core:core:android"
+include ":actor-sdk:sdk-core:core:cocoa"
+include ":actor-sdk:sdk-core:core:js"
+include ":actor-sdk:sdk-core:runtime:"
+include ":actor-sdk:sdk-core:runtime:shared"
+include ":actor-sdk:sdk-core:runtime:android"
+include ":actor-sdk:sdk-core:runtime:cocoa"
+include ":actor-sdk:sdk-core:runtime:js"
+include ":actor-sdk:sdk-api:api-codegen"
+
+//
+// SDK Android
+//
+
+include ":actor-sdk:sdk-core-android:android-app"
+include ":actor-sdk:sdk-core-android:android-sdk"
+
+//
+// SDK iOS
+//
+
+include ":actor-sdk:sdk-core-ios"
+
+//
+// SDK Web
+//
+
+
+
+//
+// SDK Bots
+//
+
+include ":actor-sdk:sdk-bot:bot-example"
