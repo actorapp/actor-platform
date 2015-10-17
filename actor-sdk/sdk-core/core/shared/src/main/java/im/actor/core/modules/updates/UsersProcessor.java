@@ -1,4 +1,4 @@
-package im.actor.core.modules.internal.users;
+package im.actor.core.modules.updates;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -196,8 +196,7 @@ public class UsersProcessor extends AbsModule implements Processor {
         context().getMessagesModule().getDialogsActor().send(
                 new DialogsActor.UserChanged(u));
         context().getMessagesModule().getDialogsGroupedActor().send(
-                new GroupedDialogsActor.PeerInformationChanged(Peer.user(u.getUid()),
-                        u.getName(), u.getAvatar()));
+                new GroupedDialogsActor.PeerInformationChanged(Peer.user(u.getUid())));
         context().getContactsModule().getContactSyncActor()
                 .send(new ContactsSyncActor.UserChanged(u));
     }
