@@ -95,7 +95,7 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
 
   private val sentCodes = new scala.collection.mutable.HashSet[Code]()
 
-  private val emailTemplate = new String(Files.readAllBytes(Paths.get("mail-template.html")))
+  private val emailTemplate = new String(Files.readAllBytes(Paths.get("/mail-template.html")))
 
   def codeWasNotSent(code: Code) = !sentCodes.contains(code)
 
