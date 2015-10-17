@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java',
+                       '../core-shared/src/main/java']
+        }
+    }
+}
+
+dependencies {
+    compile project(':actor-sdk:sdk-core:runtime:runtime-cocoa')
+}
