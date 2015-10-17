@@ -49,7 +49,6 @@ import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.contacts.ContactsSyncActor;
 import im.actor.core.modules.internal.messages.OwnReadActor;
-import im.actor.core.modules.internal.users.UsersProcessor;
 import im.actor.core.modules.updates.internal.CombinedDifference;
 import im.actor.core.modules.updates.internal.ContactsLoaded;
 import im.actor.core.modules.updates.internal.DialogHistoryLoaded;
