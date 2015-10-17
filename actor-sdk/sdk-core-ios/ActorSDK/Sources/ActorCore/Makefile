@@ -51,7 +51,7 @@ PREFIXES = \
 SOURCES_DIR = $(WORKING_DIR)/Sources
 
 EXCLUDED_FILES	= $(foreach class,$(EXCLUDED_CLASSES),$(subst .,/,$(class)).java)
-JAVA_FILES = $(filter-out $(EXCLUDED_FILES),$(foreach dir,$(SOURCE_ROOTS),$(shell find $(dir) -name "*.java" | awk -F '$(dir)/' '{print $$NF}')))
+JAVA_FILES = $(filter-out $(EXCLUDED_FILES),$(foreach dir,$(SOURCE_ROOTS),$(shell dir2='${dir}/'; find $(dir) -name "*.java" | cut -c $${\#dir2}- )))
 OBJC_FILES = $(addprefix $(SOURCES_DIR)/, $(JAVA_FILES:.java=.m))
 OBJECT_FILES = $(addprefix $(OBJ_DIR)/, $(JAVA_FILES:.java=.o))
 SOURCE_PATHS = $(subst $(space),:,$(SOURCE_ROOTS))
