@@ -45,7 +45,7 @@ EXCLUDED_CLASSES = \
     com.google.j2objc.annotations.Propery
 
 PREFIXES = \
-    --prefixes $(SDK_ROOT)/sdk-core/runtime/runtime-cocoa/prefixes.properties \
+    --prefixes $(SDK_ROOT)/sdk-core/runtime/runtime-cocoa/src/main/prefixes.properties \
 	--prefixes $(SDK_ROOT)/sdk-core/core/core-cocoa/prefixes.properties
 
 SOURCES_DIR = $(WORKING_DIR)/Sources
