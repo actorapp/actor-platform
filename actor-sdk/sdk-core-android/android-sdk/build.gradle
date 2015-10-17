@@ -1,29 +1,10 @@
-
-
-repositories {
-    mavenCentral()
-    jcenter()
-    maven { url 'https://mint.splunk.com/gradle/' }
-}
-
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.3.0'
-        // classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
     }
 }
 
 apply plugin: 'com.android.library'
-// apply plugin: 'com.neenbedankt.android-apt'
-
-def basicVersion = '1.0'
-def customVersionCode = '10240';
-if (project.hasProperty('buildIndex')) {
-    project.version = basicVersion + '.' + project.buildIndex
-    customVersionCode = '' + project.buildIndex
-} else {
-    project.version = 'debug'
-}
 
 android {
 
@@ -33,12 +14,12 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode Integer.valueOf(customVersionCode)
-        versionName project.version
     }
 
-    signingConfigs {
-        release
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
+        }
     }
 
 //    buildTypes {
@@ -132,9 +113,9 @@ android {
 //        targetCompatibility JavaVersion.VERSION_1_6
 //    }
 //
-//    lintOptions {
-//        abortOnError false
-//    }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -143,44 +124,30 @@ dependencies {
     compile project(':actor-sdk:sdk-core:core:android')
     compile 'com.droidkit:progress:0.5'
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
-    compile 'com.facebook.fresco:fresco:0.1.0'
-    compile 'com.facebook.rebound:rebound:0.3.7'
-    compile('com.github.chrisbanes.photoview:library:1.2.3') {
+    compile 'com.facebook.fresco:fresco:0+'
+    compile 'com.facebook.rebound:rebound:0+'
+    compile('com.github.chrisbanes.photoview:library:1+') {
         exclude module: 'support-v13'
     }
-    compile 'com.getbase:floatingactionbutton:1.5.1'
-    compile 'com.afollestad:material-dialogs:0.7.3.1'
-    compile 'org.pegdown:pegdown:1.5.0'
+    compile 'com.getbase:floatingactionbutton:1+'
+    compile 'com.afollestad:material-dialogs:0+'
+    compile 'org.pegdown:pegdown:1+'
 
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
 
     // Android Support
-    compile 'com.android.support:support-v4:23.0.1'
-    compile 'com.android.support:support-v13:23.0.1'
-    compile 'com.android.support:appcompat-v7:23.0.1'
-    compile 'com.android.support:palette-v7:23.0.1'
-    compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile 'com.android.support:support-v4:23+'
+    compile 'com.android.support:support-v13:23+'
+    compile 'com.android.support:appcompat-v7:23+'
+    compile 'com.android.support:palette-v7:23+'
+    compile 'com.android.support:recyclerview-v7:23+'
 
-    //GCM
-    releaseCompile 'com.google.android.gms:play-services-gcm:7.5.0'
-    debugCompile 'com.google.android.gms:play-services-gcm:7.5.0'
-
-    // Integration
+//    //GCM
+//    releaseCompile 'com.google.android.gms:play-services-gcm:7.8.0'
+//    debugCompile 'com.google.android.gms:play-services-gcm:7.8.0'
 
 //    // Annotation processing
 //    apt "org.androidannotations:androidannotations:3.3.2"
 //    compile "org.androidannotations:androidannotations-api:3.3.2"
-}
-
-task dist(dependsOn: ['assembleRelease', 'assembleFree']) {
-    doFirst {
-        println "##teamcity[buildNumber '${project.version}']"
-    }
-}
-
-def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('dd/MM/yy HH:mm:ss')
-    return formattedDate
 }
