@@ -128,3 +128,4 @@ actor-sdk/sdk-core/sdk-android/build
 actor-sdk/sdk-core/app-android/build
 npm-debug.log
 build
+actor-sdk/sdk-core/runtime/js/war
