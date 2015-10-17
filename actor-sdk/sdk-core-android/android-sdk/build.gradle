@@ -121,7 +121,7 @@ android {
 dependencies {
 
     // UI
-    compile project(':actor-sdk:sdk-core:core:android')
+    compile project(':actor-sdk:sdk-core:core:core-android')
     compile 'com.droidkit:progress:0.5'
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
     compile 'com.facebook.fresco:fresco:0+'
