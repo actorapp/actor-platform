@@ -96,22 +96,34 @@ public class JsKeyValueStorage implements KeyValueStorage {
     }
 
     @Override
+    public byte[] loadItem(long key) {
+        String res = storage.getItem(getId(key));
+        if (res == null) {
+            return null;
+        } else {
+            return fromBase64(res);
+        }
+    }
+
+    @Override
+    public List<KeyValueRecord> loadItems(long[] keys) {
+        // TODO: Implement
+        return null;
+    }
+
+    @Override
+    public List<KeyValueRecord> loadAllItems() {
+        // TODO: Implement
+        return null;
+    }
+
+    @Override
     public void clear() {
         for (long id : items) {
             storage.removeItem(getId(id));
         }
         storage.removeItem("kv_" + prefix + "_index");
         items.clear();
-    }
-
-    @Override
-    public byte[] getValue(long id) {
-        String res = storage.getItem(getId(id));
-        if (res == null) {
-            return null;
-        } else {
-            return fromBase64(res);
-        }
     }
 
     private void saveIndex() {
