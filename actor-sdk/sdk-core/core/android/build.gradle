@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    compile project(':runtime:android')
+    compile project(':actor-sdk:sdk-core:runtime:android')
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
 }
