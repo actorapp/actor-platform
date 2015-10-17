@@ -129,3 +129,5 @@ actor-sdk/sdk-core/app-android/build
 npm-debug.log
 build
 actor-sdk/sdk-core/runtime/js/war
+actor-sdk/sdk-core-ios/ActorSDK.xcodeproj/project.xcworkspace/xcuserdata
+actor-sdk/sdk-core-ios/ActorApp.xcodeproj/project.xcworkspace/xcuserdata
