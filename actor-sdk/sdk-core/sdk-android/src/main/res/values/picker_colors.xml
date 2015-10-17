@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="picker_globalWindowBackground">#fffffc</color>
+    <color name="picker_globalWindowBackgroundTranslucent">#d8eeeeee</color>
+
+    <color name="picker_grey">#999</color>
+    <color name="picker_grey_darker">#8e8e8e</color>
+    <color name="picker_black">#000000</color>
+    <color name="picker_list_divider">#dadada</color>
+
+    <color name="picker_main_color">#0277bd</color>
+    <color name="picker_main_color_picturepicker">#333</color>
+
+    <color name="picker_status_color">#808080</color>
+    <color name="picker_status_empty_color">#b2b2b2</color>
+
+    <color name="picker_controller_background_default">@color/picker_main_color</color>
+    <color name="picker_controller_background_pressed">#0069a8</color>
+    <color name="picker_controller_background_empty_default">#333333</color>
+    <color name="picker_controller_background_empty_pressed">#777</color>
+    <color name="picker_controller_text_color_disabled">#88ffffff</color>
+    <color name="picker_controller_text_color_default">#fff</color>
+
+    <color name="picker_explorer_item_title">#000000</color>
+    <color name="picker_explorer_item_subtitle">#a6a6a6</color>
+    <color name="picker_file_item_background_pressed">#efefef</color>
+    <color name="picker_file_listitem_divider">#c8c8c8</color>
+    <color name="picker_file_item_image_background">#ebebeb</color>
+    <color name="picker_file_item_image_color">#555555</color>
+    <color name="picker_file_searchbox_hint_color">#9ac9e5</color>
+    <color name="picker_file_searchbox_focused_color">#fff</color>
+
+    <color name="picker_picture_content_background">#000</color>
+    <color name="picker_picture_ab_background">#b0444444</color>
+    <color name="picker_picture_item_folder_title_background">#88000000</color>
+    <color name="picker_picture_item_folder_title_color">#f8f8f8</color>
+    <color name="picker_picture_item_folder_background">#1f1f1f</color>
+    <color name="picker_picture_item_selection_selected">@color/picker_main_color</color>
+    <color name="picker_picture_item_selection">#88000000</color>
+
+    <!-- Map -->
+    <color name="picker_map_nearby_header_color">@color/picker_main_color</color>
+    <color name="picker_map_nearby_divider">@color/picker_list_divider</color>
+    <color name="picker_map_place_subtitle">@color/picker_grey</color>
+    <color name="picker_map_controller_subtitle">@color/picker_grey_darker</color>
+    <color name="picker_map_controller_background_normal">#ffffffff</color>
+    <color name="picker_map_controller_background_pressed">#fff</color>
+
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <scale android:fromXScale="80%p"
+           android:toXScale="100%p"
+           android:fromYScale="80%p"
+           android:toYScale="100%p"
+           android:pivotX="50%p"
+           android:pivotY="50%p"
+           android:duration="@integer/activity_switch_time"/>
+
+    <alpha android:fromAlpha="0.5"
+           android:toAlpha="1.0"
+           android:duration="@integer/activity_switch_time"/>
+
+</set>

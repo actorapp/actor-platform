@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <FrameLayout
+        android:id="@+id/messagesFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/mentionsList" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/quoteContainer"
+        android:scaleType="fitXY"
+        android:src="@drawable/conv_field_shadow" />
+
+
+    <FrameLayout
+        android:id="@+id/quoteContainer"
+        android:layout_above="@+id/mentionsList"
+        android:background="@color/bg_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:drawableLeft="@drawable/ic_editor_format_quote_gray"
+            android:id="@+id/quote_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:gravity="left|center_vertical"
+            android:layout_gravity="left|center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="48dp" />
+
+        <FrameLayout
+
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="right|bottom">
+
+            <ImageView
+                android:id="@+id/ib_close_quote"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/clickable_background"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_content_clear_gray" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <ListView
+        android:layout_gravity="bottom"
+        android:id="@+id/mentionsList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/fl_send_panel"
+        android:background="@color/bg_main"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@drawable/selector" />
+
+
+    <FrameLayout
+        android:id="@+id/fl_send_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@color/bg_main"
+        android:minHeight="56dp">
+
+        <EditText
+            android:id="@+id/et_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:gravity="left|center_vertical"
+            android:hint="@string/chat_message_hint"
+            android:inputType="text|textCapSentences|textAutoCorrect|textMultiLine"
+            android:imeOptions="flagNoExtractUi"
+            android:maxLines="4"
+            android:paddingBottom="10dp"
+            android:paddingLeft="56dp"
+            android:paddingRight="112dp"
+            android:paddingTop="10dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_hint"
+            android:textCursorDrawable="@null"
+            android:cursorVisible="true"
+            android:textSize="16sp" />
+
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="left|bottom">
+
+            <ImageButton
+                android:id="@+id/ib_attach"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_flat"
+                android:padding="7dp"
+                android:src="@drawable/button_attach" />
+
+            <View
+                android:id="@+id/attachAnchor"
+                android:layout_width="56dp"
+                android:layout_height="0dp"
+                android:layout_gravity="top"
+                android:layout_marginTop="46dp" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_marginRight="56dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="right|bottom">
+
+            <ImageView
+                android:id="@+id/ib_emoji"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/clickable_background"
+                android:padding="7dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_emoji" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="right|bottom">
+
+            <im.actor.messenger.app.view.TintImageView
+                android:id="@+id/ib_send"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_flat" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/kickedFromChat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_backyard"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="@string/chat_not_member"
+                android:textAllCaps="true"
+                android:textColor="@color/primary"
+                android:textSize="18sp" />
+        </FrameLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/edit"
+        android:icon="@drawable/ic_edit_white_24dp"
+        android:title="@string/profile_menu_rename"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/remove"
+        android:title="@string/profile_menu_remove"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/add"
+        android:title="@string/profile_menu_add"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/share"
+        android:title="Share contact"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/encryption"
+        android:title="@string/profile_menu_security"
+        android:visible="false"
+        app:showAsAction="never" />
+</menu>

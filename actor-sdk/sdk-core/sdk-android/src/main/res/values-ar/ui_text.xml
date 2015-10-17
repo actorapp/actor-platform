@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <string name="app_name">Actor</string>
+    <string name="app_locale">Ar</string>
+
+    <string name="dialog_ok">حسنا</string>
+    <string name="dialog_cancel">الغاء</string>
+    <string name="dialog_yes">نعم</string>
+    <string name="dialog_no">لا</string>
+    <string name="dialog_try_again">حاول مرة اخرى</string>
+
+    <string name="pick_photo_camera">تصور بالكاميرا</string>
+    <string name="pick_photo_gallery"> صورة من الاستيديو </string>
+    <string name="pick_photo_remove">امسح الصورة</string>
+    <string name="pick_downloading">جاري تحميل</string>
+
+    <string name="progress_common">جاري</string>
+
+    <string name="toast_no_sdcard">لا يوجد ذاكرة</string>
+    <string name="toast_phone_copied">تم نسخ الرقم</string>
+    <string name="toast_messages_copied">تم نسخ الرسالة</string>
+    <string name="toast_unable_kick">خطأ بطرد الرقم المجموعة</string>
+    <string name="toast_unable_add">خطأ بأضافة الرقم للمجموعة</string>
+    <string name="toast_already_member">هذا المستخدم عضو بالمجموعة</string>
+    <string name="toast_empty_name">لايمكن ابقائه فارغا</string>
+    <string name="toast_unable_change">لا يمكن تغيير الاسم</string>
+
+    <string name="menu_share">مشاركة</string>
+    <string name="menu_save">حفظ بالهاتف</string>
+    <string name="menu_saved">تم حفظ</string>
+    <string name="menu_next">تالي</string>
+
+    <string name="invite_message">هيا بنا نبدل الى اكتور https://actor.im/dl</string>
+
+    <!-- Tour -->
+    <string name="tour_sign_up">تسجيل</string>
+    <string name="tour_sign_in">تسجيل دخول</string>
+    <string name="tour_sign_using_tel">مع رقم الهاتف</string>
+    <string name="tour_sign_using_email">مع الايميل </string>
+    <string name="tour_sign_using_oauth">مع قوقل</string>
+    <string name="tour_back_to_top">Back to top</string>
+
+    <string name="tour_welcome_title">اكتور</string>
+    <string name="tour_welcome_subtitle">محادثات آمنة بينك وبين اصدقائك و فريقك </string>
+
+    <string name="tour_groups_title">محادثة مجموعة كبيرة !!</string>
+    <string name="tour_groups_text">لا يصدق دردشات المجموعة الكبيرة. أكثر من 300 المستخدمين في مجموعة واحدة. التواصل مع فريقك واتخاذ القرارات معا .</string>
+
+    <string name="tour_everywhere_title">العمل في كل مكان</string>
+    <string name="tour_everywhere_text">بغض النظر عن مكان وجودك في مترو الأنفاق أو على التلال الجبلية . سوف تصل رسالتك إلى الشعب دائما على حق</string>
+
+    <string name="tour_secure_title">امن &amp; وخصوصي</string>
+    <string name="tour_secure_text">وتأكدوا أن أحدا لن يقرأ رسائلك . تبادل الوثائق والملفات و الصور من دون الخوف من أنهم يمكن أن تقع في الأيدي الخطأ .</string>
+
+    <!-- Phone Sign Fragment -->
+    <string name="auth_phone_title">تاكد من الرقم</string>
+    <string name="auth_phone_hint">رجاءً تــأكد من رقمك و رمز الدولة</string>
+    <string name="auth_phone_number_hint">رقم الهاتف</string>
+    <string name="auth_phone_get_code">تاكيد الرقم</string>
+    <string name="auth_phone_why">لماذا نحتاج رقمك </string>
+    <string name="auth_phone_why_description">نحن نستخدم الهاتف للمصادقة لأن هذا هو الطريق الأكثر أمانا في أيامنا هذه. </string>
+    <string name="auth_phone_why_done">تم </string>
+    <string name="auth_phone_country_title">اختر دولتك</string>
+    <string name="auth_phone_error_invalid_country">دولة خاطئ</string>
+
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">اختر نوع المصادقة</string>
+    <string name="choose_auth_type_hint">اختر نوع المصداقية</string>
+    <string name="choose_auth_type_sign_up">تسجيل</string>
+    <string name="choose_auth_type_sign_in">تسجيل دخول</string>
+    <string name="choose_auth_type_using_tel">مع رقم الهاتف</string>
+    <string name="choose_auth_type_using_email">مع الايميل</string>
+
+
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">تأكيد الايميل</string>
+    <string name="auth_email_hint">رجاءً ضع ايميلك </string>
+    <string name="auth_email_edit_text_hint">ايميل</string>
+    <string name="auth_email_get_code">تأكيد الايميل</string>
+
+    <!-- Sign In Fragment -->
+    <string name="auth_code_phone_hint">ارسلنا  لك كود التفعيل التفعيل {0}</string>
+    <string name="auth_code_email_hint">ارسلنا لك كود لتفعيل {0}</string>
+    <string name="auth_code_title">ضح رقم التفعيل هنا</string>
+    <string name="auth_code_sms_hint"></string>
+    <string name="auth_code_done">تم</string>
+    <string name="auth_code_wrong_number">خطأ برقم الهاتف</string>
+    <string name="auth_code_wrong_email">ايميل خطأ</string>
+    <string name="auth_code_phone_change">هل تريد تغيير رقم هاتفك</string>
+    <string name="auth_code_email_change">هل تريد تغيير ايميلك</string>
+    <string name="auth_code_change_yes">تغيير</string>
+
+    <!-- Sign Up Fragment -->
+    <string name="auth_profile_title">معلومات حسابك</string>
+    <string name="auth_profile_hint">رجاءً ضع اسمك و صورة اختيارية</string>
+    <string name="auth_profile_name_hint">اسمك الكريم</string>
+    <string name="auth_profile_done">بدأ محادثة</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_empty_phone">رجاْءً ضع رقم هاتفك</string>
+    <string name="auth_error_empty_email">رجاءً ضع ايميلك</string>
+    <string name="auth_error_code_expired">كود غير صالح</string>
+    au
+    <string name="auth_error_code_invalid">الكود خطأ يرجى المحاولة مرة اخرى</string>
+    <string name="auth_error_failed_get_oauth2_token">غير قادر على الاتصال بالسيرفر </string>
+
+    <!-- Typing -->
+    <string name="typing_private">جاري الكتابة</string>
+    <string name="typing_group">{0} جاري الكتابة…</string>
+    <string name="typing_group_many">{0} اشخاص يكتبون…</string>
+
+    <!-- Main -->
+    <string name="main_search_hint">اكتب شئ للبحث</string>
+    <string name="main_search_empty">لم اجد شي</string>
+    <string name="main_menu_help">مساعدة</string>
+    <string name="main_menu_search">بحث</string>
+
+    <string name="main_bar_chats">محادثات</string>
+    <string name="main_bar_contacts">جهات اتصال</string>
+
+    <string name="main_fab_compose">تشكل</string>
+    <string name="main_fab_new_group">انشاء مجموعة جديدة</string>
+    <string name="main_fab_join_public_group">انضم الى مجموعة عامة</string>
+    <string name="main_fab_add_contact">اضافة جهة اتصال</string>
+
+    <string name="main_sync_title">المزامنة في التقدم</string>
+    <string name="main_sync_message">من فضلك انتظر دقيقتين بينما نحن تمكين التطبيق الخاص بك .</string>
+
+    <string name="main_empty_title">دعوة أصدقائك</string>
+    <string name="main_empty_invite_hint">لا يجود اي من اصدقائك استخدم برنامج اكتور ماسنجر . اضغط الزر ادناه لدعوة اصدقائك</string>
+    <string name="main_empty_invite_action">اخبر صديق</string>
+    <string name="main_empty_add_hint">او اضف صديقك يدويا</string>
+    <string name="main_empty_add_action">اضف جهة اتصال</string>
+
+    <!-- Own profile/settings -->
+    <string name="settings_share_profile_title">ارسل جهة اتصال…</string>
+    <string name="settings_share_text">رقمي هو {0}</string>
+    <string name="settings_menu_edit_profile">عدل بروفاييلك</string>
+    <string name="settings_menu_change_photo">غير الصورة</string>
+    <string name="settings_header">اعدادات</string>
+    <string name="settings_help">مساعدة</string>
+    <string name="settings_ask">اسأل أسألة</string>
+    <string name="settings_notifications">اشعارات</string>
+    <string name="settings_chat">اعدادات المحادثة</string>
+    <string name="settings_security">الحماية</string>
+
+    <!-- Profile controls -->
+    <string name="phone_menu_call">اتصال {0}</string>
+    <string name="phone_menu_sms">رسالة نصية {0}</string>
+    <string name="phone_menu_share">مشاركة {0}</string>
+    <string name="phone_menu_copy">نسخ</string>
+
+    <!-- Dialogs -->
+    <string name="dialogs_title">محادثات</string>
+    <string name="dialogs_hint">ضغطة مطولة لاعدادات اكثر</string>
+    <string name="dialogs_empty_title">ابدا بالتراسل</string>
+    <string name="dialogs_empty">اختيار اسم من قائمة جهات الاتصال الخاصة بك أو اضغط بالإضافة إلى زر لبدء المحادثة الآن.</string>
+
+    <string name="dialogs_menu_contact_view">اظهر جهة الاتصال</string>
+    <string name="dialogs_menu_contact_rename">اعد تسمية حهة الاتصال </string>
+    <string name="dialogs_menu_conversation_delete">امسح المحادثة</string>
+
+    <string name="dialogs_menu_group_view">اظهار معلومات القروب </string>
+    <string name="dialogs_menu_group_rename">اعادة تسمية</string>
+    <string name="dialogs_menu_group_leave">الخروج من المجموعة</string>
+    <string name="dialogs_menu_group_delete">حذف المجموعة</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">جهات الاتصال</string>
+    <string name="contacts_empty_short">لا يوجد جهات اتصال</string>
+    <string name="contacts_share">اخبر اصدقائك عن اكتور </string>
+    <string name="contacts_add">اضف صديق...</string>
+
+    <string name="contacts_empty_title">ادعو صديق لتطبيق اكتور</string>
+    <string name="contacts_empty_invite_hint">ليس لديك اصدقاء بتطبيق اكتور . يرجى دعوتهم للتطبيق</string>
+    <string name="contacts_empty_invite_action">اخبر صديق</string>
+    <string name="contacts_empty_add_hint">أو يدويا إضافة جهة اتصال عن طريق الضغط على زر زائد أدناه.</string>
+
+    <string name="contacts_menu_remove">احذف {0} من جهات الاتصال </string>
+    <string name="contacts_menu_remove_progress">جاري الحذف …</string>
+    <string name="contacts_menu_edit">عدل الاسم</string>
+
+    <string name="contacts_invite_via_link">ادعو بالرابط</string>
+
+    <!-- Chat -->
+    <string name="chat_menu_group_info">معلومات المجموعة</string>
+    <string name="chat_menu_view_contact">اظهر جهة الاتصال</string>
+    <string name="chat_menu_call">اتصل</string>
+    <string name="chat_menu_files">ملفات</string>
+    <string name="chat_menu_clear_chat">مسح المحادثة</string>
+    <string name="chat_menu_leave_group">خروج من المجموعة</string>
+
+    <string name="chat_attach_place">مكان</string>
+    <string name="chat_attach_file">ملف</string>
+    <string name="chat_attach_take_video">صور فيديو</string>
+    <string name="chat_attach_take_photo">صور صورة</string>
+    <string name="chat_attach_gallery">استيديو</string>
+
+    <string name="chat_message_hint">رسالتي…</string>
+
+    <string name="chat_new_messages">رسالة جديدة</string>
+    <string name="chat_add_to_contacts">اضافة الى جهات الاتصال</string>
+    <string name="chat_add_to_contacts_progress">جاري اضافة…</string>
+
+    <string name="chat_doc_open">فتح</string>
+    <string name="chat_doc_send">ارسال</string>
+    <string name="chat_doc_stop">توقف</string>
+    <string name="chat_doc_download">تنزيل</string>
+
+    <string name="chat_not_member">انت ليس عضو بالمجموعة</string>
+
+    <string name="chat_unsupported">رسالة غير معتمد في هذا الإصدار. يرجى الانتظار ل تحديث التطبيق لرؤية الرسالة.</string>
+
+    <!-- Profile -->
+    <string name="profile_title">بروفايل</string>
+    <string name="profile_shared_header">نشر</string>
+    <string name="profile_shared_files">مستندات</string>
+    <string name="profile_shared_media">وسائط</string>
+    <string name="profile_settings_header">خيارات</string>
+    <string name="profile_settings_notifications">اشعارات</string>
+
+    <string name="profile_adding">جاري اضافة الى …</string>
+    <string name="profile_removing">جاري حذف العضو…</string>
+
+    <string name="profile_menu_rename">اعادة تسمية</string>
+    <string name="profile_menu_call">اتصل</string>
+    <string name="profile_menu_remove">حذف من جهات الاتصال</string>
+    <string name="profile_menu_add">اضافة الى جهات الاتصال</string>
+    <string name="profile_menu_security">الحماية</string>
+    <string name="profile_cant_find_user">غير قادر على العثور هذا المستخدم</string>
+
+    <!-- Group -->
+    <string name="group_title">معلومات المجموعة</string>
+    <string name="group_members_header">الاعضاء</string>
+    <string name="group_members_count">{0} of {1}</string>
+
+    <string name="group_admin">مدير المجموعة</string>
+
+    <string name="group_created_by">انشأ {0}</string>
+    <string name="group_created_by_you">تم انشاءها بواسطتك</string>
+
+    <string name="group_adding">جاري الاضافة الى المجموعة…</string>
+    <string name="group_removing">جاري الحذف من المجموعة…</string>
+
+    <string name="group_context_message">رسالة {0}</string>
+    <string name="group_context_call">اتصل {0}</string>
+    <string name="group_context_view">اظهر {0}</string>
+    <string name="group_context_remove">احذف {0} من المجموعة</string>
+
+    <string name="group_menu_add">اضف رقم</string>
+    <string name="group_menu_leave">غادر المجموعة</string>
+    <string name="group_menu_change_theme">تغيير الثيم</string>
+    <string name="group_menu_change_photo">تغيير الصورة</string>
+    <string name="group_menu_integration_token">اخذ التكامل</string>
+
+    <string name="group_shared_header">مشاركة</string>
+    <string name="group_shared_files">مستندات</string>
+
+    <string name="group_add_member">اضافة رقم</string>
+
+    <string name="group_not_member">انت لست عضو بهذه المجموعة</string>
+
+    <!-- Avatar -->
+    <string name="avatar_title_your">صورتك</string>
+    <string name="avatar_title_person">صورة</string>
+    <string name="avatar_title_group">صورة المجموعة</string>
+    <string name="avatar_no_photo">لا يوجد صورة</string>
+    <string name="avatar_menu_edit">تعديل</string>
+    <string name="avatar_menu_set_as">ضع كـ…</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">اضافة جهة اتصال</string>
+    <string name="add_contact_phone_hint">ادخل رقم الهاتف</string>
+    <string name="add_contact_bar_cancel">الغاء</string>
+    <string name="add_contact_bar_continue">متابعة</string>
+
+    <!-- Compose -->
+    <string name="compose_title">رسالة جديدة</string>
+
+    <!-- Create Group -->
+    <string name="create_group_title">انشاء مجموعة جديدة</string>
+    <string name="create_group_name_hint">اسم المجموعة</string>
+    <string name="create_group_hint">أدخل موضوع المجموعة ووضع صورة جماعية اختيارية</string>
+    <string name="create_group_search_hint">ابحث بالاسم</string>
+    <string name="create_group_done">تم</string>
+
+    <!-- Group add -->
+    <string name="group_add_title">اصافة عضو</string>
+
+    <!-- Join public group -->
+    <string name="join_public_group_title">مجموعات عامة</string>
+    <string name="join_public_group_members_count">اعضاء: </string>
+    <string name="join_public_group_friends_count">اصدقاء: </string>
+    <string name="join">انضمام</string>
+    <string name="open">فتح</string>
+    <string name="join_public_group_top_title">مرحبا!</string>
+    <string name="join_public_group_top_subtitle">تحقق من أعلى الأحاديث العامة</string>
+    <string name="join_public_group_top_by_friends_title">الدردشة مع الأصدقاء!</string>
+    <string name="join_public_group_top_by_friends_subtitle">أعلى دردشات مع أصدقائك</string>
+    <string name="join_public_group_all_groups">كافة المجموعات</string>
+
+
+    <!-- Invite link-->
+    <string name="invite_link_title">رابط للدعوة</string>
+    <string name="invite_link_hint">اي شخص مثبت لديه برنامج اكتور يستطيع الانصمام بالرابط</string>
+    <string name="invite_link_action_copy">نسخ الرابط</string>
+    <string name="invite_link_action_revoke">إلغاء صلة</string>
+    <string name="invite_link_action_share">رابط المشاركة</string>
+    <string name="invite_link_copied">رابط نسخها إلى الحافظة</string>
+    <string name="invite_link_chooser_title">دعوة إلى مجموعة عن طريق وصلة</string>
+    <string name="invite_link_error_get_link">غير قادر على الحصول على دعوة صلة</string>
+    <string name="invite_link_error_revoke_link">غير قادر على إلغاء دعوة صلة</string>
+    <string name="invite_link_empty_view">تحميل دعوة صلة</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">التكامل رمز</string>
+    <string name="integration_token_hint">هذا المنطلق يمكن بو تستخدم لإعداد التكامل مع هذه المجموعة</string>
+    <string name="integration_token_action_copy">نسخة رمزية</string>
+    <string name="integration_token_action_revoke">إلغاء رمز</string>
+    <string name="integration_token_action_share">حصة رمزية</string>
+    <string name="integration_token_copied">نسخ رمز إلى الحافظة</string>
+    <string name="integration_token_chooser_title">إرسال رمز</string>
+    <string name="integration_token_error_get_token">تعذر الحصول على رمز</string>
+    <string name="integration_token_error_revoke_link">غير قادر على إلغاء رمز</string>
+    <string name="integration_token_error_revoke_link_not_admin">غير قادر على إلغاء رمز - لم تكن المشرف على هذه المجموعة</string>
+    <string name="integration_token_empty_view">التكامل تحميل المنوال</string>
+
+    <!-- Documents -->
+    <string name="documents_title">مستندات</string>
+    <string name="documents_empty">لا يوجد مستندات بعد</string>
+
+    <!-- Edit name -->
+    <string name="edit_name_title_you">أدخل أسمك</string>
+    <string name="edit_name_title_contact">أدخل اسم جهة الاتصال</string>
+    <string name="edit_name_title_group">ادخل اسم المجموعة</string>
+    <string name="edit_name_cancel">الغاء</string>
+    <string name="edit_name_save">حفظ</string>
+    <string name="edit_name_process">جاري تغيير الاسم…</string>
+
+    <!-- Help -->
+    <string name="help_title">مساعدة</string>
+    <string name="help_about_title">حول</string>
+    <string name="help_about_subtitle">حول التطبيق والخدمة</string>
+    <string name="help_faq_title">التعليمات</string>
+    <string name="help_faq_subtitle">أسئلة مكررة</string>
+    <string name="help_feedback_title">ردود الفعل</string>
+    <string name="help_feedback_subtitle">تعطينا ردود فعل</string>
+    <string name="help_version_title">إصدار التطبيق</string>
+    <string name="help_version_copy">نسخة التطبيق نسخها إلى الحافظة</string>
+    <string name="help_email_title">ارسال ايميل</string>
+    <string name="help_email_subject">ردود الفعل</string>
+
+    <!-- Notifications -->
+    <string name="not_title">اشعارات</string>
+    <string name="not_conv_tones">نغمات المحادثة</string>
+    <string name="not_conv_tones_subtitle">تشغيل الأصوات للرسائل الواردة والصادرة.</string>
+    <string name="not_sound">صوت</string>
+    <string name="not_sound_subtitle">تمكين أصوات إشعارات</string>
+    <string name="not_vibration">اهتزاز</string>
+    <string name="not_vibration_subtitle">تمكين الاهتزاز في الإخطارات</string>
+    <string name="not_show_text">مشاهدة الأسماء والرسائل</string>
+    <string name="not_show_text_subtitle">عرض نص الرسالة واسم المرسل في لوحة إعلام</string>
+
+    <!-- Pick user -->
+    <string name="pick_user_title">اختيار شخص</string>
+
+    <!-- Chat Settings -->
+    <string name="settings_chat_title">إعدادات الدردشة</string>
+    <string name="settings_chat_send_enter">ترسل عن انتر</string>
+    <string name="settings_chat_send_enter_subtitle">الصغط على انتر سوف يرسل </string>
+
+    <string name="settings_chat_markdown">تخفيض</string>
+    <string name="settings_chat_markdown_subtitle">التخفيض مفعل</string>
+
+    <!-- Security -->
+    <string name="security_title">حماية</string>
+    <string name="security_terminate_title">إنهاء جميع الدورات</string>
+    <string name="security_terminate_subtitle">تسجيل الخروج على جميع الأجهزة</string>
+    <string name="security_terminate_message">ل تريد التأكد من خروج على كافة الأجهزة الأخرى؟ ستفقد جميع البيانات على أن الأجهزة.</string>
+    <string name="security_authorized_header">الأجهزة والخدمات المرخص لها</string>
+    <string name="security_authorized_loading">جاري…</string>
+
+    <!-- Alerts -->
+    <string name="alert_delete_messages_text">هل تريد بالتأكيد حذف {0} رسائل؟</string>
+    <string name="alert_delete_messages_yes">حذف</string>
+
+    <string name="alert_delete_all_messages_text">هل تريد بالتأكيد حذف كل الرسائل من هذه الدردشة؟</string>
+    <string name="alert_delete_all_messages_yes">حذف</string>
+
+    <string name="alert_remove_contact_text">هل تريد التأكد من إزالة {0} من الأسماء؟</string>
+    <string name="alert_remove_contact_yes">ازالة</string>
+
+    <string name="alert_group_add_text">ل تريد التأكد من إضافة {0} إلى مجموعة؟</string>
+    <string name="alert_group_add_yes">إضافة</string>
+
+    <string name="alert_group_remove_text">هل تريد التأكد من إزالة {0} من المجموعة؟</string>
+    <string name="alert_group_remove_yes">إزالة</string>
+
+    <string name="alert_invite_text">"{0}" غير مسجل في ممثل. أدعوه إلى الفاعل؟</string>
+    <string name="alert_invite_yes">دعوة</string>
+
+    <!-- Media -->
+    <string name="media">وسائط</string>
+    <string name="media_picture">صور</string>
+    <string name="media_pager" formatted="false">%d of %d</string>
+
+    <!-- Dialogs -->
+    <string name="alert_leave_group_message">هل تريد التأكد من خروج مجموعة "٪ 1 $ S"؟ </string>
+    <string name="alert_leave_group_yes">خروج</string>
+
+    <string name="alert_delete_group_title">حذف مجموعة "٪ 1 $ S"؟</string>
+    <string name="alert_delete_group_yes">حذف</string>
+
+    <string name="alert_delete_chat_message">حذف الدردشة مع "٪ 1 $ S"؟</string>
+    <string name="alert_delete_chat_yes">حذف</string>
+
+    <string name="alert_revoke_link_message">إلغاء الارتباط؟</string>
+    <string name="alert_revoke_link_yes">نعم</string>
+
+    <string name="alert_revoke_integration_token_message">إلغاء المنوال؟</string>
+    <string name="alert_revoke_integration_token_yes">سحب</string>
+
+    <!-- Errors -->
+    <string name="error_connection">غير قادر على الاتصال. يرجى التحقق من اتصالك بالإنترنت وحاول
+         مرة أخرى. \ n \ n الرجاء إعادة تشغيل الهاتف الخاص بك إذا استمرت المشكلة الاتصال.
+    </string>
+    <string name="error_unknown">غير قادر على تنفيذ العملية. \ n \ n الرجاء، والتحقق من الهاتف الخاص بك، وتمهيد إذا كانت المشكلة
+         لا يزال قائما.
+    </string>
+    <string name="error_view_url">نوع غير معروف URL</string>
+</resources>
