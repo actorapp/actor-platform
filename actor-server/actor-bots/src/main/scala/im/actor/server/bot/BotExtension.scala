@@ -37,6 +37,16 @@ trait BotExtension extends Extension {
   def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[Token]
 
   /**
+   * Creates a bot user
+   *
+   * @param nickname
+   * @param name
+   * @param isAdmin
+   * @return
+   */
+  def create(nickname: String, name: String, isAdmin: Boolean): Future[Token]
+
+  /**
    * Check if the bot user already exists
    * @param userId
    * @return Future containing check result
@@ -75,6 +85,12 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
   private lazy val userExt = UserExtension(system)
   private lazy val tokensKV = ShardakkaExtension(system).simpleKeyValue(BotExtension.tokensKV)
   private lazy val db = DbExtension(system).db
+
+  override def create(nickname: String, name: String, isAdmin: Boolean): Future[Token] =
+    for {
+      id ← userExt.nextId()
+      token ← create(id, nickname, name, isAdmin)
+    } yield token
 
   override def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[Token] = {
     val token = ACLUtils.randomHash()

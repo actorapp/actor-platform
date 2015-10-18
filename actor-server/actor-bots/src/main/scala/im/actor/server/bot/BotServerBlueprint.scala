@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.scaladsl.{ Flow, Merge, Source }
 import im.actor.api.rpc.Update
 import im.actor.bots.BotMessages
-import im.actor.server.bot.services.{ KeyValueService, MessagingService }
+import im.actor.server.bot.services.{ BotsService, KeyValueService, MessagingService }
 import upickle.Js
 
 import scala.concurrent.Future
@@ -12,13 +12,14 @@ import scala.concurrent.Future
 final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSystem) {
 
   import BotMessages._
-  import BotService._
+  import BotServiceBase._
   import akka.stream.scaladsl.FlowGraph.Implicits._
   import system.dispatcher
 
   private lazy val updBuilder = new BotUpdateBuilder(botUserId, botAuthId, system)
   private val msgService = new MessagingService(system)
   private val kvService = new KeyValueService(system)
+  private val botsService = new BotsService(system)
 
   val flow: Flow[BotRequest, BotMessageOut, Unit] = {
     val updSource =
@@ -62,8 +63,9 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
     resultFuture map (BotResponse(id, _))
   }
 
-  private val services: PartialFunction[String, BotService] = {
-    case "keyvalue"  ⇒ kvService
-    case "messaging" ⇒ msgService
+  private val services: PartialFunction[String, BotServiceBase] = {
+    case Services.KeyValue  ⇒ kvService
+    case Services.Messaging ⇒ msgService
+    case Services.Bots      ⇒ botsService
   }
 }

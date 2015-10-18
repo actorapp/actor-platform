@@ -6,7 +6,7 @@ import upickle.default._
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-object BotService {
+object BotServiceBase {
   import BotMessages._
 
   type BotUserId = Int
@@ -34,10 +34,10 @@ object BotService {
   case class WeakRequestHandler(handle: (BotUserId, BotAuthId) ⇒ Future[BotResponseBody])
 }
 
-trait BotService {
+trait BotServiceBase {
   import BotMessages._
 
-  import BotService._
+  import BotServiceBase._
 
   def handlers: PartialFunction[RequestBody, WeakRequestHandler]
 }
