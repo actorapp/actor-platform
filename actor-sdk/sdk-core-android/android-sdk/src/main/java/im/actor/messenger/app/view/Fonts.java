@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import java.util.HashMap;
 
 import im.actor.messenger.app.AppContext;
+import im.actor.runtime.android.AndroidContext;
 
 /**
  * Created by ex3ndr on 01.09.14.
@@ -25,22 +26,22 @@ public class Fonts {
     }
 
     public static Typeface regular() {
-        return load(AppContext.getContext(), "Regular");
+        return load(AndroidContext.getContext(), "Regular");
     }
 
     public static Typeface italic() {
-        return load(AppContext.getContext(), "Italic");
+        return load(AndroidContext.getContext(), "Italic");
     }
 
     public static Typeface bold() {
-        return load(AppContext.getContext(), "Bold");
+        return load(AndroidContext.getContext(), "Bold");
     }
 
     public static Typeface medium() {
-        return load(AppContext.getContext(), "Medium");
+        return load(AndroidContext.getContext(), "Medium");
     }
 
     public static Typeface light() {
-        return load(AppContext.getContext(), "Light");
+        return load(AndroidContext.getContext(), "Light");
     }
 }

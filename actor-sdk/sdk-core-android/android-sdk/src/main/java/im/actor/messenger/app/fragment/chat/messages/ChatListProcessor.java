@@ -29,11 +29,11 @@ import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.markdown.AndroidMarkdown;
 import im.actor.runtime.generic.mvvm.ListProcessor;
 
-import static im.actor.messenger.app.core.ActorSDK.groups;
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.myUid;
-import static im.actor.messenger.app.core.ActorSDK.users;
 import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
+import static im.actor.sdk.ActorSDKMessenger.groups;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
 public class ChatListProcessor implements ListProcessor<Message> {
 

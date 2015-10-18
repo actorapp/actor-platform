@@ -10,11 +10,11 @@ import android.widget.TextView;
 
 import im.actor.core.entity.Message;
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.TextUtils;
+import im.actor.messenger.app.util.Strings;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
 
-import static im.actor.messenger.app.core.ActorSDK.myUid;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
 
 public class TextHolder extends MessageHolder {
 
@@ -120,7 +120,7 @@ public class TextHolder extends MessageHolder {
             status.setVisibility(View.GONE);
         }
 
-        time.setText(TextUtils.formatTime(message.getDate()));
+        time.setText(Strings.formatTime(message.getDate()));
     }
 
     class CustomLinkMovementMethod extends LinkMovementMethod {

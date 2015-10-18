@@ -11,7 +11,7 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
 public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
 

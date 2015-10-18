@@ -24,7 +24,7 @@ import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
 public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, DialogHolder> {
 

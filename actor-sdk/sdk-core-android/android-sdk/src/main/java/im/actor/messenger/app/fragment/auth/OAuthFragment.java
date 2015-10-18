@@ -10,11 +10,8 @@ import android.webkit.WebViewClient;
 
 import im.actor.messenger.R;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
-/**
- * Created by korka on 02.07.15.
- */
 public class OAuthFragment extends BaseAuthFragment {
     WebView wv;
 

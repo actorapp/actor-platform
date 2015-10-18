@@ -12,10 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.style.URLSpan;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,35 +31,31 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
-import im.actor.core.modules.Modules;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.chat.mentions.MentionsAdapter;
 import im.actor.messenger.app.fragment.chat.messages.MessagesFragment;
-import im.actor.messenger.app.util.RandomUtil;
+import im.actor.messenger.app.util.Randoms;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.MentionSpan;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.markdown.AndroidMarkdown;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 
-
-import static im.actor.messenger.app.core.ActorSDK.groups;
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.users;
 import static im.actor.messenger.app.view.ViewUtils.expandMentions;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
+import static im.actor.sdk.ActorSDKMessenger.groups;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
 public class ChatActivity extends ActorEditTextActivity {
 
@@ -464,7 +457,7 @@ public class ChatActivity extends ActorEditTextActivity {
                     String externalPath = externalFile.getAbsolutePath();
                     new File(externalPath + "/actor/").mkdirs();
 
-                    pending_fileName = externalPath + "/actor/capture_" + RandomUtil.randomId() + ".jpg";
+                    pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".jpg";
                     startActivityForResult(
                             new Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                                     .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName))),
@@ -479,7 +472,7 @@ public class ChatActivity extends ActorEditTextActivity {
                     String externalPath = externalFile.getAbsolutePath();
                     new File(externalPath + "/actor/").mkdirs();
 
-                    pending_fileName = externalPath + "/actor/capture_" + RandomUtil.randomId() + ".mp4";
+                    pending_fileName = externalPath + "/actor/capture_" + Randoms.randomId() + ".mp4";
 
                     Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                             .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(pending_fileName)));

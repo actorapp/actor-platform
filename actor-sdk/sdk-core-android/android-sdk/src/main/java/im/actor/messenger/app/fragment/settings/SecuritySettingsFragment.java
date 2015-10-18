@@ -21,11 +21,8 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
-/**
- * Created by ex3ndr on 09.10.14.
- */
 public class SecuritySettingsFragment extends BaseFragment {
 
     private TextView loading;

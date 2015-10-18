@@ -13,13 +13,14 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
-import im.actor.messenger.app.core.ActorSDK;
+import im.actor.sdk.ActorSDK;
 import im.actor.messenger.app.fragment.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
-import im.actor.runtime.actors.Actor;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.Value;
+
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
 public class BaseActivity extends AppCompatActivity {
     private final ActorBinder BINDER = new ActorBinder();
@@ -143,7 +144,7 @@ public class BaseActivity extends AppCompatActivity {
         }
         isResumed = true;
 
-        ActorSDK.messenger().onActivityOpen();
+        messenger().onActivityOpen();
     }
 
     private void notifyOnPause() {
@@ -151,7 +152,7 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
         isResumed = false;
-        ActorSDK.messenger().onActivityClosed();
+        messenger().onActivityClosed();
     }
 
     public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
