@@ -26,6 +26,20 @@ object ActorConfig {
         |  }
         |
         |  extensions: ["im.actor.server.db.DbExtension", "im.actor.server.bot.BotExtension", "akka.cluster.client.ClusterClientReceptionist"]
+        |
+        |  loggers = ["akka.event.slf4j.Slf4jLogger"]
+        |
+        |  logging-filter = "akka.event.slf4j.Slf4jLoggingFilter"
+        |
+        |  actor {
+        |    serializers {
+        |      actor = "im.actor.serialization.ActorSerializer"
+        |    }
+        |
+        |    serialization-bindings {
+        |      "com.trueaccord.scalapb.GeneratedMessage" = actor
+        |    }
+        |  }
         |}
         |
         |jdbc-connection {
@@ -34,18 +48,8 @@ object ActorConfig {
         |}
       """.stripMargin
     )
-      .withFallback(ConfigFactory.parseResources("runtime.conf"))
       .withFallback(mainConfig)
-      .withFallback(ConfigFactory.parseString(
-        """
-          |akka {
-          |  persistence {
-          |    journal.plugin: "jdbc-journal"
-          |    snapshot-store.plugin: "jdbc-snapshot-store"
-          |  }
-          |}
-        """.stripMargin
-      ))
+      .withFallback(ConfigFactory.parseResources("runtime.conf"))
       .resolve()
 
     // Compatibility with old config which used "enabled-modules"
