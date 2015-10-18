@@ -1,3 +1,5 @@
+set -e
+
 pod install
 
 xcodebuild \
