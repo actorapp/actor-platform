@@ -16,8 +16,9 @@ final class ActorBotSpec
   with ServiceSpecHelpers
   with ImplicitAuthService
   with ImplicitSessionRegionProxy {
-  it should "receive messages" in rcv
-  it should "be found by nickname" in nickname
+  it should "create other bots" in rcv
+  it should "report about taken username" in takenUsername // TODO: make it independent from rcv
+  it should "be found by username" in username
 
   private lazy val dialogExt = DialogExtension(system)
   private lazy val msgService = MessagingServiceImpl()
@@ -55,7 +56,37 @@ final class ActorBotSpec
     }
   }
 
-  def nickname() = {
+  def takenUsername() = {
+    val (user, authId, _) = createUser()
+
+    Thread.sleep(1000)
+
+    whenReady(dialogExt.sendMessage(
+      peer = ActorBot.ApiPeer,
+      senderUserId = user.id,
+      senderAuthId = authId,
+      randomId = Random.nextLong(),
+      message = ApiTextMessage("/bot new mybot MyBotName", Vector.empty, None),
+      isFat = false
+    ))(identity)
+
+    Thread.sleep(1000)
+
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(user.id))
+
+    val botOutPeer = getOutPeer(ActorBot.UserId, authId)
+
+    whenReady(msgService.handleLoadHistory(botOutPeer, 0, 100)) { rsp ⇒
+      inside(rsp) {
+        case Ok(ResponseLoadHistory(history, _)) ⇒
+          history.length shouldBe (2)
+          val tm = history.last.message.asInstanceOf[ApiTextMessage]
+          tm.text shouldBe "Username already taken"
+      }
+    }
+  }
+
+  def username() = {
     val (user, authId, _) = createUser()
 
     implicit val clientData = ClientData(authId, Random.nextLong(), Some(user.id))
