@@ -12,6 +12,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
 
 import com.droidkit.pickers.file.items.ExplorerItem;
 
