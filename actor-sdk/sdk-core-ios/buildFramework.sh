@@ -46,9 +46,6 @@ cp -a build/Build/Products/Release-iphoneos/ActorSDK.framework.dSYM/* build/Outp
 
 # Compressing Framework
 cd build/Output/
-rm -f ActorSDK.framework.zip
-zip -r ActorSDK.framework.zip ActorSDK.framework
+rm -f ActorSDK.zip
+zip -r ActorSDK.zip ActorSDK.framework ActorSDK.framework.dSYM
 
-# Compressing dSYM
-rm -f ActorSDK.framework.dSYM.zip
-zip -r ActorSDK.framework.dSYM.zip ActorSDK.framework.dSYM
