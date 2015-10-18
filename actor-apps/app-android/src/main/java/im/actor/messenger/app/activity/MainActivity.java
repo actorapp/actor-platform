@@ -1,14 +1,14 @@
-package im.actor.messenger.app.activity;
+package im.actor.sdk.controllers.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 
 import im.actor.messenger.app.core.Core;
-import im.actor.messenger.app.activity.base.ControllerActivity;
-import im.actor.messenger.app.activity.controllers.MainBaseController;
-import im.actor.messenger.app.activity.controllers.MainPhoneController;
-import im.actor.messenger.app.fragment.tour.TourActivity;
+import im.actor.sdk.controllers.activity.base.ControllerActivity;
+import im.actor.sdk.controllers.activity.controllers.MainBaseController;
+import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
+import im.actor.sdk.controllers.fragment.tour.TourActivity;
 import im.actor.core.AuthState;
 import im.actor.core.entity.Dialog;
 

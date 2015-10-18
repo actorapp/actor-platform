@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.compose.view;
+package im.actor.sdk.controllers.fragment.compose.view;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -9,7 +9,7 @@ import android.text.style.ReplacementSpan;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
-import im.actor.messenger.app.util.Screen;
+import im.actor.sdk.util.Screen;
 import im.actor.core.viewmodel.UserVM;
 
 /**

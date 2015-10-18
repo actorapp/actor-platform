@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view.markdown;
+package im.actor.sdk.view.markdown;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,7 +14,7 @@ import android.text.style.StyleSpan;
 import android.view.View;
 
 import im.actor.messenger.app.AppContext;
-import im.actor.messenger.app.fragment.preview.CodePreviewActivity;
+import im.actor.sdk.controllers.fragment.preview.CodePreviewActivity;
 import im.actor.runtime.markdown.MDDocument;
 import im.actor.runtime.markdown.MDRawText;
 import im.actor.runtime.markdown.MDSection;

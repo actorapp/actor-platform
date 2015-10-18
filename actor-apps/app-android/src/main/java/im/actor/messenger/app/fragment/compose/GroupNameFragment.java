@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.compose;
+package im.actor.sdk.controllers.fragment.compose;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,10 +16,10 @@ import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.KeyboardHelper;
 
 /**
  * Created by ex3ndr on 04.10.14.

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.messages;
+package im.actor.sdk.controllers.conversation.messages;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,16 +37,16 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.chat.view.FastThumbLoader;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.util.TextUtils;
-import im.actor.messenger.app.view.TintImageView;
+import im.actor.sdk.controllers.conversation.view.FastThumbLoader;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.util.TextUtils;
+import im.actor.sdk.view.TintImageView;
 import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;
-import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.sdk.view.ViewUtils.goneView;
+import static im.actor.sdk.view.ViewUtils.showView;
 
 /**
  * Created by ex3ndr on 27.02.15.

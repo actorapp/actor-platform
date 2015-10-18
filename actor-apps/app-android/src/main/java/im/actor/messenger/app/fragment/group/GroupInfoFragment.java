@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group;
+package im.actor.sdk.controllers.fragment.group;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,15 +37,15 @@ import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.BaseActivity;
-import im.actor.messenger.app.fragment.ActorBinder;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.fragment.group.view.MembersAdapter;
-import im.actor.messenger.app.fragment.media.DocumentsActivity;
-import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.messenger.app.view.Fonts;
+import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.controllers.fragment.ActorBinder;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.fragment.group.view.MembersAdapter;
+import im.actor.sdk.controllers.fragment.media.DocumentsActivity;
+import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.CoverAvatarView;
+import im.actor.sdk.view.Fonts;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 

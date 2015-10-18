@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment;
+package im.actor.sdk.controllers.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.ViewUtils;
+import im.actor.sdk.view.ViewUtils;
 
 public class BaseFragment extends BinderCompatFragment {
 

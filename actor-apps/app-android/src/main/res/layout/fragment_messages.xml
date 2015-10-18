@@ -8,11 +8,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <im.actor.messenger.app.view.BackgroundView
+    <im.actor.sdk.view.BackgroundView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <im.actor.messenger.app.fragment.chat.view.ChatRecyclerView
+    <im.actor.sdk.controllers.conversation.view.ChatRecyclerView
         android:id="@+id/collection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

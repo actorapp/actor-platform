@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.tour;
+package im.actor.sdk.controllers.fragment.tour;
 
 import android.content.Intent;
 import android.os.Build;
@@ -13,9 +13,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.auth.AuthActivity;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.Fonts;
+import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.Fonts;
 
 
 public class TourActivity extends ActionBarActivity {
