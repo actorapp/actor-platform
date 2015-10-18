@@ -1,4 +1,4 @@
-package com.droidkit.pickers.file;
+package im.actor.pickers.file;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -20,11 +20,11 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.droidkit.pickers.file.items.ExplorerItem;
-import com.droidkit.pickers.file.search.IndexTask;
-import com.droidkit.pickers.file.search.SearchTask;
-import com.droidkit.pickers.file.view.MaterialInterpolator;
-import com.droidkit.pickers.view.SearchViewHacker;
+import im.actor.pickers.file.items.ExplorerItem;
+import im.actor.pickers.file.search.IndexTask;
+import im.actor.pickers.file.search.SearchTask;
+import im.actor.pickers.file.view.MaterialInterpolator;
+import im.actor.pickers.view.SearchViewHacker;
 
 import java.io.File;
 import java.util.ArrayList;

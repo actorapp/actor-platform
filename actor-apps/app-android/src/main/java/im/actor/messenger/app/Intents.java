@@ -187,7 +187,7 @@ public class Intents {
     }
 
     public static Intent pickFile(Context context) {
-        return com.droidkit.pickers.Intents.pickFile(context);
+        return im.actor.pickers.Intents.pickFile(context);
     }
 
     public static void openMedia(Activity activity, View photoView, String path, int senderId) {

@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.core.utils.IOUtils;
-import im.actor.messenger.app.util.Logger;
 import im.actor.messenger.app.util.images.common.ImageMetadata;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.messenger.app.util.images.sources.FileSource;
@@ -37,6 +36,7 @@ import im.actor.messenger.app.view.emoji.smiles.SmilesRecentListener;
 import im.actor.messenger.app.view.emoji.smiles.SmilesRecentsController;
 import im.actor.messenger.app.view.emoji.smiles.SmileysPack;
 import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
+import im.actor.runtime.Log;
 
 
 public class SmileProcessor {
@@ -137,7 +137,7 @@ public class SmileProcessor {
 
         emojiSideSize = (int) (density * 20);
 
-        Logger.d(TAG, "Emoji phase 0 in " + (System.currentTimeMillis() - start) + " ms");
+        Log.d(TAG, "Emoji phase 0 in " + (System.currentTimeMillis() - start) + " ms");
 
         if (density >= 2 || density == 1) {
             if (density >= 2) {
@@ -189,7 +189,7 @@ public class SmileProcessor {
             }
         }
 
-        Logger.d(TAG, "Emoji phase 1 in " + (System.currentTimeMillis() - start) + " ms");
+        Log.d(TAG, "Emoji phase 1 in " + (System.currentTimeMillis() - start) + " ms");
         start = System.currentTimeMillis();
 
         switch (layoutType) {
@@ -227,14 +227,14 @@ public class SmileProcessor {
         bodyPaint.setTextSize(getSp(15.5f));
         originalMetrics.put(CONFIGURATION_DIALOGS, bodyPaint.getFontMetricsInt());
 
-        Logger.d(TAG, "Emoji phase 2 in " + (System.currentTimeMillis() - start) + " ms");
+        Log.d(TAG, "Emoji phase 2 in " + (System.currentTimeMillis() - start) + " ms");
         start = System.currentTimeMillis();
 
         for (int i = 0; i < EMOJI_MAP.length; i++) {
             indexes.put(EMOJI_MAP[i], i);
         }
 
-        Logger.d(TAG, "Emoji phase 3 in " + (System.currentTimeMillis() - start) + " ms");
+        Log.d(TAG, "Emoji phase 3 in " + (System.currentTimeMillis() - start) + " ms");
     }
 
     protected int getSp(float sp) {
@@ -268,7 +268,7 @@ public class SmileProcessor {
             public void run() {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
                 long start = System.currentTimeMillis();
-                Logger.d(TAG, "emoji loading start");
+                Log.d(TAG, "emoji loading start");
                 try {
 
                     boolean useScale = false;
@@ -340,7 +340,7 @@ public class SmileProcessor {
 
                     // BitmapDecoderEx.decodeReuseBitmapBlend(sourceAlphaFile.getAbsolutePath(), colorsBitmap, useScale);
 
-                    Logger.d(TAG, "emoji pre-loaded in " + (System.currentTimeMillis() - start) + " ms");
+                    Log.d(TAG, "emoji pre-loaded in " + (System.currentTimeMillis() - start) + " ms");
 
                     int[] resultColors = new int[rectSize * SECTION_SIDE * rectSize * SECTION_SIDE];
                     int[] tmpColors = new int[rectSize * SECTION_SIDE * rectSize * SECTION_SIDE];
@@ -375,17 +375,17 @@ public class SmileProcessor {
                         section.setPixels(resultColors, 0, stride, 0, 0, width, height);
                         emojiMap.put(ordinal, section);
 
-                        Logger.d(TAG, "emoji region loaded in " + (System.currentTimeMillis() - start) + " ms");
+                        Log.d(TAG, "emoji region loaded in " + (System.currentTimeMillis() - start) + " ms");
                     }
 
                     recentController = SmilesRecentsController.getInstance(application);
 
                     isLoaded = true;
                     notifyEmojiUpdated(true);
-                    Logger.d(TAG, "emoji loaded in " + (System.currentTimeMillis() - start) + " ms");
+                    Log.d(TAG, "emoji loaded in " + (System.currentTimeMillis() - start) + " ms");
                 } catch (Throwable t) {
                     t.printStackTrace();
-                    Logger.d(TAG, "emoji loading error");
+                    Log.d(TAG, "emoji loading error");
                     isLoaded = false;
                     isLoading = false;
                 }
@@ -397,7 +397,7 @@ public class SmileProcessor {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Logger.d(TAG, "notify");
+                Log.d(TAG, "notify");
                 for (SmilesListener listener : listeners) {
                     listener.onSmilesUpdated(completed);
                 }

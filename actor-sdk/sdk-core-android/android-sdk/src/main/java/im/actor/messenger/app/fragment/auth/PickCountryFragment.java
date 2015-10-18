@@ -17,10 +17,8 @@ import java.util.ArrayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.util.country.Country;
-import im.actor.messenger.app.util.country.CountryDb;
+import im.actor.messenger.app.util.country.Countries;
 import im.actor.messenger.app.view.ViewHolder;
-
-import static im.actor.messenger.app.core.ActorSDK.messenger;
 
 public class PickCountryFragment extends BaseFragment {
 
@@ -46,7 +44,7 @@ public class PickCountryFragment extends BaseFragment {
             }
         });
 
-        adapter = new CountryAdapter(CountryDb.getInstance().getCountries());
+        adapter = new CountryAdapter(Countries.getInstance().getCountries());
         countriesListView.setAdapter(adapter);
 
         return v;

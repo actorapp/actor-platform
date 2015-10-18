@@ -11,6 +11,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.util.Screen;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.android.AndroidContext;
 
 /**
 * Created by ex3ndr on 26.03.15.
@@ -28,7 +29,7 @@ public class UserSpan extends ReplacementSpan {
         if (textPaint == null) {
             textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.SUBPIXEL_TEXT_FLAG);
             textPaint.setTextSize(Screen.sp(16));
-            textPaint.setColor(AppContext.getContext().getResources().getColor(R.color.text_primary));
+            textPaint.setColor(AndroidContext.getContext().getResources().getColor(R.color.text_primary));
         }
 
         int padding = Screen.dp(18);
