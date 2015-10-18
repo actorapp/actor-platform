@@ -18,6 +18,7 @@ import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.droidkit.pickers.file.items.ExplorerItem;
@@ -42,7 +43,7 @@ public class SearchFileFragment extends Fragment implements AbsListView.OnScroll
     private String root;
     private TextView status;
     private BasePickerActivity pickerActivity;
-    private android.support.v7.widget.SearchView searchView;
+    private SearchView searchView;
     private boolean animated = false;
     private IndexTask indexingTask;
     private ArrayList<File> index = new ArrayList<File>();
@@ -119,7 +120,7 @@ public class SearchFileFragment extends Fragment implements AbsListView.OnScroll
         inflater.inflate(R.menu.picker_search, menu);
         MenuItem searchMenuItem = menu.getItem(0);
 
-        searchView = (android.support.v7.widget.SearchView) searchMenuItem.getActionView();
+        searchView = (SearchView) searchMenuItem.getActionView();
 
         searchView.setIconified(false);
         int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
@@ -143,7 +144,7 @@ public class SearchFileFragment extends Fragment implements AbsListView.OnScroll
         SearchViewHacker.disableMagIcon(searchView);
         */
 
-        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
 
@@ -218,7 +219,7 @@ public class SearchFileFragment extends Fragment implements AbsListView.OnScroll
                 return false;
             }
         });
-        searchView.setOnCloseListener(new android.support.v7.widget.SearchView.OnCloseListener() {
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
 
