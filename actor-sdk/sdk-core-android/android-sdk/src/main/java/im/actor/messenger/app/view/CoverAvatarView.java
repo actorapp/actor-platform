@@ -18,11 +18,8 @@ import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.runtime.files.FileSystemReference;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
-/**
- * Created by ex3ndr on 26.12.14.
- */
 public class CoverAvatarView extends SimpleDraweeView {
 
     private FileVM fileVM;

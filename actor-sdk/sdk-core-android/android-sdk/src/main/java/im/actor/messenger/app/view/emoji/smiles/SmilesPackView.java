@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.keyboard.emoji.smiles.OnSmileClickListener;
 
-import static im.actor.messenger.app.core.ActorSDK.getSmileProcessor;
-
 public class SmilesPackView extends View {
 
     private int smileysInRow;
@@ -124,7 +122,7 @@ public class SmilesPackView extends View {
                                 } else {
                                     smile = "" + a;
                                 }
-                                getSmileProcessor().upRecent(smileId);
+                                SmileProcessor.emoji().upRecent(smileId);
                                 onSmileClickListener.onEmojiClicked(smile);
                             }
                         }

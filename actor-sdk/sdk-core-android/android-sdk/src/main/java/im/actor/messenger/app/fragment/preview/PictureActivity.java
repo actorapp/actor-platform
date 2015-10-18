@@ -35,8 +35,7 @@ import im.actor.core.viewmodel.UserVM;
 import uk.co.senab.photoview.DefaultOnDoubleTapListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-import static im.actor.messenger.app.core.ActorSDK.users;
-
+import static im.actor.sdk.ActorSDKMessenger.users;
 
 public class PictureActivity extends BaseActivity {
 

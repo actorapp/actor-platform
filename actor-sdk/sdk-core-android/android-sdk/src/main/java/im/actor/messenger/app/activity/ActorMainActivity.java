@@ -11,7 +11,7 @@ import im.actor.messenger.app.fragment.tour.TourActivity;
 import im.actor.core.AuthState;
 import im.actor.core.entity.Dialog;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
 public class ActorMainActivity extends ControllerActivity<MainBaseController> {
 
@@ -22,9 +22,7 @@ public class ActorMainActivity extends ControllerActivity<MainBaseController> {
 
     @Override
     public void onCreate(Bundle savedInstance) {
-
         super.onCreate(savedInstance);
-
 
         if (messenger().getAuthState() != AuthState.LOGGED_IN) {
             startActivity(new Intent(this, TourActivity.class));

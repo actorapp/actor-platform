@@ -8,6 +8,7 @@ import android.view.View;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
+import im.actor.runtime.android.AndroidContext;
 
 public class MentionSpan extends BaseUrlSpan {
     int[] colors;
@@ -19,13 +20,13 @@ public class MentionSpan extends BaseUrlSpan {
         super(nick, hideUrlStyle);
         this.userId = userId;
         colors = new int[]{
-                AppContext.getContext().getResources().getColor(R.color.placeholder_0),
-                AppContext.getContext().getResources().getColor(R.color.placeholder_1),
-                AppContext.getContext().getResources().getColor(R.color.placeholder_2),
-                AppContext.getContext().getResources().getColor(R.color.placeholder_3),
-                AppContext.getContext().getResources().getColor(R.color.placeholder_4),
-                AppContext.getContext().getResources().getColor(R.color.placeholder_5),
-                AppContext.getContext().getResources().getColor(R.color.placeholder_6),
+                AndroidContext.getContext().getResources().getColor(R.color.placeholder_0),
+                AndroidContext.getContext().getResources().getColor(R.color.placeholder_1),
+                AndroidContext.getContext().getResources().getColor(R.color.placeholder_2),
+                AndroidContext.getContext().getResources().getColor(R.color.placeholder_3),
+                AndroidContext.getContext().getResources().getColor(R.color.placeholder_4),
+                AndroidContext.getContext().getResources().getColor(R.color.placeholder_5),
+                AndroidContext.getContext().getResources().getColor(R.color.placeholder_6),
         };
     }
 
@@ -38,7 +39,7 @@ public class MentionSpan extends BaseUrlSpan {
         }
 
         if (tf == null) {
-            tf = Typeface.createFromAsset(AppContext.getContext().getAssets(), "Roboto-Medium.ttf");
+            tf = Typeface.createFromAsset(AndroidContext.getContext().getAssets(), "Roboto-Medium.ttf");
         }
 
         ds.setColor(colors[Math.abs(userId) % colors.length]);

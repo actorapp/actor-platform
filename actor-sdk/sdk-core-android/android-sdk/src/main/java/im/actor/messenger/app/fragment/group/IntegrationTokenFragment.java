@@ -26,13 +26,10 @@ import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
 
-import static im.actor.messenger.app.core.ActorSDK.groups;
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.myUid;
+import static im.actor.sdk.ActorSDKMessenger.groups;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
 
-/**
- * Created by korka on 25.05.15.
- */
 public class IntegrationTokenFragment extends BaseFragment {
 
     private static final String EXTRA_GROUP_ID = "GROUP_ID";
