@@ -18,7 +18,7 @@
 
 
     <application
-        android:name="im.actor.messenger.app.ActorApplication"
+        android:name="im.actor.sdk.ActorSDKApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"

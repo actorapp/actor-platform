@@ -17,7 +17,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
 public class SignEmailFragment extends BaseAuthFragment {
 

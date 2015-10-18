@@ -39,18 +39,15 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.chat.view.FastThumbLoader;
 import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.util.TextUtils;
+import im.actor.messenger.app.util.Strings;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.runtime.files.FileSystemReference;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.myUid;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
 
-/**
- * Created by ex3ndr on 27.02.15.
- */
 public class PhotoHolder extends MessageHolder {
 
     private final int COLOR_PENDING;
@@ -166,7 +163,7 @@ public class PhotoHolder extends MessageHolder {
         }
 
         // Update time
-        time.setText(TextUtils.formatTime(message.getDate()));
+        time.setText(Strings.formatTime(message.getDate()));
 
         // Update size
         if (isNewMessage) {

@@ -18,7 +18,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.activity.ActorMainActivity;
 import im.actor.messenger.app.activity.BaseFragmentActivity;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
 public class AuthActivity extends BaseFragmentActivity {
 

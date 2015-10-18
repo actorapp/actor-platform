@@ -16,12 +16,9 @@ import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
-/**
- * Created by ex3ndr on 12.09.14.
- */
 public class ProfileActivity extends BaseFragmentActivity {
 
     private int uid;

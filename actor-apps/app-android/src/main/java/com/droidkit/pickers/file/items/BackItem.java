@@ -1,6 +1,6 @@
-package com.droidkit.pickers.file.items;
+package im.actor.pickers.file.items;
 
-import com.droidkit.pickers.file.ExploreItemViewHolder;
+import im.actor.pickers.file.ExploreItemViewHolder;
 
 import java.io.File;
 

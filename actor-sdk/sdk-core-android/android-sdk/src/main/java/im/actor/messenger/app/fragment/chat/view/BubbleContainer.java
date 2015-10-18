@@ -11,17 +11,14 @@ import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.util.TextUtils;
+import im.actor.messenger.app.util.Strings;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.core.viewmodel.UserVM;
 
-import static im.actor.messenger.app.core.ActorSDK.groups;
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.groups;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
-/**
- * Created by ex3ndr on 19.01.15.
- */
 public class BubbleContainer extends ViewGroup {
 
     public interface OnAvatarClickListener {
@@ -195,7 +192,7 @@ public class BubbleContainer extends ViewGroup {
 
     public void showDate(long time) {
         showDateDiv = true;
-        dateDiv.setText(TextUtils.formatDate(time));
+        dateDiv.setText(Strings.formatDate(time));
         dateDiv.setVisibility(VISIBLE);
         requestLayout();
     }

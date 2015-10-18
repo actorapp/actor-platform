@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import im.actor.messenger.app.AppContext;
+import im.actor.runtime.android.AndroidContext;
 
 /**
  * Created by Jesus Christ. Amen.
@@ -36,7 +37,7 @@ public class StickerRecentController extends ArrayList<Sticker> {
     }
 
     public static StickerRecentController getInstance() {
-        return getInstance(AppContext.getContext());
+        return getInstance(AndroidContext.getContext());
     }
 
     public static StickerRecentController getInstance(Context context) {
