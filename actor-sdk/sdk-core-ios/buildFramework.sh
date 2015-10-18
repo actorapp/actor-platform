@@ -27,7 +27,7 @@ xcodebuild \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
   build
 
-rm build/Output/libactor.so
+rm -f build/Output/libactor.so
 lipo -create "build/Build/Intermediates/ActorSDK.build/Release-iphoneos/j2objc/Objects/libactor.so" "build/Build/Intermediates/ActorSDK.build/Release-iphonesimulator/j2objc/Objects/libactor.so" -output build/Output/libactor.so
 
 # Building Framework
@@ -37,7 +37,7 @@ cp -a build/Build/Products/Release-iphoneos/ActorSDK.framework build/Output/
 
 # Merging binaries
 lipo -create "build/Build/Products/Release-iphoneos/ActorSDK.framework/ActorSDK" "build/Build/Products/Release-iphonesimulator/ActorSDK.framework/ActorSDK" -output build/Output/ActorSDK_Lipo
-rm build/Output/ActorSDK.framework/ActorSDK
+rm -fr build/Output/ActorSDK.framework/ActorSDK
 mv build/Output/ActorSDK_Lipo build/Output/ActorSDK.framework/ActorSDK
 rm -f build/Output/ActorSDK.framework/Frameworks/*
 
