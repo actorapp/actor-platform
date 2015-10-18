@@ -15,6 +15,7 @@ object BotMessages {
   object Services {
     val KeyValue = "keyvalue"
     val Messaging = "messaging"
+    val Bots = "bots"
   }
 
   final case class FileLocation(
@@ -245,6 +246,14 @@ object BotMessages {
     override val service = Services.KeyValue
 
     override def readResponse(obj: Js.Obj) = readJs[Container[Seq[String]]](obj)
+  }
+
+  @key("CreateBot")
+  final case class CreateBot(username: String, name: String) extends RequestBody {
+    override type Response = Container[String]
+    override val service = Services.Bots
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
   }
 
   final case class MessageSent(date: Long) extends ResponseBody

@@ -1,5 +1,7 @@
 package im.actor.config
 
+import java.io.File
+
 import scala.collection.JavaConversions._
 import scala.concurrent.duration._
 import java.util.concurrent.TimeUnit
@@ -10,12 +12,20 @@ import scala.util.{ Failure, Success, Try }
 
 object ActorConfig {
   def load(): Config = {
+    val mainConfig = Option(System.getProperty("actor.home")) match {
+      case Some(home) ⇒
+        ConfigFactory.load(ConfigFactory.parseFile(new File(s"$home/conf/server.conf")))
+      case None ⇒ ConfigFactory.load()
+    }
+
     val config = ConfigFactory.parseString(
       """
         |akka {
         |  actor {
         |    provider: "akka.cluster.ClusterActorRefProvider"
         |  }
+        |
+        |  extensions: ["im.actor.server.db.DbExtension", "im.actor.server.bot.BotExtension", "akka.cluster.client.ClusterClientReceptionist"]
         |}
         |
         |jdbc-connection {
@@ -24,7 +34,8 @@ object ActorConfig {
         |}
       """.stripMargin
     )
-      .withFallback(ConfigFactory.load())
+      .withFallback(ConfigFactory.parseResources("runtime.conf"))
+      .withFallback(mainConfig)
       .withFallback(ConfigFactory.parseString(
         """
           |akka {

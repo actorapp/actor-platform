@@ -11,6 +11,7 @@ import im.actor.api.rpc.users.{ ApiUser, ApiSex }
 import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ UpdateRefs, SeqUpdatesExtension, SeqState, SeqUpdatesManager }
 import im.actor.server.{ models, persist ⇒ p }
+import im.actor.util.misc.IdUtils
 import slick.driver.PostgresDriver.api.Database
 
 import scala.concurrent.Future
@@ -45,6 +46,9 @@ private[user] sealed trait Commands extends AuthCommands {
     external:    Option[String]    = None
   ): Future[CreateAck] =
     (processorRegion.ref ? Create(userId, accessSalt, nickname, name, countryCode, sex, isBot, extensions, external)).mapTo[CreateAck]
+
+  // FIXME: check existence and reserve generated ids
+  def nextId(): Future[Int] = Future.successful(IdUtils.nextIntId())
 
   def addPhone(userId: Int, phone: Long): Future[Unit] = {
     (processorRegion.ref ? AddPhone(userId, phone)).mapTo[AddPhoneAck] map (_ ⇒ ())
