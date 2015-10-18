@@ -34,13 +34,10 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
         case nickname :: name :: Nil ⇒
           log.warning("Creating new bot")
 
-          val userId = IdUtils.nextIntId()
-
-          botExt.create(userId, nickname, name, isAdmin = false) onComplete {
-            case Success(token) ⇒
-              requestSendTextMessage(tm.peer, nextRandomId(), s"Yay! Bot created, here is your token: ${token}")
-            case Failure(UserExceptions.NicknameTaken) ⇒
-              requestSendTextMessage(tm.peer, nextRandomId(), "Nickname already taken")
+          requestCreateBot(nickname, name) onComplete {
+            case Success(token) ⇒ requestSendTextMessage(tm.peer, nextRandomId(), s"Yay! Bot created, here is your token: ${token}")
+            case Failure(BotError(_, "USERNAME_TAKEN", _, _)) ⇒
+              requestSendTextMessage(tm.peer, nextRandomId(), "Username already taken")
             case Failure(e) ⇒
               log.error(e, "Failed to create bot")
               requestSendTextMessage(tm.peer, nextRandomId(), "There was a problem on our side. Please, try again a bit later.")
