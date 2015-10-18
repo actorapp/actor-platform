@@ -44,7 +44,7 @@ object Dependencies {
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.3"
-    val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
+    val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.7.0"
 
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.2"
     val upickle                 = "com.lihaoyi"                   %% "upickle"                       % "0.3.6"
