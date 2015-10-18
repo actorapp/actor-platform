@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.profile;
+package im.actor.sdk.controllers.fragment.profile;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -36,13 +36,13 @@ import im.actor.core.api.rpc.ResponseSeq;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.media.DocumentsActivity;
-import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
-import im.actor.messenger.app.activity.BaseActivity;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.messenger.app.view.TintImageView;
+import im.actor.sdk.controllers.fragment.media.DocumentsActivity;
+import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
+import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.CoverAvatarView;
+import im.actor.sdk.view.TintImageView;
 import im.actor.core.entity.Peer;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;

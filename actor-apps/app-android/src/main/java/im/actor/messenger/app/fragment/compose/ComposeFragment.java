@@ -1,7 +1,7 @@
-package im.actor.messenger.app.fragment.compose;
+package im.actor.sdk.controllers.fragment.compose;
 
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
+import im.actor.sdk.controllers.fragment.contacts.BaseContactFragment;
 import im.actor.core.entity.Contact;
 
 /**

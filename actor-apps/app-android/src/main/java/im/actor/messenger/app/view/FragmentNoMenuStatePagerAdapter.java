@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package im.actor.messenger.app.view;
+package im.actor.sdk.view;
 
 import android.os.Bundle;
 import android.os.Parcelable;

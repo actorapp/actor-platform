@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.settings;
+package im.actor.sdk.controllers.fragment.settings;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,8 +11,8 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.view.KeyboardHelper;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;

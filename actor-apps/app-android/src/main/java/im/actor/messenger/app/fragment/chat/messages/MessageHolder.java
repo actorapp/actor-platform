@@ -1,10 +1,10 @@
-package im.actor.messenger.app.fragment.chat.messages;
+package im.actor.sdk.controllers.conversation.messages;
 
 import android.view.View;
 
 import im.actor.core.viewmodel.UserVM;
-import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
-import im.actor.messenger.app.util.TextUtils;
+import im.actor.sdk.controllers.conversation.view.BubbleContainer;
+import im.actor.sdk.util.TextUtils;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;

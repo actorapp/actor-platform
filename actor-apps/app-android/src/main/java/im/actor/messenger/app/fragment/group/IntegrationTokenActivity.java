@@ -1,10 +1,10 @@
-package im.actor.messenger.app.fragment.group;
+package im.actor.sdk.controllers.fragment.group;
 
 import android.os.Bundle;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.BaseFragmentActivity;
+import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
 /**
  * Created by korka on 25.05.15.

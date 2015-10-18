@@ -1,11 +1,11 @@
-package im.actor.messenger.app.fragment.auth;
+package im.actor.sdk.controllers.fragment.auth;
 
 import android.widget.EditText;
 
 import im.actor.core.AuthState;
 import im.actor.core.viewmodel.Command;
-import im.actor.messenger.app.activity.BaseFragmentActivity;
-import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.sdk.controllers.activity.BaseFragmentActivity;
+import im.actor.sdk.controllers.fragment.BaseFragment;
 
 /**
  * Created by ex3ndr on 31.08.14.

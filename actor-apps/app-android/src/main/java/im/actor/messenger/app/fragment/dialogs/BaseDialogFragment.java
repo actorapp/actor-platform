@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.dialogs;
+package im.actor.sdk.controllers.fragment.dialogs;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,10 +16,10 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.DisplayListFragment;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.Fonts;
+import im.actor.sdk.view.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;

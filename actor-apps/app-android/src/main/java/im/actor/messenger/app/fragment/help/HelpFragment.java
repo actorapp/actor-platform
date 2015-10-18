@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.help;
+package im.actor.sdk.controllers.fragment.help;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.sdk.controllers.fragment.BaseFragment;
 
 /**
  * Created by ex3ndr on 30.09.14.

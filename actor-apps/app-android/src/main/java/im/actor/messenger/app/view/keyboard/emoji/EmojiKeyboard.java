@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package im.actor.messenger.app.view.keyboard.emoji;
+package im.actor.sdk.view.emoji.keyboard.emoji;
 
 import android.app.Activity;
 import android.support.v4.view.ViewPager;
@@ -25,15 +25,15 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.emoji.SmileProcessor;
-import im.actor.messenger.app.view.keyboard.BaseKeyboard;
-import im.actor.messenger.app.view.keyboard.emoji.smiles.OnBackspaceClickListener;
-import im.actor.messenger.app.view.keyboard.emoji.smiles.OnSmileClickListener;
-import im.actor.messenger.app.view.keyboard.emoji.smiles.RepeatListener;
-import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilePagerAdapter;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.MaterialInterpolator;
-import im.actor.messenger.app.view.PagerSlidingTabStrip;
+import im.actor.sdk.view.emoji.SmileProcessor;
+import im.actor.sdk.view.emoji.keyboard.BaseKeyboard;
+import im.actor.sdk.view.emoji.keyboard.emoji.smiles.OnBackspaceClickListener;
+import im.actor.sdk.view.emoji.keyboard.emoji.smiles.OnSmileClickListener;
+import im.actor.sdk.view.emoji.keyboard.emoji.smiles.RepeatListener;
+import im.actor.sdk.view.emoji.keyboard.emoji.smiles.SmilePagerAdapter;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.MaterialInterpolator;
+import im.actor.sdk.view.PagerSlidingTabStrip;
 
 import static im.actor.messenger.app.core.Core.getSmileProcessor;
 

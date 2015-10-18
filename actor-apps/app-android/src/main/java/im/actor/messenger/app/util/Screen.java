@@ -2,7 +2,7 @@
  * File created on 26/06/14 at 20:54
  * Copyright Vyacheslav Krylov, 2014
  */
-package im.actor.messenger.app.util;
+package im.actor.sdk.util;
 
 import android.content.res.Resources;
 

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment;
+package im.actor.sdk.controllers.fragment;
 
 import android.app.Activity;
 import android.support.v7.widget.ChatLinearLayoutManager;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
+import im.actor.sdk.view.HeaderViewRecyclerAdapter;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.storage.ListEngineItem;

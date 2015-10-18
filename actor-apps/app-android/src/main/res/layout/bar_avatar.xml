@@ -11,7 +11,7 @@
     android:clickable="true"
     android:padding="8dp">
 
-    <im.actor.messenger.app.view.AvatarView
+    <im.actor.sdk.view.avatar.AvatarView
         android:id="@+id/avatarView"
         android:layout_width="40dp"
         android:layout_height="40dp" />
