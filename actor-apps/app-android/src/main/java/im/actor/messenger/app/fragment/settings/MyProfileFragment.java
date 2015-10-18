@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.settings;
+package im.actor.sdk.controllers.fragment.settings;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -43,13 +43,13 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.BaseActivity;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.fragment.help.HelpActivity;
-import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.messenger.app.view.TintImageView;
+import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.fragment.help.HelpActivity;
+import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.CoverAvatarView;
+import im.actor.sdk.view.TintImageView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.mentions;
+package im.actor.sdk.controllers.conversation.mentions;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,11 +12,11 @@ import java.util.List;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.HolderAdapter;
-import im.actor.messenger.app.view.SearchHighlight;
-import im.actor.messenger.app.view.ViewHolder;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.HolderAdapter;
+import im.actor.sdk.view.SearchHighlight;
+import im.actor.sdk.view.ViewHolder;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;

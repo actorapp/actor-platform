@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.settings;
+package im.actor.sdk.controllers.fragment.settings;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -19,7 +19,7 @@ import im.actor.core.api.ApiAuthHolder;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.sdk.controllers.fragment.BaseFragment;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

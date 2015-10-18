@@ -1,8 +1,8 @@
-package im.actor.pickers.file.items;
+package im.actor.sdk.controllers.pickers.file.items;
 
 import android.content.Context;
 
-import im.actor.pickers.file.util.TimeUtils;
+import im.actor.sdk.controllers.pickers.file.util.TimeUtils;
 
 import java.io.File;
 

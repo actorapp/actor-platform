@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view;
+package im.actor.sdk.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

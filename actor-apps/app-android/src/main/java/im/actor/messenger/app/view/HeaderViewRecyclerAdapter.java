@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view;
+package im.actor.sdk.view;
 /*
  * Copyright (C) 2014 darnmason
  *
@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import im.actor.messenger.app.fragment.AnimatorViewHolder;
+import im.actor.sdk.controllers.fragment.AnimatorViewHolder;
 
 /**
  * <p>

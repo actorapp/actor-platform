@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <im.actor.messenger.app.view.TintImageView
+        <im.actor.sdk.view.TintImageView
             android:id="@+id/recordIcon"
             android:layout_width="72dp"
             android:layout_height="72dp"

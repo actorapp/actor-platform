@@ -1,4 +1,4 @@
-package im.actor.messenger.app.util.country;
+package im.actor.sdk.util.country;
 
 import android.text.TextUtils;
 

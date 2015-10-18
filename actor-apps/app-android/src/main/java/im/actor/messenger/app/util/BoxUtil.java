@@ -1,4 +1,4 @@
-package im.actor.messenger.app.util;
+package im.actor.sdk.util;
 
 /**
  * Created by ex3ndr on 05.10.14.

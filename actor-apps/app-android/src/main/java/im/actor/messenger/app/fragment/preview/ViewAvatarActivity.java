@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.preview;
+package im.actor.sdk.controllers.fragment.preview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,9 +27,9 @@ import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.BaseActivity;
-import im.actor.messenger.app.util.images.common.ImageLoadException;
-import im.actor.messenger.app.util.images.ops.ImageLoading;
+import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.util.images.common.ImageLoadException;
+import im.actor.sdk.util.images.ops.ImageLoading;
 import im.actor.runtime.files.FileSystemReference;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
@@ -40,8 +40,8 @@ import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;
 import static im.actor.messenger.app.core.Core.users;
-import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.sdk.view.ViewUtils.goneView;
+import static im.actor.sdk.view.ViewUtils.showView;
 
 /**
  * Created by ex3ndr on 29.10.14.

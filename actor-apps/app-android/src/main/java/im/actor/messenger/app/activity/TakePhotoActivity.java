@@ -1,4 +1,4 @@
-package im.actor.messenger.app.activity;
+package im.actor.sdk.controllers.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;

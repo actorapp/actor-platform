@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.media;
+package im.actor.sdk.controllers.fragment.media;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,20 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.IOException;
-
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.fragment.DisplayListFragment;
-import im.actor.messenger.app.fragment.chat.messages.ChatListProcessor;
-import im.actor.messenger.app.fragment.chat.messages.DocHolder;
-import im.actor.messenger.app.fragment.chat.messages.MessageHolder;
-import im.actor.messenger.app.fragment.chat.messages.MessagesAdapter;
-import im.actor.messenger.app.fragment.chat.messages.MessagesFragment;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.controllers.conversation.messages.ChatListProcessor;
+import im.actor.sdk.controllers.conversation.messages.DocHolder;
+import im.actor.sdk.controllers.conversation.messages.MessageHolder;
+import im.actor.sdk.controllers.conversation.messages.MessagesAdapter;
+import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 

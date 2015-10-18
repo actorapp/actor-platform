@@ -70,19 +70,19 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <im.actor.messenger.app.fragment.tour.PagerContainer
+    <im.actor.sdk.controllers.fragment.tour.PagerContainer
         android:id="@+id/pager_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingBottom="-100dp">
 
-        <im.actor.messenger.app.fragment.tour.VerticalViewPager
+        <im.actor.sdk.controllers.fragment.tour.VerticalViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
-    </im.actor.messenger.app.fragment.tour.PagerContainer>
+    </im.actor.sdk.controllers.fragment.tour.PagerContainer>
 
     <LinearLayout
         android:id="@+id/background"
