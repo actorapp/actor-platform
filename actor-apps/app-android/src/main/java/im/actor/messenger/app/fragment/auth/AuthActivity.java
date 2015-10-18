@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.auth;
+package im.actor.sdk.controllers.fragment.auth;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -15,8 +15,8 @@ import im.actor.core.network.RpcTimeoutException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.BaseFragmentActivity;
-import im.actor.messenger.app.activity.MainActivity;
+import im.actor.sdk.controllers.activity.BaseFragmentActivity;
+import im.actor.sdk.controllers.activity.MainActivity;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.profile;
+package im.actor.sdk.controllers.fragment.profile;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,8 +11,8 @@ import android.widget.Toast;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.BaseFragmentActivity;
-import im.actor.messenger.app.activity.MainActivity;
+import im.actor.sdk.controllers.activity.BaseFragmentActivity;
+import im.actor.sdk.controllers.activity.MainActivity;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 

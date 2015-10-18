@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group.view;
+package im.actor.sdk.controllers.fragment.group.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,10 +9,10 @@ import android.widget.TextView;
 import java.util.Collection;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.HolderAdapter;
-import im.actor.messenger.app.view.ViewHolder;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.HolderAdapter;
+import im.actor.sdk.view.ViewHolder;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.UserVM;
 

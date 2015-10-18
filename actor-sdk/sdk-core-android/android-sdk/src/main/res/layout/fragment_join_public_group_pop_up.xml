@@ -26,7 +26,7 @@
                 android:src="@drawable/img_profile_avatar_default"
                 android:scaleType="centerCrop" />
 
-            <im.actor.messenger.app.view.CoverAvatarView
+            <im.actor.sdk.view.avatar.CoverAvatarView
                 android:id="@+id/avatar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

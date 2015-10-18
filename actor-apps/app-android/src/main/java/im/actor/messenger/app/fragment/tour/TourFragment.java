@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.tour;
+package im.actor.sdk.controllers.fragment.tour;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.Fonts;
+import im.actor.sdk.view.Fonts;
 
 /**
  * Created by Jesus Christ. Amen.

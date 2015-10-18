@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.contacts;
+package im.actor.sdk.controllers.fragment.contacts;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,13 +20,13 @@ import android.widget.TextView;
 import im.actor.core.entity.Contact;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.AddContactActivity;
-import im.actor.messenger.app.fragment.DisplayListFragment;
-import im.actor.messenger.app.fragment.help.HelpActivity;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.messenger.app.view.TintImageView;
+import im.actor.sdk.controllers.activity.AddContactActivity;
+import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.controllers.fragment.help.HelpActivity;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.Fonts;
+import im.actor.sdk.view.OnItemClickedListener;
+import im.actor.sdk.view.TintImageView;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;

@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.messenger.app.view.emoji.smiles;
+package im.actor.sdk.view.emoji.smiles;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,8 +16,8 @@ import android.view.ViewConfiguration;
 
 import java.util.ArrayList;
 
-import im.actor.messenger.app.view.emoji.SmileProcessor;
-import im.actor.messenger.app.view.keyboard.emoji.smiles.OnSmileClickListener;
+import im.actor.sdk.view.emoji.SmileProcessor;
+import im.actor.sdk.view.emoji.keyboard.emoji.smiles.OnSmileClickListener;
 
 import static im.actor.messenger.app.core.Core.getSmileProcessor;
 

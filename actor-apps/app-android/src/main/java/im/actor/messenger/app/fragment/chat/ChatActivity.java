@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat;
+package im.actor.sdk.controllers.fragment.chat;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -43,15 +43,15 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.chat.mentions.MentionsAdapter;
-import im.actor.messenger.app.fragment.chat.messages.MessagesFragment;
-import im.actor.messenger.app.util.RandomUtil;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.MentionSpan;
-import im.actor.messenger.app.view.TypingDrawable;
-import im.actor.messenger.app.view.emoji.SmileProcessor;
-import im.actor.messenger.app.view.markdown.AndroidMarkdown;
+import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
+import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
+import im.actor.sdk.util.RandomUtil;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.MentionSpan;
+import im.actor.sdk.view.TypingDrawable;
+import im.actor.sdk.view.emoji.SmileProcessor;
+import im.actor.sdk.view.markdown.AndroidMarkdown;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 
@@ -59,10 +59,10 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;
-import static im.actor.messenger.app.view.ViewUtils.expandMentions;
-import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
-import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
+import static im.actor.sdk.view.ViewUtils.expandMentions;
+import static im.actor.sdk.view.ViewUtils.goneView;
+import static im.actor.sdk.view.ViewUtils.showView;
+import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 
 public class ChatActivity extends ActorEditTextActivity {
 
