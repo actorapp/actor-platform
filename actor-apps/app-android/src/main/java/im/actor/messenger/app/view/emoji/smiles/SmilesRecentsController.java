@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.messenger.app.view.emoji.smiles;
+package im.actor.sdk.view.emoji.smiles;
 
 import android.content.Context;
 import android.content.SharedPreferences;

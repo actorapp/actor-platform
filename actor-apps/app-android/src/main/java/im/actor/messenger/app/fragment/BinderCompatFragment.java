@@ -1,11 +1,11 @@
-package im.actor.messenger.app.fragment;
+package im.actor.sdk.controllers.fragment;
 
 import android.view.View;
 import android.widget.TextView;
 
 import im.actor.core.entity.Avatar;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.messenger.app.view.CoverAvatarView;
+import im.actor.sdk.view.CoverAvatarView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueModel;
 

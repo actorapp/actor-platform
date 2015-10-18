@@ -1,4 +1,4 @@
-package im.actor.messenger.app.util.images;
+package im.actor.sdk.util.images;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

@@ -29,9 +29,9 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarPlaceholderDrawable;
+import im.actor.sdk.controllers.activity.MainActivity;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.AvatarPlaceholderDrawable;
 import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.groups;

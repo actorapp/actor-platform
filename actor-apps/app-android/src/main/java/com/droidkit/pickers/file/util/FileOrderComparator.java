@@ -1,13 +1,13 @@
-package im.actor.pickers.file.util;
+package im.actor.sdk.controllers.pickers.file.util;
 
-import im.actor.pickers.file.items.ExplorerItem;
+import im.actor.sdk.controllers.pickers.file.items.ExplorerItem;
 
 import java.util.Comparator;
 
 /**
  * Created by kiolt_000 on 14/09/2014.
  */
-public abstract class FileOrderComparator implements Comparator<im.actor.pickers.file.items.ExplorerItem> {
+public abstract class FileOrderComparator implements Comparator<im.actor.sdk.controllers.pickers.file.items.ExplorerItem> {
     @Override
     public int compare(ExplorerItem explorerItem, ExplorerItem explorerItem2) {
         if (explorerItem.isDirectory()) {

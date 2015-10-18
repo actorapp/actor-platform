@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.dialogs;
+package im.actor.sdk.controllers.fragment.dialogs;
 
 import android.view.View;
 
@@ -9,7 +9,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.MainActivity;
+import im.actor.sdk.controllers.activity.MainActivity;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;

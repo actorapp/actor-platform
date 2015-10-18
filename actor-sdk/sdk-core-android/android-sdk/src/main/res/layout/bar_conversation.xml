@@ -10,7 +10,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/selector_light">
 
-    <im.actor.messenger.app.view.AvatarView
+    <im.actor.sdk.view.avatar.AvatarView
         android:id="@+id/avatarPreview"
         android:layout_width="32dp"
         android:layout_height="32dp"

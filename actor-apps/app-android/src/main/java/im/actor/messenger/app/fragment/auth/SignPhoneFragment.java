@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.auth;
+package im.actor.sdk.controllers.fragment.auth;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,11 +18,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.country.Country;
-import im.actor.messenger.app.util.country.CountryDb;
-import im.actor.messenger.app.util.country.CountryUtil;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.sdk.util.country.Country;
+import im.actor.sdk.util.country.CountryDb;
+import im.actor.sdk.util.country.CountryUtil;
+import im.actor.sdk.view.Fonts;
+import im.actor.sdk.view.KeyboardHelper;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

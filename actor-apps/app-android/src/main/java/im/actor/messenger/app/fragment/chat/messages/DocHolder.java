@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.messages;
+package im.actor.sdk.controllers.conversation.messages;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -24,15 +24,15 @@ import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.util.FileTypes;
-import im.actor.messenger.app.util.images.common.ImageLoadException;
-import im.actor.messenger.app.util.images.ops.ImageLoading;
-import im.actor.messenger.app.view.TintImageView;
+import im.actor.sdk.util.FileTypes;
+import im.actor.sdk.util.images.common.ImageLoadException;
+import im.actor.sdk.util.images.ops.ImageLoading;
+import im.actor.sdk.view.TintImageView;
 import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.messenger;
-import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.sdk.view.ViewUtils.goneView;
+import static im.actor.sdk.view.ViewUtils.showView;
 
 /**
  * Created by ex3ndr on 27.02.15.

@@ -9,7 +9,7 @@
     android:padding="1dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <im.actor.messenger.app.fragment.media.MediaPreview
+    <im.actor.sdk.controllers.fragment.media.MediaPreview
         android:id="@+id/image"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"

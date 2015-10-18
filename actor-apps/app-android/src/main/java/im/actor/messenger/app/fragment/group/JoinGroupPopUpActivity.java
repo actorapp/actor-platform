@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group;
+package im.actor.sdk.controllers.fragment.group;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

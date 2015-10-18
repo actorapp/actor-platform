@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view;
+package im.actor.sdk.view;
 
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import im.actor.messenger.app.util.Screen;
+import im.actor.sdk.util.Screen;
 
 /**
  * Created by ex3ndr on 25.03.14.

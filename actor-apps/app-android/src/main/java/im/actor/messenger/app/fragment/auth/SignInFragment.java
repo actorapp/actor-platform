@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.auth;
+package im.actor.sdk.controllers.fragment.auth;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,8 +21,8 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.sdk.view.Fonts;
+import im.actor.sdk.view.KeyboardHelper;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

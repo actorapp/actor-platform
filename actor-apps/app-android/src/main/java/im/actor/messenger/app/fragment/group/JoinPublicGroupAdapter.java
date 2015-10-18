@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group;
+package im.actor.sdk.controllers.fragment.group;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,13 +15,13 @@ import java.util.List;
 import im.actor.core.entity.PublicGroup;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.util.TextUtils;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.HolderAdapter;
-import im.actor.messenger.app.view.SearchHighlight;
-import im.actor.messenger.app.view.ViewHolder;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.util.TextUtils;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.Fonts;
+import im.actor.sdk.view.HolderAdapter;
+import im.actor.sdk.view.SearchHighlight;
+import im.actor.sdk.view.ViewHolder;
 import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.messenger;

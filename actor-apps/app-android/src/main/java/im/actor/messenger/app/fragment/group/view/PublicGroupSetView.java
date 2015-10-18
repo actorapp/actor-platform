@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group.view;
+package im.actor.sdk.controllers.fragment.group.view;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.Fonts;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.Fonts;
 import im.actor.core.entity.PublicGroup;
 
 /**

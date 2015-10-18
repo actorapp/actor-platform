@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.tour;
+package im.actor.sdk.controllers.fragment.tour;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.activity;
+package im.actor.sdk.controllers.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,7 +12,7 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.sdk.view.KeyboardHelper;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

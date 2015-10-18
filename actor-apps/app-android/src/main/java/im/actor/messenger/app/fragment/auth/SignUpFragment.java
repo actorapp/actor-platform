@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.auth;
+package im.actor.sdk.controllers.fragment.auth;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,10 +14,10 @@ import android.widget.TextView;
 import im.actor.core.entity.Sex;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.Fonts;
+import im.actor.sdk.view.KeyboardHelper;
 
 import static im.actor.messenger.app.core.Core.messenger;
 
