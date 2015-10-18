@@ -85,7 +85,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
           )
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-    .dependsOn(actorRunner)
+    .dependsOn(actorRunner, actorCli)
     .aggregate(
       //      actorDashboard,
       actorCore,
@@ -113,10 +113,13 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   lazy val actorRunner = Project(
     id = "actor-runner",
     base = file("actor-runner"),
-    settings = defaultSettings
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.runner
+    )
   ).dependsOn(
     actorActivation,
     actorBots,
+    actorCli,
     actorEnrich,
     actorEmail,
     actorFrontend,
@@ -164,6 +167,16 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
   )
     .dependsOn(actorBotsShared)
     .aggregate(actorBotsShared)
+
+  lazy val actorCli = Project(
+    id = "actor-cli",
+    base = file("actor-cli"),
+    settings = defaultSettings ++ Revolver.settings ++ Seq(
+      libraryDependencies ++= Dependencies.cli,
+      mainClass in Revolver.reStart := Some("im.actor.server.cli.ActorCliApp"),
+      mainClass in Compile := Some("im.actor.server.cli.ActorCliApp")
+    )
+  )
 
   lazy val actorCore = Project(
     id = "actor-core",

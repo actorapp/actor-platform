@@ -72,6 +72,8 @@ object Dependencies {
     val scalazCore              = "org.scalaz"                    %% "scalaz-core"                   % V.scalaz
     val scalazConcurrent        = "org.scalaz"                    %% "scalaz-concurrent"             % V.scalaz
 
+    val scopt                   = "com.github.scopt"              %% "scopt"                         % "3.3.0"
+
     val shapeless               = "com.chuusai"                   %% "shapeless"                     % "2.2.4"
 
     val scrImageCore            = "com.sksamuel.scrimage"         %% "scrimage-core"                 % "1.4.2"
@@ -116,6 +118,8 @@ object Dependencies {
   val botkit = Seq(actorConcurrent, akkaActor, akkaHttp, akkaSlf4j, javaCompat, sprayWebsocket, upickle)
 
   val botShared = Seq(upickle)
+
+  val cli = Seq(akkaClusterTools, scopt)
 
   val core = shared ++ Seq(
     actorConcurrent,
@@ -172,6 +176,8 @@ object Dependencies {
   val dashboard = shared :+ scalazCore
 
   val notifications = shared ++ Seq(akkaClusterTools, slick)
+
+  val runner = Seq.empty
 
   val runtime = shared ++ Seq(akkaActor, akkaHttp, akkaStream, akkaPersistenceJdbc, caffeine, cats, concmap, jodaConvert, jodaTime, libPhoneNumber, scalapbSer, scalazCore, akkaTestkit % "test", scalatest % "test")
 

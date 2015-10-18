@@ -4,17 +4,16 @@ import akka.actor.ActorSystem
 import akka.util.Timeout
 import im.actor.bots.BotMessages
 import im.actor.config.ActorConfig
-import im.actor.server.bot.BotService
+import im.actor.server.bot.BotServiceBase
 import shardakka.ShardakkaExtension
 import shardakka.keyvalue.SimpleKeyValue
 
 import scala.collection.concurrent.TrieMap
-import scala.concurrent.Future
 
-final class KeyValueService(system: ActorSystem) extends BotService {
+final class KeyValueService(system: ActorSystem) extends BotServiceBase {
 
   import BotMessages._
-  import BotService._
+  import BotServiceBase._
   import system.dispatcher
 
   type Keyspace = String
