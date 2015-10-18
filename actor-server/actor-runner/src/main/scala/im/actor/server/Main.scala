@@ -4,7 +4,6 @@ import java.net.InetAddress
 
 import akka.actor._
 import akka.cluster.Cluster
-import akka.cluster.pubsub.DistributedPubSub
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigException
 import im.actor.config.ActorConfig
@@ -28,6 +27,7 @@ import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webactions.WebactionsServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.bot.ActorBot
+import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
 import im.actor.server.email.{ EmailConfig, EmailSender }
@@ -145,6 +145,8 @@ object Main extends App {
     ActorBot.start()
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
+
+    ActorCliService.start(system)
 
     Frontend.start(serverConfig)
     HttpApiFrontend.start(serverConfig)
