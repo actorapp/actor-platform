@@ -137,11 +137,11 @@ dependencies {
     compile files('libs/libphonenumber-5.9.jar')
 
     // Android Support
-    compile 'com.android.support:support-v4:23+'
-    compile 'com.android.support:support-v13:23+'
-    compile 'com.android.support:appcompat-v7:23+'
-    compile 'com.android.support:palette-v7:23+'
-    compile 'com.android.support:recyclerview-v7:23+'
+    compile 'com.android.support:support-v4:23.1.0'
+    compile 'com.android.support:support-v13:23.1.0'
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:palette-v7:23.1.0'
+    compile 'com.android.support:recyclerview-v7:23.1.0'
 
 //    //GCM
 //    releaseCompile 'com.google.android.gms:play-services-gcm:7.8.0'
