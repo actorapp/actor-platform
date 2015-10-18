@@ -35,8 +35,6 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.MaterialInterpolator;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 
-import static im.actor.messenger.app.core.ActorSDK.getSmileProcessor;
-
 public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
         OnBackspaceClickListener {
 
@@ -57,7 +55,7 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
         if (selectionEnd < 0) {
             selectionEnd = messageBody.getText().length();
         }
-        CharSequence appendString = getSmileProcessor().processEmojiMutable(smile,
+        CharSequence appendString = SmileProcessor.emoji().processEmojiMutable(smile,
                 SmileProcessor.CONFIGURATION_BUBBLES);
 
         messageBody.getText().insert(selectionEnd, appendString);
@@ -117,7 +115,7 @@ public class EmojiKeyboard extends BaseKeyboard implements OnSmileClickListener,
 
     @Override
     protected void onDismiss() {
-        getSmileProcessor().getRecentController().saveRecents();
+        SmileProcessor.emoji().getRecentController().saveRecents();
     }
 
     void animateView(View view) {

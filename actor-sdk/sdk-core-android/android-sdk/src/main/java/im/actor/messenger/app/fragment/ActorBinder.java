@@ -19,15 +19,11 @@ import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
-import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueTripleChangedListener;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
-/**
- * Created by ex3ndr on 19.02.15.
- */
 public class ActorBinder {
 
     private ArrayList<Binding> bindings = new ArrayList<Binding>();

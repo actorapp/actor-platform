@@ -31,11 +31,8 @@ import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
-/**
- * Created by ex3ndr on 23.09.14.
- */
 public abstract class BaseContactFragment extends DisplayListFragment<Contact, ContactHolder> {
 
     private View emptyView;

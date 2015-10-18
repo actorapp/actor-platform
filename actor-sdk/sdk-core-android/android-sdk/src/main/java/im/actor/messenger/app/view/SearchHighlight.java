@@ -8,7 +8,7 @@ import android.text.style.ForegroundColorSpan;
 import java.util.List;
 
 import im.actor.core.util.StringMatch;
-import im.actor.messenger.app.util.TextUtils;
+import im.actor.messenger.app.util.Strings;
 
 /**
  * Created by ex3ndr on 19.10.14.
@@ -32,7 +32,7 @@ public class SearchHighlight {
         String matchString = src.toLowerCase();
         SpannableStringBuilder builder = new SpannableStringBuilder(src);
         int index = matchString.indexOf(" " + query);
-        if (matchString.startsWith(query) || TextUtils.transliterate(matchString).startsWith(query)) {
+        if (matchString.startsWith(query) || Strings.transliterate(matchString).startsWith(query)) {
             builder.setSpan(new ForegroundColorSpan(color), 0, query.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         } else if (index >= 0) {
             builder.setSpan(new ForegroundColorSpan(color), index + 1, index + 1 + query.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
