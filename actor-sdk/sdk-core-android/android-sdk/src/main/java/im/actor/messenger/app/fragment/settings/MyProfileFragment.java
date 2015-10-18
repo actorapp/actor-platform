@@ -11,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,11 +30,6 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
-import im.actor.core.api.rpc.RequestCheckNickName;
-import im.actor.core.api.rpc.RequestEditNickName;
-import im.actor.core.api.rpc.ResponseBool;
-import im.actor.core.api.rpc.ResponseSeq;
-import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
@@ -53,13 +46,10 @@ import im.actor.messenger.app.view.TintImageView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.myUid;
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
-/**
- * Created by ex3ndr on 09.09.14.
- */
 public class MyProfileFragment extends BaseFragment {
 
     private int baseColor;

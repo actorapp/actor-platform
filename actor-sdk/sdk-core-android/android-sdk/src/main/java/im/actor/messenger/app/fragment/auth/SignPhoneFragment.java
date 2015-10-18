@@ -18,19 +18,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.util.Devices;
 import im.actor.messenger.app.util.country.Country;
-import im.actor.messenger.app.util.country.CountryDb;
-import im.actor.messenger.app.util.country.CountryUtil;
+import im.actor.messenger.app.util.country.Countries;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
 public class SignPhoneFragment extends BaseAuthFragment {
 
     private static final int REQUEST_COUNTRY = 0;
 
-    private CountryDb countryDb;
+    private Countries countryDb;
 
     private Button countrySelectButton;
     private EditText countryCodeEditText;
@@ -51,10 +51,9 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
         initView(v);
 
-        countryDb = CountryDb.getInstance();
+        countryDb = Countries.getInstance();
 
-        Activity a = getActivity();
-        String deviceCountry = CountryUtil.getDeviceCountry(a);
+        String deviceCountry = Devices.getDeviceCountry();
         if (!TextUtils.isEmpty(deviceCountry)) {
             Country country = countryDb.getCountryByShortName(deviceCountry);
             setCountryName(country);

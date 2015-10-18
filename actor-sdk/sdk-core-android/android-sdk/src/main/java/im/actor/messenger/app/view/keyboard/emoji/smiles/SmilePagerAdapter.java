@@ -13,13 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.view.emoji.smiles.SmilesPack;
 import im.actor.messenger.app.view.emoji.smiles.SmilesPackView;
 import im.actor.messenger.app.view.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-
-import static im.actor.messenger.app.core.ActorSDK.getSmileProcessor;
 
 /**
 * Created by Jesus Christ. Amen.
@@ -68,16 +67,16 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
         if (Screen.getWidth() / emojiSize < emojisMaxRowCount) {
             emojisMaxRowCount = Screen.getWidth() / emojiSize;
         }
-        final SmilesPackView smilesPackView = new SmilesPackView(container.getContext(), getSmileProcessor(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
+        final SmilesPackView smilesPackView = new SmilesPackView(container.getContext(), SmileProcessor.emoji(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
         emojicontainer.addView(smilesPackView, params);
-        if(!getSmileProcessor().isLoaded()){
-            getSmileProcessor().registerListener(new SmilesListener() {
+        if(!SmileProcessor.emoji().isLoaded()){
+            SmileProcessor.emoji().registerListener(new SmilesListener() {
                 @Override
                 public void onSmilesUpdated(boolean completed) {
                     smilesPackView.update();
-                    getSmileProcessor().unregisterListener(this);
+                    SmileProcessor.emoji().unregisterListener(this);
                 }
             });
         }

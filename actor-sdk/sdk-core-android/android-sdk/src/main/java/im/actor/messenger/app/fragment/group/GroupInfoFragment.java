@@ -49,14 +49,11 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 
-import static im.actor.messenger.app.core.ActorSDK.groups;
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.myUid;
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.groups;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
-/**
- * Created by ex3ndr on 07.10.14.
- */
 public class GroupInfoFragment extends BaseFragment {
 
     private static final String EXTRA_CHAT_ID = "chat_id";

@@ -7,11 +7,8 @@ import im.actor.messenger.R;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.ServiceContent;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
-/**
- * Created by ex3ndr on 27.02.15.
- */
 public class ServiceHolder extends MessageHolder {
 
     private TextView messageText;

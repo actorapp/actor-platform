@@ -1,6 +1,6 @@
 package im.actor;
 
-import im.actor.messenger.app.core.ActorSDK;
+import im.actor.sdk.ActorSDK;
 
 /**
  * Created by badgr on 16.10.2015.

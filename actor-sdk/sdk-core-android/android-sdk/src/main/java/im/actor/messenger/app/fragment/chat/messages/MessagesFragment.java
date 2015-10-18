@@ -43,8 +43,8 @@ import im.actor.runtime.generic.mvvm.AndroidListUpdate;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MessagesFragment extends DisplayListFragment<Message, MessageHolder> {

@@ -1,8 +1,5 @@
 package im.actor.messenger.app.util;
 
-/**
- * Created by ex3ndr on 05.10.14.
- */
 public class BoxUtil {
     public static int[] unbox(Integer[] src) {
         int[] res = new int[src.length];
