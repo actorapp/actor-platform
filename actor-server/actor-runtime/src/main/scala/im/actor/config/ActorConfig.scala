@@ -41,11 +41,6 @@ object ActorConfig {
         |    }
         |  }
         |}
-        |
-        |jdbc-connection {
-        |  jndiPath: "/"
-        |  dataSourceName: "DefaultDataSource"
-        |}
       """.stripMargin
     )
       .withFallback(mainConfig)
