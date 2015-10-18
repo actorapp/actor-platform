@@ -2,17 +2,15 @@ package im.actor.messenger.app.fragment.chat.messages;
 
 import android.view.View;
 
-import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.app.fragment.chat.view.BubbleContainer;
-import im.actor.messenger.app.util.TextUtils;
+import im.actor.messenger.app.util.Strings;
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 
-import static im.actor.messenger.app.core.ActorSDK.groups;
-import static im.actor.messenger.app.core.ActorSDK.myUid;
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
 public abstract class MessageHolder extends BindedViewHolder
         implements BubbleContainer.OnAvatarClickListener, BubbleContainer.OnAvatarLongClickListener, View.OnClickListener, View.OnLongClickListener {
@@ -53,7 +51,7 @@ public abstract class MessageHolder extends BindedViewHolder
         // Date div
         boolean useDiv;
         if (prev != null) {
-            useDiv = !TextUtils.areSameDays(prev.getDate(), message.getDate());
+            useDiv = !Strings.areSameDays(prev.getDate(), message.getDate());
         } else {
             useDiv = true;
         }

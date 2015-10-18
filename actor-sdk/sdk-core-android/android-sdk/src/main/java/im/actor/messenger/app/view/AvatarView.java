@@ -26,11 +26,8 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.runtime.files.FileSystemReference;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
-/**
- * Created by ex3ndr on 18.09.14.
- */
 public class AvatarView extends SimpleDraweeView {
 
     private FileVM bindedFile;

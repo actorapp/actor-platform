@@ -14,11 +14,8 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.view.KeyboardHelper;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
-/**
- * Created by ex3ndr on 03.11.14.
- */
 public class AddContactActivity extends BaseFragmentActivity {
 
     private KeyboardHelper helper;

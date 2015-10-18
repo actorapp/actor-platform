@@ -18,101 +18,10 @@ android {
 
     sourceSets {
         main {
-            res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
+            res.srcDirs = ['src/main/res', 'src/main/res-material']
         }
     }
 
-//    buildTypes {
-//
-//        // Java types for BuildConfig
-//        def STRING = "String"
-//        def VERSION_TITLE = "VERSION_TITLE"
-//        def BOOLEAN = "boolean"
-//        def ENABLE_KEEP_ALIVE = "ENABLE_KEEP_ALIVE"
-//
-//        release {
-//            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Release)\""
-//            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "false"
-//            signingConfig signingConfigs.release
-//        }
-//
-//        free {
-//            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Free)\""
-//            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "true"
-//            signingConfig signingConfigs.release
-//        }
-//
-//        debug {
-//            buildConfigField STRING, VERSION_TITLE, "\"Debug Version (${getDate()})\""
-//            buildConfigField BOOLEAN, ENABLE_KEEP_ALIVE, "false"
-//        }
-//    }
-
-//    // Setting themes
-//    sourceSets {
-//
-//
-//        main {
-//            res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
-//        }
-//
-//        release {
-//            java.srcDirs += 'src/push/google/java'
-//        }
-//
-//        free {
-//            java.srcDirs += 'src/push/empty/java'
-//        }
-//
-//
-//        debug {
-//            java.srcDirs += 'src/push/google/java'
-//            res.srcDirs = ['src/themes/dev']
-//        }
-//    }
-
-    // Signing configuration
-
-//    boolean isSigningLoaded = false
-//    if (project.rootProject.file('keystore.properties').exists()) {
-//        Properties properties = new Properties()
-//        properties.load(project.rootProject.file('keystore.properties').newDataInputStream())
-//        if (!properties.getProperty('androidStore', '').equals('')) {
-//            def androidStore = properties.getProperty('androidStore')
-//            def androidStorePass = properties.getProperty('androidStorePass')
-//            def androidAliasPass = properties.getProperty('androidAliasPass')
-//            def androidAlias = properties.getProperty('androidAlias')
-//
-//            android.signingConfigs.release.storeFile = file(androidStore)
-//            android.signingConfigs.release.storePassword = androidStorePass
-//            android.signingConfigs.release.keyAlias = androidAlias
-//            android.signingConfigs.release.keyPassword = androidAliasPass
-//
-//            isSigningLoaded = true
-//        }
-//    }
-//    if (!isSigningLoaded) {
-//        buildTypes.release.signingConfig = null
-//        buildTypes.free.signingConfig = null
-//    }
-//
-//    // Some technical configuration
-//
-//    packagingOptions {
-//        exclude 'LICENSE.txt'
-//    }
-//
-//    dexOptions {
-//        incremental true
-//        preDexLibraries false
-//        javaMaxHeapSize "4g"
-//    }
-//
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_6
-//        targetCompatibility JavaVersion.VERSION_1_6
-//    }
-//
     lintOptions {
         abortOnError false
     }
@@ -142,12 +51,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:palette-v7:23.1.0'
     compile 'com.android.support:recyclerview-v7:23.1.0'
-
-//    //GCM
-//    releaseCompile 'com.google.android.gms:play-services-gcm:7.8.0'
-//    debugCompile 'com.google.android.gms:play-services-gcm:7.8.0'
-
-//    // Annotation processing
-//    apt "org.androidannotations:androidannotations:3.3.2"
-//    compile "org.androidannotations:androidannotations-api:3.3.2"
 }

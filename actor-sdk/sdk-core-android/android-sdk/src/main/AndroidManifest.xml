@@ -279,7 +279,7 @@
 
 
         <activity
-            android:name="com.droidkit.pickers.file.FilePickerActivity"
+            android:name="im.actor.pickers.file.FilePickerActivity"
             android:label="@string/picker_file_activity_title"
             android:theme="@style/PickerTheme.FilePicker" />
 

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import im.actor.messenger.app.AppContext;
+import im.actor.runtime.android.AndroidContext;
 
 /**
  * Created by Jesus Christ. Amen.
@@ -31,7 +32,7 @@ public class SmilesRecentsController extends ArrayList<Long> {
     }
 
     public static SmilesRecentsController getInstance() {
-        return getInstance(AppContext.getContext());
+        return getInstance(AndroidContext.getContext());
     }
 
     public static SmilesRecentsController getInstance(Context context) {

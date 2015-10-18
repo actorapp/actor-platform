@@ -16,11 +16,8 @@ import im.actor.messenger.app.view.ViewHolder;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.UserVM;
 
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
-/**
- * Created by ex3ndr on 07.10.14.
- */
 public class MembersAdapter extends HolderAdapter<GroupMember> {
     private GroupMember[] members;
 
