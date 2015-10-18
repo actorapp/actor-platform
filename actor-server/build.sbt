@@ -5,9 +5,6 @@ enablePlugins(JavaServerAppPackaging)
 enablePlugins(JDebPackaging)
 enablePlugins(RpmPlugin)
 
-JavaAppPackaging.projectSettings
-JavaServerAppPackaging.debianSettings
-
 name := "actor"
 
 maintainer := "Actor LLC <oss@actor.im>"
