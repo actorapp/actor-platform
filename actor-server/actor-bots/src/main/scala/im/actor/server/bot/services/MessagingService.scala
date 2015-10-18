@@ -3,13 +3,13 @@ package im.actor.server.bot.services
 import akka.actor.ActorSystem
 import im.actor.api.rpc.messaging.ApiTextMessage
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.server.bot.BotService
+import im.actor.server.bot.BotServiceBase
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.sequence.SeqStateDate
 
-final class MessagingService(system: ActorSystem) extends BotService {
+final class MessagingService(system: ActorSystem) extends BotServiceBase {
 
-  import BotService._
+  import BotServiceBase._
   import im.actor.bots.BotMessages._
   import system.dispatcher
 
