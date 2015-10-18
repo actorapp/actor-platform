@@ -26,9 +26,9 @@ import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.Value;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.myUid;
 import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
 
 public class DialogHolder extends BindedViewHolder {
 

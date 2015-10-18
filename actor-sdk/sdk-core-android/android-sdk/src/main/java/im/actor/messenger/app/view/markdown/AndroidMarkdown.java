@@ -15,6 +15,7 @@ import android.view.View;
 
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.fragment.preview.CodePreviewActivity;
+import im.actor.runtime.android.AndroidContext;
 import im.actor.runtime.markdown.MDDocument;
 import im.actor.runtime.markdown.MDRawText;
 import im.actor.runtime.markdown.MDSection;
@@ -55,8 +56,8 @@ public class AndroidMarkdown {
                 builder.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
-                        AppContext.getContext().startActivity(
-                                new Intent(AppContext.getContext(), CodePreviewActivity.class)
+                        AndroidContext.getContext().startActivity(
+                                new Intent(AndroidContext.getContext(), CodePreviewActivity.class)
                                         .putExtra("source_code", text)
                                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
@@ -92,7 +93,7 @@ public class AndroidMarkdown {
                 builder.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View view) {
-                        AppContext.getContext().startActivity(
+                        AndroidContext.getContext().startActivity(
                                 new Intent(Intent.ACTION_VIEW)
                                         .setData(Uri.parse(url.getUrl()))
                                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));

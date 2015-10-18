@@ -17,7 +17,7 @@ import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.keyboard.KeyboardStatusListener;
 import im.actor.messenger.app.view.keyboard.emoji.EmojiKeyboard;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
 public abstract class ActorEditTextActivity extends BaseActivity {
 

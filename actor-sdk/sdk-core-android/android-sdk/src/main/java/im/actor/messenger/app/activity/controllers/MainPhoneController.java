@@ -46,13 +46,10 @@ import im.actor.messenger.app.view.PagerSlidingTabStrip;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.Value;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
 
-/**
- * Created by ex3ndr on 25.10.14.
- */
 public class MainPhoneController extends MainBaseController {
 
     private ViewPager pager;

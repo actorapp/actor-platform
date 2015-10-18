@@ -23,12 +23,9 @@ import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
 import im.actor.messenger.app.util.BoxUtil;
 import im.actor.messenger.app.util.Screen;
 
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.users;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
-/**
- * Created by ex3ndr on 04.10.14.
- */
 public class GroupUsersFragment extends BaseContactFragment {
 
     public static GroupUsersFragment create(String title, String avatarPath) {

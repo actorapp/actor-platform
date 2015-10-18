@@ -36,16 +36,13 @@ import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.Value;
 import uk.co.senab.photoview.PhotoView;
 
-import static im.actor.messenger.app.core.ActorSDK.groups;
-import static im.actor.messenger.app.core.ActorSDK.messenger;
-import static im.actor.messenger.app.core.ActorSDK.myUid;
-import static im.actor.messenger.app.core.ActorSDK.users;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.sdk.ActorSDKMessenger.groups;
+import static im.actor.sdk.ActorSDKMessenger.messenger;
+import static im.actor.sdk.ActorSDKMessenger.myUid;
+import static im.actor.sdk.ActorSDKMessenger.users;
 
-/**
- * Created by ex3ndr on 29.10.14.
- */
 public class ViewAvatarActivity extends BaseActivity {
 
     public static Intent viewAvatar(int uid, Context context) {
