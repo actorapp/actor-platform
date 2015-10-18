@@ -2,6 +2,9 @@ set -e
 
 pod install
 
+rm -fr build
+mkdir -p build/Output
+
 xcodebuild \
   -workspace "ActorSDK.xcworkspace" \
   -scheme "ActorSDK" \
@@ -23,8 +26,6 @@ xcodebuild \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
   build
-
-mkdir build/Output
 
 rm build/Output/libactor.so
 lipo -create "build/Build/Intermediates/ActorSDK.build/Release-iphoneos/j2objc/Objects/libactor.so" "build/Build/Intermediates/ActorSDK.build/Release-iphonesimulator/j2objc/Objects/libactor.so" -output build/Output/libactor.so
