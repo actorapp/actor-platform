@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.messages;
+package im.actor.sdk.controllers.conversation.messages;
 
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -24,16 +24,16 @@ import im.actor.core.entity.content.TextContent;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.MentionSpan;
-import im.actor.messenger.app.view.emoji.SmileProcessor;
-import im.actor.messenger.app.view.markdown.AndroidMarkdown;
+import im.actor.sdk.view.MentionSpan;
+import im.actor.sdk.view.emoji.SmileProcessor;
+import im.actor.sdk.view.markdown.AndroidMarkdown;
 import im.actor.runtime.generic.mvvm.ListProcessor;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.myUid;
 import static im.actor.messenger.app.core.Core.users;
-import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
+import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 
 public class ChatListProcessor implements ListProcessor<Message> {
 

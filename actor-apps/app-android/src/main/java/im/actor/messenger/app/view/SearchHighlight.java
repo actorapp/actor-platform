@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view;
+package im.actor.sdk.view;
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -8,7 +8,7 @@ import android.text.style.ForegroundColorSpan;
 import java.util.List;
 
 import im.actor.core.util.StringMatch;
-import im.actor.messenger.app.util.TextUtils;
+import im.actor.sdk.util.TextUtils;
 
 /**
  * Created by ex3ndr on 19.10.14.

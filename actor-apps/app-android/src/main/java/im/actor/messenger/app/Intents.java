@@ -16,16 +16,16 @@ import java.io.FileOutputStream;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Peer;
 import im.actor.core.utils.IOUtils;
-import im.actor.messenger.app.activity.AddContactActivity;
-import im.actor.messenger.app.activity.TakePhotoActivity;
-import im.actor.messenger.app.fragment.chat.ChatActivity;
-import im.actor.messenger.app.fragment.group.GroupInfoActivity;
-import im.actor.messenger.app.fragment.group.IntegrationTokenActivity;
-import im.actor.messenger.app.fragment.group.InviteLinkActivity;
-import im.actor.messenger.app.fragment.preview.PictureActivity;
-import im.actor.messenger.app.fragment.profile.ProfileActivity;
-import im.actor.messenger.app.fragment.settings.EditAboutActivity;
-import im.actor.messenger.app.fragment.settings.EditNameActivity;
+import im.actor.sdk.controllers.activity.AddContactActivity;
+import im.actor.sdk.controllers.activity.TakePhotoActivity;
+import im.actor.sdk.controllers.fragment.chat.ChatActivity;
+import im.actor.sdk.controllers.fragment.group.GroupInfoActivity;
+import im.actor.sdk.controllers.fragment.group.IntegrationTokenActivity;
+import im.actor.sdk.controllers.fragment.group.InviteLinkActivity;
+import im.actor.sdk.controllers.fragment.preview.PictureActivity;
+import im.actor.sdk.controllers.fragment.profile.ProfileActivity;
+import im.actor.sdk.controllers.fragment.settings.EditAboutActivity;
+import im.actor.sdk.controllers.fragment.settings.EditNameActivity;
 
 /**
  * Created by ex3ndr on 07.10.14.
@@ -187,7 +187,7 @@ public class Intents {
     }
 
     public static Intent pickFile(Context context) {
-        return im.actor.pickers.Intents.pickFile(context);
+        return im.actor.sdk.controllers.pickers.Intents.pickFile(context);
     }
 
     public static void openMedia(Activity activity, View photoView, String path, int senderId) {

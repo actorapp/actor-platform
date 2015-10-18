@@ -1,7 +1,7 @@
-package im.actor.messenger.app.activity.controllers;
+package im.actor.sdk.controllers.activity.controllers;
 
-import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.activity.base.Controller;
+import im.actor.sdk.controllers.activity.MainActivity;
+import im.actor.sdk.controllers.activity.base.Controller;
 import im.actor.core.entity.Dialog;
 
 /**

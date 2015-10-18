@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.compose;
+package im.actor.sdk.controllers.fragment.compose;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,10 +18,10 @@ import im.actor.core.entity.Contact;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.compose.view.UserSpan;
-import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
-import im.actor.messenger.app.util.BoxUtil;
-import im.actor.messenger.app.util.Screen;
+import im.actor.sdk.controllers.fragment.compose.view.UserSpan;
+import im.actor.sdk.controllers.fragment.contacts.BaseContactFragment;
+import im.actor.sdk.util.BoxUtil;
+import im.actor.sdk.util.Screen;
 
 import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.core.Core.users;

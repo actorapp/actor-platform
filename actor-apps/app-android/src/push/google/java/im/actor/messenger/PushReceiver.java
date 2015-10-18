@@ -12,7 +12,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.MainActivity;
+import im.actor.sdk.controllers.activity.MainActivity;
 import im.actor.runtime.Log;
 
 

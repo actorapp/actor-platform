@@ -19,7 +19,7 @@
             android:layout_alignParentBottom="true"
             android:background="#e2e5e7" />
 
-        <im.actor.messenger.app.view.PagerSlidingTabStrip
+        <im.actor.sdk.view.PagerSlidingTabStrip
             android:id="@+id/emoji_pager_indicator"
             android:layout_width="match_parent"
             android:layout_height="48dp"

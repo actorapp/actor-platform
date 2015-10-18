@@ -12,7 +12,8 @@
               android:paddingLeft="16dp"
               android:paddingRight="16dp"
               android:paddingTop="16dp">
-    <im.actor.messenger.app.view.AutoFocusEditText android:layout_width="match_parent"
+    <im.actor.sdk.view.AutoFocusEditText
+        android:layout_width="match_parent"
                                                    android:layout_height="wrap_content"
                                                    android:singleLine="true"
                                                    android:hint="Enter contact name"

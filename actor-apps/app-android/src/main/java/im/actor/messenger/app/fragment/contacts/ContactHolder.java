@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.contacts;
+package im.actor.sdk.controllers.fragment.contacts;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 import im.actor.runtime.android.view.BindedViewHolder;
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.messenger.app.view.SearchHighlight;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.Fonts;
+import im.actor.sdk.view.OnItemClickedListener;
+import im.actor.sdk.view.SearchHighlight;
 import im.actor.core.entity.Contact;
 
 /**

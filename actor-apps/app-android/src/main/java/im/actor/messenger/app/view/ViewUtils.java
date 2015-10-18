@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view;
+package im.actor.sdk.view;
 
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -6,7 +6,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
 
-import im.actor.messenger.app.util.Screen;
+import im.actor.sdk.util.Screen;
 
 public class ViewUtils {
 

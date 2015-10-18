@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.view;
+package im.actor.sdk.controllers.conversation.view;
 
 import android.graphics.Bitmap;
 
@@ -7,10 +7,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import im.actor.messenger.app.util.images.BitmapUtil;
-import im.actor.messenger.app.util.images.common.ImageLoadException;
-import im.actor.messenger.app.util.images.ops.ImageLoading;
-import im.actor.messenger.app.view.FastBitmapDrawable;
+import im.actor.sdk.util.images.BitmapUtil;
+import im.actor.sdk.util.images.common.ImageLoadException;
+import im.actor.sdk.util.images.ops.ImageLoading;
+import im.actor.sdk.view.FastBitmapDrawable;
 
 /**
  * Created by ex3ndr on 27.02.15.

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view;
+package im.actor.sdk.view;
 
 /**
  * Created by ex3ndr on 22.10.14.

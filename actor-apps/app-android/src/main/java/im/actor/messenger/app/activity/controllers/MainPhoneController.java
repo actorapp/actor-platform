@@ -1,4 +1,4 @@
-package im.actor.messenger.app.activity.controllers;
+package im.actor.sdk.controllers.activity.controllers;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,27 +28,27 @@ import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.AddContactActivity;
-import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.fragment.compose.ComposeActivity;
-import im.actor.messenger.app.fragment.compose.CreateGroupActivity;
-import im.actor.messenger.app.fragment.contacts.ContactsFragment;
-import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
-import im.actor.messenger.app.fragment.help.HelpActivity;
-import im.actor.messenger.app.fragment.main.SearchAdapter;
-import im.actor.messenger.app.fragment.settings.MyProfileActivity;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.Fonts;
-import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
-import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
-import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.messenger.app.view.PagerSlidingTabStrip;
+import im.actor.sdk.controllers.activity.AddContactActivity;
+import im.actor.sdk.controllers.activity.MainActivity;
+import im.actor.sdk.controllers.fragment.compose.ComposeActivity;
+import im.actor.sdk.controllers.fragment.compose.CreateGroupActivity;
+import im.actor.sdk.controllers.fragment.contacts.ContactsFragment;
+import im.actor.sdk.controllers.fragment.dialogs.DialogsFragment;
+import im.actor.sdk.controllers.fragment.help.HelpActivity;
+import im.actor.sdk.controllers.fragment.main.SearchAdapter;
+import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.Fonts;
+import im.actor.sdk.view.FragmentNoMenuStatePagerAdapter;
+import im.actor.sdk.view.HeaderViewRecyclerAdapter;
+import im.actor.sdk.view.OnItemClickedListener;
+import im.actor.sdk.view.PagerSlidingTabStrip;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.Value;
 
 import static im.actor.messenger.app.core.Core.messenger;
-import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
+import static im.actor.sdk.view.ViewUtils.goneView;
+import static im.actor.sdk.view.ViewUtils.showView;
 
 /**
  * Created by ex3ndr on 25.10.14.

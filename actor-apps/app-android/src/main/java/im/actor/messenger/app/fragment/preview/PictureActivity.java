@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.preview;
+package im.actor.sdk.controllers.fragment.preview;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -24,12 +24,12 @@ import com.droidkit.progress.CircularView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.BaseActivity;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.util.images.common.ImageLoadException;
-import im.actor.messenger.app.util.images.ops.ImageLoading;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.MaterialInterpolator;
+import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.util.images.common.ImageLoadException;
+import im.actor.sdk.util.images.ops.ImageLoading;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.MaterialInterpolator;
 import im.actor.core.entity.FileReference;
 import im.actor.core.viewmodel.UserVM;
 import uk.co.senab.photoview.DefaultOnDoubleTapListener;

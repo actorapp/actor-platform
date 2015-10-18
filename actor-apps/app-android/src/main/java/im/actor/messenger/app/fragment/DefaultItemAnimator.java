@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
-package im.actor.messenger.app.fragment;
+package im.actor.sdk.controllers.fragment;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
