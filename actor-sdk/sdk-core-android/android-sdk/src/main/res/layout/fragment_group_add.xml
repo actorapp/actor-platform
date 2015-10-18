@@ -19,7 +19,7 @@
         android:orientation="horizontal"
         android:paddingRight="8dp">
 
-        <im.actor.messenger.app.view.TintImageView
+        <im.actor.sdk.view.TintImageView
             android:layout_width="72dp"
             android:layout_height="58dp"
             app:src="@drawable/ic_person_add_white_24dp"

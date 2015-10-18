@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment;
+package im.actor.sdk.controllers.fragment;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -14,8 +14,8 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.CoverAvatarView;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.CoverAvatarView;
 import im.actor.runtime.mvvm.Value;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;

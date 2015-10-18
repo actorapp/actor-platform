@@ -8,7 +8,7 @@ import android.content.Context;
 
 import java.io.File;
 
-import im.actor.messenger.app.util.RandomUtil;
+import im.actor.sdk.util.RandomUtil;
 
 public class AppContext {
     private static Context context;

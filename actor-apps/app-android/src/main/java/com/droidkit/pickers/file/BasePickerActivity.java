@@ -1,4 +1,4 @@
-package im.actor.pickers.file;
+package im.actor.sdk.controllers.pickers.file;
 
 import android.animation.ValueAnimator;
 import android.app.Fragment;
@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import im.actor.pickers.file.items.ExplorerItem;
+import im.actor.sdk.controllers.pickers.file.items.ExplorerItem;
 
 import java.io.File;
 import java.util.ArrayList;

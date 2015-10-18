@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.view;
+package im.actor.sdk.controllers.conversation.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.util.TextUtils;
-import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.Fonts;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.util.TextUtils;
+import im.actor.sdk.view.AvatarView;
+import im.actor.sdk.view.Fonts;
 import im.actor.core.viewmodel.UserVM;
 
 import static im.actor.messenger.app.core.Core.groups;

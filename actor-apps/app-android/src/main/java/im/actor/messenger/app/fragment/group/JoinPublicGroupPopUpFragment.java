@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group;
+package im.actor.sdk.controllers.fragment.group;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,10 +15,10 @@ import im.actor.core.network.RpcException;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
-import im.actor.messenger.app.view.CoverAvatarView;
-import im.actor.messenger.app.view.Fonts;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
+import im.actor.sdk.view.CoverAvatarView;
+import im.actor.sdk.view.Fonts;
 import im.actor.runtime.bser.Bser;
 
 import static im.actor.messenger.app.core.Core.messenger;

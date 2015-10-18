@@ -4,7 +4,7 @@
   ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
   -->
 
-<im.actor.messenger.app.fragment.chat.view.BubbleContainer xmlns:android="http://schemas.android.com/apk/res/android"
+<im.actor.sdk.controllers.conversation.view.BubbleContainer xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainContainer"
     android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:scaleType="center"
                 android:src="@drawable/picker_apk" />
 
-            <im.actor.messenger.app.view.TintImageView
+            <im.actor.sdk.view.TintImageView
                 android:id="@+id/downloading"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
@@ -120,4 +120,4 @@
         </FrameLayout>
 
     </LinearLayout>
-</im.actor.messenger.app.fragment.chat.view.BubbleContainer>
+</im.actor.sdk.controllers.conversation.view.BubbleContainer>

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group.view;
+package im.actor.sdk.controllers.fragment.group.view;
 
 import java.util.ArrayList;
 

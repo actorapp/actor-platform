@@ -11,7 +11,7 @@
         android:id="@+id/sticker_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <!--<im.actor.messenger.app.view.CirclePageIndicator
+    <!--<im.actor.sdk.view.CirclePageIndicator
         android:id="@+id/sticker_pager_indicator"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"

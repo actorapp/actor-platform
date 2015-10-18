@@ -18,12 +18,14 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
-import im.actor.messenger.app.activity.ActorMainActivity;
+import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+import im.actor.sdk.controllers.fragment.tour.TourActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
-import im.actor.messenger.app.core.KeepAliveService;
-import im.actor.messenger.app.util.Devices;
-import im.actor.messenger.app.view.emoji.SmileProcessor;
+import im.actor.sdk.services.KeepAliveService;
+import im.actor.sdk.util.Devices;
+import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.runtime.android.AndroidContext;
 
 public class ActorSDK {
@@ -137,7 +139,11 @@ public class ActorSDK {
     }
 
     public void startMessagingApp(Activity context) {
-        context.startActivity(new Intent(AndroidContext.getContext(), ActorMainActivity.class));
+        if (messenger.isLoggedIn()) {
+            context.startActivity(new Intent(AndroidContext.getContext(), ActorMainActivity.class));
+        } else {
+            context.startActivity(new Intent(context, AuthActivity.class));
+        }
     }
 
     //

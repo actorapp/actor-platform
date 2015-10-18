@@ -28,7 +28,7 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.AppContext;
-import im.actor.messenger.app.view.emoji.SmileProcessor;
+import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.runtime.actors.ActorCreator;
 import im.actor.runtime.actors.ActorRef;
 import im.actor.runtime.actors.Props;

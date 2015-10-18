@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.settings;
+package im.actor.sdk.controllers.fragment.settings;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.sdk.controllers.fragment.BaseFragment;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

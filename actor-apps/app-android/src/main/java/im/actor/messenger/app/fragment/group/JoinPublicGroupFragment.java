@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group;
+package im.actor.sdk.controllers.fragment.group;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,10 +24,10 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.fragment.group.view.PublicGroupCardView;
-import im.actor.messenger.app.fragment.group.view.PublicGroupSet;
-import im.actor.messenger.app.fragment.group.view.PublicGroupSetView;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.controllers.fragment.group.view.PublicGroupCardView;
+import im.actor.sdk.controllers.fragment.group.view.PublicGroupSet;
+import im.actor.sdk.controllers.fragment.group.view.PublicGroupSetView;
 import im.actor.runtime.files.FileSystemReference;
 
 import static im.actor.messenger.app.core.Core.groups;

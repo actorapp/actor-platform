@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat;
+package im.actor.sdk.controllers.fragment.chat;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.activity.BaseActivity;
-import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.messenger.app.view.TintImageView;
-import im.actor.messenger.app.view.keyboard.KeyboardStatusListener;
-import im.actor.messenger.app.view.keyboard.emoji.EmojiKeyboard;
+import im.actor.sdk.controllers.activity.BaseActivity;
+import im.actor.sdk.view.KeyboardHelper;
+import im.actor.sdk.view.TintImageView;
+import im.actor.sdk.view.emoji.keyboard.KeyboardStatusListener;
+import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

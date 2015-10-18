@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view;
+package im.actor.sdk.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,7 +7,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.util.Screen;
+import im.actor.sdk.util.Screen;
 
 /**
  * Created by ex3ndr on 01.04.15.

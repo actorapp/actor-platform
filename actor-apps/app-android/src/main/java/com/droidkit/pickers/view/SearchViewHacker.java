@@ -1,4 +1,4 @@
-package im.actor.pickers.view;
+package im.actor.sdk.controllers.pickers.view;
 
 import android.content.res.Resources;
 import android.support.v7.internal.widget.TintImageView;
