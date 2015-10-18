@@ -1,9 +1,9 @@
-package im.actor.messenger.app.util.images.sources;
+package im.actor.sdk.util.images.sources;
 
 import android.graphics.Bitmap;
-import im.actor.messenger.app.util.images.common.ImageLoadException;
-import im.actor.messenger.app.util.images.common.ImageMetadata;
-import im.actor.messenger.app.util.images.common.ReuseResult;
+import im.actor.sdk.util.images.common.ImageLoadException;
+import im.actor.sdk.util.images.common.ImageMetadata;
+import im.actor.sdk.util.images.common.ReuseResult;
 
 /**
  * Source of image
@@ -16,7 +16,7 @@ public abstract class ImageSource {
      * Loading of image metadata
      *
      * @return metadata
-     * @throws im.actor.messenger.app.util.images.common.ImageLoadException if it is unable to load file
+     * @throws im.actor.sdk.util.images.common.ImageLoadException if it is unable to load file
      */
     protected abstract ImageMetadata loadMetadata() throws ImageLoadException;
 
@@ -24,7 +24,7 @@ public abstract class ImageSource {
      * Getting of image metadata
      *
      * @return metadata
-     * @throws im.actor.messenger.app.util.images.common.ImageLoadException if it is unable to load file
+     * @throws im.actor.sdk.util.images.common.ImageLoadException if it is unable to load file
      */
     public ImageMetadata getImageMetadata() throws ImageLoadException {
         if (imageMetadata == null) {
@@ -37,7 +37,7 @@ public abstract class ImageSource {
      * Loading unmodified image
      *
      * @return bitmap
-     * @throws im.actor.messenger.app.util.images.common.ImageLoadException if it is unable to load file
+     * @throws im.actor.sdk.util.images.common.ImageLoadException if it is unable to load file
      */
     public abstract Bitmap loadBitmap() throws ImageLoadException;
 
@@ -46,7 +46,7 @@ public abstract class ImageSource {
      *
      * @param scale divider of size, might be factor of two
      * @return bitmap
-     * @throws im.actor.messenger.app.util.images.common.ImageLoadException if it is unable to load file
+     * @throws im.actor.sdk.util.images.common.ImageLoadException if it is unable to load file
      */
     public abstract Bitmap loadBitmap(int scale) throws ImageLoadException;
 
@@ -55,7 +55,7 @@ public abstract class ImageSource {
      *
      * @param reuse image for reuse
      * @return Reuse image loading result
-     * @throws im.actor.messenger.app.util.images.common.ImageLoadException
+     * @throws im.actor.sdk.util.images.common.ImageLoadException
      */
     public abstract ReuseResult loadBitmap(Bitmap reuse) throws ImageLoadException;
 }

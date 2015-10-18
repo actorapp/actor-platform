@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.group;
+package im.actor.sdk.controllers.fragment.group;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -22,9 +22,9 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.view.HolderAdapter;
-import im.actor.messenger.app.view.ViewHolder;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.view.HolderAdapter;
+import im.actor.sdk.view.ViewHolder;
 
 import static im.actor.messenger.app.core.Core.groups;
 import static im.actor.messenger.app.core.Core.messenger;

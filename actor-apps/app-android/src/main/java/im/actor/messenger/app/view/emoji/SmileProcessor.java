@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.messenger.app.view.emoji;
+package im.actor.sdk.view.emoji;
 
 import android.app.Application;
 import android.graphics.Bitmap;
@@ -28,15 +28,15 @@ import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.core.utils.IOUtils;
-import im.actor.messenger.app.util.Logger;
-import im.actor.messenger.app.util.images.common.ImageMetadata;
-import im.actor.messenger.app.util.images.ops.ImageLoading;
-import im.actor.messenger.app.util.images.sources.FileSource;
-import im.actor.messenger.app.view.emoji.smiles.SmilesPack;
-import im.actor.messenger.app.view.emoji.smiles.SmilesRecentListener;
-import im.actor.messenger.app.view.emoji.smiles.SmilesRecentsController;
-import im.actor.messenger.app.view.emoji.smiles.SmileysPack;
-import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
+import im.actor.sdk.util.Logger;
+import im.actor.sdk.util.images.common.ImageMetadata;
+import im.actor.sdk.util.images.ops.ImageLoading;
+import im.actor.sdk.util.images.sources.FileSource;
+import im.actor.sdk.view.emoji.smiles.SmilesPack;
+import im.actor.sdk.view.emoji.smiles.SmilesRecentListener;
+import im.actor.sdk.view.emoji.smiles.SmilesRecentsController;
+import im.actor.sdk.view.emoji.smiles.SmileysPack;
+import im.actor.sdk.view.emoji.keyboard.emoji.smiles.SmilesListener;
 
 
 public class SmileProcessor {

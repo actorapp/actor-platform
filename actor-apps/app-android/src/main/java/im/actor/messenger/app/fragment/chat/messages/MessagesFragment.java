@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.chat.messages;
+package im.actor.sdk.controllers.conversation.messages;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -34,10 +34,10 @@ import im.actor.core.entity.content.VideoContent;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.fragment.DisplayListFragment;
-import im.actor.messenger.app.fragment.chat.ChatActivity;
-import im.actor.messenger.app.util.Screen;
+import im.actor.sdk.controllers.activity.MainActivity;
+import im.actor.sdk.controllers.fragment.DisplayListFragment;
+import im.actor.sdk.controllers.fragment.chat.ChatActivity;
+import im.actor.sdk.util.Screen;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.generic.mvvm.AndroidListUpdate;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.auth;
+package im.actor.sdk.controllers.fragment.auth;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,10 +15,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.util.country.Country;
-import im.actor.messenger.app.util.country.CountryDb;
-import im.actor.messenger.app.view.ViewHolder;
+import im.actor.sdk.controllers.fragment.BaseFragment;
+import im.actor.sdk.util.country.Country;
+import im.actor.sdk.util.country.CountryDb;
+import im.actor.sdk.view.ViewHolder;
 
 import static im.actor.messenger.app.core.Core.messenger;
 

@@ -1,4 +1,4 @@
-package im.actor.messenger.app.view.keyboard.emoji.smiles;
+package im.actor.sdk.view.emoji.keyboard.emoji.smiles;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.emoji.smiles.SmilesPack;
-import im.actor.messenger.app.view.emoji.smiles.SmilesPackView;
-import im.actor.messenger.app.view.keyboard.emoji.EmojiKeyboard;
-import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.PagerSlidingTabStrip;
+import im.actor.sdk.view.emoji.smiles.SmilesPack;
+import im.actor.sdk.view.emoji.smiles.SmilesPackView;
+import im.actor.sdk.view.emoji.keyboard.emoji.EmojiKeyboard;
+import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.PagerSlidingTabStrip;
 
 import static im.actor.messenger.app.core.Core.getSmileProcessor;
 

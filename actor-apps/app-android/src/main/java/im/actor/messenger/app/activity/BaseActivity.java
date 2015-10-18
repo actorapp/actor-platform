@@ -1,4 +1,4 @@
-package im.actor.messenger.app.activity;
+package im.actor.sdk.controllers.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.messenger.R;
 import im.actor.messenger.app.core.Core;
-import im.actor.messenger.app.fragment.ActorBinder;
-import im.actor.messenger.app.view.AvatarView;
+import im.actor.sdk.controllers.fragment.ActorBinder;
+import im.actor.sdk.view.AvatarView;
 import im.actor.runtime.mvvm.ValueChangedListener;
 import im.actor.runtime.mvvm.ValueDoubleChangedListener;
 import im.actor.runtime.mvvm.Value;

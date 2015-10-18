@@ -146,7 +146,7 @@
             android:layout_height="56dp"
             android:layout_gravity="right|bottom">
 
-            <im.actor.messenger.app.view.TintImageView
+            <im.actor.sdk.view.TintImageView
                 android:id="@+id/ib_send"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

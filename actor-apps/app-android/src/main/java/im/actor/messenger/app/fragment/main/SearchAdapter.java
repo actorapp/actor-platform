@@ -1,11 +1,11 @@
-package im.actor.messenger.app.fragment.main;
+package im.actor.sdk.controllers.fragment.main;
 
 import android.content.Context;
 import android.view.ViewGroup;
 
 import im.actor.core.entity.SearchEntity;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.sdk.view.OnItemClickedListener;
 import im.actor.runtime.android.view.BindedListAdapter;
 
 /**
