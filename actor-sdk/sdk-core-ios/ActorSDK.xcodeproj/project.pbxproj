@@ -1331,6 +1331,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = ActorSDK;
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1368,6 +1369,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = ActorSDK;
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
 		};
