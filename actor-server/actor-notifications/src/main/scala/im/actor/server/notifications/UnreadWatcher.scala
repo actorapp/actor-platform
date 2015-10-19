@@ -22,7 +22,7 @@ class UnreadWatcher()(implicit system: ActorSystem, config: UnreadWatcherConfig)
     val now = DateTime.now
     db.run {
       for {
-        users ← persist.User.activeUsersIds
+        users ← persist.UserRepo.activeUsersIds
         tasks ← DBIO.sequence(users.map { userId ⇒
           for (data ← findUnread(userId, now)) yield if (data.isEmpty) None else Some(Notification(userId, data.toMap))
         })
@@ -33,7 +33,7 @@ class UnreadWatcher()(implicit system: ActorSystem, config: UnreadWatcherConfig)
   private def findUnread(userId: Int, now: DateTime): DBIO[Seq[(Option[String], Int)]] = {
     val dateToReadBefore = now.minus(unreadTimeout)
     for {
-      dialogs ← persist.Dialog.findLastReadBefore(dateToReadBefore, userId)
+      dialogs ← persist.DialogRepo.findLastReadBefore(dateToReadBefore, userId)
       senderAndCount ← DBIO.sequence(dialogs.map { dialog ⇒
         for {
           exists ← persist.HistoryMessage.haveMessagesBetween(userId, dialog.peer, dialog.ownerLastReadAt, dateToReadBefore)

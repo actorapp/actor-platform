@@ -6,7 +6,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models
 
-class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
+final class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
   def id = column[Int]("id", O.PrimaryKey)
 
   def creatorUserId = column[Int]("creator_user_id")
@@ -59,7 +59,7 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
   def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, about, topic) <> ((models.Group.apply _).tupled, models.Group.unapply)
 }
 
-object Group {
+object GroupRepo {
   val groups = TableQuery[FullGroupTable]
   val groupsC = Compiled(groups)
 

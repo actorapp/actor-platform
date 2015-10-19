@@ -18,14 +18,14 @@ class Managers extends Controller {
       errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
       fromRequest ⇒ db.run {
         for {
-          duplicate ← persist.Manager.findByEmail(fromRequest.email)
+          duplicate ← persist.ManagerRepo.findByEmail(fromRequest.email)
           result ← duplicate.map { d ⇒
             DBIO.successful(
               NotAcceptable(Json.toJson(Map("message" → s"Manager with email ${fromRequest.email} already exists")))
             )
           } getOrElse {
             for {
-              _ ← persist.Manager.create(fromRequest)
+              _ ← persist.ManagerRepo.create(fromRequest)
             } yield Created
           }
         } yield result

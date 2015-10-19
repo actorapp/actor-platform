@@ -19,7 +19,7 @@ import im.actor.api.rpc.users.ApiSex._
 import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode }
 import im.actor.server.activation._
 import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User }
-import im.actor.server.persist.auth.AuthTransaction
+import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session._
 import im.actor.server.user.UserExtension
 import im.actor.util.misc.IdUtils._
@@ -34,7 +34,7 @@ trait AuthHelpers extends Helpers {
   protected def newUserPhoneSignUp(transaction: models.AuthPhoneTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
     val phone = transaction.phoneNumber
     for {
-      optPhone ← fromDBIO(persist.UserPhone.findByPhoneNumber(phone).headOption)
+      optPhone ← fromDBIO(persist.UserPhoneRepo.findByPhoneNumber(phone).headOption)
       phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
       (_, countryCode) = phoneAndCode
       result ← optPhone match {
@@ -47,13 +47,13 @@ trait AuthHelpers extends Helpers {
   protected def newUserEmailSignUp(transaction: models.AuthEmailTransaction, name: String, sex: Option[ApiSex]): Result[(Int, String) \/ User] = {
     val email = transaction.email
     for {
-      optEmail ← fromDBIO(persist.UserEmail.find(email))
+      optEmail ← fromDBIO(persist.UserEmailRepo.find(email))
       result ← optEmail match {
         case Some(existingEmail) ⇒ point(-\/((existingEmail.userId, "")))
         case None ⇒
           val userResult: Result[(Int, String) \/ User] =
             for {
-              optToken ← fromDBIO(persist.OAuth2Token.findByUserId(email))
+              optToken ← fromDBIO(persist.OAuth2TokenRepo.findByUserId(email))
               locale ← optToken.map { token ⇒
                 val locale = oauth2Service.fetchProfile(token.accessToken).map(_.flatMap(_.locale))
                 fromFuture(locale)
@@ -68,8 +68,8 @@ trait AuthHelpers extends Helpers {
   def handleUserCreate(user: models.User, transaction: models.AuthTransactionChildren, authId: Long): Result[User] = {
     for {
       _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.nickname, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false, Seq.empty[ApiExtension], None))
-      _ ← fromDBIO(persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
-      _ ← fromDBIO(AuthTransaction.delete(transaction.transactionHash))
+      _ ← fromDBIO(persist.AvatarDataRepo.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
+      _ ← fromDBIO(AuthTransactionRepo.delete(transaction.transactionHash))
       _ ← transaction match {
         case p: models.AuthPhoneTransaction ⇒
           val phone = p.phoneNumber
@@ -102,21 +102,21 @@ trait AuthHelpers extends Helpers {
         case InvalidResponse ⇒ cleanupAndError(transactionHash, AuthErrors.ActivationServiceError)
         case Validated       ⇒ point(())
       }
-      _ ← fromDBIO(persist.auth.AuthTransaction.updateSetChecked(transactionHash))
+      _ ← fromDBIO(persist.auth.AuthTransactionRepo.updateSetChecked(transactionHash))
 
       userAndCountry ← transaction match {
         case p: AuthPhoneTransaction ⇒
           val phone = p.phoneNumber
           for {
             //if user is not registered - return error
-            phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(persist.UserPhone.findByPhoneNumber(phone).headOption)
+            phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(persist.UserPhoneRepo.findByPhoneNumber(phone).headOption)
             phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
             _ ← fromDBIO(activationContext.finish(transactionHash))
           } yield (phoneModel.userId, phoneAndCode._2)
         case e: AuthEmailTransaction ⇒
           for {
             //if user is not registered - return error
-            emailModel ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmail.find(e.email))
+            emailModel ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmailRepo.find(e.email))
             _ ← fromDBIO(activationContext.finish(transactionHash))
           } yield (emailModel.userId, "")
       }
@@ -129,9 +129,9 @@ trait AuthHelpers extends Helpers {
    */
   protected def refreshAuthSession(deviceHash: Array[Byte], newSession: models.AuthSession): DBIO[Unit] =
     for {
-      prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
+      prevSessions ← persist.AuthSessionRepo.findByDeviceHash(deviceHash)
       _ ← DBIO.from(Future.sequence(prevSessions map userExt.logout))
-      _ ← persist.AuthSession.create(newSession)
+      _ ← persist.AuthSessionRepo.create(newSession)
     } yield ()
 
   protected def authorize(userId: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] = {
@@ -146,9 +146,9 @@ trait AuthHelpers extends Helpers {
   //TODO: what country to use in case of email auth
   protected def authorizeT(userId: Int, countryCode: String, clientData: ClientData): Result[User] = {
     for {
-      user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(userId).headOption)
+      user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.UserRepo.find(userId).headOption)
       _ ← fromFuture(userExt.changeCountryCode(userId, countryCode))
-      _ ← fromDBIO(persist.AuthId.setUserData(clientData.authId, userId))
+      _ ← fromDBIO(persist.AuthIdRepo.setUserData(clientData.authId, userId))
     } yield user
   }
 
@@ -196,7 +196,7 @@ trait AuthHelpers extends Helpers {
 
   private def cleanupAndError(transactionHash: String, error: RpcError): Result[Unit] = {
     for {
-      _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
+      _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transactionHash))
       _ ← fromEither[Unit](Error(error))
     } yield ()
   }

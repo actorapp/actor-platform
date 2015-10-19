@@ -40,7 +40,7 @@ class FilesServiceImpl(
 
   override def jhandleGetFileUrl(location: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseGetFileUrl]] = {
     val authorizedAction = requireAuth(clientData) map { client ⇒
-      persist.File.find(location.fileId) flatMap {
+      persist.FileRepo.find(location.fileId) flatMap {
         implicit val timeout = 1.day
 
         {
@@ -71,7 +71,7 @@ class FilesServiceImpl(
       presignedRequest.setMethod(HttpMethod.PUT)
 
       for {
-        _ ← persist.File.create(id, salt, key)
+        _ ← persist.FileRepo.create(id, salt, key)
         url ← DBIO.from(fsAdapter.s3Client.generatePresignedUrlRequest(presignedRequest))
       } yield {
         Ok(ResponseGetFileUploadUrl(url.toString, key.getBytes()))
@@ -85,7 +85,7 @@ class FilesServiceImpl(
     val authorizedAction = requireAuth(clientData).map { client ⇒
       val key = new String(uploadKey)
 
-      persist.File.findByKey(key) flatMap {
+      persist.FileRepo.findByKey(key) flatMap {
         case Some(file) ⇒
           val partKey = s"upload_part_${file.s3UploadKey}_${partNumber}"
           val request = new GeneratePresignedUrlRequest(fsAdapter.bucketName, partKey)
@@ -97,7 +97,7 @@ class FilesServiceImpl(
 
           for {
             url ← DBIO.from(fsAdapter.s3Client.generatePresignedUrlRequest(request))
-            _ ← persist.FilePart.createOrUpdate(file.id, partNumber, partSize, partKey)
+            _ ← persist.FilePartRepo.createOrUpdate(file.id, partNumber, partSize, partKey)
           } yield {
             Ok(ResponseGetFileUploadPartUrl(url.toString))
           }
@@ -113,10 +113,10 @@ class FilesServiceImpl(
     val authorizedAction = requireAuth(clientData).map { client ⇒
       val key = new String(uploadKey)
 
-      persist.File.findByKey(key) flatMap {
+      persist.FileRepo.findByKey(key) flatMap {
         case Some(file) ⇒
           for {
-            parts ← persist.FilePart.findByFileId(file.id)
+            parts ← persist.FilePartRepo.findByFileId(file.id)
             tempDir ← DBIO.from(createTempDir())
             download = FutureTransfer.listenFor {
               fsAdapter.transferManager.downloadDirectory(fsAdapter.bucketName, s"upload_part_${file.s3UploadKey}", tempDir)
@@ -129,7 +129,7 @@ class FilesServiceImpl(
             } map (_.waitForCompletion())
             _ ← DBIO.from(upload)
             _ ← DBIO.from(deleteDir(tempDir))
-            _ ← DBIO.from(fileLengthF) flatMap (size ⇒ persist.File.setUploaded(file.id, size, fileName))
+            _ ← DBIO.from(fileLengthF) flatMap (size ⇒ persist.FileRepo.setUploaded(file.id, size, fileName))
           } yield {
             Ok(ResponseCommitFileUpload(ApiFileLocation(file.id, ACLUtils.fileAccessHash(file.id, file.accessSalt))))
           }

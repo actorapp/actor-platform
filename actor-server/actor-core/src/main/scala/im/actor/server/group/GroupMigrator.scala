@@ -26,7 +26,7 @@ object GroupMigrator extends Migration {
   protected override def migrationTimeout: Duration = 1.hour
 
   protected override def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(p.Group.findAllIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
+    db.run(p.GroupRepo.findAllIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
   }
 
   private def migrateSingle(groupId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
@@ -48,12 +48,12 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
   override def persistenceId = GroupOffice.persistenceIdFor(groupId)
 
   private def migrate(): Unit = {
-    db.run(p.Group.findFull(groupId)) foreach {
+    db.run(p.GroupRepo.findFull(groupId)) foreach {
       case Some(group) ⇒
         db.run(for {
-          avatarOpt ← p.AvatarData.findByGroupId(groupId)
-          bots ← p.GroupBot.findByGroup(groupId) map (_.map(Seq(_)).getOrElse(Seq.empty))
-          users ← p.GroupUser.find(groupId)
+          avatarOpt ← p.AvatarDataRepo.findByGroupId(groupId)
+          bots ← p.GroupBotRepo.findByGroup(groupId) map (_.map(Seq(_)).getOrElse(Seq.empty))
+          users ← p.GroupUserRepo.find(groupId)
         } yield Migrate(
           group = group,
           avatarData = avatarOpt,

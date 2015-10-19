@@ -67,7 +67,7 @@ class GroupPresenceManager extends Actor with ActorLogging with Stash {
   def receive = {
     case env @ Envelope(groupId, _) ⇒
       stash()
-      db.run(persist.GroupUser.findUserIds(groupId))
+      db.run(persist.GroupUserRepo.findUserIds(groupId))
         .map(ids ⇒ Initialized(groupId, ids.toSet))
         .pipeTo(self)
         .onFailure {

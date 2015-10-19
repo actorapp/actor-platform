@@ -14,7 +14,7 @@ object AuthAction extends ActionBuilder[Request] {
 
   def invokeBlock[A](request: Request[A], block: (Request[A]) ⇒ Future[Result]) = {
     val token = request.getQueryString("auth-token")
-    val query = persist.Manager.managers.filter { manager ⇒
+    val query = persist.ManagerRepo.managers.filter { manager ⇒
       token.map { manager.authToken === _ } getOrElse (false: Rep[Boolean])
     } map { _.id }
     db.run {

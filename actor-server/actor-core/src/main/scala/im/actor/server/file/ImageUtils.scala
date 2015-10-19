@@ -71,7 +71,7 @@ object ImageUtils {
     val smallFileName = "small-avatar.jpg"
     val largeFileName = "large-avatar.jpg"
 
-    persist.File.find(fullFileId) flatMap {
+    persist.FileRepo.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         fsAdapter.downloadFile(fullFileId) flatMap {
           case Some(fullFile) ⇒
