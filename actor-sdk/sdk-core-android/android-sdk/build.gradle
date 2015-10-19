@@ -52,7 +52,7 @@ dependencies {
     compile('com.github.chrisbanes.photoview:library:1.2.4') {
         exclude module: 'support-v13'
     }
-    
+
     compile 'com.droidkit:progress:0.5'
     compile 'com.getbase:floatingactionbutton:1.9.1'
 
@@ -131,7 +131,6 @@ project.afterEvaluate {
     String ossrhPassword = properties.getProperty("ossrhPassword", "")
 
     signing {
-        required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
         sign configurations.archives
     }
 
