@@ -11,15 +11,7 @@ public class AANavigationController: UINavigationController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Style navigation bar
-        
-        navigationBar.titleTextAttributes =
-            [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.navigationTitleColor]
-        navigationBar.tintColor = ActorSDK.sharedActor().style.navigationTintColor
-        navigationBar.barTintColor = ActorSDK.sharedActor().style.navigationBgColor
-        navigationBar.hairlineHidden = true
-        
-        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
+        styleNavBar()
         
 //         Enabling app state sync progress
 //        self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
@@ -38,11 +30,23 @@ public class AANavigationController: UINavigationController {
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        styleNavBar()
+        
         UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
     }
     
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return ActorSDK.sharedActor().style.vcStatusBarStyle
+    }
+    
+    private func styleNavBar() {
+        navigationBar.titleTextAttributes =
+            [NSForegroundColorAttributeName: ActorSDK.sharedActor().style.navigationTitleColor]
+        navigationBar.tintColor = ActorSDK.sharedActor().style.navigationTintColor
+        navigationBar.barTintColor = ActorSDK.sharedActor().style.navigationBgColor
+        navigationBar.hairlineHidden = ActorSDK.sharedActor().style.navigationHairlineHidden
+        
+        view.backgroundColor = ActorSDK.sharedActor().style.vcBgColor
     }
 }
 

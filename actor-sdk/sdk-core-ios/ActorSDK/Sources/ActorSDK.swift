@@ -264,7 +264,6 @@ public class ActorSDK {
                 tab.viewControllers = [
                     AANavigationController(rootViewController: AAContactsViewController()),
                     AANavigationController(rootViewController: AARecentViewController()),
-                    AANavigationController(rootViewController: AADebugController()),
                     AANavigationController(rootViewController: AASettingsViewController())]
                 tab.selectedIndex = 0
                 tab.selectedIndex = 1
