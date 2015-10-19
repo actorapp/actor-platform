@@ -134,3 +134,4 @@ actor-sdk/sdk-core-ios/ActorApp.xcodeproj/project.xcworkspace/xcuserdata
 actor-sdk/sdk-core-ios/Pods
 actor-sdk/sdk-core-ios/ActorSDK.xcworkspace
 actor-deps/dist
+gradle.properties
