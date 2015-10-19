@@ -1,6 +1,7 @@
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.3.0'
+        classpath 'com.github.dcendents:android-maven-plugin:1.2'
     }
 }
 
@@ -9,7 +10,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = 'im.actor'
-version = '0.6.1'
+version = '0.0.1'
 
 android {
 
@@ -44,23 +45,22 @@ android {
 dependencies {
 
     // UI
-    compile 'com.droidkit:progress:0.5'
+    compile 'com.facebook.fresco:fresco:0.7.0'
+    compile 'com.facebook.rebound:rebound:0.3.8'
+
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
-    compile 'com.facebook.fresco:fresco:0+'
-    compile 'com.facebook.rebound:rebound:0+'
-    compile('com.github.chrisbanes.photoview:library:1+') {
+    compile('com.github.chrisbanes.photoview:library:1.2.4') {
         exclude module: 'support-v13'
     }
-    compile 'com.getbase:floatingactionbutton:1+'
-    compile 'com.afollestad:material-dialogs:0+'
-    compile 'org.pegdown:pegdown:1+'
+    
+    compile 'com.droidkit:progress:0.5'
+    compile 'com.getbase:floatingactionbutton:1.9.1'
 
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
 
     // Core
-    compile 'com.squareup.okhttp:okhttp:2+'
-//    compile project(':actor-sdk:sdk-core:core:core-android')
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
 
     // Android Support
     compile 'com.android.support:support-v4:23.1.0'
@@ -68,6 +68,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:palette-v7:23.1.0'
     compile 'com.android.support:recyclerview-v7:23.1.0'
+    compile 'com.android.support:design:23.1.0'
 }
 
 //
@@ -77,86 +78,100 @@ dependencies {
 //
 // Prepare Android JavaDocs and Sources jar
 //
-//android.libraryVariants.all { variant ->
-//    task("${variant.name}Javadoc", type: Javadoc) {
-//        destinationDir = new File("$project.buildDir/javadoc/$variant.name")
+
+android.libraryVariants.all { variant ->
+
+    task("javadoc${variant.name.capitalize()}", type: Javadoc, dependsOn: "assemble${variant.name.capitalize()}") {
+
+        title = "Actor SDK for Android"
+
+        // Sources
+        source = variant.javaCompile.source
+
+        // First add all of your dependencies to the classpath, then add the android jars
+        classpath += files(variant.javaCompile.classpath.files)
+        classpath += files(android.getBootClasspath())
+
+        // Configuration
+        options.links("http://d.android.com/reference")
+        failOnError = false // TODO: Fix all errors
+
+        // We're excluding these generated files
+        // TODO: Fix
+        // exclude '**/BuildConfig.java'
+        // exclude '**/R.java'
+    }
+
+    task("javadocJar${variant.name.capitalize()}", type: Jar, dependsOn: "javadoc${variant.name.capitalize()}") {
+        classifier 'javadoc'
+        destinationDir = new File("$project.buildDir/libs/")
+        from "$project.buildDir/javadoc/$variant.name"
+    }
+
+    task("sourcesJar${variant.name.capitalize()}", type: Jar, dependsOn: "assemble${variant.name.capitalize()}") {
+        classifier 'sources'
+        destinationDir = new File("$project.buildDir/libs/")
+        from variant.javaCompile.source
+    }
+}
+
 //
-//        source = variant.javaCompile.source
-//        exclude '**/BuildConfig.java'
-//        exclude '**/R.java'
+// Configuration of publishing
 //
-//        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-//        classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
-//    }
-//
-//    task("${variant.name}JavadocJar", type: Jar, dependsOn: "${variant.name}Javadoc") {
-//        classifier 'javadoc'
-//        destinationDir = new File("$project.buildDir/libs/")
-//        from "$project.buildDir/javadoc/$variant.name"
-//    }
-//
-//    task("${variant.name}SourcesJar", type: Jar) {
-//        classifier 'sources'
-//
-//        destinationDir = new File("$project.buildDir/libs/")
-//
-//        from variant.javaCompile.source
-//        exclude '**/BuildConfig.java'
-//        exclude '**/R.java'
-//    }
-//}
-//
-//project.afterEvaluate {
-//
-//    artifacts {
-//        archives releaseJavadocJar
-//        archives releaseSourcesJar
-//    }
-//
-//    if (project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")) {
-//
-//        signing {
-//            sign configurations.archives
-//        }
-//
-//        uploadArchives {
-//            repositories {
-//                mavenDeployer {
-//                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-//
-//                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-//                        authentication(userName: ossrhUsername, password: ossrhPassword)
-//                    }
-//
-//                    pom.project {
-//                        name 'Actor SDK for Android'
-//                        packaging 'aar'
-//                        description 'Actor SDK: Embedding mobile messaging to Android App'
-//                        url 'https://github.com/actorapp/actor-platform'
-//
-//                        scm {
-//                            url 'scm:git@github.com:actorapp/actor-platform.git'
-//                            connection 'scm:git@github.com:actorapp/actor-platform.git'
-//                            developerConnection 'scm:git@github.com:actorapp/actor-platform.git'
-//                        }
-//
-//                        licenses {
-//                            license {
-//                                name 'The MIT License (MIT)'
-//                                url 'http://opensource.org/licenses/MIT'
-//                                distribution 'repo'
-//                            }
-//                        }
-//
-//                        developers {
-//                            developer {
-//                                id 'ex3ndr'
-//                                name 'Stepan Korshakov'
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+project.afterEvaluate {
+
+    artifacts {
+        archives javadocJarRelease
+        archives sourcesJarRelease
+    }
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    String ossrhUsername = properties.getProperty("ossrhUsername", "")
+    String ossrhPassword = properties.getProperty("ossrhPassword", "")
+
+    signing {
+        required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'Actor SDK for Android'
+                    packaging 'aar'
+                    description 'Actor SDK: Embedding mobile messaging to Android App'
+                    url 'https://github.com/actorapp/actor-platform'
+
+                    scm {
+                        url 'scm:git@github.com:actorapp/actor-platform.git'
+                        connection 'scm:git@github.com:actorapp/actor-platform.git'
+                        developerConnection 'scm:git@github.com:actorapp/actor-platform.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The MIT License (MIT)'
+                            url 'http://opensource.org/licenses/MIT'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'ex3ndr'
+                            name 'Stepan Korshakov'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
