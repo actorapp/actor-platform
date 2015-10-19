@@ -21,7 +21,7 @@ object FileHelpers {
   }
 
   def withFileLocation[R <: RpcResponse](fileLocation: ApiFileLocation, maxSize: Int)(f: ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext, s: ActorSystem) = {
-    persist.File.find(fileLocation.fileId) flatMap {
+    persist.FileRepo.find(fileLocation.fileId) flatMap {
       case Some(file) ⇒
         if (!file.isUploaded) {
           DBIO.successful(Error(Errors.LocationInvalid))

@@ -299,13 +299,13 @@ private[user] sealed trait AuthCommands {
   def removeAuth(userId: Int, authId: Long): Future[RemoveAuthAck] = (processorRegion.ref ? RemoveAuth(userId, authId)).mapTo[RemoveAuthAck]
 
   def logoutByAppleToken(token: Array[Byte])(implicit db: Database): Future[Unit] = {
-    db.run(p.push.ApplePushCredentials.findByToken(token)) flatMap { creds ⇒
+    db.run(p.push.ApplePushCredentialsRepo.findByToken(token)) flatMap { creds ⇒
       Future.sequence(creds map (c ⇒ logout(c.authId))) map (_ ⇒ ())
     }
   }
 
   def logout(authId: Long)(implicit db: Database): Future[Unit] = {
-    db.run(p.AuthSession.findByAuthId(authId)) flatMap {
+    db.run(p.AuthSessionRepo.findByAuthId(authId)) flatMap {
       case Some(session) ⇒ logout(session)
       case None          ⇒ throw new Exception("Can't find auth session to logout")
     }
@@ -319,7 +319,7 @@ private[user] sealed trait AuthCommands {
 
     for {
       _ ← removeAuth(session.userId, session.authId)
-      _ ← db.run(p.AuthSession.delete(session.userId, session.id))
+      _ ← db.run(p.AuthSessionRepo.delete(session.userId, session.id))
       _ = SeqUpdatesManager.deletePushCredentials(session.authId)
     } yield {
       publishAuthIdInvalidated(mediator, session.authId)

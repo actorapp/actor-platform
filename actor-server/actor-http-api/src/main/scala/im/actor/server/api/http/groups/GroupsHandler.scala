@@ -50,15 +50,15 @@ class GroupsHandler()(
   private def retrieve(token: String): Future[Either[Errors, GroupInviteInfo]] =
     db.run {
       for {
-        optToken ← persist.GroupInviteToken.findByToken(token)
+        optToken ← persist.GroupInviteTokenRepo.findByToken(token)
         result ← optToken.map { token ⇒
           for {
-            groupTitle ← persist.Group.findTitle(token.groupId)
-            groupAvatar ← persist.AvatarData.findByGroupId(token.groupId)
+            groupTitle ← persist.GroupRepo.findTitle(token.groupId)
+            groupAvatar ← persist.AvatarDataRepo.findByGroupId(token.groupId)
             groupAvatarUrls ← avatarUrls(groupAvatar)
 
-            inviterName ← persist.User.findName(token.creatorId)
-            inviterAvatar ← persist.AvatarData.findByUserId(token.creatorId).headOption
+            inviterName ← persist.UserRepo.findName(token.creatorId)
+            inviterAvatar ← persist.AvatarDataRepo.findByUserId(token.creatorId).headOption
             inviterAvatarUrls ← avatarUrls(inviterAvatar)
           } yield Right(GroupInviteInfo(group = Group(groupTitle.getOrElse("Group"), groupAvatarUrls), inviter = User(inviterName.getOrElse("User"), inviterAvatarUrls)))
         }.getOrElse(DBIO.successful(Left(Errors("Expired or invalid token"))))
@@ -78,7 +78,7 @@ class GroupsHandler()(
   private def urlOrNone(location: ApiFileLocation): DBIO[Option[String]] = {
     implicit val timeout = 1.day
     for {
-      fileOpt ← persist.File.find(location.fileId)
+      fileOpt ← persist.FileRepo.find(location.fileId)
       url ← fileOpt.map { file ⇒
         DBIO.from(fsAdapter.getFileUrl(file, location.accessHash))
       }.getOrElse(DBIO.successful(None))

@@ -19,10 +19,10 @@ object GroupUtils {
 
   def getPubgroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
     for {
-      membersIds ← persist.GroupUser.findUserIds(group.id)
-      userContactsIds ← persist.contact.UserContact.findNotDeletedIds(senderUserId)
+      membersIds ← persist.GroupUserRepo.findUserIds(group.id)
+      userContactsIds ← persist.contact.UserContactRepo.findNotDeletedIds(senderUserId)
       friendsCount = (membersIds intersect userContactsIds).length
-      groupAvatarModelOpt ← persist.AvatarData.findByGroupId(group.id)
+      groupAvatarModelOpt ← persist.AvatarDataRepo.findByGroupId(group.id)
     } yield {
       ApiPublicGroup(group.id, group.accessHash, group.title, membersIds.length, friendsCount, group.about.getOrElse(""), groupAvatarModelOpt map getAvatar)
     }
@@ -33,7 +33,7 @@ object GroupUtils {
   }
 
   def withGroup[A](groupId: Int)(f: models.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
-    persist.Group.find(groupId) flatMap {
+    persist.GroupRepo.find(groupId) flatMap {
       case Some(group) ⇒ f(group)
       case None        ⇒ DBIO.failed(new Exception(s"Group ${groupId} not found"))
     }
@@ -41,7 +41,7 @@ object GroupUtils {
 
   //todo: use GroupExtension.getMembers instead
   def withGroupUserIds[A](groupId: Int)(f: Seq[Int] ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
-    persist.GroupUser.findUserIds(groupId) flatMap f
+    persist.GroupUserRepo.findUserIds(groupId) flatMap f
   }
 
   def getUserIds(groups: Seq[ApiGroup]): Seq[Int] =

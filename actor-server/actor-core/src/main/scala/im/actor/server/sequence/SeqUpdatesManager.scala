@@ -118,7 +118,7 @@ object SeqUpdatesManager {
 
     val ext = SeqUpdatesExtension(system)
 
-    DbExtension(system).db.run(p.push.ApplePushCredentials.findByToken(token)) foreach { creds ⇒
+    DbExtension(system).db.run(p.push.ApplePushCredentialsRepo.findByToken(token)) foreach { creds ⇒
       creds foreach { c ⇒
         ext.region.ref ! PushCredentialsDeleted(c.authId)
       }
@@ -127,7 +127,7 @@ object SeqUpdatesManager {
 
   def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
     def run(state: Long, acc: Vector[models.sequence.SeqUpdate], currentSize: Long): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
-      p.sequence.SeqUpdate.findAfter(authId, state).flatMap { updates ⇒
+      p.sequence.SeqUpdateRepo.findAfter(authId, state).flatMap { updates ⇒
         if (updates.isEmpty) {
           DBIO.successful(acc → false)
         } else {

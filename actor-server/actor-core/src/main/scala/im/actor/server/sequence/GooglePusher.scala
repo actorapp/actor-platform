@@ -24,9 +24,9 @@ private[sequence] class GooglePusher(pushManager: GooglePushManager, db: Databas
 
         val messageAction = textOpt match {
           case Some(text) ⇒
-            persist.AuthId.findUserId(authId) flatMap {
+            persist.AuthIdRepo.findUserId(authId) flatMap {
               case Some(userId) ⇒
-                persist.AuthSession.findAppIdByAuthId(authId) flatMap {
+                persist.AuthSessionRepo.findAppIdByAuthId(authId) flatMap {
                   case Some(appId) ⇒
                     val category = models.AuthSession.appCategory(appId)
                     val paramBase = s"category.${category}.notification"

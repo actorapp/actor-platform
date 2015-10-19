@@ -311,7 +311,7 @@ class HttpApiFrontendSpec
     def groupInvitesOk() = {
       val token = ACLUtils.accessToken(ThreadLocalRandom.current())
       val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
-      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+      whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
@@ -333,13 +333,13 @@ class HttpApiFrontendSpec
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar = ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
-        whenReady(db.run(persist.AvatarData.createOrUpdate(avatar)))(_ ⇒ ())
+        whenReady(db.run(persist.AvatarDataRepo.createOrUpdate(avatar)))(_ ⇒ ())
       }
 
       val token = ACLUtils.accessToken(ThreadLocalRandom.current())
       val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
 
-      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+      whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
@@ -375,12 +375,12 @@ class HttpApiFrontendSpec
         val avatar =
           ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
             .copy(smallAvatarFileId = None, smallAvatarFileHash = None, smallAvatarFileSize = None)
-        whenReady(db.run(persist.AvatarData.createOrUpdate(avatar)))(_ ⇒ ())
+        whenReady(db.run(persist.AvatarDataRepo.createOrUpdate(avatar)))(_ ⇒ ())
       }
 
       val token = ACLUtils.accessToken(ThreadLocalRandom.current())
       val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
-      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+      whenReady(db.run(persist.GroupInviteTokenRepo.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"

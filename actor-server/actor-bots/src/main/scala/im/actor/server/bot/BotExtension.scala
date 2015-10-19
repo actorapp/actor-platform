@@ -131,14 +131,14 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
   override def getAuthId(userId: UserId): Future[AuthId] = getOrCreateAuthId(userId)
 
   private def getOrCreateAuthId(userId: Int): Future[AuthId] = {
-    db.run(persist.AuthId.findFirstIdByUserId(userId)) flatMap {
+    db.run(persist.AuthIdRepo.findFirstIdByUserId(userId)) flatMap {
       case Some(authId) ⇒
         Future.successful(authId)
       case None ⇒
         val authId = ACLUtils.randomLong()
 
         for {
-          _ ← db.run(persist.AuthId.create(authId, None, None))
+          _ ← db.run(persist.AuthIdRepo.create(authId, None, None))
           _ ← userExt.auth(userId, authId)
         } yield authId
     }

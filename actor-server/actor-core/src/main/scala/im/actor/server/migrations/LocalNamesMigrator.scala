@@ -23,8 +23,8 @@ object LocalNamesMigrator extends Migration {
     system.log.warning("Migrating local names")
 
     val actions = DBIO.sequence(Seq(
-      persist.contact.UserEmailContact.econtacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Email)).result,
-      persist.contact.UserPhoneContact.pcontacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Phone)).result
+      persist.contact.UserEmailContactRepo.econtacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Email)).result,
+      persist.contact.UserPhoneContactRepo.pcontacts.filter(!_.isDeleted).map(c ⇒ (c.ownerUserId, c.contactUserId, Phone)).result
     ))
 
     db.run(actions) flatMap (contacts ⇒ Future.sequence(contacts.flatten map migrateSingle)) map (_ ⇒ ())
@@ -50,12 +50,12 @@ private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int,
   override def receive: Receive = Actor.emptyBehavior
 
   db.run(for {
-    contact ← persist.contact.UserContact.find(ownerUserId, contactUserId)
-    user ← persist.User.find(contactUserId).headOption
+    contact ← persist.contact.UserContactRepo.find(ownerUserId, contactUserId)
+    user ← persist.UserRepo.find(contactUserId).headOption
   } yield (contact, user)) foreach {
     case (Some(contact), Some(user)) ⇒
       (if (contact.name.contains(user.name)) {
-        db.run(persist.contact.UserContact.updateName(ownerUserId, contactUserId, None))
+        db.run(persist.contact.UserContactRepo.updateName(ownerUserId, contactUserId, None))
       } else {
         contact.name map (_ ⇒ ContactsUtils.registerLocalName(ownerUserId, contactUserId, contact.name)) getOrElse Future.successful(())
       }) onComplete {

@@ -170,12 +170,12 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
         for {
-          token ← persist.GroupInviteToken.find(fullGroup.id, client.userId).headOption.flatMap {
+          token ← persist.GroupInviteTokenRepo.find(fullGroup.id, client.userId).headOption.flatMap {
             case Some(invToken) ⇒ DBIO.successful(invToken.token)
             case None ⇒
               val token = accessToken(ThreadLocalRandom.current())
               val inviteToken = models.GroupInviteToken(fullGroup.id, client.userId, token)
-              for (_ ← persist.GroupInviteToken.create(inviteToken)) yield token
+              for (_ ← persist.GroupInviteTokenRepo.create(inviteToken)) yield token
           }
         } yield Ok(ResponseInviteUrl(genInviteUrl(groupInviteConfig.baseUrl, token)))
       }
@@ -209,7 +209,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   override def jhandleEnterGroup(peer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseEnterGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withPublicGroup(peer) { fullGroup ⇒
-        persist.GroupUser.find(fullGroup.id, client.userId) flatMap {
+        persist.GroupUserRepo.find(fullGroup.id, client.userId) flatMap {
           case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited))
           case None ⇒
             val group = models.Group.fromFull(fullGroup)
@@ -234,8 +234,8 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         val inviteToken = models.GroupInviteToken(fullGroup.id, client.userId, token)
 
         for {
-          _ ← persist.GroupInviteToken.revoke(fullGroup.id, client.userId)
-          _ ← persist.GroupInviteToken.create(inviteToken)
+          _ ← persist.GroupInviteTokenRepo.revoke(fullGroup.id, client.userId)
+          _ ← persist.GroupInviteTokenRepo.create(inviteToken)
         } yield Ok(ResponseInviteUrl(genInviteUrl(groupInviteConfig.baseUrl, token)))
       }
     }

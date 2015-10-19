@@ -73,7 +73,7 @@ trait HistoryHandlers {
 
       for {
         _ ← persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
-        _ ← persist.Dialog.delete(client.userId, peer.asModel)
+        _ ← persist.DialogRepo.delete(client.userId, peer.asModel)
         seqstate ← DBIO.from(userExt.broadcastClientUpdate(update, None, isFat = false))
       } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
@@ -83,7 +83,7 @@ trait HistoryHandlers {
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.Dialog.findNotArchivedByUser(client.userId, endDateTimeFrom(endDate), limit) flatMap { dialogModels ⇒
+      persist.DialogRepo.findNotArchivedByUser(client.userId, endDateTimeFrom(endDate), limit) flatMap { dialogModels ⇒
         for {
           dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
           (users, groups) ← getDialogsUsersGroups(dialogs)
@@ -103,7 +103,7 @@ trait HistoryHandlers {
   override def jhandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] = {
     // TODO: #perf meh, not optimal
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      persist.Dialog.findNotArchivedByUser(client.userId, None, Int.MaxValue) flatMap { dialogModels ⇒
+      persist.DialogRepo.findNotArchivedByUser(client.userId, None, Int.MaxValue) flatMap { dialogModels ⇒
         val (groupModels, privateModels) = dialogModels.foldLeft((Vector.empty[models.Dialog], Vector.empty[models.Dialog])) {
           case ((groupModels, privateModels), dialog) ⇒
             if (dialog.peer.typ == models.PeerType.Group)
@@ -153,7 +153,7 @@ trait HistoryHandlers {
         val update = UpdateChatArchived(peer.asPeer)
 
         for {
-          _ ← persist.Dialog.makeArchived(client.userId, peer.asModel)
+          _ ← persist.DialogRepo.makeArchived(client.userId, peer.asModel)
           SeqState(seq, state) ← DBIO.from(userExt.broadcastClientUpdate(update, pushText = None))
         } yield Ok(ResponseSeq(seq, state.toByteArray))
       }
@@ -166,7 +166,7 @@ trait HistoryHandlers {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeer(peer) {
         withHistoryOwner(peer.asModel) { historyOwner ⇒
-          persist.Dialog.find(client.userId, peer.asModel) flatMap { dialogOpt ⇒
+          persist.DialogRepo.find(client.userId, peer.asModel) flatMap { dialogOpt ⇒
             persist.HistoryMessage.find(historyOwner, peer.asModel, endDateTimeFrom(endDate), limit) flatMap { messageModels ⇒
               val lastReceivedAt = dialogOpt map (_.lastReceivedAt) getOrElse (new DateTime(0))
               val lastReadAt = dialogOpt map (_.lastReadAt) getOrElse (new DateTime(0))
@@ -216,7 +216,7 @@ trait HistoryHandlers {
 
                 for {
                   _ ← persist.HistoryMessage.delete(historyOwner, peer, randomIds.toSet)
-                  groupUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.toSet)
+                  groupUserIds ← persist.GroupUserRepo.findUserIds(peer.id) map (_.toSet)
                   (seqstate, _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(groupUserIds, update, None, false))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               }
