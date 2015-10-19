@@ -2,9 +2,8 @@ package im.actor.sdk.controllers.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDialog;
 import android.view.View;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
@@ -68,7 +67,7 @@ public class BaseFragment extends BinderCompatFragment {
         });
     }
 
-    public <T> void executeSilent(Command<T> cmd,final CommandCallback<T> callback) {
+    public <T> void executeSilent(Command<T> cmd, final CommandCallback<T> callback) {
         cmd.start(callback);
     }
 
@@ -99,21 +98,20 @@ public class BaseFragment extends BinderCompatFragment {
 
     public <T> void execute(Command<T> cmd, int title) {
 
-        final MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
-                .content(title)
-                .progress(true, 0)
-                .cancelable(false)
-                .show();
+        final AppCompatDialog dialog = new AppCompatDialog(getActivity());
+        dialog.setTitle(title);
+        dialog.setCancelable(false);
+        dialog.show();
 
         cmd.start(new CommandCallback<T>() {
             @Override
             public void onResult(T res) {
-                materialDialog.dismiss();
+                dialog.dismiss();
             }
 
             @Override
             public void onError(Exception e) {
-                materialDialog.dismiss();
+                dialog.dismiss();
             }
         });
     }

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
@@ -110,13 +110,12 @@ public class IntegrationTokenFragment extends BaseFragment {
                         case 3:
                             //Revoke
                             if (isAdmin) {
-                                new MaterialDialog.Builder(getActivity())
-                                        .content(R.string.alert_revoke_integration_token_message)
-                                        .positiveText(R.string.alert_revoke_integration_token_yes)
-                                        .negativeText(R.string.dialog_cancel)
-                                        .callback(new MaterialDialog.ButtonCallback() {
+                                new AlertDialog.Builder(getActivity())
+                                        .setMessage(R.string.alert_revoke_integration_token_message)
+                                        .setNegativeButton(R.string.dialog_cancel, null)
+                                        .setPositiveButton(R.string.alert_revoke_integration_token_yes, new DialogInterface.OnClickListener() {
                                             @Override
-                                            public void onPositive(MaterialDialog materialDialog1) {
+                                            public void onClick(DialogInterface d, int which) {
                                                 execute(messenger().revokeIntegrationToken(chatId), R.string.integration_token_action_revoke, new CommandCallback<String>() {
                                                     @Override
                                                     public void onResult(String res) {
@@ -135,7 +134,6 @@ public class IntegrationTokenFragment extends BaseFragment {
                             } else {
                                 Toast.makeText(getActivity(), getString(R.string.integration_token_error_revoke_link_not_admin), Toast.LENGTH_LONG).show();
                             }
-
 
                             break;
 
