@@ -120,6 +120,25 @@ android.libraryVariants.all { variant ->
 //
 // Configuration of publishing
 //
+
+String ossrhUsername = ""
+String ossrhPassword = ""
+boolean isDeployConfigured = false
+if (project.rootProject.file('gradle.properties').exists()) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
+    ossrhUsername = properties.getProperty("ossrhUsername", "")
+    ossrhPassword = properties.getProperty("ossrhPassword", "")
+    version = properties.getProperty("version", "")
+
+    nexusStaging {
+        username ossrhUsername
+        password ossrhPassword
+    }
+
+    isDeployConfigured = true
+}
+
 project.afterEvaluate {
 
     artifacts {
@@ -127,25 +146,10 @@ project.afterEvaluate {
         archives sourcesJarRelease
     }
 
-    if (project.rootProject.file('gradle.properties').exists()) {
-
-        if (!properties.hasProperty("ossrhUsername") || !properties.hasProperty("ossrhPassword")) {
-            return
-        }
-
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
-        String ossrhUsername = properties.getProperty("ossrhUsername", "")
-        String ossrhPassword = properties.getProperty("ossrhPassword", "")
-        version = properties.getProperty("version", "")
-
+    if (isDeployConfigured) {
+        
         signing {
             sign configurations.archives
-        }
-
-        nexusStaging {
-            username ossrhUsername
-            password ossrhPassword
         }
 
         uploadArchives {
