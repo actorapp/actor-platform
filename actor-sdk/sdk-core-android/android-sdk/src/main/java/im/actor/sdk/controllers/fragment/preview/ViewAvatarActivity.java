@@ -2,18 +2,19 @@ package im.actor.sdk.controllers.fragment.preview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
@@ -267,11 +268,11 @@ public class ViewAvatarActivity extends BaseActivity {
                 args = new CharSequence[]{getString(R.string.pick_photo_camera),
                         getString(R.string.pick_photo_gallery)};
             }
-            new MaterialDialog.Builder(this)
-                    .items(args)
-                    .itemsCallback(new MaterialDialog.ListCallback() {
+
+            new AlertDialog.Builder(this)
+                    .setItems(args, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
+                        public void onClick(DialogInterface d, int which) {
                             if (which == 0) {
                                 externalFile = Files.getExternalTempFile("capture", "jpg");
                                 if (externalFile == null) {
