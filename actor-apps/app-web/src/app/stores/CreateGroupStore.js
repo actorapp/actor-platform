@@ -2,7 +2,6 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import _ from 'lodash';
 import { Store } from 'flux/utils';
 import Dispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
