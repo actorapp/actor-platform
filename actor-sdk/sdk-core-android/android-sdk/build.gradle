@@ -30,6 +30,10 @@ android {
             res.srcDirs = ['src/main/res',
                            'src/main/res-material']
 
+            resources.srcDirs = [
+                    '../../sdk-core/core/core-shared/src/main/resources'
+            ]
+
             java.srcDirs = ['src/main/java',
                             '../../sdk-core/core/core-shared/src/main/java',
                             '../../sdk-core/core/core-android/src/main/java',
@@ -147,7 +151,7 @@ project.afterEvaluate {
     }
 
     if (isDeployConfigured) {
-        
+
         signing {
             sign configurations.archives
         }
