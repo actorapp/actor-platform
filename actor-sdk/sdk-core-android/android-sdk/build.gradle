@@ -5,6 +5,11 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = 'im.actor'
+version = '0.6.1'
 
 android {
 
@@ -19,6 +24,12 @@ android {
     sourceSets {
         main {
             res.srcDirs = ['src/main/res', 'src/main/res-material']
+            java.srcDirs = ['src/main/java',
+                            '../../sdk-core/core/core-shared/src/main/java',
+                            '../../sdk-core/core/core-android/src/main/java',
+                            '../../sdk-core/runtime/runtime-shared/src/main/java',
+                            '../../sdk-core/runtime/runtime-generic/src/main/java',
+                            '../../sdk-core/runtime/runtime-android/src/main/java',]
         }
     }
 
@@ -30,7 +41,6 @@ android {
 dependencies {
 
     // UI
-    compile project(':actor-sdk:sdk-core:core:core-android')
     compile 'com.droidkit:progress:0.5'
     compile 'com.soundcloud.android:android-crop:1.0.0@aar'
     compile 'com.facebook.fresco:fresco:0+'
@@ -45,10 +55,104 @@ dependencies {
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
 
+    // Core
+    compile 'com.squareup.okhttp:okhttp:2+'
+
     // Android Support
     compile 'com.android.support:support-v4:23.1.0'
     compile 'com.android.support:support-v13:23.1.0'
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:palette-v7:23.1.0'
     compile 'com.android.support:recyclerview-v7:23.1.0'
+}
+
+//
+// Publishing of SDK to Maven Central
+//
+
+//
+// Prepare Android JavaDocs and Sources jar
+//
+android.libraryVariants.all { variant ->
+    task("${variant.name}Javadoc", type: Javadoc) {
+        destinationDir = new File("$project.buildDir/javadoc/$variant.name")
+
+        source = variant.javaCompile.source
+        exclude '**/BuildConfig.java'
+        exclude '**/R.java'
+
+        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+        classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
+    }
+
+    task("${variant.name}JavadocJar", type: Jar, dependsOn: "${variant.name}Javadoc") {
+        classifier 'javadoc'
+        destinationDir = new File("$project.buildDir/libs/")
+        from "$project.buildDir/javadoc/$variant.name"
+    }
+
+    task("${variant.name}SourcesJar", type: Jar) {
+        classifier 'sources'
+
+        destinationDir = new File("$project.buildDir/libs/")
+
+        from variant.javaCompile.source
+        exclude '**/BuildConfig.java'
+        exclude '**/R.java'
+    }
+}
+
+project.afterEvaluate {
+
+    artifacts {
+        archives releaseJavadocJar
+        archives releaseSourcesJar
+    }
+
+    if (project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")) {
+
+        signing {
+            sign configurations.archives
+        }
+
+        uploadArchives {
+            repositories {
+                mavenDeployer {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                    repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                        authentication(userName: ossrhUsername, password: ossrhPassword)
+                    }
+
+                    pom.project {
+                        name 'Actor SDK for Android'
+                        packaging 'aar'
+                        description 'Actor SDK: Embedding mobile messaging to Android App'
+                        url 'https://github.com/actorapp/actor-platform'
+
+                        scm {
+                            url 'scm:git@github.com:actorapp/actor-platform.git'
+                            connection 'scm:git@github.com:actorapp/actor-platform.git'
+                            developerConnection 'scm:git@github.com:actorapp/actor-platform.git'
+                        }
+
+                        licenses {
+                            license {
+                                name 'The MIT License (MIT)'
+                                url 'http://opensource.org/licenses/MIT'
+                                distribution 'repo'
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id 'ex3ndr'
+                                name 'Stepan Korshakov'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
