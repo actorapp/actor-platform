@@ -25,7 +25,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -106,40 +105,42 @@ public class MyProfileFragment extends BaseFragment {
                 recordView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-                        LinearLayout fl = new LinearLayout(getActivity());
-                        fl.setOrientation(LinearLayout.VERTICAL);
 
-                        builder.input(getString(R.string.nickname), val, false, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(MaterialDialog materialDialog, final CharSequence charSequence) {
-                                execute(messenger().editMyNick(charSequence.toString()), R.string.progress_common, new CommandCallback<Boolean>() {
-
-                                    @Override
-                                    public void onResult(Boolean res) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                ((TextView) recordView.findViewById(R.id.value)).setText(charSequence.toString());
-                                            }
-                                        });
-
-                                    }
-
-                                    @Override
-                                    public void onError(final Exception e) {
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
-
-                        builder.show();
+                        // TODO: Replace
+//                        final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+////                        LinearLayout fl = new LinearLayout(getActivity());
+////                        fl.setOrientation(LinearLayout.VERTICAL);
+//
+//                        builder.input(getString(R.string.nickname), val, false, new MaterialDialog.InputCallback() {
+//                            @Override
+//                            public void onInput(MaterialDialog materialDialog, final CharSequence charSequence) {
+//                                execute(messenger().editMyNick(charSequence.toString()), R.string.progress_common, new CommandCallback<Boolean>() {
+//
+//                                    @Override
+//                                    public void onResult(Boolean res) {
+//                                        getActivity().runOnUiThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                ((TextView) recordView.findViewById(R.id.value)).setText(charSequence.toString());
+//                                            }
+//                                        });
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onError(final Exception e) {
+//                                        getActivity().runOnUiThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+//                                            }
+//                                        });
+//                                    }
+//                                });
+//                            }
+//                        });
+//
+//                        builder.show();
                     }
                 });
             }

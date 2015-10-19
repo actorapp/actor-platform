@@ -24,7 +24,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -89,10 +88,10 @@ public class ProfileFragment extends BaseFragment {
             about.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    new MaterialDialog.Builder(getActivity())
-                            .title(getString(R.string.about_user))
-                            .content(aboutText).show();
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.about_user)
+                            .setMessage(aboutText)
+                            .show();
 
                 }
             });
