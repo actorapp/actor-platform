@@ -8,6 +8,7 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 
 import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
+
 import CreateGroupStore from 'stores/CreateGroupStore';
 
 import CreateGroupForm from './create-group/Form.react';
@@ -25,14 +26,12 @@ class CreateGroup extends Component {
     };
   }
 
-  constructor(props) {
-    super(props);
-
-    document.addEventListener('keydown', this.onKeyDown, false);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown, false);
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (!nextState.isOpen && this.state.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
   }
 
   render() {
