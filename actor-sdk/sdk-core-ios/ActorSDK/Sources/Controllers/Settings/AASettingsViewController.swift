@@ -22,6 +22,8 @@ public class AASettingsViewController: AAContentTableController {
         content = ACAllEvents_Main.SETTINGS()
         
         tabBarItem = UITabBarItem(title: "TabSettings", img: "TabIconSettings", selImage: "TabIconSettingsHighlighted")
+        
+        navigationItem.title = AALocalized("TabSettings")
     }
 
     public required init(coder aDecoder: NSCoder) {

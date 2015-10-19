@@ -83,7 +83,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
     }
     
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+        return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
     
     public func showPlaceholderWithImage(image: UIImage?, title: String?, subtitle: String?) {

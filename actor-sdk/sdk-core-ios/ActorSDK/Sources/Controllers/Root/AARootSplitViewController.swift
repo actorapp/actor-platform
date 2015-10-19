@@ -36,6 +36,6 @@ public class AARootSplitViewController: UISplitViewController {
     }
     
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+        return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
 }
