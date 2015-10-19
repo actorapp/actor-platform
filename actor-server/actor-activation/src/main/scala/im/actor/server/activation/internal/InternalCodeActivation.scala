@@ -1,6 +1,5 @@
 package im.actor.server.activation.internal
 
-import java.nio.file.{ Paths, Files }
 import java.time.temporal.ChronoUnit._
 import java.time.{ LocalDateTime, ZoneOffset }
 
@@ -95,7 +94,7 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
 
   private val sentCodes = new scala.collection.mutable.HashSet[Code]()
 
-  private val emailTemplate = new String(Files.readAllBytes(Paths.get("/mail-template.html")))
+  private val emailTemplate = EmailTemplate.template
 
   def codeWasNotSent(code: Code) = !sentCodes.contains(code)
 
