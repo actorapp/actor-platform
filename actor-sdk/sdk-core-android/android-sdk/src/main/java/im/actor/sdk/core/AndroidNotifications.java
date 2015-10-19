@@ -28,7 +28,7 @@ import im.actor.core.entity.Notification;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.FileVMCallback;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.util.Screen;

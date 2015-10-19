@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 
 public class PagerSlidingTabStrip extends FrameLayout {

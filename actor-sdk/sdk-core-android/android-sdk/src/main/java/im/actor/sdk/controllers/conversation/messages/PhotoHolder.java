@@ -35,7 +35,7 @@ import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.view.FastThumbLoader;
 import im.actor.sdk.util.Screen;

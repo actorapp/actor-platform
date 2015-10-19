@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 
 /**

@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 public class ChatBackgroundView extends View {
 

@@ -14,7 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.Screen;

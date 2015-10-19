@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.actor.core.entity.Message;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 import im.actor.sdk.controllers.conversation.messages.DocHolder;
 import im.actor.sdk.controllers.conversation.messages.MessageHolder;
