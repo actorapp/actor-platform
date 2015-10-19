@@ -141,6 +141,11 @@ project.afterEvaluate {
         sign configurations.archives
     }
 
+    nexusStaging {
+        username ossrhUsername
+        password ossrhPassword
+    }
+
     uploadArchives {
         repositories {
             mavenDeployer {
