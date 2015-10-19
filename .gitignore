@@ -127,6 +127,8 @@ actor-sdk/sdk-core/build-tools/dist
 actor-sdk/sdk-core/sdk-android/build
 actor-sdk/sdk-core/app-android/build
 npm-debug.log
+actor-deps/dist
+actor-sdk/sdk-core/core/core-js/build
 build
 actor-sdk/sdk-core/runtime/js/war
 actor-sdk/sdk-core-ios/ActorSDK.xcodeproj/project.xcworkspace/xcuserdata
