@@ -139,15 +139,21 @@ gulp.task('locale-data', () => {
     .pipe(gulp.dest('./dist/assets/locale-data'));
 });
 
-gulp.task('lib:build', shell.task(['cd ../../actor-sdk/sdk-core/ && ./gradlew :core:js:buildPackage']));
-gulp.task('lib:build:dev', shell.task(['cd ../../actor-sdk/sdk-core/ && ./gradlew :core:js:buildPackageDev']));
+gulp.task('lib:build', shell.task(['cd ../.. && ./gradlew actor-sdk:sdk-core:core:core-js:buildPackage']));
+gulp.task('lib:build:dev', shell.task(['cd ../.. && ./gradlew actor-sdk:sdk-core:core:core-js:buildPackageDev']));
 
 gulp.task('lib', ['lib:build'], () => {
-  gulp.src('../../actor-sdk/sdk-core/core/js/build/package/*')
+  gulp.src([
+    '../../actor-sdk/sdk-core/core/js/build/package/*',
+    '../../actor-sdk/sdk-core/runtime/runtime-js/src/main/javascript/interval.js'
+  ])
     .pipe(gulp.dest('./dist/actor/'));
 });
 gulp.task('lib:dev', ['lib:build:dev'], () => {
-  gulp.src('../../actor-sdk/sdk-core/core/js/build/package/*')
+  gulp.src([
+    '../../actor-sdk/sdk-core/core/js/build/package/*',
+    '../../actor-sdk/sdk-core/runtime/runtime-js/src/main/javascript/interval.js'
+  ])
     .pipe(gulp.dest('./dist/actor/'));
 });
 
