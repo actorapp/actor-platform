@@ -21,7 +21,7 @@ private[sequence] class ApplePusher(pushManager: ApplePushManager, db: Database)
 
     val action = (textOpt, originPeerOpt) match {
       case (Some(text), Some(originPeer)) ⇒
-        persist.AuthId.findUserId(authId) flatMap {
+        persist.AuthIdRepo.findUserId(authId) flatMap {
           case Some(userId) ⇒
             val peerStr = originPeer.`type` match {
               case ApiPeerType.Private ⇒ s"PRIVATE_${originPeer.id}"
@@ -30,15 +30,15 @@ private[sequence] class ApplePusher(pushManager: ApplePushManager, db: Database)
 
             system.log.debug(s"Loading params ${paramBase}")
 
-            persist.configs.Parameter.findValue(userId, s"${paramBase}.chat.${peerStr}.enabled") flatMap {
+            persist.configs.ParameterRepo.findValue(userId, s"${paramBase}.chat.${peerStr}.enabled") flatMap {
               case Some("false") ⇒
                 system.log.debug("Notifications disabled")
                 DBIO.successful(builder)
               case _ ⇒
                 system.log.debug("Notifications enabled")
                 for {
-                  soundEnabled ← persist.configs.Parameter.findValue(userId, s"${paramBase}.sound.enabled") map (_.getOrElse("true"))
-                  vibrationEnabled ← persist.configs.Parameter.findValue(userId, s"${paramBase}.vibration.enabled") map (_.getOrElse("true"))
+                  soundEnabled ← persist.configs.ParameterRepo.findValue(userId, s"${paramBase}.sound.enabled") map (_.getOrElse("true"))
+                  vibrationEnabled ← persist.configs.ParameterRepo.findValue(userId, s"${paramBase}.vibration.enabled") map (_.getOrElse("true"))
                   showText ← getShowText(userId, paramBase)
                 } yield {
                   if (soundEnabled == "true") {

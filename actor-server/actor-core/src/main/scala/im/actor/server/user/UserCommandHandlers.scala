@@ -66,7 +66,7 @@ private[user] trait UserCommandHandlers {
             createdAt = LocalDateTime.now(ZoneOffset.UTC),
             external = external
           )
-          db.run(for (_ ← p.User.create(user)) yield CreateAck())
+          db.run(for (_ ← p.UserRepo.create(user)) yield CreateAck())
         }
       } else {
         replyTo ! Status.Failure(UserExceptions.NicknameTaken)
@@ -76,18 +76,18 @@ private[user] trait UserCommandHandlers {
 
   protected def addAuth(user: User, authId: Long): Unit = {
     persistStashingReply(TSEvent(now(), UserEvents.AuthAdded(authId)), user) { _ ⇒
-      db.run(p.AuthId.setUserData(authId, user.id)) map (_ ⇒ NewAuthAck())
+      db.run(p.AuthIdRepo.setUserData(authId, user.id)) map (_ ⇒ NewAuthAck())
     }
   }
 
   protected def removeAuth(user: User, authId: Long): Unit =
     persistStashingReply(TSEvent(now(), UserEvents.AuthRemoved(authId)), user) { _ ⇒
-      db.run(p.AuthId.delete(authId) map (_ ⇒ RemoveAuthAck()))
+      db.run(p.AuthIdRepo.delete(authId) map (_ ⇒ RemoveAuthAck()))
     }
 
   protected def changeCountryCode(user: User, countryCode: String): Unit =
     persistReply(TSEvent(now(), UserEvents.CountryCodeChanged(countryCode)), user) { _ ⇒
-      db.run(p.User.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
+      db.run(p.UserRepo.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
     }
 
   protected def changeName(user: User, name: String, clientAuthId: Long): Unit =
@@ -103,14 +103,14 @@ private[user] trait UserCommandHandlers {
 
   protected def delete(user: User): Unit =
     persistStashingReply(TSEvent(now(), UserEvents.Deleted()), user) { _ ⇒
-      db.run(p.User.setDeletedAt(userId) map (_ ⇒ DeleteAck()))
+      db.run(p.UserRepo.setDeletedAt(userId) map (_ ⇒ DeleteAck()))
     }
 
   protected def addPhone(user: User, phone: Long): Unit =
     persistReply(TSEvent(now(), UserEvents.PhoneAdded(phone)), user) { _ ⇒
       val rng = ThreadLocalRandom.current()
       db.run(for {
-        _ ← p.UserPhone.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
+        _ ← p.UserPhoneRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
         _ ← markContactRegistered(user, phone, false)
       } yield AddPhoneAck())
     }
@@ -119,7 +119,7 @@ private[user] trait UserCommandHandlers {
     persistReply(TSEvent(now(), UserEvents.EmailAdded(email)), user) { _ ⇒
       val rng = ThreadLocalRandom.current()
       db.run(for {
-        _ ← p.UserEmail.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
+        _ ← p.UserEmailRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
         _ ← markContactRegistered(user, email, false)
       } yield AddEmailAck())
     }
@@ -133,7 +133,7 @@ private[user] trait UserCommandHandlers {
           val update = UpdateUserNickChanged(userId, nicknameOpt)
 
           for {
-            _ ← db.run(p.User.setNickname(userId, nicknameOpt))
+            _ ← db.run(p.UserRepo.setNickname(userId, nicknameOpt))
             relatedUserIds ← getRelations(userId)
             (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
           } yield seqstate
@@ -148,7 +148,7 @@ private[user] trait UserCommandHandlers {
     persistReply(TSEvent(now(), UserEvents.AboutChanged(about)), user) { _ ⇒
       val update = UpdateUserAboutChanged(userId, about)
       for {
-        _ ← db.run(p.User.setAbout(userId, about))
+        _ ← db.run(p.UserRepo.setAbout(userId, about))
         relatedUserIds ← getRelations(userId)
         (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield seqstate
@@ -164,7 +164,7 @@ private[user] trait UserCommandHandlers {
       val relationsF = getRelations(user.id)
 
       for {
-        _ ← db.run(p.AvatarData.createOrUpdate(avatarData))
+        _ ← db.run(p.AvatarDataRepo.createOrUpdate(avatarData))
         relatedUserIds ← relationsF
         (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
@@ -173,7 +173,7 @@ private[user] trait UserCommandHandlers {
 
   private def checkNicknameExists(nicknameOpt: Option[String]): Future[Boolean] = {
     nicknameOpt match {
-      case Some(nickname) ⇒ db.run(p.User.nicknameExists(nickname))
+      case Some(nickname) ⇒ db.run(p.UserRepo.nicknameExists(nickname))
       case None           ⇒ Future.successful(false)
     }
   }
@@ -181,7 +181,7 @@ private[user] trait UserCommandHandlers {
   private def markContactRegistered(user: User, phoneNumber: Long, isSilent: Boolean): DBIO[Unit] = {
     val date = new DateTime
 
-    p.contact.UnregisteredPhoneContact.find(phoneNumber) flatMap { contacts ⇒
+    p.contact.UnregisteredPhoneContactRepo.find(phoneNumber) flatMap { contacts ⇒
       log.debug(s"Unregistered ${phoneNumber} is in contacts of users: $contacts")
       val randomId = ThreadLocalRandom.current().nextLong()
       val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
@@ -206,7 +206,7 @@ private[user] trait UserCommandHandlers {
       }
       for {
         _ ← DBIO.sequence(actions)
-        _ ← p.contact.UnregisteredPhoneContact.deleteAll(phoneNumber)
+        _ ← p.contact.UnregisteredPhoneContactRepo.deleteAll(phoneNumber)
       } yield ()
     }
   }
@@ -214,7 +214,7 @@ private[user] trait UserCommandHandlers {
   private def markContactRegistered(user: User, email: String, isSilent: Boolean): DBIO[Unit] = {
     val date = new DateTime
     for {
-      contacts ← p.contact.UnregisteredEmailContact.find(email)
+      contacts ← p.contact.UnregisteredEmailContactRepo.find(email)
       _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
       _ ← DBIO.sequence(contacts.map { contact ⇒
         val randomId = ThreadLocalRandom.current().nextLong()
@@ -234,7 +234,7 @@ private[user] trait UserCommandHandlers {
           )
         } yield recordRelation(user.id, contact.ownerUserId)
       })
-      _ ← p.contact.UnregisteredEmailContact.deleteAll(email)
+      _ ← p.contact.UnregisteredEmailContactRepo.deleteAll(email)
     } yield ()
   }
 

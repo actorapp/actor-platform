@@ -73,11 +73,11 @@ class PresenceManager extends Actor with ActorLogging with Stash {
   private[this] var state = PresenceState(userId, Offline, None)
 
   private def initialize(userId: Int): Unit = {
-    db.run(persist.presences.UserPresence.find(userId).map {
+    db.run(persist.presences.UserPresenceRepo.find(userId).map {
       case Some(userPresence) ⇒
         self ! Initialized(userPresence.lastSeenAt)
       case None ⇒
-        db.run(persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, None)))
+        db.run(persist.presences.UserPresenceRepo.createOrUpdate(models.presences.UserPresence(userId, None)))
         self ! Initialized(None)
     }) onFailure {
       case e ⇒
@@ -120,7 +120,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
 
       if (presence != Offline) {
         this.state = this.state.copy(lastSeenAt = Some(new DateTime))
-        db.run(persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, this.state.lastSeenAt)))
+        db.run(persist.presences.UserPresenceRepo.createOrUpdate(models.presences.UserPresence(userId, this.state.lastSeenAt)))
 
         this.scheduledTimeouts = this.scheduledTimeouts +
           (authId → context.system.scheduler.scheduleOnce(timeout.millis, self, Envelope(userId, UserPresenceChange(Offline, authId, 0))))

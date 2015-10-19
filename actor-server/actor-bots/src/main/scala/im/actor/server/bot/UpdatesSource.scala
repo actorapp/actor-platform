@@ -44,7 +44,7 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[(Int, Update)] 
 
   private var buf = Vector.empty[(Int, Update)]
 
-  db.run(persist.AuthId.findUserId(authId)).map {
+  db.run(persist.AuthIdRepo.findUserId(authId)).map {
     case Some(userId) ⇒ Initialized(userId)
     case None         ⇒ AuthIdNotAuthorized
   }.pipeTo(self)

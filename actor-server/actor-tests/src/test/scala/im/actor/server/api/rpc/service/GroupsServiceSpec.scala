@@ -99,7 +99,7 @@ class GroupsServiceSpec
       case (UpdateGroupInvite.header, update)      ⇒ parseUpdate[UpdateGroupInvite](update)
     }
 
-    whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
+    whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
       userIds.toSet shouldEqual Set(user1.id, user2.id)
     }
   }
@@ -333,8 +333,8 @@ class GroupsServiceSpec
     val findTokens =
       for {
         tokens ← DBIO.sequence(List(
-          persist.GroupInviteToken.find(groupOutPeer.groupId, user1.id),
-          persist.GroupInviteToken.find(groupOutPeer.groupId, user2.id)
+          persist.GroupInviteTokenRepo.find(groupOutPeer.groupId, user1.id),
+          persist.GroupInviteTokenRepo.find(groupOutPeer.groupId, user2.id)
         ))
       } yield tokens.flatten
     whenReady(db.run(findTokens)) { tokens ⇒
@@ -395,7 +395,7 @@ class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.GroupInviteToken.find(groupOutPeer.groupId, user1.id))) { tokens ⇒
+    whenReady(db.run(persist.GroupInviteTokenRepo.find(groupOutPeer.groupId, user1.id))) { tokens ⇒
       tokens should have length 1
     }
 
@@ -429,7 +429,7 @@ class GroupsServiceSpec
           }
       }
     }
-    whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
+    whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
       userIds should have length 2
       userIds should contain allOf (user1.id, user2.id)
     }
@@ -498,7 +498,7 @@ class GroupsServiceSpec
           }
       }
     }
-    whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
+    whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
       userIds should have length 2
       userIds should contain allOf (user1.id, user2.id)
     }
@@ -609,7 +609,7 @@ class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(db.run(persist.GroupUser.find(groupOutPeer.groupId, user1.id))) { groupUser ⇒
+    whenReady(db.run(persist.GroupUserRepo.find(groupOutPeer.groupId, user1.id))) { groupUser ⇒
       groupUser shouldBe defined
       groupUser.get.isAdmin shouldEqual true
     }
@@ -694,7 +694,7 @@ class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
       group.get.about shouldEqual about
     }
   }
@@ -729,7 +729,7 @@ class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
       group.get.about shouldEqual None
     }
   }
@@ -751,7 +751,7 @@ class GroupsServiceSpec
       resp shouldEqual Error(GroupRpcErrors.AboutTooLong)
     }
 
-    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
       group.get.about shouldEqual None
     }
   }
@@ -782,7 +782,7 @@ class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
       group.get.topic shouldEqual topic2
     }
 
@@ -805,7 +805,7 @@ class GroupsServiceSpec
       resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
     }
 
-    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
       group.get.topic shouldEqual None
     }
 
@@ -824,7 +824,7 @@ class GroupsServiceSpec
       }
     }
 
-    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+    whenReady(db.run(persist.GroupRepo.find(groupOutPeer.groupId))) { group ⇒
       group.get.topic shouldEqual None
     }
 

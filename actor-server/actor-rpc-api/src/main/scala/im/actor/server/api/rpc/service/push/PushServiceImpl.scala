@@ -29,7 +29,7 @@ class PushServiceImpl(
   override def jhandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val creds = models.push.GooglePushCredentials(clientData.authId, projectId, token)
     val action: DBIO[HandlerResult[ResponseVoid]] = for {
-      _ ← persist.push.GooglePushCredentials.deleteByToken(token)
+      _ ← persist.push.GooglePushCredentialsRepo.deleteByToken(token)
       _ ← DBIO.successful(SeqUpdatesManager.setPushCredentials(clientData.authId, creds))
     } yield Ok(ResponseVoid)
     db.run(action)
@@ -41,7 +41,7 @@ class PushServiceImpl(
         val tokenBytes = tokenBits.toByteArray
         val creds = models.push.ApplePushCredentials(clientData.authId, apnsKey, tokenBytes)
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
-          _ ← persist.push.ApplePushCredentials.deleteByToken(tokenBytes)
+          _ ← persist.push.ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← DBIO.successful(SeqUpdatesManager.setPushCredentials(clientData.authId, creds))
         } yield Ok(ResponseVoid)
         db.run(action)
