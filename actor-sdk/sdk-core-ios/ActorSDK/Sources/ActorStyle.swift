@@ -21,7 +21,7 @@ public class ActorStyle {
     /// Text Hint colors
     public var vcHintColor = UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1)
     /// App's main status bar style. Default is light content.
-    public var vcStatusBarStyle = UIStatusBarStyle.LightContent
+    public var vcStatusBarStyle = UIStatusBarStyle.Default
     /// UITableView separator color. Also used for other separators or borders.
     public var vcSeparatorColor = UIColor(rgb: 0xd4d4d4)
     /// Cell Selected color
@@ -43,11 +43,13 @@ public class ActorStyle {
     // UINavigationBar
     //
     /// Main Navigation bar color
-    public var navigationBgColor: UIColor = UIColor(rgb: 0x3576cc)
+    public var navigationBgColor: UIColor = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1)
+    /// Main Navigation bar hairline color
+    public var navigationHairlineHidden = false
     /// Navigation Bar icons colors
-    public var navigationTintColor: UIColor = UIColor.whiteColor()
+    public var navigationTintColor: UIColor = UIColor(rgb: 0x5085CB)
     /// Navigation Bar title color
-    public var navigationTitleColor: UIColor = UIColor.whiteColor()
+    public var navigationTitleColor: UIColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0)
     /// Navigation Bar subtitle color, default is 0.8 alhpa of navigationTitleColor
     public var navigationSubtitleColor: UIColor {
         get { return _navigationSubtitleColor != nil ? _navigationSubtitleColor! : navigationTitleColor.alpha(0.8) }
@@ -92,7 +94,7 @@ public class ActorStyle {
     public var searchStatusBarStyle = UIStatusBarStyle.Default
     /// Background Color of search bar
     public var searchBackgroundColor: UIColor {
-        get { return _searchBackgroundColor != nil ? _searchBackgroundColor! : UIColor(rgb: 0xf1f1f1)  }
+        get { return _searchBackgroundColor != nil ? _searchBackgroundColor! : UIColor.whiteColor()  }
         set(v) { _searchBackgroundColor = v }
     }
     private var _searchBackgroundColor: UIColor?
@@ -103,7 +105,7 @@ public class ActorStyle {
     }
     private var _searchCancelColor: UIColor?
     /// Search Input Field background color
-    public var searchFieldBgColor = UIColor.whiteColor()
+    public var searchFieldBgColor = UIColor(rgb: 0xededed)
     /// Search Input Field text color
     public var searchFieldTextColor = UIColor.blackColor().alpha(0.56)
     
