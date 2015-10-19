@@ -8,7 +8,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.ViewUtils;
 
 public class BaseFragment extends BinderCompatFragment {

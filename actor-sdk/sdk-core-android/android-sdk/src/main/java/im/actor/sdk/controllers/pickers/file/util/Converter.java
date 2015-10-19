@@ -9,7 +9,7 @@ import im.actor.sdk.controllers.pickers.file.items.PictureItem;
 
 import java.io.File;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 public class Converter {
 

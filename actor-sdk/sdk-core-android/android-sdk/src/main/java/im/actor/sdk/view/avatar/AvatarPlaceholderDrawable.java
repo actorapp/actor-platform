@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.TypedValue;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 
 public class AvatarPlaceholderDrawable extends Drawable {

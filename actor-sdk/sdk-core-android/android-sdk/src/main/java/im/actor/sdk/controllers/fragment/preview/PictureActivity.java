@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.droidkit.progress.CircularView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.util.Screen;

@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.smiles.SmilesPack;
 import im.actor.sdk.view.emoji.smiles.SmilesPackView;

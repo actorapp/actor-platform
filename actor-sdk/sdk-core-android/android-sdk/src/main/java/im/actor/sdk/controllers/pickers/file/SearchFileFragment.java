@@ -30,7 +30,7 @@ import im.actor.sdk.controllers.pickers.view.SearchViewHacker;
 import java.io.File;
 import java.util.ArrayList;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 
 public class SearchFileFragment extends Fragment implements AbsListView.OnScrollListener {
