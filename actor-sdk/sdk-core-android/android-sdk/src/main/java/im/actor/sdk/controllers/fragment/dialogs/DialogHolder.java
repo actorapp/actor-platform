@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.PeerType;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.util.Fonts;

@@ -14,7 +14,7 @@ import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.View;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 public class TintImageView extends View {
 
