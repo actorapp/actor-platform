@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.core.entity.Sex;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;

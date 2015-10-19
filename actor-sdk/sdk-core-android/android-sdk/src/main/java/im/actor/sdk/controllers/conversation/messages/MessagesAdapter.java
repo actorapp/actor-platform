@@ -15,7 +15,7 @@ import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.runtime.android.view.BindedListAdapter;
 
 public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {

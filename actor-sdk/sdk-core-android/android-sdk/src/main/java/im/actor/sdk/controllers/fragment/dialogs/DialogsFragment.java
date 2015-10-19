@@ -7,7 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.GroupVM;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 

@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 
 public class HelpFragment extends BaseFragment {

@@ -27,7 +27,7 @@ import im.actor.core.entity.SearchEntity;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.AddContactActivity;
 import im.actor.sdk.controllers.fragment.compose.ComposeActivity;

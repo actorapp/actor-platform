@@ -24,7 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.sdk.view.emoji.keyboard.BaseKeyboard;
 import im.actor.sdk.view.emoji.keyboard.emoji.smiles.OnBackspaceClickListener;

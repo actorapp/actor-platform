@@ -11,7 +11,7 @@ import java.util.List;
 
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.adapters.HolderAdapter;
