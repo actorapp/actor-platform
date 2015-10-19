@@ -3,7 +3,7 @@ package im.actor.sdk.controllers.conversation.messages;
 import android.view.View;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.ServiceContent;
 

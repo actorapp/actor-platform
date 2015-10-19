@@ -36,7 +36,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 public class ExplorerFragment extends Fragment {
 

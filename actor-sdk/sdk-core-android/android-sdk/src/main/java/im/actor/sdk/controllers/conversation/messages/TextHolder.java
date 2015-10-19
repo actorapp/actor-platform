@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Strings;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.view.TintImageView;

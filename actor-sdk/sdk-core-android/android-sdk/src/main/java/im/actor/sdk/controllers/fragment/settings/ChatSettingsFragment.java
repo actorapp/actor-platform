@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
