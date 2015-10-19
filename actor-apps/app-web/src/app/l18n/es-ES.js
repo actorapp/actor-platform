@@ -21,6 +21,7 @@ export default {
       // Sidebar menu
       'editProfile': 'Editar perfil',
       'addToContacts': 'Añadir contacto',
+      'createGroup': 'Crear grupo',
       'configureIntegrations': 'Configurar Integraciones',
       'helpAndFeedback': 'Ayuda',
       'twitter': 'Our twitter',

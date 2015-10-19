@@ -2,7 +2,8 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component } from 'react';
+import { Container } from 'flux/utils';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 
@@ -15,25 +16,22 @@ import Modal from 'react-modal';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
-const getStateFromStores = () => {
-  return {
-    isOpen: CreateGroupStore.isModalOpen()
-  };
-};
-
 @ReactMixin.decorate(IntlMixin)
-class CreateGroup extends React.Component {
+class CreateGroup extends Component {
+  static getStores = () => [CreateGroupStore];
+  static calculateState() {
+    return {
+      isOpen: CreateGroupStore.isModalOpen()
+    };
+  }
+
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores();
-
-    CreateGroupStore.addChangeListener(this.onChange);
     document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
-    CreateGroupStore.removeChangeListener(this.onChange);
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
@@ -61,8 +59,6 @@ class CreateGroup extends React.Component {
     }
   }
 
-  onChange = () => this.setState(getStateFromStores());
-
   onClose = () => CreateGroupActionCreators.closeModal();
 
   onKeyDown = (event) => {
@@ -73,4 +69,4 @@ class CreateGroup extends React.Component {
   }
 }
 
-export default CreateGroup;
+export default Container.create(CreateGroup, {pure: false});
