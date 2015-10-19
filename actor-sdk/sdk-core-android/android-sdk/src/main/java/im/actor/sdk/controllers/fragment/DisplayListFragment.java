@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.view.adapters.HeaderViewRecyclerAdapter;
 import im.actor.runtime.android.view.BindedListAdapter;
 import im.actor.runtime.bser.BserObject;

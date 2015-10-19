@@ -2,7 +2,7 @@ package im.actor.sdk.util.country;
 
 import android.text.TextUtils;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 import java.util.ArrayList;
 

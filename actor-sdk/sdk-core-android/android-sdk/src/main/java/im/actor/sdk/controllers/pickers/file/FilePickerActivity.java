@@ -9,7 +9,7 @@ import im.actor.sdk.controllers.pickers.file.items.BackItem;
 import im.actor.sdk.controllers.pickers.file.items.ExplorerItem;
 import im.actor.sdk.controllers.pickers.file.util.HistoryDatabase;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 public class FilePickerActivity extends BasePickerActivity {
 

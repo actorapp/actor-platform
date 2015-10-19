@@ -16,7 +16,7 @@ import android.widget.EditText;
 
 import im.actor.core.entity.Contact;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.compose.view.UserSpan;
 import im.actor.sdk.controllers.fragment.contacts.BaseContactFragment;

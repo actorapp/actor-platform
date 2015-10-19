@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.util.country.Country;
 import im.actor.sdk.util.country.Countries;

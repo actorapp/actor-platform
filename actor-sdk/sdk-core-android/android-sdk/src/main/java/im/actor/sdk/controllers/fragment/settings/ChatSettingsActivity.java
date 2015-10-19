@@ -2,7 +2,7 @@ package im.actor.sdk.controllers.fragment.settings;
 
 import android.os.Bundle;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
 
 public class ChatSettingsActivity extends BaseFragmentActivity {

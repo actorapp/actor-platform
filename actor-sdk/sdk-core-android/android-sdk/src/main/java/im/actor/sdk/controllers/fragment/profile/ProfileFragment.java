@@ -31,7 +31,7 @@ import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.media.DocumentsActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;

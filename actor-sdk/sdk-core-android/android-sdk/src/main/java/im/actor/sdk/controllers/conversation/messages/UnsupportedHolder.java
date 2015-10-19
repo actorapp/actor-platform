@@ -6,7 +6,7 @@ package im.actor.sdk.controllers.conversation.messages;
 
 import android.view.View;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.core.entity.Message;
 
 public class UnsupportedHolder extends TextHolder {

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import im.actor.core.entity.Dialog;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
 import im.actor.sdk.util.Screen;
