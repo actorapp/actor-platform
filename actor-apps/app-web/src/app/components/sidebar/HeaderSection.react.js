@@ -13,14 +13,16 @@ import { escapeWithEmoji } from 'utils/EmojiUtils'
 import confirm from 'utils/confirm'
 
 import MyProfileActions from 'actions/MyProfileActionCreators';
+import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
 import LoginActionCreators from 'actions/LoginActionCreators';
 import HelpActionCreators from 'actions/HelpActionCreators';
 import AddContactActionCreators from 'actions/AddContactActionCreators';
 import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
-import MyProfileStore from 'stores/MyProfileStore'
+import MyProfileStore from 'stores/MyProfileStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
+import CreateGroupModal from 'components/modals/CreateGroup.react';
 import MyProfileModal from 'components/modals/MyProfile.react';
 import AddContactModal from 'components/modals/AddContact.react';
 import PreferencesModal from 'components/modals/Preferences.react';
@@ -53,6 +55,7 @@ class HeaderSection extends Component {
 
 
   openMyProfile = () => MyProfileActions.show();
+  openCreateGroup = () => CreateGroupActionCreators.openModal();
   openHelpDialog = () => HelpActionCreators.open();
   openAddContactModal = () => AddContactActionCreators.openModal();
   onSettingsOpen = () => PreferencesActionCreators.show();
@@ -98,6 +101,10 @@ class HeaderSection extends Component {
                   <i className="material-icons">person_add</i>
                   {this.getIntlMessage('menu.addToContacts')}
                 </li>
+                <li className="dropdown__menu__item" onClick={this.openCreateGroup}>
+                  <i className="material-icons">group_add</i>
+                  {this.getIntlMessage('menu.createGroup')}
+                </li>
                 <li className="dropdown__menu__separator"></li>
                 <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
                   <i className="material-icons">help</i>
@@ -122,6 +129,7 @@ class HeaderSection extends Component {
           </div>
 
           <MyProfileModal/>
+          <CreateGroupModal/>
           <AddContactModal/>
           <PreferencesModal/>
         </header>
