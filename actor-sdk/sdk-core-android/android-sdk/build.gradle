@@ -185,8 +185,4 @@ project.afterEvaluate {
             }
         }
     }
-
-    task releaseSDK(dependsOn: ['uploadArchives', 'closeAndPromoteRepository']) {
-
-    }
 }
