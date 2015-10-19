@@ -257,18 +257,6 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
-        <activity
-            android:name="im.actor.sdk.controllers.fragment.group.JoinPublicGroupActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/CommonActivityTheme"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name="im.actor.sdk.controllers.fragment.group.JoinGroupPopUpActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:windowSoftInputMode="adjustResize" />
-
         <!-- Misc -->
         <activity
             android:name="im.actor.sdk.controllers.activity.TakePhotoActivity"
