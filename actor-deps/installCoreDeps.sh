@@ -43,7 +43,7 @@ fi
 
 echo Installing Android SDK Components...
 # ${SDK_TOOL} list sdk --all --extended --no-ui
-( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | ${SDK_TOOL} update sdk --no-ui --filter "${SDK_COMPONENTS}"
+( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | "${SDK_TOOL}" update sdk --no-ui --filter "${SDK_COMPONENTS}"
 # Hack for propper installation
 # ( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | ${SDK_TOOL} update sdk -a --no-ui --filter "${SDK_FORCE_COMPONENTS}"
 
