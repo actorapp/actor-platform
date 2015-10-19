@@ -125,10 +125,15 @@ project.afterEvaluate {
         archives sourcesJarRelease
     }
 
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
-    String ossrhUsername = properties.getProperty("ossrhUsername", "")
-    String ossrhPassword = properties.getProperty("ossrhPassword", "")
+    String ossrhUsername = ""
+    String ossrhPassword = ""
+    if (project.rootProject.file('gradle.properties').exists()) {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
+        ossrhUsername = properties.getProperty("ossrhUsername", "")
+        ossrhPassword = properties.getProperty("ossrhPassword", "")
+        version = properties.getProperty("version", "")
+    }
 
     signing {
         sign configurations.archives
