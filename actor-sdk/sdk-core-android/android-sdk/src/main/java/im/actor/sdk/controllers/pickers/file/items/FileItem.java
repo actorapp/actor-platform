@@ -6,7 +6,7 @@ import im.actor.sdk.controllers.pickers.file.util.TimeUtils;
 
 import java.io.File;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 /**
  * Created by kiolt_000 on 15/09/2014.

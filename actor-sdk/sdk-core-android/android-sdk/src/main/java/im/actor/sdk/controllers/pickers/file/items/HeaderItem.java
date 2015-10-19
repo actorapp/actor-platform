@@ -3,7 +3,7 @@ package im.actor.sdk.controllers.pickers.file.items;
 import android.view.View;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 /**
  * Created by kiolt_000 on 14/09/2014.

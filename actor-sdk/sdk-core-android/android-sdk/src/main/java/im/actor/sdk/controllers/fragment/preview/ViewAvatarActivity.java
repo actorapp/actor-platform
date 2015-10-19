@@ -24,7 +24,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.AvatarUploadState;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.util.Files;

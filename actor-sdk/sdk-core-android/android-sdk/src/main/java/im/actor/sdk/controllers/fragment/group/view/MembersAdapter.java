@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import java.util.Collection;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.adapters.HolderAdapter;

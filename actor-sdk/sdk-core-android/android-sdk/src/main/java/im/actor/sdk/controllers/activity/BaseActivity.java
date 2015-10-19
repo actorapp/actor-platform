@@ -12,7 +12,7 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.ActorBinder;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.runtime.mvvm.ValueChangedListener;

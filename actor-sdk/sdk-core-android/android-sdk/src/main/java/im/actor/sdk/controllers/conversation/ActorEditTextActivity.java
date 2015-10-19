@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.BaseActivity;
 import im.actor.sdk.util.KeyboardHelper;
 import im.actor.sdk.view.TintImageView;
