@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.avatar.AvatarView;

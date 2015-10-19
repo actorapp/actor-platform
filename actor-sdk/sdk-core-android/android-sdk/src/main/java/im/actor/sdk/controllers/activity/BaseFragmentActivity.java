@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 /**
  * Created by ex3ndr on 29.12.14.

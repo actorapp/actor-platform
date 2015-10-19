@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.runtime.android.view.BindedViewHolder;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.util.Fonts;

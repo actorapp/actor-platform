@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.country.Country;
 import im.actor.sdk.util.country.Countries;

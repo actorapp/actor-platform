@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.runtime.Log;
 
 public class BaseKeyboard implements

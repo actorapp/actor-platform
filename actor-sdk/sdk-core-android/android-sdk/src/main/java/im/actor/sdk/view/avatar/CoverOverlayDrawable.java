@@ -6,7 +6,7 @@ import android.graphics.ColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 
 /**

@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 /**
  * Created by kiolt_000 on 15/09/2014.

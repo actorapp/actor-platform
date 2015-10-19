@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 
 /**
  * Created by kiolt_000 on 09/10/2014.

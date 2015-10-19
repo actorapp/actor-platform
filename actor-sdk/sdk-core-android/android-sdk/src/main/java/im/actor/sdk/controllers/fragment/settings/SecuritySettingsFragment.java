@@ -18,7 +18,7 @@ import java.util.List;
 import im.actor.core.api.ApiAuthHolder;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.viewmodel.CommandCallback;
-import im.actor.messenger.R;
+import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
