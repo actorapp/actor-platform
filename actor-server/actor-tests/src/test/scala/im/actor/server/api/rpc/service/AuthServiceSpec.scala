@@ -18,7 +18,7 @@ import im.actor.server.models.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.persist.auth.AuthTransaction
+import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
@@ -264,7 +264,7 @@ final class AuthServiceSpec
         }
 
       val dateUpdate =
-        persist.AuthCode.codes
+        persist.AuthCodeRepo.codes
           .filter(_.transactionHash === transactionHash)
           .map(_.createdAt)
           .update(LocalDateTime.now(ZoneOffset.UTC).minusHours(25))
@@ -276,10 +276,10 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(AuthTransaction.find(transactionHash))) {
+      whenReady(db.run(AuthTransactionRepo.find(transactionHash))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+      whenReady(db.run(persist.AuthCodeRepo.findByTransactionHash(transactionHash))) {
         _ shouldBe empty
       }
     }
@@ -300,7 +300,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual true
       }
@@ -360,10 +360,10 @@ final class AuthServiceSpec
           case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
       }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) { code ⇒
+      whenReady(db.run(persist.AuthCodeRepo.findByTransactionHash(transactionHash))) { code ⇒
         code shouldBe empty
       }
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { transaction ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { transaction ⇒
         transaction shouldBe empty
       }
     }
@@ -388,7 +388,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual false
       }
@@ -440,7 +440,7 @@ final class AuthServiceSpec
 
       //make unregistered contact
       val (regUser, regAuthId, _) = createUser()
-      whenReady(db.run(persist.contact.UnregisteredPhoneContact.createIfNotExists(phoneNumber, regUser.id, Some("Local name"))))(_ ⇒ ())
+      whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.createIfNotExists(phoneNumber, regUser.id, Some("Local name"))))(_ ⇒ ())
       val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
 
       sendSessionHello(authId, sessionId)
@@ -461,10 +461,10 @@ final class AuthServiceSpec
         expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
       }
 
-      whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) {
+      whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.find(phoneNumber))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.contact.UserContact.find(regUser.id, user.id))) { optContact ⇒
+      whenReady(db.run(persist.contact.UserContactRepo.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
           case UserContact(_, _, Some(_), _, false) ⇒
@@ -507,7 +507,7 @@ final class AuthServiceSpec
         implicit val clientData = regClientData
         expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
 
-        whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) {
+        whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.find(phoneNumber))) {
           _ shouldBe empty
         }
 
@@ -546,10 +546,10 @@ final class AuthServiceSpec
         inside(resp) { case Ok(ResponseAuth(respUser, _)) ⇒ }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) {
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+      whenReady(db.run(persist.AuthCodeRepo.findByTransactionHash(transactionHash))) {
         _ shouldBe empty
       }
     }
@@ -578,10 +578,10 @@ final class AuthServiceSpec
         inside(resp) { case Ok(ResponseAuth(user, _)) ⇒ }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) {
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+      whenReady(db.run(persist.AuthCodeRepo.findByTransactionHash(transactionHash))) {
         _ shouldBe empty
       }
     }
@@ -718,7 +718,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthEmailTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthEmailTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         val cache = optCache.get
         cache.redirectUri shouldEqual Some(correctUri)
@@ -763,12 +763,12 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual true
       }
 
-      whenReady(db.run(persist.OAuth2Token.findByUserId(email))) { optToken ⇒
+      whenReady(db.run(persist.OAuth2TokenRepo.findByUserId(email))) { optToken ⇒
         optToken should not be empty
         val token = optToken.get
         token.accessToken should not be empty
@@ -795,7 +795,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual false
       }
@@ -820,7 +820,7 @@ final class AuthServiceSpec
         }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { optCache ⇒
+      whenReady(db.run(persist.auth.AuthTransactionRepo.find(transactionHash))) { optCache ⇒
         optCache should not be empty
         optCache.get.isChecked shouldEqual false
       }
@@ -864,12 +864,12 @@ final class AuthServiceSpec
           }
           resp.toOption.get.user
         }
-      whenReady(db.run(persist.UserEmail.find(email))) { optEmail ⇒
+      whenReady(db.run(persist.UserEmailRepo.find(email))) { optEmail ⇒
         optEmail should not be empty
         optEmail.get.userId shouldEqual user.id
       }
 
-      whenReady(db.run(persist.OAuth2Token.findByUserId(email))) { optToken ⇒
+      whenReady(db.run(persist.OAuth2TokenRepo.findByUserId(email))) { optToken ⇒
         optToken should not be empty
         val token = optToken.get
         token.accessToken should not be empty
@@ -889,7 +889,7 @@ final class AuthServiceSpec
 
       //make unregistered contact
       val (regUser, regAuthId, _) = createUser()
-      whenReady(db.run(persist.contact.UnregisteredEmailContact.createIfNotExists(email, regUser.id, Some("Local name"))))(_ ⇒ ())
+      whenReady(db.run(persist.contact.UnregisteredEmailContactRepo.createIfNotExists(email, regUser.id, Some("Local name"))))(_ ⇒ ())
       val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
 
       sendSessionHello(authId, sessionId)
@@ -912,10 +912,10 @@ final class AuthServiceSpec
         expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
       }
 
-      whenReady(db.run(persist.contact.UnregisteredEmailContact.find(email))) {
+      whenReady(db.run(persist.contact.UnregisteredEmailContactRepo.find(email))) {
         _ shouldBe empty
       }
-      whenReady(db.run(persist.contact.UserContact.find(regUser.id, user.id))) { optContact ⇒
+      whenReady(db.run(persist.contact.UserContactRepo.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
           case UserContact(_, _, _, _, false) ⇒
@@ -933,13 +933,13 @@ final class AuthServiceSpec
 
       //let seqUpdateManager register credentials
       Thread.sleep(1000L)
-      whenReady(db.run(persist.AuthId.find(authId))) { optAuthId ⇒
+      whenReady(db.run(persist.AuthIdRepo.find(authId))) { optAuthId ⇒
         optAuthId shouldBe defined
       }
-      whenReady(db.run(persist.push.GooglePushCredentials.find(authId))) { optGoogleCreds ⇒
+      whenReady(db.run(persist.push.GooglePushCredentialsRepo.find(authId))) { optGoogleCreds ⇒
         optGoogleCreds shouldBe defined
       }
-      whenReady(db.run(persist.push.ApplePushCredentials.find(authId))) { appleCreds ⇒
+      whenReady(db.run(persist.push.ApplePushCredentialsRepo.find(authId))) { appleCreds ⇒
         appleCreds shouldBe defined
       }
 
@@ -951,13 +951,13 @@ final class AuthServiceSpec
       }
       //let seqUpdateManager register credentials
       Thread.sleep(1000L)
-      whenReady(db.run(persist.AuthId.find(authId))) { optAuthId ⇒
+      whenReady(db.run(persist.AuthIdRepo.find(authId))) { optAuthId ⇒
         optAuthId should not be defined
       }
-      whenReady(db.run(persist.push.GooglePushCredentials.find(authId))) { optGoogleCreds ⇒
+      whenReady(db.run(persist.push.GooglePushCredentialsRepo.find(authId))) { optGoogleCreds ⇒
         optGoogleCreds should not be defined
       }
-      whenReady(db.run(persist.push.ApplePushCredentials.find(authId))) { appleCreds ⇒
+      whenReady(db.run(persist.push.ApplePushCredentialsRepo.find(authId))) { appleCreds ⇒
         appleCreds should not be defined
       }
     }

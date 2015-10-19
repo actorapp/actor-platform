@@ -37,7 +37,7 @@ object UserMigrator extends Migration {
   protected override def migrationTimeout: Duration = 1.hour
 
   protected override def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(p.User.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
+    db.run(p.UserRepo.allIds) flatMap (ids ⇒ Future.sequence(ids map migrateSingle)) map (_ ⇒ ())
   }
 
   private def migrateSingle(userId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
@@ -59,13 +59,13 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
   override def persistenceId = UserOffice.persistenceIdFor(userId)
 
   def migrate(): Unit = {
-    db.run(p.User.find(userId).headOption) foreach {
+    db.run(p.UserRepo.find(userId).headOption) foreach {
       case Some(user) ⇒
         db.run(for {
-          avatarOpt ← p.AvatarData.findByUserId(userId).headOption
-          authIds ← p.AuthId.findIdByUserId(userId)
-          phones ← p.UserPhone.findByUserId(userId)
-          emails ← p.UserEmail.findByUserId(userId)
+          avatarOpt ← p.AvatarDataRepo.findByUserId(userId).headOption
+          authIds ← p.AuthIdRepo.findIdByUserId(userId)
+          phones ← p.UserPhoneRepo.findByUserId(userId)
+          emails ← p.UserEmailRepo.findByUserId(userId)
         } yield Migrate(
           user.accessSalt,
           user.name,

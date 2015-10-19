@@ -23,7 +23,7 @@ object HiddenGroupMigrator extends Migration {
 
   override protected def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
     for {
-      ids ← db.run(p.Group.findAllIds)
+      ids ← db.run(p.GroupRepo.findAllIds)
       _ ← ftraverse(ids)(migrateGroup)
     } yield ()
   }
@@ -52,7 +52,7 @@ private final class HiddenGroupMigrator(promise: Promise[Unit], groupId: Int) ex
 
   private def migrate(): Unit = {
     if (isHidden) {
-      db.run(p.Group.makeHidden(groupId)) onComplete {
+      db.run(p.GroupRepo.makeHidden(groupId)) onComplete {
         case Failure(e) ⇒
           promise.failure(e)
           self ! PoisonPill

@@ -44,7 +44,7 @@ class GateCodeActivation(config: GateConfig)(
       result ← codeResponse match {
         case CodeHash(hash) ⇒
           optTransactionHash.map { transactionHash ⇒
-            for (_ ← persist.auth.GateAuthCode.createOrUpdate(transactionHash, hash)) yield \/-(())
+            for (_ ← persist.auth.GateAuthCodeRepo.createOrUpdate(transactionHash, hash)) yield \/-(())
           } getOrElse DBIO.successful(\/-(()))
         case CodeError(message) ⇒
           DBIO.successful(-\/(message))
@@ -54,7 +54,7 @@ class GateCodeActivation(config: GateConfig)(
 
   override def validate(transactionHash: String, code: String): DBIO[ValidationResponse] = {
     for {
-      optCodeHash ← persist.auth.GateAuthCode.find(transactionHash)
+      optCodeHash ← persist.auth.GateAuthCodeRepo.find(transactionHash)
       validationResponse ← DBIO.from(optCodeHash map { codeHash ⇒
         val validationUri = Uri(s"${config.uri}/v1/codes/validate/${codeHash.codeHash}").withQuery("code" → code)
         val request = HttpRequest(GET, validationUri)
@@ -68,5 +68,5 @@ class GateCodeActivation(config: GateConfig)(
     } yield validationResponse
   }
 
-  override def finish(transactionHash: String): DBIO[Unit] = persist.auth.GateAuthCode.delete(transactionHash).map(_ ⇒ ())
+  override def finish(transactionHash: String): DBIO[Unit] = persist.auth.GateAuthCodeRepo.delete(transactionHash).map(_ ⇒ ())
 }

@@ -84,7 +84,7 @@ private[sequence] class BatchUpdatesWriter extends Actor with ActorLogging with 
   }
 
   private def batchWrite(updates: Seq[models.sequence.SeqUpdate]): Future[Unit] =
-    db.run(persist.sequence.SeqUpdate.createBulk(updates)) map (_ ⇒ ())
+    db.run(persist.sequence.SeqUpdateRepo.createBulk(updates)) map (_ ⇒ ())
 
   override def postRestart(reason: Throwable): Unit = {
     log.error(reason, "Failed")

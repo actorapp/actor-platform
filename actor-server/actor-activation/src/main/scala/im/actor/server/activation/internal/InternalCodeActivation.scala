@@ -52,27 +52,27 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
   implicit val timeout: Timeout = Timeout(20.seconds)
 
   def send(transactionHash: Option[String], code: Code): DBIO[String \/ Unit] = (transactionHash match {
-    case Some(hash) ⇒ for (_ ← persist.AuthCode.createOrUpdate(hash, code.code)) yield ()
+    case Some(hash) ⇒ for (_ ← persist.AuthCodeRepo.createOrUpdate(hash, code.code)) yield ()
     case None       ⇒ DBIO.successful(())
   }) flatMap (_ ⇒ DBIO.from(sendCode(code)))
 
   def validate(transactionHash: String, code: String): DBIO[ValidationResponse] =
     for {
-      optCode ← persist.AuthCode.findByTransactionHash(transactionHash)
+      optCode ← persist.AuthCodeRepo.findByTransactionHash(transactionHash)
       result ← optCode map {
         case s if isExpired(s) ⇒
-          for (_ ← persist.AuthCode.deleteByTransactionHash(transactionHash)) yield ExpiredCode
+          for (_ ← persist.AuthCodeRepo.deleteByTransactionHash(transactionHash)) yield ExpiredCode
         case s if s.code != code ⇒
           if (s.attempts + 1 >= config.attempts) {
-            for (_ ← persist.AuthCode.deleteByTransactionHash(transactionHash)) yield ExpiredCode
+            for (_ ← persist.AuthCodeRepo.deleteByTransactionHash(transactionHash)) yield ExpiredCode
           } else {
-            for (_ ← persist.AuthCode.incrementAttempts(transactionHash, s.attempts)) yield InvalidCode
+            for (_ ← persist.AuthCodeRepo.incrementAttempts(transactionHash, s.attempts)) yield InvalidCode
           }
         case _ ⇒ DBIO.successful(Validated)
       } getOrElse DBIO.successful(InvalidHash)
     } yield result
 
-  def finish(transactionHash: String): DBIO[Unit] = persist.AuthCode.deleteByTransactionHash(transactionHash).map(_ ⇒ ())
+  def finish(transactionHash: String): DBIO[Unit] = persist.AuthCodeRepo.deleteByTransactionHash(transactionHash).map(_ ⇒ ())
 
   private def isExpired(code: AuthCode): Boolean =
     code.createdAt.plus(config.expiration.toMillis, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))

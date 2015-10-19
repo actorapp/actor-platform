@@ -123,7 +123,7 @@ private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) exte
           case None ⇒ Future.successful(updateBox)
           case Some(UpdateRefs(userIds, groupIds)) ⇒
             // FIXME: #perf cache userId
-            DbExtension(context.system).db.run(persist.AuthId.findUserId(authId)) flatMap {
+            DbExtension(context.system).db.run(persist.AuthIdRepo.findUserId(authId)) flatMap {
               case Some(userId) ⇒
                 for {
                   (users, groups) ← getFatData(userId, userIds, groupIds)

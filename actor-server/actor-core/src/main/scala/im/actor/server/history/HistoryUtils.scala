@@ -54,8 +54,8 @@ object HistoryUtils {
 
       for {
         _ ← persist.HistoryMessage.create(messages)
-        _ ← persist.Dialog.updateLastMessageDate(fromPeer.id, toPeer, date)
-        res ← persist.Dialog.updateLastMessageDate(toPeer.id, fromPeer, date)
+        _ ← persist.DialogRepo.updateLastMessageDate(fromPeer.id, toPeer, date)
+        res ← persist.DialogRepo.updateLastMessageDate(toPeer.id, fromPeer, date)
       } yield ()
     } else if (toPeer.typ == models.PeerType.Group) {
       DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒
@@ -64,14 +64,14 @@ object HistoryUtils {
             val historyMessage = models.HistoryMessage(sharedUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
 
             for {
-              _ ← persist.Dialog.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
+              _ ← persist.DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
               _ ← persist.HistoryMessage.create(historyMessage)
             } yield ()
           } else {
             val historyMessages = groupUserIds.map { groupUserId ⇒
               models.HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
             }
-            val dialogAction = persist.Dialog.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
+            val dialogAction = persist.DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
 
             DBIO.sequence(Seq(dialogAction, (persist.HistoryMessage.create(historyMessages) map (_.getOrElse(0))))) map (_ ⇒ ())
           }
@@ -90,17 +90,17 @@ object HistoryUtils {
       case models.PeerType.Private ⇒
         // TODO: #perf do in single query
         DBIO.sequence(Seq(
-          persist.Dialog.updateLastReceivedAt(peer.id, models.Peer.privat(byPeer.id), date),
-          persist.Dialog.updateOwnerLastReceivedAt(byPeer.id, peer, date)
+          persist.DialogRepo.updateLastReceivedAt(peer.id, models.Peer.privat(byPeer.id), date),
+          persist.DialogRepo.updateOwnerLastReceivedAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case models.PeerType.Group ⇒
         withGroup(peer.id) { group ⇒
-          persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds ⇒
+          persist.GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
             // TODO: #perf update dialogs in one query
 
-            val selfAction = persist.Dialog.updateOwnerLastReceivedAt(byPeer.id, models.Peer.group(peer.id), date)
+            val selfAction = persist.DialogRepo.updateOwnerLastReceivedAt(byPeer.id, models.Peer.group(peer.id), date)
             val otherGroupUserIds = groupUserIds.view.filterNot(_ == byPeer.id).toSet
-            val otherAction = persist.Dialog.updateLastReceivedAt(otherGroupUserIds, models.Peer.group(peer.id), date)
+            val otherAction = persist.DialogRepo.updateLastReceivedAt(otherGroupUserIds, models.Peer.group(peer.id), date)
 
             selfAction andThen otherAction map (_ ⇒ ())
           }
@@ -116,18 +116,18 @@ object HistoryUtils {
       case models.PeerType.Private ⇒
         // TODO: #perf do in single query
         DBIO.sequence(Seq(
-          persist.Dialog.updateLastReadAt(peer.id, models.Peer.privat(byPeer.id), date),
-          persist.Dialog.updateOwnerLastReadAt(byPeer.id, peer, date)
+          persist.DialogRepo.updateLastReadAt(peer.id, models.Peer.privat(byPeer.id), date),
+          persist.DialogRepo.updateOwnerLastReadAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case models.PeerType.Group ⇒
         withGroup(peer.id) { group ⇒
-          persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds ⇒
+          persist.GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
             // TODO: #perf update dialogs in one query
 
-            val selfAction = persist.Dialog.updateOwnerLastReadAt(byPeer.id, models.Peer.group(peer.id), date)
+            val selfAction = persist.DialogRepo.updateOwnerLastReadAt(byPeer.id, models.Peer.group(peer.id), date)
 
             val otherGroupUserIds = groupUserIds.view.filterNot(_ == byPeer.id).toSet
-            val otherAction = persist.Dialog.updateLastReadAt(otherGroupUserIds, models.Peer.group(peer.id), date)
+            val otherAction = persist.DialogRepo.updateLastReadAt(otherGroupUserIds, models.Peer.group(peer.id), date)
 
             selfAction andThen otherAction map (_ ⇒ ())
           }

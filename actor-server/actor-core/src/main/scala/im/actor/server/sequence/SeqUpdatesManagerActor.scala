@@ -170,9 +170,9 @@ private final class SeqUpdatesManagerActor(
 
   private def initialize(): Unit = {
     val initiatedFuture: Future[Initialized] = db.run(for {
-      seqUpdOpt ← p.sequence.SeqUpdate.findLast(authId)
-      googleCredsOpt ← p.push.GooglePushCredentials.find(authId)
-      appleCredsOpt ← p.push.ApplePushCredentials.find(authId)
+      seqUpdOpt ← p.sequence.SeqUpdateRepo.findLast(authId)
+      googleCredsOpt ← p.push.GooglePushCredentialsRepo.find(authId)
+      appleCredsOpt ← p.push.ApplePushCredentialsRepo.find(authId)
     } yield Initialized(
       seqUpdOpt.map(_.seq).getOrElse(-1),
       seqUpdOpt.map(_.timestamp).getOrElse(0),
@@ -237,7 +237,7 @@ private final class SeqUpdatesManagerActor(
               appleCredsOpt foreach { creds ⇒
                 db.run {
                   for {
-                    optUserId ← p.AuthId.findUserId(authId)
+                    optUserId ← p.AuthIdRepo.findUserId(authId)
                     unread ← optUserId.map { userId ⇒
                       HistoryMessage.getUnreadTotal(userId)
                     } getOrElse DBIO.successful(0)
