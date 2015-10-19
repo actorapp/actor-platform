@@ -126,7 +126,7 @@ project.afterEvaluate {
     }
 
     Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
     String ossrhUsername = properties.getProperty("ossrhUsername", "")
     String ossrhPassword = properties.getProperty("ossrhPassword", "")
 
