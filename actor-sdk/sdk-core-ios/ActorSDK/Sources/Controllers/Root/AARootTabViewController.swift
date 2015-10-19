@@ -141,7 +141,7 @@ public class AARootTabViewController : UITabBarController, MFMessageComposeViewC
     }
     
     public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+        return ActorSDK.sharedActor().style.vcStatusBarStyle
     }
     
     public func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {

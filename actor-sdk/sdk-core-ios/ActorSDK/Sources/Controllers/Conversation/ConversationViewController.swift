@@ -21,7 +21,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     private let titleView: UILabel = UILabel()
     private let subtitleView: UILabel = UILabel()
     private let navigationView: UIView = UIView()
-    private let avatarView = AAAvatarView(frameSize: 36, type: .Rounded)
+    private let avatarView = AABarAvatarView(frameSize: 36, type: .Rounded)
     private let backgroundView = UIImageView()
     
     override init(peer: ACPeer) {
