@@ -81,7 +81,8 @@ private[user] trait UserCommandHandlers {
             sex = models.Sex.fromInt(sex.id),
             state = models.UserState.Registered,
             createdAt = LocalDateTime.now(ZoneOffset.UTC),
-            external = external
+            external = external,
+            isBot = isBot
           )
           db.run(for (_ ← p.UserRepo.create(user)) yield CreateAck())
         }
