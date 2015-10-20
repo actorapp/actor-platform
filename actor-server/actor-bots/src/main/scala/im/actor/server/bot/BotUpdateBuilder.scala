@@ -74,7 +74,7 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
         avatar = apiGroup.avatar.map(buildAvatar),
         isMember = apiGroup.isMember,
         creatorUserId = apiGroup.creatorUserId,
-        members = apiGroup.members map (buildMember)
+        members = apiGroup.members map buildMember
       )
     } toMap
   }
