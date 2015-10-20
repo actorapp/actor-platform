@@ -6,7 +6,7 @@ import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.pubgroups.ApiPublicGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.file.ImageUtils
-import im.actor.server.user.{ UserUtils, UserExtension }
+import im.actor.server.user.UserUtils
 import im.actor.server.{ models, persist }
 import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
@@ -35,7 +35,7 @@ object GroupUtils {
   def withGroup[A](groupId: Int)(f: models.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
     persist.GroupRepo.find(groupId) flatMap {
       case Some(group) ⇒ f(group)
-      case None        ⇒ DBIO.failed(new Exception(s"Group ${groupId} not found"))
+      case None        ⇒ DBIO.failed(new Exception(s"Group $groupId not found"))
     }
   }
 
@@ -45,14 +45,14 @@ object GroupUtils {
   }
 
   def getUserIds(groups: Seq[ApiGroup]): Seq[Int] =
-    groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
+    groups.flatMap(g ⇒ g.members.flatMap(m ⇒ Seq(m.userId, m.inviterUserId)) :+ g.creatorUserId)
 
   def getGroupsUsers(groupIds: Seq[Int], userIds: Seq[Int], clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Future[(Seq[ApiGroup], Seq[ApiUser])] = {
     import system.dispatcher
     for {
       groups ← Future.sequence(groupIds map (GroupExtension(system).getApiStruct(_, clientUserId)))
       memberIds = getUserIds(groups)
-      users ← Future.sequence((userIds.toSet ++ memberIds.toSet) map (UserUtils.safeGetUser(_, clientUserId, clientAuthId))) map (_.flatten)
+      users ← Future.sequence((userIds.toSet ++ memberIds.toSet).filterNot(_ == 0) map (UserUtils.safeGetUser(_, clientUserId, clientAuthId))) map (_.flatten)
     } yield (groups, users.toSeq)
   }
 }
