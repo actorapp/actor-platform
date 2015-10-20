@@ -264,7 +264,7 @@ object EmailTemplate {
       |        </td>
       |    </tr>
       |</table>
-      |/<body>
+      |</body>
       |</html>
     """.stripMargin
 
