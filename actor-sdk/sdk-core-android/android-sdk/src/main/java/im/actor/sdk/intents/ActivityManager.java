@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKDelegate;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
@@ -12,14 +13,14 @@ import im.actor.sdk.controllers.fragment.auth.AuthActivity;
  * Created by root on 10/20/15.
  */
 public class ActivityManager {
-    private ActorSDKDelegate sdkDelegate;
+
 
     public void startAuthActivity(Context context) {
         startAuthActivity(context, null);
     }
 
     public void startAuthActivity(Context context, Bundle extras) {
-        if (!startDelegateActivity(context, sdkDelegate.getAuthStartIntent(), extras)) {
+        if (!startDelegateActivity(context, ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), extras)) {
             startActivity(context, extras, AuthActivity.class);
         }
     }
@@ -29,7 +30,7 @@ public class ActivityManager {
     }
 
     public void startAfterLoginActivity(Context context, Bundle extras) {
-        if (!startDelegateActivity(context, sdkDelegate.getAuthStartIntent(), extras)) {
+        if (!startDelegateActivity(context, ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), extras)) {
             startActivity(context, extras, ActorMainActivity.class);
         }
     }
@@ -39,14 +40,14 @@ public class ActivityManager {
     }
 
     public void startMessagingActivity(Context context, Bundle extras) {
-        if (!startDelegateActivity(context, sdkDelegate.getAuthStartIntent(), extras)) {
+        if (!startDelegateActivity(context, ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), extras)) {
             startActivity(context, extras, ActorMainActivity.class);
         }
     }
 
     private boolean startDelegateActivity(Context context, ActorIntent intent, Bundle extras) {
         if (intent != null && intent instanceof ActorIntentActivity) {
-            Intent startIntent = ((ActorIntentActivity) sdkDelegate.getAuthStartIntent()).getIntent();
+            Intent startIntent = ((ActorIntentActivity) ActorSDK.sharedActor().getDelegate().getAuthStartIntent()).getIntent();
             if (extras != null) {
                 startIntent.putExtras(extras);
             }
@@ -67,7 +68,4 @@ public class ActivityManager {
     }
 
 
-    public void setSdkDelegate(ActorSDKDelegate sdkDelegate) {
-        this.sdkDelegate = sdkDelegate;
-    }
 }
