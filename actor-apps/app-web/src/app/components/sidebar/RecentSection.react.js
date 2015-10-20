@@ -9,16 +9,19 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
+import FastSwitcherActionCreators from 'actions/FastSwitcherActionCreators';
 
 import DialogStore from 'stores/DialogStore';
 
 import RecentSectionItem from './RecentSectionItem.react';
+import ContactsSectionItem from './ContactsSectionItem.react';
+import FastSwitcherModal from 'components/modals/FastSwitcher.react';
 
 const LoadDialogsScrollBottom = 100;
 
 const getStateFromStore = () => {
   return {
-    dialogs: DialogStore.getAll()
+    allDialogs: DialogStore.getAll()
   };
 };
 
@@ -48,21 +51,50 @@ class RecentSection extends Component {
     }
   };
 
-  render() {
-    const { dialogs } = this.state;
+  openFastSwitch = () => FastSwitcherActionCreators.show();
 
-    const dialogList = _.map(dialogs, (dialog, index) => {
-      return (
-        <RecentSectionItem dialog={dialog} key={index}/>
-      );
-    }, this);
+  render() {
+    const { allDialogs } = this.state;
+
+    let groupsList = [],
+        privateList = [];
+
+    _.forEach(allDialogs, (dialogs) => {
+      switch (dialogs.key) {
+        case 'groups':
+          groupsList = _.map(dialogs.shorts, (dialog, index) => {
+            return (
+              <RecentSectionItem dialog={dialog} key={index}/>
+            );
+          });
+          break;
+        case 'privates':
+          privateList = _.map(dialogs.shorts, (dialog, index) => {
+            return (
+              <RecentSectionItem dialog={dialog} key={index}/>
+            );
+          });
+          break;
+        default:
+      }
+    });
 
     return (
       <section className="sidebar__recent">
-        <ul className="sidebar__list sidebar__list--recent" onScroll={this.onScroll}>
-          {dialogList}
-        </ul>
+        <div className="sidebar__recent__scroll-container" onScroll={this.onScroll}>
+          <ul className="sidebar__list sidebar__list--groups">
+            <li className="sidebar__list__title">Groups</li>
+            {groupsList}
+          </ul>
+          <ul className="sidebar__list sidebar__list--private">
+            <li className="sidebar__list__title">Private</li>
+            {privateList}
+          </ul>
+        </div>
+
         <footer>
+          <button className="button button--rised button--wide" onClick={this.openFastSwitch}>Fast Switch</button>
+          <FastSwitcherModal/>
         </footer>
       </section>
     );
