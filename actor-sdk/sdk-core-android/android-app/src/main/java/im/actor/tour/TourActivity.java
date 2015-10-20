@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.tour;
+package im.actor.tour;
 
 import android.content.Intent;
 import android.os.Build;

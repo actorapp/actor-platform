@@ -42,14 +42,6 @@
 
     <application>
 
-        <!-- Tour -->
-        <activity
-            android:name="im.actor.sdk.controllers.fragment.tour.TourActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/NoBarActivityTheme"
-            android:windowSoftInputMode="adjustNothing" />
-
         <!-- Auth -->
 
         <activity
@@ -72,11 +64,6 @@
             android:label="@string/app_name"
             android:theme="@style/MainActivityTheme"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
