@@ -1,5 +1,6 @@
 package im.actor.sdk;
 
+import im.actor.core.AuthState;
 import im.actor.sdk.intents.ActorIntent;
 
 public class BaseActorSDKDelegate implements ActorSDKDelegate {
@@ -17,5 +18,10 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     @Override
     public ActorIntent getStartIntent() {
         return null;
+    }
+
+    @Override
+    public AuthState getAuthStartState() {
+        return AuthState.AUTH_PHONE;
     }
 }

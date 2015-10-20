@@ -22,16 +22,16 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class AuthActivity extends BaseFragmentActivity {
 
-    private static final int OAUTH_DIALOG = 1;
-    private ProgressDialog progressDialog;
-    private AlertDialog alertDialog;
-    private AuthState state;
     public static final String AUTH_TYPE_KEY = "auth_type";
     public static final String SIGN_TYPE_KEY = "sign_type";
     public static final int AUTH_TYPE_PHONE = 1;
     public static final int AUTH_TYPE_EMAIL = 2;
     public static final int SIGN_TYPE_IN = 3;
     public static final int SIGN_TYPE_UP = 4;
+    private static final int OAUTH_DIALOG = 1;
+    private ProgressDialog progressDialog;
+    private AlertDialog alertDialog;
+    private AuthState state;
     private int authType = AUTH_TYPE_PHONE;
     private int signType;
 
@@ -76,18 +76,18 @@ public class AuthActivity extends BaseFragmentActivity {
         this.state = state;
 
         switch (state) {
-            case AUTH_START:
+//            case AUTH_START:
 //                Fragment chooseAuthFr = new ChooseAuthTypeFragment();
 //                Bundle b = new Bundle();
 //                b.putInt(SIGN_TYPE_KEY, signType);
 //                chooseAuthFr.setArguments(b);
 //                showFragment(chooseAuthFr, false, false);
 //                break;
-//            case AUTH_EMAIL:
-//                showFragment(new SignEmailFragment(), false, false);
-//                authType = AUTH_TYPE_EMAIL;
-//                break;
-//            case AUTH_PHONE:
+            case AUTH_EMAIL:
+                showFragment(new SignEmailFragment(), false, false);
+                authType = AUTH_TYPE_EMAIL;
+                break;
+            case AUTH_PHONE:
                 showFragment(new SignPhoneFragment(), false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;
