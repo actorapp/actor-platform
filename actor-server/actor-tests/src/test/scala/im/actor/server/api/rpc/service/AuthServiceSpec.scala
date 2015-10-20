@@ -66,7 +66,7 @@ final class AuthServiceSpec
 
   it should "register unregistered contacts and send updates" in s.e90
 
-  it should "register unregistered contacts with local name" in s.e91
+  it should "register unregistered contacts with local name" in s.unregContactLocalName
 
   "AuthTransaction and AuthSmsCode" should "be invalidated after sign in process successfully completed" in s.e10
 
@@ -472,7 +472,7 @@ final class AuthServiceSpec
       }
     }
 
-    def e91() = {
+    def unregContactLocalName() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
       val userSex = Some(ApiSex.Male)
