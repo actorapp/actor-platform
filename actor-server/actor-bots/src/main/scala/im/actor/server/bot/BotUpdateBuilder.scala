@@ -98,9 +98,9 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
 
   private def buildAvatar(apiAvatar: ApiAvatar): Avatar = {
     Avatar(
-      small = apiAvatar.smallImage.map(buildAvatarImage),
-      large = apiAvatar.smallImage.map(buildAvatarImage),
-      full = apiAvatar.smallImage.map(buildAvatarImage)
+      smallImage = apiAvatar.smallImage.map(buildAvatarImage),
+      largeImage = apiAvatar.smallImage.map(buildAvatarImage),
+      fullImage = apiAvatar.smallImage.map(buildAvatarImage)
     )
   }
 

@@ -1,6 +1,6 @@
 package im.actor.server.api.http.groups
 
-import im.actor.server.file.{ FileStorageAdapter, ImageUtils }
+import im.actor.server.file.{ FileLocation, FileStorageAdapter, ImageUtils }
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -14,7 +14,6 @@ import akka.http.scaladsl.server.Route
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json.JsonFormatters.{ errorsFormat, groupInviteInfoFormat }
 import im.actor.server.api.http.json.{ AvatarUrls, Errors, Group, GroupInviteInfo, User }
@@ -75,7 +74,7 @@ class GroupsHandler()(
     }.getOrElse(DBIO.successful(None))
   }
 
-  private def urlOrNone(location: ApiFileLocation): DBIO[Option[String]] = {
+  private def urlOrNone(location: FileLocation): DBIO[Option[String]] = {
     implicit val timeout = 1.day
     for {
       fileOpt ← persist.FileRepo.find(location.fileId)

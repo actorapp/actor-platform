@@ -33,9 +33,9 @@ object BotMessages {
   )
 
   final case class Avatar(
-    small: Option[AvatarImage],
-    large: Option[AvatarImage],
-    full:  Option[AvatarImage]
+    smallImage: Option[AvatarImage],
+    largeImage: Option[AvatarImage],
+    fullImage:  Option[AvatarImage]
   )
 
   final case class User(
@@ -288,7 +288,7 @@ object BotMessages {
   final case object GetHooks extends GetHooks
 
   @key("UpdateAvatar")
-  final case class UpdateAvatar(userId: Int, avatar: Avatar) extends RequestBody {
+  final case class UpdateAvatar(userId: Int, fileLocation: FileLocation) extends RequestBody {
     override type Response = Void
     override val service = Services.Users
 
