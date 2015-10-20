@@ -241,6 +241,7 @@ private[user] trait UserCommandHandlers {
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
+          _ ← DBIO.from(ContactsUtils.registerLocalName(contact.ownerUserId, user.id, localName))
           _ ← ContactsUtils.addContact(contact.ownerUserId, user.id, phoneNumber, localName)
           _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
