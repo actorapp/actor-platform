@@ -100,8 +100,8 @@ private class CleanExpiredTokenListener(_system: ActorSystem) extends ExpiredTok
     expiredTokens: util.Collection[ExpiredToken]
   ): Unit = {
     expiredTokens foreach { t ⇒
-      system.log.warning("APNS reported expired token, loggint out")
-      UserExtension(system).logoutByAppleToken(t.getToken)
+      system.log.warning("APNS reported expired token")
+      //UserExtension(system).logoutByAppleToken(t.getToken)
     }
   }
 }
