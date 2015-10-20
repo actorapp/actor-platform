@@ -188,7 +188,7 @@ private[user] final class UserProcessor
     case CheckAccessHash(_, senderAuthId, accessHash) ⇒ checkAccessHash(state, senderAuthId, accessHash)
     case GetAccessHash(_, clientAuthId)               ⇒ getAccessHash(state, clientAuthId)
     case GetUser(_)                                   ⇒ getUser(state)
-    case IsAdmin                                      ⇒ isAdmin(state)
+    case IsAdmin(_)                                   ⇒ isAdmin(state)
   }
 
   protected[this] var userStateMaybe: Option[User] = None
