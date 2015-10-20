@@ -17,12 +17,15 @@ import ActorSDK
         // this method doesn't crash
         Fabric.with([Crashlytics.self()])
         
+        ActorSDK.sharedActor().inviteUrlHost = "quit.email"
+        ActorSDK.sharedActor().inviteUrlScheme = "actor"
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
     }
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-        
+    public override func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+        super.application(application, didFinishLaunchingWithOptions: launchOptions)
 //        let style = ActorSDK.sharedActor().style
 //        
 //        style.isDarkApp = true
@@ -74,4 +77,12 @@ import ActorSDK
         
         return true;
     }
+    
+//    public override func application(application: UIApplication, handleOpenURL url: NSURL) -> Bool {
+//        return true
+//    }
+////    
+//    public override func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+//        return false
+//    }
 }

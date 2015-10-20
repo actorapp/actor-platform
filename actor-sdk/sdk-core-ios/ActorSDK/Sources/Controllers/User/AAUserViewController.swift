@@ -104,7 +104,7 @@ class AAUserViewController: AAContentTableController {
                             UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
                             self.alertUser("NumberCopied")
                         } else {
-                            UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(phoneNumber)")!)
+                            ActorSDK.sharedActor().openUrl("telprompt://+\(phoneNumber)")
                         }
                         return true
                     }
@@ -121,7 +121,7 @@ class AAUserViewController: AAContentTableController {
                         return d.email
                     }
                     r.selectAction = { (c: ACUserEmail) -> Bool in
-                        UIApplication.sharedApplication().openURL(NSURL(string: "mailto:\(c.email)")!)
+                        ActorSDK.sharedActor().openUrl("mailto:\(c.email)")
                         return true
                     }
                 }
