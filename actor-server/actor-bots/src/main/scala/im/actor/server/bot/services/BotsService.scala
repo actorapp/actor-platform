@@ -6,7 +6,7 @@ import im.actor.server.bot.{ BotExtension, BotServiceBase }
 import im.actor.server.user.UserExceptions
 import upickle.Js
 
-final class BotsService(system: ActorSystem) extends BotServiceBase {
+final class BotsService(system: ActorSystem) extends BotServiceBase(system) {
   import BotMessages._
   import system.dispatcher
 
@@ -14,11 +14,13 @@ final class BotsService(system: ActorSystem) extends BotServiceBase {
 
   private def createBot(username: String, name: String) = RequestHandler[CreateBot, CreateBot#Response](
     (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
-      (for {
-        token ← botExt.create(username, name, isAdmin = false)
-      } yield Right(Container(token))) recover {
-        case UserExceptions.NicknameTaken ⇒
-          Left(BotError(400, "USERNAME_TAKEN", Js.Obj(), None))
+      ifIsAdmin(botUserId) {
+        (for {
+          token ← botExt.create(username, name, isAdmin = false)
+        } yield Right(Container(token))) recover {
+          case UserExceptions.NicknameTaken ⇒
+            Left(BotError(400, "USERNAME_TAKEN", Js.Obj(), None))
+        }
       }
   )
 

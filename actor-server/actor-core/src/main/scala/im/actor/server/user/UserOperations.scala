@@ -287,6 +287,9 @@ private[user] sealed trait Queries {
 
   def getAccessHash(userId: Int, clientAuthId: Long): Future[Long] =
     (viewRegion.ref ? GetAccessHash(userId, clientAuthId)).mapTo[GetAccessHashResponse] map (_.accessHash)
+
+  def isAdmin(userId: Int): Future[Boolean] =
+    (viewRegion.ref ? IsAdmin(userId)).mapTo[IsAdminResponse].map(_.isAdmin)
 }
 
 private[user] sealed trait AuthCommands {

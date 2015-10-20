@@ -247,6 +247,16 @@ message UserQueries {
         required int32 user_id = 1;
     }
 
+    message IsAdmin {
+        option (scalapb.message).extends = "im.actor.server.user.UserQuery";
+
+        required int32 user_id = 1;
+    }
+
+    message IsAdminResponse {
+        required bool isAdmin = 1;
+    }
+
 }
 
 message UserEvents {

@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar }
 import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
-import im.actor.api.rpc.messaging.{ ApiJsonMessage, UpdateMessage, ApiTextMessage }
+import im.actor.api.rpc.messaging.{ ApiDocumentMessage, ApiJsonMessage, UpdateMessage, ApiTextMessage }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.bots.BotMessages._
 import im.actor.server.acl.ACLUtils
@@ -15,7 +15,7 @@ import im.actor.server.user.UserExtension
 import scala.concurrent.Future
 import scala.language.postfixOps
 
-final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSystem) {
+final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSystem) extends ApiToBotConversions {
   import system.dispatcher
 
   implicit val _system = system
@@ -24,27 +24,20 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
   def apply(seq: Int, upd: Update): Future[Option[BotFatSeqUpdate]] = {
     val updateOptFuture = upd match {
       case update: UpdateMessage ⇒
-        (update.message match {
-          case ApiTextMessage(text, _, _) ⇒ Some(TextMessage(text))
-          case ApiJsonMessage(rawJson)    ⇒ Some(JsonMessage(rawJson))
-          case _                          ⇒ None
-        }) match {
-          case Some(message) ⇒
-            if (update.senderUserId != botUserId) {
-              for {
-                apiOutPeer ← ACLUtils.getOutPeer(update.peer, botAuthId)
-                senderAccessHash ← userExt.getAccessHash(update.senderUserId, botAuthId)
-              } yield Some(Message(
-                peer = OutPeer(apiOutPeer.`type`.id, apiOutPeer.id, apiOutPeer.accessHash),
-                sender = UserOutPeer(update.senderUserId, senderAccessHash),
-                date = update.date,
-                randomId = update.randomId,
-                message = message
-              ))
-            } else
-              Future.successful(None)
-          case None ⇒ Future.successful(None)
-        }
+
+        if (update.senderUserId != botUserId) {
+          for {
+            apiOutPeer ← ACLUtils.getOutPeer(update.peer, botAuthId)
+            senderAccessHash ← userExt.getAccessHash(update.senderUserId, botAuthId)
+          } yield Some(Message(
+            peer = OutPeer(apiOutPeer.`type`.id, apiOutPeer.id, apiOutPeer.accessHash),
+            sender = UserOutPeer(update.senderUserId, senderAccessHash),
+            date = update.date,
+            randomId = update.randomId,
+            message = update.message
+          ))
+        } else
+          Future.successful(None)
       case _ ⇒ Future.successful(None)
     }
 
@@ -105,9 +98,9 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
 
   private def buildAvatar(apiAvatar: ApiAvatar): Avatar = {
     Avatar(
-      smallImage = apiAvatar.smallImage.map(buildAvatarImage),
-      largeImage = apiAvatar.smallImage.map(buildAvatarImage),
-      fullImage = apiAvatar.smallImage.map(buildAvatarImage)
+      small = apiAvatar.smallImage.map(buildAvatarImage),
+      large = apiAvatar.smallImage.map(buildAvatarImage),
+      full = apiAvatar.smallImage.map(buildAvatarImage)
     )
   }
 
