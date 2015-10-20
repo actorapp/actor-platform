@@ -6,6 +6,7 @@ import ActorClient from 'utils/ActorClient';
 import { dispatch } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 import MyProfileActionCreators from 'actions/MyProfileActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
 const LoginActionCreators = {
   requestSms: (phone) => {
@@ -66,11 +67,13 @@ const LoginActionCreators = {
 
     dispatch(ActionTypes.SET_LOGGED_IN);
     ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+    ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
   },
 
   setLoggedOut: () => {
     dispatch(ActionTypes.SET_LOGGED_OUT);
     ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+    ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
   },
 
   wrongNumberClick: () => dispatch(ActionTypes.AUTH_WRONG_NUMBER_CLICK)
