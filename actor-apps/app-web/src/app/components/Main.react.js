@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 
-import { PeerTypes } from 'constants/ActorAppConstants';
+import { PeerTypes, KeyCodes } from 'constants/ActorAppConstants';
 
 import requireAuth from 'utils/require-auth';
 import ActorClient from 'utils/ActorClient';
@@ -13,6 +13,7 @@ import RouterContainer from 'utils/RouterContainer';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import VisibilityActionCreators from 'actions/VisibilityActionCreators';
+import FastSwitcherActionCreators from 'actions/FastSwitcherActionCreators';
 
 import SidebarSection from 'components/SidebarSection.react';
 import DialogSection from 'components/DialogSection.react';
@@ -35,6 +36,7 @@ class Main extends Component {
     const peer = PeerUtils.stringToPeer(params.id);
 
     document.addEventListener('visibilitychange', this.onVisibilityChange);
+    document.addEventListener('keydown', this.onKeyDown, false);
 
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
@@ -63,6 +65,12 @@ class Main extends Component {
       VisibilityActionCreators.createAppVisible();
     } else {
       VisibilityActionCreators.createAppHidden();
+    }
+  };
+
+  onKeyDown = (event) => {
+    if (event.keyCode === KeyCodes.K && event.metaKey) {
+      FastSwitcherActionCreators.show();
     }
   };
 

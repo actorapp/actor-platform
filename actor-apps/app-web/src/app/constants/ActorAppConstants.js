@@ -137,7 +137,10 @@ export const ActionTypes = keymirror({
   CHAT_CLEAR_ERROR: null,
 
   CROP_AVATAR_MODAL_SHOW: null,
-  CROP_AVATAR_MODAL_HIDE: null
+  CROP_AVATAR_MODAL_HIDE: null,
+
+  FAST_SWITCHER_SHOW: null,
+  FAST_SWITCHER_HIDE: null
 });
 
 export const PeerTypes = {
@@ -163,7 +166,9 @@ export const KeyCodes = {
   ESC: 27,
   ENTER: 13,
   ARROW_UP: 38,
-  ARROW_DOWN: 40
+  ARROW_DOWN: 40,
+
+  K: 75
 };
 
 export const AsyncActionStates = {

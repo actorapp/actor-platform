@@ -25,12 +25,15 @@
   justify-content: center;
 
   &--after-open {
-    //transition: opacity 150ms ease-out;
     opacity: 1;
   }
   &--before-close {
     opacity: 0;
   }
+}
+
+.ReactModal__Content {
+  outline: none;
 }
 
 .modal-new {
@@ -781,6 +784,9 @@
   overflow: hidden;
 
   min-width: $modal-default-width;
+  border-radius: $modal-default-radius;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .25);
+
   &__header {
     position: relative;
 
@@ -819,6 +825,35 @@
   &--confirm {
     border-radius: 2px;
     background-color: #fff;
+  }
+  &--fast-switcher {
+    background-color: white;
+    padding: 18px;
+    box-sizing: border-box;
+    .input {
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 2px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, .6);
+        padding: 12px;
+        font-size: 26px;
+        line-height: 40px;
+        border: none;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+        height: 64px;
+        outline: none;
+        transition: 100ms;
+        @include placeholder(rgba(black,.15));
+        &:hover {
+          box-shadow: 0 0 0 1px rgba(0, 0, 0, .2);
+        }
+        &:focus {
+          box-shadow: 0 0 0 1px rgba(0, 0, 0, .05), 0 1px 8px -1px rgba($dark-sky-blue, .6);
+        }
+      }
+    }
   }
 }
 
