@@ -12,6 +12,9 @@
 		06230F421BC95BD200A4807B /* RMPhoneFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 06230F401BC95BD200A4807B /* RMPhoneFormat.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06230F451BC95C0E00A4807B /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */; settings = {ASSET_TAGS = (); }; };
 		06230F461BC95C0E00A4807B /* PhoneFormats.dat in Resources */ = {isa = PBXBuildFile; fileRef = 06230F441BC95C0E00A4807B /* PhoneFormats.dat */; settings = {ASSET_TAGS = (); }; };
+		063074191BD68E370053DEAF /* bg_3_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074161BD68E370053DEAF /* bg_3_preview.jpg */; settings = {ASSET_TAGS = (); }; };
+		0630741A1BD68E370053DEAF /* bg_2_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074171BD68E370053DEAF /* bg_2_preview.jpg */; settings = {ASSET_TAGS = (); }; };
+		0630741B1BD68E370053DEAF /* bg_1_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074181BD68E370053DEAF /* bg_1_preview.jpg */; settings = {ASSET_TAGS = (); }; };
 		065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */; settings = {ASSET_TAGS = (); }; };
 		065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A61BC62B3600B8C7DF /* ViewExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975011BC7534100B8C7DF /* FMDBBridge.swift */; settings = {ASSET_TAGS = (); }; };
@@ -179,6 +182,9 @@
 		06230F401BC95BD200A4807B /* RMPhoneFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMPhoneFormat.h; sourceTree = "<group>"; };
 		06230F431BC95C0E00A4807B /* ABPhoneFieldCodes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ABPhoneFieldCodes.txt; path = Resources/ABPhoneFieldCodes.txt; sourceTree = "<group>"; };
 		06230F441BC95C0E00A4807B /* PhoneFormats.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = PhoneFormats.dat; path = Resources/PhoneFormats.dat; sourceTree = "<group>"; };
+		063074161BD68E370053DEAF /* bg_3_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_3_preview.jpg; sourceTree = "<group>"; };
+		063074171BD68E370053DEAF /* bg_2_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_2_preview.jpg; sourceTree = "<group>"; };
+		063074181BD68E370053DEAF /* bg_1_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1_preview.jpg; sourceTree = "<group>"; };
 		065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNavigationController.swift; sourceTree = "<group>"; };
 		065974A61BC62B3600B8C7DF /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		065974C51BC680AA00B8C7DF /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "../../app-ios/Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
@@ -380,8 +386,11 @@
 			isa = PBXGroup;
 			children = (
 				0659751E1BC7C84E00B8C7DF /* bg_1.jpg */,
-				0659751F1BC7C84E00B8C7DF /* bg_3.jpg */,
+				063074181BD68E370053DEAF /* bg_1_preview.jpg */,
 				065975201BC7C84E00B8C7DF /* bg_2.jpg */,
+				063074171BD68E370053DEAF /* bg_2_preview.jpg */,
+				0659751F1BC7C84E00B8C7DF /* bg_3.jpg */,
+				063074161BD68E370053DEAF /* bg_3_preview.jpg */,
 			);
 			name = Backgrounds;
 			path = Resources/Backgrounds;
@@ -983,9 +992,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				06230F451BC95C0E00A4807B /* ABPhoneFieldCodes.txt in Resources */,
+				0630741B1BD68E370053DEAF /* bg_1_preview.jpg in Resources */,
 				06230F461BC95C0E00A4807B /* PhoneFormats.dat in Resources */,
 				065975511BC7DD3C00B8C7DF /* highlight-default.min.css in Resources */,
 				0659754B1BC7DBA000B8C7DF /* iapetus.caf in Resources */,
+				0630741A1BD68E370053DEAF /* bg_2_preview.jpg in Resources */,
 				065975221BC7C84E00B8C7DF /* bg_3.jpg in Resources */,
 				065975211BC7C84E00B8C7DF /* bg_1.jpg in Resources */,
 				0659753B1BC7D22200B8C7DF /* Images.xcassets in Resources */,
@@ -993,6 +1004,7 @@
 				065975521BC7DD3C00B8C7DF /* highlight.min.js in Resources */,
 				065975441BC7D34200B8C7DF /* Localizable.strings in Resources */,
 				0659754C1BC7DBA000B8C7DF /* notification.caf in Resources */,
+				063074191BD68E370053DEAF /* bg_3_preview.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
