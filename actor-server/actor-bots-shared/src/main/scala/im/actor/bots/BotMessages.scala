@@ -259,11 +259,14 @@ object BotMessages {
 
   @key("CreateBot")
   final case class CreateBot(username: String, name: String) extends RequestBody {
-    override type Response = Container[String]
+    override type Response = BotCreated
     override val service = Services.Bots
 
     override def readResponse(obj: Js.Obj) = readJs[Response](obj)
   }
+
+  @key("BotCreated")
+  final case class BotCreated(token: String, userId: Int) extends ResponseBody
 
   @key("RegisterHook")
   final case class RegisterHook(name: String) extends RequestBody {
