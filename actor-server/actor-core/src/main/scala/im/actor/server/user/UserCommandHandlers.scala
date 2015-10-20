@@ -2,24 +2,26 @@ package im.actor.server.user
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import akka.actor.Status
+import akka.actor.{ ActorSystem, Status }
 import akka.pattern.pipe
-import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.users._
+import im.actor.concurrent.FutureExt
+import im.actor.config.ActorConfig
+import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.history.HistoryUtils
-import im.actor.server.{ persist ⇒ p, ApiConversions, models }
-import ApiConversions._
 import im.actor.server.event.TSEvent
-import im.actor.server.file.{ ImageUtils, Avatar }
+import im.actor.server.file.{ Avatar, ImageUtils }
+import im.actor.server.history.HistoryUtils
+import im.actor.server.models.contact.{ UserContact, UserEmailContact, UserPhoneContact }
+import im.actor.server.persist.UserRepo
+import im.actor.server.persist.contact.{ UserContactRepo, UserEmailContactRepo, UserPhoneContactRepo }
 import im.actor.server.sequence.SeqUpdatesManager
-import im.actor.server.sequence.SeqState
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
-import ContactsUtils.addContact
+import im.actor.server.{ ApiConversions, models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -30,11 +32,16 @@ import scala.util.control.NoStackTrace
 sealed trait UserException extends RuntimeException
 
 object UserExceptions {
+
   final case object NicknameTaken extends RuntimeException with NoStackTrace
+
 }
 
 private object ServiceMessages {
-  def contactRegistered(userId: Int) = ApiServiceMessage("Contact registered", Some(ApiServiceExContactRegistered(userId)))
+  def contactRegistered(userId: Int, name: String)(implicit system: ActorSystem) = {
+    val systemName = ActorConfig.systemName
+    ApiServiceMessage(s"$name joined $systemName", Some(ApiServiceExContactRegistered(userId)))
+  }
 }
 
 private[user] trait UserCommandHandlers {
@@ -116,7 +123,7 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def addEmail(user: User, email: String): Unit =
-    persistReply(TSEvent(now(), UserEvents.EmailAdded(email)), user) { _ ⇒
+    persistReply(TSEvent(now(), UserEvents.EmailAdded(email)), user) { event ⇒
       val rng = ThreadLocalRandom.current()
       db.run(for {
         _ ← p.UserEmailRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
@@ -171,6 +178,50 @@ private[user] trait UserCommandHandlers {
     }
   }
 
+  protected def addContacts(
+    user:          User,
+    clientAuthId:  Long,
+    contactsToAdd: Seq[UserCommands.ContactToAdd]
+  ): Unit = {
+    val (idsLocalNames, plains, phones, emails) = contactsToAdd.view.map {
+      case UserCommands.ContactToAdd(contactUserId, localNameOpt, phoneOpt, emailOpt) ⇒
+        val phone = phoneOpt map (UserPhoneContact(_, user.id, contactUserId, localNameOpt, isDeleted = false))
+        val email = emailOpt map (UserEmailContact(_, user.id, contactUserId, localNameOpt, isDeleted = false))
+        val plain =
+          if (phone.isDefined || email.isDefined)
+            None
+          else Some(UserContact(user.id, contactUserId, localNameOpt, isDeleted = false))
+
+        ((contactUserId, localNameOpt), plain, phone, email)
+    }.foldLeft(Map.empty[Int, Option[String]], Seq.empty[UserContact], Seq.empty[UserPhoneContact], Seq.empty[UserEmailContact]) {
+      case ((idsLocalNames, plains, phones, emails), (idLocalName, plain, phone, email)) ⇒
+        (
+          idsLocalNames + idLocalName,
+          plain.map(plains :+ _).getOrElse(plains),
+          phone.map(phones :+ _).getOrElse(phones),
+          email.map(emails :+ _).getOrElse(emails)
+        )
+    }
+
+    (for {
+      _ ← FutureExt.ftraverse(plains)(c ⇒ db.run(UserContactRepo.insertOrUpdate(c)))
+      _ ← FutureExt.ftraverse(phones)(c ⇒ db.run(UserPhoneContactRepo.insertOrUpdate(c)))
+      _ ← FutureExt.ftraverse(emails)(c ⇒ db.run(UserEmailContactRepo.insertOrUpdate(c)))
+      _ ← FutureExt.ftraverse(idsLocalNames.toSeq) {
+        case (contactUserId, localName) ⇒ ContactsUtils.registerLocalName(user.id, contactUserId, localName)
+      }
+      update = UpdateContactsAdded(idsLocalNames.map(_._1).toVector)
+      seqstate ← userExt.broadcastClientUpdate(user.id, clientAuthId, update, pushText = None, isFat = true, deliveryId = None)
+    } yield seqstate) pipeTo sender()
+  }
+
+  private def getName(userId: Int, localNameOpt: Option[String]): Future[String] =
+    localNameOpt match {
+      case Some(localName) ⇒ Future.successful(localName)
+      case None ⇒
+        db.run(UserRepo.findName(userId)) map (_.getOrElse(throw new RuntimeException(s"User $userId not found")))
+    }
+
   private def checkNicknameExists(nicknameOpt: Option[String]): Future[Boolean] = {
     nicknameOpt match {
       case Some(nickname) ⇒ db.run(p.UserRepo.nicknameExists(nickname))
@@ -185,12 +236,12 @@ private[user] trait UserCommandHandlers {
       log.debug(s"Unregistered ${phoneNumber} is in contacts of users: $contacts")
       val randomId = ThreadLocalRandom.current().nextLong()
       val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
-      val serviceMessage = ServiceMessages.contactRegistered(user.id)
       // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
       val actions = contacts map { contact ⇒
         val localName = contact.name
+        val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
-          _ ← addContact(contact.ownerUserId, user.id, phoneNumber, localName, user.accessSalt)
+          _ ← ContactsUtils.addContact(contact.ownerUserId, user.id, phoneNumber, localName)
           _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
@@ -218,12 +269,12 @@ private[user] trait UserCommandHandlers {
       _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
       _ ← DBIO.sequence(contacts.map { contact ⇒
         val randomId = ThreadLocalRandom.current().nextLong()
-        val serviceMessage = ServiceMessages.contactRegistered(user.id)
         val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
         val localName = contact.name
+        val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
-          _ ← addContact(contact.ownerUserId, user.id, email, localName, user.accessSalt)
-          _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
+          _ ← ContactsUtils.addContact(contact.ownerUserId, user.id, email, localName)
+          _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, update, Some(serviceMessage.text), isFat = true, deliveryId = None))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
@@ -237,9 +288,4 @@ private[user] trait UserCommandHandlers {
       _ ← p.contact.UnregisteredEmailContactRepo.deleteAll(email)
     } yield ()
   }
-
-  private def getAuthIdUnsafe(user: User): Long = {
-    user.authIds.headOption.getOrElse(throw new scala.Exception(s"There was no authId for user ${user.id}"))
-  }
-
 }

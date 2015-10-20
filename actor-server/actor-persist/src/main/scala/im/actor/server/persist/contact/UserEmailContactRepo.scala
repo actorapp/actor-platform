@@ -7,7 +7,7 @@ final class UserEmailContactTable(tag: Tag) extends UserContactBase[models.conta
   def email = column[String]("email")
   val inherited = UserContactRepo.contacts.baseTableRow
 
-  def * = (email, ownerUserId, contactUserId, name, accessSalt, isDeleted) <> (models.contact.UserEmailContact.tupled, models.contact.UserEmailContact.unapply)
+  def * = (email, ownerUserId, contactUserId, name, isDeleted) <> (models.contact.UserEmailContact.tupled, models.contact.UserEmailContact.unapply)
 }
 
 object UserEmailContactRepo {

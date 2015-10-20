@@ -467,7 +467,7 @@ final class AuthServiceSpec
       whenReady(db.run(persist.contact.UserContactRepo.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
-          case UserContact(_, _, Some(_), _, false) ⇒
+          case UserContact(_, _, Some(_), false) ⇒
         }
       }
     }
@@ -918,7 +918,7 @@ final class AuthServiceSpec
       whenReady(db.run(persist.contact.UserContactRepo.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
-          case UserContact(_, _, _, _, false) ⇒
+          case UserContact(_, _, _, false) ⇒
         }
       }
     }

@@ -10,14 +10,13 @@ private[contact] abstract class UserContactBase[T](tag: Tag, tname: String) exte
   def ownerUserId = column[Int]("owner_user_id", O.PrimaryKey)
   def contactUserId = column[Int]("contact_user_id", O.PrimaryKey)
   def name = column[Option[String]]("name")
-  def accessSalt = column[String]("access_salt")
   def isDeleted = column[Boolean]("is_deleted", O.Default(false))
 
   def idx = index("idx_user_contacts_owner_user_id_is_deleted", (ownerUserId, isDeleted))
 }
 
 final class UserContactTable(tag: Tag) extends UserContactBase[models.contact.UserContact](tag, "user_contacts") {
-  def * = (ownerUserId, contactUserId, name, accessSalt, isDeleted) <> (models.contact.UserContact.tupled, models.contact.UserContact.unapply)
+  def * = (ownerUserId, contactUserId, name, isDeleted) <> (models.contact.UserContact.tupled, models.contact.UserContact.unapply)
 }
 
 object UserContactRepo {
