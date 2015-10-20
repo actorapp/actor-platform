@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.tour;
+package im.actor.tour;
 
 /**
  * Created by Jesus Christ. Amen.
