@@ -21,7 +21,7 @@ public protocol AABindedSearchCell {
     func bind(item: BindData, search: String?)
 }
 
-public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AABindedCell>: NSObject, AAManagedRange, ARDisplayList_AppleChangeListener {
+public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AABindedCell>: NSObject, AAManagedRange, ARDisplayList_AppleChangeListener, ARDisplayList_Listener {
     
     public var topOffset: Int = 0
     
@@ -37,7 +37,11 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
     
     public var autoHide = true
     
+    public var animated = false
+    
     private var table: AAManagedTable!
+    
+    private var lastItemsCount: Int = 0
     
     // Total items count
     
@@ -92,7 +96,39 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         
         self.table = table
 
-        displayList.addAppleListener(self)
+        if animated {
+            displayList.addAppleListener(self)
+        } else {
+            displayList.addListener(self)
+        }
+        
+        lastItemsCount = Int(displayList.size())
+        
+        updateVisibility()
+    }
+    
+    @objc public func onCollectionChanged() {
+        
+        let oldCount = lastItemsCount
+        lastItemsCount = Int(displayList.size())
+
+        if oldCount != lastItemsCount {
+            table.tableView.reloadData()
+        } else {
+            if let indexes = table.tableView.indexPathsForVisibleRows {
+                let cells = table.tableView.visibleCells
+                
+                for i in 0..<indexes.count {
+                    let index = indexes[i]
+                    let cell = cells[i]
+                    
+                    if index.section == 0 && index.row >= topOffset {
+                        let data = displayList.itemWithIndex(jint(index.row - topOffset)) as! BindCell.BindData
+                        (cell as! BindCell).bind(data, table: table, index: index.row - topOffset, totalCount: Int(displayList.size()))
+                    }
+                }
+            }
+        }
         
         updateVisibility()
     }
@@ -177,7 +213,11 @@ public class AABindedRows<BindCell where BindCell: UITableViewCell, BindCell: AA
         
         self.table = nil
         
-        displayList.removeAppleListener(self)
+        if animated {
+            displayList.removeAppleListener(self)
+        } else {
+            displayList.addListener(self)
+        }
     }
     
     public func filter(text: String) {
