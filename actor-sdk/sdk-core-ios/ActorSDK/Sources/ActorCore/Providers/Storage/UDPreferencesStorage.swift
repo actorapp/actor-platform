@@ -8,6 +8,8 @@ import Foundation
     
     let prefs = NSUserDefaults.standardUserDefaults()
     
+    var cachedBools = [String: Bool]()
+    
     func putLongWithKey(key: String!, withValue v: jlong) {
         prefs.setObject(NSNumber(longLong: v), forKey: key)
         prefs.synchronize()
@@ -37,11 +39,20 @@ import Foundation
     }
     
     func putBoolWithKey(key: String!, withValue v: Bool) {
+        if cachedBools[key] == v {
+            return
+        }
+        cachedBools[key] = v
+        
         prefs.setBool(v, forKey: key)
         prefs.synchronize()
     }
     
     func getBoolWithKey(key: String!, withDefault def: Bool) -> Bool {
+        if let r = cachedBools[key] {
+            return r
+        }
+        
         let val: AnyObject? = prefs.objectForKey(key);
         if (val == nil || (!(val is Bool))) {
             return def;

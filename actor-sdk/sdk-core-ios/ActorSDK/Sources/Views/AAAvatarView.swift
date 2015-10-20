@@ -147,12 +147,7 @@ public class AAAvatarView: UIImageView {
             
             requestId++
             
-            if (self.placeholderImage == nil) {
-                self.placeholderImage = Placeholders.avatarPlaceholder(bindedId, size: self.frameSize, title: title, rounded: self.avatarType == .Rounded)
-                self.image = self.placeholderImage
-            }
-            
-            self.image = self.placeholderImage
+            self.image = Placeholders.avatarPlaceholder(bindedId, size: self.frameSize, title: title, rounded: self.avatarType == .Rounded)
             
             return
         }
