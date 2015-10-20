@@ -3,6 +3,7 @@ package im.actor.server.file
 import akka.actor.ActorSystem
 import com.sksamuel.scrimage.{ AsyncImage, Format, Position }
 import im.actor.server.acl.ACLUtils
+import im.actor.server.db.DbExtension
 import im.actor.server.{ models, persist }
 import slick.dbio.DBIO
 
@@ -54,6 +55,14 @@ object ImageUtils {
 
   def dimensions(aimg: AsyncImage)(implicit ec: ExecutionContext): (Int, Int) =
     (aimg.width, aimg.height)
+
+  def scaleAvatarF(fullFileId: Long)(
+    implicit
+    fsAdapter: FileStorageAdapter,
+    ec:        ExecutionContext,
+    system:    ActorSystem
+  ): Future[Either[Throwable, Avatar]] =
+    DbExtension(system).db.run(scaleAvatar(fullFileId))
 
   def scaleAvatar(fullFileId: Long)(
     implicit
