@@ -13,7 +13,6 @@ import scala.collection.concurrent.TrieMap
 final class KeyValueService(system: ActorSystem) extends BotServiceBase {
 
   import BotMessages._
-  import BotServiceBase._
   import system.dispatcher
 
   type Keyspace = String

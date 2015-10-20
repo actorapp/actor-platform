@@ -10,7 +10,7 @@ import im.actor.api.rpc.messaging.{ ApiMessage, ApiTextMessage }
 import im.actor.api.rpc.peers.ApiPeerType
 import im.actor.server.api.http.json._
 import im.actor.server.dialog.DialogExtension
-import im.actor.server.group.{ GroupExtension, GroupOffice }
+import im.actor.server.group.GroupExtension
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -30,7 +30,9 @@ trait IngoingHooks extends ContentUnmarshaller with PlayJsonSupport {
               case Left(statusCode) ⇒ complete(statusCode → Status("failure"))
               case Right(_)         ⇒ complete(OK → Status("Ok"))
             }
-          case Failure(e) ⇒ complete(InternalServerError)
+          case Failure(e) ⇒
+            system.log.error(e, "Failed to handle ingoing hook")
+            complete(InternalServerError)
         }
       }
     }
