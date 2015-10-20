@@ -30,6 +30,9 @@ object UserEmailRepo {
   def find(email: String) =
     byEmail(email).result.headOption
 
+  def findByDomain(domain: String) =
+    emails.filter(_.email.like(s"%@$domain")).result
+
   def exists(email: String) =
     byEmail(email).exists.result
 

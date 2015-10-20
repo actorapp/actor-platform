@@ -168,6 +168,20 @@ message UserCommands {
         optional string about = 3;
     }
 
+    message ContactToAdd {
+        required int32 contact_user_id = 3;
+        optional string local_name = 7;
+        optional int64 phone = 5;
+        optional string email = 4;
+    }
+
+    message AddContacts {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+        required int64 client_auth_id = 2;
+        repeated ContactToAdd contacts_to_add = 3;
+    }
 }
 
 message UserQueries {

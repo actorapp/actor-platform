@@ -12,43 +12,40 @@ object ContactsUtils {
 
   def localNameKey(ownerUserId: Int, contactId: Int): String = s"${ownerUserId}_${contactId}"
 
-  def addContact(
+  private[user] def addContact(
     ownerUserId: Int,
     userId:      Int,
-    name:        Option[String],
-    accessSalt:  String
-  )(implicit ec: ExecutionContext, timeout: Timeout, system: ActorSystem): DBIO[Int] =
+    name:        Option[String]
+  )(implicit ec: ExecutionContext, timeout: Timeout, system: ActorSystem): DBIO[Int] = {
+    val contact = models.contact.UserContact(ownerUserId, userId, name, isDeleted = false)
     for {
-      _ ← DBIO.from(registerLocalName(ownerUserId, userId, name))
-      contact = models.contact.UserContact(ownerUserId, userId, name, accessSalt, isDeleted = false)
       result ← persist.contact.UserContactRepo.insertOrUpdate(contact)
     } yield result
+  }
 
-  def addContact(
+  private[user] def addContact(
     ownerUserId: Int,
     userId:      Int,
     phoneNumber: Long,
-    name:        Option[String],
-    accessSalt:  String
-  )(implicit ec: ExecutionContext, timeout: Timeout, system: ActorSystem): DBIO[Int] =
+    name:        Option[String]
+  )(implicit ec: ExecutionContext, timeout: Timeout, system: ActorSystem): DBIO[Int] = {
+    val contact = models.contact.UserPhoneContact(phoneNumber, ownerUserId, userId, name, isDeleted = false)
     for {
-      _ ← DBIO.from(registerLocalName(ownerUserId, userId, name))
-      contact = models.contact.UserPhoneContact(phoneNumber, ownerUserId, userId, name, accessSalt, isDeleted = false)
       result ← persist.contact.UserPhoneContactRepo.insertOrUpdate(contact)
     } yield result
+  }
 
-  def addContact(
+  private[user] def addContact(
     ownerUserId: Int,
     userId:      Int,
     email:       String,
-    name:        Option[String],
-    accessSalt:  String
-  )(implicit ec: ExecutionContext, timeout: Timeout, system: ActorSystem): DBIO[Int] =
+    name:        Option[String]
+  )(implicit ec: ExecutionContext, timeout: Timeout, system: ActorSystem): DBIO[Int] = {
+    val contact = models.contact.UserEmailContact(email, ownerUserId, userId, name, isDeleted = false)
     for {
-      _ ← DBIO.from(registerLocalName(ownerUserId, userId, name))
-      contact = models.contact.UserEmailContact(email, ownerUserId, userId, name, accessSalt, isDeleted = false)
       result ← persist.contact.UserEmailContactRepo.insertOrUpdate(contact)
     } yield result
+  }
 
   def deleteContact(ownerUserId: Int, userId: Int)(implicit ec: ExecutionContext, timeout: Timeout, system: ActorSystem): DBIO[Int] =
     for {
@@ -67,5 +64,4 @@ object ContactsUtils {
     val contactKey = localNameKey(ownerUserId, userId)
     name map { n ⇒ kv.upsert(contactKey, n) } getOrElse kv.delete(contactKey)
   }
-
 }
