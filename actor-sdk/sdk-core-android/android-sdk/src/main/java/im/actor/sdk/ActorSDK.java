@@ -246,7 +246,6 @@ public class ActorSDK {
 
     public void setDelegate(ActorSDKDelegate delegate) {
         this.delegate = delegate;
-        activityManager.setSdkDelegate(delegate);
     }
 
     public ActivityManager getActivityManager() {
