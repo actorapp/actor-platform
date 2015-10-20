@@ -16,6 +16,11 @@ public class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDel
         ActorSDK.sharedActor().applicationDidFinishLaunching(application)
     }
     
+    public func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+        ActorSDK.sharedActor().applicationDidFinishLaunching(application)
+        return true
+    }
+    
     public func applicationDidBecomeActive(application: UIApplication) {
         ActorSDK.sharedActor().applicationDidBecomeActive(application)
     }
@@ -47,5 +52,13 @@ public class ActorApplicationDelegate: ActorSDKDelegateDefault, UIApplicationDel
     
     public func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         ActorSDK.sharedActor().application(application, performFetchWithCompletionHandler: completionHandler)
+    }
+    
+    public func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        return ActorSDK.sharedActor().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
+    }
+    
+    public func application(application: UIApplication, handleOpenURL url: NSURL) -> Bool {
+        return ActorSDK.sharedActor().application(application, handleOpenURL: url)
     }
 }
