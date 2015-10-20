@@ -1,6 +1,5 @@
 package im.actor.server
 
-import com.google.protobuf.ByteString
 import im.actor.api.rpc.files.{ ApiAvatar, ApiAvatarImage, ApiFileLocation }
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
 
@@ -33,7 +32,7 @@ object ApiConversions {
     imageOpt map avatarImageToApi
 
   implicit def avatarToApi(avatar: Avatar): ApiAvatar =
-    ApiAvatar(avatar.small, avatar.large, avatar.full)
+    ApiAvatar(avatar.smallImage, avatar.largeImage, avatar.fullImage)
 
   implicit def avatarOptToApi(avatarOpt: Option[Avatar]): Option[ApiAvatar] =
     avatarOpt map avatarToApi

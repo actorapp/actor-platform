@@ -20,7 +20,7 @@ object FileHelpers {
     val LocationInvalid = RpcError(400, "LOCATION_INVALID", "", false, None)
   }
 
-  def withFileLocation[R <: RpcResponse](fileLocation: ApiFileLocation, maxSize: Int)(f: ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext, s: ActorSystem) = {
+  def withFileLocation[R <: RpcResponse](fileLocation: ApiFileLocation, maxSize: Long)(f: ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext, s: ActorSystem) = {
     persist.FileRepo.find(fileLocation.fileId) flatMap {
       case Some(file) ⇒
         if (!file.isUploaded) {
