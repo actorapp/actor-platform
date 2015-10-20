@@ -17,6 +17,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Tour -->
+        <activity
+            android:name="im.actor.tour.TourActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoBarActivityTheme"
+            android:windowSoftInputMode="adjustNothing" />
+
+
     </application>
 
 </manifest>
