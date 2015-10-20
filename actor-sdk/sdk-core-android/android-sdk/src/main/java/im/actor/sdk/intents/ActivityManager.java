@@ -1,0 +1,73 @@
+package im.actor.sdk.intents;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+import im.actor.sdk.ActorSDKDelegate;
+import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+
+/**
+ * Created by root on 10/20/15.
+ */
+public class ActivityManager {
+    private ActorSDKDelegate sdkDelegate;
+
+    public void startAuthActivity(Context context) {
+        startAuthActivity(context, null);
+    }
+
+    public void startAuthActivity(Context context, Bundle extras) {
+        if (!startDelegateActivity(context, sdkDelegate.getAuthStartIntent(), extras)) {
+            startActivity(context, extras, AuthActivity.class);
+        }
+    }
+
+    public void startAfterLoginActivity(Context context) {
+        startAfterLoginActivity(context, null);
+    }
+
+    public void startAfterLoginActivity(Context context, Bundle extras) {
+        if (!startDelegateActivity(context, sdkDelegate.getAuthStartIntent(), extras)) {
+            startActivity(context, extras, ActorMainActivity.class);
+        }
+    }
+
+    public void startMessagingActivity(Context context) {
+        startMessagingActivity(context, null);
+    }
+
+    public void startMessagingActivity(Context context, Bundle extras) {
+        if (!startDelegateActivity(context, sdkDelegate.getAuthStartIntent(), extras)) {
+            startActivity(context, extras, ActorMainActivity.class);
+        }
+    }
+
+    private boolean startDelegateActivity(Context context, ActorIntent intent, Bundle extras) {
+        if (intent != null && intent instanceof ActorIntentActivity) {
+            Intent startIntent = ((ActorIntentActivity) sdkDelegate.getAuthStartIntent()).getIntent();
+            if (extras != null) {
+                startIntent.putExtras(extras);
+            }
+            context.startActivity(startIntent);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private void startActivity(Context context, Bundle extras, Class<?> cls) {
+        Intent intent = new Intent(context, cls);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
+        context.startActivity(intent);
+    }
+
+
+    public void setSdkDelegate(ActorSDKDelegate sdkDelegate) {
+        this.sdkDelegate = sdkDelegate;
+    }
+}

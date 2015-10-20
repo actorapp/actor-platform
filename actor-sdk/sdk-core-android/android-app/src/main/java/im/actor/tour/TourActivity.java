@@ -12,6 +12,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
 import im.actor.sdk.util.Screen;
@@ -49,9 +50,9 @@ public class TourActivity extends ActionBarActivity {
         findViewById(R.id.signUpButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
-                authIntent.putExtra(AuthActivity.SIGN_TYPE_KEY, AuthActivity.SIGN_TYPE_UP);
-                startActivity(authIntent);
+                Bundle authExtras = new Bundle();
+                authExtras.putInt(AuthActivity.SIGN_TYPE_KEY, AuthActivity.SIGN_TYPE_UP);
+                ActorSDK.sharedActor().getActivityManager().startAuthActivity(TourActivity.this, authExtras);
                 finish();
 
             }
@@ -60,9 +61,9 @@ public class TourActivity extends ActionBarActivity {
         findViewById(R.id.signIn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
-                authIntent.putExtra(AuthActivity.SIGN_TYPE_KEY, AuthActivity.SIGN_TYPE_IN);
-                startActivity(authIntent);
+                Bundle authExtras = new Bundle();
+                authExtras.putInt(AuthActivity.SIGN_TYPE_KEY, AuthActivity.SIGN_TYPE_IN);
+                ActorSDK.sharedActor().getActivityManager().startAuthActivity(TourActivity.this, authExtras);
                 finish();
 
             }

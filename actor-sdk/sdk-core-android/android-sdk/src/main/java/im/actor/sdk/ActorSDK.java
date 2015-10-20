@@ -18,10 +18,9 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.fragment.auth.AuthActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
+import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.view.emoji.SmileProcessor;
@@ -65,7 +64,14 @@ public class ActorSDK {
      * Is Keeping app alive enabled
      */
     private boolean isKeepAliveEnabled = false;
-
+    /**
+     * Delegate
+     */
+    private ActorSDKDelegate delegate = new BaseActorSDKDelegate();
+    /**
+     * ActivityManager
+     */
+    private ActivityManager activityManager= new ActivityManager();
     private ActorSDK() {
         endpoints.add("tls://front1-mtproto-api-rev2.actor.im");
         endpoints.add("tls://front2-mtproto-api-rev2.actor.im");
@@ -133,9 +139,9 @@ public class ActorSDK {
 
     public void startMessagingApp(Activity context) {
         if (messenger.isLoggedIn()) {
-            context.startActivity(new Intent(AndroidContext.getContext(), ActorMainActivity.class));
+            getActivityManager().startMessagingActivity(context);
         } else {
-            context.startActivity(new Intent(context, AuthActivity.class));
+            getActivityManager().startAuthActivity(context);
         }
     }
 
@@ -232,5 +238,18 @@ public class ActorSDK {
      */
     public void setIsKeepAliveEnabled(boolean isKeepAliveEnabled) {
         this.isKeepAliveEnabled = isKeepAliveEnabled;
+    }
+
+    public ActorSDKDelegate getDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(ActorSDKDelegate delegate) {
+        this.delegate = delegate;
+        activityManager.setSdkDelegate(delegate);
+    }
+
+    public ActivityManager getActivityManager() {
+        return activityManager;
     }
 }
