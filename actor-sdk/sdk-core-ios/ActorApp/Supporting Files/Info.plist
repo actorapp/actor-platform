@@ -78,7 +78,7 @@
 	<key>UIRequiresFullScreen</key>
 	<false/>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleBlackOpaque</string>
+	<string>UIStatusBarStyleDefault</string>
 	<key>UIStatusBarTintParameters</key>
 	<dict>
 		<key>UINavigationBar</key>

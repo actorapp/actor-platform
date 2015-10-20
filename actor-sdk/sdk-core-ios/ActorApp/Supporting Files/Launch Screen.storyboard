@@ -18,14 +18,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mad-xh-qLG">
-                                <rect key="frame" x="0.0" y="22" width="600" height="44"/>
-                                <animations/>
-                                <color key="barTintColor" red="0.32549019607843138" green="0.53725490196078429" blue="0.82745098039215681" alpha="1" colorSpace="calibratedRGB"/>
-                                <items>
-                                    <navigationItem id="CoW-Q8-wvx"/>
-                                </items>
-                            </navigationBar>
                             <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y5b-xc-AG7">
                                 <rect key="frame" x="0.0" y="551" width="600" height="49"/>
                                 <animations/>
@@ -33,17 +25,25 @@
                                 <items/>
                             </tabBar>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="95A-jv-ymw">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="22"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="20"/>
                                 <animations/>
-                                <color key="backgroundColor" red="0.32549019607843138" green="0.53725490196078429" blue="0.82745098039215681" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.96862745098039216" green="0.96862745098039216" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
+                            <navigationBar contentMode="scaleToFill" misplaced="YES" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mad-xh-qLG">
+                                <rect key="frame" x="0.0" y="18" width="600" height="44"/>
+                                <animations/>
+                                <color key="barTintColor" red="0.96862745098039216" green="0.96862745098039216" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
+                                <items>
+                                    <navigationItem id="CoW-Q8-wvx"/>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="y5b-xc-AG7" secondAttribute="bottom" id="Md1-LU-xoi"/>
                             <constraint firstItem="mad-xh-qLG" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="TOs-27-IzQ"/>
-                            <constraint firstItem="mad-xh-qLG" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" constant="2" id="ez3-Xw-xaf"/>
+                            <constraint firstItem="mad-xh-qLG" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="ez3-Xw-xaf"/>
                             <constraint firstAttribute="trailingMargin" secondItem="y5b-xc-AG7" secondAttribute="trailing" constant="-20" id="j7Q-eB-kcs"/>
                             <constraint firstItem="y5b-xc-AG7" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-20" id="jtK-po-9d0"/>
                             <constraint firstAttribute="trailingMargin" secondItem="mad-xh-qLG" secondAttribute="trailing" constant="-20" id="ujP-Xt-yZu"/>
