@@ -74,8 +74,8 @@ object UserProcessor {
       10026 → classOf[UserCommands.UpdateAvatar],
       10027 → classOf[UserCommands.UpdateAvatarAck],
       10028 → classOf[UserCommands.AddContacts],
-      10029 → classOf[UserCommands.UpdateIsAdmin],
-      10029 → classOf[UserCommands.UpdateIsAdminAck],
+      10031 → classOf[UserCommands.UpdateIsAdmin],
+      10032 → classOf[UserCommands.UpdateIsAdminAck],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -102,7 +102,7 @@ object UserProcessor {
       12011 → classOf[UserEvents.NicknameChanged],
       12012 → classOf[UserEvents.AboutChanged],
       12013 → classOf[UserEvents.AvatarUpdated],
-      12014 → classOf[UserEvents.IsAdminUpdated],
+      12016 → classOf[UserEvents.IsAdminUpdated],
 
       13000 → classOf[User]
     )
