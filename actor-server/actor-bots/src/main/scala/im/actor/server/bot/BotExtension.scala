@@ -10,12 +10,14 @@ import im.actor.server.office.EntityNotFound
 import im.actor.server.user.UserExtension
 import im.actor.server.persist
 import im.actor.util.misc.IdUtils
-import shardakka.ShardakkaExtension
+import shardakka.keyvalue.SimpleKeyValue
+import shardakka.{ IntCodec, ShardakkaExtension }
 
 import scala.concurrent.Future
 
 object BotExtension extends ExtensionId[BotExtension] {
   private[bot] val tokensKV = "BotsTokens"
+  private[bot] val whTokensKV = "BotsWHTokens"
 
   override def createExtension(system: ExtendedActorSystem): BotExtension = new BotExtensionImpl(system)
 }
@@ -24,6 +26,9 @@ trait BotExtension extends Extension {
   type Token = String
   type UserId = Int
   type AuthId = Long
+
+  val tokensKV: SimpleKeyValue[Int]
+  val whTokensKV: SimpleKeyValue[Int]
 
   /**
    * Creates a bot user
@@ -62,6 +67,14 @@ trait BotExtension extends Extension {
   def getUserId(token: String): Future[Option[UserId]]
 
   /**
+   * Gets userId associated with web hook token
+   *
+   * @param token
+   * @return
+   */
+  def getUserIdByHookToken(token: String): Future[Option[UserId]]
+
+  /**
    * Gets or creates bot auth id
    * @param token
    * @return auth id
@@ -83,7 +96,8 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
   private lazy val userExt = UserExtension(system)
-  private lazy val tokensKV = ShardakkaExtension(system).simpleKeyValue(BotExtension.tokensKV)
+  lazy val tokensKV = ShardakkaExtension(system).simpleKeyValue(BotExtension.tokensKV, IntCodec)
+  lazy val whTokensKV = ShardakkaExtension(system).simpleKeyValue(BotExtension.whTokensKV, IntCodec)
   private lazy val db = DbExtension(system).db
 
   override def create(nickname: String, name: String, isAdmin: Boolean): Future[Token] =
@@ -105,7 +119,7 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
         sex = ApiSex.Unknown,
         isBot = true
       )
-      _ ← tokensKV.upsert(token, s"$userId")
+      _ ← tokensKV.upsert(token, userId)
     } yield token
   }
 
@@ -115,11 +129,11 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
     }
   }
 
-  override def getUserId(token: String): Future[Option[UserId]] = {
-    for {
-      tokOpt ← tokensKV.get(token)
-    } yield tokOpt map (_.toInt)
-  }
+  override def getUserId(token: String): Future[Option[UserId]] =
+    tokensKV.get(token)
+
+  override def getUserIdByHookToken(token: String): Future[Option[UserId]] =
+    whTokensKV.get(token)
 
   override def getAuthId(token: String): Future[Option[AuthId]] = {
     getUserId(token) flatMap {

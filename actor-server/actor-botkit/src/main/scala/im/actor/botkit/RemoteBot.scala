@@ -25,7 +25,7 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
 
   import BotMessages._
 
-  override protected implicit val timeout = Timeout(30.seconds)
+  override protected implicit val timeout: Timeout = Timeout(30.seconds)
   private implicit val mat = ActorMaterializer()
 
   private var rqSource = initFlow()
