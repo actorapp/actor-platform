@@ -39,7 +39,7 @@ trait BotExtension extends Extension {
    * @param isAdmin
    * @return token future
    */
-  def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[Token]
+  def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[(Token, UserId)]
 
   /**
    * Creates a bot user
@@ -49,7 +49,7 @@ trait BotExtension extends Extension {
    * @param isAdmin
    * @return
    */
-  def create(nickname: String, name: String, isAdmin: Boolean): Future[Token]
+  def create(nickname: String, name: String, isAdmin: Boolean): Future[(Token, UserId)]
 
   /**
    * Check if the bot user already exists
@@ -100,13 +100,13 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
   lazy val whTokensKV = ShardakkaExtension(system).simpleKeyValue(BotExtension.whTokensKV, IntCodec)
   private lazy val db = DbExtension(system).db
 
-  override def create(nickname: String, name: String, isAdmin: Boolean): Future[Token] =
+  override def create(nickname: String, name: String, isAdmin: Boolean): Future[(Token, UserId)] =
     for {
       id ← userExt.nextId()
-      token ← create(id, nickname, name, isAdmin)
-    } yield token
+      result ← create(id, nickname, name, isAdmin)
+    } yield result
 
-  override def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[Token] = {
+  override def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[(Token, UserId)] = {
     val token = ACLUtils.randomHash()
 
     for {
@@ -121,7 +121,7 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
         isAdmin = isAdmin
       )
       _ ← tokensKV.upsert(token, userId)
-    } yield token
+    } yield (token, userId)
   }
 
   override def exists(userId: UserId): Future[Boolean] = {

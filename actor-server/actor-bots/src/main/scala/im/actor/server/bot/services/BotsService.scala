@@ -16,8 +16,8 @@ final class BotsService(system: ActorSystem) extends BotServiceBase(system) {
     (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          token ← botExt.create(username, name, isAdmin = false)
-        } yield Right(Container(token))) recover {
+          (token, userId) ← botExt.create(username, name, isAdmin = false)
+        } yield Right(BotCreated(token, userId))) recover {
           case UserExceptions.NicknameTaken ⇒
             Left(BotError(400, "USERNAME_TAKEN", Js.Obj(), None))
         }
