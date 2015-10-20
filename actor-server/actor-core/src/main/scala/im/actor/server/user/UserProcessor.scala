@@ -73,6 +73,7 @@ object UserProcessor {
       10025 → classOf[UserCommands.ChangeAbout],
       10026 → classOf[UserCommands.UpdateAvatar],
       10027 → classOf[UserCommands.UpdateAvatarAck],
+      10028 → classOf[UserCommands.AddContacts],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -162,18 +163,19 @@ private[user] final class UserProcessor
   }
 
   override protected def handleCommand(state: User): Receive = {
-    case NewAuth(_, authId)                        ⇒ addAuth(state, authId)
-    case RemoveAuth(_, authId)                     ⇒ removeAuth(state, authId)
-    case ChangeCountryCode(_, countryCode)         ⇒ changeCountryCode(state, countryCode)
-    case ChangeName(_, name, clientAuthId)         ⇒ changeName(state, name, clientAuthId)
-    case Delete(_)                                 ⇒ delete(state)
-    case AddPhone(_, phone)                        ⇒ addPhone(state, phone)
-    case AddEmail(_, email)                        ⇒ addEmail(state, email)
-    case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
-    case ChangeAbout(_, clientAuthId, about)       ⇒ changeAbout(state, clientAuthId, about)
-    case UpdateAvatar(_, clientAuthId, avatarOpt)  ⇒ updateAvatar(state, clientAuthId, avatarOpt)
-    case StopOffice                                ⇒ context stop self
-    case ReceiveTimeout                            ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case NewAuth(_, authId)                          ⇒ addAuth(state, authId)
+    case RemoveAuth(_, authId)                       ⇒ removeAuth(state, authId)
+    case ChangeCountryCode(_, countryCode)           ⇒ changeCountryCode(state, countryCode)
+    case ChangeName(_, name, clientAuthId)           ⇒ changeName(state, name, clientAuthId)
+    case Delete(_)                                   ⇒ delete(state)
+    case AddPhone(_, phone)                          ⇒ addPhone(state, phone)
+    case AddEmail(_, email)                          ⇒ addEmail(state, email)
+    case ChangeNickname(_, clientAuthId, nickname)   ⇒ changeNickname(state, clientAuthId, nickname)
+    case ChangeAbout(_, clientAuthId, about)         ⇒ changeAbout(state, clientAuthId, about)
+    case UpdateAvatar(_, clientAuthId, avatarOpt)    ⇒ updateAvatar(state, clientAuthId, avatarOpt)
+    case AddContacts(_, clientAuthId, contactsToAdd) ⇒ addContacts(state, clientAuthId, contactsToAdd)
+    case StopOffice                                  ⇒ context stop self
+    case ReceiveTimeout                              ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
   override protected def handleQuery(state: User): Receive = {
