@@ -317,6 +317,7 @@ public class ActorSDK {
             
             // Handle custom scheme invite url
             if (u.scheme.lowercaseString == inviteUrlScheme?.lowercaseString) {
+                
                 if (u.host == "invite") {
                     let token = u.query?.componentsSeparatedByString("=")[1]
                     if token != nil {
@@ -324,6 +325,14 @@ public class ActorSDK {
                         return
                     }
                 }
+                
+                if let bindedController = bindedToWindow?.rootViewController {
+                    let alert = UIAlertController(title: nil, message: AALocalized("ErrorUnableToJoin"), preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: AALocalized("AlertOk"), style: .Cancel, handler: nil))
+                    bindedController.presentViewController(alert, animated: true, completion: nil)
+                }
+                
+                return
             }
             
             UIApplication.sharedApplication().openURL(u)
@@ -332,20 +341,23 @@ public class ActorSDK {
     
     /// Handling joining group by token
     func joinGroup(token: String) {
-        let alert = UIAlertController(title: nil, message: AALocalized("GroupJoinMessage"), preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: AALocalized("AlertNo"), style: .Cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: AALocalized("GroupJoinAction"), style: .Default){ (action) -> Void in
-            AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), type: .Safe, ignore: [], successBlock: { (val) -> Void in
-                let groupId = val as! JavaLangInteger
-                if let controller = self.bindedToWindow.rootViewController {
-                    let tabBarController = controller as! UITabBarController
+        if let bindedController = bindedToWindow?.rootViewController {
+            let alert = UIAlertController(title: nil, message: AALocalized("GroupJoinMessage"), preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: AALocalized("AlertNo"), style: .Cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: AALocalized("GroupJoinAction"), style: .Default){ (action) -> Void in
+                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), type: .Safe, ignore: [], successBlock: { (val) -> Void in
+                    
+                    // TODO: Fix for iPad
+                    let groupId = val as! JavaLangInteger
+                    let tabBarController = bindedController as! UITabBarController
                     let index = tabBarController.selectedIndex
                     let navController = tabBarController.viewControllers![index] as! UINavigationController
                     navController.pushViewController(ConversationViewController(peer: ACPeer.groupWithInt(groupId.intValue)), animated: true)
-                }
-            }, failureBlock: nil)
-        })
-        bindedToWindow.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+                    
+                }, failureBlock: nil)
+            })
+            bindedController.presentViewController(alert, animated: true, completion: nil)
+        }
     }
     
     //
