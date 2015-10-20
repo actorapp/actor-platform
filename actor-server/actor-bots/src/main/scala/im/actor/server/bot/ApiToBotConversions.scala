@@ -1,6 +1,6 @@
 package im.actor.server.bot
 
-import im.actor.api.rpc.files.ApiFastThumb
+import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar, ApiFastThumb }
 import im.actor.api.rpc.messaging._
 import scodec.bits.BitVector
 
@@ -42,4 +42,15 @@ trait ApiToBotConversions {
       case _: ApiUnsupportedMessage   ⇒ UnsupportedMessage
     }
 
+  implicit def toFileLocation(fl: ApiFileLocation): FileLocation =
+    FileLocation(fl.fileId, fl.accessHash)
+
+  implicit def toAvatarImage(ai: ApiAvatarImage): AvatarImage =
+    AvatarImage(ai.fileLocation, ai.width, ai.height, ai.fileSize)
+
+  implicit def toAvatarImage(ai: Option[ApiAvatarImage]): Option[AvatarImage] =
+    ai map toAvatarImage
+
+  implicit def toAvatar(avatar: ApiAvatar): Avatar =
+    Avatar(avatar.smallImage, avatar.largeImage, avatar.fullImage)
 }

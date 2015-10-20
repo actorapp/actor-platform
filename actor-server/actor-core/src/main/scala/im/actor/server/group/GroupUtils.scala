@@ -7,7 +7,7 @@ import im.actor.api.rpc.pubgroups.ApiPublicGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.file.ImageUtils
 import im.actor.server.user.UserUtils
-import im.actor.server.{ models, persist }
+import im.actor.server.{ ApiConversions, models, persist }
 import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
@@ -15,6 +15,7 @@ import scala.concurrent.{ Future, ExecutionContext }
 
 object GroupUtils {
 
+  import ApiConversions._
   import ImageUtils._
 
   def getPubgroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {

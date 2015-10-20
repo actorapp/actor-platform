@@ -3,6 +3,7 @@ package im.actor.concurrent
 import cats.data.{ Xor, XorT }
 
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.language.implicitConversions
 
 trait FutureResultCats[ErrorCase] {
   type Result[A] = XorT[Future, ErrorCase, A]
@@ -19,6 +20,10 @@ trait FutureResultCats[ErrorCase] {
     def toXor[A](failure: A): A Xor Unit = if (self) Xor.right(()) else Xor.left(failure)
   }
 
+  implicit def toEither[E, A](xor: E Xor A): Either[E, A] = xor.toEither
+
+  implicit def toEither[E, A](fxor: Future[E Xor A])(implicit ec: ExecutionContext): Future[Either[E, A]] = fxor map (_.toEither)
+
   def point[A](a: A): Result[A] = XorT[Future, ErrorCase, A](Future.successful(Xor.right(a)))
 
   def fromFuture[A](fa: Future[A])(implicit ec: ExecutionContext): Result[A] = XorT[Future, ErrorCase, A](fa map Xor.right)
@@ -32,8 +37,11 @@ trait FutureResultCats[ErrorCase] {
   def fromFutureOption[A](failure: ErrorCase)(foa: Future[Option[A]])(implicit ec: ExecutionContext): Result[A] =
     XorT[Future, ErrorCase, A](foa map (Xor.fromOption(_, failure)))
 
-  def fromFutureBoolean(failure: ErrorCase)(foa: Future[Boolean])(implicit ec: ExecutionContext): Result[Unit] =
-    XorT[Future, ErrorCase, Unit](foa map (_.toXor(failure)))
+  def fromFutureEither[A](errorHandle: Throwable ⇒ ErrorCase)(fea: Future[Either[Throwable, A]])(implicit ec: ExecutionContext): Result[A] =
+    XorT[Future, ErrorCase, A](fea map (either ⇒ Xor.fromEither(either.left.map(errorHandle))))
+
+  def fromFutureBoolean(failure: ErrorCase)(fa: Future[Boolean])(implicit ec: ExecutionContext): Result[Unit] =
+    XorT[Future, ErrorCase, Unit](fa map (_.toXor(failure)))
 
   def fromBoolean(failure: ErrorCase)(oa: Boolean): Result[Unit] = XorT[Future, ErrorCase, Unit](Future.successful(oa.toXor(failure)))
 }
