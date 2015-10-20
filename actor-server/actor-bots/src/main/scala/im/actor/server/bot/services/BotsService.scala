@@ -8,7 +8,6 @@ import upickle.Js
 
 final class BotsService(system: ActorSystem) extends BotServiceBase {
   import BotMessages._
-  import BotServiceBase._
   import system.dispatcher
 
   val botExt = BotExtension(system)

@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar }
 import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
-import im.actor.api.rpc.messaging.{ UpdateMessage, ApiTextMessage }
+import im.actor.api.rpc.messaging.{ ApiJsonMessage, UpdateMessage, ApiTextMessage }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.bots.BotMessages._
 import im.actor.server.acl.ACLUtils
@@ -24,22 +24,26 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
   def apply(seq: Int, upd: Update): Future[Option[BotFatSeqUpdate]] = {
     val updateOptFuture = upd match {
       case update: UpdateMessage ⇒
-        update.message match {
-          case ApiTextMessage(message, _, _) ⇒
+        (update.message match {
+          case ApiTextMessage(text, _, _) ⇒ Some(TextMessage(text))
+          case ApiJsonMessage(rawJson)    ⇒ Some(JsonMessage(rawJson))
+          case _                          ⇒ None
+        }) match {
+          case Some(message) ⇒
             if (update.senderUserId != botUserId) {
               for {
                 apiOutPeer ← ACLUtils.getOutPeer(update.peer, botAuthId)
                 senderAccessHash ← userExt.getAccessHash(update.senderUserId, botAuthId)
-              } yield Some(TextMessage(
+              } yield Some(Message(
                 peer = OutPeer(apiOutPeer.`type`.id, apiOutPeer.id, apiOutPeer.accessHash),
                 sender = UserOutPeer(update.senderUserId, senderAccessHash),
                 date = update.date,
                 randomId = update.randomId,
-                text = message
+                message = message
               ))
             } else
               Future.successful(None)
-          case _ ⇒ Future.successful(None)
+          case None ⇒ Future.successful(None)
         }
       case _ ⇒ Future.successful(None)
     }
