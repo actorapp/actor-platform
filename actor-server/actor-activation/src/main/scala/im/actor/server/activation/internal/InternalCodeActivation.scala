@@ -9,7 +9,7 @@ import akka.stream.Materializer
 import akka.util.Timeout
 import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
 import im.actor.server.activation._
-import im.actor.server.email.{ EmailSender, Message }
+import im.actor.server.email.{ Content, EmailSender, Message }
 import im.actor.server.models.AuthCode
 import im.actor.server.persist
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
@@ -122,7 +122,7 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
         case SmsCode(phone, c)            ⇒ smsEngine.sendCode(phone, c)
         case CallCode(phone, c, language) ⇒ callEngine.sendCode(phone, c, language)
         case EmailCode(email, c) ⇒
-          emailSender.send(Message(email, "Actor activation code", emailTemplate.replace("$$CODE$$", c)))
+          emailSender.send(Message(email, s"Actor activation code: $c", Content(Some(emailTemplate.replace("$$CODE$$", c)), Some(s"Your actor activation code: $c"))))
       }) map { _ ⇒
         forgetSentCodeAfterDelay(code)
         \/-(())
