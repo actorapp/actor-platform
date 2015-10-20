@@ -26,7 +26,7 @@ import im.actor.sdk.util.KeyboardHelper;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
-public class SignPhoneFragment extends BaseAuthFragment {
+public class SignPhoneFragment extends BaseCustomAuthFragment {
 
     private static final int REQUEST_COUNTRY = 0;
 
@@ -290,5 +290,15 @@ public class SignPhoneFragment extends BaseAuthFragment {
                     data.getStringExtra("country_shortname"),
                     data.getIntExtra("country_id", 0)));
         }
+    }
+
+    @Override
+    public String getAuthId() {
+        return super.getAuthId();
+    }
+
+    @Override
+    public void setAuthId(String authId) {
+        super.setAuthId(authId);
     }
 }

@@ -14,6 +14,7 @@ import im.actor.core.network.RpcInternalException;
 import im.actor.core.network.RpcTimeoutException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
@@ -26,6 +27,7 @@ public class AuthActivity extends BaseFragmentActivity {
     public static final String SIGN_TYPE_KEY = "sign_type";
     public static final int AUTH_TYPE_PHONE = 1;
     public static final int AUTH_TYPE_EMAIL = 2;
+    public static final int AUTH_TYPE_CUSTOM = 3;
     public static final int SIGN_TYPE_IN = 3;
     public static final int SIGN_TYPE_UP = 4;
     private static final int OAUTH_DIALOG = 1;
@@ -34,6 +36,7 @@ public class AuthActivity extends BaseFragmentActivity {
     private AuthState state;
     private int authType = AUTH_TYPE_PHONE;
     private int signType;
+    private BaseAuthFragment signFragment;
 
 
     @Override
@@ -76,13 +79,18 @@ public class AuthActivity extends BaseFragmentActivity {
         this.state = state;
 
         switch (state) {
-//            case AUTH_START:
-//                Fragment chooseAuthFr = new ChooseAuthTypeFragment();
-//                Bundle b = new Bundle();
-//                b.putInt(SIGN_TYPE_KEY, signType);
-//                chooseAuthFr.setArguments(b);
-//                showFragment(chooseAuthFr, false, false);
-//                break;
+            case AUTH_START:
+                signFragment = ActorSDK.sharedActor().getDelegate().getSignFragment();
+                showFragment(signFragment, false, false);
+                if (signFragment instanceof SignEmailFragment) {
+                    authType = AUTH_TYPE_EMAIL;
+                } else if (signFragment instanceof SignPhoneFragment) {
+                    authType = AUTH_TYPE_PHONE;
+                } else {
+                    authType = AUTH_TYPE_CUSTOM;
+                }
+
+                break;
             case AUTH_EMAIL:
                 showFragment(new SignEmailFragment(), false, false);
                 authType = AUTH_TYPE_EMAIL;
@@ -91,6 +99,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 showFragment(new SignPhoneFragment(), false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;
+            case CODE_VALIDATION_CUSTOM:
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
                 if ((state == AuthState.CODE_VALIDATION_EMAIL && authType == AUTH_TYPE_PHONE) || (state == AuthState.CODE_VALIDATION_PHONE && authType == AUTH_TYPE_EMAIL)) {
@@ -100,6 +109,10 @@ public class AuthActivity extends BaseFragmentActivity {
                 Fragment signInFragment = new SignInFragment();
                 Bundle args = new Bundle();
                 args.putString("authType", state == AuthState.CODE_VALIDATION_EMAIL ? SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
+                if (state == AuthState.CODE_VALIDATION_CUSTOM) {
+                    BaseCustomAuthFragment customSignFragment = (BaseCustomAuthFragment) signFragment;
+                    args.putString("authId", customSignFragment.getAuthId());
+                }
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);
                 break;
