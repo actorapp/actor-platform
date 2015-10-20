@@ -129,8 +129,8 @@ trait AuthHelpers extends Helpers {
    */
   protected def refreshAuthSession(deviceHash: Array[Byte], newSession: models.AuthSession): DBIO[Unit] =
     for {
-      prevSessions ← persist.AuthSessionRepo.findByDeviceHash(deviceHash)
-      _ ← DBIO.from(Future.sequence(prevSessions map userExt.logout))
+      // prevSessions ← persist.AuthSessionRepo.findByDeviceHash(deviceHash)
+      //_ ← DBIO.from(Future.sequence(prevSessions map userExt.logout))
       _ ← persist.AuthSessionRepo.create(newSession)
     } yield ()
 
