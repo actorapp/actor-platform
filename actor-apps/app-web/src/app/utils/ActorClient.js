@@ -27,6 +27,14 @@ export default {
     window.messenger.unbindDialogs(callback);
   },
 
+  bindGroupDialogs(callback) {
+    window.messenger.bindGroupDialogs(callback);
+  },
+
+  unbindGroupDialogs(callback) {
+    window.messenger.unbindGroupDialogs(callback);
+  },
+
   bindChat(peer, callback) {
     window.messenger.bindChat(peer, callback);
   },
