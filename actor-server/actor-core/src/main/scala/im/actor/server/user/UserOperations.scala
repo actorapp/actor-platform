@@ -81,6 +81,15 @@ private[user] sealed trait Commands extends AuthCommands {
   def updateAvatar(userId: Int, clientAuthId: Long, avatarOpt: Option[Avatar]): Future[UpdateAvatarAck] =
     (processorRegion.ref ? UpdateAvatar(userId, clientAuthId, avatarOpt)).mapTo[UpdateAvatarAck]
 
+  def addContact(userId: Int, clientAuthId: Long, contactUserId: Int, localName: Option[String], phone: Option[Long], email: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? AddContacts(userId, clientAuthId, Seq(ContactToAdd(contactUserId, localName, phone, email)))).mapTo[SeqState]
+
+  def addContacts(userId: Int, clientAuthId: Long, contactsToAdd: Seq[ContactToAdd]): Future[SeqState] =
+    if (contactsToAdd.nonEmpty)
+      (processorRegion.ref ? AddContacts(userId, clientAuthId, contactsToAdd)).mapTo[SeqState]
+    else
+      SeqUpdatesManager.getSeqState(clientAuthId)
+
   def broadcastUserUpdate(
     userId:     Int,
     update:     Update,

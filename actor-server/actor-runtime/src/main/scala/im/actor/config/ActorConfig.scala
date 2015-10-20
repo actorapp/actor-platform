@@ -2,6 +2,8 @@ package im.actor.config
 
 import java.io.File
 
+import akka.actor.ActorSystem
+
 import scala.collection.JavaConversions._
 import scala.concurrent.duration._
 import java.util.concurrent.TimeUnit
@@ -57,4 +59,6 @@ object ActorConfig {
   }
 
   val defaultTimeout: FiniteDuration = ActorConfig.load().getDuration("common.default-timeout", TimeUnit.MILLISECONDS).millis
+
+  def systemName(implicit system: ActorSystem) = system.settings.config.getString("name")
 }

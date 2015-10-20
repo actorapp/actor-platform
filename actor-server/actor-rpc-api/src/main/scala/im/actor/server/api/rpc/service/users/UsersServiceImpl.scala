@@ -49,8 +49,7 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
                   case None ⇒
                     for {
                       userPhone ← persist.UserPhoneRepo.findByUserId(user.id).head
-                      _ ← addContact(client.userId, userId, userPhone.number, Some(validName), user.accessSalt)
-                      _ ← DBIO.from(userExt.broadcastClientUpdate(UpdateContactsAdded(Vector(userId)), None, isFat = true))
+                      _ ← DBIO.from(userExt.addContact(client.userId, client.authId, userId, Some(validName), Some(userPhone.number), None))
                     } yield ()
                 }
 

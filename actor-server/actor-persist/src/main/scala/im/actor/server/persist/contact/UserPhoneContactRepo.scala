@@ -7,7 +7,7 @@ final class UserPhoneContactTable(tag: Tag) extends UserContactBase[models.conta
   def phoneNumber = column[Long]("phone_number")
   val inherited = UserContactRepo.contacts.baseTableRow
 
-  def * = (phoneNumber, ownerUserId, contactUserId, name, accessSalt, isDeleted) <> (models.contact.UserPhoneContact.tupled, models.contact.UserPhoneContact.unapply)
+  def * = (phoneNumber, ownerUserId, contactUserId, name, isDeleted) <> (models.contact.UserPhoneContact.tupled, models.contact.UserPhoneContact.unapply)
 }
 
 object UserPhoneContactRepo {
