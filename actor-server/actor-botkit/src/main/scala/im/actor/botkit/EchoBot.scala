@@ -32,7 +32,7 @@ final class EchoBot(token: String, endpoint: String) extends RemoteBot(token, en
         val name = getUser(m.sender.id).name
 
         requestSendMessage(m.sender.asOutPeer, nextRandomId(), TextMessage(s"Hey $name, here is your reply: $text"))
-      case _ ⇒
+      case notAText ⇒ requestSendMessage(m.sender.asOutPeer, nextRandomId(), notAText)
     }
   }
 }

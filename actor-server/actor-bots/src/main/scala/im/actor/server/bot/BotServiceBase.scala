@@ -1,6 +1,8 @@
 package im.actor.server.bot
 
+import akka.actor.ActorSystem
 import im.actor.bots.BotMessages
+import im.actor.server.user.UserExtension
 import upickle.Js
 import upickle.default._
 
@@ -8,7 +10,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 object BotServiceTypes extends BotServiceTypes
 
-trait BotServiceTypes {
+trait BotServiceTypes extends BotToInternalConversions {
   import BotMessages._
 
   type BotUserId = Int
@@ -36,12 +38,22 @@ trait BotServiceTypes {
   case class WeakRequestHandler(handle: (BotUserId, BotAuthId) ⇒ Future[BotResponseBody])
 }
 
-//object BotServiceBase extends Types
-
-trait BotServiceBase extends BotServiceTypes {
+abstract class BotServiceBase(system: ActorSystem) extends BotServiceTypes {
   import BotMessages._
+  import system.dispatcher
 
   type Handlers = PartialFunction[RequestBody, WeakRequestHandler]
 
   def handlers: Handlers
+
+  val userExt = UserExtension(system)
+
+  protected def ifIsAdmin[R <: ResponseBody](userId: BotUserId)(f: Future[RequestResult[R]]): Future[RequestResult[R]] = {
+    userExt.isAdmin(userId) flatMap { isAdmin ⇒
+      if (isAdmin)
+        f
+      else
+        Future.successful(Left(BotError(403, "FORBIDDEN")))
+    }
+  }
 }

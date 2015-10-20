@@ -17,6 +17,7 @@ object BotMessages {
     val Messaging = "messaging"
     val Bots = "bots"
     val WebHooks = "webhooks"
+    val Users = "users"
   }
 
   final case class FileLocation(
@@ -32,9 +33,9 @@ object BotMessages {
   )
 
   final case class Avatar(
-    smallImage: Option[AvatarImage],
-    largeImage: Option[AvatarImage],
-    fullImage:  Option[AvatarImage]
+    small: Option[AvatarImage],
+    large: Option[AvatarImage],
+    full:  Option[AvatarImage]
   )
 
   final case class User(
@@ -281,6 +282,14 @@ object BotMessages {
   @key("GetHooks")
   final case object GetHooks extends GetHooks
 
+  @key("UpdateAvatar")
+  final case class UpdateAvatar(userId: Int, avatar: Avatar) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
   final case class MessageSent(date: Long) extends ResponseBody
 
   @key("Message")
@@ -294,9 +303,55 @@ object BotMessages {
 
   sealed trait MessageBody
 
-  @key("TextMessage")
+  @key("Text")
   final case class TextMessage(text: String) extends MessageBody
 
-  @key("JsonMessage")
+  @key("Json")
   final case class JsonMessage(rawJson: String) extends MessageBody
+
+  @key("Document")
+  final case class DocumentMessage(
+    fileId:     Long,
+    accessHash: Long,
+    fileSize:   Long,
+    name:       String,
+    mimeType:   String,
+    thumb:      Option[FastThumb],
+    ext:        Option[DocumentEx]
+  ) extends MessageBody
+
+  @key("Service")
+  final case class ServiceMessage(text: String) extends MessageBody
+
+  @key("Unsupported")
+  sealed trait UnsupportedMessage extends MessageBody
+
+  @key("Unsupported")
+  final case object UnsupportedMessage extends UnsupportedMessage
+
+  @key("FastThumb")
+  final case class FastThumb(
+    width:  Int,
+    height: Int,
+    thumb:  String
+  )
+
+  sealed trait DocumentEx
+
+  @key("Photo")
+  final case class DocumentExPhoto(
+    width:  Int,
+    height: Int
+  ) extends DocumentEx
+
+  @key("Video")
+  final case class DocumentExVideo(
+    width:    Int,
+    height:   Int,
+    duration: Int
+  ) extends DocumentEx
+
+  @key("Voice")
+  final case class DocumentExVoice(duration: Int) extends DocumentEx
+
 }
