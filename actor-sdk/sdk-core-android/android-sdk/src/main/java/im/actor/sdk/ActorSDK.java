@@ -20,7 +20,6 @@ import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
-import im.actor.sdk.controllers.fragment.tour.TourActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.services.KeepAliveService;
@@ -31,43 +30,29 @@ import im.actor.runtime.android.AndroidContext;
 public class ActorSDK {
 
 
-    /**
-     * Shared ActorSDK. Use this method to get instance of SDK for configuration and starting up
-     *
-     * @return ActorSDK instance.
-     */
-    public static ActorSDK sharedActor() {
-        // Use function if we will replace implementation for some cases
-        return sdk;
-    }
-
     private static volatile ActorSDK sdk = new ActorSDK();
-
-
-    //
-    // SDK Objects
-    //
-
     /**
      * Application Context
      */
     private Application application;
 
+
+    //
+    // SDK Objects
+    //
     /**
      * Actor Messenger instance
      */
     private AndroidMessenger messenger;
-
-
-    //
-    // SDK Config
-    //
-
     /**
      * Server Endpoints
      */
     private List<String> endpoints = new ArrayList<String>();
 
+
+    //
+    // SDK Config
+    //
     /**
      * API App Id
      */
@@ -76,16 +61,24 @@ public class ActorSDK {
      * API App Key
      */
     private String apiAppKey = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
-
     /**
      * Is Keeping app alive enabled
      */
     private boolean isKeepAliveEnabled = false;
 
-
     private ActorSDK() {
         endpoints.add("tls://front1-mtproto-api-rev2.actor.im");
         endpoints.add("tls://front2-mtproto-api-rev2.actor.im");
+    }
+
+    /**
+     * Shared ActorSDK. Use this method to get instance of SDK for configuration and starting up
+     *
+     * @return ActorSDK instance.
+     */
+    public static ActorSDK sharedActor() {
+        // Use function if we will replace implementation for some cases
+        return sdk;
     }
 
     //

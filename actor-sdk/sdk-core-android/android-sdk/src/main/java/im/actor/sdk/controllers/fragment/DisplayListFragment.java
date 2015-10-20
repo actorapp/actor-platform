@@ -2,6 +2,7 @@ package im.actor.sdk.controllers.fragment;
 
 import android.app.Activity;
 import android.support.v7.widget.ChatLinearLayoutManager;
+import android.support.v7.widget.CustomItemAnimator;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,7 +57,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     public void setAnimationsEnabled(boolean isEnabled) {
         if (isEnabled) {
-            DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
+            CustomItemAnimator itemAnimator = new CustomItemAnimator();
             itemAnimator.setSupportsChangeAnimations(false);
             itemAnimator.setMoveDuration(200);
             itemAnimator.setAddDuration(150);
