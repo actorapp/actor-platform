@@ -79,7 +79,7 @@ object ActorCli extends App {
 final class CliHandlers extends BotHandlers {
   protected val BotService = "bots"
 
-  protected val config = ConfigFactory.parseString("akka.log-config-on-start=yes").withFallback(ConfigFactory.parseResources("cli.conf")).resolve()
+  protected val config = ConfigFactory.parseResources("cli.conf").resolve()
 
   protected lazy val system = ActorSystem("actor-cli", config)
 
