@@ -13,8 +13,9 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 private case class Config(
-  command:   String    = "help",
-  createBot: CreateBot = CreateBot()
+  command:       String        = "help",
+  createBot:     CreateBot     = CreateBot(),
+  updateIsAdmin: UpdateIsAdmin = UpdateIsAdmin()
 )
 
 private[cli] trait Request {
@@ -31,9 +32,18 @@ private[cli] case class CreateBot(
 
 private[cli] case class CreateBotResponse(token: String)
 
+private[cli] case class UpdateIsAdmin(
+  userId:  Int     = 0,
+  isAdmin: Boolean = false
+) extends Request {
+  override type Response = Unit
+}
+
 private object Commands {
   val Help = "help"
   val CreateBot = "create-bot"
+  val AdminGrant = "admin-grant"
+  val AdminRevoke = "admin-revoke"
 }
 
 object ActorCli extends App {
@@ -54,6 +64,20 @@ object ActorCli extends App {
         c.copy(createBot = c.createBot.copy(isAdmin = true))
       }
     )
+    cmd(Commands.AdminGrant) action { (_, c) ⇒
+      c.copy(command = Commands.AdminGrant)
+    } children (
+      opt[Int]("userId") abbr "u" required () action { (x, c) ⇒
+        c.copy(updateIsAdmin = UpdateIsAdmin(x, isAdmin = true))
+      }
+    )
+    cmd(Commands.AdminRevoke) action { (_, c) ⇒
+      c.copy(command = Commands.AdminRevoke)
+    } children (
+      opt[Int]("userId") abbr "u" required () action { (x, c) ⇒
+        c.copy(updateIsAdmin = UpdateIsAdmin(x, isAdmin = false))
+      }
+    )
   }
 
   parser.parse(args, Config()) foreach { config ⇒
@@ -64,6 +88,8 @@ object ActorCli extends App {
         Future.successful(parser.showUsage)
       case Commands.CreateBot ⇒
         handlers.createBot(config.createBot)
+      case Commands.AdminGrant | Commands.AdminRevoke ⇒
+        handlers.updateIsAdmin(config.updateIsAdmin)
     })
 
     def cmd(f: Future[Unit]): Unit = {
@@ -76,8 +102,9 @@ object ActorCli extends App {
   }
 }
 
-final class CliHandlers extends BotHandlers {
+final class CliHandlers extends BotHandlers with UsersHandlers {
   protected val BotService = "bots"
+  protected val UsersService = "users"
 
   protected val config = ConfigFactory.parseResources("cli.conf").resolve()
 

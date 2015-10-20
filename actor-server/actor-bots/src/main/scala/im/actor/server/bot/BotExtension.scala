@@ -117,7 +117,8 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
         name = name,
         countryCode = "US",
         sex = ApiSex.Unknown,
-        isBot = true
+        isBot = true,
+        isAdmin = isAdmin
       )
       _ ← tokensKV.upsert(token, userId)
     } yield token
