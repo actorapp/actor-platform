@@ -9,6 +9,7 @@ object ActorCliService {
 
 final private class ActorCliService extends Actor with ActorLogging {
   protected val bots = context.actorOf(BotsCliService.props, "bots")
+  protected val users = context.actorOf(UsersCliService.props, "users")
 
   def receive = Actor.emptyBehavior
 }

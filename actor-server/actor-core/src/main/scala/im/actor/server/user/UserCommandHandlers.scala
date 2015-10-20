@@ -49,7 +49,17 @@ private[user] trait UserCommandHandlers {
 
   import ImageUtils._
 
-  protected def create(accessSalt: String, nickname: Option[String], name: String, countryCode: String, sex: ApiSex.ApiSex, isBot: Boolean, extensions: Seq[ApiExtension], external: Option[String]): Unit = {
+  protected def create(
+    accessSalt:  String,
+    nickname:    Option[String],
+    name:        String,
+    countryCode: String,
+    sex:         ApiSex.ApiSex,
+    isBot:       Boolean,
+    isAdmin:     Boolean,
+    extensions:  Seq[ApiExtension],
+    external:    Option[String]
+  ): Unit = {
     log.debug("Creating user {} {}", userId, name)
 
     val replyTo = sender()
@@ -57,7 +67,7 @@ private[user] trait UserCommandHandlers {
     onSuccess(checkNicknameExists(nickname)) { exists ⇒
       if (!exists) {
         val ts = now()
-        val e = UserEvents.Created(userId, accessSalt, nickname, name, countryCode, sex, isBot, extensions, external)
+        val e = UserEvents.Created(userId, accessSalt, nickname, name, countryCode, sex, isBot, extensions, external, isAdmin = Some(isAdmin))
         val createEvent = TSEvent(ts, e)
         val user = UserBuilder(ts, e)
 
@@ -78,6 +88,14 @@ private[user] trait UserCommandHandlers {
       } else {
         replyTo ! Status.Failure(UserExceptions.NicknameTaken)
       }
+    }
+  }
+
+  protected def updateIsAdmin(state: User, isAdmin: Option[Boolean]): Unit = {
+    persist(TSEvent(now(), UserEvents.IsAdminUpdated(isAdmin))) { e ⇒
+      context become working(updatedState(e, state))
+
+      sender() ! UpdateIsAdminAck()
     }
   }
 

@@ -74,6 +74,8 @@ object UserProcessor {
       10026 → classOf[UserCommands.UpdateAvatar],
       10027 → classOf[UserCommands.UpdateAvatarAck],
       10028 → classOf[UserCommands.AddContacts],
+      10029 → classOf[UserCommands.UpdateIsAdmin],
+      10029 → classOf[UserCommands.UpdateIsAdminAck],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -100,6 +102,7 @@ object UserProcessor {
       12011 → classOf[UserEvents.NicknameChanged],
       12012 → classOf[UserEvents.AboutChanged],
       12013 → classOf[UserEvents.AvatarUpdated],
+      12014 → classOf[UserEvents.IsAdminUpdated],
 
       13000 → classOf[User]
     )
@@ -156,13 +159,15 @@ private[user] final class UserProcessor
         state.copy(about = about)
       case TSEvent(_, UserEvents.AvatarUpdated(avatar)) ⇒
         state.copy(avatar = avatar)
+      case TSEvent(_, UserEvents.IsAdminUpdated(isAdmin)) ⇒
+        state.copy(isAdmin = isAdmin)
       case TSEvent(_, _: UserEvents.Created) ⇒ state
     }
   }
 
   override protected def handleInitCommand: Receive = {
-    case Create(_, accessSalt, nickName, name, countryCode, sex, isBot, extensions, external) ⇒
-      create(accessSalt, nickName, name, countryCode, sex, isBot, extensions, external)
+    case Create(_, accessSalt, nickName, name, countryCode, sex, isBot, isAdmin, extensions, external) ⇒
+      create(accessSalt, nickName, name, countryCode, sex, isBot, isAdmin.getOrElse(false), extensions, external)
   }
 
   override protected def handleCommand(state: User): Receive = {
@@ -177,6 +182,7 @@ private[user] final class UserProcessor
     case ChangeAbout(_, clientAuthId, about)         ⇒ changeAbout(state, clientAuthId, about)
     case UpdateAvatar(_, clientAuthId, avatarOpt)    ⇒ updateAvatar(state, clientAuthId, avatarOpt)
     case AddContacts(_, clientAuthId, contactsToAdd) ⇒ addContacts(state, clientAuthId, contactsToAdd)
+    case UpdateIsAdmin(_, isAdmin)                   ⇒ updateIsAdmin(state, isAdmin)
     case StopOffice                                  ⇒ context stop self
     case ReceiveTimeout                              ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
