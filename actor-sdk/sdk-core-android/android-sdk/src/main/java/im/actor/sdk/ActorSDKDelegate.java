@@ -1,5 +1,6 @@
 package im.actor.sdk;
 
+import im.actor.core.AuthState;
 import im.actor.sdk.intents.ActorIntent;
 
 public interface ActorSDKDelegate {
@@ -24,4 +25,6 @@ public interface ActorSDKDelegate {
      * @return Actor Intent
      */
     ActorIntent getStartIntent();
+
+    AuthState getAuthStartState();
 }
