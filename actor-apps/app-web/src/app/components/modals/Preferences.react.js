@@ -123,7 +123,7 @@ class PreferencesModal extends Component {
 
           <div className="modal-new__header">
             <i className="modal-new__header__icon material-icons">settings</i>
-            <h3 className="modal-new__header__title">{this.getIntlMessage('preferencesModalTitle')}/></h3>
+            <h3 className="modal-new__header__title">{this.getIntlMessage('preferencesModalTitle')}</h3>
 
             <div className="pull-right">
               <button className="button button--lightblue" onClick={this.onDone}>{this.getIntlMessage('button.done')}</button>

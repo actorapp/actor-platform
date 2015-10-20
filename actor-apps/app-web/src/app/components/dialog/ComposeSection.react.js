@@ -38,7 +38,6 @@ let getStateFromStores = () => {
   };
 };
 
-
 export default
 @ReactMixin.decorate(IntlMixin)
 @ReactMixin.decorate(PureRenderMixin)
