@@ -463,7 +463,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
                           external = None
                         )
                         for {
-                          _ ← DBIO.from(userExt.create(user.id, user.accessSalt, None, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false, Seq.empty[ApiExtension], None))
+                          _ ← DBIO.from(userExt.create(user.id, user.accessSalt, None, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
                           _ ← DBIO.from(userExt.auth(userId, clientData.authId))
                           _ ← DBIO.from(userExt.addPhone(user.id, normPhoneNumber))
                           _ ← persist.AvatarDataRepo.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))

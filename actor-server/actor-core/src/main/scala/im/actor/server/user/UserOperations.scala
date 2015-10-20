@@ -42,10 +42,14 @@ private[user] sealed trait Commands extends AuthCommands {
     countryCode: String,
     sex:         ApiSex.ApiSex,
     isBot:       Boolean,
+    isAdmin:     Boolean           = false,
     extensions:  Seq[ApiExtension] = Seq.empty,
     external:    Option[String]    = None
   ): Future[CreateAck] =
-    (processorRegion.ref ? Create(userId, accessSalt, nickname, name, countryCode, sex, isBot, extensions, external)).mapTo[CreateAck]
+    (processorRegion.ref ? Create(userId, accessSalt, nickname, name, countryCode, sex, isBot, Some(isAdmin), extensions, external)).mapTo[CreateAck]
+
+  def updateIsAdmin(userId: Int, isAdmin: Boolean): Future[UpdateIsAdminAck] =
+    (processorRegion.ref ? UpdateIsAdmin(userId, Some(isAdmin))).mapTo[UpdateIsAdminAck]
 
   // FIXME: check existence and reserve generated ids
   def nextId(): Future[Int] = Future.successful(IdUtils.nextIntId())
