@@ -35,7 +35,11 @@ private object BotInterfaceImpl {
       val method = TermName(methodName)
       val fields = extractCaseClassFields(decl)
 
-      val rqConst = q"""${decl.companion}(..${fields map (_.name)})"""
+      val rqConst =
+        if (fields.nonEmpty)
+          q"""${decl.companion}(..${fields map (_.name)})"""
+        else
+          q"""${decl.companion}"""
 
       q"""
         def $method(..$fields) = request($rqConst)

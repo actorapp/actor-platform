@@ -16,6 +16,7 @@ object BotMessages {
     val KeyValue = "keyvalue"
     val Messaging = "messaging"
     val Bots = "bots"
+    val WebHooks = "webhooks"
   }
 
   final case class FileLocation(
@@ -151,6 +152,11 @@ object BotMessages {
   @key("Error")
   case class BotError(code: Int, tag: String, data: Js.Obj, retryIn: Option[Int]) extends RuntimeException with BotResponseBody
 
+  object BotError {
+    def apply(code: Int, tag: String): BotError = BotError(code, tag, Js.Obj(), None)
+    def apply(code: Int, tag: String, retryIn: Option[Int]): BotError = BotError(code, tag, Js.Obj(), retryIn)
+  }
+
   @key("Success")
   case class BotSuccess(obj: Js.Obj) extends BotResponseBody
 
@@ -195,10 +201,10 @@ object BotMessages {
   }
 
   @key("SendMessage")
-  final case class SendTextMessage(
+  final case class SendMessage(
     peer:     OutPeer,
     randomId: Long,
-    text:     String
+    message:  MessageBody
   ) extends RequestBody {
     override type Response = MessageSent
     override val service = Services.Messaging
@@ -256,15 +262,41 @@ object BotMessages {
     override def readResponse(obj: Js.Obj) = readJs[Response](obj)
   }
 
+  @key("RegisterHook")
+  final case class RegisterHook(name: String) extends RequestBody {
+    override type Response = Container[String]
+    override val service = Services.WebHooks
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("GetHooks")
+  sealed trait GetHooks extends RequestBody {
+    override type Response = Container[Seq[String]]
+    override val service = Services.WebHooks
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("GetHooks")
+  final case object GetHooks extends GetHooks
+
   final case class MessageSent(date: Long) extends ResponseBody
 
-  @key("TextMessage")
-  final case class TextMessage(
+  @key("Message")
+  final case class Message(
     peer:     OutPeer,
     sender:   UserOutPeer,
     date:     Long,
     randomId: Long,
-    text:     String
+    message:  MessageBody
   ) extends UpdateBody
 
+  sealed trait MessageBody
+
+  @key("TextMessage")
+  final case class TextMessage(text: String) extends MessageBody
+
+  @key("JsonMessage")
+  final case class JsonMessage(rawJson: String) extends MessageBody
 }

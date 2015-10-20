@@ -28,22 +28,26 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
 
   import context._
 
-  override def onTextMessage(tm: TextMessage): Unit = {
-    if (tm.peer.isPrivate && tm.text.startsWith(NewCmd)) {
-      tm.text.drop(NewCmd.length + 1).trim.split(" ").map(_.trim).toList match {
-        case nickname :: name :: Nil ⇒
-          log.warning("Creating new bot")
+  override def onMessage(m: Message): Unit = {
+    m.message match {
+      case TextMessage(text) ⇒
+        if (m.peer.isPrivate && text.startsWith(NewCmd)) {
+          text.drop(NewCmd.length + 1).trim.split(" ").map(_.trim).toList match {
+            case nickname :: name :: Nil ⇒
+              log.warning("Creating new bot")
 
-          requestCreateBot(nickname, name) onComplete {
-            case Success(token) ⇒ requestSendTextMessage(tm.peer, nextRandomId(), s"Yay! Bot created, here is your token: ${token}")
-            case Failure(BotError(_, "USERNAME_TAKEN", _, _)) ⇒
-              requestSendTextMessage(tm.peer, nextRandomId(), "Username already taken")
-            case Failure(e) ⇒
-              log.error(e, "Failed to create bot")
-              requestSendTextMessage(tm.peer, nextRandomId(), "There was a problem on our side. Please, try again a bit later.")
+              requestCreateBot(nickname, name) onComplete {
+                case Success(token) ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage(s"Yay! Bot created, here is your token: ${token}"))
+                case Failure(BotError(_, "USERNAME_TAKEN", _, _)) ⇒
+                  requestSendMessage(m.peer, nextRandomId(), TextMessage("Username already taken"))
+                case Failure(e) ⇒
+                  log.error(e, "Failed to create bot")
+                  requestSendMessage(m.peer, nextRandomId(), TextMessage("There was a problem on our side. Please, try again a bit later."))
+              }
+            case _ ⇒ requestSendMessage(m.peer, nextRandomId(), TextMessage("Command format is: /bot new <nickname> <name>"))
           }
-        case _ ⇒ requestSendTextMessage(tm.peer, nextRandomId(), "Command format is: /bot new <nickname> <name>")
-      }
+        }
+      case _ ⇒
     }
   }
 }
