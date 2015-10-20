@@ -151,7 +151,9 @@ object BotMessages {
   ) extends BotUpdate
 
   @key("Error")
-  case class BotError(code: Int, tag: String, data: Js.Obj, retryIn: Option[Int]) extends RuntimeException with BotResponseBody
+  case class BotError(code: Int, tag: String, data: Js.Obj, retryIn: Option[Int]) extends RuntimeException(
+    s"code: $code, tag: $tag, data: ${write(data)}, retryIn: $retryIn"
+  ) with BotResponseBody
 
   object BotError {
     def apply(code: Int, tag: String): BotError = BotError(code, tag, Js.Obj(), None)
