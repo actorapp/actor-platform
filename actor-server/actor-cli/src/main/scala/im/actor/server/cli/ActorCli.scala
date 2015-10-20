@@ -44,13 +44,13 @@ object ActorCli extends App {
     cmd(Commands.CreateBot) action { (_, c) ⇒
       c.copy(command = Commands.CreateBot)
     } children (
-      opt[String]("username") abbr ("u") required () action { (x, c) ⇒
+      opt[String]("username") abbr "u" required () action { (x, c) ⇒
         c.copy(createBot = c.createBot.copy(username = x))
       },
-      opt[String]("name") abbr ("n") required () action { (x, c) ⇒
+      opt[String]("name") abbr "n" required () action { (x, c) ⇒
         c.copy(createBot = c.createBot.copy(name = x))
       },
-      opt[Unit]("admin") abbr ("a") optional () action { (x, c) ⇒
+      opt[Unit]("admin") abbr "a" optional () action { (x, c) ⇒
         c.copy(createBot = c.createBot.copy(isAdmin = true))
       }
     )
@@ -87,9 +87,7 @@ final class CliHandlers extends BotHandlers {
 
   protected lazy val initialContacts = Set(ActorPath.fromString(s"akka.tcp://actor-server@$remoteHost:2552/system/receptionist"))
 
-  protected lazy val client = system.actorOf(
-    ClusterClient.props(ClusterClientSettings(system).withInitialContacts(initialContacts))
-  )
+  protected lazy val client = system.actorOf(ClusterClient.props(ClusterClientSettings(system).withInitialContacts(initialContacts)))
 
   protected implicit lazy val ec: ExecutionContext = system.dispatcher
 

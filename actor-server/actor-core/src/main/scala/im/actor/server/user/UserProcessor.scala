@@ -85,6 +85,9 @@ object UserProcessor {
       11008 → classOf[UserQueries.GetApiStructResponse],
       11009 → classOf[UserQueries.GetAccessHash],
       11010 → classOf[UserQueries.GetAccessHashResponse],
+      11011 → classOf[UserQueries.GetUser],
+      11012 → classOf[UserQueries.IsAdmin],
+      11013 → classOf[UserQueries.IsAdminResponse],
 
       12001 → classOf[UserEvents.AuthAdded],
       12002 → classOf[UserEvents.AuthRemoved],
@@ -185,6 +188,7 @@ private[user] final class UserProcessor
     case CheckAccessHash(_, senderAuthId, accessHash) ⇒ checkAccessHash(state, senderAuthId, accessHash)
     case GetAccessHash(_, clientAuthId)               ⇒ getAccessHash(state, clientAuthId)
     case GetUser(_)                                   ⇒ getUser(state)
+    case IsAdmin                                      ⇒ isAdmin(state)
   }
 
   protected[this] var userStateMaybe: Option[User] = None
