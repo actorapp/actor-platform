@@ -41,13 +41,13 @@ case class AvatarData(
   entityId:            Long,
   smallAvatarFileId:   Option[Long],
   smallAvatarFileHash: Option[Long],
-  smallAvatarFileSize: Option[Int],
+  smallAvatarFileSize: Option[Long],
   largeAvatarFileId:   Option[Long],
   largeAvatarFileHash: Option[Long],
-  largeAvatarFileSize: Option[Int],
+  largeAvatarFileSize: Option[Long],
   fullAvatarFileId:    Option[Long],
   fullAvatarFileHash:  Option[Long],
-  fullAvatarFileSize:  Option[Int],
+  fullAvatarFileSize:  Option[Long],
   fullAvatarWidth:     Option[Int],
   fullAvatarHeight:    Option[Int]
 ) {

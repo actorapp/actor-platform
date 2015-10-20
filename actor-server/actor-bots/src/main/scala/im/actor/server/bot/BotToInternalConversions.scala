@@ -16,5 +16,5 @@ trait BotToInternalConversions {
     imageOpt map toAvatarImage
 
   implicit def toAvatar(avatar: BotMessages.Avatar): Avatar =
-    Avatar(avatar.small, avatar.large, avatar.full)
+    Avatar(avatar.smallImage, avatar.largeImage, avatar.fullImage)
 }
