@@ -86,7 +86,11 @@ class FastSwitcher extends Component {
 
   handleClose = () => FastSwitcherActionCreators.hide();
   handleSearch = (event) => FastSwitcherActionCreators.search(event.target.value);
-  setFocus = () => React.findDOMNode(this.refs.query).focus();
+  setFocus = () => {
+    setTimeout(() => {
+      React.findDOMNode(this.refs.query).focus();
+    }, 0);
+  };
 
   handleKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
