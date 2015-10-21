@@ -25,6 +25,7 @@ class FastSwitcherStore extends Store {
   handleSearchQuery(query) {
     const dialogs = DialogStore.getAll();
     let result = [];
+
     forEach(dialogs, (dialog) => {
       forEach(dialog.shorts, (conversation) => {
         if (conversation.peer.title.toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
@@ -32,6 +33,7 @@ class FastSwitcherStore extends Store {
         }
       })
     });
+
     _result = result;
     this.__emitChange();
   }
@@ -42,11 +44,13 @@ class FastSwitcherStore extends Store {
         _isOpen = true;
         this.__emitChange();
         break;
+
       case ActionTypes.FAST_SWITCHER_HIDE:
         _isOpen = false;
         _result = [];
         this.__emitChange();
         break;
+
       case ActionTypes.FAST_SWITCHER_SEARCH:
         this.handleSearchQuery(action.query);
         break;
