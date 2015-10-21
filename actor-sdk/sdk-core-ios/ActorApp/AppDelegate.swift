@@ -20,6 +20,8 @@ import ActorSDK
         ActorSDK.sharedActor().inviteUrlHost = "quit.email"
         ActorSDK.sharedActor().inviteUrlScheme = "actor"
         
+        ActorSDK.sharedActor().style.searchStatusBarStyle = .Default
+        
         // Creating Actor
         ActorSDK.sharedActor().createActor()
     }

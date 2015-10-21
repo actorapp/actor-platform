@@ -355,6 +355,12 @@ public class AASettingsViewController: AAContentTableController {
             ActorSDK.sharedActor().delegate.actorSettingsSupportDidCreated(self, section: s)
         }
     }
+    
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        Actor.onProfileOpenWithUid(jint(uid))
+    }
 
     public override func tableWillBind(binder: AABinder) {
         
@@ -401,5 +407,11 @@ public class AASettingsViewController: AAContentTableController {
             self.emailCells.data = (emails?.toSwiftArray())!
             self.emailCells.reload()
         })
+    }
+    
+    public override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        Actor.onProfileClosedWithUid(jint(uid))
     }
 }

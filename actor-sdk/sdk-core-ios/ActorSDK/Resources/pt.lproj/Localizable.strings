@@ -436,6 +436,10 @@
 
 "AlertLinkCopied" = "Link copiado para a área de transferência.";
 
+"StatusConnecting" = "Connecting...";
+
+"StatusSyncing" = "Syncing...";
+
 /*
  * Errors
  */
