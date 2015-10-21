@@ -311,6 +311,16 @@ object BotMessages {
     override def readResponse(obj: Js.Obj) = readJs[Response](obj)
   }
 
+  @key("FindUser")
+  final case class FindUser(query: String) extends RequestBody {
+    override type Response = FoundUsers
+    override val service: String = Services.Users
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
+  final case class FoundUsers(users: Seq[User]) extends ResponseBody
+
   final case class MessageSent(date: Long) extends ResponseBody
 
   @key("Message")
