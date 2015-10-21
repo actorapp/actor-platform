@@ -13,7 +13,7 @@ import shardakka.keyvalue.SimpleKeyValue
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-final class WebHooksService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotMessages.BotError] {
+final class WebHooksBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotMessages.BotError] {
   import BotMessages._
 
   import system.dispatcher
