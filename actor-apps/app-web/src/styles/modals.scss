@@ -42,7 +42,7 @@
   overflow: hidden;
 
   min-width: $modal-default-width;
-  margin-top: 100px;
+  margin-top: 200px;
 
   color: $modal-text-color;
   border-radius: $modal-default-radius;
@@ -921,7 +921,7 @@
 
           @include text-elipsis();
         }
-        &:hover {
+        &--active {
           font-weight: 500;
 
           color: white;
