@@ -6,6 +6,8 @@ import im.actor.server.db.ActorPostgresDriver.api._
 
 import im.actor.server.models
 
+import scala.concurrent.ExecutionContext
+
 final class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
   import SexColumnType._
   import UserStateColumnType._
@@ -36,7 +38,16 @@ object UserRepo {
   val nameByIdC = Compiled(nameById _)
 
   def byNickname(nickname: Rep[String]) = users filter (_.nickname === nickname)
+  def idsByNickname(nickname: Rep[String]) = byNickname(nickname).map(_.id)
   val byNicknameC = Compiled(byNickname _)
+  val idsByNicknameC = Compiled(idsByNickname _)
+
+  def idsByEmail(email: Rep[String]) =
+    for {
+      emails ← UserEmailRepo.emails.filter(_.email === email)
+      users ← users.filter(_.id === emails.userId).map(_.id)
+    } yield users
+  val idsByEmailC = Compiled(idsByEmail _)
 
   val activeHumanUsers =
     users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot)
@@ -69,6 +80,18 @@ object UserRepo {
 
   def findByNickname(nickname: String) =
     byNicknameC(nickname).result.headOption
+
+  def findIdsByNickname(nickname: String) =
+    idsByNicknameC(nickname).result.headOption
+
+  def findIdsByEmail(email: String) =
+    idsByEmailC(email).result.headOption
+
+  def findIds(query: String)(implicit ec: ExecutionContext) =
+    for {
+      e ← idsByEmailC(query).result
+      n ← idsByNicknameC(query).result
+    } yield e ++ n
 
   def setNickname(userId: Int, nickname: Option[String]) =
     byId(userId).map(_.nickname).update(nickname)
