@@ -12,6 +12,7 @@ import DialogActionCreators from 'actions/DialogActionCreators';
 import FastSwitcherActionCreators from 'actions/FastSwitcherActionCreators';
 
 import DialogStore from 'stores/DialogStore';
+import FastSwitcherStore from 'stores/FastSwitcherStore';
 
 import RecentSectionItem from './RecentSectionItem.react';
 import ContactsSectionItem from './ContactsSectionItem.react';
@@ -21,7 +22,8 @@ const LoadDialogsScrollBottom = 100;
 
 const getStateFromStore = () => {
   return {
-    allDialogs: DialogStore.getAll()
+    allDialogs: DialogStore.getAll(),
+    isFastSwitcherOpen: FastSwitcherStore.isOpen()
   };
 };
 
@@ -33,6 +35,7 @@ class RecentSection extends Component {
     this.state = getStateFromStore();
 
     DialogStore.addChangeListener(this.onChange);
+    FastSwitcherStore.addListener(this.onChange);
   }
 
   componentWillUnmount() {
@@ -54,7 +57,7 @@ class RecentSection extends Component {
   openFastSwitch = () => FastSwitcherActionCreators.show();
 
   render() {
-    const { allDialogs } = this.state;
+    const { allDialogs, isFastSwitcherOpen } = this.state;
 
     let groupsList = [],
         privateList = [];
@@ -79,6 +82,8 @@ class RecentSection extends Component {
       }
     });
 
+    const fastSwitch = isFastSwitcherOpen ? <FastSwitcherModal/> : null;
+
     return (
       <section className="sidebar__recent">
         <div className="sidebar__recent__scroll-container" onScroll={this.onScroll}>
@@ -94,7 +99,7 @@ class RecentSection extends Component {
 
         <footer>
           <button className="button button--rised button--wide" onClick={this.openFastSwitch}>Fast Switch</button>
-          <FastSwitcherModal/>
+          {fastSwitch}
         </footer>
       </section>
     );

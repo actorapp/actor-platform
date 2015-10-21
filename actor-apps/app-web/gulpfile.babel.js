@@ -120,10 +120,10 @@ gulp.task('sprite', () => {
 
 gulp.task('emoji', () => {
   gulp.src([
-    './node_modules/emoji-data/sheet_apple_32.png'
-    //'./node_modules/emoji-data/sheet_emojione_32.png',
-    //'./node_modules/emoji-data/sheet_google_32.png',
-    //'./node_modules/emoji-data/sheet_twitter_32*.png',
+    './node_modules/emoji-data/sheet_apple_64.png',
+    './node_modules/emoji-data/sheet_emojione_64.png',
+    './node_modules/emoji-data/sheet_google_64.png',
+    './node_modules/emoji-data/sheet_twitter_364.png'
   ], {base: './node_modules/emoji-data'})
     .pipe(gulpif(isProduction, image()))
     .pipe(gulp.dest('./dist/assets/img/emoji'));

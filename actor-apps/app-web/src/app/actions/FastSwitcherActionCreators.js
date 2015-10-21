@@ -13,5 +13,9 @@ export default {
 
   hide() {
     dispatch(ActionTypes.FAST_SWITCHER_HIDE);
+  },
+
+  search(query) {
+    dispatch(ActionTypes.FAST_SWITCHER_SEARCH, { query });
   }
 };
