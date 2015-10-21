@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import JDStatusBarNotification
 
 public class ActorSDK {
 
@@ -102,6 +103,9 @@ public class ActorSDK {
     // View Binding info
     private(set) public var bindedToWindow: UIWindow!
     
+    // Reachability
+    private var reachability: Reachability!
+    
     //
     // Initialization
     //
@@ -185,6 +189,25 @@ public class ActorSDK {
         
         if autoPushMode == .FromStart {
             requestPush()
+        }
+        
+        // Subscribe to network changes
+        
+        do {
+            reachability = try Reachability.reachabilityForInternetConnection()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
+            try reachability.startNotifier()
+        } catch {
+            print("Unable to create Reachability")
+            return
+        }
+    }
+    
+    @objc func reachabilityChanged(note: NSNotification) {
+        print("reachabilityChanged (\(reachability.isReachable()))")
+        
+        if reachability.isReachable() {
+            messenger.forceNetworkCheck()
         }
     }
     
@@ -286,6 +309,33 @@ public class ActorSDK {
                 controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
             }
             window.rootViewController = controller!
+        }
+        
+        // Bind Status Bar connecting
+        
+        if !style.statusBarConnectingHidden {
+            
+            JDStatusBarNotification.setDefaultStyle { (style) -> JDStatusBarStyle! in
+                style.barColor = self.style.statusBarConnectingBgColor
+                style.textColor = self.style.statusBarConnectingTextColor
+                return style
+            }
+            
+            dispatchOnUi { () -> Void in
+                self.binder.bind(self.messenger.getAppState().isSyncing, valueModel2: self.messenger.getAppState().isConnecting) {
+                    (isSyncing: JavaLangBoolean?, isConnecting: JavaLangBoolean?) -> () in
+                    
+                    if isSyncing!.booleanValue() || isConnecting!.booleanValue() {
+                        if isConnecting!.booleanValue() {
+                            JDStatusBarNotification.showWithStatus(AALocalized("StatusConnecting"))
+                        } else {
+                            JDStatusBarNotification.showWithStatus(AALocalized("StatusSyncing"))
+                        }
+                    } else {
+                        JDStatusBarNotification.dismiss()
+                    }
+                }
+            }
         }
     }
     

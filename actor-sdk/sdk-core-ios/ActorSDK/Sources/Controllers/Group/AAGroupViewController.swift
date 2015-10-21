@@ -38,6 +38,7 @@ public class AAGroupViewController: AAContentTableController {
             self.headerRow = s.avatar { (r) -> () in
                 
                 r.id = self.gid
+                r.subtitleHidden = true
                 
                 r.bindAction = { (r) -> () in
                     r.avatar = self.group.getAvatarModel().get()
