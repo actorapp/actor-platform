@@ -24,9 +24,6 @@ private object BotInterfaceImpl {
     def javaFields(fields: List[MethodSymbol]) = {
       fields.foldLeft((false, List.empty[c.universe.Tree])) {
         case ((hasJavaField, fields), field) ⇒
-          println("===")
-          println(field.typeSignature)
-
           field.typeSignature.typeSymbol match {
             case s if s == c.mirror.staticClass("scala.Option") ⇒
               val typ = field.typeSignature.resultType.typeArgs.head
