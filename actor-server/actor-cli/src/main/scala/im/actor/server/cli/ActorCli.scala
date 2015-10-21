@@ -36,8 +36,11 @@ private[cli] case class UpdateIsAdmin(
   userId:  Int     = 0,
   isAdmin: Boolean = false
 ) extends Request {
-  override type Response = Unit
+  override type Response = UpdateIsAdminResponse
 }
+
+private[cli] sealed trait UpdateIsAdminResponse
+private[cli] case object UpdateIsAdminResponse extends UpdateIsAdminResponse
 
 private object Commands {
   val Help = "help"
