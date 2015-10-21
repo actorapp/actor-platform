@@ -6,7 +6,7 @@ import im.actor.server.bot.{ BotExtension, BotServiceBase }
 import im.actor.server.user.UserExceptions
 import upickle.Js
 
-final class BotsService(system: ActorSystem) extends BotServiceBase(system) {
+final class BotsBotService(system: ActorSystem) extends BotServiceBase(system) {
   import BotMessages._
   import system.dispatcher
 

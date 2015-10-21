@@ -8,7 +8,7 @@ import im.actor.server.bot.{ ApiToBotConversions, BotServiceBase }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ S3StorageExtension, FileStorageAdapter }
 
-final class UsersService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotError] with ApiToBotConversions {
+final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) with FutureResultCats[BotError] with ApiToBotConversions {
   import im.actor.bots.BotMessages._
   import system.dispatcher
   import im.actor.server.file.ImageUtils._
