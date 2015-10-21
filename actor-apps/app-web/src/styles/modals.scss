@@ -22,7 +22,7 @@
 
   flex: 1;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 
   &--after-open {
     opacity: 1;
@@ -48,6 +48,7 @@
   outline: none;
   background-color: $modal-default-background;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .25);
+  margin-top: 100px;
 
   &__header {
     position: relative;
@@ -683,6 +684,7 @@
     }
   }
   &--profile-picture {
+    margin-top: 0;
     max-width: 90%;
     max-height: 90%;
     .modal-new__body {
@@ -782,6 +784,7 @@
 
 .modal {
   overflow: hidden;
+  margin-top: 200px;
 
   min-width: $modal-default-width;
   border-radius: $modal-default-radius;
@@ -828,9 +831,28 @@
   }
   &--fast-switcher {
     background-color: white;
-    padding: 18px;
+    //padding: 8px 16px 0;
+    padding: 0;
     box-sizing: border-box;
+    .header {
+      padding: 6px 16px;
+      @include clearfix();
+      color: rgba(0, 0, 0, .5);
+      font-size: 11px;
+      line-height: 16px;
+      cursor: default;
+      user-select: none;
+      span,
+      strong {
+        display: inline-block;
+      }
+      .pull-right {
+        margin-left: 6px;
+      }
+    }
+
     .input {
+      padding: 0 16px 8px;
       input {
         width: 100%;
         box-sizing: border-box;
@@ -839,18 +861,47 @@
         color: rgba(0, 0, 0, .6);
         padding: 12px;
         font-size: 26px;
-        line-height: 40px;
+        line-height: 30px;
         border: none;
         box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
-        height: 64px;
+        //height: 64px;
         outline: none;
         transition: 100ms;
-        @include placeholder(rgba(black,.15));
+        @include placeholder(rgba(black, .15));
         &:hover {
-          box-shadow: 0 0 0 1px rgba(0, 0, 0, .2);
+          box-shadow: 0 0 0 1px rgba(0, 0, 0, .15);
         }
         &:focus {
-          box-shadow: 0 0 0 1px rgba(0, 0, 0, .05), 0 1px 8px -1px rgba($dark-sky-blue, .6);
+          box-shadow: 0 0 0 1px rgba(0, 0, 0, .2);
+          //box-shadow: 0 0 0 1px rgba($dark-sky-blue, .45);
+          //box-shadow: 0 0 0 1px rgba(0, 0, 0, .05), 0 1px 8px -1px rgba($dark-sky-blue, .6);
+        }
+      }
+    }
+    .results {
+      overflow-y: auto;
+      overflow-x: hidden;
+      max-height: 320px;
+      margin: 0 0 16px;
+      padding: 0;
+      &__item {
+        list-style: none;
+        margin: 0;
+        padding: 6px 16px;
+        line-height: 20px;
+        box-sizing: border-box;
+        .avatar {
+          margin-right: 12px;
+        }
+        .title {
+          vertical-align: middle;
+          line-height: 32px;
+          @include text-elipsis();
+        }
+        &:hover {
+          color: white;
+          text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
+          background-color: rgba($dark-sky-blue, 1);
         }
       }
     }
