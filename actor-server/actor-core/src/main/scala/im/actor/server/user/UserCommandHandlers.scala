@@ -252,7 +252,7 @@ private[user] trait UserCommandHandlers {
     val date = new DateTime
 
     p.contact.UnregisteredPhoneContactRepo.find(phoneNumber) flatMap { contacts ⇒
-      log.debug(s"Unregistered ${phoneNumber} is in contacts of users: $contacts")
+      log.debug(s"Unregistered $phoneNumber is in contacts of users: $contacts")
       val randomId = ThreadLocalRandom.current().nextLong()
       val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
       // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
@@ -285,6 +285,7 @@ private[user] trait UserCommandHandlers {
   private def markContactRegistered(user: User, email: String, isSilent: Boolean): DBIO[Unit] = {
     val date = new DateTime
     for {
+      _ ← DBIO.from(userExt.hooks.beforeContactRegistered.runAll())
       contacts ← p.contact.UnregisteredEmailContactRepo.find(email)
       _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
       _ ← DBIO.sequence(contacts.map { contact ⇒
