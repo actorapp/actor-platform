@@ -7,7 +7,7 @@ import im.actor.server.bot.{ BotToApiConversions, BotServiceBase }
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.sequence.SeqStateDate
 
-final class MessagingService(system: ActorSystem) extends BotServiceBase(system) with BotToApiConversions {
+final class MessagingBotService(system: ActorSystem) extends BotServiceBase(system) with BotToApiConversions {
 
   import im.actor.bots.BotMessages._
   import system.dispatcher
