@@ -11,7 +11,7 @@ object Dependencies {
     val scalaz = "7.1.1"
     val slick = "3.0.3"
     val scalatest = "2.2.4"
-    val shardakka = "0.1.12"
+    val shardakka = "0.1.13"
     val scalapbSer = "0.1.6"
   }
 
