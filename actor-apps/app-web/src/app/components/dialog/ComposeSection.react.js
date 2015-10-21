@@ -58,18 +58,18 @@ class ComposeSection extends React.Component {
     ComposeStore.addChangeListener(this.onChange);
     PreferencesStore.addListener(this.onChange);
 
-    window.addEventListener('focus', this.onFocus);
+    window.addEventListener('focus', this.setFocus);
   }
 
   componentWillUnmount() {
     GroupStore.removeChangeListener(this.onChange);
     ComposeStore.removeChangeListener(this.onChange);
 
-    window.removeEventListener('focus', this.onFocus);
+    window.removeEventListener('focus', this.setFocus);
   }
 
   componentWillReceiveProps() {
-    this.onFocus();
+    this.setFocus();
     this.setState({isMardownHintShow: false})
   }
 
@@ -192,12 +192,9 @@ class ComposeSection extends React.Component {
   onEmojiDropdownClose = () => this.setState({isEmojiDropdownShow: false});
   onEmojiShowClick = () => this.setState({isEmojiDropdownShow: true});
 
-  onFocus = () => {
-    const composeArea = React.findDOMNode(this.refs.area);
-    composeArea.focus();
-  };
+  setFocus = () => React.findDOMNode(this.refs.area).focus();
 
-  onDrop = (files) => {
+  handleDrop = (files) => {
     const { peer } = this.props;
 
     forEach(files, (file) => {
@@ -251,7 +248,7 @@ class ComposeSection extends React.Component {
                   value={text}
                   ref="area"/>
 
-        <DropZone onDropComplete={this.onDrop}>Drop your files here.</DropZone>
+        <DropZone onDropComplete={this.handleDrop}>Drop your files here.</DropZone>
 
         <footer className="compose__footer row">
           <button className="button attachment" onClick={this.onSendFileClick}>
