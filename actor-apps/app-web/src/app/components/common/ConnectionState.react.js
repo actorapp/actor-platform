@@ -36,7 +36,7 @@ class ConnectionState extends React.Component {
     switch (connectionState) {
       case 'online':
         return (
-          <div className={className}>'You're back online!'</div>
+          <div className={className}>You're back online!</div>
         );
       case 'connecting':
         return (
