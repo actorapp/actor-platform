@@ -7,6 +7,7 @@ import { map } from 'lodash';
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
+import classnames from 'classnames';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
@@ -22,7 +23,8 @@ class FastSwitcher extends Component {
   static calculateState() {
     return {
       isOpen: FastSwitcherStore.isOpen(),
-      results: FastSwitcherStore.getResults()
+      results: FastSwitcherStore.getResults(),
+      selectedIndex: 0
     }
   }
 
@@ -36,11 +38,18 @@ class FastSwitcher extends Component {
   }
 
   render() {
-    const { isOpen, results } = this.state;
+    const { isOpen, results, selectedIndex } = this.state;
 
-    const resultsList = map(results, (result) => {
+    const resultsList = map(results, (result, index) => {
+      const resultClassName = classnames('results__item row', {
+        'results__item--active': selectedIndex === index
+      });
+
       return (
-        <li className="results__item row">
+        <li className={resultClassName}
+            key={index}
+            onClick={() => this.handleSelect(result.peer)}
+            onMouseOver={() => this.setState({selectedIndex: index})}>
           <AvatarItem image={result.peer.avatar}
                       placeholder={result.peer.placeholder}
                       size="small"
@@ -92,13 +101,16 @@ class FastSwitcher extends Component {
     }, 0);
   };
 
+  handleSelect = (peer) => {
+    console.debug(peer);
+  };
+
   handleKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
       this.handleClose();
     }
   };
-
 }
 
 export default Container.create(FastSwitcher, {pure: false});
