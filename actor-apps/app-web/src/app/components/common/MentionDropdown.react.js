@@ -9,7 +9,7 @@ import AvatarItem from 'components/common/AvatarItem.react';
 
 const {addons: { PureRenderMixin }} = addons;
 
-const DROPDOWN_ITEM_HEIGHT = 38; // is this right?
+const DROPDOWN_ITEM_HEIGHT = 38;
 let scrollIndex = 0;
 
 @ReactMixin.decorate(PureRenderMixin)
@@ -57,7 +57,6 @@ class MentionDropdown extends React.Component {
   }
 
   cleanListeners() {
-    //console.info('cleanListeners');
     document.removeEventListener('keydown', this.onKeyDown, false);
     document.removeEventListener('click', this.closeMentions, false);
   }
