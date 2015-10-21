@@ -6,7 +6,7 @@ import akka.pattern.pipe
 import im.actor.server.user.UserExtension
 
 object UsersCliService {
-  def props = Props(new BotsCliService)
+  def props = Props(new UsersCliService)
 }
 
 private final class UsersCliService extends Actor with ActorLogging {
