@@ -1,17 +1,11 @@
 package im.actor.server.activation.gate
 
-import akka.http.scaladsl.unmarshalling._
-import akka.stream.Materializer
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
-
-import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode, Code }
+import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
 import im.actor.server.activation._
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 trait JsonImplicits {
-  implicit val materializer: Materializer
 
   val smsCodeWrites: Writes[SmsCode] = new Writes[SmsCode] {
     override def writes(code: SmsCode): JsValue = Json.obj("phone" → code.phone, "code" → code.code)
@@ -38,14 +32,6 @@ trait JsonImplicits {
       case s if s == "invalid hash" ⇒ InvalidHash
       case _                        ⇒ InvalidResponse
     }
-  }
-
-  implicit val toCodeResponse: FromResponseUnmarshaller[CodeResponse] = Unmarshaller { implicit ec ⇒ resp ⇒
-    Unmarshal(resp.entity).to[String].map { body ⇒ Json.parse(body).as[CodeResponse] }
-  }
-
-  implicit val toValidationResponse: FromResponseUnmarshaller[ValidationResponse] = Unmarshaller { implicit ec ⇒ resp ⇒
-    Unmarshal(resp.entity).to[String].map { body ⇒ Json.parse(body).as[ValidationResponse] }
   }
 
 }
