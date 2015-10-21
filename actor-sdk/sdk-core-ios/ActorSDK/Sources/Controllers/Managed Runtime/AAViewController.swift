@@ -148,7 +148,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         super.viewWillAppear(animated)
         
         if let c = content {
-            // Analytics.trackPageVisible(c)
+            ActorSDK.sharedActor().trackPageVisible(c)
         }
         if let u = uid {
             Actor.onProfileOpenWithUid(jint(u))
@@ -159,7 +159,7 @@ public class AAViewController: UIViewController, UINavigationControllerDelegate,
         super.viewWillDisappear(animated)
         
         if let c = content {
-            // Analytics.trackPageHidden(c)
+            ActorSDK.sharedActor().trackPageHidden(c)
         }
         if let u = uid {
             Actor.onProfileClosedWithUid(jint(u))
