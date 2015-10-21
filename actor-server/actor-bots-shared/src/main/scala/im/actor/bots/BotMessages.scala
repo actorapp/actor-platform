@@ -287,8 +287,24 @@ object BotMessages {
   @key("GetHooks")
   final case object GetHooks extends GetHooks
 
-  @key("UpdateAvatar")
-  final case class UpdateAvatar(userId: Int, fileLocation: FileLocation) extends RequestBody {
+  @key("ChangeUserAvatar")
+  final case class ChangeUserAvatar(userId: Int, fileLocation: FileLocation) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("ChangeUserName")
+  final case class ChangeUserName(userId: Int, name: String) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("ChangeUserAbout")
+  final case class ChangeUserAbout(userId: Int, about: Option[String]) extends RequestBody {
     override type Response = Void
     override val service = Services.Users
 

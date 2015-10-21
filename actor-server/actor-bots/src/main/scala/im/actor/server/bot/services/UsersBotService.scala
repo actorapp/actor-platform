@@ -18,10 +18,30 @@ final class UsersBotService(system: ActorSystem) extends BotServiceBase(system) 
   private implicit val _system = system
 
   override val handlers: Handlers = {
-    case UpdateAvatar(userId, fileLocation) ⇒ updateAvatar(userId, fileLocation).toWeak
+    case ChangeUserAvatar(userId, fileLocation) ⇒ changeUserAvatar(userId, fileLocation).toWeak
+    case ChangeUserName(userId, name)           ⇒ changeUserName(userId, name).toWeak
+    case ChangeUserAbout(userId, about)         ⇒ changeUserAbout(userId, about).toWeak
   }
 
-  private def updateAvatar(userId: Int, fileLocation: FileLocation) = RequestHandler[UpdateAvatar, UpdateAvatar#Response] {
+  private def changeUserName(userId: Int, name: String) = RequestHandler[ChangeUserName, ChangeUserName#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromFuture(userExt.changeName(userId, name))
+        } yield Void).value
+      }
+  }
+
+  private def changeUserAbout(userId: Int, about: Option[String]) = RequestHandler[ChangeUserAbout, ChangeUserAbout#Response] {
+    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
+      ifIsAdmin(botUserId) {
+        (for {
+          _ ← fromFuture(userExt.changeAbout(userId, 0, about))
+        } yield Void).value
+      }
+  }
+
+  private def changeUserAvatar(userId: Int, fileLocation: FileLocation) = RequestHandler[ChangeUserAvatar, ChangeUserAvatar#Response] {
     (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
       ifIsAdmin(botUserId) {
         (for {
