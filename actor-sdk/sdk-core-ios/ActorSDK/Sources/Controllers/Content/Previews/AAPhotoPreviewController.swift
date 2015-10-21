@@ -7,6 +7,8 @@ import NYTPhotoViewer
 
 public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewControllerDelegate {
     
+    var autoShowBadge = false
+    
     let photos: [PreviewImage]
     let controllerPhotos: [AAPhoto]
     var bind = [Int: AAFileCallback]()
@@ -107,6 +109,11 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
         
         // Hide Status bar
         UIApplication.sharedApplication().animateStatusBarAppearance(.SlideUp, duration: 0.3)
+        
+        // Hide badge
+        if autoShowBadge {
+            AANavigationBadge.hideBadge()
+        }
     }
     
     public func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
@@ -124,6 +131,11 @@ public class AAPhotoPreviewController: NYTPhotosViewController, NYTPhotosViewCon
         
         // Restoring status bar
         UIApplication.sharedApplication().animateStatusBarAppearance(.SlideDown, duration: 0.3)
+        
+        // Restoring badge
+        if autoShowBadge {
+            AANavigationBadge.showBadge()
+        }
     }
 }
 
