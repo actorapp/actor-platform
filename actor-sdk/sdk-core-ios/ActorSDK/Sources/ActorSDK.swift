@@ -30,6 +30,9 @@ public class ActorSDK {
     /// SDK Delegate
     public var delegate: ActorSDKDelegate = ActorSDKDelegateDefault()
     
+    /// SDK Analytics
+    public var analyticsDelegate: ActorSDKAnalytics?
+    
     //
     //  Configuration
     //
@@ -408,6 +411,21 @@ public class ActorSDK {
             })
             bindedController.presentViewController(alert, animated: true, completion: nil)
         }
+    }
+    
+    /// Tracking page visible
+    func trackPageVisible(page: ACPage) {
+        analyticsDelegate?.analyticsPageVisible(page)
+    }
+    
+    /// Tracking page hidden
+    func trackPageHidden(page: ACPage) {
+        analyticsDelegate?.analyticsPageHidden(page)
+    }
+    
+    /// Tracking event
+    func trackEvent(event: ACEvent) {
+        analyticsDelegate?.analyticsEvent(event)
     }
     
     //

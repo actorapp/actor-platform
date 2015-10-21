@@ -173,6 +173,7 @@
 		069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 069CF4CB1BCB909A00C66E12 /* CLTokenView.m */; settings = {ASSET_TAGS = (); }; };
 		06CE898A1BD8401C005A5530 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE89891BD8401C005A5530 /* Reachability.swift */; settings = {ASSET_TAGS = (); }; };
 		06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */; };
+		06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -353,6 +354,7 @@
 		069CF4CB1BCB909A00C66E12 /* CLTokenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLTokenView.m; path = CLTokenInputView/CLTokenView.m; sourceTree = "<group>"; };
 		06CE89891BD8401C005A5530 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActorSDKAnalytics.swift; sourceTree = "<group>"; };
 		22BAEA363892E475F59B7E9F /* Pods-ActorSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		333F91AE5263DD450666CC87 /* Pods-ActorSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorSDK/Pods-ActorSDK.release.xcconfig"; sourceTree = "<group>"; };
 		9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -860,6 +862,7 @@
 				066A51201BC4B53C000E606E /* SwiftExtensions */,
 				066A51571BC4C112000E606E /* Utils */,
 				066A50E11BC4AF9F000E606E /* ActorSDK.swift */,
+				06CE898F1BD84DF5005A5530 /* ActorSDKAnalytics.swift */,
 				066A525B1BC502EB000E606E /* ActorSDKDelegate.swift */,
 				066A53381BC5456B000E606E /* ActorStyle.swift */,
 				066A525D1BC503BB000E606E /* ActorApplicationDelegate.swift */,
@@ -1122,6 +1125,7 @@
 				066A53231BC533F5000E606E /* Caches.swift in Sources */,
 				066A52691BC50E7B000E606E /* AAAuthRegisterViewController.swift in Sources */,
 				066A51501BC4BE06000E606E /* AARegex.swift in Sources */,
+				06CE89901BD84DF5005A5530 /* ActorSDKAnalytics.swift in Sources */,
 				069CF4D31BCB909A00C66E12 /* CLTokenView.m in Sources */,
 				066A52F71BC52B13000E606E /* AAWallpapperPreviewCell.swift in Sources */,
 				066A51541BC4BE95000E606E /* Images.swift in Sources */,
