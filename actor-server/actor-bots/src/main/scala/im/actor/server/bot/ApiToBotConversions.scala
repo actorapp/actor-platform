@@ -1,10 +1,12 @@
 package im.actor.server.bot
 
 import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar, ApiFastThumb }
+import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
 import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.users.ApiUser
 import scodec.bits.BitVector
 
-import scala.language.implicitConversions
+import scala.language.{ postfixOps, implicitConversions }
 
 trait ApiToBotConversions {
 
@@ -53,4 +55,53 @@ trait ApiToBotConversions {
 
   implicit def toAvatar(avatar: ApiAvatar): Avatar =
     Avatar(avatar.smallImage, avatar.largeImage, avatar.fullImage)
+
+  implicit def toAvatar(avatar: Option[ApiAvatar]): Option[Avatar] =
+    avatar map toAvatar
+
+  implicit def toMember(apiMember: ApiMember): GroupMember =
+    GroupMember(
+      userId = apiMember.userId,
+      inviterUserId = apiMember.inviterUserId,
+      memberSince = apiMember.date,
+      isAdmin = apiMember.isAdmin
+    )
+
+  implicit def toMembers(apiMembers: Seq[ApiMember]): Seq[GroupMember] =
+    apiMembers map toMember
+
+  implicit def toUser(apiUser: ApiUser): User =
+    User(
+      id = apiUser.id,
+      accessHash = apiUser.accessHash,
+      name = apiUser.name,
+      sex = apiUser.sex.map(_.id),
+      about = apiUser.about,
+      avatar = apiUser.avatar,
+      username = apiUser.nick,
+      isBot = apiUser.isBot
+    )
+
+  implicit def toUsers(apiUsers: Seq[ApiUser]): Seq[User] = apiUsers map toUser
+
+  def buildGroups(apiGroups: Seq[ApiGroup]): Map[Int, Group] = {
+    apiGroups map { apiGroup ⇒
+      apiGroup.id → Group(
+        id = apiGroup.id,
+        accessHash = apiGroup.accessHash,
+        title = apiGroup.title,
+        about = apiGroup.about,
+        avatar = apiGroup.avatar,
+        isMember = apiGroup.isMember,
+        creatorUserId = apiGroup.creatorUserId,
+        members = apiGroup.members
+      )
+    } toMap
+  }
+
+  def buildUsers(apiUsers: Seq[ApiUser]): Map[Int, User] = {
+    apiUsers map { apiUser ⇒
+      apiUser.id → toUser(apiUser)
+    } toMap
+  }
 }

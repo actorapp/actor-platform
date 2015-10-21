@@ -8,7 +8,9 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.users.{ ApiUser, ApiSex }
+import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
+import im.actor.server.persist.UserRepo
 import im.actor.server.sequence.{ UpdateRefs, SeqUpdatesExtension, SeqState, SeqUpdatesManager }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.util.misc.IdUtils
@@ -294,6 +296,8 @@ private[user] sealed trait Queries {
 
   def isAdmin(userId: Int): Future[Boolean] =
     (viewRegion.ref ? IsAdmin(userId)).mapTo[IsAdminResponse].map(_.isAdmin)
+
+  def findUserIds(query: String): Future[Seq[Int]] = DbExtension(system).db.run(UserRepo.findIds(query))
 }
 
 private[user] sealed trait AuthCommands {
