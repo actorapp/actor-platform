@@ -10,7 +10,7 @@ import shardakka.keyvalue.SimpleKeyValue
 
 import scala.collection.concurrent.TrieMap
 
-final class KeyValueService(system: ActorSystem) extends BotServiceBase(system) {
+final class KeyValueBotService(system: ActorSystem) extends BotServiceBase(system) {
 
   import BotMessages._
   import system.dispatcher

@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.scaladsl.{ Flow, Merge, Source }
 import im.actor.api.rpc.Update
 import im.actor.bots.BotMessages
-import im.actor.server.bot.services.{ WebHooksService, BotsService, KeyValueService, MessagingService }
+import im.actor.server.bot.services.{ WebHooksBotService, BotsBotService, KeyValueBotService, MessagingBotService }
 import upickle.Js
 
 import scala.concurrent.Future
@@ -17,10 +17,10 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
   import system.dispatcher
 
   private lazy val updBuilder = new BotUpdateBuilder(botUserId, botAuthId, system)
-  private val msgService = new MessagingService(system)
-  private val kvService = new KeyValueService(system)
-  private val botsService = new BotsService(system)
-  private val webhooksService = new WebHooksService(system)
+  private val msgService = new MessagingBotService(system)
+  private val kvService = new KeyValueBotService(system)
+  private val botsService = new BotsBotService(system)
+  private val webhooksService = new WebHooksBotService(system)
 
   val flow: Flow[BotRequest, BotMessageOut, Unit] = {
     val updSource =
