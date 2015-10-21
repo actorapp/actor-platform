@@ -141,9 +141,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                     self.subtitleView.text = stateText;
                     let state = UInt(presence!.state.ordinal())
                     if (state == ACUserPresence_State.ONLINE.rawValue) {
-                        self.subtitleView.textColor = self.appStyle.userOnlineColor
+                        self.subtitleView.textColor = self.appStyle.userOnlineNavigationColor
                     } else {
-                        self.subtitleView.textColor = self.appStyle.userOfflineColor
+                        self.subtitleView.textColor = self.appStyle.userOfflineNavigationColor
                     }
                 }
             })

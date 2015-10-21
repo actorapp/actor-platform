@@ -226,6 +226,12 @@ class AAUserViewController: AAContentTableController {
         
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        Actor.onProfileOpenWithUid(jint(uid))
+    }
+    
     override func tableWillBind(binder: AABinder) {
         binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
             self.headerRow.reload()
@@ -244,5 +250,11 @@ class AAUserViewController: AAContentTableController {
                 self.isContactRow.reload()
             })
         }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        Actor.onProfileOpenWithUid(jint(uid))
     }
 }

@@ -137,6 +137,21 @@ public extension UITableView {
         let reuseId = cellTypeForClass(T.self)
         return self.dequeueReusableCellWithIdentifier(reuseId, forIndexPath: indexPath) as! T
     }
+    
+    public func visibleCellForIndexPath(path: NSIndexPath) -> UITableViewCell? {
+        if indexPathsForVisibleRows == nil {
+            return nil
+        }
+        
+        for i in 0..<indexPathsForVisibleRows!.count {
+            let vPath = indexPathsForVisibleRows![i]
+            if vPath.row == path.row && vPath.section == path.section {
+                return visibleCells[i]
+            }
+        }
+        
+        return nil
+    }
 }
 
 public extension UICollectionView {

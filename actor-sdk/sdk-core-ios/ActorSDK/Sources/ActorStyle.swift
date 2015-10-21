@@ -649,4 +649,30 @@ public class ActorStyle {
     //
 
     public var authTintColor = UIColor(rgb: 0x007aff)
+    
+    //
+    // Status Bar progress
+    //
+    
+    /// Is Status Bar connecting status hidden
+    public var statusBarConnectingHidden = false
+    
+    /// Is Status Bar background color
+    public var statusBarConnectingBgColor: UIColor {
+        get { return _statusBarConnectingBgColor != nil ? _statusBarConnectingBgColor! : navigationBgColor }
+        set(v) { _statusBarConnectingBgColor = v }
+    }
+    public var _statusBarConnectingBgColor : UIColor?
+
+    /// Is Status Bar background color
+    public var statusBarConnectingTextColor: UIColor {
+        get { return _statusBarConnectingTextColor != nil ? _statusBarConnectingTextColor! : navigationTitleColor }
+        set(v) { _statusBarConnectingTextColor = v }
+    }
+    public var _statusBarConnectingTextColor : UIColor?
+
 }
+
+
+
+
