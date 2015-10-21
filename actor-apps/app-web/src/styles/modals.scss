@@ -42,13 +42,13 @@
   overflow: hidden;
 
   min-width: $modal-default-width;
+  margin-top: 100px;
 
   color: $modal-text-color;
   border-radius: $modal-default-radius;
   outline: none;
   background-color: $modal-default-background;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .25);
-  margin-top: 100px;
 
   &__header {
     position: relative;
@@ -684,9 +684,9 @@
     }
   }
   &--profile-picture {
-    margin-top: 0;
     max-width: 90%;
     max-height: 90%;
+    margin-top: 0;
     .modal-new__body {
       line-height: 1px;
 
@@ -784,9 +784,10 @@
 
 .modal {
   overflow: hidden;
-  margin-top: 200px;
 
   min-width: $modal-default-width;
+  margin-top: 200px;
+
   border-radius: $modal-default-radius;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .25);
 
@@ -826,22 +827,29 @@
   }
 
   &--confirm {
+    margin-top: -50px;
+
     border-radius: 2px;
     background-color: #fff;
   }
   &--fast-switcher {
-    background-color: white;
+    box-sizing: border-box;
     //padding: 8px 16px 0;
     padding: 0;
-    box-sizing: border-box;
+
+    background-color: white;
     .header {
-      padding: 6px 16px;
-      @include clearfix();
-      color: rgba(0, 0, 0, .5);
       font-size: 11px;
       line-height: 16px;
+
+      padding: 6px 16px;
+
       cursor: default;
       user-select: none;
+
+      color: rgba(0, 0, 0, .5);
+
+      @include clearfix();
       span,
       strong {
         display: inline-block;
@@ -850,23 +858,26 @@
         margin-left: 6px;
       }
     }
-
     .input {
       padding: 0 16px 8px;
       input {
-        width: 100%;
-        box-sizing: border-box;
-        border-radius: 2px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, .6);
-        padding: 12px;
         font-size: 26px;
+        font-weight: 500;
         line-height: 30px;
+
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px;
+
+        transition: 100ms;
+
+        color: rgba(0, 0, 0, .6);
         border: none;
-        box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+        border-radius: 2px;
         //height: 64px;
         outline: none;
-        transition: 100ms;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+
         @include placeholder(rgba(black, .15));
         &:hover {
           box-shadow: 0 0 0 1px rgba(0, 0, 0, .15);
@@ -879,29 +890,43 @@
       }
     }
     .results {
-      overflow-y: auto;
       overflow-x: hidden;
+      overflow-y: auto;
+
       max-height: 320px;
-      margin: 0 0 16px;
+      margin: 0 0 10px;
       padding: 0;
       &__item {
-        list-style: none;
+        line-height: 32px;
+
+        box-sizing: border-box;
         margin: 0;
         padding: 6px 16px;
-        line-height: 20px;
-        box-sizing: border-box;
+
+        list-style: none;
+
+        cursor: pointer;
         .avatar {
           margin-right: 12px;
+          .avatar__placeholder {
+            cursor: pointer;
+          }
         }
         .title {
-          vertical-align: middle;
+          font-size: 15px;
           line-height: 32px;
+
+          user-select: none;
+          vertical-align: middle;
+
           @include text-elipsis();
         }
         &:hover {
+          font-weight: 500;
+
           color: white;
-          text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
           background-color: rgba($dark-sky-blue, 1);
+          text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
         }
       }
     }
