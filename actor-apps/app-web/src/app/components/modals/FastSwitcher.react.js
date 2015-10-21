@@ -2,6 +2,8 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { map } from 'lodash';
+
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
@@ -12,27 +14,43 @@ import FastSwitcherActionCreators from 'actions/FastSwitcherActionCreators';
 
 import FastSwitcherStore from 'stores/FastSwitcherStore';
 
+import AvatarItem from 'components/common/AvatarItem.react';
+
 class FastSwitcher extends Component {
   static getStores = () => [FastSwitcherStore];
 
   static calculateState() {
     return {
-      isOpen: FastSwitcherStore.isOpen()
+      isOpen: FastSwitcherStore.isOpen(),
+      results: FastSwitcherStore.getResults()
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.isOpen && !this.state.isOpen) {
-      document.addEventListener('keydown', this.onKeyDown, false);
-    } else if (!nextState.isOpen && this.state.isOpen) {
-      document.removeEventListener('keydown', this.onKeyDown, false);
-    }
+  componentDidMount() {
+    this.setFocus();
+    document.addEventListener('keydown', this.handleKeyDown, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
   render() {
-    const { isOpen } = this.state;
+    const { isOpen, results } = this.state;
 
-    const results = [];
+    const resultsList = map(results, (result) => {
+      return (
+        <li className="results__item row">
+          <AvatarItem image={result.peer.avatar}
+                      placeholder={result.peer.placeholder}
+                      size="small"
+                      title={result.peer.title}/>
+          <div className="title col-xs">{result.peer.title}</div>
+        </li>
+      )
+    });
+
+    console.debug(resultsList.length);
 
     if (isOpen) {
       return (
@@ -41,11 +59,23 @@ class FastSwitcher extends Component {
                isOpen={isOpen}
                style={{width: 400}}>
 
-          <header className="input">
-            <input type="text" placeholder="Start typing" onChange={this.onSearch}/>
+          <header className="header">
+            <div className="pull-left">Jump to anywhere</div>
+            <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
+            <div className="pull-right"><strong>↵</strong>&nbsp; to select</div>
+            <div className="pull-right"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
           </header>
 
-          <section className="results">{results}</section>
+          <div className="input">
+            <input type="text"
+                   placeholder="Start typing"
+                   onChange={this.handleSearch}
+                   ref="query"/>
+          </div>
+
+          <ul className="results">
+            {resultsList}
+          </ul>
 
         </Modal>
       );
@@ -54,17 +84,15 @@ class FastSwitcher extends Component {
     }
   }
 
-  onClose = () => FastSwitcherActionCreators.hide();
+  handleClose = () => FastSwitcherActionCreators.hide();
+  handleSearch = (event) => FastSwitcherActionCreators.search(event.target.value);
+  setFocus = () => React.findDOMNode(this.refs.query).focus();
 
-  onKeyDown = (event) => {
+  handleKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
-      this.onClose();
+      this.handleClose();
     }
-  };
-
-  onSearch = (event) => {
-    console.debug(event.target.value);
   };
 
 }

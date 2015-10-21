@@ -140,7 +140,8 @@ export const ActionTypes = keymirror({
   CROP_AVATAR_MODAL_HIDE: null,
 
   FAST_SWITCHER_SHOW: null,
-  FAST_SWITCHER_HIDE: null
+  FAST_SWITCHER_HIDE: null,
+  FAST_SWITCHER_SEARCH: null
 });
 
 export const PeerTypes = {
