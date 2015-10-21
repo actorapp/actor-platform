@@ -29,6 +29,7 @@ object Dependencies {
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
     val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.0.0"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
+    val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
 
     val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
 
@@ -111,7 +112,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaStream
   )
 
-  val activation = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, playJson)
+  val activation = shared ++ Seq(akkaActor, sprayClient, playJson)
 
   val bots = shared ++ Seq(upickle, shardakka)
 
