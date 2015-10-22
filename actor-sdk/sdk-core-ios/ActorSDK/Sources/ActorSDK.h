@@ -12,11 +12,11 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 
 // Importing J2ObjC Runtime
 
-#import <j2objc/j2objc.h>
+@import j2objc;
 
 // Importing Actor Core libraries
 
-#import <ActorSDK/ActorCore.h>
+#import <ActorSDK/ActorCoreUmbrella.h>
 
 // Phone Input
 
