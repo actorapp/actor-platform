@@ -10,7 +10,7 @@ xcodebuild \
   -scheme "ActorSDK" \
   -derivedDataPath build \
   -arch armv7 -arch armv7s -arch arm64 \
-  -sdk iphoneos9.0 \
+  -sdk iphoneos \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
@@ -21,7 +21,7 @@ xcodebuild \
   -scheme "ActorSDK" \
   -derivedDataPath build \
   -arch x86_64 \
-  -sdk iphonesimulator9.0 \
+  -sdk iphonesimulator \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
