@@ -75,7 +75,7 @@ isUmbrellaChanged = True
 
 umbrellaContent = ""
 for line in allFiles:
-    umbrellaContent += "#import <ActorSDK/" + line + ">\n"
+    umbrellaContent += "#import \"" + line + "\"\n"
 
 if os.path.exists('Public/ActorCoreUmbrella.h'):
     with open('Public/ActorCoreUmbrella.h', 'r') as d:
