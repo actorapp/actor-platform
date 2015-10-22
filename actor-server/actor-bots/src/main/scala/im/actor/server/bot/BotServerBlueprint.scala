@@ -70,6 +70,6 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
     case Services.Messaging ⇒ msgService
     case Services.Bots      ⇒ botsService
     case Services.WebHooks  ⇒ webhooksService
-    case Servies.Users      ⇒ usersService
+    case Services.Users     ⇒ usersService
   }
 }
