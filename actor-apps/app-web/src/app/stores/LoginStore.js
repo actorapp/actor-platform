@@ -24,6 +24,7 @@ let errors = {
 let step = AuthSteps.PHONE_WAIT;
 
 let isSmsRequested = false,
+    isCodeSended = false,
     isSignupStarted = false,
     myUid = null;
 
@@ -38,6 +39,10 @@ var LoginStore = assign({}, EventEmitter.prototype, {
 
   isSmsRequested: function () {
     return (isSmsRequested);
+  },
+
+  isCodeSended: function () {
+    return (isCodeSended);
   },
 
   isSignupStarted: function () {
@@ -70,13 +75,21 @@ const processPhoneExpired = () => {
 
 LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
   switch (action.type) {
+
+    case ActionTypes.AUTH_SMS_REQUEST:
+      isSmsRequested = true;
+      LoginStore.emitChange();
+      break;
+
     case ActionTypes.AUTH_SMS_REQUEST_SUCCESS:
       errors.phone = null;
+      isSmsRequested = false;
       step = AuthSteps.CODE_WAIT;
       mixpanel.track('Request SMS');
       LoginStore.emitChange();
       break;
     case ActionTypes.AUTH_SMS_REQUEST_FAILURE:
+      isSmsRequested = false;
       switch (action.error) {
         case 'PHONE_NUMBER_INVALID':
           errors.phone = intlData.messages.login.errors.numberInvalid;
@@ -84,12 +97,17 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
         default:
           errors.phone = action.error;
       }
+      LoginStore.emitChange();
+      break;
 
+    case ActionTypes.SEND_CODE:
+      isSmsRequested = false;
+      isCodeSended = true;
       LoginStore.emitChange();
       break;
     case ActionTypes.SEND_CODE_SUCCESS:
       errors.code = null;
-
+      isCodeSended = false;
       if (action.needSignup) {
         step = AuthSteps.SIGNUP_NAME_WAIT;
       } else {
@@ -99,6 +117,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       LoginStore.emitChange();
       break;
     case ActionTypes.SEND_CODE_FAILURE:
+      isCodeSended = false;
       switch (action.error) {
         case 'PHONE_CODE_INVALID':
           errors.code = intlData.messages.login.errors.codeInvalid;
@@ -110,7 +129,12 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
         default:
           errors.code = action.error;
       }
+      LoginStore.emitChange();
+      break;
 
+    case ActionTypes.SEND_SIGNUP:
+      isSignupStarted = true;
+      isCodeSended = false;
       LoginStore.emitChange();
       break;
     case ActionTypes.SEND_SIGNUP_SUCCESS:
@@ -121,6 +145,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       mixpanel.people.set_once({$created: new Date()});
       LoginStore.emitChange();
       break;
+
     case ActionTypes.SEND_SIGNUP_FAILURE:
       switch (action.error) {
         case 'NAME_INVALID':
@@ -135,11 +160,13 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       }
       LoginStore.emitChange();
       break;
+
     case ActionTypes.AUTH_WRONG_NUMBER_CLICK:
       errors.phone = null;
       step = AuthSteps.PHONE_WAIT;
       LoginStore.emitChange();
       break;
+
     case ActionTypes.SET_LOGGED_IN:
       myUid = ActorClient.getUid();
       const user = ActorClient.getUser(myUid);
@@ -154,7 +181,6 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.SET_LOGGED_OUT:
       Raven.setUserContext();
       mixpanel.track('Log out');
-      //mixpanel.cookie.clear();
       localStorage.clear();
       location.reload();
       break;
