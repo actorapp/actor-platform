@@ -5,7 +5,7 @@
 import _ from 'lodash';
 
 import React from 'react';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 import { Styles, TextField } from 'material-ui';
@@ -85,22 +85,22 @@ class Login extends React.Component {
   onRequestSms = event => {
     event.preventDefault();
     LoginActionCreators.requestSms(this.state.phone);
-  }
+  };
 
   onSendCode = event => {
     event.preventDefault();
     LoginActionCreators.sendCode(this.context.router, this.state.code);
-  }
+  };
 
   onSignupRequested = event => {
     event.preventDefault();
     LoginActionCreators.sendSignup(this.context.router, this.state.name);
-  }
+  };
 
   onWrongNumberClick = event => {
     event.preventDefault();
     LoginActionCreators.wrongNumberClick();
-  }
+  };
 
 
   handleFocus = () => {
@@ -117,18 +117,18 @@ class Login extends React.Component {
       default:
         return;
     }
-  }
+  };
 
   render() {
-    let requestFormClassName = classNames('login__form', 'login__form--request', {
+    let requestFormClassName = classnames('login__form', 'login__form--request', {
       'login__form--done': this.state.step > AuthSteps.PHONE_WAIT,
       'login__form--active': this.state.step === AuthSteps.PHONE_WAIT
     });
-    let checkFormClassName = classNames('login__form', 'login__form--check', {
+    let checkFormClassName = classnames('login__form', 'login__form--check', {
       'login__form--done': this.state.step > AuthSteps.CODE_WAIT,
       'login__form--active': this.state.step === AuthSteps.CODE_WAIT
     });
-    let signupFormClassName = classNames('login__form', 'login__form--signup', {
+    let signupFormClassName = classnames('login__form', 'login__form--signup', {
       'login__form--active': this.state.step === AuthSteps.SIGNUP_NAME_WAIT
     });
 
