@@ -7,6 +7,7 @@ import React from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
+import { lightbox } from 'utils/ImageUtils';
 
 import ActorClient from 'utils/ActorClient';
 import confirm from 'utils/confirm'
@@ -134,6 +135,8 @@ class GroupProfile extends React.Component {
 
   onEditGroupClick = (gid) => EditGroupActionCreators.show(gid);
 
+  handleAvatarClick= () => lightbox.open(this.props.group.bigAvatar);
+
   render() {
     const { group } = this.props;
     const {
@@ -183,7 +186,8 @@ class GroupProfile extends React.Component {
         <AvatarItem image={group.bigAvatar}
                     placeholder={group.placeholder}
                     size="large"
-                    title={group.name}/>
+                    title={group.name}
+                    onClick={this.handleAvatarClick}/>
 
         <h3 className="group_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(group.name)}}/>
         <div className="group_profile__meta__created">
