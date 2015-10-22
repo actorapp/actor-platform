@@ -10,6 +10,13 @@ if not os.path.exists('External'):
 allFiles = set()
 
 for root, directories, filenames in os.walk('Sources/'):
+    
+    count = len(root.split("/")) - 1
+    prefix = ""
+    if count > 1:
+        for i in range(0, count):
+            prefix = prefix + "../"
+
     for filename in filenames:
 
         # Matching only header files
@@ -51,11 +58,9 @@ for root, directories, filenames in os.walk('Sources/'):
                     if includedFile != 'objc/runtime.h':
                         localIncludePath = os.path.join("Sources/", includedFile)
                         if os.path.exists(localIncludePath):
-                            line = line[0:start] + "<ActorSDK/" + includedFile + ">" + line[end+1:]
+                            line = line[0:start] + "\"" + prefix + includedFile + "\"" + line[end+1:]
                         else:
                             line = "@import j2objc;"
-            #line = "@import j2objc." + includedFile.replace('.h', '').replace('/', '.') + ";"
-            # line = line[0:start] + "<j2objc/" + includedFile + ">" + line[end+1:]
         
                 destLines = destLines + line + "\n"
 
