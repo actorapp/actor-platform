@@ -41,7 +41,7 @@ final class WebHooksBotService(system: ActorSystem) extends BotServiceBase(syste
       {
         for {
           hooks ← get(botUserId)
-        } yield Right(Container(hooks))
+        } yield Right(ContainerList(hooks))
       }
   }
 

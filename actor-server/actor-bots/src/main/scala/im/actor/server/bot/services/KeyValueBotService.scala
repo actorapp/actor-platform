@@ -32,19 +32,19 @@ final class KeyValueBotService(system: ActorSystem) extends BotServiceBase(syste
 
   private def getValue(keyspace: String, key: String) = RequestHandler[GetValue, GetValue#Response](
     (botUserId: BotUserId, botAuthId: BotAuthId) ⇒ {
-      getSpace(botUserId, keyspace) get (key) map (v ⇒ Right(Container.apply(v)))
+      getSpace(botUserId, keyspace) get key map (v ⇒ Right(Container.apply(v)))
     }
   )
 
   private def deleteValue(keyspace: String, key: String) = RequestHandler[DeleteValue, DeleteValue#Response](
     (botUserId: BotUserId, botAuthId: BotAuthId) ⇒ {
-      getSpace(botUserId, keyspace) delete (key) map (_ ⇒ Right(Void))
+      getSpace(botUserId, keyspace) delete key map (_ ⇒ Right(Void))
     }
   )
 
   private def getKeys(keyspace: String) = RequestHandler[GetKeys, GetKeys#Response](
     (botUserId: BotUserId, botAuthId: BotAuthId) ⇒ {
-      getSpace(botUserId, keyspace) getKeys () map (v ⇒ Right(Container.apply(v)))
+      getSpace(botUserId, keyspace) getKeys () map (v ⇒ Right(ContainerList.apply(v)))
     }
   )
 
