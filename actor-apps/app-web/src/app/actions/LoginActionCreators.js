@@ -10,6 +10,7 @@ import DialogActionCreators from 'actions/DialogActionCreators';
 
 const LoginActionCreators = {
   requestSms: (phone) => {
+    dispatch(ActionTypes.AUTH_SMS_REQUEST);
     ActorClient.requestSms(
       phone,
       () => {
@@ -22,6 +23,7 @@ const LoginActionCreators = {
   },
 
   sendCode: (router, code) => {
+    dispatch(ActionTypes.SEND_CODE);
     ActorClient.sendCode(code,
       (state) => {
         switch (state) {
@@ -42,6 +44,7 @@ const LoginActionCreators = {
   },
 
   sendSignup: (router, name) => {
+    dispatch(ActionTypes.SEND_SIGNUP);
     ActorClient.signUp(name,
       () => {
         dispatch(ActionTypes.SEND_SIGNUP_SUCCESS);
