@@ -53,7 +53,9 @@ for root, directories, filenames in os.walk('Sources/'):
                         if os.path.exists(localIncludePath):
                             line = line[0:start] + "<ActorSDK/" + includedFile + ">" + line[end+1:]
                         else:
-                            line = line[0:start] + "<j2objc/" + includedFile + ">" + line[end+1:]
+                            line = "@import j2objc;"
+            #line = "@import j2objc." + includedFile.replace('.h', '').replace('/', '.') + ";"
+            # line = line[0:start] + "<j2objc/" + includedFile + ">" + line[end+1:]
         
                 destLines = destLines + line + "\n"
 
