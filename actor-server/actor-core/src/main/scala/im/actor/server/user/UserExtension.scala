@@ -5,7 +5,7 @@ import akka.util.Timeout
 import im.actor.server.hook._
 
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 sealed trait UserExtension extends Extension
 
