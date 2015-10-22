@@ -16,18 +16,20 @@ export const ActionTypes = keymirror({
   APP_HIDDEN: null,
   APP_VISIBLE: null,
 
+  AUTH_SMS_REQUEST: null,
   AUTH_SMS_REQUEST_SUCCESS: null,
   AUTH_SMS_REQUEST_FAILURE: null,
 
+  SEND_CODE: null,
   SEND_CODE_SUCCESS: null,
   SEND_CODE_FAILURE: null,
 
+  SEND_SIGNUP: null,
   SEND_SIGNUP_SUCCESS: null,
   SEND_SIGNUP_FAILURE: null,
 
   SET_LOGGED_IN: null,
   SET_LOGGED_OUT: null,
-  START_SIGNUP: null,
 
   AUTH_WRONG_NUMBER_CLICK: null,
 
