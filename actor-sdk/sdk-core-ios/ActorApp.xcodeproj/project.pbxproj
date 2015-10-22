@@ -425,7 +425,7 @@
 					"-framework",
 					"\"WebKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger3;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
@@ -542,7 +542,7 @@
 					"-framework",
 					"\"WebKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.messenger3;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
