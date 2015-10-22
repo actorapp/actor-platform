@@ -130,7 +130,7 @@ public class DataInput {
             throw new IOException("Count can't be negative");
         }
 
-        if (count > Limits.MAX_BLOCK_SIZE) {
+        if (count > BserLimits.MAX_BLOCK_SIZE) {
             throw new IOException("Unable to read more than 1 MB");
         }
 
@@ -184,7 +184,7 @@ public class DataInput {
         if (len < 0) {
             throw new IOException();
         }
-        if (len > Limits.MAX_BLOCK_SIZE) {
+        if (len > BserLimits.MAX_BLOCK_SIZE) {
             throw new IOException();
         }
         return readBytes((int) len);
@@ -195,7 +195,7 @@ public class DataInput {
         if (len < 0) {
             throw new IOException();
         }
-        if (len > Limits.MAX_PROTO_REPEATED) {
+        if (len > BserLimits.MAX_PROTO_REPEATED) {
             throw new IOException();
         }
 
