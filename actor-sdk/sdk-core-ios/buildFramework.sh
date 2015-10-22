@@ -39,7 +39,7 @@ cp -a build/Build/Products/Release-iphoneos/ActorSDK.framework build/Output/
 lipo -create "build/Build/Products/Release-iphoneos/ActorSDK.framework/ActorSDK" "build/Build/Products/Release-iphonesimulator/ActorSDK.framework/ActorSDK" -output build/Output/ActorSDK_Lipo
 rm -fr build/Output/ActorSDK.framework/ActorSDK
 mv build/Output/ActorSDK_Lipo build/Output/ActorSDK.framework/ActorSDK
-rm -f build/Output/ActorSDK.framework/Frameworks
+rm -fr build/Output/ActorSDK.framework/Frameworks
 
 # Merging swift docs
 cp -a build/Build/Products/Release-iphonesimulator/ActorSDK.framework/Modules/ActorSDK.swiftmodule/* build/Output/ActorSDK.framework/Modules/ActorSDK.swiftmodule/
