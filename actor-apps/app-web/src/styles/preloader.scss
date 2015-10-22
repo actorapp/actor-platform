@@ -1,5 +1,7 @@
-$preloaderMaxHeight: 20px;
-$preloaderColor: white;
+$preloader-max-height: 20px;
+$preloader-color: white;
+$spiner-height: 20px;
+$spiner-color: white;
 
 @keyframes line-scale {
   0%, 40%, 100% {
@@ -12,25 +14,30 @@ $preloaderColor: white;
   }
 }
 
+@keyframes circle-fade-delay {
+  0%, 39%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
 .preloader {
   //height: $preloaderMaxHeight;
   display: inline-block;
 
   background-color: rgba(0,0,0,.2);
-  height: $preloaderMaxHeight + 20px;
-  width: $preloaderMaxHeight + 20px;
+  height: $preloader-max-height + 20px;
+  width: $preloader-max-height + 20px;
   padding: 10px;
   box-sizing: border-box;
   border-radius: 50%;
   div {
     position: relative;
     box-sizing: content-box;
-    color: $preloaderColor;
-    background: $preloaderColor;
-    border: 0 solid $preloaderColor;
+    color: $preloader-color;
+    background: $preloader-color;
+    border: 0 solid $preloader-color;
     display: inline-block;
     width: 2px;
-    height: $preloaderMaxHeight;
+    height: $preloader-max-height;
     margin: 0 1px;
     float: left;
     border-radius: 0;
@@ -63,3 +70,37 @@ $preloaderColor: white;
     content: "";
   }
 }
+
+.spinner {
+  width: $spiner-height;
+  height: $spiner-height;
+  position: relative;
+  user-select: none;
+  div {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    &:before {
+      content: '';
+      display: block;
+      margin: 0 auto;
+      width: 12%;
+      height: 12%;
+      background-color: $spiner-color;
+      border-radius: 100%;
+      animation: circle-fade-delay 1.2s infinite ease-in-out both;
+    }
+
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) {
+        transform: rotate(30deg * $i);
+        &:before {
+          animation-delay: -(1.1s - ($i * .1));
+        }
+      }
+    }
+  }
+}
+
