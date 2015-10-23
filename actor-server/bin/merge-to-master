@@ -4,7 +4,7 @@ set -eu
 
 git diff-index --quiet --cached HEAD
 
-if [$? == 0]
+if [ $? -eq 0 ]
 then
     git checkout master
     git pull --rebase origin master
