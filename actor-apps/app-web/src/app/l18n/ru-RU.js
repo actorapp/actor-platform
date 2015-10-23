@@ -10,6 +10,7 @@ export default {
       'yourName': 'Ваше имя',
       'errors': {
         'numberInvalid': 'Неправильный номер',
+        'activationError': 'Попытайтесь запросить код позже',
         'nameInvalid': ' Неправильное имя',
         'codeInvalid': 'Неправильный код',
         'codeExpired': 'Время действия кода истекло'
