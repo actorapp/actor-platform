@@ -10,6 +10,7 @@ export default {
       'yourName': 'Su nombre',
       'errors': {
         'numberInvalid': 'Número no válido',
+        'activationError': 'Attempt to get code later',
         'nameInvalid': 'Nombre no válido',
         'codeInvalid': 'Código no válido',
         'codeExpired': 'Phone code is expired'
