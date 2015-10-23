@@ -215,11 +215,11 @@ public class AAManagedTable {
         if (searchDisplayController != nil && searchDisplayController!.active) {
             
             // If search is active: apply search status bar style
-            // MainAppTheme.search.applyStatusBar()
+            UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.vcStatusBarStyle, animated: true)
         } else {
             
             // If search is not active: apply main status bar style
-            // MainAppTheme.navigation.applyStatusBar()
+            UIApplication.sharedApplication().setStatusBarStyle(ActorSDK.sharedActor().style.searchStatusBarStyle, animated: true)
         }
     }
 }

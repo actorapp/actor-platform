@@ -11,7 +11,7 @@ object Dependencies {
     val scalaz = "7.1.1"
     val slick = "3.0.3"
     val scalatest = "2.2.4"
-    val shardakka = "0.1.12"
+    val shardakka = "0.1.14"
     val scalapbSer = "0.1.6"
   }
 
@@ -29,6 +29,7 @@ object Dependencies {
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
     val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.0.0"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
+    val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
 
     val sprayWebsocket          = "com.wandoulabs.akka"           %% "spray-websocket"               % "0.1.4"
 
@@ -111,13 +112,13 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaStream
   )
 
-  val activation = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, playJson)
+  val activation = shared ++ Seq(akkaActor, sprayClient, playJson)
 
   val bots = shared ++ Seq(upickle, shardakka)
 
   val botkit = Seq(actorConcurrent, akkaActor, akkaHttp, akkaSlf4j, javaCompat, sprayWebsocket, upickle)
 
-  val botShared = Seq(upickle)
+  val botShared = Seq(upickle, javaCompat)
 
   val cli = Seq(akkaClusterTools, scopt)
 

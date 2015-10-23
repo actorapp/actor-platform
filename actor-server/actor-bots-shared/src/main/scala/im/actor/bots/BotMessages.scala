@@ -4,6 +4,10 @@ import derive.key
 import upickle.Js
 import upickle.default._
 
+import scala.annotation.meta.beanGetter
+import scala.collection.JavaConversions._
+import scala.compat.java8.OptionConverters._
+
 object BotMessages {
 
   sealed trait BotMessage
@@ -16,60 +20,80 @@ object BotMessages {
     val KeyValue = "keyvalue"
     val Messaging = "messaging"
     val Bots = "bots"
+    val WebHooks = "webhooks"
+    val Users = "users"
   }
 
   final case class FileLocation(
-    fileId:     Long,
-    accessHash: Long
+    @beanGetter fileId:     Long,
+    @beanGetter accessHash: Long
   )
 
   final case class AvatarImage(
-    fileLocation: FileLocation,
-    width:        Int,
-    height:       Int,
-    fileSize:     Int
+    @beanGetter fileLocation: FileLocation,
+    @beanGetter width:        Int,
+    @beanGetter height:       Int,
+    @beanGetter fileSize:     Int
   )
 
   final case class Avatar(
-    smallImage: Option[AvatarImage],
-    largeImage: Option[AvatarImage],
-    fullImage:  Option[AvatarImage]
+    @beanGetter smallImage: Option[AvatarImage],
+    @beanGetter largeImage: Option[AvatarImage],
+    @beanGetter fullImage:  Option[AvatarImage]
   )
 
   final case class User(
-    id:         Int,
-    accessHash: Long,
-    name:       String,
-    sex:        Option[Int],
-    about:      Option[String],
-    avatar:     Option[Avatar],
-    username:   Option[String],
-    isBot:      Option[Boolean]
+    @beanGetter id:         Int,
+    @beanGetter accessHash: Long,
+    @beanGetter name:       String,
+    @beanGetter sex:        Option[Int],
+    about:                  Option[String],
+    avatar:                 Option[Avatar],
+    username:               Option[String],
+    isBot:                  Option[Boolean]
   ) {
     def isMale = sex.contains(1)
 
     def isFemale = sex.contains(2)
 
     def isABot = isBot.contains(true)
+
+    def getSex = sex.asJava
+
+    def getAbout = about.asJava
+
+    def getAvatar = avatar.asJava
+
+    def getUsername = username.asJava
+
+    def getIsBot = isBot.asJava
   }
 
   final case class GroupMember(
-    userId:        Int,
-    inviterUserId: Int,
-    memberSince:   Long,
-    isAdmin:       Option[Boolean]
-  )
+    @beanGetter userId:        Int,
+    @beanGetter inviterUserId: Int,
+    @beanGetter memberSince:   Long,
+    isAdmin:                   Option[Boolean]
+  ) {
+    def getIsAdmin = isAdmin.asJava
+  }
 
   final case class Group(
-    id:            Int,
-    accessHash:    Long,
-    title:         String,
-    about:         Option[String],
-    avatar:        Option[Avatar],
-    isMember:      Boolean,
-    creatorUserId: Int,
-    members:       Seq[GroupMember]
-  )
+    @beanGetter id:            Int,
+    @beanGetter accessHash:    Long,
+    @beanGetter title:         String,
+    about:                     Option[String],
+    avatar:                    Option[Avatar],
+    @beanGetter isMember:      Boolean,
+    @beanGetter creatorUserId: Int,
+    members:                   Seq[GroupMember]
+  ) {
+    def getAbout = about.asJava
+
+    def getAvatar = about.asJava
+
+    def getMembers = seqAsJavaList(members)
+  }
 
   final object OutPeer {
     def privat(id: Int, accessHash: Long) = OutPeer(1, id, accessHash)
@@ -80,9 +104,9 @@ object BotMessages {
   }
 
   final case class OutPeer(
-    `type`:     Int,
-    id:         Int,
-    accessHash: Long
+    @beanGetter `type`:     Int,
+    @beanGetter id:         Int,
+    @beanGetter accessHash: Long
   ) {
     final def isPrivate = `type` == 1
 
@@ -92,15 +116,15 @@ object BotMessages {
   }
 
   final case class UserOutPeer(
-    id:         Int,
-    accessHash: Long
+    @beanGetter id:         Int,
+    @beanGetter accessHash: Long
   ) {
     val asOutPeer = OutPeer(1, id, accessHash)
   }
 
   final case class Peer(
-    `type`: Int,
-    id:     Int
+    @beanGetter `type`: Int,
+    @beanGetter id:     Int
   )
 
   sealed trait RequestBody {
@@ -149,7 +173,14 @@ object BotMessages {
   ) extends BotUpdate
 
   @key("Error")
-  case class BotError(code: Int, tag: String, data: Js.Obj, retryIn: Option[Int]) extends RuntimeException with BotResponseBody
+  case class BotError(code: Int, tag: String, data: Js.Obj, retryIn: Option[Int]) extends RuntimeException(
+    s"code: $code, tag: $tag, data: ${write(data)}, retryIn: $retryIn"
+  ) with BotResponseBody
+
+  object BotError {
+    def apply(code: Int, tag: String): BotError = BotError(code, tag, Js.Obj(), None)
+    def apply(code: Int, tag: String, retryIn: Option[Int]): BotError = BotError(code, tag, Js.Obj(), retryIn)
+  }
 
   @key("Success")
   case class BotSuccess(obj: Js.Obj) extends BotResponseBody
@@ -180,7 +211,10 @@ object BotMessages {
       )
   }
 
-  final case class Container[T](value: T) extends ResponseBody
+  case class Container[T](@beanGetter value: T) extends ResponseBody
+  final case class ContainerList[T](value: Seq[T]) extends ResponseBody {
+    def getValue = seqAsJavaList(value)
+  }
 
   trait Void extends ResponseBody
 
@@ -195,10 +229,10 @@ object BotMessages {
   }
 
   @key("SendMessage")
-  final case class SendTextMessage(
-    peer:     OutPeer,
-    randomId: Long,
-    text:     String
+  final case class SendMessage(
+    @beanGetter peer:     OutPeer,
+    @beanGetter randomId: Long,
+    @beanGetter message:  MessageBody
   ) extends RequestBody {
     override type Response = MessageSent
     override val service = Services.Messaging
@@ -208,9 +242,9 @@ object BotMessages {
 
   @key("SetValue")
   final case class SetValue(
-    keyspace: String,
-    key:      String,
-    value:    String
+    @beanGetter keyspace: String,
+    @beanGetter key:      String,
+    @beanGetter value:    String
   ) extends RequestBody {
     override type Response = Void
     override val service = Services.KeyValue
@@ -220,8 +254,8 @@ object BotMessages {
 
   @key("GetValue")
   final case class GetValue(
-    keyspace: String,
-    key:      String
+    @beanGetter keyspace: String,
+    @beanGetter key:      String
   ) extends RequestBody {
     override type Response = Container[Option[String]]
     override val service = Services.KeyValue
@@ -231,8 +265,8 @@ object BotMessages {
 
   @key("DeleteValue")
   final case class DeleteValue(
-    keyspace: String,
-    key:      String
+    @beanGetter keyspace: String,
+    @beanGetter key:      String
   ) extends RequestBody {
     override type Response = Void
     override val service = Services.KeyValue
@@ -241,30 +275,164 @@ object BotMessages {
   }
 
   @key("GetKeys")
-  final case class GetKeys(keyspace: String) extends RequestBody {
-    override type Response = Container[Seq[String]]
+  final case class GetKeys(@beanGetter keyspace: String) extends RequestBody {
+    override type Response = ContainerList[String]
     override val service = Services.KeyValue
 
-    override def readResponse(obj: Js.Obj) = readJs[Container[Seq[String]]](obj)
+    override def readResponse(obj: Js.Obj) = readJs[ContainerList[String]](obj)
   }
 
   @key("CreateBot")
-  final case class CreateBot(username: String, name: String) extends RequestBody {
-    override type Response = Container[String]
+  final case class CreateBot(
+    @beanGetter username: String,
+    @beanGetter name:     String
+  ) extends RequestBody {
+    override type Response = BotCreated
     override val service = Services.Bots
 
     override def readResponse(obj: Js.Obj) = readJs[Response](obj)
   }
 
-  final case class MessageSent(date: Long) extends ResponseBody
+  @key("BotCreated")
+  final case class BotCreated(
+    @beanGetter token:  String,
+    @beanGetter userId: Int
+  ) extends ResponseBody
 
-  @key("TextMessage")
-  final case class TextMessage(
-    peer:     OutPeer,
-    sender:   UserOutPeer,
-    date:     Long,
-    randomId: Long,
-    text:     String
+  @key("RegisterHook")
+  final case class RegisterHook(@beanGetter name: String) extends RequestBody {
+    override type Response = Container[String]
+    override val service = Services.WebHooks
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("GetHooks")
+  sealed trait GetHooks extends RequestBody {
+    override type Response = ContainerList[String]
+    override val service = Services.WebHooks
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("GetHooks")
+  final case object GetHooks extends GetHooks
+
+  @key("ChangeUserAvatar")
+  final case class ChangeUserAvatar(
+    @beanGetter userId:       Int,
+    @beanGetter fileLocation: FileLocation
+  ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("ChangeUserName")
+  final case class ChangeUserName(
+    @beanGetter userId: Int,
+    @beanGetter name:   String
+  ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+  }
+
+  @key("ChangeUserAbout")
+  final case class ChangeUserAbout(
+    @beanGetter userId: Int,
+    about:              Option[String]
+  ) extends RequestBody {
+    override type Response = Void
+    override val service = Services.Users
+
+    override def readResponse(obj: Js.Obj) = readJs[Response](obj)
+
+    def getAbout = about.asJava
+  }
+
+  @key("FindUser")
+  final case class FindUser(
+    @beanGetter query: String
+  ) extends RequestBody {
+    override type Response = FoundUsers
+    override val service: String = Services.Users
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
+  final case class FoundUsers(users: Seq[User]) extends ResponseBody {
+    def getUsers = seqAsJavaList(users)
+  }
+
+  final case class MessageSent(@beanGetter date: Long) extends ResponseBody
+
+  @key("Message")
+  final case class Message(
+    @beanGetter peer:     OutPeer,
+    @beanGetter sender:   UserOutPeer,
+    @beanGetter date:     Long,
+    @beanGetter randomId: Long,
+    @beanGetter message:  MessageBody
   ) extends UpdateBody
+
+  sealed trait MessageBody
+
+  @key("Text")
+  final case class TextMessage(@beanGetter text: String) extends MessageBody
+
+  @key("Json")
+  final case class JsonMessage(@beanGetter rawJson: String) extends MessageBody
+
+  @key("Document")
+  final case class DocumentMessage(
+    @beanGetter fileId:     Long,
+    @beanGetter accessHash: Long,
+    @beanGetter fileSize:   Long,
+    @beanGetter name:       String,
+    @beanGetter mimeType:   String,
+    thumb:                  Option[FastThumb],
+    ext:                    Option[DocumentEx]
+  ) extends MessageBody {
+    def getThumb = thumb.asJava
+
+    def getExt = ext.asJava
+  }
+
+  @key("Service")
+  final case class ServiceMessage(@beanGetter text: String) extends MessageBody
+
+  @key("Unsupported")
+  sealed trait UnsupportedMessage extends MessageBody
+
+  @key("Unsupported")
+  final case object UnsupportedMessage extends UnsupportedMessage
+
+  @key("FastThumb")
+  final case class FastThumb(
+    @beanGetter width:  Int,
+    @beanGetter height: Int,
+    @beanGetter thumb:  String
+  )
+
+  sealed trait DocumentEx
+
+  @key("Photo")
+  final case class DocumentExPhoto(
+    @beanGetter width:  Int,
+    @beanGetter height: Int
+  ) extends DocumentEx
+
+  @key("Video")
+  final case class DocumentExVideo(
+    @beanGetter width:    Int,
+    @beanGetter height:   Int,
+    @beanGetter duration: Int
+  ) extends DocumentEx
+
+  @key("Voice")
+  final case class DocumentExVoice(@beanGetter duration: Int) extends DocumentEx
 
 }

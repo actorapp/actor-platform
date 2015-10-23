@@ -12,22 +12,22 @@ FOUNDATION_EXPORT const unsigned char ActorSDKVersionString[];
 
 // Importing J2ObjC Runtime
 
-#import <j2objc/j2objc.h>
+@import j2objc;
 
 // Importing Actor Core libraries
 
-#import <ActorSDK/ActorCore.h>
+#import "ActorCoreUmbrella.h"
 
 // Phone Input
 
-#import <ActorSDK/ABPhoneField.h>
-#import <ActorSDK/RMPhoneFormat.h>
+#import "ABPhoneField.h"
+#import "RMPhoneFormat.h"
 
 // FMDB include. FMDB Doesn't support frameworks yet, so we included it to app itself
 
-#import <ActorSDK/FMDatabase.h>
-#import <ActorSDK/FMResultSet.h>
-#import <ActorSDK/FMDatabaseAdditions.h>
-#import <ActorSDK/FMDatabaseQueue.h>
+#import "FMDatabase.h"
+#import "FMResultSet.h"
+#import "FMDatabaseAdditions.h"
+#import "FMDatabaseQueue.h"
 
-#import <ActorSDK/CLTokenInputView.h>
+#import "CLTokenInputView.h"

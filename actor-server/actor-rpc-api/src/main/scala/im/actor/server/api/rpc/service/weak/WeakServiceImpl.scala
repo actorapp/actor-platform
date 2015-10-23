@@ -33,7 +33,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
 
           for {
-            otherUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.filterNot(_ == client.userId))
+            otherUserIds ← persist.GroupUserRepo.findUserIds(peer.id) map (_.filterNot(_ == client.userId))
             _ ← DBIO.sequence(otherUserIds map (weakUpdatesExt.broadcastUserWeakUpdate(_, update, Some(reduceKey))))
           } yield ()
       }

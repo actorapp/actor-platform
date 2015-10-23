@@ -20,8 +20,8 @@ class Users extends Controller {
   def get(id: Int) = AuthAction.async { request ⇒
     db.run {
       for {
-        optUser ← persist.User.find(id).headOption
-        phones ← persist.UserPhone.findByUserId(id)
+        optUser ← persist.UserRepo.find(id).headOption
+        phones ← persist.UserPhoneRepo.findByUserId(id)
         user ← optUser.map { u ⇒
           DBIO.successful(Ok(Json.toJson(u).as[JsObject] + ("phones" → Json.toJson(phones))))
         } getOrElse DBIO.successful(NotFound(Json.toJson(Map("message" → "No such user found"))))
@@ -34,19 +34,19 @@ class Users extends Controller {
       errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
       completeUser ⇒ db.run {
         for {
-          dept ← persist.Department.find(completeUser.struct).headOption
+          dept ← persist.DepartmentRepo.find(completeUser.struct).headOption
           result ← dept.map { d ⇒
             for {
-              optPhone ← persist.UserPhone.findByPhoneNumber(completeUser.phone.number).headOption
+              optPhone ← persist.UserPhoneRepo.findByPhoneNumber(completeUser.phone.number).headOption
               result ← optPhone.map { phone ⇒
                 DBIO.successful(
                   NotAcceptable(Json.toJson(Map("message" → s"User with phone ${phone.number} already exists")))
                 )
               } getOrElse {
                 for {
-                  _ ← persist.User.create(completeUser.user)
-                  _ ← persist.UserPhone.create(completeUser.phone)
-                  _ ← persist.UserDepartment.create(completeUser.user.id, d.id)
+                  _ ← persist.UserRepo.create(completeUser.user)
+                  _ ← persist.UserPhoneRepo.create(completeUser.phone)
+                  _ ← persist.UserDepartmentRepo.create(completeUser.user.id, d.id)
                 } yield Created(Json.toJson(Map("id" → completeUser.user.id)))
               }
             } yield result
@@ -60,7 +60,7 @@ class Users extends Controller {
     request.body.validate[UserUpdate].fold(
       errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
       update ⇒ db.run {
-        for (_ ← persist.User.setName(id, update.name)) yield Accepted
+        for (_ ← persist.UserRepo.setName(id, update.name)) yield Accepted
       }
     )
   }
@@ -68,7 +68,7 @@ class Users extends Controller {
   def delete(id: Int) = AuthAction.async { request ⇒
     db.run {
       for {
-        _ ← persist.User.setDeletedAt(id)
+        _ ← persist.UserRepo.setDeletedAt(id)
       } yield Accepted
     }
   }
@@ -77,7 +77,7 @@ class Users extends Controller {
     db.run {
       for {
         usersAndPhones ← (for {
-          (u, up) ← persist.User.page(page, perPage) joinLeft persist.UserPhone.phones on (_.id === _.userId)
+          (u, up) ← persist.UserRepo.page(page, perPage) joinLeft persist.UserPhoneRepo.phones on (_.id === _.userId)
         } yield (u, up)).result
         result ← DBIO.successful(
           usersAndPhones.

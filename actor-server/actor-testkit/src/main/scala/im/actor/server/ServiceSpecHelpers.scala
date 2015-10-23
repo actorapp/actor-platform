@@ -13,6 +13,7 @@ import im.actor.server.oauth.GoogleProvider
 import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
 import im.actor.server.user.UserExtension
 import org.scalatest.Suite
+import org.scalatest.concurrent.Futures
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent._
@@ -22,17 +23,17 @@ import scalaz.{ -\/, \/- }
 trait PersistenceHelpers {
   protected implicit val timeout = Timeout(5.seconds)
 
-  def getUserModel(userId: Int)(implicit db: Database) = Await.result(db.run(persist.User.find(userId).head), timeout.duration)
+  def getUserModel(userId: Int)(implicit db: Database) = Await.result(db.run(persist.UserRepo.find(userId).head), timeout.duration)
 }
 
 trait UserStructExtensions {
   implicit class ExtUser(user: rpcapi.users.ApiUser) {
     def asModel()(implicit db: Database): models.User =
-      Await.result(db.run(persist.User.find(user.id).head), 3.seconds)
+      Await.result(db.run(persist.UserRepo.find(user.id).head), 3.seconds)
   }
 }
 
-trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
+trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions with Futures {
   this: Suite ⇒
 
   protected val system: ActorSystem
@@ -51,15 +52,15 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   def createAuthId()(implicit db: Database): Long = {
     val authId = scala.util.Random.nextLong()
 
-    Await.result(db.run(persist.AuthId.create(authId, None, None)), 1.second)
+    Await.result(db.run(persist.AuthIdRepo.create(authId, None, None)), 1.second)
     authId
   }
 
   def createAuthId(userId: Int)(implicit ec: ExecutionContext, system: ActorSystem, db: Database, service: rpcapi.auth.AuthService): Long = {
     val authId = scala.util.Random.nextLong()
-    Await.result(db.run(persist.AuthId.create(authId, None, None)), 1.second)
+    Await.result(db.run(persist.AuthIdRepo.create(authId, None, None)), 1.second)
 
-    val phoneNumber = Await.result(db.run(persist.UserPhone.findByUserId(userId)) map (_.head.number), 1.second)
+    val phoneNumber = Await.result(db.run(persist.UserPhoneRepo.findByUserId(userId)) map (_.head.number), 1.second)
 
     val smsCode = getSmsCode(authId, phoneNumber)
 
@@ -97,7 +98,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     val res = Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(rpcapi.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second)
     res.toOption.get
 
-    Await.result(db.run(persist.AuthSmsCodeObsolete.findByPhoneNumber(phoneNumber).head), 5.seconds)
+    Await.result(db.run(persist.AuthSmsCodeObsoleteRepo.findByPhoneNumber(phoneNumber).head), 5.seconds)
   }
 
   def createUser()(implicit service: rpcapi.auth.AuthService, db: Database, system: ActorSystem): (rpcapi.users.ApiUser, Long, Long) = {

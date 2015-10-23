@@ -10,12 +10,14 @@ import im.actor.server.office.EntityNotFound
 import im.actor.server.user.UserExtension
 import im.actor.server.persist
 import im.actor.util.misc.IdUtils
-import shardakka.ShardakkaExtension
+import shardakka.keyvalue.SimpleKeyValue
+import shardakka.{ IntCodec, ShardakkaExtension }
 
 import scala.concurrent.Future
 
 object BotExtension extends ExtensionId[BotExtension] {
   private[bot] val tokensKV = "BotsTokens"
+  private[bot] val whTokensKV = "BotsWHTokens"
 
   override def createExtension(system: ExtendedActorSystem): BotExtension = new BotExtensionImpl(system)
 }
@@ -24,6 +26,9 @@ trait BotExtension extends Extension {
   type Token = String
   type UserId = Int
   type AuthId = Long
+
+  val tokensKV: SimpleKeyValue[Int]
+  val whTokensKV: SimpleKeyValue[Int]
 
   /**
    * Creates a bot user
@@ -34,7 +39,7 @@ trait BotExtension extends Extension {
    * @param isAdmin
    * @return token future
    */
-  def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[Token]
+  def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[(Token, UserId)]
 
   /**
    * Creates a bot user
@@ -44,7 +49,7 @@ trait BotExtension extends Extension {
    * @param isAdmin
    * @return
    */
-  def create(nickname: String, name: String, isAdmin: Boolean): Future[Token]
+  def create(nickname: String, name: String, isAdmin: Boolean): Future[(Token, UserId)]
 
   /**
    * Check if the bot user already exists
@@ -60,6 +65,14 @@ trait BotExtension extends Extension {
    * @return user id
    */
   def getUserId(token: String): Future[Option[UserId]]
+
+  /**
+   * Gets userId associated with web hook token
+   *
+   * @param token
+   * @return
+   */
+  def getUserIdByHookToken(token: String): Future[Option[UserId]]
 
   /**
    * Gets or creates bot auth id
@@ -83,16 +96,17 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
   private lazy val userExt = UserExtension(system)
-  private lazy val tokensKV = ShardakkaExtension(system).simpleKeyValue(BotExtension.tokensKV)
+  lazy val tokensKV = ShardakkaExtension(system).simpleKeyValue(BotExtension.tokensKV, IntCodec)
+  lazy val whTokensKV = ShardakkaExtension(system).simpleKeyValue(BotExtension.whTokensKV, IntCodec)
   private lazy val db = DbExtension(system).db
 
-  override def create(nickname: String, name: String, isAdmin: Boolean): Future[Token] =
+  override def create(nickname: String, name: String, isAdmin: Boolean): Future[(Token, UserId)] =
     for {
       id ← userExt.nextId()
-      token ← create(id, nickname, name, isAdmin)
-    } yield token
+      result ← create(id, nickname, name, isAdmin)
+    } yield result
 
-  override def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[Token] = {
+  override def create(userId: UserId, nickname: String, name: String, isAdmin: Boolean): Future[(Token, UserId)] = {
     val token = ACLUtils.randomHash()
 
     for {
@@ -103,10 +117,11 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
         name = name,
         countryCode = "US",
         sex = ApiSex.Unknown,
-        isBot = true
+        isBot = true,
+        isAdmin = isAdmin
       )
-      _ ← tokensKV.upsert(token, s"$userId")
-    } yield token
+      _ ← tokensKV.upsert(token, userId)
+    } yield (token, userId)
   }
 
   override def exists(userId: UserId): Future[Boolean] = {
@@ -115,11 +130,11 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
     }
   }
 
-  override def getUserId(token: String): Future[Option[UserId]] = {
-    for {
-      tokOpt ← tokensKV.get(token)
-    } yield tokOpt map (_.toInt)
-  }
+  override def getUserId(token: String): Future[Option[UserId]] =
+    tokensKV.get(token)
+
+  override def getUserIdByHookToken(token: String): Future[Option[UserId]] =
+    whTokensKV.get(token)
 
   override def getAuthId(token: String): Future[Option[AuthId]] = {
     getUserId(token) flatMap {
@@ -131,14 +146,14 @@ private[bot] final class BotExtensionImpl(_system: ActorSystem) extends BotExten
   override def getAuthId(userId: UserId): Future[AuthId] = getOrCreateAuthId(userId)
 
   private def getOrCreateAuthId(userId: Int): Future[AuthId] = {
-    db.run(persist.AuthId.findFirstIdByUserId(userId)) flatMap {
+    db.run(persist.AuthIdRepo.findFirstIdByUserId(userId)) flatMap {
       case Some(authId) ⇒
         Future.successful(authId)
       case None ⇒
         val authId = ACLUtils.randomLong()
 
         for {
-          _ ← db.run(persist.AuthId.create(authId, None, None))
+          _ ← db.run(persist.AuthIdRepo.create(authId, None, None))
           _ ← userExt.auth(userId, authId)
         } yield authId
     }

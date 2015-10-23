@@ -2,7 +2,9 @@ package im.actor.server.api.rpc.service.contacts
 
 import java.security.MessageDigest
 
+import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
+import im.actor.server.user.UserCommands.ContactToAdd
 
 import scala.collection.immutable
 import scala.concurrent._
@@ -11,7 +13,7 @@ import scala.concurrent.duration._
 import akka.actor._
 import akka.util.Timeout
 import scodec.bits.BitVector
-import shapeless._, syntax.std.tuple._
+import shapeless._
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
@@ -21,7 +23,7 @@ import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, ApiUser }
 import im.actor.server.db.DbExtension
-import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerRegion }
 import im.actor.server.user._
 import im.actor.util.misc.PhoneNumberUtils
@@ -64,37 +66,26 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
       for {
         client ← authorizedClient(clientData)
         (clientPhones, clientEmails) ← fromFuture(userExt.getContactRecordsSet(client.userId))
-        user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
-        optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
-        optEmail ← fromDBIO(persist.UserEmail.findByUserId(client.userId).headOption)
+        user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.UserRepo.find(client.userId).headOption)
+        optPhone ← fromDBIO(persist.UserPhoneRepo.findByUserId(client.userId).headOption)
+        optEmail ← fromDBIO(persist.UserEmailRepo.findByUserId(client.userId).headOption)
 
-        phoneUsers ← fromDBIO(importPhones(user, optPhone, phones.filterNot(p ⇒ clientPhones.contains(p.phoneNumber)))(client))
-        (pUsers, pUserIds) = phoneUsers
+        (pUsers, pSeqstate) ← fromDBIO(importPhones(user, optPhone, phones.filterNot(p ⇒ clientPhones.contains(p.phoneNumber)))(client))
 
-        emailUsersAndIds ← fromDBIO(importEmails(user, optEmail, emails.filterNot(e ⇒ clientEmails.contains(e.email)))(client))
-        (eUsers, eUserIds) = emailUsersAndIds
-
-        seqstate ← fromFuture(
-          if ((pUserIds ++ eUserIds).nonEmpty) {
-            implicit val c = client
-            userExt.broadcastClientUpdate(UpdateContactsAdded((pUserIds ++ eUserIds).toVector), None, isFat = true)
-          } else {
-            SeqUpdatesManager.getSeqState(client.authId)
-          }
-        )
-      } yield ResponseImportContacts((pUsers ++ eUsers).toVector, seqstate.seq, seqstate.state.toByteArray)
+        (eUsers, eSeqstate) ← fromDBIO(importEmails(user, optEmail, emails.filterNot(e ⇒ clientEmails.contains(e.email)))(client))
+      } yield ResponseImportContacts((pUsers ++ eUsers).toVector, eSeqstate.seq, eSeqstate.state.toByteArray)
 
     db.run(action.run)
   }
 
   override def jhandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      val action = persist.contact.UserContact.findContactIdsActive(client.userId).map(hashIds).flatMap { hash ⇒
+      val action = persist.contact.UserContactRepo.findContactIdsActive(client.userId).map(hashIds).flatMap { hash ⇒
         if (contactsHash == hash) {
           DBIO.successful(Ok(ResponseGetContacts(Vector.empty[users.ApiUser], isNotChanged = true)))
         } else {
           for {
-            userIds ← persist.contact.UserContact.findContactIdsActive(client.userId)
+            userIds ← persist.contact.UserContactRepo.findContactIdsActive(client.userId)
             userStructs ← DBIO.from(Future.sequence(userIds.map(userId ⇒
               userExt.getApiStruct(userId, client.userId, client.authId))))
           } yield {
@@ -114,18 +105,20 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   override def jhandleRemoveContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
+      persist.contact.UserContactRepo.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
         case Some(contact) ⇒
-          if (accessHash == ACLUtils.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
-            for {
-              _ ← deleteContact(client.userId, userId)
-              _ ← DBIO.from(userExt.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None, isFat = false))
-              seqstate ← DBIO.from(userExt.broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)), None, isFat = false))
-            } yield {
-              Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+          DBIO.from(userExt.getAccessHash(userId, clientData.authId)) flatMap { contactAccessHash ⇒
+            if (accessHash == contactAccessHash) {
+              for {
+                _ ← deleteContact(client.userId, userId)
+                _ ← DBIO.from(userExt.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None, isFat = false))
+                seqstate ← DBIO.from(userExt.broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)), None, isFat = false))
+              } yield {
+                Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+              }
+            } else {
+              DBIO.successful(Error(CommonErrors.InvalidAccessHash))
             }
-          } else {
-            DBIO.successful(Error(CommonErrors.InvalidAccessHash))
           }
         case None ⇒ DBIO.successful(Error(Errors.ContactNotFound))
       }
@@ -137,21 +130,17 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   override def jhandleAddContact(userId: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val action = (for {
-        optUser ← persist.User.find(userId).headOption
-        optNumber ← optUser.map(user ⇒ persist.UserPhone.findByUserId(user.id).headOption).getOrElse(DBIO.successful(None))
+        optUser ← persist.UserRepo.find(userId).headOption
+        optNumber ← optUser.map(user ⇒ persist.UserPhoneRepo.findByUserId(user.id).headOption).getOrElse(DBIO.successful(None))
       } yield {
         (optUser, optNumber map (_.number))
       }) flatMap {
         case (Some(user), optPhoneNumber) ⇒
           if (accessHash == ACLUtils.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
-            persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
+            persist.contact.UserContactRepo.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
               case None ⇒
                 for {
-                  _ ← optPhoneNumber match {
-                    case Some(phoneNumber) ⇒ addContact(client.userId, user.id, phoneNumber, None, user.accessSalt)
-                    case None              ⇒ addContact(client.userId, user.id, None, user.accessSalt)
-                  }
-                  seqstate ← DBIO.from(userExt.broadcastClientUpdate(UpdateContactsAdded(Vector(user.id)), None, isFat = true))
+                  seqstate ← DBIO.from(userExt.addContact(client.userId, client.authId, user.id, None, optPhoneNumber, None))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               case Some(contact) ⇒
                 DBIO.successful(Error(Errors.ContactAlreadyExists))
@@ -179,23 +168,23 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   private def findByNickname(nickname: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
     for {
-      users ← fromDBIO(persist.User.findByNickname(nickname) map (_.toList))
+      users ← fromDBIO(persist.UserRepo.findByNickname(nickname) map (_.toList))
       structs ← fromFuture(Future.sequence(users map (user ⇒ userExt.getApiStruct(user.id, client.userId, client.authId))))
     } yield structs.toVector
   }
 
   private def findByNumber(rawNumber: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
     for {
-      clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
+      clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.UserRepo.find(client.userId).headOption)
       (clientPhones, _) ← fromFuture(userExt.getContactRecordsSet(client.userId))
-      optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption map (_.filterNot(p ⇒ clientPhones.contains(p.number))))
+      optPhone ← fromDBIO(persist.UserPhoneRepo.findByUserId(client.userId).headOption map (_.filterNot(p ⇒ clientPhones.contains(p.number))))
       normalizedPhone ← point(PhoneNumberUtils.normalizeStr(rawNumber, clientUser.countryCode))
 
       contactUsers ← if (optPhone.map(_.number) == normalizedPhone) point(Vector.empty[ApiUser])
       else fromDBIO(DBIO.sequence(normalizedPhone.toVector.map { phone ⇒
         implicit val c = client
         for {
-          userPhones ← persist.UserPhone.findByPhoneNumber(phone)
+          userPhones ← persist.UserPhoneRepo.findByPhoneNumber(phone)
           users ← DBIO.from(Future.sequence(userPhones.map(_.userId).toSet map { userId: Int ⇒ userExt.getApiStruct(userId, client.userId, client.authId) }))
         } yield {
           userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
@@ -205,7 +194,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     } yield contactUsers
   }
 
-  private def importEmails(user: models.User, optOwnEmail: Option[models.UserEmail], emails: Vector[ApiEmailToImport])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], Seq[Sequence])] = {
+  private def importEmails(user: models.User, optOwnEmail: Option[models.UserEmail], emails: Vector[ApiEmailToImport])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
     //filtering out user's own email and making `Map` from emails to optional name
     val filtered: Map[String, Option[String]] = optOwnEmail
       .map(e ⇒ emails.filterNot(_.email == e.email)).getOrElse(emails)
@@ -215,40 +204,40 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     for {
       //finding emails of users that are registered
       // but don't contain in user's contact list
-      emailModels ← persist.UserEmail.findByEmails(filteredEmails)
-      userContacts ← persist.contact.UserContact.findContactIdsAll(user.id)
+      emailModels ← persist.UserEmailRepo.findByEmails(filteredEmails)
+      userContacts ← persist.contact.UserContactRepo.findContactIdsAll(user.id)
       newEmailContacts = emailModels.filter(e ⇒ !userContacts.contains(e.userId))
 
       //registering UserEmailContacts
       newEmailContactsM = newEmailContacts.map(e ⇒ e.email → e.userId).toMap
       emailsNamesUsers = newEmailContactsM.keySet.map(k ⇒ EmailNameUser(k, filtered(k), newEmailContactsM(k)))
-      usersAndIds ← createEmailContacts(user.id, emailsNamesUsers)
+      (users, seqstate) ← createEmailContacts(user.id, emailsNamesUsers)
 
       //creating unregistered contacts
       unregisteredEmails = filteredEmails -- emailModels.map(_.email)
       unregisteredEmailActions = unregisteredEmails.map { email ⇒
-        persist.contact.UnregisteredEmailContact.createIfNotExists(email, user.id, filtered(email))
+        persist.contact.UnregisteredEmailContactRepo.createIfNotExists(email, user.id, filtered(email))
       }
       _ ← DBIO.sequence(unregisteredEmailActions.toSeq)
-    } yield usersAndIds.flatten.unzip
+    } yield (users, seqstate)
   }
 
-  private def importPhones(user: models.User, optPhone: Option[models.UserPhone], phones: Vector[ApiPhoneToImport])(client: AuthorizedClientData): DBIO[(Seq[ApiUser], Set[Int])] = {
+  private def importPhones(user: models.User, optPhone: Option[models.UserPhone], phones: Vector[ApiPhoneToImport])(client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
     val filteredPhones = optPhone.map(p ⇒ phones.filterNot(_.phoneNumber == p.number)).getOrElse(phones)
 
     val (phoneNumbers, phonesMap) = filteredPhones.foldLeft((Set.empty[Long], Map.empty[Long, Option[String]])) {
       case ((phonesAcc, mapAcc), ApiPhoneToImport(phone, nameOpt)) ⇒
         PhoneNumberUtils.normalizeLong(phone, user.countryCode) match {
           case Nil        ⇒ (phonesAcc, mapAcc + ((phone, nameOpt)))
-          case normPhones ⇒ ((phonesAcc ++ normPhones), mapAcc ++ ((phone, nameOpt) +: normPhones.map(_ → nameOpt)))
+          case normPhones ⇒ (phonesAcc ++ normPhones, mapAcc ++ ((phone, nameOpt) +: normPhones.map(_ → nameOpt)))
         }
     }
 
     val f = for {
-      userPhones ← persist.UserPhone.findByNumbers(phoneNumbers)
-      ignoredContactsIds ← persist.contact.UserContact.findContactIdsAll(user.id)
+      userPhones ← persist.UserPhoneRepo.findByNumbers(phoneNumbers)
+      ignoredContactsIds ← persist.contact.UserContactRepo.findContactIdsAll(user.id)
       uniquePhones = userPhones.filter(p ⇒ !ignoredContactsIds.contains(p.userId))
-      usersPhones ← DBIO.sequence(uniquePhones map (p ⇒ persist.User.find(p.userId).headOption map (_.map((_, p.number))))) map (_.flatten) // TODO: #perf lots of sql queries
+      usersPhones ← DBIO.sequence(uniquePhones map (p ⇒ persist.UserRepo.find(p.userId).headOption map (_.map((_, p.number))))) map (_.flatten) // TODO: #perf lots of sql queries
     } yield {
       usersPhones.foldLeft((immutable.Seq.empty[(models.User, Long, Option[String])], immutable.Set.empty[Int], immutable.Set.empty[Long])) {
         case ((usersPhonesNames, newContactIds, registeredPhones), (user, phone)) ⇒
@@ -264,44 +253,44 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
         // TODO: #perf do less queries
         val unregInsertActions = (phoneNumbers &~ registeredPhoneNumbers).toSeq map { phoneNumber ⇒
-          persist.contact.UnregisteredPhoneContact.createIfNotExists(phoneNumber, user.id, phonesMap.get(phoneNumber).getOrElse(None))
+          persist.contact.UnregisteredPhoneContactRepo.createIfNotExists(phoneNumber, user.id, phonesMap.get(phoneNumber).getOrElse(None))
         }
 
         for {
           _ ← DBIO.sequence(unregInsertActions)
           _ ← DBIO.successful(newContactIds.toSeq foreach (id ⇒ recordRelation(id, user.id)))
-          userStructs ← if (usersPhonesNames.nonEmpty)
-            createPhoneContacts(user.id, usersPhonesNames)(client)
-          else DBIO.successful(Seq.empty[ApiUser])
-        } yield (userStructs, newContactIds)
+          (userStructs, seqstate) ← createPhoneContacts(user.id, usersPhonesNames)(client)
+        } yield (userStructs, seqstate)
     }
   }
 
-  private def createPhoneContacts(ownerUserId: Int, usersPhonesNames: immutable.Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): DBIO[immutable.Seq[ApiUser]] = {
-    persist.contact.UserContact.findIds(ownerUserId, usersPhonesNames.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
-      val actions = usersPhonesNames map {
-        case (user, phone, localName) ⇒
-          for {
-            _ ← addContact(ownerUserId, user.id, phone, localName, user.accessSalt)
-            userStruct ← DBIO.from(userExt.getApiStruct(user.id, client.userId, client.authId))
-          } yield userStruct
-      }
+  private def createPhoneContacts(ownerUserId: Int, usersPhonesNames: immutable.Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
 
-      DBIO.sequence(actions)
+    persist.contact.UserContactRepo.findIds(ownerUserId, usersPhonesNames.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
+      val contactsToAdd =
+        usersPhonesNames.view
+          .filterNot(p ⇒ existingContactUserIds.contains(p._1.id))
+          .map {
+            case (user, phone, localName) ⇒
+              ContactToAdd(user.id, localName, Some(phone), None)
+          }.force
+
+      DBIO.from(addContactsGetStructs(contactsToAdd))
     }
   }
 
-  private def createEmailContacts(ownerUserId: Int, contacts: Set[EmailNameUser])(implicit client: AuthorizedClientData) = {
-    val actions = contacts.map { contact ⇒
-      for {
-        _ ← addContact(ownerUserId, contact.userId, contact.email, contact.name, "")
-        optUser ← persist.User.find(contact.userId).headOption
-        userStruct ← optUser.map { user ⇒
-          DBIO.from(userExt.getApiStruct(user.id, client.userId, client.authId)) map (Some(_))
-        }.getOrElse(DBIO.successful(None))
-      } yield userStruct.map(_ → contact.userId)
+  private def createEmailContacts(ownerUserId: Int, contacts: Set[EmailNameUser])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
+    val contactsToAdd = contacts.toSeq map { contact ⇒
+      ContactToAdd(contact.userId, contact.name, None, Some(contact.email))
     }
-    DBIO.sequence(actions.toSeq)
+
+    DBIO.from(addContactsGetStructs(contactsToAdd))
   }
 
+  private def addContactsGetStructs(contactsToAdd: Seq[ContactToAdd])(implicit client: AuthorizedClientData): Future[(Seq[ApiUser], SeqState)] = {
+    for {
+      seqstate ← userExt.addContacts(client.userId, client.authId, contactsToAdd)
+      structs ← FutureExt.ftraverse(contactsToAdd)(c ⇒ userExt.getApiStruct(c.contactUserId, client.userId, client.authId))
+    } yield (structs, seqstate)
+  }
 }

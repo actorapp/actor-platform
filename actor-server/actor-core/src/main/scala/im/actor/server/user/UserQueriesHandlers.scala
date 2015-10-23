@@ -49,4 +49,6 @@ private[user] trait UserQueriesHandlers {
     sender() ! GetAccessHashResponse(ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt))
 
   protected def getUser(state: User): Unit = sender() ! state
+
+  protected def isAdmin(state: User): Unit = sender() ! IsAdminResponse(state.isAdmin.getOrElse(false))
 }

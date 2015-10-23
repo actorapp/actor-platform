@@ -23,16 +23,14 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>im.actor.Messenger</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>actor</string>
 			</array>
-		</dict>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string></string>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
@@ -80,7 +78,7 @@
 	<key>UIRequiresFullScreen</key>
 	<false/>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleLightContent</string>
+	<string>UIStatusBarStyleDefault</string>
 	<key>UIStatusBarTintParameters</key>
 	<dict>
 		<key>UINavigationBar</key>

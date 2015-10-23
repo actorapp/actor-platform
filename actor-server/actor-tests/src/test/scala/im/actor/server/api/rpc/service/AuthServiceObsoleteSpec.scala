@@ -94,7 +94,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
           val sessionId = createSessionId()
           val smsHash = getSmsHash(authId, unregPhoneNumber)
 
-          Await.result(db.run(persist.contact.UnregisteredPhoneContact.createIfNotExists(unregPhoneNumber, user.id, Some("Local name"))), 5.seconds)
+          Await.result(db.run(persist.contact.UnregisteredPhoneContactRepo.createIfNotExists(unregPhoneNumber, user.id, Some("Local name"))), 5.seconds)
 
           implicit val clientData = ClientData(authId, sessionId, None)
 
@@ -119,11 +119,11 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
 
         Thread.sleep(1000)
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(authId).head)) { update ⇒
+        whenReady(db.run(persist.sequence.SeqUpdateRepo.find(authId).head)) { update ⇒
           update.header should ===(UpdateContactRegistered.header)
         }
 
-        whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(unregPhoneNumber))) { unregContacts ⇒
+        whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.find(unregPhoneNumber))) { unregContacts ⇒
           unregContacts shouldBe empty
         }
       }
@@ -184,7 +184,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
           resp.toOption.get
         }
 
-        Await.result(db.run(persist.AuthId.find(authId)), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
+        Await.result(db.run(persist.AuthIdRepo.find(authId)), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
       }
 
       def sameDeviceHash() = {
@@ -239,13 +239,13 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
           }
         }
 
-        whenReady(db.run(persist.AuthId.findByUserId(user.id))) { authIds ⇒
+        whenReady(db.run(persist.AuthIdRepo.findByUserId(user.id))) { authIds ⇒
           val ids = authIds.map(_.id)
           ids should contain(authId2)
           ids shouldNot contain(authId1)
         }
 
-        whenReady(db.run(persist.AuthSession.findByUserId(user.id))) { sessions ⇒
+        whenReady(db.run(persist.AuthSessionRepo.findByUserId(user.id))) { sessions ⇒
           val ids = sessions.map(_.authId)
           ids should contain(authId2)
           ids shouldNot contain(authId1)

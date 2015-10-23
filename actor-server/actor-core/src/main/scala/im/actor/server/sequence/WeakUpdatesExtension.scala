@@ -25,7 +25,7 @@ class WeakUpdatesExtensionImpl(system: ActorSystem) extends WeakUpdatesExtension
     val serializedData = update.toByteArray
     val msg = PushUpdate(header, serializedData, reduceKey)
 
-    for (authIds ← persist.AuthId.findIdByUserId(userId)) yield {
+    for (authIds ← persist.AuthIdRepo.findIdByUserId(userId)) yield {
       authIds foreach { authId ⇒
         region.ref ! Envelope(authId, msg)
       }

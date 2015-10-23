@@ -59,14 +59,14 @@ class GroupHandler(groupPeer: Peer, randomId: Long)(implicit system: ActorSystem
   def handleUpdate(message: ApiMessage): DBIO[Seq[SeqState]] = {
     val update = UpdateMessageContentChanged(groupPeer.asStruct, randomId, message)
     for {
-      usersIds ← persist.GroupUser.findUserIds(groupPeer.id)
+      usersIds ← persist.GroupUserRepo.findUserIds(groupPeer.id)
       seqstate ← DBIO.from(UserExtension(system).broadcastUsersUpdate(usersIds.toSet, update, None, false, deliveryId = Some(s"msgcontent_${randomId}")))
     } yield seqstate
   }
 
   def handleDbUpdate(message: ApiMessage): DBIO[Int] =
     for {
-      usersIds ← persist.GroupUser.findUserIds(groupPeer.id)
+      usersIds ← persist.GroupUserRepo.findUserIds(groupPeer.id)
       result ← persist.HistoryMessage.updateContentAll(
         userIds = usersIds.toSet,
         randomId = randomId,
