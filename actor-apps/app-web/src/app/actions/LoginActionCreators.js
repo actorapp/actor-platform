@@ -16,8 +16,8 @@ const LoginActionCreators = {
       () => {
         dispatch(ActionTypes.AUTH_SMS_REQUEST_SUCCESS);
       },
-      (error) => {
-        dispatch(ActionTypes.AUTH_SMS_REQUEST_FAILURE, { error });
+      (error, message, canTryAgain) => {
+        dispatch(ActionTypes.AUTH_SMS_REQUEST_FAILURE, { error, message, canTryAgain });
       }
     )
   },
