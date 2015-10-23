@@ -21,13 +21,11 @@ object ActorConfig {
     }
 
     val config = ConfigFactory.parseString(
-      """
+      s"""
         |akka {
         |  actor {
         |    provider: "akka.cluster.ClusterActorRefProvider"
         |  }
-        |
-        |  extensions: ["im.actor.server.db.DbExtension", "im.actor.server.bot.BotExtension", "akka.cluster.client.ClusterClientReceptionist"]
         |
         |  loggers = ["akka.event.slf4j.Slf4jLogger"]
         |
