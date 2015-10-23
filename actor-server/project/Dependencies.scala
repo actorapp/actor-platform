@@ -38,7 +38,6 @@ object Dependencies {
 
     val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
-    val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
     val cats                    = "org.spire-math"                %% "cats"                          % V.cats
 
@@ -166,7 +165,7 @@ object Dependencies {
 
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   
-  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
+  val models = shared ++ Seq(scodecBits, scodecCore, jodaTime, jodaConvert, slickPg)
 
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaStream,
