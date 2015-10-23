@@ -137,8 +137,12 @@ private[user] trait UserCommandHandlers {
       val rng = ThreadLocalRandom.current()
       db.run(for {
         _ ← p.UserPhoneRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
-        _ ← markContactRegistered(user, phone, false)
-      } yield AddPhoneAck())
+      } yield {
+        db.run(markContactRegistered(user, phone, false)) onFailure {
+          case e ⇒ log.error(e, "Failed to mark phone contact registered")
+        }
+        AddPhoneAck()
+      })
     }
 
   protected def addEmail(user: User, email: String): Unit =
@@ -146,8 +150,12 @@ private[user] trait UserCommandHandlers {
       val rng = ThreadLocalRandom.current()
       db.run(for {
         _ ← p.UserEmailRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
-        _ ← markContactRegistered(user, email, false)
-      } yield AddEmailAck())
+      } yield {
+        db.run(markContactRegistered(user, email, false)) onFailure {
+          case e ⇒ log.error(e, "Failed to mark email contact registered")
+        }
+        AddEmailAck()
+      })
     }
 
   protected def changeNickname(user: User, clientAuthId: Long, nicknameOpt: Option[String]): Unit = {
@@ -285,7 +293,7 @@ private[user] trait UserCommandHandlers {
   private def markContactRegistered(user: User, email: String, isSilent: Boolean): DBIO[Unit] = {
     val date = new DateTime
     for {
-      _ ← DBIO.from(userExt.hooks.beforeContactRegistered.runAll())
+      _ ← DBIO.from(userExt.hooks.beforeContactRegistered.runAll(user))
       contacts ← p.contact.UnregisteredEmailContactRepo.find(email)
       _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
       _ ← DBIO.sequence(contacts.map { contact ⇒

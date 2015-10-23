@@ -13,6 +13,7 @@ import im.actor.server.oauth.GoogleProvider
 import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
 import im.actor.server.user.UserExtension
 import org.scalatest.Suite
+import org.scalatest.concurrent.Futures
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent._
@@ -32,7 +33,7 @@ trait UserStructExtensions {
   }
 }
 
-trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
+trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions with Futures {
   this: Suite ⇒
 
   protected val system: ActorSystem
