@@ -76,7 +76,7 @@ class AuthorizationManager extends Actor with ActorLogging with ActorPublisher[M
           val f =
             if (authId == 0L) {
               authId = IdUtils.nextAuthId(ThreadLocalRandom.current())
-              db.run(persist.AuthId.create(authId, None, None))
+              db.run(persist.AuthIdRepo.create(authId, None, None))
             } else Future.successful(())
 
           f.onComplete {

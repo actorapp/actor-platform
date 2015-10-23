@@ -98,7 +98,7 @@ public class DataOutput {
     }
 
     public void writeBytes(byte[] v, int ofs, int len) {
-        if (len > Limits.MAX_BLOCK_SIZE) {
+        if (len > BserLimits.MAX_BLOCK_SIZE) {
             throw new IllegalArgumentException("Unable to write more than 1 MB");
         }
         if (len < 0) {
@@ -120,8 +120,8 @@ public class DataOutput {
     }
 
     public void writeProtoLongs(long[] values) throws IOException {
-        if (values.length > Limits.MAX_PROTO_REPEATED) {
-            throw new IllegalArgumentException("Values can't be more than " + Limits.MAX_PROTO_REPEATED);
+        if (values.length > BserLimits.MAX_PROTO_REPEATED) {
+            throw new IllegalArgumentException("Values can't be more than " + BserLimits.MAX_PROTO_REPEATED);
         }
         writeVarInt(values.length);
         for (long l : values) {

@@ -11,9 +11,9 @@ import scala.concurrent._
 trait FileStorageAdapter extends UploadActions with DownloadActions
 
 private[file] trait UploadActions {
-  def uploadFile(name: String, file: File): DBIO[ApiFileLocation]
+  def uploadFile(name: String, file: File): DBIO[FileLocation]
 
-  def uploadFileF(name: String, file: File): Future[ApiFileLocation]
+  def uploadFileF(name: String, file: File): Future[FileLocation]
 }
 
 private[file] trait DownloadActions {

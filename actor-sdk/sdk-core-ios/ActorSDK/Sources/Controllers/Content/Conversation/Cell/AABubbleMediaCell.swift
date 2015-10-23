@@ -231,6 +231,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                     if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference)) {
                         let previewImage = PreviewImage(image: img)
                         let previewController = AAPhotoPreviewController(photo: previewImage, fromView: self.preview)
+                        previewController.autoShowBadge = true
                         self.controller.presentViewController(previewController, animated: true, completion: nil)
                     }
             }))
@@ -246,6 +247,7 @@ public class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDe
                     if let img = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))) {
                         let previewImage = PreviewImage(image: img)
                         let previewController = AAPhotoPreviewController(photo: previewImage, fromView: self.preview)
+                        previewController.autoShowBadge = true
                         self.controller.presentViewController(previewController, animated: true, completion: nil)
                     }
             }))

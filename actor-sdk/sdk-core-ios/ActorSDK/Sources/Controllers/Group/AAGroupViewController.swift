@@ -38,6 +38,7 @@ public class AAGroupViewController: AAContentTableController {
             self.headerRow = s.avatar { (r) -> () in
                 
                 r.id = self.gid
+                r.subtitleHidden = true
                 
                 r.bindAction = { (r) -> () in
                     r.avatar = self.group.getAvatarModel().get()
@@ -209,7 +210,7 @@ public class AAGroupViewController: AAContentTableController {
                                     self.alertUser("GroupMemberCallNoPhones")
                                 } else if phones.size() == 1 {
                                     let number = phones.getWithInt(0)
-                                    UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.phone)")!)
+                                    ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
                                 } else {
                                     
                                     var numbers = [String]()
@@ -225,7 +226,7 @@ public class AAGroupViewController: AAContentTableController {
                                         tapClosure: { (index) -> () in
                                             if (index >= 0) {
                                                 let number = phones.getWithInt(jint(index))
-                                                UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.phone)")!)
+                                                ActorSDK.sharedActor().openUrl("telprompt://+\(number.phone)")
                                             }
                                     })
                                 }

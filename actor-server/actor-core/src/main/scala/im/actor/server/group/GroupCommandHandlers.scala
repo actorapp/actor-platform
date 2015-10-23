@@ -56,7 +56,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
       db.run(for {
         _ ← createInDb(state, rng.nextLong())
-        _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
+        _ ← p.GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
         _ ← DBIO.from(userExt.broadcastUserUpdate(creatorUserId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${groupId}_${update.randomId}")))
       } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
         case e ⇒
@@ -88,7 +88,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
       db.run(
         for {
-          _ ← p.Group.create(
+          _ ← p.GroupRepo.create(
             models.Group(
               id = groupId,
               creatorUserId = state.creatorUserId,
@@ -102,7 +102,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
             randomId,
             isHidden = false
           )
-          _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
+          _ ← p.GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(creatorUserId),
             models.Peer.group(state.id),
@@ -128,8 +128,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       context become working(updatedState(tsEvt, state))
 
       (for {
-        _ ← userExt.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), None, "Bot", "US", ApiSex.Unknown, isBot = true, Seq.empty[ApiExtension], None)
-        _ ← db.run(p.GroupBot.create(groupId, botUserId, botToken))
+        _ ← userExt.create(botUserId, nextAccessSalt(ThreadLocalRandom.current()), None, "Bot", "US", ApiSex.Unknown, isBot = true)
+        _ ← db.run(p.GroupBotRepo.create(groupId, botUserId, botToken))
         _ ← integrationTokensKv.upsert(botToken, groupId)
       } yield ()) onFailure {
         case e ⇒
@@ -148,7 +148,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     val serviceMessage = GroupServiceMessages.userInvited(userId)
 
     for {
-      _ ← db.run(p.GroupUser.create(groupId, userId, inviterUserId, date, None, isAdmin = false))
+      _ ← db.run(p.GroupUserRepo.create(groupId, userId, inviterUserId, date, None, isAdmin = false))
       _ ← userExt.broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true, deliveryId = Some(s"invite_${groupId}_${randomId}"))
       // TODO: #perf the following broadcasts do update serializing per each user
       _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(userExt.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true, deliveryId = Some(s"useradded_${groupId}_${randomId}")))) // use broadcastUsersUpdate maybe?
@@ -182,8 +182,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               val date = new DateTime
               val randomId = ThreadLocalRandom.current().nextLong()
               for {
-                exists ← p.GroupUser.exists(groupId, joiningUserId)
-                _ ← if (exists) DBIO.successful(()) else p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
+                exists ← p.GroupUserRepo.exists(groupId, joiningUserId)
+                _ ← if (exists) DBIO.successful(()) else p.GroupUserRepo.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
                 seqstatedate ← DBIO.from(DialogExtension(system).sendMessage(
                   peerType = ApiPeerType.Group,
                   peerId = groupId,
@@ -243,7 +243,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val memberIds = group.members.keySet
 
       for {
-        _ ← db.run(p.AvatarData.createOrUpdate(avatarData))
+        _ ← db.run(p.AvatarDataRepo.createOrUpdate(avatarData))
         (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(clientUserId, clientAuthId, memberIds, update, None, isFat = false, deliveryId = None)
       } yield {
         db.run(HistoryUtils.writeHistoryMessage(
@@ -263,8 +263,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   protected def makePublic(group: Group, description: String): Unit = {
     persistStashingReply(Vector(TSEvent(now(), BecamePublic()), TSEvent(now(), AboutUpdated(Some(description)))), group) { _ ⇒
       db.run(DBIO.sequence(Seq(
-        p.Group.makePublic(groupId),
-        p.Group.updateAbout(groupId, Some(description))
+        p.GroupRepo.makePublic(groupId),
+        p.GroupRepo.updateAbout(groupId, Some(description))
       ))) map (_ ⇒ MakePublicAck())
     }
   }
@@ -279,7 +279,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val serviceMessage = GroupServiceMessages.changedTitle(title)
 
       db.run(for {
-        _ ← p.Group.updateTitle(groupId, title, clientUserId, randomId, date)
+        _ ← p.GroupRepo.updateTitle(groupId, title, clientUserId, randomId, date)
         _ ← HistoryUtils.writeHistoryMessage(
           models.Peer.privat(clientUserId),
           models.Peer.group(groupId),
@@ -311,7 +311,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           val serviceMessage = GroupServiceMessages.changedTopic(trimmed)
           val update = UpdateGroupTopicChanged(groupId = groupId, randomId = randomId, userId = clientUserId, topic = trimmed, date = dateMillis)
           db.run(for {
-            _ ← p.Group.updateTopic(groupId, trimmed)
+            _ ← p.GroupRepo.updateTopic(groupId, trimmed)
             _ ← HistoryUtils.writeHistoryMessage(
               models.Peer.privat(clientUserId),
               models.Peer.group(groupId),
@@ -347,7 +347,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           val update = UpdateGroupAboutChanged(groupId, trimmed)
           val serviceMessage = GroupServiceMessages.changedAbout(trimmed)
           db.run(for {
-            _ ← p.Group.updateAbout(groupId, trimmed)
+            _ ← p.GroupRepo.updateAbout(groupId, trimmed)
             _ ← HistoryUtils.writeHistoryMessage(
               models.Peer.privat(clientUserId),
               models.Peer.group(groupId),
@@ -384,7 +384,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
             val updated = group.members.updated(candidateId, group.members(candidateId).copy(isAdmin = true))
             val members = updated.values.map(_.asStruct).toVector
             for {
-              _ ← db.run(p.GroupUser.makeAdmin(groupId, candidateId))
+              _ ← db.run(p.GroupUserRepo.makeAdmin(groupId, candidateId))
               (seqState, _) ← userExt.broadcastClientAndUsersUpdate(
                 clientUserId = clientUserId,
                 clientAuthId = clientAuthId,
@@ -409,7 +409,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val newToken = accessToken(ThreadLocalRandom.current())
       persistStashingReply(TSEvent(now(), IntegrationTokenRevoked(newToken)), group) { _ ⇒
         for {
-          _ ← db.run(p.GroupBot.updateToken(groupId, newToken))
+          _ ← db.run(p.GroupBotRepo.updateToken(groupId, newToken))
           _ ← integrationTokensKv.delete(oldToken.getOrElse(""))
           _ ← integrationTokensKv.upsert(newToken, groupId)
         } yield RevokeIntegrationTokenAck(newToken)
@@ -420,8 +420,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   private def removeUser(userId: Int, memberIds: Set[Int], clientAuthId: Long, serviceMessage: ApiServiceMessage, update: Update, date: DateTime, randomId: Long): DBIO[SeqStateDate] = {
     val groupPeer = models.Peer.group(groupId)
     for {
-      _ ← p.GroupUser.delete(groupId, userId)
-      _ ← p.GroupInviteToken.revoke(groupId, userId)
+      _ ← p.GroupUserRepo.delete(groupId, userId)
+      _ ← p.GroupInviteTokenRepo.revoke(groupId, userId)
       (SeqState(seq, state), _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
         clientUserId = userId,
         clientAuthId = clientAuthId,
@@ -432,8 +432,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         deliveryId = None
       ))
       // TODO: Move to a History Writing subsystem
-      _ ← p.Dialog.updateLastReadAt(userId, groupPeer, date)
-      _ ← p.Dialog.updateOwnerLastReadAt(userId, groupPeer, date)
+      _ ← p.DialogRepo.updateLastReadAt(userId, groupPeer, date)
+      _ ← p.DialogRepo.updateOwnerLastReadAt(userId, groupPeer, date)
       _ ← HistoryUtils.writeHistoryMessage(
         models.Peer.privat(userId),
         groupPeer,
@@ -449,7 +449,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     ThreadLocalRandom.current().nextLong()
 
   private def createInDb(state: Group, randomId: Long) =
-    p.Group.create(
+    p.GroupRepo.create(
       models.Group(
         id = groupId,
         creatorUserId = state.creatorUserId,

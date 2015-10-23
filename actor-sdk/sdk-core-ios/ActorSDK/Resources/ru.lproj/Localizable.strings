@@ -440,6 +440,10 @@
 
 "AlertLinkCopied" = "Ссылка скопирована в буфер обмена.";
 
+"StatusConnecting" = "Подключение...";
+
+"StatusSyncing" = "Синхронизация...";
+
 /*
  * Errors
  */

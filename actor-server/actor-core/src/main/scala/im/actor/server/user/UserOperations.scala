@@ -8,7 +8,9 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.users.{ ApiUser, ApiSex }
+import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
+import im.actor.server.persist.UserRepo
 import im.actor.server.sequence.{ UpdateRefs, SeqUpdatesExtension, SeqState, SeqUpdatesManager }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.util.misc.IdUtils
@@ -42,10 +44,14 @@ private[user] sealed trait Commands extends AuthCommands {
     countryCode: String,
     sex:         ApiSex.ApiSex,
     isBot:       Boolean,
+    isAdmin:     Boolean           = false,
     extensions:  Seq[ApiExtension] = Seq.empty,
     external:    Option[String]    = None
   ): Future[CreateAck] =
-    (processorRegion.ref ? Create(userId, accessSalt, nickname, name, countryCode, sex, isBot, extensions, external)).mapTo[CreateAck]
+    (processorRegion.ref ? Create(userId, accessSalt, nickname, name, countryCode, sex, isBot, Some(isAdmin), extensions, external)).mapTo[CreateAck]
+
+  def updateIsAdmin(userId: Int, isAdmin: Boolean): Future[UpdateIsAdminAck] =
+    (processorRegion.ref ? UpdateIsAdmin(userId, Some(isAdmin))).mapTo[UpdateIsAdminAck]
 
   // FIXME: check existence and reserve generated ids
   def nextId(): Future[Int] = Future.successful(IdUtils.nextIntId())
@@ -80,6 +86,15 @@ private[user] sealed trait Commands extends AuthCommands {
 
   def updateAvatar(userId: Int, clientAuthId: Long, avatarOpt: Option[Avatar]): Future[UpdateAvatarAck] =
     (processorRegion.ref ? UpdateAvatar(userId, clientAuthId, avatarOpt)).mapTo[UpdateAvatarAck]
+
+  def addContact(userId: Int, clientAuthId: Long, contactUserId: Int, localName: Option[String], phone: Option[Long], email: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? AddContacts(userId, clientAuthId, Seq(ContactToAdd(contactUserId, localName, phone, email)))).mapTo[SeqState]
+
+  def addContacts(userId: Int, clientAuthId: Long, contactsToAdd: Seq[ContactToAdd]): Future[SeqState] =
+    if (contactsToAdd.nonEmpty)
+      (processorRegion.ref ? AddContacts(userId, clientAuthId, contactsToAdd)).mapTo[SeqState]
+    else
+      SeqUpdatesManager.getSeqState(clientAuthId)
 
   def broadcastUserUpdate(
     userId:     Int,
@@ -278,6 +293,11 @@ private[user] sealed trait Queries {
 
   def getAccessHash(userId: Int, clientAuthId: Long): Future[Long] =
     (viewRegion.ref ? GetAccessHash(userId, clientAuthId)).mapTo[GetAccessHashResponse] map (_.accessHash)
+
+  def isAdmin(userId: Int): Future[Boolean] =
+    (viewRegion.ref ? IsAdmin(userId)).mapTo[IsAdminResponse].map(_.isAdmin)
+
+  def findUserIds(query: String): Future[Seq[Int]] = DbExtension(system).db.run(UserRepo.findIds(query))
 }
 
 private[user] sealed trait AuthCommands {
@@ -299,13 +319,13 @@ private[user] sealed trait AuthCommands {
   def removeAuth(userId: Int, authId: Long): Future[RemoveAuthAck] = (processorRegion.ref ? RemoveAuth(userId, authId)).mapTo[RemoveAuthAck]
 
   def logoutByAppleToken(token: Array[Byte])(implicit db: Database): Future[Unit] = {
-    db.run(p.push.ApplePushCredentials.findByToken(token)) flatMap { creds ⇒
+    db.run(p.push.ApplePushCredentialsRepo.findByToken(token)) flatMap { creds ⇒
       Future.sequence(creds map (c ⇒ logout(c.authId))) map (_ ⇒ ())
     }
   }
 
   def logout(authId: Long)(implicit db: Database): Future[Unit] = {
-    db.run(p.AuthSession.findByAuthId(authId)) flatMap {
+    db.run(p.AuthSessionRepo.findByAuthId(authId)) flatMap {
       case Some(session) ⇒ logout(session)
       case None          ⇒ throw new Exception("Can't find auth session to logout")
     }
@@ -319,7 +339,7 @@ private[user] sealed trait AuthCommands {
 
     for {
       _ ← removeAuth(session.userId, session.authId)
-      _ ← db.run(p.AuthSession.delete(session.userId, session.id))
+      _ ← db.run(p.AuthSessionRepo.delete(session.userId, session.id))
       _ = SeqUpdatesManager.deletePushCredentials(session.authId)
     } yield {
       publishAuthIdInvalidated(mediator, session.authId)

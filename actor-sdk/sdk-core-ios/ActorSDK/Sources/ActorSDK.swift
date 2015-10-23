@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import JDStatusBarNotification
 
 public class ActorSDK {
 
@@ -28,6 +29,9 @@ public class ActorSDK {
     
     /// SDK Delegate
     public var delegate: ActorSDKDelegate = ActorSDKDelegateDefault()
+    
+    /// SDK Analytics
+    public var analyticsDelegate: ActorSDKAnalytics?
     
     //
     //  Configuration
@@ -72,6 +76,9 @@ public class ActorSDK {
     /// Invite url scheme
     public var inviteUrlScheme: String? = nil
     
+    /// Web Invite Domain host
+    public var inviteUrlHost: String? = nil
+    
     /// Extensions
     private var extensions = [ActorExtension]()
     
@@ -98,6 +105,9 @@ public class ActorSDK {
     
     // View Binding info
     private(set) public var bindedToWindow: UIWindow!
+    
+    // Reachability
+    private var reachability: Reachability!
     
     //
     // Initialization
@@ -183,6 +193,25 @@ public class ActorSDK {
         if autoPushMode == .FromStart {
             requestPush()
         }
+        
+        // Subscribe to network changes
+        
+        do {
+            reachability = try Reachability.reachabilityForInternetConnection()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "reachabilityChanged:", name: ReachabilityChangedNotification, object: reachability)
+            try reachability.startNotifier()
+        } catch {
+            print("Unable to create Reachability")
+            return
+        }
+    }
+    
+    @objc func reachabilityChanged(note: NSNotification) {
+        print("reachabilityChanged (\(reachability.isReachable()))")
+        
+        if reachability.isReachable() {
+            messenger.forceNetworkCheck()
+        }
     }
     
     func didLoggedIn() {
@@ -264,7 +293,6 @@ public class ActorSDK {
                 tab.viewControllers = [
                     AANavigationController(rootViewController: AAContactsViewController()),
                     AANavigationController(rootViewController: AARecentViewController()),
-                    AANavigationController(rootViewController: AADebugController()),
                     AANavigationController(rootViewController: AASettingsViewController())]
                 tab.selectedIndex = 0
                 tab.selectedIndex = 1
@@ -285,6 +313,33 @@ public class ActorSDK {
             }
             window.rootViewController = controller!
         }
+        
+        // Bind Status Bar connecting
+        
+        if !style.statusBarConnectingHidden {
+            
+            JDStatusBarNotification.setDefaultStyle { (style) -> JDStatusBarStyle! in
+                style.barColor = self.style.statusBarConnectingBgColor
+                style.textColor = self.style.statusBarConnectingTextColor
+                return style
+            }
+            
+            dispatchOnUi { () -> Void in
+                self.binder.bind(self.messenger.getAppState().isSyncing, valueModel2: self.messenger.getAppState().isConnecting) {
+                    (isSyncing: JavaLangBoolean?, isConnecting: JavaLangBoolean?) -> () in
+                    
+                    if isSyncing!.booleanValue() || isConnecting!.booleanValue() {
+                        if isConnecting!.booleanValue() {
+                            JDStatusBarNotification.showWithStatus(AALocalized("StatusConnecting"))
+                        } else {
+                            JDStatusBarNotification.showWithStatus(AALocalized("StatusSyncing"))
+                        }
+                    } else {
+                        JDStatusBarNotification.dismiss()
+                    }
+                }
+            }
+        }
     }
     
     public func presentMessengerInNewWindow() {
@@ -292,6 +347,85 @@ public class ActorSDK {
         window.backgroundColor = UIColor.whiteColor()
         presentMessengerInWindow(window)
         window.makeKeyAndVisible()
+    }
+
+    //
+    // Data Processing
+    //
+    
+    /// Handling URL Opening in application
+    func openUrl(url: String) {
+        if let u = NSURL(string: url) {
+            
+            // Handle web invite url
+            if (u.scheme.lowercaseString == "http" || u.scheme.lowercaseString == "https") &&  inviteUrlHost != nil {
+                
+                if u.host == inviteUrlHost {
+                    if let token = u.lastPathComponent {
+                        joinGroup(token)
+                        return
+                    }
+                }
+            }
+            
+            // Handle custom scheme invite url
+            if (u.scheme.lowercaseString == inviteUrlScheme?.lowercaseString) {
+                
+                if (u.host == "invite") {
+                    let token = u.query?.componentsSeparatedByString("=")[1]
+                    if token != nil {
+                        joinGroup(token!)
+                        return
+                    }
+                }
+                
+                if let bindedController = bindedToWindow?.rootViewController {
+                    let alert = UIAlertController(title: nil, message: AALocalized("ErrorUnableToJoin"), preferredStyle: .Alert)
+                    alert.addAction(UIAlertAction(title: AALocalized("AlertOk"), style: .Cancel, handler: nil))
+                    bindedController.presentViewController(alert, animated: true, completion: nil)
+                }
+                
+                return
+            }
+            
+            UIApplication.sharedApplication().openURL(u)
+        }
+    }
+    
+    /// Handling joining group by token
+    func joinGroup(token: String) {
+        if let bindedController = bindedToWindow?.rootViewController {
+            let alert = UIAlertController(title: nil, message: AALocalized("GroupJoinMessage"), preferredStyle: .Alert)
+            alert.addAction(UIAlertAction(title: AALocalized("AlertNo"), style: .Cancel, handler: nil))
+            alert.addAction(UIAlertAction(title: AALocalized("GroupJoinAction"), style: .Default){ (action) -> Void in
+                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), type: .Safe, ignore: [], successBlock: { (val) -> Void in
+                    
+                    // TODO: Fix for iPad
+                    let groupId = val as! JavaLangInteger
+                    let tabBarController = bindedController as! UITabBarController
+                    let index = tabBarController.selectedIndex
+                    let navController = tabBarController.viewControllers![index] as! UINavigationController
+                    navController.pushViewController(ConversationViewController(peer: ACPeer.groupWithInt(groupId.intValue)), animated: true)
+                    
+                }, failureBlock: nil)
+            })
+            bindedController.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
+    
+    /// Tracking page visible
+    func trackPageVisible(page: ACPage) {
+        analyticsDelegate?.analyticsPageVisible(page)
+    }
+    
+    /// Tracking page hidden
+    func trackPageHidden(page: ACPage) {
+        analyticsDelegate?.analyticsPageHidden(page)
+    }
+    
+    /// Tracking event
+    func trackEvent(event: ACEvent) {
+        analyticsDelegate?.analyticsEvent(event)
     }
     
     //
@@ -449,42 +583,27 @@ public class ActorSDK {
         }
         self.completionHandler = completionHandler
     }
-    
+
     //
     // Handling invite url
     //
+    
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         
-        if (url.scheme == "actor") {
-            if (url.host == "invite") {
-                if (Actor.isLoggedIn()) {
-                    let token = url.query?.componentsSeparatedByString("=")[1]
-                    if token != nil {
-//                        UIAlertView.showWithTitle(nil, message: AALocalized("GroupJoinMessage"), cancelButtonTitle: localized("AlertNo"), otherButtonTitles: [AALocalized("GroupJoinAction")], tapBlock: { (view, index) -> Void in
-//                            if (index == view.firstOtherButtonIndex) {
-//                                Executions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
-//                                    let groupId = val as! JavaLangInteger
-//                                    self.openChat(ACPeer.groupWithInt(groupId.intValue))
-//                                    }, failureBlock: { (val) -> Void in
-//                                        
-//                                        if let res = val as? ACRpcException {
-//                                            if res.getTag() == "USER_ALREADY_INVITED" {
-//                                                UIAlertView.showWithTitle(nil, message: localized("ErrorAlreadyJoined"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
-//                                                return
-//                                            }
-//                                        }
-//                                        
-//                                        UIAlertView.showWithTitle(nil, message: localized("ErrorUnableToJoin"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
-//                                })
-//                            }
-//                        })
-                    }
-                }
-                
-                return true
-            }
+        dispatchOnUi { () -> Void in
+            self.openUrl(url.absoluteString)
         }
-        return false
+
+        return true
+    }
+    
+    public func application(application: UIApplication, handleOpenURL url: NSURL) -> Bool {
+        
+        dispatchOnUi { () -> Void in
+            self.openUrl(url.absoluteString)
+        }
+        
+        return true
     }
 }
 

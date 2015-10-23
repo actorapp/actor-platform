@@ -40,17 +40,16 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       StringUtils.validName(name) match {
         case \/-(validName) ⇒
-          persist.User.find(userId).headOption flatMap {
+          persist.UserRepo.find(userId).headOption flatMap {
             case Some(user) ⇒
               if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
-                val action = persist.contact.UserContact.find(client.userId, userId) flatMap {
+                val action = persist.contact.UserContactRepo.find(client.userId, userId) flatMap {
                   case Some(contact) ⇒
                     ContactsUtils.updateName(client.userId, userId, Some(validName))
                   case None ⇒
                     for {
-                      userPhone ← persist.UserPhone.findByUserId(user.id).head
-                      _ ← addContact(client.userId, userId, userPhone.number, Some(validName), user.accessSalt)
-                      _ ← DBIO.from(userExt.broadcastClientUpdate(UpdateContactsAdded(Vector(userId)), None, isFat = true))
+                      userPhone ← persist.UserPhoneRepo.findByUserId(user.id).head
+                      _ ← DBIO.from(userExt.addContact(client.userId, client.authId, userId, Some(validName), Some(userPhone.number), None))
                     } yield ()
                 }
 

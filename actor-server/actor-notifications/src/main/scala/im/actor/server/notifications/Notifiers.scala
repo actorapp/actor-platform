@@ -18,7 +18,7 @@ class PhoneNotifier(engine: SmsEngine)(implicit db: Database, ec: ExecutionConte
   def processTask(task: Notification): Unit =
     db.run {
       for {
-        optPhone ← persist.UserPhone.findByUserId(task.userId).headOption
+        optPhone ← persist.UserPhoneRepo.findByUserId(task.userId).headOption
         prodPhone = optPhone.filter(!_.number.toString.startsWith("7555")).map(_.number)
         _ ← DBIO.successful(prodPhone.map { engine.send(_, makeMessage(task.data)) })
       } yield ()

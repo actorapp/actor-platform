@@ -217,7 +217,7 @@ public class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
             let code = self.cellLayout.sources[index]
             self.controller.navigateNext(AACodePreviewController(code: code), removeCurrent: false)
         } else {
-           UIApplication.sharedApplication().openURL(url)
+            ActorSDK.sharedActor().openUrl(url.absoluteString)
         }
     }
     

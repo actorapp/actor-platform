@@ -63,7 +63,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
 
   protected def createAuthId(): Long = {
     val authId = Random.nextLong()
-    Await.result(db.run(persist.AuthId.create(authId, None, None)), 1.second)
+    Await.result(db.run(persist.AuthIdRepo.create(authId, None, None)), 1.second)
     authId
   }
 
