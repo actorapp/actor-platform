@@ -14,7 +14,6 @@
 		063074191BD68E370053DEAF /* bg_3_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074161BD68E370053DEAF /* bg_3_preview.jpg */; };
 		0630741A1BD68E370053DEAF /* bg_2_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074171BD68E370053DEAF /* bg_2_preview.jpg */; };
 		0630741B1BD68E370053DEAF /* bg_1_preview.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 063074181BD68E370053DEAF /* bg_1_preview.jpg */; };
-		0640AFDC1BD95A9900A6BA50 /* j2objc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0640AFDB1BD95A9900A6BA50 /* j2objc.framework */; };
 		065974A51BC621F100B8C7DF /* AAAuthNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */; };
 		065974A71BC62B3600B8C7DF /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065974A61BC62B3600B8C7DF /* ViewExtensions.swift */; };
 		065975021BC7534100B8C7DF /* FMDBBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065975011BC7534100B8C7DF /* FMDBBridge.swift */; };
@@ -184,7 +183,6 @@
 		063074161BD68E370053DEAF /* bg_3_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_3_preview.jpg; sourceTree = "<group>"; };
 		063074171BD68E370053DEAF /* bg_2_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_2_preview.jpg; sourceTree = "<group>"; };
 		063074181BD68E370053DEAF /* bg_1_preview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bg_1_preview.jpg; sourceTree = "<group>"; };
-		0640AFDB1BD95A9900A6BA50 /* j2objc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = j2objc.framework; path = "Pods/J2ObjC-Framework/Frameworks/j2objc.framework"; sourceTree = "<group>"; };
 		065974A41BC621F100B8C7DF /* AAAuthNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthNavigationController.swift; sourceTree = "<group>"; };
 		065974A61BC62B3600B8C7DF /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		065975011BC7534100B8C7DF /* FMDBBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBBridge.swift; sourceTree = "<group>"; };
@@ -359,7 +357,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0640AFDC1BD95A9900A6BA50 /* j2objc.framework in Frameworks */,
 				06CE898C1BD841C9005A5530 /* SystemConfiguration.framework in Frameworks */,
 				066A52001BC4E0B0000E606E /* libsqlite3.tbd in Frameworks */,
 				697B3A12994653F581459F63 /* Pods_ActorSDK.framework in Frameworks */,
@@ -884,7 +881,6 @@
 		2F428D134E194A828C3DF863 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0640AFDB1BD95A9900A6BA50 /* j2objc.framework */,
 				06CE898B1BD841C9005A5530 /* SystemConfiguration.framework */,
 				9A22DF21664BBB34087283F6 /* Pods_ActorSDK.framework */,
 				066A51FF1BC4E0B0000E606E /* libsqlite3.tbd */,
