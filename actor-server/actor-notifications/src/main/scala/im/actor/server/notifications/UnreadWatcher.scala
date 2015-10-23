@@ -12,7 +12,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
-class UnreadWatcher()(implicit system: ActorSystem, config: UnreadWatcherConfig) {
+private class UnreadWatcher()(implicit system: ActorSystem, config: UnreadWatcherConfig) {
   import system.dispatcher
 
   private val db: Database = DbExtension(system).db
