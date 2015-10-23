@@ -7,18 +7,29 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 trait Hook
 
-class HooksStorage[A <: Hook] {
-  private val hooks = TrieMap.empty[String, A]
-  protected def hooksList = hooks.values.toSeq
+trait Hook0 extends Hook {
+  def run(): Future[Unit]
+}
 
-  def register(name: String, hook: A): Unit =
+trait Hook1[P] extends Hook {
+  def run(p: P): Future[Unit]
+}
+
+class HooksStorage[H <: Hook] {
+  private val hooks = TrieMap.empty[String, H]
+  protected def hooksList: Seq[H] = hooks.values.toSeq
+
+  def register(name: String, hook: H): Unit =
     if (hooks.putIfAbsent(name, hook).nonEmpty)
       throw HookException.HookAlreadyRegistered(name)
 }
 
-class HooksStorage0[A <: Hook](run: A ⇒ Future[Unit])(implicit ec: ExecutionContext) extends HooksStorage {
-  def runAll(): Future[Unit] =
-    FutureExt.ftraverse(hooksList)(run) map (_ ⇒ ())
+final class HooksStorage0[H <: Hook0](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run()) map (_ ⇒ ())
+}
+
+final class HooksStorage1[H <: Hook1[P], P](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(p: P): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(p)) map (_ ⇒ ())
 }
 
 abstract class HooksControl {
