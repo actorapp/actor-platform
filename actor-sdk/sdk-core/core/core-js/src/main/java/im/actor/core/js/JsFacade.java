@@ -160,6 +160,29 @@ public class JsFacade implements Exportable {
         }
     }
 
+    public void requestCodeEmail(String email, final JsAuthSuccessClosure success,
+                                 final JsAuthErrorClosure error) {
+        messenger.requestStartEmailAuth(email).start(new CommandCallback<AuthState>() {
+            @Override
+            public void onResult(AuthState res) {
+                success.onResult(Enums.convert(res));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                String tag = "INTERNAL_ERROR";
+                String message = "Internal error";
+                boolean canTryAgain = false;
+                if (e instanceof RpcException) {
+                    tag = ((RpcException) e).getTag();
+                    message = e.getMessage();
+                    canTryAgain = ((RpcException) e).isCanTryAgain();
+                }
+                error.onError(tag, message, canTryAgain, getAuthState());
+            }
+        });
+    }
+
     public void sendCode(String code, final JsAuthSuccessClosure success,
                          final JsAuthErrorClosure error) {
         try {
