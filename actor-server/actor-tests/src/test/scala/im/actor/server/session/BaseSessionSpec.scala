@@ -4,7 +4,7 @@ import akka.actor._
 import akka.testkit.TestProbe
 import akka.util.Timeout
 import com.google.protobuf.ByteString
-import im.actor.api.rpc.RpcResult
+import im.actor.api.rpc.{ Request, RpcRequest, RpcResult }
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
 import im.actor.server
@@ -34,12 +34,11 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   with FlatSpecLike
   with ScalaFutures
   with Matchers
-  with ActorSerializerPrepare {
+  with ActorSerializerPrepare
+  with ServiceSpecHelpers {
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(30, Seconds))
-
-  protected implicit val timeout = Timeout(10.seconds)
 
   protected implicit val ec = system.dispatcher
 
@@ -55,7 +54,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
 
   protected val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   protected implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  protected val authService = new AuthServiceImpl(new DummyCodeActivation)
+  protected implicit val authService = new AuthServiceImpl(new DummyCodeActivation)
   protected val sequenceConfig = SequenceServiceConfig.load.toOption.get
   protected val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
@@ -188,5 +187,16 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
       ).withPayload(payload),
       probe.ref
     )
+  }
+
+  protected def sendRequest(authId: Long, sessionId: Long, session: ActorRef, messageId: Long, request: RpcRequest)(implicit probe: TestProbe): Unit = {
+    val rqBox = RpcRequestBox(RequestCodec.encode(Request(request)).require)
+    sendMessageBox(authId, sessionId, session, messageId, rqBox)
+  }
+
+  protected def sendRequest(authId: Long, sessionId: Long, session: ActorRef, request: RpcRequest)(implicit probe: TestProbe): Long = {
+    val messageId = Random.nextLong()
+    sendRequest(authId, sessionId, session, messageId, request)
+    messageId
   }
 }
