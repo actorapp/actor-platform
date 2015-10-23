@@ -49,8 +49,8 @@ private[botkit] final class WebsocketClient(url: String)
         onMessage(frame)
       case str: String ⇒
         connection ! TextFrame(str)
-      case _: Http.ConnectionClosed ⇒
-        onClose()
+      case event: Http.ConnectionClosed ⇒
+        onClose(event)
         context.stop(self)
       case e: Http.ConnectionException ⇒
         onFailure(e)
@@ -59,7 +59,7 @@ private[botkit] final class WebsocketClient(url: String)
 
     def onMessage(frame: Frame): Unit
 
-    def onClose(): Unit
+    def onClose(event: Http.ConnectionClosed): Unit
 
     def onFailure(e: Http.ConnectionException): Unit
   }
@@ -93,8 +93,8 @@ private[botkit] final class WebsocketClient(url: String)
         context.parent ! frame
       }
 
-      override def onClose() = {
-        context.parent ! ConnectionClosed
+      override def onClose(e: Http.ConnectionClosed) = {
+        context.parent ! e
       }
 
       override def onFailure(e: Http.ConnectionException) = {
@@ -125,9 +125,8 @@ private[botkit] final class WebsocketClient(url: String)
     case ActorSubscriberMessage.OnNext(textToSend: String) ⇒
       log.info(">> {}", textToSend)
       client ! textToSend
-    case ConnectionClosed ⇒
-      log.error("Connection closed")
-      onErrorThenStop(new RuntimeException("Connection closed") with NoStackTrace)
+    case e: Http.ConnectionClosed ⇒
+      onErrorThenStop(new RuntimeException(s"Connection closed: $e") with NoStackTrace)
     case Terminated(`client`) ⇒
       onErrorThenStop(new RuntimeException("Failed to connect") with NoStackTrace)
     case unmatched ⇒
