@@ -33,7 +33,7 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
       val update = UpdateParameterChanged(key, value)
 
       for {
-        _ ← persist.configs.Parameter.createOrUpdate(models.configs.Parameter(client.userId, key, value))
+        _ ← persist.configs.ParameterRepo.createOrUpdate(models.configs.Parameter(client.userId, key, value))
         SeqState(seq, state) ← DBIO.from(UserExtension(actorSystem).broadcastClientUpdate(update, None, isFat = false))
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
@@ -44,7 +44,7 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
   override def jhandleGetParameters(clientData: ClientData): Future[HandlerResult[ResponseGetParameters]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
-        params ← persist.configs.Parameter.find(client.userId)
+        params ← persist.configs.ParameterRepo.find(client.userId)
       } yield {
         val paramsStructs = params map { param ⇒
           ApiParameter(param.key, param.value.getOrElse(""))

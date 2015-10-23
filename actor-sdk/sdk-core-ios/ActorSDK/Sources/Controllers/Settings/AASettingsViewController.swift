@@ -22,6 +22,8 @@ public class AASettingsViewController: AAContentTableController {
         content = ACAllEvents_Main.SETTINGS()
         
         tabBarItem = UITabBarItem(title: "TabSettings", img: "TabIconSettings", selImage: "TabIconSettingsHighlighted")
+        
+        navigationItem.title = AALocalized("TabSettings")
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -282,7 +284,7 @@ public class AASettingsViewController: AAContentTableController {
                         UIPasteboard.generalPasteboard().string = "+\(d.phone)"
                         self.alertUser("NumberCopied")
                     } else {
-                        UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(d.phone)")!)
+                        ActorSDK.sharedActor().openUrl("telprompt://+\(d.phone)")
                     }
                     return true
                 }
@@ -304,7 +306,7 @@ public class AASettingsViewController: AAContentTableController {
                 }
                 
                 r.selectAction = { (d: ACUserEmail) -> Bool in
-                    UIApplication.sharedApplication().openURL(NSURL(string: "mailto:\(d.email)")!)
+                    ActorSDK.sharedActor().openUrl("mailto:\(d.email)")
                     return true
                 }
             }

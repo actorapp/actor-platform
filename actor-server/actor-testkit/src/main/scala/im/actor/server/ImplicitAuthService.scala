@@ -17,5 +17,4 @@ trait ImplicitAuthService {
   private implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
 
   implicit val authService = new AuthServiceImpl(new DummyCodeActivation)
-
 }

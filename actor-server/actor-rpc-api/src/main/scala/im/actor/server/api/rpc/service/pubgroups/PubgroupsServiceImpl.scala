@@ -22,7 +22,7 @@ class PubgroupsServiceImpl(
   override def jhandleGetPublicGroups(clientData: ClientData): Future[HandlerResult[ResponseGetPublicGroups]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       for {
-        groups ← persist.Group.findPublic
+        groups ← persist.GroupRepo.findPublic
         pubGroupStructs ← DBIO.sequence(groups.view map getPubgroupStructUnsafe)
         sorted = pubGroupStructs.sortWith((g1, g2) ⇒ g1.friendsCount >= g2.friendsCount && g1.membersCount >= g2.membersCount)
       } yield Ok(ResponseGetPublicGroups(sorted.toVector))

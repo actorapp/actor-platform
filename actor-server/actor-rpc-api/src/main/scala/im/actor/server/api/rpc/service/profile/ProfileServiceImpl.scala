@@ -102,7 +102,7 @@ class ProfileServiceImpl()(
         _ ← if (trimmed.isDefined) {
           for {
             checkExist ← fromOption(ProfileErrors.NicknameInvalid)(trimmed)
-            _ ← fromDBIOBoolean(ProfileErrors.NicknameBusy)(persist.User.nicknameExists(checkExist).map(exist ⇒ !exist))
+            _ ← fromDBIOBoolean(ProfileErrors.NicknameBusy)(persist.UserRepo.nicknameExists(checkExist).map(exist ⇒ !exist))
           } yield ()
         } else point(())
         SeqState(seq, state) ← fromFuture(userExt.changeNickname(client.userId, client.authId, trimmed))
@@ -116,7 +116,7 @@ class ProfileServiceImpl()(
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       (for {
         _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validNickName(nickname))
-        exists ← fromDBIO(persist.User.nicknameExists(nickname.trim))
+        exists ← fromDBIO(persist.UserRepo.nicknameExists(nickname.trim))
       } yield ResponseBool(!exists)).run
     }
     db.run(toDBIOAction(authorizedAction))

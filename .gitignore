@@ -137,3 +137,5 @@ actor-sdk/sdk-core-ios/Pods
 actor-sdk/sdk-core-ios/ActorSDK.xcworkspace
 actor-deps/dist
 gradle.properties
+actor-sdk/sdk-core/core/core-js/war
+actor-sdk/sdk-core/runtime/runtime-js/war

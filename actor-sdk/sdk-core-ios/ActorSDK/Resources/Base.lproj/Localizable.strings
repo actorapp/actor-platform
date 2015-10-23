@@ -438,6 +438,10 @@
 
 "AlertLinkCopied" = "Link copied to clipboard.";
 
+"StatusConnecting" = "Connecting...";
+
+"StatusSyncing" = "Syncing...";
+
 /*
  * Errors
  */

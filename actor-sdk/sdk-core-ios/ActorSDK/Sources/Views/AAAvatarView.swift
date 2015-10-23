@@ -147,12 +147,7 @@ public class AAAvatarView: UIImageView {
             
             requestId++
             
-            if (self.placeholderImage == nil) {
-                self.placeholderImage = Placeholders.avatarPlaceholder(bindedId, size: self.frameSize, title: title, rounded: self.avatarType == .Rounded)
-                self.image = self.placeholderImage
-            }
-            
-            self.image = self.placeholderImage
+            self.image = Placeholders.avatarPlaceholder(bindedId, size: self.frameSize, title: title, rounded: self.avatarType == .Rounded)
             
             return
         }
@@ -304,5 +299,20 @@ class Placeholders {
         let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return image;
+    }
+}
+
+class AABarAvatarView : AAAvatarView {
+    
+    override init(frameSize: Int, type: AAAvatarType) {
+        super.init(frameSize: frameSize, type: type)
+    }
+    
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func alignmentRectInsets() -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 8)
     }
 }

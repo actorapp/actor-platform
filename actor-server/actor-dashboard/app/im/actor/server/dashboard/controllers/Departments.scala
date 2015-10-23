@@ -20,11 +20,11 @@ class Departments extends Controller {
   def users(struct: String, page: Int, perPage: Int) = AuthAction.async {
     db.run {
       for {
-        dept ← persist.Department.find(struct).headOption
+        dept ← persist.DepartmentRepo.find(struct).headOption
         users ← dept.map { d ⇒
           for {
-            userIds ← persist.UserDepartment.userIdsByDepartmentId(d.id)
-            users ← persist.User.findByIdsPaged(userIds.toSet, page, perPage)
+            userIds ← persist.UserDepartmentRepo.userIdsByDepartmentId(d.id)
+            users ← persist.UserRepo.findByIdsPaged(userIds.toSet, page, perPage)
           } yield users
         } getOrElse DBIO.successful(Seq())
       } yield users.map { Json.toJson(_) }
@@ -36,7 +36,7 @@ class Departments extends Controller {
       errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
       department ⇒ db.run {
         for {
-          _ ← persist.Department.create(department)
+          _ ← persist.DepartmentRepo.create(department)
         } yield Created(Json.toJson(Map("id" → department.id)))
       }
     )
@@ -44,7 +44,7 @@ class Departments extends Controller {
 
   def get(struct: String) = AuthAction.async { request ⇒
     db.run {
-      for (depts ← persist.Department.deptAndChildren(struct)) yield nestDepartments(depts).map(Json.toJson(_))
+      for (depts ← persist.DepartmentRepo.deptAndChildren(struct)) yield nestDepartments(depts).map(Json.toJson(_))
     }.map(e ⇒ Ok(Json.toJson(e)))
   }
 
@@ -53,7 +53,7 @@ class Departments extends Controller {
       errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
       update ⇒ db.run {
         for {
-          _ ← persist.Department.setName(struct, update.title)
+          _ ← persist.DepartmentRepo.setName(struct, update.title)
         } yield Accepted
       }
     )
@@ -62,7 +62,7 @@ class Departments extends Controller {
   def delete(struct: String) = AuthAction.async { _ ⇒
     db.run {
       for {
-        _ ← persist.Department.setDeletedAt(struct)
+        _ ← persist.DepartmentRepo.setDeletedAt(struct)
       } yield Accepted
     }
   }

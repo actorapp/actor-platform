@@ -110,15 +110,15 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
       // TODO: handle errors
       // TODO: refactor
       val infoAction = {
-        persist.AuthId.find(authId) flatMap {
+        persist.AuthIdRepo.find(authId) flatMap {
           case Some(authIdModel) ⇒
-            persist.SessionInfo.find(authId, sessionId) flatMap {
+            persist.SessionInfoRepo.find(authId, sessionId) flatMap {
               case s @ Some(sessionInfoModel) ⇒ DBIO.successful(s)
               case None ⇒
                 val sessionInfoModel = models.SessionInfo(authId, sessionId, authIdModel.userId)
 
                 for {
-                  _ ← persist.SessionInfo.create(sessionInfoModel)
+                  _ ← persist.SessionInfoRepo.create(sessionInfoModel)
                 } yield Some(sessionInfoModel)
             }
           case None ⇒ DBIO.successful(None)
@@ -249,7 +249,7 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
         this.optUserId = Some(userId)
 
         // TODO: handle errors
-        db.run(persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId).map(_ ⇒ AuthorizeUserAck())) pipeTo sender()
+        db.run(persist.SessionInfoRepo.updateUserId(authId, sessionId, this.optUserId).map(_ ⇒ AuthorizeUserAck())) pipeTo sender()
       case unmatched ⇒
         log.error("Unmatched session message {}", unmatched)
     }

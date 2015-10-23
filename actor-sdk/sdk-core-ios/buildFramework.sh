@@ -10,7 +10,7 @@ xcodebuild \
   -scheme "ActorSDK" \
   -derivedDataPath build \
   -arch armv7 -arch armv7s -arch arm64 \
-  -sdk iphoneos9.0 \
+  -sdk iphoneos \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
@@ -21,7 +21,7 @@ xcodebuild \
   -scheme "ActorSDK" \
   -derivedDataPath build \
   -arch x86_64 \
-  -sdk iphonesimulator9.0 \
+  -sdk iphonesimulator \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
@@ -39,7 +39,7 @@ cp -a build/Build/Products/Release-iphoneos/ActorSDK.framework build/Output/
 lipo -create "build/Build/Products/Release-iphoneos/ActorSDK.framework/ActorSDK" "build/Build/Products/Release-iphonesimulator/ActorSDK.framework/ActorSDK" -output build/Output/ActorSDK_Lipo
 rm -fr build/Output/ActorSDK.framework/ActorSDK
 mv build/Output/ActorSDK_Lipo build/Output/ActorSDK.framework/ActorSDK
-rm -f build/Output/ActorSDK.framework/Frameworks/*
+rm -fr build/Output/ActorSDK.framework/Frameworks
 
 # Merging swift docs
 cp -a build/Build/Products/Release-iphonesimulator/ActorSDK.framework/Modules/ActorSDK.swiftmodule/* build/Output/ActorSDK.framework/Modules/ActorSDK.swiftmodule/

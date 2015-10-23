@@ -22,7 +22,7 @@ trait GroupsServiceHelpers {
     service:     GroupsService,
     actorSystem: ActorSystem
   ): ResponseCreateGroup = {
-    val users = Await.result(db.run(persist.User.findByIds(userIds)), defaultOperationTimeout)
+    val users = Await.result(db.run(persist.UserRepo.findByIds(userIds)), defaultOperationTimeout)
     val userPeers = users.map(user ⇒ ApiUserOutPeer(user.id, ACLUtils.userAccessHash(clientData.authId, user)))
     val result = Await.result(service.handleCreateGroup(Random.nextLong(), title, userPeers.toVector), defaultOperationTimeout)
     result.toOption.get

@@ -35,7 +35,7 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
 
   def completeOAuth(code: String, userId: String, redirectUri: Option[String]): DBIO[Option[models.OAuth2Token]] = {
     for {
-      optToken ← persist.OAuth2Token.findByUserId(userId)
+      optToken ← persist.OAuth2TokenRepo.findByUserId(userId)
       result ← optToken.map { token ⇒
         if (isExpired(token)) refreshToken(userId) else DBIO.successful(Some(token))
       } getOrElse getTokenFirstTime(code, userId, redirectUri)
@@ -44,7 +44,7 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
 
   def refreshToken(userId: String): DBIO[Option[models.OAuth2Token]] = {
     for {
-      optRefresh ← persist.OAuth2Token.findRefreshToken(userId)
+      optRefresh ← persist.OAuth2TokenRepo.findRefreshToken(userId)
       token ← optRefresh.map { refresh ⇒
         val form = FormData(
           "client_id" → googleConfig.clientId,
