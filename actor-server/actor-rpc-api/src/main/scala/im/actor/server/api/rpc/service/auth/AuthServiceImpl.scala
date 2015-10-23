@@ -367,7 +367,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
                 smsHash = smsHash,
                 smsCode = smsCode
               )
-            ) yield (normPhoneNumber :: smsHash :: smsCode :: HNil)
+            ) yield normPhoneNumber :: smsHash :: smsCode :: HNil
         }.flatMap { res ⇒
           persist.UserPhoneRepo.exists(normPhoneNumber) map (res :+ _)
         }.map {
@@ -436,7 +436,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
           val action = (for {
             optCode ← persist.AuthSmsCodeObsoleteRepo.findByPhoneNumber(normPhoneNumber).headOption
             optPhone ← persist.UserPhoneRepo.findByPhoneNumber(normPhoneNumber).headOption
-          } yield (optCode :: optPhone :: HNil)).flatMap {
+          } yield optCode :: optPhone :: HNil).flatMap {
             case None :: _ :: HNil ⇒ DBIO.successful(Error(AuthErrors.PhoneCodeExpired))
             case Some(smsCodeModel) :: _ :: HNil if smsCodeModel.smsHash != smsHash ⇒
               DBIO.successful(Error(AuthErrors.PhoneCodeExpired))

@@ -5,7 +5,7 @@ import java.security.MessageDigest
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiOutPeer }
+import im.actor.api.rpc.peers.{ ApiUserOutPeer, ApiPeer, ApiPeerType, ApiOutPeer }
 import im.actor.server.group.{ GroupExtension, GroupViewRegion, GroupOffice }
 import im.actor.server.models
 import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
@@ -82,5 +82,10 @@ object ACLUtils {
       case ApiPeerType.Private ⇒
         UserExtension(s).getAccessHash(peer.id, clientAuthId) map (ApiOutPeer(ApiPeerType.Private, peer.id, _))
     }
+  }
+
+  def getUserOutPeer(userId: Int, clientAuthId: Long)(implicit s: ActorSystem): Future[ApiUserOutPeer] = {
+    import s.dispatcher
+    UserExtension(s).getAccessHash(userId, clientAuthId) map (ApiUserOutPeer(userId, _))
   }
 }
