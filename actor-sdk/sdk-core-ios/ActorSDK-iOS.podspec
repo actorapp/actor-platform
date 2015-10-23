@@ -15,7 +15,6 @@ Pod::Spec.new do |s|
   CMD
 
   # Core
-  s.dependency 'J2ObjC-Framework'
   s.dependency 'RegexKitLite'
   s.dependency 'CocoaAsyncSocket'
   s.dependency 'zipzap'
