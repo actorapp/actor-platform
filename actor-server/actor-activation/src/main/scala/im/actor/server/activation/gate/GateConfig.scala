@@ -1,9 +1,10 @@
 package im.actor.server.activation.gate
 
-import scala.util.Try
-
 import com.github.kxbmap.configs._
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.typesafe.config.Config
+import im.actor.config.ActorConfig
+
+import scala.util.Try
 
 case class GateConfig(uri: String, authToken: String)
 
@@ -15,6 +16,6 @@ object GateConfig {
     } yield GateConfig(uri, authToken)
 
   def load: Try[GateConfig] = {
-    load(ConfigFactory.load().getConfig("services.activation-gate"))
+    load(ActorConfig.load().getConfig("services.activation-gate"))
   }
 }

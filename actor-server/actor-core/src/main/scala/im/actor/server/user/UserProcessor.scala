@@ -73,6 +73,9 @@ object UserProcessor {
       10025 → classOf[UserCommands.ChangeAbout],
       10026 → classOf[UserCommands.UpdateAvatar],
       10027 → classOf[UserCommands.UpdateAvatarAck],
+      10028 → classOf[UserCommands.AddContacts],
+      10031 → classOf[UserCommands.UpdateIsAdmin],
+      10032 → classOf[UserCommands.UpdateIsAdminAck],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -84,6 +87,9 @@ object UserProcessor {
       11008 → classOf[UserQueries.GetApiStructResponse],
       11009 → classOf[UserQueries.GetAccessHash],
       11010 → classOf[UserQueries.GetAccessHashResponse],
+      11011 → classOf[UserQueries.GetUser],
+      11012 → classOf[UserQueries.IsAdmin],
+      11013 → classOf[UserQueries.IsAdminResponse],
 
       12001 → classOf[UserEvents.AuthAdded],
       12002 → classOf[UserEvents.AuthRemoved],
@@ -96,6 +102,7 @@ object UserProcessor {
       12011 → classOf[UserEvents.NicknameChanged],
       12012 → classOf[UserEvents.AboutChanged],
       12013 → classOf[UserEvents.AvatarUpdated],
+      12016 → classOf[UserEvents.IsAdminUpdated],
 
       13000 → classOf[User]
     )
@@ -152,28 +159,32 @@ private[user] final class UserProcessor
         state.copy(about = about)
       case TSEvent(_, UserEvents.AvatarUpdated(avatar)) ⇒
         state.copy(avatar = avatar)
+      case TSEvent(_, UserEvents.IsAdminUpdated(isAdmin)) ⇒
+        state.copy(isAdmin = isAdmin)
       case TSEvent(_, _: UserEvents.Created) ⇒ state
     }
   }
 
   override protected def handleInitCommand: Receive = {
-    case Create(_, accessSalt, nickName, name, countryCode, sex, isBot, extensions, external) ⇒
-      create(accessSalt, nickName, name, countryCode, sex, isBot, extensions, external)
+    case Create(_, accessSalt, nickName, name, countryCode, sex, isBot, isAdmin, extensions, external) ⇒
+      create(accessSalt, nickName, name, countryCode, sex, isBot, isAdmin.getOrElse(false), extensions, external)
   }
 
   override protected def handleCommand(state: User): Receive = {
-    case NewAuth(_, authId)                        ⇒ addAuth(state, authId)
-    case RemoveAuth(_, authId)                     ⇒ removeAuth(state, authId)
-    case ChangeCountryCode(_, countryCode)         ⇒ changeCountryCode(state, countryCode)
-    case ChangeName(_, name, clientAuthId)         ⇒ changeName(state, name, clientAuthId)
-    case Delete(_)                                 ⇒ delete(state)
-    case AddPhone(_, phone)                        ⇒ addPhone(state, phone)
-    case AddEmail(_, email)                        ⇒ addEmail(state, email)
-    case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
-    case ChangeAbout(_, clientAuthId, about)       ⇒ changeAbout(state, clientAuthId, about)
-    case UpdateAvatar(_, clientAuthId, avatarOpt)  ⇒ updateAvatar(state, clientAuthId, avatarOpt)
-    case StopOffice                                ⇒ context stop self
-    case ReceiveTimeout                            ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case NewAuth(_, authId)                          ⇒ addAuth(state, authId)
+    case RemoveAuth(_, authId)                       ⇒ removeAuth(state, authId)
+    case ChangeCountryCode(_, countryCode)           ⇒ changeCountryCode(state, countryCode)
+    case ChangeName(_, name, clientAuthId)           ⇒ changeName(state, name, clientAuthId)
+    case Delete(_)                                   ⇒ delete(state)
+    case AddPhone(_, phone)                          ⇒ addPhone(state, phone)
+    case AddEmail(_, email)                          ⇒ addEmail(state, email)
+    case ChangeNickname(_, clientAuthId, nickname)   ⇒ changeNickname(state, clientAuthId, nickname)
+    case ChangeAbout(_, clientAuthId, about)         ⇒ changeAbout(state, clientAuthId, about)
+    case UpdateAvatar(_, clientAuthId, avatarOpt)    ⇒ updateAvatar(state, clientAuthId, avatarOpt)
+    case AddContacts(_, clientAuthId, contactsToAdd) ⇒ addContacts(state, clientAuthId, contactsToAdd)
+    case UpdateIsAdmin(_, isAdmin)                   ⇒ updateIsAdmin(state, isAdmin)
+    case StopOffice                                  ⇒ context stop self
+    case ReceiveTimeout                              ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
   override protected def handleQuery(state: User): Receive = {
@@ -183,6 +194,7 @@ private[user] final class UserProcessor
     case CheckAccessHash(_, senderAuthId, accessHash) ⇒ checkAccessHash(state, senderAuthId, accessHash)
     case GetAccessHash(_, clientAuthId)               ⇒ getAccessHash(state, clientAuthId)
     case GetUser(_)                                   ⇒ getUser(state)
+    case IsAdmin(_)                                   ⇒ isAdmin(state)
   }
 
   protected[this] var userStateMaybe: Option[User] = None

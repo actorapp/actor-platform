@@ -19,7 +19,7 @@ private final class BotsCliService extends Actor with ActorLogging {
   def receive = {
     case CreateBot(username, name, isAdmin) ⇒
       (for {
-        token ← botExt.create(username, name, isAdmin)
+        (token, _) ← botExt.create(username, name, isAdmin)
       } yield CreateBotResponse(token)) pipeTo sender()
   }
 }

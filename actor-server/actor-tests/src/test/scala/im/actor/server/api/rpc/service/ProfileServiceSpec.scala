@@ -187,7 +187,7 @@ class ProfileServiceSpec
         }
       }
 
-      whenReady(db.run(persist.User.find(user1.id).headOption)) { optUser ⇒
+      whenReady(db.run(persist.UserRepo.find(user1.id).headOption)) { optUser ⇒
         optUser shouldBe defined
         optUser.get.about shouldEqual about
       }
@@ -205,7 +205,7 @@ class ProfileServiceSpec
         }
       }
 
-      whenReady(db.run(persist.User.find(user1.id).headOption)) { optUser ⇒
+      whenReady(db.run(persist.UserRepo.find(user1.id).headOption)) { optUser ⇒
         optUser shouldBe defined
         optUser.get.about shouldEqual None
       }

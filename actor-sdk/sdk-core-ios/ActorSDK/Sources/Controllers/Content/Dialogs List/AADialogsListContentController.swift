@@ -21,6 +21,8 @@ public class AADialogsListContentController: AAContentTableController, UISearchB
     
     public override func tableDidLoad() {
         
+        tableView.estimatedRowHeight = 76
+        
         if enableSearch {
             search(AADialogSearchCell.self) { (s) -> () in
             

@@ -13,8 +13,9 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 private case class Config(
-  command:   String    = "help",
-  createBot: CreateBot = CreateBot()
+  command:       String        = "help",
+  createBot:     CreateBot     = CreateBot(),
+  updateIsAdmin: UpdateIsAdmin = UpdateIsAdmin()
 )
 
 private[cli] trait Request {
@@ -31,9 +32,21 @@ private[cli] case class CreateBot(
 
 private[cli] case class CreateBotResponse(token: String)
 
+private[cli] case class UpdateIsAdmin(
+  userId:  Int     = 0,
+  isAdmin: Boolean = false
+) extends Request {
+  override type Response = UpdateIsAdminResponse
+}
+
+private[cli] sealed trait UpdateIsAdminResponse
+private[cli] case object UpdateIsAdminResponse extends UpdateIsAdminResponse
+
 private object Commands {
   val Help = "help"
   val CreateBot = "create-bot"
+  val AdminGrant = "admin-grant"
+  val AdminRevoke = "admin-revoke"
 }
 
 object ActorCli extends App {
@@ -44,14 +57,28 @@ object ActorCli extends App {
     cmd(Commands.CreateBot) action { (_, c) ⇒
       c.copy(command = Commands.CreateBot)
     } children (
-      opt[String]("username") abbr ("u") required () action { (x, c) ⇒
+      opt[String]("username") abbr "u" required () action { (x, c) ⇒
         c.copy(createBot = c.createBot.copy(username = x))
       },
-      opt[String]("name") abbr ("n") required () action { (x, c) ⇒
+      opt[String]("name") abbr "n" required () action { (x, c) ⇒
         c.copy(createBot = c.createBot.copy(name = x))
       },
-      opt[Unit]("admin") abbr ("a") optional () action { (x, c) ⇒
+      opt[Unit]("admin") abbr "a" optional () action { (x, c) ⇒
         c.copy(createBot = c.createBot.copy(isAdmin = true))
+      }
+    )
+    cmd(Commands.AdminGrant) action { (_, c) ⇒
+      c.copy(command = Commands.AdminGrant)
+    } children (
+      opt[Int]("userId") abbr "u" required () action { (x, c) ⇒
+        c.copy(updateIsAdmin = UpdateIsAdmin(x, isAdmin = true))
+      }
+    )
+    cmd(Commands.AdminRevoke) action { (_, c) ⇒
+      c.copy(command = Commands.AdminRevoke)
+    } children (
+      opt[Int]("userId") abbr "u" required () action { (x, c) ⇒
+        c.copy(updateIsAdmin = UpdateIsAdmin(x, isAdmin = false))
       }
     )
   }
@@ -64,6 +91,8 @@ object ActorCli extends App {
         Future.successful(parser.showUsage)
       case Commands.CreateBot ⇒
         handlers.createBot(config.createBot)
+      case Commands.AdminGrant | Commands.AdminRevoke ⇒
+        handlers.updateIsAdmin(config.updateIsAdmin)
     })
 
     def cmd(f: Future[Unit]): Unit = {
@@ -76,10 +105,11 @@ object ActorCli extends App {
   }
 }
 
-final class CliHandlers extends BotHandlers {
+final class CliHandlers extends BotHandlers with UsersHandlers {
   protected val BotService = "bots"
+  protected val UsersService = "users"
 
-  protected val config = ConfigFactory.parseString("akka.log-config-on-start=yes").withFallback(ConfigFactory.parseResources("cli.conf")).resolve()
+  protected val config = ConfigFactory.parseResources("cli.conf").resolve()
 
   protected lazy val system = ActorSystem("actor-cli", config)
 
@@ -87,9 +117,7 @@ final class CliHandlers extends BotHandlers {
 
   protected lazy val initialContacts = Set(ActorPath.fromString(s"akka.tcp://actor-server@$remoteHost:2552/system/receptionist"))
 
-  protected lazy val client = system.actorOf(
-    ClusterClient.props(ClusterClientSettings(system).withInitialContacts(initialContacts))
-  )
+  protected lazy val client = system.actorOf(ClusterClient.props(ClusterClientSettings(system).withInitialContacts(initialContacts)))
 
   protected implicit lazy val ec: ExecutionContext = system.dispatcher
 

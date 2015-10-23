@@ -508,6 +508,7 @@ public class AAAvatarRow: AAManagedRow {
     public var avatarPath: String?
     public var avatarLoading: Bool = false
     
+    public var subtitleHidden: Bool = false
     public var subtitle: String?
     public var subtitleColor: UIColor?
     
@@ -530,12 +531,8 @@ public class AAAvatarRow: AAManagedRow {
     public func bindCell(res: AAAvatarCell) {
         res.titleLabel.text = title
         
-        if subtitle != nil {
-            res.subtitleLabel.text = subtitle
-            res.subtitleLabel.hidden = false
-        } else {
-            res.subtitleLabel.hidden = true
-        }
+        res.subtitleLabel.hidden = subtitleHidden
+        res.subtitleLabel.text = subtitle
         
         if avatarPath != nil {
             res.avatarView.bind(title!, id: jint(id!), fileName: avatarPath!)
@@ -566,7 +563,7 @@ public class AAAvatarRow: AAManagedRow {
         bindAction?(r: self)
         
         if let p = indexPath, let s = section {
-            if let cell = s.table.tableView.cellForRowAtIndexPath(p) as? AAAvatarCell {
+            if let cell = s.table.tableView.visibleCellForIndexPath(p) as? AAAvatarCell {
                 bindCell(cell)
             }
         }

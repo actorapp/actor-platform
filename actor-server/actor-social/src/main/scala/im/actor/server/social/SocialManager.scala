@@ -112,7 +112,7 @@ class SocialManager(implicit db: Database) extends Actor with ActorLogging with 
     case env @ Envelope(userId, _) ⇒
       stash()
 
-      db.run(persist.social.Relation.find(userId)) onComplete {
+      db.run(persist.social.RelationRepo.find(userId)) onComplete {
         case Success(userIds) ⇒
           self ! Initiated(userIds.toSet)
         case Failure(e) ⇒
@@ -139,13 +139,13 @@ class SocialManager(implicit db: Database) extends Actor with ActorLogging with 
 
       if (uniqUserIds.nonEmpty) {
         context.become(working(userIds ++ uniqUserIds))
-        db.run(persist.social.Relation.create(userId, uniqUserIds))
+        db.run(persist.social.RelationRepo.create(userId, uniqUserIds))
       }
     case env @ Envelope(userId, RelationNoted(notedUserId)) ⇒
       if (!userIds.contains(notedUserId) && userId != notedUserId) {
         context.become(working(userIds + notedUserId))
 
-        db.run(persist.social.Relation.create(userId, notedUserId))
+        db.run(persist.social.RelationRepo.create(userId, notedUserId))
       }
     case env @ Envelope(userId, GetRelations) ⇒
       sender() ! Relations(userIds)

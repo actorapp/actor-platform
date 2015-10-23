@@ -5,10 +5,10 @@
 import Foundation
 
 public class AAImagePickerController: UIImagePickerController {
-//    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-//        return UIStatusBarStyle.LightContent
-//    }
-//    
+    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return ActorSDK.sharedActor().style.vcStatusBarStyle
+    }
+
 //    public override func childViewControllerForStatusBarStyle() -> UIViewController? {
 //        return nil
 //    }

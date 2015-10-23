@@ -21,7 +21,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     private let titleView: UILabel = UILabel()
     private let subtitleView: UILabel = UILabel()
     private let navigationView: UIView = UIView()
-    private let avatarView = AAAvatarView(frameSize: 36, type: .Rounded)
+    private let avatarView = AABarAvatarView(frameSize: 36, type: .Rounded)
     private let backgroundView = UIImageView()
     
     override init(peer: ACPeer) {
@@ -141,9 +141,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                     self.subtitleView.text = stateText;
                     let state = UInt(presence!.state.ordinal())
                     if (state == ACUserPresence_State.ONLINE.rawValue) {
-                        self.subtitleView.textColor = self.appStyle.userOnlineColor
+                        self.subtitleView.textColor = self.appStyle.userOnlineNavigationColor
                     } else {
-                        self.subtitleView.textColor = self.appStyle.userOfflineColor
+                        self.subtitleView.textColor = self.appStyle.userOfflineNavigationColor
                     }
                 }
             })
@@ -193,7 +193,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
         
         Actor.onConversationOpenWithPeer(peer)
-        // Analytics.trackPageVisible(content)
+        ActorSDK.sharedActor().trackPageVisible(content)
     }
     
     override func viewWillLayoutSubviews() {
@@ -222,7 +222,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         super.viewWillDisappear(animated)
         
         Actor.onConversationClosedWithPeer(peer)
-//        Analytics.trackPageHidden(content)
+        ActorSDK.sharedActor().trackPageHidden(content)
 
         if !AADevice.isiPad {
             AANavigationBadge.hideBadge()
@@ -308,14 +308,14 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
  
     // Completition
     
-    override func canShowAutoCompletion() -> Bool {
+    override func didChangeAutoCompletionPrefix(prefix: String!, andWord word: String!) {
         if UInt(self.peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue {
-            if self.foundPrefix == "@" {
-
+            if prefix == "@" {
+                
                 let oldCount = filteredMembers.count
                 filteredMembers.removeAll(keepCapacity: true)
                 
-                let res = Actor.findMentionsWithGid(self.peer.peerId, withQuery: self.foundWord)
+                let res = Actor.findMentionsWithGid(self.peer.peerId, withQuery: word)
                 for index in 0..<res.size() {
                     filteredMembers.append(res.getWithInt(index) as! ACMentionFilterResult)
                 }
@@ -324,13 +324,16 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                     self.autoCompletionView.reloadData()
                 }
                 
-                return filteredMembers.count > 0
+                dispatchOnUi { () -> Void in
+                    self.showAutoCompletionView(self.filteredMembers.count > 0)
+                }
+                return
             }
-            
-            return false
         }
         
-        return false
+        dispatchOnUi { () -> Void in
+            self.showAutoCompletionView(false)
+        }
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

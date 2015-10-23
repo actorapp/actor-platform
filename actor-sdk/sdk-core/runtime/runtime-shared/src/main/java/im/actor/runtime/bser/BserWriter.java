@@ -29,7 +29,7 @@ public class BserWriter {
         if (value == null) {
             throw new IllegalArgumentException("Value can not be null");
         }
-        if (value.length > Limits.MAX_BLOCK_SIZE) {
+        if (value.length > BserLimits.MAX_BLOCK_SIZE) {
             throw new IllegalArgumentException("Unable to write more than 1 MB");
         }
         writtenFields.put(fieldNumber, true);
@@ -72,7 +72,7 @@ public class BserWriter {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
-        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+        if (values.size() > BserLimits.MAX_PROTO_REPEATED) {
             throw new IllegalArgumentException("Too many values");
         }
         writtenFields.put(fieldNumber, true);
@@ -88,7 +88,7 @@ public class BserWriter {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
-        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+        if (values.size() > BserLimits.MAX_PROTO_REPEATED) {
             throw new IllegalArgumentException("Too many values");
         }
         writtenFields.put(fieldNumber, true);
@@ -104,7 +104,7 @@ public class BserWriter {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
-        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+        if (values.size() > BserLimits.MAX_PROTO_REPEATED) {
             throw new IllegalArgumentException("Too many values");
         }
         writtenFields.put(fieldNumber, true);
@@ -120,7 +120,7 @@ public class BserWriter {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
-        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+        if (values.size() > BserLimits.MAX_PROTO_REPEATED) {
             throw new IllegalArgumentException("Too many values");
         }
         writtenFields.put(fieldNumber, true);
@@ -136,7 +136,7 @@ public class BserWriter {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
-        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+        if (values.size() > BserLimits.MAX_PROTO_REPEATED) {
             throw new IllegalArgumentException("Too many values");
         }
         writtenFields.put(fieldNumber, true);
