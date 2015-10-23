@@ -117,7 +117,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
           }
         }
 
-        Thread.sleep(1000)
+        Thread.sleep(5000)
 
         whenReady(db.run(persist.sequence.SeqUpdateRepo.find(authId).head)) { update ⇒
           update.header should ===(UpdateContactRegistered.header)
