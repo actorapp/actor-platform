@@ -44,5 +44,4 @@ object UserEmailRepo {
 
   def create(id: Int, userId: Int, accessSalt: String, email: String, title: String): FixedSqlAction[Int, NoStream, Write] =
     emails += models.UserEmail(id, userId, accessSalt, email, title)
-
 }
