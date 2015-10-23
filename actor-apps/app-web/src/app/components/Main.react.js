@@ -17,7 +17,6 @@ import FastSwitcherActionCreators from 'actions/FastSwitcherActionCreators';
 
 import SidebarSection from 'components/SidebarSection.react';
 import DialogSection from 'components/DialogSection.react';
-import Banner from 'components/common/Banner.react';
 import Favicon from 'components/common/Favicon.react';
 
 class Main extends Component {
@@ -81,7 +80,6 @@ class Main extends Component {
     return (
       <div className="app">
         <Favicon/>
-        <Banner/>
         <SidebarSection selectedPeer={peer}/>
         <DialogSection peer={peer}/>
       </div>
