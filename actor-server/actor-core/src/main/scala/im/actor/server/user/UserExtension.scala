@@ -31,15 +31,13 @@ object UserExtension extends ExtensionId[UserExtensionImpl] with ExtensionIdProv
 }
 
 final class UserHooksControl(implicit ec: ExecutionContext) extends HooksControl {
-  val beforeContactRegistered = new HooksStorage0[UserHook.BeforeContactRegisteredHook](_.run())
+  val beforeContactRegistered = new HooksStorage1[UserHook.BeforeContactRegisteredHook, User]
 }
-
-abstract class UserHook(system: ActorSystem) extends Hook
 
 object UserHook {
 
-  abstract class BeforeContactRegisteredHook(system: ActorSystem) extends UserHook(system) {
-    def run(): Future[Unit]
+  abstract class BeforeContactRegisteredHook(system: ActorSystem) extends Hook1[User] {
+    def run(user: User): Future[Unit]
   }
 
 }
