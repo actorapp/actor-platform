@@ -18,6 +18,7 @@ Pod::Spec.new do |s|
   s.dependency 'RegexKitLite'
   s.dependency 'CocoaAsyncSocket'
   s.dependency 'zipzap'
+  s.dependency 'J2ObjC-Framework'
 
   # UI
   s.dependency 'VBFPopFlatButton'
