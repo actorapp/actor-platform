@@ -28,6 +28,8 @@
     <string name="toast_already_member">User is already member of group</string>
     <string name="toast_empty_name">Name can\'t be empty</string>
     <string name="toast_unable_change">Unable to change name</string>
+    <string name="toast_empty_nick">Nick can\'t be empty</string>
+    <string name="toast_unable_change_nick">Unable to change nick</string>
     <string name="toast_empty_about">About can\'t be empty</string>
 
     <string name="menu_share">Share</string>
@@ -349,9 +351,11 @@
     <string name="edit_name_title_contact">Enter contact name</string>
     <string name="edit_name_title_group">Enter group name</string>
     <string name="edit_name_title_group_theme">Enter group theme</string>
+    <string name="edit_name_title_nick">Enter your nick</string>
     <string name="edit_name_cancel">CANCEL</string>
     <string name="edit_name_save">SAVE</string>
     <string name="edit_name_process">Changing name…</string>
+    <string name="edit_nick_process">Changing nick…</string>
     <string name="edit_about_process">Changing description…</string>
     <string name="edit_theme_process">Changing theme…</string>
 
