@@ -21,6 +21,11 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class EditNameFragment extends BaseFragment {
 
+    private KeyboardHelper helper;
+    private EditText nameEdit;
+    private int type;
+    private int id;
+
     public static EditNameFragment editName(int type, int id) {
         Bundle args = new Bundle();
         args.putInt("EXTRA_TYPE", type);
@@ -29,12 +34,6 @@ public class EditNameFragment extends BaseFragment {
         res.setArguments(args);
         return res;
     }
-
-    private KeyboardHelper helper;
-    private EditText nameEdit;
-
-    private int type;
-    private int id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +47,9 @@ public class EditNameFragment extends BaseFragment {
         if (type == EditNameActivity.TYPE_ME) {
             UserVM userModel = users().get(myUid());
             nameEdit.setText(userModel.getName().get());
+        } else if (type == EditNameActivity.TYPE_NICK) {
+            UserVM userModel = users().get(myUid());
+            nameEdit.setText(userModel.getNick().get());
         } else if (type == EditNameActivity.TYPE_USER) {
             UserVM userModel = users().get(id);
             nameEdit.setText(userModel.getName().get());
@@ -83,6 +85,18 @@ public class EditNameFragment extends BaseFragment {
                         @Override
                         public void onError(Exception e) {
                             Toast.makeText(getActivity(), R.string.toast_unable_change, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else if (type == EditNameActivity.TYPE_NICK) {
+                    execute(messenger().editMyNick(name), R.string.edit_nick_process, new CommandCallback<Boolean>() {
+                        @Override
+                        public void onResult(Boolean res) {
+                            getActivity().finish();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Toast.makeText(getActivity(), R.string.toast_unable_change_nick, Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else if (type == EditNameActivity.TYPE_USER) {
