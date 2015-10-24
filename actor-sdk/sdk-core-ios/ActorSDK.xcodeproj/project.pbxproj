@@ -1334,6 +1334,8 @@
 				OTHER_LDFLAGS = (
 					"-lactor",
 					"$(inherited)",
+					"-framework",
+					j2objc,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = ActorSDK;
@@ -1374,6 +1376,8 @@
 				OTHER_LDFLAGS = (
 					"-lactor",
 					"$(inherited)",
+					"-framework",
+					j2objc,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = im.actor.ActorSDK;
 				PRODUCT_NAME = ActorSDK;
