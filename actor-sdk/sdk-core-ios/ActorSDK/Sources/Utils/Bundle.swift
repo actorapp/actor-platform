@@ -20,6 +20,6 @@ extension UIImage {
         if let appImage = UIImage(named: named) {
             return appImage
         }
-        return UIImage(named: named, inBundle: NSBundle.framework, compatibleWithTraitCollection: nil)
+        return UIImage(named: named, inBundle: NSBundle.framework, compatibleWithTraitCollection: UITraitCollection(displayScale: UIScreen.mainScreen().scale))
     }
 }

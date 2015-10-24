@@ -60,7 +60,7 @@ public class AABubbleCell: UICollectionViewCell {
     private static var cachedInTextBg = UIImage.tinted("BubbleIncomingFull", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
     private static var cachedInTextBgBorder = UIImage.tinted("BubbleIncomingFullBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     private static var cachedInTextCompactBg = UIImage.tinted("BubbleIncomingPartial", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
-    private static var cachedInTextCompactBgBorder:UIImage = UIImage.tinted("BubbleIncomingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInColor)
+    private static var cachedInTextCompactBgBorder:UIImage = UIImage.tinted("BubbleIncomingPartialBorder", color: ActorSDK.sharedActor().style.chatTextBubbleInBorderColor)
     
     //
     // Cached media bubble images
