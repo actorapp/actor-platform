@@ -3,6 +3,7 @@ package im.actor.botkit
 import java.net.URLEncoder
 
 import akka.actor._
+import akka.http.scaladsl.Http
 import akka.stream.scaladsl.{ Sink, Source }
 import akka.stream.{ ActorMaterializer, OverflowStrategy }
 import akka.util.Timeout
@@ -17,13 +18,13 @@ import scala.concurrent.duration._
 object RemoteBot {
   val DefaultEndpoint = "wss://api.actor.im"
 
-  private final case class NextRequest(body: BotMessages.RequestBody, responsePromise: Promise[ResponseBody])
-
+  private final object StreamComplete
 }
 
 abstract class RemoteBot(token: String, endpoint: String) extends BotBase with ActorFutures {
 
   import BotMessages._
+  import RemoteBot._
 
   override protected implicit val timeout: Timeout = Timeout(30.seconds)
   private implicit val mat = ActorMaterializer()
@@ -43,7 +44,7 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
   }
 
   private final def internalReceive: Receive = workingBehavior(rqSource).orElse({
-    case ConnectionClosed ⇒
+    case StreamComplete ⇒
       log.warning("Disconnected, reinitiating flow")
       rqSource = initFlow()
   })
@@ -51,7 +52,7 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
   private def initFlow(): ActorRef = {
     val (wsSource, wsSink) = WebsocketClient.sourceAndSink(s"$endpoint/v1/bots/${URLEncoder.encode(token, "UTF-8")}")
 
-    wsSource.map(read[BotMessageOut]).to(Sink.actorRef(self, ConnectionClosed)).run()
+    wsSource.map(read[BotMessageOut]).to(Sink.actorRef(self, StreamComplete)).run()
 
     Source.actorRef(bufferSize = 100, overflowStrategy = OverflowStrategy.fail)
       .map(write[BotRequest])
