@@ -30,6 +30,7 @@ public class SignInFragment extends BaseAuthFragment {
 
     public static final String AUTH_TYPE_EMAIL = "auth_type_email";
     public static final String AUTH_TYPE_PHONE = "auth_type_phone";
+    public static final String AUTH_TYPE_CUSTOM = "auth_type_custom";
     String authType;
     private EditText codeEnterEditText;
     private KeyboardHelper keyboardHelper;
@@ -60,13 +61,12 @@ public class SignInFragment extends BaseAuthFragment {
             ((TextView) v.findViewById(R.id.sendHint)).setText(
                     Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + email + "</b>"))
             );
+        } else {
+            String authId = getArguments().getString("authId");
+            ((TextView) v.findViewById(R.id.sendHint)).setText(
+                    Html.fromHtml(getArguments().getString("authHint"))
+            );
         }
-//        else {
-//            String authId = getArguments().getString("authId");
-//            ((TextView) v.findViewById(R.id.sendHint)).setText(
-//                    Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + email + "</b>"))
-//            );
-//        }
 
         codeEnterEditText = (EditText) v.findViewById(R.id.et_sms_code_enter);
         codeEnterEditText.addTextChangedListener(new TextWatcher() {
