@@ -137,13 +137,18 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                     self.subtitleView.text = Actor.getFormatter().formatTyping()
                     self.subtitleView.textColor = self.appStyle.navigationSubtitleActiveColor
                 } else {
-                    let stateText = Actor.getFormatter().formatPresence(presence, withSex: user.getSex())
-                    self.subtitleView.text = stateText;
-                    let state = UInt(presence!.state.ordinal())
-                    if (state == ACUserPresence_State.ONLINE.rawValue) {
+                    if (user.isBot().boolValue) {
+                        self.subtitleView.text = "bot"
                         self.subtitleView.textColor = self.appStyle.userOnlineNavigationColor
                     } else {
-                        self.subtitleView.textColor = self.appStyle.userOfflineNavigationColor
+                        let stateText = Actor.getFormatter().formatPresence(presence, withSex: user.getSex())
+                        self.subtitleView.text = stateText;
+                        let state = UInt(presence!.state.ordinal())
+                        if (state == ACUserPresence_State.ONLINE.rawValue) {
+                            self.subtitleView.textColor = self.appStyle.userOnlineNavigationColor
+                        } else {
+                            self.subtitleView.textColor = self.appStyle.userOfflineNavigationColor
+                        }
                     }
                 }
             })
