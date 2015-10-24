@@ -81,7 +81,6 @@ public class AuthActivity extends BaseFragmentActivity {
         switch (state) {
             case AUTH_START:
                 signFragment = ActorSDK.sharedActor().getDelegate().getSignFragment();
-                showFragment(signFragment, false, false);
                 if (signFragment instanceof SignEmailFragment) {
                     authType = AUTH_TYPE_EMAIL;
                 } else if (signFragment instanceof SignPhoneFragment) {
@@ -89,14 +88,16 @@ public class AuthActivity extends BaseFragmentActivity {
                 } else {
                     authType = AUTH_TYPE_CUSTOM;
                 }
-
+                showFragment(signFragment, false, false);
                 break;
             case AUTH_EMAIL:
-                showFragment(new SignEmailFragment(), false, false);
+                signFragment = new SignEmailFragment();
+                showFragment(signFragment, false, false);
                 authType = AUTH_TYPE_EMAIL;
                 break;
             case AUTH_PHONE:
-                showFragment(new SignPhoneFragment(), false, false);
+                signFragment = new SignPhoneFragment();
+                showFragment(signFragment, false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;
             case CODE_VALIDATION_CUSTOM:
@@ -110,8 +111,9 @@ public class AuthActivity extends BaseFragmentActivity {
                 Bundle args = new Bundle();
                 args.putString("authType", state == AuthState.CODE_VALIDATION_EMAIL ? SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
                 if (state == AuthState.CODE_VALIDATION_CUSTOM) {
-                    BaseCustomAuthFragment customSignFragment = (BaseCustomAuthFragment) signFragment;
-                    args.putString("authId", customSignFragment.getAuthId());
+                    args.putString("authType", SignInFragment.AUTH_TYPE_CUSTOM);
+                    args.putString("authId", signFragment.getAuthId());
+                    args.putString("authHint", signFragment.getHintText());
                 }
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);

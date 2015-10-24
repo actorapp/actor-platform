@@ -120,6 +120,9 @@ public class SignEmailFragment extends BaseAuthFragment {
                     .show();
             return;
         }
+
+        setAuthId(rawEmail);
+
         executeAuth(ActorSDK.sharedActor().getMessenger().requestStartEmailAuth(rawEmail), ACTION);
     }
 
@@ -127,4 +130,8 @@ public class SignEmailFragment extends BaseAuthFragment {
         focus(emailEditText);
     }
 
+    @Override
+    public String getHintText() {
+        return getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + getAuthId() + "</b>");
+    }
 }
