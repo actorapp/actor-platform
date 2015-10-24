@@ -38,4 +38,4 @@ include ":actor-sdk:sdk-core-ios"
 // SDK Bots
 //
 
-// include ":actor-sdk:sdk-bot:bot-example"
+include ":actor-sdk:sdk-bot:bot-example"
