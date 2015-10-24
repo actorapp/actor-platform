@@ -12,6 +12,7 @@ public class EditNameActivity extends BaseFragmentActivity {
     public static final int TYPE_USER = 1;
     public static final int TYPE_GROUP = 2;
     public static final int TYPE_GROUP_THEME = 3;
+    public static final int TYPE_NICK = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,8 @@ public class EditNameActivity extends BaseFragmentActivity {
             getSupportActionBar().setTitle(R.string.edit_name_title_group);
         } else if (type == TYPE_GROUP_THEME) {
             getSupportActionBar().setTitle(R.string.edit_name_title_group_theme);
+        } else if (type == TYPE_NICK) {
+            getSupportActionBar().setTitle(R.string.edit_name_title_nick);
         }
 
         if (savedInstanceState == null) {
