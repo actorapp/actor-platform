@@ -81,6 +81,11 @@ public class Intents {
                 .putExtra(EXTRA_EDIT_ID, 0);
     }
 
+    public static Intent editUserNick(Context context) {
+        return new Intent(context, EditNameActivity.class)
+                .putExtra(EXTRA_EDIT_TYPE, EditNameActivity.TYPE_NICK);
+    }
+
     public static Intent editGroupAbout(int groupId, Context context) {
         return new Intent(context, EditAboutActivity.class)
                 .putExtra(EXTRA_EDIT_TYPE, EditAboutActivity.TYPE_GROUP)
