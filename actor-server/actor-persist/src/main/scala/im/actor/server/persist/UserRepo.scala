@@ -37,7 +37,7 @@ object UserRepo {
   val byIdC = Compiled(byId _)
   val nameByIdC = Compiled(nameById _)
 
-  def byNickname(nickname: Rep[String]) = users filter (_.nickname === nickname)
+  def byNickname(nickname: Rep[String]) = users filter (_.nickname.toLowerCase === nickname.toLowerCase)
   def idsByNickname(nickname: Rep[String]) = byNickname(nickname).map(_.id)
   val byNicknameC = Compiled(byNickname _)
   val idsByNicknameC = Compiled(idsByNickname _)
@@ -78,8 +78,11 @@ object UserRepo {
   def findSalts(ids: Set[Int]) =
     users.filter(_.id inSet ids).map(u ⇒ (u.id, u.accessSalt)).result
 
-  def findByNickname(nickname: String) =
+  def findByNickname(query: String) = {
+    val nickname =
+      if (query.startsWith("@")) query.drop(1) else query
     byNicknameC(nickname).result.headOption
+  }
 
   def findIdsByNickname(nickname: String) =
     idsByNicknameC(nickname).result.headOption

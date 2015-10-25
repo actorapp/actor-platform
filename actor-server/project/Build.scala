@@ -97,7 +97,6 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       actorFrontend,
       actorHttpApi,
       actorModels,
-      actorNotifications,
       actorPersist,
       actorPresences,
       actorSession,
