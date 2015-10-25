@@ -41,6 +41,10 @@ object AuthSessionRepo {
 
   val activeSessions = sessions.filter(_.deletedAt.isEmpty)
 
+  def byDeviceHash(deviceHash: Rep[Array[Byte]]) =
+    activeSessions.filter(_.deviceHash === deviceHash)
+  val byDeviceHashC = Compiled(byDeviceHash _)
+
   def create(session: models.AuthSession) =
     sessions += session
 
@@ -57,7 +61,7 @@ object AuthSessionRepo {
     activeSessions.filter(_.authId === authId).map(_.appId).result.headOption
 
   def findByDeviceHash(deviceHash: Array[Byte]) =
-    activeSessions.filter(_.deviceHash === deviceHash).result
+    byDeviceHashC(deviceHash).result
 
   def delete(userId: Int, id: Int) =
     activeSessions.filter(s ⇒ s.userId === userId && s.id === id).map(_.deletedAt).update(Some(new DateTime))

@@ -17,12 +17,16 @@ final class AuthSmsCodeObsoleteTable(tag: Tag) extends Table[models.AuthSmsCodeO
 object AuthSmsCodeObsoleteRepo {
   val codes = TableQuery[AuthSmsCodeObsoleteTable]
 
+  def byPhoneNumber(number: Rep[Long]) =
+    codes.filter(c ⇒ c.phoneNumber === number && c.isDeleted === false)
+  private val byPhoneNumberC = Compiled(byPhoneNumber _)
+
   def create(id: Long, phoneNumber: Long, smsHash: String, smsCode: String) =
     codes += models.AuthSmsCodeObsolete(id, phoneNumber, smsHash, smsCode)
 
   def findByPhoneNumber(number: Long) =
-    codes.filter(c ⇒ c.phoneNumber === number && c.isDeleted === false).result
+    byPhoneNumberC(number).result
 
   def deleteByPhoneNumber(number: Long) =
-    codes.filter(_.phoneNumber === number).map(_.isDeleted).update(true)
+    byPhoneNumber(number).map(_.isDeleted).update(true)
 }
