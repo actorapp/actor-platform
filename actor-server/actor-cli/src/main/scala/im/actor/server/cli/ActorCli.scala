@@ -40,7 +40,9 @@ private[cli] case class UpdateIsAdmin(
 }
 
 private[cli] sealed trait UpdateIsAdminResponse
-private[cli] case object UpdateIsAdminResponse extends UpdateIsAdminResponse
+private[cli] case object UpdateIsAdminResponse extends UpdateIsAdminResponse {
+  def apply(): UpdateIsAdminResponse = this
+}
 
 private object Commands {
   val Help = "help"
