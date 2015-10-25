@@ -130,11 +130,11 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
         appId = 42,
         appKey = "appKey",
         isSilent = false
-      )(rpcapi.ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds)
+      )(rpcapi.ClientData(authId, scala.util.Random.nextLong(), None)), 10.seconds)
 
       res match {
         case \/-(rsp) ⇒ rsp.user
-        case -\/(e)   ⇒ fail(s"Got RpcError ${e}")
+        case -\/(e)   ⇒ fail(s"Got RpcError $e")
       }
     }
 
