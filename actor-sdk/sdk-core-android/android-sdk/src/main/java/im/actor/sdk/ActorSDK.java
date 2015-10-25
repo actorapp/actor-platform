@@ -18,13 +18,19 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.Props;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
+import im.actor.sdk.core.AndroidPushActor;
 import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.runtime.android.AndroidContext;
+
+import static im.actor.runtime.actors.ActorSystem.system;
+
 
 public class ActorSDK {
 
@@ -61,6 +67,11 @@ public class ActorSDK {
      */
     private String apiAppKey = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
     /**
+     * Push Registration Id
+     */
+    private long pushId = 0;
+
+    /**
      * Is Keeping app alive enabled
      */
     private boolean isKeepAliveEnabled = false;
@@ -71,7 +82,8 @@ public class ActorSDK {
     /**
      * ActivityManager
      */
-    private ActivityManager activityManager= new ActivityManager();
+    private ActivityManager activityManager = new ActivityManager();
+
     private ActorSDK() {
         endpoints.add("tls://front1-mtproto-api-rev2.actor.im");
         endpoints.add("tls://front2-mtproto-api-rev2.actor.im");
@@ -91,7 +103,7 @@ public class ActorSDK {
     // SDK Initialization
     //
 
-    public void createActor(Application application) {
+    public void createActor(final Application application) {
 
         this.application = application;
 
@@ -135,6 +147,19 @@ public class ActorSDK {
             AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
             alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pendingIntent);
         }
+
+        //
+        //GCM
+        //
+        if (pushId != 0) {
+            system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
+                @Override
+                public AndroidPushActor create() {
+                    return new AndroidPushActor(application, messenger);
+                }
+            }), "actor/android/push");
+        }
+
     }
 
     public void startMessagingApp(Activity context) {
@@ -238,6 +263,22 @@ public class ActorSDK {
      */
     public void setIsKeepAliveEnabled(boolean isKeepAliveEnabled) {
         this.isKeepAliveEnabled = isKeepAliveEnabled;
+    }
+
+    /**
+     * Getting Push Registration Id
+     *
+     * @return pushId
+     */
+    public long getPushId() {
+        return pushId;
+    }
+
+    /**
+     * Setting Push Registration Id
+     */
+    public void setPushId(long pushId) {
+        this.pushId = pushId;
     }
 
     public ActorSDKDelegate getDelegate() {
