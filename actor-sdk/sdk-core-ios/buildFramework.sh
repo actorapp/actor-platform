@@ -14,6 +14,7 @@ xcodebuild \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
+  OTHER_CFLAGS="-fembed-bitcode" \
   build
 
 xcodebuild \
@@ -25,6 +26,7 @@ xcodebuild \
   ONLY_ACTIVE_ARCH=NO \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
+  OTHER_CFLAGS="-fembed-bitcode"
   build
 
 rm -f build/Output/libactor.so
