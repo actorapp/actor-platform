@@ -20,6 +20,6 @@ private final class UsersCliService extends Actor with ActorLogging {
     case UpdateIsAdmin(userId, isAdmin) ⇒
       (for {
         _ ← userExt.updateIsAdmin(userId, isAdmin)
-      } yield UpdateIsAdminResponse) pipeTo sender()
+      } yield UpdateIsAdminResponse()) pipeTo sender()
   }
 }
