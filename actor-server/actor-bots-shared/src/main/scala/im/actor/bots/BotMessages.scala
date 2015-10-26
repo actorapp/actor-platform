@@ -418,6 +418,14 @@ object BotMessages {
 
   final case class ResponseCreateGroup(@beanGetter peer: GroupOutPeer) extends ResponseBody
 
+  @key("InviteUser")
+  final case class InviteUser(@beanGetter groupPeer: GroupOutPeer, @beanGetter userPeer: UserOutPeer) extends RequestBody {
+    override type Response = Void
+    override val service: String = Services.Groups
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
   @key("Message")
   final case class Message(
     @beanGetter peer:     OutPeer,

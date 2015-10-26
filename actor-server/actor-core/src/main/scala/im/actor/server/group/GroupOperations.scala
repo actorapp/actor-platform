@@ -47,7 +47,10 @@ private[group] sealed trait Commands {
     (processorRegion.ref ? JoinAfterFirstRead(groupId, joiningUserId, joiningUserAuthId)) map (_ ⇒ ())
 
   def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(implicit client: AuthorizedClientData): Future[SeqStateDate] =
-    (processorRegion.ref ? Invite(groupId, inviteeUserId, client.userId, client.authId, randomId)).mapTo[SeqStateDate]
+    inviteToGroup(client.userId, client.authId, groupId, inviteeUserId, randomId)
+
+  def inviteToGroup(clientUserId: Int, clientAuthId: Long, groupId: Int, inviteeUserId: Int, randomId: Long): Future[SeqStateDate] =
+    (processorRegion.ref ? Invite(groupId, inviteeUserId, clientUserId, clientAuthId, randomId)).mapTo[SeqStateDate]
 
   def updateAvatar(groupId: Int, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long): Future[UpdateAvatarAck] =
     (processorRegion.ref ? UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId)).mapTo[UpdateAvatarAck]
