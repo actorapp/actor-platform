@@ -18,19 +18,14 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
-import im.actor.runtime.actors.ActorCreator;
-import im.actor.runtime.actors.Props;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
-import im.actor.sdk.core.AndroidPushActor;
 import im.actor.sdk.core.ActorPushManager;
 import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.runtime.android.AndroidContext;
-
-import static im.actor.runtime.actors.ActorSystem.system;
 
 
 public class ActorSDK {
@@ -153,15 +148,9 @@ public class ActorSDK {
         //GCM
         //
         try {
-
             final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
             if (pushId != 0) {
-                system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
-                    @Override
-                    public AndroidPushActor create() {
-                        return new AndroidPushActor(application, messenger, pushManager);
-                    }
-                }), "actor/android/push");
+                pushManager.registerPush(application);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
