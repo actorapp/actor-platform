@@ -38,20 +38,8 @@ var ContactStore = assign({}, EventEmitter.prototype, {
   }
 });
 
-const setContacts = (contacts) => {
-  console.debug(contacts);
-  setTimeout(function() {
-    ContactActionCreators.setContacts(contacts);
-  }, 0);
-};
-
 ContactStore.dispatchToken = register(function(action) {
   switch(action.type) {
-    case ActionTypes.SET_LOGGED_IN:
-      waitFor([LoginStore.dispatchToken]);
-      ActorClient.bindContacts(setContacts);
-      break;
-
     case ActionTypes.CONTACT_LIST_SHOW:
       _isContactsOpen = true;
       ContactStore.emitChange();
