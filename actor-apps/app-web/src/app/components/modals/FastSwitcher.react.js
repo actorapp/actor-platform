@@ -46,24 +46,60 @@ class FastSwitcher extends Component {
 
     const resultsList = map(results, (result, index) => {
       const resultClassName = classnames('results__item row', {
-        'results__item--active': selectedIndex === index
+        'results__item--active': selectedIndex === index,
+        'results__item--contact': result.type === 'CONTACT',
+        'results__item--dialog': result.type === 'DIALOG',
+        'results__item--suggestion': result.type === 'SUGGESTION'
       });
 
-      return (
-        <li className={resultClassName}
-            key={index}
-            onClick={() => this.handleSelect(result.peer.peer)}
-            onMouseOver={() => this.setState({selectedIndex: index})}>
-          <AvatarItem image={result.peer.avatar}
-                      placeholder={result.peer.placeholder}
-                      size="small"
-                      title={result.peer.title}/>
-          <div className="title col-xs">{result.peer.title}</div>
-        </li>
-      )
-    });
+      switch (result.type) {
+        case 'DIALOG':
+          return (
+            <li className={resultClassName}
+                key={index}
+                onClick={() => this.handleDialogSelect(result.dialog.peer.peer)}
+                onMouseOver={() => this.setState({selectedIndex: index})}>
+              <AvatarItem image={result.dialog.peer.avatar}
+                          placeholder={result.dialog.peer.placeholder}
+                          size="small"
+                          title={result.dialog.peer.title}/>
+              <div className="title col-xs">
+                {result.dialog.peer.title}
+                <div className="hint pull-right">Open conversation</div>
+              </div>
+            </li>
+          );
+        case 'CONTACT':
+          return (
+            <li className={resultClassName}
+                key={index}
+                onClick={() => this.handleContactSelect(result.contact.uid)}
+                onMouseOver={() => this.setState({selectedIndex: index})}>
+              <AvatarItem image={result.contact.avatar}
+                          placeholder={result.contact.placeholder}
+                          size="small"
+                          title={result.contact.name}/>
+              <div className="title col-xs">
+                {result.contact.name}
+                <div className="hint pull-right">Start new conversation</div>
+              </div>
 
-    console.debug(resultsList.length);
+            </li>
+          );
+        case 'SUGGESTION':
+          return (
+            <li className={resultClassName}
+                key={index}>
+
+              <span>No matches found for <strong>{result.query}</strong>.</span>
+              <span>Have you spelled it correctly?</span>
+              <button className="button button--rised hide">Create new dialog {result.query}</button>
+
+            </li>
+          );
+      }
+
+    });
 
     if (isOpen) {
       return (
@@ -107,8 +143,13 @@ class FastSwitcher extends Component {
 
   handleSearch = (event) => FastSwitcherActionCreators.search(event.target.value);
 
-  handleSelect = (peer) => {
+  handleDialogSelect = (peer) => {
     DialogActionCreators.selectDialogPeer(peer);
+    this.handleClose();
+  };
+
+  handleContactSelect = (uid) => {
+    DialogActionCreators.selectDialogPeerUser(uid);
     this.handleClose();
   };
 
@@ -121,7 +162,11 @@ class FastSwitcher extends Component {
       case KeyCodes.ENTER:
         event.stopPropagation();
         event.preventDefault();
-        this.handleSelect(results[selectedIndex].peer.peer);
+        if (results[selectedIndex].type === 'DIALOG') {
+          this.handleDialogSelect(results[selectedIndex].dialog.peer.peer);
+        } else if (results[selectedIndex].type === 'CONTACT') {
+          this.handleContactSelect(results[selectedIndex].contact.uid);
+        }
         break;
 
       case KeyCodes.ARROW_UP:
