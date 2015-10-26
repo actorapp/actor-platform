@@ -44,7 +44,7 @@ abstract class BotBase extends BotBaseBase {
       requests += (requestCounter → (sender() → rq))
       rqSource ! request
     case upd: BotUpdate ⇒
-      log.debug("Update {}", upd)
+      log.info("Update: {}", upd)
 
       upd match {
         case BotFatSeqUpdate(_, _, users, groups) ⇒
