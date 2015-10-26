@@ -77,12 +77,7 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
     code.createdAt.plus(config.expiration.toMillis, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
 
   private def sendCode(code: Code): Future[String \/ Unit] =
-    code match {
-      case p: PhoneCode if isTestPhone(p.phone) ⇒ Future.successful(\/-(()))
-      case _                                    ⇒ (activationActor ? Send(code)).mapTo[SendAck].map(_.result)
-    }
-
-  private def isTestPhone(number: Long): Boolean = number.toString.startsWith("7555")
+    (activationActor ? Send(code)).mapTo[SendAck].map(_.result)
 }
 
 class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: AuthCallEngine, emailSender: EmailSender)(implicit materializer: Materializer) extends Actor with ActorLogging {
