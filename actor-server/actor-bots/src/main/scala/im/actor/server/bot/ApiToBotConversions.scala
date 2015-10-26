@@ -3,7 +3,7 @@ package im.actor.server.bot
 import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar, ApiFastThumb }
 import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.users.ApiUser
+import im.actor.api.rpc.users.{ ApiContactType, ApiContactRecord, ApiUser }
 import scodec.bits.BitVector
 
 import scala.language.{ postfixOps, implicitConversions }
@@ -70,6 +70,23 @@ trait ApiToBotConversions {
   implicit def toMembers(apiMembers: Seq[ApiMember]): Seq[GroupMember] =
     apiMembers map toMember
 
+  implicit def toContactRecord(apiContactRecord: ApiContactRecord): ContactRecord =
+    apiContactRecord.`type` match {
+      case ApiContactType.Email ⇒
+        apiContactRecord.stringValue match {
+          case Some(email) ⇒ EmailContactRecord(email)
+          case None        ⇒ throw new RuntimeException(s"ApiContactRecord with Email type does not contain stringValue: $apiContactRecord")
+        }
+      case ApiContactType.Phone ⇒
+        apiContactRecord.longValue match {
+          case Some(phone) ⇒ PhoneContactRecord(phone)
+          case None        ⇒ throw new RuntimeException(s"ApiContactRecord with Phone type does not contain longValue: $apiContactRecord")
+        }
+    }
+
+  implicit def toContactRecords(apiContactRecords: Seq[ApiContactRecord]): Seq[ContactRecord] =
+    apiContactRecords map toContactRecord
+
   implicit def toUser(apiUser: ApiUser): User =
     User(
       id = apiUser.id,
@@ -79,7 +96,8 @@ trait ApiToBotConversions {
       about = apiUser.about,
       avatar = apiUser.avatar,
       username = apiUser.nick,
-      isBot = apiUser.isBot
+      isBot = apiUser.isBot,
+      contactRecords = apiUser.contactInfo
     )
 
   implicit def toUsers(apiUsers: Seq[ApiUser]): Seq[User] = apiUsers map toUser
