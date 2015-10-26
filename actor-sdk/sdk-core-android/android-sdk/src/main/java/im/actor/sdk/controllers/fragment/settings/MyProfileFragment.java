@@ -268,19 +268,25 @@ public class MyProfileFragment extends BaseFragment {
         }
 
         if (delegate.getBeforeSettingsCategory() != null) {
-            FrameLayout beforeSettings = (FrameLayout) view.findViewById(R.id.before_settings_category_container);
-            view.findViewById(R.id.before_settings_category_container_container).setVisibility(View.VISIBLE);
-            TextView beforeSettingsName = (TextView) view.findViewById(R.id.before_settings_category_name);
+            FrameLayout beforeSettings = (FrameLayout) view.findViewById(R.id.before_settings_container);
+
+            LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
+            FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
+            TextView beforeSettingsName = (TextView) categoryContainer.findViewById(R.id.category_name);
             beforeSettingsName.setText(delegate.getBeforeSettingsCategory().getCategoryName());
-            beforeSettings.addView(delegate.getBeforeSettingsCategory().getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            settingsContainer.addView(delegate.getBeforeSettingsCategory().getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            beforeSettings.addView(categoryContainer, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
 
         if (delegate.getAfterSettingsCategory() != null) {
-            FrameLayout afterSettings = (FrameLayout) view.findViewById(R.id.after_settings_category_container);
-            view.findViewById(R.id.after_settings_category_container_container).setVisibility(View.VISIBLE);
-            TextView beforeSettingsName = (TextView) view.findViewById(R.id.after_settings_category_name);
-            beforeSettingsName.setText(delegate.getAfterSettingsCategory().getCategoryName());
-            afterSettings.addView(delegate.getAfterSettingsCategory().getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            FrameLayout afterSettings = (FrameLayout) view.findViewById(R.id.after_settings_container);
+
+            LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
+            FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
+            TextView afterSettingsName = (TextView) categoryContainer.findViewById(R.id.category_name);
+            afterSettingsName.setText(delegate.getAfterSettingsCategory().getCategoryName());
+            settingsContainer.addView(delegate.getAfterSettingsCategory().getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            afterSettings.addView(categoryContainer, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
 
         avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
