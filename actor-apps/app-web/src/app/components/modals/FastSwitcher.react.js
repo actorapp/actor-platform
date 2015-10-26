@@ -63,7 +63,10 @@ class FastSwitcher extends Component {
                           placeholder={result.dialog.peer.placeholder}
                           size="small"
                           title={result.dialog.peer.title}/>
-              <div className="title col-xs">{result.dialog.peer.title}</div>
+              <div className="title col-xs">
+                {result.dialog.peer.title}
+                <div className="hint pull-right">Open conversation</div>
+              </div>
             </li>
           );
         case 'CONTACT':
@@ -76,21 +79,22 @@ class FastSwitcher extends Component {
                           placeholder={result.contact.placeholder}
                           size="small"
                           title={result.contact.name}/>
-              <div className="title col-xs">{result.contact.name}</div>
+              <div className="title col-xs">
+                {result.contact.name}
+                <div className="hint pull-right">Start new conversation</div>
+              </div>
+
             </li>
           );
         case 'SUGGESTION':
           return (
             <li className={resultClassName}
-                key={index}
-                onMouseOver={() => this.setState({selectedIndex: index})}>
-              <div className="col-xs">
-                <span>No matches found for <strong>{result.query}</strong>.</span>
-                <span>Have you spelled it correctly?</span>
-a                <button className="button button--rised">
-                  Create new dialog {result.query}
-                </button>
-              </div>
+                key={index}>
+
+              <span>No matches found for <strong>{result.query}</strong>.</span>
+              <span>Have you spelled it correctly?</span>
+              <button className="button button--rised hide">Create new dialog {result.query}</button>
+
             </li>
           );
       }
@@ -145,7 +149,8 @@ a                <button className="button button--rised">
   };
 
   handleContactSelect = (uid) => {
-    console.debug(uid);
+    DialogActionCreators.selectDialogPeerUser(uid);
+    this.handleClose();
   };
 
   handleKeyDown = (event) => {
@@ -157,7 +162,11 @@ a                <button className="button button--rised">
       case KeyCodes.ENTER:
         event.stopPropagation();
         event.preventDefault();
-        this.handleDialogSelect(results[selectedIndex].peer.peer);
+        if (results[selectedIndex].type === 'DIALOG') {
+          this.handleDialogSelect(results[selectedIndex].dialog.peer.peer);
+        } else if (results[selectedIndex].type === 'CONTACT') {
+          this.handleContactSelect(results[selectedIndex].contact.uid);
+        }
         break;
 
       case KeyCodes.ARROW_UP:
