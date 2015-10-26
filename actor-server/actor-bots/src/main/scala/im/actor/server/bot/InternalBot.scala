@@ -43,7 +43,9 @@ abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin:
           .to(Sink.actorRef(self, Kill))
           .run()
 
-      context become workingBehavior(rqSource)
+      setRqSource(rqSource)
+
+      context become workingBehavior
   }
 
   private def init() = {

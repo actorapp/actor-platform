@@ -29,34 +29,36 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
   override protected implicit val timeout: Timeout = Timeout(30.seconds)
   private implicit val mat = ActorMaterializer()
 
-  private var rqSource = initFlow()
+  initFlow()
 
   def onReceive(message: Object): Unit = {}
 
-  def receive = internalReceive orElse {
+  def receive: Receive = internalReceive orElse {
     case message ⇒
       onReceive(message.asInstanceOf[Object])
   }
 
   override protected def onStreamFailure(cause: Throwable): Unit = {
-    log.error(cause, "Bot stream failure")
-    rqSource = initFlow()
+    log.error(cause, "Stream failure")
+    initFlow()
   }
 
-  private final def internalReceive: Receive = workingBehavior(rqSource).orElse({
+  private final def internalReceive: Receive = workingBehavior.orElse({
     case StreamComplete ⇒
       log.warning("Disconnected, reinitiating flow")
-      rqSource = initFlow()
+      initFlow()
   })
 
-  private def initFlow(): ActorRef = {
+  private def initFlow(): Unit = {
     val (wsSource, wsSink) = WebsocketClient.sourceAndSink(s"$endpoint/v1/bots/${URLEncoder.encode(token, "UTF-8")}")
 
     wsSource.map(read[BotMessageOut]).to(Sink.actorRef(self, StreamComplete)).run()
 
-    Source.actorRef(bufferSize = 100, overflowStrategy = OverflowStrategy.fail)
+    val rqSource = Source.actorRef(bufferSize = 100, overflowStrategy = OverflowStrategy.fail)
       .map(write[BotRequest])
       .to(wsSink)
       .run()
+
+    setRqSource(rqSource)
   }
 }
