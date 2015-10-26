@@ -3,6 +3,7 @@ package im.actor.server.bot
 import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar, ApiFastThumb }
 import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
 import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.peers.{ ApiPeerType, ApiOutPeer }
 import im.actor.api.rpc.users.{ ApiContactType, ApiContactRecord, ApiUser }
 import scodec.bits.BitVector
 
@@ -11,6 +12,12 @@ import scala.language.{ postfixOps, implicitConversions }
 trait ApiToBotConversions {
 
   import im.actor.bots.BotMessages._
+
+  implicit def toOutPeer(outPeer: ApiOutPeer): OutPeer =
+    outPeer.`type` match {
+      case ApiPeerType.Private ⇒ UserOutPeer(outPeer.id, outPeer.accessHash)
+      case ApiPeerType.Group   ⇒ GroupOutPeer(outPeer.id, outPeer.accessHash)
+    }
 
   implicit def toFastThumb(ft: ApiFastThumb): FastThumb =
     FastThumb(ft.w, ft.h, BitVector(ft.thumb).toBase64)
