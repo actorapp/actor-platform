@@ -23,6 +23,7 @@ import im.actor.runtime.actors.Props;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.AndroidPushActor;
+import im.actor.sdk.core.ActorPushManager;
 import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
@@ -151,14 +152,25 @@ public class ActorSDK {
         //
         //GCM
         //
-        if (pushId != 0) {
-            system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
-                @Override
-                public AndroidPushActor create() {
-                    return new AndroidPushActor(application, messenger);
-                }
-            }), "actor/android/push");
+        try {
+
+            final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.PushManager").newInstance();
+            if (pushId != 0) {
+                system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
+                    @Override
+                    public AndroidPushActor create() {
+                        return new AndroidPushActor(application, messenger, pushManager);
+                    }
+                }), "actor/android/push");
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
+
 
     }
 
