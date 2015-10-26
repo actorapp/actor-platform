@@ -152,28 +152,41 @@ trait AuthHelpers extends Helpers {
     } yield user
   }
 
-  protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[String \/ Unit] = {
-    log.info("Sending sms code {} to {}", code, phoneNumber)
-    activationContext.send(transactionHash, SmsCode(phoneNumber, code))
-  }
+  protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[String \/ Unit] =
+    if (isTestPhone(phoneNumber)) {
+      log.info("Sms code {} for test phone number: {}", code, phoneNumber)
+      DBIO.successful(\/-(()))
+    } else {
+      log.info("Sending sms code {} to {}", code, phoneNumber)
+      activationContext.send(transactionHash, SmsCode(phoneNumber, code))
+    }
 
-  protected def sendCallCode(phoneNumber: Long, code: String, transactionHash: Option[String], language: String)(implicit system: ActorSystem): DBIO[String \/ Unit] = {
-    log.info("Sending call code {} to {}", code, phoneNumber)
-    activationContext.send(transactionHash, CallCode(phoneNumber, code, language))
-  }
+  protected def sendCallCode(phoneNumber: Long, code: String, transactionHash: Option[String], language: String)(implicit system: ActorSystem): DBIO[String \/ Unit] =
+    if (isTestPhone(phoneNumber)) {
+      log.info("Call code {} for test phone number: {}", code, phoneNumber)
+      DBIO.successful(\/-(()))
+    } else {
+      log.info("Sending call code {} to {}", code, phoneNumber)
+      activationContext.send(transactionHash, CallCode(phoneNumber, code, language))
+    }
 
-  protected def sendEmailCode(email: String, code: String, transactionHash: String)(implicit system: ActorSystem): DBIO[String \/ Unit] = {
-    log.info("Sending email code {} to {}", code, email)
-    activationContext.send(Some(transactionHash), EmailCode(email, code))
-  }
-
-  protected def genCode() = ThreadLocalRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(5)
+  protected def sendEmailCode(email: String, code: String, transactionHash: String)(implicit system: ActorSystem): DBIO[String \/ Unit] =
+    if (isTestEmail(email)) {
+      log.info("Code {} for test email: {}", code, email)
+      DBIO.successful(\/-(()))
+    } else {
+      log.info("Sending email code {} to {}", code, email)
+      activationContext.send(Some(transactionHash), EmailCode(email, code))
+    }
 
   protected def genSmsHash() = ThreadLocalRandom.current.nextLong().toString
 
+  protected def genEmailCode(email: String): String =
+    if (isTestEmail(email)) genTestCode(email) else genCode()
+
   protected def genSmsCode(phone: Long): String = phone.toString match {
-    case strNumber if strNumber.startsWith("7555") ⇒ strNumber(4).toString * 4
-    case _                                         ⇒ genCode()
+    case strNumber if isTestPhone(phone) ⇒ strNumber(4).toString * 4
+    case _                               ⇒ genCode()
   }
 
   private def newUser(name: String, countryCode: String, optSex: Option[ApiSex]): Result[\/-[User]] = {
@@ -200,5 +213,16 @@ trait AuthHelpers extends Helpers {
       _ ← fromEither[Unit](Error(error))
     } yield ()
   }
+
+  private def isTestPhone(number: Long): Boolean = number.toString.startsWith("7555")
+
+  val testMailRegex = """^.*@{1}acme\d{4}.com""".r
+
+  private def isTestEmail(email: String): Boolean = testMailRegex.findFirstIn(email).isDefined
+
+  private def genTestCode(email: String): String =
+    (email replaceAll (""".*acme""", "")) replaceAll (".com", "")
+
+  private def genCode() = ThreadLocalRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(5)
 
 }

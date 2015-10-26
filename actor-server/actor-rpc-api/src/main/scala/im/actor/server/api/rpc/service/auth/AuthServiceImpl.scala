@@ -226,7 +226,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
           activationType match {
             case CODE ⇒
               for {
-                _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendEmailCode(email, genCode(), hash))
+                _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendEmailCode(email, genEmailCode(email), hash))
               } yield hash
             case OAUTH2 ⇒
               point(hash)
@@ -239,7 +239,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
             case CODE ⇒
               for {
                 _ ← fromDBIO(persist.auth.AuthEmailTransactionRepo.create(emailAuthTransaction))
-                _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendEmailCode(email, genCode(), transactionHash))
+                _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendEmailCode(email, genEmailCode(email), transactionHash))
               } yield transactionHash
             case OAUTH2 ⇒
               for {
