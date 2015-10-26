@@ -157,6 +157,15 @@ public class JsBindingModule extends AbsModule implements JsFileLoadedListener {
                     value.changeValue(JsUser.fromUserVM(userVM, messenger));
                 }
             }, false);
+
+            // Sign for contact separately
+            userVM.isContact().subscribe(new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, Value<Boolean> valueModel) {
+                    value.changeValue(JsUser.fromUserVM(userVM, messenger));
+                }
+            });
+
             users.put(uid, value);
         }
         return users.get(uid);
