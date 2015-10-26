@@ -269,7 +269,7 @@ private[user] trait UserCommandHandlers {
       log.debug(s"Unregistered $phoneNumber is in contacts of users: $contacts")
       val randomId = ThreadLocalRandom.current().nextLong()
       val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
-      val updateContactsAdded = UpdateContactsAdded(user.id)
+      val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
       // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
       val actions = contacts map { contact ⇒
         val localName = contact.name
@@ -307,7 +307,7 @@ private[user] trait UserCommandHandlers {
       _ ← DBIO.sequence(contacts.map { contact ⇒
         val randomId = ThreadLocalRandom.current().nextLong()
         val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
-        val updateContactsAdded = UpdateContactsAdded(user.id)
+        val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
