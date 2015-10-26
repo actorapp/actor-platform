@@ -2,6 +2,7 @@ package im.actor.server.bot
 
 import im.actor.api.rpc.files.ApiFastThumb
 import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiOutPeer }
 import scodec.bits.BitVector
 
 import scala.language.implicitConversions
@@ -37,5 +38,17 @@ trait BotToApiConversions {
         ext) ⇒ ApiDocumentMessage(fileId, accessHash, fileSize.toInt, name, mimeType, thumb, ext)
       case ServiceMessage(_)  ⇒ throw new RuntimeException("Service messages are not supported")
       case UnsupportedMessage ⇒ ApiUnsupportedMessage
+    }
+
+  implicit def toOutPeer(outPeer: OutPeer): ApiOutPeer =
+    outPeer match {
+      case UserOutPeer(id, accessHash)  ⇒ ApiOutPeer(ApiPeerType.Private, id, accessHash)
+      case GroupOutPeer(id, accessHash) ⇒ ApiOutPeer(ApiPeerType.Group, id, accessHash)
+    }
+
+  implicit def toPeer(outPeer: OutPeer): ApiPeer =
+    outPeer match {
+      case UserOutPeer(id, _)  ⇒ ApiPeer(ApiPeerType.Private, id)
+      case GroupOutPeer(id, _) ⇒ ApiPeer(ApiPeerType.Group, id)
     }
 }
