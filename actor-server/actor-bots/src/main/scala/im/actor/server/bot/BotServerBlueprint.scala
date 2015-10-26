@@ -23,6 +23,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
   private val botsService = new BotsBotService(system)
   private val webhooksService = new WebHooksBotService(system)
   private val usersService = new UsersBotService(system)
+  private val groupsService = new GroupsBotService(system)
 
   val flow: Flow[BotRequest, BotMessageOut, Unit] = {
     val updSource =
@@ -75,5 +76,6 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
     case Services.Bots      ⇒ botsService
     case Services.WebHooks  ⇒ webhooksService
     case Services.Users     ⇒ usersService
+    case Services.Groups    ⇒ groupsService
   }
 }
