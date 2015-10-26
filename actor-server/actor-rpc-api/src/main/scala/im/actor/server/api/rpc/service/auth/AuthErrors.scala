@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.auth
 
 import im.actor.api.rpc.RpcError
+import im.actor.server.activation.{ BadRequest, SendFailure, CodeFailure }
 
 object AuthErrors {
   val AuthSessionNotFound = RpcError(404, "AUTH_SESSION_NOT_FOUND", "Auth session not found.", false, None)
@@ -21,5 +22,8 @@ object AuthErrors {
   val ActivationServiceError = RpcError(500, "ACTIVATION_SERVICE_ERROR", "Error occured in activation service. Try again later.", true, None)
   val InvalidAuthCodeHash = RpcError(400, "CODE_HASH_INVALID", "", false, None)
 
-  def activationFailure(message: String) = RpcError(500, "ACTIVATION_ERROR", message, false, None)
+  def activationFailure(failure: CodeFailure) = failure match {
+    case SendFailure(message) ⇒ RpcError(500, "ACTIVATION_SERVER_ERROR", message, true, None)
+    case BadRequest(message)  ⇒ RpcError(400, "ACTIVATION_BAD_REQUEST", message, false, None)
+  }
 }
