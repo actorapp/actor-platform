@@ -19,6 +19,10 @@ trait Hook2[A, B] extends Hook {
   def run(a: A, b: B): Future[Unit]
 }
 
+trait Hook3[A, B, C] extends Hook {
+  def run(a: A, b: B, c: C): Future[Unit]
+}
+
 class HooksStorage[H <: Hook] {
   private val hooks = TrieMap.empty[String, H]
   protected def hooksList: Seq[H] = hooks.values.toSeq
@@ -38,6 +42,10 @@ final class HooksStorage1[H <: Hook1[A], A](implicit ec: ExecutionContext) exten
 
 final class HooksStorage2[H <: Hook2[A, B], A, B](implicit ec: ExecutionContext) extends HooksStorage[H] {
   def runAll(a: A, b: B): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(a, b)) map (_ ⇒ ())
+}
+
+final class HooksStorage3[H <: Hook3[A, B, C], A, B, C](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(a: A, b: B, c: C): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(a, b, c)) map (_ ⇒ ())
 }
 
 abstract class HooksControl
