@@ -13,6 +13,9 @@ import im.actor.server.email.{ Content, EmailSender, Message }
 import im.actor.server.models.AuthCode
 import im.actor.server.persist
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
+import im.actor.util.misc.EmailUtils.isTestEmail
+import im.actor.util.misc.PhoneNumberUtils.isTestPhone
+import im.actor.util.misc.{ EmailUtils, PhoneNumberUtils }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -76,8 +79,12 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
   private def isExpired(code: AuthCode): Boolean =
     code.createdAt.plus(config.expiration.toMillis, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
 
-  private def sendCode(code: Code): Future[String \/ Unit] =
-    (activationActor ? Send(code)).mapTo[SendAck].map(_.result)
+  private def sendCode(code: Code): Future[String \/ Unit] = code match {
+    case p: PhoneCode if isTestPhone(p.phone) ⇒ Future.successful(\/-(()))
+    case m: EmailCode if isTestEmail(m.email) ⇒ Future.successful(\/-(()))
+    case _                                    ⇒ (activationActor ? Send(code)).mapTo[SendAck].map(_.result)
+  }
+
 }
 
 class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: AuthCallEngine, emailSender: EmailSender)(implicit materializer: Materializer) extends Actor with ActorLogging {
