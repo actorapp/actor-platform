@@ -26,15 +26,15 @@ class ContactsServiceSpec
 
   it should "respond with isChanged = false for all non deleted contacts" in s.getcontacts.notChangedAfterRemove
 
-  "AddContact handler" should "add contact" in (s.addremove.add())
+  "AddContact handler" should "add contact" in s.addremove.add()
 
-  "RemoveContact handler" should "remove contact" in (s.addremove.remove)
+  "RemoveContact handler" should "remove contact" in s.addremove.remove
 
-  "AddContact handler" should "add contact after remove" in (s.addremove.addAfterRemove)
+  "AddContact handler" should "add contact after remove" in s.addremove.addAfterRemove
 
-  "ImportContacts handler" should "import contacts starting with 8 in RU" in (s.imprt.ru)
+  "ImportContacts handler" should "import contacts starting with 8 in RU" in s.imprt.ru
 
-  "AddContact handler" should "add contact without a phone" in (s.addremove.addWithoutPhone())
+  "AddContact handler" should "add contact without a phone" in s.addremove.addWithoutPhone()
 
   object s {
     implicit val ec = system.dispatcher
