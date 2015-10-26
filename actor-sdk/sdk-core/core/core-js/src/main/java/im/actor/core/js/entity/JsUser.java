@@ -21,6 +21,11 @@ public class JsUser extends JavaScriptObject {
     public static JsUser fromUserVM(UserVM userVM, JsMessenger messenger) {
         UserPresence presence = userVM.getPresence().get();
         String presenceString = messenger.getFormatter().formatPresence(presence, userVM.getSex());
+        boolean isOnline = presence != null && presence.getState() == UserPresence.State.ONLINE;
+        if (userVM.isBot()) {
+            isOnline = true;
+            presenceString = "bot";
+        }
         String fileUrl = null;
         String bigFileUrl = null;
         Avatar avatar = userVM.getAvatar().get();
@@ -49,15 +54,15 @@ public class JsUser extends JavaScriptObject {
                 fileUrl, bigFileUrl,
                 Placeholders.getPlaceholder(userVM.getId()),
                 userVM.isContact().get(), userVM.isBot(),
-                presenceString, convertedPhones, convertedEmails);
+                presenceString, isOnline, convertedPhones, convertedEmails);
     }
 
     public static native JsUser create(int id, String name, String nick, String about,
                                        String avatar, String bigAvatar, String placeholder,
-                                       boolean isContact, boolean isBot, String presence, JsArray<JsPhone> phones,
+                                       boolean isContact, boolean isBot, String presence, boolean isOnline, JsArray<JsPhone> phones,
                                        JsArray<JsEmail> emails)/*-{
         return {id: id, name: name, nick: nick, about: about, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
-            isContact: isContact, presence: presence, phones: phones, emails: emails};
+            isContact: isContact, presence: presence, isOnline: isOnline, phones: phones, emails: emails};
     }-*/;
 
     protected JsUser() {
