@@ -1,4 +1,4 @@
-package im.actor;
+package im.actor.push;
 
 import android.content.Context;
 

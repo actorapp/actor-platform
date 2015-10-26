@@ -22,6 +22,9 @@ include ":actor-sdk:sdk-api:api-codegen"
 include ":actor-sdk:sdk-core-android:android-app"
 include ":actor-sdk:sdk-core-android:android-sdk"
 
+//Google push for Android SDk
+include ":actor-sdk:sdk-core-android:android-google-push"
+
 //
 // SDK iOS
 //
