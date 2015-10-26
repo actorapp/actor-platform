@@ -5,6 +5,7 @@
 import russian from './ru-RU';
 import english from './en-US';
 import spanish from './es-ES';
+import portuguese from './pt-BR';
 
 const language = navigator.language || navigator.browserLanguage;
 
@@ -30,7 +31,8 @@ if (!global.Intl) {
 const languageData = {
   'ru': russian,
   'en': english,
-  'es': spanish
+  'es': spanish,
+  'pt': portuguese
 };
 
 const intlData = languageData[language] || languageData[language.split('-')[0]] || languageData['en'];

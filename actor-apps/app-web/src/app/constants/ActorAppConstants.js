@@ -16,18 +16,20 @@ export const ActionTypes = keymirror({
   APP_HIDDEN: null,
   APP_VISIBLE: null,
 
+  AUTH_SMS_REQUEST: null,
   AUTH_SMS_REQUEST_SUCCESS: null,
   AUTH_SMS_REQUEST_FAILURE: null,
 
+  SEND_CODE: null,
   SEND_CODE_SUCCESS: null,
   SEND_CODE_FAILURE: null,
 
+  SEND_SIGNUP: null,
   SEND_SIGNUP_SUCCESS: null,
   SEND_SIGNUP_FAILURE: null,
 
   SET_LOGGED_IN: null,
   SET_LOGGED_OUT: null,
-  START_SIGNUP: null,
 
   AUTH_WRONG_NUMBER_CLICK: null,
 
@@ -137,7 +139,11 @@ export const ActionTypes = keymirror({
   CHAT_CLEAR_ERROR: null,
 
   CROP_AVATAR_MODAL_SHOW: null,
-  CROP_AVATAR_MODAL_HIDE: null
+  CROP_AVATAR_MODAL_HIDE: null,
+
+  FAST_SWITCHER_SHOW: null,
+  FAST_SWITCHER_HIDE: null,
+  FAST_SWITCHER_SEARCH: null
 });
 
 export const PeerTypes = {
@@ -163,7 +169,9 @@ export const KeyCodes = {
   ESC: 27,
   ENTER: 13,
   ARROW_UP: 38,
-  ARROW_DOWN: 40
+  ARROW_DOWN: 40,
+
+  K: 75
 };
 
 export const AsyncActionStates = {

@@ -6,21 +6,24 @@ import ActorClient from 'utils/ActorClient';
 import { dispatch } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 import MyProfileActionCreators from 'actions/MyProfileActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
 const LoginActionCreators = {
   requestSms: (phone) => {
+    dispatch(ActionTypes.AUTH_SMS_REQUEST);
     ActorClient.requestSms(
       phone,
       () => {
         dispatch(ActionTypes.AUTH_SMS_REQUEST_SUCCESS);
       },
-      (error) => {
-        dispatch(ActionTypes.AUTH_SMS_REQUEST_FAILURE, { error });
+      (error, message, canTryAgain) => {
+        dispatch(ActionTypes.AUTH_SMS_REQUEST_FAILURE, { error, message, canTryAgain });
       }
     )
   },
 
   sendCode: (router, code) => {
+    dispatch(ActionTypes.SEND_CODE);
     ActorClient.sendCode(code,
       (state) => {
         switch (state) {
@@ -41,6 +44,7 @@ const LoginActionCreators = {
   },
 
   sendSignup: (router, name) => {
+    dispatch(ActionTypes.SEND_SIGNUP);
     ActorClient.signUp(name,
       () => {
         dispatch(ActionTypes.SEND_SIGNUP_SUCCESS);
@@ -66,11 +70,13 @@ const LoginActionCreators = {
 
     dispatch(ActionTypes.SET_LOGGED_IN);
     ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+    ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
   },
 
   setLoggedOut: () => {
     dispatch(ActionTypes.SET_LOGGED_OUT);
     ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+    ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
   },
 
   wrongNumberClick: () => dispatch(ActionTypes.AUTH_WRONG_NUMBER_CLICK)

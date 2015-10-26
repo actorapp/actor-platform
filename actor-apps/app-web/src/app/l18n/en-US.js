@@ -10,6 +10,7 @@ export default {
       'yourName': 'Your name',
       'errors': {
         'numberInvalid': 'Invalid number',
+        'activationError': 'Attempt to get code later',
         'nameInvalid': 'Invalid name',
         'codeInvalid': 'Invalid code',
         'codeExpired': 'Phone code is expired'
@@ -21,6 +22,7 @@ export default {
       // Sidebar menu
       'editProfile': 'Edit Profile',
       'addToContacts': 'Add contact',
+      'createGroup': 'Create group',
       'configureIntegrations': 'Configure Integrations',
       'helpAndFeedback': 'Help & Feedback',
       'twitter': 'Our twitter',
