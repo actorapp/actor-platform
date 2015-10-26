@@ -1,4 +1,4 @@
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import ActorAppDispatcher, { dispatch } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 import mixpanel from 'utils/Mixpanel';
 
@@ -15,12 +15,7 @@ export default {
     });
   },
 
-  setContacts: (contacts) => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.CONTACT_LIST_CHANGED,
-      contacts: contacts
-    });
-  },
+  setContacts: (contacts) => dispatch(ActionTypes.CONTACT_LIST_CHANGED, { contacts }),
 
   addContact: (uid) => {
     mixpanel.track('Add user to contacts');

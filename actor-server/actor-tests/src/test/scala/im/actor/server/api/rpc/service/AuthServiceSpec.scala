@@ -64,7 +64,7 @@ final class AuthServiceSpec
 
   it should "complete sign up process for unregistered user" in s.e9
 
-  it should "register unregistered contacts and send updates" in s.e90
+  it should "register unregistered contacts and send updates" in s.contactRegistered
 
   it should "register unregistered contacts with local name" in s.unregContactLocalName
 
@@ -430,7 +430,7 @@ final class AuthServiceSpec
       }
     }
 
-    def e90() = {
+    def contactRegistered() = {
       val phoneNumber = buildPhone()
       val userName = "Rock Jam"
       val userSex = Some(ApiSex.Male)
@@ -470,6 +470,7 @@ final class AuthServiceSpec
           case UserContact(_, _, Some(_), false) ⇒
         }
       }
+      whenReady(db.run(persist.contact.UserContactRepo.findNotDeletedIds(user.id)))(_ shouldBe empty)
     }
 
     def unregContactLocalName() = {
