@@ -120,10 +120,10 @@ gulp.task('sprite', () => {
 
 gulp.task('emoji', () => {
   gulp.src([
-    './node_modules/emoji-data/sheet_apple_32.png'
-    //'./node_modules/emoji-data/sheet_emojione_32.png',
-    //'./node_modules/emoji-data/sheet_google_32.png',
-    //'./node_modules/emoji-data/sheet_twitter_32*.png',
+    './node_modules/emoji-data/sheet_apple_64.png',
+    './node_modules/emoji-data/sheet_emojione_64.png',
+    './node_modules/emoji-data/sheet_google_64.png',
+    './node_modules/emoji-data/sheet_twitter_364.png'
   ], {base: './node_modules/emoji-data'})
     .pipe(gulpif(isProduction, image()))
     .pipe(gulp.dest('./dist/assets/img/emoji'));
@@ -144,14 +144,14 @@ gulp.task('lib:build:dev', shell.task(['cd ../.. && ./gradlew actor-sdk:sdk-core
 
 gulp.task('lib', ['lib:build'], () => {
   gulp.src([
-    '../../actor-sdk/sdk-core/core/js/build/package/*',
+    '../../actor-sdk/sdk-core/core/core-js/build/library/actor/*',
     '../../actor-sdk/sdk-core/runtime/runtime-js/src/main/javascript/interval.js'
   ])
     .pipe(gulp.dest('./dist/actor/'));
 });
 gulp.task('lib:dev', ['lib:build:dev'], () => {
   gulp.src([
-    '../../actor-sdk/sdk-core/core/js/build/package/*',
+    '../../actor-sdk/sdk-core/core/core-js/build/library/actor/*',
     '../../actor-sdk/sdk-core/runtime/runtime-js/src/main/javascript/interval.js'
   ])
     .pipe(gulp.dest('./dist/actor/'));

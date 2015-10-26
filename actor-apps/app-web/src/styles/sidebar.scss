@@ -155,22 +155,26 @@
 
     overflow: auto;
 
-    margin: 0;
+    margin: 0 0 16px;
     padding: 0;
 
     list-style: none;
     &__title {
       font-size: 15px;
       font-weight: 500;
+      line-height: 32px;
 
       padding-left: 16px;
 
       text-transform: uppercase;
+
+      color: rgba(white, .6);
+      cursor: default;
     }
     &__item {
       font-size: 15px;
 
-      padding: 7px 14px;
+      padding: 5px 14px;
 
       cursor: pointer;
       vertical-align: middle;
@@ -256,6 +260,10 @@
       }
     }
 
+    &:last-child {
+      margin-bottom: 0;
+    }
+
     &--recent {
       position: absolute;
       top: $toolbar-height;
@@ -275,16 +283,27 @@
     }
   }
 
-  footer {
-    position: absolute;
-    bottom: 0;
+  &__recent {
+    &__scroll-container {
+      position: absolute;
+      top: $toolbar-height;
+      right: 0;
+      bottom: 64px;
+      left: 0;
 
-    box-sizing: border-box;
-    width: 100%;
-    padding: 14px;
-    .button {
-      i {
-        margin-top: -4px;
+      overflow: auto;
+    }
+    footer {
+      position: absolute;
+      bottom: 0;
+
+      box-sizing: border-box;
+      width: 100%;
+      padding: 14px;
+      .button {
+        i {
+          margin-top: -4px;
+        }
       }
     }
   }

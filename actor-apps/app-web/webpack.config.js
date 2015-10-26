@@ -37,6 +37,8 @@ export default {
     ]
   },
   module: {
+    noParse: [/autoit.js/],
+
     preLoaders: [
       {
         test: /\.js$/,

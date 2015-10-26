@@ -2,11 +2,13 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import React from 'react';
+import React, { Component } from 'react';
+import { Container } from 'flux/utils';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 
 import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
+
 import CreateGroupStore from 'stores/CreateGroupStore';
 
 import CreateGroupForm from './create-group/Form.react';
@@ -15,26 +17,21 @@ import Modal from 'react-modal';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
-const getStateFromStores = () => {
-  return {
-    isOpen: CreateGroupStore.isModalOpen()
-  };
-};
-
 @ReactMixin.decorate(IntlMixin)
-class CreateGroup extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = getStateFromStores();
-
-    CreateGroupStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onKeyDown, false);
+class CreateGroup extends Component {
+  static getStores = () => [CreateGroupStore];
+  static calculateState() {
+    return {
+      isOpen: CreateGroupStore.isModalOpen()
+    };
   }
 
-  componentWillUnmount() {
-    CreateGroupStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onKeyDown, false);
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.isOpen && !this.state.isOpen) {
+      document.addEventListener('keydown', this.onKeyDown, false);
+    } else if (!nextState.isOpen && this.state.isOpen) {
+      document.removeEventListener('keydown', this.onKeyDown, false);
+    }
   }
 
   render() {
@@ -61,8 +58,6 @@ class CreateGroup extends React.Component {
     }
   }
 
-  onChange = () => this.setState(getStateFromStores());
-
   onClose = () => CreateGroupActionCreators.closeModal();
 
   onKeyDown = (event) => {
@@ -73,4 +68,4 @@ class CreateGroup extends React.Component {
   }
 }
 
-export default CreateGroup;
+export default Container.create(CreateGroup, {pure: false});
