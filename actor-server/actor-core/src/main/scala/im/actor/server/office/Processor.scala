@@ -101,6 +101,8 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
     log.debug("[persistReply] {}", e)
 
     persist(e) { evt ⇒
+      val newState = updatedState(e, state)
+
       f(evt) pipeTo replyTo onComplete {
         case Success(_) ⇒
 
@@ -108,7 +110,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
           log.error(f, "Failure while processing event {}", evt)
       }
 
-      workWith(e, state)
+      context become working(newState)
     }
   }
 
