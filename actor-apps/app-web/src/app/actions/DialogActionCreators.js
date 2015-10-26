@@ -10,16 +10,12 @@ import RouterContainer from 'utils/RouterContainer';
 
 const DialogActionCreators = {
   setDialogs(dialogs) {
-    dispatch(ActionTypes.DIALOGS_CHANGED, {
-      dialogs
-    });
+    dispatch(ActionTypes.DIALOGS_CHANGED, { dialogs });
   },
 
   selectDialogPeer(peer) {
     RouterContainer.get().transitionTo('main', {id: PeerUtils.peerToString(peer)});
-    dispatch(ActionTypes.SELECT_DIALOG_PEER, {
-      peer
-    });
+    dispatch(ActionTypes.SELECT_DIALOG_PEER, { peer });
   },
 
   selectDialogPeerUser(userId) {

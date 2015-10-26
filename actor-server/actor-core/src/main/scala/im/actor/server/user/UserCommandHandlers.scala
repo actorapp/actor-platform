@@ -16,7 +16,7 @@ import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.history.HistoryUtils
 import im.actor.server.models.contact.{ UserContact, UserEmailContact, UserPhoneContact }
-import im.actor.server.persist.UserRepo
+import im.actor.server.persist.{ AuthSessionRepo, UserRepo }
 import im.actor.server.persist.contact.{ UserContactRepo, UserEmailContactRepo, UserPhoneContactRepo }
 import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.social.SocialManager._
@@ -102,6 +102,12 @@ private[user] trait UserCommandHandlers {
 
   protected def addAuth(user: User, authId: Long): Unit = {
     persistStashingReply(TSEvent(now(), UserEvents.AuthAdded(authId)), user) { _ ⇒
+      db.run(AuthSessionRepo.findByAuthId(authId)) foreach {
+        case Some(authSession) ⇒
+          userExt.hooks.afterAuth.runAll(user.id, authSession.appId, authSession.deviceTitle)
+        case None ⇒ log.error("AuthSession was not found")
+      }
+
       db.run(p.AuthIdRepo.setUserData(authId, user.id)) map (_ ⇒ NewAuthAck())
     }
   }
