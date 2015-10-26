@@ -5,14 +5,12 @@
 import _ from 'lodash';
 
 import React from 'react';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 import { Styles, TextField } from 'material-ui';
 
 import { AuthSteps } from 'constants/ActorAppConstants';
-
-import Banner from 'components/common/Banner.react';
 
 import LoginActionCreators from 'actions/LoginActionCreators';
 import LoginStore from 'stores/LoginStore';
@@ -26,6 +24,7 @@ let getStateFromStores = function () {
     step: LoginStore.getStep(),
     errors: LoginStore.getErrors(),
     smsRequested: LoginStore.isSmsRequested(),
+    codeSended: LoginStore.isCodeSended(),
     signupStarted: LoginStore.isSignupStarted(),
     codeSent: false
   });
@@ -54,6 +53,7 @@ class Login extends React.Component {
   componentDidMount() {
     this.handleFocus();
   }
+
   componentDidUpdate() {
     this.handleFocus();
   }
@@ -85,22 +85,22 @@ class Login extends React.Component {
   onRequestSms = event => {
     event.preventDefault();
     LoginActionCreators.requestSms(this.state.phone);
-  }
+  };
 
   onSendCode = event => {
     event.preventDefault();
     LoginActionCreators.sendCode(this.context.router, this.state.code);
-  }
+  };
 
   onSignupRequested = event => {
     event.preventDefault();
     LoginActionCreators.sendSignup(this.context.router, this.state.name);
-  }
+  };
 
   onWrongNumberClick = event => {
     event.preventDefault();
     LoginActionCreators.wrongNumberClick();
-  }
+  };
 
 
   handleFocus = () => {
@@ -117,25 +117,34 @@ class Login extends React.Component {
       default:
         return;
     }
-  }
+  };
 
   render() {
-    let requestFormClassName = classNames('login__form', 'login__form--request', {
+    const { smsRequested, codeSended, signupStarted } = this.state;
+
+    let requestFormClassName = classnames('login__form', 'login__form--request', {
       'login__form--done': this.state.step > AuthSteps.PHONE_WAIT,
       'login__form--active': this.state.step === AuthSteps.PHONE_WAIT
     });
-    let checkFormClassName = classNames('login__form', 'login__form--check', {
+    let checkFormClassName = classnames('login__form', 'login__form--check', {
       'login__form--done': this.state.step > AuthSteps.CODE_WAIT,
       'login__form--active': this.state.step === AuthSteps.CODE_WAIT
     });
-    let signupFormClassName = classNames('login__form', 'login__form--signup', {
+    let signupFormClassName = classnames('login__form', 'login__form--signup', {
       'login__form--active': this.state.step === AuthSteps.SIGNUP_NAME_WAIT
     });
 
+    const spinner = (
+      <div className="spinner">
+        <div/><div/><div/><div/><div/><div/><div/><div/><div/><div/><div/><div/>
+      </div>
+    );
+    const phoneWaitSpinner = smsRequested ? spinner : null;
+    const codeWaitSpinner = codeSended ? spinner : null;
+    const signupWaitSpinner = signupStarted ? spinner : null;
+
     return (
       <section className="login-new row center-xs middle-xs">
-        <Banner/>
-
         <div className="login-new__welcome col-xs row center-xs middle-xs">
           <img alt="Actor messenger"
                className="logo"
@@ -169,10 +178,11 @@ class Login extends React.Component {
         <div className="login-new__form col-xs-6 col-md-4 row center-xs middle-xs">
           <div>
             <h1 className="login-new__heading">{this.getIntlMessage('login.signIn')}</h1>
+
             <form className={requestFormClassName} onSubmit={this.onRequestSms}>
               <a className="wrong" onClick={this.onWrongNumberClick}>{this.getIntlMessage('login.wrong')}</a>
               <TextField className="login__form__input"
-                         disabled={this.state.step > AuthSteps.PHONE_WAIT}
+                         disabled={smsRequested || this.state.step > AuthSteps.PHONE_WAIT}
                          errorText={this.state.errors.phone}
                          floatingLabelText={this.getIntlMessage('login.phone')}
                          onChange={this.onPhoneChange}
@@ -181,12 +191,16 @@ class Login extends React.Component {
                          value={this.state.phone}/>
 
               <footer className="text-center">
-                <button className="button button--rised" type="submit">{this.getIntlMessage('button.requestCode')}</button>
+                <button className="button button--rised"
+                        type="submit">
+                  {this.getIntlMessage('button.requestCode')}
+                </button>
+                <div style={{display: 'inline-block', position: 'relative'}}>{phoneWaitSpinner}</div>
               </footer>
             </form>
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
               <TextField className="login__form__input"
-                         disabled={this.state.step > AuthSteps.CODE_WAIT}
+                         disabled={codeSended || this.state.step > AuthSteps.CODE_WAIT}
                          errorText={this.state.errors.code}
                          floatingLabelText={this.getIntlMessage('login.authCode')}
                          onChange={this.onCodeChange}
@@ -195,7 +209,11 @@ class Login extends React.Component {
                          value={this.state.code}/>
 
               <footer className="text-center">
-                <button className="button button--rised" type="submit">{this.getIntlMessage('button.checkCode')}</button>
+                <button className="button button--rised"
+                        type="submit">
+                  {this.getIntlMessage('button.checkCode')}
+                </button>
+                <div style={{display: 'inline-block', position: 'relative'}}>{codeWaitSpinner}</div>
               </footer>
             </form>
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
@@ -208,7 +226,11 @@ class Login extends React.Component {
                          value={this.state.name}/>
 
               <footer className="text-center">
-                <button className="button button--rised" type="submit">{this.getIntlMessage('button.signUp')}</button>
+                <button className="button button--rised"
+                        type="submit">
+                  {this.getIntlMessage('button.signUp')}
+                </button>
+                <div style={{display: 'inline-block', position: 'relative'}}>{signupWaitSpinner}</div>
               </footer>
             </form>
           </div>

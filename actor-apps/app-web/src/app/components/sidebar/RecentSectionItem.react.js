@@ -23,11 +23,7 @@ class RecentSectionItem extends React.Component {
     super(props);
   }
 
-  onClick = () => {
-    const { dialog } = this.props;
-
-    DialogActionCreators.selectDialogPeer(dialog.peer.peer);
-  };
+  onClick = () => DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
 
   //onDelete = (event) => {
   //  event.stopPropagation();

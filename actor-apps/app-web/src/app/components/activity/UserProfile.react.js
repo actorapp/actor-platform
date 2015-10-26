@@ -7,6 +7,7 @@ import React from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 import classnames from 'classnames';
+import { lightbox } from 'utils/ImageUtils';
 
 import ActorClient from 'utils/ActorClient';
 import confirm from 'utils/confirm'
@@ -112,6 +113,7 @@ class UserProfile extends React.Component {
     );
   };
 
+  handleAvatarClick = () => lightbox.open(this.props.user.bigAvatar);
 
   render() {
     const { user } = this.props;
@@ -170,7 +172,8 @@ class UserProfile extends React.Component {
               <AvatarItem image={user.bigAvatar}
                           placeholder={user.placeholder}
                           size="large"
-                          title={user.name}/>
+                          title={user.name}
+                          onClick={this.handleAvatarClick}/>
 
               <h3 className="user_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.name)}}/>
               <div className="user_profile__meta__presence">{user.presence}</div>
