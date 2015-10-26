@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="im.actor" >
 
+    <permission
+        android:name="${applicationId}.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+
     <application
         android:name=".Application"
         android:allowBackup="true"
@@ -25,6 +33,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/NoBarActivityTheme"
             android:windowSoftInputMode="adjustNothing" />
+
+        <receiver
+            android:name="im.actor.PushReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="${applicationId}" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
