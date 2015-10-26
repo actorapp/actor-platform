@@ -22,6 +22,7 @@ object BotMessages {
     val Bots = "bots"
     val WebHooks = "webhooks"
     val Users = "users"
+    val Groups = "groups"
   }
 
   final case class FileLocation(
@@ -120,36 +121,48 @@ object BotMessages {
   }
 
   final object OutPeer {
-    def privat(id: Int, accessHash: Long) = OutPeer(1, id, accessHash)
+    def privat(id: Int, accessHash: Long) = UserOutPeer(id, accessHash)
 
     def user(id: Int, accessHash: Long) = privat(id, accessHash)
 
-    def group(id: Int, accessHash: Long) = OutPeer(2, id, accessHash)
+    def group(id: Int, accessHash: Long) = GroupOutPeer(id, accessHash)
   }
 
-  final case class OutPeer(
-    @beanGetter `type`:     Int,
+  sealed trait Peer {
+    val id: Int
+  }
+
+  @key("User")
+  final case class UserPeer(@beanGetter id: Int) extends Peer
+
+  @key("Group")
+  final case class GroupPeer(@beanGetter id: Int) extends Peer
+
+  sealed trait OutPeer extends Peer {
+    val id: Int
+    val accessHash: Long
+
+    val isPrivate: Boolean
+    val isGroup: Boolean
+  }
+
+  @key("Group")
+  final case class GroupOutPeer(
     @beanGetter id:         Int,
     @beanGetter accessHash: Long
-  ) {
-    final def isPrivate = `type` == 1
-
-    final def isUser = isPrivate
-
-    final def isGroup = `type` == 2
+  ) extends OutPeer {
+    override val isPrivate = false
+    override val isGroup = true
   }
 
+  @key("User")
   final case class UserOutPeer(
     @beanGetter id:         Int,
     @beanGetter accessHash: Long
-  ) {
-    val asOutPeer = OutPeer(1, id, accessHash)
+  ) extends OutPeer {
+    override val isPrivate = true
+    override val isGroup = false
   }
-
-  final case class Peer(
-    @beanGetter `type`: Int,
-    @beanGetter id:     Int
-  )
 
   sealed trait RequestBody {
     type Response <: ResponseBody
@@ -392,6 +405,18 @@ object BotMessages {
   }
 
   final case class MessageSent(@beanGetter date: Long) extends ResponseBody
+
+  @key("CreateGroup")
+  final case class CreateGroup(
+    title: String
+  ) extends RequestBody {
+    override type Response = ResponseCreateGroup
+    override val service: String = Services.Groups
+
+    override def readResponse(obj: Js.Obj): Response = readJs[Response](obj)
+  }
+
+  final case class ResponseCreateGroup(@beanGetter peer: GroupOutPeer) extends ResponseBody
 
   @key("Message")
   final case class Message(
