@@ -1,9 +1,10 @@
-package im.actor;
+package im.actor.push;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -29,6 +30,6 @@ public class PushReceiver extends ActorPushReceiver {
                 }
             }
         }
-        completeWakefulIntent(intent);
+        WakefulBroadcastReceiver.completeWakefulIntent(intent);
     }
 }
