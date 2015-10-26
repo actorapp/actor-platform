@@ -1,15 +1,9 @@
 package im.actor.sdk.core;
 
 import android.content.Context;
-
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import java.io.IOException;
-
 import im.actor.core.AndroidMessenger;
 import im.actor.runtime.Log;
 import im.actor.runtime.actors.Actor;
-import im.actor.sdk.ActorSDK;
 
 /**
  * GCM push implementation for Actor push registration.
@@ -17,15 +11,17 @@ import im.actor.sdk.ActorSDK;
  */
 public class AndroidPushActor extends Actor {
 
-    private static final String TAG = "im.actor.core.AndroidPushActor";
+    private static final String TAG = "im.actor.sdk.core.AndroidPushActor";
 
     private final AndroidMessenger messenger;
     private final Context context;
     private boolean isRegistered;
+    private ActorPushManager pushManager;
 
-    public AndroidPushActor(Context context, AndroidMessenger messenger) {
+    public AndroidPushActor(Context context, AndroidMessenger messenger, ActorPushManager pushManager) {
         this.messenger = messenger;
         this.context = context;
+        this.pushManager = pushManager;
     }
 
     @Override
@@ -42,10 +38,8 @@ public class AndroidPushActor extends Actor {
                 @Override
                 public void run() {
                     while (true) {
-                        GoogleCloudMessaging cloudMessaging = GoogleCloudMessaging.getInstance(context);
                         try {
-                            Log.d(TAG, "Requesting push token iteration...");
-                            String regId = cloudMessaging.register("" + ActorSDK.sharedActor().getPushId());
+                            String regId = pushManager.tryRegisterPush(context);
                             if (regId != null) {
                                 Log.d(TAG, "Token loaded");
                                 self().send(new PushRegistered(regId));
@@ -53,7 +47,7 @@ public class AndroidPushActor extends Actor {
                             } else {
                                 Log.d(TAG, "Unable to load Token");
                             }
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                         Log.d(TAG, "Waiting for next attempt");
@@ -73,8 +67,8 @@ public class AndroidPushActor extends Actor {
 
     private void onPushRegistered(String token) {
         isRegistered = true;
-        messenger.getPreferences().putBool("push_registered", true);
-        messenger.registerGooglePush(ActorSDK.sharedActor().getPushId(), token);
+        pushManager.registerOnActorServer(messenger, token);
+
     }
 
     @Override

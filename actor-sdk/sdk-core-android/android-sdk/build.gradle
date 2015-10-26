@@ -76,9 +76,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.1.0'
     compile 'com.android.support:design:23.1.0'
 
-    //GCM
-    compile 'com.google.android.gms:play-services-gcm:7.5.0'
-
 }
 
 //
