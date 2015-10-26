@@ -33,7 +33,7 @@ sealed trait UserException extends RuntimeException
 
 object UserExceptions {
 
-  final case object NicknameTaken extends RuntimeException with NoStackTrace
+  case object NicknameTaken extends RuntimeException with NoStackTrace
 
 }
 
