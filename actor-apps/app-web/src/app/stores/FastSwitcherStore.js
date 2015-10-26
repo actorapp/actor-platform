@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { forEach, assign } from 'lodash';
+import { forEach, includes, findWhere } from 'lodash';
 
 import { Store } from 'flux/utils';
 import Dispatcher from 'dispatcher/ActorAppDispatcher';
@@ -36,16 +36,17 @@ class FastSwitcherStore extends Store {
     });
 
     forEach(contacts, (contact) => {
-      if (contact.name.toLocaleLowerCase().includes(query.toLocaleLowerCase())) {
-        result.push({type: 'CONTACT', contact});
+      if (
+        contact.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()) &&
+        !findWhere(dialogs, {peer: { peer: {id: contact.uid}}})
+      ) {
+          result.push({type: 'CONTACT', contact});
       }
     });
 
     if (result.length === 0) {
       result.push({type: 'SUGGESTION', query});
     }
-
-    console.debug('result', result);
 
     _result = result;
     this.__emitChange();
