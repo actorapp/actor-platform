@@ -898,6 +898,7 @@
       padding: 0;
       &__item {
         line-height: 32px;
+        color: $mine-shaft;
 
         box-sizing: border-box;
         margin: 0;
@@ -925,8 +926,22 @@
           font-weight: 500;
 
           color: white;
-          background-color: rgba($dark-sky-blue, 1);
+          background-color: $dark-sky-blue;
           text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
+        }
+        &--suggestion {
+          cursor: default !important;
+          font-weight: 400 !important;
+          color: $dove-gray !important;
+          background-color: white !important;
+          text-shadow: none !important;
+          text-align: center;
+          & > span {
+            display: block;
+          }
+          .button {
+            margin-top: 10px;
+          }
         }
       }
     }
