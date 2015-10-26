@@ -118,13 +118,13 @@ var DialogStore = assign({}, EventEmitter.prototype, {
   }
 });
 
-var setDialogs = function(dialogs) {
-  // We need setTimeout here because bindDialogs dispatches event
-  // but bindDialogs itself is called in the middle of dispatch (DialogStore)
-  setTimeout(function() {
-    DialogActionCreators.setDialogs(dialogs);
-  }, 0);
-};
+//var setDialogs = function(dialogs) {
+//  // We need setTimeout here because bindDialogs dispatches event
+//  // but bindDialogs itself is called in the middle of dispatch (DialogStore)
+//  setTimeout(function() {
+//    DialogActionCreators.setDialogs(dialogs);
+//  }, 0);
+//};
 
 var onCurrentDialogInfoChange = function(info) {
   _selectedDialogInfo = info;
@@ -175,12 +175,6 @@ var unbindCurrentDialogTyping = function() {
 
 DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
-    case ActionTypes.SET_LOGGED_IN:
-      ActorAppDispatcher.waitFor([LoginStore.dispatchToken]);
-
-      ActorClient.bindDialogs(setDialogs);
-
-      break;
     case ActionTypes.SELECT_DIALOG_PEER:
       unbindCurrentDialogInfo();
       unbindCurrentDialogTyping();

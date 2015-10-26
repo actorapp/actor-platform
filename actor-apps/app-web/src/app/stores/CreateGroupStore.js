@@ -1,53 +1,39 @@
-import _ from 'lodash';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import { EventEmitter } from 'events';
-
-import { ActionTypes } from 'constants/ActorAppConstants';
-
+import { Store } from 'flux/utils';
 import Dispatcher from 'dispatcher/ActorAppDispatcher';
-
-const CHANGE_EVENT = 'change';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 let _modalOpen = false;
 
-const CreateGroupStore = _.assign(EventEmitter.prototype, {
-  emitChange: () => {
-    CreateGroupStore.emit(CHANGE_EVENT);
-  },
-
-  addChangeListener: (callback) => {
-    CreateGroupStore.on(CHANGE_EVENT, callback);
-  },
-
-  removeChangeListener: (callback) => {
-    CreateGroupStore.removeListener(CHANGE_EVENT, callback);
-  },
-
-  isModalOpen: () => {
+class CreateGroupStore extends Store {
+  isModalOpen() {
     return _modalOpen;
   }
-});
 
-CreateGroupStore.dispatchToken = Dispatcher.register((action) => {
-  switch (action.type) {
-    case ActionTypes.GROUP_CREATE_MODAL_OPEN:
-      _modalOpen = true;
-      CreateGroupStore.emitChange();
-      break;
-    case ActionTypes.GROUP_CREATE_MODAL_CLOSE:
-      _modalOpen = false;
-      CreateGroupStore.emitChange();
-      break;
+  __onDispatch = (action) => {
+    switch (action.type) {
+      case ActionTypes.GROUP_CREATE_MODAL_OPEN:
+        _modalOpen = true;
+        this.__emitChange();
+        break;
+      case ActionTypes.GROUP_CREATE_MODAL_CLOSE:
+        _modalOpen = false;
+        this.__emitChange();
+        break;
 
-    case ActionTypes.GROUP_CREATE:
-    case ActionTypes.GROUP_CREATE_SUCCESS:
-      CreateGroupStore.emitChange();
-      break;
-    case ActionTypes.GROUP_CREATE_ERROR:
-      console.error('Failed to create group', action.error);
-      CreateGroupStore.emitChange();
-      break;
+      case ActionTypes.GROUP_CREATE:
+      case ActionTypes.GROUP_CREATE_SUCCESS:
+        this.__emitChange();
+        break;
+      case ActionTypes.GROUP_CREATE_ERROR:
+        console.error('Failed to create group', action.error);
+        this.__emitChange();
+        break;
+    }
   }
-});
+}
 
-export default CreateGroupStore;
+export default new CreateGroupStore(Dispatcher);

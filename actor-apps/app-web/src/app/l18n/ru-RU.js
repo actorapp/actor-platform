@@ -10,6 +10,7 @@ export default {
       'yourName': 'Ваше имя',
       'errors': {
         'numberInvalid': 'Неправильный номер',
+        'activationError': 'Попытайтесь запросить код позже',
         'nameInvalid': ' Неправильное имя',
         'codeInvalid': 'Неправильный код',
         'codeExpired': 'Время действия кода истекло'
@@ -21,6 +22,7 @@ export default {
       // Sidebar menu
       'editProfile': 'Редактировать профиль',
       'addToContacts': 'Добавить контакт',
+      'createGroup': 'Создать группу',
       'configureIntegrations': 'Настройка интеграций',
       'helpAndFeedback': 'Помощь и обратная связь',
       'twitter': 'Наш твиттер',

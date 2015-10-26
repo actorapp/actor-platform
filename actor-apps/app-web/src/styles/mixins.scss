@@ -13,8 +13,19 @@
 }
 
 // White placholder for inputs
-@mixin placeholder() {
-  color: rgba(white, .3);
+@mixin placeholder($color) {
+  &::-webkit-input-placeholder {
+    color: $color;
+  }
+  &::-moz-placeholder {
+    color: $color;
+  }
+  &:-moz-placeholder {
+    color: $color;
+  }
+  &:-ms-input-placeholder {
+    color: $color;
+  }
 }
 
 // Text overflow elipsis

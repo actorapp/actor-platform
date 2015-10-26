@@ -1,15 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import React from 'react';
 import classnames from 'classnames';
 
-import Lightbox from 'jsonlylightbox';
-
-// lightbox init
-const lightbox = new Lightbox();
-const lightboxOptions = {
-  animation: false,
-  controlClose: '<i class="material-icons">close</i>'
-};
-lightbox.load(lightboxOptions);
+import { lightbox } from 'utils/ImageUtils';
 
 let cache = {};
 
@@ -88,7 +84,7 @@ class Image extends React.Component {
         {preview}
         {original}
         {preloader}
-        <svg dangerouslySetInnerHTML={{__html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>'}}></svg>
+        <svg dangerouslySetInnerHTML={{__html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>'}}/>
       </div>
     );
   }
