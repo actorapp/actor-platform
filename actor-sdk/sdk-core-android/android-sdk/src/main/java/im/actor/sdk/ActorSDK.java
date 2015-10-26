@@ -154,7 +154,7 @@ public class ActorSDK {
         //
         try {
 
-            final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.PushManager").newInstance();
+            final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
             if (pushId != 0) {
                 system().actorOf(Props.create(AndroidPushActor.class, new ActorCreator<AndroidPushActor>() {
                     @Override
