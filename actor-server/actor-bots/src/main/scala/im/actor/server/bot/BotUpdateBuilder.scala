@@ -30,7 +30,7 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
             apiOutPeer ← ACLUtils.getOutPeer(update.peer, botAuthId)
             senderAccessHash ← userExt.getAccessHash(update.senderUserId, botAuthId)
           } yield Some(Message(
-            peer = OutPeer(apiOutPeer.`type`.id, apiOutPeer.id, apiOutPeer.accessHash),
+            peer = apiOutPeer,
             sender = UserOutPeer(update.senderUserId, senderAccessHash),
             date = update.date,
             randomId = update.randomId,

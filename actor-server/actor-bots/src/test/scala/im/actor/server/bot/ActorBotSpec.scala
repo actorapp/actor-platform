@@ -40,7 +40,7 @@ final class ActorBotSpec
       isFat = false
     ))(identity)
 
-    Thread.sleep(1000)
+    Thread.sleep(2000)
 
     implicit val clientData = ClientData(authId, Random.nextLong(), Some(user.id))
 
