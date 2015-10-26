@@ -112,7 +112,7 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def changeCountryCode(user: User, countryCode: String): Unit =
-    persistReply(TSEvent(now(), UserEvents.CountryCodeChanged(countryCode)), user) { _ ⇒
+    persistReply(TSEvent(now(), UserEvents.CountryCodeChanged(countryCode)), user) { e ⇒
       db.run(p.UserRepo.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
     }
 
@@ -293,7 +293,7 @@ private[user] trait UserCommandHandlers {
   private def markContactRegistered(user: User, email: String, isSilent: Boolean): DBIO[Unit] = {
     val date = new DateTime
     for {
-      _ ← DBIO.from(userExt.hooks.beforeContactRegistered.runAll(user))
+      _ ← DBIO.from(userExt.hooks.beforeEmailContactRegistered.runAll(user.id, email))
       contacts ← p.contact.UnregisteredEmailContactRepo.find(email)
       _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
       _ ← DBIO.sequence(contacts.map { contact ⇒

@@ -11,8 +11,12 @@ trait Hook0 extends Hook {
   def run(): Future[Unit]
 }
 
-trait Hook1[P] extends Hook {
-  def run(p: P): Future[Unit]
+trait Hook1[A] extends Hook {
+  def run(a: A): Future[Unit]
+}
+
+trait Hook2[A, B] extends Hook {
+  def run(a: A, b: B): Future[Unit]
 }
 
 class HooksStorage[H <: Hook] {
@@ -28,13 +32,15 @@ final class HooksStorage0[H <: Hook0](implicit ec: ExecutionContext) extends Hoo
   def runAll(): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run()) map (_ ⇒ ())
 }
 
-final class HooksStorage1[H <: Hook1[P], P](implicit ec: ExecutionContext) extends HooksStorage[H] {
-  def runAll(p: P): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(p)) map (_ ⇒ ())
+final class HooksStorage1[H <: Hook1[A], A](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(a: A): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(a)) map (_ ⇒ ())
 }
 
-abstract class HooksControl {
-
+final class HooksStorage2[H <: Hook2[A, B], A, B](implicit ec: ExecutionContext) extends HooksStorage[H] {
+  def runAll(a: A, b: B): Future[Unit] = FutureExt.ftraverse(hooksList)(_.run(a, b)) map (_ ⇒ ())
 }
+
+abstract class HooksControl
 
 abstract class HookException(msg: String) extends RuntimeException(msg)
 
