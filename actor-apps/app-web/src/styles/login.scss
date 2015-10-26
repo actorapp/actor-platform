@@ -100,12 +100,24 @@
     }
     & > div {
       width: 100%;
+      & > a {
+        color: white;
+        margin-top: 16px;
+        font-size: 14px;
+        display: inline-block;
+        text-decoration: none;
+        cursor: pointer;
+        border-bottom: 1px dotted white;
+        &:hover {
+          border-bottom: 1px solid white;
+        }
+      }
     }
     footer {
       .spinner {
         position: absolute;
-        top: -14px;
-        right: -30px;
+        top: 8px;
+        right: 10px;
       }
     }
   }

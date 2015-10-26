@@ -23,7 +23,6 @@ const LoadDialogsScrollBottom = 100;
 const getStateFromStore = () => {
   return {
     dialogs: DialogStore.getAll(),
-    //allDialogs: DialogStore.getAll(),
     isFastSwitcherOpen: FastSwitcherStore.isOpen()
   };
 };
@@ -66,29 +65,6 @@ class RecentSection extends Component {
       );
     }, this);
 
-    //let groupsList = [],
-    //    privateList = [];
-    //
-    //_.forEach(allDialogs, (dialogs) => {
-    //  switch (dialogs.key) {
-    //    case 'groups':
-    //      groupsList = _.map(dialogs.shorts, (dialog, index) => {
-    //        return (
-    //          <RecentSectionItem dialog={dialog} key={index}/>
-    //        );
-    //      });
-    //      break;
-    //    case 'privates':
-    //      privateList = _.map(dialogs.shorts, (dialog, index) => {
-    //        return (
-    //          <RecentSectionItem dialog={dialog} key={index}/>
-    //        );
-    //      });
-    //      break;
-    //    default:
-    //  }
-    //});
-
     const fastSwitch = isFastSwitcherOpen ? <FastSwitcherModal/> : null;
 
     return (
@@ -97,16 +73,7 @@ class RecentSection extends Component {
           <ul className="sidebar__list">
             {dialogList}
           </ul>
-          {/*
-          <ul className="sidebar__list sidebar__list--groups">
-            <li className="sidebar__list__title">Groups</li>
-            {groupsList}
-          </ul>
-          <ul className="sidebar__list sidebar__list--private">
-            <li className="sidebar__list__title">Private</li>
-            {privateList}
-          </ul>
-          */}
+
         </div>
 
         <footer>

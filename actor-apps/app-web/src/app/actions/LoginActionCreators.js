@@ -71,7 +71,6 @@ const LoginActionCreators = {
 
     dispatch(ActionTypes.SET_LOGGED_IN);
     ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-    //ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
     ActorClient.bindDialogs(DialogActionCreators.setDialogs);
     ActorClient.bindContacts(ContactActionCreators.setContacts);
   },
@@ -79,7 +78,6 @@ const LoginActionCreators = {
   setLoggedOut: () => {
     dispatch(ActionTypes.SET_LOGGED_OUT);
     ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-    //ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
     ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
     ActorClient.unbindContacts(ContactActionCreators.setContacts);
   },
