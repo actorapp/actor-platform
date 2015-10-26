@@ -8,6 +8,7 @@ import im.actor.server.bot.services._
 import upickle.Js
 
 import scala.concurrent.Future
+import scala.util.Failure
 
 final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSystem) {
 
@@ -62,7 +63,10 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
         } else Future.successful(BotError(400, "REQUEST_NOT_SUPPORTED", Js.Obj(), None))
       } else Future.successful(BotError(400, "SERVICE_NOT_REGISTERED", Js.Obj(), None))
 
-    resultFuture map (BotResponse(id, _))
+    resultFuture map (BotResponse(id, _)) andThen {
+      case Failure(e) ⇒ system.log.error(e, "Failed to handle {}", body)
+      case _          ⇒
+    }
   }
 
   private val services: PartialFunction[String, BotServiceBase] = {
