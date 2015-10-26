@@ -42,6 +42,19 @@ object BotMessages {
     @beanGetter fullImage:  Option[AvatarImage]
   )
 
+  final case class ContactInfo(
+    phones: Seq[Long],
+    emails: Seq[String]
+  )
+
+  sealed trait ContactRecord
+
+  @key("Email")
+  final case class EmailContactRecord(email: String) extends ContactRecord
+
+  @key("Phone")
+  final case class PhoneContactRecord(phone: Long) extends ContactRecord
+
   final case class User(
     @beanGetter id:         Int,
     @beanGetter accessHash: Long,
@@ -50,7 +63,8 @@ object BotMessages {
     about:                  Option[String],
     avatar:                 Option[Avatar],
     username:               Option[String],
-    isBot:                  Option[Boolean]
+    isBot:                  Option[Boolean],
+    contactRecords:         Seq[ContactRecord]
   ) {
     def isMale = sex.contains(1)
 
@@ -67,6 +81,16 @@ object BotMessages {
     def getUsername = username.asJava
 
     def getIsBot = isBot.asJava
+
+    def getContactRecords = seqAsJavaList(contactRecords)
+
+    def getEmailContactRecords = seqAsJavaList(contactRecords collect {
+      case e: EmailContactRecord ⇒ e
+    })
+
+    def getPhoneContactRecords = seqAsJavaList(contactRecords collect {
+      case p: PhoneContactRecord ⇒ p
+    })
   }
 
   final case class GroupMember(
