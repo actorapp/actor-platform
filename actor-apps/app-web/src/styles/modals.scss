@@ -898,6 +898,7 @@
       padding: 0;
       &__item {
         line-height: 32px;
+        color: $mine-shaft;
 
         box-sizing: border-box;
         margin: 0;
@@ -915,18 +916,45 @@
         .title {
           font-size: 15px;
           line-height: 32px;
+          display: inline-block;
 
           user-select: none;
           vertical-align: middle;
 
           @include text-elipsis();
         }
+        .hint {
+          font-size: 13px;
+          display: none;
+          line-height: 32px;
+          text-align: right;
+          vertical-align: middle;
+        }
         &--active {
           font-weight: 500;
 
           color: white;
-          background-color: rgba($dark-sky-blue, 1);
+          background-color: $dark-sky-blue;
           text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
+          .hint {
+            opacity: .7;
+            display: inline-block;
+          }
+        }
+        &--suggestion {
+          display: block;
+          cursor: default !important;
+          font-weight: 400 !important;
+          color: $dove-gray !important;
+          background-color: white !important;
+          text-shadow: none !important;
+          text-align: center;
+          & > span {
+            display: block;
+          }
+          .button {
+            margin-top: 10px;
+          }
         }
       }
     }
