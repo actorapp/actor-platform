@@ -161,6 +161,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
       for {
         client ← authorizedClient(clientData)
         nicknameUsers ← findByNickname(query, client)
+        emailUsers ← findByEmail(query, client)
         phoneUsers ← findByNumber(query, client)
       } yield ResponseSearchContacts(nicknameUsers ++ phoneUsers)
     db.run(action.run)
@@ -170,6 +171,13 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     for {
       users ← fromDBIO(persist.UserRepo.findByNickname(nickname) map (_.toList))
       structs ← fromFuture(Future.sequence(users map (user ⇒ userExt.getApiStruct(user.id, client.userId, client.authId))))
+    } yield structs.toVector
+  }
+
+  private def findByEmail(email: String, client: AuthorizedClientData): EitherT[DBIO, RpcError, Vector[ApiUser]] = {
+    for {
+      userIds ← fromDBIO(persist.UserRepo.findIdsByEmail(email) map (_.toList))
+      structs ← fromFuture(Future.sequence(userIds map (id ⇒ userExt.getApiStruct(id, client.userId, client.authId))))
     } yield structs.toVector
   }
 
