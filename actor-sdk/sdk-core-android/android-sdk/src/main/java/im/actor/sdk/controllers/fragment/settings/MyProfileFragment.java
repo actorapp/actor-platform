@@ -33,6 +33,8 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorSDKDelegate;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
@@ -245,6 +247,41 @@ public class MyProfileFragment extends BaseFragment {
                 });
             }
         });
+
+        //Add custom settings
+        ActorSDKDelegate delegate = ActorSDK.sharedActor().getDelegate();
+        if (delegate.getBeforeNickSettingsView(getActivity()) != null) {
+            FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
+            beforeNick.addView(delegate.getBeforeNickSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        }
+        if (delegate.getBeforeNickSettingsView(getActivity()) != null) {
+            FrameLayout afterPhone = (FrameLayout) view.findViewById(R.id.after_phone_container);
+            afterPhone.addView(delegate.getAfterPhoneSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        }
+        if (delegate.getSettingsTopView(getActivity()) != null) {
+            FrameLayout settingsTop = (FrameLayout) view.findViewById(R.id.settings_top_container);
+            settingsTop.addView(delegate.getSettingsTopView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        }
+        if (delegate.getSettingsBottomView(getActivity()) != null) {
+            FrameLayout settingsBot = (FrameLayout) view.findViewById(R.id.settings_bottom_container);
+            settingsBot.addView(delegate.getSettingsBottomView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        }
+
+        if (delegate.getBeforeSettingsCategory() != null) {
+            FrameLayout beforeSettings = (FrameLayout) view.findViewById(R.id.before_settings_category_container);
+            view.findViewById(R.id.before_settings_category_container_container).setVisibility(View.VISIBLE);
+            TextView beforeSettingsName = (TextView) view.findViewById(R.id.before_settings_category_name);
+            beforeSettingsName.setText(delegate.getBeforeSettingsCategory().getCategoryName());
+            beforeSettings.addView(delegate.getBeforeSettingsCategory().getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        }
+
+        if (delegate.getAfterSettingsCategory() != null) {
+            FrameLayout afterSettings = (FrameLayout) view.findViewById(R.id.after_settings_category_container);
+            view.findViewById(R.id.after_settings_category_container_container).setVisibility(View.VISIBLE);
+            TextView beforeSettingsName = (TextView) view.findViewById(R.id.after_settings_category_name);
+            beforeSettingsName.setText(delegate.getAfterSettingsCategory().getCategoryName());
+            afterSettings.addView(delegate.getAfterSettingsCategory().getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        }
 
         avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
         avatarView.setBkgrnd((ImageView) view.findViewById(R.id.avatar_bgrnd));

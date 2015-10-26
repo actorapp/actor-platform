@@ -62,7 +62,7 @@ public class PushManager implements ActorPushManager {
 
     private String tryRegisterPush(Context context) {
         GoogleCloudMessaging cloudMessaging = GoogleCloudMessaging.getInstance(context);
-        Log.d("Actor GCM", "Requesting push token iteration...");
+        Log.d(TAG, "Requesting push token iteration...");
         try {
             return cloudMessaging.register("" + ActorSDK.sharedActor().getPushId());
         } catch (IOException e) {
