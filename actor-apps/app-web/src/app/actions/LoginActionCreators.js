@@ -70,13 +70,15 @@ const LoginActionCreators = {
 
     dispatch(ActionTypes.SET_LOGGED_IN);
     ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-    ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
+    //ActorClient.bindGroupDialogs(DialogActionCreators.setDialogs);
+    ActorClient.bindDialogs(DialogActionCreators.setDialogs);
   },
 
   setLoggedOut: () => {
     dispatch(ActionTypes.SET_LOGGED_OUT);
     ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
-    ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
+    //ActorClient.unbindGroupDialogs(DialogActionCreators.setDialogs);
+    ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
   },
 
   wrongNumberClick: () => dispatch(ActionTypes.AUTH_WRONG_NUMBER_CLICK)
