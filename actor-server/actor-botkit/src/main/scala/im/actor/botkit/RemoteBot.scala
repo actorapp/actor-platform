@@ -38,10 +38,8 @@ abstract class RemoteBot(token: String, endpoint: String) extends BotBase with A
       onReceive(message.asInstanceOf[Object])
   }
 
-  override protected def onStreamFailure(cause: Throwable): Unit = {
+  override protected def onStreamFailure(cause: Throwable): Unit =
     log.error(cause, "Bot stream failure")
-    throw cause
-  }
 
   private final def internalReceive: Receive = workingBehavior(rqSource).orElse({
     case StreamComplete ⇒
