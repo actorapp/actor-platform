@@ -2,6 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { filter } from 'lodash';
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 import { register , waitFor } from 'dispatcher/ActorAppDispatcher';
@@ -38,20 +39,8 @@ var ContactStore = assign({}, EventEmitter.prototype, {
   }
 });
 
-const setContacts = (contacts) => {
-  console.debug(contacts);
-  setTimeout(function() {
-    ContactActionCreators.setContacts(contacts);
-  }, 0);
-};
-
 ContactStore.dispatchToken = register(function(action) {
   switch(action.type) {
-    case ActionTypes.SET_LOGGED_IN:
-      waitFor([LoginStore.dispatchToken]);
-      ActorClient.bindContacts(setContacts);
-      break;
-
     case ActionTypes.CONTACT_LIST_SHOW:
       _isContactsOpen = true;
       ContactStore.emitChange();
@@ -63,7 +52,12 @@ ContactStore.dispatchToken = register(function(action) {
       break;
 
     case ActionTypes.CONTACT_LIST_CHANGED:
-      _contacts = action.contacts;
+      // Remove current user from contacts list
+      _contacts = filter(action.contacts, (contact) => {
+        if (contact.uid != ActorClient.getUid()) {
+          return contact;
+        }
+      });
       ContactStore.emitChange();
       break;
 
