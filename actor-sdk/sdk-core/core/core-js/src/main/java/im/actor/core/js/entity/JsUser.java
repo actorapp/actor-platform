@@ -9,9 +9,11 @@ import com.google.gwt.core.client.JsArray;
 
 import im.actor.core.entity.Avatar;
 import im.actor.core.js.JsMessenger;
+import im.actor.core.viewmodel.UserEmail;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.core.viewmodel.generics.ArrayListUserEmail;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 
 public class JsUser extends JavaScriptObject {
@@ -36,19 +38,26 @@ public class JsUser extends JavaScriptObject {
             convertedPhones.push(JsPhone.create(p.getPhone() + "", p.getTitle()));
         }
 
+        JsArray<JsEmail> convertedEmails = JsArray.createArray().cast();
+        ArrayListUserEmail emails = userVM.getEmails().get();
+        for (UserEmail p : emails) {
+            convertedEmails.push(JsEmail.create(p.getEmail(), p.getTitle()));
+        }
+
         return create(userVM.getId(), userVM.getName().get(), userVM.getNick().get(),
                 userVM.getAbout().get(),
                 fileUrl, bigFileUrl,
                 Placeholders.getPlaceholder(userVM.getId()),
                 userVM.isContact().get(), userVM.isBot(),
-                presenceString, convertedPhones);
+                presenceString, convertedPhones, convertedEmails);
     }
 
     public static native JsUser create(int id, String name, String nick, String about,
                                        String avatar, String bigAvatar, String placeholder,
-                                       boolean isContact, boolean isBot, String presence, JsArray<JsPhone> phones)/*-{
+                                       boolean isContact, boolean isBot, String presence, JsArray<JsPhone> phones,
+                                       JsArray<JsEmail> emails)/*-{
         return {id: id, name: name, nick: nick, about: about, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
-            isContact: isContact, presence: presence, phones: phones};
+            isContact: isContact, presence: presence, phones: phones, emails: emails};
     }-*/;
 
     protected JsUser() {
