@@ -7,6 +7,7 @@ package im.actor.core.js.entity;
 import com.google.gwt.core.client.JavaScriptObject;
 
 import im.actor.core.entity.Contact;
+import im.actor.core.js.JsMessenger;
 import im.actor.runtime.js.mvvm.JsEntityConverter;
 
 public class JsContact extends JavaScriptObject {
@@ -15,10 +16,12 @@ public class JsContact extends JavaScriptObject {
         @Override
         public JsContact convert(Contact value) {
 
+            JsMessenger messenger = JsMessenger.getInstance();
+
             String fileUrl = null;
-//            if (value.getAvatar() != null && value.getAvatar().getSmallImage() != null) {
-//                fileUrl = messenger.getFileUrl(value.getAvatar().getSmallImage().getFileReference());
-//            }
+            if (value.getAvatar() != null && value.getAvatar().getSmallImage() != null) {
+                fileUrl = messenger.getFileUrl(value.getAvatar().getSmallImage().getFileReference());
+            }
 
             return create(value.getUid(), value.getName(),
                     Placeholders.getPlaceholder(value.getUid()), fileUrl);
