@@ -1,13 +1,11 @@
 package im.actor.server.bot.services
 
 import akka.actor.ActorSystem
-import im.actor.api.rpc.messaging.{ ApiJsonMessage, ApiTextMessage }
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.bot.{ BotToApiConversions, BotServiceBase }
 import im.actor.server.dialog.DialogExtension
 import im.actor.server.sequence.SeqStateDate
 
-final class MessagingBotService(system: ActorSystem) extends BotServiceBase(system) with BotToApiConversions {
+private[bot] final class MessagingBotService(system: ActorSystem) extends BotServiceBase(system) with BotToApiConversions {
 
   import im.actor.bots.BotMessages._
   import system.dispatcher
@@ -24,7 +22,7 @@ final class MessagingBotService(system: ActorSystem) extends BotServiceBase(syst
 
       for {
         SeqStateDate(_, _, date) ← dialogExt.sendMessage(
-          peer = ApiPeer(ApiPeerType(peer.`type`), peer.id),
+          peer = peer,
           senderUserId = botUserId,
           senderAuthId = 0L,
           randomId = randomId,
