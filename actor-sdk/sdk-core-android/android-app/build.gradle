@@ -31,4 +31,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':actor-sdk:sdk-core-android:android-sdk')
+    compile 'com.google.android.gms:play-services-gcm:7.5.0'
+
 }
