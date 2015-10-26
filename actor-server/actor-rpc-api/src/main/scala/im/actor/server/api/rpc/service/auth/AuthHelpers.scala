@@ -95,11 +95,11 @@ trait AuthHelpers extends Helpers {
     for {
       validationResponse ← fromDBIO(activationContext.validate(transactionHash, code))
       _ ← validationResponse match {
-        case ExpiredCode     ⇒ cleanupAndError(transactionHash, codeExpired)
-        case InvalidHash     ⇒ cleanupAndError(transactionHash, AuthErrors.InvalidAuthCodeHash)
-        case InvalidCode     ⇒ fromEither[Unit](-\/(codeInvalid))
-        case InvalidResponse ⇒ cleanupAndError(transactionHash, AuthErrors.ActivationServiceError)
-        case Validated       ⇒ point(())
+        case ExpiredCode                     ⇒ cleanupAndError(transactionHash, codeExpired)
+        case InvalidHash                     ⇒ cleanupAndError(transactionHash, AuthErrors.InvalidAuthCodeHash)
+        case InvalidCode                     ⇒ fromEither[Unit](-\/(codeInvalid))
+        case InvalidResponse | InternalError ⇒ cleanupAndError(transactionHash, AuthErrors.ActivationServiceError)
+        case Validated                       ⇒ point(())
       }
       _ ← fromDBIO(persist.auth.AuthTransactionRepo.updateSetChecked(transactionHash))
 
@@ -152,17 +152,17 @@ trait AuthHelpers extends Helpers {
     } yield user
   }
 
-  protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[String \/ Unit] = {
+  protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
     log.info("Sending sms code {} to {}", code, phoneNumber)
     activationContext.send(transactionHash, SmsCode(phoneNumber, code))
   }
 
-  protected def sendCallCode(phoneNumber: Long, code: String, transactionHash: Option[String], language: String)(implicit system: ActorSystem): DBIO[String \/ Unit] = {
+  protected def sendCallCode(phoneNumber: Long, code: String, transactionHash: Option[String], language: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
     log.info("Sending call code {} to {}", code, phoneNumber)
     activationContext.send(transactionHash, CallCode(phoneNumber, code, language))
   }
 
-  protected def sendEmailCode(email: String, code: String, transactionHash: String)(implicit system: ActorSystem): DBIO[String \/ Unit] = {
+  protected def sendEmailCode(email: String, code: String, transactionHash: String)(implicit system: ActorSystem): DBIO[CodeFailure \/ Unit] = {
     log.info("Sending email code {} to {}", code, email)
     activationContext.send(Some(transactionHash), EmailCode(email, code))
   }
