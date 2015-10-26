@@ -2,8 +2,7 @@ package im.actor.server.activation.gate
 
 import akka.actor.ActorSystem
 import im.actor.server.activation.Activation.Code
-import im.actor.server.activation.internal.CodeActivation
-import im.actor.server.activation.{ InvalidHash, ValidationResponse }
+import im.actor.server.activation._
 import im.actor.server.persist
 import slick.dbio.DBIO
 import spray.client.pipelining._
@@ -17,14 +16,12 @@ import scala.concurrent.Future
 import scala.reflect.ClassTag
 import scalaz.{ -\/, \/, \/- }
 
-class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) extends CodeActivation with JsonImplicits with PlayJsonSupport {
+class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) extends CodeActivation with JsonFormatters with PlayJsonSupport {
   import system.dispatcher
 
-  val pipeline: HttpRequest ⇒ Future[HttpResponse] =
-    addHeader("X-Auth-Token", config.authToken) ~>
-      sendReceive
+  val pipeline: HttpRequest ⇒ Future[HttpResponse] = addHeader("X-Auth-Token", config.authToken) ~> sendReceive
 
-  override def send(optTransactionHash: Option[String], code: Code): DBIO[String \/ Unit] = {
+  override def send(optTransactionHash: Option[String], code: Code): DBIO[CodeFailure \/ Unit] = {
     val codeResponse: Future[CodeResponse] = for {
       entity ← marshalToEntity(code)
       request = HttpRequest(method = POST, uri = s"${config.uri}/v1/codes/send", entity = entity)
@@ -40,8 +37,8 @@ class GateCodeActivation(config: GateConfig)(implicit system: ActorSystem) exten
           optTransactionHash.map { transactionHash ⇒
             for (_ ← persist.auth.GateAuthCodeRepo.createOrUpdate(transactionHash, hash)) yield \/-(())
           } getOrElse DBIO.successful(\/-(()))
-        case CodeError(message) ⇒
-          DBIO.successful(-\/(message))
+        case failure: CodeFailure ⇒
+          DBIO.successful(-\/(failure))
       }
     } yield result
   }

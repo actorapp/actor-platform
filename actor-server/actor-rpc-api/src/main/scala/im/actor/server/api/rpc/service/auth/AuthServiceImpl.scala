@@ -13,7 +13,7 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.ApiSex.ApiSex
 import im.actor.server.acl.ACLUtils
-import im.actor.server.activation.internal.CodeActivation
+import im.actor.server.activation.{ CodeFailure, CodeActivation }
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
 import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
@@ -179,7 +179,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
             _ ← fromDBIO(persist.auth.AuthPhoneTransactionRepo.create(phoneAuthTransaction))
           } yield transactionHash
       }
-      _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
+      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
       isRegistered ← fromDBIO(persist.UserPhoneRepo.exists(normalizedPhone))
     } yield ResponseStartPhoneAuth(transactionHash, isRegistered)
     db.run(action.run)
@@ -190,7 +190,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
       tx ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.auth.AuthPhoneTransactionRepo.find(transactionHash))
       code ← fromDBIO(persist.AuthCodeRepo.findByTransactionHash(tx.transactionHash) map (_ map (_.code) getOrElse (genSmsCode(tx.phoneNumber))))
       lang = PhoneNumberUtils.normalizeWithCountry(tx.phoneNumber).headOption.map(_._2).getOrElse("en")
-      _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), Some(transactionHash), lang))
+      _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendCallCode(tx.phoneNumber, genSmsCode(tx.phoneNumber), Some(transactionHash), lang))
     } yield ResponseVoid
 
     db.run(action.run)
@@ -254,7 +254,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
           activationType match {
             case CODE ⇒
               for {
-                _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendEmailCode(email, genEmailCode(email), hash))
+                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(email, genEmailCode(email), hash))
               } yield hash
             case OAUTH2 ⇒
               point(hash)
@@ -277,7 +277,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
             case CODE ⇒
               for {
                 _ ← fromDBIO(persist.auth.AuthEmailTransactionRepo.create(emailAuthTransaction))
-                _ ← fromDBIOEither[Unit, String](err ⇒ AuthErrors.activationFailure(err))(sendEmailCode(email, genEmailCode(email), transactionHash))
+                _ ← fromDBIOEither[Unit, CodeFailure](AuthErrors.activationFailure)(sendEmailCode(email, genEmailCode(email), transactionHash))
               } yield transactionHash
             case OAUTH2 ⇒
               for {
