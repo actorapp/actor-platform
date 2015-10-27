@@ -2,6 +2,7 @@ package im.actor.sdk.controllers.activity.controllers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,10 +21,14 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.SearchEntity;
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.Style;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
@@ -62,15 +67,14 @@ public class MainPhoneController extends MainBaseController {
     private View searchHintView;
 
     private boolean isSearchVisible = false;
+    private SearchAdapter searchAdapter;
+    private BindedDisplayList<SearchEntity> searchDisplay;
     private final DisplayList.Listener searchListener = new DisplayList.Listener() {
         @Override
         public void onCollectionChanged() {
             onSearchChanged();
         }
     };
-    private SearchAdapter searchAdapter;
-    private BindedDisplayList<SearchEntity> searchDisplay;
-
     private SearchView searchView;
     private MenuItem searchMenu;
 
@@ -80,7 +84,7 @@ public class MainPhoneController extends MainBaseController {
     private View emptyContactsView;
 
     private View fabContent;
-    private View fabRoot;
+    private com.getbase.floatingactionbutton.FloatingActionButton fabRoot;
 
     private boolean isFabVisible = false;
 
@@ -168,8 +172,13 @@ public class MainPhoneController extends MainBaseController {
         isFabVisible = false;
 
         fabContent = findViewById(R.id.fabContainer);
-        fabRoot = findViewById(R.id.rootFab);
-
+        fabRoot = (FloatingActionButton) findViewById(R.id.rootFab);
+        if (ActorSDK.sharedActor().style.fabColor != 0) {
+            fabRoot.setColorNormal(ActorSDK.sharedActor().style.fabColor);
+        }
+        if (ActorSDK.sharedActor().style.fabColorPressed != 0) {
+            fabRoot.setColorPressed(ActorSDK.sharedActor().style.fabColorPressed);
+        }
         fabRoot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,7 +238,16 @@ public class MainPhoneController extends MainBaseController {
             }
         });
 
-        findViewById(R.id.composeContainer).setOnClickListener(new View.OnClickListener() {
+        Style style = ActorSDK.sharedActor().style;
+
+        com.getbase.floatingactionbutton.FloatingActionButton fabCompose = (FloatingActionButton) findViewById(R.id.composeContainer);
+        if (style.fabColor != 0) {
+            fabCompose.setColorNormal(style.fabColor);
+        }
+        if (style.fabColorPressed != 0) {
+            fabCompose.setColorPressed(style.fabColorPressed);
+        }
+        fabCompose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goneFab();
@@ -237,7 +255,14 @@ public class MainPhoneController extends MainBaseController {
             }
         });
 
-        findViewById(R.id.createGroupContainer).setOnClickListener(new View.OnClickListener() {
+        com.getbase.floatingactionbutton.FloatingActionButton fabCreateGroup = (FloatingActionButton) findViewById(R.id.createGroupContainer);
+        if (style.fabColor != 0) {
+            fabCreateGroup.setColorNormal(style.fabColor);
+        }
+        if (style.fabColorPressed != 0) {
+            fabCreateGroup.setColorPressed(style.fabColorPressed);
+        }
+        fabCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goneFab();
@@ -245,13 +270,21 @@ public class MainPhoneController extends MainBaseController {
             }
         });
 
-        findViewById(R.id.addContactContainer).setOnClickListener(new View.OnClickListener() {
+        com.getbase.floatingactionbutton.FloatingActionButton fabAddContact = (FloatingActionButton) findViewById(R.id.addContactContainer);
+        if (style.fabColor != 0) {
+            fabAddContact.setColorNormal(style.fabColor);
+        }
+        if (style.fabColorPressed != 0) {
+            fabAddContact.setColorPressed(style.fabColorPressed);
+        }
+        fabAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goneFab();
                 startActivity(new Intent(getActivity(), AddContactActivity.class));
             }
         });
+
 
         findViewById(R.id.addContactButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -280,13 +313,17 @@ public class MainPhoneController extends MainBaseController {
         ab.setDisplayShowHomeEnabled(false);
         ab.setDisplayShowTitleEnabled(false);
 
+        if (ActorSDK.sharedActor().style.toolBarColor != 0) {
+            ab.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.toolBarColor));
+        }
+
         FrameLayout tabsContainer = new FrameLayout(getActivity());
         barTabs = new PagerSlidingTabStrip(getActivity());
         barTabs.setTabBackground(R.drawable.selector_bar);
         //barTabs.setIndicatorColorResource(R.color.main_tab_selected);
         barTabs.setIndicatorHeight(Screen.dp(2));
 
-        barTabs.setDividerColorResource(R.color.primary);
+        barTabs.setDividerColorResource(android.R.color.transparent);
         //barTabs.setTextColorResource(R.color.main_tab_text);
         barTabs.setTextSize(Screen.dp(14));
         barTabs.setUnderlineHeight(0);

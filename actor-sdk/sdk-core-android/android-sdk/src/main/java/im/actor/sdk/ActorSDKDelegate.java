@@ -1,5 +1,11 @@
 package im.actor.sdk;
 
+import android.content.Context;
+import android.view.View;
+
+import im.actor.core.AuthState;
+import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
+import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.intents.ActorIntent;
 
 public interface ActorSDKDelegate {
@@ -24,4 +30,20 @@ public interface ActorSDKDelegate {
      * @return Actor Intent
      */
     ActorIntent getStartIntent();
+
+    AuthState getAuthStartState();
+
+    BaseAuthFragment getSignFragment();
+
+    View getBeforeNickSettingsView(Context context);
+
+    View getAfterPhoneSettingsView(Context context);
+
+    View getSettingsTopView(Context context);
+
+    View getSettingsBottomView(Context context);
+
+    ActorSettingsCategory[] getBeforeSettingsCategories();
+
+    ActorSettingsCategory[] getAfterSettingsCategories();
 }

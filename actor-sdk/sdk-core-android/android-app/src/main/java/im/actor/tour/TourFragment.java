@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.tour;
+package im.actor.tour;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +18,14 @@ import im.actor.sdk.util.Fonts;
 public class TourFragment extends Fragment {
     private static final String ARG_POSITION = "arg_pos";
     private View rootView;
+
+    public static Fragment getInstance(int position) {
+        Fragment fragment = new TourFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_POSITION, position);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,13 +61,5 @@ public class TourFragment extends Fragment {
         }
 
         return rootView;
-    }
-
-    public static Fragment getInstance(int position) {
-        Fragment fragment = new TourFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_POSITION, position);
-        fragment.setArguments(args);
-        return fragment;
     }
 }

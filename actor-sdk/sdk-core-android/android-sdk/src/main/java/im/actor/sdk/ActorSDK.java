@@ -18,18 +18,75 @@ import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
-import im.actor.sdk.controllers.activity.ActorMainActivity;
-import im.actor.sdk.controllers.fragment.auth.AuthActivity;
-import im.actor.sdk.controllers.fragment.tour.TourActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
+import im.actor.sdk.core.ActorPushManager;
+import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.view.emoji.SmileProcessor;
 import im.actor.runtime.android.AndroidContext;
 
+
 public class ActorSDK {
 
+
+    private static volatile ActorSDK sdk = new ActorSDK();
+    //
+    //Style
+    //
+    public Style style = new Style();
+
+
+    //
+    // SDK Objects
+    //
+    /**
+     * Application Context
+     */
+    private Application application;
+    /**
+     * Actor Messenger instance
+     */
+    private AndroidMessenger messenger;
+
+
+    //
+    // SDK Config
+    //
+    /**
+     * Server Endpoints
+     */
+    private List<String> endpoints = new ArrayList<String>();
+    /**
+     * API App Id
+     */
+    private int apiAppId = 1;
+    /**
+     * API App Key
+     */
+    private String apiAppKey = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
+    /**
+     * Push Registration Id
+     */
+    private long pushId = 0;
+    /**
+     * Is Keeping app alive enabled
+     */
+    private boolean isKeepAliveEnabled = false;
+    /**
+     * Delegate
+     */
+    private ActorSDKDelegate delegate = new BaseActorSDKDelegate();
+    /**
+     * ActivityManager
+     */
+    private ActivityManager activityManager = new ActivityManager();
+
+    private ActorSDK() {
+        endpoints.add("tls://front1-mtproto-api-rev2.actor.im");
+        endpoints.add("tls://front2-mtproto-api-rev2.actor.im");
+    }
 
     /**
      * Shared ActorSDK. Use this method to get instance of SDK for configuration and starting up
@@ -41,58 +98,11 @@ public class ActorSDK {
         return sdk;
     }
 
-    private static volatile ActorSDK sdk = new ActorSDK();
-
-
-    //
-    // SDK Objects
-    //
-
-    /**
-     * Application Context
-     */
-    private Application application;
-
-    /**
-     * Actor Messenger instance
-     */
-    private AndroidMessenger messenger;
-
-
-    //
-    // SDK Config
-    //
-
-    /**
-     * Server Endpoints
-     */
-    private List<String> endpoints = new ArrayList<String>();
-
-    /**
-     * API App Id
-     */
-    private int apiAppId = 1;
-    /**
-     * API App Key
-     */
-    private String apiAppKey = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
-
-    /**
-     * Is Keeping app alive enabled
-     */
-    private boolean isKeepAliveEnabled = false;
-
-
-    private ActorSDK() {
-        endpoints.add("tls://front1-mtproto-api-rev2.actor.im");
-        endpoints.add("tls://front2-mtproto-api-rev2.actor.im");
-    }
-
     //
     // SDK Initialization
     //
 
-    public void createActor(Application application) {
+    public void createActor(final Application application) {
 
         this.application = application;
 
@@ -136,13 +146,31 @@ public class ActorSDK {
             AlarmManager alarm = (AlarmManager) application.getSystemService(Context.ALARM_SERVICE);
             alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 30 * 1000, pendingIntent);
         }
+
+        //
+        //GCM
+        //
+        try {
+            final ActorPushManager pushManager = (ActorPushManager) Class.forName("im.actor.push.PushManager").newInstance();
+            if (pushId != 0) {
+                pushManager.registerPush(application);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public void startMessagingApp(Activity context) {
         if (messenger.isLoggedIn()) {
-            context.startActivity(new Intent(AndroidContext.getContext(), ActorMainActivity.class));
+            getActivityManager().startMessagingActivity(context);
         } else {
-            context.startActivity(new Intent(context, AuthActivity.class));
+            getActivityManager().startAuthActivity(context);
         }
     }
 
@@ -239,5 +267,33 @@ public class ActorSDK {
      */
     public void setIsKeepAliveEnabled(boolean isKeepAliveEnabled) {
         this.isKeepAliveEnabled = isKeepAliveEnabled;
+    }
+
+    /**
+     * Getting Push Registration Id
+     *
+     * @return pushId
+     */
+    public long getPushId() {
+        return pushId;
+    }
+
+    /**
+     * Setting Push Registration Id
+     */
+    public void setPushId(long pushId) {
+        this.pushId = pushId;
+    }
+
+    public ActorSDKDelegate getDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(ActorSDKDelegate delegate) {
+        this.delegate = delegate;
+    }
+
+    public ActivityManager getActivityManager() {
+        return activityManager;
     }
 }

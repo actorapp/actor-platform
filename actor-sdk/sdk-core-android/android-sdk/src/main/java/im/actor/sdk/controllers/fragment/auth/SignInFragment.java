@@ -28,12 +28,12 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class SignInFragment extends BaseAuthFragment {
 
-    private EditText codeEnterEditText;
-    private KeyboardHelper keyboardHelper;
     public static final String AUTH_TYPE_EMAIL = "auth_type_email";
     public static final String AUTH_TYPE_PHONE = "auth_type_phone";
-
+    public static final String AUTH_TYPE_CUSTOM = "auth_type_custom";
     String authType;
+    private EditText codeEnterEditText;
+    private KeyboardHelper keyboardHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,10 +56,15 @@ public class SignInFragment extends BaseAuthFragment {
             ((TextView) v.findViewById(R.id.sendHint)).setText(
                     Html.fromHtml(getString(R.string.auth_code_phone_hint).replace("{0}", "<b>" + phoneNumber + "</b>"))
             );
-        }else{
+        } else if (authType.equals(AUTH_TYPE_EMAIL)) {
             String email = messenger().getAuthEmail();
             ((TextView) v.findViewById(R.id.sendHint)).setText(
                     Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + email + "</b>"))
+            );
+        } else {
+            String authId = getArguments().getString("authId");
+            ((TextView) v.findViewById(R.id.sendHint)).setText(
+                    Html.fromHtml(getArguments().getString("authHint"))
             );
         }
 

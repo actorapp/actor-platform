@@ -1,6 +1,7 @@
 package im.actor.sdk.controllers.activity;
 
 import android.app.ProgressDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.ActorBinder;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -31,6 +33,10 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         onCreateToolbar();
         notifyOnResume();
+
+        if (getSupportActionBar() != null && ActorSDK.sharedActor().style.toolBarColor != 0) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.toolBarColor));
+        }
     }
 
     protected void onCreateToolbar() {

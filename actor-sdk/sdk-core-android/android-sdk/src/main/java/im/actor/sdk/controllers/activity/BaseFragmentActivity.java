@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 
 /**
@@ -21,6 +22,11 @@ public class BaseFragmentActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(false);
+
+        if (ActorSDK.sharedActor().style.toolBarColor != 0) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.toolBarColor));
+        }
+
         setContentView(R.layout.activity_base_fragment);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
