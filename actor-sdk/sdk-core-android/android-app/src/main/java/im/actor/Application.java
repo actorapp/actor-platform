@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.BaseActorSDKDelegate;
+import im.actor.sdk.Style;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 
@@ -23,6 +24,13 @@ public class Application extends android.app.Application{
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
         ActorSDK.sharedActor().createActor(this);
+
+        Style style = ActorSDK.sharedActor().style;
+        style.toolBarColor = getResources().getColor(R.color.accent);
+        style.fabColor = getResources().getColor(R.color.accent);
+        style.fabColorPressed = getResources().getColor(R.color.accent_pressed);
+
+
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
