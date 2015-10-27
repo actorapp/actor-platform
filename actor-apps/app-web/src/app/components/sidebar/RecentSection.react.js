@@ -54,7 +54,7 @@ class RecentSection extends Component {
     }
   };
 
-  openFastSwitch = () => FastSwitcherActionCreators.show();
+  openQuickSearch = () => FastSwitcherActionCreators.show();
 
   render() {
     const { dialogs, isFastSwitcherOpen } = this.state;
@@ -64,8 +64,6 @@ class RecentSection extends Component {
         <RecentSectionItem dialog={dialog} key={index}/>
       );
     }, this);
-
-    const fastSwitch = isFastSwitcherOpen ? <FastSwitcherModal/> : null;
 
     return (
       <section className="sidebar__recent">
@@ -77,9 +75,13 @@ class RecentSection extends Component {
         </div>
 
         <footer>
-          <button className="button button--rised button--wide" onClick={this.openFastSwitch}>Fast Switch</button>
-          {fastSwitch}
+          <a className="sidebar__recent__quick-search" onClick={this.openQuickSearch}>
+            <i className="material-icons">search</i> Quick Search
+          </a>
         </footer>
+
+        {isFastSwitcherOpen ? <FastSwitcherModal/> : null}
+
       </section>
     );
   }
