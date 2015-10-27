@@ -11,7 +11,7 @@ import im.actor.api.rpc._
 import im.actor.util.misc.StringUtils
 
 private[auth] trait Helpers extends PublicKeyHelpers {
-  val emailPattern = Pattern.compile("""^[-.\w]+@(?:[a-z\d]{2,}\.)+[a-z]{2,6}$""", Pattern.UNICODE_CHARACTER_CLASS) //which regexp should we use?
+  val emailPattern = Pattern.compile(""".*@.*""", Pattern.UNICODE_CHARACTER_CLASS)
 
   def matchesEmail(s: String): \/[NonEmptyList[String], String] =
     if (emailPattern.matcher(s).matches) s.right else "Should be valid email address".wrapNel.left
