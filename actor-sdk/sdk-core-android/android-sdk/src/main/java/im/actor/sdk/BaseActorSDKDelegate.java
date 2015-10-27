@@ -7,7 +7,6 @@ import im.actor.core.AuthState;
 import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsCategory;
 import im.actor.sdk.intents.ActorIntent;
 
 public class BaseActorSDKDelegate implements ActorSDKDelegate {
@@ -58,12 +57,12 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     }
 
     @Override
-    public BaseActorSettingsCategory[] getBeforeSettingsCategories() {
+    public ActorSettingsCategory[] getBeforeSettingsCategories() {
         return null;
     }
 
     @Override
-    public BaseActorSettingsCategory[] getAfterSettingsCategories() {
+    public ActorSettingsCategory[] getAfterSettingsCategories() {
         return null;
     }
 

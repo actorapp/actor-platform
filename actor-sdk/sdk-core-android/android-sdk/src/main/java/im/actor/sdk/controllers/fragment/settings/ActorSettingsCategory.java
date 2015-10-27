@@ -3,9 +3,17 @@ package im.actor.sdk.controllers.fragment.settings;
 import android.content.Context;
 import android.view.View;
 
-public interface ActorSettingsCategory {
-    String getCategoryName();
-    View getView(Context context);
+/**
+ * Created by root on 10/27/15.
+ */
+public abstract class ActorSettingsCategory implements IActorSettingsCategory {
+    @Override
+    public View getView(Context context) {
+        return null;
+    }
 
-    BaseActorSettingsField[] getFields();
+    @Override
+    public ActorSettingsField[] getFields() {
+        return null;
+    }
 }
