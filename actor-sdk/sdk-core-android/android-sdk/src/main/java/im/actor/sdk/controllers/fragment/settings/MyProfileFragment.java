@@ -11,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ActionMenuView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -304,9 +302,9 @@ public class MyProfileFragment extends BaseFragment {
         return view;
     }
 
-    private void addCategories(LinearLayout container, BaseActorSettingsCategory[] categories, LayoutInflater inflater) {
+    private void addCategories(LinearLayout container, ActorSettingsCategory[] categories, LayoutInflater inflater) {
         Context context = getActivity();
-        for (ActorSettingsCategory category : categories) {
+        for (IActorSettingsCategory category : categories) {
             LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
             FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
             TextView beforeSettingsName = (TextView) categoryContainer.findViewById(R.id.category_name);
@@ -321,13 +319,13 @@ public class MyProfileFragment extends BaseFragment {
         }
     }
 
-    private void addFields(FrameLayout container, BaseActorSettingsField[] fields, LayoutInflater inflater) {
+    private void addFields(FrameLayout container, ActorSettingsField[] fields, LayoutInflater inflater) {
         Context context = getActivity();
         LinearLayout ll = new LinearLayout(getActivity());
         ll.setOrientation(LinearLayout.VERTICAL);
         container.addView(ll, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 
-        for (BaseActorSettingsField field : fields) {
+        for (ActorSettingsField field : fields) {
             if (field.getView(context) != null) {
                 ll.addView(field.getView(context), LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             } else {
@@ -335,6 +333,7 @@ public class MyProfileFragment extends BaseFragment {
                 TintImageView icon = (TintImageView) fieldLayout.findViewById(R.id.icon);
                 TextView name = (TextView) fieldLayout.findViewById(R.id.name);
                 View rightView = field.getRightView(context);
+                field.setRightView(rightView);
 
                 //Icon
                 if (field.getIconResourceId() != 0) {
@@ -343,7 +342,7 @@ public class MyProfileFragment extends BaseFragment {
                         icon.setTint(field.getIconColor());
                     }
                 } else {
-                    icon.setVisibility(View.GONE);
+                    icon.setVisibility(View.INVISIBLE);
                 }
                 //Name
                 if (field.getName() != null) {
