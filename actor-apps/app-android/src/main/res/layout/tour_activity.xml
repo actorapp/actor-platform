@@ -70,19 +70,19 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <im.actor.sdk.controllers.fragment.tour.PagerContainer
+    <PagerContainer
         android:id="@+id/pager_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingBottom="-100dp">
 
-        <im.actor.sdk.controllers.fragment.tour.VerticalViewPager
+        <VerticalViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
-    </im.actor.sdk.controllers.fragment.tour.PagerContainer>
+    </PagerContainer>
 
     <LinearLayout
         android:id="@+id/background"
@@ -108,8 +108,7 @@
         android:id="@+id/login_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:layout_below="@+id/welcome_text"
+        android:layout_below="@+id/welcome_text" android:fitsSystemWindows="true"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 

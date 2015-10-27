@@ -39,8 +39,8 @@
                             android:id="@+id/avatar_bgrnd"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/img_profile_avatar_default"
-                            android:scaleType="centerCrop" />
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_profile_avatar_default" />
 
                         <im.actor.sdk.view.avatar.CoverAvatarView
                             android:id="@+id/avatar"
@@ -76,6 +76,11 @@
 
                     </FrameLayout>
 
+                    <FrameLayout
+                        android:id="@+id/before_nick_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
                     <LinearLayout
                         android:id="@+id/nickContainer"
                         android:layout_width="match_parent"
@@ -85,8 +90,8 @@
                     </LinearLayout>
 
                     <include
-                        layout="@layout/contact_record"
-                        android:id="@+id/about" />
+                        android:id="@+id/about"
+                        layout="@layout/contact_record" />
 
                     <LinearLayout
                         android:id="@+id/phoneContainer"
@@ -95,6 +100,11 @@
                         android:orientation="vertical">
 
                     </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/after_phone_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
 
                     <FrameLayout
@@ -115,6 +125,13 @@
                             android:background="@drawable/card_shadow_top" />
                     </FrameLayout>
 
+
+                    <LinearLayout
+                        android:id="@+id/before_settings_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
@@ -123,6 +140,11 @@
                         android:text="@string/settings_header"
                         android:textColor="@color/settings_main_title"
                         android:textSize="16sp" />
+
+                    <FrameLayout
+                        android:id="@+id/settings_top_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
                     <LinearLayout
                         android:id="@+id/notifications"
@@ -264,6 +286,11 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
+                    <FrameLayout
+                        android:id="@+id/settings_bottom_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
                 </LinearLayout>
 
                 <com.getbase.floatingactionbutton.FloatingActionButton
@@ -293,6 +320,13 @@
                     android:background="@drawable/card_shadow_bottom" />
 
             </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/after_settings_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
 
         </LinearLayout>
     </ScrollView>

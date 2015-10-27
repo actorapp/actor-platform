@@ -34,6 +34,7 @@ import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.runtime.*;
 import im.actor.runtime.Runtime;
+import im.actor.sdk.ActorSDK;
 
 public class Authentication {
 
@@ -106,7 +107,7 @@ public class Authentication {
                 }
             }
         } else {
-            state = AuthState.AUTH_START;
+            state = ActorSDK.sharedActor().getDelegate().getAuthStartState();
         }
     }
 

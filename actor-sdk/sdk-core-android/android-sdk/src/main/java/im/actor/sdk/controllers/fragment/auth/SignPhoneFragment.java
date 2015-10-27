@@ -291,4 +291,5 @@ public class SignPhoneFragment extends BaseAuthFragment {
                     data.getIntExtra("country_id", 0)));
         }
     }
+
 }

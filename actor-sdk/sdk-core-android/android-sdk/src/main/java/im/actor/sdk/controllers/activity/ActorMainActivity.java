@@ -7,8 +7,6 @@ import android.os.Bundle;
 import im.actor.sdk.controllers.activity.base.ControllerActivity;
 import im.actor.sdk.controllers.activity.controllers.MainBaseController;
 import im.actor.sdk.controllers.activity.controllers.MainPhoneController;
-import im.actor.sdk.controllers.fragment.tour.TourActivity;
-import im.actor.core.AuthState;
 import im.actor.core.entity.Dialog;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -24,11 +22,6 @@ public class ActorMainActivity extends ControllerActivity<MainBaseController> {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
-        if (messenger().getAuthState() != AuthState.LOGGED_IN) {
-            startActivity(new Intent(this, TourActivity.class));
-            finish();
-            return;
-        }
 
         // getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_main)));
         getWindow().setBackgroundDrawable(null);
