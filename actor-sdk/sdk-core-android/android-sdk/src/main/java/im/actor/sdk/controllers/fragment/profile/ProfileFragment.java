@@ -30,6 +30,8 @@ import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.ArrayList;
 
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.media.DocumentsActivity;
@@ -49,6 +51,11 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 public class ProfileFragment extends BaseFragment {
 
     private static final String EXTRA_UID = "uid";
+    private int baseColor;
+    private CoverAvatarView avatarView;
+
+    public ProfileFragment() {
+    }
 
     public static ProfileFragment create(int uid) {
         Bundle bundle = new Bundle();
@@ -56,13 +63,6 @@ public class ProfileFragment extends BaseFragment {
         ProfileFragment res = new ProfileFragment();
         res.setArguments(bundle);
         return res;
-    }
-
-    private int baseColor;
-
-    private CoverAvatarView avatarView;
-
-    public ProfileFragment() {
     }
 
     @Override
@@ -277,6 +277,10 @@ public class ProfileFragment extends BaseFragment {
 
         ActionBar bar = ((BaseActivity) getActivity()).getSupportActionBar();
         int fullColor = baseColor;
+        ActorStyle style = ActorSDK.sharedActor().style;
+        if (style.getToolBarColor() != 0) {
+            fullColor = style.getToolBarColor();
+        }
 
         if (Math.abs(offset) > Screen.dp(248 - 56)) {
             bar.setBackgroundDrawable(new ColorDrawable(fullColor));
