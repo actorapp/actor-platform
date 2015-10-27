@@ -333,7 +333,8 @@ public class MyProfileFragment extends BaseFragment {
                 TintImageView icon = (TintImageView) fieldLayout.findViewById(R.id.icon);
                 TextView name = (TextView) fieldLayout.findViewById(R.id.name);
                 View rightView = field.getRightView(context);
-                field.setRightView(rightView);
+                field.bindCreatedRightView(rightView);
+                field.bindCreatedTextView(name);
 
                 //Icon
                 if (field.getIconResourceId() != 0) {
