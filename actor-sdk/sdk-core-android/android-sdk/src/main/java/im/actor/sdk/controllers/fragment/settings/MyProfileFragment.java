@@ -361,13 +361,14 @@ public class MyProfileFragment extends BaseFragment {
                 }
                 //Field
                 ll.addView(fieldLayout, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                //Divider
-                if (field.addBottomDivider()) {
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1);
-                    params.leftMargin = Screen.dp(72);
-                    View divider = inflater.inflate(R.layout.actor_settings_divider, null);
-                    ll.addView(divider, params);
-                }
+            }
+            //Divider
+            if (field.addBottomDivider()) {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1);
+                params.leftMargin = Screen.dp(72);
+                params.rightMargin = Screen.dp(16);
+                View divider = inflater.inflate(R.layout.actor_settings_divider, null);
+                ll.addView(divider, params);
             }
         }
     }
