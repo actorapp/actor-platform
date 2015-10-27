@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ActionMenuView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,14 +55,14 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MyProfileFragment extends BaseFragment {
 
+    ActorSDKDelegate delegate;
     private int baseColor;
-
     private CoverAvatarView avatarView;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
+        delegate = ActorSDK.sharedActor().getDelegate();
         baseColor = getResources().getColor(R.color.primary);
 
         final UserVM userModel = users().get(myUid());
@@ -248,8 +250,6 @@ public class MyProfileFragment extends BaseFragment {
             }
         });
 
-        //Add custom settings
-        ActorSDKDelegate delegate = ActorSDK.sharedActor().getDelegate();
         if (delegate.getBeforeNickSettingsView(getActivity()) != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
             beforeNick.addView(delegate.getBeforeNickSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -267,26 +267,14 @@ public class MyProfileFragment extends BaseFragment {
             settingsBot.addView(delegate.getSettingsBottomView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
 
-        if (delegate.getBeforeSettingsCategory() != null) {
-            FrameLayout beforeSettings = (FrameLayout) view.findViewById(R.id.before_settings_container);
-
-            LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
-            FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
-            TextView beforeSettingsName = (TextView) categoryContainer.findViewById(R.id.category_name);
-            beforeSettingsName.setText(delegate.getBeforeSettingsCategory().getCategoryName());
-            settingsContainer.addView(delegate.getBeforeSettingsCategory().getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            beforeSettings.addView(categoryContainer, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        if (delegate.getBeforeSettingsCategories() != null) {
+            LinearLayout beforeSettings = (LinearLayout) view.findViewById(R.id.before_settings_container);
+            addCategories(beforeSettings, delegate.getBeforeSettingsCategories(), inflater);
         }
 
-        if (delegate.getAfterSettingsCategory() != null) {
-            FrameLayout afterSettings = (FrameLayout) view.findViewById(R.id.after_settings_container);
-
-            LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
-            FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
-            TextView afterSettingsName = (TextView) categoryContainer.findViewById(R.id.category_name);
-            afterSettingsName.setText(delegate.getAfterSettingsCategory().getCategoryName());
-            settingsContainer.addView(delegate.getAfterSettingsCategory().getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            afterSettings.addView(categoryContainer, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        if (delegate.getAfterSettingsCategories() != null) {
+            LinearLayout afterSettings = (LinearLayout) view.findViewById(R.id.after_settings_container);
+            addCategories(afterSettings, delegate.getAfterSettingsCategories(), inflater);
         }
 
         avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
@@ -314,6 +302,74 @@ public class MyProfileFragment extends BaseFragment {
         updateActionBar(scrollView.getScrollY());
 
         return view;
+    }
+
+    private void addCategories(LinearLayout container, BaseActorSettingsCategory[] categories, LayoutInflater inflater) {
+        Context context = getActivity();
+        for (ActorSettingsCategory category : categories) {
+            LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
+            FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
+            TextView beforeSettingsName = (TextView) categoryContainer.findViewById(R.id.category_name);
+            beforeSettingsName.setText(category.getCategoryName());
+            if (category.getView(context) != null) {
+                settingsContainer.addView(category.getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            } else if (category.getFields() != null) {
+                addFields(settingsContainer, category.getFields(), inflater);
+            }
+
+            container.addView(categoryContainer, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
+    private void addFields(FrameLayout container, BaseActorSettingsField[] fields, LayoutInflater inflater) {
+        Context context = getActivity();
+        LinearLayout ll = new LinearLayout(getActivity());
+        ll.setOrientation(LinearLayout.VERTICAL);
+        container.addView(ll, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        for (BaseActorSettingsField field : fields) {
+            if (field.getView(context) != null) {
+                ll.addView(field.getView(context), LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            } else {
+                LinearLayout fieldLayout = (LinearLayout) inflater.inflate(R.layout.actor_settings_field, null);
+                TintImageView icon = (TintImageView) fieldLayout.findViewById(R.id.icon);
+                TextView name = (TextView) fieldLayout.findViewById(R.id.name);
+                View rightView = field.getRightView(context);
+
+                //Icon
+                if (field.getIconResourceId() != 0) {
+                    icon.setResource(field.getIconResourceId());
+                    if (field.getIconColor() != -1) {
+                        icon.setTint(field.getIconColor());
+                    }
+                } else {
+                    icon.setVisibility(View.GONE);
+                }
+                //Name
+                if (field.getName() != null) {
+                    name.setText(field.getName());
+                } else {
+                    name.setVisibility(View.GONE);
+                }
+                //Right view
+                if (rightView != null) {
+                    fieldLayout.addView(rightView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                }
+                //Click
+                if (field.getOnclickListener() != null) {
+                    fieldLayout.setOnClickListener(field.getOnclickListener());
+                }
+                //Field
+                ll.addView(fieldLayout, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                //Divider
+                if (field.addBottomDivider()) {
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1);
+                    params.leftMargin = Screen.dp(72);
+                    View divider = inflater.inflate(R.layout.actor_settings_divider, null);
+                    ll.addView(divider, params);
+                }
+            }
+        }
     }
 
     private void updateActionBar(int offset) {
