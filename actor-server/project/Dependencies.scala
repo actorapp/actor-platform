@@ -91,6 +91,7 @@ object Dependencies {
 
     val apacheCommonsCodec      = "commons-codec"                 % "commons-codec"                  % "1.10"
     val apacheCommonsIo         = "commons-io"                    % "commons-io"                     % "2.4"
+    val apacheCommonsValidator  = "commons-validator"             % "commons-validator"              % "1.4.1"
   }
 
   object Testing {
@@ -140,7 +141,7 @@ object Dependencies {
   val enrich = shared ++ Seq(akkaActor, akkaHttp)
 
   val rpcApi = shared ++ Seq(
-    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless, akkaHttpPlayJson
+    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, apacheCommonsValidator, shapeless, akkaHttpPlayJson
   )
 
   val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, jodaTime, playJson)
