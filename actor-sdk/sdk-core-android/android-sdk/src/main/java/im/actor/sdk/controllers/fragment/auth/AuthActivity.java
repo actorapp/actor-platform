@@ -14,6 +14,7 @@ import im.actor.core.network.RpcInternalException;
 import im.actor.core.network.RpcTimeoutException;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
@@ -22,18 +23,20 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public class AuthActivity extends BaseFragmentActivity {
 
-    private static final int OAUTH_DIALOG = 1;
-    private ProgressDialog progressDialog;
-    private AlertDialog alertDialog;
-    private AuthState state;
     public static final String AUTH_TYPE_KEY = "auth_type";
     public static final String SIGN_TYPE_KEY = "sign_type";
     public static final int AUTH_TYPE_PHONE = 1;
     public static final int AUTH_TYPE_EMAIL = 2;
+    public static final int AUTH_TYPE_CUSTOM = 3;
     public static final int SIGN_TYPE_IN = 3;
     public static final int SIGN_TYPE_UP = 4;
+    private static final int OAUTH_DIALOG = 1;
+    private ProgressDialog progressDialog;
+    private AlertDialog alertDialog;
+    private AuthState state;
     private int authType = AUTH_TYPE_PHONE;
     private int signType;
+    private BaseAuthFragment signFragment;
 
 
     @Override
@@ -77,20 +80,27 @@ public class AuthActivity extends BaseFragmentActivity {
 
         switch (state) {
             case AUTH_START:
-//                Fragment chooseAuthFr = new ChooseAuthTypeFragment();
-//                Bundle b = new Bundle();
-//                b.putInt(SIGN_TYPE_KEY, signType);
-//                chooseAuthFr.setArguments(b);
-//                showFragment(chooseAuthFr, false, false);
-//                break;
-//            case AUTH_EMAIL:
-//                showFragment(new SignEmailFragment(), false, false);
-//                authType = AUTH_TYPE_EMAIL;
-//                break;
-//            case AUTH_PHONE:
-                showFragment(new SignPhoneFragment(), false, false);
+                signFragment = ActorSDK.sharedActor().getDelegate().getSignFragment();
+                if (signFragment instanceof SignEmailFragment) {
+                    authType = AUTH_TYPE_EMAIL;
+                } else if (signFragment instanceof SignPhoneFragment) {
+                    authType = AUTH_TYPE_PHONE;
+                } else {
+                    authType = AUTH_TYPE_CUSTOM;
+                }
+                showFragment(signFragment, false, false);
+                break;
+            case AUTH_EMAIL:
+                signFragment = new SignEmailFragment();
+                showFragment(signFragment, false, false);
+                authType = AUTH_TYPE_EMAIL;
+                break;
+            case AUTH_PHONE:
+                signFragment = new SignPhoneFragment();
+                showFragment(signFragment, false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;
+            case CODE_VALIDATION_CUSTOM:
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
                 if ((state == AuthState.CODE_VALIDATION_EMAIL && authType == AUTH_TYPE_PHONE) || (state == AuthState.CODE_VALIDATION_PHONE && authType == AUTH_TYPE_EMAIL)) {
@@ -100,6 +110,11 @@ public class AuthActivity extends BaseFragmentActivity {
                 Fragment signInFragment = new SignInFragment();
                 Bundle args = new Bundle();
                 args.putString("authType", state == AuthState.CODE_VALIDATION_EMAIL ? SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
+                if (state == AuthState.CODE_VALIDATION_CUSTOM) {
+                    args.putString("authType", SignInFragment.AUTH_TYPE_CUSTOM);
+                    args.putString("authId", signFragment.getAuthId());
+                    args.putString("authHint", signFragment.getHintText());
+                }
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);
                 break;
