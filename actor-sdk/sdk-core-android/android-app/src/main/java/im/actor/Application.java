@@ -1,16 +1,17 @@
 package im.actor;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsCategory;
-import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsField;
+import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 
 /**
  * Created by badgr on 16.10.2015.
@@ -54,11 +55,11 @@ public class Application extends android.app.Application{
         }
 
         @Override
-        public BaseActorSettingsCategory[] getBeforeSettingsCategories() {
-            BaseActorSettingsCategory[] settings = new BaseActorSettingsCategory[3];
+        public ActorSettingsCategory[] getBeforeSettingsCategories() {
+            ActorSettingsCategory[] settings = new ActorSettingsCategory[3];
             for (int i = 0; i < 3; i++) {
                 final int finalI = i;
-                settings[i] = new BaseActorSettingsCategory() {
+                settings[i] = new ActorSettingsCategory() {
                     @Override
                     public String getCategoryName() {
                         return "BeforeSettingsCategory" + finalI;
@@ -76,18 +77,38 @@ public class Application extends android.app.Application{
         }
 
         @Override
-        public BaseActorSettingsCategory[] getAfterSettingsCategories() {
-            return new BaseActorSettingsCategory[]{
-                    new BaseActorSettingsCategory() {
+        public ActorSettingsCategory[] getAfterSettingsCategories() {
+            return new ActorSettingsCategory[]{
+                    new ActorSettingsCategory() {
                         @Override
                         public String getCategoryName() {
                             return "AfterSettingsCategory";
                         }
 
                         @Override
-                        public BaseActorSettingsField[] getFields() {
-                            return new BaseActorSettingsField[]{
-                                    new BaseActorSettingsField() {
+                        public ActorSettingsField[] getFields() {
+                            final ActorSettingsField zero = new ActorSettingsField() {
+                                @Override
+                                public View getRightView(Context context) {
+                                    return new CheckBox(context);
+                                }
+                            }
+                                    .setIconResourceId(R.drawable.ic_notifications_white_18dp)
+                                    .setName("Zero!");
+                            zero.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    CheckBox chb = (CheckBox) zero.getRightView();
+                                    chb.setChecked(!chb.isChecked());
+                                }
+                            });
+
+                            return new ActorSettingsField[]{
+
+                                    zero,
+
+                                    new ActorSettingsField() {
+
 
                                         @Override
                                         public int getIconResourceId() {
@@ -120,7 +141,7 @@ public class Application extends android.app.Application{
                                         }
                                     },
 
-                                    new BaseActorSettingsField() {
+                                    new ActorSettingsField() {
 
                                         @Override
                                         public View getView(Context context) {
@@ -130,13 +151,7 @@ public class Application extends android.app.Application{
                                         }
                                     },
 
-                                    new BaseActorSettingsField() {
-
-                                        @Override
-                                        public boolean addBottomDivider() {
-                                            return false;
-                                        }
-
+                                    new ActorSettingsField() {
 
                                         @Override
                                         public int getIconResourceId() {
@@ -166,6 +181,29 @@ public class Application extends android.app.Application{
                                         @Override
                                         public View getRightView(Context context) {
                                             return new SwitchCompat(context);
+                                        }
+                                    },
+
+                                    new ActorSettingsField(false) {
+
+                                        @Override
+                                        public String getName() {
+                                            return "Field 4";
+                                        }
+
+                                        @Override
+                                        public View.OnClickListener getOnclickListener() {
+                                            return new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Toast.makeText(getApplicationContext(), "Yo 4", Toast.LENGTH_SHORT).show();
+                                                }
+                                            };
+                                        }
+
+                                        @Override
+                                        public View getRightView(Context context) {
+                                            return new AppCompatCheckBox(context);
                                         }
                                     },
                             };
