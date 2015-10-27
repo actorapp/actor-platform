@@ -121,10 +121,6 @@ public class Application extends android.app.Application{
                                     },
 
                                     new BaseActorSettingsField() {
-                                        @Override
-                                        public boolean addBottomDivider() {
-                                            return false;
-                                        }
 
                                         @Override
                                         public View getView(Context context) {
@@ -132,7 +128,46 @@ public class Application extends android.app.Application{
                                             tv.setText("Custom");
                                             return tv;
                                         }
-                                    }
+                                    },
+
+                                    new BaseActorSettingsField() {
+
+                                        @Override
+                                        public boolean addBottomDivider() {
+                                            return false;
+                                        }
+
+
+                                        @Override
+                                        public int getIconResourceId() {
+                                            return R.drawable.ic_camera_alt_white_24dp;
+                                        }
+
+                                        @Override
+                                        public String getName() {
+                                            return "Field 3";
+                                        }
+
+                                        @Override
+                                        public View.OnClickListener getOnclickListener() {
+                                            return new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Toast.makeText(getApplicationContext(), "Yo 3", Toast.LENGTH_SHORT).show();
+                                                }
+                                            };
+                                        }
+
+                                        @Override
+                                        public int getIconColor() {
+                                            return getResources().getColor(R.color.action);
+                                        }
+
+                                        @Override
+                                        public View getRightView(Context context) {
+                                            return new SwitchCompat(context);
+                                        }
+                                    },
                             };
                         }
                     }
