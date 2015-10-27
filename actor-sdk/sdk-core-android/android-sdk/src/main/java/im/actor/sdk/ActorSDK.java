@@ -33,9 +33,9 @@ public class ActorSDK {
 
     private static volatile ActorSDK sdk = new ActorSDK();
     //
-    //Style
+    //ActorStyle
     //
-    public Style style = new Style();
+    public ActorStyle style = new ActorStyle();
 
 
     //

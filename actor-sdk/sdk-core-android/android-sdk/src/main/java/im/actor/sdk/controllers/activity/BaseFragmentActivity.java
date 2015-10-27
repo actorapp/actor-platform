@@ -23,8 +23,8 @@ public class BaseFragmentActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(false);
 
-        if (ActorSDK.sharedActor().style.toolBarColor != 0) {
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.toolBarColor));
+        if (ActorSDK.sharedActor().style.getToolBarColor() != 0) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
         }
 
         setContentView(R.layout.activity_base_fragment);

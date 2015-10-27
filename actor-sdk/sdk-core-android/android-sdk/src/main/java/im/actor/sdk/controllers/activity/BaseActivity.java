@@ -34,8 +34,8 @@ public class BaseActivity extends AppCompatActivity {
         onCreateToolbar();
         notifyOnResume();
 
-        if (getSupportActionBar() != null && ActorSDK.sharedActor().style.toolBarColor != 0) {
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.toolBarColor));
+        if (getSupportActionBar() != null && ActorSDK.sharedActor().style.getToolBarColor() != 0) {
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
         }
     }
 
