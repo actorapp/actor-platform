@@ -35,6 +35,7 @@ import im.actor.core.viewmodel.UserVM;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKDelegate;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
@@ -379,6 +380,10 @@ public class MyProfileFragment extends BaseFragment {
 
         ActionBar bar = ((BaseActivity) getActivity()).getSupportActionBar();
         int fullColor = baseColor;
+        ActorStyle style = ActorSDK.sharedActor().style;
+        if (style.getToolBarColor() != 0) {
+            fullColor = style.getToolBarColor();
+        }
 
         if (Math.abs(offset) > Screen.dp(248 - 56)) {
             bar.setBackgroundDrawable(new ColorDrawable(fullColor));
