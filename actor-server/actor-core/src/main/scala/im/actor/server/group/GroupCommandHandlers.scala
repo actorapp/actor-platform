@@ -9,7 +9,7 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ApiServiceMessage
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.api.rpc.peers.ApiPeerType
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiSex
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
@@ -185,8 +185,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
                 exists ← p.GroupUserRepo.exists(groupId, joiningUserId)
                 _ ← if (exists) DBIO.successful(()) else p.GroupUserRepo.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
                 seqstatedate ← DBIO.from(DialogExtension(system).sendMessage(
-                  peerType = ApiPeerType.Group,
-                  peerId = groupId,
+                  peer = ApiPeer(ApiPeerType.Group, groupId),
                   senderUserId = joiningUserId,
                   senderAuthId = joiningUserAuthId,
                   randomId = randomId,
