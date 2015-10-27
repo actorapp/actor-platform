@@ -11,10 +11,10 @@ import im.actor.api.rpc.messaging.ApiServiceMessage
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiSex
+import im.actor.concurrent.FutureExt
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.DialogExtension
-import im.actor.server.history.HistoryUtils
+import im.actor.server.dialog.{ HistoryUtils, DialogExtension }
 import im.actor.server.{ persist ⇒ p, models }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ ImageUtils, Avatar }
@@ -58,6 +58,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         _ ← createInDb(state, rng.nextLong())
         _ ← p.GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
         _ ← DBIO.from(userExt.broadcastUserUpdate(creatorUserId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${groupId}_${update.randomId}")))
+        _ ← DBIO.from(FutureExt.ftraverse(userIds)(userExt.notifyDialogsChanged))
       } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
         case e ⇒
           log.error(e, "Failed to create group internally")
@@ -103,14 +104,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
             isHidden = false
           )
           _ ← p.GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(creatorUserId),
-            models.Peer.group(state.id),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
+          _ ← DBIO.from(dialogExt.writeMessage(ApiPeer(ApiPeerType.Group, state.id), creatorUserId, date, randomId, serviceMessage))
           seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
           else DBIO.from(userExt.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${groupId}_${randomId}")))
         } yield CreateAck(state.accessHash, seqstate, date.getMillis)
@@ -154,14 +148,14 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(userExt.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true, deliveryId = Some(s"useradded_${groupId}_${randomId}")))) // use broadcastUsersUpdate maybe?
       seqstate ← userExt.broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true, deliveryId = Some(s"useradded_${groupId}_${randomId}"))
       // TODO: Move to a History Writing subsystem
-      _ ← db.run(HistoryUtils.writeHistoryMessage(
-        models.Peer.privat(inviterUserId),
-        models.Peer.group(groupId),
+      _ ← dialogExt.writeMessage(
+        ApiPeer(ApiPeerType.Group, groupId),
+        inviterUserId,
         date,
         randomId,
-        serviceMessage.header,
-        serviceMessage.toByteArray
-      ))
+        serviceMessage
+      )
+      _ ← userExt.notifyDialogsChanged(userId)
     } yield {
       SeqStateDate(seqstate.seq, seqstate.state, dateMillis)
     }
@@ -192,6 +186,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
                   message = GroupServiceMessages.userJoined,
                   isFat = true
                 ))
+                _ ← DBIO.from(userExt.notifyDialogsChanged(joiningUserId))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
           } yield updates
@@ -245,14 +240,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         _ ← db.run(p.AvatarDataRepo.createOrUpdate(avatarData))
         (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(clientUserId, clientAuthId, memberIds, update, None, isFat = false, deliveryId = None)
       } yield {
-        db.run(HistoryUtils.writeHistoryMessage(
-          models.Peer.privat(clientUserId),
-          models.Peer.group(groupId),
+        dialogExt.writeMessage(
+          ApiPeer(ApiPeerType.Group, groupId),
+          clientUserId,
           date,
           randomId,
-          serviceMessage.header,
-          serviceMessage.toByteArray
-        ))
+          serviceMessage
+        )
 
         UpdateAvatarAck(avatarOpt, SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
       }
@@ -277,17 +271,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val update = UpdateGroupTitleChanged(groupId = groupId, userId = clientUserId, title = title, date = date.getMillis, randomId = randomId)
       val serviceMessage = GroupServiceMessages.changedTitle(title)
 
-      db.run(for {
-        _ ← p.GroupRepo.updateTitle(groupId, title, clientUserId, randomId, date)
-        _ ← HistoryUtils.writeHistoryMessage(
-          models.Peer.privat(clientUserId),
-          models.Peer.group(groupId),
+      for {
+        _ ← db.run(p.GroupRepo.updateTitle(groupId, title, clientUserId, randomId, date))
+        _ ← dialogExt.writeMessage(
+          ApiPeer(ApiPeerType.Group, groupId),
+          clientUserId,
           date,
           randomId,
-          serviceMessage.header,
-          serviceMessage.toByteArray
+          serviceMessage
         )
-        (seqstate, _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
+        (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(
           clientUserId = clientUserId,
           clientAuthId = clientAuthId,
           userIds = memberIds,
@@ -295,8 +288,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           pushText = Some(PushTexts.TitleChanged),
           isFat = false,
           deliveryId = None
-        ))
-      } yield SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
+        )
+      } yield SeqStateDate(seqstate.seq, seqstate.state, date.getMillis)
     }
   }
 
@@ -309,17 +302,16 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           val dateMillis = date.getMillis
           val serviceMessage = GroupServiceMessages.changedTopic(trimmed)
           val update = UpdateGroupTopicChanged(groupId = groupId, randomId = randomId, userId = clientUserId, topic = trimmed, date = dateMillis)
-          db.run(for {
-            _ ← p.GroupRepo.updateTopic(groupId, trimmed)
-            _ ← HistoryUtils.writeHistoryMessage(
-              models.Peer.privat(clientUserId),
-              models.Peer.group(groupId),
+          for {
+            _ ← db.run(p.GroupRepo.updateTopic(groupId, trimmed))
+            _ ← dialogExt.writeMessage(
+              ApiPeer(ApiPeerType.Group, groupId),
+              clientUserId,
               date,
               randomId,
-              serviceMessage.header,
-              serviceMessage.toByteArray
+              serviceMessage
             )
-            (SeqState(seq, state), _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
+            (SeqState(seq, state), _) ← userExt.broadcastClientAndUsersUpdate(
               clientUserId = clientUserId,
               clientAuthId = clientAuthId,
               userIds = group.members.keySet - clientUserId,
@@ -327,8 +319,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               pushText = Some(PushTexts.TopicChanged),
               isFat = false,
               deliveryId = None
-            ))
-          } yield SeqStateDate(seq, state, dateMillis))
+            )
+          } yield SeqStateDate(seq, state, dateMillis)
         }
       } else {
         sender() ! Status.Failure(TopicTooLong)
@@ -347,14 +339,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           val serviceMessage = GroupServiceMessages.changedAbout(trimmed)
           db.run(for {
             _ ← p.GroupRepo.updateAbout(groupId, trimmed)
-            _ ← HistoryUtils.writeHistoryMessage(
-              models.Peer.privat(clientUserId),
-              models.Peer.group(groupId),
+            _ ← DBIO.from(dialogExt.writeMessage(
+              ApiPeer(ApiPeerType.Group, groupId),
+              clientUserId,
               date,
               randomId,
-              serviceMessage.header,
-              serviceMessage.toByteArray
-            )
+              serviceMessage
+            ))
             (SeqState(seq, state), _) ← DBIO.from(userExt.broadcastClientAndUsersUpdate(
               clientUserId = clientUserId,
               clientAuthId = clientAuthId,
@@ -433,14 +424,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       // TODO: Move to a History Writing subsystem
       _ ← p.DialogRepo.updateLastReadAt(userId, groupPeer, date)
       _ ← p.DialogRepo.updateOwnerLastReadAt(userId, groupPeer, date)
-      _ ← HistoryUtils.writeHistoryMessage(
-        models.Peer.privat(userId),
-        groupPeer,
+      _ ← DBIO.from(dialogExt.writeMessage(
+        ApiPeer(ApiPeerType.Group, groupId),
+        userId,
         date,
         randomId,
-        serviceMessage.header,
-        serviceMessage.toByteArray
-      )
+        serviceMessage
+      ))
     } yield SeqStateDate(seq, state, date.getMillis)
   }
 

@@ -9,6 +9,7 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.DialogExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, Avatar }
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
@@ -135,6 +136,7 @@ private[group] final class GroupProcessor
 
   protected val db: Database = DbExtension(system).db
   protected val userExt = UserExtension(system)
+  protected lazy val dialogExt = DialogExtension(system)
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
   protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
