@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import im.actor.core.entity.Dialog;
 import im.actor.core.entity.SearchEntity;
 import im.actor.sdk.ActorSDK;
-import im.actor.sdk.Style;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.runtime.generic.mvvm.DisplayList;
@@ -173,11 +173,11 @@ public class MainPhoneController extends MainBaseController {
 
         fabContent = findViewById(R.id.fabContainer);
         fabRoot = (FloatingActionButton) findViewById(R.id.rootFab);
-        if (ActorSDK.sharedActor().style.fabColor != 0) {
-            fabRoot.setColorNormal(ActorSDK.sharedActor().style.fabColor);
+        if (ActorSDK.sharedActor().style.getFabColor() != 0) {
+            fabRoot.setColorNormal(ActorSDK.sharedActor().style.getFabColor());
         }
-        if (ActorSDK.sharedActor().style.fabColorPressed != 0) {
-            fabRoot.setColorPressed(ActorSDK.sharedActor().style.fabColorPressed);
+        if (ActorSDK.sharedActor().style.getFabColorPressed() != 0) {
+            fabRoot.setColorPressed(ActorSDK.sharedActor().style.getFabColorPressed());
         }
         fabRoot.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,14 +238,14 @@ public class MainPhoneController extends MainBaseController {
             }
         });
 
-        Style style = ActorSDK.sharedActor().style;
+        ActorStyle style = ActorSDK.sharedActor().style;
 
         com.getbase.floatingactionbutton.FloatingActionButton fabCompose = (FloatingActionButton) findViewById(R.id.composeContainer);
-        if (style.fabColor != 0) {
-            fabCompose.setColorNormal(style.fabColor);
+        if (style.getFabColor() != 0) {
+            fabCompose.setColorNormal(style.getFabColor());
         }
-        if (style.fabColorPressed != 0) {
-            fabCompose.setColorPressed(style.fabColorPressed);
+        if (style.getFabColorPressed() != 0) {
+            fabCompose.setColorPressed(style.getFabColorPressed());
         }
         fabCompose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -256,11 +256,11 @@ public class MainPhoneController extends MainBaseController {
         });
 
         com.getbase.floatingactionbutton.FloatingActionButton fabCreateGroup = (FloatingActionButton) findViewById(R.id.createGroupContainer);
-        if (style.fabColor != 0) {
-            fabCreateGroup.setColorNormal(style.fabColor);
+        if (style.getFabColor() != 0) {
+            fabCreateGroup.setColorNormal(style.getFabColor());
         }
-        if (style.fabColorPressed != 0) {
-            fabCreateGroup.setColorPressed(style.fabColorPressed);
+        if (style.getFabColorPressed() != 0) {
+            fabCreateGroup.setColorPressed(style.getFabColorPressed());
         }
         fabCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,11 +271,11 @@ public class MainPhoneController extends MainBaseController {
         });
 
         com.getbase.floatingactionbutton.FloatingActionButton fabAddContact = (FloatingActionButton) findViewById(R.id.addContactContainer);
-        if (style.fabColor != 0) {
-            fabAddContact.setColorNormal(style.fabColor);
+        if (style.getFabColor() != 0) {
+            fabAddContact.setColorNormal(style.getFabColor());
         }
-        if (style.fabColorPressed != 0) {
-            fabAddContact.setColorPressed(style.fabColorPressed);
+        if (style.getFabColorPressed() != 0) {
+            fabAddContact.setColorPressed(style.getFabColorPressed());
         }
         fabAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -313,8 +313,8 @@ public class MainPhoneController extends MainBaseController {
         ab.setDisplayShowHomeEnabled(false);
         ab.setDisplayShowTitleEnabled(false);
 
-        if (ActorSDK.sharedActor().style.toolBarColor != 0) {
-            ab.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.toolBarColor));
+        if (ActorSDK.sharedActor().style.getToolBarColor() != 0) {
+            ab.setBackgroundDrawable(new ColorDrawable(ActorSDK.sharedActor().style.getToolBarColor()));
         }
 
         FrameLayout tabsContainer = new FrameLayout(getActivity());
