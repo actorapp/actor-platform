@@ -7,7 +7,6 @@ import im.actor.api.rpc.messaging.ApiMessage
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.peers.ApiPeerType._
-import im.actor.api.rpc.peers.ApiPeerType.ApiPeerType
 import im.actor.extension.InternalExtensions
 import im.actor.server.dialog.DialogCommands._
 import im.actor.server.dialog.group.GroupDialogRegion
@@ -31,37 +30,27 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
   implicit val ec: ExecutionContext = system.dispatcher
   implicit val timeout: Timeout = Timeout(20.seconds) // TODO: configurable
 
-  def sendMessage(
-    peer:         ApiPeer,
-    senderUserId: Int,
-    senderAuthId: Long,
-    randomId:     Long,
-    message:      ApiMessage,
-    isFat:        Boolean
-  ): Future[SeqStateDate] =
-    sendMessage(peer.`type`, peer.id, senderUserId, senderAuthId, randomId, message, isFat)
-
-  def sendMessage(peerType: ApiPeerType, peerId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] = {
-    (peerType match {
+  def sendMessage(peer: ApiPeer, senderUserId: Int, senderAuthId: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] = {
+    (peer.`type` match {
       case Private ⇒
-        privateRegion.ref ? SendMessage(privatDialogId(senderUserId, peerId), senderUserId, senderAuthId, randomId, message, isFat)
+        privateRegion.ref ? SendMessage(privatDialogId(senderUserId, peer.id), senderUserId, senderAuthId, randomId, message, isFat)
       case Group ⇒
-        groupRegion.ref ? SendMessage(groupDialogId(peerId), senderUserId, senderAuthId, randomId, message, isFat)
+        groupRegion.ref ? SendMessage(groupDialogId(peer.id), senderUserId, senderAuthId, randomId, message, isFat)
     }).mapTo[SeqStateDate]
   }
 
-  def messageReceived(peerType: ApiPeerType, peerId: Int, receiverUserId: Int, date: Long): Future[Unit] = {
-    (peerType match {
-      case Private ⇒ privateRegion.ref ? MessageReceived(privatDialogId(peerId, receiverUserId), receiverUserId, date)
-      case Group   ⇒ groupRegion.ref ? MessageReceived(groupDialogId(peerId), receiverUserId, date)
+  def messageReceived(peer: ApiPeer, receiverUserId: Int, date: Long): Future[Unit] = {
+    (peer.`type` match {
+      case Private ⇒ privateRegion.ref ? MessageReceived(privatDialogId(peer.id, receiverUserId), receiverUserId, date)
+      case Group   ⇒ groupRegion.ref ? MessageReceived(groupDialogId(peer.id), receiverUserId, date)
 
     }).mapTo[MessageReceivedAck] map (_ ⇒ ())
   }
 
-  def messageRead(peerType: ApiPeerType, peerId: Int, readerUserId: Int, readerAuthId: Long, date: Long): Future[Unit] = {
-    (peerType match {
-      case Private ⇒ privateRegion.ref ? MessageRead(privatDialogId(peerId, readerUserId), readerUserId, readerAuthId, date)
-      case Group   ⇒ groupRegion.ref ? MessageRead(groupDialogId(peerId), readerUserId, readerAuthId, date)
+  def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthId: Long, date: Long): Future[Unit] = {
+    (peer.`type` match {
+      case Private ⇒ privateRegion.ref ? MessageRead(privatDialogId(peer.id, readerUserId), readerUserId, readerAuthId, date)
+      case Group   ⇒ groupRegion.ref ? MessageRead(groupDialogId(peer.id), readerUserId, readerAuthId, date)
     }).mapTo[MessageReadAck] map (_ ⇒ ())
   }
 
