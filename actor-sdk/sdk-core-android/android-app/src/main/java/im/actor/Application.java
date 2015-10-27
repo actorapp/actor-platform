@@ -87,6 +87,7 @@ public class Application extends android.app.Application{
 
                         @Override
                         public ActorSettingsField[] getFields() {
+
                             final ActorSettingsField zero = new ActorSettingsField() {
                                 @Override
                                 public View getRightView(Context context) {
@@ -107,39 +108,12 @@ public class Application extends android.app.Application{
 
                                     zero,
 
-                                    new ActorSettingsField() {
-
-
+                                    new ActorSettingsField("Field", new View.OnClickListener() {
                                         @Override
-                                        public int getIconResourceId() {
-                                            return R.drawable.ic_cloud_download_white_36dp;
+                                        public void onClick(View v) {
+                                            Toast.makeText(getApplicationContext(), "Yo", Toast.LENGTH_SHORT).show();
                                         }
-
-                                        @Override
-                                        public String getName() {
-                                            return "Field";
-                                        }
-
-                                        @Override
-                                        public View.OnClickListener getOnclickListener() {
-                                            return new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    Toast.makeText(getApplicationContext(), "Yo", Toast.LENGTH_SHORT).show();
-                                                }
-                                            };
-                                        }
-
-                                        @Override
-                                        public int getIconColor() {
-                                            return getResources().getColor(R.color.accent);
-                                        }
-
-                                        @Override
-                                        public View getRightView(Context context) {
-                                            return new SwitchCompat(context);
-                                        }
-                                    },
+                                    }, R.drawable.ic_cloud_download_white_36dp, getResources().getColor(R.color.accent)),
 
                                     new ActorSettingsField() {
 
@@ -151,32 +125,12 @@ public class Application extends android.app.Application{
                                         }
                                     },
 
-                                    new ActorSettingsField() {
-
+                                    new ActorSettingsField("Field 3", new View.OnClickListener() {
                                         @Override
-                                        public int getIconResourceId() {
-                                            return R.drawable.ic_camera_alt_white_24dp;
+                                        public void onClick(View v) {
+                                            Toast.makeText(getApplicationContext(), "Yo 3", Toast.LENGTH_SHORT).show();
                                         }
-
-                                        @Override
-                                        public String getName() {
-                                            return "Field 3";
-                                        }
-
-                                        @Override
-                                        public View.OnClickListener getOnclickListener() {
-                                            return new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    Toast.makeText(getApplicationContext(), "Yo 3", Toast.LENGTH_SHORT).show();
-                                                }
-                                            };
-                                        }
-
-                                        @Override
-                                        public int getIconColor() {
-                                            return getResources().getColor(R.color.action);
-                                        }
+                                    }, R.drawable.ic_camera_alt_white_24dp, getResources().getColor(R.color.action)) {
 
                                         @Override
                                         public View getRightView(Context context) {

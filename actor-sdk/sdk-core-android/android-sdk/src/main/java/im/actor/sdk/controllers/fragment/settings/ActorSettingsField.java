@@ -2,6 +2,7 @@ package im.actor.sdk.controllers.fragment.settings;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.TextView;
 
 public class ActorSettingsField implements IActorSettingsField {
     private boolean addBottomDivider = true;
@@ -11,6 +12,7 @@ public class ActorSettingsField implements IActorSettingsField {
     private View.OnClickListener onClickListener = null;
     private View rightView = null;
     private int iconColor = -1;
+    private TextView nameTextView;
 
     public ActorSettingsField() {
     }
@@ -24,59 +26,37 @@ public class ActorSettingsField implements IActorSettingsField {
         this.onClickListener = onClickListener;
     }
 
-    public ActorSettingsField(String name, boolean addBottomDivider, View.OnClickListener onClickListener) {
+    public ActorSettingsField(String name, View.OnClickListener onClickListener, boolean addBottomDivider) {
         this.name = name;
         this.addBottomDivider = addBottomDivider;
         this.onClickListener = onClickListener;
     }
 
-    public ActorSettingsField(String name, int iconResourceId, View.OnClickListener onClickListener) {
+    public ActorSettingsField(String name, View.OnClickListener onClickListener, int iconResourceId) {
         this.name = name;
         this.iconResourceId = iconResourceId;
         this.onClickListener = onClickListener;
     }
 
-    public ActorSettingsField(String name, int iconResourceId, boolean addBottomDivider, View.OnClickListener onClickListener) {
+    public ActorSettingsField(String name, View.OnClickListener onClickListener, int iconResourceId, boolean addBottomDivider) {
         this.name = name;
         this.iconResourceId = iconResourceId;
         this.addBottomDivider = addBottomDivider;
         this.onClickListener = onClickListener;
     }
 
-    public ActorSettingsField(String name, int iconColor, int iconResourceId, View.OnClickListener onClickListener) {
+    public ActorSettingsField(String name, View.OnClickListener onClickListener, int iconResourceId, int iconColor) {
         this.name = name;
         this.iconColor = iconColor;
         this.iconResourceId = iconResourceId;
         this.onClickListener = onClickListener;
     }
 
-    public ActorSettingsField(boolean addBottomDivider, int iconResourceId, String name, int iconColor, View.OnClickListener onClickListener) {
+    public ActorSettingsField(String name, View.OnClickListener onClickListener, int iconResourceId, int iconColor, boolean addBottomDivider) {
         this.addBottomDivider = addBottomDivider;
         this.iconResourceId = iconResourceId;
         this.name = name;
         this.iconColor = iconColor;
-        this.onClickListener = onClickListener;
-    }
-
-    public ActorSettingsField(int iconResourceId, String name, View.OnClickListener onClickListener, View rightView, int iconColor) {
-        this.iconResourceId = iconResourceId;
-        this.name = name;
-        this.onClickListener = onClickListener;
-        this.rightView = rightView;
-        this.iconColor = iconColor;
-    }
-
-    public ActorSettingsField(int iconResourceId, String name, View.OnClickListener onClickListener, View rightView, int iconColor, boolean addBottomDivider) {
-        this.iconResourceId = iconResourceId;
-        this.name = name;
-        this.onClickListener = onClickListener;
-        this.rightView = rightView;
-        this.iconColor = iconColor;
-        this.addBottomDivider = addBottomDivider;
-    }
-
-    public ActorSettingsField(View view, View.OnClickListener onClickListener) {
-        this.view = view;
         this.onClickListener = onClickListener;
     }
 
@@ -108,6 +88,9 @@ public class ActorSettingsField implements IActorSettingsField {
 
     public ActorSettingsField setName(String name) {
         this.name = name;
+        if (nameTextView != null) {
+            nameTextView.setText(name);
+        }
         return this;
     }
 
@@ -125,9 +108,12 @@ public class ActorSettingsField implements IActorSettingsField {
         return rightView;
     }
 
-    public ActorSettingsField setRightView(View rightView) {
+    public void bindCreatedRightView(View rightView) {
         this.rightView = rightView;
-        return this;
+    }
+
+    public void bindCreatedTextView(TextView textView) {
+        this.nameTextView = textView;
     }
 
     @Override
@@ -145,6 +131,10 @@ public class ActorSettingsField implements IActorSettingsField {
         return this;
     }
 
+    public View getView() {
+        return view;
+    }
+
     public ActorSettingsField setView(View view) {
         this.view = view;
         return this;
@@ -154,4 +144,5 @@ public class ActorSettingsField implements IActorSettingsField {
         this.onClickListener = onClickListener;
         return this;
     }
+
 }
