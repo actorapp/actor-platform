@@ -6,11 +6,9 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
-import im.actor.server.dialog.DialogExtension
 import im.actor.server.dialog.privat.PrivateDialogErrors
-import im.actor.server.group.{ GroupErrors, GroupExtension }
+import im.actor.server.group.GroupErrors
 import im.actor.server.sequence.SeqStateDate
-import im.actor.server.user.UserExtension
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -33,8 +31,7 @@ private[messaging] trait MessagingHandlers {
         isChecked ← fromFuture(accessHashCheck)
         _ ← fromBoolean(CommonErrors.InvalidAccessHash)(isChecked)
         result ← fromFuture(dialogExt.sendMessage(
-          peerType = outPeer.`type`,
-          peerId = outPeer.id,
+          peer = outPeer.asPeer,
           senderUserId = client.userId,
           senderAuthId = client.authId,
           randomId = randomId,
