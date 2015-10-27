@@ -76,7 +76,10 @@ class RecentSection extends Component {
 
         <footer>
           <a className="sidebar__recent__quick-search" onClick={this.openQuickSearch}>
-            <i className="material-icons">search</i> Quick Search
+            <div className="icon-holder">
+              <i className="material-icons">search</i>
+            </div>
+            Quick Search
           </a>
         </footer>
 
