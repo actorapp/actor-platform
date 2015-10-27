@@ -10,6 +10,7 @@ import requireAuth from 'utils/require-auth';
 import ActorClient from 'utils/ActorClient';
 import PeerUtils from 'utils/PeerUtils';
 import RouterContainer from 'utils/RouterContainer';
+import { preloadEmojiSheet } from 'utils/EmojiUtils'
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import VisibilityActionCreators from 'actions/VisibilityActionCreators';
@@ -36,6 +37,9 @@ class Main extends Component {
 
     document.addEventListener('visibilitychange', this.onVisibilityChange);
     document.addEventListener('keydown', this.onKeyDown, false);
+
+    // Preload emoji spritesheet
+    preloadEmojiSheet();
 
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
