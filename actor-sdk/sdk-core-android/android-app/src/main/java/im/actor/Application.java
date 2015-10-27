@@ -1,6 +1,7 @@
 package im.actor;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
@@ -9,8 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.Style;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 
@@ -25,11 +26,8 @@ public class Application extends android.app.Application{
         ActorSDK.sharedActor().setPushId(209133700967L);
         ActorSDK.sharedActor().createActor(this);
 
-        Style style = ActorSDK.sharedActor().style;
-        style.toolBarColor = getResources().getColor(R.color.accent);
-        style.fabColor = getResources().getColor(R.color.accent);
-        style.fabColorPressed = getResources().getColor(R.color.accent_pressed);
-
+        ActorStyle style = ActorSDK.sharedActor().style;
+        style.setMainColor(Color.parseColor("#529a88"));
 
     }
 
