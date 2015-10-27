@@ -7,7 +7,7 @@ import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessage
 import im.actor.server.dialog._
 import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupExtension
-import im.actor.server.history.HistoryUtils._
+import HistoryUtils._
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
 import im.actor.server.sequence.SeqUpdatesManager._
@@ -57,6 +57,25 @@ trait GroupDialogHandlers extends UpdateCounters {
         } else Future.successful(Status.Failure(NotAMember))
       }
     }
+  }
+
+  protected def writeMessage(
+    state:        GroupDialogState,
+    senderUserId: Int,
+    dateMillis:   Long,
+    randomId:     Long,
+    message:      ApiMessage
+  ): Unit = {
+    val date = new DateTime(dateMillis)
+
+    db.run(writeHistoryMessage(
+      models.Peer.privat(senderUserId),
+      models.Peer.group(groupPeer.id),
+      date,
+      randomId,
+      message.header,
+      message.toByteArray
+    )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
   }
 
   protected def messageReceived(state: GroupDialogState, receiverUserId: Int, date: Long): Unit = {
