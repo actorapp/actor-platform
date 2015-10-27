@@ -1,4 +1,4 @@
-package im.actor.sdk.controllers.fragment.tour;
+package im.actor.tour;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -14,8 +14,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PagerContainer extends FrameLayout implements ViewPager.OnPageChangeListener {
 
-    private VerticalViewPager mPager;
     boolean mNeedsRedraw = false;
+    private VerticalViewPager mPager;
+    private Point mCenter = new Point();
+    private Point mInitialTouch = new Point();
 
     public PagerContainer(Context context) {
         super(context);
@@ -55,9 +57,6 @@ public class PagerContainer extends FrameLayout implements ViewPager.OnPageChang
     public VerticalViewPager getViewPager() {
         return mPager;
     }
-
-    private Point mCenter = new Point();
-    private Point mInitialTouch = new Point();
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {

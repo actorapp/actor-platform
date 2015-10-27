@@ -31,4 +31,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':actor-sdk:sdk-core-android:android-sdk')
+    compile project(':actor-sdk:sdk-core-android:android-google-push')
+
 }
