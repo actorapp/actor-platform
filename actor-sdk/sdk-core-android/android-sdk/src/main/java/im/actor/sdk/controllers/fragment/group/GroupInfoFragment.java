@@ -35,6 +35,8 @@ import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
@@ -59,6 +61,12 @@ public class GroupInfoFragment extends BaseFragment {
     private static final String EXTRA_CHAT_ID = "chat_id";
     private String[] theme;
     private String[] about;
+    private int chatId;
+    private GroupVM groupInfo;
+    private ListView listView;
+    private MembersAdapter groupUserAdapter;
+    private CoverAvatarView avatarView;
+    private View notMemberView;
 
     public static GroupInfoFragment create(int chatId) {
         Bundle args = new Bundle();
@@ -67,13 +75,6 @@ public class GroupInfoFragment extends BaseFragment {
         res.setArguments(args);
         return res;
     }
-
-    private int chatId;
-    private GroupVM groupInfo;
-    private ListView listView;
-    private MembersAdapter groupUserAdapter;
-    private CoverAvatarView avatarView;
-    private View notMemberView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -352,6 +353,10 @@ public class GroupInfoFragment extends BaseFragment {
         avatarView.setOffset(offset);
 
         int baseColor = getResources().getColor(R.color.primary);
+        ActorStyle style = ActorSDK.sharedActor().style;
+        if (style.getToolBarColor() != 0) {
+            baseColor = style.getToolBarColor();
+        }
 
         if (offset > Screen.dp(248 - 56)) {
             ((BaseActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(
