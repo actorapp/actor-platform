@@ -5,6 +5,7 @@ import android.view.View;
 
 public interface ActorSettingsCategory {
     String getCategoryName();
-
     View getView(Context context);
+
+    BaseActorSettingsField[] getFields();
 }
