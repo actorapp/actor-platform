@@ -6,6 +6,7 @@ import android.view.View;
 import im.actor.core.AuthState;
 import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
+import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsCategory;
 import im.actor.sdk.intents.ActorIntent;
 
 public interface ActorSDKDelegate {
@@ -43,7 +44,7 @@ public interface ActorSDKDelegate {
 
     View getSettingsBottomView(Context context);
 
-    ActorSettingsCategory getBeforeSettingsCategory();
+    BaseActorSettingsCategory[] getBeforeSettingsCategories();
 
-    ActorSettingsCategory getAfterSettingsCategory();
+    BaseActorSettingsCategory[] getAfterSettingsCategories();
 }
