@@ -30,7 +30,7 @@ trait HistoryHandlers {
   override def jhandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       DBIO.from {
-        dialogExt.messageReceived(peer.`type`, peer.id, client.userId, date) map (_ ⇒ Ok(ResponseVoid))
+        dialogExt.messageReceived(peer.asPeer, client.userId, date) map (_ ⇒ Ok(ResponseVoid))
       }
     }
 
@@ -40,7 +40,7 @@ trait HistoryHandlers {
   override def jhandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       DBIO.from {
-        dialogExt.messageRead(peer.`type`, peer.id, client.userId, client.authId, date) map (_ ⇒ Ok(ResponseVoid))
+        dialogExt.messageRead(peer.asPeer, client.userId, client.authId, date) map (_ ⇒ Ok(ResponseVoid))
       }
     }
 
