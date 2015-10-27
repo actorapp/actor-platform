@@ -241,13 +241,15 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         {
           implicit val clientData = clientData1
           expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(
+            UpdateChatGroupsChanged.header,
             UpdateMessageSent.header,
             UpdateMessageSent.header,
             UpdateMessageSent.header,
             UpdateMessageReceived.header
           )) {
-            case (UpdateMessageSent.header, update)     ⇒ parseUpdate[UpdateMessageSent](update)
-            case (UpdateMessageReceived.header, update) ⇒ parseUpdate[UpdateMessageReceived](update)
+            case (UpdateMessageSent.header, update)       ⇒ parseUpdate[UpdateMessageSent](update)
+            case (UpdateMessageReceived.header, update)   ⇒ parseUpdate[UpdateMessageReceived](update)
+            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
           }
         }
       }
@@ -310,6 +312,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         {
           implicit val clientData = clientData1
           expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
+            UpdateChatGroupsChanged.header,
             UpdateMessageSent.header,
             UpdateMessageSent.header,
             UpdateMessageSent.header,
@@ -322,6 +325,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         {
           implicit val clientData = clientData21
           expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
+            UpdateChatGroupsChanged.header,
             UpdateMessage.header,
             UpdateCountersChanged.header,
             UpdateMessage.header,
@@ -339,6 +343,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           //UpdateMessageReadByMe sent to user2 second device
           implicit val clientData = clientData22
           expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
+            UpdateChatGroupsChanged.header,
             UpdateMessage.header,
             UpdateCountersChanged.header,
             UpdateMessage.header,
@@ -451,6 +456,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         {
           implicit val clientData = clientData1
           expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
+            UpdateChatGroupsChanged.header,
             UpdateGroupUserInvited.header,
             UpdateGroupInvite.header,
             UpdateMessageSent.header,
@@ -470,6 +476,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
         val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+
+        println(s"=== spec ${user2.id} ${user1.id}")
 
         val groupOutPeer = {
           implicit val clientData = clientData1
@@ -517,6 +525,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         {
           implicit val clientData = clientData1
           expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
+            UpdateChatGroupsChanged.header,
             UpdateGroupUserInvited.header,
             UpdateGroupInvite.header,
             UpdateMessageSent.header,
@@ -526,13 +535,18 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
             UpdateMessage.header,
             UpdateCountersChanged.header
           )) {
-            case (UpdateMessageRead.header, update) ⇒ parseUpdate[UpdateMessageRead](update)
+            case (UpdateMessageReadByMe.header, update)   ⇒ parseUpdate[UpdateMessageReadByMe](update)
+            case (UpdateMessageSent.header, update)       ⇒ parseUpdate[UpdateMessageSent](update)
+            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
           }
         }
 
         {
           implicit val clientData = clientData2
           expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
+            UpdateChatGroupsChanged.header, // FIXME: being sent in Dialog, Invite and Join
+            UpdateChatGroupsChanged.header,
+            UpdateChatGroupsChanged.header,
             UpdateGroupInvite.header,
 
             UpdateCountersChanged.header,
@@ -549,8 +563,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
             UpdateMessageReadByMe.header,
             UpdateCountersChanged.header
           )) {
-            case (UpdateMessageReadByMe.header, update) ⇒ parseUpdate[UpdateMessageReadByMe](update)
-            case (UpdateMessageSent.header, update)     ⇒ parseUpdate[UpdateMessageSent](update)
+            case (UpdateMessageReadByMe.header, update)   ⇒ parseUpdate[UpdateMessageReadByMe](update)
+            case (UpdateMessageSent.header, update)       ⇒ parseUpdate[UpdateMessageSent](update)
+            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
           }
         }
       }
