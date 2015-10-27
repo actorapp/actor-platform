@@ -32,28 +32,32 @@ public class ActorSDK {
 
 
     private static volatile ActorSDK sdk = new ActorSDK();
-    /**
-     * Application Context
-     */
-    private Application application;
+    //
+    //Style
+    //
+    public Style style = new Style();
 
 
     //
     // SDK Objects
     //
     /**
+     * Application Context
+     */
+    private Application application;
+    /**
      * Actor Messenger instance
      */
     private AndroidMessenger messenger;
-    /**
-     * Server Endpoints
-     */
-    private List<String> endpoints = new ArrayList<String>();
 
 
     //
     // SDK Config
     //
+    /**
+     * Server Endpoints
+     */
+    private List<String> endpoints = new ArrayList<String>();
     /**
      * API App Id
      */
@@ -66,7 +70,6 @@ public class ActorSDK {
      * Push Registration Id
      */
     private long pushId = 0;
-
     /**
      * Is Keeping app alive enabled
      */
