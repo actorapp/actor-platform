@@ -10,6 +10,8 @@ import im.actor.server.group.GroupExtension
 import HistoryUtils._
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
+import im.actor.server.models.{ Dialog, PeerType, Peer }
+import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
@@ -99,6 +101,30 @@ trait GroupDialogHandlers extends UpdateCounters {
     } else Future.successful(MessageReceivedAck())) pipeTo replyTo onFailure {
       case e ⇒
         log.error(e, "Failed to mark messages received")
+    }
+  }
+
+  protected def createForUser(state: GroupDialogState, userId: Int): Unit = {
+    def doCreate(): Unit = {
+      (for {
+        created ← db.run(DialogRepo.createIfNotExists(Dialog(userId, Peer(PeerType.Group, groupId))))
+        _ ← if (created) userExt.notifyDialogsChanged(userId) else Future.successful(())
+      } yield ()) pipeTo self
+    }
+
+    val replyTo = sender()
+
+    doCreate()
+
+    context become {
+      case () ⇒
+        replyTo ! CreateForUserAck()
+        unstashAll()
+        context.unbecome()
+      case Status.Failure(e) ⇒
+        log.error(e, "Failed to create dialog for user {}", userId)
+        doCreate()
+      case msg ⇒ stash()
     }
   }
 

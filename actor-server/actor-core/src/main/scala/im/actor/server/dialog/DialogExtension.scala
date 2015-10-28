@@ -77,6 +77,9 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
     }).mapTo[MessageReadAck] map (_ ⇒ ())
   }
 
+  def createGroupDialog(groupId: Int, userId: Int): Future[Unit] =
+    (groupRegion.ref ? CreateForUser(groupDialogId(groupId), userId)) map (_ ⇒ ())
+
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {
     extensions match {
       case Seq() ⇒

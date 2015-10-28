@@ -58,7 +58,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         _ ← createInDb(state, rng.nextLong())
         _ ← p.GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
         _ ← DBIO.from(userExt.broadcastUserUpdate(creatorUserId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${groupId}_${update.randomId}")))
-        _ ← DBIO.from(FutureExt.ftraverse(userIds)(userExt.notifyDialogsChanged))
+        _ ← DBIO.from(FutureExt.ftraverse(userIds)(dialogExt.createGroupDialog(groupId, _)))
       } yield CreateInternalAck(accessHash)) pipeTo sender() onFailure {
         case e ⇒
           log.error(e, "Failed to create group internally")
@@ -105,6 +105,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           )
           _ ← p.GroupUserRepo.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
           _ ← DBIO.from(dialogExt.writeMessage(ApiPeer(ApiPeerType.Group, state.id), creatorUserId, date, randomId, serviceMessage))
+          _ ← DBIO.from(dialogExt.createGroupDialog(groupId, creatorUserId))
           seqstate ← if (isBot(state, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
           else DBIO.from(userExt.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true, deliveryId = Some(s"creategroup_${groupId}_${randomId}")))
         } yield CreateAck(state.accessHash, seqstate, date.getMillis)
@@ -155,7 +156,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         randomId,
         serviceMessage
       )
-      _ ← userExt.notifyDialogsChanged(userId)
+      _ ← dialogExt.createGroupDialog(groupId, userId)
     } yield {
       SeqStateDate(seqstate.seq, seqstate.state, dateMillis)
     }
@@ -186,7 +187,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
                   message = GroupServiceMessages.userJoined,
                   isFat = true
                 ))
-                _ ← DBIO.from(userExt.notifyDialogsChanged(joiningUserId))
+                _ ← DBIO.from(dialogExt.createGroupDialog(groupId, joiningUserId))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
           } yield updates

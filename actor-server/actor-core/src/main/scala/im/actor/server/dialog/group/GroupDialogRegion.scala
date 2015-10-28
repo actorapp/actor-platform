@@ -12,7 +12,7 @@ object GroupDialogRegion {
   }
 
   private def extractShardId: ShardRegion.ExtractShardId = {
-    case c: DialogCommand ⇒ (getGroupDialogId(c.dialogId).groupId % 100).toString
+    case c: DialogCommand ⇒ (getGroupDialogId(c.dialogId).groupId % 10).toString
   }
 
   val typeName = "GroupDialog"
