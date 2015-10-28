@@ -12,7 +12,9 @@ object DialogProcessor {
       40003 → classOf[DialogCommands.MessageRead],
       40004 → classOf[DialogCommands.MessageReadAck],
       40005 → classOf[DialogCommands.WriteMessage],
-      40006 → classOf[DialogCommands.WriteMessageAck]
+      40006 → classOf[DialogCommands.WriteMessageAck],
+      40007 → classOf[DialogCommands.CreateForUser],
+      40008 → classOf[DialogCommands.CreateForUserAck]
     )
   }
 }

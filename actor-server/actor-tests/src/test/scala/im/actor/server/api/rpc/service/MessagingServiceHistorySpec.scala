@@ -477,8 +477,6 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
         val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
 
-        println(s"=== spec ${user2.id} ${user1.id}")
-
         val groupOutPeer = {
           implicit val clientData = clientData1
           createGroup("Fun group", Set(user2.id)).groupPeer
@@ -544,8 +542,6 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         {
           implicit val clientData = clientData2
           expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
-            UpdateChatGroupsChanged.header, // FIXME: being sent in Dialog, Invite and Join
-            UpdateChatGroupsChanged.header,
             UpdateChatGroupsChanged.header,
             UpdateGroupInvite.header,
 
