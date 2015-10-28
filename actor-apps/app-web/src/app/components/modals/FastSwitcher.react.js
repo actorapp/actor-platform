@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Container } from 'flux/utils';
 import Modal from 'react-modal';
 import classnames from 'classnames';
+import isInside from 'utils/isInside';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
@@ -35,10 +36,12 @@ class FastSwitcher extends Component {
   componentDidMount() {
     this.setFocus();
     document.addEventListener('keydown', this.handleKeyDown, false);
+    document.addEventListener('click', this.handleDocumentClick, false);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown, false);
+    document.removeEventListener('click', this.handleDocumentClick, false);
   }
 
   render() {
@@ -107,25 +110,27 @@ class FastSwitcher extends Component {
                closeTimeoutMS={150}
                isOpen={isOpen}
                style={{width: 400}}>
+          <div ref="modal">
 
-          <header className="header">
-            <div className="pull-left">Jump to anywhere</div>
-            <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
-            <div className="pull-right"><strong>↵</strong>&nbsp; to select</div>
-            <div className="pull-right"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
-          </header>
+            <header className="header">
+              <div className="pull-left">Jump to anywhere</div>
+              <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
+              <div className="pull-right"><strong>↵</strong>&nbsp; to select</div>
+              <div className="pull-right"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
+            </header>
 
-          <div className="input">
-            <input type="text"
-                   placeholder="Start typing"
-                   onChange={this.handleSearch}
-                   ref="query"/>
+            <div className="input">
+              <input type="text"
+                     placeholder="Start typing"
+                     onChange={this.handleSearch}
+                     ref="query"/>
+            </div>
+
+            <ul className="results" ref="results">
+              {resultsList}
+            </ul>
+
           </div>
-
-          <ul className="results" ref="results">
-            {resultsList}
-          </ul>
-
         </Modal>
       );
     } else {
@@ -221,6 +226,19 @@ class FastSwitcher extends Component {
   handleScroll = (top) => {
     const resultsNode = React.findDOMNode(this.refs.results);
     resultsNode.scrollTop = top;
+  };
+
+  handleDocumentClick = (event) => {
+    const modal = React.findDOMNode(this.refs.modal);
+    const modalRect = modal.getBoundingClientRect();
+    const coords = {
+      x: event.pageX || event.clientX,
+      y: event.pageY || event.clientY
+    };
+
+    if (!isInside(coords, modalRect)) {
+      this.handleClose();
+    }
   };
 }
 
