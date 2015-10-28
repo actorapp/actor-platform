@@ -126,9 +126,9 @@ private[botkit] final class WebsocketClient(url: String)
       log.info(">> {}", textToSend)
       client ! textToSend
     case e: Http.ConnectionClosed ⇒
-      onErrorThenStop(new RuntimeException(s"Connection closed: $e") with NoStackTrace)
+      onErrorThenStop(WebsocketClientEvents.ConnectionClosed(e))
     case Terminated(`client`) ⇒
-      onErrorThenStop(new RuntimeException("Failed to connect") with NoStackTrace)
+      onErrorThenStop(WebsocketClientEvents.FailedToConnect)
     case unmatched ⇒
       log.error("Unmatched {}", unmatched)
   }
@@ -152,4 +152,11 @@ private[botkit] final class WebsocketClient(url: String)
         deliverBuf()
       }
     }
+}
+
+abstract class WebsocketClientException(message: String) extends RuntimeException(message) with NoStackTrace
+
+object WebsocketClientEvents {
+  case object FailedToConnect extends WebsocketClientException("Failed to connect")
+  case class ConnectionClosed(e: Http.ConnectionClosed) extends WebsocketClientException(s"Connection closed: ${e.getErrorCause}")
 }
