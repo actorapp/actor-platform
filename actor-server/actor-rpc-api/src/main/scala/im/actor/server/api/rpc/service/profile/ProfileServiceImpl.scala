@@ -146,5 +146,13 @@ class ProfileServiceImpl()(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleEditMyPreferredLanguages(preferredLanguages: Vector[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = ???
+  override def jhandleEditMyPreferredLanguages(preferredLanguages: Vector[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+      (for {
+        SeqState(seq, state) ← fromFuture(userExt.changePreferredLanguages(client.userId, client.authId, preferredLanguages))
+      } yield ResponseSeq(seq, state.toByteArray)).run
+    }
+
+    db.run(toDBIOAction(authorizedAction))
+  }
 }
