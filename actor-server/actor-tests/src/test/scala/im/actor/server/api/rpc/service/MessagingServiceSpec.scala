@@ -69,11 +69,11 @@ class MessagingServiceSpec
 
           whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(1000, _, _)) ⇒
+              case Ok(ResponseSeqDate(1001, _, _)) ⇒
             }
           }
 
-          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(1)) { update ⇒
+          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(2)) { update ⇒
             update.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
             update.randomId shouldEqual randomId
           }
@@ -82,7 +82,7 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData12
 
-          expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header, Some(1)) { update ⇒
+          expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header, Some(2)) { update ⇒
             update.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
             update.randomId shouldEqual randomId
             update.senderUserId shouldEqual user1.id
@@ -92,13 +92,14 @@ class MessagingServiceSpec
         {
           implicit val clientData = clientData2
 
-          expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(UpdateMessage.header, UpdateCountersChanged.header)) {
+          expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(UpdateChatGroupsChanged.header, UpdateMessage.header, UpdateCountersChanged.header)) {
             case (UpdateMessage.header, u) ⇒
               val update = parseUpdate[UpdateMessage](u)
               update.peer shouldEqual ApiPeer(ApiPeerType.Private, user1.id)
               update.randomId shouldEqual randomId
               update.senderUserId shouldEqual user1.id
-            case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
+            case (UpdateCountersChanged.header, update)   ⇒ parseUpdate[UpdateCountersChanged](update)
+            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
           }
         }
       }
@@ -128,19 +129,20 @@ class MessagingServiceSpec
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1000, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1001, _, _)) ⇒ })
           }
 
-          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(1))(identity)
+          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(2))(identity)
         }
 
         {
           implicit val clientData = clientData2
-          expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
+          expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateChatGroupsChanged.header, UpdateMessage.header, UpdateCountersChanged.header)) {
             case (UpdateMessage.header, update) ⇒ parseUpdate[UpdateMessage](update)
             case (UpdateCountersChanged.header, update) ⇒
               val counters = parseUpdate[UpdateCountersChanged](update)
               counters.counters.globalCounter shouldEqual Some(1)
+            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
           }
         }
       }
@@ -173,7 +175,7 @@ class MessagingServiceSpec
 
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None))) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(1002, _, _)) ⇒
+              case Ok(ResponseSeqDate(1003, _, _)) ⇒
             }
           }
 
@@ -265,7 +267,7 @@ class MessagingServiceSpec
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1002, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1003, _, _)) ⇒ })
           }
 
           expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header)(identity)
