@@ -135,6 +135,7 @@ public class MyProfileFragment extends BaseFragment {
                         final UserPhone record = val.get(i);
                         View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
                         TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                        tintImageView.setTint(ActorSDK.sharedActor().style.getCategoryTextColor());
                         if (i == 0) {
                             tintImageView.setResource(R.drawable.ic_call_white_36dp);
                             tintImageView.setVisibility(View.VISIBLE);
@@ -249,6 +250,9 @@ public class MyProfileFragment extends BaseFragment {
             }
         });
 
+        TextView settingsHeaderText = (TextView) view.findViewById(R.id.settings_header_text);
+        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+
         if (delegate.getBeforeNickSettingsView(getActivity()) != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
             beforeNick.addView(delegate.getBeforeNickSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -277,7 +281,10 @@ public class MyProfileFragment extends BaseFragment {
         }
 
         avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
-        avatarView.setBkgrnd((ImageView) view.findViewById(R.id.avatar_bgrnd));
+        avatarView.setBackgroundColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+        ImageView avatarBckgrnd = (ImageView) view.findViewById(R.id.avatar_bgrnd);
+        avatarBckgrnd.setBackgroundColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+        avatarView.setBkgrnd(avatarBckgrnd);
 
         bind(avatarView, users().get(myUid()).getAvatar());
 
@@ -308,8 +315,9 @@ public class MyProfileFragment extends BaseFragment {
         for (IActorSettingsCategory category : categories) {
             LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
             FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
-            TextView beforeSettingsName = (TextView) categoryContainer.findViewById(R.id.category_name);
-            beforeSettingsName.setText(category.getCategoryName());
+            TextView categoryName = (TextView) categoryContainer.findViewById(R.id.category_name);
+            categoryName.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+            categoryName.setText(category.getCategoryName());
             if (category.getView(context) != null) {
                 settingsContainer.addView(category.getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
             } else if (category.getFields() != null) {
@@ -328,7 +336,9 @@ public class MyProfileFragment extends BaseFragment {
 
         for (ActorSettingsField field : fields) {
             if (field.getView(context) != null) {
-                ll.addView(field.getView(context), LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                View view = field.getView(context);
+                ll.addView(view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                field.bindCreatedView(view);
             } else {
                 LinearLayout fieldLayout = (LinearLayout) inflater.inflate(R.layout.actor_settings_field, null);
                 TintImageView icon = (TintImageView) fieldLayout.findViewById(R.id.icon);

@@ -72,6 +72,7 @@ public class ProfileFragment extends BaseFragment {
         final String nick = user.getNick().get();
         final String aboutText = user.getAbout().get();
         baseColor = getResources().getColor(R.color.primary);
+        ActorStyle style = ActorSDK.sharedActor().style;
 
         View res = inflater.inflate(R.layout.fragment_profile, container, false);
 
@@ -128,6 +129,7 @@ public class ProfileFragment extends BaseFragment {
                 final UserPhone record = phones.get(i);
                 View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
                 TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
+                tintImageView.setTint(style.getRecordIconTintColor());
                 if (i == 0) {
                     tintImageView.setResource(R.drawable.ic_call_white_36dp);
                     tintImageView.setVisibility(View.VISIBLE);

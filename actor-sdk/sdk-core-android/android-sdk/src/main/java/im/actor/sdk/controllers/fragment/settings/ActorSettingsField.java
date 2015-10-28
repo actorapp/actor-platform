@@ -71,6 +71,10 @@ public class ActorSettingsField implements IActorSettingsField {
         return view;
     }
 
+    public void bindCreatedView(View view) {
+        this.view = view;
+    }
+
     @Override
     public int getIconResourceId() {
         return iconResourceId;
