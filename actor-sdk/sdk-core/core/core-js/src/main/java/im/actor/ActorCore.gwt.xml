@@ -27,6 +27,6 @@
     <extend-property name="locale" values="cn"/>
 
     <!-- Building single JS library -->
-    <add-linker tableName="sso"/>
+    <add-linker name="sso"/>
     <collapse-all-properties />
 </module>
