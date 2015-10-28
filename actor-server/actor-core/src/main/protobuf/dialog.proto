@@ -30,6 +30,27 @@ message DialogIdContainer {
 }
 
 message DialogCommands {
+    message CreateForUser {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required DialogIdContainer dialog_id = 1;
+        required int32 user_id = 2;
+    }
+
+    message CreateForUserAck {}
+
+    message WriteMessage {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required DialogIdContainer dialog_id = 1;
+        required int32 sender_user_id = 2;
+        required int64 date = 3;
+        required int64 random_id = 4;
+        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.ApiMessage"];
+    }
+
+    message WriteMessageAck {}
+
     message SendMessage {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
 
