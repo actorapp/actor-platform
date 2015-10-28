@@ -1,7 +1,7 @@
 {
   "version": "1.6",
   "scala-package": "im.actor.api.rpc",
-  "java-package": "im.actor.model.api",
+  "java-package": "im.actor.core.api",
   "aliases": [
     {
       "type": "bytes",
@@ -1326,6 +1326,18 @@
                 "argument": "external",
                 "category": "full",
                 "description": "  If not null, is user come from outer network"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "  Preferred user languages"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "  Time Zone of user in TZ format"
               }
             ],
             "expandable": "true",
@@ -1426,6 +1438,22 @@
                 },
                 "id": 15,
                 "name": "external"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 16,
+                "name": "preferredLanguages"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 17,
+                "name": "timeZone"
               }
             ]
           }
@@ -1703,6 +1731,80 @@
               }
             ]
           }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserPreferredLanguagesChanged",
+            "header": 212,
+            "doc": [
+              "Update about user's preferred languages",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "  User's preferred languages. Can be empty."
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "preferredLanguages"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserTimeZoneChanged",
+            "header": 216,
+            "doc": [
+              "User TimeZone changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "  User's new time zone in TZ format"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "timeZone"
+              }
+            ]
+          }
         }
       ]
     },
@@ -1911,6 +2013,63 @@
               "Removing account's avatar"
             ],
             "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditMyTimeZone",
+            "header": 144,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Updating user's time zone",
+              {
+                "type": "reference",
+                "argument": "tz",
+                "category": "full",
+                "description": "New Time Zone"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "tz"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditMyPreferredLanguages",
+            "header": 145,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Changing preffered languages",
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preffered Languages"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "preferredLanguages"
+              }
+            ]
           }
         }
       ]
@@ -3939,58 +4098,6 @@
         {
           "type": "update",
           "content": {
-            "name": "ChatArchived",
-            "header": 65,
-            "doc": [
-              "Update about chat archive",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Destination peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "ChatRestored",
-            "header": 66,
-            "doc": [
-              "Update about chat restore",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Destination peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
             "name": "ChatGroupsChanged",
             "header": 1,
             "doc": [
@@ -4491,20 +4598,44 @@
         {
           "type": "rpc",
           "content": {
-            "name": "ArchiveDialog",
-            "header": 227,
+            "name": "HideDialog",
+            "header": 231,
             "response": {
               "type": "reference",
               "name": "Seq"
             },
             "doc": [
-              "Archive dialog",
+              "Hide Dialog from grouped list",
               {
                 "type": "reference",
                 "argument": "peer",
                 "category": "full",
-                "description": "dialog peer"
+                "description": "Dialog peer"
               }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ShowDialog",
+            "header": 232,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Show Dialog in grouped list"
             ],
             "attributes": [
               {
@@ -6378,6 +6509,304 @@
       ]
     },
     {
+      "title": "Search",
+      "package": "search",
+      "doc": [
+        "Searching API"
+      ],
+      "items": [
+        {
+          "type": "enum",
+          "content": {
+            "name": "SearchPeerType",
+            "values": [
+              {
+                "name": "Groups",
+                "id": 1
+              },
+              {
+                "name": "Contacts",
+                "id": 2
+              },
+              {
+                "name": "Public",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "SearchCondition",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchPeerTypeCondition",
+            "doc": [
+              "Search peer type condition",
+              {
+                "type": "reference",
+                "argument": "peerType",
+                "category": "full",
+                "description": "  Peer type for searching"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 1
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "SearchPeerType"
+                },
+                "id": 1,
+                "name": "peerType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchPieceText",
+            "doc": [
+              "Search peer name condition",
+              {
+                "type": "reference",
+                "argument": "query",
+                "category": "full",
+                "description": "  Search query"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 2
+            },
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "query"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PeerSearchResult",
+            "doc": [
+              "Peer search result",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Peer information"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Peer title"
+              },
+              {
+                "type": "reference",
+                "argument": "description",
+                "category": "full",
+                "description": "  Description"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Members count"
+              },
+              {
+                "type": "reference",
+                "argument": "dateCreated",
+                "category": "full",
+                "description": "  Group Creation Date"
+              },
+              {
+                "type": "reference",
+                "argument": "creator",
+                "category": "full",
+                "description": "  Group Creator uid"
+              },
+              {
+                "type": "reference",
+                "argument": "isPublic",
+                "category": "full",
+                "description": "  Is group public"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "description"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 4,
+                "name": "membersCount"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "date"
+                  }
+                },
+                "id": 5,
+                "name": "dateCreated"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 6,
+                "name": "creator"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 7,
+                "name": "isPublic"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "isJoined"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "PeerSearch",
+            "header": 233,
+            "response": {
+              "type": "anonymous",
+              "header": 234,
+              "doc": [
+                "Found peers",
+                {
+                  "type": "reference",
+                  "argument": "searchResults",
+                  "category": "full",
+                  "description": "  Search Results"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Related users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "full",
+                  "description": "  Related groups"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "PeerSearchResult"
+                    }
+                  },
+                  "id": 1,
+                  "name": "searchResults"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 3,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Performing peer search",
+              {
+                "type": "reference",
+                "argument": "query",
+                "category": "hidden",
+                "description": "Search query. Warring not all combinations can be processed by server."
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "SearchCondition"
+                  }
+                },
+                "id": 1,
+                "name": "query"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Public Groups",
       "package": "pubgroups",
       "doc": [
@@ -6683,6 +7112,50 @@
         {
           "type": "rpc",
           "content": {
+            "name": "StopTyping",
+            "header": 30,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Stop typing",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "typingType",
+                "category": "full",
+                "description": "typing type"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "TypingType"
+                },
+                "id": 2,
+                "name": "typingType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "SetOnline",
             "header": 29,
             "response": {
@@ -6747,6 +7220,57 @@
                 "type": "reference",
                 "argument": "typingType",
                 "category": "full",
+                "description": "  Type of typing"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "TypingType"
+                },
+                "id": 3,
+                "name": "typingType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "TypingStop",
+            "header": 81,
+            "doc": [
+              "Update about user's typing stop",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Conversation peer"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's id"
+              },
+              {
+                "type": "reference",
+                "argument": "typingType",
+                "category": "hidden",
                 "description": "  Type of typing"
               }
             ],
@@ -9011,6 +9535,60 @@
                 },
                 "id": 1,
                 "name": "config"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Device Info",
+      "package": "device",
+      "doc": [
+        "Submiting various information about device for providing better experience.",
+        "For example, getting timezone or preffered languages"
+      ],
+      "items": [
+        {
+          "type": "rpc",
+          "content": {
+            "name": "NotifyAboutDeviceInfo",
+            "header": 229,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Notifying about device information",
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "Device Time Zone"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "preferredLanguages"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "timeZone"
               }
             ]
           }

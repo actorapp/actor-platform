@@ -1,6 +1,7 @@
 package im.actor.server.user
 
 import java.time.{ LocalDateTime, ZoneOffset }
+import java.util.{ TimeZone, Locale }
 
 import akka.actor.{ ActorSystem, Status }
 import akka.pattern.pipe
@@ -36,6 +37,10 @@ sealed trait UserException extends RuntimeException
 object UserExceptions {
 
   case object NicknameTaken extends RuntimeException with NoStackTrace
+
+  case class InvalidTimeZone(tz: String) extends RuntimeException(s"Invalid time zone: $tz") with NoStackTrace
+
+  case class InvalidLocale(locale: String) extends RuntimeException(s"Invalid locale: $locale") with NoStackTrace
 
 }
 
@@ -197,9 +202,40 @@ private[user] trait UserCommandHandlers {
     }
   }
 
+  protected def changeTimeZone(user: User, authId: Long, timeZone: String): Unit = {
+    def validTimeZone(tz: String): Boolean = TimeZone.getAvailableIDs.contains(tz)
+
+    if (validTimeZone(timeZone)) {
+      persistReply(TSEvent(now(), UserEvents.TimeZoneChanged(Some(timeZone))), user) { _ ⇒
+        val update = UpdateUserTimeZoneChanged(user.id, Some(timeZone))
+        for {
+          relatedUserIds ← getRelations(user.id)
+          (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, authId, relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
+        } yield seqstate
+      }
+    } else sender() ! Status.Failure(UserExceptions.InvalidTimeZone(timeZone))
+  }
+
+  protected def changePreferredLanguages(user: User, authId: Long, preferredLanguages: Seq[String]): Unit = {
+    def validLocale(l: String): Boolean = l matches "^[a-z]{2}(?:-[A-Z]{2})?$"
+
+    preferredLanguages.find(l ⇒ !validLocale(l)) match {
+      case Some(invalid) ⇒
+        sender() ! Status.Failure(UserExceptions.InvalidLocale(invalid))
+      case None ⇒
+        persistReply(TSEvent(now(), UserEvents.PreferredLanguagesChanged(preferredLanguages)), user) { _ ⇒
+          val update = UpdateUserPreferredLanguagesChanged(user.id, preferredLanguages.toVector)
+          for {
+            relatedUserIds ← getRelations(user.id)
+            (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, authId, relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
+          } yield seqstate
+        }
+    }
+  }
+
   protected def updateAvatar(user: User, clientAuthId: Long, avatarOpt: Option[Avatar]): Unit = {
     persistReply(TSEvent(now(), UserEvents.AvatarUpdated(avatarOpt)), user) { evt ⇒
-      val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfUser, user.id, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
+      val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfUser, user.id, _)) getOrElse models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)
 
       val update = UpdateUserAvatarChanged(user.id, avatarOpt)
 
