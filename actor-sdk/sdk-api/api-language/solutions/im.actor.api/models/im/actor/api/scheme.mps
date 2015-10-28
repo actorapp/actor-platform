@@ -3808,46 +3808,46 @@
           <property role="Nu42W" value="30" />
         </node>
       </node>
-      <node concept="NpBTk" id="5TxE3W70a3Q" role="2m5mJr">
-        <property role="TrG5h" value="ChatArchived" />
-        <node concept="2m7Kf5" id="5TxE3W70ab3" role="2m0hLx">
+      <node concept="NpBTk" id="4NJj1GT1FRx" role="2m5mJr">
+        <property role="TrG5h" value="ChatHidden" />
+        <node concept="2m7Kf5" id="4NJj1GT1FZb" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="5TxE3W70ab7" role="2m7DVh">
+          <node concept="2m5mGg" id="4NJj1GT1FZf" role="2m7DVh">
             <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node concept="Nu42z" id="5TxE3W70a3R" role="NuuwV">
-          <property role="Nu42W" value="41" />
+        <node concept="Nu42z" id="4NJj1GT1FRy" role="NuuwV">
+          <property role="Nu42W" value="61" />
         </node>
-        <node concept="NXeRC" id="5TxE3W70aaT" role="NXp_2">
-          <property role="NXePf" value="Update about chat archive" />
+        <node concept="NXeRC" id="4NJj1GT1FZi" role="NXp_2">
+          <property role="NXePf" value="Update about chat hide" />
         </node>
-        <node concept="NX1gA" id="5TxE3W70abd" role="NXp_2">
+        <node concept="NX1gA" id="4NJj1GT1FZn" role="NXp_2">
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Destination peer" />
-          <ref role="NX6Kv" node="5TxE3W70ab3" resolve="peer" />
+          <ref role="NX6Kv" node="4NJj1GT1FZb" resolve="peer" />
         </node>
       </node>
-      <node concept="NpBTk" id="5TxE3W70aRo" role="2m5mJr">
-        <property role="TrG5h" value="ChatRestored" />
-        <node concept="2m7Kf5" id="5TxE3W70aYx" role="2m0hLx">
+      <node concept="NpBTk" id="4NJj1GT1GHr" role="2m5mJr">
+        <property role="TrG5h" value="ChatShown" />
+        <node concept="2m7Kf5" id="4NJj1GT1GPd" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="5TxE3W70aY_" role="2m7DVh">
+          <node concept="2m5mGg" id="4NJj1GT1GPh" role="2m7DVh">
             <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
           </node>
         </node>
-        <node concept="Nu42z" id="5TxE3W70aRp" role="NuuwV">
-          <property role="Nu42W" value="42" />
+        <node concept="Nu42z" id="4NJj1GT1GHs" role="NuuwV">
+          <property role="Nu42W" value="62" />
         </node>
-        <node concept="NXeRC" id="5TxE3W70bcO" role="NXp_2">
-          <property role="NXePf" value="Update about chat restore" />
+        <node concept="NXeRC" id="4NJj1GT1GPb" role="NXp_2">
+          <property role="NXePf" value="Update about chat shown" />
         </node>
-        <node concept="NX1gA" id="5TxE3W70bcT" role="NXp_2">
+        <node concept="NX1gA" id="4NJj1GT1HrJ" role="NXp_2">
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Destination peer" />
-          <ref role="NX6Kv" node="5TxE3W70aYx" resolve="peer" />
+          <ref role="NX6Kv" node="4NJj1GT1GPd" resolve="peer" />
         </node>
       </node>
       <node concept="NpBTk" id="5TxE3W70bTg" role="2m5mJr">
@@ -4263,28 +4263,47 @@
           </node>
         </node>
       </node>
-      <node concept="2m6fVq" id="99pK4F46m1" role="2m5mJr">
-        <property role="TrG5h" value="ArchiveDialog" />
-        <node concept="2m7Kf5" id="99pK4F46tq" role="2m0hLx">
+      <node concept="2m6fVq" id="4NJj1GT1Ecq" role="2m5mJr">
+        <property role="TrG5h" value="HideDialog" />
+        <node concept="2m7Kf5" id="4NJj1GT1EjU" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="99pK4F46tu" role="2m7DVh">
+          <node concept="2m5mGg" id="4NJj1GT1EjY" role="2m7DVh">
             <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
-        <node concept="Nu42z" id="99pK4F46m2" role="NuuwV">
-          <property role="Nu42W" value="E3" />
+        <node concept="Nu42z" id="4NJj1GT1Ecr" role="NuuwV">
+          <property role="Nu42W" value="E7" />
         </node>
-        <node concept="2m1Rp1" id="99pK4F46tx" role="2m6efq">
+        <node concept="2m1Rp1" id="4NJj1GT1Ek1" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
-        <node concept="NXeRC" id="99pK4F46t$" role="1GBnQ6">
-          <property role="NXePf" value="Archive dialog" />
+        <node concept="NXeRC" id="4NJj1GT1Ek4" role="1GBnQ6">
+          <property role="NXePf" value="Hide Dialog from grouped list" />
         </node>
-        <node concept="NX1gA" id="99pK4F46tD" role="1GBnQ6">
-          <property role="NX6R2" value="dialog peer" />
+        <node concept="NX1gA" id="4NJj1GT1EUf" role="1GBnQ6">
+          <property role="NX6R2" value="Dialog peer" />
           <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="99pK4F46tq" resolve="peer" />
+          <ref role="NX6Kv" node="4NJj1GT1EjU" resolve="peer" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="4NJj1GT1F1U" role="2m5mJr">
+        <property role="TrG5h" value="ShowDialog" />
+        <node concept="2m7Kf5" id="4NJj1GT1F9x" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="4NJj1GT1F9_" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="4NJj1GT1F1V" role="NuuwV">
+          <property role="Nu42W" value="E8" />
+        </node>
+        <node concept="2m1Rp1" id="4NJj1GT1F9C" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="NXeRC" id="4NJj1GT1F9F" role="1GBnQ6">
+          <property role="NXePf" value="Show Dialog in grouped list" />
         </node>
       </node>
     </node>
@@ -8033,6 +8052,52 @@
         </node>
         <node concept="Nu42z" id="GBscvBBjCF" role="NuuwV">
           <property role="Nu42W" value="2A" />
+        </node>
+      </node>
+    </node>
+    <node concept="2m5mJO" id="4NJj1GT1JDA" role="2m5lHt">
+      <property role="TrG5h" value="Device Info" />
+      <property role="3XOG$Z" value="device" />
+      <node concept="1Dx9M1" id="4NJj1GT1Kfy" role="1Dx9rD">
+        <property role="1Dx9K7" value="Submiting various information about device for providing better experience. " />
+      </node>
+      <node concept="1Dx9M1" id="4NJj1GT1Kf$" role="1Dx9rD">
+        <property role="1Dx9K7" value="For example, getting timezone or preffered languages" />
+      </node>
+      <node concept="2m6fVq" id="4NJj1GT1KfB" role="2m5mJr">
+        <property role="TrG5h" value="NotifyAboutDeviceInfo" />
+        <node concept="2m7Kf5" id="4NJj1GT1KfO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="preferredLanguages" />
+          <node concept="2m5nlk" id="4NJj1GT1KfS" role="2m7DVh">
+            <node concept="2m5ndX" id="4NJj1GT1KfY" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT1Kg1" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="timeZone" />
+          <node concept="2m5nlT" id="4NJj1GT1Kgk" role="2m7DVh">
+            <node concept="2m5ndX" id="4NJj1GT1Kgq" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="4NJj1GT1KfC" role="NuuwV">
+          <property role="Nu42W" value="e5" />
+        </node>
+        <node concept="2m1Rp1" id="4NJj1GT1KfL" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="4NJj1GT1KQJ" role="1GBnQ6">
+          <property role="NXePf" value="Notifying about device information" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1Lt7" role="1GBnQ6">
+          <property role="NX6R2" value="Preferred languages" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4NJj1GT1KfO" resolve="preferredLanguages" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1Ltf" role="1GBnQ6">
+          <property role="NX6R2" value="Device Time Zone" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4NJj1GT1Kg1" resolve="timeZone" />
         </node>
       </node>
     </node>
