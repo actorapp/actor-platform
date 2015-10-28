@@ -3808,48 +3808,6 @@
           <property role="Nu42W" value="30" />
         </node>
       </node>
-      <node concept="NpBTk" id="4NJj1GT1FRx" role="2m5mJr">
-        <property role="TrG5h" value="ChatHidden" />
-        <node concept="2m7Kf5" id="4NJj1GT1FZb" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="4NJj1GT1FZf" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="4NJj1GT1FRy" role="NuuwV">
-          <property role="Nu42W" value="61" />
-        </node>
-        <node concept="NXeRC" id="4NJj1GT1FZi" role="NXp_2">
-          <property role="NXePf" value="Update about chat hide" />
-        </node>
-        <node concept="NX1gA" id="4NJj1GT1FZn" role="NXp_2">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Destination peer" />
-          <ref role="NX6Kv" node="4NJj1GT1FZb" resolve="peer" />
-        </node>
-      </node>
-      <node concept="NpBTk" id="4NJj1GT1GHr" role="2m5mJr">
-        <property role="TrG5h" value="ChatShown" />
-        <node concept="2m7Kf5" id="4NJj1GT1GPd" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="4NJj1GT1GPh" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="4NJj1GT1GHs" role="NuuwV">
-          <property role="Nu42W" value="62" />
-        </node>
-        <node concept="NXeRC" id="4NJj1GT1GPb" role="NXp_2">
-          <property role="NXePf" value="Update about chat shown" />
-        </node>
-        <node concept="NX1gA" id="4NJj1GT1HrJ" role="NXp_2">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Destination peer" />
-          <ref role="NX6Kv" node="4NJj1GT1GPd" resolve="peer" />
-        </node>
-      </node>
       <node concept="NpBTk" id="5TxE3W70bTg" role="2m5mJr">
         <property role="TrG5h" value="ChatGroupsChanged" />
         <node concept="2m7Kf5" id="5TxE3W70qfx" role="2m0hLx">
