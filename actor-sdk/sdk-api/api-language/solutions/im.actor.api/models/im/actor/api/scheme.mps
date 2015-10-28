@@ -5892,6 +5892,238 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="4NJj1GT1QnC" role="2m5lHt">
+      <property role="TrG5h" value="Search" />
+      <property role="3XOG$Z" value="search" />
+      <node concept="2m488m" id="4NJj1GT1U0C" role="2m5mJr">
+        <property role="TrG5h" value="SearchPeerType" />
+        <node concept="2m7y0F" id="4NJj1GT1U0E" role="2m7ymf">
+          <property role="TrG5h" value="Groups" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="4NJj1GT1U0M" role="2m7ymf">
+          <property role="TrG5h" value="Contacts" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="4NJj1GT224s" role="2m7ymf">
+          <property role="TrG5h" value="Public" />
+          <property role="2m7y0m" value="3" />
+        </node>
+      </node>
+      <node concept="w93zz" id="4NJj1GT1Sc1" role="2m5mJr">
+        <property role="TrG5h" value="SearchCondition" />
+        <property role="1FaRnq" value="true" />
+      </node>
+      <node concept="2m5naR" id="4NJj1GT1TpF" role="2m5mJr">
+        <property role="TrG5h" value="SearchPeerTypeCondition" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+        <node concept="2m7Kf5" id="4NJj1GT1UBJ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peerType" />
+          <node concept="3GJkcs" id="4NJj1GT1UBN" role="2m7DVh">
+            <ref role="3GJkik" node="4NJj1GT1U0C" resolve="SearchPeerType" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="4NJj1GT1VeG" role="NXodf">
+          <property role="NXePf" value="Search peer type condition" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1VQY" role="NXodf">
+          <property role="NX6R2" value="Peer type for searching" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4NJj1GT1UBJ" resolve="peerType" />
+        </node>
+        <node concept="Nu42z" id="4NJj1GT1VR2" role="3BtCOu">
+          <property role="Nu42W" value="01" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="4NJj1GT1Wun" role="2m5mJr">
+        <property role="TrG5h" value="SearchPieceText" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+        <node concept="2m7Kf5" id="4NJj1GT1WuH" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="query" />
+          <node concept="2m5ndX" id="4NJj1GT1WuL" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="4NJj1GT1WuF" role="3BtCOu">
+          <property role="Nu42W" value="02" />
+        </node>
+        <node concept="NXeRC" id="4NJj1GT1YjU" role="NXodf">
+          <property role="NXePf" value="Search peer name condition" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1YV2" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Search query" />
+          <ref role="NX6Kv" node="4NJj1GT1WuH" resolve="query" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="4NJj1GT1Zyz" role="2m5mJr">
+        <property role="TrG5h" value="PeerSearchResult" />
+        <node concept="2m7Kf5" id="4NJj1GT1ZyX" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="4NJj1GT1Zz1" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT1Zz4" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="4NJj1GT1Zza" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT20aB" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="description" />
+          <node concept="2m5nlT" id="4NJj1GT20aJ" role="2m7DVh">
+            <node concept="2m5ndX" id="4NJj1GT20aP" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT20aS" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="membersCount" />
+          <node concept="2m5nlT" id="4NJj1GT20b3" role="2m7DVh">
+            <node concept="2m5ndE" id="4NJj1GT20b9" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT20bc" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="dateCreated" />
+          <node concept="2m5nlT" id="4NJj1GT20bq" role="2m7DVh">
+            <node concept="wb0Ql" id="4NJj1GT20bz" role="3GH5xg">
+              <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT20bA" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="creator" />
+          <node concept="2m5nlT" id="4NJj1GT20c4" role="2m7DVh">
+            <node concept="2m5ndE" id="4NJj1GT20ca" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT20NO" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="isPublic" />
+          <node concept="2m5nlT" id="4NJj1GT20O8" role="2m7DVh">
+            <node concept="2m5ndN" id="4NJj1GT20Oe" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="4NJj1GT20Ny" role="NXodf">
+          <property role="NXePf" value="Peer search result" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT20NB" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Peer information" />
+          <ref role="NX6Kv" node="4NJj1GT1ZyX" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT20NJ" role="NXodf">
+          <property role="NX6R2" value="Peer title" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4NJj1GT1Zz4" resolve="title" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT20Om" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Description" />
+          <ref role="NX6Kv" node="4NJj1GT20aB" resolve="description" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT20Oy" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Members count" />
+          <ref role="NX6Kv" node="4NJj1GT20aS" resolve="membersCount" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT20OK" role="NXodf">
+          <property role="NX6R2" value="Group Creation Date" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4NJj1GT20bc" resolve="dateCreated" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT20P0" role="NXodf">
+          <property role="NX6R2" value="Group Creator uid" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4NJj1GT20bA" resolve="creator" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT20Pi" role="NXodf">
+          <property role="NX6R2" value="Is group public" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4NJj1GT20NO" resolve="isPublic" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="4NJj1GT1Vft" role="2m5mJr">
+        <property role="TrG5h" value="PeerSearch" />
+        <node concept="2m7Kf5" id="4NJj1GT1VfH" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="query" />
+          <node concept="2m5nlk" id="4NJj1GT1VfL" role="2m7DVh">
+            <node concept="3BlaRf" id="4NJj1GT1VfR" role="3GJlyp">
+              <ref role="3BrLez" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="4NJj1GT1Vfu" role="NuuwV">
+          <property role="Nu42W" value="E9" />
+        </node>
+        <node concept="2m1R6W" id="4NJj1GT1VfU" role="2m6efq">
+          <node concept="2m7Kf5" id="4NJj1GT22G1" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="searchResults" />
+            <node concept="2m5nlk" id="4NJj1GT22G5" role="2m7DVh">
+              <node concept="2m5mGg" id="4NJj1GT22Gb" role="3GJlyp">
+                <ref role="2m5mJy" node="4NJj1GT1Zyz" resolve="PeerSearchResult" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="4NJj1GT22Ge" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="4NJj1GT22Gl" role="2m7DVh">
+              <node concept="2m5mGg" id="4NJj1GT22Gr" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="4NJj1GT22Gu" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="groups" />
+            <node concept="2m5nlk" id="4NJj1GT22GC" role="2m7DVh">
+              <node concept="2m5mGg" id="4NJj1GT22GI" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="4NJj1GT1VfV" role="NuuwV">
+            <property role="Nu42W" value="EA" />
+          </node>
+          <node concept="NXeRC" id="4NJj1GT23Wg" role="1y2DgH">
+            <property role="NXePf" value="Found peers" />
+          </node>
+          <node concept="NX1gA" id="4NJj1GT23Wp" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Search Results" />
+            <ref role="NX6Kv" node="4NJj1GT22G1" resolve="searchResults" />
+          </node>
+          <node concept="NX1gA" id="4NJj1GT23Wx" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Related users" />
+            <ref role="NX6Kv" node="4NJj1GT22Ge" resolve="users" />
+          </node>
+          <node concept="NX1gA" id="4NJj1GT23WF" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Related groups" />
+            <ref role="NX6Kv" node="4NJj1GT22Gu" resolve="groups" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="4NJj1GT23kr" role="1GBnQ6">
+          <property role="NXePf" value="Performing peer search" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT23kw" role="1GBnQ6">
+          <property role="NX6R2" value="Search query. Warring not all combinations can be processed by server." />
+          <ref role="NX6Kv" node="4NJj1GT1VfH" resolve="query" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="4NJj1GT1R$P" role="1Dx9rD">
+        <property role="1Dx9K7" value="Searching API" />
+      </node>
+    </node>
     <node concept="2m5mJO" id="3aztRmLKeSG" role="2m5lHt">
       <property role="TrG5h" value="Public Groups" />
       <property role="3XOG$Z" value="pubgroups" />
