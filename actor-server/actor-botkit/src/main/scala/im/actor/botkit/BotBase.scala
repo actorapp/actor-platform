@@ -87,7 +87,7 @@ abstract class BotBase extends BotBaseBase {
 
   protected def nextRandomId() = ThreadLocalRandom.current().nextLong()
 
-  protected def getUser(id: Int) = this.users.get(id).getOrElse(throw new RuntimeException(s"User $id not found"))
+  protected def getUser(id: Int) = this.users.getOrElse(id, throw new RuntimeException(s"User $id not found"))
 
-  protected def getGroup(id: Int) = this.groups.get(id).getOrElse(throw new RuntimeException(s"Group $id not found"))
+  protected def getGroup(id: Int) = this.groups.getOrElse(id, throw new RuntimeException(s"Group $id not found"))
 }
