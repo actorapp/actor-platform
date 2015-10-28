@@ -8,9 +8,8 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiOutPeer, ApiPeerType }
 import im.actor.concurrent.FutureExt
-import im.actor.server.dialog.{ ReadFailed, ReceiveFailed }
+import im.actor.server.dialog.{ HistoryUtils, ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupUtils
-import im.actor.server.history.HistoryUtils
 import im.actor.server.sequence.{ SeqState, SeqUpdatesManager }
 import im.actor.server.user.UserUtils
 import im.actor.server.{ models, persist }
@@ -83,7 +82,7 @@ trait HistoryHandlers {
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.DialogRepo.findNotArchivedByUser(client.userId, endDateTimeFrom(endDate), limit) flatMap { dialogModels ⇒
+      persist.DialogRepo.findNotArchived(client.userId, endDateTimeFrom(endDate), limit) flatMap { dialogModels ⇒
         for {
           dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
           (users, groups) ← getDialogsUsersGroups(dialogs)
@@ -103,45 +102,17 @@ trait HistoryHandlers {
   override def jhandleLoadGroupedDialogs(clientData: ClientData): Future[HandlerResult[ResponseLoadGroupedDialogs]] = {
     // TODO: #perf meh, not optimal
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      persist.DialogRepo.findNotArchivedByUser(client.userId, None, Int.MaxValue) flatMap { dialogModels ⇒
-        val (groupModels, privateModels) = dialogModels.foldLeft((Vector.empty[models.Dialog], Vector.empty[models.Dialog])) {
-          case ((groupModels, privateModels), dialog) ⇒
-            if (dialog.peer.typ == models.PeerType.Group)
-              (groupModels :+ dialog, privateModels)
-            else
-              (groupModels, privateModels :+ dialog)
+      for {
+        dialogGroups ← DBIO.from(dialogExt.getGroupedDialogs(client.userId))
+        (userIds, groupIds) = dialogGroups.view.flatMap(_.dialogs).foldLeft((Seq.empty[Int], Seq.empty[Int])) {
+          case ((uids, gids), dialog) ⇒
+            dialog.peer.`type` match {
+              case ApiPeerType.Group   ⇒ (uids, gids :+ dialog.peer.id)
+              case ApiPeerType.Private ⇒ (uids :+ dialog.peer.id, gids)
+            }
         }
-
-        for {
-          groupDialogs ← DBIO.from(FutureExt.ftraverse(groupModels)(d ⇒ db.run(getDialogShort(d))))
-          privateDialogs ← DBIO.from(FutureExt.ftraverse(privateModels)(d ⇒ db.run((getDialogShort(d)))))
-          groupIds = groupDialogs.map(_.peer.id)
-          userIds = privateDialogs.map(_.peer.id)
-          (groups, users) ← DBIO.from(GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId))
-        } yield {
-          def sort(dialogs: Seq[ApiDialogShort], names: Map[Int, String]): Vector[ApiDialogShort] = {
-            dialogs.view
-              .map { d ⇒
-                names.get(d.peer.id).map(_ → d)
-              }
-              .collect { case Some(tp) ⇒ tp }
-              .sortBy(_._1)
-              .map(_._2)
-              .toVector
-          }
-
-          val groupTitles = groups.map(g ⇒ g.id → g.title).toMap
-          val userNames = users.map(u ⇒ u.id → u.localName.getOrElse(u.name)).toMap
-
-          val sortedGroupDialogs = sort(groupDialogs, groupTitles)
-          val sortedPrivateDialogs = sort(privateDialogs, userNames)
-
-          Ok(ResponseLoadGroupedDialogs(Vector(
-            ApiDialogGroup("Groups", "groups", sortedGroupDialogs),
-            ApiDialogGroup("Private", "privates", sortedPrivateDialogs)
-          ), users.toVector, groups.toVector))
-        }
-      }
+        (groups, users) ← DBIO.from(GroupUtils.getGroupsUsers(groupIds, userIds, client.userId, client.authId))
+      } yield Ok(ResponseLoadGroupedDialogs(dialogGroups, users.toVector, groups.toVector))
     }
 
     db.run(toDBIOAction(authorizedAction))
@@ -165,7 +136,7 @@ trait HistoryHandlers {
   override def jhandleLoadHistory(peer: ApiOutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeer(peer) {
-        withHistoryOwner(peer.asModel) { historyOwner ⇒
+        withHistoryOwner(peer.asModel, client.userId) { historyOwner ⇒
           persist.DialogRepo.find(client.userId, peer.asModel) flatMap { dialogOpt ⇒
             persist.HistoryMessage.find(historyOwner, peer.asModel, endDateTimeFrom(endDate), limit) flatMap { messageModels ⇒
               val lastReceivedAt = dialogOpt map (_.lastReceivedAt) getOrElse (new DateTime(0))
@@ -206,7 +177,7 @@ trait HistoryHandlers {
       withOutPeer(outPeer) {
         val peer = outPeer.asModel
 
-        withHistoryOwner(peer) { historyOwner ⇒
+        withHistoryOwner(peer, client.userId) { historyOwner ⇒
           if (isSharedUser(historyOwner)) {
             persist.HistoryMessage.find(historyOwner, peer, randomIds.toSet) flatMap { messages ⇒
               if (messages.exists(_.senderUserId != client.userId)) {
@@ -251,10 +222,10 @@ trait HistoryHandlers {
   }
 
   private def getDialogStruct(dialogModel: models.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialog] = {
-    withHistoryOwner(dialogModel.peer) { historyOwner ⇒
+    withHistoryOwner(dialogModel.peer, client.userId) { historyOwner ⇒
       for {
         messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
-        unreadCount ← getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
+        unreadCount ← dialogExt.getUnreadCount(client.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield {
         val emptyMessageContent = ApiTextMessage(text = "", mentions = Vector.empty, ext = None)
         val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
@@ -275,26 +246,15 @@ trait HistoryHandlers {
   }
 
   private def getDialogShort(dialogModel: models.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialogShort] = {
-    withHistoryOwner(dialogModel.peer) { historyOwner ⇒
+    withHistoryOwner(dialogModel.peer, client.userId) { historyOwner ⇒
       for {
         messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
-        unreadCount ← getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
+        unreadCount ← dialogExt.getUnreadCount(client.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield ApiDialogShort(
         peer = ApiPeer(ApiPeerType(dialogModel.peer.typ.toInt), dialogModel.peer.id),
         counter = unreadCount,
         date = messageOpt.map(_.date.getMillis).getOrElse(0)
       )
-    }
-  }
-
-  private def getUnreadCount(historyOwner: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit client: AuthorizedClientData): DBIO[Int] = {
-    if (isSharedUser(historyOwner)) {
-      for {
-        isMember ← DBIO.from(groupExt.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains client.userId })
-        result ← if (isMember) persist.HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
-      } yield result
-    } else {
-      persist.HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt)
     }
   }
 

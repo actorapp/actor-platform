@@ -11,7 +11,7 @@ import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import org.scalatest.Inside._
 
-class PubgroupsServiceSpec
+final class PubgroupsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with MessageParsing

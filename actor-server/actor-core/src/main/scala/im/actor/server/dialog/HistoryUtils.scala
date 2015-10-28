@@ -1,9 +1,9 @@
-package im.actor.server.history
+package im.actor.server.dialog
 
 import akka.actor.ActorSystem
-import akka.util.Timeout
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.server.group.{ GroupExtension, GroupOffice, GroupUtils }
+import im.actor.concurrent.FutureExt
+import im.actor.server.group.{ GroupExtension, GroupUtils }
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -18,7 +18,7 @@ object HistoryUtils {
   // User for writing history in public groups
   private val sharedUserId = 0
 
-  def writeHistoryMessage(
+  private[dialog] def writeHistoryMessage(
     fromPeer:             models.Peer,
     toPeer:               models.Peer,
     date:                 DateTime,
@@ -73,7 +73,7 @@ object HistoryUtils {
             }
             val dialogAction = persist.DialogRepo.updateLastMessageDates(groupUserIds.toSet, toPeer, date)
 
-            DBIO.sequence(Seq(dialogAction, (persist.HistoryMessage.create(historyMessages) map (_.getOrElse(0))))) map (_ ⇒ ())
+            DBIO.sequence(Seq(dialogAction, persist.HistoryMessage.create(historyMessages) map (_.getOrElse(0)))) map (_ ⇒ ())
           }
         }
       }
@@ -82,7 +82,7 @@ object HistoryUtils {
     }
   }
 
-  def markMessagesReceived(byPeer: models.Peer, peer: models.Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
+  private[dialog] def markMessagesReceived(byPeer: models.Peer, peer: models.Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
     requirePrivatePeer(byPeer)
     // requireDifferentPeers(byPeer, peer)
 
@@ -108,7 +108,7 @@ object HistoryUtils {
     }
   }
 
-  def markMessagesRead(byPeer: models.Peer, peer: models.Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
+  private[dialog] def markMessagesRead(byPeer: models.Peer, peer: models.Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
     requirePrivatePeer(byPeer)
     // requireDifferentPeers(byPeer, peer)
 
@@ -135,28 +135,23 @@ object HistoryUtils {
     }
   }
 
-  def withHistoryOwner[A](peer: models.Peer)(f: Int ⇒ DBIO[A])(implicit system: ActorSystem, client: AuthorizedClientData): DBIO[A] = {
+  def withHistoryOwner[A](peer: models.Peer, clientUserId: Int)(f: Int ⇒ DBIO[A])(implicit system: ActorSystem): DBIO[A] = {
     import system.dispatcher
     (peer.typ match {
-      case models.PeerType.Private ⇒ DBIO.successful(client.userId)
+      case models.PeerType.Private ⇒ DBIO.successful(clientUserId)
       case models.PeerType.Group ⇒
         implicit val groupViewRegion = GroupExtension(system).viewRegion
         DBIO.from(GroupExtension(system).isHistoryShared(peer.id)) flatMap { isHistoryShared ⇒
           if (isHistoryShared) {
             DBIO.successful(sharedUserId)
           } else {
-            DBIO.successful(client.userId)
+            DBIO.successful(clientUserId)
           }
         }
     }) flatMap f
   }
 
   def isSharedUser(userId: Int): Boolean = userId == sharedUserId
-
-  private def requireDifferentPeers(peer1: models.Peer, peer2: models.Peer) = {
-    if (peer1 == peer2)
-      throw new Exception("peers should not be same")
-  }
 
   private def requirePrivatePeer(peer: models.Peer) = {
     if (peer.typ != models.PeerType.Private)

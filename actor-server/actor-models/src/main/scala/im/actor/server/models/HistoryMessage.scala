@@ -11,4 +11,6 @@ case class HistoryMessage(
   messageContentHeader: Int,
   messageContentData:   Array[Byte],
   deletedAt:            Option[DateTime]
-)
+) {
+  def ofUser(userId: Int) = this.copy(userId = userId)
+}

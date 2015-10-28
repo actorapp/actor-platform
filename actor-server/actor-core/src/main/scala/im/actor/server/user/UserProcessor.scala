@@ -6,6 +6,7 @@ import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
+import im.actor.server.dialog.DialogExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -76,6 +77,8 @@ object UserProcessor {
       10028 → classOf[UserCommands.AddContacts],
       10031 → classOf[UserCommands.UpdateIsAdmin],
       10032 → classOf[UserCommands.UpdateIsAdminAck],
+      10033 → classOf[UserCommands.NotifyDialogsChanged],
+      10034 → classOf[UserCommands.NotifyDialogsChangedAck],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -125,6 +128,7 @@ private[user] final class UserProcessor
 
   protected val db: Database = DbExtension(system).db
   protected val userExt = UserExtension(system)
+  protected lazy val dialogExt = DialogExtension(system)
   protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
   protected implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
 
@@ -183,6 +187,7 @@ private[user] final class UserProcessor
     case UpdateAvatar(_, clientAuthId, avatarOpt)    ⇒ updateAvatar(state, clientAuthId, avatarOpt)
     case AddContacts(_, clientAuthId, contactsToAdd) ⇒ addContacts(state, clientAuthId, contactsToAdd)
     case UpdateIsAdmin(_, isAdmin)                   ⇒ updateIsAdmin(state, isAdmin)
+    case NotifyDialogsChanged(_)                     ⇒ notifyDialogsChanged(state)
     case StopOffice                                  ⇒ context stop self
     case ReceiveTimeout                              ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }

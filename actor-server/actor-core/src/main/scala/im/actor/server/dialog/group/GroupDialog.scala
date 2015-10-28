@@ -2,17 +2,22 @@ package im.actor.server.dialog.group
 
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
+import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.dialog.group.GroupDialogEvents.GroupDialogEvent
 import im.actor.server.group.GroupExtension
+import im.actor.server.models.{ Peer, PeerType, Dialog }
 import im.actor.server.office.ProcessorState
+import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesExtension }
 import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
+import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -52,8 +57,8 @@ private[group] final class GroupDialog extends DialogProcessor[GroupDialogState,
 
   protected val db: Database = DbExtension(system).db
   protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
-  protected val groupExt = GroupExtension(system)
-  protected val userExt = UserExtension(system)
+  protected lazy val groupExt = GroupExtension(system)
+  protected lazy val userExt = UserExtension(system)
 
   protected val delivery = new ActorDelivery()
 
@@ -68,29 +73,25 @@ private[group] final class GroupDialog extends DialogProcessor[GroupDialogState,
     case LastReadDateChanged(date)         ⇒ state.copy(lastReadDate = Some(date))
   }
 
-  override protected def handleInitCommand: Receive = working(initState)
+  override protected def handleInitCommand: Receive = handleCommand(initState)
 
   override protected def handleCommand(state: GroupDialogState): Receive = {
     case SendMessage(_, senderUserId, senderAuthId, randomId, message, isFat) ⇒
       sendMessage(state, senderUserId, senderAuthId, randomId, message, isFat)
+    case WriteMessage(_, senderUserId, date, randomId, message) ⇒
+      writeMessage(state, senderUserId, date, randomId, message)
     case MessageReceived(_, receiverUserId, date) ⇒
       messageReceived(state, receiverUserId, date)
     case MessageRead(_, readerUserId, readerAuthId, date) ⇒
       messageRead(state, readerUserId, readerAuthId, date)
-    case StopDialog     ⇒ context stop self
-    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
+    case CreateForUser(_, userId) ⇒ createForUser(state, userId)
+    case StopDialog               ⇒ context stop self
+    case ReceiveTimeout           ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }
 
   override protected def handleQuery(state: GroupDialogState): Receive = PartialFunction.empty[Any, Unit]
 
-  private[this] var tmpDialogState: GroupDialogState = initState
-  override def receiveRecover = {
-    case e: GroupDialogEvent ⇒ tmpDialogState = updatedState(e, tmpDialogState)
-    case RecoveryCompleted ⇒
-      context become working(tmpDialogState)
-    case unmatched ⇒
-      log.error("Unmatched recovery event {}", unmatched)
-  }
+  override def receiveRecover = Actor.emptyBehavior
 
   override def persistenceId: String = s"dialog_${ApiPeerType.Group.id}"
 

@@ -7,9 +7,11 @@ import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessage
 import im.actor.server.dialog._
 import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupExtension
-import im.actor.server.history.HistoryUtils._
+import HistoryUtils._
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
+import im.actor.server.models.{ Dialog, PeerType, Peer }
+import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
@@ -59,6 +61,25 @@ trait GroupDialogHandlers extends UpdateCounters {
     }
   }
 
+  protected def writeMessage(
+    state:        GroupDialogState,
+    senderUserId: Int,
+    dateMillis:   Long,
+    randomId:     Long,
+    message:      ApiMessage
+  ): Unit = {
+    val date = new DateTime(dateMillis)
+
+    db.run(writeHistoryMessage(
+      models.Peer.privat(senderUserId),
+      models.Peer.group(groupPeer.id),
+      date,
+      randomId,
+      message.header,
+      message.toByteArray
+    )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
+  }
+
   protected def messageReceived(state: GroupDialogState, receiverUserId: Int, date: Long): Unit = {
     val replyTo = sender()
 
@@ -80,6 +101,30 @@ trait GroupDialogHandlers extends UpdateCounters {
     } else Future.successful(MessageReceivedAck())) pipeTo replyTo onFailure {
       case e ⇒
         log.error(e, "Failed to mark messages received")
+    }
+  }
+
+  protected def createForUser(state: GroupDialogState, userId: Int): Unit = {
+    def doCreate(): Unit = {
+      (for {
+        created ← db.run(DialogRepo.createIfNotExists(Dialog(userId, Peer(PeerType.Group, groupId))))
+        _ ← if (created) userExt.notifyDialogsChanged(userId) else Future.successful(())
+      } yield ()) pipeTo self
+    }
+
+    val replyTo = sender()
+
+    doCreate()
+
+    context become {
+      case () ⇒
+        replyTo ! CreateForUserAck()
+        unstashAll()
+        context.unbecome()
+      case Status.Failure(e) ⇒
+        log.error(e, "Failed to create dialog for user {}", userId)
+        doCreate()
+      case msg ⇒ stash()
     }
   }
 
