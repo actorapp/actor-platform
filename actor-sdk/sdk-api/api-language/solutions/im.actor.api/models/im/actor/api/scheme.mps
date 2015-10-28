@@ -6140,6 +6140,42 @@
           <ref role="NX6Kv" node="GBscvBBuxV" resolve="typingType" />
         </node>
       </node>
+      <node concept="2m6fVq" id="4NJj1GT1MF1" role="2m5mJr">
+        <property role="TrG5h" value="StopTyping" />
+        <node concept="2m7Kf5" id="4NJj1GT1MGd" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="4NJj1GT1MGh" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT1MGk" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="typingType" />
+          <node concept="3GJkcs" id="4NJj1GT1MGq" role="2m7DVh">
+            <ref role="3GJkik" node="4zDDY4ERgsM" resolve="TypingType" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="4NJj1GT1MF2" role="NuuwV">
+          <property role="Nu42W" value="1E" />
+        </node>
+        <node concept="2m1Rp1" id="4NJj1GT1MGa" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="4NJj1GT1NiT" role="1GBnQ6">
+          <property role="NXePf" value="Stop typing" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1NTr" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="4NJj1GT1MGd" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1NTz" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="typing type" />
+          <ref role="NX6Kv" node="4NJj1GT1MGk" resolve="typingType" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBuyg" role="2m5mJr">
         <property role="TrG5h" value="SetOnline" />
         <node concept="2m7Kf5" id="GBscvBBuyv" role="2m0hLx">
@@ -6216,6 +6252,48 @@
         </node>
         <node concept="Nu42z" id="GBscvBBxyy" role="NuuwV">
           <property role="Nu42W" value="06" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="4NJj1GT1Oxk" role="2m5mJr">
+        <property role="TrG5h" value="TypingStop" />
+        <node concept="2m7Kf5" id="4NJj1GT1Oy$" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="4NJj1GT1OyC" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT1P9y" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="4NJj1GT1P9C" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="4NJj1GT1P9F" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="typingType" />
+          <node concept="3GJkcs" id="4NJj1GT1P9N" role="2m7DVh">
+            <ref role="3GJkik" node="4zDDY4ERgsM" resolve="TypingType" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="4NJj1GT1Oxl" role="NuuwV">
+          <property role="Nu42W" value="51" />
+        </node>
+        <node concept="NXeRC" id="4NJj1GT1OyF" role="NXp_2">
+          <property role="NXePf" value="Update about user's typing stop" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1OyK" role="NXp_2">
+          <property role="NX6R2" value="Conversation peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="4NJj1GT1Oy$" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1P9t" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User's id" />
+          <ref role="NX6Kv" node="4NJj1GT1P9y" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="4NJj1GT1P9V" role="NXp_2">
+          <property role="NX6R2" value="Type of typing" />
+          <ref role="NX6Kv" node="4NJj1GT1P9F" resolve="typingType" />
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBBxKK" role="2m5mJr">
