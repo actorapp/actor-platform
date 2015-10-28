@@ -1,5 +1,8 @@
 package im.actor.server.persist
 
+import im.actor.server.models.{ Dialog, PeerType }
+import slick.lifted.ColumnOrdered
+
 import scala.concurrent.ExecutionContext
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
@@ -9,8 +12,6 @@ import slick.driver.PostgresDriver.api._
 import slick.profile.{ SqlAction, FixedSqlStreamingAction, FixedSqlAction }
 
 import im.actor.server.models
-
-import scala.util.matching.Regex.Groups
 
 final class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 
@@ -32,10 +33,12 @@ final class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 
   def isArchived = column[Boolean]("is_archived")
 
-  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived) <> (applyDialog.tupled, unapplyDialog)
+  def createdAt = column[DateTime]("created_at")
 
-  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Boolean) ⇒ models.Dialog = {
-    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived) ⇒
+  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived, createdAt) <> (applyDialog.tupled, unapplyDialog)
+
+  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Boolean, DateTime) ⇒ models.Dialog = {
+    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived, createdAt) ⇒
       models.Dialog(
         userId = userId,
         peer = models.Peer(models.PeerType.fromInt(peerType), peerId),
@@ -44,20 +47,22 @@ final class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
         lastReadAt = lastReadAt,
         ownerLastReceivedAt = ownerLastReceivedAt,
         ownerLastReadAt = ownerLastReadAt,
-        isArchived = isArchived
+        isArchived = isArchived,
+        createdAt = createdAt
       )
   }
 
-  def unapplyDialog: models.Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Boolean)] = { dialog ⇒
+  def unapplyDialog: models.Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Boolean, DateTime)] = { dialog ⇒
     models.Dialog.unapply(dialog).map {
-      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived) ⇒
-        (userId, peer.typ.toInt, peer.id, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived)
+      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived, createdAt) ⇒
+        (userId, peer.typ.toInt, peer.id, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isArchived, createdAt)
     }
   }
 }
 
 object DialogRepo {
   val dialogs = TableQuery[DialogTable]
+  val dialogsC = Compiled(dialogs)
 
   def byPeerSimple(peerType: Rep[Int], peerId: Rep[Int]) =
     dialogs.filter(d ⇒ d.peerType === peerType && d.peerId === peerId)
@@ -74,22 +79,28 @@ object DialogRepo {
   def idByPeerType(userId: Rep[Int], peerType: Rep[Int]) =
     byPeerType(userId, peerType).map(_.peerId)
 
+  def userIdByPeerType(peerType: Rep[Int], peerId: Rep[Int]) =
+    byPeerSimple(peerType, peerId)
+
   val byPKC = Compiled(byPKSimple _)
   val byPeerC = Compiled(byPeerSimple _)
   val byPeerTypeC = Compiled(byPeerType _)
   val idByPeerTypeC = Compiled(idByPeerType _)
 
   val notHiddenDialogs = DialogRepo.dialogs joinLeft GroupRepo.groups on (_.peerId === _.id) filter {
-    case (dialog, groupOpt) ⇒ dialog.isArchived === false && (groupOpt.map(!_.isHidden).getOrElse(true))
+    case (dialog, groupOpt) ⇒ dialog.isArchived === false && groupOpt.map(!_.isHidden).getOrElse(true)
   } map (_._1)
 
   def create(dialog: models.Dialog) =
-    dialogs += dialog
+    dialogsC += dialog
 
-  def createIfNotExists(dialog: models.Dialog)(implicit ec: ExecutionContext) = {
+  def create(dialogs: Seq[models.Dialog]) =
+    dialogsC ++= dialogs
+
+  def createIfNotExists(dialog: models.Dialog)(implicit ec: ExecutionContext): DBIO[Boolean] = {
     for {
       dOpt ← find(dialog.userId, dialog.peer)
-      res ← if (dOpt.isEmpty) create(dialog) else DBIO.successful(0)
+      res ← if (dOpt.isEmpty) create(dialog).map(_ ⇒ true) else DBIO.successful(false)
     } yield res
   }
 
@@ -98,6 +109,9 @@ object DialogRepo {
 
   def findGroups(userId: Int): FixedSqlStreamingAction[Seq[models.Dialog], models.Dialog, Read] =
     byPeerTypeC((userId, models.PeerType.Group.toInt)).result
+
+  def findAllGroups(userIds: Set[Int], groupId: Int) =
+    dialogs.filter(d ⇒ d.peerType === PeerType.Group.toInt && d.peerId === groupId && d.userId.inSet(userIds)).result
 
   def findGroupIds(userId: Int): FixedSqlStreamingAction[Seq[Int], Int, Read] =
     idByPeerTypeC((userId, models.PeerType.Group.toInt)).result
@@ -108,10 +122,16 @@ object DialogRepo {
   def findLastReadBefore(date: DateTime, userId: Int) =
     dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result
 
-  def findNotArchivedByUser(userId: Int, dateOpt: Option[DateTime], limit: Int)(implicit ec: ExecutionContext) = {
+  def findNotArchivedSortByCreatedAt(userId: Int, dateOpt: Option[DateTime], limit: Int)(implicit ec: ExecutionContext): DBIO[Seq[models.Dialog]] =
+    findNotArchived(userId, dateOpt: Option[DateTime], limit, _.createdAt.asc)
+
+  def findNotArchived(userId: Int, dateOpt: Option[DateTime], limit: Int)(implicit ec: ExecutionContext): DBIO[Seq[models.Dialog]] =
+    findNotArchived(userId, dateOpt: Option[DateTime], limit, _.lastMessageDate.desc)
+
+  def findNotArchived[A](userId: Int, dateOpt: Option[DateTime], limit: Int, sortBy: DialogTable ⇒ ColumnOrdered[A])(implicit ec: ExecutionContext): DBIO[Seq[models.Dialog]] = {
     val baseQuery = notHiddenDialogs
       .filter(d ⇒ d.userId === userId)
-      .sortBy(_.lastMessageDate.desc)
+      .sortBy(sortBy)
 
     val limitedQuery = dateOpt match {
       case Some(date) ⇒ baseQuery.filter(_.lastMessageDate <= date)
@@ -132,13 +152,8 @@ object DialogRepo {
     } yield result
   }
 
-  def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
-    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastMessageDate).update(lastMessageDate) flatMap {
-      case 0 ⇒
-        create(models.Dialog.withLastMessageDate(userId, peer, lastMessageDate))
-      case x ⇒ DBIO.successful(x)
-    }
-  }
+  def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) =
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastMessageDate).update(lastMessageDate)
 
   def findExistingUserIds(userIds: Set[Int], peer: models.Peer): FixedSqlStreamingAction[Seq[Int], Int, Read] = {
     byPeerC.applied((peer.typ.toInt, peer.id))
@@ -148,81 +163,37 @@ object DialogRepo {
   }
 
   def updateLastMessageDates(userIds: Set[Int], peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
-    for {
-      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
-        .filter(_.userId inSetBind existing)
-        .map(_.lastMessageDate)
-        .update(lastMessageDate)
-      _ ← DBIO.sequence(
-        (userIds diff existing)
-          .toSeq
-          .map(userId ⇒ create(models.Dialog.withLastMessageDate(userId, peer, lastMessageDate)))
-      )
-    } yield userIds.size
+    byPeerC.applied((peer.typ.toInt, peer.id))
+      .filter(_.userId inSetBind userIds)
+      .map(_.lastMessageDate)
+      .update(lastMessageDate)
   }
 
-  def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
-    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastReceivedAt).update(lastReceivedAt) flatMap {
-      case 0 ⇒
-        create(models.Dialog.withLastReceivedAt(userId, peer, lastReceivedAt))
-      case x ⇒ DBIO.successful(x)
-    }
-  }
+  def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) =
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastReceivedAt).update(lastReceivedAt)
 
   def updateLastReceivedAt(userIds: Set[Int], peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
-    for {
-      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
-        .filter(_.userId inSetBind existing)
-        .map(_.lastReceivedAt)
-        .update(lastReceivedAt)
-      _ ← DBIO.sequence(
-        (userIds diff existing)
-          .toSeq
-          .map(userId ⇒ create(models.Dialog.withLastReceivedAt(userId, peer, lastReceivedAt)))
-      )
-    } yield userIds.size
+    byPeerC.applied((peer.typ.toInt, peer.id))
+      .filter(_.userId inSetBind userIds)
+      .map(_.lastReceivedAt)
+      .update(lastReceivedAt)
   }
 
-  def updateOwnerLastReceivedAt(userId: Int, peer: models.Peer, ownerLastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
-    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.ownerLastReceivedAt).update(ownerLastReceivedAt) flatMap {
-      case 0 ⇒
-        create(models.Dialog.withOwnerLastReceivedAt(userId, peer, ownerLastReceivedAt))
-      case x ⇒ DBIO.successful(x)
-    }
-  }
+  def updateOwnerLastReceivedAt(userId: Int, peer: models.Peer, ownerLastReceivedAt: DateTime)(implicit ec: ExecutionContext) =
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.ownerLastReceivedAt).update(ownerLastReceivedAt)
 
-  def updateLastReadAt(userId: Int, peer: models.Peer, lastReadAt: DateTime)(implicit ec: ExecutionContext) = {
-    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastReadAt).update(lastReadAt) flatMap {
-      case 0 ⇒
-        create(models.Dialog.withLastReadAt(userId, peer, lastReadAt))
-      case x ⇒ DBIO.successful(x)
-    }
-  }
+  def updateLastReadAt(userId: Int, peer: models.Peer, lastReadAt: DateTime)(implicit ec: ExecutionContext) =
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastReadAt).update(lastReadAt)
 
   def updateLastReadAt(userIds: Set[Int], peer: models.Peer, lastReadAt: DateTime)(implicit ec: ExecutionContext) = {
-    for {
-      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
-        .filter(_.userId inSetBind existing)
-        .map(_.lastReadAt)
-        .update(lastReadAt)
-      _ ← DBIO.sequence(
-        (userIds diff existing)
-          .toSeq
-          .map(userId ⇒ create(models.Dialog.withLastReadAt(userId, peer, lastReadAt)))
-      )
-    } yield userIds.size
+    byPeerC.applied((peer.typ.toInt, peer.id))
+      .filter(_.userId inSetBind userIds)
+      .map(_.lastReadAt)
+      .update(lastReadAt)
   }
 
-  def updateOwnerLastReadAt(userId: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit ec: ExecutionContext) = {
-    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.ownerLastReadAt).update(ownerLastReadAt) flatMap {
-      case 0 ⇒
-        create(models.Dialog.withOwnerLastReadAt(userId, peer, ownerLastReadAt))
-      case x ⇒ DBIO.successful(x)
-    }
-  }
+  def updateOwnerLastReadAt(userId: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit ec: ExecutionContext) =
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.ownerLastReadAt).update(ownerLastReadAt)
 
   def makeArchived(userId: Int, peer: models.Peer) =
     byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.isArchived).update(true)

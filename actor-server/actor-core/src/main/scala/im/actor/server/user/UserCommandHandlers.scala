@@ -7,14 +7,15 @@ import akka.pattern.pipe
 import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ApiExtension
+import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.users._
 import im.actor.concurrent.FutureExt
 import im.actor.config.ActorConfig
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
+import im.actor.server.dialog.HistoryUtils
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, ImageUtils }
-import im.actor.server.history.HistoryUtils
 import im.actor.server.models.contact.{ UserContact, UserEmailContact, UserPhoneContact }
 import im.actor.server.persist.{ AuthSessionRepo, UserRepo }
 import im.actor.server.persist.contact.{ UserContactRepo, UserEmailContactRepo, UserPhoneContactRepo }
@@ -27,6 +28,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.util.Failure
 import scala.util.control.NoStackTrace
 
 sealed trait UserException extends RuntimeException
@@ -143,12 +145,12 @@ private[user] trait UserCommandHandlers {
       val rng = ThreadLocalRandom.current()
       db.run(for {
         _ ← p.UserPhoneRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
+        _ ← markContactRegistered(user, phone, false)
       } yield {
-        db.run(markContactRegistered(user, phone, false)) onFailure {
-          case e ⇒ log.error(e, "Failed to mark phone contact registered")
-        }
         AddPhoneAck()
-      })
+      }) andThen {
+        case Failure(e) ⇒ log.error(e, "Failed to add phone")
+      }
     }
 
   protected def addEmail(user: User, email: String): Unit =
@@ -156,12 +158,12 @@ private[user] trait UserCommandHandlers {
       val rng = ThreadLocalRandom.current()
       db.run(for {
         _ ← p.UserEmailRepo.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
+        _ ← markContactRegistered(user, email, false)
       } yield {
-        db.run(markContactRegistered(user, email, false)) onFailure {
-          case e ⇒ log.error(e, "Failed to mark email contact registered")
-        }
         AddEmailAck()
-      })
+      }) andThen {
+        case Failure(e) ⇒ log.error(e, "Failed to add email")
+      }
     }
 
   protected def changeNickname(user: User, clientAuthId: Long, nicknameOpt: Option[String]): Unit = {
@@ -209,6 +211,13 @@ private[user] trait UserCommandHandlers {
         (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false, deliveryId = None)
       } yield UpdateAvatarAck(avatarOpt, seqstate)
     }
+  }
+
+  protected def notifyDialogsChanged(user: User): Unit = {
+    (for {
+      shortDialogs ← dialogExt.getGroupedDialogs(user.id)
+      _ ← userExt.broadcastUserUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), pushText = None, isFat = false, deliveryId = None)
+    } yield NotifyDialogsChangedAck()) pipeTo sender()
   }
 
   protected def addContacts(
@@ -279,14 +288,13 @@ private[user] trait UserCommandHandlers {
           _ ← ContactsUtils.addContact(contact.ownerUserId, user.id, phoneNumber, localName)
           _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None))
           _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None))
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(user.id),
-            models.Peer.privat(contact.ownerUserId),
+          _ ← DBIO.from(dialogExt.writeMessage(
+            ApiPeer(ApiPeerType.Private, contact.ownerUserId),
+            user.id,
             date,
             randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
+            serviceMessage
+          ))
         } yield {
           recordRelation(user.id, contact.ownerUserId)
         }
@@ -314,14 +322,13 @@ private[user] trait UserCommandHandlers {
           _ ← ContactsUtils.addContact(contact.ownerUserId, user.id, email, localName)
           _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, deliveryId = None))
           _ ← DBIO.from(userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None))
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(user.id),
-            models.Peer.privat(contact.ownerUserId),
+          _ ← DBIO.from(dialogExt.writeMessage(
+            ApiPeer(ApiPeerType.Private, contact.ownerUserId),
+            user.id,
             date,
             randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
+            serviceMessage
+          ))
         } yield recordRelation(user.id, contact.ownerUserId)
       })
       _ ← p.contact.UnregisteredEmailContactRepo.deleteAll(email)
