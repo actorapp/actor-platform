@@ -71,7 +71,6 @@ class RecentSection extends Component {
           <ul className="sidebar__list">
             {dialogList}
           </ul>
-
         </div>
 
         <footer>
