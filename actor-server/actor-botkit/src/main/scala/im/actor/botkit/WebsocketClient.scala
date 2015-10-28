@@ -62,6 +62,11 @@ private[botkit] final class WebsocketClient(url: String)
     def onClose(event: Http.ConnectionClosed): Unit
 
     def onFailure(e: Http.ConnectionException): Unit
+
+    override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+      log.error(reason, "actor failed, message: {}", message)
+      super.preRestart(reason, message)
+    }
   }
 
   val uri = new URI(url)
@@ -134,6 +139,12 @@ private[botkit] final class WebsocketClient(url: String)
   }
 
   override val requestStrategy = new WatermarkRequestStrategy(Int.MaxValue)
+
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    log.error(reason, "actor failed, message: {}", message)
+    super.preRestart(reason, message)
+  }
 
   @tailrec final def deliverBuf(): Unit =
     if (totalDemand > 0) {
