@@ -62,6 +62,7 @@ final class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 
 object DialogRepo {
   val dialogs = TableQuery[DialogTable]
+  val dialogsC = Compiled(dialogs)
 
   def byPeerSimple(peerType: Rep[Int], peerId: Rep[Int]) =
     dialogs.filter(d ⇒ d.peerType === peerType && d.peerId === peerId)
@@ -78,6 +79,9 @@ object DialogRepo {
   def idByPeerType(userId: Rep[Int], peerType: Rep[Int]) =
     byPeerType(userId, peerType).map(_.peerId)
 
+  def userIdByPeerType(peerType: Rep[Int], peerId: Rep[Int]) =
+    byPeerSimple(peerType, peerId)
+
   val byPKC = Compiled(byPKSimple _)
   val byPeerC = Compiled(byPeerSimple _)
   val byPeerTypeC = Compiled(byPeerType _)
@@ -88,12 +92,15 @@ object DialogRepo {
   } map (_._1)
 
   def create(dialog: models.Dialog) =
-    dialogs += dialog
+    dialogsC += dialog
 
-  def createIfNotExists(dialog: models.Dialog)(implicit ec: ExecutionContext) = {
+  def create(dialogs: Seq[models.Dialog]) =
+    dialogsC ++= dialogs
+
+  def createIfNotExists(dialog: models.Dialog)(implicit ec: ExecutionContext): DBIO[Boolean] = {
     for {
       dOpt ← find(dialog.userId, dialog.peer)
-      res ← if (dOpt.isEmpty) create(dialog) else DBIO.successful(0)
+      res ← if (dOpt.isEmpty) create(dialog).map(_ ⇒ true) else DBIO.successful(false)
     } yield res
   }
 
@@ -156,36 +163,20 @@ object DialogRepo {
   }
 
   def updateLastMessageDates(userIds: Set[Int], peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
-    for {
-      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
-        .filter(_.userId inSetBind existing)
-        .map(_.lastMessageDate)
-        .update(lastMessageDate)
-      _ ← DBIO.sequence(
-        (userIds diff existing)
-          .toSeq
-          .map(userId ⇒ create(models.Dialog.withLastMessageDate(userId, peer, lastMessageDate)))
-      )
-    } yield userIds.size
+    byPeerC.applied((peer.typ.toInt, peer.id))
+      .filter(_.userId inSetBind userIds)
+      .map(_.lastMessageDate)
+      .update(lastMessageDate)
   }
 
   def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) =
     byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastReceivedAt).update(lastReceivedAt)
 
   def updateLastReceivedAt(userIds: Set[Int], peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
-    for {
-      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
-        .filter(_.userId inSetBind existing)
-        .map(_.lastReceivedAt)
-        .update(lastReceivedAt)
-      _ ← DBIO.sequence(
-        (userIds diff existing)
-          .toSeq
-          .map(userId ⇒ create(models.Dialog.withLastReceivedAt(userId, peer, lastReceivedAt)))
-      )
-    } yield userIds.size
+    byPeerC.applied((peer.typ.toInt, peer.id))
+      .filter(_.userId inSetBind userIds)
+      .map(_.lastReceivedAt)
+      .update(lastReceivedAt)
   }
 
   def updateOwnerLastReceivedAt(userId: Int, peer: models.Peer, ownerLastReceivedAt: DateTime)(implicit ec: ExecutionContext) =
@@ -195,18 +186,10 @@ object DialogRepo {
     byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastReadAt).update(lastReadAt)
 
   def updateLastReadAt(userIds: Set[Int], peer: models.Peer, lastReadAt: DateTime)(implicit ec: ExecutionContext) = {
-    for {
-      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
-        .filter(_.userId inSetBind existing)
-        .map(_.lastReadAt)
-        .update(lastReadAt)
-      _ ← DBIO.sequence(
-        (userIds diff existing)
-          .toSeq
-          .map(userId ⇒ create(models.Dialog.withLastReadAt(userId, peer, lastReadAt)))
-      )
-    } yield userIds.size
+    byPeerC.applied((peer.typ.toInt, peer.id))
+      .filter(_.userId inSetBind userIds)
+      .map(_.lastReadAt)
+      .update(lastReadAt)
   }
 
   def updateOwnerLastReadAt(userId: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit ec: ExecutionContext) =

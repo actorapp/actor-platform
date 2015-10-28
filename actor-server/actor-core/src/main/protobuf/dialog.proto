@@ -30,6 +30,15 @@ message DialogIdContainer {
 }
 
 message DialogCommands {
+    message CreateForUser {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required DialogIdContainer dialog_id = 1;
+        required int32 user_id = 2;
+    }
+
+    message CreateForUserAck {}
+
     message WriteMessage {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
 
