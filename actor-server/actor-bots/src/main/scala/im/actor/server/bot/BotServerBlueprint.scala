@@ -51,10 +51,6 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
       rqrsp ~> merge
 
       (rqrsp.inlet, merge.out)
-    } recover {
-      case e ⇒
-        log.error(e, "Failure in bot stream, userId: {}", botUserId)
-        throw e
     }
   }
 
