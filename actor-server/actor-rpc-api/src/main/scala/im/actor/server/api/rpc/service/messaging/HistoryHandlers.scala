@@ -118,20 +118,9 @@ trait HistoryHandlers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleArchiveDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      withOutPeer(peer) {
-        val update = UpdateChatArchived(peer.asPeer)
+  override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = Future.failed(new RuntimeException("Not implemented"))
 
-        for {
-          _ ← persist.DialogRepo.makeArchived(client.userId, peer.asModel)
-          SeqState(seq, state) ← DBIO.from(userExt.broadcastClientUpdate(update, pushText = None))
-        } yield Ok(ResponseSeq(seq, state.toByteArray))
-      }
-    }
-
-    db.run(toDBIOAction(authorizedAction))
-  }
+  override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = Future.failed(new RuntimeException("Not implemented"))
 
   override def jhandleLoadHistory(peer: ApiOutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
