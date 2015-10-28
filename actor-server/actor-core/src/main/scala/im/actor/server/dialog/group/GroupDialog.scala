@@ -17,6 +17,7 @@ import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesExtension }
 import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
+import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -72,14 +73,7 @@ private[group] final class GroupDialog extends DialogProcessor[GroupDialogState,
     case LastReadDateChanged(date)         ⇒ state.copy(lastReadDate = Some(date))
   }
 
-  override protected def handleInitCommand: Receive = {
-    case () ⇒
-      unstashAll()
-      context become working(initState)
-    case msg ⇒
-      log.debug("Stashing while initializing: {}", msg)
-      stash()
-  }
+  override protected def handleInitCommand: Receive = handleCommand(initState)
 
   override protected def handleCommand(state: GroupDialogState): Receive = {
     case SendMessage(_, senderUserId, senderAuthId, randomId, message, isFat) ⇒
@@ -90,35 +84,14 @@ private[group] final class GroupDialog extends DialogProcessor[GroupDialogState,
       messageReceived(state, receiverUserId, date)
     case MessageRead(_, readerUserId, readerAuthId, date) ⇒
       messageRead(state, readerUserId, readerAuthId, date)
-    case StopDialog     ⇒ context stop self
-    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
+    case CreateForUser(_, userId) ⇒ createForUser(state, userId)
+    case StopDialog               ⇒ context stop self
+    case ReceiveTimeout           ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }
 
   override protected def handleQuery(state: GroupDialogState): Receive = PartialFunction.empty[Any, Unit]
 
-  private def init(): Unit = {
-    (for {
-      (userIds, _, _) ← groupExt.getMemberIds(groupId)
-      existingDialogs ← db.run(DialogRepo.findAllGroups(userIds.toSet, groupId))
-      _ ← FutureExt.ftraverse(userIds diff existingDialogs.map(_.userId))(createAndNotify)
-    } yield ()) pipeTo self onFailure {
-      case e ⇒
-        log.error(e, "Failed to initialize dialog")
-        init()
-    }
-  }
-
-  private def createAndNotify(userId: Int): Future[Unit] = {
-    for {
-      _ ← db.run(DialogRepo.create(Dialog(userId, Peer(PeerType.Group, groupId))))
-      _ ← userExt.notifyDialogsChanged(userId)
-    } yield ()
-  }
-
-  override def receiveRecover = {
-    case RecoveryCompleted ⇒
-      init()
-  }
+  override def receiveRecover = Actor.emptyBehavior
 
   override def persistenceId: String = s"dialog_${ApiPeerType.Group.id}"
 
