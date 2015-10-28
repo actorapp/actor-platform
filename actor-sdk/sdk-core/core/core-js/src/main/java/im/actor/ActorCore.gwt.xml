@@ -26,7 +26,7 @@
     <extend-property name="locale" values="ru"/>
     <extend-property name="locale" values="cn"/>
 
-    <!--Uncomment for building single JS library -->
-    <!--<add-linker tableName="sso"/>-->
-    <!--<collapse-all-properties />-->
+    <!-- Building single JS library -->
+    <add-linker tableName="sso"/>
+    <collapse-all-properties />
 </module>
