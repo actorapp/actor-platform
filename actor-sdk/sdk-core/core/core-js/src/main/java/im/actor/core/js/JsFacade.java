@@ -15,6 +15,8 @@ import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
 import im.actor.core.js.providers.JsPhoneBookProvider;
+import im.actor.core.js.providers.electron.JsElectronApp;
+import im.actor.core.js.providers.electron.JsElectronListener;
 import im.actor.core.js.utils.HtmlMarkdownUtils;
 import im.actor.core.js.utils.IdentityUtils;
 import im.actor.core.network.RpcException;
@@ -99,6 +101,19 @@ public class JsFacade implements Exportable {
         }
 
         messenger = new JsMessenger(configuration.build());
+
+        if (isElectron()) {
+            JsElectronApp.subscribe("window", new JsElectronListener() {
+                @Override
+                public void onEvent(String content) {
+                    if ("focus".equals(content)) {
+                        messenger.onAppVisible();
+                    } else if ("blur".equals(content)) {
+                        messenger.onAppHidden();
+                    }
+                }
+            });
+        }
 
         Log.d(TAG, "JsMessenger created");
     }
@@ -558,10 +573,18 @@ public class JsFacade implements Exportable {
     // Events
 
     public void onAppVisible() {
+        // Ignore for electron runtime
+        if (isElectron()) {
+            return;
+        }
         messenger.onAppVisible();
     }
 
     public void onAppHidden() {
+        // Ignore for electron runtime
+        if (isElectron()) {
+            return;
+        }
         messenger.onAppHidden();
     }
 
