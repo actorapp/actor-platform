@@ -231,6 +231,8 @@ object SeqUpdatesManager {
       case api.users.UpdateUserNameChanged(userId, _)                              ⇒ singleUser(userId)
       case api.users.UpdateUserNickChanged(userId, _)                              ⇒ singleUser(userId)
       case api.users.UpdateUserAboutChanged(userId, _)                             ⇒ singleUser(userId)
+      case api.users.UpdateUserPreferredLanguagesChanged(userId, _)                ⇒ singleUser(userId)
+      case api.users.UpdateUserTimeZoneChanged(userId, _)                          ⇒ singleUser(userId)
       case api.weak.UpdateGroupOnline(groupId, _)                                  ⇒ singleGroup(groupId)
       case api.weak.UpdateTyping(peer, userId, _) ⇒
         val refs = peerRefs(peer)

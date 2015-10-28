@@ -46,7 +46,9 @@ private[user] object UserBuilder {
       createdAt = ts.getMillis,
       internalExtensions = e.extensions,
       external = e.external,
-      isAdmin = e.isAdmin
+      isAdmin = e.isAdmin,
+      preferredLanguages = Seq.empty[String],
+      timeZone = None
     )
 }
 
@@ -79,6 +81,8 @@ object UserProcessor {
       10032 → classOf[UserCommands.UpdateIsAdminAck],
       10033 → classOf[UserCommands.NotifyDialogsChanged],
       10034 → classOf[UserCommands.NotifyDialogsChangedAck],
+      10035 → classOf[UserCommands.ChangePreferredLanguages],
+      10036 → classOf[UserCommands.ChangeTimeZone],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -106,6 +110,8 @@ object UserProcessor {
       12012 → classOf[UserEvents.AboutChanged],
       12013 → classOf[UserEvents.AvatarUpdated],
       12016 → classOf[UserEvents.IsAdminUpdated],
+      12017 → classOf[UserEvents.PreferredLanguagesChanged],
+      12018 → classOf[UserEvents.TimeZoneChanged],
 
       13000 → classOf[User]
     )
@@ -165,6 +171,10 @@ private[user] final class UserProcessor
         state.copy(avatar = avatar)
       case TSEvent(_, UserEvents.IsAdminUpdated(isAdmin)) ⇒
         state.copy(isAdmin = isAdmin)
+      case TSEvent(_, UserEvents.TimeZoneChanged(timeZone)) ⇒
+        state.copy(timeZone = timeZone)
+      case TSEvent(_, UserEvents.PreferredLanguagesChanged(preferredLanguages)) ⇒
+        state.copy(preferredLanguages = preferredLanguages)
       case TSEvent(_, _: UserEvents.Created) ⇒ state
     }
   }
@@ -175,21 +185,23 @@ private[user] final class UserProcessor
   }
 
   override protected def handleCommand(state: User): Receive = {
-    case NewAuth(_, authId)                          ⇒ addAuth(state, authId)
-    case RemoveAuth(_, authId)                       ⇒ removeAuth(state, authId)
-    case ChangeCountryCode(_, countryCode)           ⇒ changeCountryCode(state, countryCode)
-    case ChangeName(_, name, clientAuthId)           ⇒ changeName(state, name, clientAuthId)
-    case Delete(_)                                   ⇒ delete(state)
-    case AddPhone(_, phone)                          ⇒ addPhone(state, phone)
-    case AddEmail(_, email)                          ⇒ addEmail(state, email)
-    case ChangeNickname(_, clientAuthId, nickname)   ⇒ changeNickname(state, clientAuthId, nickname)
-    case ChangeAbout(_, clientAuthId, about)         ⇒ changeAbout(state, clientAuthId, about)
-    case UpdateAvatar(_, clientAuthId, avatarOpt)    ⇒ updateAvatar(state, clientAuthId, avatarOpt)
+    case NewAuth(_, authId) ⇒ addAuth(state, authId)
+    case RemoveAuth(_, authId) ⇒ removeAuth(state, authId)
+    case ChangeCountryCode(_, countryCode) ⇒ changeCountryCode(state, countryCode)
+    case ChangeName(_, name, clientAuthId) ⇒ changeName(state, name, clientAuthId)
+    case Delete(_) ⇒ delete(state)
+    case AddPhone(_, phone) ⇒ addPhone(state, phone)
+    case AddEmail(_, email) ⇒ addEmail(state, email)
+    case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
+    case ChangeAbout(_, clientAuthId, about) ⇒ changeAbout(state, clientAuthId, about)
+    case UpdateAvatar(_, clientAuthId, avatarOpt) ⇒ updateAvatar(state, clientAuthId, avatarOpt)
     case AddContacts(_, clientAuthId, contactsToAdd) ⇒ addContacts(state, clientAuthId, contactsToAdd)
-    case UpdateIsAdmin(_, isAdmin)                   ⇒ updateIsAdmin(state, isAdmin)
-    case NotifyDialogsChanged(_)                     ⇒ notifyDialogsChanged(state)
-    case StopOffice                                  ⇒ context stop self
-    case ReceiveTimeout                              ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case UpdateIsAdmin(_, isAdmin) ⇒ updateIsAdmin(state, isAdmin)
+    case NotifyDialogsChanged(_) ⇒ notifyDialogsChanged(state)
+    case ChangeTimeZone(_, authId, timeZone) ⇒ changeTimeZone(state, authId, timeZone)
+    case ChangePreferredLanguages(_, authId, preferredLanguages) ⇒ changePreferredLanguages(state, authId, preferredLanguages)
+    case StopOffice ⇒ context stop self
+    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
   override protected def handleQuery(state: User): Receive = {
