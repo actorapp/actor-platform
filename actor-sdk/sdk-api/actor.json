@@ -4098,58 +4098,6 @@
         {
           "type": "update",
           "content": {
-            "name": "ChatHidden",
-            "header": 97,
-            "doc": [
-              "Update about chat hide",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Destination peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "ChatShown",
-            "header": 98,
-            "doc": [
-              "Update about chat shown",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Destination peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
             "name": "ChatGroupsChanged",
             "header": 1,
             "doc": [
