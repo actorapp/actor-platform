@@ -140,7 +140,6 @@ private[botkit] final class WebsocketClient(url: String)
 
   override val requestStrategy = new WatermarkRequestStrategy(Int.MaxValue)
 
-
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     log.error(reason, "actor failed, message: {}", message)
     super.preRestart(reason, message)
