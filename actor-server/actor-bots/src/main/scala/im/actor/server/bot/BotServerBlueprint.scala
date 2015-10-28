@@ -55,8 +55,6 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
   }
 
   private def handleRequest(id: Long, service: String, body: RequestBody): Future[BotResponse] = {
-    log.debug("Bot request: {}, id: {}, userId: {}", body, id, botUserId)
-
     val resultFuture =
       if (services.isDefinedAt(service)) {
         val handlers = services(service).handlers
@@ -68,10 +66,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
         } else Future.successful(BotError(400, "REQUEST_NOT_SUPPORTED", Js.Obj(), None))
       } else Future.successful(BotError(400, "SERVICE_NOT_REGISTERED", Js.Obj(), None))
 
-    resultFuture map (BotResponse(id, _)) andThen {
-      case Failure(e)   ⇒ log.error(e, "Failed to handle bot request: {}, id: {}, userId: {}", body, id, botUserId)
-      case Success(rsp) ⇒ log.debug("Bot response: {}, id: {}, userId: {}", rsp, id, botUserId)
-    }
+    resultFuture map (BotResponse(id, _))
   }
 
   private val services: PartialFunction[String, BotServiceBase] = {
