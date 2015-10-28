@@ -34,7 +34,9 @@ private[user] trait UserQueriesHandlers {
         contactInfo = UserUtils.defaultUserContactRecords(state.phones.toVector, state.emails.toVector),
         nick = state.nickname,
         about = state.about,
-        external = state.external
+        external = state.external,
+        preferredLanguages = state.preferredLanguages.toVector,
+        timeZone = state.timeZone
       ))
     } pipeTo sender()
   }
