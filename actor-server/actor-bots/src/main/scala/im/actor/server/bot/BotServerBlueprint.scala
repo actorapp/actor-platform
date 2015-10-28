@@ -1,6 +1,7 @@
 package im.actor.server.bot
 
 import akka.actor.ActorSystem
+import akka.event.Logging
 import akka.stream.scaladsl.{ Flow, Merge, Source }
 import im.actor.api.rpc.Update
 import im.actor.bots.BotMessages
@@ -8,12 +9,11 @@ import im.actor.server.bot.services._
 import upickle.Js
 
 import scala.concurrent.Future
-import scala.util.Failure
+import scala.util.{ Success, Failure }
 
 final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSystem) {
 
   import BotMessages._
-  import BotServiceTypes._
   import akka.stream.scaladsl.FlowGraph.Implicits._
   import system.dispatcher
 
@@ -24,6 +24,8 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
   private val webhooksService = new WebHooksBotService(system)
   private val usersService = new UsersBotService(system)
   private val groupsService = new GroupsBotService(system)
+
+  private val log = Logging(system, getClass)
 
   val flow: Flow[BotRequest, BotMessageOut, Unit] = {
     val updSource =
@@ -49,10 +51,16 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
       rqrsp ~> merge
 
       (rqrsp.inlet, merge.out)
+    } recover {
+      case e ⇒
+        log.error(e, "Failure in bot stream, userId: {}", botUserId)
+        throw e
     }
   }
 
   private def handleRequest(id: Long, service: String, body: RequestBody): Future[BotResponse] = {
+    log.debug("Bot request: {}, id: {}, userId: {}", body, id, botUserId)
+
     val resultFuture =
       if (services.isDefinedAt(service)) {
         val handlers = services(service).handlers
@@ -65,8 +73,8 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
       } else Future.successful(BotError(400, "SERVICE_NOT_REGISTERED", Js.Obj(), None))
 
     resultFuture map (BotResponse(id, _)) andThen {
-      case Failure(e) ⇒ system.log.error(e, "Failed to handle {}", body)
-      case _          ⇒
+      case Failure(e)   ⇒ log.error(e, "Failed to handle bot request: {}, id: {}, userId: {}", body, id, botUserId)
+      case Success(rsp) ⇒ log.debug("Bot response: {}, id: {}, userId: {}", rsp, id, botUserId)
     }
   }
 
