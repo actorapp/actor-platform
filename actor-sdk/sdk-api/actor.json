@@ -6703,6 +6703,14 @@
                 },
                 "id": 7,
                 "name": "isPublic"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 8,
+                "name": "isJoined"
               }
             ]
           }
