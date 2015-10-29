@@ -102,7 +102,7 @@ public class DialogsFragment extends BaseDialogFragment {
                                 }
                             }
                         }
-                    });
+                    }).show();
             return true;
         }
 

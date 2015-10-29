@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.BaseFragment;
@@ -40,6 +41,7 @@ public class GroupNameFragment extends BaseFragment {
         helper = new KeyboardHelper(getActivity());
 
         View res = inflater.inflate(R.layout.fragment_create_group_name, container, false);
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         groupName = (EditText) res.findViewById(R.id.groupTitle);
         groupName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

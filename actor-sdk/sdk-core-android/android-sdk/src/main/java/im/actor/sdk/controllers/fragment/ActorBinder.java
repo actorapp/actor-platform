@@ -108,7 +108,7 @@ public class ActorBinder {
             @Override
             public void onChanged(UserPresence val, Value<UserPresence> Value) {
                 String s = messenger().getFormatter().formatPresence(val, user.getSex());
-                if (s != null) {
+                if (!user.isBot() && s != null) {
                     container.setVisibility(View.VISIBLE);
                     textView.setText(s);
                 } else {
@@ -229,6 +229,10 @@ public class ActorBinder {
         bindings.clear();
     }
 
+    public interface OnChangedListener {
+        void onChanged(String s);
+    }
+
     private class Binding {
         private Value model;
         private ValueChangedListener listener;
@@ -241,9 +245,5 @@ public class ActorBinder {
         public void unbind() {
             model.unsubscribe(listener);
         }
-    }
-
-    public interface OnChangedListener {
-        void onChanged(String s);
     }
 }

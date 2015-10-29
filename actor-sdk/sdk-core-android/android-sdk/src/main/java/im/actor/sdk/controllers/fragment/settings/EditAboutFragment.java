@@ -10,6 +10,7 @@ import android.widget.Toast;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.KeyboardHelper;
@@ -21,6 +22,11 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class EditAboutFragment extends BaseFragment {
 
+    private KeyboardHelper helper;
+    private EditText aboutEdit;
+    private int type;
+    private int id;
+
     public static EditAboutFragment editAbout(int type, int id) {
         Bundle args = new Bundle();
         args.putInt("EXTRA_TYPE", type);
@@ -30,12 +36,6 @@ public class EditAboutFragment extends BaseFragment {
         return res;
     }
 
-    private KeyboardHelper helper;
-    private EditText aboutEdit;
-
-    private int type;
-    private int id;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -44,6 +44,7 @@ public class EditAboutFragment extends BaseFragment {
 
         helper = new KeyboardHelper(getActivity());
         View res = inflater.inflate(R.layout.fragment_edit_about, container, false);
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         aboutEdit = (EditText) res.findViewById(R.id.nameEdit);
         if (type == EditAboutActivity.TYPE_ME) {
             UserVM userModel = users().get(myUid());
