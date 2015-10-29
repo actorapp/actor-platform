@@ -40,6 +40,7 @@ import im.actor.core.api.updates.UpdateMessageReceived;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.api.updates.UpdateParameterChanged;
 import im.actor.core.api.updates.UpdateTyping;
+import im.actor.core.api.updates.UpdateTypingStop;
 import im.actor.core.api.updates.UpdateUserLastSeen;
 import im.actor.core.api.updates.UpdateUserLocalNameChanged;
 import im.actor.core.api.updates.UpdateUserOffline;
@@ -198,6 +199,9 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof UpdateTyping) {
             UpdateTyping typing = (UpdateTyping) update;
             typingProcessor.onTyping(typing.getPeer(), typing.getUid(), typing.getTypingType());
+        } else if (update instanceof UpdateTypingStop){
+            UpdateTypingStop typing = (UpdateTypingStop) update;
+            typingProcessor.onTypingStop(typing.getPeer(), typing.getUid(), typing.getTypingType());
         }
     }
 

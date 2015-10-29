@@ -7,7 +7,7 @@ import akka.pattern.ask
 import akka.serialization.Serialization
 import akka.util.Timeout
 import com.google.protobuf.ByteString
-import im.actor.api.rpc.messaging.UpdateMessage
+import im.actor.api.rpc.messaging.{ ApiDialogGroup, UpdateMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.serialization.ActorSerializer
@@ -163,14 +163,25 @@ object SeqUpdatesManager {
     run(updates, updateAcc, currentSize)
   }
 
-  def updateRefs(update: api.Update): UpdateRefs = {
-    def peerRefs(peer: api.peers.ApiPeer): UpdateRefs = {
-      if (peer.`type` == api.peers.ApiPeerType.Private) {
-        UpdateRefs(Seq(peer.id), Seq.empty)
-      } else {
-        UpdateRefs(Seq.empty, Seq(peer.id))
-      }
+  def peerRefs(peer: api.peers.ApiPeer): UpdateRefs = {
+    if (peer.`type` == api.peers.ApiPeerType.Private) {
+      UpdateRefs(Seq(peer.id), Seq.empty)
+    } else {
+      UpdateRefs(Seq.empty, Seq(peer.id))
     }
+  }
+
+  def peerRefs(dialogGroups: Seq[api.messaging.ApiDialogGroup]): UpdateRefs = {
+    dialogGroups.view.flatMap(_.dialogs).foldLeft(UpdateRefs(Seq.empty, Seq.empty)) {
+      case (UpdateRefs(userIds, groupIds), dialog) ⇒
+        dialog.peer.`type` match {
+          case ApiPeerType.Private ⇒ UpdateRefs(userIds :+ dialog.peer.id, groupIds)
+          case ApiPeerType.Group   ⇒ UpdateRefs(userIds, groupIds :+ dialog.peer.id)
+        }
+    }
+  }
+
+  def updateRefs(update: api.Update): UpdateRefs = {
 
     val empty = UpdateRefs(Seq.empty, Seq.empty)
     def singleUser(userId: Int) = UpdateRefs(Seq(userId), Seq.empty)
@@ -201,6 +212,7 @@ object SeqUpdatesManager {
       case api.messaging.UpdateMessageSent(peer, _, _)                             ⇒ peerRefs(peer)
       case api.messaging.UpdateMessageContentChanged(peer, _, _)                   ⇒ peerRefs(peer)
       case api.messaging.UpdateMessageDateChanged(peer, _, _)                      ⇒ peerRefs(peer)
+      case api.messaging.UpdateChatGroupsChanged(dialogs)                          ⇒ peerRefs(dialogs)
       case api.groups.UpdateGroupAvatarChanged(groupId, userId, _, _, _)           ⇒ userAndGroup(userId, groupId)
       case api.groups.UpdateGroupInvite(groupId, inviteUserId, _, _)               ⇒ userAndGroup(inviteUserId, groupId)
       case api.groups.UpdateGroupMembersUpdate(groupId, members)                   ⇒ UpdateRefs((members.map(_.userId).toSet ++ members.map(_.inviterUserId).toSet).toSeq, Seq(groupId)) // TODO: #perf use foldLeft
@@ -219,6 +231,8 @@ object SeqUpdatesManager {
       case api.users.UpdateUserNameChanged(userId, _)                              ⇒ singleUser(userId)
       case api.users.UpdateUserNickChanged(userId, _)                              ⇒ singleUser(userId)
       case api.users.UpdateUserAboutChanged(userId, _)                             ⇒ singleUser(userId)
+      case api.users.UpdateUserPreferredLanguagesChanged(userId, _)                ⇒ singleUser(userId)
+      case api.users.UpdateUserTimeZoneChanged(userId, _)                          ⇒ singleUser(userId)
       case api.weak.UpdateGroupOnline(groupId, _)                                  ⇒ singleGroup(groupId)
       case api.weak.UpdateTyping(peer, userId, _) ⇒
         val refs = peerRefs(peer)

@@ -8,10 +8,6 @@ import org.joda.time.DateTime
 trait HistoryImplicits {
 
   implicit class ExtHistoryMessageModel(model: models.HistoryMessage) {
-    def ofUser(userId: Int) = {
-      model.copy(userId = userId)
-    }
-
     def asStruct(lastReceivedAt: DateTime, lastReadAt: DateTime) = {
       val in = CodedInputStream.newInstance(model.messageContentData)
       try {

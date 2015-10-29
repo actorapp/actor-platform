@@ -65,7 +65,9 @@ object BotMessages {
     avatar:                 Option[Avatar],
     username:               Option[String],
     isBot:                  Option[Boolean],
-    contactRecords:         Seq[ContactRecord]
+    contactRecords:         Seq[ContactRecord],
+    timeZone:               Option[String],
+    preferredLanguages:     Seq[String]
   ) {
     def isMale = sex.contains(1)
 
@@ -92,6 +94,10 @@ object BotMessages {
     def getPhoneContactRecords = seqAsJavaList(contactRecords collect {
       case p: PhoneContactRecord ⇒ p
     })
+
+    def getTimeZone = timeZone.asJava
+
+    def getPreferredLanguages = seqAsJavaList(preferredLanguages)
   }
 
   final case class GroupMember(

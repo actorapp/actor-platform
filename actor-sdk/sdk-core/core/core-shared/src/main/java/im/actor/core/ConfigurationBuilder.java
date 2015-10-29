@@ -38,6 +38,9 @@ public class ConfigurationBuilder {
     private int maxDelay = 15000;
     private int maxFailureCount = 50;
 
+    private String timeZone;
+    private ArrayList<String> preferredLanguages = new ArrayList<String>();
+
     /**
      * Set App Type
      *
@@ -61,6 +64,34 @@ public class ConfigurationBuilder {
     @ObjectiveCName("setDeviceCategory:")
     public ConfigurationBuilder setDeviceCategory(@NotNull DeviceCategory deviceCategory) {
         this.deviceCategory = deviceCategory;
+        return this;
+    }
+
+    /**
+     * Setting Device TimeZone
+     *
+     * @param timeZone device time zone
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setTimeZone:")
+    public ConfigurationBuilder setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+        return this;
+    }
+
+    /**
+     * Adding preferred language
+     *
+     * @param language language code
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("addPreferredLanguage:")
+    public ConfigurationBuilder addPreferredLanguage(String language) {
+        if (!preferredLanguages.contains(language)) {
+            preferredLanguages.add(language);
+        }
         return this;
     }
 
@@ -272,6 +303,7 @@ public class ConfigurationBuilder {
                 apiConfiguration, enableContactsLogging, enableNetworkLogging,
                 enableFilesLogging, deviceCategory, platformType,
                 minDelay, maxDelay, maxFailureCount,
-                extensions.toArray(new ConfigurationExtension[extensions.size()]));
+                extensions.toArray(new ConfigurationExtension[extensions.size()]),
+                timeZone, preferredLanguages.toArray(new String[preferredLanguages.size()]));
     }
 }
