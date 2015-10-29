@@ -150,7 +150,9 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.isBot(),
                 w.getNick(),
                 w.getAbout(),
-                w.getExternal());
+                w.getExternal(),
+                w.getPreferredLanguages(),
+                w.getTimeZone());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -168,7 +170,9 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.isBot(),
                 w.getNick(),
                 w.getAbout(),
-                w.getExternal());
+                w.getExternal(),
+                w.getPreferredLanguages(),
+                w.getTimeZone());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -186,7 +190,9 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.isBot(),
                 nick,
                 w.getAbout(),
-                w.getExternal());
+                w.getExternal(),
+                w.getPreferredLanguages(),
+                w.getTimeZone());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -204,7 +210,9 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.isBot(),
                 w.getNick(),
                 about,
-                w.getExternal());
+                w.getExternal(),
+                w.getPreferredLanguages(),
+                w.getTimeZone());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -222,7 +230,9 @@ public class User extends WrapperEntity<ApiUser> implements KeyValueItem {
                 w.isBot(),
                 w.getNick(),
                 w.getAbout(),
-                w.getExternal());
+                w.getExternal(),
+                w.getPreferredLanguages(),
+                w.getTimeZone());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }

@@ -118,7 +118,8 @@ public class Authentication {
                         apiConfiguration.getAppId(),
                         apiConfiguration.getAppKey(),
                         deviceHash,
-                        apiConfiguration.getDeviceTitle()
+                        apiConfiguration.getDeviceTitle(),
+                        null, new ArrayList<String>()
                 ), new RpcCallback<ResponseStartEmailAuth>() {
                     @Override
                     public void onResult(ResponseStartEmailAuth response) {
@@ -163,7 +164,8 @@ public class Authentication {
                         apiConfiguration.getAppId(),
                         apiConfiguration.getAppKey(),
                         deviceHash,
-                        apiConfiguration.getDeviceTitle()
+                        apiConfiguration.getDeviceTitle(),
+                        null, new ArrayList<String>()
                 ), new RpcCallback<ResponseStartPhoneAuth>() {
                     @Override
                     public void onResult(ResponseStartPhoneAuth response) {
