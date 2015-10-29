@@ -29,7 +29,7 @@ sealed trait MaybeAuthorized[+A] {
 final case class Authorized[+A](a: A) extends MaybeAuthorized[A]
 
 @SerialVersionUID(1L)
-final case object NotAuthorized extends MaybeAuthorized[Nothing]
+case object NotAuthorized extends MaybeAuthorized[Nothing]
 
 @SerialVersionUID(1L)
 case object MaybeAuthorized extends MaybeAuthorizedInstances
