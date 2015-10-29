@@ -161,7 +161,7 @@ trait HistoryHandlers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleDeleteMessage(outPeer: ApiOutPeer, randomIds: Vector[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleDeleteMessage(outPeer: ApiOutPeer, randomIds: IndexedSeq[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       withOutPeer(outPeer) {
         val peer = outPeer.asModel
@@ -195,7 +195,7 @@ trait HistoryHandlers {
     db.run(toDBIOAction(action))
   }
 
-  private val MaxDate = (new DateTime(294276, 1, 1, 0, 0)).getMillis
+  private val MaxDate = new DateTime(294276, 1, 1, 0, 0).getMillis
 
   private def endDateTimeFrom(date: Long): Option[DateTime] = {
     if (date == 0l) {
