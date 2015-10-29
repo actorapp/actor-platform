@@ -352,7 +352,7 @@
 
 "AuthPhoneNumberHint" = "Your phone number";
 
-"AuthPhoneHint" = "Please condifm your country code and enter your phone number.";
+"AuthPhoneHint" = "Please confirm your country code and enter your phone number.";
 
 "AuthPhoneTooShort" = "Phone number too short";
 

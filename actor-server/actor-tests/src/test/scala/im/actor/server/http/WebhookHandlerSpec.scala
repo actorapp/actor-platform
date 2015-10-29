@@ -104,7 +104,9 @@ class WebhookHandlerSpec
     }
 
     def tokenMigration() = {
-      val groups = for (i ← 1 to 300) yield createGroup(s"$i", Set(user2.id)).groupPeer
+      val groups = for (i ← 1 to 10) yield {
+        createGroup(s"$i", Set(user2.id)).groupPeer
+      }
 
       IntegrationTokenMigrator.migrate()
 

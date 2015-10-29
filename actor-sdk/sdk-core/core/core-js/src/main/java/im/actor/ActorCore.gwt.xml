@@ -25,8 +25,9 @@
     <extend-property name="locale" values="en"/>
     <extend-property name="locale" values="ru"/>
     <extend-property name="locale" values="cn"/>
+    <set-property-fallback name="locale" value="en"/>
 
-    <!--Uncomment for building single JS library -->
-    <!--<add-linker tableName="sso"/>-->
-    <!--<collapse-all-properties />-->
+    <!-- Building single JS library -->
+    <add-linker name="sso"/>
+    <collapse-all-properties />
 </module>

@@ -1,35 +1,24 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import ActorAppDispatcher, { dispatch } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
 import mixpanel from 'utils/Mixpanel';
 
 export default {
-  showContactList: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.CONTACT_LIST_SHOW
-    });
-  },
-
-  hideContactList: () => {
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.CONTACT_LIST_HIDE
-    });
-  },
+  showContactList: () => dispatch(ActionTypes.CONTACT_LIST_SHOW),
+  hideContactList: () => dispatch(ActionTypes.CONTACT_LIST_HIDE),
 
   setContacts: (contacts) => dispatch(ActionTypes.CONTACT_LIST_CHANGED, { contacts }),
 
   addContact: (uid) => {
     mixpanel.track('Add user to contacts');
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.CONTACT_ADD,
-      uid: uid
-    });
+    dispatch(ActionTypes.CONTACT_ADD, { uid });
   },
 
   removeContact: (uid) => {
     mixpanel.track('Remove user from contacts');
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.CONTACT_REMOVE,
-      uid: uid
-    });
+    dispatch(ActionTypes.CONTACT_REMOVE, { uid });
   }
 };

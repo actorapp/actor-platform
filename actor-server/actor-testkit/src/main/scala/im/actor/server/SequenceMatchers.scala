@@ -130,6 +130,7 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
       case UpdateGroupInvite.header           ⇒ UpdateGroupInvite.parseFrom(is)
       case UpdateGroupTitleChanged.header     ⇒ UpdateGroupTitleChanged.parseFrom(is)
       case UpdateMessageContentChanged.header ⇒ UpdateMessageContentChanged.parseFrom(is)
+      case UpdateChatGroupsChanged.header     ⇒ UpdateChatGroupsChanged.parseFrom(is)
       case _                                  ⇒ fail(s"Failed to parse update of given type. You MUST provide (header -> update) mapping in im.actor.server.SequenceMatchers.parseUpdate")
     }
     inside(result) {

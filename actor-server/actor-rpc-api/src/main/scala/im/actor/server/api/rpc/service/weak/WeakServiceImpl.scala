@@ -58,4 +58,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
 
     db.run(toDBIOAction(authorizedAction))
   }
+
+  override def jhandleStopTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    Future.failed(new RuntimeException("Not implemented"))
 }

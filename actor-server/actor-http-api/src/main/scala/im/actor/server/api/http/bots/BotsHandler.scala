@@ -85,21 +85,25 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
 
     Flow[Message]
       .collect {
-        case TextMessage.Strict(text) ⇒ read[BotRequest](text)
-        case tm: TextMessage          ⇒ throw new RuntimeException("Streamed text message is not supported") with NoStackTrace
+        case TextMessage.Strict(text) ⇒
+          val rq = read[BotRequest](text)
+          log.debug("Bot request: {}, userId: {}", rq, botUserId)
+          rq
+        case tm: TextMessage ⇒ throw new RuntimeException("Streamed text message is not supported") with NoStackTrace
       }
       .via(bp.flow)
       .map {
         case rsp: BotResponse ⇒
-          log.debug("Sending response {}", rsp)
+          log.debug("Bot response {}", rsp)
           write[BotResponse](rsp)
         case upd: BotUpdate ⇒
-          log.debug("Sending update {}", upd)
+          log.debug("Bot update {}", upd)
           write[BotUpdate](upd)
-        case unmatched ⇒
-          log.error("Unmatched {}", unmatched)
-          throw new RuntimeException(s"Unmatched BotMessage ${unmatched}")
       }
       .map(TextMessage.Strict(_).asInstanceOf[Message])
+  } recover {
+    case e ⇒
+      log.error(e, "Failure in websocket bot stream, userId: {}", botUserId)
+      throw e
   }
 }
