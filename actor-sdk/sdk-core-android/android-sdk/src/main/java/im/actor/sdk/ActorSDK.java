@@ -12,12 +12,15 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import im.actor.core.AndroidMessenger;
 import im.actor.core.ApiConfiguration;
 import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
+import im.actor.runtime.Log;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.ActorPushManager;
@@ -30,6 +33,7 @@ import im.actor.runtime.android.AndroidContext;
 
 public class ActorSDK {
 
+    private static final String TAG = "ActorSDK";
 
     private static volatile ActorSDK sdk = new ActorSDK();
     //
@@ -66,6 +70,10 @@ public class ActorSDK {
      * API App Key
      */
     private String apiAppKey = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
+    /**
+     * Actor App Name
+     */
+    private String appName = "Actor";
     /**
      * Push Registration Id
      */
@@ -128,12 +136,24 @@ public class ActorSDK {
         builder.setDeviceCategory(DeviceCategory.MOBILE);
         builder.setPlatformType(PlatformType.ANDROID);
         builder.setApiConfiguration(new ApiConfiguration(
-                // TODO: Update Title
-                "Title?",
+                appName,
                 apiAppId,
                 apiAppKey,
                 Devices.getDeviceName(),
                 AndroidContext.getContext().getPackageName() + ":" + Build.SERIAL));
+
+        // Adding Locales
+        Locale defaultLocale = Locale.getDefault();
+        Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
+        Log.d(TAG, "Found Locale: " + defaultLocale.getLanguage());
+        builder.addPreferredLanguage(defaultLocale.getLanguage() + "-" + defaultLocale.getCountry());
+        builder.addPreferredLanguage(defaultLocale.getLanguage());
+
+        // Adding TimeZone
+        String timeZone = TimeZone.getDefault().getID();
+        Log.d(TAG, "Found TimeZone: " + timeZone);
+        builder.setTimeZone(timeZone);
+
         this.messenger = new AndroidMessenger(AndroidContext.getContext(), builder.build());
 
         //
@@ -267,6 +287,24 @@ public class ActorSDK {
      */
     public void setIsKeepAliveEnabled(boolean isKeepAliveEnabled) {
         this.isKeepAliveEnabled = isKeepAliveEnabled;
+    }
+
+    /**
+     * Getting Application Name. Used to identify application.
+     *
+     * @return Application Name
+     */
+    public String getAppName() {
+        return appName;
+    }
+
+    /**
+     * Setting Application Name.
+     *
+     * @param appName Application name
+     */
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     /**

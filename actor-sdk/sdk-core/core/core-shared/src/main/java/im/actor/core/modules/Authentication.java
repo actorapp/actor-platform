@@ -114,12 +114,17 @@ public class Authentication {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
+                ArrayList<String> langs = new ArrayList<String>();
+                for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                    langs.add(s);
+                }
                 request(new RequestStartEmailAuth(email,
                         apiConfiguration.getAppId(),
                         apiConfiguration.getAppKey(),
                         deviceHash,
                         apiConfiguration.getDeviceTitle(),
-                        null, new ArrayList<String>()
+                        modules.getConfiguration().getTimeZone(),
+                        langs
                 ), new RpcCallback<ResponseStartEmailAuth>() {
                     @Override
                     public void onResult(ResponseStartEmailAuth response) {
@@ -160,12 +165,17 @@ public class Authentication {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
+                ArrayList<String> langs = new ArrayList<String>();
+                for (String s : modules.getConfiguration().getPreferredLanguages()) {
+                    langs.add(s);
+                }
                 request(new RequestStartPhoneAuth(phone,
                         apiConfiguration.getAppId(),
                         apiConfiguration.getAppKey(),
                         deviceHash,
                         apiConfiguration.getDeviceTitle(),
-                        null, new ArrayList<String>()
+                        modules.getConfiguration().getTimeZone(),
+                        langs
                 ), new RpcCallback<ResponseStartPhoneAuth>() {
                     @Override
                     public void onResult(ResponseStartPhoneAuth response) {

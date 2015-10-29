@@ -6,6 +6,7 @@ import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.internal.ContactsModule;
+import im.actor.core.modules.internal.DeviceInfoModule;
 import im.actor.core.modules.internal.DisplayLists;
 import im.actor.core.modules.internal.ExternalModule;
 import im.actor.core.modules.internal.FilesModule;
@@ -83,6 +84,8 @@ public interface ModuleContext {
     Messenger getMessenger();
 
     MentionsModule getMentions();
+
+    DeviceInfoModule getDeviceInfoModule();
 
     Extensions getExtensions();
 }
