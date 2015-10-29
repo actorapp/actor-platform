@@ -8,7 +8,18 @@ class AuthPhoneTransactionTable(tag: Tag) extends AuthTransactionBase[models.Aut
   def phoneNumber = column[Long]("phone_number")
 
   val inherited = AuthTransactionRepo.transactions.baseTableRow
-  def * = (phoneNumber, transactionHash, appId, apiKey, deviceHash, deviceTitle, accessSalt, isChecked, deletedAt) <> (models.AuthPhoneTransaction.tupled, models.AuthPhoneTransaction.unapply)
+  def * = (
+    phoneNumber,
+    transactionHash,
+    appId,
+    apiKey,
+    deviceHash,
+    deviceTitle,
+    accessSalt,
+    userData,
+    isChecked,
+    deletedAt
+  ) <> (models.AuthPhoneTransaction.tupled, models.AuthPhoneTransaction.unapply)
 }
 
 object AuthPhoneTransactionRepo {

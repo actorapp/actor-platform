@@ -14,6 +14,7 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.ApiSex.ApiSex
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.internal.CodeActivation
+import im.actor.server.auth.UserData
 import im.actor.server.db.DbExtension
 import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
 import im.actor.server.persist.auth.AuthTransactionRepo
@@ -112,7 +113,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
 
         email ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmailRepo.find(transaction.email))
 
-        user ← authorizeT(email.userId, profile.locale.getOrElse(""), clientData)
+        user ← authorizeT(email.userId, profile.locale.getOrElse(""), UserData.parseFrom(transaction.userData), clientData)
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
 
         //refresh session data
@@ -146,7 +147,16 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
     db.run(action.run)
   }
 
-  def jhandleStartPhoneAuth(phoneNumber: Long, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, clientData: ClientData): Future[HandlerResult[ResponseStartPhoneAuth]] = {
+  def jhandleStartPhoneAuth(
+    phoneNumber:        Long,
+    appId:              Int,
+    apiKey:             String,
+    deviceHash:         Array[Byte],
+    deviceTitle:        String,
+    timeZone:           Option[String],
+    preferredLanguages: IndexedSeq[String],
+    clientData:         ClientData
+  ): Future[HandlerResult[ResponseStartPhoneAuth]] = {
     val action = for {
       normalizedPhone ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeLong(phoneNumber).headOption)
       optAuthTransaction ← fromDBIO(persist.auth.AuthPhoneTransactionRepo.findByPhoneAndDeviceHash(normalizedPhone, deviceHash))
@@ -155,7 +165,16 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         case None ⇒
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
-          val phoneAuthTransaction = models.AuthPhoneTransaction(normalizedPhone, transactionHash, appId, apiKey, deviceHash, deviceTitle, accessSalt)
+          val phoneAuthTransaction = models.AuthPhoneTransaction(
+            normalizedPhone,
+            transactionHash,
+            appId,
+            apiKey,
+            deviceHash,
+            deviceTitle,
+            accessSalt,
+            UserData(timeZone.getOrElse(""), preferredLanguages).toByteArray
+          )
           for {
             _ ← fromDBIO(persist.auth.AuthPhoneTransactionRepo.create(phoneAuthTransaction))
           } yield transactionHash
@@ -190,7 +209,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         }
         //fallback to sign up if user exists
         user ← signInORsignUp match {
-          case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, clientData)
+          case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, UserData.parseFrom(transaction.userData), clientData)
           case \/-(user)                  ⇒ handleUserCreate(user, transaction, clientData.authId)
         }
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
@@ -214,7 +233,16 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
     db.run(action.run)
   }
 
-  def jhandleStartEmailAuth(email: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, clientData: ClientData): Future[HandlerResult[ResponseStartEmailAuth]] = {
+  override def jhandleStartEmailAuth(
+    email:              String,
+    appId:              Int,
+    apiKey:             String,
+    deviceHash:         Array[Byte],
+    deviceTitle:        String,
+    timeZone:           Option[String],
+    preferredLanguages: IndexedSeq[String],
+    clientData:         ClientData
+  ): Future[HandlerResult[ResponseStartEmailAuth]] = {
     val action = for {
       validEmail ← fromEither(validEmail(email).leftMap(validationFailed("EMAIL_INVALID", _))) //it actually does not change input email
       activationType = if (OAuth2ProvidersDomains.supportsOAuth2(email)) OAUTH2 else CODE
@@ -234,7 +262,17 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         case None ⇒
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
-          val emailAuthTransaction = models.AuthEmailTransaction(validEmail, None, transactionHash, appId, apiKey, deviceHash, deviceTitle, accessSalt)
+          val emailAuthTransaction = models.AuthEmailTransaction(
+            validEmail,
+            None,
+            transactionHash,
+            appId,
+            apiKey,
+            deviceHash,
+            deviceTitle,
+            accessSalt,
+            UserData(timeZone.getOrElse(""), preferredLanguages).toByteArray
+          )
           activationType match {
             case CODE ⇒
               for {
@@ -263,7 +301,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         (userId, countryCode) = userAndCounty
 
         //sign in user and delete auth transaction
-        user ← authorizeT(userId, countryCode, clientData)
+        user ← authorizeT(userId, countryCode, UserData.parseFrom(transaction.userData), clientData)
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
         _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transaction.transactionHash))
 
