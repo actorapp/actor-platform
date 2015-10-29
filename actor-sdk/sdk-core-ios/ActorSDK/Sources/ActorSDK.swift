@@ -144,6 +144,17 @@ public class ActorSDK {
         // Stats
         builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
         builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
+        
+        // Locale
+        for lang in NSLocale.preferredLanguages() {
+            log("Found locale :\(lang)")
+            builder.addPreferredLanguage(lang)
+        }
+        
+        // TimeZone
+        let timeZone = NSTimeZone.defaultTimeZone().name
+        log("Found time zone :\(timeZone)")
+        builder.setTimeZone(timeZone)
   
         // Extensions
         for ex in extensions {
