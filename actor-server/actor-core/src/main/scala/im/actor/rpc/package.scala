@@ -60,11 +60,21 @@ package object rpc extends {
       case None         ⇒ NotAuthorized
     }
 
+  object Result {
+    val UserNotAuthorized = -\/(RpcError(403, "USER_NOT_AUTHORIZED", "", false, None))
+  }
+
   def toDBIOAction[R](
     authorizedAction: MaybeAuthorized[DBIOAction[RpcError \/ R, NoStream, Nothing]]
   ): DBIOAction[RpcError \/ R, NoStream, Nothing] = {
-    authorizedAction.getOrElse(DBIO.successful(-\/(RpcError(403, "USER_NOT_AUTHORIZED", "", false, None))))
+    authorizedAction.getOrElse(DBIO.successful(Result.UserNotAuthorized))
   }
+
+  def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError \/ R]]): Future[RpcError \/ R] =
+    authorizedFuture.getOrElse(Future.successful(Result.UserNotAuthorized))
+
+  def authorized[R](clientData: ClientData)(fa: AuthorizedClientData ⇒ Future[RpcError \/ R]): Future[RpcError \/ R] =
+    toResult(requireAuth(clientData) map fa)
 
   def authorizedClient(clientData: ClientData): Result[AuthorizedClientData] =
     DBIOResult.fromOption(CommonErrors.UserNotFound)(clientData.optUserId.map(id ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, id)))

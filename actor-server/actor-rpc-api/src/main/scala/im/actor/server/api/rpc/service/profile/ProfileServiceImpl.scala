@@ -1,29 +1,24 @@
 package im.actor.server.api.rpc.service.profile
 
-import im.actor.server.{ ApiConversions, persist }
+import akka.actor.ActorSystem
+import akka.util.Timeout
+import im.actor.api.rpc.FutureResultRpc._
+import im.actor.api.rpc._
+import im.actor.api.rpc.files.ApiFileLocation
+import im.actor.api.rpc.misc.{ResponseBool, ResponseSeq}
+import im.actor.api.rpc.profile.{ProfileService, ResponseEditAvatar}
+import im.actor.server.db.DbExtension
+import im.actor.server.file.{FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension}
+import im.actor.server.persist
+import im.actor.server.sequence.SeqState
+import im.actor.server.social.{SocialExtension, SocialManagerRegion}
+import im.actor.server.user._
+import im.actor.util.misc.StringUtils
+import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.concurrent.{ ExecutionContext, Future }
-
-import akka.actor.ActorSystem
-import akka.util.Timeout
-import slick.driver.PostgresDriver.api._
-
-import im.actor.api.rpc.DBIOResult._
-import im.actor.api.rpc._
-import im.actor.api.rpc.files.ApiFileLocation
-import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
-import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
-import ApiConversions._
-import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, ImageUtils, FileErrors }
-import im.actor.server.persist
-import im.actor.server.sequence.SeqUpdatesExtension
-import im.actor.server.sequence.SeqState
-import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
-import im.actor.server.user._
-import im.actor.util.misc.StringUtils
+import scala.concurrent.{ExecutionContext, Future}
 
 object ProfileErrors {
   val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",
@@ -95,64 +90,55 @@ class ProfileServiceImpl()(
   }
 
   def jhandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      val action: Result[ResponseSeq] = for {
+    authorized(clientData) { implicit client ⇒
+      val action = for {
         trimmed ← point(nickname.map(_.trim))
         _ ← fromBoolean(ProfileErrors.NicknameInvalid)(trimmed.map(StringUtils.validNickName).getOrElse(true))
         _ ← if (trimmed.isDefined) {
           for {
             checkExist ← fromOption(ProfileErrors.NicknameInvalid)(trimmed)
-            _ ← fromDBIOBoolean(ProfileErrors.NicknameBusy)(persist.UserRepo.nicknameExists(checkExist).map(exist ⇒ !exist))
+            _ ← fromFutureBoolean(ProfileErrors.NicknameBusy)(db.run(persist.UserRepo.nicknameExists(checkExist).map(exist ⇒ !exist)))
           } yield ()
         } else point(())
         SeqState(seq, state) ← fromFuture(userExt.changeNickname(client.userId, client.authId, trimmed))
       } yield ResponseSeq(seq, state.toByteArray)
       action.run
     }
-    db.run(toDBIOAction(authorizedAction))
   }
 
   def jhandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] = {
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+    authorized(clientData) { implicit client ⇒
       (for {
         _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validNickName(nickname))
-        exists ← fromDBIO(persist.UserRepo.nicknameExists(nickname.trim))
+        exists ← fromFuture(db.run(persist.UserRepo.nicknameExists(nickname.trim)))
       } yield ResponseBool(!exists)).run
     }
-    db.run(toDBIOAction(authorizedAction))
   }
 
   //todo: move validation inside of UserOffice
   def jhandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      val action: Result[ResponseSeq] = for {
+    authorized(clientData) { implicit client ⇒
+      (for {
         trimmed ← point(about.map(_.trim))
         _ ← fromBoolean(ProfileErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
-
         SeqState(seq, state) ← fromFuture(userExt.changeAbout(client.userId, client.authId, trimmed))
-      } yield ResponseSeq(seq, state.toByteArray)
-      action.run
+      } yield ResponseSeq(seq, state.toByteArray)).run
     }
-    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+    authorized(clientData) { implicit client ⇒
       (for {
         SeqState(seq, state) ← fromFuture(userExt.changeTimeZone(client.userId, client.authId, tz))
       } yield ResponseSeq(seq, state.toByteArray)).run
     }
-
-    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleEditMyPreferredLanguages(preferredLanguages: Vector[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+    authorized(clientData) { implicit client ⇒
       (for {
         SeqState(seq, state) ← fromFuture(userExt.changePreferredLanguages(client.userId, client.authId, preferredLanguages))
       } yield ResponseSeq(seq, state.toByteArray)).run
     }
-
-    db.run(toDBIOAction(authorizedAction))
   }
 }
