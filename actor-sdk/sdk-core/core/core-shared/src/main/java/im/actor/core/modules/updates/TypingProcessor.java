@@ -32,6 +32,10 @@ public class TypingProcessor extends AbsModule {
         }
     }
 
+    public void onTypingStop(ApiPeer peer, int uid, ApiTypingType typingType) {
+        
+    }
+
     @Verified
     public void onMessage(ApiPeer peer, int uid) {
         if (peer.getType() == ApiPeerType.PRIVATE) {
