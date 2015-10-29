@@ -25,7 +25,7 @@ object WeakUpdatesManager {
   def props = Props(classOf[WeakUpdatesManager])
 }
 
-class WeakUpdatesManager extends Actor with ActorLogging {
+private final class WeakUpdatesManager extends Actor with ActorLogging {
 
   import WeakUpdatesManager._
 
@@ -35,7 +35,8 @@ class WeakUpdatesManager extends Actor with ActorLogging {
 
   def working(consumers: Set[ActorRef]): Receive = {
     case Envelope(authId, PushUpdate(header, serializedData, reduceKey)) ⇒
-      consumers foreach (_ ! UpdateReceived(WeakUpdate(System.currentTimeMillis(), header, serializedData), reduceKey))
+      val event = UpdateReceived(WeakUpdate(System.currentTimeMillis(), header, serializedData), reduceKey)
+      consumers foreach (_ ! event)
     case Envelope(_, Subscribe(consumer)) ⇒
       context.watch(consumer)
       context.become(working(consumers + consumer))
