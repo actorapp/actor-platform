@@ -123,8 +123,6 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
         case SmsCode(phone, c)            ⇒ smsEngine.sendCode(phone, c)
         case CallCode(phone, c, language) ⇒ callEngine.sendCode(phone, c, language)
         case EmailCode(email, c) ⇒
-          println(s"=== email, ${email}")
-          if (email == null) println("=== null")
           emailSender.send(Message(email, s"Actor activation code: $c", Content(Some(emailTemplate.replace("$$CODE$$", c)), Some(s"Your actor activation code: $c"))))
       }) map { _ ⇒
         forgetSentCodeAfterDelay(code)
