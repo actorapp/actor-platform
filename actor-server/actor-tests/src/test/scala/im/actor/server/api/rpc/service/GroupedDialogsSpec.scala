@@ -48,7 +48,7 @@ final class GroupedDialogsSpec
 
             groups.map(_.id).toSet shouldBe Set(group.groupPeer.groupId)
 
-            val (gs, ps) = dgroups.foldLeft(Vector.empty[ApiDialogShort], Vector.empty[ApiDialogShort]) {
+            val (gs, ps) = dgroups.foldLeft(IndexedSeq.empty[ApiDialogShort], IndexedSeq.empty[ApiDialogShort]) {
               case ((gs, ps), dg) ⇒
                 dg.key match {
                   case "groups"   ⇒ (dg.dialogs, ps)

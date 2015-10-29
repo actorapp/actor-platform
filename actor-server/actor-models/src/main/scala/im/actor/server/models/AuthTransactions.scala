@@ -12,6 +12,7 @@ case class AuthTransaction(
   deviceHash:      Array[Byte],
   deviceTitle:     String,
   accessSalt:      String,
+  userData:        Array[Byte],
   isChecked:       Boolean               = false,
   deletedAt:       Option[LocalDateTime] = None
 )
@@ -27,6 +28,7 @@ case class AuthPhoneTransaction(
   deviceHash:      Array[Byte],
   deviceTitle:     String,
   accessSalt:      String,
+  userData:        Array[Byte],
   isChecked:       Boolean               = false,
   deletedAt:       Option[LocalDateTime] = None
 ) extends AuthTransactionChildren
@@ -43,6 +45,7 @@ case class AuthEmailTransaction(
   deviceHash:      Array[Byte],
   deviceTitle:     String,
   accessSalt:      String,
+  userData:        Array[Byte],
   isChecked:       Boolean               = false,
   deletedAt:       Option[LocalDateTime] = None
 ) extends AuthTransactionChildren
@@ -55,4 +58,5 @@ sealed trait AuthTransactionChildren {
   def deviceTitle: String
   def isChecked: Boolean
   def accessSalt: String
+  def userData: Array[Byte]
 }

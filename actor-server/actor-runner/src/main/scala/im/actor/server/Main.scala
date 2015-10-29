@@ -30,7 +30,7 @@ import im.actor.server.bot.ActorBot
 import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
-import im.actor.server.email.{ EmailConfig, EmailSender }
+import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
 import im.actor.server.migrations.{ HiddenGroupMigrator, GroupCreatorMemberMigrator, IntegrationTokenMigrator, LocalNamesMigrator }
@@ -111,7 +111,7 @@ object Main extends App {
           activationConfig,
           new TelesignSmsEngine(telesignClient),
           new TelesignCallEngine((telesignClient)),
-          new EmailSender(emailConfig)
+          new SmtpEmailSender(emailConfig)
         )
       case "actor-activation" ⇒ new GateCodeActivation(gateConfig)
       case _                  ⇒ throw new Exception("""Invalid activation.default-service value provided: valid options: "internal", actor-activation""")

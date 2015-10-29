@@ -15,8 +15,16 @@ case class Content(html: Option[String], text: Option[String]) {
 
 case class Message(to: String, subject: String, content: Content)
 
-class EmailSender(config: EmailConfig) {
-  def send(message: Message)(implicit ec: ExecutionContext) = Future {
+trait EmailSender {
+  def send(message: Message): Future[Unit]
+}
+
+final class DummyEmailSender extends EmailSender {
+  override def send(message: Message): Future[Unit] = Future.successful(())
+}
+
+final class SmtpEmailSender(config: EmailConfig)(implicit ec: ExecutionContext) extends EmailSender {
+  override def send(message: Message) = Future {
     val email = new HtmlEmail()
     email.setHostName(config.host)
     email.setSmtpPort(config.port)
