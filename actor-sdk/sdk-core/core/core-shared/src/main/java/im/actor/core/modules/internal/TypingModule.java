@@ -51,6 +51,10 @@ public class TypingModule extends AbsModule {
         ownTypingActor.send(new OwnTypingActor.Typing(peer));
     }
 
+    public void onMessageSent(Peer peer) {
+        ownTypingActor.send(new OwnTypingActor.MessageSent(peer));
+    }
+
     public void resetModule() {
         // TODO: Implement
     }
