@@ -28,4 +28,9 @@ public class JsElectronApp {
             listener.@im.actor.core.js.providers.electron.JsElectronListener::onEvent(*)(message);
         });
     }-*/;
+
+    public static native void openUrlExternal(String url)/*-{
+        var shell = $wnd.require('shell');
+        shell.openExternal(url);
+    }-*/;
 }

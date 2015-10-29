@@ -5,6 +5,7 @@
 package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.client.TimeZone;
 import com.google.gwt.user.client.Event;
@@ -1120,19 +1121,12 @@ public class JsFacade implements Exportable {
         }
     }
 
-    public native void handleLinkClick(Event event)/*-{
-        console.warn('event type is', event.type);
-        if (event.type == 'click') {
-            if (window.$wnd.messenger.isElectron()) {
-                console.warn('opening external');
-                var url = event.target.getAttribute('href');
-                window.$wnd.require('shell').openExternal(url);
-                event.preventDefault()
-            } else {
-                console.warn('type of window.require is', typeof window.$wnd.require);
-            }
-        } else {
-            throw new Error("Event has type " + event.type + ", must to be click");
+    public void handleLinkClick(Event event) {
+        if (JsElectronApp.isElectron()) {
+            Element target = Element.as(event.getEventTarget());
+            String href = target.getAttribute("href");
+            JsElectronApp.openUrlExternal(href);
+            event.preventDefault();
         }
-    }-*/;
+    }
 }
