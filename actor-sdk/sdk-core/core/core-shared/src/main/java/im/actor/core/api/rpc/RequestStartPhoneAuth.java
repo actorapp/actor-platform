@@ -27,13 +27,17 @@ public class RequestStartPhoneAuth extends Request<ResponseStartPhoneAuth> {
     private String apiKey;
     private byte[] deviceHash;
     private String deviceTitle;
+    private String timeZone;
+    private List<String> preferredLanguages;
 
-    public RequestStartPhoneAuth(long phoneNumber, int appId, @NotNull String apiKey, @NotNull byte[] deviceHash, @NotNull String deviceTitle) {
+    public RequestStartPhoneAuth(long phoneNumber, int appId, @NotNull String apiKey, @NotNull byte[] deviceHash, @NotNull String deviceTitle, @Nullable String timeZone, @NotNull List<String> preferredLanguages) {
         this.phoneNumber = phoneNumber;
         this.appId = appId;
         this.apiKey = apiKey;
         this.deviceHash = deviceHash;
         this.deviceTitle = deviceTitle;
+        this.timeZone = timeZone;
+        this.preferredLanguages = preferredLanguages;
     }
 
     public RequestStartPhoneAuth() {
@@ -63,6 +67,16 @@ public class RequestStartPhoneAuth extends Request<ResponseStartPhoneAuth> {
         return this.deviceTitle;
     }
 
+    @Nullable
+    public String getTimeZone() {
+        return this.timeZone;
+    }
+
+    @NotNull
+    public List<String> getPreferredLanguages() {
+        return this.preferredLanguages;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.phoneNumber = values.getLong(1);
@@ -70,6 +84,8 @@ public class RequestStartPhoneAuth extends Request<ResponseStartPhoneAuth> {
         this.apiKey = values.getString(3);
         this.deviceHash = values.getBytes(4);
         this.deviceTitle = values.getString(5);
+        this.timeZone = values.optString(6);
+        this.preferredLanguages = values.getRepeatedString(7);
     }
 
     @Override
@@ -88,6 +104,10 @@ public class RequestStartPhoneAuth extends Request<ResponseStartPhoneAuth> {
             throw new IOException();
         }
         writer.writeString(5, this.deviceTitle);
+        if (this.timeZone != null) {
+            writer.writeString(6, this.timeZone);
+        }
+        writer.writeRepeatedString(7, this.preferredLanguages);
     }
 
     @Override
@@ -96,6 +116,8 @@ public class RequestStartPhoneAuth extends Request<ResponseStartPhoneAuth> {
         res += "phoneNumber=" + this.phoneNumber;
         res += ", deviceHash=" + byteArrayToString(this.deviceHash);
         res += ", deviceTitle=" + this.deviceTitle;
+        res += ", timeZone=" + this.timeZone;
+        res += ", preferredLanguages=" + this.preferredLanguages;
         res += "}";
         return res;
     }

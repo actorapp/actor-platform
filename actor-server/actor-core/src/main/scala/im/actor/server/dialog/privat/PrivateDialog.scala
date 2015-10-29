@@ -2,6 +2,7 @@ package im.actor.server.dialog.privat
 
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
+import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
@@ -9,17 +10,19 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.ApiPeerType
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
-import im.actor.server.dialog.privat.PrivateDialogEvents.PrivateDialogEvent
+import im.actor.server.event.TSEvent
+import im.actor.server.models.{ Dialog, Peer, PeerType }
 import im.actor.server.office.ProcessorState
+import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
+import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api.Database
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success }
 
 case class DialogState(
   peerId:          Int,
@@ -56,7 +59,7 @@ object PrivateDialog {
   def props = Props(classOf[PrivateDialog])
 }
 
-private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogState, PrivateDialogEvent] with PrivateDialogHandlers {
+private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogState, TSEvent] with PrivateDialogHandlers {
 
   import DialogCommands._
   import PrivateDialog._
@@ -93,32 +96,16 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
 
   context.setReceiveTimeout(1.hours)
 
-  override protected def updatedState(evt: PrivateDialogEvent, state: PrivateDialogState): PrivateDialogState = evt match {
-    case Created(s)                    ⇒ s
-    case LastMessageDate(date, userId) ⇒ state.updated(userId, state(userId).copy(lastMessageDate = Some(date)))
-    case LastReceiveDate(date, userId) ⇒ state.updated(userId, state(userId).copy(lastReceiveDate = Some(date)))
-    case LastReadDate(date, userId)    ⇒ state.updated(userId, state(userId).copy(lastReadDate = Some(date)))
+  override protected def updatedState(evt: TSEvent, state: PrivateDialogState): PrivateDialogState = evt match {
+    case TSEvent(_, Created(s))                    ⇒ s
+    case TSEvent(_, LastMessageDate(date, userId)) ⇒ state.updated(userId, state(userId).copy(lastMessageDate = Some(date)))
+    case TSEvent(_, LastReceiveDate(date, userId)) ⇒ state.updated(userId, state(userId).copy(lastReceiveDate = Some(date)))
+    case TSEvent(_, LastReadDate(date, userId))    ⇒ state.updated(userId, state(userId).copy(lastReadDate = Some(date)))
   }
 
   override protected def handleQuery(state: PrivateDialogState): Receive = Actor.emptyBehavior
 
   override protected def handleInitCommand: Receive = {
-    case msg ⇒
-      log.debug("Stashing while initializing, message: {}", msg)
-      stash()
-      context become (waitForExtensions orElse stashingBehavior)
-
-      val u1 = userExt.getUser(left)
-      val u2 = userExt.getUser(right)
-      val stateFuture = for (l ← u1; r ← u2) yield Extensions(l.internalExtensions, r.internalExtensions)
-
-      stateFuture onComplete {
-        case Success(exts) ⇒ self ! exts
-        case Failure(e)    ⇒ throw new Exception("Failed to initialize dialog")
-      }
-  }
-
-  private def waitForExtensions: Receive = {
     case Extensions(leftExt, rightExt) ⇒
       leftDeliveryExt = dialogExt.getDeliveryExtension(leftExt)
       rightDeliveryExt = dialogExt.getDeliveryExtension(rightExt)
@@ -126,12 +113,18 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
         left → DialogState(right, None, None, None),
         right → DialogState(left, None, None, None)
       ))
-      unstashAndWork(Created(state), state)
+      unstashAll()
+      context become working(updatedState(TSEvent(now(), Created(state)), state))
+    case msg ⇒
+      log.debug("Stashing while initializing: {}", msg)
+      stash()
   }
 
   override protected def handleCommand(state: PrivateDialogState): Receive = {
     case SendMessage(_, senderUserId, senderAuthId, randomId, message, isFat) ⇒
       sendMessage(state, senderUserId, senderAuthId, randomId, message, isFat)
+    case WriteMessage(_, senderUserId, date, randomId, message) ⇒
+      writeMessage(state, senderUserId, date, randomId, message)
     case MessageReceived(_, receiverUserId, date) ⇒
       messageReceived(state, receiverUserId, date)
     case MessageRead(_, readerUserUd, readerAuthId, date) ⇒
@@ -140,18 +133,45 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }
 
-  private[this] var recoveryState: Option[PrivateDialogState] = None
+  private def init(): Unit = {
+    val rightPeer = Peer(PeerType.Private, right)
+    val leftPeer = Peer(PeerType.Private, left)
+
+    val createModelFuture = db.run(for {
+      leftDialogOpt ← DialogRepo.find(left, rightPeer)
+      rightDialogOpt ← DialogRepo.find(right, leftPeer)
+      _ ← leftDialogOpt match {
+        case Some(_) ⇒ DBIO.successful(())
+        case None ⇒
+          for {
+            _ ← DialogRepo.create(Dialog(left, rightPeer))
+            _ ← DBIO.from(userExt.notifyDialogsChanged(left))
+          } yield ()
+      }
+      _ ← rightDialogOpt match {
+        case Some(_) ⇒ DBIO.successful(())
+        case None ⇒
+          for {
+            _ ← DialogRepo.create(Dialog(right, leftPeer))
+            _ ← DBIO.from(userExt.notifyDialogsChanged(right))
+          } yield ()
+      }
+    } yield ())
+
+    (for {
+      _ ← createModelFuture
+      l ← userExt.getUser(left)
+      r ← userExt.getUser(right)
+    } yield Extensions(l.internalExtensions, r.internalExtensions)) pipeTo self onFailure {
+      case e ⇒
+        log.error(e, "Failed to init dialog")
+        init()
+    }
+  }
 
   override def receiveRecover = {
-    case created: Created      ⇒ recoveryState = Some(created.state)
-    case e: PrivateDialogEvent ⇒ recoveryState = recoveryState map (updatedState(e, _))
     case RecoveryCompleted ⇒
-      recoveryState match {
-        case Some(dialogState) ⇒ context become working(dialogState)
-        case None              ⇒ context become initializing
-      }
-    case unmatched ⇒
-      log.error("Unmatched recovery event {}", unmatched)
+      init()
   }
 
   override def persistenceId: String = s"dialog_${ApiPeerType.Group.id}"

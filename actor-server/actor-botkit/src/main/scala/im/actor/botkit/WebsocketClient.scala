@@ -62,6 +62,11 @@ private[botkit] final class WebsocketClient(url: String)
     def onClose(event: Http.ConnectionClosed): Unit
 
     def onFailure(e: Http.ConnectionException): Unit
+
+    override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+      log.error(reason, "actor failed, message: {}", message)
+      super.preRestart(reason, message)
+    }
   }
 
   val uri = new URI(url)
@@ -126,14 +131,19 @@ private[botkit] final class WebsocketClient(url: String)
       log.info(">> {}", textToSend)
       client ! textToSend
     case e: Http.ConnectionClosed ⇒
-      onErrorThenStop(new RuntimeException(s"Connection closed: $e") with NoStackTrace)
+      onErrorThenStop(WebsocketClientEvents.ConnectionClosed(e))
     case Terminated(`client`) ⇒
-      onErrorThenStop(new RuntimeException("Failed to connect") with NoStackTrace)
+      onErrorThenStop(WebsocketClientEvents.FailedToConnect)
     case unmatched ⇒
       log.error("Unmatched {}", unmatched)
   }
 
   override val requestStrategy = new WatermarkRequestStrategy(Int.MaxValue)
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    log.error(reason, "actor failed, message: {}", message)
+    super.preRestart(reason, message)
+  }
 
   @tailrec final def deliverBuf(): Unit =
     if (totalDemand > 0) {
@@ -152,4 +162,11 @@ private[botkit] final class WebsocketClient(url: String)
         deliverBuf()
       }
     }
+}
+
+abstract class WebsocketClientException(message: String) extends RuntimeException(message) with NoStackTrace
+
+object WebsocketClientEvents {
+  case object FailedToConnect extends WebsocketClientException("Failed to connect")
+  case class ConnectionClosed(e: Http.ConnectionClosed) extends WebsocketClientException(s"Connection closed: ${e.getErrorCause}")
 }

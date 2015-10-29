@@ -11,11 +11,6 @@ public class JsElectronApp {
         ipc.send('tray-bounce');
     }-*/;
 
-    public static native void showNewMessages()/*-{
-        var ipc = $wnd.require('ipc');
-        ipc.send('new-messages-show');
-    }-*/;
-
     public static native void hideNewMessages()/*-{
         var ipc = $wnd.require('ipc');
         ipc.send('new-messages-hide');
@@ -24,5 +19,18 @@ public class JsElectronApp {
     public static native void updateBadge(int count)/*-{
         var ipc = $wnd.require('ipc');
         ipc.send('tray-badge', { count: count });
+    }-*/;
+
+
+    public static native void subscribe(String topic, JsElectronListener listener)/*-{
+        var ipc = $wnd.require('ipc');
+        ipc.on(topic, function(message) {
+            listener.@im.actor.core.js.providers.electron.JsElectronListener::onEvent(*)(message);
+        });
+    }-*/;
+
+    public static native void openUrlExternal(String url)/*-{
+        var shell = $wnd.require('shell');
+        shell.openExternal(url);
     }-*/;
 }

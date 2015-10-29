@@ -11,6 +11,7 @@ import im.actor.core.network.api.ApiBroker;
 import im.actor.core.network.parser.Request;
 import im.actor.core.network.parser.Response;
 import im.actor.runtime.threading.AtomicIntegerCompat;
+import im.actor.runtime.threading.AtomicLongCompat;
 
 /**
  * Actor API Object for connecting to Actor's servers
@@ -22,6 +23,7 @@ public class ActorApi {
     public static final int API_MINOR_VERSION = ApiVersion.VERSION_MINOR;
 
     private static final AtomicIntegerCompat NEXT_ID = im.actor.runtime.Runtime.createAtomicInt(1);
+    private static final AtomicLongCompat NEXT_RPC_ID = im.actor.runtime.Runtime.createAtomicLong(1);
 
     private final Endpoints endpoints;
     private final AuthKeyStorage keyStorage;
@@ -62,13 +64,24 @@ public class ActorApi {
      * @param request  request body
      * @param callback request callback
      * @param <T>      type of response
+     * @return rid of request
      */
-    public synchronized <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
+    public synchronized <T extends Response> long request(Request<T> request, RpcCallback<T> callback) {
         if (request == null) {
             throw new RuntimeException("Request can't be null");
         }
+        long rid = NEXT_RPC_ID.incrementAndGet();
+        this.apiBroker.send(new ApiBroker.PerformRequest(rid, request, callback));
+        return rid;
+    }
 
-        this.apiBroker.send(new ApiBroker.PerformRequest(request, callback));
+    /**
+     * Cancelling API Request
+     *
+     * @param rid request rid
+     */
+    public synchronized void cancelRequest(long rid) {
+        this.apiBroker.send(new ApiBroker.CancelRequest(rid));
     }
 
     /**
