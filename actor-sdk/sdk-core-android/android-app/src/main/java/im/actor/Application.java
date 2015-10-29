@@ -28,6 +28,7 @@ public class Application extends android.app.Application{
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setMainColor(Color.parseColor("#529a88"));
+        style.setMainBackground(style.getMainColor());
 
     }
 

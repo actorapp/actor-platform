@@ -10,6 +10,7 @@ import android.widget.Toast;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.KeyboardHelper;
@@ -43,6 +44,7 @@ public class EditNameFragment extends BaseFragment {
 
         helper = new KeyboardHelper(getActivity());
         View res = inflater.inflate(R.layout.fragment_edit_name, container, false);
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         nameEdit = (EditText) res.findViewById(R.id.nameEdit);
         if (type == EditNameActivity.TYPE_ME) {
             UserVM userModel = users().get(myUid());

@@ -13,12 +13,11 @@
         android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_backyard">
+        android:background="@color/bg_main">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bg_main"
             android:orientation="vertical">
 
             <FrameLayout
@@ -39,7 +38,6 @@
                             android:id="@+id/avatar_bgrnd"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/img_profile_avatar_default"
                             android:scaleType="centerCrop" />
 
                         <im.actor.sdk.view.avatar.CoverAvatarView
@@ -89,8 +87,8 @@
                     </LinearLayout>
 
                     <include
-                        layout="@layout/contact_record"
-                        android:id="@+id/about" />
+                        android:id="@+id/about"
+                        layout="@layout/contact_record" />
 
                     <LinearLayout
                         android:id="@+id/phoneContainer"
@@ -127,6 +125,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/shared_header_text"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:gravity="center_vertical|left"
@@ -203,6 +202,7 @@
                         </LinearLayout>
 
                         <FrameLayout
+                            android:id="@+id/after_shared_divider"
                             android:layout_width="match_parent"
                             android:layout_height="16dp"
                             android:background="@color/bg_backyard">
@@ -222,6 +222,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/settings_header_text"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:gravity="center_vertical|left"
@@ -259,6 +260,7 @@
                     </LinearLayout>
 
                     <FrameLayout
+                        android:id="@+id/bottom_divider"
                         android:layout_width="match_parent"
                         android:layout_height="16dp"
                         android:background="@color/bg_backyard">

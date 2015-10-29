@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import im.actor.core.entity.Contact;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.AddContactActivity;
 import im.actor.sdk.controllers.fragment.DisplayListFragment;
@@ -35,10 +36,10 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
 public abstract class BaseContactFragment extends DisplayListFragment<Contact, ContactHolder> {
 
-    private View emptyView;
     private final boolean useCompactVersion;
     private final boolean userSearch;
     private final boolean useSelection;
+    private View emptyView;
 
     public BaseContactFragment(boolean useCompactVersion, boolean userSearch, boolean useSelection) {
         this.useCompactVersion = useCompactVersion;
@@ -57,7 +58,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         emptyView = res.findViewById(R.id.emptyCollection);
 
         View headerPadding = new View(getActivity());
-        headerPadding.setBackgroundColor(getResources().getColor(R.color.bg_main));
+        headerPadding.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
         addHeaderView(headerPadding);
 
@@ -75,7 +76,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 }
             }
         });
-
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         return res;
     }
 
@@ -83,9 +84,10 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         if (useCompactVersion) {
             View footer = new View(getActivity());
             footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+            footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
             addFooterView(footer);
         } else {
-            addFooterOrHeaderAction(R.color.contacts_action_share, R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
+            addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionShareColor(), R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
                 @Override
                 public void run() {
                     String inviteMessage = getResources().getString(R.string.invite_message);
@@ -96,7 +98,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 }
             }, false);
 
-            addFooterOrHeaderAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, R.string.contacts_add, true, new Runnable() {
+            addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionAddContactColor(), R.drawable.ic_person_add_white_24dp, R.string.contacts_add, true, new Runnable() {
                 @Override
                 public void run() {
                     startActivity(new Intent(getActivity(), AddContactActivity.class));
@@ -110,14 +112,14 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             shadow.setScaleType(ImageView.ScaleType.FIT_XY);
             shadow.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
             footer.addView(shadow);
-
+            footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
             addFooterView(footer);
         }
     }
 
     protected void addFooterOrHeaderAction(int color, int icon, int text, boolean isLast, final Runnable action, boolean isHeader) {
         FrameLayout container = new FrameLayout(getActivity());
-        container.setBackgroundColor(getResources().getColor(R.color.bg_main));
+        container.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         {
             container.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -139,7 +141,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         }
 
         TintImageView inviteIcon = new TintImageView(getActivity());
-        inviteIcon.setTint(getResources().getColor(color));
+        inviteIcon.setTint(color);
         inviteIcon.setResource(icon);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
@@ -152,7 +154,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         TextView inviteText = new TextView(getActivity());
         inviteText.setText(text);
-        inviteText.setTextColor(getResources().getColor(color));
+        inviteText.setTextColor(color);
         inviteText.setPadding(Screen.dp(72), 0, Screen.dp(8), 0);
         inviteText.setTextSize(16);
         inviteText.setSingleLine(true);

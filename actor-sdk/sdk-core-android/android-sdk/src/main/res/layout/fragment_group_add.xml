@@ -20,6 +20,7 @@
         android:paddingRight="8dp">
 
         <im.actor.sdk.view.TintImageView
+            android:id="@+id/add_icon"
             android:layout_width="72dp"
             android:layout_height="58dp"
             app:src="@drawable/ic_person_add_white_24dp"
@@ -40,6 +41,7 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/bottom_divider"
         android:layout_width="match_parent"
         android:layout_height="16dp"
         android:background="@color/bg_backyard">
