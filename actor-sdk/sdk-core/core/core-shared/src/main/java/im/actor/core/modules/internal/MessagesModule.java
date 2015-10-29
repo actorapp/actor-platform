@@ -288,6 +288,8 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
 
     public void sendMessage(@NotNull Peer peer, @NotNull String message, @Nullable String markDownText,
                             @Nullable ArrayList<Integer> mentions, boolean autoDetect) {
+        // Notify typing about message sent
+        context().getTypingModule().onMessageSent(peer);
         sendMessageActor.send(new SenderActor.SendText(peer, message, markDownText, mentions,
                 autoDetect));
     }

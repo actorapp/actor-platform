@@ -60,7 +60,7 @@ public class ApiBroker extends Actor {
     }
 
     private static final String TAG = "ApiBroker";
-    private static final AtomicLongCompat NEXT_RPC_ID = im.actor.runtime.Runtime.createAtomicLong(1);
+
     private static final AtomicIntegerCompat NEXT_PROTO_ID = im.actor.runtime.Runtime.createAtomicInt(1);
 
     private final Endpoints endpoints;
@@ -360,12 +360,19 @@ public class ApiBroker extends Actor {
     }
 
     public static class PerformRequest {
+
         private Request message;
         private RpcCallback callback;
+        private long rid;
 
-        public PerformRequest(Request message, RpcCallback callback) {
+        public PerformRequest(long rid, Request message, RpcCallback callback) {
+            this.rid = rid;
             this.message = message;
             this.callback = callback;
+        }
+
+        public long getRid() {
+            return rid;
         }
 
         public Request getMessage() {
@@ -577,8 +584,7 @@ public class ApiBroker extends Actor {
             createMtProto(initMTProto.getAuthId());
         } else if (message instanceof PerformRequest) {
             PerformRequest request = (PerformRequest) message;
-            performRequest(NEXT_RPC_ID.getAndIncrement(),
-                    request.getMessage(), request.getCallback());
+            performRequest(request.getRid(), request.getMessage(), request.getCallback());
         } else if (message instanceof CancelRequest) {
             CancelRequest cancelRequest = (CancelRequest) message;
             cancelRequest(cancelRequest.getRandomId());
