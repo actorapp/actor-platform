@@ -130,8 +130,8 @@ public class ModuleActor extends Actor implements BusSubscriber {
         return context;
     }
 
-    public <T extends Response> void request(Request<T> request) {
-        request(request, new RpcCallback<T>() {
+    public <T extends Response> long request(Request<T> request) {
+        return request(request, new RpcCallback<T>() {
             @Override
             public void onResult(T response) {
 
@@ -144,8 +144,8 @@ public class ModuleActor extends Actor implements BusSubscriber {
         });
     }
 
-    public <T extends Response> void request(final Request<T> request, final RpcCallback<T> callback) {
-        context.getActorApi().request(request, new RpcCallback<T>() {
+    public <T extends Response> long request(final Request<T> request, final RpcCallback<T> callback) {
+        return context.getActorApi().request(request, new RpcCallback<T>() {
             @Override
             public void onResult(final T response) {
                 self().send(new Runnable() {
@@ -176,6 +176,10 @@ public class ModuleActor extends Actor implements BusSubscriber {
                 });
             }
         });
+    }
+
+    public void cancelRequest(long rid) {
+        context.getActorApi().cancelRequest(rid);
     }
 
     @Override

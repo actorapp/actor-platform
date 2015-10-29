@@ -191,11 +191,11 @@ class Login extends React.Component {
                          value={this.state.phone}/>
 
               <footer className="text-center">
-                <button className="button button--rised"
+                <button className="button button--rised button--wide"
                         type="submit">
                   {this.getIntlMessage('button.requestCode')}
+                  {phoneWaitSpinner}
                 </button>
-                <div style={{display: 'inline-block', position: 'relative'}}>{phoneWaitSpinner}</div>
               </footer>
             </form>
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
@@ -209,11 +209,11 @@ class Login extends React.Component {
                          value={this.state.code}/>
 
               <footer className="text-center">
-                <button className="button button--rised"
+                <button className="button button--rised button--wide"
                         type="submit">
                   {this.getIntlMessage('button.checkCode')}
+                  {codeWaitSpinner}
                 </button>
-                <div style={{display: 'inline-block', position: 'relative'}}>{codeWaitSpinner}</div>
               </footer>
             </form>
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
@@ -226,11 +226,11 @@ class Login extends React.Component {
                          value={this.state.name}/>
 
               <footer className="text-center">
-                <button className="button button--rised"
+                <button className="button button--rised button--wide"
                         type="submit">
                   {this.getIntlMessage('button.signUp')}
+                  {signupWaitSpinner}
                 </button>
-                <div style={{display: 'inline-block', position: 'relative'}}>{signupWaitSpinner}</div>
               </footer>
             </form>
           </div>

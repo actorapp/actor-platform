@@ -33,6 +33,20 @@ public class TypingProcessor extends AbsModule {
     }
 
     @Verified
+    public void onTypingStop(ApiPeer peer, int uid, ApiTypingType typingType) {
+        // Other types are unsupported
+        // TODO: Move to Actor
+        if (typingType != ApiTypingType.TEXT) {
+            return;
+        }
+        if (peer.getType() == ApiPeerType.PRIVATE) {
+            typingActor.sendOnce(new TypingActor.StopTyping(uid));
+        } else if (peer.getType() == ApiPeerType.GROUP) {
+            typingActor.sendOnce(new TypingActor.StopGroupTyping(peer.getId(), uid));
+        }
+    }
+
+    @Verified
     public void onMessage(ApiPeer peer, int uid) {
         if (peer.getType() == ApiPeerType.PRIVATE) {
             typingActor.sendOnce(new TypingActor.StopTyping(uid));

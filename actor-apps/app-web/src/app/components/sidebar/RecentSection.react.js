@@ -23,7 +23,6 @@ const LoadDialogsScrollBottom = 100;
 const getStateFromStore = () => {
   return {
     dialogs: DialogStore.getAll(),
-    //allDialogs: DialogStore.getAll(),
     isFastSwitcherOpen: FastSwitcherStore.isOpen()
   };
 };
@@ -55,7 +54,7 @@ class RecentSection extends Component {
     }
   };
 
-  openFastSwitch = () => FastSwitcherActionCreators.show();
+  openQuickSearch = () => FastSwitcherActionCreators.show();
 
   render() {
     const { dialogs, isFastSwitcherOpen } = this.state;
@@ -66,53 +65,25 @@ class RecentSection extends Component {
       );
     }, this);
 
-    //let groupsList = [],
-    //    privateList = [];
-    //
-    //_.forEach(allDialogs, (dialogs) => {
-    //  switch (dialogs.key) {
-    //    case 'groups':
-    //      groupsList = _.map(dialogs.shorts, (dialog, index) => {
-    //        return (
-    //          <RecentSectionItem dialog={dialog} key={index}/>
-    //        );
-    //      });
-    //      break;
-    //    case 'privates':
-    //      privateList = _.map(dialogs.shorts, (dialog, index) => {
-    //        return (
-    //          <RecentSectionItem dialog={dialog} key={index}/>
-    //        );
-    //      });
-    //      break;
-    //    default:
-    //  }
-    //});
-
-    const fastSwitch = isFastSwitcherOpen ? <FastSwitcherModal/> : null;
-
     return (
       <section className="sidebar__recent">
         <div className="sidebar__recent__scroll-container" onScroll={this.onScroll}>
           <ul className="sidebar__list">
             {dialogList}
           </ul>
-          {/*
-          <ul className="sidebar__list sidebar__list--groups">
-            <li className="sidebar__list__title">Groups</li>
-            {groupsList}
-          </ul>
-          <ul className="sidebar__list sidebar__list--private">
-            <li className="sidebar__list__title">Private</li>
-            {privateList}
-          </ul>
-          */}
         </div>
 
         <footer>
-          <button className="button button--rised button--wide" onClick={this.openFastSwitch}>Fast Switch</button>
-          {fastSwitch}
+          <a className="sidebar__recent__quick-search" onClick={this.openQuickSearch}>
+            <div className="icon-holder">
+              <i className="material-icons">search</i>
+            </div>
+            Quick Search
+          </a>
         </footer>
+
+        {isFastSwitcherOpen ? <FastSwitcherModal/> : null}
+
       </section>
     );
   }

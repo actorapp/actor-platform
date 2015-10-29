@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import { Path, KeyCodes } from 'constants/ActorAppConstants';
 import { emoji, getEmojiCategories } from 'utils/EmojiUtils';
+import isInside from 'utils/isInside';
 
 import { Element, Link } from 'react-scroll';
 
@@ -108,15 +109,6 @@ export default class EmojiDropdown extends Component {
     if (!this.isInside(coords, emojiRect)) {
       this.onClose();
     }
-  };
-
-  isInside = (coords, rect) => {
-    return (
-      coords.x > rect.left &&
-      coords.y > rect.top &&
-      coords.x < rect.left + rect.width &&
-      coords.y < rect.top + rect.height
-    )
   };
 
   changeDropdownTitle = (title) => this.setState({dropdownTitle: title});

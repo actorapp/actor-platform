@@ -77,22 +77,23 @@ trait ApiToBotConversions {
   implicit def toMembers(apiMembers: Seq[ApiMember]): Seq[GroupMember] =
     apiMembers map toMember
 
-  implicit def toContactRecord(apiContactRecord: ApiContactRecord): ContactRecord =
+  def toContactRecord(apiContactRecord: ApiContactRecord): Option[ContactRecord] =
     apiContactRecord.`type` match {
       case ApiContactType.Email ⇒
         apiContactRecord.stringValue match {
-          case Some(email) ⇒ EmailContactRecord(email)
+          case Some(email) ⇒ Some(EmailContactRecord(email))
           case None        ⇒ throw new RuntimeException(s"ApiContactRecord with Email type does not contain stringValue: $apiContactRecord")
         }
       case ApiContactType.Phone ⇒
         apiContactRecord.longValue match {
-          case Some(phone) ⇒ PhoneContactRecord(phone)
+          case Some(phone) ⇒ Some(PhoneContactRecord(phone))
           case None        ⇒ throw new RuntimeException(s"ApiContactRecord with Phone type does not contain longValue: $apiContactRecord")
         }
+      case _ ⇒ None
     }
 
   implicit def toContactRecords(apiContactRecords: Seq[ApiContactRecord]): Seq[ContactRecord] =
-    apiContactRecords map toContactRecord
+    apiContactRecords flatMap toContactRecord
 
   implicit def toUser(apiUser: ApiUser): User =
     User(
@@ -104,7 +105,9 @@ trait ApiToBotConversions {
       avatar = apiUser.avatar,
       username = apiUser.nick,
       isBot = apiUser.isBot,
-      contactRecords = apiUser.contactInfo
+      contactRecords = apiUser.contactInfo,
+      timeZone = apiUser.timeZone,
+      preferredLanguages = apiUser.preferredLanguages
     )
 
   implicit def toUsers(apiUsers: Seq[ApiUser]): Seq[User] = apiUsers map toUser

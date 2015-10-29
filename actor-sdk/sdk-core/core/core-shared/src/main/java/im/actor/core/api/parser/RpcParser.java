@@ -42,6 +42,8 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 212: return RequestEditAbout.fromBytes(payload);
             case 31: return RequestEditAvatar.fromBytes(payload);
             case 91: return RequestRemoveAvatar.fromBytes(payload);
+            case 144: return RequestEditMyTimeZone.fromBytes(payload);
+            case 145: return RequestEditMyPreferredLanguages.fromBytes(payload);
             case 7: return RequestImportContacts.fromBytes(payload);
             case 87: return RequestGetContacts.fromBytes(payload);
             case 89: return RequestRemoveContact.fromBytes(payload);
@@ -56,7 +58,8 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 118: return RequestLoadHistory.fromBytes(payload);
             case 104: return RequestLoadDialogs.fromBytes(payload);
             case 225: return RequestLoadGroupedDialogs.fromBytes(payload);
-            case 227: return RequestArchiveDialog.fromBytes(payload);
+            case 231: return RequestHideDialog.fromBytes(payload);
+            case 232: return RequestShowDialog.fromBytes(payload);
             case 65: return RequestCreateGroup.fromBytes(payload);
             case 199: return RequestEnterGroup.fromBytes(payload);
             case 85: return RequestEditGroupTitle.fromBytes(payload);
@@ -71,10 +74,12 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 177: return RequestGetGroupInviteUrl.fromBytes(payload);
             case 179: return RequestRevokeInviteUrl.fromBytes(payload);
             case 180: return RequestJoinGroup.fromBytes(payload);
+            case 233: return RequestPeerSearch.fromBytes(payload);
             case 201: return RequestGetPublicGroups.fromBytes(payload);
             case 182: return RequestGetIntegrationToken.fromBytes(payload);
             case 184: return RequestRevokeIntegrationToken.fromBytes(payload);
             case 27: return RequestTyping.fromBytes(payload);
+            case 30: return RequestStopTyping.fromBytes(payload);
             case 29: return RequestSetOnline.fromBytes(payload);
             case 77: return RequestGetFileUrl.fromBytes(payload);
             case 97: return RequestGetFileUploadUrl.fromBytes(payload);
@@ -93,6 +98,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 33: return RequestSubscribeFromOnline.fromBytes(payload);
             case 74: return RequestSubscribeToGroupOnline.fromBytes(payload);
             case 75: return RequestSubscribeFromGroupOnline.fromBytes(payload);
+            case 229: return RequestNotifyAboutDeviceInfo.fromBytes(payload);
             case 116: return RequestInitWebaction.fromBytes(payload);
             case 123: return RequestCompleteWebaction.fromBytes(payload);
             case 193: return ResponseStartPhoneAuth.fromBytes(payload);
@@ -114,6 +120,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 215: return ResponseMakeUserAdmin.fromBytes(payload);
             case 178: return ResponseInviteUrl.fromBytes(payload);
             case 181: return ResponseJoinGroup.fromBytes(payload);
+            case 234: return ResponsePeerSearch.fromBytes(payload);
             case 202: return ResponseGetPublicGroups.fromBytes(payload);
             case 183: return ResponseIntegrationToken.fromBytes(payload);
             case 78: return ResponseGetFileUrl.fromBytes(payload);
