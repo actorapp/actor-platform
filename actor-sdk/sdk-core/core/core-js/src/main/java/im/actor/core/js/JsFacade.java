@@ -5,6 +5,8 @@
 package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.i18n.client.TimeZone;
 import com.google.gwt.user.client.Event;
 
 import im.actor.core.*;
@@ -36,6 +38,7 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import java.util.Date;
 import java.util.List;
 
 @ExportPackage("actor")
@@ -87,6 +90,24 @@ public class JsFacade implements Exportable {
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setPhoneBookProvider(new JsPhoneBookProvider());
         configuration.setNotificationProvider(new JsNotificationsProvider());
+
+        // Setting locale
+        String locale = LocaleInfo.getCurrentLocale().getLocaleName();
+        if (locale.equals("default")) {
+            Log.d(TAG, "Default locale found");
+            configuration.addPreferredLanguage("en");
+        } else {
+            Log.d(TAG, "Locale found:" + locale);
+            configuration.addPreferredLanguage(locale.toLowerCase());
+        }
+
+        // Setting timezone
+        int offset = new Date().getTimezoneOffset();
+        String timeZone = TimeZone.createTimeZone(offset).getID();
+        Log.d(TAG, "TimeZone found:" + timeZone + " for delta " + offset);
+        configuration.setTimeZone(timeZone);
+
+        // LocaleInfo.getCurrentLocale().getLocaleName()
 
         // Is Web application
         configuration.setPlatformType(PlatformType.WEB);
