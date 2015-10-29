@@ -127,6 +127,18 @@
                 "argument": "deviceTitle",
                 "category": "full",
                 "description": "Device Title"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "TimeZone of device"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages of device"
               }
             ],
             "attributes": [
@@ -154,6 +166,22 @@
                 "type": "string",
                 "id": 5,
                 "name": "deviceTitle"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 7,
+                "name": "preferredLanguages"
               }
             ]
           }
@@ -258,14 +286,26 @@
               {
                 "type": "reference",
                 "argument": "deviceHash",
-                "category": "hidden",
+                "category": "full",
                 "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
               },
               {
                 "type": "reference",
                 "argument": "deviceTitle",
-                "category": "hidden",
+                "category": "full",
                 "description": "Device Title"
+              },
+              {
+                "type": "reference",
+                "argument": "timeZone",
+                "category": "full",
+                "description": "TimeZone of device"
+              },
+              {
+                "type": "reference",
+                "argument": "preferredLanguages",
+                "category": "full",
+                "description": "Preferred languages"
               }
             ],
             "attributes": [
@@ -293,6 +333,22 @@
                 "type": "string",
                 "id": 5,
                 "name": "deviceTitle"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 6,
+                "name": "timeZone"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "string"
+                },
+                "id": 7,
+                "name": "preferredLanguages"
               }
             ]
           }

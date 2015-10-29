@@ -229,6 +229,16 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3zgy61Em3mT" resolve="deviceTitle" />
         </node>
+        <node concept="NX1gA" id="1GlYFhnboWX" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="TimeZone of device" />
+          <ref role="NX6Kv" node="1GlYFhnbnF_" resolve="timeZone" />
+        </node>
+        <node concept="NX1gA" id="1GlYFhnbp$X" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Preferred languages of device" />
+          <ref role="NX6Kv" node="1GlYFhnbokI" resolve="preferredLanguages" />
+        </node>
         <node concept="2m7Kf5" id="3zgy61Em3mo" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="phoneNumber" />
@@ -253,6 +263,20 @@
           <property role="2m7DUN" value="5" />
           <property role="TrG5h" value="deviceTitle" />
           <node concept="2m5ndX" id="3zgy61Em3n5" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1GlYFhnbnF_" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="timeZone" />
+          <node concept="2m5nlT" id="1GlYFhnbok_" role="2m7DVh">
+            <node concept="2m5ndX" id="1GlYFhnbokF" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1GlYFhnbokI" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="preferredLanguages" />
+          <node concept="2m5nlk" id="1GlYFhnbokZ" role="2m7DVh">
+            <node concept="2m5ndX" id="1GlYFhnbol5" role="3GJlyp" />
+          </node>
         </node>
         <node concept="Nu42z" id="3zgy61Em3iq" role="NuuwV">
           <property role="Nu42W" value="BF" />
@@ -328,11 +352,23 @@
         </node>
         <node concept="NX1gA" id="3zgy61Em7qy" role="1GBnQ6">
           <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3zgy61ElWcS" resolve="deviceHash" />
         </node>
         <node concept="NX1gA" id="3zgy61Em7qK" role="1GBnQ6">
           <property role="NX6R2" value="Device Title" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="3zgy61ElWd5" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="1GlYFhnbqP$" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="TimeZone of device" />
+          <ref role="NX6Kv" node="1GlYFhnbqcQ" resolve="timeZone" />
+        </node>
+        <node concept="NX1gA" id="1GlYFhnbrtG" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Preferred languages" />
+          <ref role="NX6Kv" node="1GlYFhnbqdd" resolve="preferredLanguages" />
         </node>
         <node concept="2m7Kf5" id="3zgy61ElEO4" role="2m0hLx">
           <property role="2m7DUN" value="1" />
@@ -358,6 +394,20 @@
           <property role="2m7DUN" value="5" />
           <property role="TrG5h" value="deviceTitle" />
           <node concept="2m5ndX" id="3zgy61ElWdh" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="1GlYFhnbqcQ" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="timeZone" />
+          <node concept="2m5nlT" id="1GlYFhnbqd4" role="2m7DVh">
+            <node concept="2m5ndX" id="1GlYFhnbqda" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1GlYFhnbqdd" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="preferredLanguages" />
+          <node concept="2m5nlk" id="1GlYFhnbqdu" role="2m7DVh">
+            <node concept="2m5ndX" id="1GlYFhnbqd$" role="3GJlyp" />
+          </node>
         </node>
         <node concept="Nu42z" id="3zgy61ElELc" role="NuuwV">
           <property role="Nu42W" value="B9" />
