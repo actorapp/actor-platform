@@ -134,7 +134,7 @@ class ProfileServiceImpl()(
     }
   }
 
-  override def jhandleEditMyPreferredLanguages(preferredLanguages: Vector[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       (for {
         SeqState(seq, state) ← fromFuture(userExt.changePreferredLanguages(client.userId, client.authId, preferredLanguages))

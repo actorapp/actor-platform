@@ -61,7 +61,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     BitVector(md.digest(uids.getBytes)).toHex
   }
 
-  override def jhandleImportContacts(phones: Vector[ApiPhoneToImport], emails: Vector[ApiEmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = {
+  override def jhandleImportContacts(phones: IndexedSeq[ApiPhoneToImport], emails: IndexedSeq[ApiEmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = {
     val action =
       for {
         client ← authorizedClient(clientData)
@@ -202,7 +202,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     } yield contactUsers
   }
 
-  private def importEmails(user: models.User, optOwnEmail: Option[models.UserEmail], emails: Vector[ApiEmailToImport])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
+  private def importEmails(user: models.User, optOwnEmail: Option[models.UserEmail], emails: IndexedSeq[ApiEmailToImport])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
     //filtering out user's own email and making `Map` from emails to optional name
     val filtered: Map[String, Option[String]] = optOwnEmail
       .map(e ⇒ emails.filterNot(_.email == e.email)).getOrElse(emails)
@@ -230,7 +230,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     } yield (users, seqstate)
   }
 
-  private def importPhones(user: models.User, optPhone: Option[models.UserPhone], phones: Vector[ApiPhoneToImport])(client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
+  private def importPhones(user: models.User, optPhone: Option[models.UserPhone], phones: IndexedSeq[ApiPhoneToImport])(client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
     val filteredPhones = optPhone.map(p ⇒ phones.filterNot(_.phoneNumber == p.number)).getOrElse(phones)
 
     val (phoneNumbers, phonesMap) = filteredPhones.foldLeft((Set.empty[Long], Map.empty[Long, Option[String]])) {
@@ -261,7 +261,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
         // TODO: #perf do less queries
         val unregInsertActions = (phoneNumbers &~ registeredPhoneNumbers).toSeq map { phoneNumber ⇒
-          persist.contact.UnregisteredPhoneContactRepo.createIfNotExists(phoneNumber, user.id, phonesMap.get(phoneNumber).getOrElse(None))
+          persist.contact.UnregisteredPhoneContactRepo.createIfNotExists(phoneNumber, user.id, phonesMap.getOrElse(phoneNumber, None))
         }
 
         for {
@@ -272,7 +272,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
     }
   }
 
-  private def createPhoneContacts(ownerUserId: Int, usersPhonesNames: immutable.Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
+  private def createPhoneContacts(ownerUserId: Int, usersPhonesNames: Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
 
     persist.contact.UserContactRepo.findIds(ownerUserId, usersPhonesNames.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
       val contactsToAdd =

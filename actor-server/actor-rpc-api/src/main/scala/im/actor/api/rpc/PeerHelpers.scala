@@ -89,7 +89,7 @@ object PeerHelpers {
     case \/-(validTitle) ⇒ f(validTitle)
   }
 
-  def withUserOutPeers[R <: RpcResponse](userOutPeers: immutable.Seq[ApiUserOutPeer])(f: ⇒ DBIO[RpcError \/ R])(
+  def withUserOutPeers[R <: RpcResponse](userOutPeers: Seq[ApiUserOutPeer])(f: ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
     actorSystem: ActorSystem,
