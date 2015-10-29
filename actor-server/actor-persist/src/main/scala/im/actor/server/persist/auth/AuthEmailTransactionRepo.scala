@@ -9,7 +9,19 @@ final class AuthEmailTransactionTable(tag: Tag) extends AuthTransactionBase[mode
   def redirectUri = column[Option[String]]("redirect_uri")
 
   val inherited = AuthTransactionRepo.transactions.baseTableRow
-  def * = (email, redirectUri, transactionHash, appId, apiKey, deviceHash, deviceTitle, accessSalt, isChecked, deletedAt) <> (models.AuthEmailTransaction.tupled, models.AuthEmailTransaction.unapply)
+  def * = (
+    email,
+    redirectUri,
+    transactionHash,
+    appId,
+    apiKey,
+    deviceHash,
+    deviceTitle,
+    accessSalt,
+    userData,
+    isChecked,
+    deletedAt
+  ) <> (models.AuthEmailTransaction.tupled, models.AuthEmailTransaction.unapply)
 }
 
 object AuthEmailTransactionRepo {

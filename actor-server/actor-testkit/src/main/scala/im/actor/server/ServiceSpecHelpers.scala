@@ -1,14 +1,13 @@
 package im.actor.server
 
 import akka.actor.{ ActorRef, ActorSystem }
-import akka.cluster.pubsub.DistributedPubSub
 import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.api.{ rpc ⇒ rpcapi }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth
+import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.oauth.GoogleProvider
 import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
 import im.actor.server.user.UserExtension
@@ -153,7 +152,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     sessionRegion: SessionRegion,
     oauth2Service: GoogleProvider,
     system:        ActorSystem
-  ) = new auth.AuthServiceImpl(new DummyCodeActivation)
+  ) = new AuthServiceImpl(new DummyCodeActivation)
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]

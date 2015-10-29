@@ -9,13 +9,12 @@ import akka.stream.Materializer
 import akka.util.Timeout
 import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
 import im.actor.server.activation._
-import im.actor.server.email.{ Content, EmailSender, Message }
+import im.actor.server.email.{ EmailSender, Content, Message }
 import im.actor.server.models.AuthCode
 import im.actor.server.persist
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
 import im.actor.util.misc.EmailUtils.isTestEmail
 import im.actor.util.misc.PhoneNumberUtils.isTestPhone
-import im.actor.util.misc.{ EmailUtils, PhoneNumberUtils }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -124,6 +123,8 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
         case SmsCode(phone, c)            ⇒ smsEngine.sendCode(phone, c)
         case CallCode(phone, c, language) ⇒ callEngine.sendCode(phone, c, language)
         case EmailCode(email, c) ⇒
+          println(s"=== email, ${email}")
+          if (email == null) println("=== null")
           emailSender.send(Message(email, s"Actor activation code: $c", Content(Some(emailTemplate.replace("$$CODE$$", c)), Some(s"Your actor activation code: $c"))))
       }) map { _ ⇒
         forgetSentCodeAfterDelay(code)
