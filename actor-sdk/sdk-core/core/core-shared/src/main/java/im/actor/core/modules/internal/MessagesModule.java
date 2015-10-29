@@ -315,6 +315,9 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
     }
 
     public void onMessageShown(final Peer peer, final int sender, final long sortDate) {
+        if (!context().getAppStateModule().getAppStateVM().getIsAppVisible().get()) {
+            return;
+        }
         im.actor.runtime.Runtime.dispatch(new Runnable() {
             @Override
             public void run() {
