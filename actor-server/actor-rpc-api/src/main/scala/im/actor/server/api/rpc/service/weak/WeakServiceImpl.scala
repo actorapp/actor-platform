@@ -5,7 +5,9 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
 import im.actor.api.rpc.weak.{ ApiTypingType, UpdateTyping, WeakService }
+import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
+import im.actor.server.group.GroupExtension
 import im.actor.server.persist
 import im.actor.server.presences.PresenceExtension
 import im.actor.server.sequence.WeakUpdatesExtension
@@ -20,9 +22,11 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
   private val weakUpdatesExt = WeakUpdatesExtension(actorSystem)
   private val db = DbExtension(actorSystem).db
 
+  private lazy val groupExt = GroupExtension(actorSystem)
+
   override def jhandleTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      val action = peer.`type` match {
+    authorized(clientData) { client ⇒
+      peer.`type` match {
         case ApiPeerType.Private ⇒
           val update = UpdateTyping(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
@@ -33,15 +37,13 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
 
           for {
-            otherUserIds ← persist.GroupUserRepo.findUserIds(peer.id) map (_.filterNot(_ == client.userId))
-            _ ← DBIO.sequence(otherUserIds map (weakUpdatesExt.broadcastUserWeakUpdate(_, update, Some(reduceKey))))
+            (memberIds, _, _) ← groupExt.getMemberIds(peer.id)
+            _ ← FutureExt.ftraverse(memberIds filterNot (_ == client.userId))(weakUpdatesExt.broadcastUserWeakUpdate(_, update, Some(reduceKey)))
           } yield ()
       }
 
-      for (_ ← action) yield Ok(ResponseVoid)
+      Future.successful(Ok(ResponseVoid))
     }
-
-    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleSetOnline(isOnline: Boolean, timeout: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -59,6 +61,26 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleStopTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
-    Future.failed(new RuntimeException("Not implemented"))
+  // TODO: DRY
+  override def jhandleStopTyping(peer: ApiOutPeer, typingType: ApiTypingType.ApiTypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    authorized(clientData) { client ⇒
+      peer.`type` match {
+        case ApiPeerType.Private ⇒
+          val update = UpdateTyping(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
+          val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
+          weakUpdatesExt.broadcastUserWeakUpdate(peer.id, update, Some(reduceKey))
+        case ApiPeerType.Group ⇒
+          val update = UpdateTyping(ApiPeer(ApiPeerType.Group, peer.id), client.userId, typingType)
+          val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
+
+          for {
+            (memberIds, _, _) ← groupExt.getMemberIds(peer.id)
+            _ ← FutureExt.ftraverse(memberIds filterNot (_ == client.userId))(weakUpdatesExt.broadcastUserWeakUpdate(_, update, Some(reduceKey)))
+          } yield ()
+      }
+
+      Future.successful(Ok(ResponseVoid))
+    }
+  }
+
 }
