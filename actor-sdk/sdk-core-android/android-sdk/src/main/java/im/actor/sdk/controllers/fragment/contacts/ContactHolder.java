@@ -76,7 +76,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         fastTitle = new TextView(context);
-        fastTitle.setTextColor(ActorSDK.sharedActor().style.getContctFastTitleColor());
+        fastTitle.setTextColor(ActorSDK.sharedActor().style.getContactFastTitleColor());
         fastTitle.setTextSize(18);
         fastTitle.setGravity(Gravity.CENTER);
         fastTitle.setTypeface(Fonts.medium());
