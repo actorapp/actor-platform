@@ -9,6 +9,11 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 sealed trait UserExtension extends Extension
 
+object UserFields {
+  val TimeZone = "TimeZone"
+  val PreferredLanguages = "PreferredLanguages"
+}
+
 final class UserExtensionImpl(actorSystem: ActorSystem) extends UserExtension with UserOperations {
   UserProcessor.register()
 

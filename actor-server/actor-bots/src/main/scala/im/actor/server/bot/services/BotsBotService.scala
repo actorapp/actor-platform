@@ -3,7 +3,7 @@ package im.actor.server.bot.services
 import akka.actor.ActorSystem
 import im.actor.bots.BotMessages
 import im.actor.server.bot.{ BotExtension, BotServiceBase }
-import im.actor.server.user.UserExceptions
+import im.actor.server.user.UserErrors
 import upickle.Js
 
 private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceBase(system) {
@@ -18,7 +18,7 @@ private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceB
         (for {
           (token, userId) ← botExt.create(username, name, isAdmin = false)
         } yield Right(BotCreated(token, userId))) recover {
-          case UserExceptions.NicknameTaken ⇒
+          case UserErrors.NicknameTaken ⇒
             Left(BotError(400, "USERNAME_TAKEN", Js.Obj(), None))
         }
       }

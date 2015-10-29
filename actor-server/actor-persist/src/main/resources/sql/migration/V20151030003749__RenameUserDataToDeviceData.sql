@@ -1,0 +1,1 @@
+ALTER TABLE auth_transactions RENAME user_data TO device_info

@@ -16,7 +16,7 @@ class AuthPhoneTransactionTable(tag: Tag) extends AuthTransactionBase[models.Aut
     deviceHash,
     deviceTitle,
     accessSalt,
-    userData,
+    deviceInfo,
     isChecked,
     deletedAt
   ) <> (models.AuthPhoneTransaction.tupled, models.AuthPhoneTransaction.unapply)
