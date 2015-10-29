@@ -29,6 +29,9 @@ public class Configuration {
 
     private PlatformType platformType;
 
+    private String timeZone;
+    private String[] preferredLanguages;
+
     private int minDelay;
 
     private int maxDelay;
@@ -47,7 +50,9 @@ public class Configuration {
                   int minDelay,
                   int maxDelay,
                   int maxFailureCount,
-                  ConfigurationExtension[] extensions) {
+                  ConfigurationExtension[] extensions,
+                  String timeZone,
+                  String[] preferredLanguages) {
         this.endpoints = endpoints;
         this.phoneBookProvider = phoneBookProvider;
         this.enableContactsLogging = enableContactsLogging;
@@ -61,6 +66,8 @@ public class Configuration {
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
         this.extensions = extensions;
+        this.timeZone = timeZone;
+        this.preferredLanguages = preferredLanguages;
     }
 
     /**
@@ -178,5 +185,23 @@ public class Configuration {
      */
     public int getMaxFailureCount() {
         return maxFailureCount;
+    }
+
+    /**
+     * Get device time zone
+     *
+     * @return device timezone in Tz-format
+     */
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    /**
+     * Get preferred languages
+     *
+     * @return preferred languages
+     */
+    public String[] getPreferredLanguages() {
+        return preferredLanguages;
     }
 }
