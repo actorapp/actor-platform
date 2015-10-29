@@ -10,7 +10,7 @@ import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension }
 import im.actor.server.persist
-import im.actor.server.sequence.SeqState
+import im.actor.server.sequence.{ SequenceErrors, SeqState }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
 import im.actor.util.misc.StringUtils
@@ -129,7 +129,7 @@ class ProfileServiceImpl()(
   override def jhandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       (for {
-        SeqState(seq, state) ← fromFuture(userExt.changeTimeZone(client.userId, client.authId, tz))
+        SeqState(seq, state) ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, client.authId, tz))
       } yield ResponseSeq(seq, state.toByteArray)).run
     }
   }
@@ -137,8 +137,16 @@ class ProfileServiceImpl()(
   override def jhandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       (for {
-        SeqState(seq, state) ← fromFuture(userExt.changePreferredLanguages(client.userId, client.authId, preferredLanguages))
+        SeqState(seq, state) ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, client.authId, preferredLanguages))
       } yield ResponseSeq(seq, state.toByteArray)).run
     }
+  }
+
+  private def produceError = PartialFunction[Throwable, RpcError] {
+    case SequenceErrors.UpdateAlreadyApplied(field) ⇒ RpcError(400, "UPDATE_ALREADY_APPLIED", s"$field already updated.", canTryAgain = false, data = None)
+    case UserErrors.InvalidLocale(locale) ⇒ RpcError(400, "INVALID_LOCALE", s"Invalid language: $locale.", canTryAgain = false, data = None)
+    case UserErrors.InvalidTimeZone(tz) ⇒ RpcError(400, "INVALID_TIME_ZONE", s"Invalid time zone: $tz.", canTryAgain = false, data = None)
+    case UserErrors.EmptyLocalesList ⇒ RpcError(400, "EMPTY_LOCALES_LIST", s"Empty languages list.", canTryAgain = false, data = None)
+    case e ⇒ throw e
   }
 }

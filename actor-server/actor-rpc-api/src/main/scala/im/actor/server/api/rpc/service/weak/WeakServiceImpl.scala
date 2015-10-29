@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
-import im.actor.api.rpc.weak.{UpdateTypingStop, ApiTypingType, UpdateTyping, WeakService}
+import im.actor.api.rpc.weak.{ UpdateTypingStop, ApiTypingType, UpdateTyping, WeakService }
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension

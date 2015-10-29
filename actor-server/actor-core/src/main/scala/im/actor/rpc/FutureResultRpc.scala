@@ -27,6 +27,11 @@ object FutureResultRpc {
 
   def fromFuture[A](fu: Future[A])(implicit ec: ExecutionContext): Result[A] = Result[A](fu.map(_.right))
 
+  def fromFuture[A](failure: Throwable ⇒ RpcError)(fu: Future[A])(implicit ec: ExecutionContext): Result[A] =
+    Result[A](fu.map(_.right).recover {
+      case e ⇒ failure(e).left
+    })
+
   def fromEither[A](va: RpcError \/ A): Result[A] = Result[A](Future.successful(va))
 
   def fromEither[A, B](failure: B ⇒ RpcError)(va: B \/ A): Result[A] = Result[A](Future.successful(va.leftMap(failure)))

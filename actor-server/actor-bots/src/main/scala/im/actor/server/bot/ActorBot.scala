@@ -3,7 +3,7 @@ package im.actor.server.bot
 import akka.actor.{ Props, ActorSystem }
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
 import im.actor.bots.BotMessages
-import im.actor.server.user.UserExceptions
+import im.actor.server.user.UserErrors
 import im.actor.util.misc.IdUtils
 
 import scala.util.{ Failure, Success }

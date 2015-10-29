@@ -8,7 +8,7 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.users.{ ApiUser, ApiSex }
-import im.actor.server.auth.UserData
+import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
 import im.actor.server.persist.UserRepo
@@ -81,7 +81,7 @@ private[user] sealed trait Commands extends AuthCommands {
   def changeTimeZone(userId: Int, authId: Long, timeZone: String): Future[SeqState] =
     (processorRegion.ref ? ChangeTimeZone(userId, authId, timeZone)).mapTo[SeqState]
 
-  def setUserData(userId: Int, authId: Long, data: UserData): Future[Unit] =
+  def setDeviceInfo(userId: Int, authId: Long, data: DeviceInfo): Future[Unit] =
     for {
       _ ← changeTimeZone(userId, authId, data.timeZone)
       _ ← changePreferredLanguages(userId, authId, data.preferredLanguages)

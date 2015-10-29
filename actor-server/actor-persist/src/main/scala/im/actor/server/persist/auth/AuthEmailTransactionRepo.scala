@@ -18,7 +18,7 @@ final class AuthEmailTransactionTable(tag: Tag) extends AuthTransactionBase[mode
     deviceHash,
     deviceTitle,
     accessSalt,
-    userData,
+    deviceInfo,
     isChecked,
     deletedAt
   ) <> (models.AuthEmailTransaction.tupled, models.AuthEmailTransaction.unapply)

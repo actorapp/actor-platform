@@ -10,7 +10,7 @@ import im.actor.api.rpc.users.ApiSex._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.Activation.{ CallCode, EmailCode, SmsCode }
 import im.actor.server.activation._
-import im.actor.server.auth.UserData
+import im.actor.server.auth.DeviceInfo
 import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User }
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session._
@@ -66,7 +66,7 @@ trait AuthHelpers extends Helpers {
   def handleUserCreate(user: models.User, transaction: models.AuthTransactionChildren, authId: Long): Result[User] = {
     for {
       _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.nickname, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
-      _ ← fromFuture(userExt.setUserData(user.id, authId, UserData.parseFrom(transaction.userData)) recover { case _ ⇒ () })
+      _ ← fromFuture(userExt.setDeviceInfo(user.id, authId, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
       _ ← fromDBIO(persist.AvatarDataRepo.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
       _ ← fromDBIO(AuthTransactionRepo.delete(transaction.transactionHash))
       _ ← transaction match {
@@ -143,11 +143,11 @@ trait AuthHelpers extends Helpers {
   }
 
   //TODO: what country to use in case of email auth
-  protected def authorizeT(userId: Int, countryCode: String, userData: UserData, clientData: ClientData): Result[User] = {
+  protected def authorizeT(userId: Int, countryCode: String, deviceInfo: DeviceInfo, clientData: ClientData): Result[User] = {
     for {
       user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.UserRepo.find(userId).headOption)
       _ ← fromFuture(userExt.changeCountryCode(userId, countryCode))
-      _ ← fromFuture(userExt.setUserData(userId, clientData.authId, userData) recover { case _ ⇒ () })
+      _ ← fromFuture(userExt.setDeviceInfo(userId, clientData.authId, deviceInfo) recover { case _ ⇒ () })
       _ ← fromDBIO(persist.AuthIdRepo.setUserData(clientData.authId, userId))
     } yield user
   }

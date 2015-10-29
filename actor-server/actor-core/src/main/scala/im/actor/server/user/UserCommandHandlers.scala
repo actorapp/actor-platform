@@ -1,7 +1,7 @@
 package im.actor.server.user
 
 import java.time.{ LocalDateTime, ZoneOffset }
-import java.util.{ TimeZone, Locale }
+import java.util.TimeZone
 
 import akka.actor.{ ActorSystem, Status }
 import akka.pattern.pipe
@@ -14,16 +14,15 @@ import im.actor.concurrent.FutureExt
 import im.actor.config.ActorConfig
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
-import im.actor.server.dialog.HistoryUtils
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.models.contact.{ UserContact, UserEmailContact, UserPhoneContact }
-import im.actor.server.persist.{ AuthSessionRepo, UserRepo }
 import im.actor.server.persist.contact.{ UserContactRepo, UserEmailContactRepo, UserPhoneContactRepo }
-import im.actor.server.sequence.SeqUpdatesManager
+import im.actor.server.persist.{ AuthSessionRepo, UserRepo }
+import im.actor.server.sequence.{ SeqUpdatesManager, SequenceErrors }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
-import im.actor.server.{ ApiConversions, models, persist ⇒ p }
+import im.actor.server.{ models, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -32,15 +31,17 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.Failure
 import scala.util.control.NoStackTrace
 
-sealed trait UserException extends RuntimeException
+abstract class UserError(message: String) extends RuntimeException(message) with NoStackTrace
 
-object UserExceptions {
+object UserErrors {
 
-  case object NicknameTaken extends RuntimeException with NoStackTrace
+  case object NicknameTaken extends UserError("Nickname taken")
 
-  case class InvalidTimeZone(tz: String) extends RuntimeException(s"Invalid time zone: $tz") with NoStackTrace
+  final case class InvalidTimeZone(tz: String) extends UserError(s"Invalid time zone: $tz")
 
-  case class InvalidLocale(locale: String) extends RuntimeException(s"Invalid locale: $locale") with NoStackTrace
+  final case class InvalidLocale(locale: String) extends UserError(s"Invalid locale: $locale")
+
+  case object EmptyLocalesList extends UserError("Empty locale list")
 
 }
 
@@ -94,7 +95,7 @@ private[user] trait UserCommandHandlers {
           db.run(for (_ ← p.UserRepo.create(user)) yield CreateAck())
         }
       } else {
-        replyTo ! Status.Failure(UserExceptions.NicknameTaken)
+        replyTo ! Status.Failure(UserErrors.NicknameTaken)
       }
     }
   }
@@ -186,7 +187,7 @@ private[user] trait UserCommandHandlers {
           } yield seqstate
         }
       } else {
-        replyTo ! Status.Failure(UserExceptions.NicknameTaken)
+        replyTo ! Status.Failure(UserErrors.NicknameTaken)
       }
     }
   }
@@ -206,14 +207,21 @@ private[user] trait UserCommandHandlers {
     def validTimeZone(tz: String): Boolean = TimeZone.getAvailableIDs.contains(tz)
 
     if (validTimeZone(timeZone)) {
-      persistReply(TSEvent(now(), UserEvents.TimeZoneChanged(Some(timeZone))), user) { _ ⇒
-        val update = UpdateUserTimeZoneChanged(user.id, Some(timeZone))
-        for {
-          relatedUserIds ← getRelations(user.id)
-          (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, authId, relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
-        } yield seqstate
-      }
-    } else sender() ! Status.Failure(UserExceptions.InvalidTimeZone(timeZone))
+      if (!user.timeZone.contains(timeZone)) {
+        persistReply(TSEvent(now(), UserEvents.TimeZoneChanged(Some(timeZone))), user) { _ ⇒
+          val update = UpdateUserTimeZoneChanged(user.id, Some(timeZone))
+          for {
+            relatedUserIds ← getRelations(user.id)
+            (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, authId, relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
+          } yield seqstate
+        }
+      } else sender() ! Status.Failure(SequenceErrors.UpdateAlreadyApplied(UserFields.TimeZone))
+    } else {
+      val e = UserErrors.InvalidTimeZone(timeZone)
+      if (timeZone.nonEmpty)
+        log.error(e, "Invalid time zone")
+      sender() ! Status.Failure(e)
+    }
   }
 
   protected def changePreferredLanguages(user: User, authId: Long, preferredLanguages: Seq[String]): Unit = {
@@ -221,14 +229,22 @@ private[user] trait UserCommandHandlers {
 
     preferredLanguages.find(l ⇒ !validLocale(l)) match {
       case Some(invalid) ⇒
-        sender() ! Status.Failure(UserExceptions.InvalidLocale(invalid))
+        val e = UserErrors.InvalidLocale(invalid)
+        log.error(e, "Invalid preferred language")
+        sender() ! Status.Failure(e)
       case None ⇒
-        persistReply(TSEvent(now(), UserEvents.PreferredLanguagesChanged(preferredLanguages)), user) { _ ⇒
-          val update = UpdateUserPreferredLanguagesChanged(user.id, preferredLanguages.toVector)
-          for {
-            relatedUserIds ← getRelations(user.id)
-            (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, authId, relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
-          } yield seqstate
+        preferredLanguages match {
+          case Nil ⇒ sender() ! Status.Failure(UserErrors.EmptyLocalesList)
+          case pl if pl == user.preferredLanguages ⇒
+            sender() ! Status.Failure(SequenceErrors.UpdateAlreadyApplied(UserFields.PreferredLanguages))
+          case _ ⇒
+            persistReply(TSEvent(now(), UserEvents.PreferredLanguagesChanged(preferredLanguages)), user) { _ ⇒
+              val update = UpdateUserPreferredLanguagesChanged(user.id, preferredLanguages.toVector)
+              for {
+                relatedUserIds ← getRelations(user.id)
+                (seqstate, _) ← userExt.broadcastClientAndUsersUpdate(user.id, authId, relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
+              } yield seqstate
+            }
         }
     }
   }
