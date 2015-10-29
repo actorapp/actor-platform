@@ -73,7 +73,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleSubscribeToOnline(users: Vector[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSubscribeToOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       DBIO.successful(Ok(ResponseVoid))
     }
@@ -84,11 +84,11 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         val userIds = users.map(_.userId).toSet
 
         sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
-          .withSubscribeToOnline((SubscribeToOnline(userIds.toSeq)))
+          .withSubscribeToOnline(SubscribeToOnline(userIds.toSeq))
     }
   }
 
-  override def jhandleSubscribeFromOnline(users: Vector[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSubscribeFromOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       DBIO.successful(Ok(ResponseVoid))
     }
@@ -103,7 +103,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleSubscribeToGroupOnline(groups: Vector[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSubscribeToGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
@@ -112,7 +112,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  override def jhandleSubscribeFromGroupOnline(groups: Vector[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleSubscribeFromGroupOnline(groups: IndexedSeq[ApiGroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
@@ -121,7 +121,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  private def extractDiff(updates: Vector[models.sequence.SeqUpdate]): (Vector[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
+  private def extractDiff(updates: IndexedSeq[models.sequence.SeqUpdate]): (IndexedSeq[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
     updates.foldLeft[(Vector[ApiDifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
       case ((updates, userIds, groupIds), update) ⇒
         (updates :+ ApiDifferenceUpdate(update.header, update.serializedData),
@@ -134,7 +134,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     DBIO.from(for {
       groups ← Future.sequence(groupIds map (GroupExtension(actorSystem).getApiStruct(_, client.userId)))
       // TODO: #perf optimize collection operations
-      allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten + g.creatorUserId }
+      allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.flatMap(m ⇒ Seq(m.userId, m.inviterUserId)) + g.creatorUserId }
       users ← Future.sequence(allUserIds map (UserUtils.safeGetUser(_, client.userId, client.authId))) map (_.flatten)
     } yield (users, groups))
   }
