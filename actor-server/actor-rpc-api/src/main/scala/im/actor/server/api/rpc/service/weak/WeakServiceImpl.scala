@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeer, ApiPeerType }
-import im.actor.api.rpc.weak.{ ApiTypingType, UpdateTyping, WeakService }
+import im.actor.api.rpc.weak.{UpdateTypingStop, ApiTypingType, UpdateTyping, WeakService}
 import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
@@ -66,11 +66,11 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
     authorized(clientData) { client ⇒
       peer.`type` match {
         case ApiPeerType.Private ⇒
-          val update = UpdateTyping(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
+          val update = UpdateTypingStop(ApiPeer(ApiPeerType.Private, client.userId), client.userId, typingType)
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
           weakUpdatesExt.broadcastUserWeakUpdate(peer.id, update, Some(reduceKey))
         case ApiPeerType.Group ⇒
-          val update = UpdateTyping(ApiPeer(ApiPeerType.Group, peer.id), client.userId, typingType)
+          val update = UpdateTypingStop(ApiPeer(ApiPeerType.Group, peer.id), client.userId, typingType)
           val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
 
           for {
