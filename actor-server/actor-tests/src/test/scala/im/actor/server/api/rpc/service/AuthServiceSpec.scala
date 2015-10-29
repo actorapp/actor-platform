@@ -21,6 +21,7 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
+import im.actor.server.email.DummyEmailSender
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
 import im.actor.server.user.ContactsUtils
 import org.scalatest.Inside._
@@ -77,7 +78,7 @@ final class AuthServiceSpec
 
   //  it should "respond with ok to email of registered user" in s.e13
 
-  it should "respond with error to malformed email address" in s.e14
+  it should "respond with error to malformed email address" in s.malformedEmail
 
   it should "respond with same transactionHash when called multiple times" in s.e15
 
@@ -115,7 +116,7 @@ final class AuthServiceSpec
     val oauthGoogleConfig = DummyOAuth2Server.config
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     val activationConfig = ActivationConfig.load.get
-    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, null)
+    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, new DummyCallEngine, new DummyEmailSender)
     implicit val service = new auth.AuthServiceImpl(activationContext)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     implicit val contactService = new ContactsServiceImpl
@@ -169,7 +170,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = deviceHash,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )
 
       val transactionHash =
@@ -199,7 +202,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )) { resp ⇒
         resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
         resp.toOption.get.transactionHash
@@ -210,7 +215,9 @@ final class AuthServiceSpec
         appId = 3,
         apiKey = "someKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Web browser"
+        deviceTitle = "Web browser",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )) { resp ⇒
         resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
         resp.toOption.get.transactionHash
@@ -601,7 +608,7 @@ final class AuthServiceSpec
 
     def e13() = {}
 
-    def e14() = {
+    def malformedEmail() = {
       val malformedEmail = "foo@bar"
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
@@ -622,7 +629,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = deviceHash,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )
 
       val transactionHash =
@@ -652,7 +661,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )) { resp ⇒
         resp should matchPattern { case Ok(ResponseStartEmailAuth(_, false, _)) ⇒ }
         resp.toOption.get.transactionHash
@@ -663,7 +674,9 @@ final class AuthServiceSpec
         appId = 3,
         apiKey = "someKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Web browser"
+        deviceTitle = "Web browser",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )) { resp ⇒
         resp should matchPattern { case Ok(ResponseStartEmailAuth(_, false, _)) ⇒ }
         resp.toOption.get.transactionHash
@@ -969,7 +982,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )
     }
 
@@ -979,7 +994,9 @@ final class AuthServiceSpec
         appId = 42,
         apiKey = "apiKey",
         deviceHash = Random.nextLong().toBinaryString.getBytes,
-        deviceTitle = "Specs virtual device"
+        deviceTitle = "Specs virtual device",
+        timeZone = None,
+        preferredLanguages = Vector.empty
       )
     }
 
@@ -1063,10 +1080,11 @@ object DummyOAuth2Server {
   }
 }
 
-class DummySmsEngine extends AuthSmsEngine {
+final class DummySmsEngine extends AuthSmsEngine {
   override def sendCode(phoneNumber: Long, code: String): Future[Unit] = Future.successful(())
 }
 
-class DummyCallEngine extends AuthCallEngine {
+final class DummyCallEngine extends AuthCallEngine {
   override def sendCode(phoneNumber: Long, code: String, language: String): Future[Unit] = Future.successful(())
 }
+

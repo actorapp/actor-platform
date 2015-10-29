@@ -148,7 +148,7 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
     )
   }
 
-  private def matchUpdates(seq: Int, state: Array[Byte])(check: Vector[ApiDifferenceUpdate] ⇒ Any)(implicit client: ClientData) =
+  private def matchUpdates(seq: Int, state: Array[Byte])(check: IndexedSeq[ApiDifferenceUpdate] ⇒ Any)(implicit client: ClientData) =
     repeatAfterSleep(DefaultRetryCount) { () ⇒
       whenReady(sequenceService.handleGetDifference(seq, state)) { diff ⇒
         inside(diff) {
