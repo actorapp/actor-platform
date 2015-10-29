@@ -5,20 +5,20 @@ import akka.util.Timeout
 import im.actor.api.rpc.FutureResultRpc._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
-import im.actor.api.rpc.misc.{ResponseBool, ResponseSeq}
-import im.actor.api.rpc.profile.{ProfileService, ResponseEditAvatar}
+import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
+import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension}
+import im.actor.server.file.{ FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension }
 import im.actor.server.persist
 import im.actor.server.sequence.SeqState
-import im.actor.server.social.{SocialExtension, SocialManagerRegion}
+import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
 import im.actor.util.misc.StringUtils
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 object ProfileErrors {
   val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",
