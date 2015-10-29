@@ -10,6 +10,7 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.contacts.BaseContactFragment;
@@ -20,6 +21,10 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class AddMemberFragment extends BaseContactFragment {
 
+    public AddMemberFragment() {
+        super(true, true, false);
+    }
+
     public static AddMemberFragment create(int gid) {
         AddMemberFragment res = new AddMemberFragment();
         Bundle arguments = new Bundle();
@@ -28,13 +33,9 @@ public class AddMemberFragment extends BaseContactFragment {
         return res;
     }
 
-    public AddMemberFragment() {
-        super(true, true, false);
-    }
-
     @Override
     protected void addFootersAndHeaders() {
-       addFooterOrHeaderAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, R.string.contacts_invite_via_link, false, new Runnable() {
+        addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionAddContactColor(), R.drawable.ic_person_add_white_24dp, R.string.contacts_invite_via_link, false, new Runnable() {
             @Override
             public void run() {
                 startActivity(Intents.inviteLink(getArguments().getInt("GROUP_ID", 0), getActivity()));

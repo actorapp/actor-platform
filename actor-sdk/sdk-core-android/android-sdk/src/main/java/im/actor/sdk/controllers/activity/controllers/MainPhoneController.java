@@ -197,6 +197,7 @@ public class MainPhoneController extends MainBaseController {
         searchList.setLayoutManager(new ChatLinearLayoutManager(getActivity()));
 
         searchContainer = findViewById(R.id.searchCont);
+        searchContainer.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         searchEmptyView = findViewById(R.id.empty);
         searchHintView = findViewById(R.id.searchHint);
         searchHintView.setVisibility(View.GONE);
