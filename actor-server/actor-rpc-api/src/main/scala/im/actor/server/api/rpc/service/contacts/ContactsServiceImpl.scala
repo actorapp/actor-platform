@@ -163,7 +163,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         nicknameUsers ← findByNickname(query, client)
         emailUsers ← findByEmail(query, client)
         phoneUsers ← findByNumber(query, client)
-      } yield ResponseSearchContacts(nicknameUsers ++ phoneUsers)
+      } yield ResponseSearchContacts(nicknameUsers ++ phoneUsers ++ emailUsers)
     db.run(action.run)
   }
 
