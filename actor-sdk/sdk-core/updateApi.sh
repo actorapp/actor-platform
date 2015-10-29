@@ -3,8 +3,8 @@ set -e
 
 SCRIPT_DIR=`pwd`
 
-# cd "$SCRIPT_DIR/core/src/main/java/im/actor/model/api/"
-# rm -fr "*"
+cd "$SCRIPT_DIR/core/core-shared/src/main/java/im/actor/core/api"
+rm -fr "*"
 
-cd "$SCRIPT_DIR/build-tools/codegen-java/"
-dist/bin/codegen-java "$SCRIPT_DIR/../sdk-api/actor.json" "$SCRIPT_DIR/core/shared/src/main/java/"
+cd "$SCRIPT_DIR/../sdk-api/api-codegen/"
+dist/bin/codegen-java "$SCRIPT_DIR/../sdk-api/actor.json" "$SCRIPT_DIR/core/core-shared/src/main/java/"
