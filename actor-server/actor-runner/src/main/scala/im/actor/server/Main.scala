@@ -15,6 +15,7 @@ import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
+import im.actor.server.api.rpc.service.device.DeviceServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ MessagingServiceImpl, ReverseHooksListener }
@@ -138,7 +139,8 @@ object Main extends App {
       new PushServiceImpl,
       new ProfileServiceImpl,
       new IntegrationsServiceImpl(s"${webappConfig.scheme}://${webappConfig.host}"),
-      new WebactionsServiceImpl
+      new WebactionsServiceImpl,
+      new DeviceServiceImpl
     )
 
     system.log.warning("Starting ActorBot")

@@ -15,7 +15,7 @@ private[auth] abstract class AuthTransactionBase[T](tag: Tag, tname: String) ext
   def deviceHash = column[Array[Byte]]("device_hash")
   def deviceTitle = column[String]("device_title")
   def accessSalt = column[String]("access_salt")
-  def userData = column[Array[Byte]]("user_data")
+  def deviceInfo = column[Array[Byte]]("device_info")
   def isChecked = column[Boolean]("is_checked")
   def deletedAt = column[Option[LocalDateTime]]("deleted_at")
 }
@@ -28,7 +28,7 @@ final class AuthTransactionTable(tag: Tag) extends AuthTransactionBase[models.Au
     deviceHash,
     deviceTitle,
     accessSalt,
-    userData,
+    deviceInfo,
     isChecked,
     deletedAt
   ) <> (models.AuthTransaction.tupled, models.AuthTransaction.unapply)

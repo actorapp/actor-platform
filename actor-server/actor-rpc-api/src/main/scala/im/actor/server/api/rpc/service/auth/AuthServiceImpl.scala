@@ -14,7 +14,7 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.ApiSex.ApiSex
 import im.actor.server.acl.ACLUtils
 import im.actor.server.activation.internal.CodeActivation
-import im.actor.server.auth.UserData
+import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
 import im.actor.server.oauth.{ GoogleProvider, OAuth2ProvidersDomains }
 import im.actor.server.persist.auth.AuthTransactionRepo
@@ -113,7 +113,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
 
         email ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmailRepo.find(transaction.email))
 
-        user ← authorizeT(email.userId, profile.locale.getOrElse(""), UserData.parseFrom(transaction.userData), clientData)
+        user ← authorizeT(email.userId, profile.locale.getOrElse(""), DeviceInfo.parseFrom(transaction.deviceInfo), clientData)
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
 
         //refresh session data
@@ -173,7 +173,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
             deviceHash,
             deviceTitle,
             accessSalt,
-            UserData(timeZone.getOrElse(""), preferredLanguages).toByteArray
+            DeviceInfo(timeZone.getOrElse(""), preferredLanguages).toByteArray
           )
           for {
             _ ← fromDBIO(persist.auth.AuthPhoneTransactionRepo.create(phoneAuthTransaction))
@@ -209,7 +209,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         }
         //fallback to sign up if user exists
         user ← signInORsignUp match {
-          case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, UserData.parseFrom(transaction.userData), clientData)
+          case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, DeviceInfo.parseFrom(transaction.deviceInfo), clientData)
           case \/-(user)                  ⇒ handleUserCreate(user, transaction, clientData.authId)
         }
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
@@ -271,7 +271,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
             deviceHash,
             deviceTitle,
             accessSalt,
-            UserData(timeZone.getOrElse(""), preferredLanguages).toByteArray
+            DeviceInfo(timeZone.getOrElse(""), preferredLanguages).toByteArray
           )
           activationType match {
             case CODE ⇒
@@ -301,7 +301,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         (userId, countryCode) = userAndCounty
 
         //sign in user and delete auth transaction
-        user ← authorizeT(userId, countryCode, UserData.parseFrom(transaction.userData), clientData)
+        user ← authorizeT(userId, countryCode, DeviceInfo.parseFrom(transaction.deviceInfo), clientData)
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
         _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transaction.transactionHash))
 
