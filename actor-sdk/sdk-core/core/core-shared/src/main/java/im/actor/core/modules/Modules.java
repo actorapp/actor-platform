@@ -10,6 +10,7 @@ import im.actor.core.Messenger;
 import im.actor.core.i18n.I18nEngine;
 import im.actor.core.modules.internal.AppStateModule;
 import im.actor.core.modules.internal.ContactsModule;
+import im.actor.core.modules.internal.DeviceInfoModule;
 import im.actor.core.modules.internal.DisplayLists;
 import im.actor.core.modules.internal.ExternalModule;
 import im.actor.core.modules.internal.FilesModule;
@@ -68,6 +69,7 @@ public class Modules implements ModuleContext {
     private volatile SecurityModule security;
     private volatile DisplayLists displayLists;
     private volatile MentionsModule mentions;
+    private volatile DeviceInfoModule deviceInfoModule;
 
     public Modules(Messenger messenger, Configuration configuration) {
         this.messenger = messenger;
@@ -143,12 +145,16 @@ public class Modules implements ModuleContext {
         mentions = new MentionsModule(this);
         timing.section("DisplayLists");
         displayLists = new DisplayLists(this);
+        timing.section("DeviceInfo");
+        deviceInfoModule = new DeviceInfoModule(this);
         timing.end();
 
 
         timing = new Timing("ACCOUNT_RUN");
         timing.section("Settings");
         settings.run();
+        timing.section("DeviceInfo");
+        deviceInfoModule.run();
         timing.section("Files");
         filesModule.run();
         timing.section("Search");
@@ -281,6 +287,10 @@ public class Modules implements ModuleContext {
 
     public MentionsModule getMentions() {
         return mentions;
+    }
+
+    public DeviceInfoModule getDeviceInfoModule() {
+        return deviceInfoModule;
     }
 
     @Override
