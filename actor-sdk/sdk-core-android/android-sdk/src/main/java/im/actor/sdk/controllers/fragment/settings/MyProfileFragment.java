@@ -253,6 +253,9 @@ public class MyProfileFragment extends BaseFragment {
         TextView settingsHeaderText = (TextView) view.findViewById(R.id.settings_header_text);
         settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
 
+        view.findViewById(R.id.after_phone_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+        view.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+
         if (delegate.getBeforeNickSettingsView(getActivity()) != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
             beforeNick.addView(delegate.getBeforeNickSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -281,10 +284,9 @@ public class MyProfileFragment extends BaseFragment {
         }
 
         avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
-        avatarView.setBackgroundColor(ActorSDK.sharedActor().style.getCategoryTextColor());
-        ImageView avatarBckgrnd = (ImageView) view.findViewById(R.id.avatar_bgrnd);
-        avatarBckgrnd.setBackgroundColor(ActorSDK.sharedActor().style.getCategoryTextColor());
-        avatarView.setBkgrnd(avatarBckgrnd);
+        ImageView avatarBkgrnd = (ImageView) view.findViewById(R.id.avatar_bgrnd);
+        avatarBkgrnd.setBackgroundColor(ActorSDK.sharedActor().style.getAvatarBackgroundColor());
+        avatarView.setBkgrnd(avatarBkgrnd);
 
         bind(avatarView, users().get(myUid()).getAvatar());
 
@@ -297,7 +299,7 @@ public class MyProfileFragment extends BaseFragment {
 
 
         final ScrollView scrollView = ((ScrollView) view.findViewById(R.id.scrollContainer));
-
+        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -315,6 +317,7 @@ public class MyProfileFragment extends BaseFragment {
         for (IActorSettingsCategory category : categories) {
             LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
             FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
+            categoryContainer.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
             TextView categoryName = (TextView) categoryContainer.findViewById(R.id.category_name);
             categoryName.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
             categoryName.setText(category.getCategoryName());

@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.util.KeyboardHelper;
@@ -34,6 +35,7 @@ public class AddContactActivity extends BaseFragmentActivity {
         helper = new KeyboardHelper(this);
 
         setContentView(R.layout.activity_add);
+        findViewById(R.id.container).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
 
         searchQuery = (EditText) findViewById(R.id.searchField);
 

@@ -224,7 +224,9 @@ public class ProfileFragment extends BaseFragment {
         }
 
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
-        avatarView.setBkgrnd((ImageView) res.findViewById(R.id.avatar_bgrnd));
+        ImageView avatarBkgrnd = (ImageView) res.findViewById(R.id.avatar_bgrnd);
+        avatarBkgrnd.setBackgroundColor(ActorSDK.sharedActor().style.getAvatarBackgroundColor());
+        avatarView.setBkgrnd(avatarBkgrnd);
 
         bind(avatarView, user.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
@@ -259,8 +261,18 @@ public class ProfileFragment extends BaseFragment {
             }
         });
 
-        final ScrollView scrollView = ((ScrollView) res.findViewById(R.id.scrollContainer));
+        TextView settingsHeaderText = (TextView) res.findViewById(R.id.settings_header_text);
+        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
 
+        TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
+        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+
+        res.findViewById(R.id.phoneDivider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+        res.findViewById(R.id.after_shared_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+        res.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+
+        final ScrollView scrollView = ((ScrollView) res.findViewById(R.id.scrollContainer));
+        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
