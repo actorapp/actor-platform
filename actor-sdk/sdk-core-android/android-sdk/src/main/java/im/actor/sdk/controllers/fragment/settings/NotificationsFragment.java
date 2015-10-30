@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 
@@ -16,6 +17,12 @@ public class NotificationsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflater.inflate(R.layout.fr_settings_notifications, container, false);
+
+        res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        res.findViewById(R.id.divider1).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        res.findViewById(R.id.divider2).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        res.findViewById(R.id.divider3).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        res.findViewById(R.id.divider4).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         // Conversation tone
         final CheckBox enableTones = (CheckBox) res.findViewById(R.id.enableConversationTones);

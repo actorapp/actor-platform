@@ -10,9 +10,9 @@
     android:orientation="vertical">
 
     <View
+        android:id="@+id/dividerTop"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/div_size"
-        android:background="@color/divider" />
+        android:layout_height="@dimen/div_size" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,9 +32,9 @@
             android:textSize="16sp" />
 
         <View
+            android:id="@+id/dividerBot"
             android:layout_width="@dimen/div_size"
-            android:layout_height="match_parent"
-            android:background="@color/divider" />
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/ok"

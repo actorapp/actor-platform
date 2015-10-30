@@ -378,6 +378,7 @@ public class GroupInfoFragment extends BaseFragment {
 
     public void updateDescriptionVisibility(View descriptionContainer, boolean finalIsAdmin, View header) {
         View themeDivider = header.findViewById(R.id.themeDivider);
+        themeDivider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         boolean themeVis = theme[0] != null && !theme[0].isEmpty();
         boolean aboutVis = about[0] != null && !about[0].isEmpty();
