@@ -163,7 +163,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleGetGroupInviteUrl(groupPeer: ApiGroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
@@ -246,14 +246,13 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    * all members of group can edit group topic
    */
   def jhandleEditGroupTopic(groupPeer: ApiGroupOutPeer, randomId: Long, topic: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      for {
-        SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateTopic(groupPeer.groupId, client.userId, client.authId, topic, randomId))
-      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
-    }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {
-      case GroupErrors.NotAMember   ⇒ Error(CommonErrors.forbidden("User is not a group member."))
-      case GroupErrors.TopicTooLong ⇒ Error(GroupRpcErrors.TopicTooLong)
+    authorized(clientData) { implicit client ⇒
+      (for {
+        SeqStateDate(seq, state, date) ← groupExt.updateTopic(groupPeer.groupId, client.userId, client.authId, topic, randomId)
+      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))) recover {
+        case GroupErrors.NotAMember   ⇒ Error(CommonErrors.forbidden("User is not a group member."))
+        case GroupErrors.TopicTooLong ⇒ Error(GroupRpcErrors.TopicTooLong)
+      }
     }
   }
 
@@ -261,14 +260,13 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    * only admin can change group's about
    */
   def jhandleEditGroupAbout(groupPeer: ApiGroupOutPeer, randomId: Long, about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      for {
-        SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateAbout(groupPeer.groupId, client.userId, client.authId, about, randomId))
-      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
-    }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {
-      case GroupErrors.NotAdmin     ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
-      case GroupErrors.AboutTooLong ⇒ Error(GroupRpcErrors.AboutTooLong)
+    authorized(clientData) { implicit client ⇒
+      (for {
+        SeqStateDate(seq, state, date) ← groupExt.updateAbout(groupPeer.groupId, client.userId, client.authId, about, randomId)
+      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))) recover {
+        case GroupErrors.NotAdmin     ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
+        case GroupErrors.AboutTooLong ⇒ Error(GroupRpcErrors.AboutTooLong)
+      }
     }
   }
 
@@ -278,17 +276,15 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
    * it could be many admins in one group
    */
   def jhandleMakeUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseMakeUserAdmin]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      for {
-        (members, SeqState(seq, state)) ← DBIO.from(groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))
-      } yield Ok(ResponseMakeUserAdmin(members, seq, state.toByteArray))
+    authorized(clientData) { implicit client ⇒
+      (for {
+        (members, SeqState(seq, state)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
+      } yield Ok(ResponseMakeUserAdmin(members, seq, state.toByteArray))) recover {
+        case GroupErrors.NotAMember       ⇒ Error(CommonErrors.forbidden("User is not a group member."))
+        case GroupErrors.NotAdmin         ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
+        case GroupErrors.UserAlreadyAdmin ⇒ Error(GroupRpcErrors.UserAlreadyAdmin)
+      }
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {
-      case GroupErrors.NotAMember       ⇒ Error(CommonErrors.forbidden("User is not a group member."))
-      case GroupErrors.NotAdmin         ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
-      case GroupErrors.UserAlreadyAdmin ⇒ Error(GroupRpcErrors.UserAlreadyAdmin)
-    }
-
   }
 
 }
