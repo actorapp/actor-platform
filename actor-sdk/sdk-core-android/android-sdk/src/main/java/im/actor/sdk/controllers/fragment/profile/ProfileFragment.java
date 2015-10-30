@@ -76,12 +76,16 @@ public class ProfileFragment extends BaseFragment {
 
         View res = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        bind((TextView) res.findViewById(R.id.name), user.getName());
+        TextView nameText = (TextView) res.findViewById(R.id.name);
+        nameText.setTextColor(style.getProfileTitle());
+        bind(nameText, user.getName());
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
+        lastSeen.setTextColor(style.getProfileSubtitle());
         bind(lastSeen, lastSeen, user);
 
         final FrameLayout about = (FrameLayout) res.findViewById(R.id.about);
+        ((TintImageView) about.findViewById(R.id.recordIcon)).setTint(ActorSDK.sharedActor().style.getProfilleIcon());
         if (aboutText != null && !aboutText.isEmpty()) {
             about.findViewById(R.id.title).setVisibility(View.GONE);
             about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
@@ -262,10 +266,19 @@ public class ProfileFragment extends BaseFragment {
         });
 
         TextView settingsHeaderText = (TextView) res.findViewById(R.id.settings_header_text);
-        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
 
         TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
-        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+
+        TintImageView shareMediaIcon = (TintImageView) res.findViewById(R.id.share_media_icon);
+        shareMediaIcon.setTint(style.getSettingsIcon());
+
+        TintImageView shareDocsIcon = (TintImageView) res.findViewById(R.id.share_docs_icon);
+        shareDocsIcon.setTint(style.getSettingsIcon());
+
+        TintImageView notificationsSettingsIcon = (TintImageView) res.findViewById(R.id.settings_notification_icon);
+        notificationsSettingsIcon.setTint(style.getSettingsIcon());
 
         res.findViewById(R.id.phoneDivider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
         res.findViewById(R.id.after_shared_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());

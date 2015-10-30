@@ -72,12 +72,12 @@
         </FrameLayout>
 
         <TextView
+            android:id="@+id/security_settings_title"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:gravity="center_vertical|left"
             android:paddingLeft="24dp"
             android:text="@string/security_authorized_header"
-            android:textColor="@color/settings_main_title"
             android:textSize="16sp" />
 
         <TextView
