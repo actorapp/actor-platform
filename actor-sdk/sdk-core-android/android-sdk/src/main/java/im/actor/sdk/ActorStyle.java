@@ -81,6 +81,32 @@ public class ActorStyle {
     private int groupActionAddIcon = 0;
     private int groupActionAddText = 0;
 
+    //Conversation
+    private int convSendEnabled = 0;
+    private int convSendDisabled = Color.parseColor("#42000000");
+
+    private int convDateLine = Color.parseColor("#14000000");
+    private int convDatetext = Color.parseColor("#ffffff");
+    private int convDateBg = Color.parseColor("#99000000");
+
+    private int convText = 0;
+    private int convTime = Color.parseColor("#60000000");
+
+    private int convStatePending = Color.parseColor("#40000000");
+    private int convStateSent = Color.parseColor("#40000000");
+    private int convStateDelivered = Color.parseColor("#40000000");
+    private int convStateRead = Color.parseColor("#ff7ea8ef");
+    private int convStateError = Color.parseColor("#d24a43");
+    private int convStateWarrning = Color.parseColor("#d24a43");
+
+    private int convMediaDateBg = Color.parseColor("#99000000");
+    private int convMediaStatePending = Color.parseColor("#ffffff");
+    private int convMediaStateSent = Color.parseColor("#ffffff");
+    private int convMediaStateDelivered = Color.parseColor("#ffffff");
+    private int convMediaStateRead = Color.parseColor("#ff7ea8ef");
+    private int convMediaStateError = Color.parseColor("#ffed534b");
+    private int convMediaStateWarrning = Color.parseColor("#ffed534b");
+
     public int getMainColor() {
         return mainColor;
     }
@@ -645,6 +671,174 @@ public class ActorStyle {
 
     public void setMainFabbg(int mainFabbg) {
         this.mainFabbg = mainFabbg;
+    }
+
+    public int getConvSendEnabled() {
+        if (convSendEnabled != 0) {
+            return convSendEnabled;
+        } else {
+            return getMainColor();
+        }
+    }
+
+    public void setConvSendEnabled(int convSendEnabled) {
+        this.convSendEnabled = convSendEnabled;
+    }
+
+    public int getConvSendDisabled() {
+        return convSendDisabled;
+    }
+
+    public void setConvSendDisabled(int convSendDisabled) {
+        this.convSendDisabled = convSendDisabled;
+    }
+
+    public int getConvDateLine() {
+        return convDateLine;
+    }
+
+    public void setConvDateLine(int convDateLine) {
+        this.convDateLine = convDateLine;
+    }
+
+    public int getConvDatetext() {
+        return convDatetext;
+    }
+
+    public void setConvDatetext(int convDatetext) {
+        this.convDatetext = convDatetext;
+    }
+
+    public int getConvDateBg() {
+        return convDateBg;
+    }
+
+    public void setConvDateBg(int convDateBg) {
+        this.convDateBg = convDateBg;
+    }
+
+    public int getConvText() {
+        if (convText != 0) {
+            return convText;
+        } else {
+            return getTextPrimary();
+        }
+    }
+
+    public void setConvText(int convText) {
+        this.convText = convText;
+    }
+
+    public int getConvTime() {
+        return convTime;
+    }
+
+    public void setConvTime(int convTime) {
+        this.convTime = convTime;
+    }
+
+    public int getConvStatePending() {
+        return convStatePending;
+    }
+
+    public void setConvStatePending(int convStatePending) {
+        this.convStatePending = convStatePending;
+    }
+
+    public int getConvStateSent() {
+        return convStateSent;
+    }
+
+    public void setConvStateSent(int convStateSent) {
+        this.convStateSent = convStateSent;
+    }
+
+    public int getConvStateDelivered() {
+        return convStateDelivered;
+    }
+
+    public void setConvStateDelivered(int convStateDelivered) {
+        this.convStateDelivered = convStateDelivered;
+    }
+
+    public int getConvStateRead() {
+        return convStateRead;
+    }
+
+    public void setConvStateRead(int convStateRead) {
+        this.convStateRead = convStateRead;
+    }
+
+    public int getConvStateError() {
+        return convStateError;
+    }
+
+    public void setConvStateError(int convStateError) {
+        this.convStateError = convStateError;
+    }
+
+    public int getConvStateWarrning() {
+        return convStateWarrning;
+    }
+
+    public void setConvStateWarrning(int convStateWarrning) {
+        this.convStateWarrning = convStateWarrning;
+    }
+
+    public int getConvMediaDateBg() {
+        return convMediaDateBg;
+    }
+
+    public void setConvMediaDateBg(int convMediaDateBg) {
+        this.convMediaDateBg = convMediaDateBg;
+    }
+
+    public int getConvMediaStatePending() {
+        return convMediaStatePending;
+    }
+
+    public void setConvMediaStatePending(int convMediaStatePending) {
+        this.convMediaStatePending = convMediaStatePending;
+    }
+
+    public int getConvMediaStateSent() {
+        return convMediaStateSent;
+    }
+
+    public void setConvMediaStateSent(int convMediaStateSent) {
+        this.convMediaStateSent = convMediaStateSent;
+    }
+
+    public int getConvMediaStateDelivered() {
+        return convMediaStateDelivered;
+    }
+
+    public void setConvMediaStateDelivered(int convMediaStateDelivered) {
+        this.convMediaStateDelivered = convMediaStateDelivered;
+    }
+
+    public int getConvMediaStateRead() {
+        return convMediaStateRead;
+    }
+
+    public void setConvMediaStateRead(int convMediaStateRead) {
+        this.convMediaStateRead = convMediaStateRead;
+    }
+
+    public int getConvMediaStateError() {
+        return convMediaStateError;
+    }
+
+    public void setConvMediaStateError(int convMediaStateError) {
+        this.convMediaStateError = convMediaStateError;
+    }
+
+    public int getConvMediaStateWarrning() {
+        return convMediaStateWarrning;
+    }
+
+    public void setConvMediaStateWarrning(int convMediaStateWarrning) {
+        this.convMediaStateWarrning = convMediaStateWarrning;
     }
 
     private int getDarkenArgb(int color, double percent) {

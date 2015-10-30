@@ -216,8 +216,6 @@ message UserCommands {
 
         required int32 user_id = 1;
     }
-
-    message NotifyDialogsChangedAck {}
 }
 
 message UserQueries {
