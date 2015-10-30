@@ -23,7 +23,7 @@ object AuthErrors {
   val InvalidAuthCodeHash = RpcError(400, "CODE_HASH_INVALID", "", false, None)
 
   def activationFailure(failure: CodeFailure) = failure match {
-    case SendFailure(message) ⇒ RpcError(500, "ACTIVATION_SERVER_ERROR", message, true, None)
-    case BadRequest(message)  ⇒ RpcError(400, "ACTIVATION_BAD_REQUEST", message, false, None)
+    case SendFailure(message) ⇒ RpcError(500, "GATE_ERROR", message, true, None)
+    case BadRequest(message)  ⇒ RpcError(400, "CODE_WAIT", message, false, None)
   }
 }
