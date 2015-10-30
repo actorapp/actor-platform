@@ -145,7 +145,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
         case None ⇒
           for {
             _ ← DialogRepo.create(Dialog(left, rightPeer))
-            _ ← DBIO.from(userExt.notifyDialogsChanged(left))
+            _ ← DBIO.from(userExt.notifyDialogsChanged(left, 0))
           } yield ()
       }
       _ ← rightDialogOpt match {
@@ -153,7 +153,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
         case None ⇒
           for {
             _ ← DialogRepo.create(Dialog(right, leftPeer))
-            _ ← DBIO.from(userExt.notifyDialogsChanged(right))
+            _ ← DBIO.from(userExt.notifyDialogsChanged(right, 0))
           } yield ()
       }
     } yield ())
