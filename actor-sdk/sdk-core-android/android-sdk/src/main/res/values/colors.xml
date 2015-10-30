@@ -124,22 +124,22 @@
     <color name="conv_media_state_error">#ffed534b</color>
     <color name="conv_media_state_warring">#ffed534b</color>
 
-    <!-- Settings -->
-    <color name="settings_main_title">@color/section_title</color>
+    <!--&lt;!&ndash; Settings &ndash;&gt;-->
+    <!--<color name="settings_main_title">@color/section_title</color>-->
 
-    <color name="settings_icon">@color/section_icon_small</color>
-    <color name="settings_title">@color/text_primary</color>
-    <color name="settings_subtitle">@color/text_secondary</color>
+    <!--<color name="settings_icon">@color/section_icon_small</color>-->
+    <!--<color name="settings_title">@color/text_primary</color>-->
+    <!--<color name="settings_subtitle">@color/text_secondary</color>-->
 
-    <!-- Profile -->
-    <color name="profile_title">@color/text_primary_inv</color>
-    <color name="profile_subtitle">@color/text_secondary_inv</color>
-    <color name="profile_icon">@color/section_icon_large</color>
+    <!--&lt;!&ndash; Profile &ndash;&gt;-->
+    <!--<color name="profile_title">@color/text_primary_inv</color>-->
+    <!--<color name="profile_subtitle">@color/text_secondary_inv</color>-->
+    <!--<color name="profile_icon">@color/section_icon_large</color>-->
 
-    <!-- Group Profile -->
-    <color name="group_admin">@color/accent</color>
-    <color name="group_action_add_icon">@color/list_action</color>
-    <color name="group_action_add_text">@color/list_action</color>
+    <!--&lt;!&ndash; Group Profile &ndash;&gt;-->
+    <!--<color name="group_admin">@color/accent</color>-->
+    <!--<color name="group_action_add_icon">@color/list_action</color>-->
+    <!--<color name="group_action_add_text">@color/list_action</color>-->
 
 
     <bool name="default_circle_indicator_centered">true</bool>

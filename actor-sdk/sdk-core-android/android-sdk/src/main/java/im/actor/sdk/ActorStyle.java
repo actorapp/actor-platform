@@ -36,6 +36,16 @@ public class ActorStyle {
     private int primaryAltHovered = Color.parseColor("#ff3d8652");
     private int primaryAltPressed = Color.parseColor("#ff5cca7b");
 
+    private int accent = Color.parseColor("#d94335");
+    private int accentHovered = Color.parseColor("#b3372c");
+    private int accentPressed = Color.parseColor("#ca4a3f");
+
+    //Base UI colors
+
+    private int listAction = 0;
+    private int sectonIconSmall = Color.parseColor("#b5b6b7");
+    private int sectionIconLarge = 0;
+
     //Dividers
     private int divider = Color.parseColor("#1e000000");
     private int divider_inv = Color.parseColor("#1effffff");
@@ -49,6 +59,23 @@ public class ActorStyle {
     private int textSecondaryInv = Color.parseColor("#8Affffff");
     private int textHintInv = Color.parseColor("#42ffffff");
     private int textSubheaderInv = Color.parseColor("#8Fffffff");
+
+    //Settings
+
+    private int settingsMainTitle = 0;
+    private int settingsIcon = 0;
+    private int settingsTitle = 0;
+    private int settingsSubtitle = 0;
+
+    //Profile
+    private int profileTitle = 0;
+    private int profileSubtitle = 0;
+    private int profilleIcon = 0;
+
+    //Group Profile
+    private int groupAdmin = 0;
+    private int groupActionAddIcon = 0;
+    private int groupActionAddText = 0;
 
     public int getMainColor() {
         return mainColor;
@@ -95,7 +122,7 @@ public class ActorStyle {
         this.fabColorPressed = fabColorPressed;
     }
 
-    public int getCategoryTextColor() {
+    public int getSettingsCategoryTextColor() {
         if (categoryTextColor != 0) {
             return categoryTextColor;
         } else {
@@ -241,6 +268,30 @@ public class ActorStyle {
 
     public void setPrimaryAltPressed(int primaryAltPressed) {
         this.primaryAltPressed = primaryAltPressed;
+    }
+
+    public int getAccent() {
+        return accent;
+    }
+
+    public void setAccent(int accent) {
+        this.accent = accent;
+    }
+
+    public int getAccentHovered() {
+        return accentHovered;
+    }
+
+    public void setAccentHovered(int accentHovered) {
+        this.accentHovered = accentHovered;
+    }
+
+    public int getAccentPressed() {
+        return accentPressed;
+    }
+
+    public void setAccentPressed(int accentPressed) {
+        this.accentPressed = accentPressed;
     }
 
     public int getDialogsStatePendingColor() {
@@ -418,6 +469,158 @@ public class ActorStyle {
 
     public void setTextSubheaderInv(int textSubheaderInv) {
         this.textSubheaderInv = textSubheaderInv;
+    }
+
+    public int getListAction() {
+        if (listAction != 0) {
+            return listAction;
+        } else {
+            return getMainColor();
+        }
+    }
+
+    public void setListAction(int listAction) {
+        this.listAction = listAction;
+    }
+
+    public int getSectonIconSmall() {
+        return sectonIconSmall;
+    }
+
+    public void setSectonIconSmall(int sectonIconSmall) {
+        this.sectonIconSmall = sectonIconSmall;
+    }
+
+    public int getSectionIconLarge() {
+        if (sectionIconLarge != 0) {
+            return sectionIconLarge;
+        } else {
+            return getMainColor();
+        }
+    }
+
+    public void setSectionIconLarge(int sectionIconLarge) {
+        this.sectionIconLarge = sectionIconLarge;
+    }
+
+    public int getSettingsMainTitle() {
+        if (listAction != 0) {
+            return listAction;
+        } else {
+            return getSettingsCategoryTextColor();
+        }
+    }
+
+    public void setSettingsMainTitle(int settingsMainTitle) {
+        this.settingsMainTitle = settingsMainTitle;
+    }
+
+    public int getSettingsIcon() {
+        if (settingsIcon != 0) {
+            return settingsIcon;
+        } else {
+            return getSectonIconSmall();
+        }
+    }
+
+    public void setSettingsIcon(int settingsIcon) {
+        this.settingsIcon = settingsIcon;
+    }
+
+    public int getSettingsTitle() {
+        if (settingsTitle != 0) {
+            return settingsTitle;
+        } else {
+            return getTextPrimary();
+        }
+    }
+
+    public void setSettingsTitle(int settingsTitle) {
+        this.settingsTitle = settingsTitle;
+    }
+
+    public int getSettingsSubtitle() {
+        if (settingsSubtitle != 0) {
+            return settingsSubtitle;
+        } else {
+            return getTextSecondary();
+        }
+    }
+
+    public void setSettingsSubtitle(int settingsSubtitle) {
+        this.settingsSubtitle = settingsSubtitle;
+    }
+
+    public int getProfileTitle() {
+        if (profileTitle != 0) {
+            return profileTitle;
+        } else {
+            return getTextPrimaryInv();
+        }
+    }
+
+    public void setProfileTitle(int profileTitle) {
+        this.profileTitle = profileTitle;
+    }
+
+    public int getProfileSubtitle() {
+        if (profileSubtitle != 0) {
+            return profileSubtitle;
+        } else {
+            return getTextSecondaryInv();
+        }
+    }
+
+    public void setProfileSubtitle(int profileSubtitle) {
+        this.profileSubtitle = profileSubtitle;
+    }
+
+    public int getProfilleIcon() {
+        if (profilleIcon != 0) {
+            return profilleIcon;
+        } else {
+            return getSectionIconLarge();
+        }
+    }
+
+    public void setProfilleIcon(int profilleIcon) {
+        this.profilleIcon = profilleIcon;
+    }
+
+    public int getGroupAdmin() {
+        if (groupAdmin != 0) {
+            return groupAdmin;
+        } else {
+            return getAccent();
+        }
+    }
+
+    public void setGroupAdmin(int groupAdmin) {
+        this.groupAdmin = groupAdmin;
+    }
+
+    public int getGroupActionAddIcon() {
+        if (groupActionAddIcon != 0) {
+            return groupActionAddIcon;
+        } else {
+            return getListAction();
+        }
+    }
+
+    public void setGroupActionAddIcon(int groupActionAddIcon) {
+        this.groupActionAddIcon = groupActionAddIcon;
+    }
+
+    public int getGroupActionAddText() {
+        if (groupActionAddText != 0) {
+            return groupActionAddText;
+        } else {
+            return getListAction();
+        }
+    }
+
+    public void setGroupActionAddText(int groupActionAddText) {
+        this.groupActionAddText = groupActionAddText;
     }
 
     private int getDarkenArgb(int color, double percent) {

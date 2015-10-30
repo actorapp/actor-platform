@@ -88,7 +88,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         title = new TextView(context);
-        title.setTextColor(context.getResources().getColor(R.color.text_primary));
+        title.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
         title.setPadding(Screen.dp(72), 0, (isSelectable ? Screen.dp(64) : 0) + Screen.dp(8), 0);
         title.setTextSize(16);
         title.setSingleLine(true);
