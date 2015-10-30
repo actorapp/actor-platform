@@ -172,6 +172,7 @@ public class MainPhoneController extends MainBaseController {
         isFabVisible = false;
 
         fabContent = findViewById(R.id.fabContainer);
+        fabContent.setBackgroundColor(ActorSDK.sharedActor().style.getMainFabbg());
         fabRoot = (FloatingActionButton) findViewById(R.id.rootFab);
         if (ActorSDK.sharedActor().style.getFabColor() != 0) {
             fabRoot.setColorNormal(ActorSDK.sharedActor().style.getFabColor());

@@ -59,9 +59,9 @@
 
 
         <View
+            android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size"
-            android:background="@color/divider" />
+            android:layout_height="@dimen/div_size" />
 
         <LinearLayout
             android:id="@+id/soundCont"
@@ -106,9 +106,9 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/divider1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size"
-            android:background="@color/divider" />
+            android:layout_height="@dimen/div_size" />
 
         <LinearLayout
             android:id="@+id/vibrationCont"
@@ -153,9 +153,9 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/divider2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size"
-            android:background="@color/divider" />
+            android:layout_height="@dimen/div_size" />
 
         <LinearLayout
             android:id="@+id/groupCont"
@@ -200,9 +200,9 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/divider3"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size"
-            android:background="@color/divider" />
+            android:layout_height="@dimen/div_size" />
 
         <LinearLayout
             android:id="@+id/groupMentionsCont"
@@ -247,9 +247,9 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/divider4"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size"
-            android:background="@color/divider" />
+            android:layout_height="@dimen/div_size" />
 
         <LinearLayout
             android:id="@+id/titlesCont"

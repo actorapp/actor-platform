@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 
 /**
@@ -27,6 +28,7 @@ public class ExploreItemViewHolder {
         imageView = (ImageView) itemView.findViewById(R.id.image);
         selectedView = itemView.findViewById(R.id.selected);
         divider = itemView.findViewById(R.id.divider);
+        divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         typeView = (TextView) itemView.findViewById(R.id.type);
     }
 

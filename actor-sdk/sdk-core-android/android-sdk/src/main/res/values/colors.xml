@@ -55,48 +55,48 @@
     <color name="selector_messages">#44000000</color>
     <color name="selector_messages_selected">#66000000</color>
 
-    <color name="divider">#1e000000</color>
-    <color name="divider_inv">#1effffff</color>
+    <!--<color name="divider">#1e000000</color>-->
+    <!--<color name="divider_inv">#1effffff</color>-->
 
     <!-- Base UI colors -->
 
-    <color name="list_action">@color/primary</color>
+    <!--<color name="list_action">@color/primary</color>-->
 
-    <color name="section_title">@color/primary</color>
-    <color name="section_icon_small">#b5b6b7</color>
-    <color name="section_icon_large">@color/primary</color>
+    <!--<color name="section_title">@color/primary</color>-->
+    <!--<color name="section_icon_small">#b5b6b7</color>-->
+    <!--<color name="section_icon_large">@color/primary</color>-->
 
     <!-- Main screen -->
-    <color name="main_tab_selected">#fffffc</color>
-    <color name="main_tab_divider">#15000000</color>
-    <color name="main_tab_text">@color/text_primary_inv</color>
-    <color name="main_fab_bg">#ccffffff</color>
+    <!--<color name="main_tab_selected">#fffffc</color>-->
+    <!--<color name="main_tab_divider">#15000000</color>-->
+    <!--<color name="main_tab_text">@color/text_primary_inv</color>-->
+    <!--<color name="main_fab_bg">#ccffffff</color>-->
 
     <!-- Profile screen -->
     <color name="upload_overlay">#8c000000</color>
 
-    <!-- Dialogs -->
-    <color name="chats_divider">@color/divider</color>
-    <color name="chats_title">@color/text_primary</color>
-    <color name="chats_text">@color/text_secondary</color>
-    <color name="chats_time">@color/text_secondary</color>
-    <color name="chats_counter">@color/text_primary_inv</color>
-    <color name="chats_counter_bg">@color/primary_alt</color>
-    <color name="chats_typing">@color/primary</color>
+    <!--&lt;!&ndash; Dialogs &ndash;&gt;-->
+    <!--<color name="chats_divider">@color/divider</color>-->
+    <!--<color name="chats_title">@color/text_primary</color>-->
+    <!--<color name="chats_text">@color/text_secondary</color>-->
+    <!--<color name="chats_time">@color/text_secondary</color>-->
+    <!--<color name="chats_counter">@color/text_primary_inv</color>-->
+    <!--<color name="chats_counter_bg">@color/primary_alt</color>-->
+    <!--<color name="chats_typing">@color/primary</color>-->
 
-    <color name="chats_state_pending">#40000000</color>
-    <color name="chats_state_sent">#40000000</color>
-    <color name="chats_state_delivered">#40000000</color>
-    <color name="chats_state_read">#ff7ea8ef</color>
-    <color name="chats_state_error">#d24a43</color>
-    <color name="chats_state_warring">#d24a43</color>
+    <!--<color name="chats_state_pending">#40000000</color>-->
+    <!--<color name="chats_state_sent">#40000000</color>-->
+    <!--<color name="chats_state_delivered">#40000000</color>-->
+    <!--<color name="chats_state_read">#ff7ea8ef</color>-->
+    <!--<color name="chats_state_error">#d24a43</color>-->
+    <!--<color name="chats_state_warring">#d24a43</color>-->
 
-    <!-- Contacts -->
-    <color name="contacts_fast">@color/primary</color>
-    <color name="contacts_action">@color/list_action</color>
-    <color name="contacts_action_share">@color/contacts_action</color>
-    <color name="contacts_action_add">@color/contacts_action</color>
-    <color name="contacts_divider">@color/divider</color>
+    <!--&lt;!&ndash; Contacts &ndash;&gt;-->
+    <!--<color name="contacts_fast">@color/primary</color>-->
+    <!--<color name="contacts_action">@color/list_action</color>-->
+    <!--<color name="contacts_action_share">@color/contacts_action</color>-->
+    <!--<color name="contacts_action_add">@color/contacts_action</color>-->
+    <!--<color name="contacts_divider">@color/divider</color>-->
 
     <!-- Conversation -->
     <color name="conv_send_enabled">@color/primary</color>

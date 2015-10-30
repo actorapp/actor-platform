@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.fragment.auth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.util.country.Country;
@@ -30,6 +32,7 @@ public class PickCountryFragment extends BaseFragment {
         View v = inflater.inflate(R.layout.fragment_country_select, null);
 
         countriesListView = (ListView) v.findViewById(R.id.lv_countries);
+        countriesListView.setDivider(new ColorDrawable(ActorSDK.sharedActor().style.getDivider()));
         countriesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

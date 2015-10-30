@@ -21,6 +21,7 @@ import android.widget.Toast;
 import im.actor.core.viewmodel.Command;
 import im.actor.core.viewmodel.CommandCallback;
 import im.actor.core.viewmodel.GroupVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.view.adapters.HolderAdapter;
@@ -201,6 +202,7 @@ public class IntegrationTokenFragment extends BaseFragment {
             topShadow = res.findViewById(R.id.top_shadow);
             botShadow = res.findViewById(R.id.bot_shadow);
             divider = res.findViewById(R.id.divider);
+            divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
             return res;
         }
 
