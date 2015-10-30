@@ -94,8 +94,8 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
         case 'PHONE_NUMBER_INVALID':
           errors.phone = intlData.messages.login.errors.numberInvalid;
           break;
-        case 'ACTIVATION_ERROR':
-          errors.phone = intlData.messages.login.errors.activationError;
+        case 'CODE_WAIT':
+          errors.phone = intlData.messages.login.errors.codeWait;
           break;
         default:
           errors.phone = action.error;
