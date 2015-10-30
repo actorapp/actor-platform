@@ -120,7 +120,7 @@ object HistoryMessage {
   //возможно тут не учитываются
   private def unreadTotal(userId: Rep[Int]) =
     (for {
-      d ← DialogRepo.notHiddenDialogs.filter(_.userId === userId)
+      d ← DialogRepo.notHiddenNotArchived.filter(_.userId === userId)
       m ← notDeletedMessages.filter(_.senderUserId =!= userId)
       if m.userId === d.userId && m.peerType === d.peerType && m.peerId === d.peerId && m.date > d.ownerLastReadAt
     } yield m.date).length
