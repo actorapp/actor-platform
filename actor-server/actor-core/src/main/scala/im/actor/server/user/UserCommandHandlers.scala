@@ -268,8 +268,8 @@ private[user] trait UserCommandHandlers {
   protected def notifyDialogsChanged(user: User): Unit = {
     (for {
       shortDialogs ← dialogExt.getGroupedDialogs(user.id)
-      _ ← userExt.broadcastUserUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), pushText = None, isFat = false, deliveryId = None)
-    } yield NotifyDialogsChangedAck()) pipeTo sender()
+      seqstate ← userExt.broadcastUserUpdate(user.id, UpdateChatGroupsChanged(shortDialogs), pushText = None, isFat = false, deliveryId = None)
+    } yield seqstate) pipeTo sender()
   }
 
   protected def addContacts(
