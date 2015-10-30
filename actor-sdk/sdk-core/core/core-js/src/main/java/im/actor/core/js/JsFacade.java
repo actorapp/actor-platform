@@ -14,6 +14,9 @@ import im.actor.core.*;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.PeerSearchEntity;
+import im.actor.core.entity.PeerSearchType;
+import im.actor.core.entity.PeerType;
 import im.actor.core.js.entity.*;
 import im.actor.core.js.modules.JsBindedValueCallback;
 import im.actor.core.js.providers.JsNotificationsProvider;
@@ -703,6 +706,38 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onError(Exception e) {
                         Log.d(TAG, "editMyAbout:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise findGroups() {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.findPeers(PeerSearchType.GROUPS).start(new CommandCallback<List<PeerSearchEntity>>() {
+                    @Override
+                    public void onResult(List<PeerSearchEntity> res) {
+                        Log.d(TAG, "findGroups:result");
+                        JsArray<JsPeerSearchResult> jsRes = JsArray.createArray().cast();
+                        for (PeerSearchEntity s : res) {
+                            if (s.getPeer().getPeerType() == PeerType.GROUP) {
+                                jsRes.push(JsPeerSearchResult.create(messenger.buildPeerInfo(s.getPeer()),
+                                        s.getDescription(), s.getMembersCount(), (int) (s.getDate() / 1000L),
+                                        messenger.buildPeerInfo(Peer.user(s.getCreatorUid())), s.isPublic(),
+                                        s.isJoined()));
+                            } else if (s.getPeer().getPeerType() == PeerType.PRIVATE) {
+                                jsRes.push(JsPeerSearchResult.create(messenger.buildPeerInfo(s.getPeer())));
+                            }
+                            // jsRes.push();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "findGroups:error");
                         reject(e.getMessage());
                     }
                 });
