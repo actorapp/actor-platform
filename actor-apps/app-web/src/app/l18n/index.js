@@ -6,8 +6,9 @@ import russian from './ru-RU';
 import english from './en-US';
 import spanish from './es-ES';
 import portuguese from './pt-BR';
+import chinese from './zh-CN';
 
-const language = navigator.language || navigator.browserLanguage;
+const language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
 
 // Intl polyfill
 if (!global.Intl) {
@@ -32,7 +33,8 @@ const languageData = {
   'ru': russian,
   'en': english,
   'es': spanish,
-  'pt': portuguese
+  'pt': portuguese,
+  'zh-cn': chinese
 };
 
 const intlData = languageData[language] || languageData[language.split('-')[0]] || languageData['en'];
