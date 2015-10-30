@@ -102,8 +102,8 @@ private[user] sealed trait Commands extends AuthCommands {
     else
       SeqUpdatesManager.getSeqState(clientAuthId)
 
-  def notifyDialogsChanged(userId: Int): Future[SeqState] =
-    (processorRegion.ref ? NotifyDialogsChanged(userId)).mapTo[SeqState]
+  def notifyDialogsChanged(userId: Int, clientAuthId: Long): Future[SeqState] =
+    (processorRegion.ref ? NotifyDialogsChanged(userId, clientAuthId)).mapTo[SeqState]
 
   def broadcastUserUpdate(
     userId:     Int,
