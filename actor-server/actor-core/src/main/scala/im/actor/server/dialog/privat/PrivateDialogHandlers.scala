@@ -59,30 +59,33 @@ trait PrivateDialogHandlers extends UpdateCounters {
     val date = new DateTime(dateMillis)
     val userState = dialogState(senderUserId)
 
-    message match {
-      case ApiServiceMessage(_, Some(ApiServiceExContactRegistered(userId))) ⇒
-        db.run(HistoryMessage.create(
-          models.HistoryMessage(
-            userId = userState.peerId,
-            peer = models.Peer.privat(userId),
-            date = date,
-            senderUserId = userId,
-            randomId = randomId,
-            messageContentHeader = message.header,
-            messageContentData = message.toByteArray,
-            deletedAt = None
-          )
-        ))
-      case _ ⇒
-        db.run(writeHistoryMessage(
-          models.Peer.privat(senderUserId),
-          models.Peer.privat(userState.peerId),
-          date,
-          randomId,
-          message.header,
-          message.toByteArray
-        )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
-    }
+    val fut =
+      message match {
+        case ApiServiceMessage(_, Some(ApiServiceExContactRegistered(userId))) ⇒
+          db.run(HistoryMessage.create(
+            models.HistoryMessage(
+              userId = userState.peerId,
+              peer = models.Peer.privat(userId),
+              date = date,
+              senderUserId = userId,
+              randomId = randomId,
+              messageContentHeader = message.header,
+              messageContentData = message.toByteArray,
+              deletedAt = None
+            )
+          ))
+        case _ ⇒
+          db.run(writeHistoryMessage(
+            models.Peer.privat(senderUserId),
+            models.Peer.privat(userState.peerId),
+            date,
+            randomId,
+            message.header,
+            message.toByteArray
+          ))
+      }
+
+    fut map (_ ⇒ WriteMessageAck()) pipeTo sender()
   }
 
   protected def messageReceived(state: PrivateDialogState, receiverUserId: Int, date: Long): Unit = {
