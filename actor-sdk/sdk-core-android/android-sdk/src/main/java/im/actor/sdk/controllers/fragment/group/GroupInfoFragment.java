@@ -115,12 +115,16 @@ public class GroupInfoFragment extends BaseFragment {
             }
         });
 
+        ActorStyle style = ActorSDK.sharedActor().style;
         // Title
-        bind((TextView) header.findViewById(R.id.title), groupInfo.getName());
+        TextView title = (TextView) header.findViewById(R.id.title);
+        title.setTextColor(style.getProfileTitle());
+        bind(title, groupInfo.getName());
 
         // Created by
         boolean isAdmin = false;
         final TextView createdBy = (TextView) header.findViewById(R.id.createdBy);
+        createdBy.setTextColor(style.getProfileSubtitle());
         if (groupInfo.getCreatorId() == myUid()) {
             createdBy.setText(R.string.group_created_by_you);
             isAdmin = true;
@@ -141,6 +145,7 @@ public class GroupInfoFragment extends BaseFragment {
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
         final View descriptionContainer = header.findViewById(R.id.descriptionContainer);
         final TextView themeHeader = (TextView) header.findViewById(R.id.theme_header);
+        themeHeader.setTextColor(style.getProfileSubtitle());
 
         final boolean finalIsAdmin = isAdmin;
         bind(themeTV, header.findViewById(R.id.themeContainer), groupInfo.getTheme(), new ActorBinder.OnChangedListener() {
@@ -218,6 +223,7 @@ public class GroupInfoFragment extends BaseFragment {
         name.setTextColor(ActorSDK.sharedActor().style.getActionAddContactColor());
         name.setTypeface(Fonts.medium());
         TintImageView addIcon = (TintImageView) add.findViewById(R.id.add_icon);
+        addIcon.setTint(ActorSDK.sharedActor().style.getGroupActionAddIcon());
         addIcon.setTint(ActorSDK.sharedActor().style.getActionAddContactColor());
 
         add.findViewById(R.id.addUser).setOnClickListener(new View.OnClickListener() {
@@ -350,13 +356,22 @@ public class GroupInfoFragment extends BaseFragment {
 
 
         TextView settingsHeaderText = (TextView) res.findViewById(R.id.settings_header_text);
-        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+
+        TintImageView notificationSettingIcon = (TintImageView) res.findViewById(R.id.settings_notification_icon);
+        notificationSettingIcon.setTint(style.getSettingsIcon());
+
+        TintImageView shareMediaIcon = (TintImageView) res.findViewById(R.id.share_media_icon);
+        shareMediaIcon.setTint(style.getSettingsIcon());
+
+        TintImageView shareDocsIcon = (TintImageView) res.findViewById(R.id.share_docs_icon);
+        shareDocsIcon.setTint(style.getSettingsIcon());
 
         TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
-        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
 
         TextView membersHeaderText = (TextView) res.findViewById(R.id.membersTitle);
-        membersHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+        membersHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
 
         return res;
     }

@@ -15,9 +15,6 @@ import im.actor.sdk.BaseActorSDKDelegate;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 
-/**
- * Created by badgr on 16.10.2015.
- */
 public class Application extends android.app.Application{
     @Override
     public void onCreate() {
@@ -27,9 +24,11 @@ public class Application extends android.app.Application{
         ActorSDK.sharedActor().createActor(this);
 
         ActorStyle style = ActorSDK.sharedActor().style;
-        style.setMainColor(Color.parseColor("#529a88"));
-        style.setMainBackground(style.getMainColor());
-
+//        style.setMainColor(Color.parseColor("#529a88"));
+        style.setMainColor(Color.CYAN);
+        style.setMainBackground(Color.DKGRAY);
+        style.setTextPrimary(Color.RED);
+        style.setTextSecondary(Color.CYAN);
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {

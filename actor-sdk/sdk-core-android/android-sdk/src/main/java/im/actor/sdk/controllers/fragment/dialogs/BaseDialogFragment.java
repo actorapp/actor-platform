@@ -67,7 +67,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         hint.setPadding(Screen.dp(16), Screen.dp(8), Screen.dp(16), 0);
         hint.setGravity(Gravity.CENTER);
         hint.setTextSize(15);
-        hint.setTextColor(getResources().getColor(R.color.text_subheader));
+        hint.setTextColor(ActorSDK.sharedActor().style.getTextSubHeader());
         hint.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         footer.addView(hint);
 
@@ -77,7 +77,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
         View header = new View(getActivity());
         header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
-        header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
+        header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         addHeaderView(header);
 
         // Empty View

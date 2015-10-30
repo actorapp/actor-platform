@@ -63,7 +63,6 @@
                                 android:includeFontPadding="false"
                                 android:lines="1"
                                 android:singleLine="true"
-                                android:textColor="@color/profile_title"
                                 android:textSize="26sp" />
 
                             <TextView
@@ -71,7 +70,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="-2dp"
-                                android:textColor="@color/profile_subtitle"
                                 android:textSize="14sp" />
 
                         </LinearLayout>
@@ -131,7 +129,6 @@
                             android:gravity="center_vertical|left"
                             android:paddingLeft="72dp"
                             android:text="@string/profile_shared_header"
-                            android:textColor="@color/settings_main_title"
                             android:textSize="16sp" />
 
                         <LinearLayout
@@ -143,10 +140,10 @@
                             android:visibility="gone">
 
                             <im.actor.sdk.view.TintImageView
+                                android:id="@+id/share_media_icon"
                                 android:layout_width="72dp"
                                 android:layout_height="match_parent"
-                                app:src="@drawable/conv_attach_gallery"
-                                app:tintColor="@color/settings_icon" />
+                                app:src="@drawable/conv_attach_gallery" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -176,10 +173,10 @@
                             android:paddingRight="8dp">
 
                             <im.actor.sdk.view.TintImageView
+                                android:id="@+id/share_docs_icon"
                                 android:layout_width="72dp"
                                 android:layout_height="match_parent"
-                                app:src="@drawable/conv_attach_file"
-                                app:tintColor="@color/settings_icon" />
+                                app:src="@drawable/conv_attach_file" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -228,7 +225,6 @@
                         android:gravity="center_vertical|left"
                         android:paddingLeft="72dp"
                         android:text="@string/profile_settings_header"
-                        android:textColor="@color/settings_main_title"
                         android:textSize="16sp" />
 
                     <LinearLayout
@@ -239,10 +235,10 @@
                         android:paddingRight="8dp">
 
                         <im.actor.sdk.view.TintImageView
+                            android:id="@+id/settings_notification_icon"
                             android:layout_width="72dp"
                             android:layout_height="match_parent"
-                            app:src="@drawable/ic_notifications_white_18dp"
-                            app:tintColor="@color/settings_icon" />
+                            app:src="@drawable/ic_notifications_white_18dp" />
 
                         <TextView
                             android:layout_width="0dp"

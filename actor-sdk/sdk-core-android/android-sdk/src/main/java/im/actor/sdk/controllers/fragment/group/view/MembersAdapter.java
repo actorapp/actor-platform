@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import java.util.Collection;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -64,6 +65,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
             avatarView.init(Screen.dp(42), 24);
             admin = res.findViewById(R.id.adminFlag);
+            ((TextView) admin).setTextColor(ActorSDK.sharedActor().style.getGroupAdmin());
             return res;
         }
 

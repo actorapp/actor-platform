@@ -47,7 +47,6 @@
             android:gravity="center_vertical"
             android:paddingRight="8dp"
             android:text="@string/group_admin"
-            android:textColor="@color/group_admin"
             android:textSize="16sp" />
     </LinearLayout>
 

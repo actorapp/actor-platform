@@ -63,11 +63,11 @@ public class MyProfileFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         delegate = ActorSDK.sharedActor().getDelegate();
         baseColor = getResources().getColor(R.color.primary);
-
+        ActorStyle style = ActorSDK.sharedActor().style;
         final UserVM userModel = users().get(myUid());
 
         final TextView nameView = (TextView) view.findViewById(R.id.name);
-
+        nameView.setTextColor(style.getProfileTitle());
         bind(nameView, userModel.getName());
 
         view.findViewById(R.id.notifications).setOnClickListener(new View.OnClickListener() {
@@ -135,7 +135,7 @@ public class MyProfileFragment extends BaseFragment {
                         final UserPhone record = val.get(i);
                         View recordView = inflater.inflate(R.layout.contact_record, contactsContainer, false);
                         TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
-                        tintImageView.setTint(ActorSDK.sharedActor().style.getCategoryTextColor());
+                        tintImageView.setTint(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
                         if (i == 0) {
                             tintImageView.setResource(R.drawable.ic_call_white_36dp);
                             tintImageView.setVisibility(View.VISIBLE);
@@ -251,7 +251,37 @@ public class MyProfileFragment extends BaseFragment {
         });
 
         TextView settingsHeaderText = (TextView) view.findViewById(R.id.settings_header_text);
-        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
+
+        TextView settingsNotificationsTitle = (TextView) view.findViewById(R.id.settings_notifications_title);
+        settingsNotificationsTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+
+        TextView settingsChatTitle = (TextView) view.findViewById(R.id.settings_chat_title);
+        settingsChatTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+
+        TextView securityTitle = (TextView) view.findViewById(R.id.settings_security_title);
+        securityTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+
+        TintImageView securityIcon = (TintImageView) view.findViewById(R.id.settings_security_icon);
+        securityIcon.setTint(style.getSettingsIcon());
+
+        TextView helpTitle = (TextView) view.findViewById(R.id.settings_help_title);
+        helpTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+
+        TintImageView helpIcon = (TintImageView) view.findViewById(R.id.settings_help_icon);
+        helpIcon.setTint(style.getSettingsIcon());
+
+        TextView askTitle = (TextView) view.findViewById(R.id.settings_ask_title);
+        askTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+
+        TintImageView askIcon = (TintImageView) view.findViewById(R.id.settings_ask_icon);
+        askIcon.setTint(style.getSettingsIcon());
+
+        TintImageView notificationsSettingsIcon = (TintImageView) view.findViewById(R.id.settings_notification_icon);
+        notificationsSettingsIcon.setTint(style.getSettingsIcon());
+
+        TintImageView chatSettingsIcon = (TintImageView) view.findViewById(R.id.settings_chat_icon);
+        chatSettingsIcon.setTint(style.getSettingsIcon());
 
         view.findViewById(R.id.after_phone_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
         view.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
@@ -319,7 +349,8 @@ public class MyProfileFragment extends BaseFragment {
             FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
             categoryContainer.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
             TextView categoryName = (TextView) categoryContainer.findViewById(R.id.category_name);
-            categoryName.setTextColor(ActorSDK.sharedActor().style.getCategoryTextColor());
+            categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitle());
+            categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
             categoryName.setText(category.getCategoryName());
             if (category.getView(context) != null) {
                 settingsContainer.addView(category.getView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
@@ -345,7 +376,9 @@ public class MyProfileFragment extends BaseFragment {
             } else {
                 LinearLayout fieldLayout = (LinearLayout) inflater.inflate(R.layout.actor_settings_field, null);
                 TintImageView icon = (TintImageView) fieldLayout.findViewById(R.id.icon);
+                icon.setTint(ActorSDK.sharedActor().style.getSettingsIcon());
                 TextView name = (TextView) fieldLayout.findViewById(R.id.name);
+                name.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
                 View rightView = field.getRightView(context);
                 field.bindCreatedRightView(rightView);
                 field.bindCreatedTextView(name);
