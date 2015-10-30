@@ -62,7 +62,7 @@ public class JsUser extends JavaScriptObject {
                                        boolean isContact, boolean isBot, String presence, boolean isOnline, JsArray<JsPhone> phones,
                                        JsArray<JsEmail> emails)/*-{
         return {id: id, name: name, nick: nick, about: about, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
-            isContact: isContact, presence: presence, isOnline: isOnline, phones: phones, emails: emails};
+            isContact: isContact, isBot: isBot, presence: presence, isOnline: isOnline, phones: phones, emails: emails};
     }-*/;
 
     protected JsUser() {

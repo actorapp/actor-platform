@@ -733,6 +733,7 @@ public class JsFacade implements Exportable {
                             }
                             // jsRes.push();
                         }
+                        resolve(jsRes);
                     }
 
                     @Override
