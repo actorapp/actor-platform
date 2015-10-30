@@ -3,14 +3,13 @@ package im.actor.server.api.rpc.service.messaging
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
-import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ ApiPeer, ApiOutPeer, ApiPeerType }
-import im.actor.concurrent.FutureExt
-import im.actor.server.dialog.{ HistoryUtils, ReadFailed, ReceiveFailed }
+import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
+import im.actor.server.dialog.HistoryUtils
 import im.actor.server.group.GroupUtils
-import im.actor.server.sequence.{ SeqState, SeqUpdatesManager }
+import im.actor.server.persist.DialogRepo
+import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserUtils
 import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
@@ -27,23 +26,15 @@ trait HistoryHandlers {
   import im.actor.api.rpc.Implicits._
 
   override def jhandleMessageReceived(peer: ApiOutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val action = requireAuth(clientData).map { implicit client ⇒
-      DBIO.from {
-        dialogExt.messageReceived(peer.asPeer, client.userId, date) map (_ ⇒ Ok(ResponseVoid))
-      }
+    authorized(clientData) { client ⇒
+      dialogExt.messageReceived(peer.asPeer, client.userId, date) map (_ ⇒ Ok(ResponseVoid))
     }
-
-    db.run(toDBIOAction(action))
   }
 
   override def jhandleMessageRead(peer: ApiOutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val action = requireAuth(clientData).map { implicit client ⇒
-      DBIO.from {
-        dialogExt.messageRead(peer.asPeer, client.userId, client.authId, date) map (_ ⇒ Ok(ResponseVoid))
-      }
+    authorized(clientData) { client ⇒
+      dialogExt.messageRead(peer.asPeer, client.userId, client.authId, date) map (_ ⇒ Ok(ResponseVoid))
     }
-
-    db.run(toDBIOAction(action))
   }
 
   override def jhandleClearChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
@@ -82,7 +73,7 @@ trait HistoryHandlers {
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.DialogRepo.findNotArchived(client.userId, endDateTimeFrom(endDate), limit) flatMap { dialogModels ⇒
+      persist.DialogRepo.findNotArchived(client.userId, endDateTimeFrom(endDate), limit, fetchHidden = true) flatMap { dialogModels ⇒
         for {
           dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
           (users, groups) ← getDialogsUsersGroups(dialogs)
@@ -118,9 +109,23 @@ trait HistoryHandlers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = Future.failed(new RuntimeException("Not implemented"))
+  override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    authorized(clientData) { implicit client ⇒
+      for {
+        _ ← db.run(DialogRepo.hide(client.userId, peer.asModel))
+        SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
+    }
+  }
 
-  override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = Future.failed(new RuntimeException("Not implemented"))
+  override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    authorized(clientData) { implicit client ⇒
+      for {
+        _ ← db.run(DialogRepo.show(client.userId, peer.asModel))
+        SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
+    }
+  }
 
   override def jhandleLoadHistory(peer: ApiOutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -128,8 +133,8 @@ trait HistoryHandlers {
         withHistoryOwner(peer.asModel, client.userId) { historyOwner ⇒
           persist.DialogRepo.find(client.userId, peer.asModel) flatMap { dialogOpt ⇒
             persist.HistoryMessage.find(historyOwner, peer.asModel, endDateTimeFrom(endDate), limit) flatMap { messageModels ⇒
-              val lastReceivedAt = dialogOpt map (_.lastReceivedAt) getOrElse (new DateTime(0))
-              val lastReadAt = dialogOpt map (_.lastReadAt) getOrElse (new DateTime(0))
+              val lastReceivedAt = dialogOpt map (_.lastReceivedAt) getOrElse new DateTime(0)
+              val lastReadAt = dialogOpt map (_.lastReadAt) getOrElse new DateTime(0)
 
               val (messages, userIds) = messageModels.view
                 .map(_.ofUser(client.userId))
@@ -234,19 +239,6 @@ trait HistoryHandlers {
     }
   }
 
-  private def getDialogShort(dialogModel: models.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialogShort] = {
-    withHistoryOwner(dialogModel.peer, client.userId) { historyOwner ⇒
-      for {
-        messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
-        unreadCount ← dialogExt.getUnreadCount(client.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
-      } yield ApiDialogShort(
-        peer = ApiPeer(ApiPeerType(dialogModel.peer.typ.toInt), dialogModel.peer.id),
-        counter = unreadCount,
-        date = messageOpt.map(_.date.getMillis).getOrElse(0)
-      )
-    }
-  }
-
   private def getDialogsUsersGroups(dialogs: Seq[ApiDialog])(implicit client: AuthorizedClientData) = {
     val (userIds, groupIds) = dialogs.foldLeft((Set.empty[Int], Set.empty[Int])) {
       case ((uacc, gacc), dialog) ⇒
@@ -259,14 +251,14 @@ trait HistoryHandlers {
 
     for {
       groups ← DBIO.from(Future.sequence(groupIds map (groupExt.getApiStruct(_, client.userId))))
-      groupUserIds = groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
+      groupUserIds = groups.flatMap(g ⇒ g.members.flatMap(m ⇒ Seq(m.userId, m.inviterUserId)) :+ g.creatorUserId)
       users ← DBIO.from(Future.sequence((userIds ++ groupUserIds).filterNot(_ == 0) map (UserUtils.safeGetUser(_, client.userId, client.authId)))) map (_.flatten)
     } yield (users, groups)
   }
 
   private def relatedUsers(message: ApiMessage): Set[Int] = {
     message match {
-      case ApiServiceMessage(_, extOpt)   ⇒ extOpt map (relatedUsers) getOrElse (Set.empty)
+      case ApiServiceMessage(_, extOpt)   ⇒ extOpt map relatedUsers getOrElse Set.empty
       case ApiTextMessage(_, mentions, _) ⇒ mentions.toSet
       case ApiJsonMessage(_)              ⇒ Set.empty
       case _: ApiDocumentMessage          ⇒ Set.empty

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Strings;
@@ -21,32 +22,18 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class BubbleContainer extends ViewGroup {
 
-    public interface OnAvatarClickListener {
-        void onAvatarClick(int uid);
-    }
-
-    public interface OnAvatarLongClickListener {
-        void onAvatarLongClick(int uid);
-    }
-
     private static final int MODE_LEFT = 0;
     private static final int MODE_RIGHT = 1;
     private static final int MODE_FULL = 2;
-
     private final Paint SELECTOR_PAINT = new Paint();
-
     private boolean showDateDiv;
     private boolean showUnreadDiv;
     private boolean showAvatar;
-
     private TextView dateDiv;
     private TextView unreadDiv;
     private AvatarView avatarView;
-
     private int mode = MODE_FULL;
-
     private boolean isSelected;
-
     private OnAvatarClickListener onClickListener;
     private OnAvatarLongClickListener onLongClickListener;
 
@@ -54,7 +41,6 @@ public class BubbleContainer extends ViewGroup {
         super(context);
         init();
     }
-
     public BubbleContainer(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -82,7 +68,7 @@ public class BubbleContainer extends ViewGroup {
         dateDiv.setIncludeFontPadding(false);
         dateDiv.setBackgroundResource(R.drawable.conv_bubble_date_bg);
         dateDiv.setGravity(Gravity.CENTER);
-        dateDiv.setTextColor(getResources().getColor(R.color.conv_date_text));
+        dateDiv.setTextColor(ActorSDK.sharedActor().style.getConvDatetext());
 
         if (!showDateDiv) {
             dateDiv.setVisibility(GONE);
@@ -100,9 +86,9 @@ public class BubbleContainer extends ViewGroup {
         unreadDiv.setTextSize(13);
         unreadDiv.setTypeface(Fonts.regular());
         unreadDiv.setIncludeFontPadding(false);
-        unreadDiv.setBackgroundColor(getResources().getColor(R.color.conv_date_bg));
+        unreadDiv.setBackgroundColor(ActorSDK.sharedActor().style.getConvDateBg());
         unreadDiv.setGravity(Gravity.CENTER);
-        unreadDiv.setTextColor(getResources().getColor(R.color.conv_date_text));
+        unreadDiv.setTextColor(ActorSDK.sharedActor().style.getConvDatetext());
         unreadDiv.setPadding(0, Screen.dp(6), 0, Screen.dp(6));
         unreadDiv.setText(R.string.chat_new_messages);
 
@@ -159,9 +145,9 @@ public class BubbleContainer extends ViewGroup {
         if (showAvatar) {
             UserVM u = users().get(uid);
             avatarView.setVisibility(VISIBLE);
-            if(gid!=0){
+            if (gid != 0) {
                 avatarView.bind(groups().get(gid));
-            }else{
+            } else {
                 avatarView.bind(u);
             }
             avatarView.setOnClickListener(new OnClickListener() {
@@ -178,7 +164,7 @@ public class BubbleContainer extends ViewGroup {
                     if (onLongClickListener != null) {
                         onLongClickListener.onAvatarLongClick(uid);
                         return true;
-                    }else{
+                    } else {
                         return false;
                     }
                 }
@@ -231,8 +217,6 @@ public class BubbleContainer extends ViewGroup {
         throw new RuntimeException("Unable to find bubble view!");
     }
 
-    // Small hack for avoiding listview selection
-
     public void setBubbleSelected(boolean isSelected) {
         this.isSelected = isSelected;
         setSelected(isSelected);
@@ -246,6 +230,8 @@ public class BubbleContainer extends ViewGroup {
         }
         super.setSelected(selected);
     }
+
+    // Small hack for avoiding listview selection
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -332,5 +318,13 @@ public class BubbleContainer extends ViewGroup {
             canvas.drawRect(0, getHeight() - bubble.getHeight(),
                     getWidth(), getHeight(), SELECTOR_PAINT);
         }
+    }
+
+    public interface OnAvatarClickListener {
+        void onAvatarClick(int uid);
+    }
+
+    public interface OnAvatarLongClickListener {
+        void onAvatarLongClick(int uid);
     }
 }

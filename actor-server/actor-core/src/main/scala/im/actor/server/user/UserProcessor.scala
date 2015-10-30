@@ -80,7 +80,6 @@ object UserProcessor {
       10031 → classOf[UserCommands.UpdateIsAdmin],
       10032 → classOf[UserCommands.UpdateIsAdminAck],
       10033 → classOf[UserCommands.NotifyDialogsChanged],
-      10034 → classOf[UserCommands.NotifyDialogsChangedAck],
       10035 → classOf[UserCommands.ChangePreferredLanguages],
       10036 → classOf[UserCommands.ChangeTimeZone],
 
