@@ -7978,6 +7978,37 @@
           </node>
         </node>
       </node>
+      <node concept="NpBTk" id="1GlYFhnbv9G" role="2m5mJr">
+        <property role="TrG5h" value="RawUpdate" />
+        <node concept="2m7Kf5" id="1GlYFhnbws5" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="type" />
+          <node concept="2m5nlT" id="1GlYFhnbwsq" role="2m7DVh">
+            <node concept="2m5ndX" id="1GlYFhnbwsw" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="1GlYFhnbvbN" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="bytes" />
+          <node concept="2m61tm" id="1GlYFhnbvNZ" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="1GlYFhnbv9H" role="NuuwV">
+          <property role="Nu42W" value="50" />
+        </node>
+        <node concept="NXeRC" id="1GlYFhnbvbU" role="NXp_2">
+          <property role="NXePf" value="Custom Raw Update" />
+        </node>
+        <node concept="NX1gA" id="1GlYFhnbwsB" role="NXp_2">
+          <property role="NX6R2" value="Type of content" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1GlYFhnbws5" resolve="type" />
+        </node>
+        <node concept="NX1gA" id="1GlYFhnbvNV" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Raw data" />
+          <ref role="NX6Kv" node="1GlYFhnbvbN" resolve="bytes" />
+        </node>
+      </node>
       <node concept="NvyAe" id="GBscvBBAXl" role="2m5mJr" />
       <node concept="2m6fVq" id="GBscvBBBd$" role="2m5mJr">
         <property role="TrG5h" value="SubscribeToOnline" />
