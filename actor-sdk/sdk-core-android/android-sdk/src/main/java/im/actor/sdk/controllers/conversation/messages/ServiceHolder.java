@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.conversation.messages;
 import android.view.View;
 import android.widget.TextView;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.ServiceContent;
@@ -17,6 +18,7 @@ public class ServiceHolder extends MessageHolder {
         super(fragment, itemView, true);
 
         messageText = (TextView) itemView.findViewById(R.id.serviceMessage);
+        messageText.setTextColor(ActorSDK.sharedActor().style.getConvDatetext());
     }
 
     @Override
