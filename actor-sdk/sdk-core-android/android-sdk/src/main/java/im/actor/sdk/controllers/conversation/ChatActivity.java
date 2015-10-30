@@ -36,6 +36,7 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
@@ -59,27 +60,20 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class ChatActivity extends ActorEditTextActivity {
 
-    public static Intent build(Peer peer, boolean compose, Context context) {
-        final Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra(EXTRA_CHAT_PEER, peer.getUnuqueId());
-        intent.putExtra(EXTRA_CHAT_COMPOSE, compose);
-        return intent;
-    }
+    public static final String EXTRA_CHAT_PEER = "chat_peer";
 
     //////////////////////////////////
     // Activity keys
     //////////////////////////////////
-
+    public static final String EXTRA_CHAT_COMPOSE = "compose";
+    public static final String STATE_FILE_NAME = "pending_file_name";
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_PHOTO = 1;
     private static final int REQUEST_VIDEO = 2;
     private static final int REQUEST_DOC = 3;
     private static final int REQUEST_LOCATION = 4;
-
-    public static final String EXTRA_CHAT_PEER = "chat_peer";
-    public static final String EXTRA_CHAT_COMPOSE = "compose";
-
-    public static final String STATE_FILE_NAME = "pending_file_name";
+    // Peer of current chat
+    private Peer peer;
 
     //////////////////////////////////
     // Configuration
@@ -88,56 +82,47 @@ public class ChatActivity extends ActorEditTextActivity {
     //////////////////////////////////
     // Model
     //////////////////////////////////
-
-    // Peer of current chat
-    private Peer peer;
+    // Toolbar title root view
+    private View barView;
 
     //////////////////////////////////
     // Toolbar views
     //////////////////////////////////
-
-    // Toolbar title root view
-    private View barView;
     // Toolbar Avatar view
     private AvatarView barAvatar;
     // Toolbar title view
     private TextView barTitle;
-
     // Toolbar subtitle view container
     private View barSubtitleContainer;
     // Toolbar subtitle text view
     private TextView barSubtitle;
-
     // Toolbar typing container
     private View barTypingContainer;
     // Toolbar typing icon
     private ImageView barTypingIcon;
     // Toolbar typing text
     private TextView barTyping;
+    private boolean isMentionsVisible = false;
 
     //////////////////////////////////
     // Mentions
     //////////////////////////////////
-
-    private boolean isMentionsVisible = false;
     private MentionsAdapter mentionsAdapter;
     private ListView mentionsList;
     private String mentionSearchString = "";
     private int mentionStart;
+    private FrameLayout quoteContainer;
 
     //////////////////////////////////
     // Quote
     //////////////////////////////////
-
-    private FrameLayout quoteContainer;
     private TextView quoteText;
     private String currentQuote = "";
+    private String sendUri;
 
     //////////////////////////////////
     // Forwarding
     //////////////////////////////////
-
-    private String sendUri;
     private ArrayList<String> sendUriMultiple;
     private int shareUser;
     private String forwardDocDescriptor;
@@ -145,19 +130,23 @@ public class ChatActivity extends ActorEditTextActivity {
     private String forwardText;
     private String forwardTextRaw;
     private String sendText;
+    // Camera photo destination name
+    private String pending_fileName;
 
     //////////////////////////////////
     // Utility variables
     //////////////////////////////////
-
-    // Camera photo destination name
-    private String pending_fileName;
-
     // Lock typing during messageEditText change
     private boolean isTypingDisabled = false;
-
     // Is Activity opened from Compose
     private boolean isCompose = false;
+
+    public static Intent build(Peer peer, boolean compose, Context context) {
+        final Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtra(EXTRA_CHAT_PEER, peer.getUnuqueId());
+        intent.putExtra(EXTRA_CHAT_COMPOSE, compose);
+        return intent;
+    }
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -780,10 +769,10 @@ public class ChatActivity extends ActorEditTextActivity {
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() > 0) {
-                sendButton.setTint(getResources().getColor(R.color.conv_send_enabled));
+                sendButton.setTint(ActorSDK.sharedActor().style.getConvSendEnabled());
                 sendButton.setEnabled(true);
             } else {
-                sendButton.setTint(getResources().getColor(R.color.conv_send_disabled));
+                sendButton.setTint(ActorSDK.sharedActor().style.getConvSendDisabled());
                 sendButton.setEnabled(false);
             }
 
