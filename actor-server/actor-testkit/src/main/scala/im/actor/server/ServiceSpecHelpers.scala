@@ -20,7 +20,7 @@ import scala.concurrent.duration._
 import scalaz.{ -\/, \/- }
 
 trait PersistenceHelpers {
-  protected implicit val timeout = Timeout(5.seconds)
+  implicit val timeout = Timeout(5.seconds)
 
   def getUserModel(userId: Int)(implicit db: Database) = Await.result(db.run(persist.UserRepo.find(userId).head), timeout.duration)
 }

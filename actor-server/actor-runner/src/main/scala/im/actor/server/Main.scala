@@ -12,6 +12,7 @@ import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActiv
 import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.api.rpc.service.SearchServiceImpl
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
@@ -140,7 +141,8 @@ object Main extends App {
       new ProfileServiceImpl,
       new IntegrationsServiceImpl(s"${webappConfig.scheme}://${webappConfig.host}"),
       new WebactionsServiceImpl,
-      new DeviceServiceImpl
+      new DeviceServiceImpl,
+      new SearchServiceImpl
     )
 
     system.log.warning("Starting ActorBot")
