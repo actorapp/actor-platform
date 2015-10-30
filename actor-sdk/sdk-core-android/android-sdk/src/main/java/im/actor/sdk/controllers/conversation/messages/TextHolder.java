@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.core.entity.Message;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Strings;
 import im.actor.sdk.util.Fonts;
@@ -36,17 +37,19 @@ public class TextHolder extends MessageHolder {
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
+        text.setTextColor(ActorSDK.sharedActor().style.getConvText());
         text.setTypeface(Fonts.regular());
 
         time = (TextView) itemView.findViewById(R.id.tv_time);
+        ActorSDK.sharedActor().style.getConvTime();
         time.setTypeface(Fonts.regular());
         status = (TintImageView) itemView.findViewById(R.id.stateIcon);
 
-        waitColor = itemView.getResources().getColor(R.color.conv_state_pending);
-        sentColor = itemView.getResources().getColor(R.color.conv_state_sent);
-        deliveredColor = itemView.getResources().getColor(R.color.conv_state_delivered);
-        readColor = itemView.getResources().getColor(R.color.conv_state_read);
-        errorColor = itemView.getResources().getColor(R.color.conv_state_error);
+        waitColor = ActorSDK.sharedActor().style.getConvStatePending();
+        sentColor = ActorSDK.sharedActor().style.getConvStateSent();
+        deliveredColor = ActorSDK.sharedActor().style.getConvStateDelivered();
+        readColor = ActorSDK.sharedActor().style.getConvStateRead();
+        errorColor = ActorSDK.sharedActor().style.getConvStateError();
     }
 
     @Override

@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/conv_bubble_date_bg"
             android:includeFontPadding="false"
-            android:textColor="@color/conv_date_text"
             android:textSize="12sp" />
     </LinearLayout>
 </im.actor.sdk.controllers.conversation.view.BubbleContainer>
