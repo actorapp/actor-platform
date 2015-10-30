@@ -62,6 +62,9 @@ public class EditNameFragment extends BaseFragment {
             GroupVM group = groups().get(id);
             nameEdit.setText(group.getTheme().get());
         }
+        res.findViewById(R.id.dividerTop).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        res.findViewById(R.id.dividerBot).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+
         res.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

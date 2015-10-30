@@ -13,7 +13,6 @@
         android:id="@+id/lv_countries"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/divider"
         android:dividerHeight="@dimen/div_size"
         android:fadingEdge="none"
         android:scrollingCache="false" />

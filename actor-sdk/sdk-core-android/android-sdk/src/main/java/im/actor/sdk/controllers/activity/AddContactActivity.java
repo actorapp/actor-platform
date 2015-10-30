@@ -38,6 +38,8 @@ public class AddContactActivity extends BaseFragmentActivity {
         findViewById(R.id.container).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
 
         searchQuery = (EditText) findViewById(R.id.searchField);
+        findViewById(R.id.dividerTop).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        findViewById(R.id.dividerBot).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override

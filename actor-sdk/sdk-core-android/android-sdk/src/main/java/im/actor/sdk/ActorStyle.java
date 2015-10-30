@@ -6,15 +6,25 @@ public class ActorStyle {
     private int toolBarColor = 0;
     private int fabColor = 0;
     private int fabColorPressed = 0;
-    private int categoryTextColor = 0;
+    private int mainFabbg = Color.parseColor("#ccffffff");
+    private int settingsCategoryTextColor = 0;
     private int recordIconTintColor = 0;
     private int avatarBackgroundColor = 0;
     private int actionShareColor = 0;
-    private int actionAddContactColor = 0;
+
+    //Root colors
+    private int mainColor = Color.parseColor("#4d74a6");
+    private int mainBackground = Color.parseColor("#ffffff");
+    private int backyardBackground = 0;
+
+    //Contacts
     private int contactFastTitleColor = 0;
+    private int actionAddContactColor = 0;
+    private int contactDivider = 0;
 
     //Dialogs
     private int dialogsStatePendingColor = Color.parseColor("#40000000");
+    private int dialogsTime = 0;
     private int dialogsStateSentColor = Color.parseColor("#40000000");
     private int dialogsStateDeliveredColor = Color.parseColor("#40000000");
     private int dialogsStateReadColor = Color.parseColor("#ff7ea8ef");
@@ -24,13 +34,8 @@ public class ActorStyle {
     private int dialogsDivider = 0;
     private int dialogsTitle = 0;
     private int dialogsText = 0;
-    private int dialogsTime = 0;
-    private int dialogsTyping = 0;
 
-    //Root colors
-    private int mainColor = Color.parseColor("#4d74a6");
-    private int mainBackground = Color.parseColor("#ffffff");
-    private int backyardBackground = 0;
+    private int dialogsTyping = 0;
 
     private int primaryAlt = Color.parseColor("#4ca665");
     private int primaryAltHovered = Color.parseColor("#ff3d8652");
@@ -61,7 +66,6 @@ public class ActorStyle {
     private int textSubheaderInv = Color.parseColor("#8Fffffff");
 
     //Settings
-
     private int settingsMainTitle = 0;
     private int settingsIcon = 0;
     private int settingsTitle = 0;
@@ -123,15 +127,15 @@ public class ActorStyle {
     }
 
     public int getSettingsCategoryTextColor() {
-        if (categoryTextColor != 0) {
-            return categoryTextColor;
+        if (settingsCategoryTextColor != 0) {
+            return settingsCategoryTextColor;
         } else {
             return getMainColor();
         }
     }
 
-    public void setCategoryTextColor(int categoryTextColor) {
-        this.categoryTextColor = categoryTextColor;
+    public void setSettingsCategoryTextColor(int settingsCategoryTextColor) {
+        this.settingsCategoryTextColor = settingsCategoryTextColor;
     }
 
     public int getRecordIconTintColor() {
@@ -621,6 +625,26 @@ public class ActorStyle {
 
     public void setGroupActionAddText(int groupActionAddText) {
         this.groupActionAddText = groupActionAddText;
+    }
+
+    public int getContactDivider() {
+        if (contactDivider != 0) {
+            return contactDivider;
+        } else {
+            return getDivider();
+        }
+    }
+
+    public void setContactDivider(int contactDivider) {
+        this.contactDivider = contactDivider;
+    }
+
+    public int getMainFabbg() {
+        return mainFabbg;
+    }
+
+    public void setMainFabbg(int mainFabbg) {
+        this.mainFabbg = mainFabbg;
     }
 
     private int getDarkenArgb(int color, double percent) {

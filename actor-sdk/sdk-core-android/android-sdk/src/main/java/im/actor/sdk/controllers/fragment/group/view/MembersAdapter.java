@@ -66,6 +66,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             avatarView.init(Screen.dp(42), 24);
             admin = res.findViewById(R.id.adminFlag);
             ((TextView) admin).setTextColor(ActorSDK.sharedActor().style.getGroupAdmin());
+            res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
             return res;
         }
 

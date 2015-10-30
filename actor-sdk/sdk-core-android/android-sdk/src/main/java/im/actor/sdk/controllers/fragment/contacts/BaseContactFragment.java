@@ -170,7 +170,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         if (!isLast) {
             View div = new View(getActivity());
-            div.setBackgroundColor(getResources().getColor(R.color.contacts_divider));
+            div.setBackgroundColor(ActorSDK.sharedActor().style.getContactDivider());
             {
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         getResources().getDimensionPixelSize(R.dimen.div_size));
