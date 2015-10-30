@@ -31,7 +31,7 @@ object MessagingService {
       case models.PeerType.Group   ⇒ "group"
     }
 
-    s"messaging.messages.${strType}.${peer.id}"
+    s"messaging.messages.$strType.${peer.id}"
   }
 
   def messagesTopic(peer: ApiPeer): String =
