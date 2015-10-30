@@ -42,6 +42,7 @@ public class SecuritySettingsFragment extends BaseFragment {
             }
         });
         authItems = (LinearLayout) res.findViewById(R.id.authItems);
+        res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         res.findViewById(R.id.terminateSessions).setOnClickListener(new View.OnClickListener() {
             @Override

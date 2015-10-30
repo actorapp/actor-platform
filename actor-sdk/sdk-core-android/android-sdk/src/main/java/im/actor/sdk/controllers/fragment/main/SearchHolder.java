@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.runtime.android.view.BindedViewHolder;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -62,7 +63,7 @@ public class SearchHolder extends BindedViewHolder {
         }
 
         separator = new View(context);
-        separator.setBackgroundColor(context.getResources().getColor(R.color.chats_divider));
+        separator.setBackgroundColor(ActorSDK.sharedActor().style.getDialogsDivider());
         {
             FrameLayout.LayoutParams divLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     context.getResources().getDimensionPixelSize(R.dimen.div_size));

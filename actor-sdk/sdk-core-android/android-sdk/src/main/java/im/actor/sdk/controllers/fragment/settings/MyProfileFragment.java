@@ -63,10 +63,11 @@ public class MyProfileFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         delegate = ActorSDK.sharedActor().getDelegate();
         baseColor = getResources().getColor(R.color.primary);
-        ActorStyle style = ActorSDK.sharedActor().style;
+        final ActorStyle style = ActorSDK.sharedActor().style;
         final UserVM userModel = users().get(myUid());
 
         final TextView nameView = (TextView) view.findViewById(R.id.name);
+        nameView.setShadowLayer(1, 1, 1, style.getDivider());
         nameView.setTextColor(style.getProfileTitle());
         bind(nameView, userModel.getName());
 
@@ -89,18 +90,22 @@ public class MyProfileFragment extends BaseFragment {
         final FrameLayout about = (FrameLayout) view.findViewById(R.id.about);
 
         // TODO: Move bindings to onResume
-
         bind(userModel.getNick(), new ValueChangedListener<String>() {
             @Override
             public void onChanged(final String val, Value<String> Value) {
                 final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
+                recordView.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDivider());
                 TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
                 tintImageView.setVisibility(View.INVISIBLE);
                 String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
                 String title = getString(R.string.nickname);
 
-                ((TextView) recordView.findViewById(R.id.value)).setText(value);
-                ((TextView) recordView.findViewById(R.id.title)).setText(title);
+                TextView nickValue = (TextView) recordView.findViewById(R.id.value);
+                nickValue.setText(value);
+                nickValue.setTextColor(style.getTextPrimary());
+                TextView nickTitle = (TextView) recordView.findViewById(R.id.title);
+                nickTitle.setText(title);
+                nickTitle.setTextColor(style.getTextSecondary());
                 nickContainer.removeAllViews();
                 nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         Screen.dp(72)));
@@ -114,9 +119,14 @@ public class MyProfileFragment extends BaseFragment {
             }
         });
 
-        about.findViewById(R.id.title).setVisibility(View.GONE);
+        TextView aboutTitle = (TextView) about.findViewById(R.id.title);
+        aboutTitle.setTextColor(style.getTextSecondary());
+        aboutTitle.setVisibility(View.GONE);
         about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
-        ((TextView) about.findViewById(R.id.value)).setText(getString(R.string.about_user_me));
+        TextView aboutValue = (TextView) about.findViewById(R.id.value);
+        aboutValue.setTextColor(style.getTextPrimary());
+        aboutValue.setText(getString(R.string.about_user_me));
+        about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDivider());
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,11 +153,13 @@ public class MyProfileFragment extends BaseFragment {
                             tintImageView.setVisibility(View.INVISIBLE);
                         }
 
+                        View divider = recordView.findViewById(R.id.divider);
                         if (i != val.size() - 1) {
-                            recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+                            divider.setVisibility(View.VISIBLE);
                         } else {
-                            recordView.findViewById(R.id.divider).setVisibility(View.GONE);
+                            divider.setVisibility(View.GONE);
                         }
+                        divider.setBackgroundColor(ActorSDK.sharedActor().style.getDivider());
 
                         String _phoneNumber;
                         try {
@@ -159,8 +171,12 @@ public class MyProfileFragment extends BaseFragment {
                         }
                         final String phoneNumber = _phoneNumber;
 
-                        ((TextView) recordView.findViewById(R.id.value)).setText(phoneNumber);
-                        ((TextView) recordView.findViewById(R.id.title)).setText(record.getTitle());
+                        TextView value = (TextView) recordView.findViewById(R.id.value);
+                        value.setTextColor(style.getTextPrimary());
+                        value.setText(phoneNumber);
+                        TextView title = (TextView) recordView.findViewById(R.id.title);
+                        title.setTextColor(style.getTextSecondary());
+                        title.setText(record.getTitle());
                         contactsContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 Screen.dp(72)));
 
@@ -285,6 +301,11 @@ public class MyProfileFragment extends BaseFragment {
 
         view.findViewById(R.id.after_phone_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
         view.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+
+        view.findViewById(R.id.divider1).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        view.findViewById(R.id.divider2).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        view.findViewById(R.id.divider3).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        view.findViewById(R.id.divider4).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
         if (delegate.getBeforeNickSettingsView(getActivity()) != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
@@ -415,6 +436,7 @@ public class MyProfileFragment extends BaseFragment {
                 params.leftMargin = Screen.dp(72);
                 params.rightMargin = Screen.dp(16);
                 View divider = inflater.inflate(R.layout.actor_settings_divider, null);
+                divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
                 ll.addView(divider, params);
             }
         }

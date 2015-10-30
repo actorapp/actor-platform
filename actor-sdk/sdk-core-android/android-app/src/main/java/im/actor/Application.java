@@ -27,8 +27,10 @@ public class Application extends android.app.Application{
 //        style.setMainColor(Color.parseColor("#529a88"));
         style.setMainColor(Color.CYAN);
         style.setMainBackground(Color.DKGRAY);
-        style.setTextPrimary(Color.RED);
-        style.setTextSecondary(Color.CYAN);
+        style.setTextPrimary(Color.GREEN);
+        style.setTextSecondary(Color.RED);
+        style.setSettingsIcon(Color.GREEN);
+        style.setDivider(Color.WHITE);
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {

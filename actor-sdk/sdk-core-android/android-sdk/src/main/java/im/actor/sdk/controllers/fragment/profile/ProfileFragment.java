@@ -140,10 +140,12 @@ public class ProfileFragment extends BaseFragment {
                 } else {
                     tintImageView.setVisibility(View.INVISIBLE);
                 }
+                View divider = recordView.findViewById(R.id.divider);
+                divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
                 if (i != phones.size() - 1) {
-                    recordView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+                    divider.setVisibility(View.VISIBLE);
                 } else {
-                    recordView.findViewById(R.id.divider).setVisibility(View.GONE);
+                    divider.setVisibility(View.GONE);
                 }
 
                 String _phoneNumber;

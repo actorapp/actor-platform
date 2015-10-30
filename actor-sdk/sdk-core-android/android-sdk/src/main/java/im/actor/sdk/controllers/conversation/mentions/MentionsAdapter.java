@@ -11,6 +11,7 @@ import java.util.List;
 
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -23,13 +24,12 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
 
+    int gid;
+    int oldRowsCount = 0;
     private List<MentionFilterResult> membersToShow = new ArrayList<MentionFilterResult>();
     private String query;
     private MentionsUpdatedCallback updatedCallback;
     private int highlightColor;
-
-    int gid;
-    int oldRowsCount = 0;
 
     public MentionsAdapter(int gid, Context context, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
         super(context);
@@ -69,16 +69,22 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
         return new GroupViewHolder();
     }
 
+    public interface MentionsUpdatedCallback {
+        void onMentionsUpdated(int oldRowsCount, int newRowsCount);
+    }
+
     private class GroupViewHolder extends ViewHolder<MentionFilterResult> {
 
+        MentionFilterResult data;
         private TextView userName;
         private TextView mentionHint;
         private AvatarView avatarView;
-        MentionFilterResult data;
 
         @Override
         public View init(final MentionFilterResult data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
+            res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+
             userName = (TextView) res.findViewById(R.id.name);
             mentionHint = (TextView) res.findViewById(R.id.mentionHint);
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
@@ -112,10 +118,6 @@ public class MentionsAdapter extends HolderAdapter<MentionFilterResult> {
         public void unbind() {
             avatarView.unbind();
         }
-    }
-
-    public interface MentionsUpdatedCallback {
-        void onMentionsUpdated(int oldRowsCount, int newRowsCount);
     }
 
 

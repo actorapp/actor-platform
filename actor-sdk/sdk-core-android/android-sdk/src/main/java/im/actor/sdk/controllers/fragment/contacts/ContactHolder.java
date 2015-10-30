@@ -113,7 +113,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         View div = new View(context);
-        div.setBackgroundColor(context.getResources().getColor(R.color.contacts_divider));
+        div.setBackgroundColor(ActorSDK.sharedActor().style.getContactDivider());
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     context.getResources().getDimensionPixelSize(R.dimen.div_size));

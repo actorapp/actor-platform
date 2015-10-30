@@ -261,7 +261,6 @@
         android:id="@+id/fabContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_fab_bg"
         android:visibility="gone">
 
         <LinearLayout

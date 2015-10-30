@@ -194,6 +194,7 @@ public class InviteLinkFragment extends BaseFragment {
             topShadow = res.findViewById(R.id.top_shadow);
             botShadow = res.findViewById(R.id.bot_shadow);
             divider = res.findViewById(R.id.divider);
+            divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
             return res;
         }
 

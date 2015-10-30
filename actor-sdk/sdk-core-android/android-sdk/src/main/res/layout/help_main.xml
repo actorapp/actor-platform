@@ -52,9 +52,9 @@
 
 
         <View
+            android:id="@+id/divider1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size"
-            android:background="@color/divider" />
+            android:layout_height="@dimen/div_size" />
 
         <LinearLayout
             android:id="@+id/openFaq"
@@ -92,9 +92,9 @@
 
 
         <View
+            android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/div_size"
-            android:background="@color/divider"
             android:visibility="gone" />
 
         <LinearLayout
@@ -132,9 +132,9 @@
 
 
         <View
+            android:id="@+id/divider3"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/div_size"
-            android:background="@color/divider" />
+            android:layout_height="@dimen/div_size" />
 
 
         <LinearLayout

@@ -15,9 +15,9 @@
         android:orientation="vertical">
 
         <View
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/div_size"
-            android:background="@color/divider"
             android:visibility="gone" />
 
         <LinearLayout
