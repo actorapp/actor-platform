@@ -114,7 +114,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
   def isSharedUser(userId: Int): Boolean = userId == 0
 
   def getGroupedDialogs(userId: Int) = {
-    db.run(DialogRepo.findNotArchivedSortByCreatedAt(userId, None, Int.MaxValue)) flatMap { dialogModels ⇒
+    db.run(DialogRepo.findNotArchivedSortByCreatedAt(userId, None, Int.MaxValue) flatMap { dialogModels ⇒
       val (groupModels, privateModels) = dialogModels.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog])) {
         case ((groupModels, privateModels), dialog) ⇒
           if (dialog.peer.typ == PeerType.Group)
@@ -124,15 +124,13 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
       }
 
       for {
-        groupDialogs ← db.run(DBIO.sequence(groupModels map getDialogShort))
-        privateDialogs ← FutureExt.ftraverse(privateModels)(d ⇒ db.run(getDialogShort(d)))
-      } yield {
-        Vector(
-          ApiDialogGroup("Groups", "groups", groupDialogs),
-          ApiDialogGroup("Private", "privates", privateDialogs.toVector)
-        )
-      }
-    }
+        groupDialogs ← DBIO.sequence(groupModels map getDialogShort)
+        privateDialogs ← DBIO.sequence(privateModels map getDialogShort)
+      } yield Vector(
+        ApiDialogGroup("Groups", "groups", groupDialogs),
+        ApiDialogGroup("Private", "privates", privateDialogs.toVector)
+      )
+    })
   }
 
   private def getDialogShort(dialogModel: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] = {
