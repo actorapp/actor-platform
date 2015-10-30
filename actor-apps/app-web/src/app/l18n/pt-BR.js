@@ -10,10 +10,10 @@ export default {
       'yourName': 'Seu nome',
       'errors': {
         'numberInvalid': 'Numero inválido',
-        'activationError': 'Attempt to get code later',
         'nameInvalid': 'Nome inválido',
         'codeInvalid': 'Código inválido',
-        'codeExpired': 'Este código expirou'
+        'codeExpired': 'Este código expirou',
+        'codeWait': 'Try to request code later'
       }
     },
 
