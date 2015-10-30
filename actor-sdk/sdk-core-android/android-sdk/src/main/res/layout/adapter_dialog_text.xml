@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|left"
             android:includeFontPadding="false"
-            android:textColor="@color/conv_text"
             android:textSize="15sp" />
 
         <LinearLayout
@@ -40,7 +39,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:includeFontPadding="false"
-                android:textColor="@color/conv_time"
                 android:textSize="13sp" />
 
             <im.actor.sdk.view.TintImageView

@@ -35,6 +35,7 @@ import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.view.FastThumbLoader;
@@ -85,11 +86,11 @@ public class PhotoHolder extends MessageHolder {
         super(fragment, itemView, false);
         this.context = fragment.getMessagesFragment().getActivity();
 
-        COLOR_PENDING = context.getResources().getColor(R.color.conv_media_state_pending);
-        COLOR_SENT = context.getResources().getColor(R.color.conv_media_state_sent);
-        COLOR_RECEIVED = context.getResources().getColor(R.color.conv_media_state_delivered);
-        COLOR_READ = context.getResources().getColor(R.color.conv_media_state_read);
-        COLOR_ERROR = context.getResources().getColor(R.color.conv_media_state_error);
+        COLOR_PENDING = ActorSDK.sharedActor().style.getConvMediaStatePending();
+        COLOR_SENT = ActorSDK.sharedActor().style.getConvMediaStateSent();
+        COLOR_RECEIVED = ActorSDK.sharedActor().style.getConvMediaStateDelivered();
+        COLOR_READ = ActorSDK.sharedActor().style.getConvMediaStateRead();
+        COLOR_ERROR = ActorSDK.sharedActor().style.getConvMediaStateError();
 
         messageBubble = (FrameLayout) itemView.findViewById(R.id.bubbleContainer);
         overlay = itemView.findViewById(R.id.photoOverlay);
