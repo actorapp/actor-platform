@@ -113,7 +113,7 @@ trait HistoryHandlers {
     authorized(clientData) { implicit client ⇒
       for {
         _ ← db.run(DialogRepo.hide(client.userId, peer.asModel))
-        SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId)
+        SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId, client.authId)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
   }
@@ -122,7 +122,7 @@ trait HistoryHandlers {
     authorized(clientData) { implicit client ⇒
       for {
         _ ← db.run(DialogRepo.show(client.userId, peer.asModel))
-        SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId)
+        SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId, client.authId)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
   }
