@@ -63,7 +63,7 @@ final class SearchServiceImpl(implicit system: ActorSystem) extends SearchServic
         } yield groups map (result(_, isPublic = false))
       case ApiSearchPeerType.Public ⇒
         for {
-          groups ← searchGroups(text)
+          groups ← searchPublic(text)
         } yield groups map (result(_, isPublic = true))
     }
   }
