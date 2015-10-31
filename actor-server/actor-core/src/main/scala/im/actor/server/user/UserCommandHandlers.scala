@@ -327,9 +327,9 @@ private[user] trait UserCommandHandlers {
   private def markContactRegistered(user: User, phoneNumber: Long, isSilent: Boolean): Future[Unit] = {
     val date = new DateTime
     for {
-      contacts <- db.run(p.contact.UnregisteredPhoneContactRepo.find(phoneNumber))
+      contacts ← db.run(p.contact.UnregisteredPhoneContactRepo.find(phoneNumber))
       _ = log.debug(s"Unregistered $phoneNumber is in contacts of users: $contacts")
-      _ <- Future.sequence(contacts map { contact ⇒
+      _ ← Future.sequence(contacts map { contact ⇒
         val randomId = ThreadLocalRandom.current().nextLong()
         val updateContactRegistered = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
         val updateContactsAdded = UpdateContactsAdded(Vector(user.id))
