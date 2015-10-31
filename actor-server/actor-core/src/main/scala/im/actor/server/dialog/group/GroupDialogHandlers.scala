@@ -108,7 +108,7 @@ trait GroupDialogHandlers extends UpdateCounters {
     def doCreate(): Unit = {
       (for {
         created ← db.run(DialogRepo.createIfNotExists(Dialog(userId, Peer(PeerType.Group, groupId))))
-        _ ← if (created) userExt.notifyDialogsChanged(userId) else Future.successful(())
+        _ ← if (created) userExt.notifyDialogsChanged(userId, 0) else Future.successful(())
       } yield ()) pipeTo self
     }
 

@@ -196,7 +196,7 @@ private[user] final class UserProcessor
     case UpdateAvatar(_, clientAuthId, avatarOpt) ⇒ updateAvatar(state, clientAuthId, avatarOpt)
     case AddContacts(_, clientAuthId, contactsToAdd) ⇒ addContacts(state, clientAuthId, contactsToAdd)
     case UpdateIsAdmin(_, isAdmin) ⇒ updateIsAdmin(state, isAdmin)
-    case NotifyDialogsChanged(_) ⇒ notifyDialogsChanged(state)
+    case NotifyDialogsChanged(_, clientAuthId) ⇒ notifyDialogsChanged(state, clientAuthId)
     case ChangeTimeZone(_, authId, timeZone) ⇒ changeTimeZone(state, authId, timeZone)
     case ChangePreferredLanguages(_, authId, preferredLanguages) ⇒ changePreferredLanguages(state, authId, preferredLanguages)
     case StopOffice ⇒ context stop self
