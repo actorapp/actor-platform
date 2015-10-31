@@ -50,4 +50,6 @@ final class ActorBot extends InternalBot(ActorBot.UserId, ActorBot.Username, Act
       case _ ⇒
     }
   }
+
+  override def onRawUpdate(u: RawUpdate): Unit = {}
 }
