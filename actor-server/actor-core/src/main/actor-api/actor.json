@@ -9085,6 +9085,43 @@
           }
         },
         {
+          "type": "update",
+          "content": {
+            "name": "RawUpdate",
+            "header": 80,
+            "doc": [
+              "Custom Raw Update",
+              {
+                "type": "reference",
+                "argument": "type",
+                "category": "full",
+                "description": "  Type of content"
+              },
+              {
+                "type": "reference",
+                "argument": "bytes",
+                "category": "full",
+                "description": "  Raw data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "type"
+              },
+              {
+                "type": "bytes",
+                "id": 2,
+                "name": "bytes"
+              }
+            ]
+          }
+        },
+        {
           "type": "empty"
         },
         {

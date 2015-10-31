@@ -65,7 +65,7 @@ abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin:
 
     (for {
       _ ← existence
-      authId ← botExt.getAuthId(userId)
+      authId ← botExt.findAuthId(userId)
     } yield Initialized(authId)) pipeTo self
   }
 
