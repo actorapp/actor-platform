@@ -7,7 +7,7 @@ import akka.stream.scaladsl.Source
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.messaging.UpdateMessage
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate }
+import im.actor.api.rpc.sequence.{ UpdateRawUpdate, FatSeqUpdate, SeqUpdate }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.persist
@@ -67,6 +67,13 @@ private class UpdatesSource(authId: Long) extends ActorPublisher[(Int, Update)] 
                   enqueue(seq, upd)
                 case Left(e) ⇒
                   log.error(e, "Failed to parse UpdateMessage")
+              }
+            case UpdateRawUpdate.header ⇒
+              UpdateRawUpdate.parseFrom(body) match {
+                case Right(upd) ⇒
+                  enqueue(seq, upd)
+                case Left(e) ⇒
+                  log.error(e, "Failed to parse UpdateRawUpdate")
               }
             case _ ⇒
               log.debug("Received SeqUpdate with header: {}, ignoring", header)
