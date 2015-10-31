@@ -134,6 +134,12 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   }
 
   private def init(): Unit = {
+    if (left == right) {
+      val error = new RuntimeException(s"Attempt to create dialog with yourself: ${left}")
+      log.error(error, "Failed to init dialog")
+      throw error
+    }
+
     val rightPeer = Peer(PeerType.Private, right)
     val leftPeer = Peer(PeerType.Private, left)
 
@@ -145,7 +151,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
         case None ⇒
           for {
             _ ← DialogRepo.create(Dialog(left, rightPeer))
-            _ ← DBIO.from(userExt.notifyDialogsChanged(left))
+            _ ← DBIO.from(userExt.notifyDialogsChanged(left, 0))
           } yield ()
       }
       _ ← rightDialogOpt match {
@@ -153,7 +159,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
         case None ⇒
           for {
             _ ← DialogRepo.create(Dialog(right, leftPeer))
-            _ ← DBIO.from(userExt.notifyDialogsChanged(right))
+            _ ← DBIO.from(userExt.notifyDialogsChanged(right, 0))
           } yield ()
       }
     } yield ())

@@ -1,12 +1,13 @@
 package im.actor.server.dialog.privat
 
 import akka.pattern.pipe
-import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageReceived }
+import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.dialog._
 import im.actor.server.event.TSEvent
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.models
+import im.actor.server.persist.HistoryMessage
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
 import HistoryUtils._
@@ -58,14 +59,33 @@ trait PrivateDialogHandlers extends UpdateCounters {
     val date = new DateTime(dateMillis)
     val userState = dialogState(senderUserId)
 
-    db.run(writeHistoryMessage(
-      models.Peer.privat(senderUserId),
-      models.Peer.privat(userState.peerId),
-      date,
-      randomId,
-      message.header,
-      message.toByteArray
-    )) map (_ ⇒ WriteMessageAck()) pipeTo sender()
+    val fut =
+      message match {
+        case ApiServiceMessage(_, Some(ApiServiceExContactRegistered(userId))) ⇒
+          db.run(HistoryMessage.create(
+            models.HistoryMessage(
+              userId = userState.peerId,
+              peer = models.Peer.privat(userId),
+              date = date,
+              senderUserId = userId,
+              randomId = randomId,
+              messageContentHeader = message.header,
+              messageContentData = message.toByteArray,
+              deletedAt = None
+            )
+          ))
+        case _ ⇒
+          db.run(writeHistoryMessage(
+            models.Peer.privat(senderUserId),
+            models.Peer.privat(userState.peerId),
+            date,
+            randomId,
+            message.header,
+            message.toByteArray
+          ))
+      }
+
+    fut map (_ ⇒ WriteMessageAck()) pipeTo sender()
   }
 
   protected def messageReceived(state: PrivateDialogState, receiverUserId: Int, date: Long): Unit = {
