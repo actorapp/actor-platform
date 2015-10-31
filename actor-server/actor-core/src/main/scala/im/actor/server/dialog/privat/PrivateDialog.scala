@@ -134,6 +134,12 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   }
 
   private def init(): Unit = {
+    if (left == right) {
+      val error = new RuntimeException(s"Attempt to create dialog with yourself: ${left}")
+      log.error(error, "Failed to init dialog")
+      throw error
+    }
+
     val rightPeer = Peer(PeerType.Private, right)
     val leftPeer = Peer(PeerType.Private, left)
 
