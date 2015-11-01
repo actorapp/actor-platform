@@ -37,7 +37,9 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
       db.close()
     }
 
-    new DbExtensionImpl(ds, db)
+    val ext = new DbExtensionImpl(ds, db)
+    ext.migrate()
+    ext
   }
 
   private def initDs(sqlConfig: Config): Try[HikariCPJdbcDataSource] = {
