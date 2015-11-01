@@ -139,22 +139,11 @@ gulp.task('locale-data', () => {
     .pipe(gulp.dest('./dist/assets/locale-data'));
 });
 
-gulp.task('lib:build', shell.task(['cd ../.. && ./gradlew actor-sdk:sdk-core:core:core-js:buildPackage']));
-gulp.task('lib:build:dev', shell.task(['cd ../.. && ./gradlew actor-sdk:sdk-core:core:core-js:buildPackageDev']));
-
-gulp.task('lib', ['lib:build'], () => {
+gulp.task('lib', () => {
   gulp.src([
-    '../../actor-sdk/sdk-core/core/core-js/build/library/actor/*',
     '../../actor-sdk/sdk-core/runtime/runtime-js/src/main/javascript/interval.js'
   ])
-    .pipe(gulp.dest('./dist/actor/'));
-});
-gulp.task('lib:dev', ['lib:build:dev'], () => {
-  gulp.src([
-    '../../actor-sdk/sdk-core/core/core-js/build/library/actor/*',
-    '../../actor-sdk/sdk-core/runtime/runtime-js/src/main/javascript/interval.js'
-  ])
-    .pipe(gulp.dest('./dist/actor/'));
+    .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
@@ -170,7 +159,7 @@ gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
 
 const staticTasksBase = ['html', 'assets', 'push'];
 const staticTasks = staticTasksBase.concat(['lib']);
-const staticTasksDev = staticTasksBase.concat(['lib:dev']);
+const staticTasksDev = staticTasksBase.concat(['lib']);
 
 gulp.task('static', staticTasks);
 gulp.task('static:dev', staticTasksDev);

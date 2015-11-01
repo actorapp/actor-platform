@@ -10,6 +10,7 @@ import crosstab from 'crosstab';
 import React, { Component } from 'react';
 import Router from 'react-router';
 import ReactMixin from 'react-mixin';
+import Actor from 'actor-js';
 
 import { intlData } from 'l18n';
 import { IntlMixin } from 'react-intl';
@@ -76,10 +77,11 @@ const initReact = () => {
       crosstab.broadcast(ActorInitEvent, {});
     }
 
+    console.log(Actor)
     if (location.pathname === '/app/index.html') {
-      window.messenger = new require('actor-js').messenger.ActorApp(['ws://' + location.hostname + ':9080/']);
+      window.messenger = Actor.create(['ws://' + location.hostname + ':9080/']);
     } else {
-      window.messenger = new require('actor-js').messenger.ActorApp(endpoints);
+      window.messenger = Actor.create(endpoints);
     }
   }
 
