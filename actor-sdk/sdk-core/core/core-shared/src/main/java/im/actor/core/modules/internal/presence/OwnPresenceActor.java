@@ -24,6 +24,7 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
     private static final int TIMEOUT = 90 * 1000;
 
     private boolean isVisible = false;
+    private long prevRid = 0;
 
     public OwnPresenceActor(Modules messenger) {
         super(messenger);
@@ -45,7 +46,11 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
     }
 
     private void performOnline() {
-        request(new RequestSetOnline(isVisible, TIMEOUT),
+        if (prevRid != 0) {
+            cancelRequest(prevRid);
+            prevRid = 0;
+        }
+        prevRid = request(new RequestSetOnline(isVisible, TIMEOUT),
                 new RpcCallback<ResponseVoid>() {
                     @Override
                     public void onResult(ResponseVoid response) {
