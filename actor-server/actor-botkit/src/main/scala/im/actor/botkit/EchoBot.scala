@@ -1,7 +1,7 @@
 package im.actor.botkit
 
 import akka.actor.{ ActorSystem, Props }
-import im.actor.bots.BotMessages.{ Message, TextMessage }
+import im.actor.bots.BotMessages.{ RawUpdate, Message, TextMessage }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -35,4 +35,6 @@ final class EchoBot(token: String, endpoint: String) extends RemoteBot(token, en
       case notAText ⇒ requestSendMessage(m.sender, nextRandomId(), notAText)
     }
   }
+
+  override def onRawUpdate(u: RawUpdate): Unit = {}
 }
