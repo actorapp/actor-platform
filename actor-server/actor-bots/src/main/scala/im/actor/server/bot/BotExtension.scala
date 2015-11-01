@@ -39,7 +39,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
   private implicit val system = _system
   private implicit val timeout = Timeout(ActorConfig.defaultTimeout)
 
-  private lazy val db = DbExtension(system).db
+  private val db = DbExtension(system).db
   private lazy val userExt = UserExtension(system)
   private val shardakka = ShardakkaExtension(system)
 

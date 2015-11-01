@@ -85,8 +85,6 @@ object Main extends App {
 
     implicit val db = DbExtension(system).db
 
-    DbExtension(system).migrate()
-
     UserMigrator.migrate()
     GroupMigrator.migrate()
     LocalNamesMigrator.migrate()
