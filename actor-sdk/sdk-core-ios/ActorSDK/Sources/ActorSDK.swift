@@ -50,7 +50,7 @@ public class ActorSDK {
     public var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
     
     /// Push registration mode
-    public var autoPushMode = AAAutoPush.None
+    public var autoPushMode = AAAutoPush.AfterLogin
     
     /// Push token registration id. Required for sending push tokens
     public var apiPushId: Int? = nil
