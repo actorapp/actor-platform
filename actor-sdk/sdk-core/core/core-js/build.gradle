@@ -12,12 +12,11 @@ gwt {
     modules 'im.actor.ActorCore'
 
     compiler {
-        strict = true;
-        // style = "OBF"
-        style = "OBF"
-        enableClosureCompiler = true;
-        disableClassMetadata = true;
-        disableCastChecking = true;
+        strict = true
+        style = "PRETTY" //"OBF"
+        enableClosureCompiler = false
+        disableClassMetadata = false
+        disableCastChecking = true
     }
 
     minHeapSize = "512M";
