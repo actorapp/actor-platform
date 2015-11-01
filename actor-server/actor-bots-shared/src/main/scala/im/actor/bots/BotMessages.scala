@@ -441,6 +441,14 @@ object BotMessages {
     @beanGetter message:  MessageBody
   ) extends UpdateBody
 
+  @key("RawUpdate")
+  final case class RawUpdate(
+    `type`:           Option[String],
+    @beanGetter data: String
+  ) extends UpdateBody {
+    def getType = `type`.asJava
+  }
+
   sealed trait MessageBody
 
   @key("Text")

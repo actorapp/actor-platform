@@ -31,6 +31,8 @@ final class EchoBot extends InternalBot(EchoBot.UserId, "echo", "Echo Bot", isAd
       case _ ⇒
     }
   }
+
+  override def onRawUpdate(u: RawUpdate): Unit = {}
 }
 
 final class EchoBotSpec

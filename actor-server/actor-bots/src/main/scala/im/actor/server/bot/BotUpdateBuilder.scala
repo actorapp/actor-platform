@@ -1,10 +1,13 @@
 package im.actor.server.bot
 
+import java.util.Base64
+
 import akka.actor.ActorSystem
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar }
 import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
 import im.actor.api.rpc.messaging.{ ApiDocumentMessage, ApiJsonMessage, UpdateMessage, ApiTextMessage }
+import im.actor.api.rpc.sequence.UpdateRawUpdate
 import im.actor.api.rpc.users.ApiUser
 import im.actor.bots.BotMessages._
 import im.actor.server.acl.ACLUtils
@@ -38,6 +41,11 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
           ))
         } else
           Future.successful(None)
+      case update: UpdateRawUpdate ⇒
+        Future.successful(Some(RawUpdate(
+          `type` = update.`type`,
+          data = Base64.getEncoder.encodeToString(update.bytes)
+        )))
       case _ ⇒ Future.successful(None)
     }
 
