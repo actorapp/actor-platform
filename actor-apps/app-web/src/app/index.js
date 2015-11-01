@@ -77,9 +77,9 @@ const initReact = () => {
     }
 
     if (location.pathname === '/app/index.html') {
-      window.messenger = new window.actor.ActorApp(['ws://' + location.hostname + ':9080/']);
+      window.messenger = new require('actor-js').messenger.ActorApp(['ws://' + location.hostname + ':9080/']);
     } else {
-      window.messenger = new window.actor.ActorApp(endpoints);
+      window.messenger = new require('actor-js').messenger.ActorApp(endpoints);
     }
   }
 
