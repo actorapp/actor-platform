@@ -15,7 +15,7 @@ public class JsSecureInterval extends JavaScriptObject {
         console.warn("Create jsSecureInverval")
         try {
             if (typeof(Worker) !== "undefined") {
-                var worker = new Worker("actor/interval.js");
+                var worker = new Worker("interval.js");
                 var _runnable = runnable;
                 worker.onmessage = function() {
                     _runnable.@java.lang.Runnable::run()();
