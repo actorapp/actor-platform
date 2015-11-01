@@ -168,18 +168,6 @@ gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('electron:prepare', ['build'], () => {
-  gulp.src(['dist/**/*'])
-    .pipe(gulp.dest('./electron_dist/app'));
-});
-
-gulp.task('electron:app', () => {
-  gulp.src(['electron/**/*'])
-    .pipe(gulp.dest('./electron_dist/app'));
-});
-
-gulp.task('electron', ['electron:prepare', 'electron:app'], shell.task(['asar pack electron_dist/app electron_dist/app.asar']));
-
 const staticTasksBase = ['html', 'assets', 'push'];
 const staticTasks = staticTasksBase.concat(['lib']);
 const staticTasksDev = staticTasksBase.concat(['lib:dev']);
@@ -193,4 +181,4 @@ gulp.task('build', ['static', 'webpack:build']);
 
 gulp.task('build:gwt', ['static', 'webpack:build']);
 
-gulp.task('dist', ['build', 'electron']);
+gulp.task('dist', ['build']);
