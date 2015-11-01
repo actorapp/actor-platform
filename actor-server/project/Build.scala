@@ -88,21 +88,11 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
     .dependsOn(actorRunner, actorCli)
     .aggregate(
       //      actorDashboard,
-      actorCore,
       actorBots,
       actorBotsShared,
       actorBotkit,
-      actorEmail,
-      actorEnrich,
-      actorFrontend,
-      actorHttpApi,
-      actorModels,
-      actorPersist,
-      actorPresences,
-      actorSession,
-      actorRpcApi,
-      actorTests,
-      actorRuntime
+      actorRuntime,
+      actorTests
     )
     .settings(
     aggregate in Docker := false,
