@@ -19,11 +19,10 @@ private[user] trait UserQueriesHandlers {
 
   protected def getApiStruct(state: User, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
     (for {
-      localName ←
-        if (clientUserId == state.id)
-          Future.successful(None)
-        else
-          userExt.getLocalName(clientUserId, state.id)
+      localName ← if (clientUserId == state.id || clientUserId == 0)
+        Future.successful(None)
+      else
+        userExt.getLocalName(clientUserId, state.id)
     } yield GetApiStructResponse(ApiUser(
       id = userId,
       accessHash = ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt),
