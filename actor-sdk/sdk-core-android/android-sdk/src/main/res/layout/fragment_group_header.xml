@@ -92,14 +92,13 @@
                 android:id="@+id/theme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/group_theme_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/theme_group"
-                android:textColor="@color/text_secondary"
                 android:textSize="16sp" />
 
 
@@ -127,14 +126,13 @@
                 android:id="@+id/about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/about_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/about_group"
-                android:textColor="@color/text_secondary"
                 android:textSize="16sp" />
 
         </LinearLayout>
@@ -182,12 +180,12 @@
             app:src="@drawable/ic_notifications_white_18dp" />
 
         <TextView
+            android:id="@+id/settings_notifications_title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/profile_settings_notifications"
-            android:textColor="@color/text_primary"
             android:textSize="16sp" />
 
         <android.support.v7.widget.SwitchCompat
@@ -244,21 +242,19 @@
                 app:src="@drawable/conv_attach_gallery" />
 
             <TextView
+                android:id="@+id/settings_media_title"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/profile_shared_media"
-                android:textColor="@color/text_primary"
                 android:textSize="16sp" />
-
 
             <TextView
                 android:id="@+id/mediaCount"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:paddingRight="16dp"
-                android:textColor="@color/text_hint"
                 android:textSize="16sp" />
 
         </LinearLayout>
@@ -276,12 +272,12 @@
                 app:src="@drawable/conv_attach_file" />
 
             <TextView
+                android:id="@+id/share_docs_title"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:text="@string/profile_shared_files"
-                android:textColor="@color/text_primary"
                 android:textSize="16sp" />
 
 
@@ -290,7 +286,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:paddingRight="16dp"
-                android:textColor="@color/text_hint"
                 android:textSize="16sp" />
 
         </LinearLayout>
@@ -333,7 +328,6 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:paddingRight="16dp"
-            android:textColor="@color/text_hint"
             android:textSize="16sp" />
 
     </LinearLayout>

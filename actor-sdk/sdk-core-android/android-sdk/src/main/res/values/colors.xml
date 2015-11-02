@@ -33,15 +33,15 @@
 
     <!-- Root text colors -->
 
-    <color name="text_primary">#DE000000</color>
-    <color name="text_secondary">#7A000000</color>
-    <color name="text_hint">#42000000</color>
-    <color name="text_subheader">#6F000000</color>
+    <!--<color name="text_primary">#DE000000</color>-->
+    <!--<color name="text_secondary">#7A000000</color>-->
+    <!--<color name="text_hint">#42000000</color>-->
+    <!--<color name="text_subheader">#6F000000</color>-->
 
-    <color name="text_primary_inv">#DEffffff</color>
-    <color name="text_secondary_inv">#8Affffff</color>
-    <color name="text_hint_inv">#42ffffff</color>
-    <color name="text_subheader_inv">#8Fffffff</color>
+    <!--<color name="text_primary_inv">#DEffffff</color>-->
+    <!--<color name="text_secondary_inv">#8Affffff</color>-->
+    <!--<color name="text_hint_inv">#42ffffff</color>-->
+    <!--<color name="text_subheader_inv">#8Fffffff</color>-->
 
     <!-- Selector & divider colors -->
 

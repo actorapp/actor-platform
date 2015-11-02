@@ -30,23 +30,23 @@
 
     <FrameLayout
         android:id="@+id/quoteContainer"
-        android:layout_above="@+id/mentionsList"
-        android:background="@color/bg_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/mentionsList"
+        android:background="@color/bg_main"
         android:visibility="gone">
 
         <TextView
-            android:drawableLeft="@drawable/ic_editor_format_quote_gray"
             android:id="@+id/quote_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:singleLine="true"
+            android:layout_gravity="left|center_vertical"
+            android:drawableLeft="@drawable/ic_editor_format_quote_gray"
             android:ellipsize="end"
             android:gravity="left|center_vertical"
-            android:layout_gravity="left|center_vertical"
             android:paddingLeft="10dp"
-            android:paddingRight="48dp" />
+            android:paddingRight="48dp"
+            android:singleLine="true" />
 
         <FrameLayout
 
@@ -65,11 +65,11 @@
     </FrameLayout>
 
     <ListView
-        android:layout_gravity="bottom"
         android:id="@+id/mentionsList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_above="@+id/fl_send_panel"
+        android:layout_gravity="bottom"
         android:background="@color/bg_main"
         android:divider="@null"
         android:dividerHeight="0dp"
@@ -91,19 +91,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@android:color/transparent"
+            android:cursorVisible="true"
             android:gravity="left|center_vertical"
             android:hint="@string/chat_message_hint"
-            android:inputType="text|textCapSentences|textAutoCorrect|textMultiLine"
             android:imeOptions="flagNoExtractUi"
+            android:inputType="text|textCapSentences|textAutoCorrect|textMultiLine"
             android:maxLines="4"
             android:paddingBottom="10dp"
             android:paddingLeft="56dp"
             android:paddingRight="112dp"
             android:paddingTop="10dp"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_hint"
             android:textCursorDrawable="@null"
-            android:cursorVisible="true"
             android:textSize="16sp" />
 
         <FrameLayout
@@ -127,10 +125,10 @@
                 android:layout_marginTop="46dp" />
         </FrameLayout>
         <FrameLayout
-            android:layout_marginRight="56dp"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_gravity="right|bottom">
+            android:layout_gravity="right|bottom"
+            android:layout_marginRight="56dp">
 
             <ImageView
                 android:id="@+id/ib_emoji"

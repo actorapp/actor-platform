@@ -79,6 +79,7 @@ public class InviteLinkFragment extends BaseFragment {
 
         emptyView = (TextView) res.findViewById(R.id.emptyView);
         emptyView.setText(getString(R.string.invite_link_empty_view));
+        emptyView.setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         adapter = new InviteLincActionsAdapter(getActivity());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -190,6 +191,8 @@ public class InviteLinkFragment extends BaseFragment {
         public View init(Void data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_invite_link_item, viewGroup, false);
             action = (TextView) res.findViewById(R.id.action);
+            action.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+
             container = (FrameLayout) res.findViewById(R.id.linksActionContainer);
             topShadow = res.findViewById(R.id.top_shadow);
             botShadow = res.findViewById(R.id.bot_shadow);
@@ -228,14 +231,14 @@ public class InviteLinkFragment extends BaseFragment {
                 topShadow.setVisibility(View.VISIBLE);
                 botShadow.setVisibility(View.VISIBLE);
                 divider.setVisibility(View.INVISIBLE);
-                action.setTextColor(getActivity().getResources().getColor(R.color.text_hint));
+                action.setTextColor(ActorSDK.sharedActor().style.getTextHint());
                 action.setTextSize(14);
             } else {
                 container.setBackgroundColor(Color.TRANSPARENT);
                 topShadow.setVisibility(View.INVISIBLE);
                 botShadow.setVisibility(View.INVISIBLE);
                 divider.setVisibility(View.VISIBLE);
-                action.setTextColor(getActivity().getResources().getColor(R.color.text_primary));
+                action.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
                 action.setTextSize(16);
             }
         }

@@ -25,12 +25,12 @@
         android:background="@color/bg_main">
 
         <TextView
+            android:id="@+id/not_member_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/group_not_member"
-            android:textColor="@color/text_primary"
             android:textSize="21sp" />
     </FrameLayout>
 

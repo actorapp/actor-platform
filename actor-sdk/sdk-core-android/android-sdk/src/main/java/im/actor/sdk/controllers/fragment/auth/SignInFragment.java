@@ -20,6 +20,7 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
@@ -41,9 +42,13 @@ public class SignInFragment extends BaseAuthFragment {
         keyboardHelper = new KeyboardHelper(getActivity());
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
-        ((TextView) v.findViewById(R.id.button_confirm_sms_code_text)).setTypeface(Fonts.medium());
+        TextView buttonConfirm = (TextView) v.findViewById(R.id.button_confirm_sms_code_text);
+        buttonConfirm.setTypeface(Fonts.medium());
+        buttonConfirm.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
         ((TextView) v.findViewById(R.id.button_edit_phone)).setTypeface(Fonts.medium());
 
+        TextView sendHint = (TextView) v.findViewById(R.id.sendHint);
+        sendHint.setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         if(authType.equals(AUTH_TYPE_PHONE)){
             String phoneNumber = "+" + messenger().getAuthPhone();
             try {
@@ -53,17 +58,17 @@ public class SignInFragment extends BaseAuthFragment {
                 e.printStackTrace();
             }
 
-            ((TextView) v.findViewById(R.id.sendHint)).setText(
+            sendHint.setText(
                     Html.fromHtml(getString(R.string.auth_code_phone_hint).replace("{0}", "<b>" + phoneNumber + "</b>"))
             );
         } else if (authType.equals(AUTH_TYPE_EMAIL)) {
             String email = messenger().getAuthEmail();
-            ((TextView) v.findViewById(R.id.sendHint)).setText(
+            sendHint.setText(
                     Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + email + "</b>"))
             );
         } else {
             String authId = getArguments().getString("authId");
-            ((TextView) v.findViewById(R.id.sendHint)).setText(
+            sendHint.setText(
                     Html.fromHtml(getArguments().getString("authHint"))
             );
         }

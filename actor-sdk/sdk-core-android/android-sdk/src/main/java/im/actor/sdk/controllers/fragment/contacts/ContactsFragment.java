@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import im.actor.core.entity.Contact;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 
@@ -34,6 +36,8 @@ public class ContactsFragment extends BaseContactFragment {
                 startActivity(sendIntent);
             }
         });
+        ((TextView) res.findViewById(R.id.no_contacts_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         return res;
     }
 

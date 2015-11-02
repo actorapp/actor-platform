@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.util.country.Country;
@@ -44,7 +45,9 @@ public class SignPhoneFragment extends BaseAuthFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sign_phone, container, false);
 
-        ((TextView) v.findViewById(R.id.button_continue_text)).setTypeface(Fonts.medium());
+        TextView buttonContinue = (TextView) v.findViewById(R.id.button_continue_text);
+        buttonContinue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        buttonContinue.setTypeface(Fonts.medium());
         ((TextView) v.findViewById(R.id.button_why)).setTypeface(Fonts.medium());
 
         keyboardHelper = new KeyboardHelper(getActivity());
@@ -88,6 +91,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
     }
 
     private void initView(View v) {
+        ((TextView) v.findViewById(R.id.phone_sign_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         countrySelectButton = (Button) v.findViewById(R.id.button_country_select);
         onClick(countrySelectButton, new View.OnClickListener() {
             @Override
@@ -157,6 +161,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
 
         phoneNumberEditText = (BackspaceKeyEditText) v.findViewById(R.id.tv_phone_number);
+        phoneNumberEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
         phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         phoneNumberEditText.setBackspaceListener(new BackspaceKeyEditText.BackspacePressListener() {
             @Override

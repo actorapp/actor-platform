@@ -37,7 +37,6 @@
             android:lines="1"
             android:paddingRight="8dp"
             android:singleLine="true"
-            android:textColor="@color/text_primary"
             android:textSize="16sp" />
 
         <TextView
@@ -50,7 +49,6 @@
             android:lines="1"
             android:paddingRight="8dp"
             android:singleLine="true"
-            android:textColor="@color/text_secondary"
             android:textSize="16sp" />
 
     </LinearLayout>

@@ -25,7 +25,6 @@
             android:gravity="center"
             android:lineSpacingMultiplier="1.1"
             android:text="@string/choose_auth_type_hint"
-            android:textColor="@color/text_secondary"
             android:textSize="16sp" />
 
         <FrameLayout
@@ -48,7 +47,6 @@
                 android:minWidth="88dp"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
-                android:textColor="@color/text_primary_inv"
                 android:textSize="15sp" />
         </FrameLayout>
 
@@ -72,7 +70,6 @@
                 android:minWidth="88dp"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
-                android:textColor="@color/text_primary_inv"
                 android:textSize="15sp" />
         </FrameLayout>
 

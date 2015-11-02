@@ -48,7 +48,7 @@ public class SearchHolder extends BindedViewHolder {
         }
 
         title = new TextView(context);
-        title.setTextColor(context.getResources().getColor(R.color.text_primary));
+        title.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
         title.setPadding(Screen.dp(74), 0, Screen.dp(12), 0);
         title.setTextSize(16);
         title.setSingleLine(true);

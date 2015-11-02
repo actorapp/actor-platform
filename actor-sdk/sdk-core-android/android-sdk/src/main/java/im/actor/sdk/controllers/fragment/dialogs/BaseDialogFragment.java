@@ -92,6 +92,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
                 }
             }
         });
+        ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
 
         return res;
     }

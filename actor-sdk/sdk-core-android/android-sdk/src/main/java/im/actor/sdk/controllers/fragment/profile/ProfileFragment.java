@@ -250,8 +250,15 @@ public class ProfileFragment extends BaseFragment {
         });
 
         res.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
+        ((TextView) res.findViewById(R.id.share_media_text)).setTextColor(style.getSettingsTitle());
+        ((TextView) res.findViewById(R.id.mediaCount)).setTextColor(style.getTextHint());
+
+        res.findViewById(R.id.docsContainer).setVisibility(View.GONE);
+        ((TextView) res.findViewById(R.id.share_docs_title)).setTextColor(style.getSettingsTitle());
+        ((TextView) res.findViewById(R.id.docCount)).setTextColor(style.getTextHint());
 
         View notificationContainter = res.findViewById(R.id.notificationsCont);
+        ((TextView) notificationContainter.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimary());
         final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
         notificationEnable.setChecked(messenger().isNotificationsEnabled(Peer.user(uid)));
         notificationEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

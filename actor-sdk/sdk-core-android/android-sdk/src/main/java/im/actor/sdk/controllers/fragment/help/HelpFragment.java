@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -19,6 +20,14 @@ public class HelpFragment extends BaseFragment {
         res.findViewById(R.id.divider2).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         res.findViewById(R.id.divider3).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
+        ((TextView) res.findViewById(R.id.help_about_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) res.findViewById(R.id.help_faq_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) res.findViewById(R.id.help_feedback_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) res.findViewById(R.id.help_version_title)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.help_about_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.help_faq_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.help_feedback_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.version)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         res.findViewById(R.id.openFaq).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
