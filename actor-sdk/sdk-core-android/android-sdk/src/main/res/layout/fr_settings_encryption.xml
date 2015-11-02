@@ -38,17 +38,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/settings_terminate_sessions_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/security_terminate_title"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/settings_terminate_sessions_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/security_terminate_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
         </LinearLayout>
@@ -87,7 +87,6 @@
             android:background="@drawable/selector"
             android:gravity="center"
             android:text="@string/security_authorized_loading"
-            android:textColor="@color/text_primary"
             android:textSize="@dimen/text_primary" />
 
         <LinearLayout

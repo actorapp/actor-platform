@@ -21,23 +21,23 @@
         android:paddingTop="8dp">
 
         <TextView
+            android:id="@+id/phone_sign_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:lineSpacingMultiplier="1.1"
             android:text="@string/auth_phone_hint"
-            android:textColor="@color/text_secondary"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/button_country_select"
-            android:background="@drawable/abc_textfield_default_mtrl_alpha"
-            android:textColor="@color/primary"
-            android:textSize="15sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp" />
+            android:layout_marginRight="20dp"
+            android:background="@drawable/abc_textfield_default_mtrl_alpha"
+            android:textColor="@color/primary"
+            android:textSize="15sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,11 +48,11 @@
             android:paddingRight="4dp">
 
             <TextView
+                android:id="@+id/plus"
                 android:layout_width="12dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="+"
-                android:textColor="@color/text_secondary"
                 android:textSize="16sp" />
 
             <EditText
@@ -64,8 +64,7 @@
                 android:inputType="phone"
                 android:maxLength="4"
                 android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@color/text_primary" />
+                android:singleLine="true" />
 
             <im.actor.sdk.controllers.fragment.auth.BackspaceKeyEditText
                 android:id="@+id/tv_phone_number"
@@ -77,7 +76,6 @@
                 android:inputType="phone"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:textColor="@color/text_primary"
                 android:textColorHint="#a6a6a6" />
 
         </LinearLayout>
@@ -103,7 +101,6 @@
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
                 android:text="@string/auth_phone_get_code"
-                android:textColor="@color/text_primary_inv"
                 android:textSize="15sp" />
         </FrameLayout>
 

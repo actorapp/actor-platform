@@ -28,7 +28,6 @@
             android:gravity="center"
             android:text="@string/add_contact_bar_cancel"
             android:textAllCaps="true"
-            android:textColor="@color/text_primary"
             android:textSize="16sp" />
 
         <View
@@ -46,7 +45,6 @@
             android:gravity="center"
             android:text="@string/add_contact_bar_continue"
             android:textAllCaps="true"
-            android:textColor="@color/text_primary"
             android:textSize="16sp" />
     </LinearLayout>
 

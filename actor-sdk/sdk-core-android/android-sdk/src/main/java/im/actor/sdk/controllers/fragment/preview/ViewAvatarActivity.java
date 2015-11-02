@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soundcloud.android.crop.Crop;
@@ -25,6 +26,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.AvatarUploadState;
 import im.actor.core.viewmodel.FileVM;
 import im.actor.core.viewmodel.FileVMCallback;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.activity.BaseActivity;
@@ -46,6 +48,16 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class ViewAvatarActivity extends BaseActivity {
 
+    private static final int REQUEST_GALLERY = 1;
+    private static final int REQUEST_PHOTO = 2;
+    private String externalFile;
+    private String avatarPath;
+    private Peer peer;
+    private PhotoView photoView;
+    private View progress;
+    private TextView noPhoto;
+    private FileVM bindedDownloadFile;
+
     public static Intent viewAvatar(int uid, Context context) {
         Intent res = new Intent(context, ViewAvatarActivity.class);
         res.putExtra(Intents.EXTRA_CHAT_PEER, Peer.user(uid).getUnuqueId());
@@ -57,21 +69,6 @@ public class ViewAvatarActivity extends BaseActivity {
         res.putExtra(Intents.EXTRA_CHAT_PEER, Peer.group(gid).getUnuqueId());
         return res;
     }
-
-    private static final int REQUEST_GALLERY = 1;
-    private static final int REQUEST_PHOTO = 2;
-
-    private String externalFile;
-    private String avatarPath;
-
-    private Peer peer;
-
-    private PhotoView photoView;
-    private View progress;
-    private View noPhoto;
-
-    private FileVM bindedDownloadFile;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +102,9 @@ public class ViewAvatarActivity extends BaseActivity {
 
         progress = findViewById(R.id.uploadProgress);
 
-        noPhoto = findViewById(R.id.noPhoto);
+        noPhoto = (TextView) findViewById(R.id.noPhoto);
+        noPhoto.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+
     }
 
     @Override

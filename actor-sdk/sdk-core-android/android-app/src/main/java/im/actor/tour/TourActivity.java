@@ -44,8 +44,14 @@ public class TourActivity extends ActionBarActivity {
         final View welcomeImage = findViewById(R.id.welcome_logo);
         final View welcomeText = findViewById(R.id.welcome_text);
 
-        ((TextView) findViewById(R.id.signUpButtonText)).setTypeface(Fonts.medium());
-        ((TextView) findViewById(R.id.signIn)).setTypeface(Fonts.medium());
+        TextView signupButtonText = (TextView) findViewById(R.id.signUpButtonText);
+        signupButtonText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        signupButtonText.setTypeface(Fonts.medium());
+        TextView buttonSignUp = (TextView) findViewById(R.id.signIn);
+        buttonSignUp.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        buttonSignUp.setTypeface(Fonts.medium());
+        ((TextView) findViewById(R.id.app_name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        ((TextView) findViewById(R.id.tour_welcome_subtitle)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
 
         findViewById(R.id.signUpButton).setOnClickListener(new View.OnClickListener() {
             @Override

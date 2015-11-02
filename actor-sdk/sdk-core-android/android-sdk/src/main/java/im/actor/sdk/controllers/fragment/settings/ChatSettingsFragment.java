@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
@@ -32,18 +33,8 @@ public class ChatSettingsFragment extends BaseFragment {
         };
         sendByEnter.setOnClickListener(listener);
         res.findViewById(R.id.sendByEnterCont).setOnClickListener(listener);
-
-        final CheckBox markDown = (CheckBox) res.findViewById(R.id.markdown);
-        markDown.setChecked(messenger().isMarkdownEnabled());
-        View.OnClickListener markDownListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                messenger().changeMarkdown(!messenger().isMarkdownEnabled());
-                markDown.setChecked(messenger().isMarkdownEnabled());
-            }
-        };
-        markDown.setOnClickListener(markDownListener);
-        res.findViewById(R.id.markdownCont).setOnClickListener(markDownListener);
+        ((TextView) res.findViewById(R.id.settings_send_by_enter_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) res.findViewById(R.id.settings_set_by_enter_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
 
         return res;
     }

@@ -24,7 +24,6 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="Today"
-            android:textColor="@color/text_subheader"
             android:textSize="16sp" />
 
         <View
@@ -72,7 +71,6 @@
                 android:paddingRight="8dp"
                 android:paddingTop="2dp"
                 android:singleLine="true"
-                android:textColor="@color/text_primary"
                 android:textSize="@dimen/picker_file_title_size" />
 
             <TextView
@@ -81,7 +79,6 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="2dp"
                 android:paddingRight="8dp"
-                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/picker_file_subtitle_size" />
 
         </LinearLayout>

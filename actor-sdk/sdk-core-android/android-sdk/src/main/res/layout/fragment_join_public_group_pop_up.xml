@@ -80,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|left"
                 android:padding="24dp"
-                android:textColor="@color/text_secondary"
                 android:textSize="16sp" />
 
             <FrameLayout
@@ -104,7 +103,6 @@
                     android:paddingLeft="24dp"
                     android:paddingRight="24dp"
                     android:text="@string/join"
-                    android:textColor="@color/text_primary_inv"
                     android:textSize="16sp" />
             </FrameLayout>
 

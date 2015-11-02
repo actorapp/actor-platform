@@ -15,7 +15,6 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
-        android:textColor="@color/text_primary"
         android:textSize="16sp" />
 
     <TextView
@@ -24,7 +23,6 @@
         android:layout_height="48dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:textColor="@color/text_secondary"
         android:textSize="16sp" />
 
 </LinearLayout>

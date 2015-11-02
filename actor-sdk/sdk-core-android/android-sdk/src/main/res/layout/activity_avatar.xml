@@ -27,6 +27,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/avatar_no_photo"
-        android:textColor="@color/text_primary_inv"
         android:textSize="24sp" />
 </FrameLayout>

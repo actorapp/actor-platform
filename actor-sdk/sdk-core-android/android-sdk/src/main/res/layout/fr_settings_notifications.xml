@@ -34,17 +34,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/settings_conversation_tones_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_conv_tones"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/settings_conversation_tones_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_conv_tones_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
 
@@ -81,17 +81,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/settings_sound_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_sound"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/settings_sound_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_sound_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
 
@@ -128,17 +128,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/settings_vibration_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_vibration"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/settings_vibration_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_vibration_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
 
@@ -175,17 +175,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/settings_group_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_group"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/settings_group_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_group_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
 
@@ -222,17 +222,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/settings_group_mentions_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_group_mentions"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/settings_group_mentions_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_group_mentions_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
 
@@ -269,17 +269,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/settings_titles_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_show_text"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/settings_titles_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/not_show_text_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
 

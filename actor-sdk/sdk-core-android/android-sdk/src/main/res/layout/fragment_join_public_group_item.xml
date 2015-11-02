@@ -42,7 +42,6 @@
                 android:gravity="center_vertical"
                 android:lines="1"
                 android:singleLine="true"
-                android:textColor="@color/text_primary"
                 android:textSize="16sp" />
 
             <TextView
@@ -53,7 +52,6 @@
                 android:gravity="center_vertical"
                 android:maxLines="2"
                 android:paddingRight="8dp"
-                android:textColor="@color/text_secondary"
                 android:textSize="15sp" />
         </LinearLayout>
 
@@ -73,7 +71,6 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="@string/join_public_group_members_count"
-            android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
         <TextView
@@ -82,7 +79,6 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
             android:gravity="center_vertical"
-            android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
         <TextView
@@ -91,7 +87,6 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="@string/join_public_group_friends_count"
-            android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
         <TextView
@@ -99,7 +94,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:textColor="@color/text_secondary"
             android:textSize="14sp" />
     </LinearLayout>
 
