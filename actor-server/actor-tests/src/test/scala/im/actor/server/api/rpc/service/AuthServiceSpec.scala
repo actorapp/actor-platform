@@ -519,12 +519,6 @@ final class AuthServiceSpec
           _ shouldBe empty
         }
 
-        val kv = ShardakkaExtension(system).simpleKeyValue(KeyValueMappings.LocalNames)
-        whenReady(kv.get(ContactsUtils.localNameKey(regUser.id, createdUser.id))) { optLocalName ⇒
-          optLocalName shouldBe defined
-          optLocalName shouldEqual localName
-        }
-
         whenReady(contactService.handleGetContacts("wrongHash")) { resp ⇒
           inside(resp) {
             case Ok(ResponseGetContacts(users, false)) ⇒

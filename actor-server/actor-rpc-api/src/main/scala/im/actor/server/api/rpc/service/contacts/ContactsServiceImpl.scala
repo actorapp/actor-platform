@@ -273,7 +273,6 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   }
 
   private def createPhoneContacts(ownerUserId: Int, usersPhonesNames: Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): DBIO[(Seq[ApiUser], SeqState)] = {
-
     persist.contact.UserContactRepo.findIds(ownerUserId, usersPhonesNames.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
       val contactsToAdd =
         usersPhonesNames.view

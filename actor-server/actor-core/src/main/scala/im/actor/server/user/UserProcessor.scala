@@ -85,6 +85,7 @@ object UserProcessor {
       10033 → classOf[UserCommands.NotifyDialogsChanged],
       10035 → classOf[UserCommands.ChangePreferredLanguages],
       10036 → classOf[UserCommands.ChangeTimeZone],
+      10037 → classOf[UserCommands.EditLocalName],
 
       11001 → classOf[UserQueries.GetAuthIds],
       11002 → classOf[UserQueries.GetAuthIdsResponse],
@@ -99,6 +100,8 @@ object UserProcessor {
       11011 → classOf[UserQueries.GetUser],
       11012 → classOf[UserQueries.IsAdmin],
       11013 → classOf[UserQueries.IsAdminResponse],
+      11014 → classOf[UserQueries.GetLocalName],
+      11015 → classOf[UserQueries.GetLocalNameResponse],
 
       12001 → classOf[UserEvents.AuthAdded],
       12002 → classOf[UserEvents.AuthRemoved],
@@ -115,6 +118,7 @@ object UserProcessor {
       12016 → classOf[UserEvents.IsAdminUpdated],
       12017 → classOf[UserEvents.PreferredLanguagesChanged],
       12018 → classOf[UserEvents.TimeZoneChanged],
+      12019 → classOf[UserEvents.LocalNameChanged],
 
       13000 → classOf[User],
       13001 → classOf[SocialContact]
@@ -147,6 +151,8 @@ private[user] final class UserProcessor
   protected val userId = self.path.name.toInt
 
   override def persistenceId = UserOffice.persistenceIdFor(userId)
+
+  protected val contacts = new UserContacts(userId)
 
   context.setReceiveTimeout(1.hour)
 
@@ -207,6 +213,8 @@ private[user] final class UserProcessor
     case NotifyDialogsChanged(_, clientAuthId) ⇒ notifyDialogsChanged(state, clientAuthId)
     case ChangeTimeZone(_, authId, timeZone) ⇒ changeTimeZone(state, authId, timeZone)
     case ChangePreferredLanguages(_, authId, preferredLanguages) ⇒ changePreferredLanguages(state, authId, preferredLanguages)
+    case cmd: EditLocalName ⇒ contacts.ref forward cmd
+    case query: GetLocalName ⇒ contacts.ref forward query
     case StopOffice ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }

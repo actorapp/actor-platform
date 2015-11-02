@@ -35,7 +35,7 @@ import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
 import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.group._
-import im.actor.server.migrations.{ HiddenGroupMigrator, GroupCreatorMemberMigrator, IntegrationTokenMigrator, LocalNamesMigrator }
+import im.actor.server.migrations._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceExtension, PresenceExtension }
 import im.actor.server.sequence._
@@ -90,6 +90,7 @@ object Main extends App {
     LocalNamesMigrator.migrate()
     GroupCreatorMemberMigrator.migrate()
     HiddenGroupMigrator.migrate()
+    LocalNamesFromKVMigrator.migrate()
 
     val weakUpdatesExt = WeakUpdatesExtension(system)
     val presenceExt = PresenceExtension(system)
