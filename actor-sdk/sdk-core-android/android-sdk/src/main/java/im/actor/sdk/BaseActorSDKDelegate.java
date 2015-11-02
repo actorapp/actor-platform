@@ -61,6 +61,11 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
         return null;
     }
 
+    @Override
+    public ActorIntent getSettingsIntent() {
+        return null;
+    }
+
     //
     // Hacking settings activity
     //
