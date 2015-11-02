@@ -26,11 +26,11 @@ public class Application extends android.app.Application{
         ActorStyle style = ActorSDK.sharedActor().style;
 //        style.setMainColor(Color.parseColor("#529a88"));
         style.setMainColor(Color.CYAN);
-        style.setMainBackground(Color.DKGRAY);
-        style.setTextPrimary(Color.GREEN);
-        style.setTextSecondary(Color.RED);
-        style.setSettingsIcon(Color.GREEN);
-        style.setDivider(Color.WHITE);
+        style.setMainBackgroundColor(Color.DKGRAY);
+        style.setTextPrimaryColor(Color.GREEN);
+        style.setTextSecondaryColor(Color.RED);
+        style.setSettingsIconColor(Color.GREEN);
+        style.setDividerColor(Color.WHITE);
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
@@ -121,7 +121,7 @@ public class Application extends android.app.Application{
                                         public void onClick(View v) {
                                             Toast.makeText(getApplicationContext(), "Yo", Toast.LENGTH_SHORT).show();
                                         }
-                                    }, R.drawable.ic_cloud_download_white_36dp, getResources().getColor(R.color.accent)),
+                                    }, R.drawable.ic_cloud_download_white_36dp, ActorSDK.sharedActor().style.getAccentColor()),
 
                                     new ActorSettingsField() {
 

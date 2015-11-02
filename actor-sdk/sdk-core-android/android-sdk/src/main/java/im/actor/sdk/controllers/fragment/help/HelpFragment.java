@@ -20,14 +20,14 @@ public class HelpFragment extends BaseFragment {
         res.findViewById(R.id.divider2).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         res.findViewById(R.id.divider3).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
-        ((TextView) res.findViewById(R.id.help_about_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.help_faq_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.help_feedback_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.help_version_title)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
-        ((TextView) res.findViewById(R.id.help_about_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
-        ((TextView) res.findViewById(R.id.help_faq_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
-        ((TextView) res.findViewById(R.id.help_feedback_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
-        ((TextView) res.findViewById(R.id.version)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.help_about_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.help_faq_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.help_feedback_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.help_version_title)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) res.findViewById(R.id.help_about_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) res.findViewById(R.id.help_faq_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) res.findViewById(R.id.help_feedback_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) res.findViewById(R.id.version)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         res.findViewById(R.id.openFaq).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

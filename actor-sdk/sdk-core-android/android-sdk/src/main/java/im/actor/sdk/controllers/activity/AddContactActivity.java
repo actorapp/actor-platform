@@ -36,22 +36,22 @@ public class AddContactActivity extends BaseFragmentActivity {
         helper = new KeyboardHelper(this);
 
         setContentView(R.layout.activity_add);
-        findViewById(R.id.container).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        findViewById(R.id.container).setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
 
         searchQuery = (EditText) findViewById(R.id.searchField);
-        searchQuery.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
-        searchQuery.setHintTextColor(ActorSDK.sharedActor().style.getTextHint());
+        searchQuery.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        searchQuery.setHintTextColor(ActorSDK.sharedActor().style.getTextHintColor());
         findViewById(R.id.dividerTop).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         findViewById(R.id.dividerBot).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
-        ((TextView) findViewById(R.id.cancel)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) findViewById(R.id.cancel)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        ((TextView) findViewById(R.id.ok)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) findViewById(R.id.ok)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

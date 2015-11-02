@@ -56,8 +56,10 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         View res = inflate(inflater, container, layoutId, messenger().buildContactsDisplayList());
 
         emptyView = res.findViewById(R.id.emptyCollection);
+        emptyView.findViewById(R.id.empty_collection_bg).setBackgroundColor(ActorSDK.sharedActor().style.getMainColor());
+        ((TextView) emptyView.findViewById(R.id.empty_collection_text)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
         View headerPadding = new View(getActivity());
-        headerPadding.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        headerPadding.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
         addHeaderView(headerPadding);
 
@@ -75,7 +77,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 }
             }
         });
-        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         return res;
     }
 
@@ -83,7 +85,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         if (useCompactVersion) {
             View footer = new View(getActivity());
             footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-            footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+            footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
             addFooterView(footer);
         } else {
             addFooterOrHeaderAction(ActorSDK.sharedActor().style.getActionShareColor(), R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
@@ -111,14 +113,14 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             shadow.setScaleType(ImageView.ScaleType.FIT_XY);
             shadow.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
             footer.addView(shadow);
-            footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+            footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
             addFooterView(footer);
         }
     }
 
     protected void addFooterOrHeaderAction(int color, int icon, int text, boolean isLast, final Runnable action, boolean isHeader) {
         FrameLayout container = new FrameLayout(getActivity());
-        container.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        container.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         {
             container.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -169,7 +171,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         if (!isLast) {
             View div = new View(getActivity());
-            div.setBackgroundColor(ActorSDK.sharedActor().style.getContactDivider());
+            div.setBackgroundColor(ActorSDK.sharedActor().style.getContactDividerColor());
             {
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         getResources().getDimensionPixelSize(R.dimen.div_size));

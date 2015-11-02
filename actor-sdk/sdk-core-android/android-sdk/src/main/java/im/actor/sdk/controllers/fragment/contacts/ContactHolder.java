@@ -58,7 +58,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         View fastBg = new View(context);
-        fastBg.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        fastBg.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(40), ViewGroup.LayoutParams.MATCH_PARENT);
             fl.addView(fastBg, layoutParams);
@@ -88,7 +88,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         title = new TextView(context);
-        title.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        title.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         title.setPadding(Screen.dp(72), 0, (isSelectable ? Screen.dp(64) : 0) + Screen.dp(8), 0);
         title.setTextSize(16);
         title.setSingleLine(true);
@@ -113,7 +113,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         View div = new View(context);
-        div.setBackgroundColor(ActorSDK.sharedActor().style.getContactDivider());
+        div.setBackgroundColor(ActorSDK.sharedActor().style.getContactDividerColor());
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     context.getResources().getDimensionPixelSize(R.dimen.div_size));

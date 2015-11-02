@@ -93,10 +93,10 @@
         android:orientation="vertical">
 
         <View
+            android:id="@+id/background_colored"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/primary" />
+            android:layout_weight="1" />
 
         <View
             android:layout_width="match_parent"
@@ -128,7 +128,6 @@
                 android:id="@+id/signUpButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:background="@drawable/btn_green"
                 android:gravity="center"
                 android:minWidth="88dp"
                 android:paddingLeft="24dp"

@@ -1,6 +1,6 @@
 package im.actor.tour;
 
-import android.content.Intent;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +17,7 @@ import im.actor.sdk.R;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.util.Fonts;
+import im.actor.sdk.view.SelectorFactory;
 
 
 public class TourActivity extends ActionBarActivity {
@@ -44,14 +45,17 @@ public class TourActivity extends ActionBarActivity {
         final View welcomeImage = findViewById(R.id.welcome_logo);
         final View welcomeText = findViewById(R.id.welcome_text);
 
+        background.findViewById(R.id.background_colored).setBackgroundColor(ActorSDK.sharedActor().style.getMainColor());
         TextView signupButtonText = (TextView) findViewById(R.id.signUpButtonText);
-        signupButtonText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        StateListDrawable states = SelectorFactory.get(ActorSDK.sharedActor().style.getPrimaryAltColor(), this);
+        signupButtonText.setBackgroundDrawable(states);
+        signupButtonText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         signupButtonText.setTypeface(Fonts.medium());
         TextView buttonSignUp = (TextView) findViewById(R.id.signIn);
-        buttonSignUp.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        buttonSignUp.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         buttonSignUp.setTypeface(Fonts.medium());
-        ((TextView) findViewById(R.id.app_name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
-        ((TextView) findViewById(R.id.tour_welcome_subtitle)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        ((TextView) findViewById(R.id.app_name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
+        ((TextView) findViewById(R.id.tour_welcome_subtitle)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
 
         findViewById(R.id.signUpButton).setOnClickListener(new View.OnClickListener() {
             @Override

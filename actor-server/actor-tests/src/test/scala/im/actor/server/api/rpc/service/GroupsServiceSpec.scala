@@ -51,7 +51,7 @@ final class GroupsServiceSpec
 
   it should "not allow to create group with empty name" in e13
 
-  "Creator of group" should "be groupAdmin" in e14
+  "Creator of group" should "be groupAdminColor" in e14
 
   "MakeUserAdmin" should "allow group member to become admin" in e15
 

@@ -68,7 +68,7 @@ public class BubbleContainer extends ViewGroup {
         dateDiv.setIncludeFontPadding(false);
         dateDiv.setBackgroundResource(R.drawable.conv_bubble_date_bg);
         dateDiv.setGravity(Gravity.CENTER);
-        dateDiv.setTextColor(ActorSDK.sharedActor().style.getConvDatetext());
+        dateDiv.setTextColor(ActorSDK.sharedActor().style.getConvDatetextColor());
 
         if (!showDateDiv) {
             dateDiv.setVisibility(GONE);
@@ -86,9 +86,9 @@ public class BubbleContainer extends ViewGroup {
         unreadDiv.setTextSize(13);
         unreadDiv.setTypeface(Fonts.regular());
         unreadDiv.setIncludeFontPadding(false);
-        unreadDiv.setBackgroundColor(ActorSDK.sharedActor().style.getConvDateBg());
+        unreadDiv.setBackgroundColor(ActorSDK.sharedActor().style.getConvDateBgColor());
         unreadDiv.setGravity(Gravity.CENTER);
-        unreadDiv.setTextColor(ActorSDK.sharedActor().style.getConvDatetext());
+        unreadDiv.setTextColor(ActorSDK.sharedActor().style.getConvDatetextColor());
         unreadDiv.setPadding(0, Screen.dp(6), 0, Screen.dp(6));
         unreadDiv.setText(R.string.chat_new_messages);
 

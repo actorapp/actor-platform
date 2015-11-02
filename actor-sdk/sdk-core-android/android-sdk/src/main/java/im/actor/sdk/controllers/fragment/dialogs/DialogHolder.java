@@ -104,7 +104,7 @@ public class DialogHolder extends BindedViewHolder {
         }
 
         title = new TextView(context);
-        title.setTextColor(ActorSDK.sharedActor().style.getDialogsTitle());
+        title.setTextColor(ActorSDK.sharedActor().style.getDialogsTitleColor());
         title.setTypeface(Fonts.medium());
         title.setTextSize(17);
         title.setPadding(0, Screen.dp(1), 0, 0);
@@ -119,7 +119,7 @@ public class DialogHolder extends BindedViewHolder {
         firstRow.addView(title);
 
         time = new TextView(context);
-        time.setTextColor(ActorSDK.sharedActor().style.getDialogsTime());
+        time.setTextColor(ActorSDK.sharedActor().style.getDialogsTimeColor());
         time.setTypeface(Fonts.regular());
         time.setTextSize(13);
         time.setPadding(Screen.dp(6), 0, 0, 0);
@@ -130,7 +130,7 @@ public class DialogHolder extends BindedViewHolder {
 
         text = new TextView(context);
         text.setTypeface(Fonts.regular());
-        text.setTextColor(style.getDialogsText());
+        text.setTextColor(style.getDialogsTextColor());
         text.setTextSize(15);
         text.setPadding(0, Screen.dp(5), Screen.dp(28), 0);
         text.setSingleLine();
@@ -140,7 +140,7 @@ public class DialogHolder extends BindedViewHolder {
         fl.addView(linearLayout);
 
         separator = new View(context);
-        separator.setBackgroundColor(style.getDialogsDivider());
+        separator.setBackgroundColor(style.getDialogsDividerColor());
         FrameLayout.LayoutParams divLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 context.getResources().getDimensionPixelSize(R.dimen.div_size));
         divLayoutParams.leftMargin = Screen.dp(76);
@@ -209,7 +209,7 @@ public class DialogHolder extends BindedViewHolder {
 
         Drawable left = null;
         if (data.getPeer().getPeerType() == PeerType.GROUP) {
-            left = new TintDrawable(context.getResources().getDrawable(R.drawable.dialogs_group), ActorSDK.sharedActor().style.getDialogsTitle());
+            left = new TintDrawable(context.getResources().getDrawable(R.drawable.dialogs_group), ActorSDK.sharedActor().style.getDialogsTitleColor());
         }
         title.setCompoundDrawablesWithIntrinsicBounds(left, null, null, null);
 
@@ -260,10 +260,10 @@ public class DialogHolder extends BindedViewHolder {
                 public void onChanged(Boolean val, Value<Boolean> Value) {
                     if (val) {
                         text.setText(messenger().getFormatter().formatTyping());
-                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsTyping());
+                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsTypingColor());
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsText());
+                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsTextColor());
                     }
                 }
             };
@@ -279,17 +279,17 @@ public class DialogHolder extends BindedViewHolder {
                         } else {
                             text.setText(messenger().getFormatter().formatTyping(val.length));
                         }
-                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsTyping());
+                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsTypingColor());
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsText());
+                        text.setTextColor(ActorSDK.sharedActor().style.getDialogsTextColor());
                     }
                 }
             };
             messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
             text.setText(bindedText);
-            text.setTextColor(ActorSDK.sharedActor().style.getDialogsText());
+            text.setTextColor(ActorSDK.sharedActor().style.getDialogsTextColor());
         }
 
         if (data.getSenderId() != myUid()) {

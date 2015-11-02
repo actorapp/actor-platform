@@ -18,7 +18,7 @@ public class ServiceHolder extends MessageHolder {
         super(fragment, itemView, true);
 
         messageText = (TextView) itemView.findViewById(R.id.serviceMessage);
-        messageText.setTextColor(ActorSDK.sharedActor().style.getConvDatetext());
+        messageText.setTextColor(ActorSDK.sharedActor().style.getConvDatetextColor());
     }
 
     @Override
