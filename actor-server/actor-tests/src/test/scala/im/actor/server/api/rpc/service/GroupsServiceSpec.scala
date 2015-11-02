@@ -22,7 +22,7 @@ final class GroupsServiceSpec
   with ImplicitSequenceService
   with ImplicitAuthService
   with ImplicitSessionRegionProxy
-  with SequenceMatchers {
+  with SeqUpdateMatchers {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in sendInvitesOnCreate
@@ -94,11 +94,9 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateChatGroupsChanged.header, UpdateGroupUserInvited.header, UpdateGroupInvite.header)) {
-      case (UpdateGroupUserInvited.header, update)  ⇒ parseUpdate[UpdateGroupUserInvited](update)
-      case (UpdateGroupInvite.header, update)       ⇒ parseUpdate[UpdateGroupInvite](update)
-      case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
-    }
+    expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+    expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+    expectUpdate(classOf[UpdateGroupInvite])(identity)
 
     whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
       userIds.toSet shouldEqual Set(user1.id, user2.id)
@@ -126,19 +124,15 @@ final class GroupsServiceSpec
           case Ok(ResponseSeqDate(1002, _, _)) ⇒
         }
       }
-      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateChatGroupsChanged.header, UpdateGroupUserInvited.header, UpdateGroupInvite.header)) {
-        case (UpdateGroupUserInvited.header, update)  ⇒ parseUpdate[UpdateGroupUserInvited](update)
-        case (UpdateGroupInvite.header, update)       ⇒ parseUpdate[UpdateGroupInvite](update)
-        case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
-      }
+      expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
     }
 
     {
       implicit val clientData = clientData2
-      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateChatGroupsChanged.header, UpdateGroupInvite.header)) {
-        case (UpdateGroupInvite.header, update)       ⇒ parseUpdate[UpdateGroupInvite](update)
-        case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
-      }
+      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
     }
 
   }
@@ -161,30 +155,17 @@ final class GroupsServiceSpec
           case Ok(ResponseSeqDate(1003, _, _)) ⇒
         }
       }
-      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(
-        UpdateChatGroupsChanged.header,
-        UpdateGroupUserInvited.header,
-        UpdateGroupInvite.header,
-        UpdateGroupTitleChanged.header
-      )) {
-        case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
-        case (UpdateGroupUserInvited.header, update)  ⇒ parseUpdate[UpdateGroupUserInvited](update)
-        case (UpdateGroupInvite.header, update)       ⇒ parseUpdate[UpdateGroupInvite](update)
-        case (UpdateGroupTitleChanged.header, update) ⇒ parseUpdate[UpdateGroupTitleChanged](update)
-      }
+      expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+      expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateGroupTitleChanged])(identity)
     }
 
     {
       implicit val clientData = clientData2
-      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(
-        UpdateChatGroupsChanged.header,
-        UpdateGroupInvite.header,
-        UpdateGroupTitleChanged.header
-      )) {
-        case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
-        case (UpdateGroupInvite.header, update)       ⇒ parseUpdate[UpdateGroupInvite](update)
-        case (UpdateGroupTitleChanged.header, update) ⇒ parseUpdate[UpdateGroupTitleChanged](update)
-      }
+      expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateGroupTitleChanged])(identity)
     }
 
   }
@@ -497,12 +478,10 @@ final class GroupsServiceSpec
 
           whenReady(service.jhandleJoinGroup(url, clientData2))(_ ⇒ ())
 
-          expectUpdatesUnorderedOnly(failUnmatched)(createGroupResponse.seq, createGroupResponse.state, List(UpdateMessage.header, UpdateCountersChanged.header)) {
-            case (UpdateMessage.header, u) ⇒
-              val update = parseUpdate[UpdateMessage](u)
-              update.message shouldEqual GroupServiceMessages.userJoined
-            case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
+          expectUpdate(createGroupResponse.seq, classOf[UpdateMessage]) { upd ⇒
+            upd.message shouldEqual GroupServiceMessages.userJoined
           }
+          expectUpdate(createGroupResponse.seq, classOf[UpdateCountersChanged])(identity)
       }
     }
     whenReady(db.run(persist.GroupUserRepo.findUserIds(groupOutPeer.groupId))) { userIds ⇒
@@ -541,17 +520,11 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData1
-      expectUpdatesUnordered(ignoreUnmatched)(0, Array.empty, Seq(
-        UpdateGroupInvite.header,
-        UpdateGroupUserInvited.header,
-        UpdateMessageRead.header,
-        UpdateCountersChanged.header,
-        UpdateMessage.header
-      )) {
-        case (UpdateMessage.header, u) ⇒
-          val update = parseUpdate[UpdateMessage](u)
-          update.message shouldEqual GroupServiceMessages.userJoined
-      }
+      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+      expectUpdate(classOf[UpdateMessageRead])(identity)
+      expectUpdate(classOf[UpdateCountersChanged])(identity)
+      expectUpdate(classOf[UpdateMessage])(identity)
     }
   }
 
@@ -584,18 +557,12 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData1
-      expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
-        UpdateChatGroupsChanged.header,
-        UpdateGroupInvite.header,
-        UpdateMessageSent.header,
-        UpdateMessage.header,
-        UpdateCountersChanged.header,
-        UpdateMessageRead.header
-      )) {
-        case (UpdateMessage.header, u) ⇒
-          val update = parseUpdate[UpdateMessage](u)
-          update.message shouldEqual GroupServiceMessages.userJoined
-      }
+      expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+      expectUpdate(classOf[UpdateGroupInvite])(identity)
+      expectUpdate(classOf[UpdateMessageSent])(identity)
+      expectUpdate(classOf[UpdateMessage])(identity)
+      expectUpdate(classOf[UpdateCountersChanged])(identity)
+      expectUpdate(classOf[UpdateMessageRead])(identity)
     }
   }
 

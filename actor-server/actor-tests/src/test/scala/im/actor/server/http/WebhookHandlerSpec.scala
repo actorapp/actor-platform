@@ -29,7 +29,7 @@ class WebhookHandlerSpec
   with ImplicitSequenceService
   with ImplicitSessionRegionProxy
   with ImplicitAuthService
-  with SequenceMatchers {
+  with SeqUpdateMatchers {
 
   behavior of "WebhookHandler"
 
@@ -79,12 +79,10 @@ class WebhookHandlerSpec
 
       val firstMessage = Text("Alert! All tests are failed!")
       whenReady(handler.send(firstMessage, token)) { _ ⇒
-        expectUpdatesUnordered(ignoreUnmatched)(initSeq, initState, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
-          case (UpdateMessage.header, u) ⇒
-            val update = parseUpdate[UpdateMessage](u)
-            update.message shouldEqual ApiTextMessage(firstMessage.text, Vector.empty, None)
-          case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
+        expectUpdate(initSeq, classOf[UpdateMessage]) { upd ⇒
+          upd.message shouldEqual ApiTextMessage(firstMessage.text, Vector.empty, None)
         }
+        expectUpdate(initSeq, classOf[UpdateCountersChanged])(identity)
       }
 
       val (seq1, state1) = whenReady(sequenceService.handleGetState()) { resp ⇒
@@ -94,12 +92,10 @@ class WebhookHandlerSpec
 
       val secondMessage = Text("It's ok now!")
       whenReady(handler.send(secondMessage, token)) { _ ⇒
-        expectUpdatesUnordered(failUnmatched)(seq1, state1, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
-          case (UpdateMessage.header, u) ⇒
-            val update = parseUpdate[UpdateMessage](u)
-            update.message shouldEqual ApiTextMessage(secondMessage.text, Vector.empty, None)
-          case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
+        expectUpdate(seq1, classOf[UpdateMessage]) { upd ⇒
+          upd.message shouldEqual ApiTextMessage(secondMessage.text, Vector.empty, None)
         }
+        expectUpdate(seq1, classOf[UpdateCountersChanged])(identity)
       }
     }
 
