@@ -37,7 +37,7 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'im.actor:android-sdk:0.1+'
+    compile 'im.actor:android-sdk:0.1.30'
     compile 'com.google.android.gms:play-services-gcm:8.1.0'
 }
 
