@@ -7,6 +7,8 @@ import akka.pattern.ask
 import akka.util.Timeout
 import im.actor.api.rpc.users.UpdateUserLocalNameChanged
 import im.actor.server.cqrs.{ Processor, ProcessorState }
+import im.actor.server.db.DbExtension
+import im.actor.server.persist.contact.UserContactRepo
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserCommands.EditLocalName
 
@@ -42,6 +44,7 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
   override def getInitialState: UserContactsState = UserContactsState()
 
   private val userExt = UserExtension(context.system)
+  private val db = DbExtension(context.system).db
 
   override protected def handleCommand: Receive = {
     case EditLocalName(_, clientAuthId, contactUserId, nameOpt, supressUpdate) ⇒
@@ -56,6 +59,8 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
   private def editLocalName(clientAuthId: Long, contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean): Unit = {
     persistTS(LocalNameChanged(contactUserId, nameOpt)) { (e, ts) ⇒
       commit(e, ts)
+
+      db.run(UserContactRepo.updateName(userId, contactUserId, nameOpt))
 
       if (supressUpdate)
         reply(SeqState())
