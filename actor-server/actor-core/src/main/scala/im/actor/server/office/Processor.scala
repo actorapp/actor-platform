@@ -7,6 +7,7 @@ import akka.cluster.sharding.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
 import im.actor.concurrent.ActorFutures
+import im.actor.server.event.TSEvent
 import org.joda.time.DateTime
 
 import scala.collection.immutable
@@ -18,8 +19,6 @@ import scala.util.{ Failure, Success }
 
 case object EntityNotFound extends RuntimeException with NoStackTrace
 case object StopOffice
-
-trait ProcessorState
 
 trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFutures {
 

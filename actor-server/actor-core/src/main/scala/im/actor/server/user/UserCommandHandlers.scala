@@ -307,9 +307,10 @@ private[user] trait UserCommandHandlers {
       _ ← FutureExt.ftraverse(phones)(c ⇒ db.run(UserPhoneContactRepo.insertOrUpdate(c)))
       _ ← FutureExt.ftraverse(emails)(c ⇒ db.run(UserEmailContactRepo.insertOrUpdate(c)))
       _ ← FutureExt.ftraverse(idsLocalNames.toSeq) {
-        case (contactUserId, localName) ⇒ ContactsUtils.registerLocalName(user.id, contactUserId, localName)
+        case (contactUserId, localName) ⇒
+          contacts.editLocalName(clientAuthId, contactUserId, localName, supressUpdate = true)
       }
-      update = UpdateContactsAdded(idsLocalNames.map(_._1).toVector)
+      update = UpdateContactsAdded(idsLocalNames.keys.toVector)
       seqstate ← userExt.broadcastClientUpdate(user.id, clientAuthId, update, pushText = None, isFat = true, deliveryId = None)
     } yield seqstate) pipeTo sender()
   }
@@ -341,8 +342,7 @@ private[user] trait UserCommandHandlers {
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
-          _ ← ContactsUtils.registerLocalName(contact.ownerUserId, user.id, localName)
-          _ ← db.run(ContactsUtils.addContact(contact.ownerUserId, user.id, phoneNumber, localName))
+          _ ← userExt.addContact(contact.ownerUserId, 0, user.id, localName, Some(phoneNumber), None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} registered"), isFat = true, deliveryId = None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
           _ ← dialogExt.writeMessage(
@@ -373,7 +373,7 @@ private[user] trait UserCommandHandlers {
         val localName = contact.name
         val serviceMessage = ServiceMessages.contactRegistered(user.id, localName.getOrElse(user.name))
         for {
-          _ ← db.run(ContactsUtils.addContact(contact.ownerUserId, user.id, email, localName))
+          _ ← userExt.addContact(contact.ownerUserId, 0, user.id, localName, None, Some(email))
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, deliveryId = None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
           _ ← dialogExt.writeMessage(

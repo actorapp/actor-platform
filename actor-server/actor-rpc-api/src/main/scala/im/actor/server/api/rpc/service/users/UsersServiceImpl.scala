@@ -1,25 +1,19 @@
 package im.actor.server.api.rpc.service.users
 
-import akka.util.Timeout
-
-import im.actor.api.rpc.contacts.UpdateContactsAdded
-import im.actor.server.acl.ACLUtils
-
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.concurrent.duration._
-
 import akka.actor._
-import slick.driver.PostgresDriver.api._
-
+import akka.util.Timeout
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
+import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
 import im.actor.server.persist
-import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.user.{ ContactsUtils, UserExtension, UserOffice, UserViewRegion }
+import im.actor.server.user.UserExtension
 import im.actor.util.misc.StringUtils
+import slick.driver.PostgresDriver.api._
 
+import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 import scalaz.{ -\/, \/- }
 
 object UserErrors {
@@ -27,8 +21,6 @@ object UserErrors {
 }
 
 final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersService {
-  import ContactsUtils._
-  import SeqUpdatesManager._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(10.seconds)
@@ -37,35 +29,29 @@ final class UsersServiceImpl(implicit actorSystem: ActorSystem) extends UsersSer
   private val userExt = UserExtension(actorSystem)
 
   override def jhandleEditUserLocalName(userId: Int, accessHash: Long, name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+    authorized(clientData) { implicit client ⇒
       StringUtils.validName(name) match {
         case \/-(validName) ⇒
-          persist.UserRepo.find(userId).headOption flatMap {
+          db.run(persist.UserRepo.find(userId).headOption) flatMap {
             case Some(user) ⇒
               if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
-                val action = persist.contact.UserContactRepo.find(client.userId, userId) flatMap {
+                val seqstateF = db.run(persist.contact.UserContactRepo.find(client.userId, userId)) flatMap {
                   case Some(contact) ⇒
-                    ContactsUtils.updateName(client.userId, userId, Some(validName))
+                    userExt.editLocalName(client.userId, client.authId, userId, Some(validName))
                   case None ⇒
-                    for {
-                      userPhone ← persist.UserPhoneRepo.findByUserId(user.id).head
-                      _ ← DBIO.from(userExt.addContact(client.userId, client.authId, userId, Some(validName), Some(userPhone.number), None))
-                    } yield ()
+                    userExt.addContact(client.userId, client.authId, userId, Some(validName), None, None)
                 }
 
                 for {
-                  _ ← action
-                  seqstate ← DBIO.from(userExt.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, Some(name)), None, isFat = false))
+                  seqstate ← seqstateF
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               } else {
-                DBIO.successful(Error(CommonErrors.InvalidAccessHash))
+                Future.successful(Error(CommonErrors.InvalidAccessHash))
               }
-            case None ⇒ DBIO.successful(Error(CommonErrors.UserNotFound))
+            case None ⇒ Future.successful(Error(CommonErrors.UserNotFound))
           }
-        case -\/(err) ⇒ DBIO.successful(Error(UserErrors.NameInvalid))
+        case -\/(err) ⇒ Future.successful(Error(UserErrors.NameInvalid))
       }
     }
-
-    db.run(toDBIOAction(authorizedAction))
   }
 }
