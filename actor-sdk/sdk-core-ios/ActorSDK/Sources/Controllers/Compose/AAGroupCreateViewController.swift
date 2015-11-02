@@ -92,14 +92,12 @@ public class AAGroupCreateViewController: AAViewController, UITextFieldDelegate 
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        let screenSize = UIScreen.mainScreen().bounds.size
-        
         avatarImageView.frame = CGRectMake(20, 20 + 66, 80, 80)
         addPhotoButton.frame = avatarImageView.frame
-        hint.frame = CGRectMake(120, 20 + 66, screenSize.width - 140, 80)
+        hint.frame = CGRectMake(120, 20 + 66, view.width - 140, 80)
         
-        groupName.frame = CGRectMake(20, 106 + 66, screenSize.width - 20, 56.0)
-        groupNameFieldSeparator.frame = CGRectMake(20, 156 + 66, screenSize.width - 20, 0.5)
+        groupName.frame = CGRectMake(20, 106 + 66, view.width - 20, 56.0)
+        groupNameFieldSeparator.frame = CGRectMake(20, 156 + 66, view.width - 20, 0.5)
     }
     
     public func photoTap() {

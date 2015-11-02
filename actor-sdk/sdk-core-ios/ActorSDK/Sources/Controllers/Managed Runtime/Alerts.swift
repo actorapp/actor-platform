@@ -121,14 +121,22 @@ public extension UIViewController {
         let config = AAEditTextControllerConfig()
         closure(config)
         config.check()
-        self.presentViewController(AANavigationController(rootViewController: AAEditTextController(config: config)), animated: true, completion: nil)
+        let controller = AANavigationController(rootViewController: AAEditTextController(config: config))
+        if (AADevice.isiPad) {
+            controller.modalPresentationStyle = .FormSheet
+        }
+        self.presentViewController(controller, animated: true, completion: nil)
     }
     
     func startEditField(@noescape closure: (c: AAEditFieldControllerConfig) -> ()) {
         let config = AAEditFieldControllerConfig()
         closure(c: config)
         config.check()
-        self.presentViewController(AANavigationController(rootViewController: AAEditFieldController(config: config)), animated: true, completion: nil)
+        let controller = AANavigationController(rootViewController: AAEditFieldController(config: config))
+        if (AADevice.isiPad) {
+            controller.modalPresentationStyle = .FormSheet
+        }
+        self.presentViewController(controller, animated: true, completion: nil)
     }
 }
 
