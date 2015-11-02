@@ -32,7 +32,7 @@ public class PickCountryFragment extends BaseFragment {
         View v = inflater.inflate(R.layout.fragment_country_select, null);
 
         countriesListView = (ListView) v.findViewById(R.id.lv_countries);
-        countriesListView.setDivider(new ColorDrawable(ActorSDK.sharedActor().style.getDivider()));
+        countriesListView.setDivider(new ColorDrawable(ActorSDK.sharedActor().style.getDividerColor()));
         countriesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -96,11 +96,10 @@ public class PickCountryFragment extends BaseFragment {
             @Override
             public View init(Country data, ViewGroup parent, Context context) {
                 View v = LayoutInflater.from(context).inflate(R.layout.adapter_country_select, null);
-                ((TextView) v.findViewById(R.id.plus)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
                 name = (TextView) v.findViewById(R.id.tv_country_name);
                 code = (TextView) v.findViewById(R.id.tv_country_code);
-                name.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
-                code.setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+                name.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+                code.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
                 return v;
             }
 

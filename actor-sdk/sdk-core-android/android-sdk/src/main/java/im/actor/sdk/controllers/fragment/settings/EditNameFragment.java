@@ -45,9 +45,9 @@ public class EditNameFragment extends BaseFragment {
 
         helper = new KeyboardHelper(getActivity());
         View res = inflater.inflate(R.layout.fragment_edit_name, container, false);
-        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         nameEdit = (EditText) res.findViewById(R.id.nameEdit);
-        nameEdit.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        nameEdit.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         if (type == EditNameActivity.TYPE_ME) {
             UserVM userModel = users().get(myUid());
             nameEdit.setText(userModel.getName().get());
@@ -73,7 +73,7 @@ public class EditNameFragment extends BaseFragment {
                 getActivity().finish();
             }
         });
-        ((TextView) res.findViewById(R.id.cancel)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) res.findViewById(R.id.cancel)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         res.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,7 +146,7 @@ public class EditNameFragment extends BaseFragment {
                 }
             }
         });
-        ((TextView) res.findViewById(R.id.ok)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) res.findViewById(R.id.ok)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         return res;
     }
 

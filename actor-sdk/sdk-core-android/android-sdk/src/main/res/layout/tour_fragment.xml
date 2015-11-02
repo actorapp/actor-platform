@@ -43,7 +43,6 @@
                 android:layout_weight="1"
                 android:gravity="center|bottom"
                 android:text="@string/tour_everywhere_title"
-                android:textColor="@color/primary"
                 android:textSize="@dimen/tour_card_title" />
 
             <TextView

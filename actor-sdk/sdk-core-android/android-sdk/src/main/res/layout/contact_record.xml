@@ -47,5 +47,5 @@
         android:layout_height="@dimen/div_size"
         android:layout_gravity="bottom"
         android:layout_marginLeft="72dp"
-        android:background="@color/accent" />
+        android:background="@android:color/holo_red_dark" />
 </FrameLayout>

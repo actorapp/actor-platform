@@ -109,19 +109,20 @@ public class DocHolder extends MessageHolder {
 
         // Content views
         fileName = (TextView) itemView.findViewById(R.id.fileName);
-        fileName.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        fileName.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         fileSize = (TextView) itemView.findViewById(R.id.fileSize);
-        fileSize.setTextColor(ActorSDK.sharedActor().style.getTextHint());
+        fileSize.setTextColor(ActorSDK.sharedActor().style.getTextHintColor());
         status = (TextView) itemView.findViewById(R.id.status);
-        status.setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        status.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         fileIcon = (ImageView) itemView.findViewById(R.id.icon);
 
         // Progress views
         downloadIcon = (TintImageView) itemView.findViewById(R.id.downloading);
+        downloadIcon.setTint(ActorSDK.sharedActor().style.getMainColor());
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
         progressView.setColor(ActorSDK.sharedActor().style.getMainColor());
         progressValue = (TextView) itemView.findViewById(R.id.progressValue);
-        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
     }
 
     @Override

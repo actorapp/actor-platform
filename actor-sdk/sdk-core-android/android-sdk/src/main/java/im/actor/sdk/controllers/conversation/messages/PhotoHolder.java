@@ -86,11 +86,11 @@ public class PhotoHolder extends MessageHolder {
         super(fragment, itemView, false);
         this.context = fragment.getMessagesFragment().getActivity();
 
-        COLOR_PENDING = ActorSDK.sharedActor().style.getConvMediaStatePending();
-        COLOR_SENT = ActorSDK.sharedActor().style.getConvMediaStateSent();
-        COLOR_RECEIVED = ActorSDK.sharedActor().style.getConvMediaStateDelivered();
-        COLOR_READ = ActorSDK.sharedActor().style.getConvMediaStateRead();
-        COLOR_ERROR = ActorSDK.sharedActor().style.getConvMediaStateError();
+        COLOR_PENDING = ActorSDK.sharedActor().style.getConvMediaStatePendingColor();
+        COLOR_SENT = ActorSDK.sharedActor().style.getConvMediaStateSentColor();
+        COLOR_RECEIVED = ActorSDK.sharedActor().style.getConvMediaStateDeliveredColor();
+        COLOR_READ = ActorSDK.sharedActor().style.getConvMediaStateReadColor();
+        COLOR_ERROR = ActorSDK.sharedActor().style.getConvMediaStateErrorColor();
 
         messageBubble = (FrameLayout) itemView.findViewById(R.id.bubbleContainer);
         overlay = itemView.findViewById(R.id.photoOverlay);
@@ -116,7 +116,7 @@ public class PhotoHolder extends MessageHolder {
 
         progressContainer = itemView.findViewById(R.id.progressBg);
         progressValue = (TextView) itemView.findViewById(R.id.progressValue);
-        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
         progressView.setColor(Color.WHITE);
         progressIcon = (ImageView) itemView.findViewById(R.id.contentIcon);

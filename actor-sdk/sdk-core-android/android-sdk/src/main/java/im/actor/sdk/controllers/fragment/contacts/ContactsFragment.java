@@ -36,8 +36,8 @@ public class ContactsFragment extends BaseContactFragment {
                 startActivity(sendIntent);
             }
         });
-        ((TextView) res.findViewById(R.id.no_contacts_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
-        ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.no_contacts_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         return res;
     }
 

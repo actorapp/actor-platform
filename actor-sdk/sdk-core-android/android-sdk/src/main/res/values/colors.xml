@@ -56,7 +56,7 @@
     <color name="selector_messages_selected">#66000000</color>
 
     <!--<color name="divider">#1e000000</color>-->
-    <!--<color name="divider_inv">#1effffff</color>-->
+    <!--<color name="dividerInvColor">#1effffff</color>-->
 
     <!-- Base UI colors -->
 
@@ -137,7 +137,7 @@
     <!--<color name="profile_icon">@color/section_icon_large</color>-->
 
     <!--&lt;!&ndash; Group Profile &ndash;&gt;-->
-    <!--<color name="group_admin">@color/accent</color>-->
+    <!--<color name="group_admin">@color/accentColor</color>-->
     <!--<color name="group_action_add_icon">@color/list_action</color>-->
     <!--<color name="group_action_add_text">@color/list_action</color>-->
 
