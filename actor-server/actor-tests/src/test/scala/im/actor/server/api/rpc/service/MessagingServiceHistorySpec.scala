@@ -20,7 +20,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   with ImplicitSessionRegionProxy
   with ImplicitAuthService
   with ImplicitSequenceService
-  with SequenceMatchers {
+  with SeqUpdateMatchers {
   behavior of "MessagingServiceHistoryService"
 
   "Private messaging" should "load history" in s.privat
@@ -192,6 +192,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
     object historyPrivate {
       val (user1, authId1, _) = createUser()
+
       def markReceived() = {
         val (user2, authId2, _) = createUser()
         val sessionId = createSessionId()
@@ -240,17 +241,13 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(
-            UpdateChatGroupsChanged.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageReceived.header
-          )) {
-            case (UpdateMessageSent.header, update)       ⇒ parseUpdate[UpdateMessageSent](update)
-            case (UpdateMessageReceived.header, update)   ⇒ parseUpdate[UpdateMessageReceived](update)
-            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
-          }
+          expectUpdates(
+            classOf[UpdateChatGroupsChanged],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageReceived]
+          )(emptyCheck)
         }
       }
 
@@ -311,52 +308,46 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
-            UpdateChatGroupsChanged.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageRead.header
-          )) {
-            case (UpdateMessageRead.header, update) ⇒ parseUpdate[UpdateMessageRead](update)
-          }
+          expectUpdates(
+            classOf[UpdateChatGroupsChanged],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageSent],
+            classOf[UpdateMessageRead]
+          )(emptyCheck)
         }
 
         {
           implicit val clientData = clientData21
-          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
-            UpdateChatGroupsChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
+          expectUpdates(
+            classOf[UpdateChatGroupsChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
             //here we got read on other device. so we don't get ReadByMe update
-            UpdateCountersChanged.header
-          )) {
-            case _ ⇒
-          }
+            classOf[UpdateCountersChanged]
+          )(emptyCheck)
         }
 
         {
           //UpdateMessageReadByMe sent to user2 second device
           implicit val clientData = clientData22
-          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
-            UpdateChatGroupsChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header,
+          expectUpdates(
+            classOf[UpdateChatGroupsChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessage],
+            classOf[UpdateCountersChanged],
 
             //why this order
-            UpdateCountersChanged.header,
-            UpdateMessageReadByMe.header
-          )) {
-            case _ ⇒
-          }
+            classOf[UpdateCountersChanged],
+            classOf[UpdateMessageReadByMe]
+          )(emptyCheck)
         }
       }
 
@@ -400,7 +391,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
             }
           }
 
-          expectUpdate[UpdateCountersChanged](seq, state, UpdateCountersChanged.header, Some(1)) { upd ⇒
+          expectUpdate(seq, classOf[UpdateCountersChanged]) { upd ⇒
             val globalCounter = upd.counters.globalCounter
             globalCounter shouldEqual Some(0)
           }
@@ -455,17 +446,13 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
-            UpdateChatGroupsChanged.header,
-            UpdateGroupUserInvited.header,
-            UpdateGroupInvite.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageReceived.header
-          )) {
-            case _ ⇒
-          }
+          expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+          expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+          expectUpdate(classOf[UpdateGroupInvite])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageReceived])(identity)
         }
       }
 
@@ -522,47 +509,35 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
-            UpdateChatGroupsChanged.header,
-            UpdateGroupUserInvited.header,
-            UpdateGroupInvite.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageSent.header,
-            UpdateMessageRead.header,
-            UpdateMessage.header,
-            UpdateCountersChanged.header
-          )) {
-            case (UpdateMessageReadByMe.header, update)   ⇒ parseUpdate[UpdateMessageReadByMe](update)
-            case (UpdateMessageSent.header, update)       ⇒ parseUpdate[UpdateMessageSent](update)
-            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
-          }
+          expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+          expectUpdate(classOf[UpdateGroupUserInvited])(identity)
+          expectUpdate(classOf[UpdateGroupInvite])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
+          expectUpdate(classOf[UpdateMessageRead])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
         }
 
         {
           implicit val clientData = clientData2
-          expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
-            UpdateChatGroupsChanged.header,
-            UpdateGroupInvite.header,
+          expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+          expectUpdate(classOf[UpdateGroupInvite])(identity)
 
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
 
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
 
-            UpdateCountersChanged.header,
-            UpdateMessage.header,
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
 
-            UpdateMessageSent.header, //sent message with GroupServiceMessages.userJoined
+          expectUpdate(classOf[UpdateMessageSent])(identity) //sent message with GroupServiceMessages.userJoined
 
-            UpdateMessageReadByMe.header,
-            UpdateCountersChanged.header
-          )) {
-            case (UpdateMessageReadByMe.header, update)   ⇒ parseUpdate[UpdateMessageReadByMe](update)
-            case (UpdateMessageSent.header, update)       ⇒ parseUpdate[UpdateMessageSent](update)
-            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
-          }
+          expectUpdate(classOf[UpdateMessageReadByMe])(identity)
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
         }
       }
     }
