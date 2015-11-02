@@ -34,18 +34,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/help_about_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/help_about_title"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
-
+                    android:id="@+id/help_about_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/help_about_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
         </LinearLayout>
@@ -75,17 +74,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/help_faq_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/help_faq_title"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/help_faq_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/help_faq_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
         </LinearLayout>
@@ -115,17 +114,17 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/help_feedback_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/help_feedback_title"
-                    android:textColor="@color/text_primary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
+                    android:id="@+id/help_feedback_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/help_feedback_subtitle"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
         </LinearLayout>
@@ -155,17 +154,16 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/help_version_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/help_version_title"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_primary" />
 
                 <TextView
                     android:id="@+id/version"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_secondary" />
             </LinearLayout>
         </LinearLayout>

@@ -96,10 +96,11 @@ public class PickCountryFragment extends BaseFragment {
             @Override
             public View init(Country data, ViewGroup parent, Context context) {
                 View v = LayoutInflater.from(context).inflate(R.layout.adapter_country_select, null);
-
+                ((TextView) v.findViewById(R.id.plus)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
                 name = (TextView) v.findViewById(R.id.tv_country_name);
                 code = (TextView) v.findViewById(R.id.tv_country_code);
-
+                name.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+                code.setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
                 return v;
             }
 

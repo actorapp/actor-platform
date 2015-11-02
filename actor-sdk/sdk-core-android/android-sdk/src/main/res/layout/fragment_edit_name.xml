@@ -17,8 +17,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="24dp"
-        android:inputType="text|textCapSentences"
-        android:textColor="@color/text_primary" />
+        android:inputType="text|textCapSentences" />
 
     <View
         android:layout_width="0dp"

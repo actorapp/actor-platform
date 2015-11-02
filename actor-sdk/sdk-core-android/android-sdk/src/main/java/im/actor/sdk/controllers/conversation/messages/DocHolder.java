@@ -22,6 +22,7 @@ import im.actor.core.viewmodel.FileVMCallback;
 import im.actor.core.viewmodel.UploadFileCallback;
 import im.actor.core.viewmodel.UploadFileVM;
 import im.actor.core.viewmodel.UploadFileVMCallback;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.util.FileTypes;
@@ -108,15 +109,19 @@ public class DocHolder extends MessageHolder {
 
         // Content views
         fileName = (TextView) itemView.findViewById(R.id.fileName);
+        fileName.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
         fileSize = (TextView) itemView.findViewById(R.id.fileSize);
+        fileSize.setTextColor(ActorSDK.sharedActor().style.getTextHint());
         status = (TextView) itemView.findViewById(R.id.status);
+        status.setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         fileIcon = (ImageView) itemView.findViewById(R.id.icon);
 
         // Progress views
         downloadIcon = (TintImageView) itemView.findViewById(R.id.downloading);
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
-        progressView.setColor(fragment.getMessagesFragment().getActivity().getResources().getColor(R.color.primary));
+        progressView.setColor(ActorSDK.sharedActor().style.getMainColor());
         progressValue = (TextView) itemView.findViewById(R.id.progressValue);
+        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
     }
 
     @Override

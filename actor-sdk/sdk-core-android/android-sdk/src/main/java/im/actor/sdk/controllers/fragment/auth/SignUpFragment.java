@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.core.entity.Sex;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.util.Screen;
@@ -44,9 +45,13 @@ public class SignUpFragment extends BaseAuthFragment {
         avatarView.init(Screen.dp(96), 24);
         avatarView.getHierarchy().setPlaceholderImage(R.drawable.circle_placeholder);
 
-        ((TextView) v.findViewById(R.id.button_confirm_sms_code_text)).setTypeface(Fonts.medium());
+        TextView buttonConfirm = (TextView) v.findViewById(R.id.button_confirm_sms_code_text);
+        buttonConfirm.setTypeface(Fonts.medium());
+        buttonConfirm.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
 
         firstNameEditText = (EditText) v.findViewById(R.id.et_first_name_enter);
+        firstNameEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        firstNameEditText.setHintTextColor(ActorSDK.sharedActor().style.getTextHint());
         final View sendConfirmCodeButton = v.findViewById(R.id.button_confirm_sms_code);
         firstNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -63,6 +68,8 @@ public class SignUpFragment extends BaseAuthFragment {
             public void afterTextChanged(Editable s) {
             }
         });
+
+        ((TextView) v.findViewById(R.id.sign_up_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
 
         v.findViewById(R.id.pickAvatar).setOnClickListener(new View.OnClickListener() {
             @Override

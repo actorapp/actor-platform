@@ -63,8 +63,8 @@ public class MainPhoneController extends MainBaseController {
 
     private RecyclerView searchList;
     private View searchContainer;
-    private View searchEmptyView;
-    private View searchHintView;
+    private TextView searchEmptyView;
+    private TextView searchHintView;
 
     private boolean isSearchVisible = false;
     private SearchAdapter searchAdapter;
@@ -160,18 +160,28 @@ public class MainPhoneController extends MainBaseController {
         }
 
         setContentView(R.layout.actor_activity_main);
-
+        ActorStyle style = ActorSDK.sharedActor().style;
         getActivity().setSupportActionBar(((Toolbar) findViewById(R.id.toolbar)));
 
         syncInProgressView = findViewById(R.id.syncInProgress);
+        ((TextView) syncInProgressView.findViewById(R.id.wait_text)).setTextColor(style.getTextSecondary());
         emptyContactsView = findViewById(R.id.emptyContacts);
+        ((TextView) emptyContactsView.findViewById(R.id.no_contacts)).setTextColor(style.getTextSecondary());
+        ((TextView) emptyContactsView.findViewById(R.id.add_contact_manually_text)).setTextColor(style.getTextSecondary());
 
-        ((TextView) findViewById(R.id.addContactButtonText)).setTypeface(Fonts.medium());
-        ((TextView) findViewById(R.id.inviteButtonText)).setTypeface(Fonts.medium());
+        TextView addContactBtnText = (TextView) findViewById(R.id.addContactButtonText);
+        addContactBtnText.setTextColor(style.getTextSecondary());
+        addContactBtnText.setTypeface(Fonts.medium());
+        TextView inviteBtnText = (TextView) findViewById(R.id.inviteButtonText);
+        inviteBtnText.setTypeface(Fonts.medium());
+        inviteBtnText.setTextColor(style.getTextPrimaryInv());
 
         isFabVisible = false;
 
         fabContent = findViewById(R.id.fabContainer);
+        ((TextView) fabContent.findViewById(R.id.fab_add_contact_text)).setTextColor(style.getTextPrimary());
+        ((TextView) fabContent.findViewById(R.id.fab_create_group_text)).setTextColor(style.getTextPrimary());
+        ((TextView) fabContent.findViewById(R.id.fab_compose_text)).setTextColor(style.getTextPrimary());
         fabContent.setBackgroundColor(ActorSDK.sharedActor().style.getMainFabbg());
         fabRoot = (FloatingActionButton) findViewById(R.id.rootFab);
         if (ActorSDK.sharedActor().style.getFabColor() != 0) {
@@ -199,8 +209,10 @@ public class MainPhoneController extends MainBaseController {
 
         searchContainer = findViewById(R.id.searchCont);
         searchContainer.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
-        searchEmptyView = findViewById(R.id.empty);
-        searchHintView = findViewById(R.id.searchHint);
+        searchEmptyView = (TextView) findViewById(R.id.empty);
+        searchHintView = (TextView) findViewById(R.id.searchHint);
+        searchEmptyView.setTextColor(style.getTextSecondary());
+        searchHintView.setTextColor(style.getTextSecondary());
         searchHintView.setVisibility(View.GONE);
         searchEmptyView.setVisibility(View.GONE);
 
@@ -239,8 +251,6 @@ public class MainPhoneController extends MainBaseController {
 
             }
         });
-
-        ActorStyle style = ActorSDK.sharedActor().style;
 
         com.getbase.floatingactionbutton.FloatingActionButton fabCompose = (FloatingActionButton) findViewById(R.id.composeContainer);
         if (style.getFabColor() != 0) {

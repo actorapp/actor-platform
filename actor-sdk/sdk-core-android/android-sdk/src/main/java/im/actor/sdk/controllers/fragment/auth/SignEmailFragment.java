@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
@@ -28,7 +29,9 @@ public class SignEmailFragment extends BaseAuthFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sign_email, container, false);
 
-        ((TextView) v.findViewById(R.id.button_continue_text)).setTypeface(Fonts.medium());
+        TextView buttonCotinueText = (TextView) v.findViewById(R.id.button_continue_text);
+        buttonCotinueText.setTypeface(Fonts.medium());
+        buttonCotinueText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
 
         keyboardHelper = new KeyboardHelper(getActivity());
 
@@ -52,8 +55,9 @@ public class SignEmailFragment extends BaseAuthFragment {
     }
 
     private void initView(View v) {
-
+        ((TextView) v.findViewById(R.id.email_login_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         emailEditText = (EditText) v.findViewById(R.id.tv_email);
+        emailEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
         emailEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         String email = messenger().getAuthEmail();
         if(email!=null && !email.isEmpty()){

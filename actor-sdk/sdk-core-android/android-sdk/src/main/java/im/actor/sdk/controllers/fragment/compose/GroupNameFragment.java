@@ -42,6 +42,7 @@ public class GroupNameFragment extends BaseFragment {
 
         View res = inflater.inflate(R.layout.fragment_create_group_name, container, false);
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        ((TextView) res.findViewById(R.id.create_group_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         groupName = (EditText) res.findViewById(R.id.groupTitle);
         groupName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -53,6 +54,8 @@ public class GroupNameFragment extends BaseFragment {
                 return false;
             }
         });
+        groupName.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        groupName.setHintTextColor(ActorSDK.sharedActor().style.getTextHint());
 
         avatarView = (AvatarView) res.findViewById(R.id.avatar);
         avatarView.init(Screen.dp(96), 24);

@@ -87,7 +87,7 @@ public class GroupInfoFragment extends BaseFragment {
         View res = inflater.inflate(R.layout.fragment_group, container, false);
 
         notMemberView = res.findViewById(R.id.notMember);
-
+        ((TextView) notMemberView).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
         bind(groupInfo.isMember(), new ValueChangedListener<Boolean>() {
             @Override
             public void onChanged(Boolean val, Value<Boolean> Value) {
@@ -142,7 +142,11 @@ public class GroupInfoFragment extends BaseFragment {
         theme = new String[1];
         about = new String[1];
         TextView themeTV = (TextView) header.findViewById(R.id.theme);
+        themeTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) header.findViewById(R.id.group_theme_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         TextView aboutTV = (TextView) header.findViewById(R.id.about);
+        aboutTV.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) header.findViewById(R.id.about_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         final View descriptionContainer = header.findViewById(R.id.descriptionContainer);
         final TextView themeHeader = (TextView) header.findViewById(R.id.theme_header);
         themeHeader.setTextColor(style.getProfileSubtitle());
@@ -210,11 +214,12 @@ public class GroupInfoFragment extends BaseFragment {
         header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
 
         //Members
-        ((TextView) header.findViewById(R.id.membersCount)).setText(
+        TextView memberCount = (TextView) header.findViewById(R.id.membersCount);
+        memberCount.setText(
                 getString(R.string.group_members_count)
                         .replace("{0}", groupInfo.getMembersCount() + "")
                         .replace("{1}", "300"));
-
+        memberCount.setTextColor(ActorSDK.sharedActor().style.getTextHint());
         listView.addHeaderView(header, null, false);
 
         View add = inflater.inflate(R.layout.fragment_group_add, listView, false);
@@ -360,12 +365,17 @@ public class GroupInfoFragment extends BaseFragment {
 
         TintImageView notificationSettingIcon = (TintImageView) res.findViewById(R.id.settings_notification_icon);
         notificationSettingIcon.setTint(style.getSettingsIcon());
+        ((TextView) res.findViewById(R.id.settings_notifications_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
 
         TintImageView shareMediaIcon = (TintImageView) res.findViewById(R.id.share_media_icon);
         shareMediaIcon.setTint(style.getSettingsIcon());
+        ((TextView) res.findViewById(R.id.settings_media_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) res.findViewById(R.id.mediaCount)).setTextColor(ActorSDK.sharedActor().style.getTextHint());
 
         TintImageView shareDocsIcon = (TintImageView) res.findViewById(R.id.share_docs_icon);
         shareDocsIcon.setTint(style.getSettingsIcon());
+        ((TextView) res.findViewById(R.id.share_docs_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        ((TextView) res.findViewById(R.id.docCount)).setTextColor(ActorSDK.sharedActor().style.getTextHint());
 
         TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
         sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());

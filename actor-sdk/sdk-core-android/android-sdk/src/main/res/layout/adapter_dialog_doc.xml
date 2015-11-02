@@ -54,7 +54,6 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="100"
-                android:textColor="@color/text_primary"
                 android:textSize="18sp" />
         </FrameLayout>
 
@@ -80,7 +79,6 @@
                     android:paddingRight="24dp"
                     android:singleLine="true"
                     android:text="file.txt"
-                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <TextView
@@ -90,7 +88,6 @@
                     android:lines="1"
                     android:singleLine="true"
                     android:text="125kb, ZIP"
-                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
                 <TextView
@@ -100,7 +97,6 @@
                     android:ellipsize="end"
                     android:lines="1"
                     android:singleLine="true"
-                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
 
             </LinearLayout>
