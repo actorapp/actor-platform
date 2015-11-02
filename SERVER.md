@@ -8,13 +8,7 @@ Read more in our [new documentation](http://actor.readme.io/docs/server-docker)
 
 ## Ubuntu (tested on 14.04)
 
-```
-echo "deb https://dl.bintray.com/actor/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list
-sudo apt-get update
-sudo apt-get install actor
-```
-
-create `/etc/actor/server.conf` (see `/etc/actor/server.conf.example`)
+Read more in our [new documentation](https://actor.readme.io/docs/installing-on-ubuntu)
 
 ## Building the server (optional)
 * Install ```java``` and ```sbt``` on your machine.
