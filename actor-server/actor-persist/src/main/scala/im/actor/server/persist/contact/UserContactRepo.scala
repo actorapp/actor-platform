@@ -21,6 +21,7 @@ final class UserContactTable(tag: Tag) extends UserContactBase[models.contact.Us
 
 object UserContactRepo {
   val contacts = TableQuery[UserContactTable]
+  val active = contacts.filterNot(_.isDeleted === false)
 
   def byPK(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
@@ -37,6 +38,9 @@ object UserContactRepo {
 
   def byPKDeleted(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
+
+  def fetchAll =
+    active.result
 
   //TODO: check usages - make sure they dont need phone number
   def find(ownerUserId: Int, contactUserId: Int) =
