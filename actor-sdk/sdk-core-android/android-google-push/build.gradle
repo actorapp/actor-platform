@@ -7,6 +7,9 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'io.codearte.nexus-staging'
 
 group = 'im.actor'
 version = '0.0.1'
