@@ -14,6 +14,8 @@ import slick.driver.PostgresDriver.api.Database
 import im.actor.server.session.SessionRegion
 import im.actor.tls.TlsContext
 
+import scala.concurrent.Future
+
 object WsFrontend extends Frontend {
 
   import Directives._
@@ -38,7 +40,12 @@ object WsFrontend extends Frontend {
     }
   }
 
-  def route(flow: Flow[ByteString, ByteString, Unit])(implicit db: Database, system: ActorSystem): Route = {
+  def route(flow: Flow[ByteString, ByteString, Unit])(
+    implicit
+    db:     Database,
+    system: ActorSystem,
+    mat:    Materializer
+  ): Route = {
     get {
       pathSingleSlash {
         handleWebsocketMessages(websocket(flow))
@@ -46,12 +53,18 @@ object WsFrontend extends Frontend {
     }
   }
 
-  def websocket(mtProtoFlow: Flow[ByteString, ByteString, Unit])(implicit system: ActorSystem): Flow[Message, Message, Unit] = {
+  def websocket(mtProtoFlow: Flow[ByteString, ByteString, Unit])(
+    implicit
+    system: ActorSystem,
+    mat:    Materializer
+  ): Flow[Message, Message, Unit] = {
     Flow[Message]
       .collect {
-        case BinaryMessage.Strict(msg) ⇒
-          //system.log.debug("WS Receive {}", BitVector(msg.toByteBuffer).toHex)
-          msg
+        case msg: BinaryMessage ⇒ msg
+      }
+      .mapAsync(1) { msg: BinaryMessage ⇒
+        // FIXME: control buffer size
+        msg.dataStream.runWith(Sink.fold(ByteString.empty)(_ ++ _))
       }
       .via(mtProtoFlow)
       .map {
