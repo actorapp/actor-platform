@@ -1,7 +1,6 @@
 package im.actor.sdk.controllers.fragment.dialogs;
 
 import android.app.Activity;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -47,14 +46,14 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
         View res = inflate(inflater, container, R.layout.fragment_dialogs,
                 messenger().getDialogsDisplayList());
-        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         // setAnimationsEnabled(true);
 
         // Footer
 
         FrameLayout footer = new FrameLayout(getActivity());
         footer.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(160)));
-        footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+        footer.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
         ImageView shadow = new ImageView(getActivity());
         shadow.setImageResource(R.drawable.card_shadow_bottom);
         shadow.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -67,7 +66,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         hint.setPadding(Screen.dp(16), Screen.dp(8), Screen.dp(16), 0);
         hint.setGravity(Gravity.CENTER);
         hint.setTextSize(15);
-        hint.setTextColor(ActorSDK.sharedActor().style.getTextSubHeader());
+        hint.setTextColor(ActorSDK.sharedActor().style.getTextSubHeaderColor());
         hint.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         footer.addView(hint);
 
@@ -77,7 +76,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
         View header = new View(getActivity());
         header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
-        header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        header.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         addHeaderView(header);
 
         // Empty View
@@ -92,7 +91,9 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
                 }
             }
         });
-        ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.add_contact_hint_text)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+        ((TextView) emptyDialogs.findViewById(R.id.empty_dialogs_text)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
+        emptyDialogs.findViewById(R.id.empty_dialogs_bg).setBackgroundColor(ActorSDK.sharedActor().style.getMainColor());
 
         return res;
     }

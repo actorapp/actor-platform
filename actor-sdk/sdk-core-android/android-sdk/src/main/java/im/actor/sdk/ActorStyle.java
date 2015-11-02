@@ -8,8 +8,8 @@ import android.graphics.Color;
 public class ActorStyle {
     private int toolBarColor = 0;
     private int fabColor = 0;
-    private int fabColorPressed = 0;
-    private int mainFabbg = Color.parseColor("#ccffffff");
+    private int fabPressedColor = 0;
+    private int mainFabbgColor = Color.parseColor("#ccffffff");
     private int settingsCategoryTextColor = 0;
     private int recordIconTintColor = 0;
     private int avatarBackgroundColor = 0;
@@ -17,101 +17,105 @@ public class ActorStyle {
 
     //Root colors
     private int mainColor = Color.parseColor("#4d74a6");
-    private int mainBackground = Color.parseColor("#ffffff");
-    private int backyardBackground = 0;
+    private int mainBackgroundColor = Color.parseColor("#ffffff");
+    private int backyardBackgroundColor = 0;
 
     //Contacts
     private int contactFastTitleColor = 0;
     private int actionAddContactColor = 0;
-    private int contactDivider = 0;
+    private int contactDividerColor = 0;
 
     //Dialogs
     private int dialogsStatePendingColor = Color.parseColor("#40000000");
-    private int dialogsTime = 0;
+    private int dialogsTimeColor = 0;
     private int dialogsStateSentColor = Color.parseColor("#40000000");
     private int dialogsStateDeliveredColor = Color.parseColor("#40000000");
     private int dialogsStateReadColor = Color.parseColor("#ff7ea8ef");
     private int dialogsStateErrorColor = Color.parseColor("#d24a43");
     private int dialogsCounterTextColor = 0;
     private int dialogsCounterBackgroundColor = 0;
-    private int dialogsDivider = 0;
-    private int dialogsTitle = 0;
-    private int dialogsText = 0;
+    private int dialogsDividerColor = 0;
+    private int dialogsTitleColor = 0;
+    private int dialogsTextColor = 0;
 
-    private int dialogsTyping = 0;
+    private int dialogsTypingColor = 0;
 
-    private int primaryAlt = Color.parseColor("#4ca665");
-    private int primaryAltHovered = Color.parseColor("#ff3d8652");
-    private int primaryAltPressed = Color.parseColor("#ff5cca7b");
+    private int primaryAltColor = Color.parseColor("#4ca665");
+    private int primaryAltHoveredColor = Color.parseColor("#ff3d8652");
+    private int primaryAltPressedColor = Color.parseColor("#ff5cca7b");
 
-    private int accent = Color.parseColor("#d94335");
-    private int accentHovered = Color.parseColor("#b3372c");
-    private int accentPressed = Color.parseColor("#ca4a3f");
+    private int accentColor = Color.parseColor("#d94335");
+    private int accentHoveredColor = Color.parseColor("#b3372c");
+    private int accentPressedColor = Color.parseColor("#ca4a3f");
 
     //Base UI colors
 
-    private int listAction = 0;
-    private int sectonIconSmall = Color.parseColor("#b5b6b7");
-    private int sectionIconLarge = 0;
+    private int listActionColor = 0;
+    private int sectonIconSmallColor = Color.parseColor("#b5b6b7");
+    private int sectionIconLargeColor = 0;
 
     //Dividers
-    private int divider = Color.parseColor("#1e000000");
-    private int divider_inv = Color.parseColor("#1effffff");
+    private int dividerColor = Color.parseColor("#1e000000");
+    private int dividerInvColor = Color.parseColor("#1effffff");
 
     //Text colors
-    private int textPrimaryInv = Color.parseColor("#DEffffff");
-    private int textPrimary = Color.parseColor("#DE000000");
-    private int textSecondary = Color.parseColor("#7A000000");
-    private int textHint = Color.parseColor("#42000000");
-    private int textSubHeader = Color.parseColor("#6F000000");
-    private int textSecondaryInv = Color.parseColor("#8Affffff");
-    private int textHintInv = Color.parseColor("#42ffffff");
-    private int textSubheaderInv = Color.parseColor("#8Fffffff");
+    private int textPrimaryInvColor = Color.parseColor("#DEffffff");
+    private int textPrimaryColor = Color.parseColor("#DE000000");
+    private int textSecondaryColor = Color.parseColor("#7A000000");
+    private int textHintColor = Color.parseColor("#42000000");
+    private int textSubHeaderColor = Color.parseColor("#6F000000");
+    private int textSecondaryInvColor = Color.parseColor("#8Affffff");
+    private int textHintInvColor = Color.parseColor("#42ffffff");
+    private int textSubheaderInvColor = Color.parseColor("#8Fffffff");
 
     //Settings
-    private int settingsMainTitle = 0;
-    private int settingsIcon = 0;
-    private int settingsTitle = 0;
-    private int settingsSubtitle = 0;
+    private int settingsMainTitleColor = 0;
+    private int settingsIconColor = 0;
+    private int settingsTitleColor = 0;
+    private int settingsSubtitleColor = 0;
 
     //Profile
-    private int profileTitle = 0;
-    private int profileSubtitle = 0;
-    private int profilleIcon = 0;
+    private int profileTitleColor = 0;
+    private int profileSubtitleColor = 0;
+    private int profilleIconColor = 0;
 
     //Group Profile
-    private int groupAdmin = 0;
-    private int groupActionAddIcon = 0;
-    private int groupActionAddText = 0;
+    private int groupAdminColor = 0;
+    private int groupActionAddIconColor = 0;
+    private int groupActionAddTextColor = 0;
 
     //Conversation
-    private int convSendEnabled = 0;
-    private int convSendDisabled = Color.parseColor("#42000000");
+    private int convSendEnabledColor = 0;
+    private int convSendDisabledColor = Color.parseColor("#42000000");
 
-    private int convDateLine = Color.parseColor("#14000000");
-    private int convDatetext = Color.parseColor("#ffffff");
-    private int convDateBg = Color.parseColor("#99000000");
+    private int convDateLineColor = Color.parseColor("#14000000");
+    private int convDatetextColor = Color.parseColor("#ffffff");
+    private int convDateBgColor = Color.parseColor("#99000000");
 
-    private int convText = 0;
-    private int convTime = Color.parseColor("#60000000");
+    private int convTextColor = 0;
+    private int convTimeColor = Color.parseColor("#60000000");
 
-    private int convStatePending = Color.parseColor("#40000000");
-    private int convStateSent = Color.parseColor("#40000000");
-    private int convStateDelivered = Color.parseColor("#40000000");
-    private int convStateRead = Color.parseColor("#ff7ea8ef");
-    private int convStateError = Color.parseColor("#d24a43");
-    private int convStateWarrning = Color.parseColor("#d24a43");
+    private int convStatePendingColor = Color.parseColor("#40000000");
+    private int convStateSentColor = Color.parseColor("#40000000");
+    private int convStateDeliveredColor = Color.parseColor("#40000000");
+    private int convStateReadColor = Color.parseColor("#ff7ea8ef");
+    private int convStateErrorColor = Color.parseColor("#d24a43");
+    private int convStateWarrningColor = Color.parseColor("#d24a43");
 
-    private int convMediaDateBg = Color.parseColor("#99000000");
-    private int convMediaStatePending = Color.parseColor("#ffffff");
-    private int convMediaStateSent = Color.parseColor("#ffffff");
-    private int convMediaStateDelivered = Color.parseColor("#ffffff");
-    private int convMediaStateRead = Color.parseColor("#ff7ea8ef");
-    private int convMediaStateError = Color.parseColor("#ffed534b");
-    private int convMediaStateWarrning = Color.parseColor("#ffed534b");
+    private int convMediaDateBgColor = Color.parseColor("#99000000");
+    private int convMediaStatePendingColor = Color.parseColor("#ffffff");
+    private int convMediaStateSentColor = Color.parseColor("#ffffff");
+    private int convMediaStateDeliveredColor = Color.parseColor("#ffffff");
+    private int convMediaStateReadColor = Color.parseColor("#ff7ea8ef");
+    private int convMediaStateErrorColor = Color.parseColor("#ffed534b");
+    private int convMediaStateWarrningColor = Color.parseColor("#ffed534b");
 
     public int getMainColor() {
         return mainColor;
+    }
+
+    public int getMainPressedColor() {
+        return getDarkenArgb(getMainColor(), 0.95);
     }
 
     public void setMainColor(int mainColor) {
@@ -142,17 +146,17 @@ public class ActorStyle {
         this.fabColor = fabColor;
     }
 
-    public int getFabColorPressed() {
-        if (fabColorPressed != 0) {
-            return fabColorPressed;
+    public int getFabPressedColor() {
+        if (fabPressedColor != 0) {
+            return fabPressedColor;
         } else {
             double percent = 0.95;
             return getDarkenArgb(getFabColor(), percent);
         }
     }
 
-    public void setFabColorPressed(int fabColorPressed) {
-        this.fabColorPressed = fabColorPressed;
+    public void setFabPressedColor(int fabPressedColor) {
+        this.fabPressedColor = fabPressedColor;
     }
 
     public int getSettingsCategoryTextColor() {
@@ -191,24 +195,24 @@ public class ActorStyle {
         this.avatarBackgroundColor = avatarBackgroundColor;
     }
 
-    public int getMainBackground() {
-        return mainBackground;
+    public int getMainBackgroundColor() {
+        return mainBackgroundColor;
     }
 
-    public void setMainBackground(int mainBackground) {
-        this.mainBackground = mainBackground;
+    public void setMainBackgroundColor(int mainBackgroundColor) {
+        this.mainBackgroundColor = mainBackgroundColor;
     }
 
-    public int getBackyardBackground() {
-        if (backyardBackground != 0) {
-            return backyardBackground;
+    public int getBackyardBackgroundColor() {
+        if (backyardBackgroundColor != 0) {
+            return backyardBackgroundColor;
         } else {
-            return getDarkenArgb(getMainBackground(), 0.9375);
+            return getDarkenArgb(getMainBackgroundColor(), 0.9375);
         }
     }
 
-    public void setBackyardBackground(int backyardBackground) {
-        this.backyardBackground = backyardBackground;
+    public void setBackyardBackgroundColor(int backyardBackgroundColor) {
+        this.backyardBackgroundColor = backyardBackgroundColor;
     }
 
     public int getActionShareColor() {
@@ -251,7 +255,7 @@ public class ActorStyle {
         if (dialogsCounterTextColor != 0) {
             return dialogsCounterTextColor;
         } else {
-            return getTextPrimaryInv();
+            return getTextPrimaryInvColor();
         }
     }
 
@@ -263,7 +267,7 @@ public class ActorStyle {
         if (dialogsCounterBackgroundColor != 0) {
             return dialogsCounterBackgroundColor;
         } else {
-            return getPrimaryAlt();
+            return getPrimaryAltColor();
         }
     }
 
@@ -271,60 +275,60 @@ public class ActorStyle {
         this.dialogsCounterBackgroundColor = dialogsCounterBackgroundColor;
     }
 
-    public int getTextPrimaryInv() {
-        return textPrimaryInv;
+    public int getTextPrimaryInvColor() {
+        return textPrimaryInvColor;
     }
 
-    public void setTextPrimaryInv(int textPrimaryInv) {
-        this.textPrimaryInv = textPrimaryInv;
+    public void setTextPrimaryInvColor(int textPrimaryInvColor) {
+        this.textPrimaryInvColor = textPrimaryInvColor;
     }
 
-    public int getPrimaryAlt() {
-        return primaryAlt;
+    public int getPrimaryAltColor() {
+        return primaryAltColor;
     }
 
-    public void setPrimaryAlt(int primaryAlt) {
-        this.primaryAlt = primaryAlt;
+    public void setPrimaryAltColor(int primaryAltColor) {
+        this.primaryAltColor = primaryAltColor;
     }
 
-    public int getPrimaryAltHovered() {
-        return primaryAltHovered;
+    public int getPrimaryAltHoveredColor() {
+        return primaryAltHoveredColor;
     }
 
-    public void setPrimaryAltHovered(int primaryAltHovered) {
-        this.primaryAltHovered = primaryAltHovered;
+    public void setPrimaryAltHoveredColor(int primaryAltHoveredColor) {
+        this.primaryAltHoveredColor = primaryAltHoveredColor;
     }
 
-    public int getPrimaryAltPressed() {
-        return primaryAltPressed;
+    public int getPrimaryAltPressedColor() {
+        return primaryAltPressedColor;
     }
 
-    public void setPrimaryAltPressed(int primaryAltPressed) {
-        this.primaryAltPressed = primaryAltPressed;
+    public void setPrimaryAltPressedColor(int primaryAltPressedColor) {
+        this.primaryAltPressedColor = primaryAltPressedColor;
     }
 
-    public int getAccent() {
-        return accent;
+    public int getAccentColor() {
+        return accentColor;
     }
 
-    public void setAccent(int accent) {
-        this.accent = accent;
+    public void setAccentColor(int accentColor) {
+        this.accentColor = accentColor;
     }
 
-    public int getAccentHovered() {
-        return accentHovered;
+    public int getAccentHoveredColor() {
+        return accentHoveredColor;
     }
 
-    public void setAccentHovered(int accentHovered) {
-        this.accentHovered = accentHovered;
+    public void setAccentHoveredColor(int accentHoveredColor) {
+        this.accentHoveredColor = accentHoveredColor;
     }
 
-    public int getAccentPressed() {
-        return accentPressed;
+    public int getAccentPressedColor() {
+        return accentPressedColor;
     }
 
-    public void setAccentPressed(int accentPressed) {
-        this.accentPressed = accentPressed;
+    public void setAccentPressedColor(int accentPressedColor) {
+        this.accentPressedColor = accentPressedColor;
     }
 
     public int getDialogsStatePendingColor() {
@@ -367,484 +371,480 @@ public class ActorStyle {
         this.dialogsStateErrorColor = dialogsStateErrorColor;
     }
 
-    public int getDialogsDivider() {
-        if (dialogsDivider != 0) {
-            return dialogsDivider;
+    public int getDialogsDividerColor() {
+        if (dialogsDividerColor != 0) {
+            return dialogsDividerColor;
         } else {
             return getDividerColor();
         }
     }
 
-    public void setDialogsDivider(int dialogsDivider) {
-        this.dialogsDivider = dialogsDivider;
+    public void setDialogsDividerColor(int dialogsDividerColor) {
+        this.dialogsDividerColor = dialogsDividerColor;
     }
 
-    public int getDialogsTitle() {
-        if (dialogsTitle != 0) {
-            return dialogsTitle;
+    public int getDialogsTitleColor() {
+        if (dialogsTitleColor != 0) {
+            return dialogsTitleColor;
         } else {
-            return getTextPrimary();
+            return getTextPrimaryColor();
         }
 
     }
 
-    public void setDialogsTitle(int dialogsTitle) {
-        this.dialogsTitle = dialogsTitle;
+    public void setDialogsTitleColor(int dialogsTitleColor) {
+        this.dialogsTitleColor = dialogsTitleColor;
     }
 
-    public int getDialogsText() {
-        if (dialogsText != 0) {
-            return dialogsText;
+    public int getDialogsTextColor() {
+        if (dialogsTextColor != 0) {
+            return dialogsTextColor;
         } else {
-            return getTextSecondary();
+            return getTextSecondaryColor();
         }
     }
 
-    public void setDialogsText(int dialogsText) {
-        this.dialogsText = dialogsText;
+    public void setDialogsTextColor(int dialogsTextColor) {
+        this.dialogsTextColor = dialogsTextColor;
     }
 
-    public int getDialogsTime() {
-        if (dialogsTime != 0) {
-            return dialogsTime;
+    public int getDialogsTimeColor() {
+        if (dialogsTimeColor != 0) {
+            return dialogsTimeColor;
         } else {
-            return getTextSecondary();
+            return getTextSecondaryColor();
         }
     }
 
-    public void setDialogsTime(int dialogsTime) {
-        this.dialogsTime = dialogsTime;
+    public void setDialogsTimeColor(int dialogsTimeColor) {
+        this.dialogsTimeColor = dialogsTimeColor;
     }
 
-    public int getDialogsTyping() {
-        if (dialogsTyping != 0) {
-            return dialogsTyping;
+    public int getDialogsTypingColor() {
+        if (dialogsTypingColor != 0) {
+            return dialogsTypingColor;
         } else {
             return getMainColor();
         }
     }
 
-    public void setDialogsTyping(int dialogsTyping) {
-        this.dialogsTyping = dialogsTyping;
+    public void setDialogsTypingColor(int dialogsTypingColor) {
+        this.dialogsTypingColor = dialogsTypingColor;
     }
 
     public int getDividerColor() {
-        return divider;
+        return dividerColor;
     }
 
-    public int getDivider_inv() {
-        return divider_inv;
+    public int getDividerInvColor() {
+        return dividerInvColor;
     }
 
-    public void setDivider_inv(int divider_inv) {
-        this.divider_inv = divider_inv;
+    public void setDividerInvColor(int dividerInvColor) {
+        this.dividerInvColor = dividerInvColor;
     }
 
-    public int getDivider() {
-        return divider;
+    public void setDividerColor(int divider) {
+        this.dividerColor = divider;
     }
 
-    public void setDivider(int divider) {
-        this.divider = divider;
+    public int getTextPrimaryColor() {
+        return textPrimaryColor;
     }
 
-    public int getTextPrimary() {
-        return textPrimary;
+    public void setTextPrimaryColor(int textPrimaryColor) {
+        this.textPrimaryColor = textPrimaryColor;
     }
 
-    public void setTextPrimary(int textPrimary) {
-        this.textPrimary = textPrimary;
+    public int getTextSecondaryColor() {
+        return textSecondaryColor;
     }
 
-    public int getTextSecondary() {
-        return textSecondary;
+    public void setTextSecondaryColor(int textSecondaryColor) {
+        this.textSecondaryColor = textSecondaryColor;
     }
 
-    public void setTextSecondary(int textSecondary) {
-        this.textSecondary = textSecondary;
+    public int getTextHintColor() {
+        return textHintColor;
     }
 
-    public int getTextHint() {
-        return textHint;
+    public void setTextHintColor(int textHintColor) {
+        this.textHintColor = textHintColor;
     }
 
-    public void setTextHint(int textHint) {
-        this.textHint = textHint;
+    public int getTextSubHeaderColor() {
+        return textSubHeaderColor;
     }
 
-    public int getTextSubHeader() {
-        return textSubHeader;
+    public void setTextSubHeaderColor(int textSubHeaderColor) {
+        this.textSubHeaderColor = textSubHeaderColor;
     }
 
-    public void setTextSubHeader(int textSubHeader) {
-        this.textSubHeader = textSubHeader;
+    public int getTextSecondaryInvColor() {
+        return textSecondaryInvColor;
     }
 
-    public int getTextSecondaryInv() {
-        return textSecondaryInv;
+    public void setTextSecondaryInvColor(int textSecondaryInvColor) {
+        this.textSecondaryInvColor = textSecondaryInvColor;
     }
 
-    public void setTextSecondaryInv(int textSecondaryInv) {
-        this.textSecondaryInv = textSecondaryInv;
+    public int getTextHintInvColor() {
+        return textHintInvColor;
     }
 
-    public int getTextHintInv() {
-        return textHintInv;
+    public void setTextHintInvColor(int textHintInvColor) {
+        this.textHintInvColor = textHintInvColor;
     }
 
-    public void setTextHintInv(int textHintInv) {
-        this.textHintInv = textHintInv;
+    public int getTextSubheaderInvColor() {
+        return textSubheaderInvColor;
     }
 
-    public int getTextSubheaderInv() {
-        return textSubheaderInv;
+    public void setTextSubheaderInvColor(int textSubheaderInvColor) {
+        this.textSubheaderInvColor = textSubheaderInvColor;
     }
 
-    public void setTextSubheaderInv(int textSubheaderInv) {
-        this.textSubheaderInv = textSubheaderInv;
-    }
-
-    public int getListAction() {
-        if (listAction != 0) {
-            return listAction;
+    public int getListActionColor() {
+        if (listActionColor != 0) {
+            return listActionColor;
         } else {
             return getMainColor();
         }
     }
 
-    public void setListAction(int listAction) {
-        this.listAction = listAction;
+    public void setListActionColor(int listActionColor) {
+        this.listActionColor = listActionColor;
     }
 
-    public int getSectonIconSmall() {
-        return sectonIconSmall;
+    public int getSectonIconSmallColor() {
+        return sectonIconSmallColor;
     }
 
-    public void setSectonIconSmall(int sectonIconSmall) {
-        this.sectonIconSmall = sectonIconSmall;
+    public void setSectonIconSmallColor(int sectonIconSmallColor) {
+        this.sectonIconSmallColor = sectonIconSmallColor;
     }
 
-    public int getSectionIconLarge() {
-        if (sectionIconLarge != 0) {
-            return sectionIconLarge;
+    public int getSectionIconLargeColor() {
+        if (sectionIconLargeColor != 0) {
+            return sectionIconLargeColor;
         } else {
             return getMainColor();
         }
     }
 
-    public void setSectionIconLarge(int sectionIconLarge) {
-        this.sectionIconLarge = sectionIconLarge;
+    public void setSectionIconLargeColor(int sectionIconLargeColor) {
+        this.sectionIconLargeColor = sectionIconLargeColor;
     }
 
-    public int getSettingsMainTitle() {
-        if (listAction != 0) {
-            return listAction;
+    public int getSettingsMainTitleColor() {
+        if (listActionColor != 0) {
+            return listActionColor;
         } else {
             return getSettingsCategoryTextColor();
         }
     }
 
-    public void setSettingsMainTitle(int settingsMainTitle) {
-        this.settingsMainTitle = settingsMainTitle;
+    public void setSettingsMainTitleColor(int settingsMainTitleColor) {
+        this.settingsMainTitleColor = settingsMainTitleColor;
     }
 
-    public int getSettingsIcon() {
-        if (settingsIcon != 0) {
-            return settingsIcon;
+    public int getSettingsIconColor() {
+        if (settingsIconColor != 0) {
+            return settingsIconColor;
         } else {
-            return getSectonIconSmall();
+            return getSectonIconSmallColor();
         }
     }
 
-    public void setSettingsIcon(int settingsIcon) {
-        this.settingsIcon = settingsIcon;
+    public void setSettingsIconColor(int settingsIconColor) {
+        this.settingsIconColor = settingsIconColor;
     }
 
-    public int getSettingsTitle() {
-        if (settingsTitle != 0) {
-            return settingsTitle;
+    public int getSettingsTitleColor() {
+        if (settingsTitleColor != 0) {
+            return settingsTitleColor;
         } else {
-            return getTextPrimary();
+            return getTextPrimaryColor();
         }
     }
 
-    public void setSettingsTitle(int settingsTitle) {
-        this.settingsTitle = settingsTitle;
+    public void setSettingsTitleColor(int settingsTitleColor) {
+        this.settingsTitleColor = settingsTitleColor;
     }
 
-    public int getSettingsSubtitle() {
-        if (settingsSubtitle != 0) {
-            return settingsSubtitle;
+    public int getSettingsSubtitleColor() {
+        if (settingsSubtitleColor != 0) {
+            return settingsSubtitleColor;
         } else {
-            return getTextSecondary();
+            return getTextSecondaryColor();
         }
     }
 
-    public void setSettingsSubtitle(int settingsSubtitle) {
-        this.settingsSubtitle = settingsSubtitle;
+    public void setSettingsSubtitleColor(int settingsSubtitleColor) {
+        this.settingsSubtitleColor = settingsSubtitleColor;
     }
 
-    public int getProfileTitle() {
-        if (profileTitle != 0) {
-            return profileTitle;
+    public int getProfileTitleColor() {
+        if (profileTitleColor != 0) {
+            return profileTitleColor;
         } else {
-            return getTextPrimaryInv();
+            return getTextPrimaryInvColor();
         }
     }
 
-    public void setProfileTitle(int profileTitle) {
-        this.profileTitle = profileTitle;
+    public void setProfileTitleColor(int profileTitleColor) {
+        this.profileTitleColor = profileTitleColor;
     }
 
-    public int getProfileSubtitle() {
-        if (profileSubtitle != 0) {
-            return profileSubtitle;
+    public int getProfileSubtitleColor() {
+        if (profileSubtitleColor != 0) {
+            return profileSubtitleColor;
         } else {
-            return getTextSecondaryInv();
+            return getTextSecondaryInvColor();
         }
     }
 
-    public void setProfileSubtitle(int profileSubtitle) {
-        this.profileSubtitle = profileSubtitle;
+    public void setProfileSubtitleColor(int profileSubtitleColor) {
+        this.profileSubtitleColor = profileSubtitleColor;
     }
 
-    public int getProfilleIcon() {
-        if (profilleIcon != 0) {
-            return profilleIcon;
+    public int getProfilleIconColor() {
+        if (profilleIconColor != 0) {
+            return profilleIconColor;
         } else {
-            return getSectionIconLarge();
+            return getSectionIconLargeColor();
         }
     }
 
-    public void setProfilleIcon(int profilleIcon) {
-        this.profilleIcon = profilleIcon;
+    public void setProfilleIconColor(int profilleIconColor) {
+        this.profilleIconColor = profilleIconColor;
     }
 
-    public int getGroupAdmin() {
-        if (groupAdmin != 0) {
-            return groupAdmin;
+    public int getGroupAdminColor() {
+        if (groupAdminColor != 0) {
+            return groupAdminColor;
         } else {
-            return getAccent();
+            return getAccentColor();
         }
     }
 
-    public void setGroupAdmin(int groupAdmin) {
-        this.groupAdmin = groupAdmin;
+    public void setGroupAdminColor(int groupAdminColor) {
+        this.groupAdminColor = groupAdminColor;
     }
 
-    public int getGroupActionAddIcon() {
-        if (groupActionAddIcon != 0) {
-            return groupActionAddIcon;
+    public int getGroupActionAddIconColor() {
+        if (groupActionAddIconColor != 0) {
+            return groupActionAddIconColor;
         } else {
-            return getListAction();
+            return getListActionColor();
         }
     }
 
-    public void setGroupActionAddIcon(int groupActionAddIcon) {
-        this.groupActionAddIcon = groupActionAddIcon;
+    public void setGroupActionAddIconColor(int groupActionAddIconColor) {
+        this.groupActionAddIconColor = groupActionAddIconColor;
     }
 
-    public int getGroupActionAddText() {
-        if (groupActionAddText != 0) {
-            return groupActionAddText;
+    public int getGroupActionAddTextColor() {
+        if (groupActionAddTextColor != 0) {
+            return groupActionAddTextColor;
         } else {
-            return getListAction();
+            return getListActionColor();
         }
     }
 
-    public void setGroupActionAddText(int groupActionAddText) {
-        this.groupActionAddText = groupActionAddText;
+    public void setGroupActionAddTextColor(int groupActionAddTextColor) {
+        this.groupActionAddTextColor = groupActionAddTextColor;
     }
 
-    public int getContactDivider() {
-        if (contactDivider != 0) {
-            return contactDivider;
+    public int getContactDividerColor() {
+        if (contactDividerColor != 0) {
+            return contactDividerColor;
         } else {
-            return getDivider();
+            return getDividerColor();
         }
     }
 
-    public void setContactDivider(int contactDivider) {
-        this.contactDivider = contactDivider;
+    public void setContactDividerColor(int contactDividerColor) {
+        this.contactDividerColor = contactDividerColor;
     }
 
-    public int getMainFabbg() {
-        return mainFabbg;
+    public int getMainFabbgColor() {
+        return mainFabbgColor;
     }
 
-    public void setMainFabbg(int mainFabbg) {
-        this.mainFabbg = mainFabbg;
+    public void setMainFabbgColor(int mainFabbgColor) {
+        this.mainFabbgColor = mainFabbgColor;
     }
 
-    public int getConvSendEnabled() {
-        if (convSendEnabled != 0) {
-            return convSendEnabled;
+    public int getConvSendEnabledColor() {
+        if (convSendEnabledColor != 0) {
+            return convSendEnabledColor;
         } else {
             return getMainColor();
         }
     }
 
-    public void setConvSendEnabled(int convSendEnabled) {
-        this.convSendEnabled = convSendEnabled;
+    public void setConvSendEnabledColor(int convSendEnabledColor) {
+        this.convSendEnabledColor = convSendEnabledColor;
     }
 
-    public int getConvSendDisabled() {
-        return convSendDisabled;
+    public int getConvSendDisabledColor() {
+        return convSendDisabledColor;
     }
 
-    public void setConvSendDisabled(int convSendDisabled) {
-        this.convSendDisabled = convSendDisabled;
+    public void setConvSendDisabledColor(int convSendDisabledColor) {
+        this.convSendDisabledColor = convSendDisabledColor;
     }
 
-    public int getConvDateLine() {
-        return convDateLine;
+    public int getConvDateLineColor() {
+        return convDateLineColor;
     }
 
-    public void setConvDateLine(int convDateLine) {
-        this.convDateLine = convDateLine;
+    public void setConvDateLineColor(int convDateLineColor) {
+        this.convDateLineColor = convDateLineColor;
     }
 
-    public int getConvDatetext() {
-        return convDatetext;
+    public int getConvDatetextColor() {
+        return convDatetextColor;
     }
 
-    public void setConvDatetext(int convDatetext) {
-        this.convDatetext = convDatetext;
+    public void setConvDatetextColor(int convDatetextColor) {
+        this.convDatetextColor = convDatetextColor;
     }
 
-    public int getConvDateBg() {
-        return convDateBg;
+    public int getConvDateBgColor() {
+        return convDateBgColor;
     }
 
-    public void setConvDateBg(int convDateBg) {
-        this.convDateBg = convDateBg;
+    public void setConvDateBgColor(int convDateBgColor) {
+        this.convDateBgColor = convDateBgColor;
     }
 
-    public int getConvText() {
-        if (convText != 0) {
-            return convText;
+    public int getConvTextColor() {
+        if (convTextColor != 0) {
+            return convTextColor;
         } else {
-            return getTextPrimary();
+            return getTextPrimaryColor();
         }
     }
 
-    public void setConvText(int convText) {
-        this.convText = convText;
+    public void setConvTextColor(int convTextColor) {
+        this.convTextColor = convTextColor;
     }
 
-    public int getConvTime() {
-        return convTime;
+    public int getConvTimeColor() {
+        return convTimeColor;
     }
 
-    public void setConvTime(int convTime) {
-        this.convTime = convTime;
+    public void setConvTimeColor(int convTimeColor) {
+        this.convTimeColor = convTimeColor;
     }
 
-    public int getConvStatePending() {
-        return convStatePending;
+    public int getConvStatePendingColor() {
+        return convStatePendingColor;
     }
 
-    public void setConvStatePending(int convStatePending) {
-        this.convStatePending = convStatePending;
+    public void setConvStatePendingColor(int convStatePendingColor) {
+        this.convStatePendingColor = convStatePendingColor;
     }
 
-    public int getConvStateSent() {
-        return convStateSent;
+    public int getConvStateSentColor() {
+        return convStateSentColor;
     }
 
-    public void setConvStateSent(int convStateSent) {
-        this.convStateSent = convStateSent;
+    public void setConvStateSentColor(int convStateSentColor) {
+        this.convStateSentColor = convStateSentColor;
     }
 
-    public int getConvStateDelivered() {
-        return convStateDelivered;
+    public int getConvStateDeliveredColor() {
+        return convStateDeliveredColor;
     }
 
-    public void setConvStateDelivered(int convStateDelivered) {
-        this.convStateDelivered = convStateDelivered;
+    public void setConvStateDeliveredColor(int convStateDeliveredColor) {
+        this.convStateDeliveredColor = convStateDeliveredColor;
     }
 
-    public int getConvStateRead() {
-        return convStateRead;
+    public int getConvStateReadColor() {
+        return convStateReadColor;
     }
 
-    public void setConvStateRead(int convStateRead) {
-        this.convStateRead = convStateRead;
+    public void setConvStateReadColor(int convStateReadColor) {
+        this.convStateReadColor = convStateReadColor;
     }
 
-    public int getConvStateError() {
-        return convStateError;
+    public int getConvStateErrorColor() {
+        return convStateErrorColor;
     }
 
-    public void setConvStateError(int convStateError) {
-        this.convStateError = convStateError;
+    public void setConvStateErrorColor(int convStateErrorColor) {
+        this.convStateErrorColor = convStateErrorColor;
     }
 
-    public int getConvStateWarrning() {
-        return convStateWarrning;
+    public int getConvStateWarrningColor() {
+        return convStateWarrningColor;
     }
 
-    public void setConvStateWarrning(int convStateWarrning) {
-        this.convStateWarrning = convStateWarrning;
+    public void setConvStateWarrningColor(int convStateWarrningColor) {
+        this.convStateWarrningColor = convStateWarrningColor;
     }
 
-    public int getConvMediaDateBg() {
-        return convMediaDateBg;
+    public int getConvMediaDateBgColor() {
+        return convMediaDateBgColor;
     }
 
-    public void setConvMediaDateBg(int convMediaDateBg) {
-        this.convMediaDateBg = convMediaDateBg;
+    public void setConvMediaDateBgColor(int convMediaDateBgColor) {
+        this.convMediaDateBgColor = convMediaDateBgColor;
     }
 
-    public int getConvMediaStatePending() {
-        return convMediaStatePending;
+    public int getConvMediaStatePendingColor() {
+        return convMediaStatePendingColor;
     }
 
-    public void setConvMediaStatePending(int convMediaStatePending) {
-        this.convMediaStatePending = convMediaStatePending;
+    public void setConvMediaStatePendingColor(int convMediaStatePendingColor) {
+        this.convMediaStatePendingColor = convMediaStatePendingColor;
     }
 
-    public int getConvMediaStateSent() {
-        return convMediaStateSent;
+    public int getConvMediaStateSentColor() {
+        return convMediaStateSentColor;
     }
 
-    public void setConvMediaStateSent(int convMediaStateSent) {
-        this.convMediaStateSent = convMediaStateSent;
+    public void setConvMediaStateSentColor(int convMediaStateSentColor) {
+        this.convMediaStateSentColor = convMediaStateSentColor;
     }
 
-    public int getConvMediaStateDelivered() {
-        return convMediaStateDelivered;
+    public int getConvMediaStateDeliveredColor() {
+        return convMediaStateDeliveredColor;
     }
 
-    public void setConvMediaStateDelivered(int convMediaStateDelivered) {
-        this.convMediaStateDelivered = convMediaStateDelivered;
+    public void setConvMediaStateDeliveredColor(int convMediaStateDeliveredColor) {
+        this.convMediaStateDeliveredColor = convMediaStateDeliveredColor;
     }
 
-    public int getConvMediaStateRead() {
-        return convMediaStateRead;
+    public int getConvMediaStateReadColor() {
+        return convMediaStateReadColor;
     }
 
-    public void setConvMediaStateRead(int convMediaStateRead) {
-        this.convMediaStateRead = convMediaStateRead;
+    public void setConvMediaStateReadColor(int convMediaStateReadColor) {
+        this.convMediaStateReadColor = convMediaStateReadColor;
     }
 
-    public int getConvMediaStateError() {
-        return convMediaStateError;
+    public int getConvMediaStateErrorColor() {
+        return convMediaStateErrorColor;
     }
 
-    public void setConvMediaStateError(int convMediaStateError) {
-        this.convMediaStateError = convMediaStateError;
+    public void setConvMediaStateErrorColor(int convMediaStateErrorColor) {
+        this.convMediaStateErrorColor = convMediaStateErrorColor;
     }
 
-    public int getConvMediaStateWarrning() {
-        return convMediaStateWarrning;
+    public int getConvMediaStateWarrningColor() {
+        return convMediaStateWarrningColor;
     }
 
-    public void setConvMediaStateWarrning(int convMediaStateWarrning) {
-        this.convMediaStateWarrning = convMediaStateWarrning;
+    public void setConvMediaStateWarrningColor(int convMediaStateWarrningColor) {
+        this.convMediaStateWarrningColor = convMediaStateWarrningColor;
     }
 
-    private int getDarkenArgb(int color, double percent) {
+    public static int getDarkenArgb(int color, double percent) {
         return Color.argb(Color.alpha(color), (int) Math.round(Color.red(color) * percent), (int) Math.round(Color.green(color) * percent), (int) Math.round(Color.blue(color) * percent));
     }
 }

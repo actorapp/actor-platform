@@ -39,8 +39,7 @@
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:layout_gravity="center"
-                app:src="@drawable/ic_cloud_download_white_36dp"
-                app:tintColor="@color/primary" />
+                app:src="@drawable/ic_cloud_download_white_36dp" />
 
             <com.droidkit.progress.CircularView
                 android:id="@+id/progressView"

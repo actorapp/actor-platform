@@ -103,7 +103,7 @@ public class ViewAvatarActivity extends BaseActivity {
         progress = findViewById(R.id.uploadProgress);
 
         noPhoto = (TextView) findViewById(R.id.noPhoto);
-        noPhoto.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        noPhoto.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
 
     }
 

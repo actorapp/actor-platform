@@ -33,8 +33,8 @@ public class ChatSettingsFragment extends BaseFragment {
         };
         sendByEnter.setOnClickListener(listener);
         res.findViewById(R.id.sendByEnterCont).setOnClickListener(listener);
-        ((TextView) res.findViewById(R.id.settings_send_by_enter_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.settings_set_by_enter_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.settings_send_by_enter_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_set_by_enter_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
 
         return res;
     }

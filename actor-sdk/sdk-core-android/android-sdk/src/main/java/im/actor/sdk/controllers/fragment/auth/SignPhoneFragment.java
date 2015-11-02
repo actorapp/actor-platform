@@ -3,6 +3,7 @@ package im.actor.sdk.controllers.fragment.auth;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
@@ -24,6 +25,7 @@ import im.actor.sdk.util.country.Country;
 import im.actor.sdk.util.country.Countries;
 import im.actor.sdk.util.Fonts;
 import im.actor.sdk.util.KeyboardHelper;
+import im.actor.sdk.view.SelectorFactory;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -46,9 +48,12 @@ public class SignPhoneFragment extends BaseAuthFragment {
         View v = inflater.inflate(R.layout.fragment_sign_phone, container, false);
 
         TextView buttonContinue = (TextView) v.findViewById(R.id.button_continue_text);
-        buttonContinue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInv());
+        StateListDrawable states = SelectorFactory.get(ActorSDK.sharedActor().style.getMainColor(), getActivity());
+        buttonContinue.setBackground(states);
+        buttonContinue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         buttonContinue.setTypeface(Fonts.medium());
         ((TextView) v.findViewById(R.id.button_why)).setTypeface(Fonts.medium());
+        ((TextView) v.findViewById(R.id.button_why)).setTextColor(ActorSDK.sharedActor().style.getMainColor());
 
         keyboardHelper = new KeyboardHelper(getActivity());
 
@@ -91,8 +96,9 @@ public class SignPhoneFragment extends BaseAuthFragment {
     }
 
     private void initView(View v) {
-        ((TextView) v.findViewById(R.id.phone_sign_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) v.findViewById(R.id.phone_sign_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         countrySelectButton = (Button) v.findViewById(R.id.button_country_select);
+        countrySelectButton.setTextColor(ActorSDK.sharedActor().style.getMainColor());
         onClick(countrySelectButton, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +108,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
         });
 
         countryCodeEditText = (EditText) v.findViewById(R.id.tv_country_code);
+        countryCodeEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         countryCodeEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -161,7 +168,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
 
         phoneNumberEditText = (BackspaceKeyEditText) v.findViewById(R.id.tv_phone_number);
-        phoneNumberEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        phoneNumberEditText.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         phoneNumberEditText.setBackspaceListener(new BackspaceKeyEditText.BackspacePressListener() {
             @Override

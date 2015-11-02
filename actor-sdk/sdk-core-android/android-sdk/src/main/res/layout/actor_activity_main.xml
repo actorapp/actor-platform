@@ -47,8 +47,6 @@
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
-            app:fab_colorNormal="@color/action"
-            app:fab_colorPressed="@color/action_pressed"
             app:fab_icon="@drawable/ic_plus_white_24dp" />
 
         <FrameLayout
@@ -92,9 +90,9 @@
             android:clickable="true">
 
             <View
+                android:id="@+id/sync_background"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="@color/primary" />
+                android:layout_height="150dp" />
 
             <ImageView
                 android:id="@+id/emptyDialogsImage"
@@ -112,11 +110,11 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/sync_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/main_sync_title"
-                    android:textColor="@color/primary"
                     android:textSize="21sp" />
 
                 <TextView
@@ -147,9 +145,9 @@
                 android:clickable="true">
 
                 <View
+                    android:id="@+id/empty_contacts_bg"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:background="@color/primary" />
+                    android:layout_height="150dp" />
 
                 <ImageView
                     android:id="@+id/emptyContactsImage"
@@ -167,11 +165,11 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/empty_contacts_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/main_empty_title"
-                        android:textColor="@color/primary"
                         android:textSize="21sp" />
 
                     <TextView
@@ -285,8 +283,6 @@
                     android:id="@+id/addContactContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/action"
-                    app:fab_colorPressed="@color/action_pressed"
                     app:fab_icon="@drawable/ic_person_add_white_24dp" />
             </LinearLayout>
 
@@ -307,8 +303,6 @@
                     android:id="@+id/createGroupContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/action"
-                    app:fab_colorPressed="@color/action_pressed"
                     app:fab_icon="@drawable/ic_group_white_24dp" />
             </LinearLayout>
 
@@ -351,8 +345,6 @@
                     android:id="@+id/composeContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/action"
-                    app:fab_colorPressed="@color/action_pressed"
                     app:fab_icon="@drawable/ic_message_white_24dp" />
             </LinearLayout>
         </LinearLayout>

@@ -37,8 +37,8 @@ public class NotificationsFragment extends BaseFragment {
             }
         };
         ActorStyle style = ActorSDK.sharedActor().style;
-        ((TextView) res.findViewById(R.id.settings_conversation_tones_title)).setTextColor(style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.settings_conversation_tones_hint)).setTextColor(style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.settings_conversation_tones_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_conversation_tones_hint)).setTextColor(style.getTextSecondaryColor());
         enableTones.setOnClickListener(enableTonesListener);
         res.findViewById(R.id.conversationTonesCont).setOnClickListener(enableTonesListener);
 
@@ -54,8 +54,8 @@ public class NotificationsFragment extends BaseFragment {
         };
         enableSound.setOnClickListener(enableSoundListener);
         res.findViewById(R.id.soundCont).setOnClickListener(enableSoundListener);
-        ((TextView) res.findViewById(R.id.settings_sound_title)).setTextColor(style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.settings_sound_hint)).setTextColor(style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.settings_sound_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_sound_hint)).setTextColor(style.getTextSecondaryColor());
         // Vibration
         final CheckBox enableVibration = (CheckBox) res.findViewById(R.id.enableVibration);
         enableVibration.setChecked(messenger().isNotificationVibrationEnabled());
@@ -68,8 +68,8 @@ public class NotificationsFragment extends BaseFragment {
         };
         enableVibration.setOnClickListener(enableVibrationListener);
         res.findViewById(R.id.vibrationCont).setOnClickListener(enableVibrationListener);
-        ((TextView) res.findViewById(R.id.settings_vibration_title)).setTextColor(style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.settings_vibration_hint)).setTextColor(style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.settings_vibration_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_vibration_hint)).setTextColor(style.getTextSecondaryColor());
         // Group
         final CheckBox enableGroup = (CheckBox) res.findViewById(R.id.enableGroup);
         enableGroup.setChecked(messenger().isGroupNotificationsEnabled());
@@ -82,8 +82,8 @@ public class NotificationsFragment extends BaseFragment {
         };
         enableGroup.setOnClickListener(enableGroupListener);
         res.findViewById(R.id.groupCont).setOnClickListener(enableGroupListener);
-        ((TextView) res.findViewById(R.id.settings_group_title)).setTextColor(style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.settings_group_hint)).setTextColor(style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.settings_group_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_group_hint)).setTextColor(style.getTextSecondaryColor());
         // Mentions
         final CheckBox enableGroupMentions = (CheckBox) res.findViewById(R.id.enableGroupMentions);
         enableGroupMentions.setChecked(messenger().isGroupNotificationsOnlyMentionsEnabled());
@@ -96,8 +96,8 @@ public class NotificationsFragment extends BaseFragment {
         };
         enableGroupMentions.setOnClickListener(enableGroupMentionsListener);
         res.findViewById(R.id.groupMentionsCont).setOnClickListener(enableGroupMentionsListener);
-        ((TextView) res.findViewById(R.id.settings_group_mentions_title)).setTextColor(style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.settings_group_mentions_hint)).setTextColor(style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.settings_group_mentions_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_group_mentions_hint)).setTextColor(style.getTextSecondaryColor());
         // Names and messages
 
         final CheckBox enableText = (CheckBox) res.findViewById(R.id.enableTitles);
@@ -111,8 +111,8 @@ public class NotificationsFragment extends BaseFragment {
         };
         enableText.setOnClickListener(enableTextListener);
         res.findViewById(R.id.titlesCont).setOnClickListener(enableTextListener);
-        ((TextView) res.findViewById(R.id.settings_titles_title)).setTextColor(style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.settings_titles_hint)).setTextColor(style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.settings_titles_title)).setTextColor(style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_titles_hint)).setTextColor(style.getTextSecondaryColor());
         return res;
     }
 }

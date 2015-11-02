@@ -32,9 +32,9 @@ public class SecuritySettingsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View res = inflater.inflate(R.layout.fr_settings_encryption, container, false);
-        ((TextView) res.findViewById(R.id.security_settings_title)).setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitle());
+        ((TextView) res.findViewById(R.id.security_settings_title)).setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitleColor());
         loading = (TextView) res.findViewById(R.id.loading);
-        loading.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        loading.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         loading.setVisibility(View.GONE);
         loading.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,8 +75,8 @@ public class SecuritySettingsFragment extends BaseFragment {
                         .setCanceledOnTouchOutside(true);
             }
         });
-        ((TextView) res.findViewById(R.id.settings_terminate_sessions_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
-        ((TextView) res.findViewById(R.id.settings_terminate_sessions_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        ((TextView) res.findViewById(R.id.settings_terminate_sessions_title)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ((TextView) res.findViewById(R.id.settings_terminate_sessions_hint)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         performLoad();
 
         return res;
@@ -106,11 +106,11 @@ public class SecuritySettingsFragment extends BaseFragment {
                     boolean isThisDevice = item.getAuthHolder() == ApiAuthHolder.OTHERDEVICE;
                     String deviceTitle = (isThisDevice ? "(This) " : "") + item.getDeviceTitle();
                     ((TextView) view.findViewById(R.id.date)).setText(messenger().getFormatter().formatShortDate(item.getAuthTime() * 1000L));
-                    ((TextView) view.findViewById(R.id.date)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+                    ((TextView) view.findViewById(R.id.date)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
                     ((TextView) view.findViewById(R.id.appTitle)).setText(item.getAppTitle());
-                    ((TextView) view.findViewById(R.id.appTitle)).setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+                    ((TextView) view.findViewById(R.id.appTitle)).setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
                     ((TextView) view.findViewById(R.id.deviceTitle)).setText(deviceTitle);
-                    ((TextView) view.findViewById(R.id.deviceTitle)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+                    ((TextView) view.findViewById(R.id.deviceTitle)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
                     if (!isThisDevice) {
                         view.setOnClickListener(new View.OnClickListener() {
                             @Override

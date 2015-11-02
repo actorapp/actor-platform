@@ -57,8 +57,8 @@ public class GroupUsersFragment extends BaseContactFragment {
                 container, savedInstanceState);
 
         searchField = (EditText) res.findViewById(R.id.searchField);
-        searchField.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
-        searchField.setHintTextColor(ActorSDK.sharedActor().style.getTextHint());
+        searchField.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        searchField.setHintTextColor(ActorSDK.sharedActor().style.getTextHintColor());
         textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

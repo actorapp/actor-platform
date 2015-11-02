@@ -67,8 +67,8 @@ public class MyProfileFragment extends BaseFragment {
         final UserVM userModel = users().get(myUid());
 
         final TextView nameView = (TextView) view.findViewById(R.id.name);
-        nameView.setShadowLayer(1, 1, 1, style.getDivider());
-        nameView.setTextColor(style.getProfileTitle());
+        nameView.setShadowLayer(1, 1, 1, style.getDividerColor());
+        nameView.setTextColor(style.getProfileTitleColor());
         bind(nameView, userModel.getName());
 
         view.findViewById(R.id.notifications).setOnClickListener(new View.OnClickListener() {
@@ -94,7 +94,7 @@ public class MyProfileFragment extends BaseFragment {
             @Override
             public void onChanged(final String val, Value<String> Value) {
                 final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
-                recordView.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDivider());
+                recordView.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
                 TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
                 tintImageView.setVisibility(View.INVISIBLE);
                 String value = (val != null && !val.isEmpty()) ? val : getString(R.string.nickname_empty);
@@ -102,10 +102,10 @@ public class MyProfileFragment extends BaseFragment {
 
                 TextView nickValue = (TextView) recordView.findViewById(R.id.value);
                 nickValue.setText(value);
-                nickValue.setTextColor(style.getTextPrimary());
+                nickValue.setTextColor(style.getTextPrimaryColor());
                 TextView nickTitle = (TextView) recordView.findViewById(R.id.title);
                 nickTitle.setText(title);
-                nickTitle.setTextColor(style.getTextSecondary());
+                nickTitle.setTextColor(style.getTextSecondaryColor());
                 nickContainer.removeAllViews();
                 nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         Screen.dp(72)));
@@ -120,13 +120,13 @@ public class MyProfileFragment extends BaseFragment {
         });
 
         TextView aboutTitle = (TextView) about.findViewById(R.id.title);
-        aboutTitle.setTextColor(style.getTextSecondary());
+        aboutTitle.setTextColor(style.getTextSecondaryColor());
         aboutTitle.setVisibility(View.GONE);
         about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
         TextView aboutValue = (TextView) about.findViewById(R.id.value);
-        aboutValue.setTextColor(style.getTextPrimary());
+        aboutValue.setTextColor(style.getTextPrimaryColor());
         aboutValue.setText(getString(R.string.about_user_me));
-        about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDivider());
+        about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +159,7 @@ public class MyProfileFragment extends BaseFragment {
                         } else {
                             divider.setVisibility(View.GONE);
                         }
-                        divider.setBackgroundColor(ActorSDK.sharedActor().style.getDivider());
+                        divider.setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
                         String _phoneNumber;
                         try {
@@ -172,10 +172,10 @@ public class MyProfileFragment extends BaseFragment {
                         final String phoneNumber = _phoneNumber;
 
                         TextView value = (TextView) recordView.findViewById(R.id.value);
-                        value.setTextColor(style.getTextPrimary());
+                        value.setTextColor(style.getTextPrimaryColor());
                         value.setText(phoneNumber);
                         TextView title = (TextView) recordView.findViewById(R.id.title);
-                        title.setTextColor(style.getTextSecondary());
+                        title.setTextColor(style.getTextSecondaryColor());
                         title.setText(record.getTitle());
                         contactsContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                 Screen.dp(72)));
@@ -270,37 +270,37 @@ public class MyProfileFragment extends BaseFragment {
         settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
 
         TextView settingsNotificationsTitle = (TextView) view.findViewById(R.id.settings_notifications_title);
-        settingsNotificationsTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+        settingsNotificationsTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
 
         TextView settingsChatTitle = (TextView) view.findViewById(R.id.settings_chat_title);
-        settingsChatTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+        settingsChatTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
 
         TextView securityTitle = (TextView) view.findViewById(R.id.settings_security_title);
-        securityTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+        securityTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
 
         TintImageView securityIcon = (TintImageView) view.findViewById(R.id.settings_security_icon);
-        securityIcon.setTint(style.getSettingsIcon());
+        securityIcon.setTint(style.getSettingsIconColor());
 
         TextView helpTitle = (TextView) view.findViewById(R.id.settings_help_title);
-        helpTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+        helpTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
 
         TintImageView helpIcon = (TintImageView) view.findViewById(R.id.settings_help_icon);
-        helpIcon.setTint(style.getSettingsIcon());
+        helpIcon.setTint(style.getSettingsIconColor());
 
         TextView askTitle = (TextView) view.findViewById(R.id.settings_ask_title);
-        askTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+        askTitle.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
 
         TintImageView askIcon = (TintImageView) view.findViewById(R.id.settings_ask_icon);
-        askIcon.setTint(style.getSettingsIcon());
+        askIcon.setTint(style.getSettingsIconColor());
 
         TintImageView notificationsSettingsIcon = (TintImageView) view.findViewById(R.id.settings_notification_icon);
-        notificationsSettingsIcon.setTint(style.getSettingsIcon());
+        notificationsSettingsIcon.setTint(style.getSettingsIconColor());
 
         TintImageView chatSettingsIcon = (TintImageView) view.findViewById(R.id.settings_chat_icon);
-        chatSettingsIcon.setTint(style.getSettingsIcon());
+        chatSettingsIcon.setTint(style.getSettingsIconColor());
 
-        view.findViewById(R.id.after_phone_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
-        view.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+        view.findViewById(R.id.after_phone_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        view.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
 
         view.findViewById(R.id.divider1).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         view.findViewById(R.id.divider2).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
@@ -350,7 +350,7 @@ public class MyProfileFragment extends BaseFragment {
 
 
         final ScrollView scrollView = ((ScrollView) view.findViewById(R.id.scrollContainer));
-        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -368,9 +368,9 @@ public class MyProfileFragment extends BaseFragment {
         for (IActorSettingsCategory category : categories) {
             LinearLayout categoryContainer = (LinearLayout) inflater.inflate(R.layout.actor_settings_category, null);
             FrameLayout settingsContainer = (FrameLayout) categoryContainer.findViewById(R.id.settings_container);
-            categoryContainer.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+            categoryContainer.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
             TextView categoryName = (TextView) categoryContainer.findViewById(R.id.category_name);
-            categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitle());
+            categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsMainTitleColor());
             categoryName.setTextColor(ActorSDK.sharedActor().style.getSettingsCategoryTextColor());
             categoryName.setText(category.getCategoryName());
             if (category.getView(context) != null) {
@@ -397,9 +397,9 @@ public class MyProfileFragment extends BaseFragment {
             } else {
                 LinearLayout fieldLayout = (LinearLayout) inflater.inflate(R.layout.actor_settings_field, null);
                 TintImageView icon = (TintImageView) fieldLayout.findViewById(R.id.icon);
-                icon.setTint(ActorSDK.sharedActor().style.getSettingsIcon());
+                icon.setTint(ActorSDK.sharedActor().style.getSettingsIconColor());
                 TextView name = (TextView) fieldLayout.findViewById(R.id.name);
-                name.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+                name.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
                 View rightView = field.getRightView(context);
                 field.bindCreatedRightView(rightView);
                 field.bindCreatedTextView(name);

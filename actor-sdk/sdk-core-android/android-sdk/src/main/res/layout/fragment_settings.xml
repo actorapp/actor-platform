@@ -296,8 +296,6 @@
                     android:layout_marginRight="6dp"
                     android:layout_marginTop="214dp"
                     android:visibility="gone"
-                    app:fab_colorNormal="@color/accent"
-                    app:fab_colorPressed="@color/accent_pressed"
                     app:fab_icon="@drawable/ic_share_white_24dp" />
 
             </FrameLayout>

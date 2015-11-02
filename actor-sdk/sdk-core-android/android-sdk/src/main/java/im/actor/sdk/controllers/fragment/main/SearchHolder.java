@@ -48,7 +48,7 @@ public class SearchHolder extends BindedViewHolder {
         }
 
         title = new TextView(context);
-        title.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        title.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         title.setPadding(Screen.dp(74), 0, Screen.dp(12), 0);
         title.setTextSize(16);
         title.setSingleLine(true);
@@ -63,7 +63,7 @@ public class SearchHolder extends BindedViewHolder {
         }
 
         separator = new View(context);
-        separator.setBackgroundColor(ActorSDK.sharedActor().style.getDialogsDivider());
+        separator.setBackgroundColor(ActorSDK.sharedActor().style.getDialogsDividerColor());
         {
             FrameLayout.LayoutParams divLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     context.getResources().getDimensionPixelSize(R.dimen.div_size));

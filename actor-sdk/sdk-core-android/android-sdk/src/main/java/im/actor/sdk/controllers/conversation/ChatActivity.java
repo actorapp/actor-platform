@@ -769,10 +769,10 @@ public class ChatActivity extends ActorEditTextActivity {
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() > 0) {
-                sendButton.setTint(ActorSDK.sharedActor().style.getConvSendEnabled());
+                sendButton.setTint(ActorSDK.sharedActor().style.getConvSendEnabledColor());
                 sendButton.setEnabled(true);
             } else {
-                sendButton.setTint(ActorSDK.sharedActor().style.getConvSendDisabled());
+                sendButton.setTint(ActorSDK.sharedActor().style.getConvSendDisabledColor());
                 sendButton.setEnabled(false);
             }
 
