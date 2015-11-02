@@ -88,11 +88,12 @@ public class AASettingsViewController: AAContentTableController {
             s.action("SettingsSetPhoto") { [unowned self] (r) -> () in
                 r.selectAction = { [unowned self] () -> Bool in
                     let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+                    let view = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0))!.contentView
                     self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                         cancelButton: "AlertCancel",
                         destructButton: self.user.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
-                        sourceView: self.view,
-                        sourceRect: self.view.bounds,
+                        sourceView: view,
+                        sourceRect: view.bounds,
                         tapClosure: { [unowned self] (index) -> () in
                             if index == -2 {
                                 self.confirmUser("PhotoRemoveGroupMessage",
@@ -217,7 +218,7 @@ public class AASettingsViewController: AAContentTableController {
                         }
                     }
                     
-                    return false
+                    return AADevice.isiPad
                 }
             }
             
@@ -258,7 +259,7 @@ public class AASettingsViewController: AAContentTableController {
                         }
                     }
                     
-                    return false
+                    return AADevice.isiPad
                 }
             }
  

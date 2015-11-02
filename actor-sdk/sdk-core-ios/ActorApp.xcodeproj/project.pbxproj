@@ -426,7 +426,7 @@
 					"-framework",
 					"\"WebKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";
@@ -544,7 +544,7 @@
 					"-framework",
 					"\"WebKit\"",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk;
+				PRODUCT_BUNDLE_IDENTIFIER = im.actor.sdk.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDK_PATH = "../actor-sdk";

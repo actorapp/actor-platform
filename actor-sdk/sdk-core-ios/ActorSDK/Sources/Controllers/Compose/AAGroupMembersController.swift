@@ -81,7 +81,7 @@ public class GroupMembersController: AAContactsListContentController, AAContacts
             if self.groupImage != nil {
                 Actor.changeGroupAvatar(gid, image: self.groupImage!)
             }
-            self.navigateNext(ConversationViewController(peer: ACPeer.groupWithInt(gid)), removeCurrent: true)
+            self.navigateDetail(ConversationViewController(peer: ACPeer.groupWithInt(gid)))
         }
     }
     

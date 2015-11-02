@@ -57,6 +57,9 @@ class AANavigationBadge {
     }
     
     class func showBadge() {
+        if (AADevice.isiPad) {
+            return
+        }
         start()
         isBadgeVisible = true
         if badgeCount > 0 {
@@ -65,6 +68,9 @@ class AANavigationBadge {
     }
     
     class func hideBadge() {
+        if (AADevice.isiPad) {
+            return
+        }        
         start()
         isBadgeVisible = false
         self.badgeView.hideView()

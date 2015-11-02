@@ -131,6 +131,12 @@ public class AAManagedTableController: AAViewController {
             m.controllerViewDidDisappear(animated)
         }
     }
+    
+    public override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        tableView.frame = view.bounds
+    }
 }
 
 public protocol AAManagedTableControllerDelegate {
