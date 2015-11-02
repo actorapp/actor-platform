@@ -23,7 +23,7 @@ class MessagingServiceSpec
   with ImplicitSequenceService
   with ImplicitSessionRegionProxy
   with ImplicitAuthService
-  with SequenceMatchers {
+  with SeqUpdateMatchers {
   behavior of "MessagingService"
 
   "Private Messaging" should "send messages" in s.privat.sendMessage
@@ -73,33 +73,30 @@ class MessagingServiceSpec
             }
           }
 
-          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(2)) { update ⇒
-            update.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
-            update.randomId shouldEqual randomId
+          expectUpdate(classOf[UpdateMessageSent]) { upd ⇒
+            upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
+            upd.randomId shouldEqual randomId
           }
         }
 
         {
           implicit val clientData = clientData12
 
-          expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header, Some(2)) { update ⇒
-            update.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
-            update.randomId shouldEqual randomId
-            update.senderUserId shouldEqual user1.id
+          expectUpdate(classOf[UpdateMessage]) { upd ⇒
+            upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user2.id)
+            upd.randomId shouldEqual randomId
+            upd.senderUserId shouldEqual user1.id
           }
         }
 
         {
           implicit val clientData = clientData2
 
-          expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(UpdateChatGroupsChanged.header, UpdateMessage.header, UpdateCountersChanged.header)) {
-            case (UpdateMessage.header, u) ⇒
-              val update = parseUpdate[UpdateMessage](u)
-              update.peer shouldEqual ApiPeer(ApiPeerType.Private, user1.id)
-              update.randomId shouldEqual randomId
-              update.senderUserId shouldEqual user1.id
-            case (UpdateCountersChanged.header, update)   ⇒ parseUpdate[UpdateCountersChanged](update)
-            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
+          expectUpdates(classOf[UpdateChatGroupsChanged], classOf[UpdateMessage], classOf[UpdateCountersChanged]) {
+            case Seq(upd: UpdateMessage) ⇒
+              upd.peer shouldEqual ApiPeer(ApiPeerType.Private, user1.id)
+              upd.randomId shouldEqual randomId
+              upd.senderUserId shouldEqual user1.id
           }
         }
       }
@@ -132,17 +129,15 @@ class MessagingServiceSpec
             resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1001, _, _)) ⇒ })
           }
 
-          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(2))(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
         }
 
         {
           implicit val clientData = clientData2
-          expectUpdatesUnordered(failUnmatched)(0, Array.empty, Seq(UpdateChatGroupsChanged.header, UpdateMessage.header, UpdateCountersChanged.header)) {
-            case (UpdateMessage.header, update) ⇒ parseUpdate[UpdateMessage](update)
-            case (UpdateCountersChanged.header, update) ⇒
-              val counters = parseUpdate[UpdateCountersChanged](update)
-              counters.counters.globalCounter shouldEqual Some(1)
-            case (UpdateChatGroupsChanged.header, update) ⇒ parseUpdate[UpdateChatGroupsChanged](update)
+          expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+          expectUpdate(classOf[UpdateMessage])(identity)
+          expectUpdate(classOf[UpdateCountersChanged]) { upd ⇒
+            upd.counters.globalCounter shouldEqual Some(1)
           }
         }
       }
@@ -179,29 +174,29 @@ class MessagingServiceSpec
             }
           }
 
-          expectUpdate[UpdateMessageSent](groupSeq, groupState, UpdateMessageSent.header) { update ⇒
-            update.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
-            update.randomId shouldEqual randomId
+          expectUpdate(seq = groupSeq, classOf[UpdateMessageSent]) { upd ⇒
+            upd.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
+            upd.randomId shouldEqual randomId
           }
         }
 
         {
           implicit val clientData = clientData12
 
-          expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header) { update ⇒
-            update.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
-            update.randomId shouldEqual randomId
-            update.senderUserId shouldEqual user1.id
+          expectUpdate(classOf[UpdateMessage]) { upd ⇒
+            upd.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
+            upd.randomId shouldEqual randomId
+            upd.senderUserId shouldEqual user1.id
           }
         }
 
         {
           implicit val clientData = clientData2
 
-          expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header) { update ⇒
-            update.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
-            update.randomId shouldEqual randomId
-            update.senderUserId shouldEqual user1.id
+          expectUpdate(classOf[UpdateMessage]) { upd ⇒
+            upd.peer shouldEqual ApiPeer(ApiPeerType.Group, groupOutPeer.groupId)
+            upd.randomId shouldEqual randomId
+            upd.senderUserId shouldEqual user1.id
           }
         }
       }
@@ -270,15 +265,13 @@ class MessagingServiceSpec
             resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1003, _, _)) ⇒ })
           }
 
-          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header)(identity)
+          expectUpdate(classOf[UpdateMessageSent])(identity)
         }
 
         {
           implicit val clientData = clientData2
-          expectUpdatesUnordered(ignoreUnmatched)(0, Array.empty, Seq(UpdateMessage.header, UpdateCountersChanged.header)) {
-            case (UpdateMessage.header, update)         ⇒ parseUpdate[UpdateMessage](update)
-            case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
-          }
+          expectUpdate(classOf[UpdateMessage])(identity)
+          expectUpdate(classOf[UpdateCountersChanged])(identity)
         }
       }
     }
