@@ -49,11 +49,11 @@
             </FrameLayout>
 
             <TextView
+                android:id="@+id/sign_up_hint"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="8dp"
                 android:text="@string/auth_profile_hint"
-                android:textColor="@color/text_secondary"
                 android:textSize="17sp" />
         </LinearLayout>
 
@@ -63,9 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:hint="@string/auth_profile_name_hint"
-            android:inputType="text|textCapSentences"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_hint" />
+            android:inputType="text|textCapSentences" />
 
         <FrameLayout
             android:id="@+id/button_confirm_sms_code"
@@ -88,7 +86,6 @@
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"
                 android:text="@string/auth_profile_done"
-                android:textColor="@color/text_primary_inv"
                 android:textSize="15sp" />
         </FrameLayout>
 

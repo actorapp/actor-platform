@@ -23,7 +23,6 @@
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="@string/contacts_empty_short"
-        android:textColor="@color/text_secondary"
         android:textSize="16sp" />
 
 </FrameLayout>

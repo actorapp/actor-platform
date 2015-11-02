@@ -56,7 +56,6 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         View res = inflate(inflater, container, layoutId, messenger().buildContactsDisplayList());
 
         emptyView = res.findViewById(R.id.emptyCollection);
-
         View headerPadding = new View(getActivity());
         headerPadding.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
         headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));

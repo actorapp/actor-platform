@@ -56,7 +56,6 @@
                 android:gravity="center"
                 android:lineSpacingMultiplier="1.1"
                 android:text="@string/tour_everywhere_text"
-                android:textColor="@color/text_secondary"
                 android:textSize="@dimen/tour_card_message" />
         </LinearLayout>
     </LinearLayout>

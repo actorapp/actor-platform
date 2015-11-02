@@ -16,6 +16,7 @@ import android.widget.EditText;
 
 import im.actor.core.entity.Contact;
 import im.actor.core.viewmodel.CommandCallback;
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.fragment.compose.view.UserSpan;
@@ -28,6 +29,15 @@ import static im.actor.sdk.util.ActorSDKMessenger.users;
 
 public class GroupUsersFragment extends BaseContactFragment {
 
+    private String title;
+    private String avatarPath;
+    private EditText searchField;
+    private TextWatcher textWatcher;
+
+    public GroupUsersFragment() {
+        super(true, false, true);
+    }
+
     public static GroupUsersFragment create(String title, String avatarPath) {
         GroupUsersFragment res = new GroupUsersFragment();
         Bundle args = new Bundle();
@@ -35,16 +45,6 @@ public class GroupUsersFragment extends BaseContactFragment {
         args.putString("avatarPath", avatarPath);
         res.setArguments(args);
         return res;
-    }
-
-    private String title;
-    private String avatarPath;
-
-    private EditText searchField;
-    private TextWatcher textWatcher;
-
-    public GroupUsersFragment() {
-        super(true, false, true);
     }
 
     @Override
@@ -57,6 +57,8 @@ public class GroupUsersFragment extends BaseContactFragment {
                 container, savedInstanceState);
 
         searchField = (EditText) res.findViewById(R.id.searchField);
+        searchField.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+        searchField.setHintTextColor(ActorSDK.sharedActor().style.getTextHint());
         textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

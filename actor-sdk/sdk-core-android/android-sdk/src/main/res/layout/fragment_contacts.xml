@@ -52,6 +52,7 @@
                 android:textSize="21sp" />
 
             <TextView
+                android:id="@+id/no_contacts_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -61,7 +62,6 @@
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
                 android:text="@string/contacts_empty_invite_hint"
-                android:textColor="@color/text_secondary"
                 android:textSize="16sp" />
 
             <Button
@@ -72,6 +72,7 @@
                 android:text="@string/contacts_empty_invite_action" />
 
             <TextView
+                android:id="@+id/add_contact_hint_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -81,7 +82,6 @@
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
                 android:text="@string/contacts_empty_add_hint"
-                android:textColor="@color/text_secondary"
                 android:textSize="16sp" />
 
         </LinearLayout>

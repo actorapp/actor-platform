@@ -17,11 +17,9 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
-        android:minHeight="56dp"
         android:hint="@string/create_group_search_hint"
         android:maxLines="3"
-        android:textColor="@color/text_primary"
-        android:textColorHint="@color/text_hint"
+        android:minHeight="56dp"
         android:textSize="16sp" />
 
     <android.support.v7.widget.RecyclerView

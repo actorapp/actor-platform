@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.util.Fonts;
 
@@ -35,6 +36,7 @@ public class TourFragment extends Fragment {
         TextView titleView = (TextView) rootView.findViewById(R.id.title);
         titleView.setTypeface(Fonts.medium());
         TextView bodyView = (TextView) rootView.findViewById(R.id.body);
+        bodyView.setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
         ImageView imageView = (ImageView) rootView.findViewById(R.id.image);
 
 
