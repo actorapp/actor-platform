@@ -9,23 +9,17 @@ import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.intents.ActorIntent;
 
+/**
+ * Base Implementation of Actor SDK Delegate. This class is recommended to subclass instead
+ * of implementing ActorSDKDelegate
+ */
 public class BaseActorSDKDelegate implements ActorSDKDelegate {
-    
-    @Override
-    public ActorIntent getAuthStartIntent() {
-        return null;
-    }
 
-    @Override
-    public ActorIntent getStartAfterLoginIntent() {
-        return null;
-    }
+    //
+    // Authentication Activity
+    //
 
-    @Override
-    public ActorIntent getStartIntent() {
-        return null;
-    }
-
+    @Deprecated
     @Override
     public AuthState getAuthStartState() {
         return AuthState.AUTH_START;
@@ -35,6 +29,41 @@ public class BaseActorSDKDelegate implements ActorSDKDelegate {
     public BaseAuthFragment getSignFragment() {
         return new SignPhoneFragment();
     }
+
+    @Override
+    public ActorIntent getAuthStartIntent() {
+        return null;
+    }
+
+    //
+    // Starting Activity
+    //
+
+    /**
+     * Return non-null to open specific Activity after user's successful log in.
+     * If null is specified, result of getStartIntent is used.
+     *
+     * @return ActorIntent for activity after login
+     */
+    @Override
+    public ActorIntent getStartAfterLoginIntent() {
+        return null;
+    }
+
+    /**
+     * Return non-null to open specific Activity when user is logged in. If null, SDK will launch
+     * standard Messaging activity with contacts and recent list
+     *
+     * @return ActorIntent for start activity
+     */
+    @Override
+    public ActorIntent getStartIntent() {
+        return null;
+    }
+
+    //
+    // Hacking settings activity
+    //
 
     @Override
     public View getBeforeNickSettingsView(Context context) {

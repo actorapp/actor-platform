@@ -9,11 +9,8 @@ import im.actor.sdk.ActorSDKDelegate;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
 
-/**
- * Created by root on 10/20/15.
- */
+@Deprecated
 public class ActivityManager {
-
 
     public void startAuthActivity(Context context) {
         startAuthActivity(context, null);
