@@ -2,6 +2,9 @@ package im.actor.sdk;
 
 import android.graphics.Color;
 
+/**
+ * Actor Styling class
+ */
 public class ActorStyle {
     private int toolBarColor = 0;
     private int fabColor = 0;

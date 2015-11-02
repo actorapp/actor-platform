@@ -10,6 +10,9 @@ import android.os.Build;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -85,6 +88,7 @@ public class ActorSDK {
     /**
      * Delegate
      */
+    @NotNull
     private ActorSDKDelegate delegate = new BaseActorSDKDelegate();
     /**
      * ActivityManager
@@ -175,15 +179,9 @@ public class ActorSDK {
             if (pushId != 0) {
                 pushManager.registerPush(application);
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void startMessagingApp(Activity context) {
@@ -323,14 +321,26 @@ public class ActorSDK {
         this.pushId = pushId;
     }
 
+    /**
+     * Getting Application Delegate.
+     *
+     * @return Application Delegate
+     */
+    @NotNull
     public ActorSDKDelegate getDelegate() {
         return delegate;
     }
 
-    public void setDelegate(ActorSDKDelegate delegate) {
+    /**
+     * Setting Application Delegate. Useful for hacking various parts of SDK
+     *
+     * @param delegate Application Delegate
+     */
+    public void setDelegate(@NotNull ActorSDKDelegate delegate) {
         this.delegate = delegate;
     }
 
+    @Deprecated
     public ActivityManager getActivityManager() {
         return activityManager;
     }
