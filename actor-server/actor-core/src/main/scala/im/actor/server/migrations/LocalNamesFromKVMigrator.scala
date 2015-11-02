@@ -17,24 +17,18 @@ import scala.concurrent.{ ExecutionContext, Future, Promise }
 
 object LocalNamesFromKVMigrator extends Migration {
 
-  override protected def migrationName: String = "2015-11-02-LocalNamesFromKVMigration"
+  override protected def migrationName: String = "2015-11-03-LocalNamesFromKVMigration"
 
   override protected def migrationTimeout: Duration = 1.hour
 
   override protected def startMigration()(implicit system: ActorSystem, db: PostgresDriver.api.Database, ec: ExecutionContext): Future[Unit] = {
     system.log.warning("Migrating local names from KV")
 
-    val shardakka = ShardakkaExtension(system)
-    val kv = shardakka.simpleKeyValue("LocalNames")
-
-    implicit val timeout = Timeout(20.seconds)
-
     db.run(UserContactRepo.fetchAll)
       .flatMap { contacts ⇒
         FutureExt.ftraverse(contacts) { contact ⇒
           for {
-            localNameOpt ← kv.get(s"${contact.ownerUserId}_${contact.contactUserId}")
-            _ ← migrateSingle(contact.ownerUserId, contact.contactUserId, localNameOpt)
+            _ ← migrateSingle(contact.ownerUserId, contact.contactUserId, contact.name)
           } yield ()
         }
       }
@@ -49,6 +43,7 @@ object LocalNamesFromKVMigrator extends Migration {
         system.actorOf(Props(new LocalNamesFromKVMigrator(promise, ownerUserId, contactUserId, localName)))
         promise.future
       case None ⇒
+        system.log.debug("Not moving contact of user: {} ({})", ownerUserId, contactUserId)
         Future.successful(())
     }
   }
