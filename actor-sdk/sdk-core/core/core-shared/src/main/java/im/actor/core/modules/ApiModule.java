@@ -113,7 +113,9 @@ public class ApiModule extends AbsModule implements BusSubscriber {
 
         @Override
         public void onUpdateReceived(Object obj) {
-            context().getUpdatesModule().onUpdateReceived(obj);
+            if (context().getUpdatesModule()!=null) {
+                context().getUpdatesModule().onUpdateReceived(obj);
+            }
         }
 
         @Override
