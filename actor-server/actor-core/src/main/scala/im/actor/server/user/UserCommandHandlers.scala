@@ -137,7 +137,7 @@ private[user] trait UserCommandHandlers {
         relatedUserIds ← getRelations(userId)
         _ ← userExt.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false, deliveryId = None)
         _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds.filterNot(_ == clientAuthId).toSet, update, pushText = None, isFat = false, deliveryId = None)
-        _ <- db.run(UserRepo.setName(userId, name))
+        _ ← db.run(UserRepo.setName(userId, name))
         seqstate ← SeqUpdatesManager.persistAndPushUpdate(clientAuthId, update, pushText = None, isFat = false)
       } yield seqstate
     }
