@@ -62,10 +62,8 @@ object WsFrontend extends Frontend {
       .collect {
         case msg: BinaryMessage ⇒ msg
       }
-      .mapAsync(1) { msg: BinaryMessage ⇒
-        // FIXME: control buffer size
-        msg.dataStream.runWith(Sink.fold(ByteString.empty)(_ ++ _))
-      }
+      .map(_.dataStream)
+      .flatten(FlattenStrategy.concat)
       .via(mtProtoFlow)
       .map {
         case bs ⇒
