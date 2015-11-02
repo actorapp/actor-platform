@@ -341,11 +341,12 @@ public class AAConversationContentController: SLKTextViewController, ARDisplayLi
         }
     }
     
-    public override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
-        super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+    public override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
         
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.collectionView.collectionViewLayout.invalidateLayout()
+//            self.collectionView.collectionViewLayout.invalidateLayout()
+            self.collectionView.performBatchUpdates(nil, completion: nil)
         })
     }
 }

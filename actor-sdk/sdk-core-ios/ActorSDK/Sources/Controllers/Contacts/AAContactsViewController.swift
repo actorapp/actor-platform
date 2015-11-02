@@ -56,7 +56,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
             
             r.selectAction = { () -> Bool in
                 self.findContact()
-                return false
+                return AADevice.isiPad
             }
         }
         
@@ -116,7 +116,9 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                     }
                 }
                 
-                self.showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: UIView(), sourceRect: CGRectZero, tapClosure: builder.tapClosure)
+                let view = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0))!.contentView
+                
+                self.showActionSheet(builder.items, cancelButton: "AlertCancel", destructButton: nil, sourceView: view, sourceRect: view.bounds, tapClosure: builder.tapClosure)
                 
                 return true
             }
@@ -156,10 +158,10 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                     
                     if user != nil {
                         c.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
-                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                             c.dismiss()
                         }, failureBlock: { (val) -> Void in
-                            self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                             c.dismiss()
                         })
                     } else {
