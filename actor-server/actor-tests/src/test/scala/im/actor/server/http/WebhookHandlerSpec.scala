@@ -147,9 +147,9 @@ class WebhookHandlerSpec
       val sendText = List("/task jump", "/task eat", "/command sleep", "/command die")
 
       object Parser extends CommandParser
-      val commands = (sendText map Parser.parseCommand)
+      val commands = sendText map Parser.parseCommand
 
-      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, ApiTextMessage(sendText(0), Vector.empty, None)))(_ ⇒ ())
+      whenReady(messagingService.handleSendMessage(group.asOutPeer, 1L, ApiTextMessage(sendText.head, Vector.empty, None)))(_ ⇒ ())
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 2L, GroupServiceMessages.changedTitle("xx")))(_ ⇒ ())
 
       whenReady(messagingService.handleSendMessage(group.asOutPeer, 3L, ApiTextMessage(sendText(1), Vector.empty, None)))(_ ⇒ ())
