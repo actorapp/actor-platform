@@ -2,6 +2,10 @@ package im.actor.sdk;
 
 import android.app.Application;
 
+/**
+ * Implementation of Application object that handles everything required for creating and
+ * managing Actor SDK
+ */
 public class ActorSDKApplication extends Application {
 
     @Override
