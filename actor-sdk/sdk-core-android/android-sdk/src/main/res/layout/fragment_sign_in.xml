@@ -75,7 +75,6 @@
             android:layout_marginTop="8dp"
             android:background="@null"
             android:text="@string/auth_code_wrong_number"
-            android:textColor="@color/primary"
             android:textSize="14sp" />
 
     </LinearLayout>

@@ -24,6 +24,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
@@ -71,21 +72,25 @@ public class ProfileFragment extends BaseFragment {
         final UserVM user = users().get(uid);
         final String nick = user.getNick().get();
         final String aboutText = user.getAbout().get();
-        baseColor = getResources().getColor(R.color.primary);
         ActorStyle style = ActorSDK.sharedActor().style;
 
         View res = inflater.inflate(R.layout.fragment_profile, container, false);
 
         TextView nameText = (TextView) res.findViewById(R.id.name);
-        nameText.setTextColor(style.getProfileTitle());
+        nameText.setTextColor(style.getProfileTitleColor());
         bind(nameText, user.getName());
 
         final TextView lastSeen = (TextView) res.findViewById(R.id.lastSeen);
-        lastSeen.setTextColor(style.getProfileSubtitle());
+        lastSeen.setTextColor(style.getProfileSubtitleColor());
         bind(lastSeen, lastSeen, user);
 
         final FrameLayout about = (FrameLayout) res.findViewById(R.id.about);
-        ((TintImageView) about.findViewById(R.id.recordIcon)).setTint(ActorSDK.sharedActor().style.getProfilleIcon());
+        about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
+        TextView aboutTitle = (TextView) about.findViewById(R.id.title);
+        aboutTitle.setTextColor(style.getTextSecondaryColor());
+        TextView aboutValue = (TextView) about.findViewById(R.id.value);
+        aboutValue.setTextColor(style.getTextPrimaryColor());
+        ((TintImageView) about.findViewById(R.id.recordIcon)).setTint(ActorSDK.sharedActor().style.getProfilleIconColor());
         if (aboutText != null && !aboutText.isEmpty()) {
             about.findViewById(R.id.title).setVisibility(View.GONE);
             about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
@@ -108,11 +113,15 @@ public class ProfileFragment extends BaseFragment {
         final LinearLayout nickContainer = (LinearLayout) res.findViewById(R.id.nickContainer);
         if (nick != null && !nick.isEmpty()) {
             final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
+            TextView nickValue = (TextView) recordView.findViewById(R.id.value);
+            nickValue.setTextColor(style.getTextPrimaryColor());
+            TextView nickTitle = (TextView) recordView.findViewById(R.id.title);
+            nickTitle.setTextColor(style.getTextSecondaryColor());
             TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
             tintImageView.setVisibility(View.INVISIBLE);
             String value = nick;
             String title = getString(R.string.nickname);
-
+            recordView.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
             ((TextView) recordView.findViewById(R.id.value)).setText(value);
             ((TextView) recordView.findViewById(R.id.title)).setText(title);
             nickContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -158,8 +167,12 @@ public class ProfileFragment extends BaseFragment {
                 }
                 final String phoneNumber = _phoneNumber;
 
-                ((TextView) recordView.findViewById(R.id.value)).setText(phoneNumber);
-                ((TextView) recordView.findViewById(R.id.title)).setText(record.getTitle());
+                TextView value = (TextView) recordView.findViewById(R.id.value);
+                value.setTextColor(style.getTextPrimaryColor());
+                value.setText(phoneNumber);
+                TextView title = (TextView) recordView.findViewById(R.id.title);
+                title.setTextColor(style.getTextSecondaryColor());
+                title.setText(record.getTitle());
                 contactsContainer.addView(recordView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         Screen.dp(72)));
 
@@ -217,11 +230,14 @@ public class ProfileFragment extends BaseFragment {
         }
 
 
+        FloatingActionButton fab = (FloatingActionButton) res.findViewById(R.id.profileAction);
+        fab.setColorNormal(ActorSDK.sharedActor().style.getFabColor());
+        fab.setColorPressed(ActorSDK.sharedActor().style.getFabPressedColor());
         if (user.isBot()) {
-            res.findViewById(R.id.profileAction).setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
         } else {
-            res.findViewById(R.id.profileAction).setVisibility(View.VISIBLE);
-            res.findViewById(R.id.profileAction).setOnClickListener(new View.OnClickListener() {
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
@@ -250,15 +266,15 @@ public class ProfileFragment extends BaseFragment {
         });
 
         res.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
-        ((TextView) res.findViewById(R.id.share_media_text)).setTextColor(style.getSettingsTitle());
-        ((TextView) res.findViewById(R.id.mediaCount)).setTextColor(style.getTextHint());
+        ((TextView) res.findViewById(R.id.share_media_text)).setTextColor(style.getSettingsTitleColor());
+        ((TextView) res.findViewById(R.id.mediaCount)).setTextColor(style.getTextHintColor());
 
         res.findViewById(R.id.docsContainer).setVisibility(View.GONE);
-        ((TextView) res.findViewById(R.id.share_docs_title)).setTextColor(style.getSettingsTitle());
-        ((TextView) res.findViewById(R.id.docCount)).setTextColor(style.getTextHint());
+        ((TextView) res.findViewById(R.id.share_docs_title)).setTextColor(style.getSettingsTitleColor());
+        ((TextView) res.findViewById(R.id.docCount)).setTextColor(style.getTextHintColor());
 
         View notificationContainter = res.findViewById(R.id.notificationsCont);
-        ((TextView) notificationContainter.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimary());
+        ((TextView) notificationContainter.findViewById(R.id.settings_notifications_title)).setTextColor(style.getTextPrimaryColor());
         final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);
         notificationEnable.setChecked(messenger().isNotificationsEnabled(Peer.user(uid)));
         notificationEnable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -275,26 +291,26 @@ public class ProfileFragment extends BaseFragment {
         });
 
         TextView settingsHeaderText = (TextView) res.findViewById(R.id.settings_header_text);
-        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+        settingsHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
 
         TextView sharedHeaderText = (TextView) res.findViewById(R.id.shared_header_text);
-        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsTitle());
+        sharedHeaderText.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
 
         TintImageView shareMediaIcon = (TintImageView) res.findViewById(R.id.share_media_icon);
-        shareMediaIcon.setTint(style.getSettingsIcon());
+        shareMediaIcon.setTint(style.getSettingsIconColor());
 
         TintImageView shareDocsIcon = (TintImageView) res.findViewById(R.id.share_docs_icon);
-        shareDocsIcon.setTint(style.getSettingsIcon());
+        shareDocsIcon.setTint(style.getSettingsIconColor());
 
         TintImageView notificationsSettingsIcon = (TintImageView) res.findViewById(R.id.settings_notification_icon);
-        notificationsSettingsIcon.setTint(style.getSettingsIcon());
+        notificationsSettingsIcon.setTint(style.getSettingsIconColor());
 
-        res.findViewById(R.id.phoneDivider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
-        res.findViewById(R.id.after_shared_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
-        res.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackground());
+        res.findViewById(R.id.phoneDivider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        res.findViewById(R.id.after_shared_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
+        res.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
 
         final ScrollView scrollView = ((ScrollView) res.findViewById(R.id.scrollContainer));
-        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackground());
+        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {

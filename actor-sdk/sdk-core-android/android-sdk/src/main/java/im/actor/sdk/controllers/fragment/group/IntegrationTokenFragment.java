@@ -85,7 +85,7 @@ public class IntegrationTokenFragment extends BaseFragment {
         listView = (ListView) res.findViewById(R.id.listView);
         emptyView = (TextView) res.findViewById(R.id.emptyView);
         emptyView.setText(getString(R.string.integration_token_empty_view));
-        emptyView.setTextColor(ActorSDK.sharedActor().style.getTextSecondary());
+        emptyView.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
         adapter = new IntegrationTokenActionsAdapter(getActivity());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -199,7 +199,7 @@ public class IntegrationTokenFragment extends BaseFragment {
         public View init(Void data, ViewGroup viewGroup, Context context) {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_invite_link_item, viewGroup, false);
             action = (TextView) res.findViewById(R.id.action);
-            action.setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+            action.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
             container = (FrameLayout) res.findViewById(R.id.linksActionContainer);
             topShadow = res.findViewById(R.id.top_shadow);
             botShadow = res.findViewById(R.id.bot_shadow);
@@ -239,14 +239,14 @@ public class IntegrationTokenFragment extends BaseFragment {
                 topShadow.setVisibility(View.VISIBLE);
                 botShadow.setVisibility(View.VISIBLE);
                 divider.setVisibility(View.INVISIBLE);
-                action.setTextColor(ActorSDK.sharedActor().style.getTextHint());
+                action.setTextColor(ActorSDK.sharedActor().style.getTextHintColor());
                 action.setTextSize(14);
             } else {
                 container.setBackgroundColor(Color.TRANSPARENT);
                 topShadow.setVisibility(View.INVISIBLE);
                 botShadow.setVisibility(View.INVISIBLE);
                 divider.setVisibility(View.VISIBLE);
-                action.setTextColor(ActorSDK.sharedActor().style.getTextHint());
+                action.setTextColor(ActorSDK.sharedActor().style.getTextHintColor());
                 action.setTextSize(16);
             }
         }

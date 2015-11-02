@@ -65,8 +65,8 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
             avatarView.init(Screen.dp(42), 24);
             admin = res.findViewById(R.id.adminFlag);
-            ((TextView) admin).setTextColor(ActorSDK.sharedActor().style.getGroupAdmin());
-            ((TextView) res.findViewById(R.id.name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimary());
+            ((TextView) admin).setTextColor(ActorSDK.sharedActor().style.getGroupAdminColor());
+            ((TextView) res.findViewById(R.id.name)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
             res.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
             return res;
         }

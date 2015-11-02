@@ -25,9 +25,9 @@
         android:orientation="vertical">
 
         <View
+            android:id="@+id/empty_collection_bg"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="@color/primary" />
+            android:layout_height="150dp" />
 
         <ImageView
             android:layout_width="match_parent"
@@ -44,11 +44,11 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/empty_collection_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/contacts_empty_title"
-                android:textColor="@color/primary"
                 android:textSize="21sp" />
 
             <TextView
