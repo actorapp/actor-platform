@@ -106,6 +106,9 @@ private[user] sealed trait Commands extends AuthCommands {
     else
       SeqUpdatesManager.getSeqState(clientAuthId)
 
+  def editLocalName(userId: Int, clientAuthId: Long, contactUserId: Int, localName: Option[String], supressUpdate: Boolean = false): Future[SeqState] =
+    (processorRegion.ref ? EditLocalName(userId, clientAuthId, contactUserId, localName, supressUpdate)).mapTo[SeqState]
+
   def notifyDialogsChanged(userId: Int, clientAuthId: Long): Future[SeqState] =
     (processorRegion.ref ? NotifyDialogsChanged(userId, clientAuthId)).mapTo[SeqState]
 
@@ -277,32 +280,29 @@ private[user] sealed trait Queries {
 
   implicit val timeout: Timeout
 
-  def getAuthIds(userId: Int): Future[Seq[Long]] = {
+  def getAuthIds(userId: Int): Future[Seq[Long]] =
     (viewRegion.ref ? GetAuthIds(userId)).mapTo[GetAuthIdsResponse] map (_.authIds)
-  }
 
-  def getAuthIds(userIds: Set[Int]): Future[Seq[Long]] = {
+  def getAuthIds(userIds: Set[Int]): Future[Seq[Long]] =
     Future.sequence(userIds map getAuthIds) map (_.toSeq.flatten)
-  }
 
-  def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiUser] = {
+  def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long): Future[ApiUser] =
     (viewRegion.ref ? GetApiStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiStructResponse] map (_.struct)
-  }
 
-  def getUser(userId: Int): Future[User] = {
+  def getLocalName(ownerUserId: Int, contactUserId: Int): Future[Option[String]] =
+    (viewRegion.ref ? GetLocalName(ownerUserId, contactUserId)).mapTo[GetLocalNameResponse] map (_.localName)
+
+  def getUser(userId: Int): Future[User] =
     (viewRegion.ref ? GetUser(userId)).mapTo[User]
-  }
 
-  def getContactRecords(userId: Int): Future[(Seq[Long], Seq[String])] = {
+  def getContactRecords(userId: Int): Future[(Seq[Long], Seq[String])] =
     (viewRegion.ref ? GetContactRecords(userId)).mapTo[GetContactRecordsResponse] map (r ⇒ (r.phones, r.emails))
-  }
 
   def getContactRecordsSet(userId: Int): Future[(Set[Long], Set[String])] =
     for ((phones, emails) ← getContactRecords(userId)) yield (phones.toSet, emails.toSet)
 
-  def checkAccessHash(userId: Int, senderAuthId: Long, accessHash: Long): Future[Boolean] = {
+  def checkAccessHash(userId: Int, senderAuthId: Long, accessHash: Long): Future[Boolean] =
     (viewRegion.ref ? CheckAccessHash(userId, senderAuthId, accessHash)).mapTo[CheckAccessHashResponse] map (_.isCorrect)
-  }
 
   def getAccessHash(userId: Int, clientAuthId: Long): Future[Long] =
     (viewRegion.ref ? GetAccessHash(userId, clientAuthId)).mapTo[GetAccessHashResponse] map (_.accessHash)
@@ -359,7 +359,6 @@ private[user] sealed trait AuthCommands {
     }
   }
 
-  private def publishAuthIdInvalidated(mediator: ActorRef, authId: Long): Unit = {
+  private def publishAuthIdInvalidated(mediator: ActorRef, authId: Long): Unit =
     mediator ! Publish(authIdTopic(authId), AuthEvents.AuthIdInvalidated)
-  }
 }

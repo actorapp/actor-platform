@@ -3,7 +3,7 @@ package im.actor.server.migrations
 import akka.actor._
 import akka.util.Timeout
 import im.actor.server.persist
-import im.actor.server.user.ContactsUtils
+import im.actor.server.user.UserExtension
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -47,6 +47,8 @@ private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int,
   private implicit val ec: ExecutionContext = context.dispatcher
   private implicit val timeout: Timeout = Timeout(40.seconds)
 
+  private val userExt = UserExtension(context.system)
+
   override def receive: Receive = Actor.emptyBehavior
 
   db.run(for {
@@ -57,7 +59,7 @@ private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int,
       (if (contact.name.contains(user.name)) {
         db.run(persist.contact.UserContactRepo.updateName(ownerUserId, contactUserId, None))
       } else {
-        contact.name map (_ ⇒ ContactsUtils.registerLocalName(ownerUserId, contactUserId, contact.name)) getOrElse Future.successful(())
+        contact.name map (_ ⇒ userExt.editLocalName(ownerUserId, 0, contactUserId, contact.name, supressUpdate = true)) getOrElse Future.successful(())
       }) onComplete {
         case Success(_) ⇒
           log.debug(s"Migrated contact with ownerUserId: $ownerUserId, contactUserId: $contactUserId")

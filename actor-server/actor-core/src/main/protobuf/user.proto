@@ -159,8 +159,10 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 1;
-        required int64 access_hash = 2;
-        required string name = 3;
+        required int64 client_auth_id = 2;
+        required int32 contact_user_id = 3;
+        optional string name = 4;
+        required bool supress_update = 5;
     }
 
     message BroadcastUpdate {
@@ -307,6 +309,16 @@ message UserQueries {
         required bool isAdmin = 1;
     }
 
+    message GetLocalName {
+        option (scalapb.message).extends = "im.actor.server.user.UserQuery";
+
+        required int32 user_id = 1;
+        required int32 client_user_id = 2;
+    }
+
+    message GetLocalNameResponse {
+        optional string local_name = 1;
+    }
 }
 
 message UserEvents {
@@ -404,5 +416,12 @@ message UserEvents {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
         optional string time_zone = 1;
+    }
+
+    message LocalNameChanged {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required int32 contact_user_id = 1;
+        optional string local_name = 2;
     }
 }
