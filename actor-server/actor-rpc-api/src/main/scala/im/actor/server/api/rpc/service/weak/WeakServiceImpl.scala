@@ -34,7 +34,7 @@ class WeakServiceImpl(implicit actorSystem: ActorSystem) extends WeakService {
           weakUpdatesExt.broadcastUserWeakUpdate(peer.id, update, reduceKey = Some(reduceKey))
         case ApiPeerType.Group ⇒
           val update = UpdateTyping(ApiPeer(ApiPeerType.Group, peer.id), client.userId, typingType)
-          val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer)
+          val reduceKey = weakUpdatesExt.reduceKey(update.header, update.peer, client.userId)
 
           for {
             (memberIds, _, _) ← groupExt.getMemberIds(peer.id)

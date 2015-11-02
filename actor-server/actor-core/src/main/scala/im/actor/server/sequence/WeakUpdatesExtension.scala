@@ -42,6 +42,8 @@ final class WeakUpdatesExtensionImpl(system: ActorSystem) extends WeakUpdatesExt
 
   def reduceKey(updateHeader: Int, peer: ApiPeer): String = s"$updateHeader-${peer.`type`.id}-${peer.id}"
 
+  def reduceKey(updateHeader: Int, peer: ApiPeer, userId: Int): String = s"$updateHeader-${peer.`type`.id}-${peer.id}-$userId"
+
   def reduceKeyUser(updateHeader: Int, userId: Int): String = s"$updateHeader-${ApiPeerType.Private.id}-$userId"
 
   def reduceKeyGroup(updateHeader: Int, groupId: Int): String = s"$updateHeader-${ApiPeerType.Group.id}-$groupId"
