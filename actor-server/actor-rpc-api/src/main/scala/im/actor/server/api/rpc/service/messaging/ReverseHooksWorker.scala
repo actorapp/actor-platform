@@ -13,6 +13,7 @@ import com.google.protobuf.CodedInputStream
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.messaging.{ ApiMessage, ApiTextMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
+import im.actor.server.office.EntityNotFound
 import im.actor.server.{ KeyValueMappings, models }
 import im.actor.server.models.PeerType.{ Group, Private }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
@@ -69,21 +70,23 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
 
   def working: Receive = {
     case Events.PeerMessage(from, _, _, _, message) ⇒
-      log.debug("Got message from group {} to forward to webhook", groupId)
+      log.debug("Got message from group {}, peer {} to forward to webhook", groupId, from)
       val parsed = ApiMessage.parseFrom(CodedInputStream.newInstance(message.toByteArray))
 
       val optNickname = from match {
-        case models.Peer(Private, id) ⇒ UserExtension(system).getApiStruct(id, 0, 0L) map (_.nick)
-        case models.Peer(Group, _)    ⇒ Future.successful(None)
+        case models.Peer(Group, _) ⇒
+          Future.successful(None)
+        case models.Peer(Private, id) ⇒
+          UserExtension(system).getApiStruct(id, 0, 0L) map (_.nick)
       }
 
       parsed.left foreach (_ ⇒ log.debug("Failed to parse message for groupId: {}", groupId))
 
       parsed.right map {
         case ApiTextMessage(content, _, _) ⇒
-          parseCommand(content) map {
+          parseCommand(content) foreach {
             case (command, text) ⇒
-              for {
+              (for {
                 keys ← reverseHooksKv.getKeys()
 
                 nick ← optNickname
@@ -113,7 +116,9 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
                     }
                     sendFuture
                 })
-              } yield ()
+              } yield ()) onFailure {
+                case e ⇒ log.error(e, "Failed to process message")
+              }
           }
         case _ ⇒ log.debug("Does not support non text messages in reverse hooks")
       }
