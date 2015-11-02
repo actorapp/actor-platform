@@ -20,6 +20,8 @@ import scala.util.{ Failure, Success }
 case object EntityNotFound extends RuntimeException with NoStackTrace
 case object StopOffice
 
+trait ProcessorState
+
 trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFutures {
 
   case class UnstashAndWork(evt: Event, state: State)
