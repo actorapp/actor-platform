@@ -21,7 +21,7 @@ final class UserContactTable(tag: Tag) extends UserContactBase[models.contact.Us
 
 object UserContactRepo {
   val contacts = TableQuery[UserContactTable]
-  val active = contacts.filterNot(_.isDeleted === false)
+  val active = contacts.filter(_.isDeleted === false)
 
   def byPK(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
