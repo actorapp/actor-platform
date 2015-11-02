@@ -7,6 +7,8 @@ import im.actor.server.ApiConversions
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 
+import scala.concurrent.Future
+
 private[user] trait UserQueriesHandlers {
   self: UserProcessor ⇒
 
@@ -17,7 +19,11 @@ private[user] trait UserQueriesHandlers {
 
   protected def getApiStruct(state: User, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem): Unit = {
     (for {
-      localName ← userExt.getLocalName(clientUserId, state.id)
+      localName ←
+        if (clientUserId == state.id)
+          Future.successful(None)
+        else
+          userExt.getLocalName(clientUserId, state.id)
     } yield GetApiStructResponse(ApiUser(
       id = userId,
       accessHash = ACLUtils.userAccessHash(clientAuthId, userId, state.accessSalt),
