@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.groups
 import akka.actor.ActorSystem
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
+import im.actor.api.rpc.collections.ApiMapValue
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
@@ -11,10 +12,10 @@ import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils.accessToken
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension }
-import im.actor.server.group.{ GroupCommands, GroupErrors, GroupExtension }
+import im.actor.server.group._
 import im.actor.server.presences.GroupPresenceExtension
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.UserExtension
+import im.actor.server.user.{ UserUtils, UserExtension }
 import im.actor.server.{ models, persist }
 import im.actor.util.misc.IdUtils
 import slick.dbio.DBIO
@@ -109,7 +110,40 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleCreateGroup(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
+  override def jhandleCreateGroup(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], groupType: Option[String], userData: Option[ApiMapValue], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
+    authorized(clientData) { implicit client ⇒
+      db.run(withUserOutPeers(users) {
+        withValidGroupTitle(title) { validTitle ⇒
+          DBIO.from {
+            val groupId = nextIntId()
+            val userIds = users.map(_.userId)
+            val typ = if (groupType.contains("public")) GroupType.Public else GroupType.General
+
+            for {
+              res ← groupExt.create(
+                groupId,
+                client.userId,
+                client.authId,
+                validTitle,
+                randomId,
+                userIds.toSet,
+                typ
+              )
+              group ← groupExt.getApiStruct(groupId, client.userId)
+              users ← Future.sequence(GroupUtils.getUserIds(group) map (userExt.getApiStruct(_, client.userId, client.authId)))
+            } yield Ok(ResponseCreateGroup(
+              seq = res.seqstate.seq,
+              state = res.seqstate.state.toByteArray,
+              group = group,
+              users = users.toVector
+            ))
+          }
+        }
+      })
+    }
+  }
+
+  override def jhandleCreateGroupObsolete(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], userData: ApiMapValue, clientData: ClientData): Future[HandlerResult[ResponseCreateGroupObsolete]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withUserOutPeers(users) {
         withValidGroupTitle(title) { validTitle ⇒
@@ -118,7 +152,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           val groupUserIds = userIds + client.userId
 
           val f = for (res ← groupExt.create(groupId, title, randomId, userIds)) yield {
-            Ok(ResponseCreateGroup(
+            Ok(ResponseCreateGroupObsolete(
               groupPeer = ApiGroupOutPeer(groupId, res.accessHash),
               seq = res.seqstate.seq,
               state = res.seqstate.state.toByteArray,

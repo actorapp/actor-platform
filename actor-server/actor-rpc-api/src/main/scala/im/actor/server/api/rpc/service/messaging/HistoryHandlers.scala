@@ -109,21 +109,23 @@ trait HistoryHandlers {
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] = {
     authorized(clientData) { implicit client ⇒
       for {
         _ ← db.run(DialogRepo.hide(client.userId, peer.asModel))
-        SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId, client.authId)
-      } yield Ok(ResponseSeq(seq, state.toByteArray))
+        seqstate ← userExt.notifyDialogsChanged(client.userId, client.authId)
+        groups ← dialogExt.getGroupedDialogs(client.userId)
+      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))
     }
   }
 
-  override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] = {
     authorized(clientData) { implicit client ⇒
       for {
         _ ← db.run(DialogRepo.show(client.userId, peer.asModel))
         SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId, client.authId)
-      } yield Ok(ResponseSeq(seq, state.toByteArray))
+        groups ← dialogExt.getGroupedDialogs(client.userId)
+      } yield Ok(ResponseDialogsOrder(seq, state.toByteArray, groups = groups))
     }
   }
 

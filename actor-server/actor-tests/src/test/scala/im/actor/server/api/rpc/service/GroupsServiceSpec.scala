@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc._
+import im.actor.api.rpc.collections.ApiMapValue
 import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging._
@@ -571,7 +572,7 @@ final class GroupsServiceSpec
 
     implicit val clientData = ClientData(authId1, createSessionId(), Some(user1.id))
 
-    whenReady(service.handleCreateGroup(1L, "", Vector.empty)) { resp ⇒
+    whenReady(service.handleCreateGroupObsolete(1L, "", Vector.empty, ApiMapValue(Vector.empty))) { resp ⇒
       inside(resp) {
         case Error(GroupRpcErrors.WrongGroupTitle) ⇒
       }
