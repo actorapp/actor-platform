@@ -1,4 +1,4 @@
-package im.actor.server.api.frontend
+package im.actor.server.frontend
 
 import scala.annotation.tailrec
 import scala.util.control.NoStackTrace

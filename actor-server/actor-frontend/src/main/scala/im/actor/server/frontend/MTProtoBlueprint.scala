@@ -1,4 +1,4 @@
-package im.actor.server.api.frontend
+package im.actor.server.frontend
 
 import scala.util.{ Failure, Success }
 

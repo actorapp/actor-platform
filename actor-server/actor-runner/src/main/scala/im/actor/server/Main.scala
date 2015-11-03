@@ -9,7 +9,6 @@ import com.typesafe.config.ConfigException
 import im.actor.config.ActorConfig
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
-import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
 import im.actor.server.api.rpc.service.SearchServiceImpl
@@ -34,6 +33,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
 import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
+import im.actor.server.frontend.Frontend
 import im.actor.server.group._
 import im.actor.server.migrations._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }

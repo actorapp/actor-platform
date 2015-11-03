@@ -1,4 +1,4 @@
-package im.actor.server.api.frontend
+package im.actor.server.frontend
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
