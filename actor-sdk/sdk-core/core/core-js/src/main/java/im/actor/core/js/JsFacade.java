@@ -462,6 +462,27 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise hideChat(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.hideChat(peer.convert()).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "hideChat:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "hideChat:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
     // Peers
 
     public JsPeer getUserPeer(int uid) {
@@ -858,7 +879,7 @@ public class JsFacade implements Exportable {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
             public void execute() {
-                String avatarDescriptor = provider.registerUploadFile(file);
+                String avatarDescriptor = file != null ? provider.registerUploadFile(file) : null;
                 //noinspection ConstantConditions
                 messenger.createGroup(title, avatarDescriptor, uids).start(new CommandCallback<Integer>() {
                     @Override
