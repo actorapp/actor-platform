@@ -6186,6 +6186,29 @@
           <property role="2m7y0m" value="3" />
         </node>
       </node>
+      <node concept="2m488m" id="5qm50Y0f7oy" role="2m5mJr">
+        <property role="TrG5h" value="SearchContentType" />
+        <node concept="2m7y0F" id="5qm50Y0f7o$" role="2m7ymf">
+          <property role="TrG5h" value="Any" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="5qm50Y0f7q2" role="2m7ymf">
+          <property role="TrG5h" value="Text" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="5qm50Y0f7q5" role="2m7ymf">
+          <property role="TrG5h" value="Links" />
+          <property role="2m7y0m" value="3" />
+        </node>
+        <node concept="2m7y0F" id="5qm50Y0f7q9" role="2m7ymf">
+          <property role="TrG5h" value="Documents" />
+          <property role="2m7y0m" value="4" />
+        </node>
+        <node concept="2m7y0F" id="5qm50Y0f7qe" role="2m7ymf">
+          <property role="TrG5h" value="Photos" />
+          <property role="2m7y0m" value="5" />
+        </node>
+      </node>
       <node concept="w93zz" id="4NJj1GT1Sc1" role="2m5mJr">
         <property role="TrG5h" value="SearchCondition" />
         <property role="1FaRnq" value="true" />
@@ -6232,6 +6255,127 @@
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Search query" />
           <ref role="NX6Kv" node="4NJj1GT1WuH" resolve="query" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="5qm50Y0eYkm" role="2m5mJr">
+        <property role="TrG5h" value="SearchAndCondition" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+        <node concept="2m7Kf5" id="5qm50Y0eYXU" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="andQuery" />
+          <node concept="2m5nlk" id="5qm50Y0eYXY" role="2m7DVh">
+            <node concept="3BlaRf" id="5qm50Y0eYY4" role="3GJlyp">
+              <ref role="3BrLez" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="5qm50Y0eYY7" role="NXodf">
+          <property role="NXePf" value="Search AND condion" />
+        </node>
+        <node concept="NX1gA" id="5qm50Y0eZAF" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="And Query" />
+          <ref role="NX6Kv" node="5qm50Y0eYXU" resolve="andQuery" />
+        </node>
+        <node concept="Nu42z" id="5qm50Y0f0ff" role="3BtCOu">
+          <property role="Nu42W" value="03" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="5qm50Y0f0T1" role="2m5mJr">
+        <property role="TrG5h" value="SearchOrCondition" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+        <node concept="2m7Kf5" id="5qm50Y0f0Uj" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="orQuery" />
+          <node concept="2m5nlk" id="5qm50Y0f0Un" role="2m7DVh">
+            <node concept="2m5mGg" id="5qm50Y0f0Ut" role="3GJlyp">
+              <ref role="2m5mJy" node="5qm50Y0f0T1" resolve="SearchOrCondition" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="5qm50Y0f0Uh" role="3BtCOu">
+          <property role="Nu42W" value="04" />
+        </node>
+        <node concept="NXeRC" id="5qm50Y0f2bG" role="NXodf">
+          <property role="NXePf" value="Search OR condition" />
+        </node>
+        <node concept="NX1gA" id="5qm50Y0f2Oo" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Or Query" />
+          <ref role="NX6Kv" node="5qm50Y0f0Uj" resolve="orQuery" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="5qm50Y0f3uq" role="2m5mJr">
+        <property role="TrG5h" value="SearchPeerCondition" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+        <node concept="2m7Kf5" id="5qm50Y0f4Lb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="5qm50Y0f4Lf" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5qm50Y0f3vL" role="3BtCOu">
+          <property role="Nu42W" value="05" />
+        </node>
+        <node concept="NXeRC" id="5qm50Y0f3vN" role="NXodf">
+          <property role="NXePf" value="Serch Peer condition" />
+        </node>
+        <node concept="NX1gA" id="5qm50Y0f62K" role="NXodf">
+          <property role="NX6R2" value="Peer condition" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5qm50Y0f4Lb" resolve="peer" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="5qm50Y0f851" role="2m5mJr">
+        <property role="TrG5h" value="SearchPeerContentType" />
+        <property role="tsOgz" value="false" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+        <node concept="2m7Kf5" id="5qm50Y0f86A" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="contentType" />
+          <node concept="3GJkcs" id="5qm50Y0f86E" role="2m7DVh">
+            <ref role="3GJkik" node="5qm50Y0f7oy" resolve="SearchContentType" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="5qm50Y0f86$" role="3BtCOu">
+          <property role="Nu42W" value="06" />
+        </node>
+        <node concept="NXeRC" id="5qm50Y0f86H" role="NXodf">
+          <property role="NXePf" value="Search content type condition" />
+        </node>
+        <node concept="NX1gA" id="5qm50Y0f8JF" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Content Type" />
+          <ref role="NX6Kv" node="5qm50Y0f86A" resolve="contentType" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="MlriG8H5kU" role="2m5mJr">
+        <property role="TrG5h" value="SearchSenderIdConfition" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+        <node concept="2m7Kf5" id="MlriG8H5mE" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="senderId" />
+          <node concept="wb0Ql" id="MlriG8H5mI" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="MlriG8H5mC" role="3BtCOu">
+          <property role="Nu42W" value="07" />
+        </node>
+        <node concept="NXeRC" id="MlriG8H5mL" role="NXodf">
+          <property role="NXePf" value="Searching sender uid condition" />
+        </node>
+        <node concept="NX1gA" id="MlriG8H5mQ" role="NXodf">
+          <property role="NX6R2" value="sender UID" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="MlriG8H5mE" resolve="senderId" />
         </node>
       </node>
       <node concept="2m5naR" id="4NJj1GT1Zyz" role="2m5mJr">
@@ -6399,8 +6543,159 @@
           <property role="NXePf" value="Performing peer search" />
         </node>
         <node concept="NX1gA" id="4NJj1GT23kw" role="1GBnQ6">
-          <property role="NX6R2" value="Search query. Warring not all combinations can be processed by server." />
+          <property role="NX6R2" value="Search query. Warring not all combinations can be processed by server. (acts as OR)" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="4NJj1GT1VfH" resolve="query" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="5qm50Y0fa3d" role="2m5mJr">
+        <property role="TrG5h" value="MessageSearchResult" />
+        <node concept="2m7Kf5" id="5qm50Y0faHL" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="5qm50Y0faHP" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="5qm50Y0faHS" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="MlriG8H6D4" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="MlriG8H6D7" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="MlriG8H6Df" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="MlriG8Hi8J" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="senderId" />
+          <node concept="wb0Ql" id="MlriG8Hi8V" role="2m7DVh">
+            <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="MlriG8H6Di" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="content" />
+          <node concept="3BlaRf" id="MlriG8H6Ds" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="MlriG8HiM9" role="NXodf">
+          <property role="NXePf" value="Message container" />
+        </node>
+        <node concept="NX1gA" id="MlriG8HkHM" role="NXodf">
+          <property role="NX6R2" value="Message Peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5qm50Y0faHL" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="MlriG8HkI0" role="NXodf">
+          <property role="NX6R2" value="Message Random Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="5qm50Y0faHS" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="MlriG8HkIa" role="NXodf">
+          <property role="NX6R2" value="Message Date" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="MlriG8H6D7" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="MlriG8HkIm" role="NXodf">
+          <property role="NX6R2" value="Message sender UID" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="MlriG8Hi8J" resolve="senderId" />
+        </node>
+        <node concept="NX1gA" id="MlriG8HkI$" role="NXodf">
+          <property role="NX6R2" value="Message content" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="MlriG8H6Di" resolve="content" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="MlriG8HkKF" role="2m5mJr">
+        <property role="TrG5h" value="MessageSearchItem" />
+        <node concept="2m7Kf5" id="MlriG8HkMF" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="result" />
+          <node concept="2m5mGg" id="MlriG8Hls3" role="2m7DVh">
+            <ref role="2m5mJy" node="5qm50Y0fa3d" resolve="MessageSearchResult" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="MlriG8Hm5q" role="NXodf">
+          <property role="NXePf" value="Message Search result container" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="MlriG8Ho3u" role="2m5mJr">
+        <property role="TrG5h" value="MessageSearch" />
+        <node concept="2m7Kf5" id="MlriG8HpsG" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="query" />
+          <node concept="3BlaRf" id="MlriG8HpsS" role="2m7DVh">
+            <ref role="3BrLez" node="4NJj1GT1Sc1" resolve="SearchCondition" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="MlriG8Ho3v" role="NuuwV">
+          <property role="Nu42W" value="D9" />
+        </node>
+        <node concept="2m1R6W" id="MlriG8Ho9L" role="2m6efq">
+          <node concept="2m7Kf5" id="MlriG8Hrpz" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="searchResults" />
+            <node concept="2m5nlk" id="MlriG8HrpB" role="2m7DVh">
+              <node concept="2m5mGg" id="MlriG8HrpH" role="3GJlyp">
+                <ref role="2m5mJy" node="MlriG8HkKF" resolve="MessageSearchItem" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="MlriG8HrpK" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="MlriG8HrpR" role="2m7DVh">
+              <node concept="2m5mGg" id="MlriG8HrpX" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="MlriG8Hrq0" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="groups" />
+            <node concept="2m5nlk" id="MlriG8Hrqa" role="2m7DVh">
+              <node concept="2m5mGg" id="MlriG8Hrqg" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="MlriG8Ho9M" role="NuuwV">
+            <property role="Nu42W" value="DA" />
+          </node>
+          <node concept="NXeRC" id="MlriG8HqK3" role="1y2DgH">
+            <property role="NXePf" value="Search Result" />
+          </node>
+          <node concept="NX1gA" id="MlriG8Hs3X" role="1y2DgH">
+            <property role="NX6R2" value="Search results" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="MlriG8Hrpz" resolve="searchResults" />
+          </node>
+          <node concept="NX1gA" id="MlriG8Hs45" role="1y2DgH">
+            <property role="NX6R2" value="Search users" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="MlriG8HrpK" resolve="users" />
+          </node>
+          <node concept="NX1gA" id="MlriG8Hs4f" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Search groups" />
+            <ref role="NX6Kv" node="MlriG8Hrq0" resolve="groups" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="MlriG8Ho9Q" role="1GBnQ6">
+          <property role="NXePf" value="Performing message search" />
+        </node>
+        <node concept="NX1gA" id="MlriG8Hq6y" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Search query" />
+          <ref role="NX6Kv" node="MlriG8HpsG" resolve="query" />
         </node>
       </node>
       <node concept="1Dx9M1" id="4NJj1GT1R$P" role="1Dx9rD">
