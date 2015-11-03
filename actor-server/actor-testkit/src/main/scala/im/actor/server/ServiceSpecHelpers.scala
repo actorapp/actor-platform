@@ -4,9 +4,11 @@ import akka.actor.{ ActorRef, ActorSystem }
 import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
+import im.actor.api.rpc.ClientData
+import im.actor.api.rpc.auth.{ ResponseSendAuthCodeObsolete, AuthService }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
-import im.actor.api.{ rpc ⇒ rpcapi }
-import im.actor.server.api.rpc.RpcApiService
+import im.actor.api.rpc.users.ApiUser
+import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.oauth.GoogleProvider
 import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
@@ -26,7 +28,7 @@ trait PersistenceHelpers {
 }
 
 trait UserStructExtensions {
-  implicit class ExtUser(user: rpcapi.users.ApiUser) {
+  implicit class ExtUser(user: ApiUser) {
     def asModel()(implicit db: Database): models.User =
       Await.result(db.run(persist.UserRepo.find(user.id).head), 3.seconds)
   }
@@ -55,7 +57,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     authId
   }
 
-  def createAuthId(userId: Int)(implicit ec: ExecutionContext, system: ActorSystem, db: Database, service: rpcapi.auth.AuthService): Long = {
+  def createAuthId(userId: Int)(implicit ec: ExecutionContext, system: ActorSystem, db: Database, service: AuthService): Long = {
     val authId = scala.util.Random.nextLong()
     Await.result(db.run(persist.AuthIdRepo.create(authId, None, None)), 1.second)
 
@@ -73,7 +75,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
       appId = 42,
       appKey = "appKey",
       isSilent = false
-    )(rpcapi.ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds)
+    )(ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds)
 
     res match {
       case \/-(rsp) ⇒ rsp
@@ -86,27 +88,27 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
   def createSessionId(): Long =
     scala.util.Random.nextLong()
 
-  def getSmsHash(authId: Long, phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem): String = withoutLogs {
-    val rpcapi.auth.ResponseSendAuthCodeObsolete(smsHash, _) =
-      Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(rpcapi.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
+  def getSmsHash(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem): String = withoutLogs {
+    val ResponseSendAuthCodeObsolete(smsHash, _) =
+      Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
 
     smsHash
   }
 
-  def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): models.AuthSmsCodeObsolete = withoutLogs {
-    val res = Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(rpcapi.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second)
+  def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): models.AuthSmsCodeObsolete = withoutLogs {
+    val res = Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(ClientData(authId, scala.util.Random.nextLong(), None)), 1.second)
     res.toOption.get
 
     Await.result(db.run(persist.AuthSmsCodeObsoleteRepo.findByPhoneNumber(phoneNumber).head), 5.seconds)
   }
 
-  def createUser()(implicit service: rpcapi.auth.AuthService, db: Database, system: ActorSystem): (rpcapi.users.ApiUser, Long, Long) = {
+  def createUser()(implicit service: AuthService, db: Database, system: ActorSystem): (ApiUser, Long, Long) = {
     val authId = createAuthId()
     val phoneNumber = buildPhone()
     (createUser(authId, phoneNumber), authId, phoneNumber)
   }
 
-  def createUser(phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): rpcapi.users.ApiUser =
+  def createUser(phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): ApiUser =
     createUser(createAuthId(), phoneNumber)
 
   def getOutPeer(userId: Int, clientAuthId: Long): ApiOutPeer = {
@@ -115,7 +117,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
   }
 
   //TODO: make same method to work with email
-  def createUser(authId: Long, phoneNumber: Long)(implicit service: rpcapi.auth.AuthService, system: ActorSystem, db: Database): rpcapi.users.ApiUser =
+  def createUser(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): ApiUser =
     withoutLogs {
       val smsCode = getSmsCode(authId, phoneNumber)
 
@@ -129,7 +131,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
         appId = 42,
         appKey = "appKey",
         isSilent = false
-      )(rpcapi.ClientData(authId, scala.util.Random.nextLong(), None)), 10.seconds)
+      )(ClientData(authId, scala.util.Random.nextLong(), None)), 10.seconds)
 
       res match {
         case \/-(rsp) ⇒ rsp.user
@@ -138,7 +140,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     }
 
   def buildRpcApiService(services: Seq[im.actor.api.rpc.Service])(implicit system: ActorSystem, db: Database) =
-    system.actorOf(RpcApiService.props(services), "rpcApiService")
+    RpcApiExtension(system).register(services)
 
   def buildSessionRegion(rpcApiService: ActorRef)(implicit system: ActorSystem, materializer: Materializer) = {
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
@@ -157,7 +159,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
 
-    val logLevel = logger.getLevel()
+    val logLevel = logger.getLevel
     val esLogLevel = system.eventStream.logLevel
 
     logger.setLevel(ch.qos.logback.classic.Level.WARN)
