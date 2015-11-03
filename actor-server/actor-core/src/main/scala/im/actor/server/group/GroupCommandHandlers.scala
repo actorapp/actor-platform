@@ -15,7 +15,7 @@ import im.actor.concurrent.FutureExt
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.dialog.{ HistoryUtils, DialogExtension }
-import im.actor.server.{ persist ⇒ p, models }
+import im.actor.server.{ persist ⇒ p, model }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ ImageUtils, Avatar }
 import im.actor.server.group.GroupErrors._
@@ -90,7 +90,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       db.run(
         for {
           _ ← p.GroupRepo.create(
-            models.Group(
+            model.Group(
               id = groupId,
               creatorUserId = state.creatorUserId,
               accessHash = state.accessHash,
@@ -230,7 +230,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   protected def updateAvatar(group: Group, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long): Unit = {
     persistStashingReply(TSEvent(now(), AvatarUpdated(avatarOpt)), group) { evt ⇒
       val date = new DateTime
-      val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong)
+      val avatarData = avatarOpt map (getAvatarData(model.AvatarData.OfGroup, groupId, _)) getOrElse model.AvatarData.empty(model.AvatarData.OfGroup, groupId.toLong)
 
       val update = UpdateGroupAvatarChanged(groupId, clientUserId, avatarOpt, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.changedAvatar(avatarOpt)
@@ -409,7 +409,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   }
 
   private def removeUser(userId: Int, memberIds: Set[Int], clientAuthId: Long, serviceMessage: ApiServiceMessage, update: Update, date: DateTime, randomId: Long): DBIO[SeqStateDate] = {
-    val groupPeer = models.Peer.group(groupId)
+    val groupPeer = model.Peer.group(groupId)
     for {
       _ ← p.GroupUserRepo.delete(groupId, userId)
       _ ← p.GroupInviteTokenRepo.revoke(groupId, userId)
@@ -440,7 +440,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
   private def createInDb(state: Group, randomId: Long) =
     p.GroupRepo.create(
-      models.Group(
+      model.Group(
         id = groupId,
         creatorUserId = state.creatorUserId,
         accessHash = state.accessHash,

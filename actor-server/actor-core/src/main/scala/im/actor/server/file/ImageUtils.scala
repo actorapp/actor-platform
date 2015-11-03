@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import com.sksamuel.scrimage.{ AsyncImage, Format, Position }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import slick.dbio.DBIO
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -16,7 +16,7 @@ object ImageUtils {
   val SmallSize = 100
   val LargeSize = 200
 
-  def avatar(ad: models.AvatarData) =
+  def avatar(ad: model.AvatarData) =
     (ad.smallOpt, ad.largeOpt, ad.fullOpt) match {
       case (None, None, None) ⇒ None
       case (smallOpt, largeOpt, fullOpt) ⇒
@@ -141,7 +141,7 @@ object ImageUtils {
     }
   }
 
-  def getAvatar(avatarModel: models.AvatarData): Avatar = {
+  def getAvatar(avatarModel: model.AvatarData): Avatar = {
     val smallImageOpt = avatarModel.smallOpt map {
       case (fileId, fileHash, fileSize) ⇒ AvatarImage(FileLocation(fileId, fileHash), SmallSize, SmallSize, fileSize)
     }
@@ -157,8 +157,8 @@ object ImageUtils {
     Avatar(smallImageOpt, largeImageOpt, fullImageOpt)
   }
 
-  def getAvatarData(entityType: models.AvatarData.TypeVal, entityId: Int, avatar: Avatar): models.AvatarData = {
-    models.AvatarData(
+  def getAvatarData(entityType: model.AvatarData.TypeVal, entityId: Int, avatar: Avatar): model.AvatarData = {
+    model.AvatarData(
       entityType = entityType,
       entityId = entityId.toLong,
       smallAvatarFileId = avatar.smallImage map (_.fileLocation.fileId),

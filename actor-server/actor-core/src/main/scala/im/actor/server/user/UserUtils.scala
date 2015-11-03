@@ -2,8 +2,8 @@ package im.actor.server.user
 
 import akka.actor.ActorSystem
 import im.actor.api.rpc.users._
-import im.actor.server.models
-import im.actor.server.models.UserPhone
+import im.actor.server.model
+import im.actor.server.model.UserPhone
 import im.actor.server.office.EntityNotFound
 
 import scala.language.postfixOps
@@ -25,7 +25,7 @@ object UserUtils {
     phoneRecords ++ emailRecords ++ socialRecords
   }
 
-  def userContactRecords(phones: Vector[models.UserPhone], emails: Vector[models.UserEmail]): Vector[ApiContactRecord] = {
+  def userContactRecords(phones: Vector[model.UserPhone], emails: Vector[model.UserEmail]): Vector[ApiContactRecord] = {
     val phoneRecords = phones map { phone ⇒
       ApiContactRecord(ApiContactType.Phone, stringValue = None, longValue = Some(phone.number), title = Some(phone.title), subtitle = None, typeSpec = None)
     }
@@ -37,7 +37,7 @@ object UserUtils {
     phoneRecords ++ emailRecords
   }
 
-  def userPhone(u: models.User, phones: Seq[UserPhone]): Option[Long] = {
+  def userPhone(u: model.User, phones: Seq[UserPhone]): Option[Long] = {
     phones.headOption match {
       case Some(phone) ⇒ Some(phone.number)
       case None        ⇒ Some(0L)

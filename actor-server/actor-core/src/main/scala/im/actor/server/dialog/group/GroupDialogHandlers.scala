@@ -9,8 +9,8 @@ import im.actor.server.group.GroupErrors.NotAMember
 import im.actor.server.group.GroupExtension
 import HistoryUtils._
 import im.actor.server.misc.UpdateCounters
-import im.actor.server.models
-import im.actor.server.models.{ Dialog, PeerType, Peer }
+import im.actor.server.model
+import im.actor.server.model.{ Dialog, PeerType, Peer }
 import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqUpdatesManager._
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -49,7 +49,7 @@ trait GroupDialogHandlers extends UpdateCounters {
               } else {
                 delivery.senderDelivery(senderUserId, senderAuthId, groupPeer, randomId, dateMillis, message, isFat)
               }
-              _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
+              _ ← db.run(writeHistoryMessage(model.Peer.privat(senderUserId), model.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
             } yield SeqStateDate(seq, state, dateMillis)
           } recover {
             case e ⇒
@@ -71,8 +71,8 @@ trait GroupDialogHandlers extends UpdateCounters {
     val date = new DateTime(dateMillis)
 
     db.run(writeHistoryMessage(
-      models.Peer.privat(senderUserId),
-      models.Peer.group(groupPeer.id),
+      model.Peer.privat(senderUserId),
+      model.Peer.group(groupPeer.id),
       date,
       randomId,
       message.header,
@@ -93,7 +93,7 @@ trait GroupDialogHandlers extends UpdateCounters {
 
         val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map userExt.getAuthIds) map (_.flatten.toSet)
         for {
-          _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
+          _ ← db.run(markMessagesReceived(model.Peer.privat(receiverUserId), model.Peer.group(groupId), new DateTime(date)))
           authIds ← authIdsF
           _ ← persistAndPushUpdates(authIds.toSet, update, None, isFat = false)
         } yield MessageReceivedAck()
@@ -136,7 +136,7 @@ trait GroupDialogHandlers extends UpdateCounters {
       withMembers { (memberIds, _, _) ⇒
         if (memberIds contains readerUserId) {
           for {
-            _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+            _ ← db.run(markMessagesRead(model.Peer.privat(readerUserId), model.Peer.group(groupId), new DateTime(date)))
             _ ← userExt.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false, deliveryId = None)
             counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
             _ ← userExt.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
@@ -166,7 +166,7 @@ trait GroupDialogHandlers extends UpdateCounters {
 
           for {
             authIds ← authIdsF
-            _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+            _ ← db.run(markMessagesRead(model.Peer.privat(readerUserId), model.Peer.group(groupId), new DateTime(date)))
             _ ← persistAndPushUpdates(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
           } yield ()
         } else Future.successful(())

@@ -4,22 +4,22 @@ import scala.concurrent.ExecutionContext
 
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.models
+import im.actor.server.model
 
-final class ParameterTable(tag: Tag) extends Table[models.configs.Parameter](tag, "config_parameters") {
+final class ParameterTable(tag: Tag) extends Table[model.configs.Parameter](tag, "config_parameters") {
   def userId = column[Int]("user_id", O.PrimaryKey)
 
   def key = column[String]("key", O.PrimaryKey)
 
   def value = column[Option[String]]("value")
 
-  def * = (userId, key, value) <> (models.configs.Parameter.tupled, models.configs.Parameter.unapply)
+  def * = (userId, key, value) <> (model.configs.Parameter.tupled, model.configs.Parameter.unapply)
 }
 
 object ParameterRepo {
   val parameters = TableQuery[ParameterTable]
 
-  def createOrUpdate(parameter: models.configs.Parameter) =
+  def createOrUpdate(parameter: model.configs.Parameter) =
     parameters.insertOrUpdate(parameter)
 
   def find(userId: Int) =

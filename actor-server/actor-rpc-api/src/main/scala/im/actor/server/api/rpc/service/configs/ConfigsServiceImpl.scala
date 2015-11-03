@@ -8,7 +8,7 @@ import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server.db.DbExtension
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserExtension
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -33,7 +33,7 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
       val update = UpdateParameterChanged(key, value)
 
       for {
-        _ ← persist.configs.ParameterRepo.createOrUpdate(models.configs.Parameter(client.userId, key, value))
+        _ ← persist.configs.ParameterRepo.createOrUpdate(model.configs.Parameter(client.userId, key, value))
         SeqState(seq, state) ← DBIO.from(UserExtension(actorSystem).broadcastClientUpdate(update, None, isFat = false))
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }

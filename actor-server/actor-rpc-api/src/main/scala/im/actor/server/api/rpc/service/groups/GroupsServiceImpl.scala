@@ -16,7 +16,7 @@ import im.actor.server.group._
 import im.actor.server.presences.GroupPresenceExtension
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.{ UserUtils, UserExtension }
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import im.actor.util.misc.IdUtils
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -208,7 +208,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
             case Some(invToken) ⇒ DBIO.successful(invToken.token)
             case None ⇒
               val token = accessToken(ThreadLocalRandom.current())
-              val inviteToken = models.GroupInviteToken(fullGroup.id, client.userId, token)
+              val inviteToken = model.GroupInviteToken(fullGroup.id, client.userId, token)
               for (_ ← persist.GroupInviteTokenRepo.create(inviteToken)) yield token
           }
         } yield Ok(ResponseInviteUrl(genInviteUrl(groupInviteConfig.baseUrl, token)))
@@ -220,7 +220,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   override def jhandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
-        val group = models.Group.fromFull(fullGroup)
+        val group = model.Group.fromFull(fullGroup)
 
         val join = groupExt.joinGroup(
           groupId = group.id,
@@ -246,7 +246,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         persist.GroupUserRepo.find(fullGroup.id, client.userId) flatMap {
           case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited))
           case None ⇒
-            val group = models.Group.fromFull(fullGroup)
+            val group = model.Group.fromFull(fullGroup)
             for {
               (seqstatedate, userIds, randomId) ← DBIO.from(groupExt.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
               userStructs ← DBIO.from(Future.sequence(userIds.map(userExt.getApiStruct(_, client.userId, client.authId))))
@@ -265,7 +265,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
         val token = accessToken(ThreadLocalRandom.current())
-        val inviteToken = models.GroupInviteToken(fullGroup.id, client.userId, token)
+        val inviteToken = model.GroupInviteToken(fullGroup.id, client.userId, token)
 
         for {
           _ ← persist.GroupInviteTokenRepo.revoke(fullGroup.id, client.userId)

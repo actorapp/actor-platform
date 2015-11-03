@@ -11,7 +11,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.dialog.group.GroupDialogEvents.GroupDialogEvent
 import im.actor.server.group.GroupExtension
-import im.actor.server.models.{ Peer, PeerType, Dialog }
+import im.actor.server.model.{ Peer, PeerType, Dialog }
 import im.actor.server.office.ProcessorState
 import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesExtension }

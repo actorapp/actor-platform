@@ -4,9 +4,9 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.models
+import im.actor.server.model
 
-final class AuthSessionTable(tag: Tag) extends Table[models.AuthSession](tag, "auth_sessions") {
+final class AuthSessionTable(tag: Tag) extends Table[model.AuthSession](tag, "auth_sessions") {
   def userId = column[Int]("user_id", O.PrimaryKey)
 
   def id = column[Int]("id", O.PrimaryKey)
@@ -33,7 +33,7 @@ final class AuthSessionTable(tag: Tag) extends Table[models.AuthSession](tag, "a
 
   def * =
     (userId, id, authId, appId, appTitle, deviceTitle, deviceHash, authTime, authLocation, latitude, longitude) <>
-      ((models.AuthSession.apply _).tupled, models.AuthSession.unapply)
+      ((model.AuthSession.apply _).tupled, model.AuthSession.unapply)
 }
 
 object AuthSessionRepo {
@@ -45,7 +45,7 @@ object AuthSessionRepo {
     activeSessions.filter(_.deviceHash === deviceHash)
   val byDeviceHashC = Compiled(byDeviceHash _)
 
-  def create(session: models.AuthSession) =
+  def create(session: model.AuthSession) =
     sessions += session
 
   def find(userId: Int, id: Int) =
