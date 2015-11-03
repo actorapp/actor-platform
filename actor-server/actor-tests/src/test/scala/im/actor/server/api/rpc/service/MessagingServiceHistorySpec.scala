@@ -233,7 +233,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, models.Peer.privat(user2.id)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer.privat(user2.id)))) { dialogOpt ⇒
             dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -293,7 +293,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, models.Peer.privat(user2.id)))) { optDialog ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer.privat(user2.id)))) { optDialog ⇒
             val dialog = optDialog.get
             dialog.lastReadAt.getMillis should be < startDate + 3000
             dialog.lastReadAt.getMillis should be > startDate + 1000
@@ -438,7 +438,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -496,7 +496,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(300)
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReadAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReadAt.getMillis should be > startDate + 1000
           }

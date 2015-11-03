@@ -10,14 +10,14 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 import im.actor.server.dashboard.controllers.utils.json.Common._
-import im.actor.server.models
+import im.actor.server.model
 
 object UsersJsonImplicits {
 
   implicit val userWrites = Common.userWrites
 
-  implicit val userPhoneWrites = new Writes[models.UserPhone] {
-    def writes(phone: models.UserPhone): JsValue = Json.obj(
+  implicit val userPhoneWrites = new Writes[model.UserPhone] {
+    def writes(phone: model.UserPhone): JsValue = Json.obj(
       "id" → phone.id,
       "number" → phone.number
     )
@@ -39,14 +39,14 @@ object UsersJsonImplicits {
 
   implicit val userUpdateReads: Reads[UserUpdate] = (JsPath \ "name").read[String](length).map { UserUpdate }
 
-  case class CompleteUser(user: models.User, struct: String, phone: models.UserPhone)
+  case class CompleteUser(user: model.User, struct: String, phone: model.UserPhone)
 
   private def makeUserAndPhone(language: String)(name: String, struct: String, phone: String): CompleteUser = {
     val rnd = ThreadLocalRandom.current()
     val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
     val normalizedPhone = PhoneNumberUtils.tryNormalize(phone.toLong, language)
-    val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, language, models.NoSex, models.UserState.Registered)
-    val userPhone = models.UserPhone(phoneId, userId, ACLUtils.nextAccessSalt(rnd), normalizedPhone, "Mobile phone")
+    val user = model.User(userId, ACLUtils.nextAccessSalt(rnd), name, language, model.NoSex, model.UserState.Registered)
+    val userPhone = model.UserPhone(phoneId, userId, ACLUtils.nextAccessSalt(rnd), normalizedPhone, "Mobile phone")
     CompleteUser(user, struct, userPhone)
   }
 

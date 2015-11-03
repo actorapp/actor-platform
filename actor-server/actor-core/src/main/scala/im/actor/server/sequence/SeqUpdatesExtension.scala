@@ -3,7 +3,7 @@ package im.actor.server.sequence
 import akka.actor._
 import akka.util.Timeout
 import im.actor.server.db.DbExtension
-import im.actor.server.models
+import im.actor.server.model
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -13,7 +13,7 @@ import scala.util.Try
 sealed trait SeqUpdatesExtension extends Extension {
   val region: SeqUpdatesManagerRegion
 
-  def persistUpdate(upd: models.sequence.SeqUpdate): Future[Unit]
+  def persistUpdate(upd: model.sequence.SeqUpdate): Future[Unit]
 }
 
 final class SeqUpdatesExtensionImpl(
@@ -31,7 +31,7 @@ final class SeqUpdatesExtensionImpl(
 
   private val writer = system.actorOf(BatchUpdatesWriter.props, "batch-updates-writer")
 
-  override def persistUpdate(update: models.sequence.SeqUpdate): Future[Unit] = {
+  override def persistUpdate(update: model.sequence.SeqUpdate): Future[Unit] = {
     val promise = Promise[Unit]()
     writer ! BatchUpdatesWriter.Enqueue(update, promise)
     promise.future

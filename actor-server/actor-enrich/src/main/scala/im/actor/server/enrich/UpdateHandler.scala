@@ -3,7 +3,7 @@ package im.actor.server.enrich
 import akka.actor.ActorSystem
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageContentChanged }
-import im.actor.server.models.{ Peer, PeerType }
+import im.actor.server.model.{ Peer, PeerType }
 import im.actor.server.persist
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserExtension

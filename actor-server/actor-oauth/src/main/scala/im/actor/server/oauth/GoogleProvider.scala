@@ -18,8 +18,8 @@ import akka.http.scaladsl.unmarshalling._
 import akka.stream.Materializer
 import slick.dbio.DBIO
 
-import im.actor.server.models.OAuth2Token
-import im.actor.server.{ models, persist }
+import im.actor.server.model.OAuth2Token
+import im.actor.server.{ model, persist }
 
 class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
   implicit
@@ -33,7 +33,7 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
 
   private val http = Http()
 
-  def completeOAuth(code: String, userId: String, redirectUri: Option[String]): DBIO[Option[models.OAuth2Token]] = {
+  def completeOAuth(code: String, userId: String, redirectUri: Option[String]): DBIO[Option[model.OAuth2Token]] = {
     for {
       optToken ← persist.OAuth2TokenRepo.findByUserId(userId)
       result ← optToken.map { token ⇒
@@ -42,7 +42,7 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
     } yield result
   }
 
-  def refreshToken(userId: String): DBIO[Option[models.OAuth2Token]] = {
+  def refreshToken(userId: String): DBIO[Option[model.OAuth2Token]] = {
     for {
       optRefresh ← persist.OAuth2TokenRepo.findRefreshToken(userId)
       token ← optRefresh.map { refresh ⇒
@@ -89,7 +89,7 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
     DBIO.from(fetchToken(form, userId))
   }
 
-  private def fetchToken(form: FormData, userId: String): Future[Option[models.OAuth2Token]] =
+  private def fetchToken(form: FormData, userId: String): Future[Option[model.OAuth2Token]] =
     for {
       optToken ← requestToken(form)
       result ← Future.successful(optToken.map(makeModel(_, userId)))
@@ -101,9 +101,9 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
     token ← Unmarshal(response).to[Option[Token]]
   } yield token
 
-  private def makeModel(token: Token, email: String): models.OAuth2Token = {
+  private def makeModel(token: Token, email: String): model.OAuth2Token = {
     val id = ThreadLocalRandom.current().nextLong()
-    models.OAuth2Token(
+    model.OAuth2Token(
       id = id,
       userId = email,
       accessToken = token.accessToken,
@@ -114,7 +114,7 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
     )
   }
 
-  private def isExpired(token: models.OAuth2Token): Boolean =
+  private def isExpired(token: model.OAuth2Token): Boolean =
     token.createdAt.plus(token.expiresIn, SECONDS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
 
 }

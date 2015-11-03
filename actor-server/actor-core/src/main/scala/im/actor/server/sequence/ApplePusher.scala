@@ -7,12 +7,12 @@ import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotifi
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 
 private[sequence] class ApplePusher(pushManager: ApplePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   private implicit val ec: ExecutionContext = system.dispatcher
 
-  def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[ApiPeer], unreadCount: Int): Unit = {
+  def deliverApplePush(creds: model.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[ApiPeer], unreadCount: Int): Unit = {
     val paramBase = "category.mobile.notification"
 
     system.log.debug("Delivering apple push, authId: {}, seq: {}, text: {}, originPeer: {}", authId, seq, textOpt, originPeerOpt)

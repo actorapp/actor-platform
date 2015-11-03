@@ -29,7 +29,7 @@ trait PersistenceHelpers {
 
 trait UserStructExtensions {
   implicit class ExtUser(user: ApiUser) {
-    def asModel()(implicit db: Database): models.User =
+    def asModel()(implicit db: Database): model.User =
       Await.result(db.run(persist.UserRepo.find(user.id).head), 3.seconds)
   }
 }
@@ -95,7 +95,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     smsHash
   }
 
-  def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): models.AuthSmsCodeObsolete = withoutLogs {
+  def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): model.AuthSmsCodeObsolete = withoutLogs {
     val res = Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(ClientData(authId, scala.util.Random.nextLong(), None)), 1.second)
     res.toOption.get
 

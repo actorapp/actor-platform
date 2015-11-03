@@ -21,7 +21,7 @@ import im.actor.server.persist.auth.AuthTransactionRepo
 import im.actor.server.session._
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user.UserExtension
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import im.actor.util.log.AnyRefLogSource
 import im.actor.util.misc.PhoneNumberUtils._
 import im.actor.util.misc._
@@ -117,12 +117,12 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
 
         //refresh session data
-        authSession = models.AuthSession(
+        authSession = model.AuthSession(
           userId = user.id,
           id = nextIntId(ThreadLocalRandom.current()),
           authId = clientData.authId,
           appId = transaction.appId,
-          appTitle = models.AuthSession.appTitleOf(transaction.appId),
+          appTitle = model.AuthSession.appTitleOf(transaction.appId),
           deviceHash = transaction.deviceHash,
           deviceTitle = transaction.deviceTitle,
           authTime = DateTime.now,
@@ -165,7 +165,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         case None ⇒
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
-          val phoneAuthTransaction = models.AuthPhoneTransaction(
+          val phoneAuthTransaction = model.AuthPhoneTransaction(
             normalizedPhone,
             transactionHash,
             appId,
@@ -204,8 +204,8 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         //ensure that `authTransaction` is checked
         _ ← fromBoolean(AuthErrors.NotValidated)(transaction.isChecked)
         signInORsignUp ← transaction match {
-          case p: models.AuthPhoneTransaction ⇒ newUserPhoneSignUp(p, name, sex)
-          case e: models.AuthEmailTransaction ⇒ newUserEmailSignUp(e, name, sex)
+          case p: model.AuthPhoneTransaction ⇒ newUserPhoneSignUp(p, name, sex)
+          case e: model.AuthEmailTransaction ⇒ newUserEmailSignUp(e, name, sex)
         }
         //fallback to sign up if user exists
         user ← signInORsignUp match {
@@ -214,12 +214,12 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         }
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
         //refresh session data
-        authSession = models.AuthSession(
+        authSession = model.AuthSession(
           userId = user.id,
           id = nextIntId(ThreadLocalRandom.current()),
           authId = clientData.authId,
           appId = transaction.appId,
-          appTitle = models.AuthSession.appTitleOf(transaction.appId),
+          appTitle = model.AuthSession.appTitleOf(transaction.appId),
           deviceHash = transaction.deviceHash,
           deviceTitle = transaction.deviceTitle,
           authTime = DateTime.now,
@@ -262,7 +262,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         case None ⇒
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
-          val emailAuthTransaction = models.AuthEmailTransaction(
+          val emailAuthTransaction = model.AuthEmailTransaction(
             validEmail,
             None,
             transactionHash,
@@ -306,12 +306,12 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         _ ← fromDBIO(persist.auth.AuthTransactionRepo.delete(transaction.transactionHash))
 
         //refresh session data
-        authSession = models.AuthSession(
+        authSession = model.AuthSession(
           userId = user.id,
           id = nextIntId(ThreadLocalRandom.current()),
           authId = clientData.authId,
           appId = transaction.appId,
-          appTitle = models.AuthSession.appTitleOf(transaction.appId),
+          appTitle = model.AuthSession.appTitleOf(transaction.appId),
           deviceHash = transaction.deviceHash,
           deviceTitle = transaction.deviceTitle,
           authTime = DateTime.now,
@@ -393,7 +393,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         Future.successful(Error(AuthErrors.PhoneNumberInvalid))
       case Some(normPhoneNumber) ⇒
         val action = persist.AuthSmsCodeObsoleteRepo.findByPhoneNumber(normPhoneNumber).headOption.flatMap {
-          case Some(models.AuthSmsCodeObsolete(_, _, smsHash, smsCode, _)) ⇒
+          case Some(model.AuthSmsCodeObsolete(_, _, smsHash, smsCode, _)) ⇒
             DBIO.successful(normPhoneNumber :: smsHash :: smsCode :: HNil)
           case None ⇒
             val smsHash = genSmsHash()
@@ -490,13 +490,13 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
                         val rnd = ThreadLocalRandom.current()
                         val userId = nextIntId(rnd)
                         //todo: move this to UserOffice
-                        val user = models.User(
+                        val user = model.User(
                           id = userId,
                           accessSalt = ACLUtils.nextAccessSalt(rnd),
                           name = name,
                           countryCode = countryCode,
-                          sex = models.NoSex,
-                          state = models.UserState.Registered,
+                          sex = model.NoSex,
+                          state = model.UserState.Registered,
                           createdAt = LocalDateTime.now(ZoneOffset.UTC),
                           external = None
                         )
@@ -504,7 +504,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
                           _ ← DBIO.from(userExt.create(user.id, user.accessSalt, None, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
                           _ ← DBIO.from(userExt.auth(userId, clientData.authId))
                           _ ← DBIO.from(userExt.addPhone(user.id, normPhoneNumber))
-                          _ ← persist.AvatarDataRepo.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
+                          _ ← persist.AvatarDataRepo.create(model.AvatarData.empty(model.AvatarData.OfUser, user.id.toLong))
                         } yield {
                           \/-(user :: HNil)
                         }
@@ -526,12 +526,12 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
           }.flatMap {
             case \/-(user :: HNil) ⇒
               val rnd = ThreadLocalRandom.current()
-              val authSession = models.AuthSession(
+              val authSession = model.AuthSession(
                 userId = user.id,
                 id = nextIntId(rnd),
                 authId = clientData.authId,
                 appId = appId,
-                appTitle = models.AuthSession.appTitleOf(appId),
+                appTitle = model.AuthSession.appTitleOf(appId),
                 deviceHash = deviceHash,
                 deviceTitle = deviceTitle,
                 authTime = DateTime.now,

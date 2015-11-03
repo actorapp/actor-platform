@@ -14,7 +14,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -85,7 +85,7 @@ class S3StorageAdapter(config: S3StorageAdapterConfig, _system: ActorSystem) ext
   override def downloadFileF(id: Long): Future[Option[File]] =
     db.run(downloadFile(id))
 
-  override def getFileUrl(file: models.File, accessHash: Long): Future[Option[String]] = {
+  override def getFileUrl(file: model.File, accessHash: Long): Future[Option[String]] = {
     val timeout = 1.day
 
     if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == accessHash) {

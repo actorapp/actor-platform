@@ -184,7 +184,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
           resp.toOption.get
         }
 
-        Await.result(db.run(persist.AuthIdRepo.find(authId)), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
+        Await.result(db.run(persist.AuthIdRepo.find(authId)), 5.seconds) should ===(Some(model.AuthId(authId, Some(rsp.user.id), None)))
       }
 
       def sameDeviceHash() = {

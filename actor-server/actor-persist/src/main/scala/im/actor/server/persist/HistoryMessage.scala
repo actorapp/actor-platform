@@ -7,9 +7,9 @@ import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
 import slick.profile.{ SqlAction, FixedSqlStreamingAction, FixedSqlAction }
 
-import im.actor.server.models
+import im.actor.server.model
 
-class HistoryMessageTable(tag: Tag) extends Table[models.HistoryMessage](tag, "history_messages") {
+class HistoryMessageTable(tag: Tag) extends Table[model.HistoryMessage](tag, "history_messages") {
   def userId = column[Int]("user_id", O.PrimaryKey)
 
   def peerType = column[Int]("peer_type", O.PrimaryKey)
@@ -31,11 +31,11 @@ class HistoryMessageTable(tag: Tag) extends Table[models.HistoryMessage](tag, "h
   def * = (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) <>
     (applyHistoryMessage.tupled, unapplyHistoryMessage)
 
-  private def applyHistoryMessage: (Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime]) ⇒ models.HistoryMessage = {
+  private def applyHistoryMessage: (Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime]) ⇒ model.HistoryMessage = {
     case (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) ⇒
-      models.HistoryMessage(
+      model.HistoryMessage(
         userId = userId,
-        peer = models.Peer(models.PeerType.fromInt(peerType), peerId),
+        peer = model.Peer(model.PeerType.fromInt(peerType), peerId),
         date = date,
         senderUserId = senderUserId,
         randomId = randomId,
@@ -45,8 +45,8 @@ class HistoryMessageTable(tag: Tag) extends Table[models.HistoryMessage](tag, "h
       )
   }
 
-  private def unapplyHistoryMessage: models.HistoryMessage ⇒ Option[(Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime])] = { historyMessage ⇒
-    models.HistoryMessage.unapply(historyMessage) map {
+  private def unapplyHistoryMessage: model.HistoryMessage ⇒ Option[(Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime])] = { historyMessage ⇒
+    model.HistoryMessage.unapply(historyMessage) map {
       case (userId, peer, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) ⇒
         (userId, peer.typ.toInt, peer.id, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt)
     }
@@ -61,13 +61,13 @@ object HistoryMessage {
 
   val withoutServiceMessages = notDeletedMessages.filter(_.messageContentHeader =!= 2)
 
-  def create(message: models.HistoryMessage): FixedSqlAction[Int, NoStream, Write] =
+  def create(message: model.HistoryMessage): FixedSqlAction[Int, NoStream, Write] =
     messagesC += message
 
-  def create(newMessages: Seq[models.HistoryMessage]): FixedSqlAction[Option[Int], NoStream, Write] =
+  def create(newMessages: Seq[model.HistoryMessage]): FixedSqlAction[Option[Int], NoStream, Write] =
     messagesC ++= newMessages
 
-  def find(userId: Int, peer: models.Peer, dateOpt: Option[DateTime], limit: Int): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] = {
+  def find(userId: Int, peer: model.Peer, dateOpt: Option[DateTime], limit: Int): FixedSqlStreamingAction[Seq[model.HistoryMessage], model.HistoryMessage, Read] = {
     val baseQuery = notDeletedMessages
       .filter(m ⇒
         m.userId === userId &&
@@ -84,7 +84,7 @@ object HistoryMessage {
     query.take(limit).result
   }
 
-  def findNewest(userId: Int, peer: models.Peer): SqlAction[Option[models.HistoryMessage], NoStream, Read] =
+  def findNewest(userId: Int, peer: model.Peer): SqlAction[Option[model.HistoryMessage], NoStream, Read] =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .sortBy(_.date.desc)
@@ -92,16 +92,16 @@ object HistoryMessage {
       .result
       .headOption
 
-  def find(userId: Int, peer: models.Peer): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] =
+  def find(userId: Int, peer: model.Peer): FixedSqlStreamingAction[Seq[model.HistoryMessage], model.HistoryMessage, Read] =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .sortBy(_.date.desc)
       .result
 
-  def find(userId: Int, peer: models.Peer, randomIds: Set[Long]): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] =
+  def find(userId: Int, peer: model.Peer, randomIds: Set[Long]): FixedSqlStreamingAction[Seq[model.HistoryMessage], model.HistoryMessage, Read] =
     notDeletedMessages.filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id && (m.randomId inSet randomIds)).result
 
-  def updateContentAll(userIds: Set[Int], randomId: Long, peerType: models.PeerType, peerIds: Set[Int],
+  def updateContentAll(userIds: Set[Int], randomId: Long, peerType: model.PeerType, peerIds: Set[Int],
                        messageContentHeader: Int, messageContentData: Array[Byte]): FixedSqlAction[Int, NoStream, Write] =
     notDeletedMessages
       .filter(m ⇒ m.randomId === randomId && m.peerType === peerType.toInt)
@@ -110,7 +110,7 @@ object HistoryMessage {
       .map(m ⇒ (m.messageContentHeader, m.messageContentData))
       .update((messageContentHeader, messageContentData))
 
-  def getUnreadCount(userId: Int, peer: models.Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
+  def getUnreadCount(userId: Int, peer: model.Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
     (if (noServiceMessages) withoutServiceMessages else notDeletedMessages)
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= userId)
@@ -129,20 +129,20 @@ object HistoryMessage {
 
   def getUnreadTotal(userId: Int): DBIO[Int] = unreadTotalC(userId).result
 
-  def haveMessagesBetween(userId: Int, peer: models.Peer, minDate: DateTime, maxDate: DateTime) =
+  def haveMessagesBetween(userId: Int, peer: model.Peer, minDate: DateTime, maxDate: DateTime) =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .filter(m ⇒ m.date > minDate && m.date < maxDate && m.senderUserId =!= userId)
       .exists
       .result
 
-  def deleteAll(userId: Int, peer: models.Peer): FixedSqlAction[Int, NoStream, Write] =
+  def deleteAll(userId: Int, peer: model.Peer): FixedSqlAction[Int, NoStream, Write] =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .map(_.deletedAt)
       .update(Some(new DateTime))
 
-  def delete(userId: Int, peer: models.Peer, randomIds: Set[Long]) =
+  def delete(userId: Int, peer: model.Peer, randomIds: Set[Long]) =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .filter(_.randomId inSet randomIds)

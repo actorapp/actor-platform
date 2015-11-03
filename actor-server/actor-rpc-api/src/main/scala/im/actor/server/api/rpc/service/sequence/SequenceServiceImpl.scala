@@ -17,7 +17,7 @@ import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference, SequenceService }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
-import im.actor.server.models
+import im.actor.server.model
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.session._
 import im.actor.server.user.{ UserUtils, UserViewRegion, UserExtension, UserOffice }
@@ -121,7 +121,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  private def extractDiff(updates: IndexedSeq[models.sequence.SeqUpdate]): (IndexedSeq[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
+  private def extractDiff(updates: IndexedSeq[model.sequence.SeqUpdate]): (IndexedSeq[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
     updates.foldLeft[(Vector[ApiDifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
       case ((updates, userIds, groupIds), update) ⇒
         (updates :+ ApiDifferenceUpdate(update.header, update.serializedData),
