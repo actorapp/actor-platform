@@ -1,4 +1,4 @@
-package im.actor.server.api.frontend
+package im.actor.server.frontend
 
 import im.actor.server.db.DbExtension
 import im.actor.util.misc.IdUtils
