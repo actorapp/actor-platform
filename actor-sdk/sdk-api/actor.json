@@ -22,6 +22,14 @@
     {
       "type": "int32",
       "alias": "sec"
+    },
+    {
+      "type": "int32",
+      "alias": "userId"
+    },
+    {
+      "type": "int32",
+      "alias": "groupId"
     }
   ],
   "sections": [
@@ -1399,7 +1407,10 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "id"
               },
@@ -1546,7 +1557,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1585,7 +1599,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1625,7 +1642,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1659,7 +1679,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1696,7 +1719,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1736,7 +1762,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1773,7 +1802,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1810,7 +1842,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -1847,7 +1882,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -2411,7 +2449,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -2449,7 +2490,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -2541,7 +2585,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -2587,7 +2634,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int32"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 1,
                 "name": "uids"
@@ -2613,7 +2663,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int32"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 1,
                 "name": "uids"
@@ -2717,7 +2770,10 @@
               {
                 "type": {
                   "type": "list",
-                  "childType": "int32"
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
                 },
                 "id": 2,
                 "name": "mentions"
@@ -2843,7 +2899,10 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "invitedUid"
               }
@@ -2885,7 +2944,10 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "kickedUid"
               }
@@ -3002,7 +3064,10 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               }
@@ -3715,7 +3780,10 @@
                 "name": "peer"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "senderUid"
               },
@@ -4233,7 +4301,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "senderUid"
               },
@@ -4441,7 +4512,10 @@
                 "name": "sortDate"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 5,
                 "name": "senderUid"
               },
@@ -4652,13 +4726,67 @@
           }
         },
         {
+          "type": "response",
+          "content": {
+            "name": "DialogsOrder",
+            "header": 235,
+            "doc": [
+              "Dialogs order response",
+              {
+                "type": "reference",
+                "argument": "seq",
+                "category": "full",
+                "description": "  update seq"
+              },
+              {
+                "type": "reference",
+                "argument": "state",
+                "category": "full",
+                "description": "  update state"
+              },
+              {
+                "type": "reference",
+                "argument": "groups",
+                "category": "full",
+                "description": "  Update groups"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
+                "id": 2,
+                "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "DialogGroup"
+                  }
+                },
+                "id": 3,
+                "name": "groups"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "HideDialog",
             "header": 231,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "DialogsOrder"
             },
             "doc": [
               "Hide Dialog from grouped list",
@@ -4688,7 +4816,7 @@
             "header": 232,
             "response": {
               "type": "reference",
-              "name": "Seq"
+              "name": "DialogsOrder"
             },
             "doc": [
               "Show Dialog in grouped list"
@@ -4757,7 +4885,7 @@
                 "type": "reference",
                 "argument": "isMember",
                 "category": "full",
-                "description": "  is member of group"
+                "description": "  is member of group (deprecated)"
               },
               {
                 "type": "reference",
@@ -4779,33 +4907,36 @@
               },
               {
                 "type": "reference",
-                "argument": "disableEdit",
-                "category": "full",
-                "description": "  Disabling changing name and avatar of group"
+                "argument": "ext",
+                "category": "hidden",
+                "description": "  Group extension Data"
               },
               {
                 "type": "reference",
-                "argument": "disableInviteView",
-                "category": "full",
-                "description": "  Disabling allowing invite to group to non-admins"
+                "argument": "isAdmin",
+                "category": "hidden",
+                "description": "  Is current user admin (deprecated)"
               },
               {
                 "type": "reference",
-                "argument": "disableIntegrationView",
+                "argument": "isHidden",
                 "category": "full",
-                "description": "  Disabling allowing to get integration token to non-admins"
+                "description": "  Is group hidden"
               },
               {
                 "type": "reference",
-                "argument": "extensions",
+                "argument": "groupType",
                 "category": "full",
-                "description": "  Group extensions"
+                "description": "  Group type"
               }
             ],
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "id"
               },
@@ -4833,10 +4964,14 @@
               {
                 "type": "bool",
                 "id": 6,
-                "name": "isMember"
+                "name": "isMember",
+                "deprecated": "true"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 8,
                 "name": "creatorUid"
               },
@@ -4864,48 +4999,9 @@
                   "type": "opt",
                   "childType": "bool"
                 },
-                "id": 11,
-                "name": "disableEdit"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 12,
-                "name": "disableInviteView"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 13,
-                "name": "disableInviteRevoke"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 14,
-                "name": "disableIntegrationView"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
-                "id": 15,
-                "name": "disableIntegrationsRevoke"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": "bool"
-                },
                 "id": 16,
-                "name": "isAdmin"
+                "name": "isAdmin",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -4933,14 +5029,22 @@
               },
               {
                 "type": {
-                  "type": "list",
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 23,
+                "name": "groupType"
+              },
+              {
+                "type": {
+                  "type": "opt",
                   "childType": {
                     "type": "struct",
-                    "childType": "Extension"
+                    "childType": "MapValue"
                   }
                 },
-                "id": 21,
-                "name": "extensions"
+                "id": 22,
+                "name": "ext"
               }
             ]
           }
@@ -4979,12 +5083,18 @@
             "expandable": "true",
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "inviterUid"
               },
@@ -5007,7 +5117,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "CreateGroup",
+            "name": "CreateGroupObsolete",
             "header": 65,
             "response": {
               "type": "anonymous",
@@ -5086,7 +5196,7 @@
               ]
             },
             "doc": [
-              "Creating group chat",
+              "Creating group chat (obsolete)",
               {
                 "type": "reference",
                 "argument": "rid",
@@ -5097,24 +5207,12 @@
                 "type": "reference",
                 "argument": "title",
                 "category": "full",
-                "description": "Group title"
-              },
-              {
-                "type": "reference",
-                "argument": "users",
-                "category": "compact",
-                "description": "Members of group"
-              },
-              {
-                "type": "reference",
-                "argument": "title",
-                "category": "full",
                 "description": "Title of new group"
               },
               {
                 "type": "reference",
                 "argument": "users",
-                "category": "full",
+                "category": "compact",
                 "description": "Members of new group"
               }
             ],
@@ -5142,6 +5240,164 @@
                 },
                 "id": 3,
                 "name": "users"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MapValue"
+                },
+                "id": 4,
+                "name": "userData"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CreateGroup",
+            "header": 230,
+            "response": {
+              "type": "anonymous",
+              "header": 216,
+              "doc": [
+                "Created group",
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Update Seq"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "compact",
+                  "description": "  Update state"
+                },
+                {
+                  "type": "reference",
+                  "argument": "group",
+                  "category": "full",
+                  "description": "  Created group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Referenced users"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "int32",
+                  "id": 1,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 2,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Group"
+                  },
+                  "id": 3,
+                  "name": "group"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 4,
+                  "name": "users"
+                }
+              ]
+            },
+            "doc": [
+              "Creating group chat",
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random Id for avoiding double create"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "Group Title"
+              },
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "hidden",
+                "description": "Members of group"
+              },
+              {
+                "type": "reference",
+                "argument": "groupType",
+                "category": "hidden",
+                "description": "Group Type. 'public' for public groups"
+              },
+              {
+                "type": "reference",
+                "argument": "userData",
+                "category": "hidden",
+                "description": "Group external data"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 1,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "UserOutPeer"
+                  }
+                },
+                "id": 3,
+                "name": "users"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 5,
+                "name": "groupType"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MapValue"
+                  }
+                },
+                "id": 4,
+                "name": "userData"
               }
             ]
           }
@@ -5154,6 +5410,45 @@
             "response": {
               "type": "anonymous",
               "header": 200,
+              "doc": [
+                "Joined group",
+                {
+                  "type": "reference",
+                  "argument": "group",
+                  "category": "full",
+                  "description": "  Joined group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Referenced users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "rid",
+                  "category": "full",
+                  "description": "  Rid of join message"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Seq of Update"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "full",
+                  "description": "  State of Update"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Date of update"
+                }
+              ],
               "attributes": [
                 {
                   "type": {
@@ -5206,11 +5501,11 @@
               ]
             },
             "doc": [
-              "Join Public group",
+              "Join random group by peer id",
               {
                 "type": "reference",
                 "argument": "peer",
-                "category": "hidden",
+                "category": "full",
                 "description": "Public group peer"
               }
             ],
@@ -5829,7 +6124,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5842,7 +6140,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 5,
                 "name": "inviteUid"
               },
@@ -5897,7 +6198,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5910,12 +6214,18 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 3,
                 "name": "inviterUid"
               },
@@ -5964,7 +6274,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -5977,7 +6290,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -6032,7 +6348,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6045,12 +6364,18 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 3,
                 "name": "kickerUid"
               },
@@ -6087,7 +6412,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6145,7 +6473,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6158,7 +6489,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -6218,7 +6552,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6231,7 +6568,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 3,
                 "name": "uid"
               },
@@ -6276,7 +6616,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6331,7 +6674,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -6344,7 +6690,10 @@
                 "name": "rid"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -7289,7 +7638,10 @@
                 "name": "peer"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -7340,7 +7692,10 @@
                 "name": "peer"
               },
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 2,
                 "name": "uid"
               },
@@ -7371,7 +7726,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               }
@@ -7394,7 +7752,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               }
@@ -7423,7 +7784,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -7460,7 +7824,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -8634,7 +9001,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
                 "id": 1,
                 "name": "uid"
               },
@@ -8667,7 +9037,10 @@
             ],
             "attributes": [
               {
-                "type": "int32",
+                "type": {
+                  "type": "alias",
+                  "childType": "groupId"
+                },
                 "id": 1,
                 "name": "groupId"
               },
@@ -9313,112 +9686,6 @@
                 },
                 "id": 1,
                 "name": "counters"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "title": "Binary Diffs",
-      "package": "binary",
-      "doc": [
-        "Package contains structs for low-level protobuf differences."
-      ],
-      "items": [
-        {
-          "type": "struct",
-          "content": {
-            "name": "ObjectPatch",
-            "doc": [
-              "Main object patch description",
-              {
-                "type": "reference",
-                "argument": "rules",
-                "category": "full",
-                "description": "  Rules of patch"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "Rule"
-                  }
-                },
-                "id": 1,
-                "name": "rules"
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "Rule",
-            "doc": [
-              "Rule for changing protobuf objects",
-              {
-                "type": "reference",
-                "argument": "action",
-                "category": "full",
-                "description": "  Action of Rule"
-              },
-              {
-                "type": "reference",
-                "argument": "longValues",
-                "category": "compact",
-                "description": "  Long values for protobuf field"
-              },
-              {
-                "type": "reference",
-                "argument": "rawValues",
-                "category": "compact",
-                "description": "  Bytes values for protobuf field"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "enum",
-                  "childType": "Action"
-                },
-                "id": 1,
-                "name": "action"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": "int64"
-                },
-                "id": 2,
-                "name": "longValues"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": "bytes"
-                },
-                "id": 3,
-                "name": "rawValues"
-              }
-            ]
-          }
-        },
-        {
-          "type": "enum",
-          "content": {
-            "name": "Action",
-            "values": [
-              {
-                "name": "Remove",
-                "id": 1
-              },
-              {
-                "name": "AddOrReplace",
-                "id": 2
               }
             ]
           }
