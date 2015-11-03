@@ -181,10 +181,10 @@ object DialogRepo {
   }
 
   def hide(userId: Int, peer: models.Peer) =
-    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.isHidden).update(false)
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.isHidden).update(true)
 
   def show(userId: Int, peer: models.Peer) =
-    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.isHidden).update(true)
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.isHidden).update(false)
 
   def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) =
     byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastMessageDate).update(lastMessageDate)
