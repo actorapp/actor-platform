@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service
 
 import akka.actor.ActorSystem
-import im.actor.api.rpc.{ ClientData, _ }
+import im.actor.api.rpc._
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.search._
@@ -27,6 +27,7 @@ final class SearchServiceImpl(implicit system: ActorSystem) extends SearchServic
       val (peerTypes, texts) = query.foldLeft(Set.empty[ApiSearchPeerType.Value], Set.empty[String]) {
         case ((pts, txts), ApiSearchPieceText(t))          ⇒ (pts, txts + t)
         case ((pts, txts), ApiSearchPeerTypeCondition(pt)) ⇒ (pts + pt, txts)
+        case ((pts, txts), _)                              ⇒ (pts, txts)
       }
 
       texts.toList match {
@@ -36,6 +37,8 @@ final class SearchServiceImpl(implicit system: ActorSystem) extends SearchServic
       }
     }
   }
+
+  override def jhandleMessageSearch(query: ApiSearchCondition, clientData: ClientData): Future[HandlerResult[ResponseMessageSearch]] = Future.failed(new RuntimeException("Not implemented"))
 
   private def searchResult(pts: IndexedSeq[ApiSearchPeerType.Value], text: Option[String])(implicit client: AuthorizedClientData): Future[HandlerResult[ResponsePeerSearch]] = {
     for {
