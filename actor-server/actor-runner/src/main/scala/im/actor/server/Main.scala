@@ -11,7 +11,7 @@ import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
-import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
 import im.actor.server.api.rpc.service.SearchServiceImpl
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
@@ -111,7 +111,7 @@ object Main extends App {
         InternalCodeActivation.newContext(
           activationConfig,
           new TelesignSmsEngine(telesignClient),
-          new TelesignCallEngine((telesignClient)),
+          new TelesignCallEngine(telesignClient),
           new SmtpEmailSender(emailConfig)
         )
       case "actor-activation" ⇒ new GateCodeActivation(gateConfig)
@@ -147,7 +147,7 @@ object Main extends App {
     system.log.warning("Starting ActorBot")
     ActorBot.start()
 
-    system.actorOf(RpcApiService.props(services), "rpcApiService")
+    RpcApiExtension(system).register(services)
 
     ActorCliService.start(system)
 
