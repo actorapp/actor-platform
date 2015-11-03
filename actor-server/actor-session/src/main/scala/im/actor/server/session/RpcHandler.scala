@@ -5,7 +5,7 @@ import akka.pattern.pipe
 import akka.stream.actor._
 import im.actor.api.rpc.RpcInternalError
 import im.actor.server.api.rpc.RpcApiService.RpcResponse
-import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
+import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService, RpcResultCodec }
 import im.actor.server.mtproto.protocol.{ ProtoMessage, RpcResponseBox }
 import im.actor.util.cache.CacheHelpers._
 import scodec.bits._
@@ -29,13 +29,13 @@ private[session] object RpcHandler {
 }
 
 private[session] object RequestHandler {
-  private[session] def props(promise: Promise[RpcApiService.RpcResponse], service: ActorSelection, request: RpcApiService.HandleRpcRequest) =
+  private[session] def props(promise: Promise[RpcApiService.RpcResponse], service: ActorRef, request: RpcApiService.HandleRpcRequest) =
     Props(classOf[RequestHandler], promise, service, request)
 }
 
 private[session] class RequestHandler(
   promise: Promise[RpcApiService.RpcResponse],
-  service: ActorSelection,
+  service: ActorRef,
   request: RpcApiService.HandleRpcRequest
 )
   extends Actor with ActorLogging {
@@ -73,7 +73,7 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[Pr
 
   private implicit val ec = context.dispatcher
 
-  private[this] val rpcApiService: ActorSelection = context.actorSelection("/user/rpcApiService")
+  private[this] val rpcApiService = RpcApiExtension(context.system).serviceRef
 
   def receive = subscriber.orElse(publisher).orElse {
     case unmatched ⇒

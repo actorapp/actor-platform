@@ -2,16 +2,15 @@ package im.actor.server.session
 
 import akka.actor._
 import akka.testkit.TestProbe
-import akka.util.Timeout
 import com.google.protobuf.ByteString
-import im.actor.api.rpc.{ Request, RpcRequest, RpcResult }
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
+import im.actor.api.rpc.{ Request, RpcRequest, RpcResult }
 import im.actor.server
 import im.actor.server._
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
-import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
+import im.actor.server.api.rpc.{ RpcApiExtension, RpcResultCodec }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
@@ -58,7 +57,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected val sequenceConfig = SequenceServiceConfig.load.toOption.get
   protected val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
-  system.actorOf(RpcApiService.props(Seq(authService, sequenceService)), "rpcApiService")
+  RpcApiExtension(system).register(Seq(authService, sequenceService))
 
   protected def createAuthId(): Long = {
     val authId = Random.nextLong()
