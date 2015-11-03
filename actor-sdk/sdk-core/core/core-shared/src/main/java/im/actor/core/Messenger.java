@@ -703,6 +703,17 @@ public class Messenger {
     }
 
     /**
+     * Hide chat
+     *
+     * @param peer destination peer
+     * @return Command for execution
+     */
+    @ObjectiveCName("hideChatCommandWithPeer:")
+    public Command<Boolean> hideChat(Peer peer) {
+        return modules.getMessagesModule().hideChat(peer);
+    }
+
+    /**
      * Save message draft
      *
      * @param peer  destination peer
