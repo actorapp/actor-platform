@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Actor Core</title>
+
+    <script type="text/javascript" language="javascript"
+            src="actor/actor.nocache.js"></script>
+</head>
+<body>
+<h1>Look at console!</h1>
+<script type="text/javascript" language="javascript">
+    window.jsAppLoaded = function() {
+        window.messenger = new actor.ActorApp()
+        console.log('Messenger created. Check out window.messenger object')
+    }
+</script>
+</body>
+</html>
