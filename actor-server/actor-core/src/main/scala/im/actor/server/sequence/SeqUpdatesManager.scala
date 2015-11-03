@@ -12,8 +12,8 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
-import im.actor.server.models.sequence
-import im.actor.server.{ models, persist ⇒ p }
+import im.actor.server.model.sequence
+import im.actor.server.{ model, persist ⇒ p }
 import slick.dbio.DBIO
 
 import scala.annotation.tailrec
@@ -95,13 +95,13 @@ object SeqUpdatesManager {
 
   def setPushCredentials(
     authId: Long,
-    creds:  models.push.PushCredentials
+    creds:  model.push.PushCredentials
   )(implicit system: ActorSystem): Unit = {
     val ext = SeqUpdatesExtension(system)
     val msg = creds match {
-      case c: models.push.GooglePushCredentials ⇒
+      case c: model.push.GooglePushCredentials ⇒
         PushCredentialsUpdated(authId).withGoogle(GooglePushCredentials(c.projectId, c.regId))
-      case c: models.push.ApplePushCredentials ⇒
+      case c: model.push.ApplePushCredentials ⇒
         PushCredentialsUpdated(authId).withApple(ApplePushCredentials(c.apnsKey, ByteString.copyFrom(c.token)))
     }
 
@@ -125,8 +125,8 @@ object SeqUpdatesManager {
     }
   }
 
-  def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
-    def run(state: Long, acc: Vector[models.sequence.SeqUpdate], currentSize: Long): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
+  def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[model.sequence.SeqUpdate], Boolean)] = {
+    def run(state: Long, acc: Vector[model.sequence.SeqUpdate], currentSize: Long): DBIO[(Vector[model.sequence.SeqUpdate], Boolean)] = {
       p.sequence.SeqUpdateRepo.findAfter(authId, state).flatMap { updates ⇒
         if (updates.isEmpty) {
           DBIO.successful(acc → false)

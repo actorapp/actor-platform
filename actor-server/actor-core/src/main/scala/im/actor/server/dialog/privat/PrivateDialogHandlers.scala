@@ -6,7 +6,7 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.dialog._
 import im.actor.server.event.TSEvent
 import im.actor.server.misc.UpdateCounters
-import im.actor.server.models
+import im.actor.server.model
 import im.actor.server.persist.HistoryMessage
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
@@ -38,7 +38,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
         for {
           SeqState(seq, state) ← deliveryExt(senderUserId).senderDelivery(senderUserId, senderAuthId, privatePeerStruct(userState.peerId), randomId, dateMillis, message, isFat)
           _ = recordRelation(senderUserId, userState.peerId)
-          _ ← db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userState.peerId), date, randomId, message.header, message.toByteArray))
+          _ ← db.run(writeHistoryMessage(model.Peer.privat(senderUserId), model.Peer.privat(userState.peerId), date, randomId, message.header, message.toByteArray))
           _ ← deliveryExt(userState.peerId).receiverDelivery(userState.peerId, senderUserId, privatePeerStruct(senderUserId), randomId, dateMillis, message, isFat)
         } yield SeqStateDate(seq, state, dateMillis)
       } recover {
@@ -63,9 +63,9 @@ trait PrivateDialogHandlers extends UpdateCounters {
       message match {
         case ApiServiceMessage(_, Some(ApiServiceExContactRegistered(userId))) ⇒
           db.run(HistoryMessage.create(
-            models.HistoryMessage(
+            model.HistoryMessage(
               userId = userState.peerId,
-              peer = models.Peer.privat(userId),
+              peer = model.Peer.privat(userId),
               date = date,
               senderUserId = userId,
               randomId = randomId,
@@ -76,8 +76,8 @@ trait PrivateDialogHandlers extends UpdateCounters {
           ))
         case _ ⇒
           db.run(writeHistoryMessage(
-            models.Peer.privat(senderUserId),
-            models.Peer.privat(userState.peerId),
+            model.Peer.privat(senderUserId),
+            model.Peer.privat(userState.peerId),
             date,
             randomId,
             message.header,
@@ -101,7 +101,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
       val update = UpdateMessageReceived(privatePeerStruct(receiverUserId), date, now)
       for {
         _ ← userExt.broadcastUserUpdate(userState.peerId, update, None, isFat = false, deliveryId = None)
-        _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userState.peerId), new DateTime(date)))
+        _ ← db.run(markMessagesReceived(model.Peer.privat(receiverUserId), model.Peer.privat(userState.peerId), new DateTime(date)))
       } yield MessageReceivedAck()
     } else {
       Future.successful(MessageReceivedAck())
@@ -122,7 +122,7 @@ trait PrivateDialogHandlers extends UpdateCounters {
       context become working(updatedState(TSEvent(new DateTime(now), LastReadDate(date, readerUserId)), state))
 
       for {
-        _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userState.peerId), new DateTime(date)))
+        _ ← db.run(markMessagesRead(model.Peer.privat(readerUserId), model.Peer.privat(userState.peerId), new DateTime(date)))
         _ ← deliveryExt(userState.peerId).authorRead(readerUserId, userState.peerId, date, now)
         _ ← deliveryExt(readerUserId).readerRead(readerUserId, readerAuthId, userState.peerId, date)
       } yield MessageReadAck()

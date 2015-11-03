@@ -15,7 +15,7 @@ import im.actor.server.dialog.DialogCommands._
 import im.actor.server.dialog.group.GroupDialogRegion
 import im.actor.server.dialog.privat.PrivateDialogRegion
 import im.actor.server.group.{ GroupExtension, GroupUtils }
-import im.actor.server.models.{ Peer, PeerType, Dialog }
+import im.actor.server.model.{ Peer, PeerType, Dialog }
 import im.actor.server.persist.{ HistoryMessage, DialogRepo }
 import im.actor.server.sequence.SeqStateDate
 import org.joda.time.DateTime

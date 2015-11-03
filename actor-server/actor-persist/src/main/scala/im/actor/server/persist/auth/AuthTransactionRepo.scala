@@ -5,8 +5,8 @@ import java.time.{ ZoneOffset, LocalDateTime }
 import scala.concurrent.ExecutionContext
 
 import im.actor.server.db.ActorPostgresDriver.api._
-import im.actor.server.models
-import im.actor.server.models.AuthTransactionChildren
+import im.actor.server.model
+import im.actor.server.model.AuthTransactionChildren
 
 private[auth] abstract class AuthTransactionBase[T](tag: Tag, tname: String) extends Table[T](tag, tname) {
   def transactionHash = column[String]("transaction_hash", O.PrimaryKey)
@@ -20,7 +20,7 @@ private[auth] abstract class AuthTransactionBase[T](tag: Tag, tname: String) ext
   def deletedAt = column[Option[LocalDateTime]]("deleted_at")
 }
 
-final class AuthTransactionTable(tag: Tag) extends AuthTransactionBase[models.AuthTransaction](tag, "auth_transactions") {
+final class AuthTransactionTable(tag: Tag) extends AuthTransactionBase[model.AuthTransaction](tag, "auth_transactions") {
   def * = (
     transactionHash,
     appId,
@@ -31,7 +31,7 @@ final class AuthTransactionTable(tag: Tag) extends AuthTransactionBase[models.Au
     deviceInfo,
     isChecked,
     deletedAt
-  ) <> (models.AuthTransaction.tupled, models.AuthTransaction.unapply)
+  ) <> (model.AuthTransaction.tupled, model.AuthTransaction.unapply)
 }
 
 object AuthTransactionRepo {

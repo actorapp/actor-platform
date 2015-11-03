@@ -4,26 +4,26 @@ import java.time.LocalDateTime
 
 import im.actor.server.db.ActorPostgresDriver.api._
 
-import im.actor.server.models
+import im.actor.server.model
 
-final class AuthCodeTable(tag: Tag) extends Table[models.AuthCode](tag, "auth_codes") {
+final class AuthCodeTable(tag: Tag) extends Table[model.AuthCode](tag, "auth_codes") {
   def transactionHash = column[String]("transaction_hash", O.PrimaryKey)
   def code = column[String]("code")
   def attempts = column[Int]("attempts")
   def createdAt = column[LocalDateTime]("created_at")
   def isDeleted = column[Boolean]("is_deleted")
 
-  def * = (transactionHash, code, attempts, createdAt, isDeleted) <> (models.AuthCode.tupled, models.AuthCode.unapply)
+  def * = (transactionHash, code, attempts, createdAt, isDeleted) <> (model.AuthCode.tupled, model.AuthCode.unapply)
 }
 
 object AuthCodeRepo {
   val codes = TableQuery[AuthCodeTable]
 
   def create(transactionHash: String, code: String) =
-    codes += models.AuthCode(transactionHash, code)
+    codes += model.AuthCode(transactionHash, code)
 
   def createOrUpdate(transactionHash: String, code: String) =
-    codes.insertOrUpdate(models.AuthCode(transactionHash, code))
+    codes.insertOrUpdate(model.AuthCode(transactionHash, code))
 
   def findByTransactionHash(transactionHash: String) =
     codes.filter(c ⇒ c.transactionHash === transactionHash && c.isDeleted === false).result.headOption

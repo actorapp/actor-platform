@@ -14,7 +14,7 @@ import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActiv
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
-import im.actor.server.models.contact.UserContact
+import im.actor.server.model.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -936,8 +936,8 @@ final class AuthServiceSpec
       val sessionId = createSessionId()
       implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
-      SeqUpdatesManager.setPushCredentials(authId, models.push.GooglePushCredentials(authId, 22L, "hello"))
-      SeqUpdatesManager.setPushCredentials(authId, models.push.ApplePushCredentials(authId, 22, "hello".getBytes()))
+      SeqUpdatesManager.setPushCredentials(authId, model.push.GooglePushCredentials(authId, 22L, "hello"))
+      SeqUpdatesManager.setPushCredentials(authId, model.push.ApplePushCredentials(authId, 22, "hello".getBytes()))
 
       //let seqUpdateManager register credentials
       Thread.sleep(1000L)

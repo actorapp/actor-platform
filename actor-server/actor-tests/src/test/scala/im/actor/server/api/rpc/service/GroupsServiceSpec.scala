@@ -184,7 +184,7 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+    whenReady(db.run(persist.HistoryMessage.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
       serviceMessages should have length 1
       serviceMessages
         .map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
@@ -194,7 +194,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 2
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
@@ -202,7 +202,7 @@ final class GroupsServiceSpec
             Right(GroupServiceMessages.groupCreated)
           )
       }
-      whenReady(db.run(persist.HistoryMessage.find(user2.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user2.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 1
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(Right(GroupServiceMessages.userInvited(user2.id)))
@@ -215,7 +215,7 @@ final class GroupsServiceSpec
 
       Thread.sleep(500)
 
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 3
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
@@ -224,7 +224,7 @@ final class GroupsServiceSpec
             Right(GroupServiceMessages.groupCreated)
           )
       }
-      whenReady(db.run(persist.HistoryMessage.find(user2.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user2.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 2
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
@@ -236,7 +236,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Not fun group")) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 4
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.changedTitle("Not fun group"))
       }
@@ -244,7 +244,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong())(ClientData(authId2, sessionId, Some(user2.id)))) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 5
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userLeft(user2.id))
       }
@@ -252,7 +252,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 6
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userInvited(user2.id))
       }
@@ -260,7 +260,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 7
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userKicked(user2.id))
       }

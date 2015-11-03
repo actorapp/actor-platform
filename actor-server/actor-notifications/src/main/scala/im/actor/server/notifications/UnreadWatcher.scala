@@ -3,9 +3,9 @@ package im.actor.server.notifications
 import akka.actor.ActorSystem
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
-import im.actor.server.models.PeerType
+import im.actor.server.model.PeerType
 import im.actor.server.user.UserExtension
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -44,7 +44,7 @@ private class UnreadWatcher()(implicit system: ActorSystem, config: UnreadWatche
     } yield senderAndCount.flatten
   }
 
-  private def getNameByPeer(userId: Int, peer: models.Peer): Future[Option[String]] = {
+  private def getNameByPeer(userId: Int, peer: model.Peer): Future[Option[String]] = {
     (if (peer.typ == PeerType.Private)
       UserExtension(system).getApiStruct(peer.id, userId, 0L) map (u ⇒ u.localName.getOrElse(u.name))
     else GroupExtension(system).getApiStruct(peer.id, userId) map (_.title)) map (Some(_))

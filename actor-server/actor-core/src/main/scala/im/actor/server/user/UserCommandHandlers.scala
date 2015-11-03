@@ -16,13 +16,13 @@ import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, ImageUtils }
-import im.actor.server.models.contact.{ UserContact, UserEmailContact, UserPhoneContact }
+import im.actor.server.model.contact.{ UserContact, UserEmailContact, UserPhoneContact }
 import im.actor.server.persist.contact.{ UserContactRepo, UserEmailContactRepo, UserPhoneContactRepo }
 import im.actor.server.persist.{ AuthSessionRepo, UserRepo }
 import im.actor.server.sequence.{ SeqUpdatesManager, SequenceErrors }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
-import im.actor.server.{ models, persist ⇒ p }
+import im.actor.server.{ model, persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -80,14 +80,14 @@ private[user] trait UserCommandHandlers {
         val user = UserBuilder(ts, e)
 
         persistStashingReply(createEvent, user, replyTo) { evt ⇒
-          val user = models.User(
+          val user = model.User(
             id = userId,
             accessSalt = accessSalt,
             nickname = nickname,
             name = name,
             countryCode = countryCode,
-            sex = models.Sex.fromInt(sex.id),
-            state = models.UserState.Registered,
+            sex = model.Sex.fromInt(sex.id),
+            state = model.UserState.Registered,
             createdAt = LocalDateTime.now(ZoneOffset.UTC),
             external = external,
             isBot = isBot
@@ -257,7 +257,7 @@ private[user] trait UserCommandHandlers {
 
   protected def updateAvatar(user: User, clientAuthId: Long, avatarOpt: Option[Avatar]): Unit = {
     persistReply(TSEvent(now(), UserEvents.AvatarUpdated(avatarOpt)), user) { evt ⇒
-      val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfUser, user.id, _)) getOrElse models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)
+      val avatarData = avatarOpt map (getAvatarData(model.AvatarData.OfUser, user.id, _)) getOrElse model.AvatarData.empty(model.AvatarData.OfUser, user.id.toLong)
 
       val update = UpdateUserAvatarChanged(user.id, avatarOpt)
 
