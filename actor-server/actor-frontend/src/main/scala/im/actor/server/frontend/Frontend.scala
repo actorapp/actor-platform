@@ -1,4 +1,4 @@
-package im.actor.server.api.frontend
+package im.actor.server.frontend
 
 import java.util.concurrent.atomic.AtomicLong
 

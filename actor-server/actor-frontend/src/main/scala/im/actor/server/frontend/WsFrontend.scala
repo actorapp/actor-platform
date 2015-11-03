@@ -1,4 +1,4 @@
-package im.actor.server.api.frontend
+package im.actor.server.frontend
 
 import akka.actor.ActorSystem
 import akka.event.Logging
