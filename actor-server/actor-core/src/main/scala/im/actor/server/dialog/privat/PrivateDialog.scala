@@ -11,7 +11,7 @@ import im.actor.api.rpc.peers.ApiPeerType
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.event.TSEvent
-import im.actor.server.models.{ Dialog, Peer, PeerType }
+import im.actor.server.model.{ Dialog, Peer, PeerType }
 import im.actor.server.office.ProcessorState
 import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqStateDate

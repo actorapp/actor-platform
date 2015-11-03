@@ -7,13 +7,13 @@ import com.google.android.gcm.server.Message
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.peers.ApiPeer
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 
 // FIXME: #perf pinned dispatcher
 private[sequence] class GooglePusher(pushManager: GooglePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   implicit val ec: ExecutionContext = system.dispatcher
 
-  def deliverGooglePush(creds: models.push.GooglePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[ApiPeer]): Unit = {
+  def deliverGooglePush(creds: model.push.GooglePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[ApiPeer]): Unit = {
     pushManager.getInstance(creds.projectId) match {
       case Some(gcmSender) ⇒
         system.log.debug("Delivering google push, authId: {}, seq: {}", authId, seq)
@@ -28,7 +28,7 @@ private[sequence] class GooglePusher(pushManager: GooglePushManager, db: Databas
               case Some(userId) ⇒
                 persist.AuthSessionRepo.findAppIdByAuthId(authId) flatMap {
                   case Some(appId) ⇒
-                    val category = models.AuthSession.appCategory(appId)
+                    val category = model.AuthSession.appCategory(appId)
                     val paramBase = s"category.${category}.notification"
 
                     (originPeerOpt match {

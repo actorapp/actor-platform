@@ -14,7 +14,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
 import im.actor.server.persist.UserRepo
 import im.actor.server.sequence.{ UpdateRefs, SeqUpdatesExtension, SeqState, SeqUpdatesManager }
-import im.actor.server.{ models, persist ⇒ p }
+import im.actor.server.{ model, persist ⇒ p }
 import im.actor.util.misc.IdUtils
 import slick.driver.PostgresDriver.api.Database
 
@@ -345,7 +345,7 @@ private[user] sealed trait AuthCommands {
     }
   }
 
-  def logout(session: models.AuthSession)(implicit db: Database): Future[Unit] = {
+  def logout(session: model.AuthSession)(implicit db: Database): Future[Unit] = {
     system.log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
 
     implicit val seqExt = SeqUpdatesExtension(system)

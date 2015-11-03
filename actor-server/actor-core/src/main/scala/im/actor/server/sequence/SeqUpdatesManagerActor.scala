@@ -20,7 +20,9 @@ import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
 import im.actor.server.persist.HistoryMessage
-import im.actor.server.{ models, persist ⇒ p }
+import im.actor.server.{ persist ⇒ p }
+import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel }
+import im.actor.server.model.sequence.{ SeqUpdate ⇒ SeqUpdateModel }
 
 trait SeqUpdatesManagerMessage {
   val authId: Long
@@ -34,8 +36,8 @@ private[sequence] object SeqUpdatesManagerActor {
   private case class Initialized(
     seq:            Int,
     timestamp:      Long,
-    googleCredsOpt: Option[models.push.GooglePushCredentials],
-    appleCredsOpt:  Option[models.push.ApplePushCredentials]
+    googleCredsOpt: Option[GooglePushCredentialsModel],
+    appleCredsOpt:  Option[ApplePushCredentialsModel]
   )
 
   def props(
@@ -78,8 +80,8 @@ private final class SeqUpdatesManagerActor(
   private[this] var lastTimestamp: Long = 0
   // TODO: feed this value from db on actor startup
   private[this] var consumers: Set[ActorRef] = Set.empty
-  private[this] var googleCredsOpt: Option[models.push.GooglePushCredentials] = None
-  private[this] var appleCredsOpt: Option[models.push.ApplePushCredentials] = None
+  private[this] var googleCredsOpt: Option[GooglePushCredentialsModel] = None
+  private[this] var appleCredsOpt: Option[ApplePushCredentialsModel] = None
 
   private[this] val applePusher = new ApplePusher(applePushManager, db)
   private[this] val googlePusher = new GooglePusher(googlePushManager, db)
@@ -118,11 +120,11 @@ private final class SeqUpdatesManagerActor(
     case p @ PushCredentialsUpdated(_, creds) ⇒
       creds match {
         case PushCredentialsUpdated.Credentials.Apple(ApplePushCredentials(apnsKey, token)) ⇒
-          val model = models.push.ApplePushCredentials(authId, apnsKey, token.toByteArray)
+          val model = ApplePushCredentialsModel(authId, apnsKey, token.toByteArray)
           appleCredsOpt = Some(model)
           db.run(setPushCredentials(model))
         case PushCredentialsUpdated.Credentials.Google(GooglePushCredentials(projectId, regId)) ⇒
-          val model = models.push.GooglePushCredentials(authId, projectId, regId)
+          val model = GooglePushCredentialsModel(authId, projectId, regId)
           googleCredsOpt = Some(model)
           db.run(setPushCredentials(model))
         case _ ⇒ // TODO: delete?
@@ -204,7 +206,7 @@ private final class SeqUpdatesManagerActor(
     def push(seq: Int, timestamp: Long): Future[Int] = {
       val UpdateRefs(userIds, groupIds) = refs
 
-      val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData.toByteArray, userIds.toSet, groupIds.toSet)
+      val seqUpdate = SeqUpdateModel(authId, timestamp, seq, header, serializedData.toByteArray, userIds.toSet, groupIds.toSet)
 
       ext.persistUpdate(seqUpdate)
         .map(_ ⇒ seq)

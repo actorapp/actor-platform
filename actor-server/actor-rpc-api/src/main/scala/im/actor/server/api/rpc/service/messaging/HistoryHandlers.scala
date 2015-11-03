@@ -11,7 +11,7 @@ import im.actor.server.group.GroupUtils
 import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserUtils
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import org.joda.time.DateTime
 import slick.dbio
 import slick.driver.PostgresDriver.api._
@@ -217,14 +217,14 @@ trait HistoryHandlers {
     }
   }
 
-  private def getDialogStruct(dialogModel: models.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialog] = {
+  private def getDialogStruct(dialogModel: model.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[ApiDialog] = {
     withHistoryOwner(dialogModel.peer, client.userId) { historyOwner ⇒
       for {
         messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
         unreadCount ← dialogExt.getUnreadCount(client.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield {
         val emptyMessageContent = ApiTextMessage(text = "", mentions = Vector.empty, ext = None)
-        val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
+        val messageModel = messageOpt.getOrElse(model.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
         val message = messageModel.asStruct(dialogModel.lastReceivedAt, dialogModel.lastReadAt)
 
         ApiDialog(

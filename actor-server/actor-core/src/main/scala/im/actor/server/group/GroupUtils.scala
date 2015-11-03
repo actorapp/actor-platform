@@ -7,7 +7,7 @@ import im.actor.api.rpc.pubgroups.ApiPublicGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.file.ImageUtils
 import im.actor.server.user.UserUtils
-import im.actor.server.{ ApiConversions, models, persist }
+import im.actor.server.{ ApiConversions, model, persist }
 import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
@@ -18,7 +18,7 @@ object GroupUtils {
   import ApiConversions._
   import ImageUtils._
 
-  def getPubgroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
+  def getPubgroupStructUnsafe(group: model.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
     for {
       membersIds ← persist.GroupUserRepo.findUserIds(group.id)
       userContactsIds ← persist.contact.UserContactRepo.findNotDeletedIds(senderUserId)
@@ -29,11 +29,11 @@ object GroupUtils {
     }
   }
 
-  def getPubgroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
+  def getPubgroupStructUnsafe(group: model.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
     getPubgroupStructUnsafe(group, clientData.userId)
   }
 
-  def withGroup[A](groupId: Int)(f: models.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
+  def withGroup[A](groupId: Int)(f: model.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
     persist.GroupRepo.find(groupId) flatMap {
       case Some(group) ⇒ f(group)
       case None        ⇒ DBIO.failed(new Exception(s"Group $groupId not found"))

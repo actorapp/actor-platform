@@ -6,7 +6,7 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
 import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
@@ -27,7 +27,7 @@ class PushServiceImpl(
   }
 
   override def jhandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val creds = models.push.GooglePushCredentials(clientData.authId, projectId, token)
+    val creds = model.push.GooglePushCredentials(clientData.authId, projectId, token)
     val action: DBIO[HandlerResult[ResponseVoid]] = for {
       _ ← persist.push.GooglePushCredentialsRepo.deleteByToken(token)
       _ ← DBIO.successful(SeqUpdatesManager.setPushCredentials(clientData.authId, creds))
@@ -39,7 +39,7 @@ class PushServiceImpl(
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
-        val creds = models.push.ApplePushCredentials(clientData.authId, apnsKey, tokenBytes)
+        val creds = model.push.ApplePushCredentials(clientData.authId, apnsKey, tokenBytes)
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← persist.push.ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← DBIO.successful(SeqUpdatesManager.setPushCredentials(clientData.authId, creds))

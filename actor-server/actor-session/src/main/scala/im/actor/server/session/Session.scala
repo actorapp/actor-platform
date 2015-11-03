@@ -18,7 +18,7 @@ import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
 import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.user.{ AuthEvents, UserExtension }
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import scodec.DecodeResult
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
@@ -115,7 +115,7 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
             persist.SessionInfoRepo.find(authId, sessionId) flatMap {
               case s @ Some(sessionInfoModel) ⇒ DBIO.successful(s)
               case None ⇒
-                val sessionInfoModel = models.SessionInfo(authId, sessionId, authIdModel.userId)
+                val sessionInfoModel = model.SessionInfo(authId, sessionId, authIdModel.userId)
 
                 for {
                   _ ← persist.SessionInfoRepo.create(sessionInfoModel)
@@ -139,7 +139,7 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
   }
 
   def waitingForSessionInfo(authId: Long, sessionId: Long, subscribe: DistributedPubSubMediator.Subscribe): Receive = {
-    case info: models.SessionInfo ⇒
+    case info: model.SessionInfo ⇒
       log.debug("SessionInfo: {}", info)
       optUserId = info.optUserId
       unstashAll()

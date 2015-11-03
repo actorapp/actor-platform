@@ -4,7 +4,7 @@ import org.joda.time.DateTime
 import slick.dbio.Effect.{ Read, Write }
 import slick.profile.{ SqlAction, FixedSqlAction }
 
-import im.actor.server.models.presences.{ UserPresence ⇒ UserPresenceModel }
+import im.actor.server.model.presences.{ UserPresence ⇒ UserPresenceModel }
 import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 

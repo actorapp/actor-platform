@@ -10,7 +10,7 @@ import akka.util.Timeout
 import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
 import im.actor.server.activation._
 import im.actor.server.email.{ EmailSender, Content, Message }
-import im.actor.server.models.AuthCode
+import im.actor.server.model.AuthCode
 import im.actor.server.persist
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
 import im.actor.util.misc.EmailUtils.isTestEmail

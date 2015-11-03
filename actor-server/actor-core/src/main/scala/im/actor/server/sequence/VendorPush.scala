@@ -6,13 +6,13 @@ import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 
 private[sequence] trait VendorPush {
-  protected def setPushCredentials(creds: models.push.ApplePushCredentials): DBIO[Int] =
+  protected def setPushCredentials(creds: model.push.ApplePushCredentials): DBIO[Int] =
     persist.push.ApplePushCredentialsRepo.createOrUpdate(creds)
 
-  protected def setPushCredentials(creds: models.push.GooglePushCredentials): DBIO[Int] =
+  protected def setPushCredentials(creds: model.push.GooglePushCredentials): DBIO[Int] =
     persist.push.GooglePushCredentialsRepo.createOrUpdate(creds)
 
   protected def deletePushCredentials(authId: Long)(implicit ec: ExecutionContext): DBIO[Int] =
