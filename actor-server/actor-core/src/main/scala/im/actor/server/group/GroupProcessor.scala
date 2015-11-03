@@ -5,6 +5,7 @@ import akka.cluster.sharding.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
+import im.actor.api.rpc.collections.{ ApiMapValueItem, ApiMapValue }
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
@@ -49,7 +50,7 @@ private[group] case class Group(
   topic:           Option[String],
   isHidden:        Boolean,
   isHistoryShared: Boolean,
-  extensions:      Seq[ApiExtension]
+  extensions:      Seq[ApiMapValue]
 ) extends ProcessorState
 
 trait GroupCommand {
@@ -265,14 +266,14 @@ private[group] final class GroupProcessor
       about = None,
       creatorUserId = evt.creatorUserId,
       createdAt = ts,
-      members = (evt.userIds map (userId ⇒ (userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId))))).toMap,
+      members = (evt.userIds map (userId ⇒ userId → Member(userId, evt.creatorUserId, ts, isAdmin = (userId == evt.creatorUserId)))).toMap,
       bot = None,
       invitedUserIds = evt.userIds.filterNot(_ == evt.creatorUserId).toSet,
       avatar = None,
       topic = None,
       isHidden = evt.isHidden.getOrElse(false),
       isHistoryShared = evt.isHistoryShared.getOrElse(false),
-      extensions = evt.extensions
+      extensions = Vector.empty
     )
   }
 

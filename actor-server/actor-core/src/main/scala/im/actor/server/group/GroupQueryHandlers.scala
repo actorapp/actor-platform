@@ -33,16 +33,12 @@ private[group] trait GroupQueryHandlers extends GroupCommandHelpers {
       creatorUserId = group.creatorUserId,
       members = apiMembers,
       createDate = group.createdAt.getMillis,
-      disableEdit = None,
-      disableInviteView = None,
-      disableInviteRevoke = None,
-      disableIntegrationView = None,
-      disableIntegrationsRevoke = None,
       isAdmin = Some(isAdmin(group, clientUserId)),
       theme = group.topic,
       about = group.about,
       isHidden = Some(group.isHidden),
-      extensions = group.extensions.toVector
+      ext = None,
+      groupType = if (group.typ.isPublic) Some("public") else None
     )
 
     sender() ! GetApiStructResponse(struct)
