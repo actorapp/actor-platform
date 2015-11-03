@@ -6941,6 +6941,34 @@
           }
         },
         {
+          "type": "enum",
+          "content": {
+            "name": "SearchContentType",
+            "values": [
+              {
+                "name": "Any",
+                "id": 1
+              },
+              {
+                "name": "Text",
+                "id": 2
+              },
+              {
+                "name": "Links",
+                "id": 3
+              },
+              {
+                "name": "Documents",
+                "id": 4
+              },
+              {
+                "name": "Photos",
+                "id": 5
+              }
+            ]
+          }
+        },
+        {
           "type": "trait",
           "content": {
             "isContainer": "true",
@@ -6999,6 +7027,157 @@
                 "type": "string",
                 "id": 1,
                 "name": "query"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchAndCondition",
+            "doc": [
+              "Search AND condion",
+              {
+                "type": "reference",
+                "argument": "andQuery",
+                "category": "full",
+                "description": "  And Query"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 3
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "SearchCondition"
+                  }
+                },
+                "id": 1,
+                "name": "andQuery"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchOrCondition",
+            "doc": [
+              "Search OR condition",
+              {
+                "type": "reference",
+                "argument": "orQuery",
+                "category": "full",
+                "description": "  Or Query"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 4
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "SearchOrCondition"
+                  }
+                },
+                "id": 2,
+                "name": "orQuery"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchPeerCondition",
+            "doc": [
+              "Serch Peer condition",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Peer condition"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 5
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchPeerContentType",
+            "doc": [
+              "Search content type condition",
+              {
+                "type": "reference",
+                "argument": "contentType",
+                "category": "full",
+                "description": "  Content Type"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 6
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "SearchContentType"
+                },
+                "id": 1,
+                "name": "contentType"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "SearchSenderIdConfition",
+            "doc": [
+              "Searching sender uid condition",
+              {
+                "type": "reference",
+                "argument": "senderId",
+                "category": "full",
+                "description": "  sender UID"
+              }
+            ],
+            "trait": {
+              "name": "SearchCondition",
+              "key": 7
+            },
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 1,
+                "name": "senderId"
               }
             ]
           }
@@ -7190,8 +7369,8 @@
               {
                 "type": "reference",
                 "argument": "query",
-                "category": "hidden",
-                "description": "Search query. Warring not all combinations can be processed by server."
+                "category": "full",
+                "description": "Search query. Warring not all combinations can be processed by server. (acts as OR)"
               }
             ],
             "attributes": [
@@ -7202,6 +7381,192 @@
                     "type": "trait",
                     "childType": "SearchCondition"
                   }
+                },
+                "id": 1,
+                "name": "query"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MessageSearchResult",
+            "doc": [
+              "Message container",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Message Peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Message Random Id"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Message Date"
+              },
+              {
+                "type": "reference",
+                "argument": "senderId",
+                "category": "full",
+                "description": "  Message sender UID"
+              },
+              {
+                "type": "reference",
+                "argument": "content",
+                "category": "full",
+                "description": "  Message content"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 3,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "userId"
+                },
+                "id": 4,
+                "name": "senderId"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 5,
+                "name": "content"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "MessageSearchItem",
+            "doc": [
+              "Message Search result container"
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "MessageSearchResult"
+                },
+                "id": 1,
+                "name": "result"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageSearch",
+            "header": 217,
+            "response": {
+              "type": "anonymous",
+              "header": 218,
+              "doc": [
+                "Search Result",
+                {
+                  "type": "reference",
+                  "argument": "searchResults",
+                  "category": "full",
+                  "description": "  Search results"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "full",
+                  "description": "  Search users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "full",
+                  "description": "  Search groups"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "MessageSearchItem"
+                    }
+                  },
+                  "id": 1,
+                  "name": "searchResults"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 3,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Performing message search",
+              {
+                "type": "reference",
+                "argument": "query",
+                "category": "full",
+                "description": "Search query"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "SearchCondition"
                 },
                 "id": 1,
                 "name": "query"
