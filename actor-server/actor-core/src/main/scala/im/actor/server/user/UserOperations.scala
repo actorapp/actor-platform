@@ -4,6 +4,7 @@ import akka.actor.{ ActorRef, ActorSystem }
 import akka.cluster.pubsub.DistributedPubSub
 import akka.pattern.ask
 import akka.util.Timeout
+import im.actor.api.rpc.messaging.ApiDialogGroup
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
 import im.actor.api.rpc.peers.ApiPeer
