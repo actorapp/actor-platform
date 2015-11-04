@@ -143,7 +143,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     }
   }
 
-  override def jhandleCreateGroupObsolete(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], userData: ApiMapValue, clientData: ClientData): Future[HandlerResult[ResponseCreateGroupObsolete]] = {
+  override def jhandleCreateGroupObsolete(randomId: Long, title: String, users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroupObsolete]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withUserOutPeers(users) {
         withValidGroupTitle(title) { validTitle ⇒
