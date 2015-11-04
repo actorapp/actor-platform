@@ -101,7 +101,7 @@ object UserProcessor {
       11014 → classOf[UserQueries.GetLocalName],
       11015 → classOf[UserQueries.GetLocalNameResponse],
       11016 → classOf[UserQueries.GetName],
-      11016 → classOf[UserQueries.GetNameResponse],
+      11017 → classOf[UserQueries.GetNameResponse],
 
       12001 → classOf[UserEvents.AuthAdded],
       12002 → classOf[UserEvents.AuthRemoved],
