@@ -139,6 +139,7 @@ private[group] final class GroupProcessor
   protected val userExt = UserExtension(system)
   protected lazy val dialogExt = DialogExtension(system)
   protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
+  protected val seqUpdExt = SeqUpdatesExtension(system)
 
   protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
 
@@ -195,21 +196,21 @@ private[group] final class GroupProcessor
   }
 
   override def handleInitCommand: Receive = {
-    case Create(_, typ, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
-      create(groupId, typ, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
+    case Create(_, typ, creatorUserId, title, randomId, userIds) ⇒
+      create(groupId, typ, creatorUserId, title, randomId, userIds.toSet)
     case CreateInternal(_, typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions) ⇒
       createInternal(typ, creatorUserId, title, userIds, isHidden, isHistoryShared, extensions)
   }
 
   override def handleCommand(state: Group): Receive = {
-    case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
+    case Invite(_, inviteeUserId, inviterUserId, randomId) ⇒
       if (!hasMember(state, inviteeUserId)) {
         persist(TSEvent(now(), GroupEvents.UserInvited(inviteeUserId, inviterUserId))) { evt ⇒
           context become working(updatedState(evt, state))
 
           val replyTo = sender()
 
-          invite(state, inviteeUserId, inviterUserId, inviterAuthId, randomId, evt.ts) pipeTo replyTo
+          invite(state, inviteeUserId, inviterUserId, randomId, evt.ts) pipeTo replyTo
         }
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
@@ -223,18 +224,18 @@ private[group] final class GroupProcessor
       kick(state, kickedUserId, kickerUserId, kickerAuthId, randomId)
     case Leave(_, userId, authId, randomId) ⇒
       leave(state, userId, authId, randomId)
-    case UpdateAvatar(_, clientUserId, clientAuthId, avatarOpt, randomId) ⇒
-      updateAvatar(state, clientUserId, clientAuthId, avatarOpt, randomId)
-    case UpdateTitle(_, clientUserId, clientAuthId, title, randomId) ⇒
-      updateTitle(state, clientUserId, clientAuthId, title, randomId)
+    case UpdateAvatar(_, clientUserId, avatarOpt, randomId) ⇒
+      updateAvatar(state, clientUserId, avatarOpt, randomId)
+    case UpdateTitle(_, clientUserId, title, randomId) ⇒
+      updateTitle(state, clientUserId, title, randomId)
     case MakePublic(_, description) ⇒
       makePublic(state, description.getOrElse(""))
-    case ChangeTopic(_, clientUserId, clientAuthId, topic, randomId) ⇒
-      updateTopic(state, clientUserId, clientAuthId, topic, randomId)
-    case ChangeAbout(_, clientUserId, clientAuthId, about, randomId) ⇒
-      updateAbout(state, clientUserId, clientAuthId, about, randomId)
-    case MakeUserAdmin(_, clientUserId, clientAuthId, candidateId) ⇒
-      makeUserAdmin(state, clientUserId, clientAuthId, candidateId)
+    case ChangeTopic(_, clientUserId, topic, randomId) ⇒
+      updateTopic(state, clientUserId, topic, randomId)
+    case ChangeAbout(_, clientUserId, about, randomId) ⇒
+      updateAbout(state, clientUserId, about, randomId)
+    case MakeUserAdmin(_, clientUserId, candidateId) ⇒
+      makeUserAdmin(state, clientUserId, candidateId)
     case RevokeIntegrationToken(_, userId) ⇒
       revokeIntegrationToken(state, userId)
     case StopOffice     ⇒ context stop self

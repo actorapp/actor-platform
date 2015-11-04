@@ -19,7 +19,7 @@ import slick.dbio.DBIO
 import scala.annotation.tailrec
 import scala.concurrent._
 import scala.concurrent.duration._
-
+/*
 object SeqUpdatesManager {
 
   import SeqUpdatesManagerMessages._
@@ -125,8 +125,8 @@ object SeqUpdatesManager {
     }
   }
 
-  def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[model.sequence.SeqUpdate], Boolean)] = {
-    def run(state: Long, acc: Vector[model.sequence.SeqUpdate], currentSize: Long): DBIO[(Vector[model.sequence.SeqUpdate], Boolean)] = {
+  def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[model.sequence.SeqUpdateObsolete], Boolean)] = {
+    def run(state: Long, acc: Vector[model.sequence.SeqUpdateObsolete], currentSize: Long): DBIO[(Vector[model.sequence.SeqUpdateObsolete], Boolean)] = {
       p.sequence.SeqUpdateRepo.findAfter(authId, state).flatMap { updates ⇒
         if (updates.isEmpty) {
           DBIO.successful(acc → false)
@@ -143,12 +143,12 @@ object SeqUpdatesManager {
         }
       }
     }
-    run(timestamp, Vector.empty[sequence.SeqUpdate], 0L)
+    run(timestamp, Vector.empty[sequence.SeqUpdateObsolete], 0L)
   }
 
-  private def append(updates: Vector[sequence.SeqUpdate], currentSize: Long, maxSizeInBytes: Long, updateAcc: Vector[sequence.SeqUpdate]): (Vector[sequence.SeqUpdate], Long, Boolean) = {
+  private def append(updates: Vector[sequence.SeqUpdateObsolete], currentSize: Long, maxSizeInBytes: Long, updateAcc: Vector[sequence.SeqUpdateObsolete]): (Vector[sequence.SeqUpdateObsolete], Long, Boolean) = {
     @tailrec
-    def run(updLeft: Vector[sequence.SeqUpdate], acc: Vector[sequence.SeqUpdate], currSize: Long): (Vector[sequence.SeqUpdate], Long, Boolean) = {
+    def run(updLeft: Vector[sequence.SeqUpdateObsolete], acc: Vector[sequence.SeqUpdateObsolete], currSize: Long): (Vector[sequence.SeqUpdateObsolete], Long, Boolean) = {
       updLeft match {
         case h +: t ⇒
           val newSize = currSize + h.serializedData.length
@@ -291,3 +291,4 @@ object SeqUpdatesManager {
     }
   }
 }
+*/ 

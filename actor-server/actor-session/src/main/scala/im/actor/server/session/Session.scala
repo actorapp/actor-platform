@@ -11,7 +11,7 @@ import akka.stream.{ Materializer, ActorMaterializer }
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import com.typesafe.config.Config
-import im.actor.api.rpc.ClientData
+import im.actor.api.rpc.{ AuthData, ClientData }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
@@ -72,6 +72,8 @@ object Session {
 
   def props(implicit config: SessionConfig, materializer: Materializer): Props =
     Props(classOf[Session], config, materializer)
+
+  private final case class Initialized(authDataOpt: Option[AuthData])
 }
 
 class Session(implicit config: SessionConfig, materializer: Materializer) extends Actor with ActorLogging with MessageIdHelper with Stash {
@@ -84,7 +86,7 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
   private implicit val db: Database = DbExtension(context.system).db
   private implicit val seqUpdManagerRegion = SeqUpdatesExtension(context.system).region
 
-  private[this] var optUserId: Option[Int] = None
+  private[this] var authDataOpt: Option[AuthData] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
 
   context.setReceiveTimeout(config.idleTimeout)
@@ -107,28 +109,12 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
 
       context.become(waitingForSessionInfo(authId, sessionId, subscribe))
 
-      // TODO: handle errors
-      // TODO: refactor
-      val infoAction = {
-        persist.AuthIdRepo.find(authId) flatMap {
-          case Some(authIdModel) ⇒
-            persist.SessionInfoRepo.find(authId, sessionId) flatMap {
-              case s @ Some(sessionInfoModel) ⇒ DBIO.successful(s)
-              case None ⇒
-                val sessionInfoModel = model.SessionInfo(authId, sessionId, authIdModel.userId)
-
-                for {
-                  _ ← persist.SessionInfoRepo.create(sessionInfoModel)
-                } yield Some(sessionInfoModel)
-            }
-          case None ⇒ DBIO.successful(None)
-        }
-      }
-
-      val infoFuture = db.run(infoAction)
-
-      infoFuture map {
-        case Some(info) ⇒ self ! info
+      db.run(persist.AuthIdRepo.find(authId)) foreach {
+        case Some(_) ⇒
+          db.run(persist.AuthSessionRepo.findByAuthId(authId) map {
+            case Some(session) ⇒ Session.Initialized(Some(AuthData(session.userId, session.id)))
+            case None          ⇒ Session.Initialized(None)
+          }) pipeTo self
         case None ⇒
           log.warning("Reporting AuthIdInvalid and dying")
           //call helper. нет такого auth id
@@ -139,9 +125,9 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
   }
 
   def waitingForSessionInfo(authId: Long, sessionId: Long, subscribe: DistributedPubSubMediator.Subscribe): Receive = {
-    case info: model.SessionInfo ⇒
-      log.debug("SessionInfo: {}", info)
-      optUserId = info.optUserId
+    case Session.Initialized(authDataOpt) ⇒
+      log.debug("Initialized: {}", authDataOpt)
+      this.authDataOpt = authDataOpt
       unstashAll()
       context.become(waitingForSubscribeAck(authId, sessionId, subscribe))
     case msg ⇒ stash()
@@ -192,22 +178,22 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
         recordClient(client, reSender)
 
         sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
-        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
+        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authDataOpt))
 
         unstashAll()
-        context.become(resolved(authId, sessionId, sessionMessagePublisher, reSender))
+        context.become(resolved(authId, sessionId, sessionMessagePublisher, reSender, updatesHandler))
       }
     case internal ⇒ handleInternal(authId, sessionId, internal, stashUnmatched = true)
   }
 
-  def resolved(authId: Long, sessionId: Long, publisher: ActorRef, reSender: ActorRef): Receive = {
+  def resolved(authId: Long, sessionId: Long, publisher: ActorRef, reSender: ActorRef, updatesHandler: ActorRef): Receive = {
     case env @ SessionEnvelope(eauthId, esessionId, (msg)) ⇒
       val client = sender()
 
       if (authId != eauthId || sessionId != esessionId) // Should never happen
         log.error("Received Envelope with another's authId and sessionId {}", env)
       else
-        handleSessionMessage(authId, sessionId, client, msg, publisher, reSender)
+        handleSessionMessage(authId, sessionId, client, msg, publisher, reSender, updatesHandler)
     case internal ⇒ handleInternal(authId, sessionId, internal, stashUnmatched = false)
   }
 
@@ -221,18 +207,19 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
   }
 
   private def handleSessionMessage(
-    authId:    Long,
-    sessionId: Long,
-    client:    ActorRef,
-    message:   Payload,
-    publisher: ActorRef,
-    reSender:  ActorRef
+    authId:         Long,
+    sessionId:      Long,
+    client:         ActorRef,
+    message:        Payload,
+    publisher:      ActorRef,
+    reSender:       ActorRef,
+    updatesHandler: ActorRef
   ): Unit = {
     message match {
       case Payload.HandleMessageBox(HandleMessageBox(messageBoxBytes)) ⇒
         withValidMessageBox(client, messageBoxBytes.toByteArray) { mb ⇒
           recordClient(client, reSender)
-          publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
+          publisher ! Tuple2(mb, ClientData(authId, sessionId, authDataOpt))
         }
       case _: Payload.SubscribeToOnline | _: Payload.SubscribeFromOnline | _: Payload.SubscribeToGroupOnline | _: Payload.SubscribeFromGroupOnline ⇒
         val cmd: SubscribeCommand =
@@ -243,13 +230,12 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
             .get
 
         publisher ! cmd
-      case Payload.AuthorizeUser(AuthorizeUser(userId)) ⇒
+      case Payload.AuthorizeUser(AuthorizeUser(userId, authSid)) ⇒
         log.debug("User {} authorized session {}", userId, sessionId)
 
-        this.optUserId = Some(userId)
+        this.authDataOpt = Some(AuthData(userId, authSid))
 
-        // TODO: handle errors
-        db.run(persist.SessionInfoRepo.updateUserId(authId, sessionId, this.optUserId).map(_ ⇒ AuthorizeUserAck())) pipeTo sender()
+        updatesHandler ! UpdatesHandler.Authorize(userId, authSid)
       case unmatched ⇒
         log.error("Unmatched session message {}", unmatched)
     }

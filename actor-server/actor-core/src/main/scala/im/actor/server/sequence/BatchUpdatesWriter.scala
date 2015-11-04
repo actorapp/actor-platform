@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
 private[sequence] object BatchUpdatesWriter {
-  final case class Enqueue(update: model.sequence.SeqUpdate, promise: Promise[Unit])
+  final case class Enqueue(update: model.sequence.SeqUpdateObsolete, promise: Promise[Unit])
 
   private final case object Resume
   private final case object ScheduledFlush
@@ -30,7 +30,7 @@ private[sequence] class BatchUpdatesWriter extends Actor with ActorLogging with 
   private val db = DbExtension(context.system).db
   private implicit val ec: ExecutionContext = context.dispatcher
 
-  private[this] var queue = immutable.Queue.empty[model.sequence.SeqUpdate]
+  private[this] var queue = immutable.Queue.empty[model.sequence.SeqUpdateObsolete]
   private[this] var senders = immutable.Queue.empty[Promise[Unit]]
   private[this] var scheduledFlush: Option[Cancellable] = None
 
@@ -48,7 +48,7 @@ private[sequence] class BatchUpdatesWriter extends Actor with ActorLogging with 
     case msg ⇒ stash()
   }
 
-  private def enqueue(update: model.sequence.SeqUpdate, promise: Promise[Unit]): Unit = {
+  private def enqueue(update: model.sequence.SeqUpdateObsolete, promise: Promise[Unit]): Unit = {
     this.queue = this.queue.enqueue(update)
     this.senders = this.senders.enqueue(promise)
 
@@ -83,7 +83,7 @@ private[sequence] class BatchUpdatesWriter extends Actor with ActorLogging with 
     }
   }
 
-  private def batchWrite(updates: Seq[model.sequence.SeqUpdate]): Future[Unit] =
+  private def batchWrite(updates: Seq[model.sequence.SeqUpdateObsolete]): Future[Unit] =
     db.run(persist.sequence.SeqUpdateRepo.createBulk(updates)) map (_ ⇒ ())
 
   override def postRestart(reason: Throwable): Unit = {

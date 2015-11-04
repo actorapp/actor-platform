@@ -9,7 +9,7 @@ import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
 import im.actor.server.ActorSpecification
 import im.actor.server.mtproto.protocol._
-import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesExtension }
+import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
 
 import scala.concurrent.duration._
 import scala.util.Random
@@ -35,6 +35,7 @@ class SessionResendSpec extends BaseSessionSpec(
 
   case class Sessions() {
     val weakUpdatesExt = WeakUpdatesExtension(system)
+    val seqUpdExt = SeqUpdatesExtension(system)
 
     def e1() = {
       implicit val probe = TestProbe()
@@ -153,7 +154,7 @@ class SessionResendSpec extends BaseSessionSpec(
     def e4() = {
       implicit val probe = TestProbe()
 
-      val authId = createAuthId()
+      val (user, authId, _, _) = createUser()
       val sessionId = Random.nextLong()
 
       val helloMessageId = Random.nextLong()
@@ -162,7 +163,7 @@ class SessionResendSpec extends BaseSessionSpec(
       expectMessageAck(authId, sessionId, helloMessageId)
 
       val update = UpdateContactRegistered(1, false, 1L, 2L)
-      SeqUpdatesManager.persistAndPushUpdate(authId, update, None, isFat = false)
+      seqUpdExt.deliverSingleUpdate(user.id, update)
       expectSeqUpdate(authId, sessionId, None)
 
       // Still no ack

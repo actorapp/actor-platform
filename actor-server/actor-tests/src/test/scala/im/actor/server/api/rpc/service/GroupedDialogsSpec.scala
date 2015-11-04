@@ -24,11 +24,11 @@ final class GroupedDialogsSpec
   private val service = MessagingServiceImpl()
 
   def loadGrouped() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, _, _) = createUser()
-    val (user3, _, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, _, _, _) = createUser()
+    val (user3, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, 1, Some(user1.id))
+    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1)))
 
     val group = createGroup("Some group", Set(user3.id))
 

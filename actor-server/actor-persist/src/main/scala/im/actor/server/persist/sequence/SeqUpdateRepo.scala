@@ -4,7 +4,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.model
 
-final class SeqUpdateTable(tag: Tag) extends Table[model.sequence.SeqUpdate](tag, "seq_updates_ngen") {
+final class SeqUpdateTable(tag: Tag) extends Table[model.sequence.SeqUpdateObsolete](tag, "seq_updates_ngen") {
   def authId = column[Long]("auth_id", O.PrimaryKey)
 
   def timestamp = column[Long]("timestamp")
@@ -21,11 +21,11 @@ final class SeqUpdateTable(tag: Tag) extends Table[model.sequence.SeqUpdate](tag
 
   def * = (authId, timestamp, seq, header, serializedData, userIds, groupIds) <> ((toModel _).tupled, fromModel)
 
-  private def toModel(authId: Long, timestamp: Long, seq: Int, header: Int, serializedData: Array[Byte], userIdsStr: String, groupIdsStr: String): model.sequence.SeqUpdate = {
-    model.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, toIntSet(userIdsStr), toIntSet(groupIdsStr))
+  private def toModel(authId: Long, timestamp: Long, seq: Int, header: Int, serializedData: Array[Byte], userIdsStr: String, groupIdsStr: String): model.sequence.SeqUpdateObsolete = {
+    model.sequence.SeqUpdateObsolete(authId, timestamp, seq, header, serializedData, toIntSet(userIdsStr), toIntSet(groupIdsStr))
   }
 
-  private def fromModel(update: model.sequence.SeqUpdate) =
+  private def fromModel(update: model.sequence.SeqUpdateObsolete) =
     Some((update.authId, update.timestamp, update.seq, update.header, update.serializedData, update.userIds.mkString(","), update.groupIds.mkString(",")))
 
   private def toIntSet(str: String): Set[Int] = {
@@ -55,10 +55,10 @@ object SeqUpdateRepo {
   val lastC = Compiled(last _)
   val byAuthIdC = Compiled(byAuthId _)
 
-  def create(update: model.sequence.SeqUpdate) =
+  def create(update: model.sequence.SeqUpdateObsolete) =
     updatesC += update
 
-  def createBulk(newUpdates: Seq[model.sequence.SeqUpdate]) =
+  def createBulk(newUpdates: Seq[model.sequence.SeqUpdateObsolete]) =
     updatesC ++= newUpdates
 
   def findLast(authId: Long) =

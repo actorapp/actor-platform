@@ -29,6 +29,7 @@ object MessagingService {
     val strType = peer.typ match {
       case model.PeerType.Private ⇒ "private"
       case model.PeerType.Group   ⇒ "group"
+      case _                      ⇒ throw new RuntimeException(s"Unknown peer type ${peer.typ}")
     }
 
     s"messaging.messages.$strType.${peer.id}"
@@ -51,6 +52,7 @@ object MessagingService {
 
         mediator ! DistributedPubSubMediator.Publish(groupMessagesTopic, message, sendOneMessageToEachGroup = false)
         mediator ! DistributedPubSubMediator.Publish(topic, message, sendOneMessageToEachGroup = false)
+      case unknown ⇒ throw new RuntimeException(s"Unknown peer type $unknown")
     }
   }
 }

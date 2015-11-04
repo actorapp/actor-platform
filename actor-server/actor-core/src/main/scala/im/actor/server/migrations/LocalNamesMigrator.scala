@@ -59,7 +59,7 @@ private final class LocalNamesMigrator(promise: Promise[Unit], ownerUserId: Int,
       (if (contact.name.contains(user.name)) {
         db.run(persist.contact.UserContactRepo.updateName(ownerUserId, contactUserId, None))
       } else {
-        contact.name map (_ ⇒ userExt.editLocalName(ownerUserId, 0, contactUserId, contact.name, supressUpdate = true)) getOrElse Future.successful(())
+        contact.name map (_ ⇒ userExt.editLocalName(ownerUserId, contactUserId, contact.name, supressUpdate = true)) getOrElse Future.successful(())
       }) onComplete {
         case Success(_) ⇒
           log.debug(s"Migrated contact with ownerUserId: $ownerUserId, contactUserId: $contactUserId")

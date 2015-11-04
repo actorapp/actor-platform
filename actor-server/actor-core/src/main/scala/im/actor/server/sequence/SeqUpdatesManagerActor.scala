@@ -19,11 +19,12 @@ import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.db.DbExtension
-import im.actor.server.persist.HistoryMessage
+import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.{ persist ⇒ p }
 import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel }
-import im.actor.server.model.sequence.{ SeqUpdate ⇒ SeqUpdateModel }
+import im.actor.server.model.sequence.{ SeqUpdateObsolete ⇒ SeqUpdateModel }
 
+/*
 trait SeqUpdatesManagerMessage {
   val authId: Long
 }
@@ -241,7 +242,7 @@ private final class SeqUpdatesManagerActor(
                   for {
                     optUserId ← p.AuthIdRepo.findUserId(authId)
                     unread ← optUserId.map { userId ⇒
-                      HistoryMessage.getUnreadTotal(userId)
+                      HistoryMessageRepo.getUnreadTotal(userId)
                     } getOrElse DBIO.successful(0)
                     _ = applePusher.deliverApplePush(creds, authId, seqUpdate.seq, pushText, originPeer, unread)
                   } yield ()
@@ -280,3 +281,4 @@ private final class SeqUpdatesManagerActor(
   private def sequenceState(sequence: Int, state: Array[Byte]): SeqState = SeqState(sequence, ByteString.copyFrom(state))
 
 }
+*/ 
