@@ -4662,13 +4662,6 @@
             </node>
           </node>
         </node>
-        <node concept="2m7Kf5" id="5qm50Y0ecmG" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="userData" />
-          <node concept="2m5mGg" id="5qm50Y0ecmR" role="2m7DVh">
-            <ref role="2m5mJy" node="2WAO9Y$lCqr" resolve="MapValue" />
-          </node>
-        </node>
         <node concept="Nu42z" id="GBscvBBsbu" role="NuuwV">
           <property role="Nu42W" value="41" />
         </node>
