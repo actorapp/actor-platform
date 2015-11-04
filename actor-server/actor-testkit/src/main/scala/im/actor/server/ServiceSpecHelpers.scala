@@ -11,6 +11,7 @@ import im.actor.api.rpc.users.ApiUser
 import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.oauth.GoogleProvider
+import im.actor.server.persist.AuthSessionRepo
 import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
 import im.actor.server.user.UserExtension
 import org.scalatest.Suite
@@ -57,7 +58,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     authId
   }
 
-  def createAuthId(userId: Int)(implicit ec: ExecutionContext, system: ActorSystem, db: Database, service: AuthService): Long = {
+  def createAuthId(userId: Int)(implicit ec: ExecutionContext, system: ActorSystem, db: Database, service: AuthService): (Long, Int) = {
     val authId = scala.util.Random.nextLong()
     Await.result(db.run(persist.AuthIdRepo.create(authId, None, None)), 1.second)
 
@@ -82,7 +83,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
       case -\/(e)   ⇒ fail(s"Got RpcError ${e}")
     }
 
-    authId
+    (authId, Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get.id)
   }
 
   def createSessionId(): Long =
@@ -102,13 +103,14 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
     Await.result(db.run(persist.AuthSmsCodeObsoleteRepo.findByPhoneNumber(phoneNumber).head), 5.seconds)
   }
 
-  def createUser()(implicit service: AuthService, db: Database, system: ActorSystem): (ApiUser, Long, Long) = {
+  def createUser()(implicit service: AuthService, db: Database, system: ActorSystem): (ApiUser, Long, Int, Long) = {
     val authId = createAuthId()
     val phoneNumber = buildPhone()
-    (createUser(authId, phoneNumber), authId, phoneNumber)
+    val (user, authSid) = createUser(authId, phoneNumber)
+    (user, authId, authSid, phoneNumber)
   }
 
-  def createUser(phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): ApiUser =
+  def createUser(phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): (ApiUser, Int) =
     createUser(createAuthId(), phoneNumber)
 
   def getOutPeer(userId: Int, clientAuthId: Long): ApiOutPeer = {
@@ -117,7 +119,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
   }
 
   //TODO: make same method to work with email
-  def createUser(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): ApiUser =
+  def createUser(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): (ApiUser, Int) =
     withoutLogs {
       val smsCode = getSmsCode(authId, phoneNumber)
 
@@ -134,7 +136,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
       )(ClientData(authId, scala.util.Random.nextLong(), None)), 10.seconds)
 
       res match {
-        case \/-(rsp) ⇒ rsp.user
+        case \/-(rsp) ⇒ (rsp.user, Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get.id)
         case -\/(e)   ⇒ fail(s"Got RpcError $e")
       }
     }

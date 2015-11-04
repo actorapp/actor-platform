@@ -11,7 +11,7 @@ import akka.http.scaladsl.unmarshalling._
 import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import im.actor.api.rpc.ClientData
+import im.actor.api.rpc.{ AuthData, ClientData }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.http.json.JsonFormatters._
@@ -95,10 +95,10 @@ class HttpApiFrontendSpec
   val s3BucketName = fsAdapterS3.bucketName
 
   object t {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val groupName = "Test group"
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer

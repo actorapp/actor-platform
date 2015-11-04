@@ -23,7 +23,7 @@ import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, ApiUser }
 import im.actor.server.db.DbExtension
-import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
 import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerRegion }
 import im.actor.server.user._
 import im.actor.util.misc.PhoneNumberUtils
@@ -35,7 +35,6 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
   extends ContactsService {
 
   import ContactsUtils._
-  import SeqUpdatesManager._
   import SocialManager._
   import UserUtils._
 
@@ -140,7 +139,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
             persist.contact.UserContactRepo.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
               case None ⇒
                 for {
-                  seqstate ← DBIO.from(userExt.addContact(client.userId, client.authId, user.id, None, optPhoneNumber, None))
+                  seqstate ← DBIO.from(userExt.addContact(client.userId, user.id, None, optPhoneNumber, None))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               case Some(contact) ⇒
                 DBIO.successful(Error(Errors.ContactAlreadyExists))
@@ -296,7 +295,7 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   private def addContactsGetStructs(contactsToAdd: Seq[ContactToAdd])(implicit client: AuthorizedClientData): Future[(Seq[ApiUser], SeqState)] = {
     for {
-      seqstate ← userExt.addContacts(client.userId, client.authId, contactsToAdd)
+      seqstate ← userExt.addContacts(client.userId, contactsToAdd)
       structs ← FutureExt.ftraverse(contactsToAdd)(c ⇒ userExt.getApiStruct(c.contactUserId, client.userId, client.authId))
     } yield (structs, seqstate)
   }

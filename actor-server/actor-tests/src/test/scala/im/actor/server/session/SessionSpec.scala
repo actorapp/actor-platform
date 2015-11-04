@@ -12,7 +12,8 @@ import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
-import im.actor.server.sequence.{ SeqUpdatesManager, WeakUpdatesExtension }
+import im.actor.server.persist.AuthSessionRepo
+import im.actor.server.sequence.{ SeqUpdatesExtension, WeakUpdatesExtension }
 import im.actor.server.session.SessionEnvelope.Payload
 import im.actor.server.user.UserExtension
 import scodec.bits._
@@ -38,6 +39,7 @@ class SessionSpec extends BaseSessionSpec {
     implicit val probe = TestProbe()
 
     val weakUpdatesExt = WeakUpdatesExtension(system)
+    val seqUpdExt = SeqUpdatesExtension(system)
 
     def e1() = {
       val authId = createAuthId()
@@ -165,7 +167,7 @@ class SessionSpec extends BaseSessionSpec {
         case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
-      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
+      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id, Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get.id)
 
       val update = UpdateContactRegistered(1, true, 1L, 2L)
       Await.result(UserExtension(system).broadcastClientUpdate(update, None, isFat = false), 1.second)
@@ -210,7 +212,7 @@ class SessionSpec extends BaseSessionSpec {
         case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
-      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
+      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id, Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get.id)
 
       val update = UpdateContactRegistered(1, true, 1L, 5L)
       Await.result(weakUpdatesExt.broadcastUserWeakUpdate(clientData.userId, update, reduceKey = None), 1.second)
@@ -280,7 +282,7 @@ class SessionSpec extends BaseSessionSpec {
     }
 
     def e8() = {
-      val authId = createAuthId()
+      val (user, authId, _, _) = createUser()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
@@ -288,7 +290,7 @@ class SessionSpec extends BaseSessionSpec {
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(authId, sessionId, messageId)
 
-      SeqUpdatesManager.persistAndPushUpdate(authId, UpdateContactRegistered(1, false, 1L, 2L), None, isFat = false)
+      seqUpdExt.deliverSingleUpdate(user.id, UpdateContactRegistered(1, false, 1L, 2L))
 
       expectSeqUpdate(authId, sessionId)
       probe.expectNoMsg()

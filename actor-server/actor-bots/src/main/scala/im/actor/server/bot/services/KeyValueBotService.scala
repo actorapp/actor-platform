@@ -25,25 +25,25 @@ private[bot] final class KeyValueBotService(system: ActorSystem) extends BotServ
   private val spaces = TrieMap.empty[(BotUserId, String), SimpleKeyValue[String]]
 
   private def setValue(keyspace: Keyspace, key: String, value: String) = RequestHandler[SetValue, SetValue#Response](
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒ {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: Int) ⇒ {
       getSpace(botUserId, keyspace) upsert (key, value) map (_ ⇒ Right(Void))
     }
   )
 
   private def getValue(keyspace: String, key: String) = RequestHandler[GetValue, GetValue#Response](
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒ {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: Int) ⇒ {
       getSpace(botUserId, keyspace) get key map (v ⇒ Right(Container.apply(v)))
     }
   )
 
   private def deleteValue(keyspace: String, key: String) = RequestHandler[DeleteValue, DeleteValue#Response](
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒ {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: Int) ⇒ {
       getSpace(botUserId, keyspace) delete key map (_ ⇒ Right(Void))
     }
   )
 
   private def getKeys(keyspace: String) = RequestHandler[GetKeys, GetKeys#Response](
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒ {
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: Int) ⇒ {
       getSpace(botUserId, keyspace) getKeys () map (v ⇒ Right(ContainerList.apply(v)))
     }
   )

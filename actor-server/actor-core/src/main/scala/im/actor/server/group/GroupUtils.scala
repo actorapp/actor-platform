@@ -33,17 +33,15 @@ object GroupUtils {
     getPubgroupStructUnsafe(group, clientData.userId)
   }
 
-  def withGroup[A](groupId: Int)(f: model.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
+  def withGroup[A](groupId: Int)(f: model.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] =
     persist.GroupRepo.find(groupId) flatMap {
       case Some(group) ⇒ f(group)
       case None        ⇒ DBIO.failed(new Exception(s"Group $groupId not found"))
     }
-  }
 
   //todo: use GroupExtension.getMembers instead
-  def withGroupUserIds[A](groupId: Int)(f: Seq[Int] ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
+  def withGroupUserIds[A](groupId: Int)(f: Seq[Int] ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] =
     persist.GroupUserRepo.findUserIds(groupId) flatMap f
-  }
 
   def getUserIds(group: ApiGroup): Set[Int] =
     group.members.flatMap(m ⇒ Seq(m.userId, m.inviterUserId)).toSet + group.creatorUserId

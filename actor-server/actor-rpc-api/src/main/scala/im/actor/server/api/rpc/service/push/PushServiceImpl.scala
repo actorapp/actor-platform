@@ -5,7 +5,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
 import im.actor.server.db.DbExtension
-import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.{ model, persist }
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
@@ -22,17 +22,16 @@ class PushServiceImpl(
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
 
   override def jhandleUnregisterPush(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    SeqUpdatesManager.deletePushCredentials(clientData.authId)
+    seqUpdExt.deletePushCredentials(clientData.authId)
     Future.successful(Ok(ResponseVoid))
   }
 
   override def jhandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val creds = model.push.GooglePushCredentials(clientData.authId, projectId, token)
-    val action: DBIO[HandlerResult[ResponseVoid]] = for {
-      _ ← persist.push.GooglePushCredentialsRepo.deleteByToken(token)
-      _ ← DBIO.successful(SeqUpdatesManager.setPushCredentials(clientData.authId, creds))
+    for {
+      _ ← db.run(persist.push.GooglePushCredentialsRepo.deleteByToken(token))
+      _ ← seqUpdExt.registerGooglePushCredentials(clientData.authId, creds)
     } yield Ok(ResponseVoid)
-    db.run(action)
   }
 
   override def jhandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -42,7 +41,7 @@ class PushServiceImpl(
         val creds = model.push.ApplePushCredentials(clientData.authId, apnsKey, tokenBytes)
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← persist.push.ApplePushCredentialsRepo.deleteByToken(tokenBytes)
-          _ ← DBIO.successful(SeqUpdatesManager.setPushCredentials(clientData.authId, creds))
+          _ ← DBIO.from(seqUpdExt.registerApplePushCredentials(clientData.authId, creds))
         } yield Ok(ResponseVoid)
         db.run(action)
       case None ⇒

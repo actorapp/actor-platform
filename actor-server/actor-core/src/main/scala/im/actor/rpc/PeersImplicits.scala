@@ -7,7 +7,7 @@ trait PeersImplicits {
 
   implicit class ExtPeer(peer: ApiPeer) {
     lazy val asModel: Peer =
-      Peer(PeerType.fromInt(peer.`type`.id), peer.id)
+      Peer(PeerType.fromValue(peer.`type`.id), peer.id)
   }
 
   implicit class ExtOutPeer(outPeer: ApiOutPeer) {
@@ -15,7 +15,7 @@ trait PeersImplicits {
       ApiPeer(outPeer.`type`, outPeer.id)
 
     lazy val asModel: Peer =
-      Peer(PeerType.fromInt(outPeer.`type`.id), outPeer.id)
+      Peer(PeerType.fromValue(outPeer.`type`.id), outPeer.id)
   }
 
   implicit class ExtGroupOutPeer(groupOutPeer: ApiGroupOutPeer) {
@@ -28,6 +28,6 @@ trait PeersImplicits {
 
   implicit class ExtPeerModel(model: Peer) {
     lazy val asStruct: ApiPeer =
-      ApiPeer(ApiPeerType(model.typ.toInt), model.id)
+      ApiPeer(ApiPeerType(model.typ.value), model.id)
   }
 }

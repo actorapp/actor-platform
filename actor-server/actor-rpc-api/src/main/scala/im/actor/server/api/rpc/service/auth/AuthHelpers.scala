@@ -63,10 +63,10 @@ trait AuthHelpers extends Helpers {
     } yield result
   }
 
-  def handleUserCreate(user: model.User, transaction: model.AuthTransactionChildren, authId: Long): Result[User] = {
+  def handleUserCreate(user: model.User, transaction: model.AuthTransactionChildren): Result[User] = {
     for {
       _ ← fromFuture(userExt.create(user.id, user.accessSalt, user.nickname, user.name, user.countryCode, im.actor.api.rpc.users.ApiSex(user.sex.toInt), isBot = false))
-      _ ← fromFuture(userExt.setDeviceInfo(user.id, authId, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
+      _ ← fromFuture(userExt.setDeviceInfo(user.id, DeviceInfo.parseFrom(transaction.deviceInfo)) recover { case _ ⇒ () })
       _ ← fromDBIO(persist.AvatarDataRepo.create(model.AvatarData.empty(model.AvatarData.OfUser, user.id.toLong)))
       _ ← fromDBIO(AuthTransactionRepo.delete(transaction.transactionHash))
       _ ← transaction match {
@@ -147,7 +147,7 @@ trait AuthHelpers extends Helpers {
     for {
       user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.UserRepo.find(userId).headOption)
       _ ← fromFuture(userExt.changeCountryCode(userId, countryCode))
-      _ ← fromFuture(userExt.setDeviceInfo(userId, clientData.authId, deviceInfo) recover { case _ ⇒ () })
+      _ ← fromFuture(userExt.setDeviceInfo(userId, deviceInfo) recover { case _ ⇒ () })
       _ ← fromDBIO(persist.AuthIdRepo.setUserData(clientData.authId, userId))
     } yield user
   }

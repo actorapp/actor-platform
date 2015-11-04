@@ -6,15 +6,12 @@ import com.google.protobuf.ByteString
 import im.actor.api.rpc.messaging.{ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.server.dialog._
 import im.actor.server.group.GroupErrors.NotAMember
-import im.actor.server.group.GroupExtension
 import HistoryUtils._
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.model
 import im.actor.server.model.{ Dialog, PeerType, Peer }
 import im.actor.server.persist.DialogRepo
-import im.actor.server.sequence.SeqUpdatesManager._
-import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.UserExtension
+import im.actor.server.sequence.{ PushRules, SeqState, SeqStateDate }
 import im.actor.util.cache.CacheHelpers._
 import org.joda.time.DateTime
 
@@ -27,17 +24,17 @@ trait GroupDialogHandlers extends UpdateCounters {
   import GroupDialogEvents._
 
   protected def sendMessage(
-    state:        GroupDialogState,
-    senderUserId: Int,
-    senderAuthId: Long,
-    randomId:     Long,
-    message:      ApiMessage,
-    isFat:        Boolean
+    state:         GroupDialogState,
+    senderUserId:  Int,
+    senderAuthSid: Int,
+    randomId:      Long,
+    message:       ApiMessage,
+    isFat:         Boolean
   ): Unit = {
     deferStashingReply(LastSenderIdChanged(senderUserId), state) { e ⇒
       withMemberIds(groupId) { (memberIds, _, optBot) ⇒
         if ((memberIds contains senderUserId) || optBot.contains(senderUserId)) {
-          withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) {
+          withCachedFuture[AuthSidRandomId, SeqStateDate](senderAuthSid → randomId) {
             val date = new DateTime
             val dateMillis = date.getMillis
             for {
@@ -47,9 +44,9 @@ trait GroupDialogHandlers extends UpdateCounters {
               SeqState(seq, state) ← if (optBot.contains(senderUserId)) {
                 Future.successful(SeqState(0, ByteString.EMPTY))
               } else {
-                delivery.senderDelivery(senderUserId, senderAuthId, groupPeer, randomId, dateMillis, message, isFat)
+                delivery.senderDelivery(senderUserId, senderAuthSid, groupPeer, randomId, dateMillis, message, isFat)
               }
-              _ ← db.run(writeHistoryMessage(model.Peer.privat(senderUserId), model.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
+              _ ← db.run(writeHistoryMessage(model.Peer(PeerType.Private, senderUserId), model.Peer(PeerType.Group, groupPeer.id), date, randomId, message.header, message.toByteArray))
             } yield SeqStateDate(seq, state, dateMillis)
           } recover {
             case e ⇒
@@ -71,8 +68,8 @@ trait GroupDialogHandlers extends UpdateCounters {
     val date = new DateTime(dateMillis)
 
     db.run(writeHistoryMessage(
-      model.Peer.privat(senderUserId),
-      model.Peer.group(groupPeer.id),
+      model.Peer(PeerType.Private, senderUserId),
+      model.Peer(PeerType.Group, groupPeer.id),
       date,
       randomId,
       message.header,
@@ -91,11 +88,9 @@ trait GroupDialogHandlers extends UpdateCounters {
         val now = System.currentTimeMillis
         val update = UpdateMessageReceived(groupPeer, date, now)
 
-        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map userExt.getAuthIds) map (_.flatten.toSet)
         for {
-          _ ← db.run(markMessagesReceived(model.Peer.privat(receiverUserId), model.Peer.group(groupId), new DateTime(date)))
-          authIds ← authIdsF
-          _ ← persistAndPushUpdates(authIds.toSet, update, None, isFat = false)
+          _ ← db.run(markMessagesReceived(model.Peer(PeerType.Private, receiverUserId), model.Peer(PeerType.Group, groupId), new DateTime(date)))
+          _ ← seqUpdatesExt.broadcastSingleUpdate(memberIds.filterNot(_ == receiverUserId), update)
         } yield MessageReceivedAck()
       }
     } else Future.successful(MessageReceivedAck())) pipeTo replyTo onFailure {
@@ -108,7 +103,7 @@ trait GroupDialogHandlers extends UpdateCounters {
     def doCreate(): Unit = {
       (for {
         created ← db.run(DialogRepo.createIfNotExists(Dialog(userId, Peer(PeerType.Group, groupId))))
-        _ ← if (created) userExt.notifyDialogsChanged(userId, 0) else Future.successful(())
+        _ ← if (created) userExt.notifyDialogsChanged(userId) else Future.successful(())
       } yield ()) pipeTo self
     }
 
@@ -128,7 +123,7 @@ trait GroupDialogHandlers extends UpdateCounters {
     }
   }
 
-  protected def messageRead(state: GroupDialogState, readerUserId: Int, readerAuthId: Long, date: Long): Unit = {
+  protected def messageRead(state: GroupDialogState, readerUserId: Int, readerAuthSid: Int, date: Long): Unit = {
     val replyTo = sender()
     val withMembers = withMemberIds[Unit](groupId) _
 
@@ -136,17 +131,21 @@ trait GroupDialogHandlers extends UpdateCounters {
       withMembers { (memberIds, _, _) ⇒
         if (memberIds contains readerUserId) {
           for {
-            _ ← db.run(markMessagesRead(model.Peer.privat(readerUserId), model.Peer.group(groupId), new DateTime(date)))
-            _ ← userExt.broadcastUserUpdate(readerUserId, UpdateMessageReadByMe(groupPeer, date), None, isFat = false, deliveryId = None)
+            _ ← db.run(markMessagesRead(model.Peer(PeerType.Private, readerUserId), model.Peer(PeerType.Group, groupId), new DateTime(date)))
+            _ ← seqUpdatesExt.deliverSingleUpdate(
+              userId = readerUserId,
+              update = UpdateMessageReadByMe(groupPeer, date),
+              pushRules = PushRules(excludeAuthSids = Seq(readerAuthSid))
+            )
             counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-            _ ← userExt.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false, deliveryId = None)
+            _ ← seqUpdatesExt.deliverSingleUpdate(readerUserId, counterUpdate)
           } yield ()
         } else Future.successful(())
       }
 
     val joinerF: Future[Unit] = withMembers { (_, invitedUserIds, _) ⇒
       if (invitedUserIds contains readerUserId) {
-        groupExt.joinAfterFirstRead(groupId, readerUserId, readerAuthId)
+        groupExt.joinAfterFirstRead(groupId, readerUserId, readerAuthSid)
       } else Future.successful(())
     }
 
@@ -162,12 +161,10 @@ trait GroupDialogHandlers extends UpdateCounters {
         if (memberIds contains readerUserId) {
           val now = new DateTime().getMillis
           val restMembers = memberIds.filterNot(_ == readerUserId)
-          val authIdsF = Future.sequence(restMembers map userExt.getAuthIds) map (_.flatten.toSet)
 
           for {
-            authIds ← authIdsF
-            _ ← db.run(markMessagesRead(model.Peer.privat(readerUserId), model.Peer.group(groupId), new DateTime(date)))
-            _ ← persistAndPushUpdates(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
+            _ ← db.run(markMessagesRead(model.Peer(PeerType.Private, readerUserId), model.Peer(PeerType.Group, groupId), new DateTime(date)))
+            _ ← seqUpdatesExt.broadcastSingleUpdate(restMembers, UpdateMessageRead(groupPeer, date, now))
           } yield ()
         } else Future.successful(())
       }

@@ -11,6 +11,7 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.group.GroupExtension
+import im.actor.server.model.PeerType
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -45,14 +46,14 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   implicit private val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   private object s {
-    val (user1, authId1, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
     val sessionId1 = createSessionId()
 
-    val (user2, authId2, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
     val sessionId2 = createSessionId()
 
-    val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+    val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2)))
 
     val user1Model = getUserModel(user1.id)
     val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
@@ -159,8 +160,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
     def public() = {
       val groupId = Random.nextInt
-      val (pubUser, pubAuthId, _) = createUser()
-      val accessHash = whenReady(GroupExtension(system).create(groupId, pubUser.id, pubAuthId, "Public group", Random.nextLong, Set.empty))(_.accessHash)
+      val (pubUser, _, _, _) = createUser()
+      val accessHash = whenReady(GroupExtension(system).create(groupId, pubUser.id, "Public group", Random.nextLong, Set.empty))(_.accessHash)
       whenReady(GroupExtension(system).makePublic(groupId, "Public group description"))(identity)
 
       val groupOutPeer = ApiGroupOutPeer(groupId, accessHash)
@@ -191,14 +192,14 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
     }
 
     object historyPrivate {
-      val (user1, authId1, _) = createUser()
+      val (user1, authId1, authSid1, _) = createUser()
 
       def markReceived() = {
-        val (user2, authId2, _) = createUser()
+        val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
-        val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1)))
+        val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -233,7 +234,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer.privat(user2.id)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Private, user2.id)))) { dialogOpt ⇒
             dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -252,13 +253,16 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
       }
 
       def markRead() = {
-        val (user1, authId1, _) = createUser()
-        val (user2, authId21, _) = createUser()
+        val (user1, authId1, authSid1, _) = createUser()
+        val (user2, authId21, authSid21, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-        val clientData21 = ClientData(authId21, sessionId, Some(user2.id))
-        val clientData22 = ClientData(createAuthId(user2.id), sessionId, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+        val clientData21 = ClientData(authId21, sessionId, Some(AuthData(user2.id, authSid21)))
+
+        val (authId22, authSid22) = createAuthId(user2.id)
+
+        val clientData22 = ClientData(authId22, sessionId, Some(AuthData(user2.id, authSid22)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -293,7 +297,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer.privat(user2.id)))) { optDialog ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Private, user2.id)))) { optDialog ⇒
             val dialog = optDialog.get
             dialog.lastReadAt.getMillis should be < startDate + 3000
             dialog.lastReadAt.getMillis should be > startDate + 1000
@@ -352,12 +356,12 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
       }
 
       def counterAfterRead() = {
-        val (user1, authId1, _) = createUser()
-        val (user2, authId21, _) = createUser()
+        val (user1, authId1, authSid1, _) = createUser()
+        val (user2, authId21, authSid21, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-        val clientData21 = ClientData(authId21, sessionId, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+        val clientData21 = ClientData(authId21, sessionId, Some(AuthData(user2.id, authSid21)))
 
         val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
@@ -401,12 +405,12 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
     object historyGroup {
       def markReceived() = {
-        val (user1, authId1, _) = createUser()
-        val (user2, authId2, _) = createUser()
+        val (user1, authId1, authSid1, _) = createUser()
+        val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-        val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+        val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
         val groupOutPeer = {
           implicit val clientData = clientData1
@@ -438,7 +442,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -457,12 +461,12 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
       }
 
       def markRead() = {
-        val (user1, authId1, _) = createUser()
-        val (user2, authId2, _) = createUser()
+        val (user1, authId1, authSid1, _) = createUser()
+        val (user2, authId2, authSid2, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-        val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+        val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
         val groupOutPeer = {
           implicit val clientData = clientData1
@@ -496,7 +500,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(300)
 
-          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
+          whenReady(db.run(persist.DialogRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReadAt.getMillis should be < startDate + 3000
             dialogOpt.get.lastReadAt.getMillis should be > startDate + 1000
           }

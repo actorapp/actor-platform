@@ -19,7 +19,6 @@ import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransactionRepo
-import im.actor.server.sequence.SeqUpdatesManager
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
 import im.actor.server.email.DummyEmailSender
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
@@ -139,8 +138,8 @@ final class AuthServiceSpec
     }
 
     def e2() = {
-      val (user, authId, phoneNumber) = createUser()
-      implicit val clientData = ClientData(authId, createSessionId(), Some(user.id))
+      val (user, authId, authSid, phoneNumber) = createUser()
+      implicit val clientData = ClientData(authId, createSessionId(), Some(AuthData(user.id, authSid)))
 
       whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
         inside(resp) {
@@ -314,9 +313,9 @@ final class AuthServiceSpec
     }
 
     def e7() = {
-      val (user, authId, phoneNumber) = createUser()
+      val (user, authId, authSid, phoneNumber) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
       sendSessionHello(authId, sessionId)
 
@@ -446,9 +445,9 @@ final class AuthServiceSpec
       val unregClientData = ClientData(authId, sessionId, None)
 
       //make unregistered contact
-      val (regUser, regAuthId, _) = createUser()
+      val (regUser, regAuthId, regAuthSid, _) = createUser()
       whenReady(db.run(persist.contact.UnregisteredPhoneContactRepo.createIfNotExists(phoneNumber, regUser.id, Some("Local name"))))(_ ⇒ ())
-      val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
+      val regClientData = ClientData(regAuthId, sessionId, Some(AuthData(regUser.id, regAuthSid)))
 
       sendSessionHello(authId, sessionId)
 
@@ -488,9 +487,9 @@ final class AuthServiceSpec
       val sessionId = createSessionId()
       val unregClientData = ClientData(authId, sessionId, None)
 
-      val (regUser, regAuthId, _) = createUser()
+      val (regUser, regAuthId, regAuthSid, _) = createUser()
       val localName = Some("Bloody wild goat")
-      val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
+      val regClientData = ClientData(regAuthId, sessionId, Some(AuthData(regUser.id, regAuthSid)))
 
       {
         implicit val clientData = regClientData
@@ -500,7 +499,7 @@ final class AuthServiceSpec
 
       sendSessionHello(authId, sessionId)
 
-      val createdUser = {
+      {
         implicit val clientData = unregClientData
         val transactionHash =
           whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
@@ -533,9 +532,9 @@ final class AuthServiceSpec
     }
 
     def e10() = {
-      val (user, authId, phoneNumber) = createUser()
+      val (user, authId, authSid, phoneNumber) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
       sendSessionHello(authId, sessionId)
 
@@ -896,9 +895,9 @@ final class AuthServiceSpec
       val unregClientData = ClientData(authId, sessionId, None)
 
       //make unregistered contact
-      val (regUser, regAuthId, _) = createUser()
+      val (regUser, regAuthId, regAuthSid, _) = createUser()
       whenReady(db.run(persist.contact.UnregisteredEmailContactRepo.createIfNotExists(email, regUser.id, Some("Local name"))))(_ ⇒ ())
-      val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
+      val regClientData = ClientData(regAuthId, sessionId, Some(AuthData(regUser.id, regAuthSid)))
 
       sendSessionHello(authId, sessionId)
 
@@ -932,12 +931,12 @@ final class AuthServiceSpec
     }
 
     def e25() = {
-      val (user, authId, _) = createUser()
+      val (user, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
-      SeqUpdatesManager.setPushCredentials(authId, model.push.GooglePushCredentials(authId, 22L, "hello"))
-      SeqUpdatesManager.setPushCredentials(authId, model.push.ApplePushCredentials(authId, 22, "hello".getBytes()))
+      seqUpdExt.registerGooglePushCredentials(authId, model.push.GooglePushCredentials(authId, 22L, "hello"))
+      seqUpdExt.registerApplePushCredentials(authId, model.push.ApplePushCredentials(authId, 22, "hello".getBytes()))
 
       //let seqUpdateManager register credentials
       Thread.sleep(1000L)

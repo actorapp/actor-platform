@@ -85,7 +85,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
       }
 
       def e2() = {
-        val (user, authId, _) = createUser()
+        val (user, authId, _, _) = createUser()
 
         val unregPhoneNumber = buildPhone()
 
@@ -189,7 +189,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
 
       def sameDeviceHash() = {
         val phoneNumber = buildPhone()
-        val user = createUser(phoneNumber)
+        val (user, _) = createUser(phoneNumber)
 
         val deviceHash = Array[Byte](4, 5, 6)
 
