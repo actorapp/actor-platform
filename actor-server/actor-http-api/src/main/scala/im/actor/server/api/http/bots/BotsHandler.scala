@@ -48,8 +48,8 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
 
           val sendMessageF = for {
             data ← request.entity.dataBytes.runFold(ByteString.empty)(_ ++ _)
-            _ ← sendMessage(headers, data, token)
-          } yield ()
+            res ← sendMessage(headers, data, token)
+          } yield res
 
           onComplete(sendMessageF) {
             case Success(result) ⇒
