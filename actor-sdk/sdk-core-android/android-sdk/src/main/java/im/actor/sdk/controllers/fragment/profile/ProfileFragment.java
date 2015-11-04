@@ -75,7 +75,7 @@ public class ProfileFragment extends BaseFragment {
         ActorStyle style = ActorSDK.sharedActor().style;
 
         View res = inflater.inflate(R.layout.fragment_profile, container, false);
-
+        res.findViewById(R.id.container).setBackgroundColor(style.getMainBackgroundColor());
         TextView nameText = (TextView) res.findViewById(R.id.name);
         nameText.setTextColor(style.getProfileTitleColor());
         bind(nameText, user.getName());
@@ -310,7 +310,7 @@ public class ProfileFragment extends BaseFragment {
         res.findViewById(R.id.bottom_divider).setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
 
         final ScrollView scrollView = ((ScrollView) res.findViewById(R.id.scrollContainer));
-        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
+        scrollView.setBackgroundColor(ActorSDK.sharedActor().style.getBackyardBackgroundColor());
         scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
