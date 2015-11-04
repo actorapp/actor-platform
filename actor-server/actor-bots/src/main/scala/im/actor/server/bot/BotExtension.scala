@@ -12,7 +12,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.office.EntityNotFound
 import im.actor.server.persist
 import im.actor.server.user.UserExtension
-import org.apache.commons.codec.digest.Md5Crypt
+import org.apache.commons.codec.digest.DigestUtils
 import shardakka.keyvalue.SimpleKeyValue
 import shardakka.{ Codec, IntCodec, ShardakkaExtension }
 
@@ -175,7 +175,8 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
    */
   def findAuthId(userId: UserId): Future[AuthId] = getOrCreateAuthId(userId)
 
-  private def genToken(): String = Md5Crypt.md5Crypt(ThreadLocalRandom.current().nextLong().toString.getBytes())
+  private def genToken(): String =
+    DigestUtils.md5Hex(ThreadLocalRandom.current().nextLong().toString)
 
   private def getOrCreateAuthId(userId: Int): Future[AuthId] = {
     db.run(persist.AuthIdRepo.findFirstIdByUserId(userId)) flatMap {
