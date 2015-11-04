@@ -20,7 +20,7 @@ import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json.{ ContentUnmarshaller, JsValueUnmarshaller, JsonFormatters, Status }
 import im.actor.server.bot.{ BotExtension, BotServerBlueprint }
 import im.actor.server.dialog.DialogExtension
-import im.actor.server.sequence.SeqUpdatesManager
+import im.actor.server.model.AuthSession
 import im.actor.server.user.UserExtension
 import play.api.libs.json._
 import upickle.default._
@@ -61,8 +61,8 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
     } ~ path("bots" / Segment) { token ⇒
       val flowFuture = (for {
         userId ← OptionT(botExt.findUserId(token))
-        authId ← OptionT(botExt.findAuthId(token))
-      } yield flow(userId, authId)).value map {
+        session ← OptionT[Future, AuthSession](botExt.getAuthSession(userId) map (Some(_)))
+      } yield flow(userId, session.authId, session.id)).value map {
         case Some(r) ⇒ r
         case None ⇒
           val e = new RuntimeException("Wrong token") with NoStackTrace
@@ -104,8 +104,8 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
     }
   }
 
-  private def flow(botUserId: Int, botAuthId: Long) = {
-    val bp = new BotServerBlueprint(botUserId, botAuthId, system)
+  private def flow(botUserId: Int, botAuthId: Long, botAuthSid: Int) = {
+    val bp = new BotServerBlueprint(botUserId, botAuthId, botAuthSid, system)
 
     Flow[Message]
       .collect {

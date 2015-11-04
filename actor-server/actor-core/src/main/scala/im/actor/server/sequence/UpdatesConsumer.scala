@@ -5,7 +5,7 @@ import akka.util.Timeout
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.messaging.UpdateMessageSent
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, WeakUpdate }
+import im.actor.api.rpc.sequence.{ SeqUpdate, FatSeqUpdate, WeakUpdate }
 import im.actor.api.rpc.users.ApiUser
 import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
@@ -47,11 +47,11 @@ object UpdatesConsumerMessage {
 }
 
 object UpdatesConsumer {
-  def props(authId: Long, session: ActorRef) =
-    Props(classOf[UpdatesConsumer], authId, session)
+  def props(userId: Int, authId: Long, authSid: Int, session: ActorRef) =
+    Props(classOf[UpdatesConsumer], authId, authSid, session)
 }
 
-private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) extends Actor with ActorLogging with Stash {
+private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int, subscriber: ActorRef) extends Actor with ActorLogging with Stash {
 
   import Presences._
   import UpdatesConsumerMessage._
@@ -74,7 +74,7 @@ private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) exte
 
   def receive = {
     case SubscribeToSeq ⇒
-      SeqUpdatesManager.subscribe(authId, self) onFailure {
+      seqUpdExt.subscribe(userId, self) onFailure {
         case e ⇒
           self ! SubscribeToSeq
           log.error(e, "Failed to subscribe to sequence updates")
@@ -116,6 +116,21 @@ private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) exte
             self ! cmd
             log.error(e, "Failed to unsubscribe from group presences")
         }
+      }
+    case UserSequenceEvents.NewUpdate(Some(seqUpd), pushRulesOpt, state) ⇒
+      val pushRules = pushRulesOpt.getOrElse(PushRules())
+
+      if (!pushRules.excludeAuthSids.contains(authSid)) {
+        val upd = seqUpd.getMapping.custom.getOrElse(authSid, seqUpd.getMapping.getDefault)
+
+        val boxFuture =
+          if (pushRules.isFat) {
+            for {
+              (users, groups) ← getFatData(userId, upd.userIds, upd.groupIds)
+            } yield FatSeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray, users.toVector, groups.toVector)
+          } else Future.successful(SeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray))
+
+        boxFuture foreach (sendUpdateBox(_, None))
       }
     case UpdateReceived(updateBox, fatRefsOpt) ⇒
       if (updateBox.updateHeader != UpdateMessageSent.header) {

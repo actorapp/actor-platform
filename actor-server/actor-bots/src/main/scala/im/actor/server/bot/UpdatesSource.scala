@@ -17,42 +17,23 @@ import scala.annotation.tailrec
 
 private[bot] object UpdatesSource {
   private case class Initialized(userId: Int)
-  private case object AuthIdNotAuthorized
 
   def source(authId: Long) = Source.actorPublisher[(Int, Update)](props(authId))
 
   def props(authId: Long) = Props(classOf[UpdatesSource], authId)
 }
 
-private class UpdatesSource(authId: Long) extends ActorPublisher[(Int, Update)] with ActorLogging with Stash {
+private class UpdatesSource(userId: Int, authId: Long, authSid: Int) extends ActorPublisher[(Int, Update)] with ActorLogging with Stash {
 
-  import UpdatesSource._
   import akka.stream.actor.ActorPublisherMessage._
   import context._
   import im.actor.server.sequence.NewUpdate
 
-  private val db = DbExtension(system).db
-
-  context.actorOf(UpdatesConsumer.props(authId, self), "updatesConsumer")
+  context.actorOf(UpdatesConsumer.props(userId, authId, authSid, self), "updatesConsumer")
 
   private var buf = Vector.empty[(Int, Update)]
 
-  db.run(persist.AuthIdRepo.findUserId(authId)).map {
-    case Some(userId) ⇒ Initialized(userId)
-    case None         ⇒ AuthIdNotAuthorized
-  }.pipeTo(self)
-
-  def receive = {
-    case Initialized(userId) ⇒
-      context become working(userId)
-    case AuthIdNotAuthorized ⇒
-      val msg = "AuthId not authorized"
-      log.error(msg)
-      throw new RuntimeException(msg)
-    case msg ⇒ stash()
-  }
-
-  def working(userId: Int): Receive = {
+  def receive: Receive = {
     case NewUpdate(UpdateBox(bodyBytes), _) ⇒
       (UpdateBoxCodec.decode(bodyBytes).require.value match {
         case SeqUpdate(seq, _, header, body)          ⇒ Some((seq, header, body))

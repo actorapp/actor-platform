@@ -55,9 +55,9 @@ package object rpc extends {
   }
 
   def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
-    clientData.optUserId match {
-      case Some(userId) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId))
-      case None         ⇒ NotAuthorized
+    clientData.authData match {
+      case Some(AuthData(userId, authSid)) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId, authSid))
+      case None                            ⇒ NotAuthorized
     }
 
   object Result {
@@ -77,7 +77,7 @@ package object rpc extends {
     toResult(requireAuth(clientData) map fa)
 
   def authorizedClient(clientData: ClientData): Result[AuthorizedClientData] =
-    DBIOResult.fromOption(CommonErrors.UserNotFound)(clientData.optUserId.map(id ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, id)))
+    DBIOResult.fromOption(CommonErrors.UserNotFound)(clientData.authData.map(data ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, data.userId, data.authSid)))
 
   type Result[A] = EitherT[DBIO, RpcError, A]
 

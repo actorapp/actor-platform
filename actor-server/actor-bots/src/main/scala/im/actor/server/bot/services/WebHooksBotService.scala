@@ -21,7 +21,7 @@ private[bot] final class WebHooksBotService(system: ActorSystem) extends BotServ
   }
 
   private def registerHook(name: String) = RequestHandler[RegisterHook, RegisterHook#Response] {
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       {
         (for {
           _ ← fromFutureBoolean(BotError(406, "HOOK_EXISTS"))(botExt.webHookExists(botUserId, name).map(!_))
@@ -31,7 +31,7 @@ private[bot] final class WebHooksBotService(system: ActorSystem) extends BotServ
   }
 
   private def getHooks() = RequestHandler[GetHooks, GetHooks#Response] {
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       {
         for {
           hooks ← botExt.findWebHooks(botUserId)

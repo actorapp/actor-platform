@@ -27,7 +27,7 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
   }
 
   private def changeUserName(userId: Int, name: String) = RequestHandler[ChangeUserName, ChangeUserName#Response] {
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
           _ ← fromFuture(userExt.changeName(userId, name))
@@ -36,26 +36,26 @@ private[bot] final class UsersBotService(system: ActorSystem) extends BotService
   }
 
   private def changeUserAbout(userId: Int, about: Option[String]) = RequestHandler[ChangeUserAbout, ChangeUserAbout#Response] {
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
-          _ ← fromFuture(userExt.changeAbout(userId, 0, about))
+          _ ← fromFuture(userExt.changeAbout(userId, about))
         } yield Void).value
       }
   }
 
   private def changeUserAvatar(userId: Int, fileLocation: FileLocation) = RequestHandler[ChangeUserAvatar, ChangeUserAvatar#Response] {
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
           avatar ← fromFutureEither(_ ⇒ BotError(400, "LOCATION_INVALID"))(db.run(scaleAvatar(fileLocation.fileId)))
-          _ ← fromFuture(userExt.updateAvatar(userId, 0, Some(avatar)))
+          _ ← fromFuture(userExt.updateAvatar(userId, Some(avatar)))
         } yield Void).value
       }
   }
 
   private def findUser(query: String) = RequestHandler[FindUser, FindUser#Response] {
-    (botUserId, botAuthId) ⇒
+    (botUserId, botAuthId, botAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
           ids ← fromFuture(userExt.findUserIds(query))

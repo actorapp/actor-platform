@@ -36,8 +36,6 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.language.postfixOps
 import scalaz._
 
-case class PubSubMediator(mediator: ActorRef)
-
 class AuthServiceImpl(val activationContext: CodeActivation)(
   implicit
   val sessionRegion: SessionRegion,
@@ -61,8 +59,6 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
   protected val log = Logging(actorSystem, this)
 
   private val maxGroupSize: Int = 300
-
-  implicit val mediatorWrap = PubSubMediator(DistributedPubSub(actorSystem).mediator)
 
   implicit protected val timeout = Timeout(10 seconds)
 
@@ -210,7 +206,7 @@ class AuthServiceImpl(val activationContext: CodeActivation)(
         //fallback to sign up if user exists
         user ← signInORsignUp match {
           case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, DeviceInfo.parseFrom(transaction.deviceInfo), clientData)
-          case \/-(user)                  ⇒ handleUserCreate(user, transaction, clientData.authId)
+          case \/-(user)                  ⇒ handleUserCreate(user, transaction)
         }
         userStruct ← fromFuture(userExt.getApiStruct(user.id, user.id, clientData.authId))
         //refresh session data

@@ -18,8 +18,8 @@ final class HiddenGroupsSpec extends BaseAppSuite with ImplicitAuthService with 
   private val service = MessagingServiceImpl()
 
   def loadHidden() = {
-    val (user, authId, _) = createUser()
-    implicit val clientData = ClientData(authId, 1, Some(user.id))
+    val (user, authId, authSid, _) = createUser()
+    implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
 
     val groupId = 1
 
@@ -32,7 +32,7 @@ final class HiddenGroupsSpec extends BaseAppSuite with ImplicitAuthService with 
           case Ok(ResponseLoadDialogs(dialogs, _, _)) ⇒
             dialogs.length shouldBe (0)
 
-            db.run(persist.HistoryMessage.getUnreadTotal(user.id))
+            db.run(persist.HistoryMessageRepo.getUnreadTotal(user.id))
         }
       }
     }
