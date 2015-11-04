@@ -87,7 +87,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   }
 
   protected def expectRpcResult(sendAckAt: Option[Duration] = Some(0.seconds), expectAckFor: Set[Long] = Set.empty)(implicit probe: TestProbe, sessionRegion: SessionRegion): RpcResult = {
-    val messages = probe.receiveN(1 + expectAckFor.size).toSet
+    val messages = probe.receiveN(1 + expectAckFor.size, patienceConfig.timeout.totalNanos.nano).toSet
 
     if (messages.size != expectAckFor.size + 1) {
       fail(s"Expected response and acks for ${expectAckFor.mkString(",")}, got: ${messages.mkString(",")}")

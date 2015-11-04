@@ -38,7 +38,7 @@ private[user] sealed trait Commands extends AuthCommands {
 
   implicit val timeout: Timeout
 
-  private val seqUpdExt = SeqUpdatesExtension(system)
+  private lazy val seqUpdExt = SeqUpdatesExtension(system)
 
   def create(
     userId:      Int,
