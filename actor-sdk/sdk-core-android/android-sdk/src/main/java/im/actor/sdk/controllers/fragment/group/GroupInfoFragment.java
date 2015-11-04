@@ -87,7 +87,7 @@ public class GroupInfoFragment extends BaseFragment {
         View res = inflater.inflate(R.layout.fragment_group, container, false);
 
         notMemberView = res.findViewById(R.id.notMember);
-        ((TextView) notMemberView).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        ((TextView) notMemberView.findViewById(R.id.not_member_text)).setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
         bind(groupInfo.isMember(), new ValueChangedListener<Boolean>() {
             @Override
             public void onChanged(Boolean val, Value<Boolean> Value) {
