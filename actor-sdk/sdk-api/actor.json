@@ -5240,14 +5240,6 @@
                 },
                 "id": 3,
                 "name": "users"
-              },
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "MapValue"
-                },
-                "id": 4,
-                "name": "userData"
               }
             ]
           }
