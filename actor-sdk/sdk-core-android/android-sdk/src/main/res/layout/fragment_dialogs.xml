@@ -40,7 +40,7 @@
             android:layout_marginTop="216dp"
             android:orientation="vertical">
 
-            <TextViewxt
+            <TextView
                 android:id="@+id/empty_dialogs_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
