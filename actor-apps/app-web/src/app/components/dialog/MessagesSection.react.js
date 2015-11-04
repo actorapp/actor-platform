@@ -42,10 +42,7 @@ class MessagesSection extends Component {
   }
 
   getMessagesListItem = (message, index) => {
-    let date = new Date(message.fullDate);
-
-    const dateDeviderFormatOptions = { month: 'long', day: 'numeric' };
-    const dateDeviderContent = new Intl.DateTimeFormat(undefined, dateDeviderFormatOptions).format(date);
+    const date = message.fullDate;//new Date(message.fullDate);
 
     if (lastMessageDate === null) {
       lastMessageDate = new Date(message.fullDate);
@@ -54,7 +51,12 @@ class MessagesSection extends Component {
     const isFirstMessage = index === 0;
     const isNewDay = date.getDate() !== lastMessageDate.getDate();
 
-    const dateDivider = isNewDay ? <li className="date-divider">{dateDeviderContent}</li> : null;
+    let dateDivider = null;
+    if (isNewDay) {
+      const dateDividerFormatOptions = { month: 'long', day: 'numeric' };
+      const dateDividerContent = new Intl.DateTimeFormat(undefined, dateDividerFormatOptions).format(date);
+      dateDivider = <li className="date-divider">{dateDividerContent}</li>
+    }
     const isSameSender = message.sender.peer.id === lastMessageSenderId && !isFirstMessage && !isNewDay;
 
     const messageItem = (
@@ -66,7 +68,7 @@ class MessagesSection extends Component {
                    peer={this.props.peer}/>
     );
 
-    lastMessageDate = new Date(message.fullDate);
+    lastMessageDate = date; //new Date(message.fullDate);
     lastMessageSenderId = message.sender.peer.id;
 
     return [dateDivider, messageItem];
