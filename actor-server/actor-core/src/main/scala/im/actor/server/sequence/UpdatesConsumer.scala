@@ -48,7 +48,7 @@ object UpdatesConsumerMessage {
 
 object UpdatesConsumer {
   def props(userId: Int, authId: Long, authSid: Int, session: ActorRef) =
-    Props(classOf[UpdatesConsumer], authId, authSid, session)
+    Props(classOf[UpdatesConsumer], userId, authId, authSid, session)
 }
 
 private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int, subscriber: ActorRef) extends Actor with ActorLogging with Stash {
