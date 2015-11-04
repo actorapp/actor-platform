@@ -64,8 +64,8 @@ private[group] final class GroupDialog extends DialogProcessor[GroupDialogState,
 
   context.setReceiveTimeout(1.hours)
 
-  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
-    createCache[AuthIdRandomId, Future[SeqStateDate]](GroupDialog.MaxCacheSize)
+  protected implicit val sendResponseCache: Cache[AuthSidRandomId, Future[SeqStateDate]] =
+    createCache[AuthSidRandomId, Future[SeqStateDate]](GroupDialog.MaxCacheSize)
 
   override protected def updatedState(evt: GroupDialogEvent, state: GroupDialogState): GroupDialogState = evt match {
     case LastSenderIdChanged(senderUserId) ⇒ state.copy(lastSenderId = Some(senderUserId))

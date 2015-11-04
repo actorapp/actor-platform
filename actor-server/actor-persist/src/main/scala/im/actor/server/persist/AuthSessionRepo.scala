@@ -54,6 +54,9 @@ object AuthSessionRepo {
   def findByUserId(userId: Int) =
     activeSessions.filter(_.userId === userId).result
 
+  def findFirstByUserId(userId: Int) =
+    activeSessions.filter(_.userId === userId).take(1).result.headOption
+
   def findByAuthId(authId: Long) =
     activeSessions.filter(_.authId === authId).result.headOption
 

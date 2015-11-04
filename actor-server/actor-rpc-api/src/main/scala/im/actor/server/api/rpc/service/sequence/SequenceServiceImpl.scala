@@ -1,5 +1,9 @@
 package im.actor.server.api.rpc.service.sequence
 
+import akka.protobuf.ByteString
+import im.actor.api.rpc.groups.ApiGroup
+import im.actor.api.rpc.users.ApiUser
+import im.actor.server.model.SeqUpdate
 import im.actor.server.office.EntityNotFound
 
 import scala.concurrent.duration._
@@ -18,7 +22,7 @@ import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference, S
 import im.actor.server.db.DbExtension
 import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
 import im.actor.server.model
-import im.actor.server.sequence.{ SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.sequence.{ SeqUpdatesExtension }
 import im.actor.server.session._
 import im.actor.server.user.{ UserUtils, UserViewRegion, UserExtension, UserOffice }
 
@@ -28,8 +32,6 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   actorSystem:   ActorSystem,
   materializer:  Materializer
 ) extends SequenceService {
-
-  import SeqUpdatesManager._
 
   protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -41,7 +43,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   override def jhandleGetState(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
-        seqstate ← DBIO.from(getSeqState(client.authId))
+        seqstate ← DBIO.from(seqUpdExt.getSeqState(client.userId))
       } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
@@ -49,19 +51,18 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   }
 
   override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-
+    authorized(clientData) { implicit client ⇒
       for {
         // FIXME: would new updates between getSeqState and getDifference break client state?
-        (updates, needMore) ← getDifference(client.authId, bytesToTimestamp(state), maxDifferenceSize)
+        (updates, needMore) ← seqUpdExt.getDifference(client.userId, seq, client.authSid, maxDifferenceSize)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, groups) ← getUsersGroups(userIds, groupIds)
       } yield {
-        val (newSeq, newState) = updates.lastOption map { u ⇒ u.seq → timestampToBytes(u.timestamp) } getOrElse (seq → state)
+        val newSeq = updates.lastOption map (_.seq) getOrElse seq
 
         Ok(ResponseGetDifference(
           seq = newSeq,
-          state = newState,
+          state = state,
           updates = diffUpdates,
           needMore = needMore,
           users = users.toVector,
@@ -69,8 +70,6 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         ))
       }
     }
-
-    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleSubscribeToOnline(users: IndexedSeq[ApiUserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -121,21 +120,23 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  private def extractDiff(updates: IndexedSeq[model.sequence.SeqUpdate]): (IndexedSeq[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
+  private def extractDiff(updates: IndexedSeq[SeqUpdate])(implicit client: AuthorizedClientData): (IndexedSeq[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
     updates.foldLeft[(Vector[ApiDifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
       case ((updates, userIds, groupIds), update) ⇒
-        (updates :+ ApiDifferenceUpdate(update.header, update.serializedData),
-          userIds ++ update.userIds,
-          groupIds ++ update.groupIds)
+        val upd = update.getMapping.custom.getOrElse(client.authSid, update.getMapping.getDefault)
+
+        (updates :+ ApiDifferenceUpdate(upd.header, upd.body.toByteArray),
+          userIds ++ upd.userIds,
+          groupIds ++ upd.groupIds)
     }
   }
 
-  private def getUsersGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData) = {
-    DBIO.from(for {
+  private def getUsersGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData): Future[(Set[ApiUser], Set[ApiGroup])] = {
+    for {
       groups ← Future.sequence(groupIds map (GroupExtension(actorSystem).getApiStruct(_, client.userId)))
       // TODO: #perf optimize collection operations
       allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.flatMap(m ⇒ Seq(m.userId, m.inviterUserId)) + g.creatorUserId }
       users ← Future.sequence(allUserIds map (UserUtils.safeGetUser(_, client.userId, client.authId))) map (_.flatten)
-    } yield (users, groups))
+    } yield (users, groups)
   }
 }

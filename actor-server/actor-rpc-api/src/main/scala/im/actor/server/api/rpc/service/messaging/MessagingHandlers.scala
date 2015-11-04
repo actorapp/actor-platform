@@ -33,7 +33,7 @@ private[messaging] trait MessagingHandlers {
         result ← fromFuture(dialogExt.sendMessage(
           peer = outPeer.asPeer,
           senderUserId = client.userId,
-          senderAuthId = client.authId,
+          senderAuthSid = client.authSid,
           randomId = randomId,
           message = message
         ))

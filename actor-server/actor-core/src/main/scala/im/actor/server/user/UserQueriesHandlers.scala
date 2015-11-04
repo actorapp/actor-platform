@@ -53,4 +53,6 @@ private[user] trait UserQueriesHandlers {
   protected def getUser(state: User): Unit = sender() ! state
 
   protected def isAdmin(state: User): Unit = sender() ! IsAdminResponse(state.isAdmin.getOrElse(false))
+
+  protected def getName(state: User): Unit = sender() ! GetNameResponse(state.name)
 }

@@ -1,5 +1,5 @@
 package im.actor.server.sequence
-
+/*
 import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.server.db.DbExtension
@@ -101,3 +101,4 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     }
   }
 }
+*/ 

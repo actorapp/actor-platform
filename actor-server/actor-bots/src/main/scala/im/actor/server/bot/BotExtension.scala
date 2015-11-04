@@ -9,12 +9,16 @@ import im.actor.api.rpc.users.ApiSex
 import im.actor.config.ActorConfig
 import im.actor.server.acl.ACLUtils
 import im.actor.server.db.DbExtension
+import im.actor.server.model.AuthSession
 import im.actor.server.office.EntityNotFound
 import im.actor.server.persist
 import im.actor.server.user.UserExtension
+import im.actor.util.misc.IdUtils
 import org.apache.commons.codec.digest.Md5Crypt
+import org.joda.time.DateTime
 import shardakka.keyvalue.SimpleKeyValue
 import shardakka.{ Codec, IntCodec, ShardakkaExtension }
+import slick.dbio.DBIO
 
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -156,37 +160,44 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
   def getHookUrl(token: String): String =
     s"${ActorConfig.baseUrl}/v1/bots/hooks/${URLEncoder.encode(token, "UTF-8")}"
 
-  /**
-   * Gets or creates bot auth id
-   * @param token
-   * @return auth id
-   */
-  def findAuthId(token: String): Future[Option[AuthId]] = {
-    findUserId(token) flatMap {
-      case Some(userId) ⇒ getOrCreateAuthId(userId) map (Some(_))
-      case None         ⇒ Future.successful(None)
-    }
-  }
-
-  /**
-   * Gets or creates a bot auth id
-   * @param userId
-   * @return auth id
-   */
-  def findAuthId(userId: UserId): Future[AuthId] = getOrCreateAuthId(userId)
+  def getAuthSession(userId: UserId): Future[AuthSession] = getOrCreateAuthSession(userId)
 
   private def genToken(): String = Md5Crypt.md5Crypt(ThreadLocalRandom.current().nextLong().toString.getBytes())
 
-  private def getOrCreateAuthId(userId: Int): Future[AuthId] = {
-    db.run(persist.AuthIdRepo.findFirstIdByUserId(userId)) flatMap {
+  private def getOrCreateAuthSession(userId: Int): Future[AuthSession] = {
+    db.run(persist.AuthSessionRepo.findFirstByUserId(userId)) flatMap {
+      case Some(session) ⇒ Future.successful(session)
+      case None ⇒
+        for {
+          authId ← db.run(getOrCreateAuthId(userId))
+          session = AuthSession(
+            userId = userId,
+            id = IdUtils.nextIntId(),
+            authId = authId,
+            appId = 0,
+            appTitle = "Bot",
+            deviceTitle = "Bot",
+            deviceHash = Array.empty,
+            authTime = new DateTime,
+            authLocation = "",
+            latitude = None,
+            longitude = None
+          )
+          _ ← db.run(persist.AuthSessionRepo.create(session))
+        } yield session
+    }
+  }
+
+  private def getOrCreateAuthId(userId: Int): DBIO[AuthId] = {
+    persist.AuthIdRepo.findFirstIdByUserId(userId) flatMap {
       case Some(authId) ⇒
-        Future.successful(authId)
+        DBIO.successful(authId)
       case None ⇒
         val authId = ACLUtils.randomLong()
 
         for {
-          _ ← db.run(persist.AuthIdRepo.create(authId, None, None))
-          _ ← userExt.auth(userId, authId)
+          _ ← persist.AuthIdRepo.create(authId, None, None)
+          _ ← DBIO.from(userExt.auth(userId, authId))
         } yield authId
     }
   }

@@ -1,18 +1,23 @@
 package im.actor.server.sequence
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
-import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
+import akka.cluster.sharding.{ ClusterSharding, ClusterShardingSettings, ShardRegion }
 
 case class SeqUpdatesManagerRegion(ref: ActorRef)
 
 object SeqUpdatesManagerRegion {
 
+  import UserSequenceCommands._
+
   private val extractEntityId: ShardRegion.ExtractEntityId = {
-    case msg: SeqUpdatesManagerMessage ⇒ (msg.authId.toString, msg)
+    case e @ Envelope(userId, payload) ⇒ (userId.toString, e.getField(Envelope.descriptor.findFieldByNumber(payload.number)) match {
+      case Some(any) ⇒ any
+      case None      ⇒ throw new RuntimeException(s"Payload not found for $e")
+    })
   }
 
-  private val extractShardId: ShardRegion.ExtractShardId = msg ⇒ msg match {
-    case msg: SeqUpdatesManagerMessage ⇒ (msg.authId % 32).toString // TODO: configurable
+  private val extractShardId: ShardRegion.ExtractShardId = {
+    case Envelope(userId, _) ⇒ (userId % 10).toString // TODO: configurable
   }
 
   private val typeName = "SeqUpdatesManager"
@@ -32,7 +37,7 @@ object SeqUpdatesManagerRegion {
     googlePushManager: GooglePushManager,
     applePushManager:  ApplePushManager
   ): SeqUpdatesManagerRegion =
-    start(SeqUpdatesManagerActor.props)
+    start(UserSequence.props)
 
   def startProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion =
     SeqUpdatesManagerRegion(ClusterSharding(system).startProxy(

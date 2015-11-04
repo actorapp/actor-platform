@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 
 package im.actor.server;
 
@@ -8,87 +8,58 @@ option (scalapb.options) = {
 };
 
 import "scalapb/scalapb.proto";
+import "model.proto";
 
-message SeqState {
-    required int32 seq = 1;
-    required bytes state = 2;
+message PushData {
+    string text = 1;
+    Peer peer = 2;
 }
 
-message SeqStateDate {
-    required int32 seq = 1;
-    required bytes state = 2;
-    required int64 date = 3;
+message PushRules {
+    repeated int32 exclude_auth_sids = 1;
+    bool is_fat = 3;
+    string text = 4;
+    PushData data = 2;
 }
 
-message UpdateRefs {
-    repeated int32 user_ids = 1;
-    repeated int32 group_ids = 2;
-}
-
-message GooglePushCredentials {
-    required int64 project_id = 1;
-    required string reg_id = 2;
-}
-
-message ApplePushCredentials {
-    required int32 apns_key = 1;
-    required bytes token = 2;
-}
-
-message UpdateReceived {
-    required bytes update = 1 [(scalapb.field).type = "im.actor.api.rpc.sequence.SeqUpdate"];
-    optional UpdateRefs fat_refs = 2;
-}
-
-message SeqUpdatesManagerMessages {
-    message GetSeqState {
-        option (scalapb.message).extends = "im.actor.server.sequence.SeqUpdatesManagerMessage";
-
-        required int64 auth_id = 1;
+message UserSequenceEvents {
+    message NewUpdate {
+        SeqUpdate seq_update = 1;
+        PushRules push_rules = 2;
+        bytes state = 3;
     }
+}
 
-    message PushUpdate {
-        option (scalapb.message).extends = "im.actor.server.sequence.SeqUpdatesManagerMessage";
-
-        required int64 auth_id = 1;
-        optional string delivery_id = 2;
-        required int32 header = 3;
-        required bytes serialized_data = 4;
-        required UpdateRefs refs = 5;
-        required bool is_fat = 8;
-        optional string push_text = 6;
-        optional bytes origin_peer = 7 [(scalapb.field).type = "im.actor.api.rpc.peers.ApiPeer"];
-    }
-
-    message PushUpdateAck {
-        optional int64 delivery_id = 1;
-        required SeqState seqstate = 2;
-    }
-
-    message Subscribe {
-        option (scalapb.message).extends = "im.actor.server.sequence.SeqUpdatesManagerMessage";
-
-        required int64 auth_id = 1;
-        required string consumer = 2;
-    }
-
-    message SubscribeAck {
-        required Subscribe subscribe = 1;
-    }
-
-    message PushCredentialsUpdated {
-        option (scalapb.message).extends = "im.actor.server.sequence.SeqUpdatesManagerMessage";
-
-        required int64 auth_id = 1;
-        oneof credentials {
-            ApplePushCredentials apple = 2;
-            GooglePushCredentials google = 3;
+message UserSequenceCommands {
+    message Envelope {
+        int32 user_id = 1;
+        oneof payload {
+            DeliverUpdate deliverUpdate = 2;
+            GetSeqState getSeqState = 3;
         }
     }
 
-    message PushCredentialsDeleted {
-        option (scalapb.message).extends = "im.actor.server.sequence.SeqUpdatesManagerMessage";
-
-        required int64 auth_id = 1;
+    message DeliverUpdate {
+        UpdateMapping mapping = 1;
+        PushRules push_rules = 2;
+        string delivery_id = 4;
     }
+
+    message DeliverUpdateAck {
+        SeqState seq_state = 1;
+        string delivery_id = 2;
+    }
+
+    message GetSeqState {}
+}
+
+message SeqState {
+    int32 seq = 1;
+    bytes state = 2;
+}
+
+message SeqStateDate {
+    int32 seq = 1;
+    bytes state = 2;
+    int64 date = 3;
 }

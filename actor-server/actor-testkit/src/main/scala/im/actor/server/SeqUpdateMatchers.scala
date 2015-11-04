@@ -101,7 +101,7 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
 
   private def extractHeader[U <: Update: ClassTag](clazz: Class[U]): Int = callCompanionMethod[Int](clazz, "header")
 
-  private def extractUpdate[U <: Update: ClassTag](clazz: UpdateClass, update: model.sequence.SeqUpdate): U = {
+  private def extractUpdate[U <: Update: ClassTag](clazz: UpdateClass, update: model.sequence.SeqUpdateObsolete): U = {
     val runtimeMirror = universe.runtimeMirror(getClass.getClassLoader)
 
     val moduleSymbol = currentMirror.moduleSymbol(clazz)
@@ -137,7 +137,7 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
     objectMirror.reflectMethod(method).apply(args).asInstanceOf[Result]
   }
 
-  private def matchUpdates(seq: Int)(check: Seq[model.sequence.SeqUpdate] ⇒ Any)(implicit client: ClientData): Int =
+  private def matchUpdates(seq: Int)(check: Seq[model.sequence.SeqUpdateObsolete] ⇒ Any)(implicit client: ClientData): Int =
     repeatAfterSleep(DefaultRetryCount) {
       whenReady(findSeqUpdateAfter(seq)) { updates ⇒
         check(updates)
@@ -145,7 +145,7 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
       }
     }
 
-  private def findSeqUpdateAfter(seq: Int)(implicit client: ClientData): Future[Seq[model.sequence.SeqUpdate]] = {
+  private def findSeqUpdateAfter(seq: Int)(implicit client: ClientData): Future[Seq[model.sequence.SeqUpdateObsolete]] = {
     import slick.driver.PostgresDriver.api._
     val query = persist.sequence.SeqUpdateRepo.updates
       .filter(u ⇒ u.authId === client.authId && u.seq > seq)

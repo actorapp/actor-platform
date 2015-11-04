@@ -8,6 +8,6 @@ import scala.concurrent.ExecutionContext
 
 trait UpdateCounters {
   protected def getUpdateCountersChanged(userId: Int)(implicit ec: ExecutionContext): DBIO[UpdateCountersChanged] = for {
-    unreadTotal ← persist.HistoryMessage.getUnreadTotal(userId)
+    unreadTotal ← persist.HistoryMessageRepo.getUnreadTotal(userId)
   } yield UpdateCountersChanged(ApiAppCounters(Some(unreadTotal)))
 }

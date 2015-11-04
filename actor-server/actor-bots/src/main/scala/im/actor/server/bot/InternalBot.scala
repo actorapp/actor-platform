@@ -14,7 +14,7 @@ import scala.util.Failure
 
 private object InternalBot {
 
-  final case class Initialized(authId: Long)
+  final case class Initialized(authId: Long, authSid: Int)
 
 }
 
@@ -34,8 +34,8 @@ abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin:
   init()
 
   def receive = {
-    case Initialized(authId) ⇒
-      val bp = new BotServerBlueprint(userId, authId, system)
+    case Initialized(authId, authSid) ⇒
+      val bp = new BotServerBlueprint(userId, authId, authSid, system)
 
       val rqSource =
         Source.actorRef(100, OverflowStrategy.fail)
@@ -46,6 +46,8 @@ abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin:
       setRqSource(rqSource)
 
       context become workingBehavior
+    case Status.Failure(e) ⇒
+      log.error(e, "Failed to initialize bot")
   }
 
   private def init() = {
@@ -65,8 +67,8 @@ abstract class InternalBot(userId: Int, nickname: String, name: String, isAdmin:
 
     (for {
       _ ← existence
-      authId ← botExt.findAuthId(userId)
-    } yield Initialized(authId)) pipeTo self
+      session ← botExt.getAuthSession(userId)
+    } yield Initialized(session.authId, session.id)) pipeTo self
   }
 
   override protected def onStreamFailure(cause: Throwable): Unit = {
