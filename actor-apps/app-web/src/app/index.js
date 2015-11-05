@@ -15,8 +15,7 @@ import Actor from 'actor-js';
 import { intlData } from 'l18n';
 import { IntlMixin } from 'react-intl';
 
-import Raven from 'utils/Raven'; // eslint-disable-line
-import isMobile from 'utils/IsMobile';
+import isMobile from 'utils/isMobile';
 
 import { endpoints } from 'constants/ActorAppConstants'
 
@@ -31,6 +30,8 @@ import Main from 'components/Main.react';
 import JoinGroup from 'components/JoinGroup.react';
 import Install from 'components/Install.react';
 //import AppCache from 'utils/AppCache'; // eslint-disable-line
+
+import 'utils/Bugsnag';
 
 // Loading progress
 import Pace from 'pace';
@@ -77,7 +78,6 @@ const initReact = () => {
       crosstab.broadcast(ActorInitEvent, {});
     }
 
-    console.log(Actor)
     if (location.pathname === '/app/index.html') {
       window.messenger = Actor.create(['ws://' + location.hostname + ':9080/']);
     } else {

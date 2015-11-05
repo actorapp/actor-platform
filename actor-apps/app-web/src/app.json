@@ -5,5 +5,6 @@
     "wss://front2-ws-mtproto-api-rev2.actor.im"
   ],
   "base_version": "0.6.0",
-  "community": false
+  "community": false,
+  "bugsnag": "cd24ee53326e06669a36c637b29660c3"
 }

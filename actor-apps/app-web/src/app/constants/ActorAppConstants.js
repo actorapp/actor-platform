@@ -202,6 +202,8 @@ export const AddContactMessages = {
   ALREADY_HAVE: 2
 };
 
+export const BugsnagAPIKey = app.bugsnag;
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -227,5 +229,7 @@ export default {
 
   Path: Path,
 
-  AddContactMessages
+  AddContactMessages,
+
+  BugsnagAPIKey
 };
