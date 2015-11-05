@@ -1,5 +1,8 @@
 package im.actor.server.dialog
 
-private[dialog] trait DialogCommand {
-  val dialogId: DialogIdContainer
+import im.actor.server.model.Peer
+
+trait DialogCommand {
+  val origin: Peer
+  val dest: Peer
 }
