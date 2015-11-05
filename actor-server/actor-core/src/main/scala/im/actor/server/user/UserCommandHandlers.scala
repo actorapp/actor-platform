@@ -113,7 +113,7 @@ private[user] trait UserCommandHandlers {
       db.run(AuthSessionRepo.findByAuthId(authId)) foreach {
         case Some(authSession) ⇒
           userExt.hooks.afterAuth.runAll(user.id, authSession.appId, authSession.deviceTitle)
-        case None ⇒ log.error("AuthSession was not found")
+        case None ⇒ log.error("AuthSession for {} was not found", authId)
       }
 
       db.run(p.AuthIdRepo.setUserData(authId, user.id)) map (_ ⇒ NewAuthAck())

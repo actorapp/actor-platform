@@ -22,7 +22,7 @@ import scala.concurrent.duration._
 
 final case class NewUpdate(ub: UpdateBox, reduceKey: Option[String])
 
-trait UpdatesConsumerMessage
+sealed trait UpdatesConsumerMessage
 
 object UpdatesConsumerMessage {
 
@@ -131,24 +131,6 @@ private[sequence] class UpdatesConsumer(userId: Int, authId: Long, authSid: Int,
           } else Future.successful(SeqUpdate(seqUpd.seq, state.toByteArray, upd.header, upd.body.toByteArray))
 
         boxFuture foreach (sendUpdateBox(_, None))
-      }
-    case UpdateReceived(updateBox, fatRefsOpt) ⇒
-      if (updateBox.updateHeader != UpdateMessageSent.header) {
-        (fatRefsOpt match {
-          case None ⇒ Future.successful(updateBox)
-          case Some(UpdateRefs(userIds, groupIds)) ⇒
-            // FIXME: #perf cache userId
-            DbExtension(context.system).db.run(persist.AuthIdRepo.findUserId(authId)) flatMap {
-              case Some(userId) ⇒
-                for {
-                  (users, groups) ← getFatData(userId, userIds, groupIds)
-                } yield {
-                  FatSeqUpdate(updateBox.seq, updateBox.state, updateBox.updateHeader, updateBox.update, users.toVector, groups.toVector)
-                }
-              case None ⇒
-                throw new Exception(s"Cannot find userId for authId ${authId}")
-            }
-        }) foreach (sendUpdateBox(_, None))
       }
     case WeakUpdatesManager.UpdateReceived(updateBox, reduceKey) ⇒
       sendUpdateBox(updateBox, reduceKey)

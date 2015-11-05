@@ -27,17 +27,17 @@ class SessionResendSpec extends BaseSessionSpec(
 ) {
   behavior of "Session's ReSender"
 
-  it should "resend messages if no ack received within ack-timeout" in Sessions().e1
-  it should "resend messages to new client" in Sessions().e2
-  it should "not resend messages if ack received within ack-timeout" in Sessions().e3
-  it should "resend updates if no ack received within ack-timeout" in Sessions().e4
+  it should "resend messages if no ack received within ack-timeout" in Sessions().resendNoAck
+  it should "resend messages to new client" in Sessions().newClient
+  it should "not resend messages if ack received within ack-timeout" in Sessions().noResendOnAck
+  it should "resend updates if no ack received within ack-timeout" in Sessions().resendUpdates
   it should "not resend messages when another came with the same reduceKey" in Sessions().reduceKey
 
   case class Sessions() {
     val weakUpdatesExt = WeakUpdatesExtension(system)
     val seqUpdExt = SeqUpdatesExtension(system)
 
-    def e1() = {
+    def resendNoAck() = {
       implicit val probe = TestProbe()
 
       val authId = createAuthId()
@@ -78,7 +78,7 @@ class SessionResendSpec extends BaseSessionSpec(
       probe.expectNoMsg(5.seconds)
     }
 
-    def e2() = {
+    def newClient() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
@@ -117,7 +117,7 @@ class SessionResendSpec extends BaseSessionSpec(
       }
     }
 
-    def e3() = {
+    def noResendOnAck() = {
       implicit val probe = TestProbe()
 
       val authId = createAuthId()
@@ -151,7 +151,7 @@ class SessionResendSpec extends BaseSessionSpec(
       }
     }
 
-    def e4() = {
+    def resendUpdates() = {
       implicit val probe = TestProbe()
 
       val (user, authId, _, _) = createUser()
@@ -177,7 +177,7 @@ class SessionResendSpec extends BaseSessionSpec(
     def reduceKey() = {
       implicit val probe = TestProbe()
 
-      val authId = createAuthId()
+      val (_, authId, _, _) = createUser()
       val sessionId = Random.nextLong()
 
       val helloMessageId = Random.nextLong()

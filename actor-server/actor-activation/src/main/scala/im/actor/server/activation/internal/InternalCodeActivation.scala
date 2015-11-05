@@ -43,9 +43,30 @@ object InternalCodeActivation {
       config
     )
   }
+
+  def validateAction(txHash: String, code: String, attemptsNum: Int, expiration: Long)(implicit ec: ExecutionContext): DBIO[ValidationResponse] =
+    for {
+      optCode ← persist.AuthCodeRepo.findByTransactionHash(txHash)
+      result ← optCode map {
+        case s if isExpired(s, expiration) ⇒
+          for (_ ← persist.AuthCodeRepo.deleteByTransactionHash(txHash)) yield ExpiredCode
+        case s if s.code != code ⇒
+          if (s.attempts + 1 >= attemptsNum) {
+            for (_ ← persist.AuthCodeRepo.deleteByTransactionHash(txHash)) yield ExpiredCode
+          } else {
+            for (_ ← persist.AuthCodeRepo.incrementAttempts(txHash, s.attempts)) yield InvalidCode
+          }
+        case _ ⇒ DBIO.successful(Validated)
+      } getOrElse DBIO.successful(InvalidHash)
+    } yield result
+
+  def finishAction(txHash: String)(implicit ec: ExecutionContext): DBIO[Unit] = persist.AuthCodeRepo.deleteByTransactionHash(txHash).map(_ ⇒ ())
+
+  def isExpired(code: AuthCode, expiration: Long): Boolean =
+    code.createdAt.plus(expiration, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
 }
 
-private[activation] class InternalCodeActivation(activationActor: ActorRef, config: ActivationConfig)(implicit db: Database, ec: ExecutionContext) extends CodeActivation {
+private[activation] final class InternalCodeActivation(activationActor: ActorRef, config: ActivationConfig)(implicit db: Database, ec: ExecutionContext) extends CodeActivation {
 
   import InternalCodeActivation._
   import im.actor.server.activation.Activation._
@@ -57,26 +78,9 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
     case None       ⇒ DBIO.successful(())
   }) flatMap (_ ⇒ DBIO.from(sendCode(code)))
 
-  def validate(transactionHash: String, code: String): DBIO[ValidationResponse] =
-    for {
-      optCode ← persist.AuthCodeRepo.findByTransactionHash(transactionHash)
-      result ← optCode map {
-        case s if isExpired(s) ⇒
-          for (_ ← persist.AuthCodeRepo.deleteByTransactionHash(transactionHash)) yield ExpiredCode
-        case s if s.code != code ⇒
-          if (s.attempts + 1 >= config.attempts) {
-            for (_ ← persist.AuthCodeRepo.deleteByTransactionHash(transactionHash)) yield ExpiredCode
-          } else {
-            for (_ ← persist.AuthCodeRepo.incrementAttempts(transactionHash, s.attempts)) yield InvalidCode
-          }
-        case _ ⇒ DBIO.successful(Validated)
-      } getOrElse DBIO.successful(InvalidHash)
-    } yield result
+  def validate(txHash: String, code: String): DBIO[ValidationResponse] = validateAction(txHash, code, config.attempts, config.expiration.toMillis)
 
-  def finish(transactionHash: String): DBIO[Unit] = persist.AuthCodeRepo.deleteByTransactionHash(transactionHash).map(_ ⇒ ())
-
-  private def isExpired(code: AuthCode): Boolean =
-    code.createdAt.plus(config.expiration.toMillis, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
+  def finish(txHash: String): DBIO[Unit] = finishAction(txHash)
 
   private def sendCode(code: Code): Future[CodeFailure \/ Unit] = code match {
     case p: PhoneCode if isTestPhone(p.phone) ⇒ Future.successful(\/-(()))
