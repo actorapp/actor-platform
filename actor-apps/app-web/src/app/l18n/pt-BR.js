@@ -103,7 +103,7 @@ export default {
     'sharedMedia': 'Media Compartilhada',
     'notifications': 'Notificações',
     'integrationTokenCopied': 'Link de integração.',
-    'membros': '{numMembers, plural,' +
+    'members': '{numMembers, plural,' +
     '=0 {sem Membros}' +
     '=1 {# Membro}' +
     'other {# Membros}' +
