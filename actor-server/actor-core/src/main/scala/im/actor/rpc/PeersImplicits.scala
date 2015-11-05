@@ -30,4 +30,10 @@ trait PeersImplicits {
     lazy val asStruct: ApiPeer =
       ApiPeer(ApiPeerType(model.typ.value), model.id)
   }
+
+  implicit class ExtPeerCompanion(companion: com.trueaccord.scalapb.GeneratedMessageCompanion[Peer]) {
+    def privat(userId: Int) = Peer(PeerType.Private, userId)
+    def group(groupId: Int) = Peer(PeerType.Group, groupId)
+  }
+
 }
