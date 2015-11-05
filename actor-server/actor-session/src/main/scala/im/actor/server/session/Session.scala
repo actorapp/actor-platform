@@ -128,23 +128,29 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
       val subscribe = DistributedPubSubMediator.Subscribe(UserExtension(context.system).authIdTopic(authId), self)
       mediator ! subscribe
-      context become {
+
+      val waiting: Receive = {
         case msg if msg == DistributedPubSubMediator.SubscribeAck(subscribe) ⇒
           unstashAll()
           context.become(anonymous)
         case msg ⇒
           stash()
       }
+
+      context become (waiting orElse internal)
     case Session.AuthIdInvalid ⇒
       log.warning("AuthId invalid, waiting for message and dying...")
       unstashAll()
-      context become {
-        case e: SessionEnvelope ⇒
+
+      val waiting: Receive = {
+        case _: SessionMessage ⇒
           log.warning("Reporting AuthIdInvalid and dying")
           sender ! MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require)
           context stop self
         case msg ⇒ log.warning("Ignoring {}", msg)
       }
+
+      context become (waiting orElse internal)
     case msg ⇒ stash()
   }
 
@@ -232,14 +238,11 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
     }
   }
 
-  private def handleInternal(message: Any, stashUnmatched: Boolean) =
+  private def handleInternal(message: Any, stashUnmatched: Boolean) = {
     message match {
+      case _ if internal.isDefinedAt(message) ⇒ internal(message)
       case AuthEvents.AuthIdInvalidated ⇒
         sendAuthIdInvalidAndStop()
-      case ReceiveTimeout ⇒
-        context.parent ! Passivate(stopMessage = PoisonPill)
-      case Terminated(client) ⇒
-        clients -= client
       case unmatched ⇒
         if (stashUnmatched) {
           stash()
@@ -247,6 +250,15 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
           log.error("Received unmatched message {}", message)
         }
     }
+  }
+
+  private def internal: Receive = {
+    case ReceiveTimeout ⇒
+      log.debug("Receive timeout, passivating")
+      context.parent ! Passivate(stopMessage = PoisonPill)
+    case Terminated(client) ⇒
+      clients -= client
+  }
 
   private def sendAuthIdInvalidAndStop(): Unit = {
     log.warning("Reporting AuthIdInvalid and dying")
