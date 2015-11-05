@@ -1,19 +1,17 @@
 package im.actor.server.session
 
+import akka.testkit.TestProbe
+import com.typesafe.config.ConfigFactory
+import im.actor.api.rpc._
+import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
+import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.server.ActorSpecification
+import im.actor.server.mtproto.protocol.{ RequestResend, RpcRequestBox, UnsentResponse }
 
 import scala.concurrent.duration._
 import scala.util.Random
 
-import akka.testkit.TestProbe
-import com.typesafe.config.ConfigFactory
-
-import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
-import im.actor.api.rpc.codecs.RequestCodec
-import im.actor.server.mtproto.protocol.{ RequestResend, UnsentResponse, RpcRequestBox }
-
-class SessionResendLargeSpec extends BaseSessionSpec(
+final class SessionResendLargeSpec extends BaseSessionSpec(
   ActorSpecification.createSystem(ConfigFactory.parseString(
     """
       |session {
@@ -72,17 +70,16 @@ class SessionResendLargeSpec extends BaseSessionSpec(
 
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props)
+      val session = system.actorOf(Session.props, s"${authId}_$sessionId")
       watchProbe watch session
 
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
 
-      for (_ ← 1 to 100) {
-        implicit val sendProbe = TestProbe()
-        sendMessageBox(authId, sessionId, session, Random.nextLong(), RpcRequestBox(encodedRequest))
-      }
+      for (_ ← 1 to 100)
+        TestProbe().send(session, handleMessageBox(Random.nextLong(), RpcRequestBox(encodedRequest)))
 
       watchProbe.expectTerminated(session)
     }
   }
+
 }
