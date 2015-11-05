@@ -37,4 +37,4 @@ It is very hard to find any open source messaging servers that have awesome mobi
 
 # License
 
-Actor Platform released under [MIT License](LICENSE).
+Actor Platform released under [Apache 2.0 License](LICENSE).
