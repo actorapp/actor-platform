@@ -30,7 +30,7 @@ class HttpApiFrontendSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with ImplicitFileStorageAdapter
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService
   with PlayJsonSupport {
   behavior of "HttpApiFrontend"

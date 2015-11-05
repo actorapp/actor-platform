@@ -6,7 +6,7 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType, ApiOutPeer }
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
-import im.actor.server.{ GroupsServiceHelpers, ImplicitSessionRegionProxy, ImplicitAuthService, BaseAppSuite }
+import im.actor.server.{ GroupsServiceHelpers, ImplicitSessionRegion, ImplicitAuthService, BaseAppSuite }
 import org.scalatest.Inside._
 
 import scala.concurrent.{ Await, Future }
@@ -16,7 +16,7 @@ import scala.util.Random
 final class GroupedDialogsSpec
   extends BaseAppSuite
   with ImplicitAuthService
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with GroupsServiceHelpers {
   "LoadGroupedDialogs" should "load groups and privates" in loadGrouped
 

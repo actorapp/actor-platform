@@ -14,7 +14,7 @@ final class SearchServiceSpec
   with ContactsSpecHelpers
   with GroupsServiceHelpers
   with ImplicitAuthService
-  with ImplicitSessionRegionProxy {
+  with ImplicitSessionRegion {
   behavior of "PeerSearch"
   it should "search private peers" in privat
   it should "search groups" in groups
