@@ -21,7 +21,7 @@ import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceIm
 final class ProfileServiceSpec
   extends BaseAppSuite
   with ImplicitFileStorageAdapter
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "Profile Service"
 

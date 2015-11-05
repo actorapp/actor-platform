@@ -33,7 +33,7 @@ import scalaz.\/
 final class AuthServiceSpec
   extends BaseAppSuite
   with ImplicitSequenceService
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with SeqUpdateMatchers {
   behavior of "AuthService"
 

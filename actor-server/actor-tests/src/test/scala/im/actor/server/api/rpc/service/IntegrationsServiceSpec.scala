@@ -14,7 +14,7 @@ import org.scalatest.Inside._
 class IntegrationsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "IntegrationsService"
 

@@ -15,7 +15,7 @@ final class PubgroupsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with MessageParsing
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "PubgroupsService"
 

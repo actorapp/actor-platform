@@ -5,12 +5,12 @@ import im.actor.api.rpc.webactions.{ ResponseCompleteWebaction, ResponseInitWeba
 import im.actor.api.rpc.{ AuthData, ClientData, Error, Ok }
 import im.actor.server.api.rpc.service.webactions.{ WebactionsErrors, WebactionsKeyValues, WebactionsServiceImpl }
 import im.actor.server.webactions.CorrectWebaction
-import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegionProxy }
+import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
 import org.scalatest.Inside._
 
 class WebactionServiceSpec
   extends BaseAppSuite
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
 
   behavior of "WebactionService"

@@ -23,7 +23,7 @@ final class GroupsServiceSpec
   with MessageParsing
   with ImplicitSequenceService
   with ImplicitAuthService
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with SeqUpdateMatchers {
   behavior of "GroupsService"
 
