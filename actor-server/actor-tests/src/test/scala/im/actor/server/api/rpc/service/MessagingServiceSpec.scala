@@ -21,7 +21,7 @@ class MessagingServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with ImplicitSequenceService
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService
   with SeqUpdateMatchers {
   behavior of "MessagingService"
@@ -69,7 +69,7 @@ class MessagingServiceSpec
 
           whenReady(service.handleSendMessage(user2Peer, randomId, ApiTextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(1001, _, _)) ⇒
+              case Ok(ResponseSeqDate(2, _, _)) ⇒
             }
           }
 
@@ -126,7 +126,7 @@ class MessagingServiceSpec
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1001, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(2, _, _)) ⇒ })
           }
 
           expectUpdate(classOf[UpdateMessageSent])(identity)
@@ -170,7 +170,7 @@ class MessagingServiceSpec
 
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, ApiTextMessage("Hi again", Vector.empty, None))) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseSeqDate(1003, _, _)) ⇒
+              case Ok(ResponseSeqDate(4, _, _)) ⇒
             }
           }
 
@@ -262,7 +262,7 @@ class MessagingServiceSpec
           ))
 
           whenReady(actions) { resps ⇒
-            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1003, _, _)) ⇒ })
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(4, _, _)) ⇒ })
           }
 
           expectUpdate(classOf[UpdateMessageSent])(identity)

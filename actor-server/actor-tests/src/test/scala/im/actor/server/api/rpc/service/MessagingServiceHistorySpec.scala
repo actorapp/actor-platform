@@ -16,9 +16,9 @@ import im.actor.server.model.PeerType
 import scala.concurrent.Future
 import scala.util.Random
 
-class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
+final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   with ImplicitFileStorageAdapter
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService
   with ImplicitSequenceService
   with SeqUpdateMatchers {
