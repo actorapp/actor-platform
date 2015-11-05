@@ -12,7 +12,7 @@ import im.actor.server.model._
 import im.actor.server.model.sequence.SeqUpdateObsolete
 import im.actor.server.model.push.{ GooglePushCredentials ⇒ GooglePushCredentialsModel, ApplePushCredentials ⇒ ApplePushCredentialsModel }
 import im.actor.server.persist.sequence.UserSequenceRepo
-import slick.driver.PostgresDriver.api._
+import slick.dbio.DBIO
 
 import scala.annotation.tailrec
 import scala.concurrent.duration._
@@ -30,7 +30,7 @@ final class SeqUpdatesExtension(
 
   private implicit val OperationTimeout = Timeout(20.seconds)
   private implicit val system: ActorSystem = _system
-  private implicit lazy val db: Database = DbExtension(system).db
+  private implicit lazy val db = DbExtension(system).db
 
   lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system, gpm, apm)
 
@@ -60,7 +60,7 @@ final class SeqUpdatesExtension(
   ): Future[SeqState] =
     deliverUpdate(
       userId,
-      UpdateMapping(default = Some(SerializedUpdate(update.header, ByteString.copyFrom(update.toByteArray)))),
+      UpdateMapping(default = Some(serializedUpdate(update))),
       pushRules,
       deliveryId
     )
@@ -92,16 +92,15 @@ final class SeqUpdatesExtension(
     custom:     Map[Int, Update],
     pushRules:  PushRules        = PushRules(),
     deliveryId: String           = ""
-  ): Future[SeqState] =
-    deliverUpdate(
-      userId,
-      UpdateMapping(
-        default = default map serializedUpdate,
-        custom = custom mapValues serializedUpdate
-      ),
-      pushRules = pushRules,
-      deliveryId = deliveryId
-    )
+  ): Future[SeqState] = deliverUpdate(
+    userId,
+    UpdateMapping(
+      default = default map serializedUpdate,
+      custom = custom mapValues serializedUpdate
+    ),
+    pushRules = pushRules,
+    deliveryId = deliveryId
+  )
 
   val DiffStep = 100L
 
@@ -169,8 +168,7 @@ final class SeqUpdatesExtension(
   def subscribe(userId: Int, ref: ActorRef): Future[Unit] =
     (mediator ? DistributedPubSubMediator.Subscribe(UserSequence.topic(userId), ref)) map (_ ⇒ ())
 
-  private def serializedUpdate(u: Update): SerializedUpdate =
-    SerializedUpdate(u.header, ByteString.copyFrom(u.toByteArray), u.getUserIds, u.getGroupIds)
+  private def serializedUpdate(u: Update): SerializedUpdate = SerializedUpdate(u.header, ByteString.copyFrom(u.toByteArray), u._relatedUserIds, u._relatedGroupIds)
 }
 
 object SeqUpdatesExtension extends ExtensionId[SeqUpdatesExtension] with ExtensionIdProvider {

@@ -15,7 +15,7 @@ final class ActorBotSpec
   extends BaseAppSuite
   with ServiceSpecHelpers
   with ImplicitAuthService
-  with ImplicitSessionRegionProxy {
+  with ImplicitSessionRegion {
   it should "create other bots" in rcv
   it should "report about taken username" in takenUsername // TODO: make it independent from rcv
   it should "be found by username" in username

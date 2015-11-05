@@ -16,7 +16,7 @@ import scala.util.Random
 
 class ContactsServiceSpec
   extends BaseAppSuite
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "Contacts Service"
 

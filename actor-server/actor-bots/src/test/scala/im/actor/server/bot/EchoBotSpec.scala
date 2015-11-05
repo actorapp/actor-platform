@@ -40,7 +40,7 @@ final class EchoBotSpec
   with ServiceSpecHelpers
   with GroupsServiceHelpers
   with ImplicitAuthService
-  with ImplicitSessionRegionProxy {
+  with ImplicitSessionRegion {
   it should "reply with the same message (private)" in replyPrivate
   it should "reply with the same message (group)" in replyGroup
 
