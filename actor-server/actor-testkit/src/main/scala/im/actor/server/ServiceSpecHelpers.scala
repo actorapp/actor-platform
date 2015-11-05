@@ -8,18 +8,19 @@ import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.auth.{ ResponseSendAuthCodeObsolete, AuthService }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.api.rpc.users.ApiUser
-import im.actor.server.api.rpc.{ RpcApiExtension, RpcApiService }
+import im.actor.server.api.rpc.RpcApiExtension
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.oauth.GoogleProvider
-import im.actor.server.persist.AuthSessionRepo
+import im.actor.server.persist.{ AuthCodeRepo, AuthSessionRepo }
 import im.actor.server.session.{ Session, SessionConfig, SessionRegion }
 import im.actor.server.user.UserExtension
-import org.scalatest.Suite
-import org.scalatest.concurrent.Futures
+import org.scalatest.{ Inside, Suite }
+import org.scalatest.concurrent.ScalaFutures
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent._
 import scala.concurrent.duration._
+import scala.util.Random
 import scalaz.{ -\/, \/- }
 
 trait PersistenceHelpers {
@@ -35,12 +36,14 @@ trait UserStructExtensions {
   }
 }
 
-trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions with Futures {
+trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions with ScalaFutures with Inside {
   this: Suite ⇒
 
   protected val system: ActorSystem
 
   protected val fairy = Fairy.create()
+
+  //private implicit val patienceConfig = PatienceConfig(Span(10, Seconds))
 
   def buildPhone(): Long = {
     75550000000L + scala.util.Random.nextInt(999999)
@@ -120,25 +123,28 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
 
   //TODO: make same method to work with email
   def createUser(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): (ApiUser, Int) =
-    withoutLogs {
-      val smsCode = getSmsCode(authId, phoneNumber)
+    //withoutLogs
+    {
+      implicit val clientData = ClientData(authId, Random.nextLong(), None)
 
-      val res = Await.result(service.handleSignUpObsolete(
+      val txHash = whenReady(service.handleStartPhoneAuth(
         phoneNumber = phoneNumber,
-        smsHash = smsCode.smsHash,
-        smsCode = smsCode.smsCode,
-        name = fairy.person().fullName(),
-        deviceHash = scala.util.Random.nextLong.toBinaryString.getBytes(),
-        deviceTitle = "Specs virtual device",
         appId = 42,
-        appKey = "appKey",
-        isSilent = false
-      )(ClientData(authId, scala.util.Random.nextLong(), None)), 10.seconds)
+        apiKey = "appKey",
+        deviceHash = Random.nextLong.toBinaryString.getBytes,
+        deviceTitle = "Specs Has You",
+        timeZone = None,
+        preferredLanguages = Vector.empty
+      ))(_.toOption.get.transactionHash)
 
-      res match {
-        case \/-(rsp) ⇒ (rsp.user, Await.result(db.run(AuthSessionRepo.findByAuthId(authId)), 5.seconds).get.id)
-        case -\/(e)   ⇒ fail(s"Got RpcError $e")
-      }
+      Thread.sleep(1000)
+      val code = whenReady(db.run(AuthCodeRepo.findByTransactionHash(txHash)))(_.get.code)
+      whenReady(service.handleValidateCode(txHash, code))(_ ⇒ ())
+
+      val user = whenReady(service.handleSignUp(txHash, fairy.person().fullName(), None))(_.toOption.get.user)
+      val authSid = whenReady(db.run(AuthSessionRepo.findByAuthId(authId)))(_.get.id)
+
+      (user, authSid)
     }
 
   def buildRpcApiService(services: Seq[im.actor.api.rpc.Service])(implicit system: ActorSystem, db: Database) =

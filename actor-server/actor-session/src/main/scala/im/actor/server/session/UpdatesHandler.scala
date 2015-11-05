@@ -11,11 +11,11 @@ import scala.collection.immutable
 private[session] object UpdatesHandler {
   final case class Authorize(userId: Int, authSid: Int)
 
-  def props(authId: Long)(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Props =
-    Props(classOf[UpdatesHandler], authId, seqUpdManagerRegion)
+  def props(authId: Long): Props =
+    Props(classOf[UpdatesHandler], authId)
 }
 
-private[session] class UpdatesHandler(authId: Long)(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion)
+private[session] class UpdatesHandler(authId: Long)
   extends ActorSubscriber with ActorPublisher[(UpdateBox, Option[String])] with ActorLogging with Stash {
 
   import ActorPublisherMessage._

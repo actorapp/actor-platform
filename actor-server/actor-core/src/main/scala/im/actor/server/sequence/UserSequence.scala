@@ -20,7 +20,19 @@ object UserSequence {
   private[sequence] def props = Props(new UserSequence)
 }
 
-private[sequence] final class UserSequence extends Actor with ActorLogging with Stash {
+private trait SeqControl {
+  private var seq: Int = 0
+
+  protected def getSeq: Int = this.seq
+  protected def nextSeq(): Int = {
+    val nseq = this.seq + 1
+    this.seq = nseq
+    nseq
+  }
+  protected def setSeq(s: Int): Unit = this.seq = s
+}
+
+private[sequence] final class UserSequence extends Actor with ActorLogging with Stash with SeqControl {
 
   import UserSequence._
   import UserSequenceCommands._
@@ -31,8 +43,7 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
 
   val userId = self.path.name.toInt
 
-  var seq = 0
-  var mediator = DistributedPubSub(context.system).mediator
+  private val mediator = DistributedPubSub(context.system).mediator
 
   val deliveryCache = Caffeine.newBuilder().maximumSize(100).executor(context.dispatcher).build[String, SeqState]()
 
@@ -40,11 +51,13 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
 
   def receive = {
     case Initialized(initSeq) ⇒
-      this.seq = initSeq
+      setSeq(initSeq)
+      unstashAll()
       context become initialized
     case Status.Failure(e) ⇒
       log.error(e, "Failed to initialize UserSequence")
       init()
+    case msg ⇒ stash()
   }
 
   def initialized: Receive = {
@@ -54,9 +67,12 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
         case None ⇒
           log.error("Empty mapping")
       }
+    case GetSeqState() ⇒
+      sender() ! SeqState(getSeq)
   }
 
-  private def becomeStashing(r: Receive): Unit = context become (r orElse stashing)
+  private def becomeStashing(f: ActorRef ⇒ Receive): Unit =
+    context.become(f(sender()) orElse stashing, discardOld = false)
 
   private def stashing: Receive = {
     case msg ⇒ stash()
@@ -66,29 +82,31 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
     db.run(UserSequenceRepo.fetchSeq(userId)) map (seqOpt ⇒ Initialized(seqOpt.getOrElse(0))) pipeTo self
 
   private def deliver(mapping: UpdateMapping, pushRules: Option[PushRules], deliveryId: String): Unit = {
-    val replyTo = sender()
-
     cached(deliveryId) {
-      val nextSeq = seq + 1
+      val seq = nextSeq()
+
       val seqUpdate = SeqUpdate(
         userId,
-        nextSeq,
+        seq,
         System.currentTimeMillis(),
         Some(mapping)
       )
 
-      becomeStashing {
+      becomeStashing(replyTo ⇒ {
         case s: SeqState ⇒
+          unstashAll()
           context.unbecome()
 
           mediator ! Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, ByteString.EMPTY))
         case s @ Status.Failure(e) ⇒
           log.error(e, "Failed to write seq update: {}", seqUpdate)
           replyTo ! s
-          context.unbecome()
-      }
 
-      writeToDb(seqUpdate) map (_ ⇒ SeqState(nextSeq)) pipeTo self
+          unstashAll()
+          context.unbecome()
+      })
+
+      writeToDb(seqUpdate) map (_ ⇒ SeqState(seq)) pipeTo self
     }
   }
 
