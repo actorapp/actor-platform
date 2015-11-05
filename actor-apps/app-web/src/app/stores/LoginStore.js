@@ -3,7 +3,7 @@
  */
 
 import ActorClient from 'utils/ActorClient';
-import Raven from 'utils/Raven';
+import Bugsnag from 'utils/Bugsnag';
 import mixpanel from 'utils/Mixpanel';
 import { intlData } from 'l18n';
 
@@ -173,16 +173,20 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.SET_LOGGED_IN:
       myUid = ActorClient.getUid();
       const user = ActorClient.getUser(myUid);
-      Raven.setUserContext({id: myUid});
       mixpanel.identify(myUid);
       mixpanel.people.set({
         $phone: user.phones[0],
         $name: user.name
       });
+      Bugsnag.metaData = {
+        account: {
+          id: myUid,
+          name: user.name
+        }
+      };
       LoginStore.emitChange();
       break;
     case ActionTypes.SET_LOGGED_OUT:
-      Raven.setUserContext();
       mixpanel.track('Log out');
       localStorage.clear();
       location.reload();
