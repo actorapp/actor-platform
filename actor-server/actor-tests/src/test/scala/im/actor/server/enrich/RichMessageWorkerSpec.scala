@@ -37,7 +37,6 @@ class RichMessageWorkerSpec
     val ThumbMinSize = 90
     implicit val ec = system.dispatcher
 
-    implicit val sessionRegion = buildSessionRegionProxy()
     implicit val socialManagerRegion = SocialManager.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
