@@ -27,7 +27,7 @@ public class JsListStorage implements ListStorage {
     private final Comparator<Index> comparator = new Comparator<Index>() {
         @Override
         public int compare(Index o1, Index o2) {
-            return -compare(o1.sortKey, o2.sortKey);
+            return -compare(o1.getSortKey(), o2.getSortKey());
         }
 
         int compare(long x, long y) {
@@ -50,28 +50,25 @@ public class JsListStorage implements ListStorage {
                     long order = dataInput.readLong();
                     index.add(new Index(id, order));
                 }
-                // Just in case...
-                Collections.sort(index, comparator);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        // updateIndex();
+        updateIndex();
     }
 
     @Override
     public void updateOrAdd(ListEngineRecord record) {
         // Update Index
-        addToIndex(record.getKey(), record.getOrder());
-//        for (Index i : index) {
-//            if (i.id == record.getKey()) {
-//                index.remove(i);
-//                break;
-//            }
-//        }
-//        index.add(new Index(record.getKey(), record.getOrder()));
-        saveIndex();
+        for (Index i : index) {
+            if (i.getId() == record.getKey()) {
+                index.remove(i);
+                break;
+            }
+        }
+        index.add(new Index(record.getKey(), record.getOrder()));
+        updateIndex();
 
         // Save record
         storage.setItem(getId(record.getKey()), toBase64(record.getData()));
@@ -81,16 +78,15 @@ public class JsListStorage implements ListStorage {
     public void updateOrAdd(List<ListEngineRecord> items) {
         // Update Index
         for (ListEngineRecord record : items) {
-//            for (Index i : index) {
-//                if (i.id == record.getKey()) {
-//                    index.remove(i);
-//                    break;
-//                }
-//            }
-//            index.add(new Index(record.getKey(), record.getOrder()));
-            addToIndex(record.getKey(), record.getOrder());
+            for (Index i : index) {
+                if (i.getId() == record.getKey()) {
+                    index.remove(i);
+                    break;
+                }
+            }
+            index.add(new Index(record.getKey(), record.getOrder()));
         }
-        saveIndex();
+        updateIndex();
 
         // Save records
         for (ListEngineRecord record : items) {
@@ -101,10 +97,10 @@ public class JsListStorage implements ListStorage {
     @Override
     public void delete(long key) {
         for (Index i : index) {
-            if (i.id == key) {
+            if (i.getId() == key) {
                 index.remove(i);
                 storage.removeItem(getId(key));
-                saveIndex();
+                updateIndex();
                 break;
             }
         }
@@ -114,10 +110,10 @@ public class JsListStorage implements ListStorage {
     public void delete(long[] keys) {
         for (long key : keys) {
             for (Index i : index) {
-                if (i.id == key) {
+                if (i.getId() == key) {
                     index.remove(i);
                     storage.removeItem(getId(key));
-                    saveIndex();
+                    updateIndex();
                     break;
                 }
             }
@@ -127,17 +123,17 @@ public class JsListStorage implements ListStorage {
     @Override
     public void clear() {
         for (Index i : index) {
-            storage.removeItem(getId(i.id));
+            storage.removeItem(getId(i.getId()));
         }
         index.clear();
-        saveIndex();
+        updateIndex();
     }
 
     @Override
     public ListEngineRecord loadItem(long key) {
         Index indexValue = null;
         for (Index i : index) {
-            if (i.id == key) {
+            if (i.getId() == key) {
                 indexValue = i;
                 break;
             }
@@ -150,7 +146,7 @@ public class JsListStorage implements ListStorage {
         String item = storage.getItem(getId(key));
         if (item != null) {
             byte[] res = fromBase64(item);
-            return new ListEngineRecord(key, indexValue.sortKey, null, res);
+            return new ListEngineRecord(key, indexValue.getSortKey(), null, res);
         }
         return null;
     }
@@ -173,7 +169,7 @@ public class JsListStorage implements ListStorage {
 
     public Long getHeadId() {
         if (index.size() > 0) {
-            return index.get(0).id;
+            return index.get(0).getId();
         } else {
             return null;
         }
@@ -182,7 +178,7 @@ public class JsListStorage implements ListStorage {
     public long[] getOrderedIds() {
         long[] res = new long[index.size()];
         for (int i = 0; i < res.length; i++) {
-            res[i] = index.get(i).id;
+            res[i] = index.get(i).getId();
         }
         return res;
     }
@@ -191,64 +187,34 @@ public class JsListStorage implements ListStorage {
         return "list_" + prefix + "_" + id;
     }
 
-    private void addToIndex(long id, long sortKey) {
-        for (int i = 0; i < index.size(); i++) {
-            Index ind = index.get(i);
-            if (ind.id == id) {
-                index.remove(i);
-                break;
-            }
-        }
-
-        boolean found = false;
-        for (int i = 0; i < index.size(); i++) {
-            Index ind = index.get(i);
-            if (ind.sortKey < sortKey) {
-                found = true;
-                index.add(i, new Index(id, sortKey));
-            }
-        }
-        if (!found) {
-            index.add(new Index(id, sortKey));
-        }
-//        for (Index i : index) {
-//            if (i.id == id) {
-//                //index.remove()
-//            }
-//        }
-        //        for (Index i : index) {
-//            if (i.id == record.getKey()) {
-//                index.remove(i);
-//                break;
-//            }
-//        }
-//        index.add(new Index(record.getKey(), record.getOrder()));
-    }
-
     private void updateIndex() {
         Collections.sort(index, comparator);
-        saveIndex();
-    }
-
-    private void saveIndex() {
         DataOutput dataOutput = new DataOutput();
         dataOutput.writeInt(index.size());
 
         for (Index i : index) {
-            dataOutput.writeLong(i.id);
-            dataOutput.writeLong(i.sortKey);
+            dataOutput.writeLong(i.getId());
+            dataOutput.writeLong(i.getSortKey());
         }
 
         storage.setItem("list_" + prefix + "_index", toBase64(dataOutput.toByteArray()));
     }
 
     private class Index {
-        public final long id;
-        public final long sortKey;
+        private long id;
+        private long sortKey;
 
         private Index(long id, long sortKey) {
             this.id = id;
             this.sortKey = sortKey;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public long getSortKey() {
+            return sortKey;
         }
     }
 }
