@@ -1,5 +1,5 @@
 package im.actor.server.sequence
-
+/*
 import java.nio.ByteBuffer
 
 import akka.actor._
@@ -12,14 +12,13 @@ import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
-import im.actor.server.model.sequence
 import im.actor.server.{ model, persist ⇒ p }
 import slick.dbio.DBIO
 
 import scala.annotation.tailrec
 import scala.concurrent._
 import scala.concurrent.duration._
-/*
+
 object SeqUpdatesManager {
 
   import SeqUpdatesManagerMessages._
