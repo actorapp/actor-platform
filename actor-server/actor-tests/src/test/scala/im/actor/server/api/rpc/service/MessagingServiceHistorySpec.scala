@@ -42,26 +42,26 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
 
   private val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit private val service = messaging.MessagingServiceImpl()
-  implicit private val groupsService = new GroupsServiceImpl(groupInviteConfig)
+  implicit private lazy val service = messaging.MessagingServiceImpl()
+  implicit private lazy val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   private object s {
-    val (user1, authId1, authSid1, _) = createUser()
-    val sessionId1 = createSessionId()
+    lazy val (user1, authId1, authSid1, _) = createUser()
+    lazy val sessionId1 = createSessionId()
 
-    val (user2, authId2, authSid2, _) = createUser()
-    val sessionId2 = createSessionId()
+    lazy val (user2, authId2, authSid2, _) = createUser()
+    lazy val sessionId2 = createSessionId()
 
-    val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1)))
-    val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2)))
+    lazy val clientData1 = ClientData(authId1, sessionId1, Some(AuthData(user1.id, authSid1)))
+    lazy val clientData2 = ClientData(authId2, sessionId2, Some(AuthData(user2.id, authSid2)))
 
-    val user1Model = getUserModel(user1.id)
-    val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
-    val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
+    lazy val user1Model = getUserModel(user1.id)
+    lazy val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
+    lazy val user1Peer = peers.ApiOutPeer(ApiPeerType.Private, user1.id, user1AccessHash)
 
-    val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
-    val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
+    lazy val user2Model = getUserModel(user2.id)
+    lazy val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
+    lazy val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
 
     def privat() = {
       val step = 100L
@@ -331,7 +331,7 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
             classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
             classOf[UpdateCountersChanged],
-            //here we got read on other device. so we don't get ReadByMe update
+            classOf[UpdateMessageReadByMe],
             classOf[UpdateCountersChanged]
           )(emptyCheck)
         }
@@ -347,10 +347,8 @@ final class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceH
             classOf[UpdateCountersChanged],
             classOf[UpdateMessage],
             classOf[UpdateCountersChanged],
-
-            //why this order
-            classOf[UpdateCountersChanged],
-            classOf[UpdateMessageReadByMe]
+            classOf[UpdateMessageReadByMe],
+            classOf[UpdateCountersChanged]
           )(emptyCheck)
         }
       }

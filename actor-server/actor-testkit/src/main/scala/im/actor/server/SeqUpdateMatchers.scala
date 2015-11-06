@@ -88,7 +88,9 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
       val headersToUpdates = updates map (u ⇒ extractHeader(u) → u)
       val updatesMap: Map[Int, UpdateClass] = headersToUpdates.toMap
       val updatesHeaders = headersToUpdates map (_._1)
-      val updatesNames = updates map (_.getSimpleName) mkString ", "
+      val updatesNames = headersToUpdates map {
+        case (h, u) ⇒ s"${u.getSimpleName}{${h}}"
+      } mkString ", "
 
       val dbUpdatesHeaders = dbUpdates map (_.header)
       val dbUpdatesNames = dbUpdatesHeaders mkString ", "

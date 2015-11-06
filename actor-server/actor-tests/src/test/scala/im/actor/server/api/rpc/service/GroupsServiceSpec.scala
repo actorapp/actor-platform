@@ -123,7 +123,7 @@ final class GroupsServiceSpec
 
       whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
         resp should matchPattern {
-          case Ok(ResponseSeqDate(1002, _, _)) ⇒
+          case Ok(ResponseSeqDate(3, _, _)) ⇒
         }
       }
       expectUpdate(classOf[UpdateGroupUserInvited])(identity)
@@ -154,7 +154,7 @@ final class GroupsServiceSpec
 
       whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp ⇒
         resp should matchPattern {
-          case Ok(ResponseSeqDate(1003, _, _)) ⇒
+          case Ok(ResponseSeqDate(4, _, _)) ⇒
         }
       }
       expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
