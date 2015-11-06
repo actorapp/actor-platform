@@ -39,8 +39,6 @@ final class ContactsServiceSpec
   object s {
     implicit val ec = system.dispatcher
 
-    implicit val sessionRegion = buildSessionRegionProxy()
-
     implicit val service = new contacts.ContactsServiceImpl
 
     private implicit val userExt = UserExtension(system)

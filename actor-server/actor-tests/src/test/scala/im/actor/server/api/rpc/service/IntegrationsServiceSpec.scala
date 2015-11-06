@@ -33,7 +33,6 @@ class IntegrationsServiceSpec
   object t {
 
     implicit val ec = system.dispatcher
-    implicit val sessionRegion = buildSessionRegionProxy()
 
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
