@@ -32,6 +32,6 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   DbExtension(_system).migrate()
 
   override implicit def patienceConfig: PatienceConfig =
-    new PatienceConfig(timeout = Span(30, Seconds))
+    new PatienceConfig(timeout = Span(15, Seconds))
 
 }
