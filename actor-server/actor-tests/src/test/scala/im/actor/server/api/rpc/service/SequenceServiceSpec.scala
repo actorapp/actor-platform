@@ -1,6 +1,5 @@
 package im.actor.server.api.rpc.service
 
-import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
@@ -8,14 +7,15 @@ import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessageContentChanged 
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference }
+import im.actor.concurrent.FutureExt
 import im.actor.server._
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
-import org.scalatest.Inside._
+import im.actor.server.sequence.SeqUpdatesExtension
 
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, Future }
-/*
-class SequenceServiceSpec extends BaseAppSuite({
+import scala.concurrent.Await
+
+final class SequenceServiceSpec extends BaseAppSuite({
   ActorSpecification.createSystem(
     ConfigFactory.parseString(
       """
@@ -23,40 +23,38 @@ class SequenceServiceSpec extends BaseAppSuite({
       """
     )
   )
-}) with ImplicitSessionRegionProxy with ImplicitAuthService with ImplicitFileStorageAdapter {
+}) with ImplicitSessionRegion with ImplicitAuthService {
 
   behavior of "Sequence service"
 
-  it should "get state" in e1
-  it should "get difference" in e2
-  it should "get difference if there is one update bigger than difference size limit" in e3
+  it should "get state" in getState
+  it should "get difference" in getDifference
+  it should "get difference if there is one update bigger than difference size limit" in bigUpdate
 
-  val bucketName = "actor-uploads-test"
+  private val config = SequenceServiceConfig.load().get
+  private lazy val seqUpdExt = SeqUpdatesExtension(system)
 
-  implicit val transferManager = new TransferManager(awsCredentials)
-  val config = SequenceServiceConfig.load().get
+  implicit lazy val service = new sequence.SequenceServiceImpl(config)
+  implicit lazy val msgService = messaging.MessagingServiceImpl()
 
-  implicit val service = new sequence.SequenceServiceImpl(config)
-  implicit val msgService = messaging.MessagingServiceImpl()
-
-  def e1() = {
-    val (user, authId, _) = createUser()
+  def getState() = {
+    val (user, authId, authSid, _) = createUser()
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
     whenReady(service.handleGetState()) { res ⇒
-      res should matchPattern { case Ok(ResponseSeq(999, _)) ⇒ }
+      res should matchPattern { case Ok(ResponseSeq(0, _)) ⇒ }
     }
   }
 
-  def e2() = {
-    val (user, authId, _) = createUser()
-    val (user2, _, _) = createUser()
+  def getDifference() = {
+    val (user, authId, authSid, _) = createUser()
+    val (user2, _, _, _) = createUser()
     val sessionId = createSessionId()
 
     val user2Peer = ApiPeer(ApiPeerType.Private, user2.id)
 
-    implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
     val message = ApiTextMessage("Hello mr President. Zzz", Vector.empty, None)
 
@@ -67,13 +65,12 @@ class SequenceServiceSpec extends BaseAppSuite({
 
     //serialized update size is: 40 bytes for body + 4 bytes for header, 44 bytes total
     //with max update size of 20 KiB 1281 updates should split into three parts
-    val actions = for (i ← 1000L to 2280L) yield {
+    Await.result(FutureExt.ftraverse(0L to 1280L) { i ⇒
       val update = UpdateMessageContentChanged(user2Peer, i, message)
-      persistAndPushUpdate(authId, update, pushText = None, isFat = false)
-    }
-    var totalUpdates: Seq[ApiDifferenceUpdate] = Seq.empty
+      seqUpdExt.deliverSingleUpdate(user.id, update)
+    }, 10.seconds)
 
-    Await.result(Future.sequence(actions), 10.seconds)
+    var totalUpdates: Seq[ApiDifferenceUpdate] = Seq.empty
 
     val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
       val diff = res.toOption.get
@@ -82,7 +79,7 @@ class SequenceServiceSpec extends BaseAppSuite({
           (updates.map(_.toByteArray.length).sum <= withError(config.maxDifferenceSize)) shouldEqual true
           needMore shouldEqual true
           totalUpdates ++= updates
-          diff.seq shouldEqual 999 + updates.length
+          diff.seq shouldEqual updates.length
       }
       (diff.seq, diff.state)
     }
@@ -111,37 +108,37 @@ class SequenceServiceSpec extends BaseAppSuite({
       diff.seq
     }
 
-    for (i ← 1000 to 2280) {
-      val data = totalUpdates(i - 1000)
-      val in = CodedInputStream.newInstance(data.update)
-      val id = i.toLong
-      UpdateMessageContentChanged.parseFrom(in) should matchPattern {
-        case Right(UpdateMessageContentChanged(_, `id`, _)) ⇒
-      }
+    totalUpdates.zipWithIndex foreach {
+      case (data, i) ⇒
+        val in = CodedInputStream.newInstance(data.update)
+        val id = i.toLong
+        UpdateMessageContentChanged.parseFrom(in) should matchPattern {
+          case Right(UpdateMessageContentChanged(_, `id`, _)) ⇒
+        }
     }
 
-    finalSeq shouldEqual 2280
     totalUpdates.length shouldEqual 1281
+    finalSeq shouldEqual 1281
 
   }
 
-  def e3() = {
-    val (user, authId, _) = createUser()
-    val (user2, _, _) = createUser()
+  def bigUpdate() = {
+    val (user, authId, authSid, _) = createUser()
+    val (user2, _, _, _) = createUser()
     val sessionId = createSessionId()
 
     val user2Peer = ApiPeer(ApiPeerType.Private, user2.id)
 
-    implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+    implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
     val maxSize = config.maxDifferenceSize
 
     val smallUpdate = UpdateMessageContentChanged(user2Peer, 1L, ApiTextMessage("Hello", Vector.empty, None))
     val bigUpdate = UpdateMessageContentChanged(user2Peer, 2L, ApiTextMessage((for (_ ← 1L to maxSize * 10) yield "b").mkString(""), Vector.empty, None))
 
-    whenReady(persistAndPushUpdate(authId, smallUpdate, pushText = None, isFat = false))(identity)
-    whenReady(persistAndPushUpdate(authId, bigUpdate, pushText = None, isFat = false))(identity)
-    whenReady(persistAndPushUpdate(authId, bigUpdate, pushText = None, isFat = false))(identity)
+    whenReady(seqUpdExt.deliverSingleUpdate(user.id, smallUpdate))(identity)
+    whenReady(seqUpdExt.deliverSingleUpdate(user.id, bigUpdate))(identity)
+    whenReady(seqUpdExt.deliverSingleUpdate(user.id, bigUpdate))(identity)
 
     // expect first small update and needMore == true
     val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
@@ -174,4 +171,3 @@ class SequenceServiceSpec extends BaseAppSuite({
     }
   }
 }
-*/ 
