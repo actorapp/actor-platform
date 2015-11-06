@@ -1,7 +1,7 @@
 package im.actor.server.sequence
 
 import akka.actor._
-import akka.cluster.pubsub.{ DistributedPubSubMediator, DistributedPubSub }
+import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.protobuf.ByteString
@@ -9,8 +9,7 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.server.db.DbExtension
 import im.actor.server.model._
-import im.actor.server.model.sequence.SeqUpdateObsolete
-import im.actor.server.model.push.{ GooglePushCredentials ⇒ GooglePushCredentialsModel, ApplePushCredentials ⇒ ApplePushCredentialsModel }
+import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel }
 import im.actor.server.persist.sequence.UserSequenceRepo
 import slick.dbio.DBIO
 
@@ -153,7 +152,7 @@ final class SeqUpdatesExtension(
 
   def deleteApplePushCredentials(token: Array[Byte]): Future[Unit] = Future.successful(())
 
-  def persistUpdate(update: SeqUpdateObsolete): Future[Unit] = {
+  def persistUpdate(update: SeqUpdate): Future[Unit] = {
     val promise = Promise[Unit]()
     writer ! BatchUpdatesWriter.Enqueue(update, promise)
     promise.future
