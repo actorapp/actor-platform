@@ -14,7 +14,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.Random
 
-class ContactsServiceSpec
+final class ContactsServiceSpec
   extends BaseAppSuite
   with ImplicitSessionRegion
   with ImplicitAuthService {
@@ -110,7 +110,7 @@ class ContactsServiceSpec
 
       implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
-      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1000) = {
+      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1) = {
         whenReady(service.handleAddContact(user2.id, user2AccessHash)) { resp ⇒
           resp should matchPattern {
             case Ok(api.misc.ResponseSeq(seq, state)) if seq == expectedUpdSeq ⇒
@@ -144,7 +144,7 @@ class ContactsServiceSpec
       def remove() = {
         whenReady(service.handleRemoveContact(user2.id, user2AccessHash)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.misc.ResponseSeq(1002, state)) ⇒
+            case Ok(api.misc.ResponseSeq(3, state)) ⇒
           }
         }
 
@@ -155,7 +155,7 @@ class ContactsServiceSpec
         }
       }
 
-      def addAfterRemove() = add(firstRun = false, expectedUpdSeq = 1003)
+      def addAfterRemove() = add(firstRun = false, expectedUpdSeq = 4)
     }
 
     object imprt {
