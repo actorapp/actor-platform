@@ -22,7 +22,6 @@ import im.actor.server.db.DbExtension
 import im.actor.server.persist.HistoryMessageRepo
 import im.actor.server.{ persist ⇒ p }
 import im.actor.server.model.push.{ ApplePushCredentials ⇒ ApplePushCredentialsModel, GooglePushCredentials ⇒ GooglePushCredentialsModel }
-import im.actor.server.model.sequence.{ SeqUpdateObsolete ⇒ SeqUpdateModel }
 
 /*
 trait SeqUpdatesManagerMessage {
