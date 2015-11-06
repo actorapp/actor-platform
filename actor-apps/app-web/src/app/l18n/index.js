@@ -8,7 +8,10 @@ import spanish from './es-ES';
 import portuguese from './pt-BR';
 import chinese from './zh-CN';
 
-const language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
+let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
+if (language === 'zh-cn') {
+  language = 'zn'
+}
 
 // Intl polyfill
 if (!global.Intl) {
@@ -34,7 +37,7 @@ const languageData = {
   'en': english,
   'es': spanish,
   'pt': portuguese,
-  'zh-cn': chinese
+  'zh': chinese
 };
 
 const intlData = languageData[language] || languageData[language.split('-')[0]] || languageData['en'];
