@@ -21,12 +21,11 @@ import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging
 import im.actor.server.file.ImageUtils
-import org.scalatest.Inside._
 import play.api.libs.json._
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-class HttpApiFrontendSpec
+final class HttpApiFrontendSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with ImplicitFileStorageAdapter
