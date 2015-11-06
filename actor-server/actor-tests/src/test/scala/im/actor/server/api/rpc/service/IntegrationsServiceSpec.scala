@@ -9,9 +9,8 @@ import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import org.scalatest.Inside._
 
-class IntegrationsServiceSpec
+final class IntegrationsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with ImplicitSessionRegion
@@ -48,7 +47,7 @@ class IntegrationsServiceSpec
 
     val sessionId = createSessionId()
     val clientData1 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1)))
-    val clientData2 = ClientData(user1AuthId2, sessionId, Some(AuthData(user1.id, user1AuthSid2)))
+    val clientData2 = ClientData(user1AuthId2, sessionId, Some(AuthData(user2.id, user1AuthSid2)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
