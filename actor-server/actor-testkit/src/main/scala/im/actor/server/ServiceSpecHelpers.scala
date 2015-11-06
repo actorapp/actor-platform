@@ -123,8 +123,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
 
   //TODO: make same method to work with email
   def createUser(authId: Long, phoneNumber: Long)(implicit service: AuthService, system: ActorSystem, db: Database): (ApiUser, Int) =
-    //withoutLogs
-    {
+    withoutLogs {
       implicit val clientData = ClientData(authId, Random.nextLong(), None)
 
       val txHash = whenReady(service.handleStartPhoneAuth(
@@ -137,7 +136,6 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions wi
         preferredLanguages = Vector.empty
       ))(_.toOption.get.transactionHash)
 
-      Thread.sleep(1000)
       val code = whenReady(db.run(AuthCodeRepo.findByTransactionHash(txHash)))(_.get.code)
       whenReady(service.handleValidateCode(txHash, code))(_ ⇒ ())
 
