@@ -11,6 +11,7 @@ import im.actor.server.persist.sequence.UserSequenceRepo
 
 import scala.concurrent.Future
 import scala.language.postfixOps
+import scala.util.{ Failure, Success }
 
 object UserSequence {
   def topic(userId: Int): String = s"sequence.$userId"
@@ -40,12 +41,13 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
   import context.dispatcher
 
   private val db = DbExtension(context.system).db
+  private val seqUpdExt = SeqUpdatesExtension(context.system)
 
   val userId = self.path.name.toInt
 
   private val mediator = DistributedPubSub(context.system).mediator
 
-  val deliveryCache = Caffeine.newBuilder().maximumSize(100).executor(context.dispatcher).build[String, SeqState]()
+  private val deliveryCache = Caffeine.newBuilder().maximumSize(100).executor(context.dispatcher).build[String, SeqState]()
 
   init()
 
@@ -71,13 +73,6 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
       sender() ! SeqState(getSeq)
   }
 
-  private def becomeStashing(f: ActorRef ⇒ Receive): Unit =
-    context.become(f(sender()) orElse stashing, discardOld = false)
-
-  private def stashing: Receive = {
-    case msg ⇒ stash()
-  }
-
   private def init(): Unit =
     db.run(UserSequenceRepo.fetchSeq(userId)) map (seqOpt ⇒ Initialized(seqOpt.getOrElse(0))) pipeTo self
 
@@ -92,21 +87,9 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
         Some(mapping)
       )
 
-      becomeStashing(replyTo ⇒ {
-        case s: SeqState ⇒
-          unstashAll()
-          context.unbecome()
-
-          mediator ! Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, ByteString.EMPTY))
-        case s @ Status.Failure(e) ⇒
-          log.error(e, "Failed to write seq update: {}", seqUpdate)
-          replyTo ! s
-
-          unstashAll()
-          context.unbecome()
-      })
-
-      writeToDb(seqUpdate) map (_ ⇒ SeqState(seq)) pipeTo self
+      writeToDb(seqUpdate) map (_ ⇒ SeqState(seq)) andThen {
+        case Success(_) ⇒ mediator ! Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, ByteString.EMPTY))
+      }
     }
   }
 
@@ -116,10 +99,13 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
         case Some(seqstate) ⇒ Future.successful(seqstate)
         case None           ⇒ f
       }
-    } else f) pipeTo sender() onSuccess { case s ⇒ deliveryCache.put(deliveryId, s) }
+    } else f) pipeTo sender() onComplete {
+      case Success(s) ⇒ deliveryCache.put(deliveryId, s)
+      case Failure(e) ⇒ log.error(e, "Failed to deliver")
+    }
   }
 
-  private def writeToDb(seqUpdate: SeqUpdate): Future[Unit] = db.run(UserSequenceRepo.create(seqUpdate)) map (_ ⇒ ())
+  private def writeToDb(seqUpdate: SeqUpdate): Future[Unit] = seqUpdExt.persistUpdate(seqUpdate)
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     super.preRestart(reason, message)
