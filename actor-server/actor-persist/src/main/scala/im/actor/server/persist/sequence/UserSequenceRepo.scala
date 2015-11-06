@@ -35,7 +35,7 @@ object UserSequenceRepo {
     byUser _ andThen (_.sortBy(_.seq.desc).map(_.seq).take(1))
   }
 
-  def create(updates: Seq[SeqUpdate]) = sequenceC ++= updates
+  def create(updates: Seq[SeqUpdate]) = (sequenceC ++= updates).transactionally
 
   def create(update: SeqUpdate) = sequenceC += update
 

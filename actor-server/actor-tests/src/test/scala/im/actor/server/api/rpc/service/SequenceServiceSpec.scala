@@ -7,13 +7,12 @@ import im.actor.api.rpc.messaging.{ ApiTextMessage, UpdateMessageContentChanged 
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference }
-import im.actor.concurrent.FutureExt
 import im.actor.server._
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.sequence.SeqUpdatesExtension
 
 import scala.concurrent.duration._
-import scala.concurrent.Await
+import scala.concurrent.{ Future, Await }
 
 final class SequenceServiceSpec extends BaseAppSuite({
   ActorSpecification.createSystem(
@@ -29,7 +28,7 @@ final class SequenceServiceSpec extends BaseAppSuite({
 
   it should "get state" in getState
   it should "get difference" in getDifference
-  it should "get difference if there is one update bigger than difference size limit" in bigUpdate
+  it should "not produce empty difference if there is one update bigger than difference size limit" in bigUpdate
 
   private val config = SequenceServiceConfig.load().get
   private lazy val seqUpdExt = SeqUpdatesExtension(system)
@@ -65,10 +64,10 @@ final class SequenceServiceSpec extends BaseAppSuite({
 
     //serialized update size is: 40 bytes for body + 4 bytes for header, 44 bytes total
     //with max update size of 20 KiB 1281 updates should split into three parts
-    Await.result(FutureExt.ftraverse(0L to 1280L) { i ⇒
+    Await.result(Future.sequence((0L to 1280L) map { i ⇒
       val update = UpdateMessageContentChanged(user2Peer, i, message)
       seqUpdExt.deliverSingleUpdate(user.id, update)
-    }, 10.seconds)
+    }), 10.seconds)
 
     var totalUpdates: Seq[ApiDifferenceUpdate] = Seq.empty
 
