@@ -66,6 +66,7 @@ public class JsFacade implements Exportable {
 
     private JsMessenger messenger;
     private JsFileSystemProvider provider;
+    private Peer lastVisiblePeer;
 
     @Export
     public static JsFacade production() {
@@ -639,10 +640,14 @@ public class JsFacade implements Exportable {
     }
 
     public void onConversationOpen(JsPeer peer) {
-        messenger.onConversationOpen(peer.convert());
+        lastVisiblePeer = peer.convert();
+        messenger.onConversationOpen(lastVisiblePeer);
     }
 
     public void onConversationClosed(JsPeer peer) {
+        if (lastVisiblePeer == peer.convert()) {
+            lastVisiblePeer = null;
+        }
         messenger.onConversationClosed(peer.convert());
     }
 
@@ -1183,11 +1188,19 @@ public class JsFacade implements Exportable {
     }
 
     public void handleLinkClick(Event event) {
+        Element target = Element.as(event.getEventTarget());
+        String href = target.getAttribute("href");
         if (JsElectronApp.isElectron()) {
-            Element target = Element.as(event.getEventTarget());
-            String href = target.getAttribute("href");
             JsElectronApp.openUrlExternal(href);
             event.preventDefault();
+        } else {
+            if (href.startsWith("send:")) {
+                String msg = href.substring("send:".length());
+                if (lastVisiblePeer != null) {
+                    messenger.sendMessage(lastVisiblePeer, msg);
+                    event.preventDefault();
+                }
+            }
         }
     }
 }
