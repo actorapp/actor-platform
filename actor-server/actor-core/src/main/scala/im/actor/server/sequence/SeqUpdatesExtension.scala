@@ -40,16 +40,18 @@ final class SeqUpdatesExtension(
     (region.ref ? Envelope(userId).withGetSeqState(GetSeqState())).mapTo[SeqState]
 
   def deliverUpdate(
+    userId:  Int,
+    deliver: DeliverUpdate
+  ): Future[SeqState] =
+    (region.ref ? Envelope(userId).withDeliverUpdate(deliver)).mapTo[SeqState]
+
+  def deliverUpdate(
     userId:     Int,
     mapping:    UpdateMapping,
     pushRules:  PushRules     = PushRules(),
     deliveryId: String        = ""
   ): Future[SeqState] =
-    (region.ref ? Envelope(userId).withDeliverUpdate(DeliverUpdate(
-      mapping = Some(mapping),
-      pushRules = Some(pushRules),
-      deliveryId = deliveryId
-    ))).mapTo[SeqState]
+    deliverUpdate(userId, buildDeliver(mapping, pushRules, deliveryId))
 
   def deliverSingleUpdate(
     userId:     Int,
@@ -69,9 +71,17 @@ final class SeqUpdatesExtension(
     update:     Update,
     pushRules:  PushRules = PushRules(),
     deliveryId: String    = ""
+  ): Future[Seq[SeqState]] = {
+    val mapping = UpdateMapping(default = Some(serializedUpdate(update)))
+    val deliver = buildDeliver(mapping, pushRules, deliveryId)
+    broadcastSingleUpdate(userIds, deliver)
+  }
+
+  def broadcastSingleUpdate(
+    userIds: Set[Int],
+    deliver: DeliverUpdate
   ): Future[Seq[SeqState]] =
-    // TODO: #perf dont serialize multiple times
-    Future.sequence(userIds.toSeq map (deliverSingleUpdate(_, update, pushRules = pushRules, deliveryId = deliveryId)))
+    Future.sequence(userIds.toSeq map (deliverUpdate(_, deliver)))
 
   def broadcastOwnSingleUpdate(
     userId:       Int,
@@ -79,11 +89,14 @@ final class SeqUpdatesExtension(
     update:       Update,
     pushRules:    PushRules = PushRules(),
     deliveryId:   String    = ""
-  ): Future[(SeqState, Seq[SeqState])] =
+  ): Future[(SeqState, Seq[SeqState])] = {
+    val mapping = UpdateMapping(default = Some(serializedUpdate(update)))
+    val deliver = buildDeliver(mapping, pushRules, deliveryId)
     for {
-      seqstate ← deliverSingleUpdate(userId, update, pushRules, deliveryId)
-      seqstates ← broadcastSingleUpdate(bcastUserIds, update, pushRules, deliveryId)
+      seqstate ← deliverUpdate(userId, deliver)
+      seqstates ← broadcastSingleUpdate(bcastUserIds, deliver)
     } yield (seqstate, seqstates)
+  }
 
   def deliverMappedUpdate(
     userId:     Int,
@@ -141,6 +154,13 @@ final class SeqUpdatesExtension(
     }
     run(updates, updateAcc, currentSize)
   }
+
+  private def buildDeliver(mapping: UpdateMapping, pushRules: PushRules, deliveryId: String): DeliverUpdate =
+    DeliverUpdate(
+      mapping = Some(mapping),
+      pushRules = Some(pushRules),
+      deliveryId = deliveryId
+    )
 
   def registerGooglePushCredentials(authId: Long, creads: GooglePushCredentialsModel) = Future.successful(())
 
