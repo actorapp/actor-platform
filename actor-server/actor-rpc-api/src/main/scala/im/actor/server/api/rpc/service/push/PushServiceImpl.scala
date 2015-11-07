@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.push
 
 import akka.actor.ActorSystem
+import com.google.protobuf.ByteString
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
@@ -12,7 +13,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-class PushServiceImpl(
+final class PushServiceImpl(
   implicit
   actorSystem: ActorSystem
 ) extends PushService {
@@ -38,7 +39,7 @@ class PushServiceImpl(
     BitVector.fromHex(token) match {
       case Some(tokenBits) ⇒
         val tokenBytes = tokenBits.toByteArray
-        val creds = model.push.ApplePushCredentials(clientData.authId, apnsKey, tokenBytes)
+        val creds = model.push.ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes))
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← persist.push.ApplePushCredentialsRepo.deleteByToken(tokenBytes)
           _ ← DBIO.from(seqUpdExt.registerApplePushCredentials(clientData.authId, creds))

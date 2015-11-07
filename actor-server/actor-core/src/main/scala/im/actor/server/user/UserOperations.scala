@@ -13,7 +13,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
 import im.actor.server.model.{ SerializedUpdate, UpdateMapping, Peer }
 import im.actor.server.persist.UserRepo
-import im.actor.server.sequence.{ PushRules, SeqUpdatesExtension, SeqState }
+import im.actor.server.sequence.{ PushData, PushRules, SeqUpdatesExtension, SeqState }
 import im.actor.server.{ model, persist ⇒ p }
 import im.actor.util.misc.IdUtils
 import slick.driver.PostgresDriver.api.Database
@@ -142,7 +142,7 @@ private[user] sealed trait Commands extends AuthCommands {
     seqUpdExt.deliverUpdate(
       userId = userId,
       mapping = UpdateMapping(default = Some(SerializedUpdate(header, ByteString.copyFrom(serializedData)))),
-      pushRules = PushRules(text = pushText.getOrElse(""), isFat = isFat),
+      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
       deliveryId = deliveryId.getOrElse("")
     )
 
@@ -156,7 +156,7 @@ private[user] sealed trait Commands extends AuthCommands {
     seqUpdExt.broadcastSingleUpdate(
       userIds = userIds,
       update = update,
-      pushRules = PushRules(isFat = isFat, text = pushText.getOrElse("")),
+      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
       deliveryId = deliveryId.getOrElse("")
     )
 
@@ -178,7 +178,7 @@ private[user] sealed trait Commands extends AuthCommands {
     seqUpdExt.deliverSingleUpdate(
       userId = clientUserId,
       update = update,
-      pushRules = PushRules(text = pushText.getOrElse(""), isFat = isFat),
+      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
       deliveryId = deliveryId.getOrElse("")
     )
 
@@ -200,7 +200,7 @@ private[user] sealed trait Commands extends AuthCommands {
     isFat:         Boolean,
     deliveryId:    Option[String]
   ): Future[(SeqState, Seq[SeqState])] = {
-    val pushRules = PushRules(text = pushText.getOrElse(""), isFat = isFat)
+    val pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse("")))
     val deliveryIdStr = deliveryId.getOrElse("")
 
     for {

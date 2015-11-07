@@ -9,6 +9,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.{ model, persist }
 
+/*
 private[sequence] class ApplePusher(pushManager: ApplePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   private implicit val ec: ExecutionContext = system.dispatcher
 
@@ -73,9 +74,9 @@ private[sequence] class ApplePusher(pushManager: ApplePushManager, db: Database)
       val payload = builder.buildWithDefaultMaximumLength()
 
       pushManager.getInstance(creds.apnsKey) foreach { mgr ⇒
-        mgr.getQueue.put(new SimpleApnsPushNotification(creds.token, payload))
+        mgr.getQueue.put(new SimpleApnsPushNotification(creds.token.toByteArray, payload))
       }
     }
   }
 
-}
+}*/ 
