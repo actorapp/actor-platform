@@ -44,6 +44,8 @@ object UpdatesConsumerMessage {
   @SerialVersionUID(1L)
   case class UnsubscribeFromGroupPresences(groupIds: Set[Int]) extends UpdatesConsumerMessage
 
+  final case class Authorized(userId: Int) extends UpdatesConsumerMessage
+
 }
 
 object UpdatesConsumer {
@@ -65,6 +67,7 @@ private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) exte
 
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
   private var lastDateTime = new DateTime
+  private var userIdOpt: Option[Int] = None
 
   override def preStart(): Unit = {
     self ! SubscribeToSeq
@@ -117,23 +120,31 @@ private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) exte
             log.error(e, "Failed to unsubscribe from group presences")
         }
       }
+    // this is a dirty hack, to be deleted after merging server/sequence branch
+    case Authorized(userId) ⇒ this.userIdOpt = Some(userId)
     case UpdateReceived(updateBox, fatRefsOpt) ⇒
       if (updateBox.updateHeader != UpdateMessageSent.header) {
-        (fatRefsOpt match {
-          case None ⇒ Future.successful(updateBox)
-          case Some(UpdateRefs(userIds, groupIds)) ⇒
-            // FIXME: #perf cache userId
-            DbExtension(context.system).db.run(persist.AuthIdRepo.findUserId(authId)) flatMap {
+        (userIdOpt match {
+          case Some(userId) ⇒
+            Future.successful(userId)
+          case None ⇒
+            for {
+              opt ← DbExtension(context.system).db.run(persist.AuthIdRepo.findUserId(authId))
+            } yield opt match {
               case Some(userId) ⇒
-                for {
-                  (users, groups) ← getFatData(userId, userIds, groupIds)
-                } yield {
-                  FatSeqUpdate(updateBox.seq, updateBox.state, updateBox.updateHeader, updateBox.update, users.toVector, groups.toVector)
-                }
-              case None ⇒
-                throw new Exception(s"Cannot find userId for authId ${authId}")
+                self ! Authorized(userId)
+                userId
+              case None ⇒ throw new RuntimeException("AuthId is not authorized")
             }
-        }) foreach (sendUpdateBox(_, None))
+        }) foreach { userId ⇒
+          (fatRefsOpt match {
+            case None ⇒ Future.successful(updateBox)
+            case Some(UpdateRefs(userIds, groupIds)) ⇒
+              for {
+                (users, groups) ← getFatData(userId, userIds, groupIds)
+              } yield FatSeqUpdate(updateBox.seq, updateBox.state, updateBox.updateHeader, updateBox.update, users.toVector, groups.toVector)
+          }) foreach (sendUpdateBox(_, None))
+        }
       }
     case WeakUpdatesManager.UpdateReceived(updateBox, reduceKey) ⇒
       sendUpdateBox(updateBox, reduceKey)
