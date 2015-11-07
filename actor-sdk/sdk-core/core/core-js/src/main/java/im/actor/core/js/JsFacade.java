@@ -6,6 +6,7 @@ package im.actor.core.js;
 
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.i18n.client.TimeZone;
 import com.google.gwt.user.client.Event;
@@ -1202,6 +1203,7 @@ public class JsFacade implements Exportable {
         } else {
             if (href.startsWith("send:")) {
                 String msg = href.substring("send:".length());
+                msg = URL.decode(msg);
                 Log.d(TAG, "handleLinkClick | Sending message " + msg);
                 if (lastVisiblePeer != null) {
                     Log.d(TAG, "handleLinkClick | To peer " + lastVisiblePeer);
