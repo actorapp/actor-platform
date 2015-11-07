@@ -640,13 +640,16 @@ public class JsFacade implements Exportable {
     }
 
     public void onConversationOpen(JsPeer peer) {
+        Log.d(TAG, "onConversationOpen | " + peer);
         lastVisiblePeer = peer.convert();
         messenger.onConversationOpen(lastVisiblePeer);
     }
 
     public void onConversationClosed(JsPeer peer) {
-        if (lastVisiblePeer == peer.convert()) {
+        Log.d(TAG, "onConversationClosed | " + peer);
+        if (lastVisiblePeer != null && lastVisiblePeer.equals(peer.convert())) {
             lastVisiblePeer = null;
+            Log.d(TAG, "onConversationClosed | Closing");
         }
         messenger.onConversationClosed(peer.convert());
     }
@@ -1188,18 +1191,27 @@ public class JsFacade implements Exportable {
     }
 
     public void handleLinkClick(Event event) {
+        Log.d(TAG, "handleLinkClick " + event);
         Element target = Element.as(event.getEventTarget());
         String href = target.getAttribute("href");
+        Log.d(TAG, "handleLinkClick | " + href);
         if (JsElectronApp.isElectron()) {
+            Log.d(TAG, "handleLinkClick | Open In Electron");
             JsElectronApp.openUrlExternal(href);
             event.preventDefault();
         } else {
             if (href.startsWith("send:")) {
                 String msg = href.substring("send:".length());
+                Log.d(TAG, "handleLinkClick | Sending message " + msg);
                 if (lastVisiblePeer != null) {
+                    Log.d(TAG, "handleLinkClick | To peer " + lastVisiblePeer);
                     messenger.sendMessage(lastVisiblePeer, msg);
                     event.preventDefault();
+                } else {
+                    Log.d(TAG, "handleLinkClick | No peer visible");
                 }
+            } else {
+                Log.d(TAG, "handleLinkClick | No send prefix");
             }
         }
     }
