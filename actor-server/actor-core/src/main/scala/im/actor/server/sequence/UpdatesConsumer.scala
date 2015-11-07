@@ -1,6 +1,7 @@
 package im.actor.server.sequence
 
 import akka.actor._
+import akka.pattern.pipe
 import akka.util.Timeout
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.groups.ApiGroup
@@ -65,19 +66,29 @@ private[sequence] class UpdatesConsumer(authId: Long, subscriber: ActorRef) exte
 
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
   private var lastDateTime = new DateTime
+  private var subscribedToSeq: Boolean = false
 
   override def preStart(): Unit = {
-    self ! SubscribeToSeq
-
     self ! SubscribeToWeak
   }
 
   def receive = {
     case SubscribeToSeq ⇒
-      SeqUpdatesManager.subscribe(authId, self) onFailure {
-        case e ⇒
-          self ! SubscribeToSeq
-          log.error(e, "Failed to subscribe to sequence updates")
+      if (!subscribedToSeq) {
+        context become {
+          case () ⇒
+            this.subscribedToSeq = true
+            unstashAll()
+            context become receive
+          case Status.Failure(e) ⇒
+            log.error(e, "Failed to subscribe to seq")
+            self ! SubscribeToSeq
+            unstashAll()
+            context become receive
+          case msg ⇒ stash()
+        }
+
+        SeqUpdatesManager.subscribe(authId, self) pipeTo self
       }
     case SubscribeToWeak ⇒
       weakUpdatesExt.subscribe(authId, self) onFailure {
