@@ -7,7 +7,8 @@ import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.ApiUserOutPeer
-import im.actor.api.rpc.sequence.RequestSubscribeToOnline
+import im.actor.api.rpc.sequence.{ RequestSubscribeToOnline, RequestGetState }
+import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.weak.UpdateUserOffline
 import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
 import im.actor.server.mtproto.protocol._
@@ -166,6 +167,16 @@ class SessionSpec extends BaseSessionSpec {
       }
 
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
+
+      val encodedGetSeqRequest = RequestCodec.encode(Request(RequestGetState)).require
+
+      val thirdMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, RpcRequestBox(encodedGetSeqRequest))
+
+      expectMessageAck(authId, sessionId, thirdMessageId)
+      expectRpcResult() should matchPattern {
+        case RpcOk(ResponseSeq(_, _)) ⇒
+      }
 
       val update = UpdateContactRegistered(1, true, 1L, 2L)
       Await.result(UserExtension(system).broadcastClientUpdate(update, None, isFat = false), 1.second)

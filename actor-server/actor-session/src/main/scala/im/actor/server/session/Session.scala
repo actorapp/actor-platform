@@ -234,12 +234,13 @@ class Session(implicit config: SessionConfig, materializer: Materializer) extend
           recordClient(client, reSender)
           publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
         }
-      case _: Payload.SubscribeToOnline | _: Payload.SubscribeFromOnline | _: Payload.SubscribeToGroupOnline | _: Payload.SubscribeFromGroupOnline ⇒
+      case _: Payload.SubscribeToOnline | _: Payload.SubscribeFromOnline | _: Payload.SubscribeToGroupOnline | _: Payload.SubscribeFromGroupOnline | _: Payload.SubscribeToSeq ⇒
         val cmd: SubscribeCommand =
           message.subscribeToOnline
             .orElse(message.subscribeFromOnline)
             .orElse(message.subscribeToGroupOnline)
             .orElse(message.subscribeFromGroupOnline)
+            .orElse(message.subscribeToSeq)
             .get
 
         publisher ! cmd
