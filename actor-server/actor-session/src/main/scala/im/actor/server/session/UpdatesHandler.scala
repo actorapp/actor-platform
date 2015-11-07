@@ -18,7 +18,7 @@ private[session] class UpdatesHandler(authId: Long)(implicit seqUpdManagerRegion
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
-  import UpdatesConsumerMessage._
+  //import UpdatesConsumerMessage._
 
   private val updatesConsumer = context.actorOf(UpdatesConsumer.props(authId, self), "updatesConsumer")
 
@@ -33,13 +33,15 @@ private[session] class UpdatesHandler(authId: Long)(implicit seqUpdManagerRegion
     case OnNext(cmd: SubscribeCommand) ⇒
       cmd match {
         case SubscribeToOnline(userIds) ⇒
-          updatesConsumer ! SubscribeToUserPresences(userIds.toSet)
+          updatesConsumer ! UpdatesConsumerMessage.SubscribeToUserPresences(userIds.toSet)
         case SubscribeFromOnline(userIds) ⇒
-          updatesConsumer ! UnsubscribeFromUserPresences(userIds.toSet)
+          updatesConsumer ! UpdatesConsumerMessage.UnsubscribeFromUserPresences(userIds.toSet)
         case SubscribeToGroupOnline(groupIds) ⇒
-          updatesConsumer ! SubscribeToGroupPresences(groupIds.toSet)
+          updatesConsumer ! UpdatesConsumerMessage.SubscribeToGroupPresences(groupIds.toSet)
         case SubscribeFromGroupOnline(groupIds) ⇒
-          updatesConsumer ! UnsubscribeFromGroupPresences(groupIds.toSet)
+          updatesConsumer ! UpdatesConsumerMessage.UnsubscribeFromGroupPresences(groupIds.toSet)
+        case SubscribeToSeq() ⇒
+          updatesConsumer ! UpdatesConsumerMessage.SubscribeToSeq
       }
     case OnComplete ⇒
       context.stop(self)
