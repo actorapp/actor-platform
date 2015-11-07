@@ -2,6 +2,7 @@ package im.actor.core.js.utils;
 
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.safehtml.shared.UriUtils;
+
 import im.actor.runtime.markdown.*;
 
 import java.util.ArrayList;
@@ -71,10 +72,17 @@ public class HtmlMarkdownUtils {
     }
 
     private static String urlElement(MDUrl url) {
+        // Sanitizing URL
         String href = UriUtils.sanitizeUri(url.getUrl());
 
-        if (href != "#" && !href.contains("://")) {
-            href = "http://" + href;
+        // "DeSanitize" custom url scheme
+        if (url.getUrl().startsWith("send:")) {
+            href = UriUtils.encodeAllowEscapes(url.getUrl());
+        } else {
+            // HotFixing url without prefix
+            if (!href.equals("#") && !href.contains("://")) {
+                href = "http://" + href;
+            }
         }
 
         return "<a " +
