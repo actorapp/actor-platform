@@ -20,6 +20,7 @@ message SessionEnvelope {
         SubscribeFromOnline subscribe_from_online = 6;
         SubscribeToGroupOnline subscribe_to_group_online = 7;
         SubscribeFromGroupOnline subscribe_from_group_online = 8;
+        SubscribeToSeq subscribe_to_seq = 9;
     }
 }
 
@@ -55,4 +56,8 @@ message SubscribeToGroupOnline {
 message SubscribeFromGroupOnline {
     option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
     repeated int32 group_ids = 1;
+}
+
+message SubscribeToSeq {
+    option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
 }
