@@ -21,7 +21,7 @@ import im.actor.server.event.TSEvent
 import im.actor.server.file.{ ImageUtils, Avatar }
 import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
-import im.actor.server.sequence.{ PushRules, SeqState, SeqStateDate }
+import im.actor.server.sequence.{ PushData, PushRules, SeqState, SeqStateDate }
 import ACLUtils._
 import im.actor.util.misc.IdUtils._
 import ImageUtils._
@@ -284,7 +284,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           clientUserId,
           memberIds,
           update,
-          PushRules(text = PushTexts.TitleChanged)
+          PushRules().withData(PushData().withText(PushTexts.TitleChanged))
         )
       } yield SeqStateDate(seqstate.seq, seqstate.state, date.getMillis)
     }
@@ -312,7 +312,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               clientUserId,
               group.members.keySet - clientUserId,
               update,
-              PushRules(text = PushTexts.TopicChanged)
+              PushRules().withData(PushData().withText(PushTexts.TopicChanged))
             )
           } yield SeqStateDate(seq, state, dateMillis)
         }
@@ -344,7 +344,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               clientUserId,
               group.members.keySet - clientUserId,
               update,
-              PushRules(text = PushTexts.AboutChanged)
+              PushRules().withData(PushData().withText(PushTexts.AboutChanged))
             ))
           } yield SeqStateDate(seq, state, dateMillis))
         }
