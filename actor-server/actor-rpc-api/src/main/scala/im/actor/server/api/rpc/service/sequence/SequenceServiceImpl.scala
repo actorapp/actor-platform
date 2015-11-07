@@ -38,8 +38,14 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   private val maxDifferenceSize: Long = config.maxDifferenceSize
 
+  private def subscribeToSeq()(implicit client: AuthorizedClientData): Unit = {
+    sessionRegion.ref ! SessionEnvelope(client.authId, client.sessionId)
+      .withSubscribeToSeq(SubscribeToSeq())
+  }
+
   override def jhandleGetState(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      subscribeToSeq()
       for {
         seqstate ← DBIO.from(getSeqState(client.authId))
       } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
@@ -50,7 +56,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-
+      subscribeToSeq()
       for {
         // FIXME: would new updates between getSeqState and getDifference break client state?
         (updates, needMore) ← getDifference(client.authId, bytesToTimestamp(state), maxDifferenceSize)
