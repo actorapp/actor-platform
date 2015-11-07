@@ -24,7 +24,7 @@ private[session] class UpdatesHandler(authId: Long)
 
   def receive = {
     case UpdatesHandler.Authorize(userId, authSid) ⇒
-      val updatesConsumer = context.actorOf(UpdatesConsumer.props(userId, authId, authSid, self), "updatesConsumer")
+      val updatesConsumer = context.actorOf(UpdatesConsumer.props(userId, authId, authSid, self), "updates-consumer")
 
       context become authorized(updatesConsumer)
     case msg ⇒ stash()
