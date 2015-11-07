@@ -8,6 +8,7 @@ option (scalapb.options) = {
 };
 
 import "scalapb/scalapb.proto";
+import "model/push.proto";
 import "model.proto";
 
 message PushData {
@@ -18,7 +19,6 @@ message PushData {
 message PushRules {
     repeated int32 exclude_auth_sids = 1;
     bool is_fat = 3;
-    string text = 4;
     PushData data = 2;
 }
 
@@ -36,6 +36,10 @@ message UserSequenceCommands {
         oneof payload {
             DeliverUpdate deliverUpdate = 2;
             GetSeqState getSeqState = 3;
+            RegisterPushCredentials registerPushCredentials = 4;
+            UnregisterPushCredentials unregisterPushCredentials = 5;
+            DeliverPush deliverPush = 6;
+            ReloadSettings reloadSettings = 7;
         }
     }
 
@@ -51,6 +55,32 @@ message UserSequenceCommands {
     }
 
     message GetSeqState {}
+
+    message RegisterPushCredentials {
+        option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
+
+        oneof creds {
+            GooglePushCredentials google = 1;
+            ApplePushCredentials apple = 2;
+        }
+    }
+
+    message UnregisterPushCredentials {
+        option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
+
+        int64 auth_id = 1;
+    }
+
+    message DeliverPush {
+        option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
+
+        int32 seq = 1;
+        PushRules push_rules = 2;
+    }
+
+    message ReloadSettings {
+        option (scalapb.message).extends = "im.actor.server.sequence.VendorPushCommand";
+    }
 }
 
 message SeqState {

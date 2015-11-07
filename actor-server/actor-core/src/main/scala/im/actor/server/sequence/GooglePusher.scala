@@ -9,6 +9,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.peers.ApiPeer
 import im.actor.server.{ model, persist }
 
+/*
 // FIXME: #perf pinned dispatcher
 private[sequence] class GooglePusher(pushManager: GooglePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   implicit val ec: ExecutionContext = system.dispatcher
@@ -72,4 +73,4 @@ private[sequence] class GooglePusher(pushManager: GooglePushManager, db: Databas
         system.log.error("Key not found for projectId {}", creds.projectId)
     }
   }
-}
+}*/ 
