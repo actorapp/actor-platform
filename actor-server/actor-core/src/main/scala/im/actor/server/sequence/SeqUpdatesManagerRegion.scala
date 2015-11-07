@@ -40,7 +40,7 @@ object SeqUpdatesManagerRegion {
     googlePushManager: GooglePushManager,
     applePushManager:  ApplePushManager
   ): SeqUpdatesManagerRegion =
-    start(UserSequence.props)
+    start(UserSequence.props(googlePushManager, applePushManager))
 
   def startProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion =
     SeqUpdatesManagerRegion(ClusterSharding(system).startProxy(

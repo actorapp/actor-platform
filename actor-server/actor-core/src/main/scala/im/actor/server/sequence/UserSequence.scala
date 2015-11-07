@@ -6,7 +6,7 @@ import akka.pattern.pipe
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.google.protobuf.ByteString
 import im.actor.server.db.DbExtension
-import im.actor.server.model.{ UpdateMapping, SeqUpdate }
+import im.actor.server.model.{ SeqUpdate, UpdateMapping }
 import im.actor.server.persist.sequence.UserSequenceRepo
 
 import scala.concurrent.Future
@@ -18,22 +18,31 @@ object UserSequence {
 
   private final case class Initialized(seq: Int)
 
-  private[sequence] def props = Props(new UserSequence)
+  private[sequence] def props(
+    googlePushManager: GooglePushManager,
+    applePushManager:  ApplePushManager
+  ) =
+    Props(new UserSequence(googlePushManager, applePushManager))
 }
 
 private trait SeqControl {
   private var seq: Int = 0
 
   protected def getSeq: Int = this.seq
+
   protected def nextSeq(): Int = {
     val nseq = this.seq + 1
     this.seq = nseq
     nseq
   }
+
   protected def setSeq(s: Int): Unit = this.seq = s
 }
 
-private[sequence] final class UserSequence extends Actor with ActorLogging with Stash with SeqControl {
+private[sequence] final class UserSequence(
+  googlePushManager: GooglePushManager,
+  applePushManager:  ApplePushManager
+) extends Actor with ActorLogging with Stash with SeqControl {
 
   import UserSequence._
   import UserSequenceCommands._
@@ -49,6 +58,8 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
 
   private val deliveryCache = Caffeine.newBuilder().maximumSize(100).executor(context.dispatcher).build[String, SeqState]()
 
+  private val vendorPush = context.actorOf(VendorPush.props(userId, googlePushManager, applePushManager), "vendor-push")
+
   init()
 
   def receive = {
@@ -63,6 +74,7 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
   }
 
   def initialized: Receive = {
+    case cmd: VendorPushCommand ⇒ vendorPush forward cmd
     case DeliverUpdate(mappingOpt, pushRules, deliveryId) ⇒
       mappingOpt match {
         case Some(mapping) ⇒ deliver(mapping, pushRules, deliveryId)
@@ -74,7 +86,9 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
   }
 
   private def init(): Unit =
-    db.run(UserSequenceRepo.fetchSeq(userId)) map (seqOpt ⇒ Initialized(seqOpt.getOrElse(0))) pipeTo self
+    db.run(for {
+      seq ← UserSequenceRepo.fetchSeq(userId) map (_ getOrElse 0)
+    } yield Initialized(seq)) pipeTo self
 
   private def deliver(mapping: UpdateMapping, pushRules: Option[PushRules], deliveryId: String): Unit = {
     cached(deliveryId) {
@@ -88,7 +102,9 @@ private[sequence] final class UserSequence extends Actor with ActorLogging with 
       )
 
       writeToDb(seqUpdate) map (_ ⇒ SeqState(seq)) andThen {
-        case Success(_) ⇒ mediator ! Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, ByteString.EMPTY))
+        case Success(_) ⇒
+          mediator ! Publish(topic(userId), UserSequenceEvents.NewUpdate(Some(seqUpdate), pushRules, ByteString.EMPTY))
+          vendorPush ! DeliverPush(seq, pushRules)
       }
     }
   }

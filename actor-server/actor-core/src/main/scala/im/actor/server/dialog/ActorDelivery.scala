@@ -1,12 +1,13 @@
 package im.actor.server.dialog
 
 import akka.actor.ActorSystem
+import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
 import im.actor.server.db.DbExtension
 import im.actor.server.messaging.PushText
 import im.actor.server.misc.UpdateCounters
-import im.actor.server.sequence.{ PushRules, SeqUpdatesExtension, SeqState }
+import im.actor.server.sequence.{ PushData, PushRules, SeqUpdatesExtension, SeqState }
 import im.actor.server.user.UserExtension
 
 import slick.driver.PostgresDriver.api.Database
@@ -40,7 +41,12 @@ private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) ex
     for {
       senderName ← userExt.getName(receiverUserId, senderUserId)
       pushText ← getPushText(peer, receiverUserId, senderName, message)
-      _ ← seqUpdatesExt.deliverSingleUpdate(receiverUserId, receiverUpdate, PushRules(text = pushText, isFat = isFat), s"msg_${peer.toString}_${randomId}")
+      _ ← seqUpdatesExt.deliverSingleUpdate(
+        receiverUserId,
+        receiverUpdate,
+        PushRules(isFat = isFat).withData(PushData().withText(pushText).withPeer(peer.asModel)),
+        deliveryId = s"msg_${peer.toString}_$randomId"
+      )
       counterUpdate ← db.run(getUpdateCountersChanged(receiverUserId))
       _ ← seqUpdatesExt.deliverSingleUpdate(receiverUserId, counterUpdate, deliveryId = s"counter_$randomId")
     } yield ()
