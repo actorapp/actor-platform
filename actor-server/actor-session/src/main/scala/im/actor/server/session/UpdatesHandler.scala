@@ -1,6 +1,6 @@
 package im.actor.server.session
 
-import akka.actor.{ ActorLogging, Props }
+import akka.actor.{ Stash, ActorRef, ActorLogging, Props }
 import akka.stream.actor._
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.sequence._
@@ -9,39 +9,46 @@ import scala.annotation.tailrec
 import scala.collection.immutable
 
 private[session] object UpdatesHandler {
-  def props(authId: Long)(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Props =
-    Props(classOf[UpdatesHandler], authId, seqUpdManagerRegion)
+  final case class Authorize(userId: Int, authSid: Int)
+
+  def props(authId: Long): Props =
+    Props(classOf[UpdatesHandler], authId)
 }
 
-private[session] class UpdatesHandler(authId: Long)(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion)
-  extends ActorSubscriber with ActorPublisher[(UpdateBox, Option[String])] with ActorLogging {
+private[session] class UpdatesHandler(authId: Long)
+  extends ActorSubscriber with ActorPublisher[(UpdateBox, Option[String])] with ActorLogging with Stash {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
   //import UpdatesConsumerMessage._
 
-  private val updatesConsumer = context.actorOf(UpdatesConsumer.props(authId, self), "updatesConsumer")
+  def receive = {
+    case UpdatesHandler.Authorize(userId, authSid) ⇒
+      val updatesConsumer = context.actorOf(UpdatesConsumer.props(userId, authId, authSid, self), "updates-consumer")
 
-  def receive = subscriber.orElse(publisher).orElse {
-    case unmatched ⇒
-      log.error("Unmatched msg {}", unmatched)
+      context become authorized(updatesConsumer)
+    case msg ⇒ stash()
+  }
+
+  def authorized(consumer: ActorRef): Receive = subscriber(consumer) orElse publisher orElse {
+    case unmatched ⇒ log.error("Unmatched msg: {}", unmatched)
   }
 
   // Subscriber-related
 
-  def subscriber: Receive = {
+  def subscriber(consumer: ActorRef): Receive = {
     case OnNext(cmd: SubscribeCommand) ⇒
       cmd match {
         case SubscribeToOnline(userIds) ⇒
-          updatesConsumer ! UpdatesConsumerMessage.SubscribeToUserPresences(userIds.toSet)
+          consumer ! UpdatesConsumerMessage.SubscribeToUserPresences(userIds.toSet)
         case SubscribeFromOnline(userIds) ⇒
-          updatesConsumer ! UpdatesConsumerMessage.UnsubscribeFromUserPresences(userIds.toSet)
+          consumer ! UpdatesConsumerMessage.UnsubscribeFromUserPresences(userIds.toSet)
         case SubscribeToGroupOnline(groupIds) ⇒
-          updatesConsumer ! UpdatesConsumerMessage.SubscribeToGroupPresences(groupIds.toSet)
+          consumer ! UpdatesConsumerMessage.SubscribeToGroupPresences(groupIds.toSet)
         case SubscribeFromGroupOnline(groupIds) ⇒
-          updatesConsumer ! UpdatesConsumerMessage.UnsubscribeFromGroupPresences(groupIds.toSet)
+          consumer ! UpdatesConsumerMessage.UnsubscribeFromGroupPresences(groupIds.toSet)
         case SubscribeToSeq() ⇒
-          updatesConsumer ! UpdatesConsumerMessage.SubscribeToSeq
+          consumer ! UpdatesConsumerMessage.SubscribeToSeq
       }
     case OnComplete ⇒
       context.stop(self)

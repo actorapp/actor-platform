@@ -7,7 +7,7 @@ import akka.actor.ActorSystem
 import akka.util.Timeout
 import im.actor.api.rpc.peers.{ ApiUserOutPeer, ApiPeer, ApiPeerType, ApiOutPeer }
 import im.actor.server.group.{ GroupExtension, GroupViewRegion, GroupOffice }
-import im.actor.server.models
+import im.actor.server.model
 import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
 import org.apache.commons.codec.digest.DigestUtils
 
@@ -25,19 +25,19 @@ object ACLUtils {
   def userAccessHash(authId: Long, userId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$authId:$userId:$accessSalt:${secretKey()}")
 
-  def userAccessHash(authId: Long, u: models.User)(implicit s: ActorSystem): Long =
+  def userAccessHash(authId: Long, u: model.User)(implicit s: ActorSystem): Long =
     userAccessHash(authId, u.id, u.accessSalt)
 
   def phoneAccessHash(authId: Long, userId: Int, phoneId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$authId:$userId:$phoneId:$accessSalt:${secretKey()}")
 
-  def phoneAccessHash(authId: Long, p: models.UserPhone)(implicit s: ActorSystem): Long =
+  def phoneAccessHash(authId: Long, p: model.UserPhone)(implicit s: ActorSystem): Long =
     phoneAccessHash(authId, p.userId, p.id, p.accessSalt)
 
   def emailAccessHash(authId: Long, userId: Int, emailId: Int, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$authId:$userId:$emailId:$accessSalt:${secretKey()}")
 
-  def emailAccessHash(authId: Long, e: models.UserEmail)(implicit s: ActorSystem): Long =
+  def emailAccessHash(authId: Long, e: model.UserEmail)(implicit s: ActorSystem): Long =
     emailAccessHash(authId, e.userId, e.id, e.accessSalt)
 
   def fileAccessHash(fileId: Long, accessSalt: String)(implicit s: ActorSystem): Long =

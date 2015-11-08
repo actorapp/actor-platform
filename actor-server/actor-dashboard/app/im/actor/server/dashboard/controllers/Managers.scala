@@ -9,12 +9,12 @@ import slick.dbio.DBIO
 
 import im.actor.server.dashboard.controllers.utils.Db._
 import im.actor.server.dashboard.controllers.utils.json.ManagersJsonImplicits._
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 
 class Managers extends Controller {
 
   def create = Action.async(BodyParsers.parse.json) { request ⇒
-    request.body.validate[models.Manager].fold(
+    request.body.validate[model.Manager].fold(
       errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
       fromRequest ⇒ db.run {
         for {

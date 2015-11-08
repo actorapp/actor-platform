@@ -4,17 +4,17 @@ import akka.actor.{ ActorRef, ActorSystem }
 import akka.cluster.pubsub.DistributedPubSub
 import akka.pattern.ask
 import akka.util.Timeout
-import im.actor.api.rpc.messaging.ApiDialogGroup
+import com.google.protobuf.ByteString
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.{ AuthorizedClientData, Update }
-import im.actor.api.rpc.peers.ApiPeer
 import im.actor.api.rpc.users.{ ApiUser, ApiSex }
 import im.actor.server.auth.DeviceInfo
 import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
+import im.actor.server.model.{ SerializedUpdate, UpdateMapping, Peer }
 import im.actor.server.persist.UserRepo
-import im.actor.server.sequence.{ UpdateRefs, SeqUpdatesExtension, SeqState, SeqUpdatesManager }
-import im.actor.server.{ models, persist ⇒ p }
+import im.actor.server.sequence.{ PushData, PushRules, SeqUpdatesExtension, SeqState }
+import im.actor.server.{ model, persist ⇒ p }
 import im.actor.util.misc.IdUtils
 import slick.driver.PostgresDriver.api.Database
 
@@ -37,6 +37,8 @@ private[user] sealed trait Commands extends AuthCommands {
   val processorRegion: UserProcessorRegion
 
   implicit val timeout: Timeout
+
+  protected val seqUpdExt: SeqUpdatesExtension
 
   def create(
     userId:      Int,
@@ -77,41 +79,41 @@ private[user] sealed trait Commands extends AuthCommands {
   def changeName(userId: Int, name: String): Future[SeqState] =
     (processorRegion.ref ? ChangeName(userId, name)).mapTo[SeqState]
 
-  def changeNickname(userId: Int, clientAuthId: Long, nickname: Option[String]): Future[SeqState] =
-    (processorRegion.ref ? ChangeNickname(userId, clientAuthId, nickname)).mapTo[SeqState]
+  def changeNickname(userId: Int, nickname: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? ChangeNickname(userId, nickname)).mapTo[SeqState]
 
-  def changeAbout(userId: Int, clientAuthId: Long, about: Option[String]): Future[SeqState] =
-    (processorRegion.ref ? ChangeAbout(userId, clientAuthId, about)).mapTo[SeqState]
+  def changeAbout(userId: Int, about: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? ChangeAbout(userId, about)).mapTo[SeqState]
 
-  def changeTimeZone(userId: Int, authId: Long, timeZone: String): Future[SeqState] =
-    (processorRegion.ref ? ChangeTimeZone(userId, authId, timeZone)).mapTo[SeqState]
+  def changeTimeZone(userId: Int, timeZone: String): Future[SeqState] =
+    (processorRegion.ref ? ChangeTimeZone(userId, timeZone)).mapTo[SeqState]
 
-  def setDeviceInfo(userId: Int, authId: Long, data: DeviceInfo): Future[Unit] =
+  def setDeviceInfo(userId: Int, data: DeviceInfo): Future[Unit] =
     for {
-      _ ← changeTimeZone(userId, authId, data.timeZone)
-      _ ← changePreferredLanguages(userId, authId, data.preferredLanguages)
+      _ ← changeTimeZone(userId, data.timeZone)
+      _ ← changePreferredLanguages(userId, data.preferredLanguages)
     } yield ()
 
-  def changePreferredLanguages(userId: Int, authId: Long, preferredLanguages: Seq[String]): Future[SeqState] =
-    (processorRegion.ref ? ChangePreferredLanguages(userId, authId, preferredLanguages)).mapTo[SeqState]
+  def changePreferredLanguages(userId: Int, preferredLanguages: Seq[String]): Future[SeqState] =
+    (processorRegion.ref ? ChangePreferredLanguages(userId, preferredLanguages)).mapTo[SeqState]
 
-  def updateAvatar(userId: Int, clientAuthId: Long, avatarOpt: Option[Avatar]): Future[UpdateAvatarAck] =
-    (processorRegion.ref ? UpdateAvatar(userId, clientAuthId, avatarOpt)).mapTo[UpdateAvatarAck]
+  def updateAvatar(userId: Int, avatarOpt: Option[Avatar]): Future[UpdateAvatarAck] =
+    (processorRegion.ref ? UpdateAvatar(userId, avatarOpt)).mapTo[UpdateAvatarAck]
 
-  def addContact(userId: Int, clientAuthId: Long, contactUserId: Int, localName: Option[String], phone: Option[Long], email: Option[String]): Future[SeqState] =
-    (processorRegion.ref ? AddContacts(userId, clientAuthId, Seq(ContactToAdd(contactUserId, localName, phone, email)))).mapTo[SeqState]
+  def addContact(userId: Int, contactUserId: Int, localName: Option[String], phone: Option[Long], email: Option[String]): Future[SeqState] =
+    (processorRegion.ref ? AddContacts(userId, Seq(ContactToAdd(contactUserId, localName, phone, email)))).mapTo[SeqState]
 
-  def addContacts(userId: Int, clientAuthId: Long, contactsToAdd: Seq[ContactToAdd]): Future[SeqState] =
+  def addContacts(userId: Int, contactsToAdd: Seq[ContactToAdd]): Future[SeqState] =
     if (contactsToAdd.nonEmpty)
-      (processorRegion.ref ? AddContacts(userId, clientAuthId, contactsToAdd)).mapTo[SeqState]
+      (processorRegion.ref ? AddContacts(userId, contactsToAdd)).mapTo[SeqState]
     else
-      SeqUpdatesManager.getSeqState(clientAuthId)
+      seqUpdExt.getSeqState(userId)
 
-  def editLocalName(userId: Int, clientAuthId: Long, contactUserId: Int, localName: Option[String], supressUpdate: Boolean = false): Future[SeqState] =
-    (processorRegion.ref ? EditLocalName(userId, clientAuthId, contactUserId, localName, supressUpdate)).mapTo[SeqState]
+  def editLocalName(userId: Int, contactUserId: Int, localName: Option[String], supressUpdate: Boolean = false): Future[SeqState] =
+    (processorRegion.ref ? EditLocalName(userId, contactUserId, localName, supressUpdate)).mapTo[SeqState]
 
-  def notifyDialogsChanged(userId: Int, clientAuthId: Long): Future[SeqState] =
-    (processorRegion.ref ? NotifyDialogsChanged(userId, clientAuthId)).mapTo[SeqState]
+  def notifyDialogsChanged(userId: Int): Future[SeqState] =
+    (processorRegion.ref ? NotifyDialogsChanged(userId)).mapTo[SeqState]
 
   def broadcastUserUpdate(
     userId:     Int,
@@ -119,31 +121,30 @@ private[user] sealed trait Commands extends AuthCommands {
     pushText:   Option[String],
     isFat:      Boolean,
     deliveryId: Option[String]
-  ): Future[Seq[SeqState]] = {
+  ): Future[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
-    val originPeer = SeqUpdatesManager.getOriginPeer(update)
-    val refs = SeqUpdatesManager.updateRefs(update)
+    val originPeer = seqUpdExt.getOriginPeer(update)
 
-    broadcastUserUpdate(userId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
+    broadcastUserUpdate(userId, header, serializedData, pushText, originPeer, isFat, deliveryId)
   }
 
   def broadcastUserUpdate(
     userId:         Int,
     header:         Int,
     serializedData: Array[Byte],
-    refs:           UpdateRefs,
     pushText:       Option[String],
-    originPeer:     Option[ApiPeer],
+    originPeer:     Option[Peer],
     isFat:          Boolean,
     deliveryId:     Option[String]
-  ): Future[Seq[SeqState]] = {
-    for {
-      authIds ← getAuthIds(userId)
-      seqstates ← SeqUpdatesManager.persistAndPushUpdates(authIds.toSet, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
-    } yield seqstates
-  }
+  ): Future[SeqState] =
+    seqUpdExt.deliverUpdate(
+      userId = userId,
+      mapping = UpdateMapping(default = Some(SerializedUpdate(header, ByteString.copyFrom(serializedData)))),
+      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
+      deliveryId = deliveryId.getOrElse("")
+    )
 
   def broadcastUsersUpdate(
     userIds:    Set[Int],
@@ -151,53 +152,35 @@ private[user] sealed trait Commands extends AuthCommands {
     pushText:   Option[String],
     isFat:      Boolean,
     deliveryId: Option[String]
-  ): Future[Seq[SeqState]] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = SeqUpdatesManager.getOriginPeer(update)
-    val refs = SeqUpdatesManager.updateRefs(update)
-
-    for {
-      authIds ← getAuthIds(userIds)
-      seqstates ← Future.sequence(
-        authIds.map(SeqUpdatesManager.persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
-      )
-    } yield seqstates
-  }
+  ): Future[Seq[SeqState]] =
+    seqUpdExt.broadcastSingleUpdate(
+      userIds = userIds,
+      update = update,
+      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
+      deliveryId = deliveryId.getOrElse("")
+    )
 
   def broadcastClientUpdate(
     update:     Update,
     pushText:   Option[String],
     isFat:      Boolean        = false,
     deliveryId: Option[String] = None
-  )(implicit client: AuthorizedClientData): Future[SeqState] = broadcastClientUpdate(client.userId, client.authId, update, pushText, isFat, deliveryId)
+  )(implicit client: AuthorizedClientData): Future[SeqState] = broadcastClientUpdate(client.userId, client.authSid, update, pushText, isFat, deliveryId)
 
   def broadcastClientUpdate(
-    clientUserId: Int,
-    clientAuthId: Long,
-    update:       Update,
-    pushText:     Option[String],
-    isFat:        Boolean,
-    deliveryId:   Option[String]
-  ): Future[SeqState] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = SeqUpdatesManager.getOriginPeer(update)
-    val refs = SeqUpdatesManager.updateRefs(update)
-
-    for {
-      otherAuthIds ← getAuthIds(clientUserId) map (_.filter(_ != clientAuthId))
-      _ ← Future.sequence(
-        otherAuthIds map (
-          SeqUpdatesManager.persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
-        )
-      )
-
-      seqstate ← SeqUpdatesManager.persistAndPushUpdate(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
-    } yield seqstate
-  }
+    clientUserId:  Int,
+    clientAuthSid: Int,
+    update:        Update,
+    pushText:      Option[String],
+    isFat:         Boolean,
+    deliveryId:    Option[String]
+  ): Future[SeqState] =
+    seqUpdExt.deliverSingleUpdate(
+      userId = clientUserId,
+      update = update,
+      pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse(""))),
+      deliveryId = deliveryId.getOrElse("")
+    )
 
   def broadcastClientAndUsersUpdate(
     userIds:    Set[Int],
@@ -206,68 +189,34 @@ private[user] sealed trait Commands extends AuthCommands {
     isFat:      Boolean        = false,
     deliveryId: Option[String] = None
   )(implicit client: AuthorizedClientData): Future[(SeqState, Seq[SeqState])] =
-    broadcastClientAndUsersUpdate(client.userId, client.authId, userIds, update, pushText, isFat, deliveryId)
+    broadcastClientAndUsersUpdate(client.userId, client.authSid, userIds, update, pushText, isFat, deliveryId)
 
   def broadcastClientAndUsersUpdate(
-    clientUserId: Int,
-    clientAuthId: Long,
-    userIds:      Set[Int],
-    update:       Update,
-    pushText:     Option[String],
-    isFat:        Boolean,
-    deliveryId:   Option[String]
+    clientUserId:  Int,
+    clientAuthSid: Int,
+    userIds:       Set[Int],
+    update:        Update,
+    pushText:      Option[String],
+    isFat:         Boolean,
+    deliveryId:    Option[String]
   ): Future[(SeqState, Seq[SeqState])] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = SeqUpdatesManager.getOriginPeer(update)
-    val refs = SeqUpdatesManager.updateRefs(update)
+    val pushRules = PushRules(isFat = isFat).withData(PushData().withText(pushText.getOrElse("")))
+    val deliveryIdStr = deliveryId.getOrElse("")
 
     for {
-      authIds ← getAuthIds(userIds + clientUserId)
-      seqstates ← Future.sequence(
-        authIds.view
-          .filterNot(_ == clientAuthId)
-          .map(SeqUpdatesManager.persistAndPushUpdate(_, header, serializedData, refs, pushText, originPeer, isFat, deliveryId))
+      seqstates ← seqUpdExt.broadcastSingleUpdate(
+        userIds = userIds filterNot (_ == clientUserId),
+        update = update,
+        pushRules = pushRules,
+        deliveryId = deliveryIdStr
       )
-      seqstate ← SeqUpdatesManager.persistAndPushUpdate(clientAuthId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
+      seqstate ← seqUpdExt.deliverSingleUpdate(
+        userId = clientUserId,
+        update = update,
+        pushRules = pushRules,
+        deliveryId = deliveryIdStr
+      )
     } yield (seqstate, seqstates)
-  }
-
-  def notifyUserUpdate(
-    userId:       Int,
-    exceptAuthId: Long,
-    update:       Update,
-    pushText:     Option[String],
-    isFat:        Boolean        = false,
-    deliveryId:   Option[String] = None
-  ): Future[Seq[SeqState]] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    val originPeer = SeqUpdatesManager.getOriginPeer(update)
-
-    notifyUserUpdate(userId, exceptAuthId, header, serializedData, SeqUpdatesManager.updateRefs(update), pushText, originPeer, isFat, deliveryId)
-  }
-
-  def notifyUserUpdate(
-    userId:         Int,
-    exceptAuthId:   Long,
-    header:         Int,
-    serializedData: Array[Byte],
-    refs:           UpdateRefs,
-    pushText:       Option[String],
-    originPeer:     Option[ApiPeer],
-    isFat:          Boolean,
-    deliveryId:     Option[String]
-  ) = {
-    implicit val s: ActorSystem = system //why it does not compile without this?
-    for {
-      otherAuthIds ← getAuthIds(userId) map (_.filter(_ != exceptAuthId))
-      seqstates ← Future.sequence(otherAuthIds map { authId ⇒
-        SeqUpdatesManager.persistAndPushUpdate(authId, header, serializedData, refs, pushText, originPeer, isFat, deliveryId)
-      })
-    } yield seqstates
   }
 }
 
@@ -292,6 +241,15 @@ private[user] sealed trait Queries {
 
   def getLocalName(ownerUserId: Int, contactUserId: Int): Future[Option[String]] =
     (viewRegion.ref ? GetLocalName(ownerUserId, contactUserId)).mapTo[GetLocalNameResponse] map (_.localName)
+
+  def getName(userId: Int): Future[String] =
+    (viewRegion.ref ? GetName(userId)).mapTo[GetNameResponse] map (_.name)
+
+  def getName(userId: Int, clientUserId: Int): Future[String] =
+    for {
+      localNameOpt ← getLocalName(clientUserId, userId)
+      name ← localNameOpt map Future.successful getOrElse getName(userId)
+    } yield name
 
   def getUser(userId: Int): Future[User] =
     (viewRegion.ref ? GetUser(userId)).mapTo[User]
@@ -345,7 +303,7 @@ private[user] sealed trait AuthCommands {
     }
   }
 
-  def logout(session: models.AuthSession)(implicit db: Database): Future[Unit] = {
+  def logout(session: model.AuthSession)(implicit db: Database): Future[Unit] = {
     system.log.warning(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
 
     implicit val seqExt = SeqUpdatesExtension(system)
@@ -354,7 +312,7 @@ private[user] sealed trait AuthCommands {
     for {
       _ ← removeAuth(session.userId, session.authId)
       _ ← db.run(p.AuthSessionRepo.delete(session.userId, session.id))
-      _ = SeqUpdatesManager.deletePushCredentials(session.authId)
+      _ ← seqExt.deletePushCredentials(session.userId, session.id)
     } yield {
       publishAuthIdInvalidated(mediator, session.authId)
     }

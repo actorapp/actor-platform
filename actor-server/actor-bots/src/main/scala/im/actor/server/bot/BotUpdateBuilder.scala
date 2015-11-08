@@ -4,21 +4,18 @@ import java.util.Base64
 
 import akka.actor.ActorSystem
 import im.actor.api.rpc.Update
-import im.actor.api.rpc.files.{ ApiFileLocation, ApiAvatarImage, ApiAvatar }
-import im.actor.api.rpc.groups.{ ApiMember, ApiGroup }
-import im.actor.api.rpc.messaging.{ ApiDocumentMessage, ApiJsonMessage, UpdateMessage, ApiTextMessage }
+import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.sequence.UpdateRawUpdate
-import im.actor.api.rpc.users.ApiUser
 import im.actor.bots.BotMessages._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.group.GroupUtils
-import im.actor.server.sequence.{ UpdateRefs, SeqUpdatesManager }
 import im.actor.server.user.UserExtension
 
 import scala.concurrent.Future
 import scala.language.postfixOps
 
 final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSystem) extends ApiToBotConversions {
+
   import system.dispatcher
 
   implicit val _system = system
@@ -51,7 +48,8 @@ final class BotUpdateBuilder(botUserId: Int, botAuthId: Long, system: ActorSyste
 
     updateOptFuture flatMap {
       case Some(body) ⇒
-        val UpdateRefs(userIds, groupIds) = SeqUpdatesManager.updateRefs(upd)
+        val groupIds = upd._relatedGroupIds
+        val userIds = upd._relatedUserIds
 
         for {
           (apiGroups, apiUsers) ← GroupUtils.getGroupsUsers(groupIds, userIds, botUserId, botAuthId)

@@ -2,22 +2,16 @@ package im.actor.server.dialog.group
 
 import akka.actor._
 import akka.cluster.sharding.ShardRegion
-import akka.pattern.pipe
-import akka.persistence.RecoveryCompleted
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
-import im.actor.concurrent.FutureExt
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.dialog.group.GroupDialogEvents.GroupDialogEvent
 import im.actor.server.group.GroupExtension
-import im.actor.server.models.{ Peer, PeerType, Dialog }
-import im.actor.server.office.{ EntityNotFound, ProcessorState }
-import im.actor.server.persist.DialogRepo
+import im.actor.server.office.ProcessorState
 import im.actor.server.sequence.{ SeqStateDate, SeqUpdatesExtension }
 import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
-import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -64,8 +58,8 @@ private[group] final class GroupDialog extends DialogProcessor[GroupDialogState,
 
   context.setReceiveTimeout(1.hours)
 
-  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
-    createCache[AuthIdRandomId, Future[SeqStateDate]](GroupDialog.MaxCacheSize)
+  protected implicit val sendResponseCache: Cache[AuthSidRandomId, Future[SeqStateDate]] =
+    createCache[AuthSidRandomId, Future[SeqStateDate]](GroupDialog.MaxCacheSize)
 
   override protected def updatedState(evt: GroupDialogEvent, state: GroupDialogState): GroupDialogState = evt match {
     case LastSenderIdChanged(senderUserId) ⇒ state.copy(lastSenderId = Some(senderUserId))
