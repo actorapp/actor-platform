@@ -172,6 +172,9 @@ final class SeqUpdatesExtension(
 
   def deleteApplePushCredentials(token: Array[Byte]): Future[Unit] = Future.successful(())
 
+  def reloadSettings(userId: Int): Unit =
+    region.ref ! Envelope(userId).withReloadSettings(ReloadSettings())
+
   def persistUpdate(update: SeqUpdate): Future[Unit] = {
     val promise = Promise[Unit]()
     writer ! BatchUpdatesWriter.Enqueue(update, promise)
