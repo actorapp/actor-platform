@@ -13,7 +13,7 @@ private[bot] final class BotsBotService(system: ActorSystem) extends BotServiceB
   val botExt = BotExtension(system)
 
   private def createBot(username: String, name: String) = RequestHandler[CreateBot, CreateBot#Response](
-    (botUserId: BotUserId, botAuthId: BotAuthId) ⇒
+    (botUserId: BotUserId, botAuthId: BotAuthId, botAuthSid: BotAuthSid) ⇒
       ifIsAdmin(botUserId) {
         (for {
           (token, userId) ← botExt.create(username, name, isAdmin = false)

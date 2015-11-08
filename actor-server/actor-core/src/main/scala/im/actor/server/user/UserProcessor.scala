@@ -58,8 +58,6 @@ object UserProcessor {
     ActorSerializer.register(
       10001 → classOf[UserCommands.NewAuth],
       10002 → classOf[UserCommands.NewAuthAck],
-      10005 → classOf[UserCommands.BroadcastUpdate],
-      10006 → classOf[UserCommands.BroadcastUpdateResponse],
       10007 → classOf[UserCommands.RemoveAuth],
       10008 → classOf[UserCommands.Create],
       10010 → classOf[UserCommands.Delete],
@@ -102,6 +100,8 @@ object UserProcessor {
       11013 → classOf[UserQueries.IsAdminResponse],
       11014 → classOf[UserQueries.GetLocalName],
       11015 → classOf[UserQueries.GetLocalNameResponse],
+      11016 → classOf[UserQueries.GetName],
+      11017 → classOf[UserQueries.GetNameResponse],
 
       12001 → classOf[UserEvents.AuthAdded],
       12002 → classOf[UserEvents.AuthRemoved],
@@ -198,26 +198,26 @@ private[user] final class UserProcessor
   }
 
   override protected def handleCommand(state: User): Receive = {
-    case NewAuth(_, authId) ⇒ addAuth(state, authId)
-    case RemoveAuth(_, authId) ⇒ removeAuth(state, authId)
-    case ChangeCountryCode(_, countryCode) ⇒ changeCountryCode(state, countryCode)
-    case ChangeName(_, name, clientAuthId) ⇒ changeName(state, name, clientAuthId)
-    case Delete(_) ⇒ delete(state)
-    case AddPhone(_, phone) ⇒ addPhone(state, phone)
-    case AddEmail(_, email) ⇒ addEmail(state, email)
-    case AddSocialContact(_, contact) ⇒ addSocialContact(state, contact)
-    case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
-    case ChangeAbout(_, clientAuthId, about) ⇒ changeAbout(state, clientAuthId, about)
-    case UpdateAvatar(_, clientAuthId, avatarOpt) ⇒ updateAvatar(state, clientAuthId, avatarOpt)
-    case AddContacts(_, clientAuthId, contactsToAdd) ⇒ addContacts(state, clientAuthId, contactsToAdd)
-    case UpdateIsAdmin(_, isAdmin) ⇒ updateIsAdmin(state, isAdmin)
-    case NotifyDialogsChanged(_, clientAuthId) ⇒ notifyDialogsChanged(state, clientAuthId)
-    case ChangeTimeZone(_, authId, timeZone) ⇒ changeTimeZone(state, authId, timeZone)
-    case ChangePreferredLanguages(_, authId, preferredLanguages) ⇒ changePreferredLanguages(state, authId, preferredLanguages)
-    case cmd: EditLocalName ⇒ contacts.ref forward cmd
-    case query: GetLocalName ⇒ contacts.ref forward query
-    case StopOffice ⇒ context stop self
-    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case NewAuth(_, authId)                 ⇒ addAuth(state, authId)
+    case RemoveAuth(_, authId)              ⇒ removeAuth(state, authId)
+    case ChangeCountryCode(_, countryCode)  ⇒ changeCountryCode(state, countryCode)
+    case ChangeName(_, name)                ⇒ changeName(state, name)
+    case Delete(_)                          ⇒ delete(state)
+    case AddPhone(_, phone)                 ⇒ addPhone(state, phone)
+    case AddEmail(_, email)                 ⇒ addEmail(state, email)
+    case AddSocialContact(_, contact)       ⇒ addSocialContact(state, contact)
+    case ChangeNickname(_, nickname)        ⇒ changeNickname(state, nickname)
+    case ChangeAbout(_, about)              ⇒ changeAbout(state, about)
+    case UpdateAvatar(_, avatarOpt)         ⇒ updateAvatar(state, avatarOpt)
+    case AddContacts(_, contactsToAdd)      ⇒ addContacts(state, contactsToAdd)
+    case UpdateIsAdmin(_, isAdmin)          ⇒ updateIsAdmin(state, isAdmin)
+    case NotifyDialogsChanged(_)            ⇒ notifyDialogsChanged(state)
+    case ChangeTimeZone(_, timeZone)        ⇒ changeTimeZone(state, timeZone)
+    case ChangePreferredLanguages(_, langs) ⇒ changePreferredLanguages(state, langs)
+    case cmd: EditLocalName                 ⇒ contacts.ref forward cmd
+    case query: GetLocalName                ⇒ contacts.ref forward query
+    case StopOffice                         ⇒ context stop self
+    case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
   override protected def handleQuery(state: User): Receive = {
@@ -228,6 +228,7 @@ private[user] final class UserProcessor
     case GetAccessHash(_, clientAuthId)               ⇒ getAccessHash(state, clientAuthId)
     case GetUser(_)                                   ⇒ getUser(state)
     case IsAdmin(_)                                   ⇒ isAdmin(state)
+    case GetName(_)                                   ⇒ getName(state)
   }
 
   protected[this] var userStateMaybe: Option[User] = None

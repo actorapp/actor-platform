@@ -3,7 +3,7 @@ package im.actor.server
 import scala.util.control.NoStackTrace
 
 package object dialog {
-  type AuthIdRandomId = (Long, Long)
+  type AuthSidRandomId = (Int, Long)
 
   case object ReceiveFailed extends Exception with NoStackTrace
 

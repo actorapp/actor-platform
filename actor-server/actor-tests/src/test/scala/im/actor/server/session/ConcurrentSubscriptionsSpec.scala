@@ -18,7 +18,7 @@ final class ConcurrentSubscriptionsSpec extends BaseSessionSpec with ServiceSpec
   implicit val probe = TestProbe()
 
   def concurrentSubscriptions(): Unit = {
-    val (_, authId, _) = createUser()
+    val (_, authId, _, _) = createUser()
 
     val sessionId = Random.nextLong()
 

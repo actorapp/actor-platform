@@ -2,15 +2,15 @@ package im.actor.server.api.rpc.service
 
 import im.actor.api.rpc.collections.{ ApiInt32Value, ApiMapValue, ApiMapValueItem, ApiStringValue }
 import im.actor.api.rpc.webactions.{ ResponseCompleteWebaction, ResponseInitWebaction }
-import im.actor.api.rpc.{ ClientData, Error, Ok }
+import im.actor.api.rpc.{ AuthData, ClientData, Error, Ok }
 import im.actor.server.api.rpc.service.webactions.{ WebactionsErrors, WebactionsKeyValues, WebactionsServiceImpl }
 import im.actor.server.webactions.CorrectWebaction
-import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegionProxy }
+import im.actor.server.{ BaseAppSuite, ImplicitAuthService, ImplicitSessionRegion }
 import org.scalatest.Inside._
 
 class WebactionServiceSpec
   extends BaseAppSuite
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
 
   behavior of "WebactionService"
@@ -28,9 +28,9 @@ class WebactionServiceSpec
   val service = new WebactionsServiceImpl()
 
   object t {
-    val (user, userAuthId, _) = createUser()
+    val (user, userAuthId, userAuthSid, _) = createUser()
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(userAuthId, sessionId, Some(user.id))
+    implicit val clientData = ClientData(userAuthId, sessionId, Some(AuthData(user.id, userAuthSid)))
     private val kv = WebactionsKeyValues.actionHashUserKV()
 
     def e1(): Unit = {

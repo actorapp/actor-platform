@@ -18,7 +18,7 @@ import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json.JsonFormatters.{ errorsFormat, groupInviteInfoFormat }
 import im.actor.server.api.http.json.{ AvatarUrls, Errors, Group, GroupInviteInfo, User }
 import ImageUtils.getAvatar
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 
 class GroupsHandler()(
   implicit
@@ -64,7 +64,7 @@ class GroupsHandler()(
       } yield result
     }
 
-  private def avatarUrls(optAvatar: Option[models.AvatarData]): DBIO[Option[AvatarUrls]] = {
+  private def avatarUrls(optAvatar: Option[model.AvatarData]): DBIO[Option[AvatarUrls]] = {
     optAvatar.map(getAvatar).map { avatar ⇒
       for {
         small ← avatar.smallImage.map(i ⇒ urlOrNone(i.fileLocation)).getOrElse(DBIO.successful(None)) //TODO: rewrite with shapeless

@@ -74,7 +74,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
   }
 
   def resendingToNewClients: Receive = subscriber.orElse(publisher).orElse {
-    case NewClient(actorRef) ⇒
+    case NewClient(_) ⇒
       log.debug("New client, sending all scheduled for resend")
       resendBuffer foreach {
         case (messageId, (msg, reduceKey, scheduledResend)) ⇒
