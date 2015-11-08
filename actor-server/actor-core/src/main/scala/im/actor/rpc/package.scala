@@ -1,5 +1,8 @@
 package im.actor.api
 
+import im.actor.server.group.GroupErrors.GroupNotFound
+import im.actor.server.office.EntityNotFound
+import im.actor.server.user.UserErrors.UserNotFound
 import slick.dbio.{ DBIO, DBIOAction }
 import slick.driver.PostgresDriver.api._
 
@@ -21,6 +24,7 @@ package object rpc extends {
     val UserNotAuthorized = RpcError(403, "USER_NOT_AUTHORIZED", "", false, None)
     val UserNotFound = RpcError(404, "USER_NOT_FOUND", "", false, None)
     val UserPhoneNotFound = RpcError(404, "USER_PHONE_NOT_FOUND", "", false, None)
+    val EntityNotFound = RpcError(404, "ENTITY_NOT_FOUND", "", false, None)
 
     def forbidden(userMessage: String) = RpcError(403, "FORBIDDEN", userMessage, false, None)
   }
@@ -49,9 +53,9 @@ package object rpc extends {
       }
   }
 
-  def authorizedAction[R](clientData: ClientData)(f: AuthorizedClientData ⇒ DBIOAction[RpcError \/ R, NoStream, Nothing])(implicit db: Database): Future[RpcError \/ R] = {
+  def authorizedAction[R](clientData: ClientData)(f: AuthorizedClientData ⇒ DBIOAction[RpcError \/ R, NoStream, Nothing])(implicit db: Database, ec: ExecutionContext): Future[RpcError \/ R] = {
     val authorizedAction = requireAuth(clientData).map(f)
-    db.run(toDBIOAction(authorizedAction))
+    recover(db.run(toDBIOAction(authorizedAction)))
   }
 
   def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
@@ -70,10 +74,17 @@ package object rpc extends {
     authorizedAction.getOrElse(DBIO.successful(Result.UserNotAuthorized))
   }
 
-  def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError \/ R]]): Future[RpcError \/ R] =
-    authorizedFuture.getOrElse(Future.successful(Result.UserNotAuthorized))
+  def toResult[R](authorizedFuture: MaybeAuthorized[Future[RpcError \/ R]])(implicit ec: ExecutionContext): Future[RpcError \/ R] =
+    recover(authorizedFuture.getOrElse(Future.successful(Result.UserNotAuthorized)))
 
-  def authorized[R](clientData: ClientData)(fa: AuthorizedClientData ⇒ Future[RpcError \/ R]): Future[RpcError \/ R] =
+  def recover[A](f: Future[\/[RpcError, A]])(implicit ec: ExecutionContext): Future[\/[RpcError, A]] = f recover recoverPF
+  def recoverPF[A]: PartialFunction[Throwable, \/[RpcError, A]] = {
+    case UserNotFound(_)  ⇒ Error(CommonErrors.UserNotFound)
+    case GroupNotFound(_) ⇒ Error(CommonErrors.GroupNotFound)
+    case EntityNotFound   ⇒ Error(CommonErrors.EntityNotFound)
+  }
+
+  def authorized[R](clientData: ClientData)(fa: AuthorizedClientData ⇒ Future[RpcError \/ R])(implicit ec: ExecutionContext): Future[RpcError \/ R] =
     toResult(requireAuth(clientData) map fa)
 
   def authorizedClient(clientData: ClientData): Result[AuthorizedClientData] =

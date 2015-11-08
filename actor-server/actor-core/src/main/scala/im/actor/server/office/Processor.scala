@@ -17,7 +17,8 @@ import scala.language.postfixOps
 import scala.util.control.NoStackTrace
 import scala.util.{ Failure, Success }
 
-case object EntityNotFound extends RuntimeException with NoStackTrace
+abstract class EntityNotFound(msg: String = "") extends RuntimeException(msg) with NoStackTrace
+case object EntityNotFound extends EntityNotFound("Entity not found")
 case object StopOffice
 
 trait ProcessorState
@@ -32,6 +33,8 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   private implicit val ec = context.dispatcher
 
   protected def updatedState(evt: Event, state: State): State
+
+  protected val notFoundError: EntityNotFound = EntityNotFound
 
   protected def workWith(es: immutable.Seq[Event], state: State): State = {
     val newState = es.foldLeft(state) {
@@ -66,7 +69,7 @@ trait Processor[State, Event <: AnyRef] extends PersistentActor with ActorFuture
   protected final def initializing: Receive = handleInitCommand orElse unstashing orElse {
     case msg ⇒
       log.debug("Entity not found while processing {}", msg)
-      sender() ! Status.Failure(EntityNotFound)
+      sender() ! Status.Failure(notFoundError)
   }
 
   protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
