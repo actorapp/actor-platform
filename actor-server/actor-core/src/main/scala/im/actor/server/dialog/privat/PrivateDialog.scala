@@ -11,7 +11,7 @@ import im.actor.api.rpc.peers.ApiPeerType
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.event.TSEvent
-import im.actor.server.models.{ Dialog, Peer, PeerType }
+import im.actor.server.model.{ Dialog, Peer, PeerType }
 import im.actor.server.office.ProcessorState
 import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqStateDate
@@ -91,8 +91,8 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
       throw ex
   }
 
-  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
-    createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
+  protected implicit val sendResponseCache: Cache[AuthSidRandomId, Future[SeqStateDate]] =
+    createCache[AuthSidRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   context.setReceiveTimeout(1.hours)
 
@@ -121,21 +121,21 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
   }
 
   override protected def handleCommand(state: PrivateDialogState): Receive = {
-    case SendMessage(_, senderUserId, senderAuthId, randomId, message, isFat) ⇒
-      sendMessage(state, senderUserId, senderAuthId, randomId, message, isFat)
+    case SendMessage(_, senderUserId, senderAuthSid, randomId, message, isFat) ⇒
+      sendMessage(state, senderUserId, senderAuthSid, randomId, message, isFat)
     case WriteMessage(_, senderUserId, date, randomId, message) ⇒
       writeMessage(state, senderUserId, date, randomId, message)
     case MessageReceived(_, receiverUserId, date) ⇒
       messageReceived(state, receiverUserId, date)
-    case MessageRead(_, readerUserUd, readerAuthId, date) ⇒
-      messageRead(state, readerUserUd, readerAuthId, date)
+    case MessageRead(_, readerUserUd, readerAuthSid, date) ⇒
+      messageRead(state, readerUserUd, readerAuthSid, date)
     case StopDialog     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopDialog)
   }
 
   private def init(): Unit = {
     if (left == right) {
-      val error = new RuntimeException(s"Attempt to create dialog with yourself: ${left}")
+      val error = new RuntimeException(s"Attempt to create dialog with yourself: $left")
       log.error(error, "Failed to init dialog")
       throw error
     }
@@ -151,7 +151,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
         case None ⇒
           for {
             _ ← DialogRepo.create(Dialog(left, rightPeer))
-            _ ← DBIO.from(userExt.notifyDialogsChanged(left, 0))
+            _ ← DBIO.from(userExt.notifyDialogsChanged(left))
           } yield ()
       }
       _ ← rightDialogOpt match {
@@ -159,7 +159,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
         case None ⇒
           for {
             _ ← DialogRepo.create(Dialog(right, leftPeer))
-            _ ← DBIO.from(userExt.notifyDialogsChanged(right, 0))
+            _ ← DBIO.from(userExt.notifyDialogsChanged(right))
           } yield ()
       }
     } yield ())
@@ -171,7 +171,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
     } yield Extensions(l.internalExtensions, r.internalExtensions)) pipeTo self onFailure {
       case e ⇒
         log.error(e, "Failed to init dialog")
-        init()
+        self ! Kill
     }
   }
 

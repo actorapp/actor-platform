@@ -9,12 +9,11 @@ import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import org.scalatest.Inside._
 
-class IntegrationsServiceSpec
+final class IntegrationsServiceSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "IntegrationsService"
 
@@ -33,7 +32,6 @@ class IntegrationsServiceSpec
   object t {
 
     implicit val ec = system.dispatcher
-    implicit val sessionRegion = buildSessionRegionProxy()
 
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
@@ -42,14 +40,14 @@ class IntegrationsServiceSpec
     private val config = HttpApiConfig("localhost", 9000, "http", "actor.im", "/dev/null", None)
     val service = new IntegrationsServiceImpl(s"${config.scheme}://${config.host}")
 
-    val (user1, user1AuthId1, _) = createUser()
-    val user1AuthId2 = createAuthId(user1.id)
+    val (user1, user1AuthId1, user1AuthSid1, _) = createUser()
+    val (user1AuthId2, user1AuthSid2) = createAuthId(user1.id)
 
-    val (user2, user2AuthId, _) = createUser()
+    val (user2, user2AuthId, user2AuthSid, _) = createUser()
 
     val sessionId = createSessionId()
-    val clientData1 = ClientData(user1AuthId1, sessionId, Some(user1.id))
-    val clientData2 = ClientData(user1AuthId2, sessionId, Some(user2.id))
+    val clientData1 = ClientData(user1AuthId1, sessionId, Some(AuthData(user1.id, user1AuthSid1)))
+    val clientData2 = ClientData(user1AuthId2, sessionId, Some(AuthData(user2.id, user1AuthSid2)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)

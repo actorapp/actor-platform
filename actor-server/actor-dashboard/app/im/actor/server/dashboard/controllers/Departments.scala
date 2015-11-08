@@ -10,7 +10,7 @@ import slick.dbio.DBIO
 import im.actor.server.dashboard.controllers.utils.DepartmentUtils._
 import im.actor.server.dashboard.controllers.utils.json.DepartmentsJsonImplicits._
 import im.actor.server.dashboard.controllers.utils.{ AuthAction, Db }
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 
 class Departments extends Controller {
 
@@ -32,7 +32,7 @@ class Departments extends Controller {
   }
 
   def create = AuthAction.async(BodyParsers.parse.json) { request ⇒
-    request.body.validate[models.Department].fold(
+    request.body.validate[model.Department].fold(
       errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
       department ⇒ db.run {
         for {

@@ -20,7 +20,7 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
   }
 
   private def createGroup(title: String) = RequestHandler[CreateGroup, CreateGroup#Response](
-    (botUserId: Int, botAuthId: Long) ⇒ {
+    (botUserId: Int, botAuthId: Long, botAuthSid: Int) ⇒ {
       val groupId = IdUtils.nextIntId()
       val randomId = ThreadLocalRandom.current().nextLong()
 
@@ -29,7 +29,6 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
           groupId = groupId,
           title = title,
           clientUserId = botUserId,
-          clientAuthId = botAuthId,
           randomId = randomId,
           userIds = Set.empty
         )
@@ -38,13 +37,13 @@ private[bot] final class GroupsBotService(system: ActorSystem) extends BotServic
   )
 
   private def inviteUser(groupPeer: GroupOutPeer, userPeer: UserOutPeer) = RequestHandler[InviteUser, InviteUser#Response](
-    (botUserId: Int, botAuthId: Long) ⇒ {
+    (botUserId: Int, botAuthId: Long, botAuthSid: Int) ⇒ {
       // FIXME: check access hash
 
       val randomId = ThreadLocalRandom.current().nextLong()
 
       for {
-        ack ← groupExt.inviteToGroup(botUserId, botAuthId, groupPeer.id, userPeer.id, randomId)
+        ack ← groupExt.inviteToGroup(botUserId, groupPeer.id, userPeer.id, randomId)
       } yield Right(Void)
     }
   )

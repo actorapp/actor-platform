@@ -11,7 +11,7 @@ import upickle.Js
 import scala.concurrent.Future
 import scala.util.{ Success, Failure }
 
-final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSystem) {
+final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int, system: ActorSystem) {
 
   import BotMessages._
   import akka.stream.scaladsl.FlowGraph.Implicits._
@@ -61,7 +61,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, system: ActorSys
 
         if (handlers.isDefinedAt(body)) {
           for {
-            response ← handlers(body).handle(botUserId, botAuthId)
+            response ← handlers(body).handle(botUserId, botAuthId, botAuthSid)
           } yield response
         } else Future.successful(BotError(400, "REQUEST_NOT_SUPPORTED", Js.Obj(), None))
       } else Future.successful(BotError(400, "SERVICE_NOT_REGISTERED", Js.Obj(), None))

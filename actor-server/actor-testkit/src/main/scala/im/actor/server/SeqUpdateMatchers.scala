@@ -5,6 +5,8 @@ import akka.event.Logging
 import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.{ ClientData, Update }
 import im.actor.server.db.DbExtension
+import im.actor.server.model.{ SerializedUpdate, SeqUpdate }
+import im.actor.server.persist.sequence.UserSequenceRepo
 import im.actor.util.log.AnyRefLogSource
 import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures
@@ -71,7 +73,9 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
     Thread.sleep(4000)
     val updateHeader = extractHeader(update)
     whenReady(findSeqUpdateAfter(seq)) { updates ⇒
-      if (updates.map(_.header).contains(updateHeader)) fail(s"There should be no update of type: ${update.getSimpleName}")
+      val authSid = client.authData.get.authSid
+      if (updates.map(u ⇒ u.getMapping.custom.getOrElse(authSid, u.getMapping.getDefault).header)
+        .contains(updateHeader)) fail(s"There should be no update of type: ${update.getSimpleName}")
     }
   }
 
@@ -84,7 +88,9 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
       val headersToUpdates = updates map (u ⇒ extractHeader(u) → u)
       val updatesMap: Map[Int, UpdateClass] = headersToUpdates.toMap
       val updatesHeaders = headersToUpdates map (_._1)
-      val updatesNames = updates map (_.getSimpleName) mkString ", "
+      val updatesNames = headersToUpdates map {
+        case (h, u) ⇒ s"${u.getSimpleName}{${h}}"
+      } mkString ", "
 
       val dbUpdatesHeaders = dbUpdates map (_.header)
       val dbUpdatesNames = dbUpdatesHeaders mkString ", "
@@ -101,7 +107,7 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
 
   private def extractHeader[U <: Update: ClassTag](clazz: Class[U]): Int = callCompanionMethod[Int](clazz, "header")
 
-  private def extractUpdate[U <: Update: ClassTag](clazz: UpdateClass, update: models.sequence.SeqUpdate): U = {
+  private def extractUpdate[U <: Update: ClassTag](clazz: UpdateClass, update: SerializedUpdate): U = {
     val runtimeMirror = universe.runtimeMirror(getClass.getClassLoader)
 
     val moduleSymbol = currentMirror.moduleSymbol(clazz)
@@ -117,7 +123,7 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
 
     val parseFrom = parseFromFiltered.headOption map (_.asMethod) getOrElse fail(s"Could not find parseFrom method in $clazz")
     val objectMirror = runtimeMirror.reflect(moduleMirror.instance)
-    val updateEither = objectMirror.reflectMethod(parseFrom).apply(CodedInputStream.newInstance(update.serializedData)).asInstanceOf[Either[String, U]]
+    val updateEither = objectMirror.reflectMethod(parseFrom).apply(CodedInputStream.newInstance(update.body.toByteArray)).asInstanceOf[Either[String, U]]
     updateEither should matchPattern {
       case Right(_) ⇒
     }
@@ -137,19 +143,22 @@ trait SeqUpdateMatchers extends Matchers with ScalaFutures with AnyRefLogSource 
     objectMirror.reflectMethod(method).apply(args).asInstanceOf[Result]
   }
 
-  private def matchUpdates(seq: Int)(check: Seq[models.sequence.SeqUpdate] ⇒ Any)(implicit client: ClientData): Int =
+  private def matchUpdates(seq: Int)(check: Seq[SerializedUpdate] ⇒ Any)(implicit client: ClientData): Int =
     repeatAfterSleep(DefaultRetryCount) {
       whenReady(findSeqUpdateAfter(seq)) { updates ⇒
-        check(updates)
+        val authSid = client.authData.get.authSid
+
+        val serUpdates = updates map { update ⇒
+          update.getMapping.custom.getOrElse(authSid, update.getMapping.getDefault)
+        }
+
+        check(serUpdates)
         updates.lastOption map (_.seq) getOrElse fail("Retrieved empty sequence")
       }
     }
 
-  private def findSeqUpdateAfter(seq: Int)(implicit client: ClientData): Future[Seq[models.sequence.SeqUpdate]] = {
-    import slick.driver.PostgresDriver.api._
-    val query = persist.sequence.SeqUpdateRepo.updates
-      .filter(u ⇒ u.authId === client.authId && u.seq > seq)
-      .sortBy(_.seq.asc).result
+  private def findSeqUpdateAfter(seq: Int)(implicit client: ClientData): Future[Seq[SeqUpdate]] = {
+    val query = UserSequenceRepo.fetchAfterSeq(client.authData.get.userId, seq, Long.MaxValue)
     DbExtension(system).db.run(query)
   }
 
