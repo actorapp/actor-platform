@@ -22,7 +22,7 @@ import im.actor.api.rpc.FileHelpers.Errors
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
 import im.actor.server.db.DbExtension
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 
 class FilesServiceImpl(
   implicit
@@ -141,7 +141,7 @@ class FilesServiceImpl(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  private def copyPartRequest(part: models.FilePart, destinationUploadId: String, destinationKey: String): CopyPartRequest = {
+  private def copyPartRequest(part: model.FilePart, destinationUploadId: String, destinationKey: String): CopyPartRequest = {
     (new CopyPartRequest)
       .withDestinationBucketName(fsAdapter.bucketName)
       .withDestinationKey(destinationKey)

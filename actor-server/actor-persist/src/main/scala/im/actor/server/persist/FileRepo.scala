@@ -4,9 +4,9 @@ import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
 import slick.profile.{ SqlAction, FixedSqlAction }
 
-import im.actor.server.models
+import im.actor.server.model
 
-final class FileTable(tag: Tag) extends Table[models.File](tag, "files") {
+final class FileTable(tag: Tag) extends Table[model.File](tag, "files") {
   def id = column[Long]("id", O.PrimaryKey)
 
   def accessSalt = column[String]("access_salt")
@@ -19,16 +19,16 @@ final class FileTable(tag: Tag) extends Table[models.File](tag, "files") {
 
   def name = column[String]("name")
 
-  def * = (id, accessSalt, s3UploadKey, isUploaded, size, name) <> (models.File.tupled, models.File.unapply)
+  def * = (id, accessSalt, s3UploadKey, isUploaded, size, name) <> (model.File.tupled, model.File.unapply)
 }
 
 object FileRepo {
   val files = TableQuery[FileTable]
 
   def create(id: Long, accessSalt: String, s3UploadKey: String): FixedSqlAction[Int, NoStream, Write] =
-    files += models.File(id, accessSalt, s3UploadKey, false, 0, "")
+    files += model.File(id, accessSalt, s3UploadKey, false, 0, "")
 
-  def find(id: Long): SqlAction[Option[models.File], NoStream, Read] =
+  def find(id: Long): SqlAction[Option[model.File], NoStream, Read] =
     files.filter(_.id === id).result.headOption
 
   def findByKey(key: String) =

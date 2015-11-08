@@ -19,17 +19,17 @@ trait DeliveryExtension {
   ): Future[Unit]
 
   def senderDelivery(
-    senderUserId: Int,
-    senderAuthId: Long,
-    peer:         ApiPeer,
-    randomId:     Long,
-    timestamp:    Long,
-    message:      ApiMessage,
-    isFat:        Boolean
+    senderUserId:  Int,
+    senderAuthSid: Int,
+    peer:          ApiPeer,
+    randomId:      Long,
+    timestamp:     Long,
+    message:       ApiMessage,
+    isFat:         Boolean
   ): Future[SeqState]
 
   def authorRead(readerUserId: Int, authorUserId: Int, date: Long, now: Long): Future[Unit]
 
-  def readerRead(readerUserId: Int, readerAuthId: Long, authorUserId: Int, date: Long): Future[Unit]
+  def readerRead(readerUserId: Int, readerAuthSid: Int, authorUserId: Int, date: Long): Future[Unit]
 
 }

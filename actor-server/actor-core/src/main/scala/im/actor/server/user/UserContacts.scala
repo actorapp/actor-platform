@@ -30,8 +30,8 @@ private final case class UserContactsState(localNames: Map[Int, String] = Map.em
 private[user] final class UserContacts(userId: Int)(implicit factory: ActorRefFactory) {
   val ref = factory.actorOf(Props(new UserContactsActor(userId)))
 
-  def editLocalName(clientAuthId: Long, contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean = false)(implicit timeout: Timeout): Future[SeqState] =
-    (ref ? EditLocalName(userId, clientAuthId, contactUserId, nameOpt, supressUpdate)).mapTo[SeqState]
+  def editLocalName(contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean = false)(implicit timeout: Timeout): Future[SeqState] =
+    (ref ? EditLocalName(userId, contactUserId, nameOpt, supressUpdate)).mapTo[SeqState]
 }
 
 private[user] final class UserContactsActor(userId: Int) extends Processor[UserContactsState] {
@@ -47,8 +47,8 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
   private val db = DbExtension(context.system).db
 
   override protected def handleCommand: Receive = {
-    case EditLocalName(_, clientAuthId, contactUserId, nameOpt, supressUpdate) ⇒
-      editLocalName(clientAuthId, contactUserId, nameOpt, supressUpdate)
+    case EditLocalName(_, contactUserId, nameOpt, supressUpdate) ⇒
+      editLocalName(contactUserId, nameOpt, supressUpdate)
   }
 
   override protected def handleQuery: QueryHandler = {
@@ -56,7 +56,7 @@ private[user] final class UserContactsActor(userId: Int) extends Processor[UserC
       Future.successful(GetLocalNameResponse(state.localNames.get(contactUserId)))
   }
 
-  private def editLocalName(clientAuthId: Long, contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean): Unit = {
+  private def editLocalName(contactUserId: Int, nameOpt: Option[String], supressUpdate: Boolean): Unit = {
     persistTS(LocalNameChanged(contactUserId, nameOpt)) { (e, ts) ⇒
       commit(e, ts)
 

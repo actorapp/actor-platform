@@ -14,9 +14,9 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.Random
 
-class ContactsServiceSpec
+final class ContactsServiceSpec
   extends BaseAppSuite
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitAuthService {
   behavior of "Contacts Service"
 
@@ -39,8 +39,6 @@ class ContactsServiceSpec
   object s {
     implicit val ec = system.dispatcher
 
-    implicit val sessionRegion = buildSessionRegionProxy()
-
     implicit val service = new contacts.ContactsServiceImpl
 
     private implicit val userExt = UserExtension(system)
@@ -54,9 +52,9 @@ class ContactsServiceSpec
     }
 
     object getcontacts {
-      val (user, authId, _) = createUser()
+      val (user, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
       val userModels = for (i ← 1 to 10) yield {
         val user = createUser()._1.asModel()
@@ -102,15 +100,15 @@ class ContactsServiceSpec
       val authId = createAuthId()
       val sessionId = createSessionId()
       val phoneNumber = buildPhone()
-      val user = createUser(authId, phoneNumber)
+      val (user, authSid) = createUser(authId, phoneNumber)
 
-      val (user2, _, _) = createUser()
+      val (user2, _, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
       val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
 
-      implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
-      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1000) = {
+      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1) = {
         whenReady(service.handleAddContact(user2.id, user2AccessHash)) { resp ⇒
           resp should matchPattern {
             case Ok(api.misc.ResponseSeq(seq, state)) if seq == expectedUpdSeq ⇒
@@ -144,7 +142,7 @@ class ContactsServiceSpec
       def remove() = {
         whenReady(service.handleRemoveContact(user2.id, user2AccessHash)) { resp ⇒
           resp should matchPattern {
-            case Ok(api.misc.ResponseSeq(1002, state)) ⇒
+            case Ok(api.misc.ResponseSeq(3, state)) ⇒
           }
         }
 
@@ -155,19 +153,19 @@ class ContactsServiceSpec
         }
       }
 
-      def addAfterRemove() = add(firstRun = false, expectedUpdSeq = 1003)
+      def addAfterRemove() = add(firstRun = false, expectedUpdSeq = 4)
     }
 
     object imprt {
       val authId = createAuthId()
       val sessionId = createSessionId()
-      val user = createUser(authId, 79031151515L)
+      val (user, authSid) = createUser(authId, 79031151515L)
 
-      val user2 = createUser(79031161616L)
+      val (user2, _) = createUser(79031161616L)
 
-      val user3 = createUser(79031171717L)
+      val (user3, _) = createUser(79031171717L)
 
-      implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
+      implicit val clientData = api.ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
       def ru() = {
         whenReady(service.handleImportContacts(Vector(ApiPhoneToImport(79031161616L, Some("Kaizer 7"))), Vector.empty)) { resp ⇒
