@@ -17,9 +17,22 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.{ Failure, Success }
 
 object V20151108011300__FillUserSequence {
   final case class Obsolete(authId: Long, timestamp: Long, seq: Int, header: Int, data: Array[Byte], userIds: String, groupIds: String)
+  final case class New(userId: Int, seq: Int, timestamp: Long, mapping: Array[Byte])
+
+  final class UserSequenceTable(tag: Tag) extends Table[New](tag, "user_sequence") {
+    def userId = column[Int]("user_id", O.PrimaryKey)
+    def seq = column[Int]("seq", O.PrimaryKey)
+    def timestamp = column[Long]("timestamp")
+    def mapping = column[Array[Byte]]("mapping")
+
+    def * = (userId, seq, timestamp, mapping) <> (New.tupled, New.unapply)
+  }
+
+  val newTable = TableQuery[UserSequenceTable]
 
   implicit val getByteArray = GetResult(r ⇒ r.nextBytes())
   implicit val setByteArray = SetParameter[Array[Byte]] { (bs, pp) ⇒ pp.setBytes(bs) }
@@ -55,18 +68,34 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
       def close(): Unit = ()
     })
 
-    Await.ready(db.run {
+    log.warn("Starting filling user sequence")
+    Await.result(db.run {
       for {
-        userIds ← UserRepo.allIds
-        _ ← DBIO.sequence(userIds map { userId ⇒
-          for {
-            authIds ← AuthIdRepo.findIdByUserId(userId)
-            oldestOpt ← maxSeq(authIds)
-            copied ← oldestOpt map (fill(userId) _) getOrElse DBIO.successful(0)
-          } yield log.warn(s"Copied $copied rows")
-        })
-      } yield ()
+        userIds ← UserRepo.allIds map (_.toIterator)
+        _ = log.warn(s"Found users: ${userIds}")
+        affected ← DBIO.sequence(userIds map migrateUser) map (_.sum)
+      } yield {
+        log.warn(s"${affected} updates moved")
+      }
     }, 1.hour)
+  }
+
+  private def migrateUser(userId: Int): DBIO[Int] = {
+    log.warn(s"Moving user: ${userId}")
+    (for {
+      authIds ← AuthIdRepo.findIdByUserId(userId)
+      _ = log.warn(s"Found ${authIds.length} authIds")
+      oldestOpt ← maxSeq(authIds)
+      copied ← oldestOpt map (fill(userId) _) getOrElse DBIO.successful(0)
+    } yield {
+      log.warn(s"Copied $copied updates")
+      copied
+    }).asTry map {
+      case Success(res) ⇒ res
+      case Failure(err) ⇒
+        log.error("Failed to move user", err)
+        throw err
+    }
   }
 
   private def maxSeq(authIds: Seq[Long]): DBIO[Option[Long]] = {
@@ -87,30 +116,25 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
 
   private def move(userId: Int, obsoletes: Vector[Obsolete]): DBIO[Int] = {
     DBIO.sequence(bulks(obsoletes, Vector.empty) map { bulkObs ⇒
-      val values = bulkObs.zipWithIndex.map {
-        case (obs, i) ⇒
-          val seq = obs.seq
-          val timestamp = obs.timestamp
-          val mapping = UpdateMapping(
+      val news = bulkObs map {
+        case Obsolete(_, timestamp, seq, header, data, userIds, groupIds) ⇒
+          New(
+            userId = userId,
+            seq = seq,
+            timestamp = timestamp,
+            mapping = UpdateMapping(
             default = Some(SerializedUpdate(
-              header = obs.header,
-              body = ByteString.copyFrom(obs.data),
-              userIds = obs.userIds.split(",").map(_.toInt).toSeq,
-              groupIds = obs.groupIds.split(",").map(_.toInt).toSeq
+              header = header,
+              body = ByteString.copyFrom(data),
+              userIds = userIds.split(",").view.filter(_.nonEmpty).map(_.toInt).toSeq,
+              groupIds = groupIds.split(",").view.filter(_.nonEmpty).map(_.toInt).toSeq
             ))
           ).toByteArray
+          )
+      }
 
-          if (i != BulkSize - 1)
-            sql"""VALUES($userId, $seq, $timestamp, $mapping), """
-          else
-            sql"""VALUES($userId, $seq, $timestamp, $mapping)"""
-      }.foldLeft(Seq.empty[Any])(_ ++ _.queryParts)
-
-      val insertBase = sql"""INSERT INTO user_sequence (user_id, seq, timestamp, mapping) """
-
-      insertBase.copy(queryParts = insertBase.queryParts ++ values).asUpdate
+      newTable ++= news
     }) map (_ ⇒ obsoletes.length)
-
   }
 
   @tailrec
@@ -121,5 +145,5 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
     }
   }
 
-  private def getSeq(authId: Long) = sql"""SELECT seq FROM seq_updates_ngen ORDER BY WHERE auth_id = $authId LIMIT 1""".as[Int].headOption
+  private def getSeq(authId: Long) = sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY seq DESC LIMIT 1""".as[Int].headOption
 }

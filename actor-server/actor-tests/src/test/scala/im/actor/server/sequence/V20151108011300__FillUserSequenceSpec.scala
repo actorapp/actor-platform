@@ -51,7 +51,7 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
 
       seqs.zipWithIndex foreach {
         case (SeqUpdate(`userId`, seq, timestamp, Some(mappingBytes)), index) ⇒
-          assert(index == seq, "seq is broken")
+          assert(index + 1 == seq, "seq is broken")
           val seqUpd =
             UpdateMapping
               .parseFrom(mappingBytes.toByteArray)
@@ -60,10 +60,10 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
           assert(seqUpd.header == UpdateContactsAdded.header, "wrong header")
 
           val upd = UpdateContactsAdded.parseFrom(seqUpd.body.toByteArray).right.get
-          assert(upd == UpdateContactsAdded(Vector(index)), "wrong update")
+          assert(upd == UpdateContactsAdded(Vector(index + 1)), "wrong update")
 
-          assert(seqUpd.userIds == Seq(index), "wrong userIds")
-          assert(seqUpd.groupIds == Seq(index, index), "wrong groupIds")
+          assert(seqUpd.userIds == Seq(index + 1), "wrong userIds")
+          assert(seqUpd.groupIds == Seq(index + 1, index + 1), "wrong groupIds")
         case (wrong, _) ⇒ fail(s"Wrong seqUpdate $wrong")
       }
     }), patienceConfig.timeout.totalNanos.nanos)
