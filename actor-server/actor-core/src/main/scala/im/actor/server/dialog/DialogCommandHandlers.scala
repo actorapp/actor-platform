@@ -24,9 +24,9 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     val sendFuture = (withCachedFuture[AuthSidRandomId, SeqStateDate](sm.senderAuthSid → sm.randomId) {
       for {
         SeqState(seq, state) ← deliveryExt.senderDelivery(userId, sm.senderAuthSid, peer, sm.randomId, sm.date, sm.message, sm.isFat)
-        _ ← dialogExt.ackSendMessage(selfPeer, sm)
         message = sm.message
         _ ← db.run(writeHistoryMessage(selfPeer, peer, new DateTime(sm.date), sm.randomId, message.header, message.toByteArray))
+        _ ← dialogExt.ackSendMessage(peer, sm)
       } yield SeqStateDate(seq, state, sm.date)
     } recover {
       case e ⇒
@@ -40,7 +40,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   protected def ackSendMessage(sm: SendMessage): Unit = {
     if (peer.typ == PeerType.Private) SocialManager.recordRelation(sm.origin.id, userId)
-    val fu = deliveryExt.receiverDelivery(userId, sm.origin.id, peer, sm.randomId, sm.date, sm.message, sm.isFat) map (_ ⇒ SendMessageAck()) pipeTo sender()
+    deliveryExt.receiverDelivery(userId, sm.origin.id, peer, sm.randomId, sm.date, sm.message, sm.isFat) map (_ ⇒ SendMessageAck()) pipeTo sender()
 
     //    onSuccess(fu) { _ =>
     //      updatePeerMessageDate()
@@ -83,15 +83,14 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   protected def messageReceived(state: DialogState, mr: MessageReceived): Unit = {
     val mustReceive = mustMakeReceive(state, mr)
-    val receiveFuture = if (mustReceive) {
+    val receiveFuture = (if (mustReceive) {
       for {
         _ ← dialogExt.ackMessageReceived(peer, mr)
         _ ← db.run(markMessagesReceived(selfPeer, peer, new DateTime(mr.date)))
       } yield MessageReceivedAck()
     } else {
       Future.successful(MessageReceivedAck())
-    }
-    receiveFuture pipeTo sender()
+    }) pipeTo sender()
     if (mustReceive) {
       onSuccess(receiveFuture) { _ ⇒
         updateOwnReceiveDate(state, mr.date)
@@ -99,24 +98,25 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     }
   }
 
-  protected def ackMessageReceived(state: DialogState, mr: MessageReceived): Unit =
-    onSuccess(deliveryExt.notifyReceive(userId, peer, mr.date, mr.now)) { _ ⇒
+  protected def ackMessageReceived(state: DialogState, mr: MessageReceived): Unit = {
+    val notifyFuture = (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender()
+    onSuccess(notifyFuture) { _ ⇒
       updatePeerReceiveDate(state, mr.date)
     }
+  }
 
   protected def messageRead(state: DialogState, mr: MessageRead): Unit = {
     val mustRead = mustMakeRead(state, mr)
-    val readFuture = if (mustRead) {
+    val readFuture = (if (mustRead) {
       for {
+        _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
         //maybe it should be before condition
         _ ← deliveryExt.read(userId, mr.readerAuthSid, peer, mr.date)
         _ ← dialogExt.ackMessageRead(peer, mr)
-        _ ← db.run(markMessagesRead(selfPeer, peer, new DateTime(mr.date)))
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
-    }
-    readFuture pipeTo sender()
+    }) pipeTo sender()
     if (mustRead) {
       onSuccess(readFuture) { _ ⇒
         updateOwnReadDate(state, mr.date)
@@ -124,15 +124,17 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     }
   }
 
-  protected def ackMessageRead(state: DialogState, mr: MessageRead): Unit =
-    onSuccess(deliveryExt.notifyRead(userId, peer, mr.date, mr.now)) { _ ⇒
+  protected def ackMessageRead(state: DialogState, mr: MessageRead): Unit = {
+    val notifyFuture = (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender()
+    onSuccess(notifyFuture) { _ ⇒
       updatePeerReadDate(state, mr.date)
     }
+  }
 
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean = peer match {
     case Peer(PeerType.Private, _) ⇒
-      !(state.lastOwnReceiveDate >= mr.date) &&
-        !(mr.date > mr.now) &&
+      (mr.date > state.lastOwnReceiveDate) &&
+        (mr.date <= mr.now) &&
         (state.lastOwnMessageDate == 0L || state.lastOwnMessageDate >= mr.date)
     case Peer(PeerType.Group, _) ⇒
       //maybe add part about ownReceivedDate
@@ -141,8 +143,8 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean = peer match {
     case Peer(PeerType.Private, _) ⇒
-      !(state.lastOwnReadDate >= mr.date) &&
-        !(mr.date > mr.now) &&
+      (mr.date > state.lastOwnReadDate)
+      (mr.date <= mr.now) &&
         (state.lastOwnMessageDate == 0L || state.lastOwnMessageDate >= mr.date)
     case Peer(PeerType.Group, _) ⇒
       !(state.lastPeerReadDate >= mr.date) //&& !state.lastSenderId.contains(readerUserId)
