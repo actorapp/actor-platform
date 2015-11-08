@@ -12,7 +12,7 @@ import im.actor.server.db.DbExtension
 import im.actor.server.dialog._
 import im.actor.server.event.TSEvent
 import im.actor.server.models.{ Dialog, Peer, PeerType }
-import im.actor.server.office.ProcessorState
+import im.actor.server.office.{EntityNotFound, ProcessorState}
 import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
@@ -171,7 +171,7 @@ private[privat] final class PrivateDialog extends DialogProcessor[PrivateDialogS
     } yield Extensions(l.internalExtensions, r.internalExtensions)) pipeTo self onFailure {
       case e ⇒
         log.error(e, "Failed to init dialog")
-        init()
+        self ! Kill
     }
   }
 
