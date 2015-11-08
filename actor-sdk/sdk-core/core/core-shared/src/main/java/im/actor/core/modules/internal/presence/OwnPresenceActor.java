@@ -4,6 +4,7 @@
 
 package im.actor.core.modules.internal.presence;
 
+import im.actor.core.DeviceCategory;
 import im.actor.core.api.rpc.RequestSetOnline;
 import im.actor.core.api.rpc.ResponseVoid;
 import im.actor.core.modules.Modules;
@@ -16,13 +17,14 @@ import im.actor.runtime.eventbus.Event;
 
 /**
  * Actor for processing current user's online status.
- * TODO: Implement correct request cancelling and timeout
+ * TODO: Implement correct request timeout
  */
 public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
 
     private static final int RESEND_TIMEOUT = 60 * 1000; // 1 min
     private static final int TIMEOUT = 90 * 1000;
 
+    private boolean isAlwaysOnline = false;
     private boolean isVisible = false;
     private long prevRid = 0;
 
@@ -32,7 +34,12 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
 
     @Override
     public void preStart() {
-        context().getEvents().subscribe(this, AppVisibleChanged.EVENT);
+        isAlwaysOnline = config().getDeviceCategory() == DeviceCategory.DESKTOP;
+        if (isAlwaysOnline) {
+            self().sendOnce(new PerformOnline());
+        } else {
+            context().getEvents().subscribe(this, AppVisibleChanged.EVENT);
+        }
     }
 
     private void onAppVisible() {
@@ -50,7 +57,8 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
             cancelRequest(prevRid);
             prevRid = 0;
         }
-        prevRid = request(new RequestSetOnline(isVisible, TIMEOUT),
+        boolean isOnline = isVisible || isAlwaysOnline;
+        prevRid = request(new RequestSetOnline(isOnline, TIMEOUT),
                 new RpcCallback<ResponseVoid>() {
                     @Override
                     public void onResult(ResponseVoid response) {
@@ -62,7 +70,7 @@ public class OwnPresenceActor extends ModuleActor implements BusSubscriber {
 
                     }
                 });
-        if (isVisible) {
+        if (isOnline) {
             self().sendOnce(new PerformOnline(), RESEND_TIMEOUT);
         }
     }
