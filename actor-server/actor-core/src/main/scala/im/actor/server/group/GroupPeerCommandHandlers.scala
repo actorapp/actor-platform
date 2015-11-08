@@ -16,7 +16,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
 
   protected def incomingMessage(state: GroupPeerState, sm: SendMessage): Unit = {
     val senderUserId = sm.origin.id
-    val futureSend = withMemberIds(groupId) { (memberIds, _, optBot) ⇒
+    val futureSend = (withMemberIds(groupId) { (memberIds, _, optBot) ⇒
       if ((memberIds contains senderUserId) || (optBot contains senderUserId)) {
         for {
           _ ← Future.traverse(memberIds - senderUserId) { userId ⇒
@@ -28,8 +28,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
       case e ⇒
         log.error(e, "Failed to send message")
         throw e
-    }
-    futureSend pipeTo sender()
+    }) pipeTo sender()
     onSuccess(futureSend) { _ ⇒
       context become initialized(state.updated(LastSenderIdChanged(senderUserId)))
     }
@@ -38,9 +37,9 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
   protected def messageReceived(state: GroupPeerState, mr: MessageReceived) = {
     val receiverUserId = mr.origin.id
     val futureReceive =
-      (if (!state.lastReceiveDate.exists(_ >= mr.date) && !state.lastSenderId.contains(receiverUserId)) {
+      ((if (!state.lastReceiveDate.exists(_ >= mr.date) && !state.lastSenderId.contains(receiverUserId)) {
         withMemberIds(groupId) { (memberIds, _, _) ⇒
-          Future.traverse(memberIds.toSeq) { memberId ⇒
+          Future.traverse(memberIds - receiverUserId) { memberId ⇒
             dialogExt.ackMessageReceived(Peer.privat(memberId), mr)
           }
         } map (_ ⇒ MessageReceivedAck())
@@ -48,8 +47,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
         case e ⇒
           log.error(e, "Failed to mark messages received")
           throw e
-      }
-    futureReceive pipeTo sender()
+      }) pipeTo sender()
     onSuccess(futureReceive) { _ ⇒
       context become initialized(state.updated(LastReceiveDateChanged(mr.date)))
     }
@@ -59,7 +57,8 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     val withMembers = withMemberIds[Unit](groupId) _
     val readerUserId = mr.origin.id
 
-    val joinerF: Future[Unit] = withMembers { (_, invitedUserIds, _) ⇒
+    //    val joinerF: Future[Unit] =
+    withMembers { (_, invitedUserIds, _) ⇒
       if (invitedUserIds contains readerUserId) {
         groupExt.joinAfterFirstRead(groupId, readerUserId, mr.readerAuthSid)
       } else Future.successful(())
@@ -76,7 +75,7 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     } else Future.successful(())
 
     val readFuture = (for {
-      _ ← joinerF
+      //      _ ← joinerF
       _ ← readerAckF
     } yield MessageReadAck()) recover {
       case e ⇒

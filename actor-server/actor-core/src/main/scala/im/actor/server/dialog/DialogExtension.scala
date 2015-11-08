@@ -75,7 +75,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def messageReceived(peer: ApiPeer, receiverUserId: Int, date: Long): Future[Unit] =
     withValidPeer(peer, receiverUserId, Future.successful(())) {
-      val now = Instant.now().getEpochSecond
+      val now = Instant.now().toEpochMilli
       val receiver = Peer.privat(receiverUserId)
       val messageReceived = MessageReceived(receiver, peer.asModel, date, now)
       (userExt.processorRegion.ref ? Envelope(receiver).withMessageReceived(messageReceived)).mapTo[MessageReceivedAck] map (_ ⇒ ())
@@ -86,7 +86,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthSid: Int, date: Long): Future[Unit] =
     withValidPeer(peer, readerUserId, Future.successful(())) {
-      val now = Instant.now().getEpochSecond
+      val now = Instant.now().toEpochMilli
       val reader = Peer.privat(readerUserId)
       val messageRead = MessageRead(reader, peer.asModel, readerAuthSid, date, now)
       (userExt.processorRegion.ref ? Envelope(reader).withMessageRead(messageRead)).mapTo[MessageReadAck] map (_ ⇒ ())
