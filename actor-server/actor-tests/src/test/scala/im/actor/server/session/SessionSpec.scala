@@ -300,10 +300,6 @@ class SessionSpec extends BaseSessionSpec {
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello)
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(authId, sessionId, messageId)
-
-      seqUpdExt.deliverSingleUpdate(user.id, UpdateContactRegistered(1, isSilent = false, 1L, 2L))
-
-      expectSeqUpdate(authId, sessionId)
       probe.expectNoMsg()
     }
   }
