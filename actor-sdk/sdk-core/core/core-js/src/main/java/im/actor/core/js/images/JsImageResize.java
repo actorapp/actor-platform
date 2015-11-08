@@ -8,11 +8,13 @@ import im.actor.runtime.js.fs.JsBlob;
 
 public class JsImageResize {
     public static native void resize(JsBlob file, JsResizeListener resizeListener)/*-{
+        console.log('resizing...')
         var img = document.createElement("img");
         img.style.cssText = "image-orientation: from-image;"
 
         var reader = new FileReader();
         reader.onload = function(e) {
+            console.log('loaded...')
             img.src = e.target.result
             var canvas = document.createElement("canvas");
 
@@ -44,6 +46,7 @@ public class JsImageResize {
 
             var compressedImage = canvas.toDataURL("image/jpeg", 0.55);
 
+            console.log('completed...')
             resizeListener.@im.actor.core.js.images.JsResizeListener::onResized(*)(compressedImage,
                   width, height, img.width, img.height);
         }
