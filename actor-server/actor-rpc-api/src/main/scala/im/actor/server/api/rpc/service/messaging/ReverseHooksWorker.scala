@@ -14,8 +14,8 @@ import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import im.actor.api.rpc.messaging.{ ApiMessage, ApiTextMessage }
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.server.office.EntityNotFound
-import im.actor.server.{ KeyValueMappings, models }
-import im.actor.server.models.PeerType.{ Group, Private }
+import im.actor.server.{ KeyValueMappings, model }
+import im.actor.server.model.PeerType.{ Group, Private }
 import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 import im.actor.util.log.AnyRefLogSource
 import play.api.libs.json.{ Format, Json }
@@ -74,9 +74,9 @@ private[messaging] final class ReverseHooksWorker(groupId: Int, token: String, m
       val parsed = ApiMessage.parseFrom(CodedInputStream.newInstance(message.toByteArray))
 
       val optNickname = from match {
-        case models.Peer(Group, _) ⇒
+        case model.Peer(Group, _) ⇒
           Future.successful(None)
-        case models.Peer(Private, id) ⇒
+        case model.Peer(Private, id) ⇒
           UserExtension(system).getApiStruct(id, 0, 0L) map (_.nick)
       }
 

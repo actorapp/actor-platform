@@ -2,7 +2,7 @@ package im.actor.server
 
 trait ImplicitRegions
   extends ImplicitSeqUpdatesManagerRegion
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitSocialManagerRegion
 
 trait ImplicitServiceDependencies extends ImplicitFileStorageAdapter

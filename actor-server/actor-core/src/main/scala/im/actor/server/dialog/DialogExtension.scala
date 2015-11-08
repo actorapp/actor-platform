@@ -8,15 +8,14 @@ import im.actor.api.rpc.messaging.{ ApiDialogGroup, ApiDialogShort, ApiMessage }
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
 import im.actor.api.rpc.peers.ApiPeerType._
-import im.actor.concurrent.FutureExt
 import im.actor.extension.InternalExtensions
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
 import im.actor.server.dialog.group.GroupDialogRegion
 import im.actor.server.dialog.privat.PrivateDialogRegion
-import im.actor.server.group.{ GroupExtension, GroupUtils }
-import im.actor.server.models.{ Peer, PeerType, Dialog }
-import im.actor.server.persist.{ HistoryMessage, DialogRepo }
+import im.actor.server.group.GroupExtension
+import im.actor.server.model.{ Peer, PeerType, Dialog }
+import im.actor.server.persist.{ HistoryMessageRepo, DialogRepo }
 import im.actor.server.sequence.SeqStateDate
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -50,13 +49,13 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
       case _ ⇒ f
     }
 
-  def sendMessage(peer: ApiPeer, senderUserId: Int, senderAuthId: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] =
+  def sendMessage(peer: ApiPeer, senderUserId: Int, senderAuthSid: Int, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] =
     withValidPeer(peer, senderUserId, Future.successful(SeqStateDate())) {
       (peer.`type` match {
         case Private ⇒
-          privateRegion.ref ? SendMessage(privatDialogId(senderUserId, peer.id), senderUserId, senderAuthId, randomId, message, isFat)
+          privateRegion.ref ? SendMessage(privatDialogId(senderUserId, peer.id), senderUserId, senderAuthSid, randomId, message, isFat)
         case Group ⇒
-          groupRegion.ref ? SendMessage(groupDialogId(peer.id), senderUserId, senderAuthId, randomId, message, isFat)
+          groupRegion.ref ? SendMessage(groupDialogId(peer.id), senderUserId, senderAuthSid, randomId, message, isFat)
       }).mapTo[SeqStateDate]
     }
 
@@ -85,11 +84,11 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
       }).mapTo[MessageReceivedAck] map (_ ⇒ ())
     }
 
-  def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthId: Long, date: Long): Future[Unit] =
+  def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthSid: Int, date: Long): Future[Unit] =
     withValidPeer(peer, readerUserId, Future.successful(())) {
       (peer.`type` match {
-        case Private ⇒ privateRegion.ref ? MessageRead(privatDialogId(peer.id, readerUserId), readerUserId, readerAuthId, date)
-        case Group   ⇒ groupRegion.ref ? MessageRead(groupDialogId(peer.id), readerUserId, readerAuthId, date)
+        case Private ⇒ privateRegion.ref ? MessageRead(privatDialogId(peer.id, readerUserId), readerUserId, readerAuthSid, date)
+        case Group   ⇒ groupRegion.ref ? MessageRead(groupDialogId(peer.id), readerUserId, readerAuthSid, date)
       }).mapTo[MessageReadAck] map (_ ⇒ ())
     }
 
@@ -120,10 +119,10 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
     if (isSharedUser(historyOwner)) {
       for {
         isMember ← DBIO.from(groupExt.getMemberIds(peer.id) map { case (memberIds, _, _) ⇒ memberIds contains clientUserId })
-        result ← if (isMember) HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
+        result ← if (isMember) HistoryMessageRepo.getUnreadCount(historyOwner, peer, ownerLastReadAt) else DBIO.successful(0)
       } yield result
     } else {
-      HistoryMessage.getUnreadCount(historyOwner, peer, ownerLastReadAt)
+      HistoryMessageRepo.getUnreadCount(historyOwner, peer, ownerLastReadAt)
     }
   }
 
@@ -152,10 +151,10 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension {
   private def getDialogShort(dialogModel: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] = {
     HistoryUtils.withHistoryOwner(dialogModel.peer, dialogModel.userId) { historyOwner ⇒
       for {
-        messageOpt ← HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(dialogModel.userId)))
+        messageOpt ← HistoryMessageRepo.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(dialogModel.userId)))
         unreadCount ← getUnreadCount(dialogModel.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
       } yield ApiDialogShort(
-        peer = ApiPeer(ApiPeerType(dialogModel.peer.typ.toInt), dialogModel.peer.id),
+        peer = ApiPeer(ApiPeerType(dialogModel.peer.typ.value), dialogModel.peer.id),
         counter = unreadCount,
         date = messageOpt.map(_.date.getMillis).getOrElse(0)
       )

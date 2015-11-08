@@ -3,6 +3,7 @@ package im.actor.server.user
 import akka.actor._
 import akka.util.Timeout
 import im.actor.server.hook._
+import im.actor.server.sequence.SeqUpdatesExtension
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
@@ -23,6 +24,7 @@ final class UserExtensionImpl(actorSystem: ActorSystem) extends UserExtension wi
 
   lazy val processorRegion: UserProcessorRegion = UserProcessorRegion.start()(system)
   lazy val viewRegion: UserViewRegion = UserViewRegion(processorRegion.ref)
+  override lazy val seqUpdExt = SeqUpdatesExtension(system)
 
   implicit val timeout: Timeout = Timeout(20.seconds)
 

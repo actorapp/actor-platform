@@ -16,7 +16,7 @@ import im.actor.server.group._
 import im.actor.server.presences.GroupPresenceExtension
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.{ UserUtils, UserExtension }
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import im.actor.util.misc.IdUtils
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -46,7 +46,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
           scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
             case Right(avatar) ⇒
               for {
-                UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, client.authId, Some(avatar), randomId))
+                UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, Some(avatar), randomId))
               } yield Ok(ResponseEditGroupAvatar(
                 avatar.get,
                 seq,
@@ -69,7 +69,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, client.authId, None, randomId))
+          UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(groupExt.updateAvatar(fullGroup.id, client.userId, None, randomId))
         } yield Ok(ResponseSeqDate(
           seq,
           state.toByteArray,
@@ -123,7 +123,6 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
               res ← groupExt.create(
                 groupId,
                 client.userId,
-                client.authId,
                 validTitle,
                 randomId,
                 userIds.toSet,
@@ -192,7 +191,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateTitle(fullGroup.id, client.userId, client.authId, title, randomId))
+          SeqStateDate(seq, state, date) ← DBIO.from(groupExt.updateTitle(fullGroup.id, client.userId, title, randomId))
         } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
       }
     }
@@ -208,7 +207,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
             case Some(invToken) ⇒ DBIO.successful(invToken.token)
             case None ⇒
               val token = accessToken(ThreadLocalRandom.current())
-              val inviteToken = models.GroupInviteToken(fullGroup.id, client.userId, token)
+              val inviteToken = model.GroupInviteToken(fullGroup.id, client.userId, token)
               for (_ ← persist.GroupInviteTokenRepo.create(inviteToken)) yield token
           }
         } yield Ok(ResponseInviteUrl(genInviteUrl(groupInviteConfig.baseUrl, token)))
@@ -220,12 +219,12 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   override def jhandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
-        val group = models.Group.fromFull(fullGroup)
+        val group = model.Group.fromFull(fullGroup)
 
         val join = groupExt.joinGroup(
           groupId = group.id,
           joiningUserId = client.userId,
-          joiningUserAuthId = client.authId,
+          joiningUserAuthSid = client.authSid,
           invitingUserId = token.creatorId
         )
         for {
@@ -246,9 +245,9 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
         persist.GroupUserRepo.find(fullGroup.id, client.userId) flatMap {
           case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited))
           case None ⇒
-            val group = models.Group.fromFull(fullGroup)
+            val group = model.Group.fromFull(fullGroup)
             for {
-              (seqstatedate, userIds, randomId) ← DBIO.from(groupExt.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
+              (seqstatedate, userIds, randomId) ← DBIO.from(groupExt.joinGroup(group.id, client.userId, client.authSid, fullGroup.creatorUserId))
               userStructs ← DBIO.from(Future.sequence(userIds.map(userExt.getApiStruct(_, client.userId, client.authId))))
               groupStruct ← DBIO.from(groupExt.getApiStruct(group.id, client.userId))
             } yield Ok(ResponseEnterGroup(groupStruct, userStructs.toVector, randomId, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date))
@@ -265,7 +264,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
         val token = accessToken(ThreadLocalRandom.current())
-        val inviteToken = models.GroupInviteToken(fullGroup.id, client.userId, token)
+        val inviteToken = model.GroupInviteToken(fullGroup.id, client.userId, token)
 
         for {
           _ ← persist.GroupInviteTokenRepo.revoke(fullGroup.id, client.userId)
@@ -282,7 +281,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   def jhandleEditGroupTopic(groupPeer: ApiGroupOutPeer, randomId: Long, topic: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     authorized(clientData) { implicit client ⇒
       (for {
-        SeqStateDate(seq, state, date) ← groupExt.updateTopic(groupPeer.groupId, client.userId, client.authId, topic, randomId)
+        SeqStateDate(seq, state, date) ← groupExt.updateTopic(groupPeer.groupId, client.userId, topic, randomId)
       } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))) recover {
         case GroupErrors.NotAMember   ⇒ Error(CommonErrors.forbidden("User is not a group member."))
         case GroupErrors.TopicTooLong ⇒ Error(GroupRpcErrors.TopicTooLong)
@@ -296,7 +295,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   def jhandleEditGroupAbout(groupPeer: ApiGroupOutPeer, randomId: Long, about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     authorized(clientData) { implicit client ⇒
       (for {
-        SeqStateDate(seq, state, date) ← groupExt.updateAbout(groupPeer.groupId, client.userId, client.authId, about, randomId)
+        SeqStateDate(seq, state, date) ← groupExt.updateAbout(groupPeer.groupId, client.userId, about, randomId)
       } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))) recover {
         case GroupErrors.NotAdmin     ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
         case GroupErrors.AboutTooLong ⇒ Error(GroupRpcErrors.AboutTooLong)
@@ -312,7 +311,7 @@ final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(implicit act
   def jhandleMakeUserAdmin(groupPeer: ApiGroupOutPeer, userPeer: ApiUserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseMakeUserAdmin]] = {
     authorized(clientData) { implicit client ⇒
       (for {
-        (members, SeqState(seq, state)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId)
+        (members, SeqState(seq, state)) ← groupExt.makeUserAdmin(groupPeer.groupId, client.userId, userPeer.userId)
       } yield Ok(ResponseMakeUserAdmin(members, seq, state.toByteArray))) recover {
         case GroupErrors.NotAMember       ⇒ Error(CommonErrors.forbidden("User is not a group member."))
         case GroupErrors.NotAdmin         ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))

@@ -14,7 +14,7 @@ final class SearchServiceSpec
   with ContactsSpecHelpers
   with GroupsServiceHelpers
   with ImplicitAuthService
-  with ImplicitSessionRegionProxy {
+  with ImplicitSessionRegion {
   behavior of "PeerSearch"
   it should "search private peers" in privat
   it should "search groups" in groups
@@ -25,10 +25,10 @@ final class SearchServiceSpec
   val searchService = new SearchServiceImpl
 
   def privat() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, _, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, _, _, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, 1, Some(user1.id))
+    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1)))
     addContact(user2.id)
 
     whenReady(searchService.handlePeerSearch(Vector(
@@ -47,9 +47,9 @@ final class SearchServiceSpec
   }
 
   def groups() = {
-    val (user1, authId1, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, 1, Some(user1.id))
+    implicit val clientData = ClientData(authId1, 1, Some(AuthData(user1.id, authSid1)))
     createGroup("Hell yeah", Set.empty)
 
     whenReady(searchService.handlePeerSearch(Vector(

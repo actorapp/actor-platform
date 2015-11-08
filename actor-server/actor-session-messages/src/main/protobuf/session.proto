@@ -32,6 +32,7 @@ message HandleMessageBox {
 message AuthorizeUser {
     option (scalapb.message).extends = "im.actor.server.session.SessionMessage";
     required int32 user_id = 1;
+    required int32 auth_sid = 2;
 }
 
 message AuthorizeUserAck {
