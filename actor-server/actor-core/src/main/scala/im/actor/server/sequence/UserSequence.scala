@@ -58,7 +58,7 @@ private[sequence] final class UserSequence(
 
   private val deliveryCache = Caffeine.newBuilder().maximumSize(100).executor(context.dispatcher).build[String, SeqState]()
 
-  private val vendorPush = context.actorOf(VendorPush.props(userId, googlePushManager, applePushManager), "vendor-push")
+  private lazy val vendorPush = context.actorOf(VendorPush.props(userId, googlePushManager, applePushManager), "vendor-push")
 
   init()
 
