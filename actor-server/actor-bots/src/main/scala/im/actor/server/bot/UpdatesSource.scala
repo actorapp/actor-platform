@@ -11,7 +11,7 @@ import im.actor.api.rpc.sequence.{ UpdateRawUpdate, FatSeqUpdate, SeqUpdate }
 import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.persist
-import im.actor.server.sequence.UpdatesConsumer
+import im.actor.server.sequence.{ UpdatesConsumerMessage, UpdatesConsumer }
 
 import scala.annotation.tailrec
 

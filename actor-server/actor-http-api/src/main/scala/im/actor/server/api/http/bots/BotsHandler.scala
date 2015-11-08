@@ -75,6 +75,10 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
           throw e
       }
 
+      flowFuture onFailure {
+        case e ⇒ log.error(e, "Failed to start bot with token {}", token)
+      }
+
       onSuccess(flowFuture) {
         case flow ⇒ handleWebsocketMessages(flow)
       }
@@ -115,6 +119,7 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
     Flow[Message]
       .collect {
         case TextMessage.Strict(text) ⇒
+          log.debug("<< {}", text)
           val rq = read[BotRequest](text)
           log.debug("Bot request: {}, userId: {}", rq, botUserId)
           rq
@@ -129,7 +134,10 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
           log.debug("Bot update {}", upd)
           write[BotUpdate](upd)
       }
-      .map(TextMessage.Strict(_).asInstanceOf[Message])
+      .map { text ⇒
+        log.debug(">> {}", text)
+        TextMessage.Strict(text).asInstanceOf[Message]
+      }
   } recover {
     case e ⇒
       log.error(e, "Failure in websocket bot stream, userId: {}", botUserId)
