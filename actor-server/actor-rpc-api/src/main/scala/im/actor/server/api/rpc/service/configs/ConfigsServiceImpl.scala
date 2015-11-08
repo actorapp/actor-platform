@@ -6,7 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.configs.{ ApiParameter, ConfigsService, ResponseGetParameters, UpdateParameterChanged }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server.db.DbExtension
-import im.actor.server.sequence.SeqState
+import im.actor.server.sequence.{SeqUpdatesExtension, SeqState}
 import im.actor.server.user.UserExtension
 import im.actor.server.{ model, persist }
 import slick.driver.PostgresDriver.api._
@@ -20,6 +20,7 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   private implicit val timeout = Timeout(10.seconds)
+  private val seqUpdExt = SeqUpdatesExtension(actorSystem)
 
   override def jhandleEditParameter(rawKey: String, rawValue: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -35,7 +36,10 @@ final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends Config
       for {
         _ ← persist.configs.ParameterRepo.createOrUpdate(model.configs.Parameter(client.userId, key, value))
         SeqState(seq, state) ← DBIO.from(UserExtension(actorSystem).broadcastClientUpdate(update, None, isFat = false))
-      } yield Ok(ResponseSeq(seq, state.toByteArray))
+      } yield {
+        seqUpdExt.reloadSettings(client.userId)
+        Ok(ResponseSeq(seq, state.toByteArray))
+      }
     }
 
     db.run(toDBIOAction(authorizedAction))
