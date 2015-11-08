@@ -11,7 +11,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.dashboard.controllers.utils._
 import im.actor.server.dashboard.controllers.utils.json.UsersJsonImplicits._
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 
 class Users extends Controller {
 
@@ -81,7 +81,7 @@ class Users extends Controller {
         } yield (u, up)).result
         result ← DBIO.successful(
           usersAndPhones.
-            foldLeft(Map[Int, (models.User, List[models.UserPhone])]()) { (acc, el) ⇒
+            foldLeft(Map[Int, (model.User, List[model.UserPhone])]()) { (acc, el) ⇒
               val (user, optPhone) = el
               optPhone.map { phone ⇒
                 acc.get(user.id).map { tuple ⇒

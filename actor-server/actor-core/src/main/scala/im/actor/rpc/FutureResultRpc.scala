@@ -6,6 +6,7 @@ import scalaz._
 
 object FutureResultRpc {
   type Result[A] = EitherT[Future, RpcError, A]
+
   def Result[A] = EitherT.apply[Future, RpcError, A] _
 
   implicit def futureFunctor(implicit ec: ExecutionContext) = new Functor[Future] {
@@ -20,6 +21,7 @@ object FutureResultRpc {
 
   implicit def rpcErrorMonoid = new Monoid[RpcError] {
     override def zero: RpcError = throw new Exception()
+
     override def append(f1: RpcError, f2: ⇒ RpcError): RpcError = throw new Exception()
   }
 

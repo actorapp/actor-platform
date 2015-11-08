@@ -2,12 +2,12 @@ package im.actor.api.rpc
 
 import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.messaging.{ ApiHistoryMessage, ApiMessage, ApiMessageState }
-import im.actor.server.models
+import im.actor.server.model.HistoryMessage
 import org.joda.time.DateTime
 
 trait HistoryImplicits {
 
-  implicit class ExtHistoryMessageModel(model: models.HistoryMessage) {
+  implicit class ExtHistoryMessageModel(model: HistoryMessage) {
     def asStruct(lastReceivedAt: DateTime, lastReadAt: DateTime) = {
       val in = CodedInputStream.newInstance(model.messageContentData)
       try {

@@ -3,7 +3,7 @@ package im.actor.server.presences
 import akka.actor._
 import akka.cluster.sharding.ShardRegion.Passivate
 import im.actor.server.db.DbExtension
-import im.actor.server.{ models, persist }
+import im.actor.server.{ model, persist }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -77,7 +77,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
       case Some(userPresence) ⇒
         self ! Initialized(userPresence.lastSeenAt)
       case None ⇒
-        db.run(persist.presences.UserPresenceRepo.createOrUpdate(models.presences.UserPresence(userId, None)))
+        db.run(persist.presences.UserPresenceRepo.createOrUpdate(model.presences.UserPresence(userId, None)))
         self ! Initialized(None)
     }) onFailure {
       case e ⇒
@@ -120,7 +120,7 @@ class PresenceManager extends Actor with ActorLogging with Stash {
 
       if (presence != Offline) {
         this.state = this.state.copy(lastSeenAt = Some(new DateTime))
-        db.run(persist.presences.UserPresenceRepo.createOrUpdate(models.presences.UserPresence(userId, this.state.lastSeenAt)))
+        db.run(persist.presences.UserPresenceRepo.createOrUpdate(model.presences.UserPresence(userId, this.state.lastSeenAt)))
 
         this.scheduledTimeouts = this.scheduledTimeouts +
           (authId → context.system.scheduler.scheduleOnce(timeout.millis, self, Envelope(userId, UserPresenceChange(Offline, authId, 0))))
