@@ -31,10 +31,7 @@ object GroupPeerEvents {
 }
 
 private[group] object GroupPeer {
-  val MaxCacheSize = 100L
-
   def props(groupId: Int) = Props(classOf[GroupPeer], groupId)
-
 }
 
 private[group] final class GroupPeer(val groupId: Int)
@@ -44,15 +41,11 @@ private[group] final class GroupPeer(val groupId: Int)
   with ActorFutures {
   import DialogCommands._
 
-  protected val groupPeer = Peer.group(groupId)
-
   protected implicit val system: ActorSystem = context.system
   protected implicit val ec: ExecutionContext = system.dispatcher
 
   protected lazy val groupExt = GroupExtension(system)
   protected lazy val dialogExt = DialogExtension(system)
-
-  protected val delivery = new ActorDelivery()
 
   def initialized(state: GroupPeerState): Receive = {
     case sm: SendMessage     ⇒ incomingMessage(state, sm)

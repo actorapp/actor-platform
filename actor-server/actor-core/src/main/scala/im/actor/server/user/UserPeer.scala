@@ -12,13 +12,20 @@ private[user] object UserPeer {
 
 private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) extends Actor with PeersImplicits {
 
+  private val selfPeer = Peer.privat(userId)
+
   def receive: Receive = {
-    case dc: DialogCommand ⇒ dialogRef(dc.dest) forward dc
+    case dc: DialogCommand ⇒ dialogRef(dc) forward dc
     case other             ⇒ context.system.log.debug("Unmatched message: {}", other)
   }
 
-  private def dialogRef(peer: Peer): ActorRef =
-    context.child(dialogName(peer)) getOrElse context.actorOf(Dialog.props(peer, userId, extensions), dialogName(peer))
+  private def dialogRef(dc: DialogCommand): ActorRef = {
+    val peer = dc.dest match {
+      case Peer(PeerType.Group, _)   ⇒ dc.dest
+      case Peer(PeerType.Private, _) ⇒ if (dc.origin == selfPeer) dc.dest else dc.origin
+    }
+    context.child(dialogName(peer)) getOrElse context.actorOf(Dialog.props(userId, peer, extensions), dialogName(peer))
+  }
 
   private def dialogName(peer: Peer): String = peer.typ match {
     case PeerType.Private ⇒ s"Private_${peer.id}"

@@ -59,7 +59,7 @@ private[dialog] final case class DialogState(
     //    case LastPeerMessageDate(date) if date != this.lastPeerMessageDate ⇒ this.copy(lastPeerMessageDate = date)
     case LastPeerReceiveDate(date) if date != this.lastPeerReceiveDate ⇒ this.copy(lastPeerReceiveDate = date)
     case LastPeerReadDate(date) if date != this.lastPeerReadDate ⇒ this.copy(lastPeerReadDate = date)
-    case _ ⇒ this
+    case unm ⇒ this
   }
 }
 
@@ -80,7 +80,7 @@ object Dialog {
 
   val MaxCacheSize = 100L
 
-  def props(peer: Peer, userId: Int, extensions: Seq[ApiExtension]): Props =
+  def props(userId: Int, peer: Peer, extensions: Seq[ApiExtension]): Props =
     Props(classOf[Dialog], userId, peer, extensions)
 
 }
@@ -116,7 +116,9 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
   override def receive: Receive = init
 
   def init: Receive = receiveStashing(replyTo ⇒ {
-    case Initialized ⇒ context become initialized(DialogState())
+    case Initialized ⇒
+      context become initialized(DialogState())
+      unstashAll()
   })
 
   def initialized(state: DialogState): Receive = {
