@@ -1,14 +1,14 @@
 package im.actor.server.persist.auth
 
 import im.actor.server.db.ActorPostgresDriver.api._
-import im.actor.server.models
+import im.actor.server.model
 
-final class GateAuthCodeTable(tag: Tag) extends Table[models.auth.GateAuthCode](tag, "gate_auth_codes") {
+final class GateAuthCodeTable(tag: Tag) extends Table[model.auth.GateAuthCode](tag, "gate_auth_codes") {
   def transactionHash = column[String]("transaction_hash", O.PrimaryKey)
   def codeHash = column[String]("code_hash")
   def isDeleted = column[Boolean]("is_deleted")
 
-  def * = (transactionHash, codeHash, isDeleted) <> (models.auth.GateAuthCode.tupled, models.auth.GateAuthCode.unapply)
+  def * = (transactionHash, codeHash, isDeleted) <> (model.auth.GateAuthCode.tupled, model.auth.GateAuthCode.unapply)
 }
 
 object GateAuthCodeRepo {
@@ -17,7 +17,7 @@ object GateAuthCodeRepo {
   val active = codes.filter(_.isDeleted === false)
 
   def createOrUpdate(transactionHash: String, codeHash: String) =
-    codes.insertOrUpdate(models.auth.GateAuthCode(transactionHash, codeHash))
+    codes.insertOrUpdate(model.auth.GateAuthCode(transactionHash, codeHash))
 
   def find(transactionHash: String) =
     active.filter(_.transactionHash === transactionHash).result.headOption

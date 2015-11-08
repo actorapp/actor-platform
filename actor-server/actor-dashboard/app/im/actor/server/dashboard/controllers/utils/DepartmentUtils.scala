@@ -2,13 +2,13 @@ package im.actor.server.dashboard.controllers.utils
 
 import com.github.tminglei.slickpg.LTree
 
-import im.actor.server.models
+import im.actor.server.model
 
 case class NestedDept(id: LTree, internalId: String, title: String, items: List[NestedDept] = List())
 
 object DepartmentUtils {
-  def nestDepartments(list: Seq[models.Department]): List[NestedDept] = {
-    def run(from: List[models.Department], acc: List[NestedDept]): List[NestedDept] = {
+  def nestDepartments(list: Seq[model.Department]): List[NestedDept] = {
+    def run(from: List[model.Department], acc: List[NestedDept]): List[NestedDept] = {
       from match {
         case h :: t ⇒
           val toNested = NestedDept(h.struct, h.struct.toString, h.name)

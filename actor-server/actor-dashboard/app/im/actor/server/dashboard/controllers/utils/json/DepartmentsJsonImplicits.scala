@@ -8,7 +8,7 @@ import play.api.libs.json._
 
 import im.actor.server.dashboard.controllers.utils.NestedDept
 import im.actor.server.dashboard.controllers.utils.json.Common._
-import im.actor.server.models
+import im.actor.server.model
 
 object DepartmentsJsonImplicits {
 
@@ -25,7 +25,7 @@ object DepartmentsJsonImplicits {
     (__ \ "items").lazyWrite(Writes.traversableWrites[NestedDept](departmentWrites))
   )(unlift(NestedDept.unapply))
 
-  implicit val departmentReads: Reads[models.Department] = (
+  implicit val departmentReads: Reads[model.Department] = (
     (JsPath \ "title").read[String](length) and
     (JsPath \ "struct").read[String](length)
   )(makeDepartment _)
@@ -34,9 +34,9 @@ object DepartmentsJsonImplicits {
 
   implicit val deptUpdateReads: Reads[DepartmentUpdate] = (JsPath \ "title").read[String](length).map { DepartmentUpdate }
 
-  private def makeDepartment(name: String, struct: String): models.Department = {
+  private def makeDepartment(name: String, struct: String): model.Department = {
     val rnd = ThreadLocalRandom.current()
-    models.Department(IdUtils.nextIntId(rnd), name, LTree(struct))
+    model.Department(IdUtils.nextIntId(rnd), name, LTree(struct))
   }
 
 }

@@ -4,7 +4,7 @@ import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.files.ApiFastThumb
 import im.actor.api.rpc.messaging.{ ApiDocumentExPhoto, ApiDocumentMessage, ApiTextMessage, UpdateMessageContentChanged }
 import im.actor.api.rpc.peers.ApiPeerType
-import im.actor.api.rpc.{ ClientData, peers }
+import im.actor.api.rpc.{ AuthData, ClientData, peers }
 import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -17,7 +17,7 @@ class RichMessageWorkerSpec
   extends BaseAppSuite
   with GroupsServiceHelpers
   with MessageParsing
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with ImplicitSequenceService
   with SeqUpdateMatchers
   with ImplicitAuthService {
@@ -37,7 +37,6 @@ class RichMessageWorkerSpec
     val ThumbMinSize = 90
     implicit val ec = system.dispatcher
 
-    implicit val sessionRegion = buildSessionRegionProxy()
     implicit val socialManagerRegion = SocialManager.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
@@ -48,11 +47,11 @@ class RichMessageWorkerSpec
     RichMessageWorker.startWorker(RichMessageConfig(5 * 1024 * 1024))
 
     object privat {
-      val (user1, authId, _) = createUser()
+      val (user1, authId, authSid, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(user1.id))
+      implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user1.id, authSid)))
 
-      val (user2, _, _) = createUser()
+      val (user2, _, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
       val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
       val user2Peer = peers.ApiOutPeer(ApiPeerType.Private, user2.id, user2AccessHash)
@@ -112,12 +111,12 @@ class RichMessageWorkerSpec
     }
 
     object group {
-      val (user1, authId1, _) = createUser()
-      val (user2, authId2, _) = createUser()
-      val (user3, authId3, _) = createUser()
+      val (user1, authId1, authSid1, _) = createUser()
+      val (user2, authId2, _, _) = createUser()
+      val (user3, authId3, _, _) = createUser()
 
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+      implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
       val groupOutPeer = createGroup("Test group", Set(user2.id, user3.id)).groupPeer
 

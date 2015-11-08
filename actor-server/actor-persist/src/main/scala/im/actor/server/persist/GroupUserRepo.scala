@@ -7,10 +7,10 @@ import org.joda.time.DateTime
 import slick.dbio.Effect.Write
 import slick.profile.FixedSqlAction
 
-import im.actor.server.models
+import im.actor.server.model
 import im.actor.server.db.ActorPostgresDriver.api._
 
-final class GroupUsersTable(tag: Tag) extends Table[models.GroupUser](tag, "group_users") {
+final class GroupUsersTable(tag: Tag) extends Table[model.GroupUser](tag, "group_users") {
   def groupId = column[Int]("group_id", O.PrimaryKey)
 
   def userId = column[Int]("user_id", O.PrimaryKey)
@@ -23,7 +23,7 @@ final class GroupUsersTable(tag: Tag) extends Table[models.GroupUser](tag, "grou
 
   def isAdmin = column[Boolean]("is_admin")
 
-  def * = (groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin) <> (models.GroupUser.tupled, models.GroupUser.unapply)
+  def * = (groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin) <> (model.GroupUser.tupled, model.GroupUser.unapply)
 }
 
 object GroupUserRepo {
@@ -46,10 +46,10 @@ object GroupUserRepo {
   val joinedAtByPKC = Compiled(joinedAtByPK _)
 
   def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime], isAdmin: Boolean) =
-    groupUsersC += models.GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin)
+    groupUsersC += model.GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin)
 
   def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime]) =
-    groupUsersC ++= userIds.map(models.GroupUser(groupId, _, inviterUserId, invitedAt, joinedAt, isAdmin = false))
+    groupUsersC ++= userIds.map(model.GroupUser(groupId, _, inviterUserId, invitedAt, joinedAt, isAdmin = false))
 
   def find(groupId: Int) =
     byGroupIdC(groupId).result

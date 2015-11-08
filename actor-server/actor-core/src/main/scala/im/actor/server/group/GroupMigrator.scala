@@ -15,9 +15,9 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
-import im.actor.server.{ persist ⇒ p, models }
+import im.actor.server.{ persist ⇒ p, model }
 
-private final case class Migrate(group: models.FullGroup, avatarData: Option[models.AvatarData], botUsers: Seq[models.GroupBot], groupUsers: Seq[models.GroupUser])
+private final case class Migrate(group: model.FullGroup, avatarData: Option[model.AvatarData], botUsers: Seq[model.GroupBot], groupUsers: Seq[model.GroupUser])
 
 object GroupMigrator extends Migration {
 
@@ -96,7 +96,7 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
       }
 
       val avatarUpdated: Vector[TSEvent] = avatarDataOpt match {
-        case Some(models.AvatarData(_, _,
+        case Some(model.AvatarData(_, _,
           Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
           Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
           Some(fullFileId), Some(fullFileHash), Some(fullFileSize),
