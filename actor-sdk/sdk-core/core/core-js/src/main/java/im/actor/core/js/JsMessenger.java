@@ -51,6 +51,7 @@ import im.actor.runtime.mvvm.ValueChangedListener;
 
 public class JsMessenger extends Messenger {
 
+    private static final String TAG = "JsMessenger";
     private static JsMessenger instance = null;
 
     public static JsMessenger getInstance() {
@@ -119,11 +120,16 @@ public class JsMessenger extends Messenger {
     }
 
     public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {
+        Log.d(TAG, "Resizing photo");
         JsImageResize.resize(blob, new JsResizeListener() {
             @Override
             public void onResized(String thumb, int thumbW, int thumbH, int fullW, int fullH) {
+
+                Log.d(TAG, "Photo resized");
+
                 int index = thumb.indexOf("base64,");
                 if (index < 0) {
+                    Log.d(TAG, "Unable to find base64");
                     return;
                 }
                 String rawData = thumb.substring(index + "base64,".length());
