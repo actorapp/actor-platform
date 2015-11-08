@@ -8,6 +8,9 @@ import slick.dbio.DBIO
 import slick.jdbc.GetResult
 import sql.migration.V20151108011300__FillUserSequence
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with ImplicitAuthService with ImplicitSessionRegion {
 
   import V20151108011300__FillUserSequence._
@@ -43,7 +46,7 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
   }
 
   private def checkValidSeq(userId: Int, obsSeq: Seq[Obsolete]): Unit = {
-    db.run(for (seqs ← sql"""SELECT * FROM user_sequence""".as[SeqUpdate]) yield {
+    Await.result(db.run(for (seqs ← sql"""SELECT * FROM user_sequence""".as[SeqUpdate]) yield {
       assert(seqs.size.toInt == obsSeq.size.toInt, "wrong sequence size")
 
       seqs.zipWithIndex foreach {
@@ -63,7 +66,7 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
           assert(seqUpd.groupIds == Seq(index, index), "wrong groupIds")
         case (wrong, _) ⇒ fail(s"Wrong seqUpdate $wrong")
       }
-    })
+    }), patienceConfig.timeout.totalNanos.nanos)
   }
 
   private def buildObsSeq(authId: Long, seq: Int) =
