@@ -6,7 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.configs.{ ApiParameter, ConfigsService, ResponseGetParameters, UpdateParameterChanged }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server.db.DbExtension
-import im.actor.server.sequence.{SeqUpdatesExtension, SeqState}
+import im.actor.server.sequence.{ SeqUpdatesExtension, SeqState }
 import im.actor.server.user.UserExtension
 import im.actor.server.{ model, persist }
 import slick.driver.PostgresDriver.api._
