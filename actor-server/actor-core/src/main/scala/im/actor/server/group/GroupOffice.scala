@@ -1,10 +1,13 @@
 package im.actor.server.group
 
+import im.actor.server.office.EntityNotFound
+
 import scala.util.control.NoStackTrace
 
 object GroupErrors {
+  final case class GroupNotFound(id: Int) extends EntityNotFound(s"Group $id not found")
 
-  final object NotAMember extends Exception("Not a group member") with NoStackTrace
+  object NotAMember extends Exception("Not a group member") with NoStackTrace
 
   case object UserAlreadyJoined extends Exception with NoStackTrace
 

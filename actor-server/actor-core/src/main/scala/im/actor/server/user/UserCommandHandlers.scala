@@ -17,6 +17,7 @@ import im.actor.server.acl.ACLUtils
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, ImageUtils }
 import im.actor.server.models.contact.{ UserContact, UserEmailContact, UserPhoneContact }
+import im.actor.server.office.EntityNotFound
 import im.actor.server.persist.contact.{ UserContactRepo, UserEmailContactRepo, UserPhoneContactRepo }
 import im.actor.server.persist.{ AuthSessionRepo, UserRepo }
 import im.actor.server.sequence.{ SeqUpdatesManager, SequenceErrors }
@@ -34,6 +35,8 @@ import scala.util.control.NoStackTrace
 abstract class UserError(message: String) extends RuntimeException(message) with NoStackTrace
 
 object UserErrors {
+
+  final case class UserNotFound(id: Int) extends EntityNotFound(s"User ${id} not found")
 
   case object NicknameTaken extends UserError("Nickname taken")
 
