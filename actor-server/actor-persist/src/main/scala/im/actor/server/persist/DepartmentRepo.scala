@@ -7,21 +7,21 @@ import org.joda.time.DateTime
 import im.actor.server._
 import im.actor.server.db.ActorPostgresDriver.api._
 
-final class DepartmentTable(tag: Tag) extends Table[models.Department](tag, "departments") {
+final class DepartmentTable(tag: Tag) extends Table[model.Department](tag, "departments") {
   def id = column[Int]("id", O.PrimaryKey)
   def name = column[String]("name")
   def struct = column[LTree]("struct")
   def deletedAt = column[Option[DateTime]]("deleted_at")
   def structUnique = index("department_struct_idx", struct, unique = true)
 
-  def * = (id, name, struct, deletedAt) <> (models.Department.tupled, models.Department.unapply)
+  def * = (id, name, struct, deletedAt) <> (model.Department.tupled, model.Department.unapply)
 }
 
 object DepartmentRepo {
 
   val departments = TableQuery[DepartmentTable]
 
-  def create(department: models.Department) =
+  def create(department: model.Department) =
     departments += department
 
   def find(struct: String) =

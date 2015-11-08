@@ -40,7 +40,7 @@ final class EchoBotSpec
   with ServiceSpecHelpers
   with GroupsServiceHelpers
   with ImplicitAuthService
-  with ImplicitSessionRegionProxy {
+  with ImplicitSessionRegion {
   it should "reply with the same message (private)" in replyPrivate
   it should "reply with the same message (group)" in replyGroup
 
@@ -49,14 +49,14 @@ final class EchoBotSpec
   private implicit lazy val groupsService = new GroupsServiceImpl(GroupInviteConfig(""))
 
   def replyPrivate() = {
-    val (user, authId, _) = createUser()
+    val (user, authId, authSid, _) = createUser()
 
     Thread.sleep(1000)
 
     whenReady(dialogExt.sendMessage(
       peer = ApiPeer(ApiPeerType.Private, EchoBot.UserId),
       senderUserId = user.id,
-      senderAuthId = authId,
+      senderAuthSid = authSid,
       randomId = Random.nextLong(),
       message = ApiTextMessage("Hello", Vector.empty, None),
       isFat = false
@@ -64,14 +64,14 @@ final class EchoBotSpec
 
     Thread.sleep(2000)
 
-    implicit val clientData = ClientData(authId, Random.nextLong(), Some(user.id))
+    implicit val clientData = ClientData(authId, Random.nextLong(), Some(AuthData(user.id, authSid)))
 
     val botOutPeer = getOutPeer(EchoBot.UserId, authId)
 
     whenReady(msgService.handleLoadHistory(botOutPeer, 0, 100)) { rsp ⇒
       inside(rsp) {
         case Ok(ResponseLoadHistory(history, _)) ⇒
-          history.length shouldBe (2)
+          history.length shouldBe 2
           val tm = history.last.message.asInstanceOf[ApiTextMessage]
           tm.text shouldBe "Hello"
       }
@@ -79,15 +79,15 @@ final class EchoBotSpec
   }
 
   def replyGroup() = {
-    val (user, authId, _) = createUser()
-    implicit val clientData = ClientData(authId, 1, Some(user.id))
+    val (user, authId, authSid, _) = createUser()
+    implicit val clientData = ClientData(authId, 1, Some(AuthData(user.id, authSid)))
     val groupPeer = createGroup("Echo group", Set(EchoBot.UserId)).groupPeer
     val outPeer = ApiOutPeer(ApiPeerType.Group, groupPeer.groupId, groupPeer.accessHash)
 
     whenReady(dialogExt.sendMessage(
       peer = ApiPeer(ApiPeerType.Group, groupPeer.groupId),
       senderUserId = user.id,
-      senderAuthId = authId,
+      senderAuthSid = authSid,
       randomId = Random.nextLong(),
       message = ApiTextMessage("Hello", Vector.empty, None),
       isFat = false

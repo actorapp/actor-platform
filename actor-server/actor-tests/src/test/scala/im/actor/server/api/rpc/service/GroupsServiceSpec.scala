@@ -10,6 +10,7 @@ import im.actor.server._
 import im.actor.server.acl.ACLUtils
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
 import im.actor.server.group.GroupServiceMessages
+import im.actor.server.model.PeerType
 import org.scalatest.Inside._
 import slick.dbio.DBIO
 
@@ -21,7 +22,7 @@ final class GroupsServiceSpec
   with MessageParsing
   with ImplicitSequenceService
   with ImplicitAuthService
-  with ImplicitSessionRegionProxy
+  with ImplicitSessionRegion
   with SeqUpdateMatchers {
   behavior of "GroupsService"
 
@@ -85,12 +86,12 @@ final class GroupsServiceSpec
   implicit val service = new GroupsServiceImpl(groupInviteConfig)
 
   def sendInvitesOnCreate() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, _, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, _, _, _) = createUser()
 
     val sessionId = createSessionId()
 
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
@@ -104,12 +105,12 @@ final class GroupsServiceSpec
   }
 
   def sendUpdatesOnInvite() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+    val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
@@ -121,7 +122,7 @@ final class GroupsServiceSpec
 
       whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
         resp should matchPattern {
-          case Ok(ResponseSeqDate(1002, _, _)) ⇒
+          case Ok(ResponseSeqDate(3, _, _)) ⇒
         }
       }
       expectUpdate(classOf[UpdateGroupUserInvited])(identity)
@@ -138,12 +139,12 @@ final class GroupsServiceSpec
   }
 
   def sendUpdatesOnTitleChange() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+    val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
     {
       implicit val clientData = clientData1
@@ -152,7 +153,7 @@ final class GroupsServiceSpec
 
       whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp ⇒
         resp should matchPattern {
-          case Ok(ResponseSeqDate(1003, _, _)) ⇒
+          case Ok(ResponseSeqDate(4, _, _)) ⇒
         }
       }
       expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
@@ -171,11 +172,11 @@ final class GroupsServiceSpec
   }
 
   def e4() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
@@ -183,7 +184,7 @@ final class GroupsServiceSpec
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+    whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
       serviceMessages should have length 1
       serviceMessages
         .map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
@@ -193,7 +194,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 2
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
@@ -201,7 +202,7 @@ final class GroupsServiceSpec
             Right(GroupServiceMessages.groupCreated)
           )
       }
-      whenReady(db.run(persist.HistoryMessage.find(user2.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessageRepo.find(user2.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 1
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(Right(GroupServiceMessages.userInvited(user2.id)))
@@ -214,7 +215,7 @@ final class GroupsServiceSpec
 
       Thread.sleep(500)
 
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 3
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
@@ -223,7 +224,7 @@ final class GroupsServiceSpec
             Right(GroupServiceMessages.groupCreated)
           )
       }
-      whenReady(db.run(persist.HistoryMessage.find(user2.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessageRepo.find(user2.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 2
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
@@ -235,15 +236,15 @@ final class GroupsServiceSpec
 
     whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Not fun group")) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 4
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.changedTitle("Not fun group"))
       }
     }
 
-    whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong())(ClientData(authId2, sessionId, Some(user2.id)))) { resp ⇒
+    whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong())(ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2))))) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 5
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userLeft(user2.id))
       }
@@ -251,7 +252,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 6
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userInvited(user2.id))
       }
@@ -259,7 +260,7 @@ final class GroupsServiceSpec
 
     whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessageRepo.find(user1.id, model.Peer(PeerType.Group, groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 7
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userKicked(user2.id))
       }
@@ -268,11 +269,11 @@ final class GroupsServiceSpec
   }
 
   def e5() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
@@ -281,7 +282,7 @@ final class GroupsServiceSpec
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
     {
-      implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+      implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
       var expUrl: String = ""
       whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
         inside(resp) {
@@ -300,7 +301,7 @@ final class GroupsServiceSpec
     }
 
     {
-      implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
+      implicit val clientData = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
       var expUrl: String = ""
       whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
         inside(resp) {
@@ -333,11 +334,11 @@ final class GroupsServiceSpec
   }
 
   def e6() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
@@ -346,7 +347,7 @@ final class GroupsServiceSpec
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
     {
-      implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
+      implicit val clientData = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
       whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
         resp should matchNotAuthorized
       }
@@ -355,11 +356,11 @@ final class GroupsServiceSpec
   }
 
   def e7() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
@@ -390,11 +391,11 @@ final class GroupsServiceSpec
   }
 
   def e8() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
@@ -408,7 +409,7 @@ final class GroupsServiceSpec
           url should startWith(groupInviteConfig.baseUrl)
 
           {
-            implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
+            implicit val clientData = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
             whenReady(service.handleJoinGroup(url)) { resp ⇒
               resp should matchPattern {
                 case Ok(ResponseJoinGroup(_, _, _, _, _, _)) ⇒
@@ -424,10 +425,10 @@ final class GroupsServiceSpec
   }
 
   def e9() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
@@ -441,7 +442,7 @@ final class GroupsServiceSpec
           url should startWith(groupInviteConfig.baseUrl)
 
           {
-            implicit val clientData = ClientData(authId2, createSessionId(), Some(user2.id))
+            implicit val clientData = ClientData(authId2, createSessionId(), Some(AuthData(user2.id, authSid2)))
             val outPeer = ApiOutPeer(ApiPeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
             whenReady(messagingService.handleMessageRead(outPeer, System.currentTimeMillis()))(_ ⇒ ())
 
@@ -456,12 +457,12 @@ final class GroupsServiceSpec
   }
 
   def e10() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+    implicit val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
@@ -491,12 +492,12 @@ final class GroupsServiceSpec
   }
 
   def e11() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
-    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+    val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
@@ -530,11 +531,11 @@ final class GroupsServiceSpec
 
   def userJoinedOnce() = {
 
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
-    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
-    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+    val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(AuthData(user2.id, authSid2)))
 
     val groupOutPeer = {
       implicit val clientData = clientData1
@@ -567,9 +568,9 @@ final class GroupsServiceSpec
   }
 
   def e13() = {
-    val (user1, authId1, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
 
-    implicit val clientData = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     whenReady(service.handleCreateGroupObsolete(1L, "", Vector.empty)) { resp ⇒
       inside(resp) {
@@ -579,8 +580,8 @@ final class GroupsServiceSpec
   }
 
   def e14() = {
-    val (user1, authId1, _) = createUser()
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    val (user1, authId1, authSid1, _) = createUser()
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -591,10 +592,10 @@ final class GroupsServiceSpec
   }
 
   def e15() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
@@ -611,12 +612,12 @@ final class GroupsServiceSpec
   }
 
   def e16() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
-    val (user3, authId3, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
+    val (user3, authId3, authSid3, _) = createUser()
 
-    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
-    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+    val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(AuthData(user2.id, authSid2)))
 
     val user3Model = getUserModel(user3.id)
     val user3AccessHash = ACLUtils.userAccessHash(clientData2.authId, user3.id, user3Model.accessSalt)
@@ -633,10 +634,10 @@ final class GroupsServiceSpec
   }
 
   def e17() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
@@ -656,9 +657,9 @@ final class GroupsServiceSpec
   }
 
   def e18() = {
-    val (user1, authId1, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -675,11 +676,11 @@ final class GroupsServiceSpec
   }
 
   def e19() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
-    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
-    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+    val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(AuthData(user2.id, authSid2)))
 
     val groupOutPeer = {
       implicit val clientData = clientData1
@@ -692,9 +693,9 @@ final class GroupsServiceSpec
   }
 
   def e20() = {
-    val (user1, authId1, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -710,9 +711,9 @@ final class GroupsServiceSpec
   }
 
   def e21() = {
-    val (user1, authId1, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -732,11 +733,11 @@ final class GroupsServiceSpec
   }
 
   def e22() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
-    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
-    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+    val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(AuthData(user2.id, authSid2)))
 
     val groupOutPeer = {
       implicit val cd = clientData1
@@ -764,9 +765,9 @@ final class GroupsServiceSpec
   }
 
   def e23() = {
-    val (user1, authId1, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -787,9 +788,9 @@ final class GroupsServiceSpec
   }
 
   def e24() = {
-    val (user1, authId1, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
 
-    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
@@ -806,11 +807,11 @@ final class GroupsServiceSpec
   }
 
   def e25() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
-    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
-    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+    val clientData1 = ClientData(authId1, createSessionId(), Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(AuthData(user2.id, authSid2)))
 
     val groupOutPeer = {
       implicit val clientData = clientData1
@@ -858,13 +859,13 @@ final class GroupsServiceSpec
   }
 
   def e26() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
 
-    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+    val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
@@ -921,13 +922,13 @@ final class GroupsServiceSpec
   }
 
   def markReadOnKickInPublic() = {
-    val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user1, authId1, authSid1, _) = createUser()
+    val (user2, authId2, authSid2, _) = createUser()
 
     val sessionId = createSessionId()
 
-    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+    val clientData1 = ClientData(authId1, sessionId, Some(AuthData(user1.id, authSid1)))
+    val clientData2 = ClientData(authId2, sessionId, Some(AuthData(user2.id, authSid2)))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)

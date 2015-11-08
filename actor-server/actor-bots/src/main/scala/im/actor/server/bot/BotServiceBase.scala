@@ -15,27 +15,28 @@ trait BotServiceTypes extends BotToInternalConversions {
 
   type BotUserId = Int
   type BotAuthId = Long
+  type BotAuthSid = Int
 
   type RequestResult[+RSP <: ResponseBody] = Either[BotError, RSP]
 
-  private type Handler[+RSP <: ResponseBody] = (BotUserId, BotAuthId) ⇒ Future[RequestResult[RSP]]
+  private type Handler[+RSP <: ResponseBody] = (BotUserId, BotAuthId, BotAuthSid) ⇒ Future[RequestResult[RSP]]
 
   case class RequestHandler[+RQ <: RequestBody, RSP <: ResponseBody: Writer](handle: Handler[RQ#Response]) {
-    def result(botUserId: Int, botAuthId: Long)(implicit ec: ExecutionContext): Future[BotResponseBody] =
+    def result(botUserId: Int, botAuthId: Long, botAuthSid: Int)(implicit ec: ExecutionContext): Future[BotResponseBody] =
       for {
-        res ← handle(botUserId, botAuthId)
+        res ← handle(botUserId, botAuthId, botAuthSid)
       } yield res match {
         case Right(rsp)  ⇒ BotSuccess(writeJs(rsp.asInstanceOf[RSP]).asInstanceOf[Js.Obj])
         case Left(error) ⇒ error
       }
 
     def toWeak(implicit ec: ExecutionContext) = WeakRequestHandler(
-      (botUserId: Int, botAuthId: Long) ⇒
-        result(botUserId, botAuthId)
+      (botUserId: Int, botAuthId: Long, botAuthSid: Int) ⇒
+        result(botUserId, botAuthId, botAuthSid)
     )
   }
 
-  case class WeakRequestHandler(handle: (BotUserId, BotAuthId) ⇒ Future[BotResponseBody])
+  case class WeakRequestHandler(handle: (BotUserId, BotAuthId, BotAuthSid) ⇒ Future[BotResponseBody])
 }
 
 abstract class BotServiceBase(system: ActorSystem) extends BotServiceTypes {
