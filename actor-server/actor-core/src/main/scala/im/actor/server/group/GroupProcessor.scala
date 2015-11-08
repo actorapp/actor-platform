@@ -143,6 +143,7 @@ private[group] final class GroupProcessor
   protected val integrationTokensKv = ShardakkaExtension(system).simpleKeyValue[Int](KeyValueMappings.IntegrationTokens, IntCodec)
 
   protected val groupId = self.path.name.toInt
+  override protected val notFoundError = GroupErrors.GroupNotFound(groupId)
 
   override def persistenceId = GroupOffice.persistenceIdFor(groupId)
 

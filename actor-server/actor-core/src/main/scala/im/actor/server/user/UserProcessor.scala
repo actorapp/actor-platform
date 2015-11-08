@@ -149,6 +149,7 @@ private[user] final class UserProcessor
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
   protected val userId = self.path.name.toInt
+  override protected val notFoundError = UserErrors.UserNotFound(userId)
 
   override def persistenceId = UserOffice.persistenceIdFor(userId)
 
