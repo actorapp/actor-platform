@@ -6,7 +6,7 @@ import akka.actor.{ ActorSystem, ActorLogging, Actor, Props }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.concurrent.ActorFutures
+import im.actor.concurrent.{ ActorFutures, ActorStashing }
 import im.actor.serialization.ActorSerializer
 import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
@@ -129,6 +129,7 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
     case mrd: MessageRead if invokes(mrd)            ⇒ messageRead(state, mrd) //User reads messages
     case mrd: MessageRead if accepts(mrd)            ⇒ ackMessageRead(state, mrd) //User's messages been read
     case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
+    case md: LastOwnMessageDate                      ⇒ updateOwnMessageDate(state, md)
   }
 
   /**
