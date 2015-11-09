@@ -1,5 +1,7 @@
 package im.actor.server.frontend
 
+import akka.stream.FlowShape
+
 import scala.util.{ Failure, Success }
 
 import akka.actor._
@@ -46,7 +48,7 @@ object MTProtoBlueprint {
         sessionClient ! PoisonPill
     }
 
-    Flow() { implicit builder ⇒
+    Flow.fromGraph(FlowGraph.create() { implicit builder ⇒
       import FlowGraph.Implicits._
 
       val bcast = builder.add(Broadcast[ByteString](2))
@@ -67,8 +69,8 @@ object MTProtoBlueprint {
 
       // format: ON
 
-      (bcast.in, mapResp.outlet)
-    }
+      FlowShape(bcast.in, mapResp.outlet)
+    })
   }
 
   def mapResponse(system: ActorSystem) = new PushStage[MTProto, ByteString] {

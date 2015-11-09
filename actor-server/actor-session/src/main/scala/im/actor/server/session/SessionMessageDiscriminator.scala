@@ -1,61 +1,80 @@
 package im.actor.server.session
 
-import akka.stream.FanOutShape._
-import akka.stream.scaladsl._
-import akka.stream.{ FanOutShape, Attributes }
-
+import akka.stream._
+import akka.stream.stage.{ OutHandler, GraphStage, GraphStageLogic, InHandler }
 import im.actor.server.mtproto.protocol._
-import im.actor.server.session.ReSenderMessage.IncomingAck
+import im.actor.server.session.SessionStreamMessage._
 
-private final class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[SessionStreamMessage]("SessionMessageDiscriminator"))
-  extends FanOutShape[SessionStreamMessage](_init) {
-  import SessionStreamMessage._
-
-  val outProtoMessage = newOutlet[ProtoMessage]("outProtoMessage")
-  val outRpc = newOutlet[HandleRpcRequest]("outRpc")
-  val outSubscribe = newOutlet[SubscribeCommand]("outSubscribe")
-  val outRequestResend = newOutlet[RequestResend]("outRequestResend")
-  val outIncomingAck = newOutlet[MessageAck]("outIncomingAck")
-  val outUnmatched = newOutlet[SessionStreamMessage]("outUnmatched")
-
-  protected override def construct(i: Init[SessionStreamMessage]) = new SessionMessageDiscriminatorShape(i)
+object SessionMessageDiscriminator {
+  type Shape = FanOutShape6[SessionStreamMessage, ProtoMessage, HandleRpcRequest, SubscribeCommand, RequestResend, MessageAck, SessionStreamMessage]
 }
 
-private[session] final class SessionMessageDiscriminator extends FlexiRoute[SessionStreamMessage, SessionMessageDiscriminatorShape](
-  new SessionMessageDiscriminatorShape, Attributes.name("SessionMessageDiscriminator")
-) {
+private[session] final class SessionMessageDiscriminator extends GraphStage[SessionMessageDiscriminator.Shape] {
+  val in = Inlet[SessionStreamMessage]("sessionStreamMessage")
+  val outProtoMessage = Outlet[ProtoMessage]("protoMessage")
+  val outRpc = Outlet[HandleRpcRequest]("rpc")
+  val outSubscribe = Outlet[SubscribeCommand]("subscribe")
+  val outRequestResend = Outlet[RequestResend]("requestResend")
+  val outIncomingAck = Outlet[MessageAck]("incomingAck")
+  val outUnmatched = Outlet[SessionStreamMessage]("unmatched")
 
-  import FlexiRoute._
+  override def shape: Shape = new FanOutShape6[SessionStreamMessage, ProtoMessage, HandleRpcRequest, SubscribeCommand, RequestResend, MessageAck, SessionStreamMessage](
+    in,
+    outProtoMessage,
+    outRpc,
+    outSubscribe,
+    outRequestResend,
+    outIncomingAck,
+    outUnmatched
+  )
 
-  import SessionStreamMessage._
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+    private var pendingCount = 0
+    private var inPulled = false
 
-  override def createRouteLogic(p: PortT) = new RouteLogic[SessionStreamMessage] {
-    override def initialState = State[Any](DemandFromAll(p.outlets)) {
-      (ctx, _, element) ⇒
-        handleElement(ctx, element)
-
-        SameState
+    val pullIn = () ⇒ {
+      inPulled = true
+      pull(in)
     }
 
-    override def initialCompletionHandling = eagerClose
+    setHandler(in, new InHandler {
+      override def onPush(): Unit = {
+        val msg = grab(in)
+        inPulled = false
 
-    private def handleElement(ctx: RouteLogicContext, element: SessionStreamMessage): Unit = {
-      element match {
-        case HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) ⇒
-          ctx.emit(p.outRpc)(HandleRpcRequest(messageId, bodyBytes, clientData))
-        case HandleMessageBox(MessageBox(messageId, m: MessageAck), clientData) ⇒
-          ctx.emit(p.outIncomingAck)(m)
-        case HandleMessageBox(MessageBox(messageId, m: RequestResend), _) ⇒
-          ctx.emit(p.outRequestResend)(m)
-        case HandleMessageBox(MessageBox(messageId, m: SessionHello), _) ⇒
-        // ignore
-        case SendProtoMessage(message) ⇒
-          ctx.emit(p.outProtoMessage)(message)
-        case msg @ HandleSubscribe(command) ⇒
-          ctx.emit(p.outSubscribe)(command)
-        case unmatched ⇒
-          ctx.emit(p.outUnmatched)(unmatched)
+        msg match {
+          case SessionStreamMessage.HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) ⇒
+            emit(outRpc, HandleRpcRequest(messageId, bodyBytes, clientData), pullIn)
+          case SessionStreamMessage.HandleMessageBox(MessageBox(messageId, m: MessageAck), clientData) ⇒
+            emit(outIncomingAck, m, pullIn)
+          case SessionStreamMessage.HandleMessageBox(MessageBox(messageId, m: RequestResend), _) ⇒
+            emit(outRequestResend, m, pullIn)
+          case SessionStreamMessage.HandleMessageBox(MessageBox(messageId, m: SessionHello), _) ⇒
+            pullIn()
+          case SessionStreamMessage.SendProtoMessage(message) ⇒
+            emit(outProtoMessage, message, pullIn)
+          case msg @ SessionStreamMessage.HandleSubscribe(command) ⇒
+            emit(outSubscribe, command, pullIn)
+          case unmatched ⇒
+            emit(outUnmatched, unmatched, pullIn)
+        }
+      }
+    })
+
+    val pullIt = new OutHandler {
+      override def onPull(): Unit = {
+        if (!inPulled)
+          pullIn()
       }
     }
+
+    setHandler(outProtoMessage, pullIt)
+    setHandler(outRpc, pullIt)
+    setHandler(outSubscribe, pullIt)
+    setHandler(outRequestResend, pullIt)
+    setHandler(outIncomingAck, pullIt)
+    setHandler(outUnmatched, pullIt)
+
+    override def preStart(): Unit = pullIn()
   }
 }

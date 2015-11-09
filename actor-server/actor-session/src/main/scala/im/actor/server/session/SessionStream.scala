@@ -38,7 +38,7 @@ private[session] object SessionStream {
     updatesHandler: ActorRef,
     reSender:       ActorRef
   )(implicit context: ActorContext) = {
-    FlowGraph.partial() { implicit builder ⇒
+    FlowGraph.create() { implicit builder ⇒
       import FlowGraph.Implicits._
 
       import SessionStreamMessage._
@@ -46,18 +46,18 @@ private[session] object SessionStream {
       val discr = builder.add(new SessionMessageDiscriminator)
 
       // TODO: think about buffer sizes and overflow strategies
-      val rpc = discr.outRpc.buffer(100, OverflowStrategy.backpressure)
-      val subscribe = discr.outSubscribe.buffer(100, OverflowStrategy.backpressure)
-      val incomingAck = discr.outIncomingAck.buffer(100, OverflowStrategy.backpressure).map(in)
-      val outProtoMessages = discr.outProtoMessage.buffer(100, OverflowStrategy.backpressure).map(out)
-      val outRequestResend = discr.outRequestResend.buffer(100, OverflowStrategy.backpressure).map(in)
-      val unmatched = discr.outUnmatched.buffer(100, OverflowStrategy.backpressure)
+      val rpc = discr.out1.buffer(100, OverflowStrategy.backpressure)
+      val subscribe = discr.out2.buffer(100, OverflowStrategy.backpressure)
+      val incomingAck = discr.out4.buffer(100, OverflowStrategy.backpressure).map(in)
+      val outProtoMessages = discr.out0.buffer(100, OverflowStrategy.backpressure).map(out)
+      val outRequestResend = discr.out3.buffer(100, OverflowStrategy.backpressure).map(in)
+      val unmatched = discr.out5.buffer(100, OverflowStrategy.backpressure)
 
       val rpcRequestSubscriber = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcHandler)))
       val rpcResponsePublisher = builder.add(Source(ActorPublisher[ProtoMessage](rpcHandler)).map(out))
 
       val updatesSubscriber = builder.add(Sink(ActorSubscriber[SubscribeCommand](updatesHandler)))
-      val updatesPublisher = builder.add(Source(ActorPublisher[OutProtoMessage](updatesHandler))).map(out)
+      val updatesPublisher = builder.add(Source(ActorPublisher[OutProtoMessage](updatesHandler)).map(out))
 
       val reSendSubscriber = builder.add(Sink(ActorSubscriber[ReSenderMessage](reSender)))
       val reSendPublisher = builder.add(Source(ActorPublisher[MTPackage](reSender)))
@@ -65,7 +65,7 @@ private[session] object SessionStream {
       val mergeProto = builder.add(MergePreferred[ReSenderMessage](3))
       val mergeProtoPriority = builder.add(MergePreferred[ReSenderMessage](1))
 
-      val logging = akka.event.Logging(context.system, s"SessionStream-${authId}-${sessionId}")
+      val logging = akka.event.Logging(context.system, s"SessionStream-$authId-$sessionId")
 
       val log = Sink.foreach[SessionStreamMessage](logging.warning("Unmatched {}", _))
 
