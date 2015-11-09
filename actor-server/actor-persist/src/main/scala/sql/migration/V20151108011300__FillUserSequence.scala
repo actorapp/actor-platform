@@ -2,9 +2,11 @@ package sql.migration
 
 import java.sql.{ SQLException, BatchUpdateException, Connection }
 
+import akka.actor.ActorSystem
 import com.google.protobuf.ByteString
 import com.typesafe.scalalogging.Logger
 import com.typesafe.slick.testkit.util.DelegateConnection
+import im.actor.server.db.DbExtension
 import im.actor.server.model.{ SerializedUpdate, UpdateMapping }
 import im.actor.server.persist.{ AuthIdRepo, UserRepo }
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration
@@ -13,7 +15,7 @@ import slick.driver.PostgresDriver.api._
 import slick.jdbc.{ GetResult, JdbcDataSource, SetParameter }
 
 import scala.annotation.tailrec
-import scala.concurrent.Await
+import scala.concurrent.{ Future, Await }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -49,35 +51,24 @@ object V20151108011300__FillUserSequence {
   val BulkSize = 300
 }
 
-final class V20151108011300__FillUserSequence extends JdbcMigration {
+final class V20151108011300__FillUserSequence(system: ActorSystem) {
   import V20151108011300__FillUserSequence._
 
   private val log = Logger(LoggerFactory.getLogger(getClass))
+  private val db = DbExtension(system).db
 
   //implicit val get = (GetResult.createGetTuple5[Long, Int, Blob, String, String] _)
   //implicit val getObsolete =
   //GetResult.createGetTuple5[Long, Int, Blob, String, String]
 
-  override def migrate(connection: Connection): Unit = {
-    connection.setAutoCommit(false)
-    val wrappedConn = new DelegateConnection(connection) {
-      override def close(): Unit = ()
-    }
-
-    val db = Database.forSource(new JdbcDataSource {
-      def createConnection(): Connection = wrappedConn
-
-      def close(): Unit = ()
-    })
-
+  def migrate(): Unit = {
     try {
       log.warn("Starting filling user sequence")
       Await.result(db.run({
-        SimpleDBIO(_.connection.setAutoCommit(false))
         for {
           userIds ← UserRepo.allIds map (_.toIterator)
           _ = log.warn(s"Found users: ${userIds}")
-          affected ← DBIO.sequence(userIds map migrateUser) map (_.sum)
+          affected ← DBIO.from(Future.sequence(userIds map (id ⇒ db.run(migrateUser(id)))) map (_.sum))
         } yield {
           log.warn(s"${affected} updates moved")
         }
@@ -87,7 +78,6 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
         log.error("Failed to migrate", e)
         throw e
     }
-    connection.setAutoCommit(false)
   }
 
   private def migrateUser(userId: Int): DBIO[Int] = {
@@ -142,7 +132,8 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
               userIds = userIds.split(",").view.filter(_.nonEmpty).map(_.toInt).toSeq,
               groupIds = groupIds.split(",").view.filter(_.nonEmpty).map(_.toInt).toSeq
             ))
-          ).toByteArray)
+          ).toByteArray
+          )
       }
 
       newTable ++= news.toVector
