@@ -157,5 +157,5 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
     }
   }
 
-  private def getSeq(authId: Long) = sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY seq DESC LIMIT 1""".as[Int].headOption
+  private def getSeq(authId: Long) = sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY timestamp DESC LIMIT 1""".as[Int].headOption
 }
