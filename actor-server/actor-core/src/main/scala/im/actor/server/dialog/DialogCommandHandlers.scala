@@ -33,8 +33,8 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
         log.error(e, "Failed to send message")
         throw e
     }) pipeTo sender()
-    onSuccess(sendFuture) { result ⇒
-      updateOwnMessageDate(state, result.date)
+    sendFuture onSuccess {
+      case SeqStateDate(_, _, date) ⇒ self ! LastOwnMessageDate(date)
     }
   }
 
@@ -133,9 +133,9 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean = peer match {
     case Peer(PeerType.Private, _) ⇒
-      (mr.date > state.lastOwnReceiveDate) &&
-        (mr.date <= mr.now) &&
-        (state.lastOwnMessageDate == 0L || state.lastOwnMessageDate >= mr.date)
+      (mr.date > state.lastOwnReceiveDate) && //receive date is later than last receive date
+        (mr.date <= mr.now) && // and receive date is not in future
+        (state.lastOwnMessageDate == 0L || mr.date > state.lastOwnMessageDate) //and receive date if after date of last message sent by this user
     case Peer(PeerType.Group, _) ⇒
       //maybe add part about ownReceivedDate
       !(state.lastPeerReceiveDate >= mr.date) //&& !state.lastSenderId.contains(receiverUserId)
@@ -143,21 +143,21 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean = peer match {
     case Peer(PeerType.Private, _) ⇒
-      (mr.date > state.lastOwnReadDate) &&
-        (mr.date <= mr.now) &&
-        (state.lastOwnMessageDate == 0L || state.lastOwnMessageDate >= mr.date)
+      (mr.date > state.lastOwnReadDate) && //read date is later than last read date
+        (mr.date <= mr.now) && // and read date is not in future
+        (state.lastOwnMessageDate == 0L || mr.date > state.lastOwnMessageDate) //and read date if after date of last message sent by this user
     case Peer(PeerType.Group, _) ⇒
       !(state.lastPeerReadDate >= mr.date) //&& !state.lastSenderId.contains(readerUserId)
   }
+
+  protected def updateOwnMessageDate(state: DialogState, md: LastOwnMessageDate): Unit =
+    context become initialized(state.updated(md))
 
   private def updatePeerReceiveDate(state: DialogState, date: Long): Unit =
     context become initialized(state.updated(LastPeerReceiveDate(date)))
 
   private def updatePeerReadDate(state: DialogState, date: Long): Unit =
     context become initialized(state.updated(LastPeerReadDate(date)))
-
-  private def updateOwnMessageDate(state: DialogState, date: Long): Unit =
-    context become initialized(state.updated(LastOwnMessageDate(date)))
 
   private def updateOwnReceiveDate(state: DialogState, date: Long): Unit =
     context become initialized(state.updated(LastOwnReceiveDate(date)))
