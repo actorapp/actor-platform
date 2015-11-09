@@ -70,8 +70,8 @@ final class V20151108011300__FillUserSequence(system: ActorSystem) {
           userIds ← UserRepo.allIds
           groupedUserIds = userIds.grouped(50)
           _ = log.warn(s"Found users: ${userIds}")
-          affected ← DBIO.from(Future.traverse(groupedUserIds){ ids =>
-            Future.sequence(ids map (id => db.run(migrateUser(id)))) map (_.sum)
+          affected ← DBIO.from(Future.traverse(groupedUserIds) { ids ⇒
+            Future.sequence(ids map (id ⇒ db.run(migrateUser(id)))) map (_.sum)
           }) map (_.sum)
         } yield {
           log.warn(s"${affected} updates moved")
