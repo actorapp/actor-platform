@@ -106,7 +106,7 @@ export default class EmojiDropdown extends Component {
       y: event.pageY || event.clientY
     };
 
-    if (!this.isInside(coords, emojiRect)) {
+    if (!isInside(coords, emojiRect)) {
       this.onClose();
     }
   };
