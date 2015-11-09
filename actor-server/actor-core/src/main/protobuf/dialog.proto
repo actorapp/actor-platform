@@ -19,11 +19,13 @@ message DialogCommands {
             SendMessage send_message = 3;
             MessageReceived message_received = 4;
             MessageRead message_read = 5;
+            Show show = 6;
+            Hide hide = 7;
         }
     }
 
     message WriteMessage {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
         required Peer origin = 6;
         required Peer dest = 7;
@@ -35,7 +37,7 @@ message DialogCommands {
     message WriteMessageAck {}
 
     message SendMessage {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
         required Peer origin = 7;
         required Peer dest = 8;
@@ -49,7 +51,7 @@ message DialogCommands {
     message SendMessageAck {}
 
     message MessageReceived {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
         required Peer origin = 4;
         required Peer dest = 5;
@@ -60,7 +62,7 @@ message DialogCommands {
     message MessageReceivedAck {}
 
     message MessageRead {
-        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
 
         required Peer origin = 5;
         required Peer dest = 6;
@@ -70,5 +72,17 @@ message DialogCommands {
     }
 
     message MessageReadAck {}
+
+    message Show {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required Peer dest = 1;
+    }
+
+    message Hide {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required Peer dest = 1;
+    }
 
 }
