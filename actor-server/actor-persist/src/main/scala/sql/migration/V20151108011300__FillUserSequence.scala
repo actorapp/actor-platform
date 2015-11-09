@@ -1,22 +1,20 @@
 package sql.migration
 
-import java.sql.{ SQLException, BatchUpdateException, Connection }
+import java.sql.SQLException
+import java.util.concurrent.{ LinkedBlockingQueue, TimeUnit, ThreadPoolExecutor }
 
 import akka.actor.ActorSystem
 import com.google.protobuf.ByteString
 import com.typesafe.scalalogging.Logger
-import com.typesafe.slick.testkit.util.DelegateConnection
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ SerializedUpdate, UpdateMapping }
 import im.actor.server.persist.{ AuthIdRepo, UserRepo }
-import org.flywaydb.core.api.migration.jdbc.JdbcMigration
 import org.slf4j.LoggerFactory
 import slick.driver.PostgresDriver.api._
-import slick.jdbc.{ GetResult, JdbcDataSource, SetParameter }
+import slick.jdbc.{ GetResult, SetParameter }
 
 import scala.annotation.tailrec
 import scala.concurrent.{ ExecutionContext, Future, Await }
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.{ Failure, Success }
@@ -65,6 +63,9 @@ object V20151108011300__FillUserSequence {
 final class V20151108011300__FillUserSequence(system: ActorSystem) {
   import V20151108011300__FillUserSequence._
 
+  private val queue = new LinkedBlockingQueue[Runnable]()
+  private val executor = new ThreadPoolExecutor(100, 100, 1, TimeUnit.HOURS, queue)
+  private implicit val ec = ExecutionContext.fromExecutor(executor)
   private val log = Logger(LoggerFactory.getLogger(getClass))
   private val db = DbExtension(system).db
 
@@ -83,7 +84,7 @@ final class V20151108011300__FillUserSequence(system: ActorSystem) {
         } yield {
           log.warn(s"${affected} updates moved")
         }
-      }.transactionally), 1.hour)
+      }.transactionally), 2.hours)
     } catch {
       case e: Exception ⇒
         log.error("Failed to migrate", e)
