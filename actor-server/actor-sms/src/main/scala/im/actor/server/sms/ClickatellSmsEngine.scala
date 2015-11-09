@@ -25,6 +25,10 @@ class ClickatellSmsEngine(config: Config)(implicit system: ActorSystem, material
   implicit val ec: ExecutionContext = system.dispatcher
 
   override def send(phoneNumber: Long, message: String): Future[Unit] = {
+    val err = new RuntimeException("Clickatell sms engine is not supported")
+    system.log.error(err, err.getMessage)
+    Future.failed(err)
+    /*
     val params = baseParams + ("to" → phoneNumber.toString)
 
     val uri = if (isAsciiString(message))
@@ -48,7 +52,7 @@ class ClickatellSmsEngine(config: Config)(implicit system: ActorSystem, material
         system.log.error(e, "Failed to send sms to clickatell")
     }
 
-    f
+    f*/
   }
 
 }
