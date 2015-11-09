@@ -1,6 +1,7 @@
 package im.actor.server.db
 
 import akka.actor._
+import akka.event.Logging
 import com.github.kxbmap.configs._
 import com.typesafe.config.{ Config, ConfigFactory }
 import im.actor.server.JNDI
@@ -29,6 +30,8 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
   override def lookup = DbExtension
 
   override def createExtension(system: ExtendedActorSystem): DbExtensionImpl = {
+    val log = Logging(system, getClass)
+
     val sqlConfig = system.settings.config.getConfig("services.postgresql")
     val ds = initDs(sqlConfig).get
     val db = initDb(ds)
@@ -38,7 +41,12 @@ object DbExtension extends ExtensionId[DbExtensionImpl] with ExtensionIdProvider
     }
 
     val ext = new DbExtensionImpl(ds, db)
-    ext.migrate()
+
+    Try(ext.migrate()) recover {
+      case e ⇒
+        log.error(e, "Migration failed")
+        throw e
+    }
     ext
   }
 
