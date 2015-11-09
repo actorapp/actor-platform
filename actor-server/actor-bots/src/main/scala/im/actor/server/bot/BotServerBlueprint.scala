@@ -2,7 +2,8 @@ package im.actor.server.bot
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.stream.scaladsl.{ Flow, Merge, Source }
+import akka.stream.FlowShape
+import akka.stream.scaladsl._
 import im.actor.api.rpc.Update
 import im.actor.bots.BotMessages
 import im.actor.server.bot.services._
@@ -14,7 +15,7 @@ import scala.util.{ Success, Failure }
 final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int, system: ActorSystem) {
 
   import BotMessages._
-  import akka.stream.scaladsl.FlowGraph.Implicits._
+
   import system.dispatcher
 
   private lazy val updBuilder = new BotUpdateBuilder(botUserId, botAuthId, system)
@@ -42,16 +43,20 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
       }
       .map(_.asInstanceOf[BotMessageOut])
 
-    Flow() { implicit b ⇒
-      val upd = b.add(updSource)
-      val rqrsp = b.add(rqrspFlow)
-      val merge = b.add(Merge[BotMessageOut](2))
+    Flow.fromGraph(
+      FlowGraph.create() { implicit b ⇒
+        import akka.stream.scaladsl.FlowGraph.Implicits._
 
-      upd ~> merge
-      rqrsp ~> merge
+        val upd = b.add(updSource)
+        val rqrsp = b.add(rqrspFlow)
+        val merge = b.add(Merge[BotMessageOut](2))
 
-      (rqrsp.inlet, merge.out)
-    }
+        upd ~> merge
+        rqrsp ~> merge
+
+        FlowShape(rqrsp.inlet, merge.out)
+      }
+    )
   }
 
   private def handleRequest(id: Long, service: String, body: RequestBody): Future[BotResponse] = {

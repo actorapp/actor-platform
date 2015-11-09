@@ -7,7 +7,7 @@ import akka.cluster.sharding.ShardRegion.Passivate
 import akka.cluster.sharding.{ ClusterShardingSettings, ClusterSharding, ShardRegion }
 import akka.cluster.pubsub.{ DistributedPubSub, DistributedPubSubMediator }
 import akka.pattern.pipe
-import akka.stream.Materializer
+import akka.stream.{ ClosedShape, Materializer }
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import com.typesafe.config.Config
@@ -161,7 +161,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
       withValidMessageBox(messageBoxBytes.toByteArray) { mb ⇒
         val graph = SessionStream.graph(authId, sessionId, rpcHandler, updatesHandler, reSender)
 
-        val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
+        RunnableGraph.fromGraph(FlowGraph.create() { implicit b ⇒
           import FlowGraph.Implicits._
 
           val source = b.add(Source(ActorPublisher[SessionStreamMessage](sessionMessagePublisher)))
@@ -170,7 +170,7 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
           // format: OFF
 
-          source ~> g ~> bcast ~> sink
+          source ~> graph ~> bcast ~> sink
           bcast ~> Sink.onComplete { c ⇒
             c.failed foreach { e =>
               log.error(e, "Dying due to stream error");
@@ -179,9 +179,9 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
           }
 
           // format: ON
-        }
 
-        flow.run()
+          ClosedShape
+        }).run()
 
         sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, authData))
@@ -279,4 +279,5 @@ final private class Session(implicit config: SessionConfig, materializer: Materi
 
     log.error(reason, "Session failed")
   }
+
 }

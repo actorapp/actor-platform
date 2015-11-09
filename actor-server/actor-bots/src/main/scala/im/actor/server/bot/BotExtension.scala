@@ -49,7 +49,7 @@ private[bot] final class BotExtension(_system: ActorSystem) extends Extension {
 
   lazy val tokensKV = shardakka.simpleKeyValue(BotExtension.tokensKV, IntCodec)
 
-  private val globalHooksKV: SimpleKeyValue[BotWebHook] = shardakka.simpleKeyValue(BotExtension.whTokensKV, BotWebHookCodec)
+  private lazy val globalHooksKV: SimpleKeyValue[BotWebHook] = shardakka.simpleKeyValue(BotExtension.whTokensKV, BotWebHookCodec)
 
   private def hooksKV(userId: UserId): SimpleKeyValue[String] =
     shardakka.simpleKeyValue(BotExtension.whUserTokensKV(userId))
