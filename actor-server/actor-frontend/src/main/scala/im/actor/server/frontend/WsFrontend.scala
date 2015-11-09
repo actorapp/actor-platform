@@ -62,8 +62,7 @@ object WsFrontend extends Frontend {
       .collect {
         case msg: BinaryMessage ⇒ msg
       }
-      .map(_.dataStream)
-      .flatten(FlattenStrategy.concat)
+      .flatMapConcat(_.dataStream)
       .via(mtProtoFlow)
       .map {
         case bs ⇒
