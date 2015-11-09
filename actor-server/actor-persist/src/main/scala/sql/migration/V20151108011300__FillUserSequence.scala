@@ -1,6 +1,6 @@
 package sql.migration
 
-import java.sql.Connection
+import java.sql.{ SQLException, BatchUpdateException, Connection }
 
 import com.google.protobuf.ByteString
 import com.typesafe.scalalogging.Logger
@@ -59,25 +59,35 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
   //GetResult.createGetTuple5[Long, Int, Blob, String, String]
 
   override def migrate(connection: Connection): Unit = {
+    connection.setAutoCommit(false)
     val wrappedConn = new DelegateConnection(connection) {
       override def close(): Unit = ()
     }
+
     val db = Database.forSource(new JdbcDataSource {
       def createConnection(): Connection = wrappedConn
 
       def close(): Unit = ()
     })
 
-    log.warn("Starting filling user sequence")
-    Await.result(db.run {
-      for {
-        userIds ← UserRepo.allIds map (_.toIterator)
-        _ = log.warn(s"Found users: ${userIds}")
-        affected ← DBIO.sequence(userIds map migrateUser) map (_.sum)
-      } yield {
-        log.warn(s"${affected} updates moved")
-      }
-    }, 1.hour)
+    try {
+      log.warn("Starting filling user sequence")
+      Await.result(db.run({
+        SimpleDBIO(_.connection.setAutoCommit(false))
+        for {
+          userIds ← UserRepo.allIds map (_.toIterator)
+          _ = log.warn(s"Found users: ${userIds}")
+          affected ← DBIO.sequence(userIds map migrateUser) map (_.sum)
+        } yield {
+          log.warn(s"${affected} updates moved")
+        }
+      }.transactionally), 1.hour)
+    } catch {
+      case e: Exception ⇒
+        log.error("Failed to migrate", e)
+        throw e
+    }
+    connection.setAutoCommit(false)
   }
 
   private def migrateUser(userId: Int): DBIO[Int] = {
@@ -92,6 +102,9 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
       copied
     }).asTry map {
       case Success(res) ⇒ res
+      case Failure(err: SQLException) ⇒
+        log.error("Failed to move user", err.getNextException)
+        throw err
       case Failure(err) ⇒
         log.error("Failed to move user", err)
         throw err
