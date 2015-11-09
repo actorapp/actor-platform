@@ -29,7 +29,6 @@ private[session] final class SessionMessageDiscriminator extends GraphStage[Sess
   )
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
-    private var pendingCount = 0
     private var inPulled = false
 
     val pullIn = () ⇒ {
