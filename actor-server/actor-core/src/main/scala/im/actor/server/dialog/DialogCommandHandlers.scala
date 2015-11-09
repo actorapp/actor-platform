@@ -143,8 +143,8 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def mustMakeRead(state: DialogState, mr: MessageRead): Boolean = peer match {
     case Peer(PeerType.Private, _) ⇒
-      (mr.date > state.lastOwnReadDate)
-      (mr.date <= mr.now) &&
+      (mr.date > state.lastOwnReadDate) &&
+        (mr.date <= mr.now) &&
         (state.lastOwnMessageDate == 0L || state.lastOwnMessageDate >= mr.date)
     case Peer(PeerType.Group, _) ⇒
       !(state.lastPeerReadDate >= mr.date) //&& !state.lastSenderId.contains(readerUserId)
