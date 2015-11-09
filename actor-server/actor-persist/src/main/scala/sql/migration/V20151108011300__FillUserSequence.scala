@@ -129,7 +129,7 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
 
   private def move(userId: Int, obsoletes: Vector[Obsolete]): DBIO[Int] = {
     DBIO.sequence(bulks(obsoletes, Vector.empty) map { bulkObs ⇒
-      val news = bulkObs map {
+      val news = bulkObs.par map {
         case Obsolete(_, timestamp, seq, header, data, userIds, groupIds) ⇒
           New(
             userId = userId,
@@ -142,11 +142,10 @@ final class V20151108011300__FillUserSequence extends JdbcMigration {
               userIds = userIds.split(",").view.filter(_.nonEmpty).map(_.toInt).toSeq,
               groupIds = groupIds.split(",").view.filter(_.nonEmpty).map(_.toInt).toSeq
             ))
-          ).toByteArray
-          )
+          ).toByteArray)
       }
 
-      newTable ++= news
+      newTable ++= news.toVector
     }) map (_ ⇒ obsoletes.length)
   }
 
