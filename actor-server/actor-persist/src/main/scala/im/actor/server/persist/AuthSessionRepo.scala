@@ -45,15 +45,15 @@ object AuthSessionRepo {
     activeSessions.filter(_.deviceHash === deviceHash)
   val byDeviceHashC = Compiled(byDeviceHash _)
 
-  val byAuthId = Compiled { (authId: Rep[Long]) =>
+  val byAuthId = Compiled { (authId: Rep[Long]) ⇒
     activeSessions.filter(_.authId === authId)
   }
 
-  val appIdByAuthId = Compiled { (authId: Rep[Long]) =>
+  val appIdByAuthId = Compiled { (authId: Rep[Long]) ⇒
     activeSessions.filter(_.authId === authId).map(_.appId)
   }
 
-  val byUserIdAndId = Compiled { (userId: Rep[Int], id: Rep[Int]) =>
+  val byUserIdAndId = Compiled { (userId: Rep[Int], id: Rep[Int]) ⇒
     activeSessions.filter(s ⇒ s.userId === userId && s.id === id)
   }
 
@@ -61,7 +61,7 @@ object AuthSessionRepo {
     sessions += session
 
   def find(userId: Int, id: Int) =
-    byUserIdAndId(userId, id).result
+    byUserIdAndId((userId, id)).result
 
   def findByUserId(userId: Int) =
     activeSessions.filter(_.userId === userId).result
