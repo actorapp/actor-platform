@@ -4,4 +4,4 @@ set -eu
 
 HOME="$(dirname "$(which "$0")")/.."
 
-eval "$HOME/bin/actor -main im.actor.server.cli.ActorCli -Dconfig.file=$HOME/conf/cp.conf $@"
+eval "$HOME/bin/actor -main im.actor.server.cli.ActorCli $@"

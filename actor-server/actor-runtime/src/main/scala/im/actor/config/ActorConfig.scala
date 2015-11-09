@@ -13,14 +13,14 @@ import com.typesafe.config.{ ConfigException, Config, ConfigFactory }
 import scala.util.{ Failure, Success, Try }
 
 object ActorConfig {
-  def load(): Config = {
+  def load(defaults: Config = ConfigFactory.empty()): Config = {
     val mainConfig = Option(System.getProperty("actor.home")) match {
       case Some(home) ⇒
         ConfigFactory.load(ConfigFactory.parseFile(new File(s"$home/conf/server.conf")))
       case None ⇒ ConfigFactory.load()
     }
 
-    val config = ConfigFactory.parseString(
+    val config = defaults.withFallback(ConfigFactory.parseString(
       s"""
         |akka {
         |  actor {
@@ -44,7 +44,7 @@ object ActorConfig {
         |  }
         |}
       """.stripMargin
-    )
+    ))
       .withFallback(mainConfig)
       .withFallback(ConfigFactory.parseResources("runtime.conf"))
       .resolve()

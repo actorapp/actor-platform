@@ -16,6 +16,7 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
   import V20151108011300__FillUserSequence._
 
   it should "properly migrate updates from authId with max sequence" in maxSeq
+  it should "migrate new updates on second run" in secondRun
 
   implicit val getSeqUpdate = GetResult[SeqUpdate](r ⇒ SeqUpdate(
     userId = r.nextInt(),
@@ -31,25 +32,53 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
 
     createUser()
 
-    val seq1 = buildObsSeq(authId1, (BulkSize * 1.5).toInt)
-    val seq2 = buildObsSeq(authId2, BulkSize + 50)
-    val seq3 = buildObsSeq(authId3, (BulkSize / 2).toInt)
+    fillObsolete(authId1, (BulkSize * 1.5).toInt)
+    fillObsolete(authId2, BulkSize + 50)
+    fillObsolete(authId3, BulkSize / 2)
 
-    whenReady(db.run(DBIO.sequence((seq1 ++ seq2 ++ seq3) map {
+    new V20151108011300__FillUserSequence().migrate()
+
+    checkValidSeq(user1.id, authId1)
+  }
+
+  def secondRun() = {
+    val (user1, authId1, _, _) = createUser()
+    val (authId2, _) = createAuthId(user1.id)
+    val (authId3, _) = createAuthId(user1.id)
+
+    val seq1 = fillObsolete(authId1, (BulkSize * 1.5).toInt)
+    fillObsolete(authId2, BulkSize + 50)
+    fillObsolete(authId3, BulkSize / 2)
+
+    new V20151108011300__FillUserSequence().migrate()
+
+    fillObsolete(authId1, 10, seq1.size + 1)
+
+    new V20151108011300__FillUserSequence().migrate()
+
+    checkValidSeq(user1.id, authId1)
+  }
+
+  private def fillObsolete(authId: Long, seq: Int, startFrom: Int = 1): Seq[Obsolete] = {
+    val obss = buildObsSeq(authId, seq, startFrom)
+
+    whenReady(db.run(DBIO.sequence(obss map {
       case Obsolete(authId, timestamp, seq, header, data, userIds, groupIds) ⇒
         sql"""INSERT INTO seq_updates_ngen (auth_id, timestamp, seq, header, serialized_data, user_ids_str, group_ids_str)
               VALUES ($authId, $timestamp, $seq, $header, $data, $userIds, $groupIds)
            """.asUpdate
     })))(identity)
 
-    new V20151108011300__FillUserSequence(system).migrate()
-
-    checkValidSeq(user1.id, seq1)
+    obss
   }
 
-  private def checkValidSeq(userId: Int, obsSeq: Seq[Obsolete]): Unit = {
-    Await.result(db.run(for (seqs ← sql"""SELECT * FROM user_sequence""".as[SeqUpdate]) yield {
-      assert(seqs.size.toInt == obsSeq.size.toInt, "wrong sequence size")
+  private def checkValidSeq(userId: Int, oldestAuthId: Long): Unit = {
+    Await.result(db.run(for {
+      seqs ← sql"""SELECT * FROM user_sequence WHERE user_id = $userId ORDER BY seq ASC""".as[SeqUpdate]
+      obsSeq ← sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $oldestAuthId ORDER BY timestamp DESC LIMIT 1"""
+        .as[Int].headOption.map(_.getOrElse(0))
+    } yield {
+      assert(seqs.size.toInt == obsSeq, "wrong sequence size")
 
       seqs.zipWithIndex foreach {
         case (SeqUpdate(`userId`, seq, timestamp, Some(mappingBytes)), index) ⇒
@@ -71,8 +100,8 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
     }), patienceConfig.timeout.totalNanos.nanos)
   }
 
-  private def buildObsSeq(authId: Long, seq: Int) =
-    for (i ← 1 to seq) yield {
+  private def buildObsSeq(authId: Long, seq: Int, startFrom: Int = 1) =
+    for (i ← startFrom to seq) yield {
       val upd = UpdateContactsAdded(Vector(i))
       Obsolete(authId, i.toLong + 100, i, upd.header, upd.toByteArray, s"$i", s"$i,$i")
     }

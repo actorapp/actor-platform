@@ -166,7 +166,7 @@ object Build extends sbt.Build with Versioning with Releasing with Publishing {
       mainClass in Revolver.reStart := Some("im.actor.server.cli.ActorCliApp"),
       mainClass in Compile := Some("im.actor.server.cli.ActorCliApp")
     )
-  )
+  ).dependsOn(actorCore)
 
   lazy val actorCore = Project(
     id = "actor-core",
