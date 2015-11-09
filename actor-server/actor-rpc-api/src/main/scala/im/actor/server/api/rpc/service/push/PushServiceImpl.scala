@@ -23,15 +23,19 @@ final class PushServiceImpl(
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
 
   override def jhandleUnregisterPush(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    seqUpdExt.deletePushCredentials(clientData.authId)
-    Future.successful(Ok(ResponseVoid))
+    authorized(clientData) { client ⇒
+      for {
+        _ ← seqUpdExt.deletePushCredentials(client.authId)
+      } yield Ok(ResponseVoid)
+    }
   }
 
   override def jhandleRegisterGooglePush(projectId: Long, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val creds = model.push.GooglePushCredentials(clientData.authId, projectId, token)
     for {
       _ ← db.run(persist.push.GooglePushCredentialsRepo.deleteByToken(token))
-      _ ← seqUpdExt.registerGooglePushCredentials(clientData.authId, creds)
+      _ ← db.run(persist.push.GooglePushCredentialsRepo.createOrUpdate(creds))
+      _ = seqUpdExt.registerGooglePushCredentials(creds)
     } yield Ok(ResponseVoid)
   }
 
@@ -42,7 +46,8 @@ final class PushServiceImpl(
         val creds = model.push.ApplePushCredentials(clientData.authId, apnsKey, ByteString.copyFrom(tokenBytes))
         val action: DBIO[HandlerResult[ResponseVoid]] = for {
           _ ← persist.push.ApplePushCredentialsRepo.deleteByToken(tokenBytes)
-          _ ← DBIO.from(seqUpdExt.registerApplePushCredentials(clientData.authId, creds))
+          _ ← persist.push.ApplePushCredentialsRepo.createOrUpdate(creds)
+          _ = seqUpdExt.registerApplePushCredentials(creds)
         } yield Ok(ResponseVoid)
         db.run(action)
       case None ⇒

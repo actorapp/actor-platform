@@ -311,8 +311,8 @@ private[user] sealed trait AuthCommands {
 
     for {
       _ ← removeAuth(session.userId, session.authId)
+      _ ← seqExt.deletePushCredentials(session.authId)
       _ ← db.run(p.AuthSessionRepo.delete(session.userId, session.id))
-      _ ← seqExt.deletePushCredentials(session.userId, session.id)
     } yield {
       publishAuthIdInvalidated(mediator, session.authId)
     }
