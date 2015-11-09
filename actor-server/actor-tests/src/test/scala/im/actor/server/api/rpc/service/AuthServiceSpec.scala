@@ -935,8 +935,8 @@ final class AuthServiceSpec
       val sessionId = createSessionId()
       implicit val clientData = ClientData(authId, sessionId, Some(AuthData(user.id, authSid)))
 
-      seqUpdExt.registerGooglePushCredentials(authId, model.push.GooglePushCredentials(authId, 22L, "hello"))
-      seqUpdExt.registerApplePushCredentials(authId, model.push.ApplePushCredentials(authId, 22, ByteString.copyFrom("hello".getBytes)))
+      seqUpdExt.registerGooglePushCredentials(model.push.GooglePushCredentials(authId, 22L, "hello"))
+      seqUpdExt.registerApplePushCredentials(model.push.ApplePushCredentials(authId, 22, ByteString.copyFrom("hello".getBytes)))
 
       //let seqUpdateManager register credentials
       Thread.sleep(1000L)
