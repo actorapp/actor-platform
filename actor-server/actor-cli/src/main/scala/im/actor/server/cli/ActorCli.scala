@@ -49,6 +49,7 @@ private object Commands {
   val CreateBot = "create-bot"
   val AdminGrant = "admin-grant"
   val AdminRevoke = "admin-revoke"
+  val MigrateUserSequence = "migrate-user-sequence"
 }
 
 object ActorCli extends App {
@@ -83,23 +84,29 @@ object ActorCli extends App {
         c.copy(updateIsAdmin = UpdateIsAdmin(x, isAdmin = false))
       }
     )
+    cmd(Commands.MigrateUserSequence) action { (_, c) ⇒
+      c.copy(command = Commands.MigrateUserSequence)
+    }
   }
 
   parser.parse(args, Config()) foreach { config ⇒
     val handlers = new CliHandlers
+    val migrationHandlers = new MigrationHandlers
 
-    cmd(config.command match {
+    config.command match {
       case Commands.Help ⇒
-        Future.successful(parser.showUsage)
+        cmd(Future.successful(parser.showUsage))
       case Commands.CreateBot ⇒
-        handlers.createBot(config.createBot)
+        cmd(handlers.createBot(config.createBot))
       case Commands.AdminGrant | Commands.AdminRevoke ⇒
-        handlers.updateIsAdmin(config.updateIsAdmin)
-    })
+        cmd(handlers.updateIsAdmin(config.updateIsAdmin))
+      case Commands.MigrateUserSequence ⇒
+        cmd(migrationHandlers.userSequence(), 2.hours)
+    }
 
-    def cmd(f: Future[Unit]): Unit = {
+    def cmd(f: Future[Unit], timeout: Duration = 10.seconds): Unit = {
       try {
-        Await.result(f, 10.seconds)
+        Await.result(f, timeout)
       } finally {
         handlers.shutdown()
       }

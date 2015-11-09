@@ -57,9 +57,9 @@ final class SequenceServiceSpec extends BaseAppSuite({
 
     val message = ApiTextMessage("Hello mr President. Zzz", Vector.empty, None)
 
-    def withError(maxUpdateSize: Long) = {
+    def withError(maxUpdateSize: Long): Int = {
       val example = UpdateMessageContentChanged(user2Peer, 1000L, message)
-      maxUpdateSize * (1 + 5.toDouble / example.getSerializedSize)
+      (maxUpdateSize * (1 + 5.toDouble / example.getSerializedSize)).toInt
     }
 
     //serialized update size is: 40 bytes for body + 4 bytes for header, 44 bytes total
@@ -75,7 +75,9 @@ final class SequenceServiceSpec extends BaseAppSuite({
       val diff = res.toOption.get
       inside(res) {
         case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
-          (updates.map(_.toByteArray.length).sum <= withError(config.maxDifferenceSize)) shouldEqual true
+          println(user2.id)
+          println(updates.map(_.update.length))
+          updates.map(_.toByteArray.length).sum should be <= withError(config.maxDifferenceSize)
           needMore shouldEqual true
           totalUpdates ++= updates
           diff.seq shouldEqual updates.length
