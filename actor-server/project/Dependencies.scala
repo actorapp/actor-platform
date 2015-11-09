@@ -27,7 +27,7 @@ object Dependencies {
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
-    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.0.0"
+    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "1.2.0"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
     val sprayClient             = "io.spray"                      %% "spray-client"                  % "1.3.3"
 
