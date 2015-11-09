@@ -25,9 +25,11 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
   ))
 
   def maxSeq() = {
-    val (user, authId1, _, _) = createUser()
-    val (authId2, _) = createAuthId(user.id)
-    val (authId3, _) = createAuthId(user.id)
+    val (user1, authId1, _, _) = createUser()
+    val (authId2, _) = createAuthId(user1.id)
+    val (authId3, _) = createAuthId(user1.id)
+
+    createUser()
 
     val seq1 = buildObsSeq(authId1, (BulkSize * 1.5).toInt)
     val seq2 = buildObsSeq(authId2, BulkSize + 50)
@@ -40,9 +42,9 @@ final class V20151108011300__FillUserSequenceSpec extends BaseAppSuite with Impl
            """.asUpdate
     })))(identity)
 
-    new V20151108011300__FillUserSequence().migrate(db.source.createConnection())
+    new V20151108011300__FillUserSequence(system).migrate()
 
-    checkValidSeq(user.id, seq1)
+    checkValidSeq(user1.id, seq1)
   }
 
   private def checkValidSeq(userId: Int, obsSeq: Seq[Obsolete]): Unit = {
