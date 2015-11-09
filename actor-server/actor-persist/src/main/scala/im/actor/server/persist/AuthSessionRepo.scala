@@ -45,11 +45,23 @@ object AuthSessionRepo {
     activeSessions.filter(_.deviceHash === deviceHash)
   val byDeviceHashC = Compiled(byDeviceHash _)
 
+  val byAuthId = Compiled { (authId: Rep[Long]) =>
+    activeSessions.filter(_.authId === authId)
+  }
+
+  val appIdByAuthId = Compiled { (authId: Rep[Long]) =>
+    activeSessions.filter(_.authId === authId).map(_.appId)
+  }
+
+  val byUserIdAndId = Compiled { (userId: Rep[Int], id: Rep[Int]) =>
+    activeSessions.filter(s ⇒ s.userId === userId && s.id === id)
+  }
+
   def create(session: model.AuthSession) =
     sessions += session
 
   def find(userId: Int, id: Int) =
-    activeSessions.filter(s ⇒ s.userId === userId && s.id === id).result
+    byUserIdAndId(userId, id).result
 
   def findByUserId(userId: Int) =
     activeSessions.filter(_.userId === userId).result
@@ -58,10 +70,10 @@ object AuthSessionRepo {
     activeSessions.filter(_.userId === userId).take(1).result.headOption
 
   def findByAuthId(authId: Long) =
-    activeSessions.filter(_.authId === authId).result.headOption
+    byAuthId(authId).result.headOption
 
   def findAppIdByAuthId(authId: Long) =
-    activeSessions.filter(_.authId === authId).map(_.appId).result.headOption
+    appIdByAuthId(authId).result.headOption
 
   def findByDeviceHash(deviceHash: Array[Byte]) =
     byDeviceHashC(deviceHash).result
