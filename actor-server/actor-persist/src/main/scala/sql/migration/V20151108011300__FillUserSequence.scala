@@ -15,7 +15,7 @@ import slick.driver.PostgresDriver.api._
 import slick.jdbc.{ GetResult, JdbcDataSource, SetParameter }
 
 import scala.annotation.tailrec
-import scala.concurrent.{ Future, Await }
+import scala.concurrent.{ ExecutionContext, Future, Await }
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -49,6 +49,17 @@ object V20151108011300__FillUserSequence {
       groupIds = r.nextString()
     ))
   val BulkSize = 300
+
+  def ftraverse[A, B](xs: Seq[A])(f: A ⇒ Future[B])(implicit ec: ExecutionContext): Future[Seq[B]] = {
+    if (xs.isEmpty) Future successful Seq.empty[B]
+    else f(xs.head) flatMap { fh ⇒ ftraverse(xs.tail)(f) map (r ⇒ fh +: r) }
+  }
+
+  def ftraverse[A, B](xs: Seq[A], chunkSize: Int, maxChunks: Int)(f: A ⇒ Future[B])(implicit ec: ExecutionContext): Future[Seq[B]] = {
+    val xss = xs.grouped(chunkSize).toList
+    val chunks = xss.take(maxChunks - 1) :+ xss.drop(maxChunks - 1).flatten
+    Future.sequence { chunks.map(chunk ⇒ ftraverse(chunk)(f)) } map { _.flatten }
+  }
 }
 
 final class V20151108011300__FillUserSequence(system: ActorSystem) {
@@ -66,9 +77,9 @@ final class V20151108011300__FillUserSequence(system: ActorSystem) {
       log.warn("Starting filling user sequence")
       Await.result(db.run({
         for {
-          userIds ← UserRepo.allIds map (_.toIterator)
+          userIds ← UserRepo.allIds
           _ = log.warn(s"Found users: ${userIds}")
-          affected ← DBIO.from(Future.sequence(userIds map (id ⇒ db.run(migrateUser(id)))) map (_.sum))
+          affected ← DBIO.from(ftraverse(userIds, 50, userIds.size)(id ⇒ db.run(migrateUser(id))) map (_.sum))
         } yield {
           log.warn(s"${affected} updates moved")
         }
