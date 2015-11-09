@@ -1,12 +1,13 @@
 package im.actor.server.dialog
 
+import akka.actor.{ ActorRef, Status }
 import akka.pattern.pipe
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
 import im.actor.server.dialog.HistoryUtils._
 import im.actor.server.misc.UpdateCounters
 import im.actor.server.model.{ Peer, HistoryMessage, PeerType }
-import im.actor.server.persist.HistoryMessageRepo
+import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager
 import im.actor.util.cache.CacheHelpers._
@@ -38,13 +39,21 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     }
   }
 
-  protected def ackSendMessage(sm: SendMessage): Unit = {
+  protected def ackSendMessage(state: DialogState, sm: SendMessage): Unit = {
     if (peer.typ == PeerType.Private) SocialManager.recordRelation(sm.origin.id, userId)
-    deliveryExt.receiverDelivery(userId, sm.origin.id, peer, sm.randomId, sm.date, sm.message, sm.isFat) map (_ ⇒ SendMessageAck()) pipeTo sender()
+
+    deliveryExt
+      .receiverDelivery(userId, sm.origin.id, peer, sm.randomId, sm.date, sm.message, sm.isFat)
+      .map(_ ⇒ SendMessageAck())
+      .pipeTo(sender())
+
+    if (state.isHidden)
+      self.tell(Show(peer), ActorRef.noSender)
 
     //    onSuccess(fu) { _ =>
     //      updatePeerMessageDate()
     //    }
+
   }
 
   protected def writeMessage(
@@ -131,6 +140,38 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     }
   }
 
+  protected def show(state: DialogState): Unit = {
+    if (!state.isHidden)
+      sender ! Status.Failure(DialogErrors.DialogAlreadyShown(peer))
+    else {
+      val future =
+        (for {
+          _ ← db.run(DialogRepo.show(userId, peer))
+          seqstate ← userExt.notifyDialogsChanged(userId)
+        } yield seqstate) pipeTo sender()
+
+      onSuccess(future) { _ ⇒
+        updateShown(state)
+      }
+    }
+  }
+
+  protected def hide(state: DialogState): Unit = {
+    if (state.isHidden)
+      sender ! Status.Failure(DialogErrors.DialogAlreadyHidden(peer))
+    else {
+      val future =
+        (for {
+          _ ← db.run(DialogRepo.hide(userId, peer))
+          seqstate ← userExt.notifyDialogsChanged(userId)
+        } yield seqstate) pipeTo sender()
+
+      onSuccess(future) { _ ⇒
+        updateHidden(state)
+      }
+    }
+  }
+
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean = peer match {
     case Peer(PeerType.Private, _) ⇒
       (mr.date > state.lastOwnReceiveDate) && //receive date is later than last receive date
@@ -164,5 +205,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   private def updateOwnReadDate(state: DialogState, date: Long): Unit =
     context become initialized(state.updated(LastOwnReadDate(date)))
+
+  private def updateShown(state: DialogState): Unit =
+    context become initialized(state.updated(Shown))
+
+  private def updateHidden(state: DialogState): Unit =
+    context become initialized(state.updated(Hidden))
 
 }

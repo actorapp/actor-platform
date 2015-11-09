@@ -16,7 +16,7 @@ import im.actor.server.dialog.DialogCommands._
 import im.actor.server.group.GroupExtension
 import im.actor.server.model.{ Peer, PeerType, Dialog ⇒ DialogModel }
 import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
-import im.actor.server.sequence.SeqStateDate
+import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -94,6 +94,12 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def ackMessageRead(peer: Peer, mr: MessageRead): Future[Unit] =
     (processorRegion(peer) ? Envelope(peer).withMessageRead(mr)).mapTo[MessageReadAck] map (_ ⇒ ())
+
+  def show(userId: Int, peer: Peer): Future[SeqState] =
+    (userExt.processorRegion.ref ? Envelope(peer).withShow(Show(peer))).mapTo[SeqState]
+
+  def hide(userId: Int, peer: Peer): Future[SeqState] =
+    (userExt.processorRegion.ref ? Envelope(peer).withHide(Hide(peer))).mapTo[SeqState]
 
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {
     extensions match {

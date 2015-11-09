@@ -27,19 +27,22 @@ object DialogEvents {
 
   private[dialog] sealed trait DialogEvent
 
-  private[dialog] case object Initialized extends DialogEvent
+  private[dialog] final case class Initialized(isHidden: Boolean) extends DialogEvent
 
-  private[dialog] case class LastOwnMessageDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastOwnMessageDate(date: Long) extends DialogEvent
 
-  private[dialog] case class LastOwnReceiveDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastOwnReceiveDate(date: Long) extends DialogEvent
 
-  private[dialog] case class LastOwnReadDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastOwnReadDate(date: Long) extends DialogEvent
 
-  private[dialog] case class LastPeerMessageDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastPeerMessageDate(date: Long) extends DialogEvent
 
-  private[dialog] case class LastPeerReceiveDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastPeerReceiveDate(date: Long) extends DialogEvent
 
-  private[dialog] case class LastPeerReadDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastPeerReadDate(date: Long) extends DialogEvent
+
+  private[dialog] case object Shown extends DialogEvent
+  private[dialog] case object Hidden extends DialogEvent
 
 }
 
@@ -48,8 +51,9 @@ private[dialog] final case class DialogState(
   lastOwnReceiveDate: Long = 0,
   lastOwnReadDate:    Long = 0,
   //lastPeerMessageDate: Long = 0,
-  lastPeerReceiveDate: Long = 0,
-  lastPeerReadDate:    Long = 0
+  lastPeerReceiveDate: Long    = 0,
+  lastPeerReadDate:    Long    = 0,
+  isHidden:            Boolean = false
 ) extends ProcessorState[DialogState] {
   import DialogEvents._
   override def updated(e: AnyRef, ts: Instant): DialogState = e match {
@@ -59,6 +63,8 @@ private[dialog] final case class DialogState(
     //    case LastPeerMessageDate(date) if date != this.lastPeerMessageDate ⇒ this.copy(lastPeerMessageDate = date)
     case LastPeerReceiveDate(date) if date != this.lastPeerReceiveDate ⇒ this.copy(lastPeerReceiveDate = date)
     case LastPeerReadDate(date) if date != this.lastPeerReadDate ⇒ this.copy(lastPeerReadDate = date)
+    case Shown ⇒ this.copy(isHidden = false)
+    case Hidden ⇒ this.copy(isHidden = true)
     case unm ⇒ this
   }
 }
@@ -116,20 +122,22 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
   override def receive: Receive = init
 
   def init: Receive = receiveStashing(replyTo ⇒ {
-    case Initialized ⇒
-      context become initialized(DialogState())
+    case Initialized(isHidden) ⇒
+      context become initialized(DialogState(isHidden = isHidden))
       unstashAll()
   })
 
   def initialized(state: DialogState): Receive = {
     case sm: SendMessage if invokes(sm)              ⇒ sendMessage(state, sm) //User sends message
-    case sm: SendMessage if accepts(sm)              ⇒ ackSendMessage(sm) //User's message been sent
+    case sm: SendMessage if accepts(sm)              ⇒ ackSendMessage(state, sm) //User's message been sent
     case mrv: MessageReceived if invokes(mrv)        ⇒ messageReceived(state, mrv) //User received messages
     case mrv: MessageReceived if accepts(mrv)        ⇒ ackMessageReceived(state, mrv) //User's messages been received
     case mrd: MessageRead if invokes(mrd)            ⇒ messageRead(state, mrd) //User reads messages
     case mrd: MessageRead if accepts(mrd)            ⇒ ackMessageRead(state, mrd) //User's messages been read
     case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
     case md: LastOwnMessageDate                      ⇒ updateOwnMessageDate(state, md)
+    case Show(_)                                     ⇒ show(state)
+    case Hide(_)                                     ⇒ hide(state)
   }
 
   /**
@@ -142,7 +150,7 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
    * @param dc command
    * @return does dialog owner invokes this command
    */
-  private def invokes(dc: DialogCommand): Boolean = (dc.dest == peer) && (dc.origin == selfPeer)
+  private def invokes(dc: DirectDialogCommand): Boolean = (dc.dest == peer) && (dc.origin == selfPeer)
 
   /**
    * dialog owner accepts `dc`
@@ -154,19 +162,20 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
    * @param dc command
    * @return does dialog owner accepts this command
    */
-  def accepts(dc: DialogCommand) = (dc.dest == selfPeer) || ((dc.dest == peer) && (dc.origin != selfPeer))
+  def accepts(dc: DirectDialogCommand) = (dc.dest == selfPeer) || ((dc.dest == peer) && (dc.origin != selfPeer))
 
   private[this] def createDialogIfNeeded(): Future[Unit] =
     db.run(for {
       optDialog ← DialogRepo.find(userId, peer)
-      _ ← optDialog match {
-        case Some(_) ⇒ DBIO.successful(())
+      dialog ← optDialog match {
+        case Some(dialog) ⇒ DBIO.successful(dialog)
         case None ⇒
+          val dialog = DialogModel(userId, peer)
           for {
-            _ ← DialogRepo.create(DialogModel(userId, peer))
+            _ ← DialogRepo.create(dialog)
             _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
-          } yield ()
+          } yield dialog
       }
-    } yield { self ! Initialized })
+    } yield { self ! Initialized(dialog.isHidden) })
 
 }
