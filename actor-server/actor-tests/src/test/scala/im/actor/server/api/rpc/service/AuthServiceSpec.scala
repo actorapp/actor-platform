@@ -939,7 +939,7 @@ final class AuthServiceSpec
       seqUpdExt.registerApplePushCredentials(model.push.ApplePushCredentials(authId, 22, ByteString.copyFrom("hello".getBytes)))
 
       //let seqUpdateManager register credentials
-      Thread.sleep(1000L)
+      Thread.sleep(5000L)
       whenReady(db.run(persist.AuthIdRepo.find(authId))) { optAuthId ⇒
         optAuthId shouldBe defined
       }
@@ -957,7 +957,8 @@ final class AuthServiceSpec
 
       }
       //let seqUpdateManager register credentials
-      Thread.sleep(1000L)
+      Thread.sleep(5000L)
+
       whenReady(db.run(persist.AuthIdRepo.find(authId))) { optAuthId ⇒
         optAuthId should not be defined
       }
