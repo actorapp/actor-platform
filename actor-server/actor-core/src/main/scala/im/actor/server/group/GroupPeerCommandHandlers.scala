@@ -10,7 +10,7 @@ import im.actor.server.model.Peer
 import scala.concurrent.Future
 
 trait GroupPeerCommandHandlers extends PeersImplicits {
-  self: GroupPeer ⇒
+  this: GroupPeer ⇒
 
   import GroupPeerEvents._
 
@@ -29,8 +29,8 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
         log.error(e, "Failed to send message")
         throw e
     }) pipeTo sender()
-    onSuccess(futureSend) { _ ⇒
-      context become initialized(state.updated(LastSenderIdChanged(senderUserId)))
+    futureSend onSuccess {
+      case _ ⇒ self ! LastSenderIdChanged(senderUserId)
     }
   }
 

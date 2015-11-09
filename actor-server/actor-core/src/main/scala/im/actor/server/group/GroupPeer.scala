@@ -39,7 +39,9 @@ private[group] final class GroupPeer(val groupId: Int)
   with ActorLogging
   with GroupPeerCommandHandlers
   with ActorFutures {
+
   import DialogCommands._
+  import GroupPeerEvents._
 
   protected implicit val system: ActorSystem = context.system
   protected implicit val ec: ExecutionContext = system.dispatcher
@@ -48,9 +50,10 @@ private[group] final class GroupPeer(val groupId: Int)
   protected lazy val dialogExt = DialogExtension(system)
 
   def initialized(state: GroupPeerState): Receive = {
-    case sm: SendMessage     ⇒ incomingMessage(state, sm)
-    case mr: MessageReceived ⇒ messageReceived(state, mr)
-    case mr: MessageRead     ⇒ messageRead(state, mr)
+    case sm: SendMessage         ⇒ incomingMessage(state, sm)
+    case mr: MessageReceived     ⇒ messageReceived(state, mr)
+    case mr: MessageRead         ⇒ messageRead(state, mr)
+    case sc: LastSenderIdChanged ⇒ context become initialized(state.updated(sc))
   }
 
   override def receive: Receive = initialized(GroupPeerState(None, None, None))
