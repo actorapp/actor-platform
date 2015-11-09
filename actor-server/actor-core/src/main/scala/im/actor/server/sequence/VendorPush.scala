@@ -326,7 +326,7 @@ private[sequence] final class VendorPush(
     } yield authSessionOpt map (s ⇒ c → PushCredentialsInfo(s.appId, s.id))
 
   private def unregister(authId: Long): Unit =
-    mapping.keys find (_.authId == authId) foreach unregister
+    mapping.keys filter (_.authId == authId) foreach unregister
 
   private def unregister(creds: PushCredentials): Unit =
     if (mapping.contains(creds)) {
