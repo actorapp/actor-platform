@@ -76,8 +76,8 @@ final class HttpApiFrontendSpec
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit val service = messaging.MessagingServiceImpl()
-  implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
+  implicit lazy val service = messaging.MessagingServiceImpl()
+  implicit lazy val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   implicit val reverseHookResponseUnmarshaller: FromEntityUnmarshaller[ReverseHookResponse] = Unmarshaller { implicit ec ⇒ entity ⇒
     Unmarshal(entity).to[String].map { body ⇒
@@ -91,7 +91,7 @@ final class HttpApiFrontendSpec
     }
   }
 
-  val s3BucketName = fsAdapterS3.bucketName
+  lazy val s3BucketName = fsAdapterS3.bucketName
 
   object t {
     val (user1, authId1, authSid1, _) = createUser()
