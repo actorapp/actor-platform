@@ -96,6 +96,7 @@ object ActorServer {
       GroupCreatorMemberMigrator.migrate()
       HiddenGroupMigrator.migrate()
       LocalNamesFromKVMigrator.migrate()
+      FillUserSequenceMigrator.migrate()
 
       val weakUpdatesExt = WeakUpdatesExtension(system)
       val presenceExt = PresenceExtension(system)
