@@ -10,7 +10,7 @@ import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.KeyValueMappings
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogCommand, DialogExtension }
+import im.actor.server.dialog.{ DirectDialogCommand, DialogExtension }
 import im.actor.server.event.TSEvent
 import im.actor.server.file.{ FileStorageAdapter, S3StorageExtension, Avatar }
 import im.actor.server.office.{ PeerProcessor, ProcessorState, StopOffice }
@@ -239,9 +239,9 @@ private[group] final class GroupProcessor
       makeUserAdmin(state, clientUserId, candidateId)
     case RevokeIntegrationToken(_, userId) ⇒
       revokeIntegrationToken(state, userId)
-    case StopOffice        ⇒ context stop self
-    case ReceiveTimeout    ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-    case dc: DialogCommand ⇒ groupPeer forward dc
+    case StopOffice              ⇒ context stop self
+    case ReceiveTimeout          ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case dc: DirectDialogCommand ⇒ groupPeer forward dc
   }
 
   private[this] var groupStateMaybe: Option[Group] = None
