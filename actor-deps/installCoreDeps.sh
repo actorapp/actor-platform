@@ -47,4 +47,8 @@ echo Installing Android SDK Components...
 # Hack for propper installation
 ( sleep 5 && while [ 1 ]; do sleep 1; echo y; done ) | ${SDK_TOOL} update sdk -a --no-ui --filter "${SDK_FORCE_COMPONENTS}"
 
+if $IS_OSX; then
 echo "sdk.dir=actor-deps/dist/android-sdk-macosx" > local.properties
+else
+echo "sdk.dir=actor-deps/dist/android-sdk-linux" > local.properties
+fi	
