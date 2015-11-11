@@ -61,7 +61,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
       val seqDeltaFuture =
         if (state.nonEmpty) {
           getDelta(client.userId, client.authId) andThen {
-            case Success(delta) => log.debug("Delta for client: {} is: {}", client, delta)
+            case Success(delta) ⇒ log.debug("Delta for client: {} is: {}", client, delta)
           }
         } else Future.successful(0)
 
