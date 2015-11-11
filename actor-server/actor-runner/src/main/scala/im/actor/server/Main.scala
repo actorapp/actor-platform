@@ -75,14 +75,8 @@ object ActorServer {
 
       if (system.settings.config.getList("akka.cluster.seed-nodes").isEmpty) {
         system.log.info("Going to a single-node cluster mode")
-        val self = Address(
-          "akka.tcp",
-          system.name,
-          InetAddress.getLocalHost.getHostAddress,
-          2552
-        )
 
-        Cluster(system).joinSeedNodes(List(self))
+        Cluster(system).join(Cluster(system).selfAddress)
       }
 
       implicit val executor = system.dispatcher
@@ -98,19 +92,37 @@ object ActorServer {
       LocalNamesFromKVMigrator.migrate()
       FillUserSequenceMigrator.migrate()
 
+      system.log.debug("Starting SeqUpdatesExtension")
+      val seqUpdatesExt = SeqUpdatesExtension(system)
+
+      system.log.debug("Starting WeakUpdatesExtension")
       val weakUpdatesExt = WeakUpdatesExtension(system)
+
+      system.log.debug("Starting PresenceExtension")
       val presenceExt = PresenceExtension(system)
+
+      system.log.debug("Starting GroupPresenceExtension")
       val groupPresenceExt = GroupPresenceExtension(system)
+
+      system.log.debug("Starting SocialExtension")
       implicit val socialManagerRegion = SocialExtension(system).region
+
+      system.log.debug("Starting UserExtension")
       implicit val userProcessorRegion = UserExtension(system).processorRegion
       implicit val userViewRegion = UserExtension(system).viewRegion
+
+      system.log.debug("Starting GroupExtension")
       implicit val groupProcessorRegion = GroupExtension(system).processorRegion
       implicit val groupViewRegion = GroupExtension(system).viewRegion
+
+      system.log.debug("Starting DialogExtension")
       val groupDialogRegion = DialogExtension(system).groupRegion
       val privateDialogRegion = DialogExtension(system).privateRegion
 
+      system.log.debug("Starting IntegrationTokenMigrator")
       IntegrationTokenMigrator.migrate()
 
+      system.log.debug("Starting ActivationContext")
       val activationContext = serverConfig.getString("services.activation.default-service") match {
         case "internal" ⇒
           val telesignClient = new TelesignClient(serverConfig.getConfig("services.telesign"))
@@ -123,41 +135,98 @@ object ActorServer {
         case "actor-activation" ⇒ new GateCodeActivation(gateConfig)
         case _                  ⇒ throw new Exception("""Invalid activation.default-service value provided: valid options: "internal", actor-activation""")
       }
-
+      system.log.warning("Starting session region")
       implicit val sessionRegion = Session.startRegion(Session.props)
 
+      system.log.debug("Starting RichMessageWorker")
       RichMessageWorker.startWorker(richMessageConfig)
+      system.log.debug("Starting ReverseHooksListener")
       ReverseHooksListener.startSingleton()
 
       implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
 
+      system.log.debug("Starting Services")
+
+      system.log.debug("Starting AuthService")
+      val authService = new AuthServiceImpl(activationContext)
+
+      system.log.debug("Staring ContactsService")
+      val contactsService = new ContactsServiceImpl
+
+      system.log.debug("Starging MessagingService")
+      val messagingService = MessagingServiceImpl()
+
+      system.log.debug("Starging GroupsService")
+      val groupsService = new GroupsServiceImpl(groupInviteConfig)
+
+      system.log.debug("Starting PubgroupsService")
+      val pubgroupsService = new PubgroupsServiceImpl
+
+      system.log.debug("Starting SequenceService")
+      val sequenceService = new SequenceServiceImpl(sequenceConfig)
+
+      system.log.debug("Starting WeakService")
+      val weakService = new WeakServiceImpl
+
+      system.log.debug("Starting UsersService")
+      val usersService = new UsersServiceImpl
+
+      system.log.debug("Starting FilesService")
+      val filesService = new FilesServiceImpl
+
+      system.log.debug("Starting ConfigsService")
+      val configsService = new ConfigsServiceImpl
+
+      system.log.debug("Starting PushService")
+      val pushService = new PushServiceImpl
+
+      system.log.debug("Starting ProfileService")
+      val profileService = new ProfileServiceImpl
+
+      system.log.debug("Starting IntegrationsService")
+      val integrationsService = new IntegrationsServiceImpl(s"${webappConfig.scheme}://${webappConfig.host}")
+
+      system.log.debug("Starting WebactionsService")
+      val webactionsService = new WebactionsServiceImpl
+
+      system.log.debug("Starting DeviceService")
+      val deviceService = new DeviceServiceImpl
+
+      system.log.debug("Starting SearchService")
+      val searchService = new SearchServiceImpl
+
       val services = Seq(
-        new AuthServiceImpl(activationContext),
-        new ContactsServiceImpl,
-        MessagingServiceImpl(),
-        new GroupsServiceImpl(groupInviteConfig),
-        new PubgroupsServiceImpl,
-        new SequenceServiceImpl(sequenceConfig),
-        new WeakServiceImpl,
-        new UsersServiceImpl,
-        new FilesServiceImpl,
-        new ConfigsServiceImpl,
-        new PushServiceImpl,
-        new ProfileServiceImpl,
-        new IntegrationsServiceImpl(s"${webappConfig.scheme}://${webappConfig.host}"),
-        new WebactionsServiceImpl,
-        new DeviceServiceImpl,
-        new SearchServiceImpl
+        authService,
+        contactsService,
+        messagingService,
+        groupsService,
+        pubgroupsService,
+        sequenceService,
+        weakService,
+        usersService,
+        filesService,
+        configsService,
+        pushService,
+        profileService,
+        integrationsService,
+        webactionsService,
+        deviceService,
+        searchService
       )
 
       system.log.warning("Starting ActorBot")
       ActorBot.start()
 
+      system.log.debug("Registering services")
       RpcApiExtension(system).register(services)
 
+      system.log.debug("Starting Actor CLI")
       ActorCliService.start(system)
 
+      system.log.debug("Starting Frontend")
       Frontend.start(serverConfig)
+
+      system.log.debug("Starting Http Api")
       HttpApiFrontend.start(serverConfig)
     } catch {
       case e: ConfigException ⇒

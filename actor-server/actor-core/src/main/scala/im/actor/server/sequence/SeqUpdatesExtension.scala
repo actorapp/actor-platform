@@ -30,14 +30,20 @@ final class SeqUpdatesExtension(
   import UserSequenceCommands._
   import system.dispatcher
 
+  private val log = Logging(_system, getClass)
   private implicit val OperationTimeout = Timeout(20.seconds)
   private implicit val system: ActorSystem = _system
-  private implicit lazy val db = DbExtension(system).db
-  private val log = Logging(system, getClass)
 
+  log.debug("Getting DbExtension")
+  private implicit lazy val db = DbExtension(system).db
+
+  log.debug("Starting region")
   lazy val region: SeqUpdatesManagerRegion = SeqUpdatesManagerRegion.start()(system, gpm, apm)
 
+  log.debug("Starting BatchUpdatesWriter")
   private val writer = system.actorOf(BatchUpdatesWriter.props, "batch-updates-writer")
+
+  log.debug("Getting mediator")
   private val mediator = DistributedPubSub(system).mediator
 
   def getSeqState(userId: Int): Future[SeqState] =
@@ -233,15 +239,28 @@ object SeqUpdatesExtension extends ExtensionId[SeqUpdatesExtension] with Extensi
   override def lookup = SeqUpdatesExtension
 
   override def createExtension(system: ExtendedActorSystem) = {
-    val applePushConfig = ApplePushManagerConfig.load(
-      Try(system.settings.config.getConfig("services.apple.push"))
-        .getOrElse(system.settings.config.getConfig("push.apple"))
-    )
-    val googlePushConfig = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
+    val log = Logging(system, getClass)
 
-    val gpm = new GooglePushManager(googlePushConfig)
-    val apm = new ApplePushManager(applePushConfig, system)
+    try {
+      log.debug("Initiating SeqUpdatesExtension")
+      val applePushConfig = ApplePushManagerConfig.load(
+        Try(system.settings.config.getConfig("services.apple.push"))
+          .getOrElse(system.settings.config.getConfig("push.apple"))
+      )
+      log.debug("Apple Push Config: {}", applePushConfig)
+      val googlePushConfig = GooglePushManagerConfig.load(system.settings.config.getConfig("services.google.push")).get
+      log.debug("Google Push Config: {}", googlePushConfig)
 
-    new SeqUpdatesExtension(system, gpm, apm)
+      val gpm = new GooglePushManager(googlePushConfig)
+      val apm = new ApplePushManager(applePushConfig, system)
+
+      log.debug("Starting up")
+
+      new SeqUpdatesExtension(system, gpm, apm)
+    } catch {
+      case e: Throwable ⇒
+        log.error(e, "Failed to start up SeqUpdatesExtension")
+        throw e
+    }
   }
 }
