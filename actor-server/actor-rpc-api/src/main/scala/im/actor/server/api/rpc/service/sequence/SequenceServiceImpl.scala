@@ -9,7 +9,6 @@ import scala.util.Success
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
@@ -17,9 +16,10 @@ import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference, SequenceService }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
-import im.actor.server.sequence.{ SeqUpdatesExtension }
+import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
 import im.actor.server.session._
 import im.actor.server.user.UserUtils
+import im.actor.server.db.ActorPostgresDriver.api._
 
 final class SequenceServiceImpl(config: SequenceServiceConfig)(
   implicit
@@ -54,9 +54,19 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     authorized(clientData) { implicit client ⇒
       subscribeToSeq()
+
+      val seqDeltaFuture =
+        if (state.nonEmpty) {
+          for {
+            oldSeq ← getOldSeq(client.authId)
+            SeqState(newSeq, _) ← seqUpdExt.getSeqState(client.userId)
+          } yield newSeq - oldSeq
+        } else Future.successful(0)
+
       for {
+        seqDelta ← seqDeltaFuture
         // FIXME: would new updates between getSeqState and getDifference break client state?
-        (updates, needMore) ← seqUpdExt.getDifference(client.userId, seq, client.authSid, maxDifferenceSize)
+        (updates, needMore) ← seqUpdExt.getDifference(client.userId, seq + seqDelta, client.authSid, maxDifferenceSize)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, groups) ← getUsersGroups(userIds, groupIds)
       } yield {
@@ -119,6 +129,13 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         // FIXME: #security check access hashes
         sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
           .withSubscribeFromGroupOnline(SubscribeFromGroupOnline(groups.map(_.groupId)))
+    }
+  }
+
+  private def getOldSeq(authId: Long): Future[Int] = {
+    db.run(sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY TIMESTAMP DESC LIMIT 1""".as[Int].headOption) map {
+      case Some(seq) ⇒ seq
+      case None      ⇒ 0
     }
   }
 
