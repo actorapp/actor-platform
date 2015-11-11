@@ -4,7 +4,6 @@ import akka.event.Logging
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.model.SeqUpdate
-import im.actor.server.persist.AuthIdRepo
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Success
