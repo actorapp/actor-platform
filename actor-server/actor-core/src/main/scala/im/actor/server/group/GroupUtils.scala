@@ -15,6 +15,7 @@ import scala.concurrent.{ Future, ExecutionContext }
 
 object GroupUtils {
 
+  import ApiConversions._
   import ImageUtils._
 
   def getPubgroupStructUnsafe(group: model.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
