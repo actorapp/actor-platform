@@ -181,6 +181,7 @@ private[sequence] final class VendorPush(
   }
 
   private def init(): Unit = {
+    log.debug("Initializing")
     db.run(for {
       googleCreds ← GooglePushCredentialsRepo.findByUser(userId)
       appleCreds ← ApplePushCredentialsRepo.findByUser(userId)
