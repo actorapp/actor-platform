@@ -15,7 +15,6 @@ import scala.concurrent.{ Future, ExecutionContext }
 
 object GroupUtils {
 
-  import ApiConversions._
   import ImageUtils._
 
   def getPubgroupStructUnsafe(group: model.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[ApiPublicGroup, NoStream, Read with Read] = {
@@ -33,11 +32,8 @@ object GroupUtils {
     getPubgroupStructUnsafe(group, clientData.userId)
   }
 
-  def withGroup[A](groupId: Int)(f: model.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] =
-    persist.GroupRepo.find(groupId) flatMap {
-      case Some(group) ⇒ f(group)
-      case None        ⇒ DBIO.failed(new Exception(s"Group $groupId not found"))
-    }
+  def withGroup[A](groupId: Int)(f: ApiGroup ⇒ DBIO[A])(implicit system: ActorSystem): DBIO[A] =
+    DBIO.from(GroupExtension(system).getApiStruct(groupId, 0)) flatMap f
 
   //todo: use GroupExtension.getMembers instead
   def withGroupUserIds[A](groupId: Int)(f: Seq[Int] ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] =

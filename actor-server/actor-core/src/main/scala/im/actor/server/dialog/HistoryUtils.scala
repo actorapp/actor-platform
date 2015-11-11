@@ -93,7 +93,7 @@ object HistoryUtils {
           persist.DialogRepo.updateOwnerLastReceivedAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case PeerType.Group ⇒
-        withGroup(peer.id) { group ⇒
+        withGroup(peer.id) { _ ⇒
           persist.GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
             // TODO: #perf update dialogs in one query
 
@@ -120,7 +120,7 @@ object HistoryUtils {
           persist.DialogRepo.updateOwnerLastReadAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case PeerType.Group ⇒
-        withGroup(peer.id) { group ⇒
+        withGroup(peer.id) { _ ⇒
           persist.GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
             // TODO: #perf update dialogs in one query
 
