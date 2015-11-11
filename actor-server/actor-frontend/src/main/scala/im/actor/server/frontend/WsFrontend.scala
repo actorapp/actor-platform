@@ -2,6 +2,7 @@ package im.actor.server.frontend
 
 import akka.actor.ActorSystem
 import akka.event.Logging
+import akka.http.ServerSettings
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.ws.{ BinaryMessage, Message }
 import akka.http.scaladsl.server.{ Directives, Route }
@@ -14,13 +15,15 @@ import slick.driver.PostgresDriver.api.Database
 import im.actor.server.session.SessionRegion
 import im.actor.tls.TlsContext
 
-import scala.concurrent.Future
+import scala.concurrent.duration._
 
 object WsFrontend extends Frontend {
 
   import Directives._
 
   override protected val connIdPrefix = "ws"
+
+  val IdleTimeout = 15.minutes
 
   def start(host: String, port: Int, tlsContext: Option[TlsContext])(
     implicit
@@ -30,8 +33,14 @@ object WsFrontend extends Frontend {
     mat:           Materializer
   ): Unit = {
     val log = Logging.getLogger(system, this)
+    val defaultSettings = ServerSettings(system)
 
-    val connections = Http().bind(host, port, httpsContext = tlsContext map (_.asHttpsContext))
+    val connections = Http().bind(
+      host,
+      port,
+      httpsContext = tlsContext map (_.asHttpsContext),
+      settings = defaultSettings.copy(timeouts = defaultSettings.timeouts.copy(idleTimeout = IdleTimeout))
+    )
 
     connections runForeach { conn ⇒
       log.debug("New HTTP Connection {}", conn.remoteAddress)
