@@ -286,29 +286,29 @@ public class CustomItemAnimator extends SimpleItemAnimator {
     @Override
     public boolean animateChange(ViewHolder oldHolder, ViewHolder newHolder,
                                  int fromX, int fromY, int toX, int toY) {
-//        if (oldHolder == newHolder) {
-//            // Don't know how to run change animations when the same view holder is re-used.
-//            // run a move animation to handle position changes.
-//            return animateMove(oldHolder, fromX, fromY, toX, toY);
-//        }
-//        final float prevTranslationX = ViewCompat.getTranslationX(oldHolder.itemView);
-//        final float prevTranslationY = ViewCompat.getTranslationY(oldHolder.itemView);
-//        final float prevAlpha = ViewCompat.getAlpha(oldHolder.itemView);
-//        resetAnimation(oldHolder);
-//        int deltaX = (int) (toX - fromX - prevTranslationX);
-//        int deltaY = (int) (toY - fromY - prevTranslationY);
-//        // recover prev translation state after ending animation
-//        ViewCompat.setTranslationX(oldHolder.itemView, prevTranslationX);
-//        ViewCompat.setTranslationY(oldHolder.itemView, prevTranslationY);
-//        ViewCompat.setAlpha(oldHolder.itemView, prevAlpha);
-//        if (newHolder != null) {
-//            // carry over translation values
-//            resetAnimation(newHolder);
-//            ViewCompat.setTranslationX(newHolder.itemView, -deltaX);
-//            ViewCompat.setTranslationY(newHolder.itemView, -deltaY);
-//            ViewCompat.setAlpha(newHolder.itemView, 0);
-//        }
-//        mPendingChanges.add(new ChangeInfo(oldHolder, newHolder, fromX, fromY, toX, toY));
+        if (oldHolder == newHolder) {
+            // Don't know how to run change animations when the same view holder is re-used.
+            // run a move animation to handle position changes.
+            return animateMove(oldHolder, fromX, fromY, toX, toY);
+        }
+        final float prevTranslationX = ViewCompat.getTranslationX(oldHolder.itemView);
+        final float prevTranslationY = ViewCompat.getTranslationY(oldHolder.itemView);
+        final float prevAlpha = ViewCompat.getAlpha(oldHolder.itemView);
+        resetAnimation(oldHolder);
+        int deltaX = (int) (toX - fromX - prevTranslationX);
+        int deltaY = (int) (toY - fromY - prevTranslationY);
+        // recover prev translation state after ending animation
+        ViewCompat.setTranslationX(oldHolder.itemView, prevTranslationX);
+        ViewCompat.setTranslationY(oldHolder.itemView, prevTranslationY);
+        ViewCompat.setAlpha(oldHolder.itemView, prevAlpha);
+        if (newHolder != null) {
+            // carry over translation values
+            resetAnimation(newHolder);
+            ViewCompat.setTranslationX(newHolder.itemView, -deltaX);
+            ViewCompat.setTranslationY(newHolder.itemView, -deltaY);
+            ViewCompat.setAlpha(newHolder.itemView, 0);
+        }
+        mPendingChanges.add(new ChangeInfo(oldHolder, newHolder, fromX, fromY, toX, toY));
         return false;
     }
 
