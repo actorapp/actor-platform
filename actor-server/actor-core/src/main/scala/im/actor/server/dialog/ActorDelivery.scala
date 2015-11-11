@@ -1,20 +1,24 @@
 package im.actor.server.dialog
 
 import akka.actor.ActorSystem
-import im.actor.api.rpc.Implicits._
+import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{ ApiPeerType, ApiPeer }
 import im.actor.server.db.DbExtension
 import im.actor.server.messaging.PushText
 import im.actor.server.misc.UpdateCounters
+import im.actor.server.model.Peer
 import im.actor.server.sequence.{ PushData, PushRules, SeqUpdatesExtension, SeqState }
 import im.actor.server.user.UserExtension
-
 import slick.driver.PostgresDriver.api.Database
+
 import scala.concurrent.{ ExecutionContext, Future }
 
-// default extension
-private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) extends DeliveryExtension with UpdateCounters with PushText {
+//default extension
+final class ActorDelivery()(implicit val system: ActorSystem)
+  extends DeliveryExtension
+  with UpdateCounters
+  with PushText
+  with PeersImplicits {
 
   implicit val ec: ExecutionContext = system.dispatcher
   implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
@@ -24,14 +28,14 @@ private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) ex
   override def receiverDelivery(
     receiverUserId: Int,
     senderUserId:   Int,
-    peer:           ApiPeer,
+    peer:           Peer,
     randomId:       Long,
     timestamp:      Long,
     message:        ApiMessage,
     isFat:          Boolean
   ): Future[Unit] = {
     val receiverUpdate = UpdateMessage(
-      peer = peer,
+      peer = peer.asStruct,
       senderUserId = senderUserId,
       date = timestamp,
       randomId = randomId,
@@ -44,7 +48,7 @@ private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) ex
       _ ← seqUpdatesExt.deliverSingleUpdate(
         receiverUserId,
         receiverUpdate,
-        PushRules(isFat = isFat).withData(PushData().withText(pushText).withPeer(peer.asModel)),
+        PushRules(isFat = isFat).withData(PushData().withText(pushText).withPeer(peer)),
         deliveryId = s"msg_${peer.toString}_$randomId"
       )
       counterUpdate ← db.run(getUpdateCountersChanged(receiverUserId))
@@ -55,21 +59,22 @@ private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) ex
   override def senderDelivery(
     senderUserId:  Int,
     senderAuthSid: Int,
-    peer:          ApiPeer,
+    peer:          Peer,
     randomId:      Long,
     timestamp:     Long,
     message:       ApiMessage,
     isFat:         Boolean
   ): Future[SeqState] = {
+    val apiPeer = peer.asStruct
     val senderUpdate = UpdateMessage(
-      peer = peer,
+      peer = apiPeer,
       senderUserId = senderUserId,
       date = timestamp,
       randomId = randomId,
       message = message
     )
 
-    val senderClientUpdate = UpdateMessageSent(peer, randomId, timestamp)
+    val senderClientUpdate = UpdateMessageSent(apiPeer, randomId, timestamp)
 
     seqUpdatesExt.deliverMappedUpdate(
       userId = senderUserId,
@@ -80,16 +85,21 @@ private[dialog] final class ActorDelivery()(implicit val system: ActorSystem) ex
     )
   }
 
-  override def authorRead(readerUserId: Int, authorUserId: Int, date: Long, now: Long): Future[Unit] = {
-    val update = UpdateMessageRead(ApiPeer(ApiPeerType.Private, readerUserId), date, now)
+  override def notifyReceive(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit] = {
+    val update = UpdateMessageReceived(peer.asStruct, date, now)
+    userExt.broadcastUserUpdate(userId, update, None, isFat = false, deliveryId = None) map (_ ⇒ ())
+  }
+
+  override def notifyRead(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit] = {
+    val update = UpdateMessageRead(peer.asStruct, date, now)
     seqUpdatesExt.deliverSingleUpdate(
-      userId = authorUserId,
+      userId = userId,
       update = update
     ) map (_ ⇒ ())
   }
 
-  override def readerRead(readerUserId: Int, readerAuthSid: Int, authorUserId: Int, date: Long): Future[Unit] = {
-    val update = UpdateMessageReadByMe(ApiPeer(ApiPeerType.Private, authorUserId), date)
+  override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long): Future[Unit] = {
+    val update = UpdateMessageReadByMe(peer.asStruct, date)
     for {
       counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
       _ ← seqUpdatesExt.deliverSingleUpdate(
