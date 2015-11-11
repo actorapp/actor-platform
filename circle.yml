@@ -2,6 +2,16 @@ machine:
   java: 
     version: oraclejdk8
 
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
+  override:
+
+
 test:
   pre:
     - actor-sdk/installCoreDeps.sh
+  override:
+
+  post:
+
