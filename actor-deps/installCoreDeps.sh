@@ -1,15 +1,17 @@
 #!/bin/bash
 set -e
 
+. "$BUILD_DIRECTORY/common.sh"
+
 ANDROID_SDK_VERSION="r24.4"
 BUILD_DIRECTORY="`pwd`/actor-deps"
 DIST_DIR="${BUILD_DIRECTORY}/dist"
 if $IS_OSX; then
-echo "Running in OSX Mode"
-SDK_DIR="${BUILD_DIRECTORY}/dist/android-sdk-macosx"
+	echo "Running in OSX Mode"
+	SDK_DIR="${BUILD_DIRECTORY}/dist/android-sdk-macosx"
 else
-echo "Running in Linux Mode"
-SDK_DIR="${BUILD_DIRECTORY}/dist/android-sdk-linux"	
+	echo "Running in Linux Mode"
+	SDK_DIR="${BUILD_DIRECTORY}/dist/android-sdk-linux"	
 fi	
 SDK_FORCE_COMPONENTS="build-tools-23.0.2,build-tools-23.0.1,build-tools-22.0.1,build-tools-21.1.2,extra-android-m2repository"
 SDK_LEVELS="android-23,android-22,android-21"
@@ -18,8 +20,6 @@ SDK_TOOL="${SDK_DIR}/tools/android"
 
 echo "Android SDK Dir: ${SDK_DIR}"
 echo "Android SDK Tool: ${SDK_TOOL}"
-
-. "$BUILD_DIRECTORY/common.sh"
 
 if [ ! -d "${SDK_DIR}" ]; then
 	echo_w Downloading Android SDK...
