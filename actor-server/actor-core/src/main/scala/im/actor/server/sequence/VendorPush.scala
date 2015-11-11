@@ -186,7 +186,7 @@ private[sequence] final class VendorPush(
       googleCreds ← GooglePushCredentialsRepo.findByUser(userId)
       appleCreds ← ApplePushCredentialsRepo.findByUser(userId)
       google ← DBIO.sequence(googleCreds map withInfo) map (_.flatten)
-      apple ← DBIO.sequence(googleCreds map withInfo) map (_.flatten)
+      apple ← DBIO.sequence(appleCreds map withInfo) map (_.flatten)
     } yield Initialized(apple ++ google)) pipeTo self
   }
 
