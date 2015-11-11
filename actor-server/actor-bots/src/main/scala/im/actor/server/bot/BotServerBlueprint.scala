@@ -30,7 +30,7 @@ final class BotServerBlueprint(botUserId: Int, botAuthId: Long, botAuthSid: Int,
 
   val flow: Flow[BotRequest, BotMessageOut, Unit] = {
     val updSource =
-      Source.actorPublisher[(Int, Update)](UpdatesSource.props(botAuthId))
+      Source.actorPublisher[(Int, Update)](UpdatesSource.props(botUserId, botAuthId, botAuthSid))
         .mapAsync(1) {
           case (seq, update) ⇒ updBuilder(seq, update)
         }.collect {

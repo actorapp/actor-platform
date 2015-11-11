@@ -18,9 +18,9 @@ import scala.annotation.tailrec
 private[bot] object UpdatesSource {
   private case class Initialized(userId: Int)
 
-  def source(authId: Long) = Source.actorPublisher[(Int, Update)](props(authId))
+  def source(userId: Int, authId: Long, authSid: Int) = Source.actorPublisher[(Int, Update)](props(userId, authId, authSid))
 
-  def props(authId: Long) = Props(classOf[UpdatesSource], authId)
+  def props(userId: Int, authId: Long, authSid: Int) = Props(classOf[UpdatesSource], userId, authId, authSid)
 }
 
 private class UpdatesSource(userId: Int, authId: Long, authSid: Int) extends ActorPublisher[(Int, Update)] with ActorLogging with Stash {
