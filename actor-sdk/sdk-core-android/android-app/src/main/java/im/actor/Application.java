@@ -29,7 +29,7 @@ public class Application extends android.app.Application{
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setMainColor(Color.parseColor("#529a88"));
 //        style.setMainColor(Color.CYAN);
-//        style.setMainBackgroundColor(Color.DKGRAY);
+        style.setMainBackgroundColor(Color.RED);
 //        style.setTextPrimaryColor(Color.GREEN);
 //        style.setTextSecondaryColor(Color.RED);
 //        style.setSettingsIconColor(Color.GREEN);
