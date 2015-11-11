@@ -2,7 +2,7 @@ package im.actor.server.bot
 
 import java.net.URLEncoder
 
-import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId }
+import akka.actor._
 import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.users.ApiSex
@@ -23,13 +23,15 @@ import slick.dbio.DBIO
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-object BotExtension extends ExtensionId[BotExtension] {
+object BotExtension extends ExtensionId[BotExtension] with ExtensionIdProvider {
   private[bot] val tokensKV = "BotsTokens"
   private[bot] val whTokensKV = "BotsWHTokens"
 
   private[bot] def whUserTokensKV(userId: Int) = s"BotsWHUserTokens-$userId"
 
   override def createExtension(system: ExtendedActorSystem): BotExtension = new BotExtension(system)
+
+  override def lookup() = BotExtension
 }
 
 private[bot] final class BotExtension(_system: ActorSystem) extends Extension {

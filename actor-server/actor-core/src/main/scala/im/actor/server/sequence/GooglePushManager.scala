@@ -27,7 +27,7 @@ object GooglePushManagerConfig {
     } yield GooglePushManagerConfig(keys)
 }
 
-class GooglePushManager(config: GooglePushManagerConfig) {
+final class GooglePushManager(config: GooglePushManagerConfig) {
   private val senders: Map[Long, Sender] =
     (config.keys map {
       case GooglePushKey(projectId, key) ⇒
