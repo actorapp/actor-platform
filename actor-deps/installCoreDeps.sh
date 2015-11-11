@@ -1,11 +1,12 @@
 #!/bin/bash
 set -e
 
-. "$BUILD_DIRECTORY/common.sh"
-
 ANDROID_SDK_VERSION="r24.4"
 BUILD_DIRECTORY="`pwd`/actor-deps"
 DIST_DIR="${BUILD_DIRECTORY}/dist"
+
+. "$BUILD_DIRECTORY/common.sh"
+
 if $IS_OSX; then
 	echo "Running in OSX Mode"
 	SDK_DIR="${BUILD_DIRECTORY}/dist/android-sdk-macosx"
