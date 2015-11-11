@@ -4,14 +4,14 @@ machine:
 
 dependencies:
   pre:
-    - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
+    - actor-deps/installCoreDeps.sh
   override:
 
 
 test:
   pre:
-    - actor-sdk/installCoreDeps.sh
+    
   override:
-
+    - ./gradlew build
   post:
 
