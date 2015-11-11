@@ -2,6 +2,7 @@ package im.actor.server.api.rpc.service.contacts
 
 import java.security.MessageDigest
 
+import akka.event.Logging
 import im.actor.concurrent.FutureExt
 import im.actor.server.acl.ACLUtils
 import im.actor.server.user.UserCommands.ContactToAdd
@@ -36,7 +37,8 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
 
   import ContactsUtils._
   import SocialManager._
-  import UserUtils._
+
+  private val log = Logging(actorSystem, getClass)
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   implicit val timeout = Timeout(5.seconds)

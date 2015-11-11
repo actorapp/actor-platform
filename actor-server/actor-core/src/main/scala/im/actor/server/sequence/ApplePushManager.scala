@@ -2,6 +2,8 @@ package im.actor.server.sequence
 
 import java.util
 
+import akka.event.Logging
+
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -42,7 +44,7 @@ object ApnsCert {
   }
 }
 
-class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
+final class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
   import system.dispatcher
 
   private val managers: Map[Int, PushManager[SimpleApnsPushNotification]] =
@@ -61,12 +63,14 @@ class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
         new PushManagerConfiguration(),
         s"ActorPushManager-${cert.key}"
       )
+
       mgr.registerRejectedNotificationListener(new LoggingRejectedNotificationListener(system))
+
       mgr.registerExpiredTokenListener(new CleanExpiredTokenListener(system))
 
       mgr.start()
 
-      system.scheduler.schedule(0.seconds, 1.hour) {
+      system.scheduler.schedule(10.seconds, 1.hour) {
         mgr.requestExpiredTokens()
       }
 
@@ -80,7 +84,7 @@ class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
 private class LoggingRejectedNotificationListener(_system: ActorSystem) extends RejectedNotificationListener[SimpleApnsPushNotification] {
   private implicit val system: ActorSystem = _system
   private implicit val ec: ExecutionContext = _system.dispatcher
-  private val seqUpdExt = SeqUpdatesExtension(system)
+  private lazy val seqUpdExt = SeqUpdatesExtension(system)
 
   override def handleRejectedNotification(pushManager: PushManager[_ <: SimpleApnsPushNotification], notification: SimpleApnsPushNotification, rejectionReason: RejectedNotificationReason): Unit = {
     system.log.warning("APNS rejected notification with reason: {}", rejectionReason)
