@@ -4,9 +4,10 @@ import akka.actor._
 import akka.cluster.sharding.ShardRegion
 import akka.persistence.RecoveryCompleted
 import akka.util.Timeout
+import im.actor.api.rpc.misc.ApiExtension
 import im.actor.serialization.ActorSerializer
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.DialogExtension
+import im.actor.server.dialog.{ DialogCommand, DialogExtension }
 import im.actor.server.event.TSEvent
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.sequence.SeqUpdatesExtension
@@ -218,6 +219,7 @@ private[user] final class UserProcessor
     case query: GetLocalName                ⇒ contacts.ref forward query
     case StopOffice                         ⇒ context stop self
     case ReceiveTimeout                     ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case dc: DialogCommand                  ⇒ userPeer(state.internalExtensions) forward dc
   }
 
   override protected def handleQuery(state: User): Receive = {
@@ -229,6 +231,11 @@ private[user] final class UserProcessor
     case GetUser(_)                                   ⇒ getUser(state)
     case IsAdmin(_)                                   ⇒ isAdmin(state)
     case GetName(_)                                   ⇒ getName(state)
+  }
+
+  private def userPeer(extensions: Seq[ApiExtension]): ActorRef = {
+    val userPeer = "UserPeer"
+    context.child(userPeer).getOrElse(context.actorOf(UserPeer.props(userId, extensions), userPeer))
   }
 
   protected[this] var userStateMaybe: Option[User] = None
