@@ -5,12 +5,14 @@ machine:
 dependencies:
   pre:
     - actor-deps/installCoreDeps.sh
+  cache_directories:
+    - "actor-deps/dist"
   override:
 
 
 test:
   pre:
-    
+
   override:
     - ./gradlew build
   post:
