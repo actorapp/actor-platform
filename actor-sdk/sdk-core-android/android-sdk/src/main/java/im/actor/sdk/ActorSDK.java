@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -24,10 +25,14 @@ import im.actor.core.ConfigurationBuilder;
 import im.actor.core.DeviceCategory;
 import im.actor.core.PlatformType;
 import im.actor.runtime.Log;
+import im.actor.sdk.controllers.activity.ActorMainActivity;
+import im.actor.sdk.controllers.fragment.auth.AuthActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.ActorPushManager;
 import im.actor.sdk.intents.ActivityManager;
+import im.actor.sdk.intents.ActorIntent;
+import im.actor.sdk.intents.ActorIntentActivity;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.view.emoji.SmileProcessor;
@@ -186,9 +191,9 @@ public class ActorSDK {
 
     public void startMessagingApp(Activity context) {
         if (messenger.isLoggedIn()) {
-            getActivityManager().startMessagingActivity(context);
+            startMessagingActivity(context);
         } else {
-            getActivityManager().startAuthActivity(context);
+            startAuthActivity(context);
         }
     }
 
@@ -344,4 +349,57 @@ public class ActorSDK {
     public ActivityManager getActivityManager() {
         return activityManager;
     }
+
+    public void startAuthActivity(Context context) {
+        startAuthActivity(context, null);
+    }
+
+    public void startAuthActivity(Context context, Bundle extras) {
+        if (!startDelegateActivity(context, delegate.getAuthStartIntent(), extras)) {
+            startActivity(context, extras, AuthActivity.class);
+        }
+    }
+
+    public void startAfterLoginActivity(Context context) {
+        startAfterLoginActivity(context, null);
+    }
+
+    public void startAfterLoginActivity(Context context, Bundle extras) {
+        if (!startDelegateActivity(context, delegate.getStartAfterLoginIntent(), extras)) {
+            startMessagingActivity(context, extras);
+        }
+    }
+
+    public void startMessagingActivity(Context context) {
+        startMessagingActivity(context, null);
+    }
+
+    public void startMessagingActivity(Context context, Bundle extras) {
+        if (!startDelegateActivity(context, delegate.getStartIntent(), extras)) {
+            startActivity(context, extras, ActorMainActivity.class);
+        }
+    }
+
+    private boolean startDelegateActivity(Context context, ActorIntent intent, Bundle extras) {
+        if (intent != null && intent instanceof ActorIntentActivity) {
+            Intent startIntent = ((ActorIntentActivity) intent).getIntent();
+            if (extras != null) {
+                startIntent.putExtras(extras);
+            }
+            context.startActivity(startIntent);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private void startActivity(Context context, Bundle extras, Class<?> cls) {
+        Intent intent = new Intent(context, cls);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
+        context.startActivity(intent);
+    }
+
 }
