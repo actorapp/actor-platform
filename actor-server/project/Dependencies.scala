@@ -22,6 +22,7 @@ object Dependencies {
 
     val akkaActor               = "com.typesafe.akka"             %% "akka-actor"                    % V.akka
     val akkaPersistence         = "com.typesafe.akka"             %% "akka-persistence"              % V.akka
+    val akkaDdata               = "com.typesafe.akka"             %% "akka-distributed-data-experimental" % V.akka
     val akkaClusterTools        = "com.typesafe.akka"             %% "akka-cluster-tools"            % V.akka
     val akkaClusterSharding     = "com.typesafe.akka"             %% "akka-cluster-sharding"         % V.akka
     val akkaStream              = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
@@ -127,6 +128,7 @@ object Dependencies {
     akkaActor,
     akkaClusterTools,
     akkaClusterSharding,
+    akkaDdata,
     amazonaws,
     awsWrap,
     caffeine,
