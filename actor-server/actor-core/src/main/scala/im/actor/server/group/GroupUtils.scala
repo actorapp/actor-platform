@@ -33,7 +33,7 @@ object GroupUtils {
     getPubgroupStructUnsafe(group, clientData.userId)
   }
 
-  def withGroup[A](groupId: Int)(f: ApiGroup ⇒ DBIO[A])(implicit system: ActorSystem): DBIO[A] =
+  def withGroup[A](groupId: Int)(f: ApiGroup ⇒ DBIO[A])(implicit system: ActorSystem, ec: ExecutionContext): DBIO[A] =
     DBIO.from(GroupExtension(system).getApiStruct(groupId, 0)) flatMap f
 
   //todo: use GroupExtension.getMembers instead
