@@ -34,7 +34,6 @@ import im.actor.core.viewmodel.UserPhone;
 import im.actor.core.viewmodel.UserVM;
 import im.actor.core.viewmodel.generics.ArrayListUserPhone;
 import im.actor.sdk.ActorSDK;
-import im.actor.sdk.ActorSDKDelegate;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
@@ -52,16 +51,14 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
-public class MyProfileFragment extends BaseFragment {
+public class MyProfileFragment extends BaseFragment implements IActorSettingsFragment {
 
-    ActorSDKDelegate delegate;
     private int baseColor;
     private CoverAvatarView avatarView;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        delegate = ActorSDK.sharedActor().getDelegate();
         baseColor = getResources().getColor(R.color.primary);
         final ActorStyle style = ActorSDK.sharedActor().style;
         final UserVM userModel = users().get(myUid());
@@ -307,31 +304,31 @@ public class MyProfileFragment extends BaseFragment {
         view.findViewById(R.id.divider3).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         view.findViewById(R.id.divider4).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
-        if (delegate.getBeforeNickSettingsView(getActivity()) != null) {
+        if (getBeforeNickSettingsView(getActivity()) != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
-            beforeNick.addView(delegate.getBeforeNickSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            beforeNick.addView(getBeforeNickSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
-        if (delegate.getBeforeNickSettingsView(getActivity()) != null) {
+        if (getBeforeNickSettingsView(getActivity()) != null) {
             FrameLayout afterPhone = (FrameLayout) view.findViewById(R.id.after_phone_container);
-            afterPhone.addView(delegate.getAfterPhoneSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            afterPhone.addView(getAfterPhoneSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
-        if (delegate.getSettingsTopView(getActivity()) != null) {
+        if (getSettingsTopView(getActivity()) != null) {
             FrameLayout settingsTop = (FrameLayout) view.findViewById(R.id.settings_top_container);
-            settingsTop.addView(delegate.getSettingsTopView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            settingsTop.addView(getSettingsTopView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
-        if (delegate.getSettingsBottomView(getActivity()) != null) {
+        if (getSettingsBottomView(getActivity()) != null) {
             FrameLayout settingsBot = (FrameLayout) view.findViewById(R.id.settings_bottom_container);
-            settingsBot.addView(delegate.getSettingsBottomView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            settingsBot.addView(getSettingsBottomView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
 
-        if (delegate.getBeforeSettingsCategories() != null) {
+        if (getBeforeSettingsCategories() != null) {
             LinearLayout beforeSettings = (LinearLayout) view.findViewById(R.id.before_settings_container);
-            addCategories(beforeSettings, delegate.getBeforeSettingsCategories(), inflater);
+            addCategories(beforeSettings, getBeforeSettingsCategories(), inflater);
         }
 
-        if (delegate.getAfterSettingsCategories() != null) {
+        if (getAfterSettingsCategories() != null) {
             LinearLayout afterSettings = (LinearLayout) view.findViewById(R.id.after_settings_container);
-            addCategories(afterSettings, delegate.getAfterSettingsCategories(), inflater);
+            addCategories(afterSettings, getAfterSettingsCategories(), inflater);
         }
 
         avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
@@ -504,5 +501,35 @@ public class MyProfileFragment extends BaseFragment {
             avatarView.unbind();
             avatarView = null;
         }
+    }
+
+    @Override
+    public View getBeforeNickSettingsView(Context context) {
+        return null;
+    }
+
+    @Override
+    public View getAfterPhoneSettingsView(Context context) {
+        return null;
+    }
+
+    @Override
+    public View getSettingsTopView(Context context) {
+        return null;
+    }
+
+    @Override
+    public View getSettingsBottomView(Context context) {
+        return null;
+    }
+
+    @Override
+    public ActorSettingsCategory[] getBeforeSettingsCategories() {
+        return new ActorSettingsCategory[0];
+    }
+
+    @Override
+    public ActorSettingsCategory[] getAfterSettingsCategories() {
+        return new ActorSettingsCategory[0];
     }
 }
