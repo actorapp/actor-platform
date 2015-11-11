@@ -1,0 +1,6 @@
+machine:
+  java: oraclejdk8
+
+test:
+  pre:
+  	- actor-sdk/installCoreDeps.sh
