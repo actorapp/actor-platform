@@ -15,6 +15,7 @@ private[sequence] final class ApplePushProvider(userId: Int, applePushManager: A
   private val db = DbExtension(system).db
 
   def deliverInvisible(seq: Int, creds: ApplePushCredentials): Unit = {
+<<<<<<< Updated upstream
     applePushManager.getInstance(creds.apnsKey) match {
       case Some(mgr) ⇒
         db.run(HistoryMessageRepo.getUnreadTotal(userId)) foreach { unreadTotal ⇒
@@ -22,6 +23,10 @@ private[sequence] final class ApplePushProvider(userId: Int, applePushManager: A
             new ApnsPayloadBuilder()
               .addCustomProperty("seq", seq)
               .setContentAvailable(true)
+=======
+    withMgr(creds.apnsKey) { mgr ⇒
+      log.debug("Delivering invisible(seq:{}) to apnsKey: {}", seq, creds.apnsKey)
+>>>>>>> Stashed changes
 
           builder.setBadgeNumber(unreadTotal)
 
