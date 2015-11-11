@@ -81,7 +81,7 @@ object HistoryUtils {
     }
   }
 
-  private[dialog] def markMessagesReceived(byPeer: Peer, peer: Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
+  private[dialog] def markMessagesReceived(byPeer: Peer, peer: Peer, date: DateTime)(implicit system: ActorSystem, ec: ExecutionContext): DBIO[Unit] = {
     requirePrivatePeer(byPeer)
     // requireDifferentPeers(byPeer, peer)
 
@@ -108,7 +108,7 @@ object HistoryUtils {
     }
   }
 
-  private[dialog] def markMessagesRead(byPeer: Peer, peer: Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
+  private[dialog] def markMessagesRead(byPeer: Peer, peer: Peer, date: DateTime)(implicit system: ActorSystem, ec: ExecutionContext): DBIO[Unit] = {
     requirePrivatePeer(byPeer)
     // requireDifferentPeers(byPeer, peer)
 
