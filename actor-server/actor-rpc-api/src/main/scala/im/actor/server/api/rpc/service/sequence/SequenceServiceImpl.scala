@@ -139,17 +139,12 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   private def getDelta(userId: Int, authId: Long): Future[Int] =
     db.run(for {
-      authIds ← AuthIdRepo.findByUserId(userId) map (_ map (_.id))
-      maxSeq ← getMaxSeq(authIds)
+      maxSeq ← getMaxSeq(userId)
       seq ← getSeq(authId)
     } yield maxSeq - seq)
 
-  private def getMaxSeq(authIds: Seq[Long]): DBIO[Int] = {
-    if (authIds.isEmpty) DBIO.successful(0)
-    else
-      for {
-        seqs ← DBIO.sequence(authIds map (a ⇒ getSeq(a)))
-      } yield seqs.max
+  private def getMaxSeq(userId: Int): DBIO[Int] = {
+    sql"""SELECT seq FROM user_sequence WHERE user_id = $userId ORDER BY seq DESC LIMIT 1""".as[Int].headOption map (_ getOrElse 0)
   }
 
   private def getSeq(authId: Long)(implicit ec: ExecutionContext) =
