@@ -1,8 +1,10 @@
 package im.actor.server.api.rpc.service.sequence
 
+import akka.event.Logging
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.model.SeqUpdate
+import im.actor.server.persist.AuthIdRepo
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Success
@@ -16,7 +18,7 @@ import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference, SequenceService }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
-import im.actor.server.sequence.{ SeqState, SeqUpdatesExtension }
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.session._
 import im.actor.server.user.UserUtils
 import im.actor.server.db.ActorPostgresDriver.api._
@@ -30,6 +32,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
+  private val log = Logging(actorSystem, getClass)
   private val db: Database = DbExtension(actorSystem).db
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
 
@@ -57,10 +60,9 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
       val seqDeltaFuture =
         if (state.nonEmpty) {
-          for {
-            oldSeq ← getOldSeq(client.authId)
-            SeqState(newSeq, _) ← seqUpdExt.getSeqState(client.userId)
-          } yield newSeq - oldSeq
+          getDelta(client.userId, client.authId) andThen {
+            case Success(delta) => log.debug("Delta for client: {} is: {}", client, delta)
+          }
         } else Future.successful(0)
 
       for {
@@ -70,11 +72,14 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, groups) ← getUsersGroups(userIds, groupIds)
       } yield {
-        val newSeq = updates.lastOption map (_.seq) getOrElse seq
+        val newSeq = updates.lastOption match {
+          case Some(upd) ⇒ upd.seq
+          case None      ⇒ seq + seqDelta
+        }
 
         Ok(ResponseGetDifference(
           seq = newSeq,
-          state = state,
+          state = Array.empty,
           updates = diffUpdates,
           needMore = needMore,
           users = users.toVector,
@@ -132,12 +137,23 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  private def getOldSeq(authId: Long): Future[Int] = {
-    db.run(sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY TIMESTAMP DESC LIMIT 1""".as[Int].headOption) map {
-      case Some(seq) ⇒ seq
-      case None      ⇒ 0
-    }
+  private def getDelta(userId: Int, authId: Long): Future[Int] =
+    db.run(for {
+      authIds ← AuthIdRepo.findByUserId(userId) map (_ map (_.id))
+      maxSeq ← getMaxSeq(authIds)
+      seq ← getSeq(authId)
+    } yield maxSeq - seq)
+
+  private def getMaxSeq(authIds: Seq[Long]): DBIO[Int] = {
+    if (authIds.isEmpty) DBIO.successful(0)
+    else
+      for {
+        seqs ← DBIO.sequence(authIds map (a ⇒ getSeq(a)))
+      } yield seqs.max
   }
+
+  private def getSeq(authId: Long)(implicit ec: ExecutionContext) =
+    sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY timestamp DESC LIMIT 1""".as[Int].headOption map (_ getOrElse 0)
 
   private def extractDiff(updates: IndexedSeq[SeqUpdate])(implicit client: AuthorizedClientData): (IndexedSeq[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
     updates.foldLeft[(Vector[ApiDifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
