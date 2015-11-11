@@ -3,4 +3,4 @@ machine:
 
 test:
   pre:
-  	- actor-sdk/installCoreDeps.sh
+    - actor-sdk/installCoreDeps.sh
