@@ -23,7 +23,8 @@ final class GroupsServiceSpec
   with ImplicitSequenceService
   with ImplicitAuthService
   with ImplicitSessionRegion
-  with SeqUpdateMatchers {
+  with SeqUpdateMatchers
+  with PeersImplicits {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in sendInvitesOnCreate
@@ -133,7 +134,7 @@ final class GroupsServiceSpec
     {
       implicit val clientData = clientData2
       expectUpdate(classOf[UpdateGroupInvite])(identity)
-      expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
+      //UpdateChatGroupsChanged will come after creation of dialog
     }
 
   }
@@ -164,9 +165,9 @@ final class GroupsServiceSpec
 
     {
       implicit val clientData = clientData2
-      expectUpdate(classOf[UpdateChatGroupsChanged])(identity)
       expectUpdate(classOf[UpdateGroupInvite])(identity)
       expectUpdate(classOf[UpdateGroupTitleChanged])(identity)
+      //UpdateChatGroupsChanged will come after creation of dialog
     }
 
   }

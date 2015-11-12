@@ -1,0 +1,20 @@
+machine:
+  java: 
+    version: oraclejdk8
+
+dependencies:
+  pre:
+    - actor-deps/installCoreDeps.sh
+  cache_directories:
+    - "actor-deps/dist"
+  override:
+
+
+test:
+  pre:
+
+  override:
+    - ./gradlew clean build -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
+    - cd actor-server && ./sbt test
+  post:
+

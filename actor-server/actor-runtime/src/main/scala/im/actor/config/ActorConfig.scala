@@ -42,6 +42,8 @@ object ActorConfig {
         |      "com.trueaccord.scalapb.GeneratedMessage" = actor
         |    }
         |  }
+        |
+        |  cluster.sharding.state-store-mode = "ddata"
         |}
       """.stripMargin
     ))
