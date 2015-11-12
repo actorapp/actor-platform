@@ -29,7 +29,7 @@ final class DialogTable(tag: Tag) extends Table[Dialog](tag, "dialogs") {
 
   def ownerLastReadAt = column[DateTime]("owner_last_read_at")
 
-  def isHidden = column[Boolean]("is_hidden")
+  def shownAt = column[Option[DateTime]]("shown_at")
 
   def isArchived = column[Boolean]("is_archived")
 
@@ -44,12 +44,12 @@ final class DialogTable(tag: Tag) extends Table[Dialog](tag, "dialogs") {
     lastReadAt,
     ownerLastReceivedAt,
     ownerLastReadAt,
-    isHidden,
+    shownAt,
     isArchived,
     createdAt
   ) <> (applyDialog.tupled, unapplyDialog)
 
-  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Boolean, Boolean, DateTime) ⇒ Dialog = {
+  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Option[DateTime], Boolean, DateTime) ⇒ Dialog = {
     case (
       userId,
       peerType,
@@ -70,13 +70,13 @@ final class DialogTable(tag: Tag) extends Table[Dialog](tag, "dialogs") {
         lastReadAt = lastReadAt,
         ownerLastReceivedAt = ownerLastReceivedAt,
         ownerLastReadAt = ownerLastReadAt,
-        isHidden = isHidden,
+        shownAt = isHidden,
         isArchived = isArchived,
         createdAt = createdAt
       )
   }
 
-  def unapplyDialog: Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Boolean, Boolean, DateTime)] = { dialog ⇒
+  def unapplyDialog: Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime, Option[DateTime], Boolean, DateTime)] = { dialog ⇒
     Dialog.unapply(dialog).map {
       case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isHidden, isArchived, createdAt) ⇒
         (userId, peer.typ.value, peer.id, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt, isHidden, isArchived, createdAt)
@@ -115,7 +115,7 @@ object DialogRepo {
     case (dialog, groupOpt) ⇒ dialog.isArchived === false && groupOpt.map(!_.isHidden).getOrElse(true)
   } map (_._1)
 
-  val notHiddenNotArchived = notArchived filter (_.isHidden === false)
+  val notHiddenNotArchived = notArchived filter (_.shownAt.isDefined)
 
   def create(dialog: Dialog) =
     dialogsC += dialog
@@ -149,7 +149,7 @@ object DialogRepo {
     dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result
 
   def findNotArchivedSortByLastMessageData(userId: Int, dateOpt: Option[DateTime], limit: Int, fetchHidden: Boolean = false)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] =
-    findNotArchived(userId, dateOpt: Option[DateTime], limit, _.lastMessageDate.desc, fetchHidden)
+    findNotArchived(userId, dateOpt: Option[DateTime], limit, _.shownAt.asc, fetchHidden)
 
   def findNotArchived(userId: Int, dateOpt: Option[DateTime], limit: Int, fetchHidden: Boolean = false)(implicit ec: ExecutionContext): DBIO[Seq[Dialog]] =
     findNotArchived(userId, dateOpt: Option[DateTime], limit, _.lastMessageDate.desc, fetchHidden)
@@ -179,10 +179,10 @@ object DialogRepo {
   }
 
   def hide(userId: Int, peer: Peer) =
-    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.isHidden).update(true)
+    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.shownAt).update(None)
 
   def show(userId: Int, peer: Peer) =
-    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.isHidden).update(false)
+    byPKC.applied((userId, peer.typ.value, peer.id)).map(_.shownAt).update(Some(new DateTime))
 
   def updateLastMessageDate(userId: Int, peer: Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) =
     byPKC.applied((userId, peer.typ.value, peer.id)).map(_.lastMessageDate).update(lastMessageDate)

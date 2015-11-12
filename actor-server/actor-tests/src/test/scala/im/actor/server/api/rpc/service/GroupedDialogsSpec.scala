@@ -21,8 +21,8 @@ final class GroupedDialogsSpec
   with MessagingSpecHelpers {
   "LoadGroupedDialogs" should "load groups and privates" in loadGrouped
 
-  "Dialogs" should "appear in top on new incoming message" in incomingGoTop
-  it should "appear in top on new outgoing message" in outgoingGoTop
+  "Dialogs" should "appear in bottom on new incoming message" in incomingGoBottom
+  it should "appear in bottom on new outgoing message" in outgoingGoBottom
 
   "Hidden dialogs" should "appear on new message" in appearHidden
   it should "appear on show" in appearShown
@@ -78,7 +78,7 @@ final class GroupedDialogsSpec
     }
   }
 
-  def incomingGoTop() = {
+  def incomingGoBottom() = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, bobAuthId, bobAuthSid, _) = createUser()
     val (eve, eveAuthId, eveAuthSid, _) = createUser()
@@ -104,15 +104,13 @@ final class GroupedDialogsSpec
       val dgs = getDialogGroups()
       val privates = dgs(Privates.key)
       privates.size should equal(2)
-      privates.head.peer.id should equal(bob.id)
-      privates.last.peer.id should equal(eve.id)
+      privates.head.peer.id should equal(eve.id)
+      privates.last.peer.id should equal(bob.id)
     }
-
-    Thread.sleep(1)
 
     {
       implicit val clientData = eveClient
-      sendMessageToUser(alice.id, ApiTextMessage("Hi, It's Eve again!", Vector.empty, None))
+      sendMessageToUser(alice.id, ApiTextMessage("Hi, I am Eve", Vector.empty, None))
     }
 
     {
@@ -122,7 +120,7 @@ final class GroupedDialogsSpec
     }
   }
 
-  def outgoingGoTop() = {
+  def outgoingGoBottom() = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, _, _, _) = createUser()
     val (eve, _, _, _) = createUser()
@@ -133,10 +131,10 @@ final class GroupedDialogsSpec
 
     inside(getDialogGroups(Privates)) {
       case privates ⇒
-        privates.head.peer.id should equal(eve.id)
+        privates.head.peer.id should equal(bob.id)
     }
 
-    sendMessageToUser(bob.id, textMessage("Go to top!"))
+    sendMessageToUser(eve.id, textMessage("Grrr"))
 
     inside(getDialogGroups(Privates)) {
       case privates ⇒
@@ -147,40 +145,46 @@ final class GroupedDialogsSpec
   def appearHidden() = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, _, _, _) = createUser()
+    val (eve, _, _, _) = createUser()
 
     implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
     sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 
-    prepareDialogs(bob)
+    prepareDialogs(bob, eve)
     whenReady(service.handleHideDialog(bobPeer))(identity)
     inside(getDialogGroups(Privates)) {
-      case Vector() ⇒
+      case Vector(d) ⇒ d.peer.id should equal(eve.id)
     }
 
     sendMessageToUser(bob.id, textMessage("Hi Bob!"))
     inside(getDialogGroups(Privates)) {
-      case Vector(_) ⇒
+      case Vector(d1, d2) ⇒
+        d1.peer.id should equal(eve.id)
+        d2.peer.id should equal(bob.id)
     }
   }
 
   def appearShown() = {
     val (alice, aliceAuthId, aliceAuthSid, _) = createUser()
     val (bob, _, _, _) = createUser()
+    val (eve, _, _, _) = createUser()
 
     implicit val clientData = ClientData(aliceAuthId, 1, Some(AuthData(alice.id, aliceAuthSid)))
     val bobPeer = getOutPeer(bob.id, aliceAuthId)
     sendMessageToUser(bob.id, textMessage("Hi Bob!"))
 
-    prepareDialogs(bob)
+    prepareDialogs(bob, eve)
     whenReady(service.handleHideDialog(bobPeer))(identity)
     inside(getDialogGroups(Privates)) {
-      case Vector() ⇒
+      case Vector(d) ⇒ d.peer.id should equal(eve.id)
     }
 
     whenReady(service.handleShowDialog(bobPeer))(identity)
     inside(getDialogGroups(Privates)) {
-      case Vector(_) ⇒
+      case Vector(d1, d2) ⇒
+        d1.peer.id should equal(eve.id)
+        d2.peer.id should equal(bob.id)
     }
   }
 }
