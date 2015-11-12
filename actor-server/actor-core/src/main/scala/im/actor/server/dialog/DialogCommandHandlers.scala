@@ -35,7 +35,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
         throw e
     }) pipeTo sender()
     sendFuture onSuccess {
-      case SeqStateDate(_, _, date) ⇒ self ! LastOwnMessageDate(date)
+      case SeqStateDate(_, _, date) ⇒
+        self ! LastOwnMessageDate(date)
+        if (state.isHidden)
+          self.tell(Show(peer), ActorRef.noSender)
     }
   }
 
@@ -45,10 +48,11 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     deliveryExt
       .receiverDelivery(userId, sm.origin.id, peer, sm.randomId, sm.date, sm.message, sm.isFat)
       .map(_ ⇒ SendMessageAck())
-      .pipeTo(sender())
-
-    if (state.isHidden)
-      self.tell(Show(peer), ActorRef.noSender)
+      .pipeTo(sender()) onSuccess {
+        case _ ⇒
+          if (state.isHidden)
+            self.tell(Show(peer), ActorRef.noSender)
+      }
 
     //    onSuccess(fu) { _ =>
     //      updatePeerMessageDate()
@@ -160,6 +164,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     if (state.isHidden)
       sender ! Status.Failure(DialogErrors.DialogAlreadyHidden(peer))
     else {
+
       val future =
         (for {
           _ ← db.run(DialogRepo.hide(userId, peer))
