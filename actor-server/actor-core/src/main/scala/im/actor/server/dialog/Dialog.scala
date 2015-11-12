@@ -2,7 +2,8 @@ package im.actor.server.dialog
 
 import java.time.Instant
 
-import akka.actor.{ ActorSystem, ActorLogging, Actor, Props }
+import akka.actor._
+import akka.pattern.pipe
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.misc.ApiExtension
@@ -118,14 +119,17 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
   protected implicit val sendResponseCache: Cache[AuthSidRandomId, Future[SeqStateDate]] =
     createCache[AuthSidRandomId, Future[SeqStateDate]](MaxCacheSize)
 
-  createDialogIfNeeded()
+  init()
 
-  override def receive: Receive = init
+  override def receive: Receive = initializing
 
-  def init: Receive = receiveStashing(replyTo ⇒ {
+  def initializing: Receive = receiveStashing(replyTo ⇒ {
     case Initialized(isHidden) ⇒
       context become initialized(DialogState(isHidden = isHidden))
       unstashAll()
+    case Status.Failure(e) ⇒
+      log.error(e, "Failed to init dialog")
+      self ! Kill
   })
 
   def initialized(state: DialogState): Receive = {
@@ -165,7 +169,7 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
    */
   def accepts(dc: DirectDialogCommand) = (dc.dest == selfPeer) || ((dc.dest == peer) && (dc.origin != selfPeer))
 
-  private[this] def createDialogIfNeeded(): Future[Unit] =
+  private[this] def init(): Unit =
     db.run(for {
       optDialog ← DialogRepo.find(userId, peer)
       dialog ← optDialog match {
@@ -177,6 +181,6 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
             _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
           } yield dialog
       }
-    } yield { self ! Initialized(dialog.shownAt.isEmpty) })
+    } yield Initialized(dialog.shownAt.isEmpty)) pipeTo self
 
 }
