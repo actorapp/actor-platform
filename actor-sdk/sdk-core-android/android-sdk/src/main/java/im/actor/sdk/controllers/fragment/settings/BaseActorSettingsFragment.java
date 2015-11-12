@@ -51,7 +51,7 @@ import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 import static im.actor.sdk.util.ActorSDKMessenger.myUid;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
 
-public class MyProfileFragment extends BaseFragment implements IActorSettingsFragment {
+public abstract class BaseActorSettingsFragment extends BaseFragment implements IActorSettingsFragment {
 
     private int baseColor;
     private CoverAvatarView avatarView;
@@ -304,21 +304,21 @@ public class MyProfileFragment extends BaseFragment implements IActorSettingsFra
         view.findViewById(R.id.divider3).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         view.findViewById(R.id.divider4).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
 
-        if (getBeforeNickSettingsView(getActivity()) != null) {
+        if (getBeforeNickSettingsView() != null) {
             FrameLayout beforeNick = (FrameLayout) view.findViewById(R.id.before_nick_container);
-            beforeNick.addView(getBeforeNickSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            beforeNick.addView(getBeforeNickSettingsView(), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
-        if (getBeforeNickSettingsView(getActivity()) != null) {
+        if (getBeforeNickSettingsView() != null) {
             FrameLayout afterPhone = (FrameLayout) view.findViewById(R.id.after_phone_container);
-            afterPhone.addView(getAfterPhoneSettingsView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            afterPhone.addView(getAfterPhoneSettingsView(), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
-        if (getSettingsTopView(getActivity()) != null) {
+        if (getSettingsTopView() != null) {
             FrameLayout settingsTop = (FrameLayout) view.findViewById(R.id.settings_top_container);
-            settingsTop.addView(getSettingsTopView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            settingsTop.addView(getSettingsTopView(), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
-        if (getSettingsBottomView(getActivity()) != null) {
+        if (getSettingsBottomView() != null) {
             FrameLayout settingsBot = (FrameLayout) view.findViewById(R.id.settings_bottom_container);
-            settingsBot.addView(getSettingsBottomView(getActivity()), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            settingsBot.addView(getSettingsBottomView(), FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         }
 
         if (getBeforeSettingsCategories() != null) {
@@ -387,19 +387,16 @@ public class MyProfileFragment extends BaseFragment implements IActorSettingsFra
         container.addView(ll, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 
         for (ActorSettingsField field : fields) {
-            if (field.getView(context) != null) {
-                View view = field.getView(context);
+            if (field.getView() != null) {
+                View view = field.getView();
                 ll.addView(view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                field.bindCreatedView(view);
             } else {
                 LinearLayout fieldLayout = (LinearLayout) inflater.inflate(R.layout.actor_settings_field, null);
                 TintImageView icon = (TintImageView) fieldLayout.findViewById(R.id.icon);
                 icon.setTint(ActorSDK.sharedActor().style.getSettingsIconColor());
                 TextView name = (TextView) fieldLayout.findViewById(R.id.name);
                 name.setTextColor(ActorSDK.sharedActor().style.getSettingsTitleColor());
-                View rightView = field.getRightView(context);
-                field.bindCreatedRightView(rightView);
-                field.bindCreatedTextView(name);
+                View rightView = field.getRightView();
 
                 //Icon
                 if (field.getIconResourceId() != 0) {
@@ -503,33 +500,4 @@ public class MyProfileFragment extends BaseFragment implements IActorSettingsFra
         }
     }
 
-    @Override
-    public View getBeforeNickSettingsView(Context context) {
-        return null;
-    }
-
-    @Override
-    public View getAfterPhoneSettingsView(Context context) {
-        return null;
-    }
-
-    @Override
-    public View getSettingsTopView(Context context) {
-        return null;
-    }
-
-    @Override
-    public View getSettingsBottomView(Context context) {
-        return null;
-    }
-
-    @Override
-    public ActorSettingsCategory[] getBeforeSettingsCategories() {
-        return new ActorSettingsCategory[0];
-    }
-
-    @Override
-    public ActorSettingsCategory[] getAfterSettingsCategories() {
-        return new ActorSettingsCategory[0];
-    }
 }
