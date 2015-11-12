@@ -14,6 +14,7 @@ import im.actor.util.cache.CacheHelpers._
 import org.joda.time.DateTime
 
 import scala.concurrent.Future
+import scala.util.Failure
 
 trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   this: Dialog ⇒
@@ -129,7 +130,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       } yield MessageReadAck()
     } else {
       Future.successful(MessageReadAck())
-    }) pipeTo sender()
+    }) pipeTo sender() andThen {
+      case Failure(e) => log.error(e, "Failed to ack MessageRead")
+    }
+
     if (mustRead) {
       onSuccess(readFuture) { _ ⇒
         updateOwnReadDate(state, mr.date)
@@ -138,7 +142,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   }
 
   protected def ackMessageRead(state: DialogState, mr: MessageRead): Unit = {
-    val notifyFuture = (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender()
+    val notifyFuture = (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
+      case Failure(e) => log.error(e, "Failed to ack MessageRead")
+    }
+    
     onSuccess(notifyFuture) { _ ⇒
       updatePeerReadDate(state, mr.date)
     }
