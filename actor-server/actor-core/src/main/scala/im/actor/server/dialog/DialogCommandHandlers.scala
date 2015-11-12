@@ -105,22 +105,25 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     } else {
       Future.successful(MessageReceivedAck())
     }) pipeTo sender() andThen {
-      case Failure(e) => log.error(e, "Failed to process MessageReceived")
+      case Failure(e) ⇒ log.error(e, "Failed to process MessageReceived")
     }
 
     if (mustReceive) {
-      onSuccess(receiveFuture) { _ ⇒
-        updateOwnReceiveDate(state, mr.date)
-      }
+      receiveFuture pipeTo self
+      becomeStashing(replyTo ⇒ acceptsRcv(state) orElse {
+        case MessageReceivedAck() ⇒
+          updateOwnReceiveDate(state, mr.date)
+          context.unbecome()
+          unstashAll()
+      })
     }
   }
 
   protected def ackMessageReceived(state: DialogState, mr: MessageReceived): Unit = {
     val notifyFuture =
       (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
-        case Failure(e) => log.error(e, "Failed to ack MessageReceived")
+        case Failure(e) ⇒ log.error(e, "Failed to ack MessageReceived")
       }
-
 
     onSuccess(notifyFuture) { _ ⇒
       updatePeerReceiveDate(state, mr.date)
@@ -143,9 +146,13 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     }
 
     if (mustRead) {
-      onSuccess(readFuture) { _ ⇒
-        updateOwnReadDate(state, mr.date)
-      }
+      readFuture pipeTo self
+      becomeStashing(replyTo ⇒ acceptsRcv(state) orElse {
+        case MessageReadAck() ⇒
+          updateOwnReadDate(state, mr.date)
+          context.unbecome()
+          unstashAll()
+      })
     }
   }
 

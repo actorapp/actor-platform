@@ -132,17 +132,27 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
       self ! Kill
   })
 
-  def initialized(state: DialogState): Receive = {
-    case sm: SendMessage if invokes(sm)              ⇒ sendMessage(state, sm) //User sends message
-    case sm: SendMessage if accepts(sm)              ⇒ ackSendMessage(state, sm) //User's message been sent
-    case mrv: MessageReceived if invokes(mrv)        ⇒ messageReceived(state, mrv) //User received messages
-    case mrv: MessageReceived if accepts(mrv)        ⇒ ackMessageReceived(state, mrv) //User's messages been received
-    case mrd: MessageRead if invokes(mrd)            ⇒ messageRead(state, mrd) //User reads messages
-    case mrd: MessageRead if accepts(mrd)            ⇒ ackMessageRead(state, mrd) //User's messages been read
+  def initialized(state: DialogState): Receive = invokesRcv(state) orElse acceptsRcv(state) orElse {
     case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
     case md: LastOwnMessageDate                      ⇒ updateOwnMessageDate(state, md)
     case Show(_)                                     ⇒ show(state)
     case Hide(_)                                     ⇒ hide(state)
+  }
+
+  def invokesRcv(state: DialogState): Receive = {
+    case dc: DirectDialogCommand if invokes(dc) ⇒ dc match {
+      case sm: SendMessage      ⇒ sendMessage(state, sm) //User sends message
+      case mrv: MessageReceived ⇒ messageReceived(state, mrv) //User received messages
+      case mrd: MessageRead     ⇒ messageRead(state, mrd) //User reads messages
+    }
+  }
+
+  def acceptsRcv(state: DialogState): Receive = {
+    case dc: DirectDialogCommand if accepts(dc) ⇒ dc match {
+      case sm: SendMessage      ⇒ ackSendMessage(state, sm) //User's message been sent
+      case mrv: MessageReceived ⇒ ackMessageReceived(state, mrv) //User's messages been received
+      case mrd: MessageRead     ⇒ ackMessageRead(state, mrd) //User's messages been read
+    }
   }
 
   /**
