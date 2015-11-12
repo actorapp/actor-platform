@@ -31,40 +31,32 @@ object DialogEvents {
 
   private[dialog] final case class Initialized(isHidden: Boolean) extends DialogEvent
 
-  private[dialog] final case class LastOwnMessageDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastMessageDate(date: Long) extends DialogEvent
 
-  private[dialog] final case class LastOwnReceiveDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastReceiveDate(date: Long) extends DialogEvent
 
-  private[dialog] final case class LastOwnReadDate(date: Long) extends DialogEvent
-
-  private[dialog] final case class LastPeerMessageDate(date: Long) extends DialogEvent
-
-  private[dialog] final case class LastPeerReceiveDate(date: Long) extends DialogEvent
-
-  private[dialog] final case class LastPeerReadDate(date: Long) extends DialogEvent
+  private[dialog] final case class LastReadDate(date: Long) extends DialogEvent
 
   private[dialog] case object Shown extends DialogEvent
   private[dialog] case object Hidden extends DialogEvent
 
 }
 
+private[dialog] object DialogState {
+  def init(isHidden: Boolean) = DialogState(0, 0, 0, isHidden)
+}
+
 private[dialog] final case class DialogState(
-  lastOwnMessageDate: Long = 0,
-  lastOwnReceiveDate: Long = 0,
-  lastOwnReadDate:    Long = 0,
-  //lastPeerMessageDate: Long = 0,
-  lastPeerReceiveDate: Long    = 0,
-  lastPeerReadDate:    Long    = 0,
-  isHidden:            Boolean = false
+  lastMessageDate: Long,
+  lastReceiveDate: Long,
+  lastReadDate:    Long,
+  isHidden:        Boolean
 ) extends ProcessorState[DialogState] {
   import DialogEvents._
   override def updated(e: AnyRef, ts: Instant): DialogState = e match {
-    case LastOwnMessageDate(date) if date != this.lastOwnMessageDate ⇒ this.copy(lastOwnMessageDate = date)
-    case LastOwnReceiveDate(date) if date != this.lastOwnReceiveDate ⇒ this.copy(lastOwnReceiveDate = date)
-    case LastOwnReadDate(date) if date != this.lastOwnReadDate ⇒ this.copy(lastOwnReadDate = date)
-    //    case LastPeerMessageDate(date) if date != this.lastPeerMessageDate ⇒ this.copy(lastPeerMessageDate = date)
-    case LastPeerReceiveDate(date) if date != this.lastPeerReceiveDate ⇒ this.copy(lastPeerReceiveDate = date)
-    case LastPeerReadDate(date) if date != this.lastPeerReadDate ⇒ this.copy(lastPeerReadDate = date)
+    case LastMessageDate(date) if date > this.lastMessageDate ⇒ this.copy(lastMessageDate = date)
+    case LastReceiveDate(date) if date > this.lastReceiveDate ⇒ this.copy(lastReceiveDate = date)
+    case LastReadDate(date) if date > this.lastReadDate ⇒ this.copy(lastReadDate = date)
     case Shown ⇒ this.copy(isHidden = false)
     case Hidden ⇒ this.copy(isHidden = true)
     case unm ⇒ this
@@ -125,35 +117,23 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
 
   def initializing: Receive = receiveStashing(replyTo ⇒ {
     case Initialized(isHidden) ⇒
-      context become initialized(DialogState(isHidden = isHidden))
+      context become initialized(DialogState.init(isHidden))
       unstashAll()
     case Status.Failure(e) ⇒
       log.error(e, "Failed to init dialog")
       self ! Kill
   })
 
-  def initialized(state: DialogState): Receive = invokesRcv(state) orElse acceptsRcv(state) orElse {
-    case md: LastOwnMessageDate                      ⇒ updateOwnMessageDate(state, md)
+  def initialized(state: DialogState): Receive = {
+    case sm: SendMessage if invokes(sm)              ⇒ sendMessage(state, sm) //User sends message
+    case sm: SendMessage if accepts(sm)              ⇒ ackSendMessage(state, sm) //User's message been sent
+    case mrv: MessageReceived if invokes(mrv)        ⇒ messageReceived(state, mrv) //User received messages
+    case mrv: MessageReceived if accepts(mrv)        ⇒ ackMessageReceived(state, mrv) //User's messages been received
+    case mrd: MessageRead if invokes(mrd)            ⇒ messageRead(state, mrd) //User reads messages
+    case mrd: MessageRead if accepts(mrd)            ⇒ ackMessageRead(state, mrd) //User's messages been read
+    case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
     case Show(_)                                     ⇒ show(state)
     case Hide(_)                                     ⇒ hide(state)
-  }
-
-  def invokesRcv(state: DialogState): Receive = {
-    case dc: DirectDialogCommand if invokes(dc) ⇒ dc match {
-      case sm: SendMessage      ⇒ sendMessage(state, sm) //User sends message
-      case mrv: MessageReceived ⇒ messageReceived(state, mrv) //User received messages
-      case mrd: MessageRead     ⇒ messageRead(state, mrd) //User reads messages
-      case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
-    }
-  }
-
-  def acceptsRcv(state: DialogState): Receive = {
-    case dc: DirectDialogCommand if accepts(dc) ⇒ dc match {
-      case sm: SendMessage      ⇒ ackSendMessage(state, sm) //User's message been sent
-      case mrv: MessageReceived ⇒ ackMessageReceived(state, mrv) //User's messages been received
-      case mrd: MessageRead     ⇒ ackMessageRead(state, mrd) //User's messages been read
-      case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
-    }
   }
 
   /**
