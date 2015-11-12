@@ -3,6 +3,7 @@ package im.actor.server.api.http.bots
 import java.util.Base64
 
 import akka.actor.ActorSystem
+import akka.event.Logging
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.ws.{ Message, TextMessage }
 import akka.http.scaladsl.model.{ HttpMethod, StatusCode }
