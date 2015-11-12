@@ -43,7 +43,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
     )
 
     for {
-      senderName ← userExt.getName(receiverUserId, senderUserId)
+      senderName ← userExt.getName(senderUserId, receiverUserId)
       pushText ← getPushText(peer, receiverUserId, senderName, message)
       _ ← seqUpdatesExt.deliverSingleUpdate(
         receiverUserId,
