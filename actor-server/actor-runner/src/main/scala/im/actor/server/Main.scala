@@ -91,6 +91,7 @@ object ActorServer {
       HiddenGroupMigrator.migrate()
       LocalNamesFromKVMigrator.migrate()
       FillUserSequenceMigrator.migrate()
+      FixUserSequenceMigrator.migrate()
 
       system.log.debug("Starting SeqUpdatesExtension")
       val seqUpdatesExt = SeqUpdatesExtension(system)
