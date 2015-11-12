@@ -40,13 +40,13 @@ object UserUtils {
   def userPhone(u: model.User, phones: Seq[UserPhone]): Option[Long] = {
     phones.headOption match {
       case Some(phone) ⇒ Some(phone.number)
-      case None ⇒ Some(0L)
+      case None        ⇒ Some(0L)
     }
   }
 
   def normalizeLocalName(name: Option[String]) = name match {
-    case n@Some(name) if name.nonEmpty ⇒ n
-    case _ ⇒ None
+    case n @ Some(name) if name.nonEmpty ⇒ n
+    case _                               ⇒ None
   }
 
   def safeGetUser(userId: Int, clientUserId: Int, clientAuthId: Long)(implicit system: ActorSystem) = {
