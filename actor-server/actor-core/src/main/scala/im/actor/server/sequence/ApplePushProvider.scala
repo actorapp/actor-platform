@@ -15,22 +15,19 @@ private[sequence] final class ApplePushProvider(userId: Int, applePushManager: A
   private val db = DbExtension(system).db
 
   def deliverInvisible(seq: Int, creds: ApplePushCredentials): Unit = {
-    applePushManager.getInstance(creds.apnsKey) match {
-      case Some(mgr) ⇒
-        db.run(HistoryMessageRepo.getUnreadTotal(userId)) foreach { unreadTotal ⇒
-          val builder =
-            new ApnsPayloadBuilder()
-              .addCustomProperty("seq", seq)
-              .setContentAvailable(true)
+    withMgr(creds.apnsKey) { mgr ⇒
+      log.debug("Delivering invisible(seq:{}) to apnsKey: {}", seq, creds.apnsKey)
+      db.run(HistoryMessageRepo.getUnreadTotal(userId)) foreach { unreadTotal ⇒
+        val builder =
+          new ApnsPayloadBuilder()
+            .addCustomProperty("seq", seq)
+            .setContentAvailable(true)
+        builder.setBadgeNumber(unreadTotal)
 
-          builder.setBadgeNumber(unreadTotal)
+        val payload = builder.buildWithDefaultMaximumLength()
 
-          val payload = builder.buildWithDefaultMaximumLength()
-
-          mgr.getQueue.add(new SimpleApnsPushNotification(creds.token.toByteArray, payload))
-        }
-      case None ⇒
-        log.warning("No apple push configured for apns-key: {}", creds.apnsKey)
+        mgr.getQueue.add(new SimpleApnsPushNotification(creds.token.toByteArray, payload))
+      }
     }
   }
 

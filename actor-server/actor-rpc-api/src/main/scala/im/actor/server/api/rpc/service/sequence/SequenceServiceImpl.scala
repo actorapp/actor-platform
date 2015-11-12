@@ -1,5 +1,6 @@
 package im.actor.server.api.rpc.service.sequence
 
+import akka.event.Logging
 import im.actor.api.rpc.groups.ApiGroup
 import im.actor.api.rpc.users.ApiUser
 import im.actor.server.model.SeqUpdate
@@ -9,7 +10,6 @@ import scala.util.Success
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
@@ -17,9 +17,10 @@ import im.actor.api.rpc.peers.{ ApiGroupOutPeer, ApiUserOutPeer }
 import im.actor.api.rpc.sequence.{ ApiDifferenceUpdate, ResponseGetDifference, SequenceService }
 import im.actor.server.db.DbExtension
 import im.actor.server.group.GroupExtension
-import im.actor.server.sequence.{ SeqUpdatesExtension }
+import im.actor.server.sequence.SeqUpdatesExtension
 import im.actor.server.session._
 import im.actor.server.user.UserUtils
+import im.actor.server.db.ActorPostgresDriver.api._
 
 final class SequenceServiceImpl(config: SequenceServiceConfig)(
   implicit
@@ -30,6 +31,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
+  private val log = Logging(actorSystem, getClass)
   private val db: Database = DbExtension(actorSystem).db
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
 
@@ -54,17 +56,29 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     authorized(clientData) { implicit client ⇒
       subscribeToSeq()
+
+      val seqDeltaFuture =
+        if (state.nonEmpty) {
+          getDelta(client.userId, client.authId) andThen {
+            case Success(delta) ⇒ log.debug("Delta for client: {} is: {}", client, delta)
+          }
+        } else Future.successful(0)
+
       for {
+        seqDelta ← seqDeltaFuture
         // FIXME: would new updates between getSeqState and getDifference break client state?
-        (updates, needMore) ← seqUpdExt.getDifference(client.userId, seq, client.authSid, maxDifferenceSize)
+        (updates, needMore) ← seqUpdExt.getDifference(client.userId, seq + seqDelta, client.authSid, maxDifferenceSize)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, groups) ← getUsersGroups(userIds, groupIds)
       } yield {
-        val newSeq = updates.lastOption map (_.seq) getOrElse seq
+        val newSeq = updates.lastOption match {
+          case Some(upd) ⇒ upd.seq
+          case None      ⇒ seq + seqDelta
+        }
 
         Ok(ResponseGetDifference(
           seq = newSeq,
-          state = state,
+          state = Array.empty,
           updates = diffUpdates,
           needMore = needMore,
           users = users.toVector,
@@ -121,6 +135,19 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
           .withSubscribeFromGroupOnline(SubscribeFromGroupOnline(groups.map(_.groupId)))
     }
   }
+
+  private def getDelta(userId: Int, authId: Long): Future[Int] =
+    db.run(for {
+      maxSeq ← getMaxSeq(userId)
+      seq ← getSeq(authId)
+    } yield maxSeq - seq)
+
+  private def getMaxSeq(userId: Int): DBIO[Int] = {
+    sql"""SELECT seq FROM user_sequence WHERE user_id = $userId ORDER BY seq DESC LIMIT 1""".as[Int].headOption map (_ getOrElse 0)
+  }
+
+  private def getSeq(authId: Long)(implicit ec: ExecutionContext) =
+    sql"""SELECT seq FROM seq_updates_ngen WHERE auth_id = $authId ORDER BY timestamp DESC LIMIT 1""".as[Int].headOption map (_ getOrElse 0)
 
   private def extractDiff(updates: IndexedSeq[SeqUpdate])(implicit client: AuthorizedClientData): (IndexedSeq[ApiDifferenceUpdate], Set[Int], Set[Int]) = {
     updates.foldLeft[(Vector[ApiDifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {

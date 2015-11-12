@@ -15,6 +15,8 @@ trait ProcessorState[S] {
   def updated(e: AnyRef, ts: Instant): S
 
   final def updated(e: TSEvent): S = updated(e.payload, Instant.ofEpochMilli(e.ts.getMillis))
+
+  final def updated(e: AnyRef): S = updated(e, Instant.now)
 }
 
 abstract class ProcessorError(msg: String) extends RuntimeException(msg) with NoStackTrace
