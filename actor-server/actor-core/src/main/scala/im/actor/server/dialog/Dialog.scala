@@ -16,6 +16,7 @@ import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
+import org.joda.time.DateTime
 import slick.dbio.DBIO
 
 import slick.driver.PostgresDriver.api.Database
@@ -170,7 +171,7 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
       dialog ← optDialog match {
         case Some(dialog) ⇒ DBIO.successful(dialog)
         case None ⇒
-          val dialog = DialogModel(userId, peer)
+          val dialog = DialogModel.withLastMessageDate(userId, peer, new DateTime)
           for {
             _ ← DialogRepo.create(dialog)
             _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
