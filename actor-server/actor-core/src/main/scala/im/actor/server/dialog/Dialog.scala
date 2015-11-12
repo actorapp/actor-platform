@@ -133,7 +133,6 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
   })
 
   def initialized(state: DialogState): Receive = invokesRcv(state) orElse acceptsRcv(state) orElse {
-    case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
     case md: LastOwnMessageDate                      ⇒ updateOwnMessageDate(state, md)
     case Show(_)                                     ⇒ show(state)
     case Hide(_)                                     ⇒ hide(state)
@@ -144,6 +143,7 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
       case sm: SendMessage      ⇒ sendMessage(state, sm) //User sends message
       case mrv: MessageReceived ⇒ messageReceived(state, mrv) //User received messages
       case mrd: MessageRead     ⇒ messageRead(state, mrd) //User reads messages
+      case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
     }
   }
 
@@ -152,6 +152,7 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
       case sm: SendMessage      ⇒ ackSendMessage(state, sm) //User's message been sent
       case mrv: MessageReceived ⇒ ackMessageReceived(state, mrv) //User's messages been received
       case mrd: MessageRead     ⇒ ackMessageRead(state, mrd) //User's messages been read
+      case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
     }
   }
 
