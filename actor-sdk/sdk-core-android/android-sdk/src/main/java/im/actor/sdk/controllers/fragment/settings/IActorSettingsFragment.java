@@ -7,13 +7,13 @@ import android.view.View;
  * Created by root on 11/11/15.
  */
 public interface IActorSettingsFragment {
-    View getBeforeNickSettingsView(Context context);
+    View getBeforeNickSettingsView();
 
-    View getAfterPhoneSettingsView(Context context);
+    View getAfterPhoneSettingsView();
 
-    View getSettingsTopView(Context context);
+    View getSettingsTopView();
 
-    View getSettingsBottomView(Context context);
+    View getSettingsBottomView();
 
     ActorSettingsCategory[] getBeforeSettingsCategories();
 
