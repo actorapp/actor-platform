@@ -3,7 +3,6 @@ package im.actor.server.user
 import akka.actor.ActorSystem
 import akka.pattern.pipe
 import im.actor.api.rpc.users.ApiUser
-import im.actor.server.ApiConversions
 import im.actor.server.ApiConversions._
 import im.actor.server.acl.ACLUtils
 

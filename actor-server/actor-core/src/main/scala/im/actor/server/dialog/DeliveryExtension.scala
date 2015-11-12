@@ -1,8 +1,8 @@
 package im.actor.server.dialog
 
 import im.actor.api.rpc.messaging.ApiMessage
-import im.actor.api.rpc.peers.ApiPeer
 import im.actor.server.sequence.SeqState
+import im.actor.server.model.Peer
 
 import scala.concurrent.Future
 
@@ -11,7 +11,7 @@ trait DeliveryExtension {
   def receiverDelivery(
     receiverUserId: Int,
     senderUserId:   Int,
-    peer:           ApiPeer,
+    peer:           Peer,
     randomId:       Long,
     timestamp:      Long,
     message:        ApiMessage,
@@ -21,15 +21,17 @@ trait DeliveryExtension {
   def senderDelivery(
     senderUserId:  Int,
     senderAuthSid: Int,
-    peer:          ApiPeer,
+    peer:          Peer,
     randomId:      Long,
     timestamp:     Long,
     message:       ApiMessage,
     isFat:         Boolean
   ): Future[SeqState]
 
-  def authorRead(readerUserId: Int, authorUserId: Int, date: Long, now: Long): Future[Unit]
+  def notifyReceive(authorUserId: Int, peer: Peer, date: Long, now: Long): Future[Unit]
 
-  def readerRead(readerUserId: Int, readerAuthSid: Int, authorUserId: Int, date: Long): Future[Unit]
+  def notifyRead(userId: Int, peer: Peer, date: Long, now: Long): Future[Unit]
+
+  def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long): Future[Unit]
 
 }

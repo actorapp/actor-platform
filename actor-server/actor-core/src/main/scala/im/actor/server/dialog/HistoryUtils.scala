@@ -54,7 +54,7 @@ object HistoryUtils {
       for {
         _ ← persist.HistoryMessageRepo.create(messages)
         _ ← persist.DialogRepo.updateLastMessageDate(fromPeer.id, toPeer, date)
-        res ← persist.DialogRepo.updateLastMessageDate(toPeer.id, fromPeer, date)
+        _ ← persist.DialogRepo.updateLastMessageDate(toPeer.id, fromPeer, date)
       } yield ()
     } else if (toPeer.typ == PeerType.Group) {
       DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒
@@ -81,7 +81,7 @@ object HistoryUtils {
     }
   }
 
-  private[dialog] def markMessagesReceived(byPeer: Peer, peer: Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
+  private[dialog] def markMessagesReceived(byPeer: Peer, peer: Peer, date: DateTime)(implicit system: ActorSystem, ec: ExecutionContext): DBIO[Unit] = {
     requirePrivatePeer(byPeer)
     // requireDifferentPeers(byPeer, peer)
 
@@ -93,7 +93,7 @@ object HistoryUtils {
           persist.DialogRepo.updateOwnerLastReceivedAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case PeerType.Group ⇒
-        withGroup(peer.id) { group ⇒
+        withGroup(peer.id) { _ ⇒
           persist.GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
             // TODO: #perf update dialogs in one query
 
@@ -108,7 +108,7 @@ object HistoryUtils {
     }
   }
 
-  private[dialog] def markMessagesRead(byPeer: Peer, peer: Peer, date: DateTime)(implicit ec: ExecutionContext): DBIO[Unit] = {
+  private[dialog] def markMessagesRead(byPeer: Peer, peer: Peer, date: DateTime)(implicit system: ActorSystem, ec: ExecutionContext): DBIO[Unit] = {
     requirePrivatePeer(byPeer)
     // requireDifferentPeers(byPeer, peer)
 
@@ -120,7 +120,7 @@ object HistoryUtils {
           persist.DialogRepo.updateOwnerLastReadAt(byPeer.id, peer, date)
         )) map (_ ⇒ ())
       case PeerType.Group ⇒
-        withGroup(peer.id) { group ⇒
+        withGroup(peer.id) { _ ⇒
           persist.GroupUserRepo.findUserIds(peer.id) flatMap { groupUserIds ⇒
             // TODO: #perf update dialogs in one query
 

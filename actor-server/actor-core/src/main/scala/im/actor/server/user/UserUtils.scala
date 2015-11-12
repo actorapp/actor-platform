@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc.users._
 import im.actor.server.model
 import im.actor.server.model.UserPhone
-import im.actor.server.office.EntityNotFound
+import im.actor.server.user.UserErrors.UserNotFound
 
 import scala.language.postfixOps
 
@@ -55,7 +55,7 @@ object UserUtils {
       .getApiStruct(userId, clientUserId, clientAuthId)
       .map(Some(_))
       .recover {
-        case EntityNotFound ⇒ None
+        case _: UserNotFound ⇒ None
       }
   }
 }

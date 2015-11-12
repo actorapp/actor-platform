@@ -6,7 +6,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
-import im.actor.server.dialog.HistoryUtils
+import im.actor.server.dialog.{ DialogErrors, HistoryUtils }
 import im.actor.server.group.GroupUtils
 import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqState
@@ -111,21 +111,25 @@ trait HistoryHandlers {
 
   override def jhandleHideDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] = {
     authorized(clientData) { implicit client ⇒
-      for {
-        _ ← db.run(DialogRepo.hide(client.userId, peer.asModel))
-        seqstate ← userExt.notifyDialogsChanged(client.userId)
+      (for {
+        seqstate ← dialogExt.hide(client.userId, peer.asModel)
         groups ← dialogExt.getGroupedDialogs(client.userId)
-      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))
+      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.state.toByteArray, groups = groups))) recover {
+        case DialogErrors.DialogAlreadyHidden(peer) ⇒
+          Error(RpcError(406, "DIALOG_ALREADY_HIDDEN", "Dialog is already hidden.", canTryAgain = false, None))
+      }
     }
   }
 
   override def jhandleShowDialog(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseDialogsOrder]] = {
     authorized(clientData) { implicit client ⇒
-      for {
-        _ ← db.run(DialogRepo.show(client.userId, peer.asModel))
-        SeqState(seq, state) ← userExt.notifyDialogsChanged(client.userId)
+      (for {
+        seqstate ← dialogExt.show(client.userId, peer.asModel)
         groups ← dialogExt.getGroupedDialogs(client.userId)
-      } yield Ok(ResponseDialogsOrder(seq, state.toByteArray, groups = groups))
+      } yield Ok(ResponseDialogsOrder(seqstate.seq, seqstate.toByteArray, groups = groups))) recover {
+        case DialogErrors.DialogAlreadyHidden(peer) ⇒
+          Error(RpcError(406, "DIALOG_ALREADY_SHOWN", "Dialog is already shown.", canTryAgain = false, None))
+      }
     }
   }
 
