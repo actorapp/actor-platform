@@ -104,7 +104,10 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       } yield MessageReceivedAck()
     } else {
       Future.successful(MessageReceivedAck())
-    }) pipeTo sender()
+    }) pipeTo sender() andThen {
+      case Failure(e) => log.error(e, "Failed to process MessageReceived")
+    }
+
     if (mustReceive) {
       onSuccess(receiveFuture) { _ ⇒
         updateOwnReceiveDate(state, mr.date)
@@ -113,7 +116,12 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
   }
 
   protected def ackMessageReceived(state: DialogState, mr: MessageReceived): Unit = {
-    val notifyFuture = (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender()
+    val notifyFuture =
+      (deliveryExt.notifyReceive(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReceivedAck() }) pipeTo sender() andThen {
+        case Failure(e) => log.error(e, "Failed to ack MessageReceived")
+      }
+
+
     onSuccess(notifyFuture) { _ ⇒
       updatePeerReceiveDate(state, mr.date)
     }
@@ -131,7 +139,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     } else {
       Future.successful(MessageReadAck())
     }) pipeTo sender() andThen {
-      case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
+      case Failure(e) ⇒ log.error(e, "Failed to process MessageRead")
     }
 
     if (mustRead) {
