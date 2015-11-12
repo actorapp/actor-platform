@@ -7,7 +7,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
 import im.actor.config.ActorConfig
-import im.actor.server.dialog.privat.PrivateDialogErrors
+import im.actor.server.dialog.DialogErrors
 import im.actor.server.group.GroupErrors
 import im.actor.server.sequence.SeqStateDate
 
@@ -45,8 +45,8 @@ private[messaging] trait MessagingHandlers {
         onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, date, message))
         ResponseSeqDate(seq, state.toByteArray, date)
       }).run recover {
-        case GroupErrors.NotAMember            ⇒ Error(CommonErrors.forbidden("You are not a group member."))
-        case PrivateDialogErrors.MessageToSelf ⇒ Error(CommonErrors.forbidden("Sending messages to self is not allowed."))
+        case GroupErrors.NotAMember     ⇒ Error(CommonErrors.forbidden("You are not a group member."))
+        case DialogErrors.MessageToSelf ⇒ Error(CommonErrors.forbidden("Sending messages to self is not allowed."))
       }
     }
   }

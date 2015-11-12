@@ -1,6 +1,7 @@
 package im.actor.server.api.http
 
 import akka.actor.ActorSystem
+import akka.http.ServerSettings
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers._
@@ -20,6 +21,7 @@ import im.actor.tls.TlsContext
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
 
 object HttpApiFrontend {
@@ -29,6 +31,8 @@ object HttpApiFrontend {
     `Access-Control-Allow-Headers`("*"),
     `Access-Control-Allow-Credentials`(true)
   )
+
+  private val IdleTimeout = 15.minutes
 
   def start(serverConfig: Config)(
     implicit
@@ -74,9 +78,17 @@ object HttpApiFrontend {
       }
     // format: ON
 
-    Http().bind(config.interface, config.port, httpsContext = tlsContext map (_.asHttpsContext)).runForeach { connection ⇒
-      connection handleWith Route.handlerFlow(routes)
-    }
+    val defaultSettings = ServerSettings(system)
+
+    Http().bind(
+      config.interface,
+      config.port,
+      httpsContext = tlsContext map (_.asHttpsContext),
+      settings = defaultSettings.copy(timeouts = defaultSettings.timeouts.copy(idleTimeout = IdleTimeout))
+    )
+      .runForeach { connection ⇒
+        connection handleWith Route.handlerFlow(routes)
+      }
   }
 
 }
