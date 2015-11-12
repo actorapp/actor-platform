@@ -54,7 +54,7 @@ object HistoryUtils {
       for {
         _ ← persist.HistoryMessageRepo.create(messages)
         _ ← persist.DialogRepo.updateLastMessageDate(fromPeer.id, toPeer, date)
-        res ← persist.DialogRepo.updateLastMessageDate(toPeer.id, fromPeer, date)
+        _ ← persist.DialogRepo.updateLastMessageDate(toPeer.id, fromPeer, date)
       } yield ()
     } else if (toPeer.typ == PeerType.Group) {
       DBIO.from(GroupExtension(system).isHistoryShared(toPeer.id)) flatMap { isHistoryShared ⇒

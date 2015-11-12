@@ -24,6 +24,25 @@ import slick.dbio.DBIO
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
+sealed trait DialogGroup {
+  def key: String
+  def title: String
+}
+
+object DialogGroups {
+  object Privates extends DialogGroup {
+    override def key: String = "privates"
+
+    override def title: String = "Private"
+  }
+
+  object Groups extends DialogGroup {
+    override def key: String = "groups"
+
+    override def title: String = "Groups"
+  }
+}
+
 sealed trait DialogExtension extends Extension
 
 final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension with PeersImplicits {
@@ -41,16 +60,16 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   private val log = Logging(system, getClass)
 
-  private def withValidPeer[A](peer: ApiPeer, senderUserId: Int, failed: ⇒ A)(f: ⇒ A): A =
+  private def withValidPeer[A](peer: Peer, senderUserId: Int, failed: ⇒ A)(f: ⇒ A): A =
     peer match {
-      case ApiPeer(ApiPeerType.Private, id) if id == senderUserId ⇒
+      case Peer(PeerType.Private, id) if id == senderUserId ⇒
         log.error(s"Attempt to work with yourself, userId: $senderUserId")
         failed
       case _ ⇒ f
     }
 
   def sendMessage(peer: ApiPeer, senderUserId: Int, senderAuthSid: Int, randomId: Long, message: ApiMessage, isFat: Boolean = false): Future[SeqStateDate] =
-    withValidPeer(peer, senderUserId, Future.successful(SeqStateDate())) {
+    withValidPeer(peer.asModel, senderUserId, Future.successful(SeqStateDate())) {
       val date = Instant.now().toEpochMilli
       val sender = Peer.privat(senderUserId)
       val sendMessage = SendMessage(sender, peer.asModel, senderAuthSid, date, randomId, message, isFat)
@@ -67,14 +86,14 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     randomId:     Long,
     message:      ApiMessage
   ): Future[Unit] =
-    withValidPeer(peer, senderUserId, Future.successful(())) {
+    withValidPeer(peer.asModel, senderUserId, Future.successful(())) {
       val sender = Peer.privat(senderUserId)
       val writeMessage = WriteMessage(sender, peer.asModel, date.getMillis, randomId, message)
       (userExt.processorRegion.ref ? Envelope(sender).withWriteMessage(writeMessage)).mapTo[WriteMessageAck] map (_ ⇒ ())
     }
 
   def messageReceived(peer: ApiPeer, receiverUserId: Int, date: Long): Future[Unit] =
-    withValidPeer(peer, receiverUserId, Future.successful(())) {
+    withValidPeer(peer.asModel, receiverUserId, Future.successful(())) {
       val now = Instant.now().toEpochMilli
       val receiver = Peer.privat(receiverUserId)
       val messageReceived = MessageReceived(receiver, peer.asModel, date, now)
@@ -85,7 +104,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     (processorRegion(peer) ? Envelope(peer).withMessageReceived(mr)).mapTo[MessageReceivedAck] map (_ ⇒ ())
 
   def messageRead(peer: ApiPeer, readerUserId: Int, readerAuthSid: Int, date: Long): Future[Unit] =
-    withValidPeer(peer, readerUserId, Future.successful(())) {
+    withValidPeer(peer.asModel, readerUserId, Future.successful(())) {
       val now = Instant.now().toEpochMilli
       val reader = Peer.privat(readerUserId)
       val messageRead = MessageRead(reader, peer.asModel, readerAuthSid, date, now)
@@ -96,10 +115,14 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     (processorRegion(peer) ? Envelope(peer).withMessageRead(mr)).mapTo[MessageReadAck] map (_ ⇒ ())
 
   def show(userId: Int, peer: Peer): Future[SeqState] =
-    (userExt.processorRegion.ref ? Envelope(peer).withShow(Show(peer))).mapTo[SeqState]
+    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withShow(Show(peer))).mapTo[SeqState]
+    }
 
   def hide(userId: Int, peer: Peer): Future[SeqState] =
-    (userExt.processorRegion.ref ? Envelope(peer).withHide(Hide(peer))).mapTo[SeqState]
+    withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withHide(Hide(peer))).mapTo[SeqState]
+    }
 
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {
     extensions match {
@@ -135,7 +158,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def isSharedUser(userId: Int): Boolean = userId == 0
 
   def getGroupedDialogs(userId: Int) = {
-    db.run(DialogRepo.findNotArchivedSortByCreatedAt(userId, None, Int.MaxValue) flatMap { dialogModels ⇒
+    db.run(DialogRepo.findNotArchivedSortByLastMessageData(userId, None, Int.MaxValue) flatMap { dialogModels ⇒
       val (groupModels, privateModels) = dialogModels.foldLeft((Vector.empty[DialogModel], Vector.empty[DialogModel])) {
         case ((groupModels, privateModels), dialog) ⇒
           if (dialog.peer.typ == PeerType.Group)
@@ -148,8 +171,8 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
         groupDialogs ← DBIO.sequence(groupModels map getDialogShort)
         privateDialogs ← DBIO.sequence(privateModels map getDialogShort)
       } yield Vector(
-        ApiDialogGroup("Groups", "groups", groupDialogs),
-        ApiDialogGroup("Private", "privates", privateDialogs.toVector)
+        ApiDialogGroup(DialogGroups.Groups.title, DialogGroups.Groups.key, groupDialogs),
+        ApiDialogGroup(DialogGroups.Privates.title, DialogGroups.Privates.key, privateDialogs.toVector)
       )
     })
   }

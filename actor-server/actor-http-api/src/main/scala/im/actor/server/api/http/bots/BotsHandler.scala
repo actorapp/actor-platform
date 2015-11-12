@@ -3,9 +3,9 @@ package im.actor.server.api.http.bots
 import java.util.Base64
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.StatusCode
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.ws.{ Message, TextMessage }
+import akka.http.scaladsl.model.{ HttpMethod, StatusCode }
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
@@ -14,20 +14,16 @@ import akka.util.ByteString
 import cats.data.OptionT
 import cats.std.future._
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import im.actor.api.rpc.messaging.ApiJsonMessage
-import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
 import im.actor.api.rpc.sequence.UpdateRawUpdate
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json.{ ContentUnmarshaller, JsValueUnmarshaller, JsonFormatters, Status }
 import im.actor.server.bot.{ BotExtension, BotServerBlueprint }
-import im.actor.server.dialog.DialogExtension
 import im.actor.server.model.AuthSession
 import im.actor.server.user.UserExtension
 import play.api.libs.json._
 import upickle.default._
 
 import scala.concurrent.Future
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.control.NoStackTrace
 import scala.util.{ Failure, Success }
 
@@ -42,25 +38,42 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
 
   override def routes: Route =
     path("bots" / "hooks" / Segment) { token ⇒
-      post {
-        extractRequest { request ⇒
-          val headers = request.headers.map(header ⇒ header.name() → header.value())
+      extractRequest { request ⇒
+        val method = request.method
+        val queryString = request.uri.queryString()
+        val headers = request.headers.map(header ⇒ header.name() → header.value())
 
-          val sendMessageF = for {
-            data ← request.entity.dataBytes.runFold(ByteString.empty)(_ ++ _)
-            res ← sendMessage(headers, data, token)
-          } yield res
+        val sendMessageF = for {
+          data ← request.entity.dataBytes.runFold(ByteString.empty)(_ ++ _)
+          res ← sendMessage(method, queryString, headers, data, token)
+        } yield res
 
-          onComplete(sendMessageF) {
-            case Success(result) ⇒
-              result match {
-                case Left(statusCode) ⇒ complete(statusCode → Status("failure"))
-                case Right(_)         ⇒ complete(OK → Status("ok"))
-              }
-            case Failure(e) ⇒
-              log.error(e, "Failed to handle bot hook")
-              complete(InternalServerError)
-          }
+        onComplete(sendMessageF) {
+          case Success(result) ⇒
+            result match {
+              case Left(statusCode) ⇒ complete(statusCode → Status("failure"))
+              case Right(_) ⇒
+                val response =
+                  """
+                    |<html>
+                    |<head>
+                    |  <title>Please, return to the app</title>
+                    |  <style>
+                    |    .element {
+                    |      position: relative;
+                    |      top: 50%;
+                    |      transform: translateY(-50%);
+                    |    }
+                    |  </style>
+                    |</head>
+                    |  <body><center id="message"><h3>Please, return to the app.</h1></center></body>
+                    |</html>
+                  """.stripMargin
+                complete(OK → Status(response))
+            }
+          case Failure(e) ⇒
+            log.error(e, "Failed to handle bot hook")
+            complete(InternalServerError)
         }
       }
     } ~ path("bots" / Segment) { token ⇒
@@ -84,7 +97,7 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
       }
     }
 
-  private def sendMessage(headers: Seq[(String, String)], data: ByteString, token: String): Future[Either[StatusCode, Unit]] = {
+  private def sendMessage(method: HttpMethod, queryString: Option[String], headers: Seq[(String, String)], data: ByteString, token: String): Future[Either[StatusCode, Unit]] = {
     (for {
       hook ← OptionT(botExt.findWebHook(token))
       _ ← OptionT.pure(userExt.broadcastUserUpdate(
@@ -95,6 +108,8 @@ private[http] final class BotsHandler(implicit system: ActorSystem, val material
             "dataType" → JsString("HookData"),
             "data" → JsObject(Map(
               "name" → JsString(hook.name),
+              "method" → JsString(method.name),
+              "queryString" → (queryString map JsString getOrElse JsNull),
               "headers" → JsObject(headers map { case (name, value) ⇒ name → JsString(value) }),
               "body" → JsString(Base64.getEncoder.encodeToString(data.toArray))
             ))
