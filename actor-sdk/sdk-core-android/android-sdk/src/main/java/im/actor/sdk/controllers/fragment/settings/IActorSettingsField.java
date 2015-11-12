@@ -10,9 +10,9 @@ public interface IActorSettingsField {
 
     View.OnClickListener getOnclickListener();
 
-    View getView(Context context);
+    View getView();
 
-    View getRightView(Context context);
+    View getRightView();
 
     boolean addBottomDivider();
 

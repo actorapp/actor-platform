@@ -27,6 +27,7 @@ import im.actor.core.PlatformType;
 import im.actor.runtime.Log;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
 import im.actor.sdk.core.ActorPushManager;
@@ -380,14 +381,29 @@ public class ActorSDK {
         }
     }
 
+    public void startSettingActivity(Context context) {
+        startSettingActivity(context, null);
+    }
+
+    public void startSettingActivity(Context context, Bundle extras) {
+        if (!startDelegateActivity(context, delegate.getSettingsIntent(), extras)) {
+            startActivity(context, extras, MyProfileActivity.class);
+        }
+    }
+
+
     private boolean startDelegateActivity(Context context, ActorIntent intent, Bundle extras) {
         if (intent != null && intent instanceof ActorIntentActivity) {
             Intent startIntent = ((ActorIntentActivity) intent).getIntent();
             if (extras != null) {
                 startIntent.putExtras(extras);
             }
-            context.startActivity(startIntent);
-            return true;
+            if (startIntent != null) {
+                context.startActivity(startIntent);
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

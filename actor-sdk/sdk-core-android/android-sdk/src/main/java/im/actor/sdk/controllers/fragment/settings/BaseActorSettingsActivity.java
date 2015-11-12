@@ -1,6 +1,5 @@
 package im.actor.sdk.controllers.fragment.settings;
 
-import android.app.Fragment;
 import android.content.Intent;
 
 import im.actor.sdk.intents.ActorIntentFragmentActivity;
@@ -10,13 +9,15 @@ public abstract class BaseActorSettingsActivity extends ActorIntentFragmentActiv
         super(intent);
     }
 
-    public BaseActorSettingsActivity(Intent intent, Fragment fragment) {
+    public BaseActorSettingsActivity(Intent intent, BaseActorSettingsFragment fragment) {
         super(intent, fragment);
     }
 
-    public IActorSettingsFragment getSettingsFragment() {
-        return null;
+    public BaseActorSettingsActivity() {
+        super();
     }
 
-    ;
+    public BaseActorSettingsFragment getSettingsFragment() {
+        return null;
+    }
 }
