@@ -177,6 +177,6 @@ private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: 
             _ ← DBIO.from(userExt.notifyDialogsChanged(userId))
           } yield dialog
       }
-    } yield { self ! Initialized(dialog.isHidden) })
+    } yield { self ! Initialized(dialog.shownAt.isEmpty) })
 
 }

@@ -22,12 +22,12 @@ private[sequence] final class ApplePushProvider(userId: Int, applePushManager: A
           new ApnsPayloadBuilder()
             .addCustomProperty("seq", seq)
             .setContentAvailable(true)
-          builder.setBadgeNumber(unreadTotal)
+        builder.setBadgeNumber(unreadTotal)
 
-          val payload = builder.buildWithDefaultMaximumLength()
+        val payload = builder.buildWithDefaultMaximumLength()
 
-          mgr.getQueue.add(new SimpleApnsPushNotification(creds.token.toByteArray, payload))
-        }
+        mgr.getQueue.add(new SimpleApnsPushNotification(creds.token.toByteArray, payload))
+      }
     }
   }
 
