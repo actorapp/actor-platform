@@ -548,7 +548,7 @@ public class MainPhoneController extends MainBaseController {
             startActivity(new Intent(getActivity(), HelpActivity.class));
             return true;
         } else if (i == R.id.profile) {
-            startActivity(new Intent(getActivity(), MyProfileActivity.class));
+            ActorSDK.sharedActor().startSettingActivity(getActivity());
             return true;
         }
 

@@ -4,7 +4,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import im.actor.sdk.ActorSDK;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
+import im.actor.sdk.intents.ActorIntent;
 
 public class MyProfileActivity extends BaseFragmentActivity {
     @Override
@@ -15,7 +17,20 @@ public class MyProfileActivity extends BaseFragmentActivity {
         getSupportActionBar().setTitle(null);
 
         if (savedInstanceState == null) {
-            showFragment(new MyProfileFragment(), false, false);
+
+            BaseActorSettingsFragment fragment;
+            if (ActorSDK.sharedActor().getDelegate().getSettingsIntent() != null) {
+                ActorIntent settingsIntent = ActorSDK.sharedActor().getDelegate().getSettingsIntent();
+                if (settingsIntent instanceof BaseActorSettingsActivity) {
+                    fragment = ((BaseActorSettingsActivity) settingsIntent).getSettingsFragment();
+                } else {
+                    fragment = new ActorSettingsFragment();
+                }
+            } else {
+                fragment = new ActorSettingsFragment();
+            }
+
+            showFragment(fragment, false, false);
         }
     }
 }

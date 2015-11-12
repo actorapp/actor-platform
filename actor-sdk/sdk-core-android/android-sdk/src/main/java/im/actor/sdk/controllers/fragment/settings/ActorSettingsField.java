@@ -67,15 +67,6 @@ public class ActorSettingsField implements IActorSettingsField {
     }
 
     @Override
-    public View getView(Context context) {
-        return view;
-    }
-
-    public void bindCreatedView(View view) {
-        this.view = view;
-    }
-
-    @Override
     public int getIconResourceId() {
         return iconResourceId;
     }
@@ -104,21 +95,10 @@ public class ActorSettingsField implements IActorSettingsField {
     }
 
     @Override
-    public View getRightView(Context context) {
-        return rightView;
-    }
-
     public View getRightView() {
         return rightView;
     }
 
-    public void bindCreatedRightView(View rightView) {
-        this.rightView = rightView;
-    }
-
-    public void bindCreatedTextView(TextView textView) {
-        this.nameTextView = textView;
-    }
 
     @Override
     public int getIconColor() {
