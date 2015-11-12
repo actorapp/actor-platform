@@ -131,7 +131,7 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
     } else {
       Future.successful(MessageReadAck())
     }) pipeTo sender() andThen {
-      case Failure(e) => log.error(e, "Failed to ack MessageRead")
+      case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
     }
 
     if (mustRead) {
@@ -143,9 +143,9 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
 
   protected def ackMessageRead(state: DialogState, mr: MessageRead): Unit = {
     val notifyFuture = (deliveryExt.notifyRead(userId, peer, mr.date, mr.now) map { _ ⇒ MessageReadAck() }) pipeTo sender() andThen {
-      case Failure(e) => log.error(e, "Failed to ack MessageRead")
+      case Failure(e) ⇒ log.error(e, "Failed to ack MessageRead")
     }
-    
+
     onSuccess(notifyFuture) { _ ⇒
       updatePeerReadDate(state, mr.date)
     }
