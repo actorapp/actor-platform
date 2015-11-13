@@ -2830,6 +2830,278 @@
         {
           "type": "struct",
           "content": {
+            "name": "TextModernMessage",
+            "doc": [
+              "Modern text message",
+              {
+                "type": "reference",
+                "argument": "text",
+                "category": "full",
+                "description": "  Text of message"
+              },
+              {
+                "type": "reference",
+                "argument": "senderNameOverride",
+                "category": "full",
+                "description": "  Overriding of sender"
+              }
+            ],
+            "trait": {
+              "name": "TextMessageEx",
+              "key": 2
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "text"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "senderNameOverride"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 3,
+                "name": "senderPhotoOverride"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ParagraphStyle"
+                  }
+                },
+                "id": 4,
+                "name": "style"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ParagraphStyle",
+            "doc": [
+              "Paragraph style",
+              {
+                "type": "reference",
+                "argument": "showParagraph",
+                "category": "full",
+                "description": "  Show quote-like paragraph?"
+              },
+              {
+                "type": "reference",
+                "argument": "paragraphColor",
+                "category": "full",
+                "description": "  Override paragraph color"
+              },
+              {
+                "type": "reference",
+                "argument": "bgColor",
+                "category": "full",
+                "description": "  Override background color"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 1,
+                "name": "showParagraph"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Color"
+                  }
+                },
+                "id": 2,
+                "name": "paragraphColor"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "trait",
+                    "childType": "Color"
+                  }
+                },
+                "id": 3,
+                "name": "bgColor"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextModernAttach",
+            "doc": [
+              "Attaches to message",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Attach of message"
+              },
+              {
+                "type": "reference",
+                "argument": "titleUrl",
+                "category": "full",
+                "description": "  Attach title url"
+              },
+              {
+                "type": "reference",
+                "argument": "titleIcon",
+                "category": "full",
+                "description": "  Attach title icon"
+              },
+              {
+                "type": "reference",
+                "argument": "text",
+                "category": "full",
+                "description": "  Attach text"
+              },
+              {
+                "type": "reference",
+                "argument": "style",
+                "category": "full",
+                "description": "  Attach style"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "titleUrl"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ImageLocation"
+                  }
+                },
+                "id": 3,
+                "name": "titleIcon"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "text"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "ParagraphStyle"
+                  }
+                },
+                "id": 5,
+                "name": "style"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "TextModernField"
+                  }
+                },
+                "id": 6,
+                "name": "fields"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "TextModernField",
+            "doc": [
+              "Modern message fields",
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Field title"
+              },
+              {
+                "type": "reference",
+                "argument": "value",
+                "category": "full",
+                "description": "  Field value"
+              },
+              {
+                "type": "reference",
+                "argument": "isShort",
+                "category": "full",
+                "description": "  Is field can be shown in compact way"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "title"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "value"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 3,
+                "name": "isShort"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "ServiceMessage",
             "doc": [
               "Service message",
@@ -8498,6 +8770,65 @@
         {
           "type": "struct",
           "content": {
+            "name": "ImageLocation",
+            "doc": [
+              "Image location",
+              {
+                "type": "reference",
+                "argument": "fileLocation",
+                "category": "full",
+                "description": "  Location of file"
+              },
+              {
+                "type": "reference",
+                "argument": "width",
+                "category": "full",
+                "description": "  Width of avatar image"
+              },
+              {
+                "type": "reference",
+                "argument": "height",
+                "category": "full",
+                "description": "  Height of avatar image"
+              },
+              {
+                "type": "reference",
+                "argument": "fileSize",
+                "category": "full",
+                "description": "  Size of file"
+              }
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "FileLocation"
+                },
+                "id": 1,
+                "name": "fileLocation"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "width"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "height"
+              },
+              {
+                "type": "int32",
+                "id": 4,
+                "name": "fileSize"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "AvatarImage",
             "doc": [
               "Avatar Image",
@@ -8658,6 +8989,81 @@
                 "type": "bytes",
                 "id": 3,
                 "name": "thumb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "Colors",
+            "values": [
+              {
+                "name": "red",
+                "id": 1
+              },
+              {
+                "name": "yellow",
+                "id": 2
+              },
+              {
+                "name": "green",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "trait",
+          "content": {
+            "isContainer": "true",
+            "name": "Color",
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "RgbColor",
+            "doc": [
+              "RGB Color",
+              {
+                "type": "reference",
+                "argument": "rgb",
+                "category": "full",
+                "description": "  RGB color value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "rgb"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "PredefinedColor",
+            "doc": [
+              "Predefined color",
+              {
+                "type": "reference",
+                "argument": "color",
+                "category": "hidden",
+                "description": "  Predefined color value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "Colors"
+                },
+                "id": 1,
+                "name": "color"
               }
             ]
           }

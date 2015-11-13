@@ -2767,6 +2767,225 @@
           <property role="Nu42W" value="01" />
         </node>
       </node>
+      <node concept="2m5naR" id="64HNz1IoxVm" role="2m5mJr">
+        <property role="TrG5h" value="TextModernMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="5NX0N0RThX2" resolve="TextMessageEx" />
+        <node concept="2m7Kf5" id="64HNz1Ioy3S" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="text" />
+          <node concept="2m5nlT" id="64HNz1IoYce" role="2m7DVh">
+            <node concept="2m5ndX" id="64HNz1IoYck" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Io_EV" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="senderNameOverride" />
+          <node concept="2m5nlT" id="64HNz1Io_F1" role="2m7DVh">
+            <node concept="2m5ndX" id="64HNz1Io_F7" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoGNl" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="senderPhotoOverride" />
+          <node concept="2m5nlT" id="64HNz1IoGNu" role="2m7DVh">
+            <node concept="2m5mGg" id="64HNz1IoGN$" role="3GH5xg">
+              <ref role="2m5mJy" node="GBscvB$$LB" resolve="Avatar" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoJLo" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="style" />
+          <node concept="2m5nlT" id="64HNz1IoJLW" role="2m7DVh">
+            <node concept="2m5mGg" id="64HNz1IoJM2" role="3GH5xg">
+              <ref role="2m5mJy" node="64HNz1IoIik" resolve="ParagraphStyle" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="64HNz1Ioy3Q" role="3BtCOu">
+          <property role="Nu42W" value="02" />
+        </node>
+        <node concept="NXeRC" id="64HNz1IoyIL" role="NXodf">
+          <property role="NXePf" value="Modern text message" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Iozpx" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Text of message" />
+          <ref role="NX6Kv" node="64HNz1Ioy3S" resolve="text" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Io_Fe" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Overriding of sender" />
+          <ref role="NX6Kv" node="64HNz1Io_EV" resolve="senderNameOverride" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="64HNz1IoIik" role="2m5mJr">
+        <property role="TrG5h" value="ParagraphStyle" />
+        <node concept="2m7Kf5" id="64HNz1IoIr2" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="showParagraph" />
+          <node concept="2m5nlT" id="64HNz1IoIr6" role="2m7DVh">
+            <node concept="2m5ndN" id="64HNz1IoIrc" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoIrf" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="paragraphColor" />
+          <node concept="2m5nlT" id="64HNz1IoIrm" role="2m7DVh">
+            <node concept="3BlaRf" id="64HNz1Ip5mE" role="3GH5xg">
+              <ref role="3BrLez" node="64HNz1IoYTS" resolve="Color" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoW8Q" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="bgColor" />
+          <node concept="2m5nlT" id="64HNz1IoW90" role="2m7DVh">
+            <node concept="3BlaRf" id="64HNz1Ip5mB" role="3GH5xg">
+              <ref role="3BrLez" node="64HNz1IoYTS" resolve="Color" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="64HNz1IoJ6q" role="NXodf">
+          <property role="NXePf" value="Paragraph style" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IoKt7" role="NXodf">
+          <property role="NX6R2" value="Show quote-like paragraph?" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoIr2" resolve="showParagraph" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IoL8f" role="NXodf">
+          <property role="NX6R2" value="Override paragraph color" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoIrf" resolve="paragraphColor" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IoWOQ" role="NXodf">
+          <property role="NX6R2" value="Override background color" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoW8Q" resolve="bgColor" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="64HNz1IoM55" role="2m5mJr">
+        <property role="TrG5h" value="TextModernAttach" />
+        <property role="tsOgz" value="true" />
+        <node concept="2m7Kf5" id="64HNz1IoMdZ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5nlT" id="64HNz1IoMe3" role="2m7DVh">
+            <node concept="2m5ndX" id="64HNz1IoMe9" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoOgu" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="titleUrl" />
+          <node concept="2m5nlT" id="64HNz1IoOgC" role="2m7DVh">
+            <node concept="2m5ndX" id="64HNz1IoOgI" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoRgi" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="titleIcon" />
+          <node concept="2m5nlT" id="64HNz1IoRgv" role="2m7DVh">
+            <node concept="2m5mGg" id="64HNz1IoU5s" role="3GH5xg">
+              <ref role="2m5mJy" node="64HNz1IoSEt" resolve="ImageLocation" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoMec" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="text" />
+          <node concept="2m5nlT" id="64HNz1IoMej" role="2m7DVh">
+            <node concept="2m5ndX" id="64HNz1IoMep" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoVt1" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="style" />
+          <node concept="2m5nlT" id="64HNz1Ip5mt" role="2m7DVh">
+            <node concept="2m5mGg" id="64HNz1Ip62B" role="3GH5xg">
+              <ref role="2m5mJy" node="64HNz1IoIik" resolve="ParagraphStyle" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Ip8Nm" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="fields" />
+          <node concept="2m5nlk" id="64HNz1Ip8ND" role="2m7DVh">
+            <node concept="2m5mGg" id="64HNz1Ip8NJ" role="3GJlyp">
+              <ref role="2m5mJy" node="64HNz1IoP4Y" resolve="TextModernField" />
+            </node>
+          </node>
+        </node>
+        <node concept="NXeRC" id="64HNz1Ip6I$" role="NXodf">
+          <property role="NXePf" value="Attaches to message" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ip7q$" role="NXodf">
+          <property role="NX6R2" value="Attach of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoMdZ" resolve="title" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ip86C" role="NXodf">
+          <property role="NX6R2" value="Attach title url" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoOgu" resolve="titleUrl" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ip86M" role="NXodf">
+          <property role="NX6R2" value="Attach title icon" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoRgi" resolve="titleIcon" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ip86Y" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Attach text" />
+          <ref role="NX6Kv" node="64HNz1IoMec" resolve="text" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ip87c" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Attach style" />
+          <ref role="NX6Kv" node="64HNz1IoVt1" resolve="style" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="64HNz1IoP4Y" role="2m5mJr">
+        <property role="TrG5h" value="TextModernField" />
+        <property role="tsOgz" value="true" />
+        <node concept="2m7Kf5" id="64HNz1IoPTd" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="title" />
+          <node concept="2m5ndX" id="64HNz1IoPTh" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoPTk" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5ndX" id="64HNz1IoPTq" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoPTt" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="isShort" />
+          <node concept="2m5nlT" id="64HNz1IoPT_" role="2m7DVh">
+            <node concept="2m5ndN" id="64HNz1IoPTF" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="64HNz1Ip9vP" role="NXodf">
+          <property role="NXePf" value="Modern message fields" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IpabY" role="NXodf">
+          <property role="NX6R2" value="Field title" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoPTd" resolve="title" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IpaSt" role="NXodf">
+          <property role="NX6R2" value="Field value" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoPTk" resolve="value" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IpaSB" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Is field can be shown in compact way" />
+          <ref role="NX6Kv" node="64HNz1IoPTt" resolve="isShort" />
+        </node>
+      </node>
       <node concept="2m5naR" id="GBscvBBkLN" role="2m5mJr">
         <property role="TrG5h" value="ServiceMessage" />
         <property role="w4tQU" value="true" />
@@ -7453,6 +7672,55 @@
           <node concept="2m5ndQ" id="GBscvB$$K5" role="2m7DVh" />
         </node>
       </node>
+      <node concept="2m5naR" id="64HNz1IoSEt" role="2m5mJr">
+        <property role="TrG5h" value="ImageLocation" />
+        <property role="tsOgz" value="true" />
+        <node concept="2m7Kf5" id="64HNz1IoSEu" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="fileLocation" />
+          <node concept="2m5mGg" id="64HNz1IoSEv" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoSEw" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="width" />
+          <node concept="2m5ndE" id="64HNz1IoSEx" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoSEy" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="height" />
+          <node concept="2m5ndE" id="64HNz1IoSEz" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoSE$" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="fileSize" />
+          <node concept="2m5ndE" id="64HNz1IoSE_" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="64HNz1IoSEA" role="NXodf">
+          <property role="NXePf" value="Image location" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IoSEB" role="NXodf">
+          <property role="NX6R2" value="Location of file" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoSEu" resolve="fileLocation" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IoSEC" role="NXodf">
+          <property role="NX6R2" value="Width of avatar image" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoSEw" resolve="width" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IoSED" role="NXodf">
+          <property role="NX6R2" value="Height of avatar image" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoSEy" resolve="height" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IoSEE" role="NXodf">
+          <property role="NX6R2" value="Size of file" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1IoSE$" resolve="fileSize" />
+        </node>
+      </node>
       <node concept="2m5naR" id="GBscvB$$Hk" role="2m5mJr">
         <property role="TrG5h" value="AvatarImage" />
         <property role="tsOgz" value="true" />
@@ -7586,6 +7854,58 @@
           <property role="2m7DUN" value="3" />
           <property role="TrG5h" value="thumb" />
           <node concept="2m61tm" id="GBscvBB68f" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m488m" id="64HNz1Ip1S_" role="2m5mJr">
+        <property role="TrG5h" value="Colors" />
+        <node concept="2m7y0F" id="64HNz1Ip1SB" role="2m7ymf">
+          <property role="TrG5h" value="red" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="64HNz1Ip3Yu" role="2m7ymf">
+          <property role="TrG5h" value="yellow" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="64HNz1Ip3Yx" role="2m7ymf">
+          <property role="TrG5h" value="green" />
+          <property role="2m7y0m" value="3" />
+        </node>
+      </node>
+      <node concept="w93zz" id="64HNz1IoYTS" role="2m5mJr">
+        <property role="1FaRnq" value="true" />
+        <property role="TrG5h" value="Color" />
+      </node>
+      <node concept="2m5naR" id="64HNz1IoZDn" role="2m5mJr">
+        <property role="TrG5h" value="RgbColor" />
+        <node concept="NXeRC" id="64HNz1Ip0n7" role="NXodf">
+          <property role="NXePf" value="RGB Color" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ip2AI" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="RGB color value" />
+          <ref role="NX6Kv" node="64HNz1IoZFg" resolve="rgb" />
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoZFg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="rgb" />
+          <node concept="2m5ndE" id="64HNz1IoZFk" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="64HNz1Ip14P" role="2m5mJr">
+        <property role="TrG5h" value="PredefinedColor" />
+        <node concept="2m7Kf5" id="64HNz1Ip1UB" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="color" />
+          <node concept="3GJkcs" id="64HNz1Ip1UF" role="2m7DVh">
+            <ref role="3GJkik" node="64HNz1Ip1S_" resolve="Colors" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="64HNz1Ip16M" role="NXodf">
+          <property role="NXePf" value="Predefined color" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ip4Ew" role="NXodf">
+          <property role="NX6R2" value="Predefined color value" />
+          <ref role="NX6Kv" node="64HNz1Ip1UB" resolve="color" />
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
@@ -9419,6 +9739,17 @@
     <property role="u_6dX" value="0.1" />
     <property role="3BlOl8" value="im.actor.extension.api" />
     <property role="WhUdw" value="im.actor.extension.api" />
+    <node concept="2m5mJO" id="64HNz1Ipac2" role="2m5lHt">
+      <node concept="2m5naR" id="64HNz1Ipac6" role="2m5mJr">
+        <property role="TrG5h" value="test" />
+        <node concept="2m7Kf5" id="64HNz1Ipac9" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <node concept="2m5mGg" id="64HNz1Ipacd" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+      </node>
+    </node>
   </node>
 </model>
 
