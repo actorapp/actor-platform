@@ -6,7 +6,7 @@ machine:
 
 database:
   post:
-    sudo -u postgres psql postgres "GRANT ALL PRIVILEGES ON circle_test TO ubuntu;"
+    - sudo -u postgres psql postgres "GRANT ALL PRIVILEGES ON circle_test TO ubuntu;"
 
 dependencies:
   pre:
