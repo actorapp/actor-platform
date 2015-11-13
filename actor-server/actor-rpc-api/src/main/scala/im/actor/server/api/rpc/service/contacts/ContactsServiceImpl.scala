@@ -164,7 +164,11 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
         nicknameUsers ← findByNickname(query, client)
         emailUsers ← findByEmail(query, client)
         phoneUsers ← findByNumber(query, client)
-      } yield ResponseSearchContacts(nicknameUsers ++ phoneUsers ++ emailUsers)
+      } yield {
+        val users = nicknameUsers ++ phoneUsers ++ emailUsers
+        users foreach (u ⇒ recordRelation(u.id, client.userId))
+        ResponseSearchContacts(users)
+      }
     db.run(action.run)
   }
 
@@ -196,7 +200,6 @@ class ContactsServiceImpl(implicit actorSystem: ActorSystem)
           userPhones ← persist.UserPhoneRepo.findByPhoneNumber(phone)
           users ← DBIO.from(Future.sequence(userPhones.map(_.userId).toSet map { userId: Int ⇒ userExt.getApiStruct(userId, client.userId, client.authId) }))
         } yield {
-          userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
           users.toVector
         }
       }) map (_.flatten))
