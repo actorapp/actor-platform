@@ -21,6 +21,7 @@ message DialogCommands {
             MessageRead message_read = 5;
             Show show = 6;
             Hide hide = 7;
+            Delete delete = 8;
         }
     }
 
@@ -80,6 +81,12 @@ message DialogCommands {
     }
 
     message Hide {
+        option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
+
+        required Peer dest = 1;
+    }
+
+    message Delete {
         option (scalapb.message).extends = "im.actor.server.dialog.DialogCommand";
 
         required Peer dest = 1;

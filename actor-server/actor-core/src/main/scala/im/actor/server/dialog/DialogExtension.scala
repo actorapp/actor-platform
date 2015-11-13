@@ -23,6 +23,7 @@ import slick.dbio.DBIO
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.reflect.ClassTag
 
 sealed trait DialogGroup {
   def key: String
@@ -60,7 +61,7 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   private val log = Logging(system, getClass)
 
-  private def withValidPeer[A](peer: Peer, senderUserId: Int, failed: ⇒ A)(f: ⇒ A): A =
+  private def withValidPeer[A](peer: Peer, senderUserId: Int, failed: ⇒ Future[A] = Future.failed[A](DialogErrors.MessageToSelf))(f: ⇒ Future[A]): Future[A] =
     peer match {
       case Peer(PeerType.Private, id) if id == senderUserId ⇒
         log.error(s"Attempt to work with yourself, userId: $senderUserId")
@@ -122,6 +123,11 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def hide(userId: Int, peer: Peer): Future[SeqState] =
     withValidPeer(peer, userId, Future.failed[SeqState](DialogErrors.MessageToSelf)) {
       (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withHide(Hide(peer))).mapTo[SeqState]
+    }
+
+  def delete(userId: Int, peer: Peer): Future[SeqState] =
+    withValidPeer(peer, userId) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withDelete(Delete(peer))).mapTo[SeqState]
     }
 
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {

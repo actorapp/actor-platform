@@ -13,7 +13,7 @@ import im.actor.server.cqrs.ProcessorState
 import im.actor.server.db.DbExtension
 import im.actor.server.model.{ Dialog ⇒ DialogModel, Peer }
 import im.actor.server.persist.DialogRepo
-import im.actor.server.sequence.SeqStateDate
+import im.actor.server.sequence.{ SeqUpdatesExtension, SeqStateDate }
 import im.actor.server.social.SocialExtension
 import im.actor.server.user.UserExtension
 import im.actor.util.cache.CacheHelpers._
@@ -105,6 +105,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
 
   protected val dialogExt = DialogExtension(system)
   protected val deliveryExt = dialogExt.getDeliveryExtension(extensions)
+  protected val seqUpdExt = SeqUpdatesExtension(context.system)
 
   protected val selfPeer: Peer = Peer.privat(userId)
 
@@ -134,6 +135,7 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
     case Show(_)                                     ⇒ show(state)
     case Hide(_)                                     ⇒ hide(state)
+    case Delete(_)                                   ⇒ delete(state)
   }
 
   /**
