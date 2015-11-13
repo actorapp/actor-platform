@@ -30,7 +30,7 @@ import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.bot.ActorBot
 import im.actor.server.cli.ActorCliService
 import im.actor.server.db.DbExtension
-import im.actor.server.dialog.{ DialogExtension, Dialog }
+import im.actor.server.dialog.{ DialogExtension, DialogProcessor }
 import im.actor.server.email.{ EmailConfig, SmtpEmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.frontend.Frontend
@@ -54,7 +54,7 @@ object ActorServer {
     CommonSerialization.register()
     UserProcessor.register()
     GroupProcessor.register()
-    Dialog.register()
+    DialogProcessor.register()
 
     val serverConfig = ActorConfig.load()
 
