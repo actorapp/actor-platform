@@ -87,9 +87,9 @@ final class V20151108011300__FillUserSequence(implicit system: ActorSystem, mate
 
       log.warn(s"Migration complete! Moved ${count} updates")
     } catch {
-      case e: Exception ⇒
-        log.error("Failed to migrate", e)
-        throw e
+      case e: SQLException ⇒
+        log.error("Failed to migrate", e.getNextException())
+        throw e.getNextException()
     }
   }
 
