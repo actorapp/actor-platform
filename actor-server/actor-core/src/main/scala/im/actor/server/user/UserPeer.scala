@@ -3,7 +3,7 @@ package im.actor.server.user
 import akka.actor.{ Actor, ActorRef, Props }
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.misc.ApiExtension
-import im.actor.server.dialog.{ DirectDialogCommand, Dialog, DialogCommand }
+import im.actor.server.dialog.{ DirectDialogCommand, DialogProcessor, DialogCommand }
 import im.actor.server.model.{ Peer, PeerType }
 
 private[user] object UserPeer {
@@ -29,7 +29,7 @@ private[user] final class UserPeer(userId: Int, extensions: Seq[ApiExtension]) e
   }
 
   private def dialogRef(peer: Peer): ActorRef =
-    context.child(dialogName(peer)) getOrElse context.actorOf(Dialog.props(userId, peer, extensions), dialogName(peer))
+    context.child(dialogName(peer)) getOrElse context.actorOf(DialogProcessor.props(userId, peer, extensions), dialogName(peer))
 
   private def dialogName(peer: Peer): String = peer.typ match {
     case PeerType.Private ⇒ s"Private_${peer.id}"
