@@ -16,40 +16,40 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
 
   protected def incomingMessage(state: GroupPeerState, sm: SendMessage): Unit = {
     val senderUserId = sm.origin.id
-    val futureSend = (withMemberIds(groupId) { (memberIds, _, optBot) ⇒
-      if ((memberIds contains senderUserId) || (optBot contains senderUserId)) {
+    (withMemberIds(groupId) { (memberIds, _, optBot) ⇒
+      if (canSend(memberIds, optBot, senderUserId)) {
         for {
           _ ← Future.traverse(memberIds - senderUserId) { userId ⇒
             dialogExt.ackSendMessage(Peer.privat(userId), sm)
           }
-        } yield SendMessageAck()
+        } yield {
+          self ! LastSenderIdChanged(senderUserId)
+          SendMessageAck()
+        }
       } else Future.successful(Status.Failure(NotAMember))
     } recover {
       case e ⇒
         log.error(e, "Failed to send message")
         throw e
     }) pipeTo sender()
-    futureSend onSuccess {
-      case _ ⇒ self ! LastSenderIdChanged(senderUserId)
-    }
   }
 
   protected def messageReceived(state: GroupPeerState, mr: MessageReceived) = {
     val receiverUserId = mr.origin.id
-    val futureReceive =
-      ((if (!state.lastReceiveDate.exists(_ >= mr.date) && !state.lastSenderId.contains(receiverUserId)) {
-        withMemberIds(groupId) { (memberIds, _, _) ⇒
-          Future.traverse(memberIds - receiverUserId) { memberId ⇒
-            dialogExt.ackMessageReceived(Peer.privat(memberId), mr)
-          }
-        } map (_ ⇒ MessageReceivedAck())
-      } else Future.successful(MessageReceivedAck())) recover {
-        case e ⇒
-          log.error(e, "Failed to mark messages received")
-          throw e
-      }) pipeTo sender()
-    onSuccess(futureReceive) { _ ⇒
-      context become initialized(state.updated(LastReceiveDateChanged(mr.date)))
+    val canReceive = canMakeReceive(state, mr)
+    ((if (canReceive) {
+      withMemberIds(groupId) { (memberIds, _, _) ⇒
+        Future.traverse(memberIds - receiverUserId) { memberId ⇒
+          dialogExt.ackMessageReceived(Peer.privat(memberId), mr)
+        }
+      } map (_ ⇒ MessageReceivedAck())
+    } else Future.successful(MessageReceivedAck())) recover {
+      case e ⇒
+        log.error(e, "Failed to mark messages received")
+        throw e
+    }) pipeTo sender()
+    if (canReceive) {
+      updateReceiveDate(state, mr.date)
     }
   }
 
@@ -57,14 +57,14 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     val withMembers = withMemberIds[Unit](groupId) _
     val readerUserId = mr.origin.id
 
-    //    val joinerF: Future[Unit] =
     withMembers { (_, invitedUserIds, _) ⇒
       if (invitedUserIds contains readerUserId) {
         groupExt.joinAfterFirstRead(groupId, readerUserId, mr.readerAuthSid)
       } else Future.successful(())
     }
 
-    val readerAckF: Future[Unit] = if (!state.lastSenderId.contains(readerUserId) && !state.lastReadDate.exists(_ >= mr.date)) {
+    val canRead = canMakeRead(state, mr)
+    (if (canRead) {
       withMembers { (memberIds, _, _) ⇒
         if (memberIds contains readerUserId) {
           Future.traverse(memberIds - readerUserId) { memberId ⇒
@@ -72,19 +72,17 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
           } map (_ ⇒ ())
         } else Future.successful(())
       }
-    } else Future.successful(())
-
-    val readFuture = (for {
-      //      _ ← joinerF
-      _ ← readerAckF
-    } yield MessageReadAck()) recover {
+    } else Future.successful(())) map { _ ⇒ MessageReadAck() } pipeTo sender() recover {
       case e ⇒
         log.error(e, "Failed to mark messages read")
         throw e
     }
-    readFuture pipeTo sender()
-    onSuccess(readFuture) { _ ⇒
-      context become initialized(state.updated(LastReadDateChanged(mr.date)))
+
+    //this assumption is not totally right.
+    //When not member reads dialog - we will still update read date anyway.
+    //it can be easily fixed after we store updated members list in GroupPeer.
+    if (canRead) {
+      updateReadDate(state, mr.date)
     }
   }
 
@@ -94,5 +92,20 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
         f(memberIds.toSet, invitedUserIds.toSet, optBot)
     }
   }
+
+  private def updateReceiveDate(state: GroupPeerState, date: Long): Unit =
+    context become initialized(state.updated(LastReceiveDateChanged(date)))
+
+  private def updateReadDate(state: GroupPeerState, date: Long): Unit =
+    context become initialized(state.updated(LastReadDateChanged(date)))
+
+  private def canSend(memberIds: Set[Int], optBot: Option[Int], senderUserId: Int): Boolean =
+    (memberIds contains senderUserId) || (optBot contains senderUserId)
+
+  private def canMakeReceive(state: GroupPeerState, mr: MessageReceived): Boolean =
+    (mr.date > state.lastReceiveDate) && (state.lastSenderId != mr.origin.id)
+
+  private def canMakeRead(state: GroupPeerState, mr: MessageRead): Boolean =
+    (mr.date > state.lastReadDate) && (state.lastSenderId != mr.origin.id)
 
 }

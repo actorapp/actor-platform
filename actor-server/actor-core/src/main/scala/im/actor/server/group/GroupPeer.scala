@@ -10,16 +10,20 @@ import im.actor.server.model.Peer
 
 import scala.concurrent.ExecutionContext
 
-case class GroupPeerState(
-  lastSenderId:    Option[Int],
-  lastReceiveDate: Option[Long],
-  lastReadDate:    Option[Long]
+private[group] object GroupPeerState {
+  def empty = GroupPeerState(0, 0, 0)
+}
+
+private[group] case class GroupPeerState(
+  lastSenderId:    Int,
+  lastReceiveDate: Long,
+  lastReadDate:    Long
 ) extends ProcessorState[GroupPeerState] {
   import GroupPeerEvents._
   override def updated(e: AnyRef, ts: Instant): GroupPeerState = e match {
-    case LastSenderIdChanged(id)      ⇒ this.copy(lastSenderId = Some(id))
-    case LastReceiveDateChanged(date) ⇒ this.copy(lastReceiveDate = Some(date))
-    case LastReadDateChanged(date)    ⇒ this.copy(lastReadDate = Some(date))
+    case LastSenderIdChanged(id)      ⇒ this.copy(lastSenderId = id)
+    case LastReceiveDateChanged(date) ⇒ this.copy(lastReceiveDate = date)
+    case LastReadDateChanged(date)    ⇒ this.copy(lastReadDate = date)
   }
 }
 
@@ -37,8 +41,7 @@ private[group] object GroupPeer {
 private[group] final class GroupPeer(val groupId: Int)
   extends Actor
   with ActorLogging
-  with GroupPeerCommandHandlers
-  with ActorFutures {
+  with GroupPeerCommandHandlers {
 
   import DialogCommands._
   import GroupPeerEvents._
@@ -56,6 +59,6 @@ private[group] final class GroupPeer(val groupId: Int)
     case sc: LastSenderIdChanged ⇒ context become initialized(state.updated(sc))
   }
 
-  override def receive: Receive = initialized(GroupPeerState(None, None, None))
+  override def receive: Receive = initialized(GroupPeerState.empty)
 
 }
