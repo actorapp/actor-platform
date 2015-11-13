@@ -1,6 +1,6 @@
 # Actor Messaging platform
 
-[![Circle CI](https://circleci.com/gh/actorapp/actor-proprietary/tree/master.svg?style=svg)](https://circleci.com/gh/actorapp/actor-proprietary/tree/master)
+[![Circle CI](https://circleci.com/gh/actorapp/actor-platform.svg?style=svg)](https://circleci.com/gh/actorapp/actor-platform)
 
 Actor is a platform for instant messaging. Actor provides features like large group chats; unlimited history storage; send/receive documents, photo, and video; authentication with one time password for phone number/email or OAuth2; easy integrations with external services.
 
