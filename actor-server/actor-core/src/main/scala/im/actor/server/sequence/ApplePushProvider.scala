@@ -22,6 +22,7 @@ private[sequence] final class ApplePushProvider(userId: Int, applePushManager: A
           new ApnsPayloadBuilder()
             .addCustomProperty("seq", seq)
             .setContentAvailable(true)
+
         builder.setBadgeNumber(unreadTotal)
 
         val payload = builder.buildWithDefaultMaximumLength()
@@ -50,8 +51,6 @@ private[sequence] final class ApplePushProvider(userId: Int, applePushManager: A
 
       if (isSoundEnabled)
         builder.setSoundFileName("iapetus.caf")
-      else
-        builder.setSoundFileName("silence.caf")
 
       val payload = builder.buildWithDefaultMaximumLength()
       mgr.getQueue.add(new SimpleApnsPushNotification(creds.token.toByteArray, payload))
