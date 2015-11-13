@@ -1,5 +1,7 @@
 # Actor Messaging platform
 
+[![Circle CI](https://circleci.com/gh/actorapp/actor-proprietary/tree/master.svg?style=svg)](https://circleci.com/gh/actorapp/actor-proprietary/tree/master)
+
 Actor is a platform for instant messaging. Actor provides features like large group chats; unlimited history storage; send/receive documents, photo, and video; authentication with one time password for phone number/email or OAuth2; easy integrations with external services.
 
 Actor has one of the best IM apps for Android, iOS, and Web that is built to handle poor connectivity on bad networks, support full offline message and file storage in applications, automatically build contact lists, and more!
