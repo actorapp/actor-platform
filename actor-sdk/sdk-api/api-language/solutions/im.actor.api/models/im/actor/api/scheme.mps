@@ -3296,6 +3296,36 @@
           <ref role="NX6Kv" node="5TxE3W704xr" resolve="dialogs" />
         </node>
       </node>
+      <node concept="2m5naR" id="64HNz1Io2Dg" role="2m5mJr">
+        <property role="TrG5h" value="MessageReaction" />
+        <node concept="2m7Kf5" id="64HNz1Io2KM" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="users" />
+          <node concept="2m5nlk" id="64HNz1Io2KY" role="2m7DVh">
+            <node concept="wb0Ql" id="64HNz1Io2L4" role="3GJlyp">
+              <ref role="wb18D" node="5qm50Y0e3uz" resolve="userId" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Io3qN" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="code" />
+          <node concept="2m5ndX" id="64HNz1Io3qU" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="64HNz1Io3qX" role="NXodf">
+          <property role="NXePf" value="Reaction to message" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Io44L" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User's reaction" />
+          <ref role="NX6Kv" node="64HNz1Io2KM" resolve="users" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Io4ID" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Reaction EMOJI code" />
+          <ref role="NX6Kv" node="64HNz1Io3qN" resolve="code" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBqzL" role="2m5mJr">
         <property role="TrG5h" value="SendMessage" />
         <node concept="2m7Kf5" id="GBscvBBqBa" role="2m0hLx">
@@ -3500,6 +3530,128 @@
           <property role="NX6R2" value="Conversation peer" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBrZI" resolve="peer" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64HNz1Io6C_" role="2m5mJr">
+        <property role="TrG5h" value="MessageSetReaction" />
+        <node concept="2m7Kf5" id="64HNz1Io6KQ" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="64HNz1Io6KW" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Io6KZ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="64HNz1Io6L7" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Io6Ky" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="code" />
+          <node concept="2m5ndX" id="64HNz1Io6KA" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="64HNz1Io6CA" role="NuuwV">
+          <property role="Nu42W" value="D2" />
+        </node>
+        <node concept="2m1Rp1" id="64HNz1Io8lk" role="2m6efq">
+          <ref role="2m1o9l" node="64HNz1Io8db" resolve="ReactionsResponse" />
+        </node>
+        <node concept="NXeRC" id="64HNz1Io9TD" role="1GBnQ6">
+          <property role="NXePf" value="Setting Message reaction" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Io9TI" role="1GBnQ6">
+          <property role="NX6R2" value="Destination peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Io6KQ" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Iobe$" role="1GBnQ6">
+          <property role="NX6R2" value="Message random id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Io6KZ" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IonCQ" role="1GBnQ6">
+          <property role="NX6R2" value="Reaction code" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Io6Ky" resolve="code" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="64HNz1Io9Ld" role="2m5mJr">
+        <property role="TrG5h" value="MessageRemoveReaction" />
+        <node concept="2m7Kf5" id="64HNz1Io9Tb" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="64HNz1Io9Tf" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Io9Ti" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="64HNz1Io9To" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Io9Tr" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="code" />
+          <node concept="2m5ndX" id="64HNz1Io9Tz" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="64HNz1Io9Le" role="NuuwV">
+          <property role="Nu42W" value="DC" />
+        </node>
+        <node concept="2m1Rp1" id="64HNz1Io9TA" role="2m6efq">
+          <ref role="2m1o9l" node="64HNz1Io8db" resolve="ReactionsResponse" />
+        </node>
+        <node concept="NXeRC" id="64HNz1Ioojl" role="1GBnQ6">
+          <property role="NXePf" value="Removing Message reaction" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IooXO" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="64HNz1Io9Tb" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IooXW" role="1GBnQ6">
+          <property role="NX6R2" value="Message random id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Io9Ti" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="64HNz1IooY6" role="1GBnQ6">
+          <property role="NX6R2" value="Reaction code" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Io9Tr" resolve="code" />
+        </node>
+      </node>
+      <node concept="2m62dX" id="64HNz1Io8db" role="2m5mJr">
+        <property role="TrG5h" value="ReactionsResponse" />
+        <node concept="2m7Kf5" id="64HNz1IoazW" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="seq" />
+          <node concept="2m5ndE" id="64HNz1Ioa$3" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Ioa$6" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="state" />
+          <node concept="wb0Ql" id="64HNz1Ioa$f" role="2m7DVh">
+            <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Io8l5" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="reactions" />
+          <node concept="2m5nlk" id="64HNz1Io8l9" role="2m7DVh">
+            <node concept="2m5mGg" id="64HNz1Io8lf" role="3GJlyp">
+              <ref role="2m5mJy" node="64HNz1Io2Dg" resolve="MessageReaction" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="64HNz1Io8dc" role="NuuwV">
+          <property role="Nu42W" value="DB" />
+        </node>
+        <node concept="NXeRC" id="64HNz1IopCD" role="NXp4Y">
+          <property role="NXePf" value="Response for reactions change" />
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBBk8i" role="2m5mJr">
@@ -3929,6 +4081,53 @@
           <ref role="NX6Kv" node="5TxE3W70qfx" resolve="dialogs" />
         </node>
       </node>
+      <node concept="NpBTk" id="64HNz1IobmL" role="2m5mJr">
+        <property role="TrG5h" value="ReactionsUpdate" />
+        <node concept="2m7Kf5" id="64HNz1Iobv8" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="64HNz1Iobvc" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Iobvf" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="64HNz1Iobvl" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1Ioc9H" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="reactions" />
+          <node concept="2m5nlk" id="64HNz1Ioc9P" role="2m7DVh">
+            <node concept="2m5mGg" id="64HNz1Ioc9V" role="3GJlyp">
+              <ref role="2m5mJy" node="64HNz1Io2Dg" resolve="MessageReaction" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="64HNz1IobmM" role="NuuwV">
+          <property role="Nu42W" value="DE" />
+        </node>
+        <node concept="NXeRC" id="64HNz1Ioqj9" role="NXp_2">
+          <property role="NXePf" value="Update about reactions change" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ioqje" role="NXp_2">
+          <property role="NX6R2" value="Destination peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Iobv8" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ioqjm" role="NXp_2">
+          <property role="NX6R2" value="Message random id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Iobvf" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="64HNz1Ioqjw" role="NXp_2">
+          <property role="NX6R2" value="New Reactions" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="64HNz1Ioc9H" resolve="reactions" />
+        </node>
+      </node>
       <node concept="2m488m" id="gbd4oSj4vu" role="2m5mJr">
         <property role="TrG5h" value="MessageState" />
         <node concept="2m7y0F" id="gbd4oSj4vv" role="2m7ymf">
@@ -3969,6 +4168,11 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="gbd4oSj4vI" resolve="message" />
         </node>
+        <node concept="NX1gA" id="64HNz1Iovfm" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Message reactions" />
+          <ref role="NX6Kv" node="64HNz1IoveR" resolve="reactions" />
+        </node>
         <node concept="2m7Kf5" id="gbd4oSj4vC" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="senderUid" />
@@ -4003,6 +4207,15 @@
           <node concept="2m5nlT" id="gbd4oSj4vL" role="2m7DVh">
             <node concept="3GJkcs" id="gbd4oSj4vM" role="3GH5xg">
               <ref role="3GJkik" node="gbd4oSj4vu" resolve="MessageState" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="64HNz1IoveR" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="reactions" />
+          <node concept="2m5nlk" id="64HNz1Iovf6" role="2m7DVh">
+            <node concept="2m5mGg" id="64HNz1Iovfc" role="3GJlyp">
+              <ref role="2m5mJy" node="64HNz1Io2Dg" resolve="MessageReaction" />
             </node>
           </node>
         </node>
