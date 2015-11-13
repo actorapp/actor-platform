@@ -4,13 +4,9 @@ machine:
   services:
     - postgresql
 
-database:
-  post:
-    - sudo -u postgres psql postgres "GRANT ALL PRIVILEGES ON circle_test TO ubuntu;"
-
 dependencies:
   pre:
-    - echo "Hey!"
+    - sudo -u postgres psql postgres "GRANT ALL PRIVILEGES ON circle_test TO ubuntu;"
     # - actor-deps/installCoreDeps.sh
   cache_directories:
     - "actor-deps/dist"
