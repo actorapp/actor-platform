@@ -63,7 +63,7 @@ private[dialog] final case class DialogState(
   }
 }
 
-object Dialog {
+object DialogProcessor {
 
   def register(): Unit = {
     ActorSerializer.register(
@@ -81,17 +81,17 @@ object Dialog {
   val MaxCacheSize = 100L
 
   def props(userId: Int, peer: Peer, extensions: Seq[ApiExtension]): Props =
-    Props(classOf[Dialog], userId, peer, extensions)
+    Props(classOf[DialogProcessor], userId, peer, extensions)
 
 }
 
-private[dialog] final class Dialog(val userId: Int, val peer: Peer, extensions: Seq[ApiExtension])
+private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, extensions: Seq[ApiExtension])
   extends Actor
   with ActorLogging
   with DialogCommandHandlers
   with ActorFutures
   with ActorStashing {
-  import Dialog._
+  import DialogProcessor._
   import DialogCommands._
   import DialogEvents._
 

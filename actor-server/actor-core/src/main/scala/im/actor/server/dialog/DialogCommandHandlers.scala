@@ -17,7 +17,7 @@ import scala.concurrent.Future
 import scala.util.Failure
 
 trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
-  this: Dialog ⇒
+  this: DialogProcessor ⇒
 
   import DialogCommands._
   import DialogEvents._

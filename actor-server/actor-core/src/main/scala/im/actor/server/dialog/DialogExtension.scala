@@ -14,7 +14,7 @@ import im.actor.extension.InternalExtensions
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
 import im.actor.server.group.GroupExtension
-import im.actor.server.model.{ Peer, PeerType, Dialog ⇒ DialogModel }
+import im.actor.server.model.{ Dialog, Peer, PeerType }
 import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
@@ -46,7 +46,7 @@ object DialogGroups {
 sealed trait DialogExtension extends Extension
 
 final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension with PeersImplicits {
-  Dialog.register()
+  DialogProcessor.register()
 
   val InternalDialogExtensions = "modules.messaging.extensions"
 
@@ -158,8 +158,8 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
   def isSharedUser(userId: Int): Boolean = userId == 0
 
   def getGroupedDialogs(userId: Int) = {
-    db.run(DialogRepo.findNotArchivedSortByLastMessageData(userId, None, Int.MaxValue) flatMap { dialogModels ⇒
-      val (groupModels, privateModels) = dialogModels.foldLeft((Vector.empty[DialogModel], Vector.empty[DialogModel])) {
+    db.run(DialogRepo.findNotArchivedSortByLastMessageData(userId, None, Int.MaxValue) map (_ filterNot (dialogWithSelf(userId, _))) flatMap { Dialogs ⇒
+      val (groupModels, privateModels) = Dialogs.foldLeft((Vector.empty[Dialog], Vector.empty[Dialog])) {
         case ((groupModels, privateModels), dialog) ⇒
           if (dialog.peer.typ == PeerType.Group)
             (groupModels :+ dialog, privateModels)
@@ -177,13 +177,16 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
     })
   }
 
-  private def getDialogShort(dialogModel: DialogModel)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] = {
-    HistoryUtils.withHistoryOwner(dialogModel.peer, dialogModel.userId) { historyOwner ⇒
+  def dialogWithSelf(userId: Int, dialog: Dialog): Boolean =
+    dialog.peer.typ == PeerType.Private && dialog.peer.id == userId
+
+  private def getDialogShort(Dialog: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] = {
+    HistoryUtils.withHistoryOwner(Dialog.peer, Dialog.userId) { historyOwner ⇒
       for {
-        messageOpt ← HistoryMessageRepo.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(dialogModel.userId)))
-        unreadCount ← getUnreadCount(dialogModel.userId, historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
+        messageOpt ← HistoryMessageRepo.findNewest(historyOwner, Dialog.peer) map (_.map(_.ofUser(Dialog.userId)))
+        unreadCount ← getUnreadCount(Dialog.userId, historyOwner, Dialog.peer, Dialog.ownerLastReadAt)
       } yield ApiDialogShort(
-        peer = ApiPeer(ApiPeerType(dialogModel.peer.typ.value), dialogModel.peer.id),
+        peer = ApiPeer(ApiPeerType(Dialog.peer.typ.value), Dialog.peer.id),
         counter = unreadCount,
         date = messageOpt.map(_.date.getMillis).getOrElse(0)
       )
