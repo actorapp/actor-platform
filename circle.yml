@@ -1,6 +1,8 @@
 machine:
   java: 
     version: oraclejdk8
+  services:
+    - postgresql
 
 dependencies:
   pre:
@@ -14,7 +16,7 @@ test:
   pre:
 
   override:
-    - ./gradlew clean build -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
-    - cd actor-server && ./sbt dist
+    # - ./gradlew clean build -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
+    - cd actor-server && ./sbt test
   post:
 
