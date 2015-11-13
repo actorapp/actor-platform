@@ -1,6 +1,6 @@
 package im.actor.server.dialog
 
-import akka.actor.{ ActorRef, Status }
+import akka.actor.{ PoisonPill, ActorRef, Status }
 import akka.pattern.pipe
 import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
@@ -177,6 +177,22 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
         updateHidden(state)
       }
     }
+  }
+
+  protected def delete(state: DialogState): Unit = {
+    val update = UpdateChatDelete(peer.asStruct)
+
+    val future =
+      for {
+        _ ← db.run(
+          HistoryMessageRepo.deleteAll(userId, peer)
+            andThen DialogRepo.delete(userId, peer)
+        )
+        _ ← userExt.notifyDialogsChanged(userId)
+        seqstate ← seqUpdExt.deliverSingleUpdate(userId, update)
+      } yield seqstate
+
+    future pipeTo sender() onSuccess { case _ ⇒ self ! PoisonPill }
   }
 
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean =

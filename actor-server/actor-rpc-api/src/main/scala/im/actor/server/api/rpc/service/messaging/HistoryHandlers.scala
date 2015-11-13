@@ -59,17 +59,11 @@ trait HistoryHandlers {
   }
 
   override def jhandleDeleteChat(peer: ApiOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val action = requireAuth(clientData).map { implicit client ⇒
-      val update = UpdateChatDelete(peer.asPeer)
-
+    authorized(clientData) { implicit client ⇒
       for {
-        _ ← persist.HistoryMessageRepo.deleteAll(client.userId, peer.asModel)
-        _ ← persist.DialogRepo.delete(client.userId, peer.asModel)
-        seqstate ← DBIO.from(userExt.broadcastClientUpdate(update, None, isFat = false))
-      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+        SeqState(seq, state) ← dialogExt.delete(client.userId, peer.asModel)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
-
-    db.run(toDBIOAction(action))
   }
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
