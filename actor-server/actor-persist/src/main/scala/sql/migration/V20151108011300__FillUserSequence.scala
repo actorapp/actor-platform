@@ -16,6 +16,8 @@ import scala.concurrent.{ ExecutionContext, Future, Await }
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
+import java.sql.SQLException
+
 object V20151108011300__FillUserSequence {
   final case class Obsolete(authId: Long, timestamp: Long, seq: Int, header: Int, data: Array[Byte], userIds: String, groupIds: String)
   final case class New(userId: Int, seq: Int, timestamp: Long, mapping: Array[Byte])
