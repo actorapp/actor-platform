@@ -6,6 +6,7 @@ machine:
 
 dependencies:
   pre:
+    echo "Hey!"
     # - actor-deps/installCoreDeps.sh
   cache_directories:
     - "actor-deps/dist"
