@@ -6,7 +6,7 @@ machine:
 
 dependencies:
   pre:
-    - sudo -u postgres psql postgres "GRANT ALL PRIVILEGES ON circle_test TO ubuntu;"
+    - sudo -u postgres psql postgres "ALTER USER WITH SUPERUSER;"
     # - actor-deps/installCoreDeps.sh
   cache_directories:
     - "actor-deps/dist"
