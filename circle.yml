@@ -6,7 +6,7 @@ machine:
 
 dependencies:
   pre:
-    - actor-deps/installCoreDeps.sh
+    # - actor-deps/installCoreDeps.sh
   cache_directories:
     - "actor-deps/dist"
   override:
