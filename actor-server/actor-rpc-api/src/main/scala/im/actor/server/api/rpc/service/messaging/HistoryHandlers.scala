@@ -8,6 +8,7 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ ApiOutPeer, ApiPeerType }
 import im.actor.server.dialog.{ DialogErrors, HistoryUtils }
 import im.actor.server.group.GroupUtils
+import im.actor.server.model.{ Dialog, PeerType }
 import im.actor.server.persist.DialogRepo
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.UserUtils
@@ -73,18 +74,21 @@ trait HistoryHandlers {
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.DialogRepo.findNotArchived(client.userId, endDateTimeFrom(endDate), limit, fetchHidden = true) flatMap { dialogModels ⇒
-        for {
-          dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
-          (users, groups) ← getDialogsUsersGroups(dialogs)
-        } yield {
-          Ok(ResponseLoadDialogs(
-            groups = groups.toVector,
-            users = users.toVector,
-            dialogs = dialogs.toVector
-          ))
+      persist.DialogRepo
+        .findNotArchived(client.userId, endDateTimeFrom(endDate), limit, fetchHidden = true)
+        .map(_ filterNot (dialogExt.dialogWithSelf(client.userId, _)))
+        .flatMap { dialogModels ⇒
+          for {
+            dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
+            (users, groups) ← getDialogsUsersGroups(dialogs)
+          } yield {
+            Ok(ResponseLoadDialogs(
+              groups = groups.toVector,
+              users = users.toVector,
+              dialogs = dialogs.toVector
+            ))
+          }
         }
-      }
     }
 
     db.run(toDBIOAction(authorizedAction))
