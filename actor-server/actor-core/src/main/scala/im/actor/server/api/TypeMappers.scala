@@ -1,6 +1,5 @@
 package im.actor.server.api
 
-import akka.actor.ActorRef
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
 import im.actor.api.rpc.files.ApiAvatar
