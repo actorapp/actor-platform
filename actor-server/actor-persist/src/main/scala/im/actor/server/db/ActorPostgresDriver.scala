@@ -14,13 +14,12 @@ trait ByteStringImplicits {
 }
 
 trait ActorPostgresDriver extends ExPostgresDriver
-  with PgDateSupportJoda
   with PgDate2Support
   with PgArraySupport
   with PgLTreeSupport {
 
   override val api =
-    new API with ArrayImplicits with LTreeImplicits with DateTimeImplicits with ByteStringImplicits with JodaDateTimeImplicits
+    new API with ArrayImplicits with LTreeImplicits with DateTimeImplicits with ByteStringImplicits
 }
 
 object ActorPostgresDriver extends ActorPostgresDriver
