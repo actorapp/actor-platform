@@ -9,6 +9,7 @@ option (scalapb.options) = {
 
 import "scalapb/scalapb.proto";
 import "model.proto";
+import "sequence.proto";
 
 message DialogCommands {
 
@@ -22,6 +23,8 @@ message DialogCommands {
             Show show = 6;
             Hide hide = 7;
             Delete delete = 8;
+            SetReaction set_reaction = 9;
+            RemoveReaction remove_reaction = 10;
         }
     }
 
@@ -92,4 +95,33 @@ message DialogCommands {
         required Peer dest = 1;
     }
 
+    message SetReaction {
+        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
+
+        required Peer origin = 1;
+        required Peer dest = 2;
+        required int32 client_auth_sid = 5;
+        required int64 random_id = 4;
+        required string code = 3;
+    }
+
+    message SetReactionAck {
+        required SeqState seqstate = 1;
+        repeated MessageReaction reactions = 2;
+    }
+
+    message RemoveReaction {
+        option (scalapb.message).extends = "im.actor.server.dialog.DirectDialogCommand";
+
+        required Peer origin = 1;
+        required Peer dest = 2;
+        required int32 client_auth_sid = 5;
+        required int64 random_id = 4;
+        required string code = 3;
+    }
+
+    message RemoveReactionAck {
+        required SeqState seqstate = 1;
+        repeated MessageReaction reactions = 2;
+    }
 }
