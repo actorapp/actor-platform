@@ -1,5 +1,6 @@
 package im.actor.server.persist.messaging
 
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.model.{ DialogId, ReactionEvent }
 
