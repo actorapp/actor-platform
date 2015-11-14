@@ -1083,6 +1083,48 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise addLike(final JsPeer peer, final String rid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.addReaction(peer.convert(), Long.parseLong(rid), "\u2764")
+                        .start(new CommandCallback<Boolean>() {
+                            @Override
+                            public void onResult(Boolean res) {
+                                resolve();
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                reject(e.getMessage());
+                            }
+                        });
+
+            }
+        });
+    }
+
+    public JsPromise removeLike(final JsPeer peer, final String rid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.removeReaction(peer.convert(), Long.parseLong(rid), "\u2764")
+                        .start(new CommandCallback<Boolean>() {
+                            @Override
+                            public void onResult(Boolean res) {
+                                resolve();
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                reject(e.getMessage());
+                            }
+                        });
+
+            }
+        });
+    }
+
     public JsPromise findUsers(final String query) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override

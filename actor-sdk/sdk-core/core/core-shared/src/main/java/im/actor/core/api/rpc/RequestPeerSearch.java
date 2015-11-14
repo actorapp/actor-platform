@@ -55,6 +55,7 @@ public class RequestPeerSearch extends Request<ResponsePeerSearch> {
     @Override
     public String toString() {
         String res = "rpc PeerSearch{";
+        res += "query=" + this.query;
         res += "}";
         return res;
     }

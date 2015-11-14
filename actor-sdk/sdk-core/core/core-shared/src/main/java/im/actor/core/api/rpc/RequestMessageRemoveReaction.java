@@ -15,20 +15,24 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestHideDialog extends Request<ResponseDialogsOrder> {
+public class RequestMessageRemoveReaction extends Request<ResponseReactionsResponse> {
 
-    public static final int HEADER = 0xe7;
-    public static RequestHideDialog fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestHideDialog(), data);
+    public static final int HEADER = 0xdc;
+    public static RequestMessageRemoveReaction fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestMessageRemoveReaction(), data);
     }
 
     private ApiOutPeer peer;
+    private long rid;
+    private String code;
 
-    public RequestHideDialog(@NotNull ApiOutPeer peer) {
+    public RequestMessageRemoveReaction(@NotNull ApiOutPeer peer, long rid, @NotNull String code) {
         this.peer = peer;
+        this.rid = rid;
+        this.code = code;
     }
 
-    public RequestHideDialog() {
+    public RequestMessageRemoveReaction() {
 
     }
 
@@ -37,9 +41,20 @@ public class RequestHideDialog extends Request<ResponseDialogsOrder> {
         return this.peer;
     }
 
+    public long getRid() {
+        return this.rid;
+    }
+
+    @NotNull
+    public String getCode() {
+        return this.code;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new ApiOutPeer());
+        this.rid = values.getLong(2);
+        this.code = values.getString(3);
     }
 
     @Override
@@ -48,12 +63,19 @@ public class RequestHideDialog extends Request<ResponseDialogsOrder> {
             throw new IOException();
         }
         writer.writeObject(1, this.peer);
+        writer.writeLong(2, this.rid);
+        if (this.code == null) {
+            throw new IOException();
+        }
+        writer.writeString(3, this.code);
     }
 
     @Override
     public String toString() {
-        String res = "rpc HideDialog{";
+        String res = "rpc MessageRemoveReaction{";
         res += "peer=" + this.peer;
+        res += ", rid=" + this.rid;
+        res += ", code=" + this.code;
         res += "}";
         return res;
     }

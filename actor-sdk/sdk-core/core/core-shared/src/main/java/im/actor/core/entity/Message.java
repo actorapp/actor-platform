@@ -7,6 +7,8 @@ package im.actor.core.entity;
 import com.google.j2objc.annotations.Property;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserCreator;
@@ -43,14 +45,18 @@ public class Message extends BserObject implements ListEngineItem {
     private MessageState messageState;
     @Property("readonly, nonatomic")
     private AbsContent content;
+    @Property("readonly, nonatomic")
+    private List<Reaction> reactions;
 
-    public Message(long rid, long sortDate, long date, int senderId, MessageState messageState, AbsContent content) {
+    public Message(long rid, long sortDate, long date, int senderId, MessageState messageState, AbsContent content,
+                   List<Reaction> reactions) {
         this.rid = rid;
         this.sortDate = sortDate;
         this.date = date;
         this.senderId = senderId;
         this.messageState = messageState;
         this.content = content;
+        this.reactions = reactions;
     }
 
     private Message() {
@@ -77,6 +83,10 @@ public class Message extends BserObject implements ListEngineItem {
         return messageState;
     }
 
+    public List<Reaction> getReactions() {
+        return reactions;
+    }
+
     public boolean isSent() {
         return messageState == MessageState.SENT || messageState == MessageState.SENT;
     }
@@ -98,19 +108,23 @@ public class Message extends BserObject implements ListEngineItem {
     }
 
     public Message changeState(MessageState messageState) {
-        return new Message(rid, sortDate, date, senderId, messageState, content);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions);
     }
 
     public Message changeDate(long date) {
-        return new Message(rid, sortDate, date, senderId, messageState, content);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions);
     }
 
     public Message changeAllDate(long date) {
-        return new Message(rid, date, date, senderId, messageState, content);
+        return new Message(rid, date, date, senderId, messageState, content, reactions);
     }
 
     public Message changeContent(AbsContent content) {
-        return new Message(rid, sortDate, date, senderId, messageState, content);
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions);
+    }
+
+    public Message changeReactions(List<Reaction> reactions) {
+        return new Message(rid, sortDate, date, senderId, messageState, content, reactions);
     }
 
     @Override
@@ -121,6 +135,10 @@ public class Message extends BserObject implements ListEngineItem {
         senderId = values.getInt(4);
         messageState = MessageState.fromValue(values.getInt(5));
         content = AbsContent.parse(values.getBytes(6));
+        reactions.clear();
+        for (byte[] react : values.getRepeatedBytes(7)) {
+            reactions.add(Reaction.fromBytes(react));
+        }
     }
 
     @Override
@@ -131,6 +149,7 @@ public class Message extends BserObject implements ListEngineItem {
         writer.writeInt(4, senderId);
         writer.writeInt(5, messageState.getValue());
         writer.writeBytes(6, AbsContent.serialize(content));
+        writer.writeRepeatedObj(7, reactions);
     }
 
     @Override

@@ -14,15 +14,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
-public abstract class ApiTextMessageEx extends BserObject {
-    public static ApiTextMessageEx fromBytes(byte[] src) throws IOException {
+public abstract class ApiColor extends BserObject {
+    public static ApiColor fromBytes(byte[] src) throws IOException {
         BserValues values = new BserValues(BserParser.deserialize(new DataInput(src, 0, src.length)));
         int key = values.getInt(1);
         byte[] content = values.getBytes(2);
         switch(key) { 
-            case 1: return Bser.parse(new ApiTextExMarkdown(), content);
-            case 2: return Bser.parse(new ApiTextModernMessage(), content);
-            default: return new ApiTextMessageExUnsupported(key, content);
+            default: return new ApiColorUnsupported(key, content);
         }
     }
     public abstract int getHeader();
