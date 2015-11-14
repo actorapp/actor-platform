@@ -14,7 +14,8 @@ import im.actor.extension.InternalExtensions
 import im.actor.server.db.DbExtension
 import im.actor.server.dialog.DialogCommands._
 import im.actor.server.group.GroupExtension
-import im.actor.server.model.{ Dialog, Peer, PeerType }
+import im.actor.server.model._
+import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.UserExtension
@@ -23,7 +24,6 @@ import slick.dbio.DBIO
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.reflect.ClassTag
 
 sealed trait DialogGroup {
   def key: String
@@ -130,6 +130,34 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
       (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withDelete(Delete(peer))).mapTo[SeqState]
     }
 
+  def setReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[SetReactionAck] =
+    withValidPeer(peer, userId) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withSetReaction(SetReaction(
+        origin = Peer.privat(userId),
+        dest = peer,
+        clientAuthSid = authSid,
+        randomId = randomId,
+        code = code
+      ))).mapTo[SetReactionAck]
+    }
+
+  def removeReaction(userId: Int, authSid: Int, peer: Peer, randomId: Long, code: String): Future[RemoveReactionAck] =
+    withValidPeer(peer, userId) {
+      (userExt.processorRegion.ref ? Envelope(Peer.privat(userId)).withRemoveReaction(RemoveReaction(
+        origin = Peer.privat(userId),
+        dest = peer,
+        clientAuthSid = authSid,
+        randomId = randomId,
+        code = code
+      ))).mapTo[RemoveReactionAck]
+    }
+
+  def ackSetReaction(peer: Peer, sr: SetReaction): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withSetReaction(sr)) map (_ ⇒ ())
+
+  def ackRemoveReaction(peer: Peer, rr: RemoveReaction): Future[Unit] =
+    (processorRegion(peer) ? Envelope(peer).withRemoveReaction(rr)) map (_ ⇒ ())
+
   def getDeliveryExtension(extensions: Seq[ApiExtension]): DeliveryExtension = {
     extensions match {
       case Seq() ⇒
@@ -185,6 +213,20 @@ final class DialogExtensionImpl(system: ActorSystem) extends DialogExtension wit
 
   def dialogWithSelf(userId: Int, dialog: Dialog): Boolean =
     dialog.peer.typ == PeerType.Private && dialog.peer.id == userId
+
+  def fetchReactions(peer: Peer, clientUserId: Int, randomId: Long): DBIO[Seq[MessageReaction]] =
+    ReactionEventRepo.fetch(DialogId(peer, clientUserId), randomId) map reactions
+
+  def fetchReactions(peer: Peer, clientUserId: Int, randomIds: Set[Long]): DBIO[Map[Long, Seq[MessageReaction]]] =
+    for {
+      events ← ReactionEventRepo.fetch(DialogId(peer, clientUserId), randomIds)
+    } yield events.view.groupBy(_.randomId).mapValues(reactions)
+
+  private def reactions(events: Seq[ReactionEvent]): Seq[MessageReaction] = {
+    (events.view groupBy (_.code) mapValues (_ map (_.userId)) map {
+      case (code, userIds) ⇒ MessageReaction(userIds, code)
+    }).toSeq
+  }
 
   private def getDialogShort(Dialog: Dialog)(implicit ec: ExecutionContext): DBIO[ApiDialogShort] = {
     HistoryUtils.withHistoryOwner(Dialog.peer, Dialog.userId) { historyOwner ⇒

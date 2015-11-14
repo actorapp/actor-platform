@@ -132,6 +132,10 @@ private[dialog] final class DialogProcessor(val userId: Int, val peer: Peer, ext
     case mrv: MessageReceived if accepts(mrv)        ⇒ ackMessageReceived(state, mrv) //User's messages been received
     case mrd: MessageRead if invokes(mrd)            ⇒ messageRead(state, mrd) //User reads messages
     case mrd: MessageRead if accepts(mrd)            ⇒ ackMessageRead(state, mrd) //User's messages been read
+    case sr: SetReaction if invokes(sr)              ⇒ setReaction(state, sr)
+    case sr: SetReaction if accepts(sr)              ⇒ ackSetReaction(state, sr)
+    case rr: RemoveReaction if invokes(rr)           ⇒ removeReaction(state, rr)
+    case rr: RemoveReaction if accepts(rr)           ⇒ ackRemoveReaction(state, rr)
     case WriteMessage(_, _, date, randomId, message) ⇒ writeMessage(date, randomId, message)
     case Show(_)                                     ⇒ show(state)
     case Hide(_)                                     ⇒ hide(state)
