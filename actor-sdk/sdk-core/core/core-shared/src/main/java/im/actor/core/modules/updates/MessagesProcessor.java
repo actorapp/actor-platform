@@ -11,6 +11,7 @@ import java.util.List;
 import im.actor.core.api.ApiDialog;
 import im.actor.core.api.ApiDialogGroup;
 import im.actor.core.api.ApiMessage;
+import im.actor.core.api.ApiMessageReaction;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiAppCounters;
 import im.actor.core.api.ApiHistoryMessage;
@@ -20,6 +21,7 @@ import im.actor.core.api.updates.UpdateMessage;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.modules.AbsModule;
@@ -65,7 +67,8 @@ public class MessagesProcessor extends AbsModule {
 
             // Sending message to conversation
             nMesages.add(new Message(u.getRid(), u.getDate(), u.getDate(), u.getSenderUid(),
-                    isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent));
+                    isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent,
+                    new ArrayList<Reaction>()));
 
             if (!isOut) {
 
@@ -110,7 +113,7 @@ public class MessagesProcessor extends AbsModule {
 
         // Sending message to conversation
         Message message = new Message(rid, date, date, senderUid,
-                isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent);
+                isOut ? MessageState.SENT : MessageState.UNKNOWN, msgContent, new ArrayList<Reaction>());
 
         conversationActor(peer).send(message);
 
@@ -129,7 +132,7 @@ public class MessagesProcessor extends AbsModule {
     @Verified
     public void onUserRegistered(long rid, int uid, long date) {
         Message message = new Message(rid, date, date, uid,
-                MessageState.UNKNOWN, ServiceUserRegistered.create());
+                MessageState.UNKNOWN, ServiceUserRegistered.create(), new ArrayList<Reaction>());
 
         conversationActor(Peer.user(uid)).send(message);
     }
@@ -190,6 +193,24 @@ public class MessagesProcessor extends AbsModule {
 
         // Send to own read actor
         ownReadActor().send(new OwnReadActor.OutMessage(peer, date));
+    }
+
+    @Verified
+    public void onReactionsChanged(ApiPeer _peer, long rid, List<ApiMessageReaction> apiReactions) {
+        Peer peer = convert(_peer);
+
+        // We are not invalidating sequence because of this update
+        if (!isValidPeer(peer)) {
+            return;
+        }
+
+        ArrayList<Reaction> reactions = new ArrayList<Reaction>();
+        for (ApiMessageReaction r : apiReactions) {
+            reactions.add(new Reaction(r.getCode(), r.getUsers()));
+        }
+
+        // Change message state in conversation
+        conversationActor(peer).send(new ConversationActor.MessageReactionsChanged(rid, reactions));
     }
 
     @Verified
@@ -320,9 +341,15 @@ public class MessagesProcessor extends AbsModule {
             }
             MessageState state = EntityConverter.convert(historyMessage.getState());
 
+            ArrayList<Reaction> reactions = new ArrayList<Reaction>();
+
+            for (ApiMessageReaction r : historyMessage.getReactions()) {
+                reactions.add(new Reaction(r.getCode(), r.getUsers()));
+            }
+
             messages.add(new Message(historyMessage.getRid(), historyMessage.getDate(),
                     historyMessage.getDate(), historyMessage.getSenderUid(),
-                    state, content));
+                    state, content, reactions));
         }
 
         // Sending updates to conversation actor

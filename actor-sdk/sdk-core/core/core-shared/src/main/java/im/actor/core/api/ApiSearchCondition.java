@@ -22,6 +22,11 @@ public abstract class ApiSearchCondition extends BserObject {
         switch(key) { 
             case 1: return Bser.parse(new ApiSearchPeerTypeCondition(), content);
             case 2: return Bser.parse(new ApiSearchPieceText(), content);
+            case 3: return Bser.parse(new ApiSearchAndCondition(), content);
+            case 4: return Bser.parse(new ApiSearchOrCondition(), content);
+            case 5: return Bser.parse(new ApiSearchPeerCondition(), content);
+            case 6: return Bser.parse(new ApiSearchPeerContentType(), content);
+            case 7: return Bser.parse(new ApiSearchSenderIdConfition(), content);
             default: return new ApiSearchConditionUnsupported(key, content);
         }
     }

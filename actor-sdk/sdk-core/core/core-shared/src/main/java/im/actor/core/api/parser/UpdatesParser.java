@@ -41,6 +41,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 47: return UpdateChatClear.fromBytes(payload);
             case 48: return UpdateChatDelete.fromBytes(payload);
             case 1: return UpdateChatGroupsChanged.fromBytes(payload);
+            case 222: return UpdateReactionsUpdate.fromBytes(payload);
             case 36: return UpdateGroupInvite.fromBytes(payload);
             case 21: return UpdateGroupUserInvited.fromBytes(payload);
             case 23: return UpdateGroupUserLeave.fromBytes(payload);
@@ -57,6 +58,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 9: return UpdateUserLastSeen.fromBytes(payload);
             case 33: return UpdateGroupOnline.fromBytes(payload);
             case 131: return UpdateParameterChanged.fromBytes(payload);
+            case 80: return UpdateRawUpdate.fromBytes(payload);
             case 215: return UpdateCountersChanged.fromBytes(payload);
             case 42: return UpdateConfig.fromBytes(payload);
         }

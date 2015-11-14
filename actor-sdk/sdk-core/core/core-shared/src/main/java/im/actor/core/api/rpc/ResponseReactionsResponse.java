@@ -15,26 +15,24 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class ResponseCreateGroup extends Response {
+public class ResponseReactionsResponse extends Response {
 
-    public static final int HEADER = 0xd8;
-    public static ResponseCreateGroup fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseCreateGroup(), data);
+    public static final int HEADER = 0xdb;
+    public static ResponseReactionsResponse fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseReactionsResponse(), data);
     }
 
     private int seq;
     private byte[] state;
-    private ApiGroup group;
-    private List<ApiUser> users;
+    private List<ApiMessageReaction> reactions;
 
-    public ResponseCreateGroup(int seq, @NotNull byte[] state, @NotNull ApiGroup group, @NotNull List<ApiUser> users) {
+    public ResponseReactionsResponse(int seq, @NotNull byte[] state, @NotNull List<ApiMessageReaction> reactions) {
         this.seq = seq;
         this.state = state;
-        this.group = group;
-        this.users = users;
+        this.reactions = reactions;
     }
 
-    public ResponseCreateGroup() {
+    public ResponseReactionsResponse() {
 
     }
 
@@ -48,25 +46,19 @@ public class ResponseCreateGroup extends Response {
     }
 
     @NotNull
-    public ApiGroup getGroup() {
-        return this.group;
-    }
-
-    @NotNull
-    public List<ApiUser> getUsers() {
-        return this.users;
+    public List<ApiMessageReaction> getReactions() {
+        return this.reactions;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
-        this.group = values.getObj(3, new ApiGroup());
-        List<ApiUser> _users = new ArrayList<ApiUser>();
-        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
-            _users.add(new ApiUser());
+        List<ApiMessageReaction> _reactions = new ArrayList<ApiMessageReaction>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _reactions.add(new ApiMessageReaction());
         }
-        this.users = values.getRepeatedObj(4, _users);
+        this.reactions = values.getRepeatedObj(3, _reactions);
     }
 
     @Override
@@ -76,16 +68,12 @@ public class ResponseCreateGroup extends Response {
             throw new IOException();
         }
         writer.writeBytes(2, this.state);
-        if (this.group == null) {
-            throw new IOException();
-        }
-        writer.writeObject(3, this.group);
-        writer.writeRepeatedObj(4, this.users);
+        writer.writeRepeatedObj(3, this.reactions);
     }
 
     @Override
     public String toString() {
-        String res = "tuple CreateGroup{";
+        String res = "response ReactionsResponse{";
         res += "}";
         return res;
     }
