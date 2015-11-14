@@ -19,10 +19,12 @@ trait MessagingSpecHelpers extends ScalaFutures {
     implicit
     clientData: ClientData,
     msgService: MessagingService
-  ): Unit = {
+  ): Long = {
+    val randomId = Random.nextLong
     whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Private, userId), clientData.authId)) { peer ⇒
-      whenReady(msgService.handleSendMessage(peer, Random.nextLong, message))(identity)
+      whenReady(msgService.handleSendMessage(peer, randomId, message))(identity)
     }
+    randomId
   }
 
   def textMessage(text: String) = ApiTextMessage(text, Vector.empty, None)
