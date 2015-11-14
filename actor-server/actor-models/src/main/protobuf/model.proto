@@ -4,6 +4,10 @@ package im.actor.server;
 
 import "scalapb/scalapb.proto";
 
+option (scalapb.options) = {
+    import: "im.actor.server.model.ModelTypeMappers._"
+};
+
 message SerializedUpdate {
     int32 header = 1;
     bytes body = 2;
@@ -42,4 +46,17 @@ message OutPeer {
     PeerType type = 1;
     int32 id = 2;
     int64 access_hash = 3;
+}
+
+message ReactionEvent {
+    int32 dialog_type = 1;
+    string dialog_id = 5;
+    int64 random_id = 2;
+    string code = 3;
+    int32 user_id = 4;
+}
+
+message MessageReaction {
+    repeated int32 user_ids = 3;
+    string code = 4;
 }
