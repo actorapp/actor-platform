@@ -15,45 +15,46 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class RequestEnterGroup extends Request<ResponseEnterGroup> {
+public class RequestMessageSearch extends Request<ResponseMessageSearch> {
 
-    public static final int HEADER = 0xc7;
-    public static RequestEnterGroup fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestEnterGroup(), data);
+    public static final int HEADER = 0xd9;
+    public static RequestMessageSearch fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestMessageSearch(), data);
     }
 
-    private ApiGroupOutPeer peer;
+    private ApiSearchCondition query;
 
-    public RequestEnterGroup(@NotNull ApiGroupOutPeer peer) {
-        this.peer = peer;
+    public RequestMessageSearch(@NotNull ApiSearchCondition query) {
+        this.query = query;
     }
 
-    public RequestEnterGroup() {
+    public RequestMessageSearch() {
 
     }
 
     @NotNull
-    public ApiGroupOutPeer getPeer() {
-        return this.peer;
+    public ApiSearchCondition getQuery() {
+        return this.query;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new ApiGroupOutPeer());
+        this.query = ApiSearchCondition.fromBytes(values.getBytes(1));
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.peer == null) {
+        if (this.query == null) {
             throw new IOException();
         }
-        writer.writeObject(1, this.peer);
+
+        writer.writeBytes(1, this.query.buildContainer());
     }
 
     @Override
     public String toString() {
-        String res = "rpc EnterGroup{";
-        res += "peer=" + this.peer;
+        String res = "rpc MessageSearch{";
+        res += "query=" + this.query;
         res += "}";
         return res;
     }

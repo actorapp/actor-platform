@@ -21,13 +21,15 @@ public class ApiHistoryMessage extends BserObject {
     private long date;
     private ApiMessage message;
     private ApiMessageState state;
+    private List<ApiMessageReaction> reactions;
 
-    public ApiHistoryMessage(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state) {
+    public ApiHistoryMessage(int senderUid, long rid, long date, @NotNull ApiMessage message, @Nullable ApiMessageState state, @NotNull List<ApiMessageReaction> reactions) {
         this.senderUid = senderUid;
         this.rid = rid;
         this.date = date;
         this.message = message;
         this.state = state;
+        this.reactions = reactions;
     }
 
     public ApiHistoryMessage() {
@@ -56,6 +58,11 @@ public class ApiHistoryMessage extends BserObject {
         return this.state;
     }
 
+    @NotNull
+    public List<ApiMessageReaction> getReactions() {
+        return this.reactions;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.senderUid = values.getInt(1);
@@ -66,6 +73,11 @@ public class ApiHistoryMessage extends BserObject {
         if (val_state != 0) {
             this.state = ApiMessageState.parse(val_state);
         }
+        List<ApiMessageReaction> _reactions = new ArrayList<ApiMessageReaction>();
+        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
+            _reactions.add(new ApiMessageReaction());
+        }
+        this.reactions = values.getRepeatedObj(7, _reactions);
     }
 
     @Override
@@ -81,6 +93,7 @@ public class ApiHistoryMessage extends BserObject {
         if (this.state != null) {
             writer.writeInt(6, this.state.getValue());
         }
+        writer.writeRepeatedObj(7, this.reactions);
     }
 
     @Override
@@ -90,6 +103,7 @@ public class ApiHistoryMessage extends BserObject {
         res += ", rid=" + this.rid;
         res += ", date=" + this.date;
         res += ", message=" + this.message;
+        res += ", reactions=" + this.reactions;
         res += "}";
         return res;
     }

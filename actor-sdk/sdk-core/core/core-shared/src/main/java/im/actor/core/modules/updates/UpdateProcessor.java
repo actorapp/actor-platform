@@ -39,6 +39,7 @@ import im.actor.core.api.updates.UpdateMessageReadByMe;
 import im.actor.core.api.updates.UpdateMessageReceived;
 import im.actor.core.api.updates.UpdateMessageSent;
 import im.actor.core.api.updates.UpdateParameterChanged;
+import im.actor.core.api.updates.UpdateReactionsUpdate;
 import im.actor.core.api.updates.UpdateTyping;
 import im.actor.core.api.updates.UpdateTypingStop;
 import im.actor.core.api.updates.UpdateUserLastSeen;
@@ -199,7 +200,7 @@ public class UpdateProcessor extends AbsModule {
         } else if (update instanceof UpdateTyping) {
             UpdateTyping typing = (UpdateTyping) update;
             typingProcessor.onTyping(typing.getPeer(), typing.getUid(), typing.getTypingType());
-        } else if (update instanceof UpdateTypingStop){
+        } else if (update instanceof UpdateTypingStop) {
             UpdateTypingStop typing = (UpdateTypingStop) update;
             typingProcessor.onTypingStop(typing.getPeer(), typing.getUid(), typing.getTypingType());
         }
@@ -309,6 +310,9 @@ public class UpdateProcessor extends AbsModule {
             messagesProcessor.onChatArchived(convert(((UpdateChatArchived) update).getPeer()));
         } else if (update instanceof UpdateChatRestored) {
             messagesProcessor.onChatRestored(convert(((UpdateChatRestored) update).getPeer()));
+        } else if (update instanceof UpdateReactionsUpdate) {
+            messagesProcessor.onReactionsChanged(((UpdateReactionsUpdate) update).getPeer(),
+                    ((UpdateReactionsUpdate) update).getRid(), ((UpdateReactionsUpdate) update).getReactions());
         }
     }
 
