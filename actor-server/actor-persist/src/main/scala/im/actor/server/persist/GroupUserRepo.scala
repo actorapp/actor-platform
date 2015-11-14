@@ -2,7 +2,6 @@ package im.actor.server.persist
 
 import java.time.{ LocalDateTime, ZonedDateTime }
 
-import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.dbio.Effect.Write
 import slick.profile.FixedSqlAction

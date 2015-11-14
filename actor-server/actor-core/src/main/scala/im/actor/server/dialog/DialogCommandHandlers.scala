@@ -6,12 +6,15 @@ import im.actor.api.rpc.PeersImplicits
 import im.actor.api.rpc.messaging._
 import im.actor.server.dialog.HistoryUtils._
 import im.actor.server.misc.UpdateCounters
-import im.actor.server.model.{ HistoryMessage, PeerType }
+import im.actor.server.model._
+import im.actor.server.persist.messaging.ReactionEventRepo
 import im.actor.server.persist.{ DialogRepo, HistoryMessageRepo }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager
 import im.actor.util.cache.CacheHelpers._
+import im.actor.server.ApiConversions._
 import org.joda.time.DateTime
+import slick.dbio.DBIO
 
 import scala.concurrent.Future
 import scala.util.Failure
@@ -193,6 +196,55 @@ trait DialogCommandHandlers extends UpdateCounters with PeersImplicits {
       } yield seqstate
 
     future pipeTo sender() onSuccess { case _ ⇒ self ! PoisonPill }
+  }
+
+  protected def setReaction(state: DialogState, sr: SetReaction): Unit = {
+    (for {
+      reactions ← db.run {
+        ReactionEventRepo.create(DialogId(peer, userId), sr.randomId, sr.code, userId)
+          .andThen(dialogExt.fetchReactions(peer, userId, sr.randomId))
+      }
+      seqstate ← seqUpdExt.deliverSingleUpdate(
+        userId,
+        UpdateReactionsUpdate(peer.asStruct, sr.randomId, reactions.toVector)
+      )
+      _ ← dialogExt.ackSetReaction(peer, sr)
+    } yield SetReactionAck(seqstate, reactions)) pipeTo sender()
+  }
+
+  protected def ackSetReaction(state: DialogState, sr: SetReaction): Unit = {
+    (for {
+      reactions ← db.run(dialogExt.fetchReactions(peer, userId, sr.randomId))
+      _ ← seqUpdExt.deliverSingleUpdate(
+        userId,
+        UpdateReactionsUpdate(peer.asStruct, sr.randomId, reactions.toVector)
+      )
+    } yield SetReactionAck()) pipeTo sender()
+  }
+
+  protected def removeReaction(state: DialogState, rr: RemoveReaction): Unit = {
+    (for {
+      reactions ← db.run {
+        ReactionEventRepo.delete(DialogId(peer, userId), rr.randomId, rr.code, userId)
+          .andThen(dialogExt.fetchReactions(peer, userId, rr.randomId))
+      }
+      seqstate ← seqUpdExt.deliverSingleUpdate(
+        userId,
+        UpdateReactionsUpdate(peer.asStruct, rr.randomId, reactions.toVector)
+      )
+      _ ← dialogExt.ackRemoveReaction(peer, rr)
+      _ ← dialogExt.ackRemoveReaction(peer, rr)
+    } yield RemoveReactionAck(seqstate, reactions)) pipeTo sender()
+  }
+
+  protected def ackRemoveReaction(state: DialogState, rr: RemoveReaction): Unit = {
+    (for {
+      reactions ← db.run(dialogExt.fetchReactions(peer, userId, rr.randomId))
+      _ ← seqUpdExt.deliverSingleUpdate(
+        userId,
+        UpdateReactionsUpdate(peer.asStruct, rr.randomId, reactions.toVector)
+      )
+    } yield RemoveReactionAck()) pipeTo sender()
   }
 
   private def mustMakeReceive(state: DialogState, mr: MessageReceived): Boolean =
