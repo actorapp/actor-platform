@@ -714,6 +714,32 @@ public class Messenger {
     }
 
     /**
+     * Adding reaction to a message
+     *
+     * @param peer destination peer
+     * @param rid  random id of message
+     * @param code reaction code
+     * @return Command for execution
+     */
+    @ObjectiveCName("addReactionWithPeer:withRid:withCode")
+    public Command<Boolean> addReaction(Peer peer, long rid, String code) {
+        return modules.getMessagesModule().addReaction(peer, rid, code);
+    }
+
+    /**
+     * Removing reaction to a message
+     *
+     * @param peer destination peer
+     * @param rid  random id of message
+     * @param code reaction code
+     * @return Command for execution
+     */
+    @ObjectiveCName("addReactionWithPeer:withRid:withCode")
+    public Command<Boolean> removeReaction(Peer peer, long rid, String code) {
+        return modules.getMessagesModule().removeReaction(peer, rid, code);
+    }
+
+    /**
      * Save message draft
      *
      * @param peer  destination peer

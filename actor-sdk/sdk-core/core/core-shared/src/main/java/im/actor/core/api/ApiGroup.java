@@ -20,40 +20,28 @@ public class ApiGroup extends BserObject {
     private long accessHash;
     private String title;
     private ApiAvatar avatar;
-    private boolean isMember;
     private int creatorUid;
     private List<ApiMember> members;
     private long createDate;
-    private Boolean disableEdit;
-    private Boolean disableInviteView;
-    private Boolean disableInviteRevoke;
-    private Boolean disableIntegrationView;
-    private Boolean disableIntegrationsRevoke;
-    private Boolean isAdmin;
     private String theme;
     private String about;
     private Boolean isHidden;
-    private List<ApiExtension> extensions;
+    private String groupType;
+    private ApiMapValue ext;
 
-    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, boolean isMember, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin, @Nullable String theme, @Nullable String about, @Nullable Boolean isHidden, @NotNull List<ApiExtension> extensions) {
+    public ApiGroup(int id, long accessHash, @NotNull String title, @Nullable ApiAvatar avatar, int creatorUid, @NotNull List<ApiMember> members, long createDate, @Nullable String theme, @Nullable String about, @Nullable Boolean isHidden, @Nullable String groupType, @Nullable ApiMapValue ext) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
         this.avatar = avatar;
-        this.isMember = isMember;
         this.creatorUid = creatorUid;
         this.members = members;
         this.createDate = createDate;
-        this.disableEdit = disableEdit;
-        this.disableInviteView = disableInviteView;
-        this.disableInviteRevoke = disableInviteRevoke;
-        this.disableIntegrationView = disableIntegrationView;
-        this.disableIntegrationsRevoke = disableIntegrationsRevoke;
-        this.isAdmin = isAdmin;
         this.theme = theme;
         this.about = about;
         this.isHidden = isHidden;
-        this.extensions = extensions;
+        this.groupType = groupType;
+        this.ext = ext;
     }
 
     public ApiGroup() {
@@ -78,10 +66,6 @@ public class ApiGroup extends BserObject {
         return this.avatar;
     }
 
-    public boolean isMember() {
-        return this.isMember;
-    }
-
     public int getCreatorUid() {
         return this.creatorUid;
     }
@@ -93,36 +77,6 @@ public class ApiGroup extends BserObject {
 
     public long getCreateDate() {
         return this.createDate;
-    }
-
-    @Nullable
-    public Boolean disableEdit() {
-        return this.disableEdit;
-    }
-
-    @Nullable
-    public Boolean disableInviteView() {
-        return this.disableInviteView;
-    }
-
-    @Nullable
-    public Boolean disableInviteRevoke() {
-        return this.disableInviteRevoke;
-    }
-
-    @Nullable
-    public Boolean disableIntegrationView() {
-        return this.disableIntegrationView;
-    }
-
-    @Nullable
-    public Boolean disableIntegrationsRevoke() {
-        return this.disableIntegrationsRevoke;
-    }
-
-    @Nullable
-    public Boolean isAdmin() {
-        return this.isAdmin;
     }
 
     @Nullable
@@ -140,9 +94,14 @@ public class ApiGroup extends BserObject {
         return this.isHidden;
     }
 
-    @NotNull
-    public List<ApiExtension> getExtensions() {
-        return this.extensions;
+    @Nullable
+    public String getGroupType() {
+        return this.groupType;
+    }
+
+    @Nullable
+    public ApiMapValue getExt() {
+        return this.ext;
     }
 
     @Override
@@ -151,7 +110,6 @@ public class ApiGroup extends BserObject {
         this.accessHash = values.getLong(2);
         this.title = values.getString(3);
         this.avatar = values.optObj(4, new ApiAvatar());
-        this.isMember = values.getBool(6);
         this.creatorUid = values.getInt(8);
         List<ApiMember> _members = new ArrayList<ApiMember>();
         for (int i = 0; i < values.getRepeatedCount(9); i ++) {
@@ -159,20 +117,11 @@ public class ApiGroup extends BserObject {
         }
         this.members = values.getRepeatedObj(9, _members);
         this.createDate = values.getLong(10);
-        this.disableEdit = values.optBool(11);
-        this.disableInviteView = values.optBool(12);
-        this.disableInviteRevoke = values.optBool(13);
-        this.disableIntegrationView = values.optBool(14);
-        this.disableIntegrationsRevoke = values.optBool(15);
-        this.isAdmin = values.optBool(16);
         this.theme = values.optString(17);
         this.about = values.optString(18);
         this.isHidden = values.optBool(20);
-        List<ApiExtension> _extensions = new ArrayList<ApiExtension>();
-        for (int i = 0; i < values.getRepeatedCount(21); i ++) {
-            _extensions.add(new ApiExtension());
-        }
-        this.extensions = values.getRepeatedObj(21, _extensions);
+        this.groupType = values.optString(23);
+        this.ext = values.optObj(22, new ApiMapValue());
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -189,28 +138,9 @@ public class ApiGroup extends BserObject {
         if (this.avatar != null) {
             writer.writeObject(4, this.avatar);
         }
-        writer.writeBool(6, this.isMember);
         writer.writeInt(8, this.creatorUid);
         writer.writeRepeatedObj(9, this.members);
         writer.writeLong(10, this.createDate);
-        if (this.disableEdit != null) {
-            writer.writeBool(11, this.disableEdit);
-        }
-        if (this.disableInviteView != null) {
-            writer.writeBool(12, this.disableInviteView);
-        }
-        if (this.disableInviteRevoke != null) {
-            writer.writeBool(13, this.disableInviteRevoke);
-        }
-        if (this.disableIntegrationView != null) {
-            writer.writeBool(14, this.disableIntegrationView);
-        }
-        if (this.disableIntegrationsRevoke != null) {
-            writer.writeBool(15, this.disableIntegrationsRevoke);
-        }
-        if (this.isAdmin != null) {
-            writer.writeBool(16, this.isAdmin);
-        }
         if (this.theme != null) {
             writer.writeString(17, this.theme);
         }
@@ -220,7 +150,12 @@ public class ApiGroup extends BserObject {
         if (this.isHidden != null) {
             writer.writeBool(20, this.isHidden);
         }
-        writer.writeRepeatedObj(21, this.extensions);
+        if (this.groupType != null) {
+            writer.writeString(23, this.groupType);
+        }
+        if (this.ext != null) {
+            writer.writeObject(22, this.ext);
+        }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -235,13 +170,10 @@ public class ApiGroup extends BserObject {
         String res = "struct Group{";
         res += "id=" + this.id;
         res += ", avatar=" + (this.avatar != null ? "set":"empty");
-        res += ", isMember=" + this.isMember;
         res += ", members=" + this.members.size();
         res += ", createDate=" + this.createDate;
-        res += ", disableEdit=" + this.disableEdit;
-        res += ", disableInviteView=" + this.disableInviteView;
-        res += ", disableIntegrationView=" + this.disableIntegrationView;
-        res += ", extensions=" + this.extensions;
+        res += ", isHidden=" + this.isHidden;
+        res += ", groupType=" + this.groupType;
         res += "}";
         return res;
     }

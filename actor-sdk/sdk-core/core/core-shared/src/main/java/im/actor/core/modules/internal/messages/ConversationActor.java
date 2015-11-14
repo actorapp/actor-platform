@@ -11,6 +11,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.modules.ModuleContext;
@@ -213,6 +214,25 @@ public class ConversationActor extends ModuleActor {
         if (!isHiddenPeer) {
             // Updating dialog
             dialogsActor.send(new DialogsActor.MessageContentChanged(peer, rid, content));
+        }
+    }
+
+    @Verified
+    private void onMessageReactionsUpdated(long rid, ArrayList<Reaction> reactions) {
+        Message message = messages.getValue(rid);
+        // Ignore if we already doesn't have this message
+        if (message == null) {
+            return;
+        }
+
+        // Updating message
+        Message updatedMsg = message.changeReactions(reactions);
+        messages.addOrUpdateItem(updatedMsg);
+
+        if (updatedMsg.getContent() instanceof DocumentContent) {
+            docs.addOrUpdateItem(updatedMsg);
+        } else {
+            docs.removeItem(rid);
         }
     }
 
@@ -477,6 +497,8 @@ public class ConversationActor extends ModuleActor {
             onMessagesDeleted(((MessagesDeleted) message).getRids());
         } else if (message instanceof MessageReadByMe) {
             onMessageReadByMe(((MessageReadByMe) message).getDate());
+        } else if (message instanceof MessageReactionsChanged) {
+            onMessageReactionsUpdated(((MessageReactionsChanged) message).getRid(), ((MessageReactionsChanged) message).getReactions());
         } else {
             drop(message);
         }
@@ -547,6 +569,25 @@ public class ConversationActor extends ModuleActor {
 
         public long getDate() {
             return date;
+        }
+
+        public long getRid() {
+            return rid;
+        }
+    }
+
+    public static class MessageReactionsChanged {
+
+        private long rid;
+        private ArrayList<Reaction> reactions;
+
+        public MessageReactionsChanged(long rid, ArrayList<Reaction> reactions) {
+            this.rid = rid;
+            this.reactions = reactions;
+        }
+
+        public ArrayList<Reaction> getReactions() {
+            return reactions;
         }
 
         public long getRid() {

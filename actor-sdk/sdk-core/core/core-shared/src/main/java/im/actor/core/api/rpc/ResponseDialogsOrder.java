@@ -15,26 +15,24 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.core.api.*;
 
-public class ResponseCreateGroup extends Response {
+public class ResponseDialogsOrder extends Response {
 
-    public static final int HEADER = 0xd8;
-    public static ResponseCreateGroup fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseCreateGroup(), data);
+    public static final int HEADER = 0xeb;
+    public static ResponseDialogsOrder fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseDialogsOrder(), data);
     }
 
     private int seq;
     private byte[] state;
-    private ApiGroup group;
-    private List<ApiUser> users;
+    private List<ApiDialogGroup> groups;
 
-    public ResponseCreateGroup(int seq, @NotNull byte[] state, @NotNull ApiGroup group, @NotNull List<ApiUser> users) {
+    public ResponseDialogsOrder(int seq, @NotNull byte[] state, @NotNull List<ApiDialogGroup> groups) {
         this.seq = seq;
         this.state = state;
-        this.group = group;
-        this.users = users;
+        this.groups = groups;
     }
 
-    public ResponseCreateGroup() {
+    public ResponseDialogsOrder() {
 
     }
 
@@ -48,25 +46,19 @@ public class ResponseCreateGroup extends Response {
     }
 
     @NotNull
-    public ApiGroup getGroup() {
-        return this.group;
-    }
-
-    @NotNull
-    public List<ApiUser> getUsers() {
-        return this.users;
+    public List<ApiDialogGroup> getGroups() {
+        return this.groups;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.seq = values.getInt(1);
         this.state = values.getBytes(2);
-        this.group = values.getObj(3, new ApiGroup());
-        List<ApiUser> _users = new ArrayList<ApiUser>();
-        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
-            _users.add(new ApiUser());
+        List<ApiDialogGroup> _groups = new ArrayList<ApiDialogGroup>();
+        for (int i = 0; i < values.getRepeatedCount(3); i ++) {
+            _groups.add(new ApiDialogGroup());
         }
-        this.users = values.getRepeatedObj(4, _users);
+        this.groups = values.getRepeatedObj(3, _groups);
     }
 
     @Override
@@ -76,16 +68,15 @@ public class ResponseCreateGroup extends Response {
             throw new IOException();
         }
         writer.writeBytes(2, this.state);
-        if (this.group == null) {
-            throw new IOException();
-        }
-        writer.writeObject(3, this.group);
-        writer.writeRepeatedObj(4, this.users);
+        writer.writeRepeatedObj(3, this.groups);
     }
 
     @Override
     public String toString() {
-        String res = "tuple CreateGroup{";
+        String res = "response DialogsOrder{";
+        res += "seq=" + this.seq;
+        res += ", state=" + byteArrayToString(this.state);
+        res += ", groups=" + this.groups;
         res += "}";
         return res;
     }
