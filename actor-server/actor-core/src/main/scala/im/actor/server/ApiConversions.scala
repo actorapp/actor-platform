@@ -1,6 +1,8 @@
 package im.actor.server
 
 import im.actor.api.rpc.files.{ ApiAvatar, ApiAvatarImage, ApiFileLocation }
+import im.actor.api.rpc.messaging.ApiMessageReaction
+import im.actor.server.model.MessageReaction
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
 
 import scala.language.implicitConversions
@@ -36,4 +38,13 @@ object ApiConversions {
 
   implicit def avatarOptToApi(avatarOpt: Option[Avatar]): Option[ApiAvatar] =
     avatarOpt map avatarToApi
+
+  implicit def reactionToApi(reaction: MessageReaction): ApiMessageReaction =
+    ApiMessageReaction(
+      reaction.userIds.toVector,
+      reaction.code
+    )
+
+  implicit def reactionsToApi(reactions: Seq[MessageReaction]): IndexedSeq[ApiMessageReaction] =
+    reactions.toVector map reactionToApi
 }

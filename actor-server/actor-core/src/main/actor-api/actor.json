@@ -3480,6 +3480,45 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "MessageReaction",
+            "doc": [
+              "Reaction to message",
+              {
+                "type": "reference",
+                "argument": "users",
+                "category": "full",
+                "description": "  User's reaction"
+              },
+              {
+                "type": "reference",
+                "argument": "code",
+                "category": "full",
+                "description": "  Reaction EMOJI code"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "alias",
+                    "childType": "userId"
+                  }
+                },
+                "id": 1,
+                "name": "users"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "code"
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
             "name": "SendMessage",
@@ -3728,6 +3767,152 @@
                 },
                 "id": 1,
                 "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageSetReaction",
+            "header": 210,
+            "response": {
+              "type": "reference",
+              "name": "ReactionsResponse"
+            },
+            "doc": [
+              "Setting Message reaction",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Message random id"
+              },
+              {
+                "type": "reference",
+                "argument": "code",
+                "category": "full",
+                "description": "Reaction code"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MessageRemoveReaction",
+            "header": 220,
+            "response": {
+              "type": "reference",
+              "name": "ReactionsResponse"
+            },
+            "doc": [
+              "Removing Message reaction",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Message random id"
+              },
+              {
+                "type": "reference",
+                "argument": "code",
+                "category": "full",
+                "description": "Reaction code"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "ReactionsResponse",
+            "header": 219,
+            "doc": [
+              "Response for reactions change"
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "seq"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "seq_state"
+                },
+                "id": 2,
+                "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageReaction"
+                  }
+                },
+                "id": 3,
+                "name": "reactions"
               }
             ]
           }
@@ -4249,6 +4434,63 @@
           }
         },
         {
+          "type": "update",
+          "content": {
+            "name": "ReactionsUpdate",
+            "header": 222,
+            "doc": [
+              "Update about reactions change",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Message random id"
+              },
+              {
+                "type": "reference",
+                "argument": "reactions",
+                "category": "full",
+                "description": "  New Reactions"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageReaction"
+                  }
+                },
+                "id": 3,
+                "name": "reactions"
+              }
+            ]
+          }
+        },
+        {
           "type": "enum",
           "content": {
             "name": "MessageState",
@@ -4297,6 +4539,12 @@
                 "argument": "message",
                 "category": "full",
                 "description": "  Content of message"
+              },
+              {
+                "type": "reference",
+                "argument": "reactions",
+                "category": "full",
+                "description": "  Message reactions"
               }
             ],
             "attributes": [
@@ -4342,6 +4590,17 @@
                 },
                 "id": 6,
                 "name": "state"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "MessageReaction"
+                  }
+                },
+                "id": 7,
+                "name": "reactions"
               }
             ]
           }
