@@ -19,9 +19,15 @@ final class UserPhoneTable(tag: Tag) extends Table[model.UserPhone](tag, "user_p
 object UserPhoneRepo {
   val phones = TableQuery[UserPhoneTable]
 
-  def byPhoneNumber(number: Long) = phones.filter(_.number === number)
+  val byPhoneNumber = Compiled { number: Rep[Long] ⇒
+    phones.filter(_.number === number)
+  }
 
-  def exists(number: Long) = byPhoneNumber(number).exists.result
+  val phoneExists = Compiled { number: Rep[Long] ⇒
+    phones.filter(_.number === number).exists
+  }
+
+  def exists(number: Long) = phoneExists(number).result
 
   // TODO: rename to findByNumber
   def findByPhoneNumber(number: Long) = byPhoneNumber(number).result
