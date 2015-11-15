@@ -21,7 +21,7 @@ It is very easy to [implement your own](http://actor.readme.io/docs/apps).
 
 Building a mobile messaging application is quite a complex procedure that requires a lot of preparation, e.g.: have developer accounts with Google and Apple, have SSL certificates for your servers, integrate the server with various services like SMS gate, push systems, etc.
 
-For more info, you can read the [server installation manual](SERVER.md). After installing the server, you can [start building the apps](APPS.md).
+For more info, you can read the [server installation manual](docs/SERVER.md). After installing the server, you can [start building the apps](docs/APPS.md).
 
 # Live demo
 

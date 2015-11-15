@@ -27,12 +27,20 @@ object AuthPhoneTransactionRepo {
 
   val active = phoneTransactions.filter(_.deletedAt.isEmpty)
 
+  val byHash = Compiled { hash: Rep[String] ⇒
+    active.filter(_.transactionHash === hash)
+  }
+
+  val byPhoneAndDeviceHash = Compiled { (phone: Rep[Long], deviceHash: Rep[Array[Byte]]) ⇒
+    active.filter(t ⇒ t.phoneNumber === phone && t.deviceHash === deviceHash)
+  }
+
   def create(transaction: model.AuthPhoneTransaction) =
     phoneTransactions += transaction
 
   def find(transactionHash: String) =
-    active.filter(_.transactionHash === transactionHash).result.headOption
+    byHash(transactionHash).result.headOption
 
   def findByPhoneAndDeviceHash(phone: Long, deviceHash: Array[Byte]) =
-    active.filter(t ⇒ t.phoneNumber === phone && t.deviceHash === deviceHash).result.headOption
+    byPhoneAndDeviceHash((phone, deviceHash)).result.headOption
 }
