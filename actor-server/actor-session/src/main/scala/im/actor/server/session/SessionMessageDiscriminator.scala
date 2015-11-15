@@ -29,17 +29,14 @@ private[session] final class SessionMessageDiscriminator extends GraphStage[Sess
   )
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
-    private var inPulled = false
-
     val pullIn = () ⇒ {
-      inPulled = true
-      pull(in)
+      if (!hasBeenPulled(in))
+        pull(in)
     }
 
     setHandler(in, new InHandler {
       override def onPush(): Unit = {
         val msg = grab(in)
-        inPulled = false
 
         msg match {
           case SessionStreamMessage.HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) ⇒
@@ -62,8 +59,7 @@ private[session] final class SessionMessageDiscriminator extends GraphStage[Sess
 
     val pullIt = new OutHandler {
       override def onPull(): Unit = {
-        if (!inPulled)
-          pullIn()
+        pullIn()
       }
     }
 
