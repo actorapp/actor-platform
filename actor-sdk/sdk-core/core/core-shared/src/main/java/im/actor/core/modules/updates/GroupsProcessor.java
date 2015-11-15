@@ -17,6 +17,7 @@ import im.actor.core.entity.Group;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
 import im.actor.core.entity.content.ServiceGroupTitleChanged;
@@ -69,19 +70,20 @@ public class GroupsProcessor extends AbsModule {
 
             // Updating group
             groups().addOrUpdateItem(group
-                    .changeMember(true)
                     .addMember(myUid(), inviterId, date));
 
             if (!isSilent) {
                 if (inviterId == myUid()) {
                     // If current user invite himself, add create group message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.UNKNOWN, ServiceGroupCreated.create());
+                            MessageState.UNKNOWN, ServiceGroupCreated.create(),
+                            new ArrayList<Reaction>());
                     conversationActor(group.peer()).send(message);
                 } else {
                     // else add invite message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.SENT, ServiceGroupUserInvited.create(myUid()));
+                            MessageState.SENT, ServiceGroupUserInvited.create(myUid()),
+                            new ArrayList<Reaction>());
                     conversationActor(group.peer()).send(message);
                 }
             }
@@ -96,8 +98,7 @@ public class GroupsProcessor extends AbsModule {
             if (uid == myUid()) {
                 // If current user leave, clear members and change member state
                 groups().addOrUpdateItem(group
-                        .clearMembers()
-                        .changeMember(false));
+                        .clearMembers());
             } else {
                 // else remove leaved user
                 groups().addOrUpdateItem(group
@@ -108,7 +109,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserLeave.create());
+                        ServiceGroupUserLeave.create(),
+                        new ArrayList<Reaction>());
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -122,8 +124,7 @@ public class GroupsProcessor extends AbsModule {
             if (uid == myUid()) {
                 // If kicked me, clear members and change member state
                 groups().addOrUpdateItem(group
-                        .clearMembers()
-                        .changeMember(false));
+                        .clearMembers());
             } else {
                 // else remove kicked user
                 groups().addOrUpdateItem(group
@@ -134,7 +135,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, kicker,
                         kicker == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserKicked.create(uid));
+                        ServiceGroupUserKicked.create(uid),
+                        new ArrayList<Reaction>());
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -152,7 +154,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, adder,
                         adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserInvited.create(uid));
+                        ServiceGroupUserInvited.create(uid),
+                        new ArrayList<Reaction>());
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -183,7 +186,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupTitleChanged.create(title));
+                        ServiceGroupTitleChanged.create(title),
+                        new ArrayList<Reaction>());
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -266,7 +270,8 @@ public class GroupsProcessor extends AbsModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupAvatarChanged.create(avatar));
+                        ServiceGroupAvatarChanged.create(avatar),
+                        new ArrayList<Reaction>());
                 conversationActor(group.peer()).send(message);
             }
         }

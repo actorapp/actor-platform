@@ -45,7 +45,6 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
     @Property("readonly, nonatomic")
     private int creatorId;
     @Property("readonly, nonatomic")
-    private boolean isMember;
     private boolean isHidden;
     @Nullable
     @Property("readonly, nonatomic")
@@ -111,37 +110,8 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
         return creatorId;
     }
 
-    public boolean isMember() {
-        return isMember;
-    }
-
     public boolean isHidden() {
         return isHidden;
-    }
-
-    public Group changeMember(boolean isMember) {
-        ApiGroup w = getWrapped();
-        ApiGroup res = new ApiGroup(
-                w.getId(),
-                w.getAccessHash(),
-                w.getTitle(),
-                w.getAvatar(),
-                isMember,
-                w.getCreatorUid(),
-                w.getMembers(),
-                w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
-                w.getTheme(),
-                w.getAbout(),
-                w.isHidden(),
-                w.getExtensions());
-        res.setUnmappedObjects(w.getUnmappedObjects());
-        return new Group(res);
     }
 
     public Group clearMembers() {
@@ -151,20 +121,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getTitle(),
                 w.getAvatar(),
-                w.isMember(),
                 w.getCreatorUid(),
                 new ArrayList<ApiMember>(),
                 w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
                 w.getTheme(),
                 w.getAbout(),
                 w.isHidden(),
-                w.getExtensions());
+                w.getGroupType(),
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -182,20 +146,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getTitle(),
                 w.getAvatar(),
-                w.isMember(),
                 w.getCreatorUid(),
                 nMembers,
                 w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
                 w.getTheme(),
                 w.getAbout(),
                 w.isHidden(),
-                w.getExtensions());
+                w.getGroupType(),
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -214,20 +172,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getTitle(),
                 w.getAvatar(),
-                w.isMember(),
                 w.getCreatorUid(),
                 nMembers,
                 w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
                 w.getTheme(),
                 w.getAbout(),
                 w.isHidden(),
-                w.getExtensions());
+                w.getGroupType(),
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -239,20 +191,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getTitle(),
                 w.getAvatar(),
-                w.isMember(),
                 w.getCreatorUid(),
                 nMembers,
                 w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
                 w.getTheme(),
                 w.getAbout(),
                 w.isHidden(),
-                w.getExtensions());
+                w.getGroupType(),
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -264,20 +210,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getAccessHash(),
                 title,
                 w.getAvatar(),
-                w.isMember(),
                 w.getCreatorUid(),
                 w.getMembers(),
                 w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
                 w.getTheme(),
                 w.getAbout(),
                 w.isHidden(),
-                w.getExtensions());
+                w.getGroupType(),
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -289,20 +229,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getTitle(),
                 w.getAvatar(),
-                w.isMember(),
                 w.getCreatorUid(),
                 w.getMembers(),
                 w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
                 theme,
                 w.getAbout(),
                 w.isHidden(),
-                w.getExtensions());
+                w.getGroupType(),
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -314,20 +248,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getTitle(),
                 w.getAvatar(),
-                w.isMember(),
                 w.getCreatorUid(),
                 w.getMembers(),
                 w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
                 w.getTheme(),
                 about,
                 w.isHidden(),
-                w.getExtensions());
+                w.getGroupType(),
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -339,20 +267,14 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
                 w.getAccessHash(),
                 w.getTitle(),
                 avatar,
-                w.isMember(),
                 w.getCreatorUid(),
                 w.getMembers(),
                 w.getCreateDate(),
-                w.disableEdit(),
-                w.disableInviteView(),
-                w.disableInviteRevoke(),
-                w.disableIntegrationView(),
-                w.disableIntegrationsRevoke(),
-                w.isAdmin(),
                 w.getTheme(),
                 w.getAbout(),
                 w.isHidden(),
-                w.getExtensions());
+                w.getGroupType(),
+                w.getExt());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -368,7 +290,6 @@ public class Group extends WrapperEntity<ApiGroup> implements KeyValueItem {
         for (ApiMember m : wrapped.getMembers()) {
             this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.isAdmin() != null ? m.isAdmin() : m.getUid() == this.creatorId));
         }
-        this.isMember = wrapped.isMember();
         this.isHidden = wrapped.isHidden() != null ? wrapped.isHidden() : false;
         this.about = wrapped.getAbout();
         this.theme = wrapped.getTheme();
