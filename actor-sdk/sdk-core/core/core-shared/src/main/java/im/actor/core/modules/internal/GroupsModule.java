@@ -88,7 +88,7 @@ public class GroupsModule extends AbsModule {
     public GroupsModule(final ModuleContext context) {
         super(context);
 
-        collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR, Group.CREATOR);
+        collection = Storage.createKeyValue(STORAGE_GROUPS, GroupVM.CREATOR(context.getAuthModule().myUid()), Group.CREATOR);
         groups = collection.getEngine();
 
         avatarVMs = new HashMap<Integer, GroupAvatarVM>();
