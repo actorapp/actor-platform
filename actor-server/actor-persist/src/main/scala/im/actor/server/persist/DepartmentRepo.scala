@@ -1,6 +1,7 @@
 package im.actor.server.persist
 
 import com.github.tminglei.slickpg.LTree
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 
 import im.actor.server._

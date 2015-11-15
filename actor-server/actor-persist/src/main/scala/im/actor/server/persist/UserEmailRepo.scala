@@ -21,8 +21,13 @@ final class UserEmailTable(tag: Tag) extends Table[model.UserEmail](tag, "user_e
 object UserEmailRepo {
   val emails = TableQuery[UserEmailTable]
 
-  def byEmail(email: String) =
+  val byEmail = Compiled { email: Rep[String] ⇒
     emails.filter(_.email === email)
+  }
+
+  val emailExists = Compiled { email: Rep[String] ⇒
+    emails.filter(_.email === email).exists
+  }
 
   def findByEmails(emailSet: Set[String]) =
     emails.filter(_.email inSet emailSet).result
@@ -34,7 +39,7 @@ object UserEmailRepo {
     emails.filter(_.email.like(s"%@$domain")).result
 
   def exists(email: String) =
-    byEmail(email).exists.result
+    emailExists(email).result
 
   def findByUserId(userId: Int): FixedSqlStreamingAction[Seq[model.UserEmail], model.UserEmail, Read] =
     emails.filter(_.userId === userId).result
