@@ -57,6 +57,10 @@ object AuthSessionRepo {
     activeSessions.filter(s ⇒ s.userId === userId && s.id === id)
   }
 
+  val byUserId = Compiled { userId: Rep[Int] ⇒
+    activeSessions.filter(_.userId === userId)
+  }
+
   def create(session: model.AuthSession) =
     sessions += session
 
@@ -64,7 +68,7 @@ object AuthSessionRepo {
     byUserIdAndId((userId, id)).result
 
   def findByUserId(userId: Int) =
-    activeSessions.filter(_.userId === userId).result
+    byUserId(userId).result
 
   def findFirstByUserId(userId: Int) =
     activeSessions.filter(_.userId === userId).take(1).result.headOption
