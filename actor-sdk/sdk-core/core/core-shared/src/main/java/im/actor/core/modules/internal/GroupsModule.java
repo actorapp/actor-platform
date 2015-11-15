@@ -21,6 +21,7 @@ import im.actor.core.api.ApiServiceMessage;
 import im.actor.core.api.ApiUser;
 import im.actor.core.api.ApiUserOutPeer;
 import im.actor.core.api.rpc.RequestCreateGroup;
+import im.actor.core.api.rpc.RequestCreateGroupObsolete;
 import im.actor.core.api.rpc.RequestEditGroupAbout;
 import im.actor.core.api.rpc.RequestEditGroupTitle;
 import im.actor.core.api.rpc.RequestEditGroupTopic;
@@ -36,6 +37,7 @@ import im.actor.core.api.rpc.RequestMakeUserAdmin;
 import im.actor.core.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.core.api.rpc.RequestRevokeInviteUrl;
 import im.actor.core.api.rpc.ResponseCreateGroup;
+import im.actor.core.api.rpc.ResponseCreateGroupObsolete;
 import im.actor.core.api.rpc.ResponseEnterGroup;
 import im.actor.core.api.rpc.ResponseGetPublicGroups;
 import im.actor.core.api.rpc.ResponseIntegrationToken;
@@ -135,9 +137,9 @@ public class GroupsModule extends AbsModule {
                     }
                 }
                 final long rid = RandomUtils.nextRid();
-                request(new RequestCreateGroup(rid, title, peers), new RpcCallback<ResponseCreateGroup>() {
+                request(new RequestCreateGroupObsolete(rid, title, peers), new RpcCallback<ResponseCreateGroupObsolete>() {
                     @Override
-                    public void onResult(ResponseCreateGroup response) {
+                    public void onResult(ResponseCreateGroupObsolete response) {
                         List<ApiMember> members = new ArrayList<ApiMember>();
                         for (int u : response.getUsers()) {
                             members.add(new ApiMember(u, myUid(), response.getDate(), u == myUid()));
@@ -145,10 +147,9 @@ public class GroupsModule extends AbsModule {
                         final ApiGroup group = new ApiGroup(
                                 response.getGroupPeer().getGroupId(),
                                 response.getGroupPeer().getAccessHash(),
-                                title, null, true, myUid(), members,
+                                title, null, myUid(), members,
                                 response.getDate(), null,
-                                null, null, null, null, true, null, null, null,
-                                new ArrayList<ApiExtension>());
+                                null, false, null, null);
                         ArrayList<ApiGroup> groups = new ArrayList<ApiGroup>();
                         groups.add(group);
 

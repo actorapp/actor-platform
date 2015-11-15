@@ -31,6 +31,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.MessageState;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.Reaction;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.DocumentContent;
@@ -150,7 +151,8 @@ public class SenderActor extends ModuleActor {
 
         TextContent content = TextContent.create(text, markDownText, mentions);
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content,
+                new ArrayList<Reaction>());
         context().getMessagesModule().getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
@@ -169,7 +171,8 @@ public class SenderActor extends ModuleActor {
         DocumentContent documentContent = DocumentContent.createLocal(fileName, fileSize,
                 descriptor, mimeType, fastThumb);
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, documentContent);
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, documentContent,
+                new ArrayList<Reaction>());
         context().getMessagesModule().getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, documentContent));
@@ -185,7 +188,8 @@ public class SenderActor extends ModuleActor {
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         PhotoContent photoContent = PhotoContent.createLocalPhoto(descriptor, fileName, fileSize, w, h, fastThumb);
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, photoContent);
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, photoContent,
+                new ArrayList<Reaction>());
         context().getMessagesModule().getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, photoContent));
@@ -202,7 +206,8 @@ public class SenderActor extends ModuleActor {
         VideoContent videoContent = VideoContent.createLocalVideo(descriptor,
                 fileName, fileSize, w, h, duration, fastThumb);
 
-        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, videoContent);
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, videoContent,
+                new ArrayList<Reaction>());
         context().getMessagesModule().getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, videoContent));
