@@ -5,4 +5,6 @@ Building of Web App is separated to two parts: Web App itself and actor-js Libra
 ### Requirements
 
 For building web app, you need:
-* NodeJS 4.2.2+ Use [Node Version Manager](https://github.com/creationix/nvm) for Linux/OSX and [official installer](https://nodejs.org/) for Windows. In most cases you have incorrect NodeJS version installed via OS's packange manager, you need to remove it first and install Node from scratch.
+* JavaScript Dependency Manager: NodeJS 4.2.2+ Use [Node Version Manager](https://github.com/creationix/nvm) for Linux/OSX and [official installer](https://nodejs.org/) for Windows. In most cases you have incorrect NodeJS version installed via OS's packange manager, you need to remove it first and install Node from scratch.
+* Build System: [GulpJS](https://gulphs.com/). Please, isntall it with command `npm install --global gulp` after installing NodeJS
+* Support for new JavaScript: gulp-babel plugin
