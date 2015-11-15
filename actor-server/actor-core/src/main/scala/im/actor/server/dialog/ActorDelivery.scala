@@ -80,7 +80,7 @@ final class ActorDelivery()(implicit val system: ActorSystem)
       userId = senderUserId,
       default = Some(senderUpdate),
       custom = Map(senderAuthSid → senderClientUpdate),
-      pushRules = PushRules(isFat = isFat),
+      pushRules = PushRules(isFat = isFat, excludeAuthSids = Seq(senderAuthSid)),
       deliveryId = s"msg_${peer.toString}_$randomId"
     )
   }
