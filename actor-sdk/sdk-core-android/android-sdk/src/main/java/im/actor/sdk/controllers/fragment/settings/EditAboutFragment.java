@@ -25,6 +25,7 @@ public class EditAboutFragment extends BaseFragment {
 
     private KeyboardHelper helper;
     private EditText aboutEdit;
+    private TextView hintTv;
     private int type;
     private int id;
 
@@ -48,9 +49,12 @@ public class EditAboutFragment extends BaseFragment {
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         aboutEdit = (EditText) res.findViewById(R.id.nameEdit);
         aboutEdit.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        hintTv = (TextView) res.findViewById(R.id.hint);
+        hintTv.setTextColor(ActorSDK.sharedActor().style.getTextHintColor());
         if (type == EditAboutActivity.TYPE_ME) {
             UserVM userModel = users().get(myUid());
             aboutEdit.setText(userModel.getAbout().get());
+            aboutEdit.setHint(getString(R.string.edit_about_edittext_hint));
         } else if (type == EditAboutActivity.TYPE_GROUP) {
             GroupVM group = groups().get(id);
             aboutEdit.setText(group.getAbout().get());

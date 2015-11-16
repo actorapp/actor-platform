@@ -25,6 +25,7 @@ public class EditNameFragment extends BaseFragment {
 
     private KeyboardHelper helper;
     private EditText nameEdit;
+    private TextView hintTv;
     private int type;
     private int id;
 
@@ -48,12 +49,16 @@ public class EditNameFragment extends BaseFragment {
         res.setBackgroundColor(ActorSDK.sharedActor().style.getMainBackgroundColor());
         nameEdit = (EditText) res.findViewById(R.id.nameEdit);
         nameEdit.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        hintTv = (TextView) res.findViewById(R.id.hint);
+        hintTv.setTextColor(ActorSDK.sharedActor().style.getTextHintColor());
         if (type == EditNameActivity.TYPE_ME) {
             UserVM userModel = users().get(myUid());
             nameEdit.setText(userModel.getName().get());
         } else if (type == EditNameActivity.TYPE_NICK) {
             UserVM userModel = users().get(myUid());
             nameEdit.setText(userModel.getNick().get());
+            nameEdit.setHint(getString(R.string.nickname_edittext_hint));
+            hintTv.setText(getString(R.string.nickname_hint));
         } else if (type == EditNameActivity.TYPE_USER) {
             UserVM userModel = users().get(id);
             nameEdit.setText(userModel.getName().get());
