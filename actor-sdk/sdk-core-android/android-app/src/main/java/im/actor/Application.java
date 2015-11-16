@@ -30,7 +30,6 @@ public class Application extends ActorSDKApplication {
     public void onConfigureActorSDK() {
         ActorSDK.sharedActor().setDelegate(new ActorSDKDelegate());
         ActorSDK.sharedActor().setPushId(209133700967L);
-        ActorSDK.sharedActor().createActor(this);
 
         ActorStyle style = ActorSDK.sharedActor().style;
         style.setMainColor(Color.parseColor("#529a88"));
