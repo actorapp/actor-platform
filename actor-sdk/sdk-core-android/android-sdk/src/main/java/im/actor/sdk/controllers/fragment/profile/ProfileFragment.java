@@ -85,6 +85,9 @@ public class ProfileFragment extends BaseFragment {
         lastSeen.setTextColor(style.getProfileSubtitleColor());
         bind(lastSeen, lastSeen, user);
 
+        boolean nickVisible = false;
+        boolean aboutVivisbe = false;
+
         final FrameLayout about = (FrameLayout) res.findViewById(R.id.about);
         about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         TextView aboutTitle = (TextView) about.findViewById(R.id.title);
@@ -95,6 +98,7 @@ public class ProfileFragment extends BaseFragment {
         aboutValue.setTextColor(style.getTextPrimaryColor());
         ((TintImageView) about.findViewById(R.id.recordIcon)).setTint(ActorSDK.sharedActor().style.getProfilleIconColor());
         if (aboutText != null && !aboutText.isEmpty()) {
+            aboutVivisbe = true;
             about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
             ((TextView) about.findViewById(R.id.value)).setText(getString(R.string.about_user));
             about.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +119,7 @@ public class ProfileFragment extends BaseFragment {
 
         final LinearLayout nickContainer = (LinearLayout) res.findViewById(R.id.nickContainer);
         if (nick != null && !nick.isEmpty()) {
+            nickVisible = true;
             final View recordView = inflater.inflate(R.layout.contact_record, nickContainer, false);
             TextView nickValue = (TextView) recordView.findViewById(R.id.value);
             nickValue.setTextColor(style.getTextPrimaryColor());
@@ -133,13 +138,22 @@ public class ProfileFragment extends BaseFragment {
         }
 
         LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.phoneContainer);
-        View phonesDivider = res.findViewById(R.id.phoneDivider);
+        View abovephonesDivider = null;
+        if (aboutVivisbe) {
+            abovephonesDivider = about.findViewById(R.id.divider);
+        } else if (nickVisible) {
+            abovephonesDivider = nickContainer.findViewById(R.id.divider);
+
+        }
         if (user.getPhones().get().size() == 0) {
             contactsContainer.setVisibility(View.GONE);
-            phonesDivider.setVisibility(View.GONE);
+            if (abovephonesDivider != null) {
+                abovephonesDivider.setVisibility(View.GONE);
+            } else {
+                res.findViewById(R.id.phoneDivider).setVisibility(View.GONE);
+            }
         } else {
             contactsContainer.setVisibility(View.VISIBLE);
-            phonesDivider.setVisibility(View.VISIBLE);
             ArrayList<UserPhone> phones = user.getPhones().get();
             for (int i = 0; i < phones.size(); i++) {
                 final UserPhone record = phones.get(i);
