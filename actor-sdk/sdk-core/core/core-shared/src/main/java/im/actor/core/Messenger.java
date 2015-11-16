@@ -642,6 +642,20 @@ public class Messenger {
     }
 
     /**
+     * Send Audio message
+     *
+     * @param peer       destination peer
+     * @param duration   audio duration
+     * @param descriptor File Descriptor
+     */
+    @ObjectiveCName("sendPhotoWithPeer:withName:withW:withH:withThumb:withDescriptor:")
+    public void sendAudio(@NotNull Peer peer, @NotNull String fileName,
+                          int duration,
+                          @NotNull String descriptor) {
+        modules.getMessagesModule().sendAudio(peer, fileName, duration, descriptor);
+    }
+
+    /**
      * Send document without preview
      *
      * @param peer       destination peer

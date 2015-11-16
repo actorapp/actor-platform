@@ -145,10 +145,26 @@
             android:layout_gravity="right|bottom">
 
             <im.actor.sdk.view.TintImageView
+                android:visibility="gone"
                 android:id="@+id/ib_send"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/selector_flat" />
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="right|bottom">
+
+            <ImageView
+                android:id="@+id/record_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="7dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/conv_record" />
         </FrameLayout>
 
         <FrameLayout
@@ -168,6 +184,54 @@
                 android:textAllCaps="true"
                 android:textSize="18sp" />
         </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:visibility="gone"
+            android:id="@+id/audioContainer">
+
+            <ImageView
+                android:id="@+id/record_point"
+                android:layout_width="40dp"
+                android:layout_height="48dp"
+                android:paddingLeft="8dp"
+                android:scaleType="center"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/conv_voice_rec" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:text="00:01"
+                android:textColor="@android:color/black"
+                android:background="@android:color/transparent"
+                android:id="@+id/audioTimer"
+                android:layout_gravity="center_vertical|left" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="fill_parent"
+                android:paddingRight="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/conv_voice_slide_arrow"
+                    android:drawablePadding="4dp"
+                    android:textColor="#aaaaaa"
+                    android:textSize="16dp"
+                    android:layout_gravity="center_vertical|right"
+                    android:gravity="center_vertical"
+                    android:text="@string/chat_voice_record_cancel"
+                    android:id="@+id/audioSlide" />
+            </FrameLayout>
+        </LinearLayout>
 
     </FrameLayout>
 
