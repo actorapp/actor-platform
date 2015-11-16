@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiDocumentExVoice;
 import im.actor.core.api.ApiFastThumb;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
@@ -41,6 +42,7 @@ import im.actor.core.entity.content.FileRemoteSource;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.core.entity.content.VoiceContent;
 import im.actor.core.modules.ModuleContext;
 import im.actor.core.modules.internal.file.UploadManager;
 import im.actor.core.modules.internal.messages.entity.PendingMessage;
@@ -198,6 +200,22 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor, fileName);
     }
 
+    public void doSendAudio(Peer peer, String descriptor, String fileName,
+                            int fileSize, int duration) {
+        long rid = RandomUtils.nextRid();
+        long date = createPendingDate();
+        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
+        VoiceContent audioContent = VoiceContent.createLocalAudio(descriptor, fileName, fileSize, duration);
+
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, audioContent, new ArrayList<Reaction>());
+        context().getMessagesModule().getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, audioContent));
+        savePending();
+
+        performUploadFile(rid, descriptor, fileName);
+    }
+
     public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
                             FastThumb fastThumb, String descriptor, int fileSize) {
         long rid = RandomUtils.nextRid();
@@ -238,6 +256,9 @@ public class SenderActor extends ModuleActor {
             nContent = VideoContent.createRemoteVideo(fileReference, baseVideoContent.getW(),
                     baseVideoContent.getH(), baseVideoContent.getDuration(),
                     baseVideoContent.getFastThumb());
+        } else if (msg.getContent() instanceof VoiceContent) {
+            VoiceContent baseVoiceContent = (VoiceContent) msg.getContent();
+            nContent = VoiceContent.createRemoteAudio(fileReference, baseVoiceContent.getDuration());
         } else if (msg.getContent() instanceof DocumentContent) {
             DocumentContent baseDocContent = (DocumentContent) msg.getContent();
             nContent = DocumentContent.createRemoteDocument(fileReference, baseDocContent.getFastThumb());
@@ -285,7 +306,11 @@ public class SenderActor extends ModuleActor {
             } else if (content instanceof VideoContent) {
                 VideoContent videoContent = (VideoContent) content;
                 documentEx = new ApiDocumentExVideo(videoContent.getW(), videoContent.getH(), videoContent.getDuration());
+            } else if (content instanceof VoiceContent) {
+                VoiceContent voiceContent = (VoiceContent) content;
+                documentEx = new ApiDocumentExVoice(voiceContent.getDuration());
             }
+
 
             ApiFastThumb fastThumb = null;
             if (documentContent.getFastThumb() != null) {
@@ -391,6 +416,10 @@ public class SenderActor extends ModuleActor {
             doSendVideo(sendVideo.getPeer(), sendVideo.getFileName(),
                     sendVideo.getW(), sendVideo.getH(), sendVideo.getDuration(),
                     sendVideo.getFastThumb(), sendVideo.getDescriptor(), sendVideo.getFileSize());
+        } else if (message instanceof SendAudio) {
+            SendAudio sendAudio = (SendAudio) message;
+            doSendAudio(sendAudio.getPeer(), sendAudio.getDescriptor(), sendAudio.getFileName(),
+                    sendAudio.getFileSize(), sendAudio.getDuration());
         } else {
             drop(message);
         }
@@ -541,6 +570,44 @@ public class SenderActor extends ModuleActor {
         public int getFileSize() {
             return fileSize;
         }
+    }
+
+    public static class SendAudio {
+        private Peer peer;
+        private String descriptor;
+        private String fileName;
+        private int fileSize;
+        private int duration;
+
+        public SendAudio(Peer peer, String descriptor, String fileName,
+                         int fileSize, int duration) {
+            this.peer = peer;
+            this.descriptor = descriptor;
+            this.fileName = fileName;
+            this.fileSize = fileSize;
+            this.duration = duration;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+
+        public String getDescriptor() {
+            return descriptor;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public int getFileSize() {
+            return fileSize;
+        }
+
     }
 
     public static class SendText {

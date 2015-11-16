@@ -14,6 +14,7 @@ import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.core.entity.content.VoiceContent;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.sdk.R;
 import im.actor.runtime.android.view.BindedListAdapter;
@@ -82,10 +83,12 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
             return 2;
         } else if (content instanceof VideoContent) {
             return 2;
+        } else if (content instanceof VoiceContent) {
+            return 4;
         } else if (content instanceof DocumentContent) {
             return 3;
         } else {
-            return 4;
+            return 5;
         }
     }
 
@@ -106,6 +109,8 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                 return new PhotoHolder(this, inflate(R.layout.adapter_dialog_photo, viewGroup));
             case 3:
                 return new DocHolder(this, inflate(R.layout.adapter_dialog_doc, viewGroup));
+            case 4:
+                return new AudioHolder(this, inflate(R.layout.adapter_dialog_audio, viewGroup));
             default:
                 return new UnsupportedHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup));
         }
