@@ -147,6 +147,8 @@
     <string name="settings_chat">Настройки чата</string>
     <string name="settings_security">Безопасность</string>
     <string name="nickname_empty">Добавить ник</string>
+    <string name="nickname_hint">Вы можете выбрать ник в Акторе. Если вы это сделаете, то другие люди смогут найти вас без номера телефона.\n\nВы можете использовать латинские буквы, цифры и подчеркивание. Минимальная длинна - 5 символов.</string>
+    <string name="nickname_edittext_hint">Введите свой ник</string>
     <string name="nickname">Ник</string>
     <string name="nickname_change">Изменить ник</string>
     <string name="about_user_me">Обо мне</string>
@@ -352,6 +354,8 @@
     <string name="edit_name_process">Смена имени…</string>
     <string name="edit_about_process">Смена описания…</string>
     <string name="edit_theme_process">Смена темы…</string>
+    <string name="edit_name_title_nick">Введите свой ник</string>
+    <string name="edit_about_edittext_hint">Рассажите что-нибудь о себе людям</string>
 
     <!-- Help -->
     <string name="help_title">Помощь</string>
