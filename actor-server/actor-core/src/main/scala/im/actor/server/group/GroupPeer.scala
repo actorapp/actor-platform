@@ -56,6 +56,8 @@ private[group] final class GroupPeer(val groupId: Int)
     case sm: SendMessage         ⇒ incomingMessage(state, sm)
     case mr: MessageReceived     ⇒ messageReceived(state, mr)
     case mr: MessageRead         ⇒ messageRead(state, mr)
+    case sr: SetReaction         ⇒ setReaction(state, sr)
+    case rr: RemoveReaction      ⇒ removeReaction(state, rr)
     case sc: LastSenderIdChanged ⇒ context become initialized(state.updated(sc))
   }
 
