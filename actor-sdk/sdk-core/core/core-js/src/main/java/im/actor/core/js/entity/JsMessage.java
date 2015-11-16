@@ -99,7 +99,7 @@ public class JsMessage extends JavaScriptObject {
                         isOwnSet = true;
                     }
                 }
-                reactions.push(JsReaction.create(r.getCode(), uids, isOwnSet);
+                reactions.push(JsReaction.create(r.getCode(), uids, isOwnSet));
             }
 
             return create(rid, sortKey, sender, isOut, date, fullDate, Enums.convert(value.getMessageState()), isOnServer, content,
