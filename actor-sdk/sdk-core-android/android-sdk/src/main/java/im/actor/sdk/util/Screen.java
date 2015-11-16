@@ -56,4 +56,8 @@ public class Screen {
         int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
         return (id > 0) && resources.getBoolean(id);
     }
+
+    public static float getDensity() {
+        return density;
+    }
 }
