@@ -5,11 +5,14 @@
 package im.actor.core.js.entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsDate;
 
 import im.actor.core.api.ApiTextExMarkdown;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
+import im.actor.core.entity.Reaction;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
@@ -85,11 +88,27 @@ public class JsMessage extends JavaScriptObject {
                 content = JsContentUnsupported.create();
             }
 
-            return create(rid, sortKey, sender, isOut, date, fullDate, Enums.convert(value.getMessageState()), isOnServer, content);
+            JsArray<JsReaction> reactions = JsArray.createArray().cast();
+
+            for (Reaction r : value.getReactions()) {
+                JsArrayInteger uids = (JsArrayInteger) JsArrayInteger.createArray();
+                boolean isOwnSet = false;
+                for (Integer i : r.getUids()) {
+                    uids.push(i);
+                    if (i == messenger.myUid()) {
+                        isOwnSet = true;
+                    }
+                }
+                reactions.push(JsReaction.create(r.getCode(), uids, isOwnSet);
+            }
+
+            return create(rid, sortKey, sender, isOut, date, fullDate, Enums.convert(value.getMessageState()), isOnServer, content,
+                    reactions);
         }
     };
 
-    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, JsDate fullDate, String state, boolean isOnServer, JsContent content)/*-{
+    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, JsDate fullDate, String state, boolean isOnServer, JsContent content,
+                                          JsArray<JsReaction> reactions)/*-{
         return {
             rid: rid,
             sortKey: sortKey,
@@ -99,7 +118,8 @@ public class JsMessage extends JavaScriptObject {
             fullDate: fullDate,
             state: state,
             isOnServer: isOnServer,
-            content: content
+            content: content,
+            reactions: reactions
         };
     }-*/;
 
