@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -118,11 +119,12 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
         TextView aboutTitle = (TextView) about.findViewById(R.id.title);
         aboutTitle.setTextColor(style.getTextSecondaryColor());
-        aboutTitle.setVisibility(View.GONE);
         about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
         TextView aboutValue = (TextView) about.findViewById(R.id.value);
         aboutValue.setTextColor(style.getTextPrimaryColor());
         aboutValue.setText(getString(R.string.about_user_me));
+        aboutTitle.setMaxLines(2);
+        aboutTitle.setEllipsize(TextUtils.TruncateAt.END);
         about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         about.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,11 +133,14 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
+        bind(aboutTitle, userModel.getAbout());
+
         bind(userModel.getPhones(), new ValueChangedListener<ArrayListUserPhone>() {
             @Override
             public void onChanged(ArrayListUserPhone val, Value<ArrayListUserPhone> Value) {
                 if (val.size() == 0) {
                     contactsContainer.setVisibility(View.GONE);
+                    about.findViewById(R.id.divider).setVisibility(View.INVISIBLE);
                 } else {
                     contactsContainer.setVisibility(View.VISIBLE);
                     for (int i = 0; i < val.size(); i++) {

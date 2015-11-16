@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,11 +89,12 @@ public class ProfileFragment extends BaseFragment {
         about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         TextView aboutTitle = (TextView) about.findViewById(R.id.title);
         aboutTitle.setTextColor(style.getTextSecondaryColor());
+        aboutTitle.setMaxLines(2);
+        aboutTitle.setEllipsize(TextUtils.TruncateAt.END);
         TextView aboutValue = (TextView) about.findViewById(R.id.value);
         aboutValue.setTextColor(style.getTextPrimaryColor());
         ((TintImageView) about.findViewById(R.id.recordIcon)).setTint(ActorSDK.sharedActor().style.getProfilleIconColor());
         if (aboutText != null && !aboutText.isEmpty()) {
-            about.findViewById(R.id.title).setVisibility(View.GONE);
             about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
             ((TextView) about.findViewById(R.id.value)).setText(getString(R.string.about_user));
             about.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +110,7 @@ public class ProfileFragment extends BaseFragment {
         } else {
             about.setVisibility(View.GONE);
         }
+        bind(aboutTitle, user.getAbout());
 
 
         final LinearLayout nickContainer = (LinearLayout) res.findViewById(R.id.nickContainer);

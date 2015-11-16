@@ -10,6 +10,7 @@
     android:background="@color/bg_main"
     android:orientation="vertical">
 
+
     <EditText
         android:id="@+id/nameEdit"
         android:layout_width="match_parent"
@@ -19,6 +20,15 @@
         android:layout_marginTop="24dp"
         android:background="@android:color/transparent"
         android:inputType="text|textMultiLine" />
+
+    <TextView
+        android:id="@+id/hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp" />
+
 
     <View
         android:layout_width="0dp"

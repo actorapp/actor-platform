@@ -153,6 +153,8 @@
     <string name="nickname_empty">Set nickname</string>
     <string name="nickname_change">Change nickname</string>
     <string name="nickname">Nickname</string>
+    <string name="nickname_hint">You can choose a username in Actor. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a–z, 0–9 and underscores. Minimum length is 5 characters.</string>
+    <string name="nickname_edittext_hint">Enter your Username</string>
     <string name="about_user_me">About me</string>
     <string name="about_user">About user</string>
 
@@ -358,6 +360,8 @@
     <string name="edit_nick_process">Changing nick…</string>
     <string name="edit_about_process">Changing description…</string>
     <string name="edit_theme_process">Changing theme…</string>
+    <string name="edit_about_edittext_hint">Tell people anything you want about yourself</string>
+
 
     <!-- Help -->
     <string name="help_title">Help</string>
