@@ -123,7 +123,7 @@ public class IOUtils {
     }
 
     public static String getFileExtension(String name) {
-        int lastIndexOf = name.lastIndexOf("");
+        int lastIndexOf = name.lastIndexOf(".");
         if (lastIndexOf == -1) {
             return ""; // empty extension
         }
