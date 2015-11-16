@@ -27,6 +27,18 @@ trait MessagingSpecHelpers extends ScalaFutures {
     randomId
   }
 
+  def sendMessageToGroup(groupId: Int, message: ApiMessage)(
+    implicit
+    clientData: ClientData,
+    msgService: MessagingService
+  ): Long = {
+    val randomId = Random.nextLong
+    whenReady(ACLUtils.getOutPeer(ApiPeer(ApiPeerType.Group, groupId), clientData.authId)) { peer ⇒
+      whenReady(msgService.handleSendMessage(peer, randomId, message))(identity)
+    }
+    randomId
+  }
+
   def textMessage(text: String) = ApiTextMessage(text, Vector.empty, None)
 
   def getDialogGroups()(implicit clientData: ClientData, service: MessagingService): Map[String, IndexedSeq[ApiDialogShort]] = {

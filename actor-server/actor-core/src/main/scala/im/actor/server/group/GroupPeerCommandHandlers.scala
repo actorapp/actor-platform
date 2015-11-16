@@ -86,6 +86,22 @@ trait GroupPeerCommandHandlers extends PeersImplicits {
     }
   }
 
+  protected def setReaction(state: GroupPeerState, sr: SetReaction): Unit = {
+    withMemberIds(groupId) { (memberIds, _, _) ⇒
+      Future.traverse(memberIds - sr.origin.id) { memberId ⇒
+        dialogExt.ackSetReaction(Peer.privat(memberId), sr)
+      }
+    } map (_ ⇒ SetReactionAck()) pipeTo sender()
+  }
+
+  protected def removeReaction(state: GroupPeerState, sr: RemoveReaction): Unit = {
+    withMemberIds(groupId) { (memberIds, _, _) ⇒
+      Future.traverse(memberIds - sr.origin.id) { memberId ⇒
+        dialogExt.ackRemoveReaction(Peer.privat(memberId), sr)
+      }
+    } map (_ ⇒ RemoveReactionAck()) pipeTo sender()
+  }
+
   protected def withMemberIds[T](groupId: Int)(f: (Set[Int], Set[Int], Option[Int]) ⇒ Future[T]): Future[T] = {
     groupExt.getMemberIds(groupId) flatMap {
       case (memberIds, invitedUserIds, optBot) ⇒
