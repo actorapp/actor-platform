@@ -135,7 +135,7 @@ public class Message extends BserObject implements ListEngineItem {
         senderId = values.getInt(4);
         messageState = MessageState.fromValue(values.getInt(5));
         content = AbsContent.parse(values.getBytes(6));
-        reactions.clear();
+        reactions = new ArrayList<Reaction>();
         for (byte[] react : values.getRepeatedBytes(7)) {
             reactions.add(Reaction.fromBytes(react));
         }
