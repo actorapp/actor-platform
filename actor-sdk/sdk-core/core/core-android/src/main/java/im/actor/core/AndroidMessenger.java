@@ -246,6 +246,12 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
     }
 
+    public void sendVoice(Peer peer, int duration, String fullFilePath) {
+        File f = new File(fullFilePath);
+        sendAudio(peer, f.getName(), duration, fullFilePath);
+    }
+
+
     public void sendVideo(Peer peer, String fullFilePath) {
         sendVideo(peer, fullFilePath, new File(fullFilePath).getName());
     }
@@ -382,7 +388,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         }
     }
 
-    private String getExternalTempFile(String prefix, String postfix) {
+    public String getExternalTempFile(String prefix, String postfix) {
         File externalFile = context.getExternalFilesDir(null);
         if (externalFile == null) {
             return null;
@@ -392,11 +398,11 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         File dest = new File(externalPath + "/actor/tmp/");
         dest.mkdirs();
 
-        File outputFile = new File(dest, prefix + "_" + random.nextLong() + "" + postfix);
+        File outputFile = new File(dest, prefix + "_" + random.nextLong() + "." + postfix);
         return outputFile.getAbsolutePath();
     }
 
-    private String getInternalTempFile(String prefix, String postfix) {
+    public String getInternalTempFile(String prefix, String postfix) {
         File externalFile = context.getFilesDir();
         if (externalFile == null) {
             return null;
@@ -406,7 +412,7 @@ public class AndroidMessenger extends im.actor.core.Messenger {
         File dest = new File(externalPath + "/actor/tmp/");
         dest.mkdirs();
 
-        File outputFile = new File(dest, prefix + "_" + random.nextLong() + "" + postfix);
+        File outputFile = new File(dest, prefix + "_" + random.nextLong() + "." + postfix);
         return outputFile.getAbsolutePath();
     }
 

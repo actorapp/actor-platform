@@ -218,9 +218,11 @@
     <string name="chat_doc_stop">Отменить</string>
     <string name="chat_doc_download">Загрузить</string>
 
-    <string name="chat_not_member">Вы не участник этой группы</string>
+    <string name="chat_voice_record_cancel">проведите для отмены</string>
 
+    <string name="chat_not_member">Вы не участник этой группы</string>
     <string name="chat_unsupported">Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.</string>
+
 
     <!-- Profile -->
     <string name="profile_title">Профиль</string>

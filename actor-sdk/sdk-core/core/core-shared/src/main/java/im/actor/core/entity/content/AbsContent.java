@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.core.api.ApiDocumentExPhoto;
 import im.actor.core.api.ApiDocumentExVideo;
+import im.actor.core.api.ApiDocumentExVoice;
 import im.actor.core.api.ApiDocumentMessage;
 import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiMessage;
@@ -31,6 +32,7 @@ import im.actor.core.entity.content.internal.ContentRemoteContainer;
 import im.actor.core.entity.content.internal.LocalDocument;
 import im.actor.core.entity.content.internal.LocalPhoto;
 import im.actor.core.entity.content.internal.LocalVideo;
+import im.actor.core.entity.content.internal.LocalVoice;
 import im.actor.runtime.bser.BserParser;
 import im.actor.runtime.bser.BserValues;
 import im.actor.runtime.bser.BserWriter;
@@ -98,6 +100,8 @@ public abstract class AbsContent {
                 return new PhotoContent(localContainer);
             } else if (content instanceof LocalVideo) {
                 return new VideoContent(localContainer);
+            } else if (content instanceof LocalVoice) {
+                return new VoiceContent(localContainer);
             } else if (content instanceof LocalDocument) {
                 return new DocumentContent(localContainer);
             } else {
@@ -113,6 +117,8 @@ public abstract class AbsContent {
                         return new PhotoContent(remoteContainer);
                     } else if (d.getExt() instanceof ApiDocumentExVideo) {
                         return new VideoContent(remoteContainer);
+                    } else if (d.getExt() instanceof ApiDocumentExVoice) {
+                        return new VoiceContent(remoteContainer);
                     } else {
                         return new DocumentContent(remoteContainer);
                     }

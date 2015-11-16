@@ -1,5 +1,6 @@
 package im.actor.sdk.controllers.conversation;
 
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +18,10 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -36,11 +40,17 @@ import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerType;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.actors.ActorCreator;
+import im.actor.runtime.actors.ActorRef;
+import im.actor.runtime.actors.ActorSystem;
+import im.actor.runtime.actors.Props;
+import im.actor.runtime.actors.messages.PoisonPill;
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
+import im.actor.sdk.core.audio.VoiceCaptureActor;
 import im.actor.sdk.util.Randoms;
 import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.avatar.AvatarView;
@@ -105,6 +115,21 @@ public class ChatActivity extends ActorEditTextActivity {
     private boolean isMentionsVisible = false;
 
     //////////////////////////////////
+    // Voice messges
+    //////////////////////////////////
+    private View audioContainer;
+    private View recordPoint;
+    private View messageContainer;
+    private View audioSlide;
+    private int slideStart;
+    private TextView audioTimer;
+    private boolean isAudioVisible;
+    private int SLIDE_LIMIT;
+    ActorRef voiceRecordActor;
+    private String audioFile;
+    private ImageView audioButton;
+
+    //////////////////////////////////
     // Mentions
     //////////////////////////////////
     private MentionsAdapter mentionsAdapter;
@@ -165,6 +190,44 @@ public class ChatActivity extends ActorEditTextActivity {
 
         messageEditText.addTextChangedListener(new TextWatcherImp());
 
+        //Voice record
+        SLIDE_LIMIT = (int) (Screen.getDensity() * 180);
+        audioContainer = findViewById(R.id.audioContainer);
+        audioTimer = (TextView) findViewById(R.id.audioTimer);
+        audioSlide = findViewById(R.id.audioSlide);
+        recordPoint = findViewById(R.id.record_point);
+        ActorSystem.system().addDispatcher("voice_capture_dispatcher");
+
+        audioButton = (ImageView) findViewById(R.id.record_btn);
+        audioButton.setVisibility(View.VISIBLE);
+        audioButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (!isAudioVisible) {
+                        showAudio();
+                        slideStart = (int) event.getX();
+                    }
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (isAudioVisible) {
+                        hideAudio(false);
+                    }
+                } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (isAudioVisible) {
+                        int slide = slideStart - (int) event.getX();
+                        if (slide < 0) {
+                            slide = 0;
+                        }
+                        if (slide > SLIDE_LIMIT) {
+                            hideAudio(true);
+                        } else {
+                            slideAudio(slide);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
 
         // Mentions
         mentionsList = (ListView) findViewById(R.id.mentionsList);
@@ -236,6 +299,45 @@ public class ChatActivity extends ActorEditTextActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        voiceRecordActor = ActorSystem.system().actorOf(Props.create(VoiceCaptureActor.class, new ActorCreator<VoiceCaptureActor>() {
+            @Override
+            public VoiceCaptureActor create() {
+                return new VoiceCaptureActor(ChatActivity.this, new VoiceCaptureActor.VoiceCaptureCallback() {
+                    @Override
+                    public void onRecordProgress(final long time) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                audioTimer.setText(messenger().getFormatter().formatDuration((int) (time / 1000)));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onRecordCrash() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                hideAudio(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onRecordStop(long progress) {
+                        if (progress < 1200) {
+                            //Cancel
+                        } else {
+                            messenger().sendVoice(peer, (int) progress, audioFile);
+                        }
+                    }
+                });
+            }
+
+
+        }).changeDispatcher("voice_capture_dispatcher"), "actor/voice_capture");
+
 
         // Force keyboard open if activity started with Compose flag
         if (isCompose) {
@@ -371,6 +473,7 @@ public class ChatActivity extends ActorEditTextActivity {
     public void onPause() {
         super.onPause();
 
+        voiceRecordActor.send(PoisonPill.INSTANCE);
         // Saving draft
         messenger().saveDraft(peer, messageEditText.getText().toString());
     }
@@ -771,12 +874,69 @@ public class ChatActivity extends ActorEditTextActivity {
             if (s.length() > 0) {
                 sendButton.setTint(ActorSDK.sharedActor().style.getConvSendEnabledColor());
                 sendButton.setEnabled(true);
+                showView(sendButton);
+                goneView(audioButton);
             } else {
                 sendButton.setTint(ActorSDK.sharedActor().style.getConvSendDisabledColor());
                 sendButton.setEnabled(false);
+                showView(audioButton);
+                goneView(sendButton);
             }
 
 
         }
+    }
+
+    private void showAudio() {
+        if (isAudioVisible) {
+            return;
+        }
+        isAudioVisible = true;
+
+        audioFile = ActorSDK.sharedActor().getMessenger().getInternalTempFile("voice_msg", "opus");
+
+        long id = VoiceCaptureActor.LAST_ID.incrementAndGet();
+        voiceRecordActor.send(new VoiceCaptureActor.Start(audioFile));
+
+        slideAudio(0);
+        audioTimer.setText("00:00");
+
+        TranslateAnimation animation = new TranslateAnimation(Screen.getWidth(), 0, 0, 0);
+        animation.setDuration(160);
+        audioContainer.clearAnimation();
+        audioContainer.setAnimation(animation);
+        audioContainer.animate();
+        audioContainer.setVisibility(View.VISIBLE);
+
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0.2f);
+        alphaAnimation.setDuration(800);
+        alphaAnimation.setRepeatMode(AlphaAnimation.REVERSE);
+        alphaAnimation.setRepeatCount(AlphaAnimation.INFINITE);
+        recordPoint.clearAnimation();
+        recordPoint.setAnimation(alphaAnimation);
+        recordPoint.animate();
+    }
+
+    private void hideAudio(boolean cancel) {
+        if (!isAudioVisible) {
+            return;
+        }
+        isAudioVisible = false;
+        voiceRecordActor.send(new VoiceCaptureActor.Stop(cancel));
+        TranslateAnimation animation = new TranslateAnimation(0, Screen.getWidth(), 0, 0);
+        animation.setDuration(160);
+        audioContainer.clearAnimation();
+        audioContainer.setAnimation(animation);
+        audioContainer.animate();
+        audioContainer.setVisibility(View.GONE);
+
+
+    }
+
+    private void slideAudio(int value) {
+        ObjectAnimator oa = ObjectAnimator.ofFloat(audioSlide, "translationX", audioSlide.getX(), -value);
+        oa.setDuration(0);
+        oa.start();
     }
 }
