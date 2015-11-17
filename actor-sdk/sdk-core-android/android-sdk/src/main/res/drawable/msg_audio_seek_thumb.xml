@@ -14,7 +14,7 @@
             <stroke
                 android:color="@android:color/transparent"
                 android:width="20dp" />
-            <solid android:color="@color/primary_alt" />
+            <solid android:color="@color/primary" />
             <size
                 android:width="10dp"
                 android:height="10dp" />
