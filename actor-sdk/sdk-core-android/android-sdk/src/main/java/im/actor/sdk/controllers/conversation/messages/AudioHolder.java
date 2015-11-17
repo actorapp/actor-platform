@@ -385,4 +385,9 @@ public class AudioHolder extends MessageHolder {
         messageBubble.getBackground().setColorFilter(null);
     }
 
+    public static void stopPlaying() {
+        if (audioActor != null) {
+            audioActor.send(new AudioPlayerActor.Stop());
+        }
+    }
 }
