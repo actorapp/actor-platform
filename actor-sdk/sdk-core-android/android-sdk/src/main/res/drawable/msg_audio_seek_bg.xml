@@ -6,12 +6,12 @@
         android:drawable="@drawable/msg_audio_progress_bg" />
     <item android:id="@android:id/secondaryProgress">
         <scale
-            android:drawable="@drawable/msg_audio_progress_bg_progress"
+            android:drawable="@drawable/msg_audio_progress_b_bg_progress"
             android:scaleWidth="100%" />
     </item>
     <item android:id="@android:id/progress">
         <scale
-            android:drawable="@drawable/msg_audio_progress_bg_progress"
+            android:drawable="@drawable/msg_audio_progress_b_bg_progress"
             android:scaleWidth="100%" />
     </item>
 
