@@ -157,6 +157,7 @@
     <string name="nickname_edittext_hint">Enter your Username</string>
     <string name="about_user_me">About me</string>
     <string name="about_user">About user</string>
+    <string name="wallpaper">Wallpaper</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Call {0}</string>

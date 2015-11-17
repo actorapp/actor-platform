@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -43,6 +44,7 @@ import im.actor.sdk.controllers.fragment.BaseFragment;
 import im.actor.sdk.controllers.fragment.help.HelpActivity;
 import im.actor.sdk.controllers.fragment.preview.ViewAvatarActivity;
 import im.actor.sdk.util.Screen;
+import im.actor.sdk.view.BackgroundPreviewView;
 import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.sdk.view.TintImageView;
 import im.actor.runtime.mvvm.ValueChangedListener;
@@ -56,10 +58,16 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
 
     private int baseColor;
     private CoverAvatarView avatarView;
+    SharedPreferences shp;
+    SharedPreferences.Editor ed;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        shp = getActivity().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
+        ed = shp.edit();
+
         baseColor = getResources().getColor(R.color.primary);
         final ActorStyle style = ActorSDK.sharedActor().style;
         final UserVM userModel = users().get(myUid());
@@ -342,6 +350,45 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
         avatarView.setBkgrnd(avatarBkgrnd);
 
         bind(avatarView, users().get(myUid()).getAvatar());
+
+        //Wallpaper
+        int selectedWallpaper = shp.getInt("wallpaper", 0);
+        LinearLayout wallpaperContainer = (LinearLayout) view.findViewById(R.id.background_container);
+        wallpaperContainer.setBackgroundColor(style.getMainBackgroundColor());
+        ((TextView) view.findViewById(R.id.settings_wallpaper_title)).setTextColor(style.getSettingsCategoryTextColor());
+        view.findViewById(R.id.wallpaperDivider).setBackgroundColor(style.getBackyardBackgroundColor());
+        final View[] elevated = new View[]{null};
+        View.OnClickListener ocl = new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+                if (v != elevated[0]) {
+                    if (elevated[0] != null) {
+                        demoteView(elevated[0]);
+                    }
+                    elevated[0] = v;
+                    elevateView(v);
+                    ed.putInt("wallpaper", (Integer) v.getTag());
+                    ed.commit();
+                }
+            }
+        };
+        for (int i = 0; i < 4; i++) {
+            FrameLayout frame = new FrameLayout(getActivity());
+            BackgroundPreviewView bckgrnd = new BackgroundPreviewView(getActivity());
+            bckgrnd.init(Screen.dp(100), Screen.dp(200));
+            bckgrnd.bind(i);
+            bckgrnd.setPadding(Screen.dp(5), Screen.dp(10), Screen.dp(5), Screen.dp(20));
+            frame.setTag(i);
+            frame.setOnClickListener(ocl);
+            frame.addView(bckgrnd);
+            wallpaperContainer.addView(frame, new LinearLayout.LayoutParams(Screen.dp(100), Screen.dp(200)));
+
+            if (i == selectedWallpaper) {
+                elevateView(frame, false);
+                elevated[0] = frame;
+            }
+        }
 
         view.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
             @Override

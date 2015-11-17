@@ -605,6 +605,7 @@ public class ChatActivity extends ActorEditTextActivity {
                 }
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     // Mentions
