@@ -127,7 +127,7 @@ public class ProfileFragment extends BaseFragment {
             nickTitle.setTextColor(style.getTextSecondaryColor());
             TintImageView tintImageView = (TintImageView) recordView.findViewById(R.id.recordIcon);
             tintImageView.setVisibility(View.INVISIBLE);
-            String value = nick;
+            String value = "@".concat(nick);
             String title = getString(R.string.nickname);
             recordView.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
             ((TextView) recordView.findViewById(R.id.value)).setText(value);
