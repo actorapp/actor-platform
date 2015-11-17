@@ -152,7 +152,7 @@ public class GroupInfoFragment extends BaseFragment {
         themeHeader.setTextColor(style.getProfileSubtitleColor());
 
         final boolean finalIsAdmin = isAdmin;
-        bind(themeTV, header.findViewById(R.id.themeContainer), groupInfo.getTheme(), new ActorBinder.OnChangedListener() {
+        bind(themeTV, header.findViewById(R.id.themeContainer), groupInfo.getTheme(), new ActorBinder.OnChangedListener<String>() {
             @Override
             public void onChanged(String s) {
                 theme[0] = s;
@@ -162,7 +162,7 @@ public class GroupInfoFragment extends BaseFragment {
 
         //bind(themeHeader, themeHeader, groupInfo.getTheme());
 
-        bind(aboutTV, header.findViewById(R.id.aboutContainer), groupInfo.getAbout(), new ActorBinder.OnChangedListener() {
+        bind(aboutTV, header.findViewById(R.id.aboutContainer), groupInfo.getAbout(), new ActorBinder.OnChangedListener<String>() {
             @Override
             public void onChanged(String s) {
                 about[0] = s;

@@ -83,6 +83,7 @@ public class ActorStyle {
     private int groupAdminColor = 0;
     private int groupActionAddIconColor = 0;
     private int groupActionAddTextColor = 0;
+    private int groupOnlineColor = Color.parseColor("#ff7ea8ef");
 
     //Conversation
     private int convSendEnabledColor = 0;
@@ -846,5 +847,13 @@ public class ActorStyle {
 
     public static int getDarkenArgb(int color, double percent) {
         return Color.argb(Color.alpha(color), (int) Math.round(Color.red(color) * percent), (int) Math.round(Color.green(color) * percent), (int) Math.round(Color.blue(color) * percent));
+    }
+
+    public int getGroupOnlineColor() {
+        return groupOnlineColor;
+    }
+
+    public void setGroupOnlineColor(int groupOnlineColor) {
+        this.groupOnlineColor = groupOnlineColor;
     }
 }

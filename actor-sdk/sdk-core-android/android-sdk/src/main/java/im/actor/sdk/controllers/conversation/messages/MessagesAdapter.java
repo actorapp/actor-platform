@@ -18,6 +18,7 @@ import im.actor.core.entity.content.VoiceContent;
 import im.actor.runtime.generic.mvvm.BindedDisplayList;
 import im.actor.sdk.R;
 import im.actor.runtime.android.view.BindedListAdapter;
+import im.actor.sdk.controllers.fragment.ActorBinder;
 
 public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
 
@@ -25,6 +26,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     private Context context;
     private long firstUnread = -1;
     protected HashMap<Long, Message> selected = new HashMap<Long, Message>();
+    private ActorBinder BINDER = new ActorBinder();
 
     public MessagesAdapter(BindedDisplayList<Message> displayList,
                            MessagesFragment messagesFragment, Context context) {
@@ -133,5 +135,9 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     @Override
     public void onViewRecycled(MessageHolder holder) {
         holder.unbind();
+    }
+
+    public ActorBinder getBinder() {
+        return BINDER;
     }
 }
