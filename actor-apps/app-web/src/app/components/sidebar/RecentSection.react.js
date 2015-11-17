@@ -9,21 +9,21 @@ import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
-import FastSwitcherActionCreators from 'actions/FastSwitcherActionCreators';
+import QuickSearchActionCreators from 'actions/QuickSearchActionCreators';
 
 import DialogStore from 'stores/DialogStore';
-import FastSwitcherStore from 'stores/FastSwitcherStore';
+import QuickSearchStore from 'stores/QuickSearchStore';
 
 import RecentSectionItem from './RecentSectionItem.react';
 import ContactsSectionItem from './ContactsSectionItem.react';
-import FastSwitcherModal from 'components/modals/FastSwitcher.react';
+import QuickSearch from 'components/modals/QuickSearch.react';
 
 const LoadDialogsScrollBottom = 100;
 
 const getStateFromStore = () => {
   return {
     dialogs: DialogStore.getAll(),
-    isFastSwitcherOpen: FastSwitcherStore.isOpen()
+    isQuickSearchOpen: QuickSearchStore.isOpen()
   };
 };
 
@@ -35,7 +35,7 @@ class RecentSection extends Component {
     this.state = getStateFromStore();
 
     DialogStore.addChangeListener(this.onChange);
-    FastSwitcherStore.addListener(this.onChange);
+    QuickSearchStore.addListener(this.onChange);
   }
 
   componentWillUnmount() {
@@ -54,10 +54,10 @@ class RecentSection extends Component {
     }
   };
 
-  openQuickSearch = () => FastSwitcherActionCreators.show();
+  openQuickSearch = () => QuickSearchActionCreators.show();
 
   render() {
-    const { dialogs, isFastSwitcherOpen } = this.state;
+    const { dialogs, isQuickSearchOpen } = this.state;
 
     const dialogList = _.map(dialogs, (dialog, index) => {
       return (
@@ -82,7 +82,7 @@ class RecentSection extends Component {
           </a>
         </footer>
 
-        {isFastSwitcherOpen ? <FastSwitcherModal/> : null}
+        {isQuickSearchOpen ? <QuickSearch/> : null}
 
       </section>
     );

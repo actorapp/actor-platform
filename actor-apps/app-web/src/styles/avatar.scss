@@ -19,6 +19,8 @@
   vertical-align: middle;
 
   border-radius: 100%;
+  box-shadow: 0 0 1px rgba(0, 0, 0, .1);
+
   &__image {
     position: absolute;
     z-index: 1;
@@ -36,6 +38,7 @@
     line-height: $default-avatar-size - 2px;
 
     display: block;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .1);
 
     width: $default-avatar-size - 2px;
     height: $default-avatar-size - 2px;

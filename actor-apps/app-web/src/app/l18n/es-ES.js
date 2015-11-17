@@ -6,6 +6,7 @@ export default {
       'signIn': 'Registrarse',
       'wrong': '¿Equivocado?',
       'phone': 'Número de móvil',
+      'email': 'Email address',
       'authCode': 'Código verificación',
       'yourName': 'Su nombre',
       'errors': {
@@ -30,6 +31,12 @@ export default {
       'signOut': 'Salir'
     },
 
+    // Sidebar
+    'sidebar': {
+      'groups': 'Groups',
+      'private': 'Private'
+    },
+
     // Buttons
     'button': {
       'ok': 'Ok',
@@ -38,13 +45,35 @@ export default {
       'requestCode': 'Solicitar código',
       'checkCode': 'Comprobar código',
       'signUp': 'Registrarse',
-      'add': 'Añadir'
+      'add': 'Añadir',
+      'send': 'Send',
+      'sendAll': 'Send all',
+      'createGroup': 'Crear grupo',
+      'addMembers': 'Añadir miembros',
+      'quickSearch': 'Quick search',
+      'close': 'Close'
     },
 
     // Messages
     'message': {
+      'pin': 'Pin',
+      'reply': 'Reply',
+      'forward': 'Forward',
       'download': 'Descargar',
-      'delete': 'Eliminar'
+      'delete': 'Eliminar',
+      'uploading': 'Uploading...',
+      'welcome': {
+        'private': '<p>This is the very beginning of your private conversation with <strong>{name}</strong>.</p><p>All messages here are private between the two of you.</p>',
+        'group': {
+          'main': '<p>This is the very beginning of <strong>{name}</strong> group conversation which created by {creator}.</p>',
+          'you': 'You',
+          'actions': {
+            'start': 'You can ',
+            'end': ' to this conversation.',
+            'invite': 'invite more users'
+          }
+        }
+      }
     },
 
     // Toolbar
@@ -52,6 +81,7 @@ export default {
 
     // Compose
     'compose': {
+      'attach': 'Attachment',
       'sendFile': 'Enviar archivo',
       'sendPhoto': 'Enviar foto',
       'send': 'Enviar',
@@ -59,7 +89,8 @@ export default {
         'bold': 'negrita',
         'italic': 'cursiva',
         'preformatted': 'preformateado'
-      }
+      },
+      'dropzone': 'Drop here to send.'
     },
 
     // Modals
@@ -82,10 +113,64 @@ export default {
       },
       'crop': {
         'title': 'Recortar la imagen'
+      },
+      'contacts': {
+        'title': 'People',
+        'search': 'Search contacts',
+        'notFound': 'Sorry, no users found.'
+      },
+      'groups': {
+        'title': 'Groups',
+        'search': 'Search',
+        'loading': 'Loading',
+        'notFound': 'No matches found for <strong>{query}</strong>.'
+      },
+      'attachments': {
+        'title': 'Send file',
+        'name': 'Filename',
+        'type': 'Type',
+        'size': 'Size',
+        'extra': 'Extra',
+        'sendAsPicture': 'Send as picture'
+      },
+      'addContact': {
+        'title': 'Añadir contacto',
+        'query': 'Número de móvil',
+        'error': {
+          'notRegistered': 'This phone is not registered in Actor.',
+          'inContacts': 'You already have this user in contacts.'
+        }
+      },
+      'createGroup': {
+        'title': 'Crear grupo',
+        'groupName': 'Nombre de grupo'
+      },
+      'quickSearch': {
+        'title': 'Search everywhere',
+        'placeholder': 'Start typing',
+        'toNavigate': 'to navigate',
+        'toSelect': 'to select',
+        'toClose': 'to close',
+        'openDialog': 'Open conversation',
+        'startDialog': 'Start new conversation',
+        'notFound': 'No matches found for <strong>{query}</strong>.<br/>Have you spelled it correctly?'
+      },
+      'confirm': {
+        'logout': 'Do you really want to leave?',
+        'leave': 'Do you really want to leave this conversation?',
+        'clear': 'Do you really want to clear this conversation?',
+        'delete': 'Do you really want to delete this conversation?',
+        'removeContact': 'You really want to remove {name} from your contacts?',
+        'kick': 'Are you sure you want kick {name}'
       }
     },
 
     // Profiles
+    'profile': {
+      'email': 'email',
+      'phone': 'phone',
+      'nickname': 'nickname'
+    },
     'createdBy': 'сreado por',
     'addPeople': 'Añadir personas',
     'more': 'Más',
@@ -108,6 +193,10 @@ export default {
       '=1 {# Miembro}' +
       'other {# Miembros}' +
     '}',
+    'kick': 'Kick',
+    'integrationToken': 'Integration Token',
+    'integrationTokenHint': 'If you have programming chops, or know someone who does, this integration token allow the most flexibility and communication with your own systems.',
+    'integrationTokenHelp': 'Learn how to integrate',
 
     // Modals
     'inviteModalTitle': 'Añadir más personas',
@@ -140,17 +229,6 @@ export default {
     'preferencesSessionsCurrentSession': 'Current session',
     'preferencesSessionsAuthTime': 'Fecha de acceso',
     'preferencesSessionsTerminate': 'Eliminar',
-    'preferencesSessionsTerminateAll': 'Terminar todas las sesiones',
-
-    'createGroupModalTitle': 'Crear grupo',
-    'createGroupButton': 'Crear grupo',
-    'createGroupGroupName': 'Nombre de grupo',
-    'createGroupAddMembers': 'Añadir miembros',
-
-    'addContactModalTitle': 'Añadir contacto',
-    'addContactPhoneNumber': 'Número de móvil',
-    'addContactAdd': 'Añadir',
-    'addContactNotRegistered': 'This phone is not registered in Actor.',
-    'addContactInContacts': 'You already have this user in contacts.'
+    'preferencesSessionsTerminateAll': 'Terminar todas las sesiones'
   }
 };

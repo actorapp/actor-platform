@@ -10,10 +10,8 @@ let targetCollection = [];
 
 export default class DropZone extends Component {
   static propTypes = {
-    children: React.PropTypes.oneOfType([
-      React.PropTypes.array,
-      React.PropTypes.element
-    ]),
+    children: React.PropTypes.node,
+
     onDropComplete: React.PropTypes.func.isRequired,
 
     // Callbacks

@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
-import mixpanel from 'utils/Mixpanel';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 import classnames from 'classnames';
@@ -20,21 +19,32 @@ import AddContactActionCreators from 'actions/AddContactActionCreators';
 import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 import MyProfileStore from 'stores/MyProfileStore';
+import CreateGroupStore from 'stores/CreateGroupStore';
+import AddContactStore from 'stores/AddContactStore';
+import PreferencesStore from 'stores/PreferencesStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
-import CreateGroupModal from 'components/modals/CreateGroup.react';
+import CreateGroupModal from 'components/modals/CreateGroup';
 import MyProfileModal from 'components/modals/MyProfile.react';
 import AddContactModal from 'components/modals/AddContact.react';
 import PreferencesModal from 'components/modals/Preferences.react';
 
 @ReactMixin.decorate(IntlMixin)
 class HeaderSection extends Component {
-  static getStores = () => [MyProfileStore];
+  static getStores = () => [MyProfileStore, CreateGroupStore, AddContactStore, PreferencesStore];
+
   static calculateState() {
     return {
-      isOpened: false,
-      profile: MyProfileStore.getProfile()
+      profile: MyProfileStore.getProfile(),
+      isMyProfileOpen: MyProfileStore.isModalOpen(),
+      isAddContactsOpen: AddContactStore.isModalOpen(),
+      isCreateGroupOpen: CreateGroupStore.isModalOpen(),
+      isPreferencesOpen: PreferencesStore.isOpen()
     }
+  }
+
+  componentWillMount() {
+    this.setState({isOpened: false});
   }
 
   toggleHeaderMenu = () => {
@@ -53,22 +63,24 @@ class HeaderSection extends Component {
     document.removeEventListener('click', this.closeHeaderMenu, false);
   };
 
-
   openMyProfile = () => MyProfileActions.show();
-  openCreateGroup = () => CreateGroupActionCreators.openModal();
+  openCreateGroup = () => CreateGroupActionCreators.open();
   openHelpDialog = () => HelpActionCreators.open();
-  openAddContactModal = () => AddContactActionCreators.openModal();
+  openAddContactModal = () => AddContactActionCreators.open();
   onSettingsOpen = () => PreferencesActionCreators.show();
   openTwitter = () => window.open('https://twitter.com/actorapp');
   setLogout = () => {
-    confirm('Do you really want to leave?').then(
+    confirm(this.getIntlMessage('modal.confirm.logout'), {
+      abortLabel: this.getIntlMessage('button.cancel'),
+      confirmLabel: this.getIntlMessage('button.ok')
+    }).then(
       () => LoginActionCreators.setLoggedOut(),
       () => {}
     );
   };
 
   render() {
-    const { profile, isOpened } = this.state;
+    const { profile, isOpened, isMyProfileOpen, isCreateGroupOpen, isAddContactsOpen, isPreferencesOpen } = this.state;
 
     if (profile) {
 
@@ -105,7 +117,7 @@ class HeaderSection extends Component {
                   <i className="material-icons">group_add</i>
                   {this.getIntlMessage('menu.createGroup')}
                 </li>
-                <li className="dropdown__menu__separator"></li>
+                <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
                   <i className="material-icons">help</i>
                   {this.getIntlMessage('menu.helpAndFeedback')}
@@ -120,7 +132,7 @@ class HeaderSection extends Component {
                   <i className="material-icons">settings</i>
                   {this.getIntlMessage('menu.preferences')}
                 </li>
-                <li className="dropdown__menu__separator"></li>
+                <li className="dropdown__menu__separator"/>
                 <li className="dropdown__menu__item" onClick={this.setLogout}>
                   {this.getIntlMessage('menu.signOut')}
                 </li>
@@ -128,10 +140,13 @@ class HeaderSection extends Component {
             </div>
           </div>
 
-          <MyProfileModal/>
-          <CreateGroupModal/>
-          <AddContactModal/>
-          <PreferencesModal/>
+
+          {/* Modals */}
+          {isMyProfileOpen ? <MyProfileModal/> : null}
+          {isCreateGroupOpen ? <CreateGroupModal/> : null}
+          {isAddContactsOpen ? <AddContactModal/> : null}
+          {isPreferencesOpen ? <PreferencesModal/> : null}
+
         </header>
       );
     } else {

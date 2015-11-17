@@ -19,17 +19,7 @@ class RecentSectionItem extends React.Component {
     dialog: React.PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   onClick = () => DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
-
-  //onDelete = (event) => {
-  //  event.stopPropagation();
-  //  const { dialog } = this.props;
-  //  DialogActionCreators.deleteChat(dialog.peer.peer);
-  //};
 
   render() {
     const { dialog } = this.props;
@@ -51,7 +41,6 @@ class RecentSectionItem extends React.Component {
                     title={dialog.peer.title}/>
         <div className="title col-xs" dangerouslySetInnerHTML={{__html: escapeWithEmoji(dialog.peer.title)}}/>
         {counter}
-        {/* <i className="material-icons delete" onClick={this.onDelete}>clear</i> */}
       </li>
     );
   }

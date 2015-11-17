@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { forEach, includes, findWhere } from 'lodash';
+import { forEach, findWhere } from 'lodash';
 
 import { Store } from 'flux/utils';
 import Dispatcher from 'dispatcher/ActorAppDispatcher';
@@ -14,7 +14,7 @@ import ContactStore from 'stores/ContactStore';
 let _isOpen = false,
     _result = [];
 
-class FastSwitcherStore extends Store {
+class QuickSearchStore extends Store {
   isOpen() {
     return _isOpen;
   }
@@ -40,7 +40,7 @@ class FastSwitcherStore extends Store {
         contact.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()) &&
         !findWhere(dialogs, {peer: { peer: {id: contact.uid}}})
       ) {
-          result.push({type: 'CONTACT', contact});
+        result.push({type: 'CONTACT', contact});
       }
     });
 
@@ -54,23 +54,23 @@ class FastSwitcherStore extends Store {
 
   __onDispatch = (action) => {
     switch (action.type) {
-      case ActionTypes.FAST_SWITCHER_SHOW:
+      case ActionTypes.QUICK_SEARCH_SHOW:
         _isOpen = true;
         this.handleSearchQuery('');
         this.__emitChange();
         break;
 
-      case ActionTypes.FAST_SWITCHER_HIDE:
+      case ActionTypes.QUICK_SEARCH_HIDE:
         _isOpen = false;
         _result = [];
         this.__emitChange();
         break;
 
-      case ActionTypes.FAST_SWITCHER_SEARCH:
+      case ActionTypes.QUICK_SEARCH:
         this.handleSearchQuery(action.query);
         break;
     }
   }
 }
 
-export default new FastSwitcherStore(Dispatcher);
+export default new QuickSearchStore(Dispatcher);

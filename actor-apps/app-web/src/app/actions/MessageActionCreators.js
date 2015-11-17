@@ -2,38 +2,59 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { dispatch } from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
+
 import ActorClient from 'utils/ActorClient';
-import mixpanel from 'utils/Mixpanel';
-import Markdown from 'utils/Markdown';
 import { emoji } from 'utils/EmojiUtils';
 
 const replaceColons = (text) => {
   emoji.change_replace_mode('unified');
-  const replacedText = emoji.replace_colons(text);
-  return replacedText;
+  return emoji.replace_colons(text);
 };
 
 export default {
-  setMessageShown: function(peer, message) {
+  setMessageShown: (peer, message) => {
     ActorClient.onMessageShown(peer, message);
   },
 
-  sendTextMessage: function(peer, text) {
-    mixpanel.track('Send Text');
+  sendTextMessage: (peer, text) => {
+    dispatch(ActionTypes.MESSAGE_SEND_TEXT, {
+      peer, text
+    });
     ActorClient.sendTextMessage(peer, replaceColons(text));
   },
 
-  sendFileMessage: function(peer, file) {
-    mixpanel.track('Send Document');
+  sendFileMessage: (peer, file) => {
+    dispatch(ActionTypes.MESSAGE_SEND_FILE, {
+      peer, file
+    });
     ActorClient.sendFileMessage(peer, file);
   },
 
-  sendPhotoMessage: function(peer, photo) {
-    mixpanel.track('Send Photo');
+  sendPhotoMessage: (peer, photo) => {
+    dispatch(ActionTypes.MESSAGE_SEND_PHOTO, {
+      peer, photo
+    });
     ActorClient.sendPhotoMessage(peer, photo);
   },
 
-  sendClipboardPhotoMessage: function(peer, photo) {
+  sendClipboardPhotoMessage: (peer, photo) => {
     ActorClient.sendClipboardPhotoMessage(peer, photo);
+  },
+
+  deleteMessage: (peer, rid) => {
+    ActorClient.deleteMessage(peer, rid);
+    dispatch(ActionTypes.MESSAGE_DELETE, {
+      peer, rid
+    });
+  },
+
+  addLike: (peer, rid) => {
+    ActorClient.addLike(peer, rid);
+  },
+
+  removeLike: (peer, rid) => {
+    ActorClient.removeLike(peer, rid);
   }
 };

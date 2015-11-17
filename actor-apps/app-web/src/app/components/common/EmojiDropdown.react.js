@@ -26,7 +26,7 @@ export default class EmojiDropdown extends Component {
 
     const emojiCategories = getEmojiCategories();
 
-    for (let category of emojiCategories) {
+    forEach(emojiCategories, (category, index) => {
       let currentCategoryEmojis = [];
 
       emoji.change_replace_mode('css');
@@ -37,6 +37,7 @@ export default class EmojiDropdown extends Component {
               spy smooth
               offset={30}
               duration={250}
+              key={index}
               onSetActive={() => this.changeDropdownTitle(category.title)}
               containerId="emojiContainer"
               className="emoji-dropdown__header__tabs__tab"
@@ -45,7 +46,7 @@ export default class EmojiDropdown extends Component {
         </Link>
       );
 
-      for (let emojiChar of category.data) {
+      forEach(category.data, (emojiChar, index) => {
         emoji.change_replace_mode('css');
         const convertedChar = emoji.replace_unified(emojiChar);
         emoji.colons_mode = true;
@@ -53,17 +54,17 @@ export default class EmojiDropdown extends Component {
         emoji.colons_mode = false;
 
         currentCategoryEmojis.push(
-          <a onClick={() => this.onSelect(emojiColon)} dangerouslySetInnerHTML={{__html: convertedChar}}/>
+          <a onClick={() => this.onSelect(emojiColon)} key={index} dangerouslySetInnerHTML={{__html: convertedChar}}/>
         );
-      }
+      });
 
       emojis.push(
-        <Element name={category.title}>
+        <Element name={category.title} key={index}>
           <p>{category.title}</p>
           {currentCategoryEmojis}
         </Element>
       );
-    }
+    });
 
     this.state = {
       isOpen: props.isOpen,

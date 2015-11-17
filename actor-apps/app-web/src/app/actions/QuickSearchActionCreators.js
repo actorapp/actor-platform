@@ -8,14 +8,14 @@ import ActorClient from 'utils/ActorClient';
 
 export default {
   show() {
-    dispatch(ActionTypes.FAST_SWITCHER_SHOW);
+    dispatch(ActionTypes.QUICK_SEARCH_SHOW);
   },
 
   hide() {
-    dispatch(ActionTypes.FAST_SWITCHER_HIDE);
+    dispatch(ActionTypes.QUICK_SEARCH_HIDE);
   },
 
   search(query) {
-    dispatch(ActionTypes.FAST_SWITCHER_SEARCH, { query });
+    dispatch(ActionTypes.QUICK_SEARCH, { query });
   }
 };

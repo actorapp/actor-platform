@@ -3,7 +3,8 @@
  */
 
 import React from 'react';
-
+import ReactMixin from 'react-mixin';
+import { IntlMixin, FormattedMessage } from 'react-intl';
 import confirm from 'utils/confirm'
 import { escapeWithEmoji } from 'utils/EmojiUtils'
 import ActorClient from 'utils/ActorClient'
@@ -16,7 +17,7 @@ import KickUserActionCreators from 'actions/KickUserActionCreators';
 import KickUserStore from 'stores/KickUserStore'
 
 import AvatarItem from 'components/common/AvatarItem.react';
-import * as Stateful from 'components/common/Stateful.react';
+import Stateful from 'components/common/Stateful';
 
 const getStateFromStore = (uid) => {
   const kickUserState = KickUserStore.getKickUserState(uid);
@@ -26,7 +27,9 @@ const getStateFromStore = (uid) => {
   }
 };
 
-export default class GroupMember extends React.Component {
+export default
+@ReactMixin.decorate(IntlMixin)
+class GroupMember extends React.Component {
   static propTypes = {
     peerInfo: React.PropTypes.object.isRequired,
     canKick: React.PropTypes.bool.isRequired,
@@ -57,7 +60,7 @@ export default class GroupMember extends React.Component {
         <div className="controls pull-right">
           <Stateful.Root currentState={kickUserState}>
             <Stateful.Pending>
-              <a onClick={() => this.onKick(gid, peerInfo.peer.id)}>Kick</a>
+              <a onClick={() => this.onKick(gid, peerInfo.peer.id)}>{this.getIntlMessage('kick')}</a>
             </Stateful.Pending>
             <Stateful.Processing>
               <i className="material-icons spin">autorenew</i>
@@ -100,13 +103,20 @@ export default class GroupMember extends React.Component {
 
   onKick = (gid, uid) => {
     const { peerInfo } = this.props;
-    const confirmText = 'Are you sure you want kick ' + peerInfo.title;
+    const confirmText = (
+      <FormattedMessage message={this.getIntlMessage('modal.confirm.kick')}
+                        name={peerInfo.title}/>
+    );
 
-    confirm(confirmText).then(
+    confirm(confirmText, {
+      abortLabel: this.getIntlMessage('button.cancel'),
+      confirmLabel: this.getIntlMessage('button.ok')
+    }).then(
       () => {
         KickUserStore.addChangeListener(this.onChange);
         KickUserActionCreators.kickMember(gid, uid);
-      }
+      },
+      () => {}
     );
   };
 }
