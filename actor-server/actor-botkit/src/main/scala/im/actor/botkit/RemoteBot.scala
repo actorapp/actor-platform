@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 object RemoteBot {
   val DefaultEndpoint = "wss://api.actor.im"
 
-  private final object StreamComplete
+  private object StreamComplete
 }
 
 abstract class RemoteBot(token: String, endpoint: String) extends BotBase with ActorFutures {
