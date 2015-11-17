@@ -5,7 +5,7 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
-import { IntlMixin } from 'react-intl';
+import { IntlMixin, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import { lightbox } from 'utils/ImageUtils';
 
@@ -60,10 +60,16 @@ class UserProfile extends React.Component {
 
   removeFromContacts = () => {
     const { user } = this.props;
-    const confirmText = 'You really want to remove ' + user.name + ' from your contacts?';
-
-    confirm(confirmText).then(
-      () => ContactActionCreators.removeContact(user.id)
+    const confirmText = (
+      <FormattedMessage message={this.getIntlMessage('modal.confirm.removeContact')}
+                        name={user.name}/>
+    );
+    confirm(confirmText, {
+      abortLabel: this.getIntlMessage('button.cancel'),
+      confirmLabel: this.getIntlMessage('button.ok')
+    }).then(
+      () => ContactActionCreators.removeContact(user.id),
+      () => {}
     );
   };
 
@@ -94,7 +100,10 @@ class UserProfile extends React.Component {
   };
 
   clearChat = (uid) => {
-    confirm('Do you really want to delete this conversation?').then(
+    confirm(this.getIntlMessage('modal.confirm.clear'), {
+      abortLabel: this.getIntlMessage('button.cancel'),
+      confirmLabel: this.getIntlMessage('button.ok')
+    }).then(
       () => {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.clearChat(peer);
@@ -104,7 +113,10 @@ class UserProfile extends React.Component {
   };
 
   deleteChat = (uid) => {
-    confirm('Do you really want to delete this conversation?').then(
+    confirm(this.getIntlMessage('modal.confirm.delete'), {
+      abortLabel: this.getIntlMessage('button.cancel'),
+      confirmLabel: this.getIntlMessage('button.ok')
+    }).then(
       () => {
         const peer = ActorClient.getUserPeer(uid);
         DialogActionCreators.deleteChat(peer);
@@ -119,47 +131,33 @@ class UserProfile extends React.Component {
     const { user } = this.props;
     const { isNotificationsEnabled, isActionsDropdownOpen } = this.state;
 
-    const actions = (user.isContact === false) ? (
-      <li className="dropdown__menu__item" onClick={this.addToContacts}>
-        {this.getIntlMessage('addToContacts')}
-      </li>
-    ) : (
-      <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
-        {this.getIntlMessage('removeFromContacts')}
-      </li>
-    );
-
     const dropdownClassNames = classnames('dropdown pull-left', {
       'dropdown--opened': isActionsDropdownOpen
     });
-
-    const about = user.about ? (
-      <div className="user_profile__meta__about"
-           dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.about).replace(/\n/g, '<br/>')}}/>
-    ) : null;
 
     const nickname = user.nick ? (
       <li>
         <svg className="icon icon--pink"
              dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#username"/>'}}/>
         <span className="title">{user.nick}</span>
-        <span className="description">nickname</span>
+        <span className="description">{this.getIntlMessage('profile.nickname')}</span>
       </li>
     ) : null;
 
-    const email = user.email ? (
-      <li className="hide">
-        <i className="material-icons icon icon--blue">mail</i>
-        <span className="title">{user.email}</span>
-        <span className="description">email</span>
+    const email = user.emails[0] ? (
+      <li>
+        <svg className="icon icon--blue"
+             dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#envelope"/>'}}/>
+        <span className="title"><a href={'mailto:' + user.emails[0].email}>{user.emails[0].email}</a></span>
+        <span className="description">{this.getIntlMessage('profile.email')}</span>
       </li>
     ) : null;
 
     const phone = user.phones[0] ? (
       <li>
         <i className="material-icons icon icon--green">call</i>
-        <span className="title">{'+' + user.phones[0].number}</span>
-        <span className="description">mobile</span>
+        <span className="title"><a href={'tel:+' + user.phones[0].number}>{'+' + user.phones[0].number}</a></span>
+        <span className="description">{this.getIntlMessage('profile.phone')}</span>
       </li>
     ) : null;
 
@@ -178,7 +176,14 @@ class UserProfile extends React.Component {
               <h3 className="user_profile__meta__title" dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.name)}}/>
               <div className="user_profile__meta__presence">{user.presence}</div>
             </header>
-            {about}
+
+            {
+              user.about
+                ? <div className="user_profile__meta__about"
+                       dangerouslySetInnerHTML={{__html: escapeWithEmoji(user.about).replace(/\n/g, '<br/>')}}/>
+                : null
+            }
+
             <footer>
               <div className={dropdownClassNames}>
                 <button className="dropdown__button button button--flat" onClick={this.toggleActionsDropdown}>
@@ -186,7 +191,15 @@ class UserProfile extends React.Component {
                   {this.getIntlMessage('actions')}
                 </button>
                 <ul className="dropdown__menu dropdown__menu--left">
-                  {actions}
+                  {
+                    user.isContact
+                      ? <li className="dropdown__menu__item" onClick={this.removeFromContacts}>
+                          {this.getIntlMessage('removeFromContacts')}
+                        </li>
+                      : <li className="dropdown__menu__item" onClick={this.addToContacts}>
+                          {this.getIntlMessage('addToContacts')}
+                        </li>
+                  }
                   <li className="dropdown__menu__item" onClick={() => this.clearChat(user.id)}>
                     {this.getIntlMessage('clearConversation')}
                   </li>
@@ -200,9 +213,9 @@ class UserProfile extends React.Component {
 
           <li className="profile__list__item user_profile__contact_info no-p">
             <ul className="user_profile__contact_info__list">
-              {nickname}
               {phone}
               {email}
+              {nickname}
             </ul>
           </li>
 
@@ -225,7 +238,7 @@ class UserProfile extends React.Component {
                        id="notifications"
                        onChange={this.onNotificationChange}
                        type="checkbox"/>
-                <label htmlFor="notifications"></label>
+                <label htmlFor="notifications"/>
               </div>
             </label>
           </li>

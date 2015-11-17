@@ -9,7 +9,7 @@ import RecentSection from 'components/sidebar/RecentSection.react';
 
 class SidebarSection extends React.Component {
   static propTypes = {
-    selectedPeer: React.PropTypes.object
+    selectedPeer: React.PropTypes.object.isRequested
   };
 
   constructor(props) {

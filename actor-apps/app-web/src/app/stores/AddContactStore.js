@@ -1,17 +1,16 @@
-import { EventEmitter } from 'events';
-import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+import { Store } from 'flux/utils';
+import Dispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, AddContactMessages } from 'constants/ActorAppConstants';
 
-const CHANGE_EVENT = 'change';
-
 let _isOpen = false,
-    _message = null;
+    _message = null,
+    _query = '';
 
-class AddContactStore extends EventEmitter {
-  constructor() {
-    super();
-  }
-
+class AddContactStore extends Store {
   isModalOpen() {
     return _isOpen;
   }
@@ -20,48 +19,45 @@ class AddContactStore extends EventEmitter {
     return _message;
   }
 
-  emitChange() {
-    this.emit(CHANGE_EVENT);
+  getQuery() {
+    return _query;
   }
 
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  }
+  __onDispatch = (action) => {
+    switch(action.type) {
+      case ActionTypes.CONTACT_ADD_MODAL_SHOW:
+        _isOpen = true;
+        this.__emitChange();
+        break;
+      case ActionTypes.CONTACT_ADD_MODAL_HIDE:
+        _isOpen = false;
+        _message = null;
+        _query = '';
+        this.__emitChange();
+        break;
 
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+      //case ActionTypes.CONTACT_FIND:
+      //case ActionTypes.CONTACT_FIND_SUCCESS:
+      //case ActionTypes.CONTACT_FIND_ERROR:
+      //  this.__emitChange();
+      //  break;
+
+      case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK:
+        _isOpen = false;
+        _message = null;
+        this.__emitChange();
+        break;
+      case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED:
+        _message = AddContactMessages.PHONE_NOT_REGISTERED;
+        this.__emitChange();
+        break;
+      case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT:
+        _message = AddContactMessages.ALREADY_HAVE;
+        this.__emitChange();
+        break;
+      default:
+    }
   }
 }
 
-let AddContactStoreInstance = new AddContactStore();
-
-AddContactStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
-  switch(action.type) {
-    case ActionTypes.CONTACT_ADD_MODAL_SHOW:
-      _isOpen = true;
-      AddContactStoreInstance.emitChange();
-      break;
-    case ActionTypes.CONTACT_ADD_MODAL_HIDE:
-      _isOpen = false;
-      _message = null;
-      AddContactStoreInstance.emitChange();
-      break;
-    case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK:
-      _isOpen = false;
-      _message = null;
-      AddContactStoreInstance.emitChange();
-      break;
-    case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED:
-      _message = AddContactMessages.PHONE_NOT_REGISTERED;
-      AddContactStoreInstance.emitChange();
-      break;
-    case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT:
-      _message = AddContactMessages.ALREADY_HAVE;
-      AddContactStoreInstance.emitChange();
-      break;
-    default:
-      return;
-  }
-});
-
-export default AddContactStoreInstance;
+export default new AddContactStore(Dispatcher);

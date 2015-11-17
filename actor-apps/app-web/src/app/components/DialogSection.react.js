@@ -91,7 +91,7 @@ class DialogSection extends React.Component {
 
     if (peer) {
       let isMember = true,
-        memberArea;
+          memberArea;
 
       if (peer.type === PeerTypes.GROUP) {
         const group = GroupStore.getGroup(peer.id);
@@ -132,7 +132,13 @@ class DialogSection extends React.Component {
         <section className="dialog dialog--empty row center-xs middle-xs">
           <ConnectionState/>
 
-          <h2>Select dialog or start a new one.</h2>
+          <div className="advice">
+            <div className="actor-logo">
+              <svg className="icon icon--gray"
+                   dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#star"/>'}}/>
+            </div>
+            <h2>Try to be better than yesterday!</h2>
+          </div>
         </section>
       );
     }

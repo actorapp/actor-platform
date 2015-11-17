@@ -3,6 +3,7 @@
  */
 
 import 'babel/polyfill';
+import { intlData } from 'l18n';
 import RouterContainer from 'utils/RouterContainer';
 
 import crosstab from 'crosstab';
@@ -12,7 +13,6 @@ import Router from 'react-router';
 import ReactMixin from 'react-mixin';
 import Actor from 'actor-js';
 
-import { intlData } from 'l18n';
 import { IntlMixin } from 'react-intl';
 
 import isMobile from 'utils/isMobile';
@@ -22,7 +22,6 @@ import { endpoints } from 'constants/ActorAppConstants'
 import LoginActionCreators from 'actions/LoginActionCreators';
 
 import LoginStore from 'stores/LoginStore';
-import PreferencesStore from 'stores/PreferencesStore';
 
 import Deactivated from 'components/Deactivated.react';
 import Login from 'components/Login.react';
@@ -40,7 +39,6 @@ Pace.start({
   restartOnRequestAfter: false,
   restartOnPushState: false
 });
-
 
 const { DefaultRoute, Route, RouteHandler } = Router;
 
@@ -87,11 +85,13 @@ const initReact = () => {
 
   const routes = (
     <Route handler={App} name="app" path="/">
+      <Route handler={Login} name="login" path="/auth"/>
+
       <Route handler={Main} name="main" path="/im/:id"/>
       <Route handler={JoinGroup} name="join" path="/join/:token"/>
-      <Route handler={Login} name="login" path="/auth"/>
       <Route handler={Deactivated} name="deactivated" path="/deactivated"/>
       <Route handler={Install} name="install" path="/install"/>
+
       <DefaultRoute handler={Main}/>
     </Route>
   );

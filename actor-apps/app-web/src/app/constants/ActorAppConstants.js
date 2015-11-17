@@ -5,33 +5,33 @@
 import keymirror from 'keymirror';
 import app from '../../app.json';
 
-export const AuthSteps = {
-  PHONE_WAIT: 1,
-  CODE_WAIT: 2,
-  SIGNUP_NAME_WAIT: 3,
-  COMPLETED: 4
-};
+export const AuthSteps = keymirror({
+  LOGIN_WAIT: null,
+  CODE_WAIT: null,
+  NAME_WAIT: null,
+  COMPLETED: null
+});
 
 export const ActionTypes = keymirror({
   APP_HIDDEN: null,
   APP_VISIBLE: null,
 
-  AUTH_SMS_REQUEST: null,
-  AUTH_SMS_REQUEST_SUCCESS: null,
-  AUTH_SMS_REQUEST_FAILURE: null,
-
-  SEND_CODE: null,
-  SEND_CODE_SUCCESS: null,
-  SEND_CODE_FAILURE: null,
-
-  SEND_SIGNUP: null,
-  SEND_SIGNUP_SUCCESS: null,
-  SEND_SIGNUP_FAILURE: null,
-
-  SET_LOGGED_IN: null,
-  SET_LOGGED_OUT: null,
-
-  AUTH_WRONG_NUMBER_CLICK: null,
+  AUTH_CHANGE_LOGIN: null,
+  AUTH_CHANGE_CODE: null,
+  AUTH_CHANGE_NAME: null,
+  AUTH_RESTART: null,
+  AUTH_CODE_REQUEST: null,
+  AUTH_CODE_REQUEST_SUCCESS: null,
+  AUTH_CODE_REQUEST_FAILURE: null,
+  AUTH_CODE_SEND: null,
+  AUTH_CODE_SEND_SUCCESS: null,
+  AUTH_CODE_SEND_FAILURE: null,
+  AUTH_SIGNUP_START: null,
+  AUTH_SIGNUP: null,
+  AUTH_SIGNUP_SUCCESS: null,
+  AUTH_SIGNUP_FAILURE: null,
+  AUTH_SET_LOGGED_IN: null,
+  AUTH_SET_LOGGED_OUT: null,
 
   DIALOGS_CHANGED: null,
   SELECTED_DIALOG_INFO_CHANGED: null,
@@ -44,9 +44,10 @@ export const ActionTypes = keymirror({
   COMPOSE_MENTION_CLOSE: null,
   COMPOSE_EMOJI_INSERT: null,
 
-  SEND_MESSAGE_TEXT: null,
-  SEND_MESSAGE_FILE: null,
-  SEND_MESSAGE_PHOTO: null,
+  MESSAGE_SEND_TEXT: null,
+  MESSAGE_SEND_FILE: null,
+  MESSAGE_SEND_PHOTO: null,
+  MESSAGE_DELETE: null,
 
   ACTIVITY_SHOW: null,
   ACTIVITY_HIDE: null,
@@ -58,6 +59,9 @@ export const ActionTypes = keymirror({
   CONTACT_LIST_CHANGED: null,
   CONTACT_ADD_MODAL_SHOW: null,
   CONTACT_ADD_MODAL_HIDE: null,
+  //CONTACT_FIND: null,
+  //CONTACT_FIND_SUCCESS: null,
+  //CONTACT_FIND_ERROR: null,
   CONTACT_ADD_MODAL_FIND_USER_OK: null,
   CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED: null,
   CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT: null,
@@ -65,6 +69,9 @@ export const ActionTypes = keymirror({
   // Group actions
   GROUP_CREATE_MODAL_OPEN: null,
   GROUP_CREATE_MODAL_CLOSE: null,
+  GROUP_CREATE_SET_NAME: null,
+  //GROUP_CREATE_SET_AVATAR: null,
+  GROUP_CREATE_SET_MEMBERS: null,
   GROUP_CREATE: null,
   GROUP_CREATE_SUCCESS: null,
   GROUP_CREATE_ERROR: null,
@@ -77,6 +84,31 @@ export const ActionTypes = keymirror({
   GROUP_EDIT_ABOUT: null,
   GROUP_EDIT_ABOUT_SUCCESS: null,
   GROUP_EDIT_ABOUT_ERROR: null,
+  GROUP_GET_TOKEN: null,
+  GROUP_GET_TOKEN_SUCCESS: null,
+  GROUP_GET_TOKEN_ERROR: null,
+  GROUP_LEAVE: null,
+  GROUP_LEAVE_SUCCESS: null,
+  GROUP_LEAVE_ERROR: null,
+  GROUP_DELETE: null,
+  GROUP_DELETE_SUCCESS: null,
+  GROUP_DELETE_ERROR: null,
+  GROUP_CLEAR: null,
+  GROUP_CLEAR_SUCCESS: null,
+  GROUP_CLEAR_ERROR: null,
+  GROUP_HIDE: null,
+  GROUP_HIDE_SUCCESS: null,
+  GROUP_HIDE_ERROR: null,
+  GROUP_JOIN_VIA_LINK: null,
+  GROUP_JOIN_VIA_LINK_SUCCESS: null,
+  GROUP_JOIN_VIA_LINK_ERROR: null,
+
+  GROUP_LIST_SHOW: null,
+  GROUP_LIST_HIDE: null,
+  GROUP_LIST_LOAD: null,
+  GROUP_LIST_LOAD_SUCCESS: null,
+  GROUP_LIST_LOAD_ERROR: null,
+  GROUP_LIST_SEARCH: null,
 
   NOTIFICATION_CHANGE: null,
 
@@ -86,10 +118,6 @@ export const ActionTypes = keymirror({
   APP_UPDATE_MODAL_SHOW: null,
   APP_UPDATE_MODAL_HIDE: null,
   APP_UPDATE_CONFIRM: null,
-
-  GET_INTEGRATION_TOKEN: null,
-  GET_INTEGRATION_TOKEN_SUCCESS: null,
-  GET_INTEGRATION_TOKEN_ERROR: null,
 
   FAVICON_SET_DEFAULT: null,
   FAVICON_SET_NOTIFICATION: null,
@@ -128,22 +156,20 @@ export const ActionTypes = keymirror({
   KICK_USER_SUCCESS: null,
   KICK_USER_ERROR: null,
 
-  CHAT_LEAVE: null,
-  CHAT_LEAVE_SUCCESS: null,
-  CHAT_LEAVE_ERROR: null,
-  CHAT_DELETE: null,
-  CHAT_DELETE_SUCCESS: null,
-  CHAT_DELETE_ERROR: null,
-  CHAT_CLEAR: null,
-  CHAT_CLEAR_SUCCESS: null,
-  CHAT_CLEAR_ERROR: null,
-
   CROP_AVATAR_MODAL_SHOW: null,
   CROP_AVATAR_MODAL_HIDE: null,
 
-  FAST_SWITCHER_SHOW: null,
-  FAST_SWITCHER_HIDE: null,
-  FAST_SWITCHER_SEARCH: null
+  QUICK_SEARCH_SHOW: null,
+  QUICK_SEARCH_HIDE: null,
+  QUICK_SEARCH: null,
+
+  ATTACHMENT_MODAL_SHOW: null,
+  ATTACHMENT_MODAL_HIDE: null,
+  ATTACHMENT_SELECT: null,
+  ATTACHMENT_CHANGE: null,
+  ATTACHMENT_DELETE: null,
+  ATTACHMENT_SEND: null,
+  ATTACHMENT_SEND_ALL: null
 });
 
 export const PeerTypes = {
@@ -154,6 +180,12 @@ export const PeerTypes = {
 export const ActivityTypes = keymirror({
   USER_PROFILE: null,
   GROUP_PROFILE: null
+});
+
+export const CreateGroupSteps = keymirror({
+  NAME_INPUT: null,
+  CONTACTS_SELECTION: null,
+  CREATION_STARTED: null
 });
 
 export const MessageContentTypes = {
@@ -183,7 +215,7 @@ export const AsyncActionStates = {
 
 export const version = app.base_version;
 
-export const Mixpanel = app.mixpanel;
+export const MixpanelAPIKey = app.mixpanel;
 
 export const Support = {
   id: 576465533,
@@ -205,31 +237,19 @@ export const AddContactMessages = {
 export const BugsnagAPIKey = app.bugsnag;
 
 export default {
-  AuthSteps: AuthSteps,
-
-  PeerTypes: PeerTypes,
-
-  ActionTypes: ActionTypes,
-
-  ActivityTypes: ActivityTypes,
-
-  MessageContentTypes: MessageContentTypes,
-
-  KeyCodes: KeyCodes,
-
-  ChangeState: AsyncActionStates,
-
-  Mixpanel: Mixpanel,
-
-  version: version,
-
-  endpoints: endpoints,
-
-  Support: Support,
-
-  Path: Path,
-
+  AuthSteps,
+  PeerTypes,
+  ActionTypes,
+  ActivityTypes,
+  MessageContentTypes,
+  CreateGroupSteps,
+  KeyCodes,
+  AsyncActionStates,
+  MixpanelAPIKey,
+  version,
+  endpoints,
+  Support,
+  Path,
   AddContactMessages,
-
   BugsnagAPIKey
 };

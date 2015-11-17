@@ -1,26 +1,23 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 import React from 'react';
 import classnames from 'classnames';
+import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl';
 
+export default
+@ReactMixin.decorate(IntlMixin)
 class Document extends React.Component {
   static propTypes = {
     content: React.PropTypes.object.isRequired,
     className: React.PropTypes.string
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { content, className } = this.props;
     const documentClassName = classnames(className, 'row');
-
-    let availableActions;
-    if (content.isUploading === true) {
-      availableActions = <span>Loading...</span>;
-    } else {
-      availableActions = <a href={content.fileUrl}>Download</a>;
-    }
 
     return (
       <div className={documentClassName}>
@@ -35,7 +32,11 @@ class Document extends React.Component {
               <span className="document__meta__ext">{content.fileExtension}</span>
             </div>
             <div className="document__actions">
-              {availableActions}
+              {
+                content.isUploading
+                  ? <span>{this.getIntlMessage('message.uploading')}</span>
+                  : <a href={content.fileUrl}>{this.getIntlMessage('message.download')}</a>
+              }
             </div>
           </div>
         </div>
@@ -44,5 +45,3 @@ class Document extends React.Component {
     );
   }
 }
-
-export default Document;

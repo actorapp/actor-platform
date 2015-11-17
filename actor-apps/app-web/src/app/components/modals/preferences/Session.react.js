@@ -11,7 +11,7 @@ import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 import PreferencesStore from 'stores/PreferencesStore';
 
-import * as Stateful from 'components/common/Stateful.react';
+import Stateful from 'components/common/Stateful';
 
 @ReactMixin.decorate(IntlMixin)
 class SessionItem extends Component {

@@ -6,29 +6,32 @@ import { map } from 'lodash';
 
 import React, { Component } from 'react';
 import { Container } from 'flux/utils';
+import ReactMixin from 'react-mixin';
+import { IntlMixin, FormattedHTMLMessage } from 'react-intl';
 import Modal from 'react-modal';
 import classnames from 'classnames';
 import isInside from 'utils/isInside';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 
-import FastSwitcherActionCreators from 'actions/FastSwitcherActionCreators';
+import QuickSearchActionCreators from 'actions/QuickSearchActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
 
-import FastSwitcherStore from 'stores/FastSwitcherStore';
+import QuickSearchStore from 'stores/QuickSearchStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 
 const RESULT_ITEM_HEIGHT = 44;
 let scrollIndex = 0;
 
-class FastSwitcher extends Component {
-  static getStores = () => [FastSwitcherStore];
+@ReactMixin.decorate(IntlMixin)
+class QuickSearch extends Component {
+  static getStores = () => [QuickSearchStore];
 
   static calculateState() {
     return {
-      isOpen: FastSwitcherStore.isOpen(),
-      results: FastSwitcherStore.getResults(),
+      isOpen: QuickSearchStore.isOpen(),
+      results: QuickSearchStore.getResults(),
       selectedIndex: 0
     }
   }
@@ -67,8 +70,8 @@ class FastSwitcher extends Component {
                           size="small"
                           title={result.dialog.peer.title}/>
               <div className="title col-xs">
+                <div className="hint pull-right">{this.getIntlMessage('modal.quickSearch.openDialog')}</div>
                 {result.dialog.peer.title}
-                <div className="hint pull-right">Open conversation</div>
               </div>
             </li>
           );
@@ -83,59 +86,53 @@ class FastSwitcher extends Component {
                           size="small"
                           title={result.contact.name}/>
               <div className="title col-xs">
+                <div className="hint pull-right">{this.getIntlMessage('modal.quickSearch.startDialog')}</div>
                 {result.contact.name}
-                <div className="hint pull-right">Start new conversation</div>
               </div>
-
             </li>
           );
         case 'SUGGESTION':
           return (
             <li className={resultClassName}
                 key={index}>
-
-              <span>No matches found for <strong>{result.query}</strong>.</span>
-              <span>Have you spelled it correctly?</span>
+              <FormattedHTMLMessage
+                message={this.getIntlMessage('modal.quickSearch.notFound')}
+                query={result.query} />
               <button className="button button--rised hide">Create new dialog {result.query}</button>
-
             </li>
           );
       }
 
     });
 
-    if (isOpen) {
-      return (
-        <Modal className="modal modal--fast-switcher"
-               closeTimeoutMS={150}
-               isOpen={isOpen}
-               style={{width: 400}}>
-          <div ref="modal">
+    return (
+      <Modal className="modal modal--quick-search"
+             closeTimeoutMS={150}
+             isOpen={isOpen}
+             style={{width: 460}}>
+        <div ref="modal">
 
-            <header className="header">
-              <div className="pull-left">Jump to anywhere</div>
-              <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
-              <div className="pull-right"><strong>↵</strong>&nbsp; to select</div>
-              <div className="pull-right"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
-            </header>
+          <header className="header">
+            <div className="pull-left">{this.getIntlMessage('modal.quickSearch.title')}</div>
+            <div className="pull-right"><strong>esc</strong>&nbsp; {this.getIntlMessage('modal.quickSearch.toClose')}</div>
+            <div className="pull-right"><strong>↵</strong>&nbsp; {this.getIntlMessage('modal.quickSearch.toSelect')}</div>
+            <div className="pull-right"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; {this.getIntlMessage('modal.quickSearch.toNavigate')}</div>
+          </header>
 
-            <div className="input">
-              <input type="text"
-                     placeholder="Start typing"
-                     onChange={this.handleSearch}
-                     ref="query"/>
-            </div>
-
-            <ul className="results" ref="results">
-              {resultsList}
-            </ul>
-
+          <div className="input">
+            <input type="text"
+                   placeholder={this.getIntlMessage('modal.quickSearch.placeholder')}
+                   onChange={this.handleSearch}
+                   ref="query"/>
           </div>
-        </Modal>
-      );
-    } else {
-      return null;
-    }
+
+          <ul className="results" ref="results">
+            {resultsList}
+          </ul>
+
+        </div>
+      </Modal>
+    );
   }
 
   setFocus = () => {
@@ -144,9 +141,9 @@ class FastSwitcher extends Component {
     }, 0);
   };
 
-  handleClose = () => FastSwitcherActionCreators.hide();
+  handleClose = () => QuickSearchActionCreators.hide();
 
-  handleSearch = (event) => FastSwitcherActionCreators.search(event.target.value);
+  handleSearch = (event) => QuickSearchActionCreators.search(event.target.value);
 
   handleDialogSelect = (peer) => {
     DialogActionCreators.selectDialogPeer(peer);
@@ -242,4 +239,4 @@ class FastSwitcher extends Component {
   };
 }
 
-export default Container.create(FastSwitcher, {pure: false});
+export default Container.create(QuickSearch, {pure: false});

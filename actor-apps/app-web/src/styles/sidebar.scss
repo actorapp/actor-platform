@@ -155,7 +155,7 @@
 
     overflow: auto;
 
-    margin: 0 0 16px;
+    margin: 0;
     padding: 0;
 
     list-style: none;
@@ -164,12 +164,32 @@
       font-weight: 500;
       line-height: 32px;
 
-      padding-left: 16px;
+      padding: 0 14px;
 
       text-transform: uppercase;
 
       color: rgba(white, .6);
       cursor: default;
+
+      a {
+        cursor: pointer;
+        transition: 200ms;
+        &:hover {
+          color: white;
+        }
+      }
+
+      &__icon {
+        line-height: 32px;
+        font-size: 22px;
+        transition: 200ms;
+        cursor: pointer;
+        color: rgba(white, .3);
+        &:hover {
+          color: white;
+          transform: rotate(90deg);
+        }
+      }
     }
     &__item {
       font-size: 15px;
@@ -237,12 +257,12 @@
         .avatar {
           filter: none;
         }
-        //.counter {
-        //  display: none;
-        //}
-        //.delete {
-        //  display: block;
-        //}
+        .counter {
+          display: none;
+        }
+        .delete {
+          display: block;
+        }
       }
       &--active {
         color: white;

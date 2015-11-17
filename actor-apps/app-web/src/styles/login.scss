@@ -36,16 +36,19 @@
       font-size: 14px;
 
       position: absolute;
-      bottom: 36px;
+      bottom: 18px;
       left: 0;
 
       box-sizing: border-box;
       width: 100%;
       padding: 0 70px;
+      p {
+        margin: 8px 0 0;
+      }
 
       color: $login-text-color;
       a {
-        margin-left: 34px;
+        //margin-left: 34px;
 
         text-decoration: none;
 
@@ -145,6 +148,36 @@
       right: -100%;
 
       width: 100%;
+    }
+  }
+
+  &--reversed {
+    .logo {
+      position: absolute;
+      top: 36px;
+      left: 36px;
+    }
+    .login-new__welcome {
+      background-color: transparent;
+      &:before {
+        display: none;
+      }
+    }
+    .login-new__form {
+      background-color: rgba(0, 0, 0, .03);
+      &:before {
+        position: absolute;
+        top: 0;
+        right: 100%;
+        bottom: 0;
+        left: -5000px;
+
+        display: block;
+
+        content: '';
+
+        background-color: rgba(0, 0, 0, .03);
+      }
     }
   }
 }
@@ -256,7 +289,7 @@
 
         position: absolute;
         z-index: 1;
-        top: 38px;
+        top: 41px;
         right: 0;
 
         display: none;

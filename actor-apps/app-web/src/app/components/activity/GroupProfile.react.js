@@ -18,10 +18,10 @@ import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
 import InviteUserActions from 'actions/InviteUserActions';
 import EditGroupActionCreators from 'actions/EditGroupActionCreators';
 
-import LoginStore from 'stores/LoginStore';
 import PeerStore from 'stores/PeerStore';
 import DialogStore from 'stores/DialogStore';
 import GroupStore from 'stores/GroupStore';
+import UserStore from 'stores/UserStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import InviteUser from 'components/modals/InviteUser.react';
@@ -49,7 +49,7 @@ class GroupProfile extends React.Component {
 
   constructor(props) {
     super(props);
-    const myId = LoginStore.getMyId();
+    const myId = UserStore.getMyId();
 
     this.state = assign({
       isMoreDropdownOpen: false
@@ -60,16 +60,15 @@ class GroupProfile extends React.Component {
     }
 
     DialogStore.addNotificationsListener(this.onChange);
-    GroupStore.addChangeListener(this.onChange);
+    GroupStore.addListener(this.onChange);
   }
 
   componentWillUnmount() {
     DialogStore.removeNotificationsListener(this.onChange);
-    GroupStore.removeChangeListener(this.onChange);
   }
 
   componentWillReceiveProps(newProps) {
-    const myId = LoginStore.getMyId();
+    const myId = UserStore.getMyId();
     // FIXME!!!
     setTimeout(() => {
       this.setState(getStateFromStores(newProps.group.id));
@@ -83,7 +82,10 @@ class GroupProfile extends React.Component {
   onAddMemberClick = group => InviteUserActions.show(group);
 
   onLeaveGroupClick = gid => {
-    confirm('Do you really want to leave this conversation?').then(
+    confirm(this.getIntlMessage('modal.confirm.leave'), {
+      abortLabel: this.getIntlMessage('button.cancel'),
+      confirmLabel: this.getIntlMessage('button.ok')
+    }).then(
       () => DialogActionCreators.leaveGroup(gid),
       () => {}
     );
@@ -114,7 +116,10 @@ class GroupProfile extends React.Component {
   };
 
   onClearGroupClick = (gid) => {
-    confirm('Do you really want to clear this conversation?').then(
+    confirm(this.getIntlMessage('modal.confirm.clear'), {
+      abortLabel: this.getIntlMessage('button.cancel'),
+      confirmLabel: this.getIntlMessage('button.ok')
+    }).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
         DialogActionCreators.clearChat(peer)
@@ -124,7 +129,10 @@ class GroupProfile extends React.Component {
   };
 
   onDeleteGroupClick = (gid) => {
-    confirm('Do you really want to delete this conversation?').then(
+    confirm(this.getIntlMessage('modal.confirm.delete'), {
+      abortLabel: this.getIntlMessage('button.cancel'),
+      confirmLabel: this.getIntlMessage('button.ok')
+    }).then(
       () => {
         const peer = ActorClient.getGroupPeer(gid);
         DialogActionCreators.deleteChat(peer);
@@ -145,8 +153,8 @@ class GroupProfile extends React.Component {
       isMoreDropdownOpen
     } = this.state;
 
-    const myId = LoginStore.getMyId();
-    const admin = GroupProfileActionCreators.getUser(group.adminId);
+    const myId = UserStore.getMyId();
+    const admin = UserStore.getUser(group.adminId);
     const isMember = DialogStore.isGroupMember(group);
 
     let adminControls;
@@ -205,14 +213,10 @@ class GroupProfile extends React.Component {
 
     const token = (group.adminId === myId) ? (
       <li className="profile__list__item group_profile__integration no-p">
-        <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
+        <Fold icon="power" iconClassName="icon--pink" title={this.getIntlMessage('integrationToken')}>
           <div className="info info--light">
-            <p>
-              If you have programming chops, or know someone who does,
-              this integration token allow the most flexibility and communication
-              with your own systems.
-            </p>
-            <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
+            <p>{this.getIntlMessage('integrationTokenHint')}</p>
+            <a href="https://actor.readme.io/docs/simple-integration" target="_blank">{this.getIntlMessage('integrationTokenHelp')}</a>
           </div>
           <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
         </Fold>

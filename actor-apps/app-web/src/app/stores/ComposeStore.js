@@ -10,9 +10,7 @@ import { register, waitFor } from 'dispatcher/ActorAppDispatcher';
 
 import { ActionTypes, PeerTypes } from 'constants/ActorAppConstants';
 
-import GroupStore from './GroupStore';
 import DraftStore from './DraftStore';
-import UserStore from './UserStore';
 
 const CHANGE_EVENT = 'change';
 

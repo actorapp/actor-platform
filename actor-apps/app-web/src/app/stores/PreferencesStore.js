@@ -9,7 +9,6 @@ import { ActionTypes, AsyncActionStates } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 
 let _isOpen = false,
-    _languageData = null,
     _sessions = [],
     _currentTab = 'GENERAL',
     _terminateSessionState = [];
@@ -108,4 +107,5 @@ class PreferencesStore extends Store {
     }
   }
 }
+
 export default new PreferencesStore(Dispatcher);

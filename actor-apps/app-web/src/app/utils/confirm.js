@@ -34,20 +34,22 @@ class Confirm extends React.Component {
   render() {
     const { message, description, abortLabel, confirmLabel } = this.props;
 
-    const confirmDescription = description ? <div className="modal__body">{description}</div> : null;
-
     return (
       <div className="modal modal--confirm">
         <header className="modal__header">
           <h4 className="modal__header__title">{message}</h4>
         </header>
-        {confirmDescription}
+        {
+          description
+            ? <div className="modal__body">{description}</div>
+            : null
+        }
         <footer className="modal__footer text-right">
-          <button className="button button" onClick={this.reject}>
+          <button className="button" onClick={this.reject}>
             {abortLabel || 'Cancel'}
           </button>
           <button className="button button--lightblue" onClick={this.resolve} ref="confirm">
-            {confirmLabel || 'OK'}
+            {confirmLabel || 'Ok'}
           </button>
         </footer>
       </div>

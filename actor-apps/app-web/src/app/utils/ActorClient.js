@@ -3,21 +3,32 @@
  */
 
 export default {
-  requestSms(phone, success, failure) {
-    window.messenger.requestSms(phone, success, failure);
+
+  // Auth
+
+  requestSms(phone) {
+    return new Promise((resolve, reject) => {
+      window.messenger.requestSms(phone, resolve, reject);
+    });
   },
 
-  sendCode(code, success, failure) {
-    window.messenger.sendCode(code, success, failure);
+  sendCode(code) {
+    return new Promise((resolve, reject) => {
+      window.messenger.sendCode(code, resolve, reject);
+    });
   },
 
-  signUp(name, success, failure) {
-    window.messenger.signUp(name, success, failure);
+  signUp(name) {
+    return new Promise((resolve, reject) => {
+      window.messenger.signUp(name, resolve, reject);
+    });
   },
 
   isLoggedIn() {
     return window.messenger.isLoggedIn();
   },
+
+  // Bindings
 
   bindDialogs(callback) {
     window.messenger.bindDialogs(callback);
@@ -161,11 +172,8 @@ export default {
 
   // Groups
 
-  joinGroup (url) {
-    console.log('Joining group by url: ' + url);
-    const p = window.messenger.joinGroupViaLink(url);
-
-    return p;
+  joinGroupViaLink (url) {
+    return window.messenger.joinGroupViaLink(url);
   },
 
   leaveGroup(gid) {
@@ -173,7 +181,6 @@ export default {
   },
 
   createGroup(title, avatar, userIds) {
-    console.log('Creating group', title, userIds);
     return window.messenger.createGroup(title, avatar, userIds);
   },
 
@@ -207,20 +214,18 @@ export default {
     return window.messenger.getGroupPeer(gid);
   },
 
-  findUsers(phone) {
-    return window.messenger.findUsers(phone.toString());
-  },
-
-  deleteMessages(peer, rids) {
-    return window.messenger.deleteMessages(peer, rids);
+  hideChat(peer) {
+    return window.messenger.hideChat(peer);
   },
 
   // Mentions
+
   findMentions(gid, query = '') {
     return window.messenger.findMentions(gid, query);
   },
 
   // Nickname
+
   editMyNick(string) {
     window.messenger.editMyNick(string)
   },
@@ -258,6 +263,7 @@ export default {
   },
 
   // Settings
+
   changeNotificationsEnabled(peer, isEnabled) {
     window.messenger.changeNotificationsEnabled(peer, isEnabled);
   },
@@ -332,5 +338,29 @@ export default {
 
   removeGroupAvatar(gid) {
     window.messenger.removeGroupAvatar(gid);
+  },
+
+  // Search
+
+  findGroups(query) {
+    return window.messenger.findGroups(query);
+  },
+
+  findUsers(phone) {
+    return window.messenger.findUsers(phone.toString());
+  },
+
+  // Messages
+
+  deleteMessage(peer, rid) {
+    return window.messenger.deleteMessage(peer, rid);
+  },
+
+  addLike(peer, rid) {
+    return window.messenger.addLike(peer, rid);
+  },
+
+  removeLike(peer, rid) {
+    return window.messenger.removeLike(peer, rid);
   }
 }

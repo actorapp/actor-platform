@@ -2,21 +2,31 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
+import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 import ActorClient from 'utils/ActorClient';
-import mixpanel from 'utils/Mixpanel';
 
 import { ActionTypes } from 'constants/ActorAppConstants';
-
 import DialogActionCreators from 'actions/DialogActionCreators';
-import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 
 const CreateGroupActionCreators = {
-  openModal() {
+  open() {
     dispatch(ActionTypes.GROUP_CREATE_MODAL_OPEN)
   },
 
-  closeModal() {
+  close() {
     dispatch(ActionTypes.GROUP_CREATE_MODAL_CLOSE);
+  },
+
+  setGroupName(name) {
+    dispatch(ActionTypes.GROUP_CREATE_SET_NAME, { name });
+  },
+
+  //setGroupAvatar(avatar) {
+  //  dispatch(ActionTypes.GROUP_CREATE_SET_AVATAR, { avatar });
+  //},
+
+  setSelectedUserIds(selectedUserIds) {
+    dispatch(ActionTypes.GROUP_CREATE_SET_MEMBERS, { selectedUserIds });
   },
 
   createGroup(title, avatar, memberIds) {
@@ -26,11 +36,13 @@ const CreateGroupActionCreators = {
       failure: ActionTypes.GROUP_CREATE_ERROR
     }, { title, avatar, memberIds });
 
-    createGroup().then((peer) => {
-      this.closeModal();
+    const openCreatedGroup = (peer) => {
+      this.close();
       DialogActionCreators.selectDialogPeer(peer);
-      mixpanel.track('Create group');
-    });
+    };
+
+    createGroup()
+      .then(openCreatedGroup);
   }
 };
 
