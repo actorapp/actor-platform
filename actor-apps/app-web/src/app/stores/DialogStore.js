@@ -12,7 +12,6 @@ import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
 import ActorClient from 'utils/ActorClient';
-import LoginStore from 'stores/LoginStore';
 
 const CHANGE_EVENT = 'change',
       SELECT_EVENT = 'select',
@@ -115,16 +114,12 @@ var DialogStore = assign({}, EventEmitter.prototype, {
 
   isGroupMember(group) {
     return (group.members.length > 0);
+  },
+
+  getCurrentPeer() {
+    return _currentPeer;
   }
 });
-
-//var setDialogs = function(dialogs) {
-//  // We need setTimeout here because bindDialogs dispatches event
-//  // but bindDialogs itself is called in the middle of dispatch (DialogStore)
-//  setTimeout(function() {
-//    DialogActionCreators.setDialogs(dialogs);
-//  }, 0);
-//};
 
 var onCurrentDialogInfoChange = function(info) {
   _selectedDialogInfo = info;

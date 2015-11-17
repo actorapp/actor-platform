@@ -2,19 +2,14 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import { EventEmitter } from 'events';
-import ActorClient from 'utils/ActorClient';
-
-import DialogStore from 'stores/DialogStore'
-
-import { register, waitFor } from 'dispatcher/ActorAppDispatcher';
+import { Store } from 'flux/utils';
+import Dispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from 'constants/ActorAppConstants';
-
-const CHANGE_EVENT = 'change';
+import ActorClient from 'utils/ActorClient';
 
 let _integrationToken = null;
 
-class GroupStore extends EventEmitter {
+class GroupStore extends Store {
   getGroup(gid) {
     return ActorClient.getGroup(gid);
   }
@@ -23,48 +18,36 @@ class GroupStore extends EventEmitter {
     return _integrationToken;
   }
 
-  emitChange() {
-    this.emit(CHANGE_EVENT);
-  }
+  __onDispatch = (action) => {
+    switch (action.type) {
 
-  addChangeListener(callback) {
-    this.on(CHANGE_EVENT, callback);
-  }
+      case ActionTypes.GROUP_GET_TOKEN:
+        this.__emitChange();
+        break;
+      case ActionTypes.GROUP_GET_TOKEN_SUCCESS:
+        _integrationToken = action.response;
+        this.__emitChange();
+        break;
+      case ActionTypes.GROUP_GET_TOKEN_ERROR:
+        _integrationToken = null;
+        this.__emitChange();
+        break;
 
-  removeChangeListener(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+      case ActionTypes.GROUP_CLEAR:
+      case ActionTypes.GROUP_CLEAR_SUCCESS:
+      case ActionTypes.GROUP_CLEAR_ERROR:
+
+      case ActionTypes.GROUP_LEAVE:
+      case ActionTypes.GROUP_LEAVE_SUCCESS:
+      case ActionTypes.GROUP_LEAVE_ERROR:
+
+      case ActionTypes.GROUP_DELETE:
+      case ActionTypes.GROUP_DELETE_SUCCESS:
+      case ActionTypes.GROUP_DELETE_ERROR:
+        this.__emitChange();
+        break;
+    }
   }
 }
 
-let GroupStoreInstance = new GroupStore();
-
-GroupStoreInstance.dispatchToken = register(action => {
-  switch (action.type) {
-    case ActionTypes.GET_INTEGRATION_TOKEN:
-      waitFor([DialogStore.dispatchToken]);
-      GroupStoreInstance.emitChange();
-      break;
-    case ActionTypes.GET_INTEGRATION_TOKEN_SUCCESS:
-      _integrationToken = action.response;
-      GroupStoreInstance.emitChange();
-      break;
-    case ActionTypes.GET_INTEGRATION_TOKEN_ERROR:
-      _integrationToken = null;
-      GroupStoreInstance.emitChange();
-      break;
-
-    case ActionTypes.CHAT_CLEAR:
-    case ActionTypes.CHAT_CLEAR_SUCCESS:
-    case ActionTypes.CHAT_CLEAR_ERROR:
-    case ActionTypes.CHAT_LEAVE:
-    case ActionTypes.CHAT_LEAVE_SUCCESS:
-    case ActionTypes.CHAT_LEAVE_ERROR:
-    case ActionTypes.CHAT_DELETE:
-    case ActionTypes.CHAT_DELETE_SUCCESS:
-    case ActionTypes.CHAT_DELETE_ERROR:
-      GroupStoreInstance.emitChange();
-      break;
-  }
-});
-
-export default GroupStoreInstance;
+export default new GroupStore(Dispatcher);

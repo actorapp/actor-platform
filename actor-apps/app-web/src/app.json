@@ -1,5 +1,5 @@
 {
-  "mixpanel": "d59f6ded47bbf7cc945e2b60bc67d8ad",
+  "mixpanel": "9591b090b987c2b701db5a8ef3e5055c",
   "endpoints": [
     "wss://front1-ws-mtproto-api-rev2.actor.im",
     "wss://front2-ws-mtproto-api-rev2.actor.im"

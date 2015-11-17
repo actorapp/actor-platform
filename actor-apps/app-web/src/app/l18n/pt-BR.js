@@ -6,6 +6,7 @@ export default {
       'signIn': 'Entrar',
       'wrong': 'Errado?',
       'phone': 'Numero do celular',
+      'email': 'Email address',
       'authCode': 'Código de autenticação',
       'yourName': 'Seu nome',
       'errors': {
@@ -22,12 +23,18 @@ export default {
       // Sidebar menu
       'editProfile': 'Editar perfil',
       'addToContacts': 'Adicionar contato',
-      'createGroup': 'Criar Grupo',
+      'createGroup': 'Criar grupo',
       'configureIntegrations': 'Configure Integrações',
       'helpAndFeedback': 'Ajuda & Feedback',
       'twitter': 'Nosso twitter',
       'preferences': 'Preferências',
       'signOut': 'Sair'
+    },
+
+    // Sidebar
+    'sidebar': {
+      'groups': 'Groups',
+      'private': 'Private'
     },
 
     // Buttons
@@ -38,13 +45,35 @@ export default {
       'requestCode': 'Requesitar código',
       'checkCode': 'Checar código',
       'signUp': 'Cadastrar',
-      'add': 'Adicionar'
+      'add': 'Adicionar',
+      'send': 'Send',
+      'sendAll': 'Send all',
+      'createGroup': 'Criar grupo',
+      'addMembers': 'Adicionar usuários',
+      'quickSearch': 'Quick search',
+      'close': 'Close'
     },
 
     // Messages
     'message': {
+      'pin': 'Pin',
+      'reply': 'Reply',
+      'forward': 'Forward',
       'download': 'Download',
-      'delete': 'Deletar'
+      'delete': 'Deletar',
+      'uploading': 'Uploading...',
+      'welcome': {
+        'private': '<p>This is the very beginning of your private conversation with <strong>{name}</strong>.</p><p>All messages here are private between the two of you.</p>',
+        'group': {
+          'main': '<p>This is the very beginning of <strong>{name}</strong> group conversation which created by {creator}.</p>',
+          'you': 'You',
+          'actions': {
+            'start': 'You can ',
+            'end': ' to this conversation.',
+            'invite': 'invite more users'
+          }
+        }
+      }
     },
 
     // Toolbar
@@ -52,6 +81,7 @@ export default {
 
     // Compose
     'compose': {
+      'attach': 'Attachment',
       'sendFile': 'Enviar arquivo',
       'sendPhoto': 'Enviar foto',
       'send': 'Enviar',
@@ -59,7 +89,8 @@ export default {
         'bold': 'bold',
         'italic': 'italico',
         'preformatted': 'pré formatado'
-      }
+      },
+      'dropzone': 'Drop here to send.'
     },
 
     // Modals
@@ -82,10 +113,64 @@ export default {
       },
       'crop': {
         'title': 'Cortat imagem'
+      },
+      'contacts': {
+        'title': 'People',
+        'search': 'Search contacts',
+        'notFound': 'Sorry, no users found.'
+      },
+      'groups': {
+        'title': 'Groups',
+        'search': 'Search',
+        'loading': 'Loading',
+        'notFound': 'No matches found for <strong>{query}</strong>.'
+      },
+      'attachments': {
+        'title': 'Send file',
+        'name': 'Filename',
+        'type': 'Type',
+        'size': 'Size',
+        'extra': 'Extra',
+        'sendAsPicture': 'Send as picture'
+      },
+      'addContact': {
+        'title': 'Adicionar contato',
+        'query': 'Numero do celular',
+        'error': {
+          'notRegistered': 'Este numero não esta registrado no Actor.',
+          'inContacts': 'Você ja possui esta pessoa em seus contatos.'
+        }
+      },
+      'createGroup': {
+        'title': 'Criar grupo',
+        'groupName': 'Grupo'
+      },
+      'quickSearch': {
+        'title': 'Search everywhere',
+        'placeholder': 'Start typing',
+        'toNavigate': 'to navigate',
+        'toSelect': 'to select',
+        'toClose': 'to close',
+        'openDialog': 'Open conversation',
+        'startDialog': 'Start new conversation',
+        'notFound': 'No matches found for <strong>{query}</strong>.<br/>Have you spelled it correctly?'
+      },
+      'confirm': {
+        'logout': 'Do you really want to leave?',
+        'leave': 'Do you really want to leave this conversation?',
+        'clear': 'Do you really want to clear this conversation?',
+        'delete': 'Do you really want to delete this conversation?',
+        'removeContact': 'You really want to remove {name} from your contacts?',
+        'kick': 'Are you sure you want kick {name}'
       }
     },
 
     // Profiles
+    'profile': {
+      'email': 'email',
+      'phone': 'phone',
+      'nickname': 'nickname'
+    },
     'createdBy': 'сriado por',
     'addPeople': 'Adicionar pessoas',
     'more': 'Mais',
@@ -108,6 +193,10 @@ export default {
     '=1 {# Membro}' +
     'other {# Membros}' +
     '}',
+    'kick': 'Kick',
+    'integrationToken': 'Integration Token',
+    'integrationTokenHint': 'If you have programming chops, or know someone who does, this integration token allow the most flexibility and communication with your own systems.',
+    'integrationTokenHelp': 'Learn how to integrate',
 
     // Modals
     'inviteModalTitle': 'Adicionar mais pessoas',
@@ -140,17 +229,6 @@ export default {
     'preferencesSessionsCurrentSession': 'Sessão atual',
     'preferencesSessionsAuthTime': 'Tempo logado',
     'preferencesSessionsTerminate': 'Matar sessão',
-    'preferencesSessionsTerminateAll': 'Terminar todas seções',
-
-    'createGroupModalTitle': 'Criar Grupo',
-    'createGroupButton': 'Criar grupo',
-    'createGroupGroupName': 'Grupo',
-    'createGroupAddMembers': 'Adicionar usuários',
-
-    'addContactModalTitle': 'Adicionar contato',
-    'addContactPhoneNumber': 'Numero do celular',
-    'addContactAdd': 'Add',
-    'addContactNotRegistered': 'Este numero não esta registrado no Actor.',
-    'addContactInContacts': 'Você ja possui esta pessoa em seus contatos.'
+    'preferencesSessionsTerminateAll': 'Terminar todas seções'
   }
 };

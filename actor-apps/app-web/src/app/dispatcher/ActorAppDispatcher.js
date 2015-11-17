@@ -39,6 +39,15 @@ export function dispatch(type, action = {}) {
   }
 
   flux.dispatch({type, ...action});
+
+  // Return response or error for chaining async actions
+  return new Promise((resolve, reject) => {
+    if (action.error) {
+      reject(action.error);
+    } else {
+      resolve(action.response ? action.response : action);
+    }
+  })
 }
 
 /**
@@ -49,9 +58,9 @@ export function dispatchAsync(promise, types, action = {}) {
 
   dispatch(request, action);
   return promise.then(
-      response => dispatch(success, {...action, response}),
-      error => dispatch(failure, {...action, error})
-  );
+    response => dispatch(success, {...action, response}),
+    error => dispatch(failure, {...action, error})
+  ).catch(console.error.bind(console));
 }
 
 export default flux;

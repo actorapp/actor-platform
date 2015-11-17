@@ -6,6 +6,7 @@ export default {
       'signIn': 'Вход',
       'wrong': 'Ошиблись?',
       'phone': 'Номер телефона',
+      'email': 'Email адрес',
       'authCode': 'Код авторизации',
       'yourName': 'Ваше имя',
       'errors': {
@@ -30,6 +31,12 @@ export default {
       'signOut': 'Выход'
     },
 
+    // Sidebar
+    'sidebar': {
+      'groups': 'Группы',
+      'private': 'Люди'
+    },
+
     // Buttons
     'button': {
       'ok': 'Ok',
@@ -38,13 +45,36 @@ export default {
       'requestCode': 'Запросить код',
       'checkCode': 'Проверить код',
       'signUp': 'Регистрация',
-      'add': 'Добавить'
+      'add': 'Добавить',
+      'send': 'Отправить',
+      'sendAll': 'Отправить все',
+      'createGroup': 'Создать группу',
+      'addMembers': 'Добавить пользователей',
+      'quickSearch': 'Быстрый поиск',
+      'close': 'Закрыть'
     },
 
     // Messages
     'message': {
+      'pin': 'Прикрепить',
+      'reply': 'Ответить',
+      'forward': 'Переслать',
       'download': 'Скачать',
-      'delete': 'Удалить'
+      'delete': 'Удалить',
+      'uploading': 'Загрузка...',
+      'welcome': {
+        'private': '<p>Это самое начало вашей приватной беседы с <strong>{name}</strong>.</p><p>Все сообщения здесь доступны только вам двоим.</p>',
+        'group': {
+          'main': '<p>Это самое начало групповой беседы <strong>{name}</strong> созданной {creator}.</p>',
+          'you': 'Вами',
+          'actions': {
+            'start': 'Вы можете ',
+            'end': ' в эту группу.',
+            'invite': 'пригласить еще людей'
+          }
+        }
+      }
+
     },
 
     // Toolbar
@@ -52,6 +82,7 @@ export default {
 
     // Compose
     'compose': {
+      'attach': 'Прикрепить',
       'sendFile': 'Документ',
       'sendPhoto': 'Изображение',
       'send': 'Отправить',
@@ -59,7 +90,8 @@ export default {
         'bold': 'жирный',
         'italic': 'курсив',
         'preformatted': 'форматированный'
-      }
+      },
+      'dropzone': 'Для отправки отпустите здесь.'
     },
 
     // Modals
@@ -82,10 +114,64 @@ export default {
       },
       'crop': {
         'title': 'Кадрирование'
+      },
+      'contacts': {
+        'title': 'Люди',
+        'search': 'Поиск контактов',
+        'notFound': 'Извините, ничего не найдено.'
+      },
+      'groups': {
+        'title': 'Группы',
+        'search': 'Поиск по группам',
+        'loading': 'Загрузка',
+        'notFound': 'По запросу <strong>{query}</strong> ничего не найдено'
+      },
+      'attachments': {
+        'title': 'Отправить файл',
+        'name': 'Имя файла',
+        'type': 'Тип',
+        'size': 'Размер',
+        'extra': 'Дополнительно',
+        'sendAsPicture': 'Отправить как изображение'
+      },
+      'addContact': {
+        'title': 'Добавить контакт',
+        'query': 'Номер телефона',
+        'error': {
+          'notRegistered': 'Данный номер не зарегистрирован.',
+          'inContacts': 'Это пользователь уже находится в ваших контактах.'
+        }
+      },
+      'createGroup': {
+        'title': 'Создать группу',
+        'groupName': 'Название группы'
+      },
+      'quickSearch': {
+        'title': 'Быстрый поиск',
+        'placeholder': 'Начните печатать',
+        'toNavigate': 'для навигации',
+        'toSelect': 'для выбора',
+        'toClose': 'для отмены',
+        'openDialog': 'Открыть диалог',
+        'startDialog': 'Начать новый диалог',
+        'notFound': 'По запросу <strong>{query}</strong> ничего не найдено.<br/>Вы уверены в правильности набора?'
+      },
+      'confirm': {
+        'logout': 'Вы действительно хотите уйти?',
+        'leave': 'Вы действительно хотите покинуть это диалог?',
+        'clear': 'Вы действительно хотите очистить это диалог?',
+        'delete': 'Вы действительно хотите удалить это диалог',
+        'removeContact': 'Удалить {name} из списка контактов?',
+        'kick': 'Вы действительно хотите исклчюить {name}'
       }
     },
 
     // Profiles
+    'profile': {
+      'email': 'емайл',
+      'phone': 'телефон',
+      'nickname': 'ник'
+    },
     'createdBy': 'создал',
     'addPeople': 'Пригласить',
     'more': 'Еще',
@@ -105,12 +191,13 @@ export default {
     'integrationTokenCopied': 'Ссылка скопирована.',
     'members': '{numMembers, plural,' +
       '=0 {Нет участников}' +
-      '=1 {# участник}' +
-      '=2 {# участника}' +
-      '=3 {# участника}' +
-      '=4 {# участника}' +
+      '=1 {# участник} =2 {# участника} =3 {# участника} =4 {# участника}' +
       'other {# участников}' +
     '}',
+    'kick': 'Исключить',
+    'integrationToken': 'Интеграция',
+    'integrationTokenHint': 'Вы можете использовать этот токен для настройки интеграции с вашими собственными системами.',
+    'integrationTokenHelp': 'Узнайте как пользоваться',
 
     // Modals
     'inviteModalTitle': 'Пригласить людей в группу',
@@ -143,17 +230,6 @@ export default {
     'preferencesSessionsCurrentSession': 'Текущий сеанс',
     'preferencesSessionsAuthTime': 'Авторизовано',
     'preferencesSessionsTerminate': 'Завершить',
-    'preferencesSessionsTerminateAll': 'Завершить все сеансы',
-
-    'createGroupModalTitle': 'Создать группу',
-    'createGroupButton': 'Создать группу',
-    'createGroupGroupName': 'Название группы',
-    'createGroupAddMembers': 'Добавить пользователей',
-
-    'addContactModalTitle': 'Добавить контакт',
-    'addContactPhoneNumber': 'Номер телефона',
-    'addContactAdd': 'Добавить',
-    'addContactNotRegistered': 'Данный номер телефона не зарегистрирован в Actor.',
-    'addContactInContacts': 'Этот пользователь уже находится в ваших контактах.'
+    'preferencesSessionsTerminateAll': 'Завершить все сеансы'
   }
 };

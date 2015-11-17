@@ -2,65 +2,80 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import ActorClient from 'utils/ActorClient';
-import { dispatch } from 'dispatcher/ActorAppDispatcher';
+import { dispatch, dispatchAsync } from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes } from 'constants/ActorAppConstants';
+
+import ActorClient from 'utils/ActorClient';
+import RouterContainer from 'utils/RouterContainer';
+
 import MyProfileActionCreators from 'actions/MyProfileActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
 import ContactActionCreators from 'actions/ContactActionCreators';
 
 const LoginActionCreators = {
-  requestSms: (phone) => {
-    dispatch(ActionTypes.AUTH_SMS_REQUEST);
-    ActorClient.requestSms(
-      phone,
-      () => {
-        dispatch(ActionTypes.AUTH_SMS_REQUEST_SUCCESS);
-      },
-      (error, message, canTryAgain) => {
-        dispatch(ActionTypes.AUTH_SMS_REQUEST_FAILURE, { error, message, canTryAgain });
+  changeLogin(login) {
+    dispatch(ActionTypes.AUTH_CHANGE_LOGIN, { login })
+  },
+  changeCode(code) {
+    dispatch(ActionTypes.AUTH_CHANGE_CODE, { code })
+  },
+  changeName(name) {
+    dispatch(ActionTypes.AUTH_CHANGE_NAME, { name })
+  },
+
+  requestSms(phone) {
+    dispatchAsync(ActorClient.requestSms(phone), {
+      request: ActionTypes.AUTH_CODE_REQUEST,
+      success: ActionTypes.AUTH_CODE_REQUEST_SUCCESS,
+      failure: ActionTypes.AUTH_CODE_REQUEST_FAILURE
+    }, { phone });
+  },
+  sendCode(code) {
+    const sendCodePromise = () => dispatchAsync(ActorClient.sendCode(code), {
+      request: ActionTypes.AUTH_CODE_SEND,
+      success: ActionTypes.AUTH_CODE_SEND_SUCCESS,
+      failure: ActionTypes.AUTH_CODE_SEND_FAILURE
+    }, { code });
+
+    const handleState = (state) => {
+      switch (state) {
+        case 'signup':
+          this.startSignup();
+          break;
+        case 'logged_in':
+          this.setLoggedIn({redirect: true});
+          break;
+        default:
+          console.error('Unsupported state', state);
       }
-    )
+    };
+
+    sendCodePromise()
+      .then(handleState);
   },
 
-  sendCode: (router, code) => {
-    dispatch(ActionTypes.SEND_CODE);
-    ActorClient.sendCode(code,
-      (state) => {
-        switch (state) {
-          case 'signup':
-            dispatch(ActionTypes.SEND_CODE_SUCCESS, { needSignup: true });
-            break;
-          case 'logged_in':
-            dispatch(ActionTypes.SEND_CODE_SUCCESS, { needSignup: false });
-            LoginActionCreators.setLoggedIn(router, {redirect: true});
-            break;
-          default:
-            console.error('Unsupported state', state);
-        }
-      },
-      (error) => {
-        dispatch(ActionTypes.SEND_CODE_FAILURE, { error });
-      });
+  startSignup() {
+    dispatch(ActionTypes.AUTH_SIGNUP_START);
+  },
+  sendSignup(name) {
+    const signUpPromise = () => dispatchAsync(ActorClient.signUp(name), {
+      request: ActionTypes.AUTH_SIGNUP,
+      success: ActionTypes.AUTH_SIGNUP_SUCCESS,
+      failure: ActionTypes.AUTH_SIGNUP_FAILURE
+    }, { name });
+
+    const setLoggedIn = () => this.setLoggedIn({redirect: true});
+
+    signUpPromise()
+      .then(setLoggedIn)
   },
 
-  sendSignup: (router, name) => {
-    dispatch(ActionTypes.SEND_SIGNUP);
-    ActorClient.signUp(name,
-      () => {
-        dispatch(ActionTypes.SEND_SIGNUP_SUCCESS);
-        LoginActionCreators.setLoggedIn(router, {redirect: true});
-      },
-      (error) => {
-        dispatch(ActionTypes.SEND_SIGNUP_FAILURE, { error });
-      });
-  },
-
-  setLoggedIn: (router, opts) => {
+  setLoggedIn: (opts) => {
     opts = opts || {};
 
     if (opts.redirect) {
-      var nextPath = router.getCurrentQuery().nextPath;
+      const router = RouterContainer.get();
+      const nextPath = router.getCurrentQuery().nextPath;
 
       if (nextPath) {
         router.replaceWith(nextPath);
@@ -69,20 +84,24 @@ const LoginActionCreators = {
       }
     }
 
-    dispatch(ActionTypes.SET_LOGGED_IN);
+    dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+
     ActorClient.bindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+
     ActorClient.bindDialogs(DialogActionCreators.setDialogs);
+
     ActorClient.bindContacts(ContactActionCreators.setContacts);
   },
-
   setLoggedOut: () => {
-    dispatch(ActionTypes.SET_LOGGED_OUT);
+    dispatch(ActionTypes.AUTH_SET_LOGGED_OUT);
     ActorClient.unbindUser(ActorClient.getUid(), MyProfileActionCreators.onProfileChanged);
+
     ActorClient.unbindDialogs(DialogActionCreators.setDialogs);
+
     ActorClient.unbindContacts(ContactActionCreators.setContacts);
   },
 
-  wrongNumberClick: () => dispatch(ActionTypes.AUTH_WRONG_NUMBER_CLICK)
+  restartAuth: () => dispatch(ActionTypes.AUTH_RESTART)
 };
 
 export default LoginActionCreators;
