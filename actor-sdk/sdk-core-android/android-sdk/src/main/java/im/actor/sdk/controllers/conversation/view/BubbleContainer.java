@@ -16,6 +16,7 @@ import im.actor.sdk.util.Strings;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.util.Fonts;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.sdk.view.avatar.AvatarViewWithOnline;
 
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.users;
@@ -31,7 +32,7 @@ public class BubbleContainer extends ViewGroup {
     private boolean showAvatar;
     private TextView dateDiv;
     private TextView unreadDiv;
-    private AvatarView avatarView;
+    private AvatarViewWithOnline avatarView;
     private int mode = MODE_FULL;
     private boolean isSelected;
     private OnAvatarClickListener onClickListener;
@@ -101,7 +102,7 @@ public class BubbleContainer extends ViewGroup {
         addView(unreadDiv, new MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
         // AVATAR
-        avatarView = new AvatarView(getContext());
+        avatarView = new AvatarViewWithOnline(getContext());
         avatarView.init(Screen.dp(42), 12);
         addView(avatarView, new MarginLayoutParams(Screen.dp(42), Screen.dp(42)));
     }
@@ -326,5 +327,9 @@ public class BubbleContainer extends ViewGroup {
 
     public interface OnAvatarLongClickListener {
         void onAvatarLongClick(int uid);
+    }
+
+    public void setOnline(boolean online, boolean isBot) {
+        avatarView.setOnline(online, isBot);
     }
 }

@@ -151,5 +151,7 @@
     <color name="default_circle_indicator_stroke_color">#FFDDDDDD</color>
     <dimen name="default_circle_indicator_stroke_width">1dp</dimen>
 
+    <color name="conv_offline">@android:color/darker_gray</color>
+    <color name="conv_online">#ff7ea8ef</color>
 
 </resources>
