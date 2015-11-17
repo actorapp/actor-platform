@@ -14,6 +14,9 @@ import im.actor.core.entity.GroupMember;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserPresence;
 import im.actor.core.viewmodel.UserVM;
+import im.actor.runtime.mvvm.ValueModel;
+import im.actor.sdk.ActorSDK;
+import im.actor.sdk.R;
 import im.actor.sdk.view.avatar.AvatarView;
 import im.actor.sdk.view.avatar.CoverAvatarView;
 import im.actor.runtime.mvvm.Value;
@@ -119,6 +122,51 @@ public class ActorBinder {
         });
     }
 
+    public Binding bind(final TextView textView, final UserVM user) {
+        return bind(user.getPresence(), new ValueChangedListener<UserPresence>() {
+            @Override
+            public void onChanged(UserPresence val, Value<UserPresence> Value) {
+                String s = messenger().getFormatter().formatPresence(val, user.getSex());
+                if (s == null) {
+                    s = "";
+                }
+
+                if (val.getState().equals(UserPresence.State.ONLINE)) {
+                    textView.setTextColor(ActorSDK.sharedActor().style.getGroupOnlineColor());
+                    s = "\u25CF".concat(s);
+                } else {
+                    textView.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
+                }
+                textView.setText(s);
+            }
+        });
+    }
+
+
+    public Binding bind(final View v, ValueModel<UserPresence> up) {
+        return bind(up, new ValueChangedListener<UserPresence>() {
+
+            @Override
+            public void onChanged(UserPresence val, Value<UserPresence> valueModel) {
+                if (val.getState().equals(UserPresence.State.ONLINE)) {
+                    v.setVisibility(View.VISIBLE);
+                } else {
+                    v.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    public Binding bind(final OnChangedListener<Boolean> callback, ValueModel<UserPresence> up) {
+        return bind(up, new ValueChangedListener<UserPresence>() {
+
+            @Override
+            public void onChanged(UserPresence val, Value<UserPresence> valueModel) {
+                callback.onChanged(val.getState().equals(UserPresence.State.ONLINE));
+            }
+        });
+    }
+
     public void bind(final TextView textView, final View titleContainer, final GroupVM value) {
         bind(value.getPresence(), value.getMembers(), value.isMember(), new ValueTripleChangedListener<Integer, HashSet<GroupMember>, Boolean>() {
             @Override
@@ -171,9 +219,11 @@ public class ActorBinder {
         });
     }
 
-    public <T> void bind(Value<T> value, ValueChangedListener<T> listener) {
+    public <T> Binding bind(Value<T> value, ValueChangedListener<T> listener) {
         value.subscribe(listener);
-        bindings.add(new Binding(value, listener));
+        Binding b = new Binding(value, listener);
+        bindings.add(b);
+        return b;
     }
 
     public <T> void bind(Value<T> value, boolean notify, ValueChangedListener<T> listener) {
@@ -229,11 +279,16 @@ public class ActorBinder {
         bindings.clear();
     }
 
-    public interface OnChangedListener {
-        void onChanged(String s);
+    public interface OnChangedListener<T> {
+        void onChanged(T val);
     }
 
-    private class Binding {
+    public void unbind(Binding b) {
+        b.unbind();
+        bindings.remove(b);
+    }
+
+    public class Binding {
         private Value model;
         private ValueChangedListener listener;
 
