@@ -100,16 +100,18 @@ final class ActorDelivery()(implicit val system: ActorSystem)
 
   override def read(readerUserId: Int, readerAuthSid: Int, peer: Peer, date: Long): Future[Unit] = {
     val update = UpdateMessageReadByMe(peer.asStruct, date)
+    val pushRules = PushRules(excludeAuthSids = Seq(readerAuthSid))
     for {
       counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
         update = update,
-        pushRules = PushRules(excludeAuthSids = Seq(readerAuthSid))
+        pushRules = pushRules
       )
       _ ← seqUpdatesExt.deliverSingleUpdate(
         userId = readerUserId,
-        update = counterUpdate
+        update = counterUpdate,
+        pushRules = pushRules
       )
     } yield ()
   }
