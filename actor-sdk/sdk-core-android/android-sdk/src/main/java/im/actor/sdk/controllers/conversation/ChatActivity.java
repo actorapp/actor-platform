@@ -49,6 +49,7 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.Intents;
 import im.actor.sdk.controllers.conversation.mentions.MentionsAdapter;
+import im.actor.sdk.controllers.conversation.messages.AudioHolder;
 import im.actor.sdk.controllers.conversation.messages.MessagesFragment;
 import im.actor.sdk.core.audio.VoiceCaptureActor;
 import im.actor.sdk.util.Randoms;
@@ -474,6 +475,7 @@ public class ChatActivity extends ActorEditTextActivity {
         super.onPause();
 
         voiceRecordActor.send(PoisonPill.INSTANCE);
+        AudioHolder.stopPlaying();
         // Saving draft
         messenger().saveDraft(peer, messageEditText.getText().toString());
     }
