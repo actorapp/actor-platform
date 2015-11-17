@@ -1,16 +1,19 @@
 package im.actor.sdk.controllers.conversation.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
 import im.actor.sdk.R;
+import im.actor.sdk.view.BackgroundPreviewView;
 
 public class ChatBackgroundView extends View {
 
     private Drawable background;
+    SharedPreferences shp;
 
     public ChatBackgroundView(Context context) {
         super(context);
@@ -33,8 +36,10 @@ public class ChatBackgroundView extends View {
 
     public void bind() {
         if (background == null) {
-            background = getResources().getDrawable(R.drawable.img_chat_background_default);
+            shp = getContext().getSharedPreferences("wallpaper", Context.MODE_PRIVATE);
+            background = getResources().getDrawable(BackgroundPreviewView.getBackground(shp.getInt("wallpaper", R.drawable.img_chat_background_default)));
         }
+
     }
 
     @Override

@@ -54,6 +54,23 @@ public class BaseFragment extends BinderCompatFragment {
         ViewUtils.showView(view, isAnimated, isSlow);
     }
 
+    public void elevateView(View view) {
+        ViewUtils.elevateView(view);
+    }
+
+    public void elevateView(final View view, boolean isAnimated) {
+        ViewUtils.elevateView(view, isAnimated);
+    }
+
+    public void demoteView(View view) {
+        ViewUtils.demoteView(view);
+    }
+
+    public void demoteView(final View view, boolean isAnimated) {
+        ViewUtils.demoteView(view, isAnimated);
+    }
+
+
     public void onClick(View view, int id, final View.OnClickListener listener) {
         onClick(view.findViewById(id), listener);
     }

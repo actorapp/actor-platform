@@ -3,6 +3,7 @@ package im.actor.sdk.util;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
 
@@ -147,4 +148,43 @@ public class ViewUtils {
 
 
     }
+
+    public static void elevateView(final View view) {
+        elevateView(view, true);
+    }
+
+    public static void elevateView(final View view, boolean isAnimated) {
+        if (view == null) {
+            return;
+        }
+
+
+        ScaleAnimation scaleAnimation = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, (float) 0.5, Animation.RELATIVE_TO_SELF, (float) 0.5);
+        scaleAnimation.setDuration(isAnimated ? 150 : 0);
+        scaleAnimation.setInterpolator(MaterialInterpolator.getInstance());
+        scaleAnimation.setFillAfter(true);
+        view.clearAnimation();
+        view.startAnimation(scaleAnimation);
+
+    }
+
+    public static void demoteView(final View view) {
+        demoteView(view, true);
+    }
+
+    public static void demoteView(final View view, boolean isAnimated) {
+        if (view == null) {
+            return;
+        }
+
+        if (isAnimated) {
+            ScaleAnimation scaleAnimation = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, (float) 0.5, Animation.RELATIVE_TO_SELF, (float) 0.5);
+            scaleAnimation.setDuration(isAnimated ? 150 : 0);
+            scaleAnimation.setInterpolator(MaterialInterpolator.getInstance());
+            scaleAnimation.setFillAfter(true);
+            view.clearAnimation();
+            view.startAnimation(scaleAnimation);
+        }
+    }
+
 }

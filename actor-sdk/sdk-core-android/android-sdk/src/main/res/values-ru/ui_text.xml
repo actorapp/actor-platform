@@ -153,6 +153,7 @@
     <string name="nickname_change">Изменить ник</string>
     <string name="about_user_me">Обо мне</string>
     <string name="about_user">О пользователе</string>
+    <string name="wallpaper">Обои</string>
 
     <!-- Profile controls -->
     <string name="phone_menu_call">Позвонить {0}</string>
