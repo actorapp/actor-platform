@@ -248,7 +248,7 @@
     <string name="group_members_header">Участники</string>
     <string name="group_members_count">{0} из {1}</string>
 
-    <string name="group_admin">админ. группы</string>
+    <string name="group_admin">админ.</string>
 
     <string name="group_created_by">Создан {0}</string>
     <string name="group_created_by_you">Создан Вами</string>
