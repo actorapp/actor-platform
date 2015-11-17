@@ -1,40 +1,25 @@
 'use strict';
 
+import minimist from 'minimist';
+
 import webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
-import webpackConfig from './webpack.config.js';
-import { assign } from 'lodash';
+import webpackDevServer from 'webpack-dev-server';
+import webpackConfigProd from './webpack.config.prod.js';
+import webpackConfigDev from './webpack.config.dev.js';
+
 import gulp from 'gulp';
 import gutil from 'gulp-util';
-import manifest from 'gulp-manifest';
-import shell from 'gulp-shell';
-import minimist from 'minimist';
-//import asar from  'asar';
+import gulpif from 'gulp-if';
 import svgSprite from 'gulp-svg-sprite';
 import image from 'gulp-image';
-import gulpif from 'gulp-if';
-import path from 'path';
 
 const argv = minimist(process.argv.slice(2));
 const isProduction = argv.release || false;
 
 gulp.task('webpack:build', (callback) => {
-  // modify some webpack config options
-  var myConfig = Object.create(webpackConfig);
-  myConfig.plugins = myConfig.plugins.concat(
-    new webpack.DefinePlugin({
-      'process.env': {
-        // This has effect on the react lib size
-        'NODE_ENV': JSON.stringify('production')
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin()
-  );
-
-  // run webpack
-  webpack(myConfig, (err, stats) => {
+  webpack(webpackConfigProd, (err, stats) => {
     if (err) {
-      throw new gutil.PluginError('webpack:build', err);
+      throw new gutil.PluginError('[webpack:build]', err);
     }
     gutil.log('[webpack:build]', stats.toString({
       colors: true
@@ -43,28 +28,8 @@ gulp.task('webpack:build', (callback) => {
   });
 });
 
-gulp.task('webpack-dev-server', () => {
-  // modify some webpack config options
-  assign(webpackConfig, {
-    resolve: {
-      modulesDirectories: ['node_modules'],
-      root: [
-        path.join(__dirname, 'src/app')
-      ]
-    },
-    plugins: [
-      new webpack.ResolverPlugin([
-        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
-      ]),
-      new webpack.optimize.DedupePlugin(),
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin()
-    ]
-  });
-  var myConfig = Object.create(webpackConfig);
-
-  // Start a webpack-dev-server
-  new WebpackDevServer(webpack(myConfig), {
+gulp.task('webpack:dev', () => {
+  new webpackDevServer(webpack(webpackConfigDev), {
     publicPath: '/assets/',
     contentBase: './dist',
     hot: true,
@@ -72,11 +37,11 @@ gulp.task('webpack-dev-server', () => {
     stats: {
       colors: true
     }
-  }).listen(3000, 'localhost', function(err) {
+  }).listen(3000, 'localhost', (err) => {
     if (err) {
-      throw new gutil.PluginError('webpack-dev-server', err);
+      throw new gutil.PluginError('[webpack:dev]', err);
     }
-    gutil.log('[webpack-dev-server]', 'http://localhost:3000');
+    gutil.log('[webpack:dev]', 'http://localhost:3000');
   });
 });
 
@@ -123,7 +88,7 @@ gulp.task('emoji', () => {
     './node_modules/emoji-data/sheet_apple_64.png',
     './node_modules/emoji-data/sheet_emojione_64.png',
     './node_modules/emoji-data/sheet_google_64.png',
-    './node_modules/emoji-data/sheet_twitter_364.png'
+    './node_modules/emoji-data/sheet_twitter_64.png'
   ], {base: './node_modules/emoji-data'})
     .pipe(gulpif(isProduction, image()))
     .pipe(gulp.dest('./dist/assets/img/emoji'));
@@ -140,34 +105,14 @@ gulp.task('locale-data', () => {
 });
 
 gulp.task('lib', () => {
-  gulp.src([
-    '../../actor-sdk/sdk-core/runtime/runtime-js/src/main/javascript/interval.js'
-  ])
+  gulp.src(['node_modules/actor-js/interval.js'])
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
-  gulp.src(['./dist/**/*'])
-    .pipe(manifest({
-      hash: true,
-      network: ['http://*', 'https://*', '*'],
-      filename: 'app.appcache',
-      exclude: ['assets/*.map']
-    }))
-    .pipe(gulp.dest('./dist/'));
-});
+gulp.task('static', ['html', 'assets', 'push', 'lib']);
 
-const staticTasksBase = ['html', 'assets', 'push'];
-const staticTasks = staticTasksBase.concat(['lib']);
-const staticTasksDev = staticTasksBase.concat(['lib']);
-
-gulp.task('static', staticTasks);
-gulp.task('static:dev', staticTasksDev);
-
-gulp.task('dev', ['static:dev', 'webpack-dev-server']);
+gulp.task('dev', ['static', 'webpack:dev']);
 
 gulp.task('build', ['static', 'webpack:build']);
-
-gulp.task('build:gwt', ['static', 'webpack:build']);
 
 gulp.task('dist', ['build']);

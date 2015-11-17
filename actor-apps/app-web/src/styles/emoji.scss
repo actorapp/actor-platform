@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-$emoji-dropdown-width: 314px;
+$emoji-dropdown-width: 328px;
 
 .emoji-outer {
   line-height: $message-line-height;
@@ -24,8 +24,9 @@ $emoji-dropdown-width: 314px;
   text-indent: -9999px;
 }
 .emoji-sizer {
+  box-sizing: border-box;
   margin: 0;
-  padding: 0;
+  padding: 1px;
 
   background-size: 100%;
 }
@@ -39,7 +40,7 @@ $emoji-dropdown-width: 314px;
 
   &__wrapper {
     position: absolute;
-    z-index: 15;
+    z-index: 1500;
     right: 1px;
     bottom: 0;
 
@@ -136,8 +137,9 @@ $emoji-dropdown-width: 314px;
       }
       a {
         line-height: 1px;
-        float: left;
+
         display: block;
+        float: left;
 
         padding: 6px;
 
@@ -151,7 +153,6 @@ $emoji-dropdown-width: 314px;
           transform: scale(1.5);
         }
       }
-
     }
   }
   &--opened {

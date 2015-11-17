@@ -5,15 +5,18 @@
 import _ from 'lodash';
 
 import React, { Component } from 'react';
-import { Container } from 'flux/utils';
+import ActorClient from 'utils/ActorClient';
 
-import { MessageContentTypes } from 'constants/ActorAppConstants';
+import { MessageContentTypes, PeerTypes } from 'constants/ActorAppConstants';
 
 import MessageActionCreators from 'actions/MessageActionCreators';
 
 import VisibilityStore from 'stores/VisibilityStore';
+import GroupStore from 'stores/GroupStore';
+import DialogStore from 'stores/DialogStore';
 
 import MessageItem from './messages/MessageItem.react';
+import Welcome from './messages/Welcome.react';
 
 let _delayed = [];
 
@@ -27,32 +30,54 @@ let flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
 let lastMessageDate = null,
     lastMessageSenderId = null;
 
+const isOnlyOneDay = (messages) => {
+  let _isOnlyOneDay = true;
+  if (messages.length > 0) {
+    let lastMessageDate = new Date(messages[0].fullDate);
+    _.forEach(messages, (message) => {
+      let currentMessageDate = new Date(message.fullDate);
+
+      if (lastMessageDate.getDate() !== currentMessageDate.getDate()) {
+        _isOnlyOneDay = false;
+      }
+      lastMessageDate = message.fullDate
+    });
+  }
+  return _isOnlyOneDay;
+};
+
 class MessagesSection extends Component {
   static propTypes = {
     messages: React.PropTypes.array.isRequired,
     peer: React.PropTypes.object.isRequired
   };
 
-  static getStores = () => [VisibilityStore];
-  static calculateState = () => {};
-
   constructor(props) {
     super(props);
+
+    this.state = {
+      isOnlyOneDay: isOnlyOneDay(props.messages)
+    };
+
+    lastMessageDate = new Date();
+
     VisibilityStore.addListener(this.onAppVisibilityChange);
   }
 
-  getMessagesListItem = (message, index) => {
-    const date = message.fullDate;//new Date(message.fullDate);
+  componentWillReceiveProps(nextProps) {
+    this.setState({isOnlyOneDay: isOnlyOneDay(nextProps.messages)});
+    lastMessageDate = new Date();
+  }
 
-    if (lastMessageDate === null) {
-      lastMessageDate = new Date(message.fullDate);
-    }
+  getMessagesListItem = (message, index) => {
+    const { isOnlyOneDay } = this.state;
+    const date = message.fullDate;
 
     const isFirstMessage = index === 0;
     const isNewDay = date.getDate() !== lastMessageDate.getDate();
 
     let dateDivider = null;
-    if (isNewDay) {
+    if (isNewDay && !isOnlyOneDay) {
       const dateDividerFormatOptions = { month: 'long', day: 'numeric' };
       const dateDividerContent = new Intl.DateTimeFormat(undefined, dateDividerFormatOptions).format(date);
       dateDivider = <li className="date-divider">{dateDividerContent}</li>
@@ -68,7 +93,7 @@ class MessagesSection extends Component {
                    peer={this.props.peer}/>
     );
 
-    lastMessageDate = date; //new Date(message.fullDate);
+    lastMessageDate = date;
     lastMessageSenderId = message.sender.peer.id;
 
     return [dateDivider, messageItem];
@@ -92,15 +117,39 @@ class MessagesSection extends Component {
   };
 
   render() {
-    const { messages } = this.props;
+    const { messages, peer } = this.props;
     const messagesList = _.map(messages, this.getMessagesListItem);
+
+    let isMember = true;
+    if (peer.type === PeerTypes.GROUP) {
+      const group = GroupStore.getGroup(peer.id);
+      isMember = DialogStore.isGroupMember(group);
+    }
+
+    const messagesLoading = (
+      <li className="message message--loading">
+        <div className="message__body col-xs text-center">
+          Loading messages from history
+        </div>
+      </li>
+    );
 
     return (
       <ul className="messages__list">
+        {
+          isMember && messagesList.length < 30
+            ? <Welcome peer={peer}/>
+            : null
+        }
+        {
+          messagesList.length >= 30
+            ? messagesLoading
+            : null
+        }
         {messagesList}
       </ul>
     );
   }
 }
 
-export default Container.create(MessagesSection);
+export default MessagesSection;

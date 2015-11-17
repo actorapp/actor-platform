@@ -10,7 +10,6 @@ import { ActionTypes } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
 
 import ContactActionCreators from 'actions/ContactActionCreators';
-import LoginStore from 'stores/LoginStore';
 
 const CONTACTS_CHANGE_EVENT = 'contacts_change';
 

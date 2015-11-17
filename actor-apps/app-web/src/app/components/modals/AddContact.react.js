@@ -4,12 +4,13 @@
 
 import _ from 'lodash';
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import Modal from 'react-modal';
-import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
 
+// TODO: get rid of the material-ui
 import { Styles, TextField } from 'material-ui';
 
 import AddContactStore from 'stores/AddContactStore';
@@ -22,20 +23,20 @@ import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 
-const getStateFromStores = () => {
-  return {
-    isOpen: AddContactStore.isModalOpen(),
-    message: AddContactStore.getMessage()
-  };
-};
-
-const {addons: { PureRenderMixin }} = addons;
-
 @ReactMixin.decorate(IntlMixin)
-@ReactMixin.decorate(PureRenderMixin)
-class AddContact extends React.Component {
+class AddContact extends Component {
+  static getStores = () => [AddContactStore];
+
+  static calculateState() {
+    return {
+      isOpen: AddContactStore.isModalOpen(),
+      message: AddContactStore.getMessage(),
+      query: AddContactStore.getQuery()
+    };
+  }
+
   static childContextTypes = {
-    muiTheme: React.PropTypes.object
+    muiTheme: PropTypes.object
   };
 
   getChildContext() {
@@ -44,13 +45,7 @@ class AddContact extends React.Component {
     };
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = _.assign({
-      phone: ''
-    }, getStateFromStores());
-
+  componentWillMount() {
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
       textField: {
@@ -61,23 +56,37 @@ class AddContact extends React.Component {
       }
     });
 
-    AddContactStore.addChangeListener(this.onChange);
+    document.addEventListener('keydown', this.handleKeyDown, false);
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.refs.query.focus();
+    }, 10)
   }
 
   componentWillUnmount() {
-    AddContactStore.removeChangeListener(this.onChange);
+    document.removeEventListener('keydown', this.handleKeyDown, false);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.isOpen && !this.state.isOpen) {
-      document.addEventListener('keydown', this.onKeyDown, false);
-    } else if (!nextState.isOpen && this.state.isOpen) {
-      document.removeEventListener('keydown', this.onKeyDown, false);
+  handleClose = () => AddContactActionCreators.close();
+
+  handleQueryChange = event => this.setState({query: event.target.value});
+
+  addContact = () => AddContactActionCreators.findUsers(this.state.query);
+
+  handleKeyDown = (event) => {
+    if (event.keyCode === KeyCodes.ESC) {
+      event.preventDefault();
+      this.handleClose();
+    } else if (event.keyCode === KeyCodes.ENTER) {
+      event.preventDefault();
+      this.addContact()
     }
-  }
+  };
 
   render() {
-    const { isOpen, message, phone } = this.state;
+    const { isOpen, message, query } = this.state;
 
     const messageClassName = classNames({
       'error-message': true,
@@ -87,61 +96,46 @@ class AddContact extends React.Component {
     let messageText;
     switch (message) {
       case AddContactMessages.PHONE_NOT_REGISTERED:
-        messageText = this.getIntlMessage('addContactNotRegistered');
+        messageText = this.getIntlMessage('modal.addContact.error.notRegistered');
         break;
       case AddContactMessages.ALREADY_HAVE:
-        messageText = this.getIntlMessage('addContactInContacts');
+        messageText = this.getIntlMessage('modal.addContact.error.inContacts');
         break;
       default:
     }
 
-    if (isOpen) {
-      return (
-        <Modal className="modal-new modal-new--add-contact"
-               closeTimeoutMS={150}
-               isOpen={isOpen}
-               style={{width: 320}}>
+    return (
+      <Modal className="modal-new modal-new--add-contact"
+             closeTimeoutMS={150}
+             isOpen={isOpen}
+             style={{width: 320}}>
 
-          <header className="modal-new__header">
-            <a className="modal-new__header__close modal-new__header__icon material-icons"
-               onClick={this.onClose}>clear</a>
-            <h3 className="modal-new__header__title">{this.getIntlMessage('addContactModalTitle')}</h3>
-          </header>
+        <header className="modal-new__header">
+          <h3 className="modal-new__header__title">{this.getIntlMessage('modal.addContact.title')}</h3>
+          <a className="modal-new__header__close modal-new__header__icon material-icons pull-right"
+             onClick={this.handleClose}>clear</a>
+        </header>
 
-          <div className="modal-new__body">
-            <TextField className="login__form__input"
-                       floatingLabelText={this.getIntlMessage('addContactPhoneNumber')}
-                       fullWidth
-                       onChange={this.onPhoneChange}
-                       value={phone}/>
-          </div>
+        <div className="modal-new__body">
+          <TextField className="login__form__input"
+                     floatingLabelText={this.getIntlMessage('modal.addContact.query')}
+                     fullWidth
+                     onChange={this.handleQueryChange}
+                     ref="query"
+                     value={query}/>
+        </div>
 
-          <span className={messageClassName}>{messageText}</span>
+        <span className={messageClassName}>{messageText}</span>
 
-          <footer className="modal-new__footer text-right">
-            <button className="button button--lightblue" onClick={this.onAddContact} type="submit">
-              {this.getIntlMessage('addContactAdd')}
-            </button>
-          </footer>
+        <footer className="modal-new__footer text-right">
+          <button className="button button--lightblue" onClick={this.addContact} type="submit">
+            {this.getIntlMessage('button.add')}
+          </button>
+        </footer>
 
-        </Modal>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  onChange = () => this.setState(getStateFromStores());
-  onClose = () => AddContactActionCreators.closeModal();
-  onPhoneChange = event => this.setState({phone: event.target.value});
-  onAddContact = () => AddContactActionCreators.findUsers(this.state.phone);
-
-  onKeyDown = (event) => {
-    if (event.keyCode === KeyCodes.ESC) {
-      event.preventDefault();
-      this.onClose();
-    }
+      </Modal>
+    );
   }
 }
 
-export default AddContact;
+export default Container.create(AddContact);

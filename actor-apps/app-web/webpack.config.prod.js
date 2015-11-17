@@ -1,26 +1,11 @@
-import minimist from 'minimist';
 import path from 'path';
 import webpack from 'webpack';
 
-const argv = minimist(process.argv.slice(2));
-
-const DEBUG = !argv.release;
-
 export default {
-  cache: DEBUG,
-  debug: DEBUG,
-  devtool: DEBUG ? 'inline-source-map' : 'source-map',
-  hotComponents: DEBUG,
+  devtool: 'source-map',
   entry: {
-    app: DEBUG ? [
-      'webpack-dev-server/client?http://localhost:3000',
-      'webpack/hot/dev-server',
-      './src/app/index.js'
-    ] : ['./src/app/index.js'],
-    styles: DEBUG ? [
-      'webpack/hot/dev-server',
-      './src/styles'
-    ] : ['./src/styles']
+    app: ['./src/app/index.js'],
+    styles: ['./src/styles']
   },
   output: {
     path: path.join(__dirname, 'dist/assets'),
@@ -30,15 +15,12 @@ export default {
     sourceMapFilename: '[name].map'
   },
   resolve: {
-    packageAlias: false,
     modulesDirectories: ['node_modules'],
     root: [
       path.join(__dirname, 'src/app')
     ]
   },
   module: {
-    noParse: [/autoit.js/],
-
     preLoaders: [
       {
         test: /\.js$/,
@@ -52,7 +34,6 @@ export default {
       {
         test: /\.(scss|css)$/,
         loaders: [
-          'react-hot',
           'style',
           'css',
           'autoprefixer?browsers=last 3 versions',
@@ -64,7 +45,6 @@ export default {
       {
         test: /\.js$/,
         loaders: [
-          'react-hot',
           'babel?optional[]=es7.classProperties' +
             '&optional[]=es7.decorators'
         ],
@@ -86,10 +66,21 @@ export default {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
     new webpack.ResolverPlugin([
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main'])
     ]),
-    new webpack.optimize.DedupePlugin()
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        warnings: false
+      }
+    })
   ],
   eslint: {
     configFile: './.eslintrc'

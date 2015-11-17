@@ -19,22 +19,26 @@ import { KeyCodes } from 'constants/ActorAppConstants';
 
 import MessageActionCreators from 'actions/MessageActionCreators';
 import ComposeActionCreators from 'actions/ComposeActionCreators';
+import AttachmentsActionCreators from 'actions/AttachmentsActionCreators';
 
 import GroupStore from 'stores/GroupStore';
 import PreferencesStore from 'stores/PreferencesStore';
 import ComposeStore from 'stores/ComposeStore';
+import AttachmentStore from 'stores/AttachmentStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import MentionDropdown from 'components/common/MentionDropdown.react';
 import EmojiDropdown from 'components/common/EmojiDropdown.react';
 import DropZone from 'components/common/DropZone.react';
+import SendAttachment from 'components/modals/SendAttachment';
 
 let getStateFromStores = () => {
   return {
     text: ComposeStore.getText(),
     profile: ActorClient.getUser(ActorClient.getUid()),
     sendByEnter: PreferencesStore.isSendByEnterEnabled(),
-    mentions: ComposeStore.getMentions()
+    mentions: ComposeStore.getMentions(),
+    isSendAttachmentOpen: AttachmentStore.isOpen()
   };
 };
 
@@ -54,15 +58,15 @@ class ComposeSection extends React.Component {
       isMardownHintShow: false
     }, getStateFromStores());
 
-    GroupStore.addChangeListener(this.onChange);
     ComposeStore.addChangeListener(this.onChange);
+    GroupStore.addListener(this.onChange);
     PreferencesStore.addListener(this.onChange);
+    AttachmentStore.addListener(this.onChange);
 
     window.addEventListener('focus', this.setFocus);
   }
 
   componentWillUnmount() {
-    GroupStore.removeChangeListener(this.onChange);
     ComposeStore.removeChangeListener(this.onChange);
 
     window.removeEventListener('focus', this.setFocus);
@@ -120,35 +124,8 @@ class ComposeSection extends React.Component {
     ComposeActionCreators.cleanText();
   };
 
-  onSendFileClick = () => {
-    const fileInput = React.findDOMNode(this.refs.composeFileInput);
-    fileInput.setAttribute('multiple', true);
-    fileInput.click();
-  };
-
-  onSendPhotoClick = () => {
-    const photoInput = React.findDOMNode(this.refs.composePhotoInput);
-    photoInput.setAttribute('multiple', true);
-    photoInput.accept = 'image/jpeg,image/png';
-    photoInput.click();
-  };
-
-  onFileInputChange = () => {
-    const { peer } = this.props;
-    const fileInput = React.findDOMNode(this.refs.composeFileInput);
-    forEach(fileInput.files, (file) => MessageActionCreators.sendFileMessage(peer, file));
-    this.resetSendFileForm();
-  };
-
-  onPhotoInputChange = () => {
-    const { peer } = this.props;
-    const photoInput = React.findDOMNode(this.refs.composePhotoInput);
-    forEach(photoInput.files, (photo) => MessageActionCreators.sendPhotoMessage(peer, photo));
-    this.resetSendFileForm();
-  };
-
-  resetSendFileForm = () => {
-    const form = React.findDOMNode(this.refs.sendFileForm);
+  resetAttachmentForm = () => {
+    const form = React.findDOMNode(this.refs.attachmentForm);
     form.reset();
   };
 
@@ -195,19 +172,33 @@ class ComposeSection extends React.Component {
   setFocus = () => React.findDOMNode(this.refs.area).focus();
 
   handleDrop = (files) => {
-    const { peer } = this.props;
+    let attachments = [];
 
-    forEach(files, (file) => {
-      if (file.type === 'image/jpeg') {
-        MessageActionCreators.sendPhotoMessage(peer, file);
-      } else {
-        MessageActionCreators.sendFileMessage(peer, file);
-      }
-    });
+    forEach(files, (file) => attachments.push(file));
+
+    if (attachments.length > 0) {
+      AttachmentsActionCreators.show(attachments);
+    }
+  };
+
+  handleAttachmentClick = () => {
+    const attachmentInputNode = React.findDOMNode(this.refs.attachment);
+    attachmentInputNode.setAttribute('multiple', true);
+    attachmentInputNode.click();
+  };
+
+  handleComposeAttachmentChange = () => {
+    const attachmentInputNode = React.findDOMNode(this.refs.attachment);
+    let attachments = [];
+
+    forEach(attachmentInputNode.files, (file) => attachments.push(file));
+
+    AttachmentsActionCreators.show(attachments);
+    this.resetAttachmentForm();
   };
 
   render() {
-    const { text, profile, mentions, isEmojiDropdownShow, isMardownHintShow } = this.state;
+    const { text, profile, mentions, isEmojiDropdownShow, isMardownHintShow, isSendAttachmentOpen } = this.state;
 
     const emojiOpenerClassName = classnames('emoji-opener material-icons', {
       'emoji-opener--active': isEmojiDropdownShow
@@ -226,6 +217,7 @@ class ComposeSection extends React.Component {
         <EmojiDropdown isOpen={isEmojiDropdownShow}
                        onSelect={this.onEmojiDropdownSelect}
                        onClose={this.onEmojiDropdownClose}/>
+
         <i className={emojiOpenerClassName}
            onClick={this.onEmojiShowClick}>insert_emoticon</i>
 
@@ -248,24 +240,25 @@ class ComposeSection extends React.Component {
                   value={text}
                   ref="area"/>
 
-        <DropZone onDropComplete={this.handleDrop}>Drop your files here.</DropZone>
+        <DropZone onDropComplete={this.handleDrop}>{this.getIntlMessage('compose.dropzone')}</DropZone>
 
         <footer className="compose__footer row">
-          <button className="button attachment" onClick={this.onSendFileClick}>
-            <i className="material-icons">attachment</i> {this.getIntlMessage('compose.sendFile')}
+          <button className="button attachment" onClick={this.handleAttachmentClick}>
+            <i className="material-icons">attachment</i> {this.getIntlMessage('compose.attach')}
           </button>
-          <button className="button attachment" onClick={this.onSendPhotoClick}>
-            <i className="material-icons">photo_camera</i> {this.getIntlMessage('compose.sendPhoto')}
+          <span className="col-xs"/>
+          <button className="button button--lightblue" onClick={this.sendTextMessage}>
+            {this.getIntlMessage('compose.send')}
           </button>
-          <span className="col-xs"></span>
-          <button className="button button--lightblue"
-                  onClick={this.sendTextMessage}>{this.getIntlMessage('compose.send')}</button>
         </footer>
 
-        <form className="compose__hidden" ref="sendFileForm">
-          <input ref="composeFileInput" onChange={this.onFileInputChange} type="file"/>
-          <input ref="composePhotoInput" onChange={this.onPhotoInputChange} type="file"/>
+        <form className="compose__hidden" ref="attachmentForm">
+          <input ref="attachment" onChange={this.handleComposeAttachmentChange} type="file"/>
         </form>
+
+        {/* Attachment modal */}
+        {isSendAttachmentOpen ? <SendAttachment/> : null}
+
       </section>
     );
   }

@@ -9,21 +9,23 @@ import portuguese from './pt-BR';
 import chinese from './zh-CN';
 
 let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
+
 if (language === 'zh-cn') {
   language = 'zh'
 }
 
 // Intl polyfill
 if (!global.Intl) {
+  require('intl');
+
   const request = new XMLHttpRequest();
   const url = window.location.href;
   const arr = url.split('/');
   const localeDataPath = arr[0] + '//' + arr[2] + '/assets/locale-data/' + language + '.json';
 
-  require('intl');
-
   function addLocaleData() {
-    IntlPolyfill.__addLocaleData(JSON.parse(this.response));
+    const localeData = JSON.parse(this.response);
+    IntlPolyfill.__addLocaleData(localeData);
   }
 
   request.addEventListener('load', addLocaleData);
@@ -40,6 +42,6 @@ const languageData = {
   'zh': chinese
 };
 
-const intlData = languageData[language] || languageData[language.split('-')[0]] || languageData['en'];
+export const intlData = languageData[language] || languageData[language.split('-')[0]] || languageData['en'];
 
 export default { intlData };

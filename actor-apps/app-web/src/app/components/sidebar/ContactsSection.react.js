@@ -34,7 +34,7 @@ class ContactsSection extends React.Component {
   }
 
   componentWillUnmount() {
-    ContactActionCreators.hideContactList();
+    ContactActionCreators.close();
     ContactStore.removeChangeListener(this.onChange);
     AddContactStore.removeChangeListener(this.onChange);
   }
@@ -44,7 +44,7 @@ class ContactsSection extends React.Component {
 
     this.state = getStateFromStores();
 
-    ContactActionCreators.showContactList();
+    ContactActionCreators.open();
     ContactStore.addChangeListener(this.onChange);
     AddContactStore.addChangeListener(this.onChange);
 

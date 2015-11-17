@@ -14,11 +14,12 @@ import { preloadEmojiSheet } from 'utils/EmojiUtils'
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import VisibilityActionCreators from 'actions/VisibilityActionCreators';
-import FastSwitcherActionCreators from 'actions/FastSwitcherActionCreators';
+import QuickSearchActionCreators from 'actions/QuickSearchActionCreators';
 
 import SidebarSection from 'components/SidebarSection.react';
 import DialogSection from 'components/DialogSection.react';
 import Favicon from 'components/common/Favicon.react';
+import ModalsWrapper from 'components/modals/ModalsWrapper.react';
 
 class Main extends Component {
   static contextTypes = {
@@ -34,6 +35,8 @@ class Main extends Component {
 
     const { params } = props;
     const peer = PeerUtils.stringToPeer(params.id);
+
+    preloadEmojiSheet();
 
     document.addEventListener('visibilitychange', this.onVisibilityChange);
     document.addEventListener('keydown', this.onKeyDown, false);
@@ -73,7 +76,7 @@ class Main extends Component {
 
   onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.K && event.metaKey) {
-      FastSwitcherActionCreators.show();
+      QuickSearchActionCreators.show();
     }
   };
 
@@ -86,6 +89,8 @@ class Main extends Component {
         <Favicon/>
         <SidebarSection selectedPeer={peer}/>
         <DialogSection peer={peer}/>
+
+        <ModalsWrapper/>
       </div>
     );
   }

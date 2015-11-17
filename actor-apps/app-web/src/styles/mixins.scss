@@ -35,3 +35,8 @@
   white-space: nowrap;
 }
 
+@mixin no-mp() {
+  margin: 0;
+  padding: 0;
+}
+

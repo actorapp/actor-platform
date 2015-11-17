@@ -4,7 +4,8 @@
 
 import _ from 'lodash';
 
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import { Container } from 'flux/utils';
 import classnames from 'classnames';
 import ReactMixin from 'react-mixin';
 import { IntlMixin } from 'react-intl';
@@ -13,6 +14,7 @@ import { Styles, TextField } from 'material-ui';
 import { AuthSteps } from 'constants/ActorAppConstants';
 
 import LoginActionCreators from 'actions/LoginActionCreators';
+
 import LoginStore from 'stores/LoginStore';
 
 import ActorTheme from 'constants/ActorTheme';
@@ -31,24 +33,55 @@ let getStateFromStores = function () {
 };
 
 @ReactMixin.decorate(IntlMixin)
-class Login extends React.Component {
+class Login extends Component {
   static contextTypes = {
-    router: React.PropTypes.func
+    router: PropTypes.func
+  };
+
+  static propTypes = {
+    query: PropTypes.object
   };
 
   static childContextTypes = {
-    muiTheme: React.PropTypes.object
+    muiTheme: PropTypes.object
   };
 
   getChildContext() {
     return {
       muiTheme: ThemeManager.getCurrentTheme()
-    };
+    }
+  };
+
+  static getStores() {
+    return [LoginStore];
   }
 
-  componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
+  static calculateState() {
+    return {
+      login: LoginStore.getLogin(),
+      code: LoginStore.getCode(),
+      name: LoginStore.getName(),
+      step: LoginStore.getStep(),
+      errors: LoginStore.getErrors(),
+      isCodeRequested: LoginStore.isCodeRequested(),
+      isCodeSended: LoginStore.isCodeSended(),
+      isSignupStarted: LoginStore.isSignupStarted()
+    }
+  };
+
+  componentWillMount() {
+    const { query } = this.props;
+
+    ThemeManager.setTheme(ActorTheme);
   }
+
+  //componentWillUnmount() {
+  //  if (LoginStore.isLoggedIn()) {
+  //    setTimeout(() => {
+  //      this.context.router.replaceWith('/')
+  //    }, 0);
+  //  }
+  //}
 
   componentDidMount() {
     this.handleFocus();
@@ -58,80 +91,69 @@ class Login extends React.Component {
     this.handleFocus();
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = _.assign({
-      phone: '',
-      name: '',
-      code: ''
-    }, getStateFromStores());
-
-    ThemeManager.setTheme(ActorTheme);
-
-    if (LoginStore.isLoggedIn()) {
-      window.setTimeout(() => this.context.router.replaceWith('/'), 0);
-    } else {
-      LoginStore.addChangeListener(this.onChange);
-    }
-
-  }
-
-  onChange = () => this.setState(getStateFromStores());
-  onPhoneChange = event => this.setState({phone: event.target.value});
-  onCodeChange = event => this.setState({code: event.target.value});
-  onNameChange = event => this.setState({name: event.target.value});
-
-  onRequestSms = event => {
+  // From change handlers
+  onLoginChange = event => {
     event.preventDefault();
-    LoginActionCreators.requestSms(this.state.phone);
+    LoginActionCreators.changeLogin(event.target.value);
+  };
+  onCodeChange = event => {
+    event.preventDefault();
+    LoginActionCreators.changeCode(event.target.value);
+  };
+  onNameChange = event => {
+    event.preventDefault();
+    LoginActionCreators.changeName(event.target.value);
   };
 
+  // Form submit handlers
+  onRequestCode = event => {
+    event.preventDefault();
+    LoginActionCreators.requestSms(this.state.login);
+  };
   onSendCode = event => {
     event.preventDefault();
-    LoginActionCreators.sendCode(this.context.router, this.state.code);
+    LoginActionCreators.sendCode(this.state.code);
   };
-
   onSignupRequested = event => {
     event.preventDefault();
-    LoginActionCreators.sendSignup(this.context.router, this.state.name);
+    LoginActionCreators.sendSignup(this.state.name);
   };
 
-  onWrongNumberClick = event => {
+  handleRestartAuthClick = event => {
     event.preventDefault();
-    LoginActionCreators.wrongNumberClick();
+    LoginActionCreators.restartAuth();
   };
-
 
   handleFocus = () => {
-    switch (this.state.step) {
-      case AuthSteps.PHONE_WAIT:
-        this.refs.phone.focus();
+    const { step } = this.state;
+
+    switch (step) {
+      case AuthSteps.LOGIN_WAIT:
+        this.refs.login.focus();
         break;
       case AuthSteps.CODE_WAIT:
         this.refs.code.focus();
         break;
-      case AuthSteps.SIGNUP_NAME_WAIT:
+      case AuthSteps.NAME_WAIT:
         this.refs.name.focus();
         break;
       default:
-        return;
     }
   };
 
   render() {
-    const { smsRequested, codeSended, signupStarted } = this.state;
+    const { step, errors, login, code, name, isCodeRequested, isCodeSended, isSignupStarted } = this.state;
 
     let requestFormClassName = classnames('login__form', 'login__form--request', {
-      'login__form--done': this.state.step > AuthSteps.PHONE_WAIT,
-      'login__form--active': this.state.step === AuthSteps.PHONE_WAIT
+      'login__form--active': step === AuthSteps.LOGIN_WAIT,
+      'login__form--done': step !== AuthSteps.LOGIN_WAIT && isCodeRequested
     });
     let checkFormClassName = classnames('login__form', 'login__form--check', {
-      'login__form--done': this.state.step > AuthSteps.CODE_WAIT,
-      'login__form--active': this.state.step === AuthSteps.CODE_WAIT
+      'login__form--active': step === AuthSteps.CODE_WAIT && isCodeRequested,
+      'login__form--done': step !== AuthSteps.CODE_WAIT && isCodeSended
     });
     let signupFormClassName = classnames('login__form', 'login__form--signup', {
-      'login__form--active': this.state.step === AuthSteps.SIGNUP_NAME_WAIT
+      'login__form--active': step === AuthSteps.NAME_WAIT
     });
 
     const spinner = (
@@ -139,9 +161,6 @@ class Login extends React.Component {
         <div/><div/><div/><div/><div/><div/><div/><div/><div/><div/><div/><div/>
       </div>
     );
-    const phoneWaitSpinner = smsRequested ? spinner : null;
-    const codeWaitSpinner = codeSended ? spinner : null;
-    const signupWaitSpinner = signupStarted ? spinner : null;
 
     return (
       <section className="login-new row center-xs middle-xs">
@@ -164,12 +183,10 @@ class Login extends React.Component {
           </article>
 
           <footer>
-            <div className="pull-left">
-              Actor Messenger © 2015
-            </div>
+            <div className="pull-left">Actor Messenger © 2015</div>
             <div className="pull-right">
-              <a href="//actorapp.ghost.io/desktop-apps">Desktop</a>
-              <a href="//actor.im/ios">iPhone</a>
+              <a href="//actorapp.ghost.io/desktop-apps">Desktop</a>&nbsp;&nbsp;•&nbsp;&nbsp;
+              <a href="//actor.im/ios">iPhone</a>&nbsp;&nbsp;•&nbsp;&nbsp;
               <a href="//actor.im/android">Android</a>
             </div>
           </footer>
@@ -179,60 +196,68 @@ class Login extends React.Component {
           <div>
             <h1 className="login-new__heading">{this.getIntlMessage('login.signIn')}</h1>
 
-            <form className={requestFormClassName} onSubmit={this.onRequestSms}>
-              <a className="wrong" onClick={this.onWrongNumberClick}>{this.getIntlMessage('login.wrong')}</a>
+            <form className={requestFormClassName} onSubmit={this.onRequestCode}>
+              <a className="wrong" onClick={this.handleRestartAuthClick}>{this.getIntlMessage('login.wrong')}</a>
               <TextField className="login__form__input"
-                         disabled={smsRequested || this.state.step > AuthSteps.PHONE_WAIT}
-                         errorText={this.state.errors.phone}
+                         disabled={isCodeRequested || step !== AuthSteps.LOGIN_WAIT}
+                         errorText={errors.login}
                          floatingLabelText={this.getIntlMessage('login.phone')}
-                         onChange={this.onPhoneChange}
-                         ref="phone"
-                         type="text"
-                         value={this.state.phone}/>
+                         onChange={this.onLoginChange}
+                         ref="login"
+                         value={login}/>
 
               <footer className="text-center">
                 <button className="button button--rised button--wide"
-                        type="submit">
+                        type="submit"
+                        disabled={isCodeRequested}>
                   {this.getIntlMessage('button.requestCode')}
-                  {phoneWaitSpinner}
+                  {isCodeRequested ? spinner : null}
                 </button>
               </footer>
             </form>
+
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
               <TextField className="login__form__input"
-                         disabled={codeSended || this.state.step > AuthSteps.CODE_WAIT}
-                         errorText={this.state.errors.code}
+                         disabled={isCodeSended || step !== AuthSteps.CODE_WAIT}
+                         errorText={errors.code}
                          floatingLabelText={this.getIntlMessage('login.authCode')}
                          onChange={this.onCodeChange}
                          ref="code"
                          type="text"
-                         value={this.state.code}/>
+                         value={code}/>
 
               <footer className="text-center">
                 <button className="button button--rised button--wide"
-                        type="submit">
+                        type="submit"
+                        disabled={isCodeSended}>
                   {this.getIntlMessage('button.checkCode')}
-                  {codeWaitSpinner}
+                  {isCodeSended ? spinner : null}
                 </button>
               </footer>
             </form>
+
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
               <TextField className="login__form__input"
-                         errorText={this.state.errors.signup}
+                         disabled={isSignupStarted || step === AuthSteps.COMPLETED}
+                         errorText={errors.signup}
                          floatingLabelText={this.getIntlMessage('login.yourName')}
                          onChange={this.onNameChange}
                          ref="name"
                          type="text"
-                         value={this.state.name}/>
+                         value={name}/>
 
               <footer className="text-center">
                 <button className="button button--rised button--wide"
-                        type="submit">
+                        type="submit"
+                        disabled={isSignupStarted}>
                   {this.getIntlMessage('button.signUp')}
-                  {signupWaitSpinner}
+                  {isSignupStarted ? spinner : null}
                 </button>
               </footer>
             </form>
+
+            <a href="https://corp.actor.im">Enterprise user?</a>
+
           </div>
         </div>
       </section>
@@ -240,4 +265,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default Container.create(Login, {pure: false});

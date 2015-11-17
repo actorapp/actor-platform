@@ -18,7 +18,7 @@ import MyProfileStore from 'stores/MyProfileStore';
 import CropAvatarStore from 'stores/CropAvatarStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
-import CropAvatarModal from './CropAvatar.react.js';
+import CropAvatarModal from './CropAvatar.react';
 
 import { Styles, TextField } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';

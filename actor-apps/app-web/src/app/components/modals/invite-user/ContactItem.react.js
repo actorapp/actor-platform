@@ -12,7 +12,7 @@ import InviteUserStore from 'stores/InviteUserStore';
 import { AsyncActionStates } from 'constants/ActorAppConstants';
 
 import AvatarItem from 'components/common/AvatarItem.react';
-import * as Stateful from 'components/common/Stateful.react';
+import Stateful from 'components/common/Stateful';
 
 import { escapeWithEmoji } from 'utils/EmojiUtils';
 

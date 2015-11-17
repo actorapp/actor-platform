@@ -59,6 +59,10 @@
     &:active {
       background-color: lighten(rgba($dark-sky-blue, .15), 15);
     }
+    &[disabled] {
+      background-color: transparent !important;
+      color: $dark-sky-blue !important;
+    }
   }
   &--rised {
     color: white;
@@ -72,6 +76,10 @@
       background-color: lighten($dark-sky-blue, 7);
       box-shadow: 0 3px 6px 0 rgba(0, 0, 0, .2), 0 4px 10px 0 rgba(0, 0, 0, .1);
     }
+    &[disabled] {
+      color: white !important;
+      background-color: $dark-sky-blue !important;
+    }
   }
   &--flat {
     color: $dark-sky-blue;
@@ -84,6 +92,10 @@
     &:active {
       background-color: lighten(rgba($dark-sky-blue, .15), 15);
       box-shadow: 0 2px 2px 0 rgba($dark-sky-blue, .35);
+    }
+    &[disabled] {
+      color: $dark-sky-blue !important;
+      background-color: rgba($dark-sky-blue, .15) !important;
     }
   }
   &--icon {
@@ -106,5 +118,10 @@
 
   &--wide {
     width: 100%;
+  }
+
+  &[disabled] {
+    opacity: .55;
+    cursor: not-allowed;
   }
 }

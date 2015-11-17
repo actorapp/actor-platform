@@ -3,15 +3,19 @@
  */
 
 import { escape } from 'lodash';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl'
 import addons from 'react/addons';
 import classnames from 'classnames';
 import { escapeWithEmoji } from 'utils/EmojiUtils';
+import PeerUtils from 'utils/PeerUtils';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
+import MessageActionCreators from 'actions/MessageActionCreators';
+import ActivityActionCreators from 'actions/ActivityActionCreators';
 import { MessageContentTypes } from 'constants/ActorAppConstants';
 
 import AvatarItem from 'components/common/AvatarItem.react';
@@ -19,30 +23,37 @@ import Text from './Text.react';
 import Image from './Image.react';
 import Document from './Document.react';
 import State from './State.react';
+import Reactions from './Reactions.react';
 
 const {addons: { PureRenderMixin }} = addons;
 
+@ReactMixin.decorate(IntlMixin)
 @ReactMixin.decorate(PureRenderMixin)
-class MessageItem extends React.Component {
+class MessageItem extends Component {
   static propTypes = {
-    peer: React.PropTypes.object.isRequired,
-    message: React.PropTypes.object.isRequired,
-    isNewDay: React.PropTypes.bool,
-    isSameSender: React.PropTypes.bool,
-    onVisibilityChange: React.PropTypes.func
+    peer: PropTypes.object.isRequired,
+    message: PropTypes.object.isRequired,
+    isNewDay: PropTypes.bool,
+    isSameSender: PropTypes.bool,
+    onVisibilityChange: PropTypes.func
   };
 
   constructor(props) {
     super(props);
 
-    //this.state = {
-    //  isActionsShown: false
-    //};
+    this.state = {
+      isActionsShown: false
+    };
   }
 
   onClick = () => {
-    const { message } = this.props;
-    DialogActionCreators.selectDialogPeerUser(message.sender.peer.id);
+    const { message, peer } = this.props;
+
+    if (PeerUtils.equals(peer, message.sender.peer)) {
+      ActivityActionCreators.show();
+    } else {
+      DialogActionCreators.selectDialogPeerUser(message.sender.peer.id);
+    }
   };
 
   onVisibilityChange = (isVisible) => {
@@ -50,27 +61,26 @@ class MessageItem extends React.Component {
     this.props.onVisibilityChange(message, isVisible);
   };
 
-  onDelete = () => {
+  handleDelete = () => {
     const { peer, message } = this.props;
-    DialogActionCreators.deleteMessages(peer, [message.rid]);
+    MessageActionCreators.deleteMessage(peer, message.rid);
   };
 
-  //showActions = () => {
-  //  this.setState({isActionsShown: true});
-  //  document.addEventListener('click', this.hideActions, false);
-  //};
+  showActions = () => {
+    this.setState({isActionsShown: true});
+    document.addEventListener('click', this.hideActions, false);
+  };
 
-  //hideActions = () => {
-  //  this.setState({isActionsShown: false});
-  //  document.removeEventListener('click', this.hideActions, false);
-  //};
+  hideActions = () => {
+    this.setState({isActionsShown: false});
+    document.removeEventListener('click', this.hideActions, false);
+  };
 
   render() {
-    const { message, isSameSender, onVisibilityChange } = this.props;
+    const { message, isSameSender, onVisibilityChange, peer } = this.props;
 
     let header = null,
         messageContent = null,
-        visibilitySensor = null,
         leftBlock = null;
 
     const messageSender = escapeWithEmoji(message.sender.title);
@@ -79,11 +89,9 @@ class MessageItem extends React.Component {
       'message--same-sender': isSameSender
     });
 
-    //let actionsDropdownClassName = classnames({
-    //  'dropdown': true,
-    //  'dropdown--small': true,
-    //  'dropdown--opened': this.state.isActionsShown
-    //});
+    let actionsDropdownClassName = classnames('message__actions__menu dropdown dropdown--small', {
+      'dropdown--opened': this.state.isActionsShown
+    });
 
     if (isSameSender) {
       leftBlock = (
@@ -115,7 +123,10 @@ class MessageItem extends React.Component {
 
     switch (message.content.content) {
       case MessageContentTypes.SERVICE:
-        messageContent = <div className="message__content message__content--service" dangerouslySetInnerHTML={{__html: escapeWithEmoji(message.content.text)}}/>;
+        messageContent = (
+          <div className="message__content message__content--service"
+               dangerouslySetInnerHTML={{__html: escapeWithEmoji(message.content.text)}}/>
+        );
         break;
       case MessageContentTypes.TEXT:
         messageContent = (
@@ -140,44 +151,38 @@ class MessageItem extends React.Component {
         return null;
     }
 
-    if (onVisibilityChange) {
-      visibilitySensor = <VisibilitySensor onChange={this.onVisibilityChange}/>;
-    }
-
     return (
       <li className={messageClassName}>
         {leftBlock}
         <div className="message__body col-xs">
           {header}
           {messageContent}
-          {visibilitySensor}
+          {onVisibilityChange ? <VisibilitySensor onChange={this.onVisibilityChange}/> : null}
         </div>
-        {/*
-         <div className="message__actions">
-         <i className="material-icons"  onClick={this.onDelete}>close</i>
-         </div>
-         <div className="message__actions hide">
-         <div className={actionsDropdownClassName}>
-         <span className="dropdown__button" onClick={this.showActions}>
-         <i className="material-icons">arrow_drop_down</i>
-         </span>
-         <ul className="dropdown__menu dropdown__menu--right">
-         <li className="dropdown__menu__item">
-         <i className="icon material-icons">reply</i>
-         Reply
-         </li>
-         <li className="dropdown__menu__item hide">
-         <i className="icon material-icons">forward</i>
-         Forward
-         </li>
-         <li className="dropdown__menu__item" onClick={this.onDelete}>
-         <i className="icon material-icons">close</i>
-         Delete
-         </li>
-         </ul>
-         </div>
-         </div>
-         */}
+        <div className="message__actions">
+          <Reactions peer={peer} message={message}/>
+
+          <div className={actionsDropdownClassName}>
+            <span className="dropdown__button" onClick={this.showActions}>
+              <svg className="icon icon--dropdown"
+                   dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/img/sprite/icons.svg#cog"/>'}}/>
+            </span>
+            <ul className="dropdown__menu dropdown__menu--right">
+              <li className="dropdown__menu__item hide">
+                <i className="icon material-icons">star_rate</i> {this.getIntlMessage('message.pin')}
+              </li>
+              <li className="dropdown__menu__item hide">
+                <i className="icon material-icons">reply</i> {this.getIntlMessage('message.reply')}
+              </li>
+              <li className="dropdown__menu__item hide">
+                <i className="icon material-icons">forward</i> {this.getIntlMessage('message.forward')}
+              </li>
+              <li className="dropdown__menu__item" onClick={this.handleDelete}>
+                <i className="icon material-icons">delete</i> {this.getIntlMessage('message.delete')}
+              </li>
+            </ul>
+          </div>
+        </div>
       </li>
     );
   }
