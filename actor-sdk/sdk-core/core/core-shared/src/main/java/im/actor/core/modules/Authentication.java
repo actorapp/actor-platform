@@ -110,56 +110,6 @@ public class Authentication {
         }
     }
 
-    public Command<AuthState> requestStartEmailAuth(final String email) {
-        return new Command<AuthState>() {
-            @Override
-            public void start(final CommandCallback<AuthState> callback) {
-                ArrayList<String> langs = new ArrayList<String>();
-                for (String s : modules.getConfiguration().getPreferredLanguages()) {
-                    langs.add(s);
-                }
-                request(new RequestStartEmailAuth(email,
-                        apiConfiguration.getAppId(),
-                        apiConfiguration.getAppKey(),
-                        deviceHash,
-                        apiConfiguration.getDeviceTitle(),
-                        modules.getConfiguration().getTimeZone(),
-                        langs
-                ), new RpcCallback<ResponseStartEmailAuth>() {
-                    @Override
-                    public void onResult(ResponseStartEmailAuth response) {
-                        modules.getPreferences().putString(KEY_EMAIL, email);
-                        modules.getPreferences().putString(KEY_TRANSACTION_HASH, response.getTransactionHash());
-
-                        ApiEmailActivationType emailActivationType = response.getActivationType();
-                        if (emailActivationType.equals(ApiEmailActivationType.OAUTH2)) {
-                            state = AuthState.GET_OAUTH_PARAMS;
-                        } else if (emailActivationType.equals(ApiEmailActivationType.CODE)) {
-                            state = AuthState.CODE_VALIDATION_EMAIL;
-                        }
-
-                        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onResult(state);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(final RpcException e) {
-                        im.actor.runtime.Runtime.postToMainThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onError(e);
-                                e.printStackTrace();
-                            }
-                        });
-                    }
-                });
-            }
-        };
-    }
 
     public Command<AuthState> requestStartPhoneAuth(final long phone) {
         return new Command<AuthState>() {
