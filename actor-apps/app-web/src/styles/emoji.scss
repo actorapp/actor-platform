@@ -141,18 +141,20 @@ $emoji-dropdown-width: 328px;
         display: block;
         float: left;
 
-        padding: 6px;
+        padding: 2px;
 
         cursor: pointer;
 
         border-radius: 2px;
-        //width: 26px;
-        //height: 26px;
-        //box-sizing: border-box;
         &:hover {
           transform: scale(1.5);
         }
       }
+    }
+
+    .emoji-outer {
+      width: 28px;
+      height: 28px;
     }
   }
   &--opened {
