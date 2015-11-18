@@ -12,6 +12,12 @@
         android:visible="false" />
 
     <item
+        android:id="@+id/contact"
+        android:icon="@drawable/conv_attach_file"
+        android:title="@string/chat_attach_contact"
+        android:visible="false" />
+
+    <item
         android:id="@+id/file"
         android:icon="@drawable/conv_attach_file"
         android:title="@string/chat_attach_file" />

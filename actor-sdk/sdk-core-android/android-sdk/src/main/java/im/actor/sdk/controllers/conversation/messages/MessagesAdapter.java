@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import im.actor.core.entity.Message;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
@@ -89,8 +90,10 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
             return 4;
         } else if (content instanceof DocumentContent) {
             return 3;
-        } else {
+        } else if (content instanceof ContactContent) {
             return 5;
+        } else {
+            return 6;
         }
     }
 
@@ -113,6 +116,8 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                 return new DocHolder(this, inflate(R.layout.adapter_dialog_doc, viewGroup));
             case 4:
                 return new AudioHolder(this, inflate(R.layout.adapter_dialog_audio, viewGroup));
+            case 5:
+                return new ContactHolder(this, inflate(R.layout.adapter_dialog_contact, viewGroup));
             default:
                 return new UnsupportedHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup));
         }

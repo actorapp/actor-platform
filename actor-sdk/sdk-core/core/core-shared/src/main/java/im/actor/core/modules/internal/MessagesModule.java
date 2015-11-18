@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
@@ -299,6 +300,10 @@ public class MessagesModule extends AbsModule implements BusSubscriber {
         context().getTypingModule().onMessageSent(peer);
         sendMessageActor.send(new SenderActor.SendText(peer, message, markDownText, mentions,
                 autoDetect));
+    }
+
+    public void sendContact(Peer peer, String name, HashSet<String> phones, HashSet<String> emails, String base64photo) {
+        sendMessageActor.send(new SenderActor.SendContact(peer, phones, emails, name, base64photo));
     }
 
     public void sendPhoto(@NotNull Peer peer, @NotNull String fileName, int w, int h, @Nullable FastThumb fastThumb,
