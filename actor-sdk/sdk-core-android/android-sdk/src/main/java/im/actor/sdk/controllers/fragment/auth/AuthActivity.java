@@ -18,6 +18,10 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.R;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.activity.BaseFragmentActivity;
+import im.actor.sdk.controllers.fragment.settings.ActorSettingsFragment;
+import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
+import im.actor.sdk.intents.ActorIntent;
+import im.actor.sdk.intents.ActorIntentFragmentActivity;
 
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
 
@@ -80,7 +84,8 @@ public class AuthActivity extends BaseFragmentActivity {
 
         switch (state) {
             case AUTH_START:
-                signFragment = ActorSDK.sharedActor().getDelegate().getSignFragment();
+
+                signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment());
 
                 if (signFragment instanceof SignPhoneFragment) {
                     authType = AUTH_TYPE_PHONE;
