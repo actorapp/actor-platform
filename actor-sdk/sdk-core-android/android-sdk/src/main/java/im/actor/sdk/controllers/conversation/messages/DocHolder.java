@@ -122,7 +122,7 @@ public class DocHolder extends MessageHolder {
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
         progressView.setColor(ActorSDK.sharedActor().style.getMainColor());
         progressValue = (TextView) itemView.findViewById(R.id.progressValue);
-        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
     }
 
     @Override
