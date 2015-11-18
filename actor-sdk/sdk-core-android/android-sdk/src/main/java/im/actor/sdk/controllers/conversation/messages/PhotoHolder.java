@@ -116,7 +116,7 @@ public class PhotoHolder extends MessageHolder {
 
         progressContainer = itemView.findViewById(R.id.progressBg);
         progressValue = (TextView) itemView.findViewById(R.id.progressValue);
-        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryColor());
+        progressValue.setTextColor(ActorSDK.sharedActor().style.getTextPrimaryInvColor());
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
         progressView.setColor(Color.WHITE);
         progressIcon = (ImageView) itemView.findViewById(R.id.contentIcon);
