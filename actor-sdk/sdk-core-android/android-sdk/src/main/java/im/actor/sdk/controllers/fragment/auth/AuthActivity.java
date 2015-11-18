@@ -85,7 +85,7 @@ public class AuthActivity extends BaseFragmentActivity {
         switch (state) {
             case AUTH_START:
 
-                signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment());
+                signFragment = ActorSDK.sharedActor().getDelegatedFragment(ActorSDK.sharedActor().getDelegate().getAuthStartIntent(), new SignPhoneFragment(), BaseAuthFragment.class);
 
                 if (signFragment instanceof SignPhoneFragment) {
                     authType = AUTH_TYPE_PHONE;
