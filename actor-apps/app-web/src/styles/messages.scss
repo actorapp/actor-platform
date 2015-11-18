@@ -13,8 +13,9 @@ $like-red: rgb(226, 38, 77);
     opacity: 0;
   }
   75% {
-    opacity: 1;
     transform: scale(1.2);
+
+    opacity: 1;
   }
   100% {
     transform: scale(1);
@@ -95,7 +96,6 @@ $like-red: rgb(226, 38, 77);
   }
   &__body {
     //overflow: auto;
-
     padding-right: 16px;
   }
   &__sender {
@@ -374,7 +374,7 @@ $like-red: rgb(226, 38, 77);
 
       user-select: none;
       text-align: center;
-      vertical-align: middle;
+      vertical-align: top;
       text-decoration: none;
 
       opacity: 0;
@@ -387,12 +387,15 @@ $like-red: rgb(226, 38, 77);
         width: $action-icon-size;
         height: $action-icon-size;
 
-        color: rgba(0, 0, 0, .25);
         cursor: pointer;
         transition: 150ms;
+        vertical-align: top;
+
+        color: rgba(0, 0, 0, .25);
         &:hover {
-          color: $like-red !important;
           transform: scale(1.2);
+
+          color: $like-red !important;
         }
         &:active {
           transform: translateY(1px);
@@ -457,7 +460,7 @@ $like-red: rgb(226, 38, 77);
     &__menu {
       display: inline-block;
 
-      vertical-align: middle;
+      vertical-align: top;
     }
   }
   .dropdown {
@@ -481,6 +484,7 @@ $like-red: rgb(226, 38, 77);
 
         transition: 200ms;
         transform: rotate(90deg);
+        vertical-align: top;
       }
       &:hover {
         opacity: 1 !important;
