@@ -17,7 +17,7 @@ test:
   pre:
 
   override:
-    # - ./gradlew clean build -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
-    - cd actor-server && ./sbt test
+    - ./gradlew clean build -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
+    # - cd actor-server && ./sbt test
   post:
 
