@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiSex;
@@ -534,6 +535,19 @@ public class Messenger {
     public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText,
                             @Nullable ArrayList<Integer> mentions, boolean autoDetect) {
         modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions, autoDetect);
+    }
+
+    /**
+     * Send Markdown Message with mentions
+     *
+     * @param peer        destination peer
+     * @param name        contact name
+     * @param phones      contact phones
+     * @param emails      contact emails
+     * @param base64photo contact photo
+     */
+    public void sendContact(Peer peer, String name, HashSet<String> phones, HashSet<String> emails, String base64photo) {
+        modules.getMessagesModule().sendContact(peer, name, phones, emails, base64photo);
     }
 
     /**

@@ -203,6 +203,7 @@
     <string name="chat_menu_leave_group">Покинуть группу</string>
 
     <string name="chat_attach_place">Мое место</string>
+    <string name="chat_attach_contact">Контакт</string>
     <string name="chat_attach_file">Файл</string>
     <string name="chat_attach_take_video">Снять видео</string>
     <string name="chat_attach_take_photo">Снять фото</string>
