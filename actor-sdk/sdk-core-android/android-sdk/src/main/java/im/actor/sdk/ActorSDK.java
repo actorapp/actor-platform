@@ -3,6 +3,7 @@ package im.actor.sdk;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
+import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,9 @@ import im.actor.core.PlatformType;
 import im.actor.runtime.Log;
 import im.actor.sdk.controllers.activity.ActorMainActivity;
 import im.actor.sdk.controllers.fragment.auth.AuthActivity;
+import im.actor.sdk.controllers.fragment.auth.BaseAuthActivity;
+import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
+import im.actor.sdk.controllers.fragment.auth.SignPhoneFragment;
 import im.actor.sdk.controllers.fragment.settings.MyProfileActivity;
 import im.actor.sdk.core.AndroidNotifications;
 import im.actor.sdk.core.AndroidPhoneBook;
@@ -34,6 +38,7 @@ import im.actor.sdk.core.ActorPushManager;
 import im.actor.sdk.intents.ActivityManager;
 import im.actor.sdk.intents.ActorIntent;
 import im.actor.sdk.intents.ActorIntentActivity;
+import im.actor.sdk.intents.ActorIntentFragmentActivity;
 import im.actor.sdk.services.KeepAliveService;
 import im.actor.sdk.util.Devices;
 import im.actor.sdk.view.emoji.SmileProcessor;
@@ -416,6 +421,19 @@ public class ActorSDK {
             intent.putExtras(extras);
         }
         context.startActivity(intent);
+    }
+
+    public <T extends android.support.v4.app.Fragment> T getDelegatedFragment(ActorIntent delegatedIntent, T baseFragment) {
+        Class type = baseFragment.getClass().getSuperclass();
+        if (delegatedIntent != null &&
+                delegatedIntent instanceof ActorIntentFragmentActivity &&
+                ((ActorIntentFragmentActivity) delegatedIntent).getFragment() != null
+                && type.isInstance(((ActorIntentFragmentActivity) delegatedIntent).getFragment())) {
+            return (T) ((ActorIntentFragmentActivity) delegatedIntent).getFragment();
+        } else {
+            return baseFragment;
+        }
+
     }
 
 }

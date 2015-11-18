@@ -8,6 +8,8 @@ import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
+import im.actor.sdk.controllers.fragment.auth.BaseAuthActivity;
+import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
