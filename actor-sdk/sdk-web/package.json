@@ -1,0 +1,87 @@
+{
+  "name": "actor-sdk",
+  "version": "1.0.15",
+  "description": "Actor SDK for building messaging web apps on top of Actor platform",
+  "license": {
+    "type": "Apache-2.0",
+    "url": "http://opensource.org/licenses/apache2.0.php"
+  },
+  "main": "index.js",
+  "contributors": [
+    "Oleg Shilov <me@olegshilov.com>",
+    "prettynatty <fear@loathing.in>"
+  ],
+  "engines": {
+    "node": ">=4.2.2"
+  },
+  "scripts": {
+    "clean": "$(npm bin)/rimraf build && $(npm bin)/rimraf publish",
+
+    "assets:fonts": "$(npm bin)/copyfiles 'assets/fonts/**/*' build",
+    "assets:emojis": "$(npm bin)/copyfiles -f 'node_modules/emoji-data/sheet_*_64.png' build/assets/images/emoji",
+    "assets:sounds": "$(npm bin)/copyfiles 'assets/sound/**/*' build",
+    "assets:images": "$(npm bin)/copyfiles 'assets/images/**.png' build",
+    "assets:sprite": "$(npm bin)/svg-sprite -w 24 -h 24 --symbol --symbol-sprite icons --symbol-dest images --dest build/assets assets/images/svg/*.svg",
+    "assets": "npm run assets:fonts && npm run assets:emojis && npm run assets:sprite && npm run assets:sounds && npm run assets:images",
+
+    "prebuild": "npm run clean && npm run assets",
+    "build:babel": "babel src --out-dir build --plugins transform-es2015-modules-umd --plugins transform-strict-mode",
+    "build:sass": "$(npm bin)/node-sass src/styles/index.scss --include-path node_modules -o build/styles --output-style compressed",
+    "build": "npm run build:babel && npm run build:sass",
+
+    "watch:babel": "babel src --out-dir build --plugins transform-es2015-modules-umd --plugins transform-strict-mode --watch",
+    "watch:sass": "$(npm bin)/node-sass src/styles/index.scss --include-path node_modules -o build/styles --watch",
+    "watch": "npm run watch:babel & npm run watch:sass",
+
+    "prepare": "npm run build && $(npm bin)/copyfiles './*.js' '.gitignore' '.babelrc' '.eslintrc' 'package.json' './src/**/*' './assets/**/*' './example/**/*' './build/**/*' publish"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "publish"
+  ],
+  "dependencies": {
+    "actor-js": "1.0.53",
+    "babel-polyfill": "^6.2.0",
+    "bugsnag-js": "^2.4.8",
+    "classnames": "2.2.0",
+    "crosstab": "0.2.11",
+    "emoji-data": "github:olegshilov/emoji-data.git#develop",
+    "flexboxgrid": "6.3.0",
+    "flux": "2.1.1",
+    "immutable": "3.7.5",
+    "intl": "1.0.0",
+    "js-emoji": "github:olegshilov/js-emoji#develop",
+    "jsonlylightbox": "github:olegshilov/jsOnlyLightbox.git#develop",
+    "keymirror": "0.1.1",
+    "lodash": "3.10.1",
+    "material-ui": "github:olegshilov/material-ui.git#develop",
+    "memoizee": "0.3.9",
+    "mixpanel-browser": "github:mixpanel/mixpanel-js",
+    "normalize.css": "3.0.3",
+    "object-assign": "4.0.1",
+    "pace": "github:hubspot/pace",
+    "react": "0.13.3",
+    "react-intl": "1.2.0",
+    "react-mixin": "3.0.0",
+    "react-modal": "0.3.0",
+    "react-router": "0.13.3",
+    "react-scroll": "github:olegshilov/react-scroll.git#f690add1cd1367e5483074d5a2dcddd3892f28fe",
+    "react-visibility-sensor": "2.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.2.1",
+    "babel-plugin-transform-es2015-modules-umd": "^6.1.18",
+    "babel-plugin-transform-strict-mode": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.1.18",
+    "babel-preset-stage-0": "^6.1.18",
+    "copyfiles": "^0.2.1",
+    "node-sass": "^3.3.3",
+    "rimraf": "^2.4.4",
+    "svg-sprite": "^1.2.15"
+  }
+}
