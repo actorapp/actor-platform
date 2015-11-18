@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import im.actor.core.entity.GroupMember;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.PeerType;
+import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.viewmodel.GroupVM;
 import im.actor.core.viewmodel.UserVM;
@@ -160,6 +161,29 @@ public class ChatListProcessor implements ListProcessor<Message> {
                     preprocessedTexts.put(msg.getRid(), new PreprocessedTextData(text.getText(),
                             hasSpannable ? spannableString : null));
                 }
+                preprocessedDatas.add(preprocessedTexts.get(msg.getRid()));
+            } else if (msg.getContent() instanceof ContactContent) {
+                ContactContent contact = (ContactContent) msg.getContent();
+                String text = "";
+                for (String phone : contact.getPhones()) {
+                    text += "\n".concat(phone);
+                }
+                for (String email : contact.getEmails()) {
+                    text += "\n".concat(email);
+                }
+                Spannable spannableString = new SpannableString(text);
+
+                SpannableStringBuilder builder = new SpannableStringBuilder();
+                String name;
+                name = contact.getName();
+                builder.append(name);
+                builder.setSpan(new ForegroundColorSpan(colors[Math.abs(msg.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                //builder.append("\n");
+                spannableString = builder.append(spannableString);
+
+
+                preprocessedTexts.put(msg.getRid(), new PreprocessedTextData(text, spannableString));
+
                 preprocessedDatas.add(preprocessedTexts.get(msg.getRid()));
             } else {
                 // Nothing to do yet
