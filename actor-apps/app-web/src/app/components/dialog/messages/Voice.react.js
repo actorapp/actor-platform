@@ -70,14 +70,14 @@ class Voice extends Component {
   render() {
     const { className } = this.props;
     const { isPlaying, currentTime, duration } = this.state;
-    const documentClassName = classnames(className, 'row');
+    const voiceClassName = classnames(className, 'row');
 
     const current = this.humanTime(currentTime * 1000);
     const total = this.humanTime(duration * 1000);
     const progress = (currentTime / duration) * 100;
 
     return (
-      <div className={documentClassName}>
+      <div className={voiceClassName}>
         <div className="voice row">
           <div className="voice__controls">
             {
