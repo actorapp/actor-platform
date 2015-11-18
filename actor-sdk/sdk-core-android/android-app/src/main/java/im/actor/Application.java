@@ -1,28 +1,18 @@
 package im.actor;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import im.actor.sdk.ActorSDK;
 import im.actor.sdk.ActorSDKApplication;
 import im.actor.sdk.ActorStyle;
 import im.actor.sdk.BaseActorSDKDelegate;
-import im.actor.sdk.controllers.fragment.auth.BaseAuthFragment;
-import im.actor.sdk.controllers.fragment.auth.SignEmailFragment;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsCategory;
 import im.actor.sdk.controllers.fragment.settings.ActorSettingsField;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsActivity;
 import im.actor.sdk.controllers.fragment.settings.BaseActorSettingsFragment;
 import im.actor.sdk.intents.ActorIntent;
-import im.actor.sdk.intents.ActorIntentActivity;
-import im.actor.tour.TourActivity;
 
 public class Application extends ActorSDKApplication {
 
@@ -36,10 +26,6 @@ public class Application extends ActorSDKApplication {
     }
 
     private class ActorSDKDelegate extends BaseActorSDKDelegate {
-        @Override
-        public BaseAuthFragment getSignFragment() {
-            return new SignEmailFragment();
-        }
 
         @Override
         public ActorIntent getSettingsIntent() {
