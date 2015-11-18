@@ -14,7 +14,7 @@ export default class Contact extends Component {
 
   render() {
     const { content, className } = this.props;
-    const documentClassName = classnames(className, 'row');
+    const contactClassName = classnames(className, 'row');
 
     //let contactAvatar = new Image();
     const contactAvatar = 'data:image/jpeg;base64,' + content.photo64;
@@ -41,7 +41,7 @@ export default class Contact extends Component {
 
 
     return (
-      <div className={documentClassName}>
+      <div className={contactClassName}>
         <div className="contact row">
           <div className="contact__avatar">
             <img src={contactAvatar}
