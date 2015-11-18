@@ -206,6 +206,7 @@
     <string name="chat_menu_leave_group">Leave group</string>
 
     <string name="chat_attach_place">Place</string>
+    <string name="chat_attach_contact">Contact</string>
     <string name="chat_attach_file">File</string>
     <string name="chat_attach_take_video">Take video</string>
     <string name="chat_attach_take_photo">Take photo</string>

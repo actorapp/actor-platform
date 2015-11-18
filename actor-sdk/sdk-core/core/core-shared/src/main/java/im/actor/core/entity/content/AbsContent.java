@@ -150,6 +150,8 @@ public abstract class AbsContent {
                     JSONObject object = new JSONObject(json.getRawJson());
                     if (object.getString("dataType").equals("banner")) {
                         return new BannerContent(remoteContainer);
+                    } else if (object.getString("dataType").equals("contact")) {
+                        return new ContactContent(remoteContainer);
                     }
                 }
             } catch (Exception e) {

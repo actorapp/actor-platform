@@ -9,10 +9,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import im.actor.core.api.ApiDocumentExVoice;
 import im.actor.core.api.ApiFastThumb;
+import im.actor.core.api.ApiJsonMessage;
 import im.actor.core.api.ApiMessage;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiDocumentEx;
@@ -35,6 +37,7 @@ import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Reaction;
 import im.actor.core.entity.User;
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.FileLocalSource;
@@ -200,6 +203,28 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor, fileName);
     }
 
+    public void doSendContact(@NotNull Peer peer,
+                              @NotNull HashSet<String> emails, @NotNull HashSet<String> phones,
+                              @Nullable String name,
+                              @Nullable String base64photo) {
+
+
+        long rid = RandomUtils.nextRid();
+        long date = createPendingDate();
+        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
+
+
+        ContactContent content = ContactContent.create(name, phones, emails, base64photo);
+
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content, new ArrayList<Reaction>());
+        context().getMessagesModule().getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
+        savePending();
+
+        performSendContent(peer, rid, content);
+    }
+
     public void doSendAudio(Peer peer, String descriptor, String fileName,
                             int fileSize, int duration) {
         long rid = RandomUtils.nextRid();
@@ -326,6 +351,8 @@ public class SenderActor extends ModuleActor {
                     source.getFileReference().getFileName(),
                     documentContent.getMimeType(),
                     fastThumb, documentEx);
+        } else if (content instanceof ContactContent) {
+            message = new ApiJsonMessage(((ContactContent) content).getRawJson());
         } else {
             return;
         }
@@ -420,6 +447,9 @@ public class SenderActor extends ModuleActor {
             SendAudio sendAudio = (SendAudio) message;
             doSendAudio(sendAudio.getPeer(), sendAudio.getDescriptor(), sendAudio.getFileName(),
                     sendAudio.getFileSize(), sendAudio.getDuration());
+        } else if (message instanceof SendContact) {
+            SendContact sendContact = (SendContact) message;
+            doSendContact(sendContact.getPeer(), sendContact.getEmails(), sendContact.getPhones(), sendContact.getName(), sendContact.getBase64photo());
         } else {
             drop(message);
         }
@@ -644,6 +674,42 @@ public class SenderActor extends ModuleActor {
 
         public boolean isAutoDetect() {
             return autoDetect;
+        }
+    }
+
+    public static class SendContact {
+        private Peer peer;
+        private HashSet<String> phones;
+        private HashSet<String> emails;
+        private String name;
+        private String base64photo;
+
+        public SendContact(Peer peer, HashSet<String> phones, HashSet<String> emails, String name, String base64photo) {
+            this.peer = peer;
+            this.phones = phones;
+            this.emails = emails;
+            this.name = name;
+            this.base64photo = base64photo;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public HashSet<String> getPhones() {
+            return phones;
+        }
+
+        public HashSet<String> getEmails() {
+            return emails;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getBase64photo() {
+            return base64photo;
         }
     }
 

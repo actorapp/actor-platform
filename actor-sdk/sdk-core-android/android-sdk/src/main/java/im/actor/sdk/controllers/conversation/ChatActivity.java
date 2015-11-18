@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -14,6 +16,7 @@ import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +37,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import im.actor.core.entity.MentionFilterResult;
 import im.actor.core.entity.Peer;
@@ -83,6 +87,7 @@ public class ChatActivity extends ActorEditTextActivity {
     private static final int REQUEST_VIDEO = 2;
     private static final int REQUEST_DOC = 3;
     private static final int REQUEST_LOCATION = 4;
+    private static final int REQUEST_CONTACT = 5;
     // Peer of current chat
     private Peer peer;
 
@@ -574,6 +579,9 @@ public class ChatActivity extends ActorEditTextActivity {
                     return true;
                 } else if (item.getItemId() == R.id.file) {
                     startActivityForResult(Intents.pickFile(ChatActivity.this), REQUEST_DOC);
+                } else if (item.getItemId() == R.id.contact) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                    startActivityForResult(intent, REQUEST_CONTACT);
                 }
                 return false;
             }
@@ -603,6 +611,70 @@ public class ChatActivity extends ActorEditTextActivity {
                         }
                     }
                 }
+            } else if (requestCode == REQUEST_CONTACT) {
+                HashSet<String> phones = new HashSet<String>();
+                HashSet<String> emails = new HashSet<String>();
+                String name = "";
+                byte[] photo = null;
+
+                Uri contactData = data.getData();
+                Cursor c = managedQuery(contactData, null, null, null, null);
+                if (c.moveToFirst()) {
+
+
+                    String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+
+                    String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                    if (hasPhone.equalsIgnoreCase("1")) {
+                        Cursor phonesCursor = getContentResolver().query(
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,
+                                null, null);
+                        if (phonesCursor.moveToFirst()) {
+                            int phoneColumnIndex = phonesCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DATA);
+                            do {
+                                phones.add(phonesCursor.getString(phoneColumnIndex));
+                            } while (phonesCursor.moveToNext());
+                            phonesCursor.close();
+                        }
+
+                    }
+                    name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+
+                    Cursor emailCursor = getContentResolver().query(
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + id,
+                            null, null);
+                    if (emailCursor != null && emailCursor.moveToFirst()) {
+                        int emailColumnIndex = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
+                        do {
+                            emails.add(emailCursor.getString(emailColumnIndex));
+                        } while (emailCursor.moveToNext());
+                        emailCursor.close();
+                    }
+
+                    Uri photoUri = Uri.withAppendedPath(contactData, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+                    Cursor photoCursor = getContentResolver().query(photoUri,
+                            new String[]{ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
+                    if (photoCursor == null) {
+
+                    } else {
+                        try {
+                            if (photoCursor.moveToFirst()) {
+                                photo = photoCursor.getBlob(0);
+
+                            }
+                        } finally {
+                            photoCursor.close();
+                        }
+                    }
+
+                }
+
+                messenger().sendContact(peer, name, phones, emails, photo != null ? (Base64.encodeToString(photo, Base64.URL_SAFE | Base64.NO_WRAP)) : null);
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
