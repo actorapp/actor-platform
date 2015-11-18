@@ -81,19 +81,13 @@ public class AuthActivity extends BaseFragmentActivity {
         switch (state) {
             case AUTH_START:
                 signFragment = ActorSDK.sharedActor().getDelegate().getSignFragment();
-                if (signFragment instanceof SignEmailFragment) {
-                    authType = AUTH_TYPE_EMAIL;
-                } else if (signFragment instanceof SignPhoneFragment) {
+
+                if (signFragment instanceof SignPhoneFragment) {
                     authType = AUTH_TYPE_PHONE;
                 } else {
                     authType = AUTH_TYPE_CUSTOM;
                 }
                 showFragment(signFragment, false, false);
-                break;
-            case AUTH_EMAIL:
-                signFragment = new SignEmailFragment();
-                showFragment(signFragment, false, false);
-                authType = AUTH_TYPE_EMAIL;
                 break;
             case AUTH_PHONE:
                 signFragment = new SignPhoneFragment();
@@ -102,14 +96,10 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case CODE_VALIDATION_CUSTOM:
             case CODE_VALIDATION_PHONE:
-            case CODE_VALIDATION_EMAIL:
-                if ((state == AuthState.CODE_VALIDATION_EMAIL && authType == AUTH_TYPE_PHONE) || (state == AuthState.CODE_VALIDATION_PHONE && authType == AUTH_TYPE_EMAIL)) {
-                    updateState(AuthState.AUTH_START);
-                    break;
-                }
+
                 Fragment signInFragment = new SignInFragment();
                 Bundle args = new Bundle();
-                args.putString("authType", state == AuthState.CODE_VALIDATION_EMAIL ? SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
+                args.putString("authType", SignInFragment.AUTH_TYPE_PHONE);
                 if (state == AuthState.CODE_VALIDATION_CUSTOM) {
                     args.putString("authType", SignInFragment.AUTH_TYPE_CUSTOM);
                     args.putString("authId", signFragment.getAuthId());

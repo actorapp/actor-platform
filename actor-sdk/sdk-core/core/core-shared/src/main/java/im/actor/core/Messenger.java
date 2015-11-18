@@ -117,18 +117,6 @@ public class Messenger {
     }
 
     /**
-     * Request email auth
-     *
-     * @param email email to authenticate
-     * @return Command for execution
-     */
-    @NotNull
-    @ObjectiveCName("requestStartAuthCommandWithEmail:")
-    public Command<AuthState> requestStartEmailAuth(final String email) {
-        return modules.getAuthModule().requestStartEmailAuth(email);
-    }
-
-    /**
      * Request phone auth
      *
      * @param phone phone to authenticate
