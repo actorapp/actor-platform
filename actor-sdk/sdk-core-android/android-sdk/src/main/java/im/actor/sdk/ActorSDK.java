@@ -423,15 +423,15 @@ public class ActorSDK {
         context.startActivity(intent);
     }
 
-    public <T extends android.support.v4.app.Fragment> T getDelegatedFragment(ActorIntent delegatedIntent, T baseFragment) {
-        Class type = baseFragment.getClass().getSuperclass();
+    public <T> T getDelegatedFragment(ActorIntent delegatedIntent, android.support.v4.app.Fragment baseFragment, Class<T> type) {
+
         if (delegatedIntent != null &&
                 delegatedIntent instanceof ActorIntentFragmentActivity &&
                 ((ActorIntentFragmentActivity) delegatedIntent).getFragment() != null
                 && type.isInstance(((ActorIntentFragmentActivity) delegatedIntent).getFragment())) {
             return (T) ((ActorIntentFragmentActivity) delegatedIntent).getFragment();
         } else {
-            return baseFragment;
+            return (T) baseFragment;
         }
 
     }
