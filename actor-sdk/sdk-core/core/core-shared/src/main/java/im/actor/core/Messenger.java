@@ -762,7 +762,7 @@ public class Messenger {
      * @param code reaction code
      * @return Command for execution
      */
-    @ObjectiveCName("addReactionWithPeer:withRid:withCode")
+    @ObjectiveCName("removeReactionWithPeer:withRid:withCode")
     public Command<Boolean> removeReaction(Peer peer, long rid, String code) {
         return modules.getMessagesModule().removeReaction(peer, rid, code);
     }
