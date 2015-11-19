@@ -21,7 +21,8 @@ if (!global.Intl) {
   const request = new XMLHttpRequest();
   const url = window.location.href;
   const arr = url.split('/');
-  const localeDataPath = arr[0] + '//' + arr[2] + '/assets/locale-data/' + language + '.json';
+  const query = language.split('-')[0] + '-' + language.split('-')[1].toUpperCase();
+  const localeDataPath = arr[0] + '//' + arr[2] + '/assets/locale-data/' + query + '.json';
 
   function addLocaleData() {
     const localeData = JSON.parse(this.response);
