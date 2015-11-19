@@ -813,9 +813,6 @@ public class JSONObject {
                     o instanceof String) {
                 return o;
             }
-            if (o.getClass().getPackage().getName().startsWith("java.")) {
-                return o.toString();
-            }
         } catch (Exception ignored) {
         }
         return null;

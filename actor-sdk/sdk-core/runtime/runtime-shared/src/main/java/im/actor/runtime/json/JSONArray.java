@@ -16,7 +16,6 @@
 
 package im.actor.runtime.json;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -115,10 +114,10 @@ public class JSONArray {
         if (!array.getClass().isArray()) {
             throw new JSONException("Not a primitive array: " + array.getClass());
         }
-        final int length = Array.getLength(array);
+        final int length = ArrayReflect.getLength(array);
         values = new ArrayList<Object>(length);
         for (int i = 0; i < length; ++i) {
-            put(JSONObject.wrap(Array.get(array, i)));
+            put(JSONObject.wrap(ArrayReflect.get(array, i)));
         }
     }
 
