@@ -9,6 +9,9 @@ public enum ContentType {
     DOCUMENT(3),
     DOCUMENT_PHOTO(4),
     DOCUMENT_VIDEO(5),
+    DOCUMENT_AUDIO(17),
+    CONTACT(18),
+    LOCATION(19),
     SERVICE(6),
     SERVICE_ADD(7),
     SERVICE_KICK(8),
@@ -64,6 +67,12 @@ public enum ContentType {
                 return SERVICE_AVATAR_REMOVED;
             case 16:
                 return SERVICE_JOINED;
+            case 17:
+                return DOCUMENT_AUDIO;
+            case 18:
+                return CONTACT;
+            case 19:
+                return LOCATION;
         }
     }
 }
