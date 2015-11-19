@@ -23,4 +23,6 @@
     <dimen name="tour_card_title">16sp</dimen>
     <dimen name="tour_card_message">14sp</dimen>
     <dimen name="keyboard_height">250dp</dimen>
+    <dimen name="share_btn_size">60dp</dimen>
+
 </resources>

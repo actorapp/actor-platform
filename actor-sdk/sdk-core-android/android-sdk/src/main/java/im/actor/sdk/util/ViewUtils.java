@@ -7,7 +7,6 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
 
-import im.actor.sdk.util.Screen;
 import im.actor.sdk.view.MaterialInterpolator;
 
 public class ViewUtils {
@@ -105,7 +104,7 @@ public class ViewUtils {
 
         v.getLayoutParams().height = initialHeight;
         v.setVisibility(View.VISIBLE);
-        Animation a = new ExpandMentionsAnimation(v, targetHeight, initialHeight);
+        Animation a = new ExpandAnimation(v, targetHeight, initialHeight);
 
         a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)));
         a.setInterpolator(MaterialInterpolator.getInstance());
@@ -113,13 +112,13 @@ public class ViewUtils {
     }
 
 
-    private static class ExpandMentionsAnimation extends Animation {
+    private static class ExpandAnimation extends Animation {
         private final View v;
         private final int targetHeight;
         private final int initialHeight;
         private int currentHeight;
 
-        public ExpandMentionsAnimation(View v, int targetHeight, int initialHeight) {
+        public ExpandAnimation(View v, int targetHeight, int initialHeight) {
             this.v = v;
             this.targetHeight = targetHeight;
             this.initialHeight = initialHeight;
@@ -186,5 +185,26 @@ public class ViewUtils {
             view.startAnimation(scaleAnimation);
         }
     }
+
+    public static void expand(final View v, int targetHeight) {
+
+        v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
+
+        final int initialHeight = new Integer(v.getLayoutParams().height);
+
+        v.getLayoutParams().height = initialHeight;
+        Animation a = new ExpandAnimation(v, targetHeight, initialHeight);
+
+        a.setDuration(/*(targetHeight > 0 ? targetHeight : initialHeight / Screen.dp(1))*/150);
+        a.setInterpolator(MaterialInterpolator.getInstance());
+        v.startAnimation(a);
+        if (targetHeight == 0) {
+            v.setVisibility(View.INVISIBLE);
+        } else {
+            v.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 
 }

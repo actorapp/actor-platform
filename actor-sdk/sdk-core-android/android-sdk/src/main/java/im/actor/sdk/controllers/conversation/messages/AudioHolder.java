@@ -92,7 +92,7 @@ public class AudioHolder extends MessageHolder {
         duration.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
         seekBar = (SeekBar) itemView.findViewById(R.id.audioSlide);
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
-        progressView.setColor(context.getResources().getColor(R.color.primary_alt));
+        progressView.setColor(context.getResources().getColor(R.color.primary));
         progressView.setMaxValue(100);
 //        seekBar.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
