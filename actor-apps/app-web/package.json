@@ -2,11 +2,19 @@
   "name": "actor-web",
   "version": "0.6.0",
   "description": "Actor Web Application.",
+  "license": {
+    "type": "Apache-2.0",
+    "url": "http://opensource.org/licenses/apache2.0.php"
+  },
   "main": "main.js",
-  "authors": [
+  "contributors": [
     "Oleg Shilov <me@olegshilov.com>",
     "prettynatty <fear@loathing.in>"
   ],
+  "private": true,
+  "engines": {
+    "node": ">=4.2.2"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
@@ -15,7 +23,7 @@
     "tests"
   ],
   "dependencies": {
-    "actor-js": "1.0.36",
+    "actor-js": "1.0.44",
     "bugsnag-js": "^2.4.8",
     "classnames": "2.2.0",
     "crosstab": "0.2.11",
