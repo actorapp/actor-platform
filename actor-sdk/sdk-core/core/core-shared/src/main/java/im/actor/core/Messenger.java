@@ -502,7 +502,7 @@ public class Messenger {
      *
      * @param state New network state
      */
-    @ObjectiveCName("onNetworkChanged")
+    @ObjectiveCName("onNetworkChanged:")
     public void onNetworkChanged(@NotNull NetworkState state) {
         modules.getActorApi().onNetworkChanged(state);
     }
@@ -546,7 +546,9 @@ public class Messenger {
      * @param emails      contact emails
      * @param base64photo contact photo
      */
-    public void sendContact(Peer peer, String name, HashSet<String> phones, HashSet<String> emails, String base64photo) {
+    @ObjectiveCName("sendContactWithPeer:withName:withPhones:withEmails:withPhoto:")
+    public void sendContact(@NotNull Peer peer, @NotNull String name, @NotNull HashSet<String> phones,
+                            @NotNull HashSet<String> emails, @Nullable String base64photo) {
         modules.getMessagesModule().sendContact(peer, name, phones, emails, base64photo);
     }
 
