@@ -192,6 +192,10 @@ public class Intents {
         return im.actor.sdk.controllers.pickers.Intents.pickFile(context);
     }
 
+    public static Intent pickLocation(Context context) {
+        return im.actor.sdk.controllers.pickers.Intents.pickLocation(context);
+    }
+
     public static void openMedia(Activity activity, View photoView, String path, int senderId) {
         PictureActivity.launchPhoto(activity, photoView, path, senderId);
     }
