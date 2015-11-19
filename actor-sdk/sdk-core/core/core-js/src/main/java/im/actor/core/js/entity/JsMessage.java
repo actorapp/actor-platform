@@ -86,7 +86,7 @@ public class JsMessage extends JavaScriptObject {
                 } else if (value.getContent() instanceof VoiceContent) {
                     VoiceContent voiceContent = (VoiceContent) value.getContent();
                     content = JsContentVoice.create(fileName, fileExtension, fileSize, fileUrl,
-                            isUploading, voiceContent.getDuration())
+                            isUploading, voiceContent.getDuration());
                 } else {
                     content = JsContentDocument.create(fileName, fileExtension, fileSize,
                             thumb, fileUrl, isUploading);
