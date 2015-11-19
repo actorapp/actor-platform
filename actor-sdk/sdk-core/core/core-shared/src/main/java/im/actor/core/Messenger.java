@@ -662,10 +662,9 @@ public class Messenger {
      * @param duration   audio duration
      * @param descriptor File Descriptor
      */
-    @ObjectiveCName("sendPhotoWithPeer:withName:withW:withH:withThumb:withDescriptor:")
+    @ObjectiveCName("sendAudioWithPeer:withName:withDuration:withDescriptor:")
     public void sendAudio(@NotNull Peer peer, @NotNull String fileName,
-                          int duration,
-                          @NotNull String descriptor) {
+                          int duration, @NotNull String descriptor) {
         modules.getMessagesModule().sendAudio(peer, fileName, duration, descriptor);
     }
 
@@ -1399,7 +1398,7 @@ public class Messenger {
      *
      * @param val is notification vibration enabled
      */
-    @ObjectiveCName("changeNotificationVibrationEnabledWithValue")
+    @ObjectiveCName("changeNotificationVibrationEnabledWithValue:")
     public void changeNotificationVibrationEnabled(boolean val) {
         modules.getSettingsModule().changeNotificationVibrationEnabled(val);
     }
