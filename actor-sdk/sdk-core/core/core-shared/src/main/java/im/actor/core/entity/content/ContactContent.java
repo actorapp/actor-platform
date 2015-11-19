@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import im.actor.core.api.ApiJsonMessage;
+import im.actor.core.entity.Contact;
 import im.actor.core.entity.content.internal.ContentRemoteContainer;
 import im.actor.runtime.json.JSONArray;
 import im.actor.runtime.json.JSONException;
 import im.actor.runtime.json.JSONObject;
-
 
 public class ContactContent extends AbsContent {
 
@@ -27,42 +27,31 @@ public class ContactContent extends AbsContent {
 
     @NotNull
     public static ContactContent create(@NotNull String name, @NotNull HashSet<String> phones, @NotNull HashSet<String> emails, @Nullable String base64photo) {
-        String emailsJsonString = "";
-        for (String email : emails) {
-            emailsJsonString = emailsJsonString.concat("\"").concat(email).concat("\",");
-        }
-        if (!emailsJsonString.isEmpty()) {
-            emailsJsonString = emailsJsonString.substring(0, emailsJsonString.length() - 1);
-        }
 
-        String phonesJsonString = "";
-        for (String phone : phones) {
-            phonesJsonString = phonesJsonString.concat("\"").concat(phone).concat("\",");
-        }
-        if (!phonesJsonString.isEmpty()) {
-            phonesJsonString = phonesJsonString.substring(0, phonesJsonString.length() - 1);
-        }
-
-        String jsonString =
-                "{\"dataType\":\"contact\"," +
-                        "\"data\":{" +
-                        "\"contact\":{" +
-                        "\"name\":\"" + name + "\"," +
-                        "\"phones\":[" + phonesJsonString + "]," +
-                        "\"emails\":[" + emailsJsonString + "]" +
-                        (base64photo != null ? (",\"photo\":\"" + base64photo + "\"") : ("")) +
-                        "}" +
-                        "}" +
-                        "}";
-        ContactContent lc = null;
         try {
-            lc = new ContactContent(new ContentRemoteContainer(
-                    new ApiJsonMessage(jsonString)));
+            JSONObject obj = new JSONObject();
+            obj.put("dataType", "contact");
+            JSONObject contact = new JSONObject();
+            contact.put("name", name);
+            if (base64photo != null) {
+                contact.put("photo", base64photo);
+            }
+            JSONArray phoneArray = new JSONArray();
+            for (String phone : phones) {
+                phoneArray.put(phone);
+            }
+            JSONArray emailArray = new JSONArray();
+            for (String phone : emails) {
+                emailArray.put(phone);
+            }
+            contact.put("emails", emailArray);
+            contact.put("phones", phoneArray);
+            obj.put("contact", contact);
+
+            return new ContactContent(new ContentRemoteContainer(new ApiJsonMessage(obj.toString())));
         } catch (JSONException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        if (lc != null) lc.rawJson = jsonString;
-        return lc;
     }
 
 
@@ -88,7 +77,6 @@ public class ContactContent extends AbsContent {
         for (int i = 0; i < emailsJson.length(); i++) {
             emails.add(emailsJson.getString(i));
         }
-
     }
 
     public ArrayList<String> getPhones() {

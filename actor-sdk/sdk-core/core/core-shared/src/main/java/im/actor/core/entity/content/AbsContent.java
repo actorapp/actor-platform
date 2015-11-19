@@ -152,6 +152,8 @@ public abstract class AbsContent {
                         return new BannerContent(remoteContainer);
                     } else if (object.getString("dataType").equals("contact")) {
                         return new ContactContent(remoteContainer);
+                    } else if (object.getString("dataType").equals("location")) {
+                        return new LocationContent(remoteContainer);
                     }
                 }
             } catch (Exception e) {
