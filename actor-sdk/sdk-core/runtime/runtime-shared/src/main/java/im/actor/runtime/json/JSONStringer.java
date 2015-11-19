@@ -352,6 +352,22 @@ public class JSONStringer {
         out.append("\"");
     }
 
+    private static final char[] HEX_DIGITS = "0123456789abcdef".toCharArray();
+
+    private String escapeHex(char c) {
+        char[] r = new char[6];
+        r[0] = '\\';
+        r[1] = 'u';
+        r[5] = HEX_DIGITS[c & 15];
+        c >>>= 4;
+        r[4] = HEX_DIGITS[c & 15];
+        c >>>= 4;
+        r[3] = HEX_DIGITS[c & 15];
+        c >>>= 4;
+        r[2] = HEX_DIGITS[c & 15];
+        return String.valueOf(r);
+    }
+
     private void newline() {
         if (indent == null) {
             return;
