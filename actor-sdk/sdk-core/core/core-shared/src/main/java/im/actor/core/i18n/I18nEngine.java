@@ -338,6 +338,12 @@ public class I18nEngine {
                 return locale.get("ContentPhoto");
             case DOCUMENT_VIDEO:
                 return locale.get("ContentVideo");
+            case DOCUMENT_AUDIO:
+                return locale.get("ContentAudio");
+            case CONTACT:
+                return locale.get("Contact");
+            case LOCATION:
+                return locale.get("Location");
             case SERVICE:
                 return text;// Should be service message
             case SERVICE_REGISTERED:

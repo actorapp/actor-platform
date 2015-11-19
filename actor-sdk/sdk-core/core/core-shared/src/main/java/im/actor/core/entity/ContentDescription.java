@@ -9,7 +9,9 @@ import com.google.j2objc.annotations.Property;
 import java.io.IOException;
 
 import im.actor.core.entity.content.AbsContent;
+import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
@@ -22,6 +24,7 @@ import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
+import im.actor.core.entity.content.VoiceContent;
 import im.actor.runtime.bser.Bser;
 import im.actor.runtime.bser.BserObject;
 import im.actor.runtime.bser.BserValues;
@@ -42,8 +45,14 @@ public class ContentDescription extends BserObject {
             return new ContentDescription(ContentType.DOCUMENT_PHOTO);
         } else if (msg instanceof VideoContent) {
             return new ContentDescription(ContentType.DOCUMENT_VIDEO);
+        } else if (msg instanceof VoiceContent) {
+            return new ContentDescription(ContentType.DOCUMENT_AUDIO);
         } else if (msg instanceof DocumentContent) {
             return new ContentDescription(ContentType.DOCUMENT);
+        } else if (msg instanceof LocationContent) {
+            return new ContentDescription(ContentType.LOCATION);
+        } else if (msg instanceof ContactContent) {
+            return new ContentDescription(ContentType.CONTACT);
         } else if (msg instanceof ServiceUserRegistered) {
             return new ContentDescription(ContentType.SERVICE_REGISTERED);
         } else if (msg instanceof ServiceGroupAvatarChanged) {
