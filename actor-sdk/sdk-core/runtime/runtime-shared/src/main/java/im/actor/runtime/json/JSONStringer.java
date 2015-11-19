@@ -341,7 +341,7 @@ public class JSONStringer {
 
                 default:
                     if (c <= 0x1F) {
-                        out.append(String.format("\\u%04x", (int) c));
+                        out.append(escapeHex(c));
                     } else {
                         out.append(c);
                     }
