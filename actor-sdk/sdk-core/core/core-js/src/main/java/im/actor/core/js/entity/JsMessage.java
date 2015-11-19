@@ -7,18 +7,22 @@ package im.actor.core.js.entity;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.JsDate;
 
 import im.actor.core.api.ApiTextExMarkdown;
 import im.actor.core.entity.Message;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.Reaction;
+import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
+import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.TextContent;
+import im.actor.core.entity.content.VoiceContent;
 import im.actor.core.js.JsMessenger;
 import im.actor.runtime.crypto.Base64Utils;
 import im.actor.runtime.js.mvvm.JsEntityConverter;
@@ -79,11 +83,32 @@ public class JsMessage extends JavaScriptObject {
                             fileName, fileExtension, fileSize,
                             photoContent.getW(), photoContent.getH(), thumb,
                             fileUrl, isUploading);
+                } else if (value.getContent() instanceof VoiceContent) {
+                    VoiceContent voiceContent = (VoiceContent) value.getContent();
+                    content = JsContentVoice.create(fileName, fileExtension, fileSize, fileUrl,
+                            isUploading, voiceContent.getDuration())
                 } else {
                     content = JsContentDocument.create(fileName, fileExtension, fileSize,
                             thumb, fileUrl, isUploading);
                 }
 
+            } else if (value.getContent() instanceof ContactContent) {
+                ContactContent contactContent = (ContactContent) value.getContent();
+                JsArrayString phones = JsArray.createArray().cast();
+                JsArrayString emails = JsArray.createArray().cast();
+                for (String s : contactContent.getEmails()) {
+                    emails.push(s);
+                }
+                for (String s : contactContent.getPhones()) {
+                    phones.push(s);
+                }
+                content = JsContentContact.create(contactContent.getName(),
+                        contactContent.getPhoto64(), phones, emails);
+            } else if (value.getContent() instanceof LocationContent) {
+                LocationContent locationContent = (LocationContent) value.getContent();
+
+                content = JsContentLocation.create(locationContent.getLongitude(), locationContent.getLatitude(),
+                        locationContent.getStreet(), locationContent.getPlace());
             } else {
                 content = JsContentUnsupported.create();
             }
