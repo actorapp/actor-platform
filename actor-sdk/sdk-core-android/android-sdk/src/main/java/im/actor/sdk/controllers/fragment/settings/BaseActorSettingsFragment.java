@@ -125,13 +125,12 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        TextView aboutTitle = (TextView) about.findViewById(R.id.title);
-        aboutTitle.setTextColor(style.getTextSecondaryColor());
+        final TextView aboutTitle = (TextView) about.findViewById(R.id.value);
         about.findViewById(R.id.recordIcon).setVisibility(View.INVISIBLE);
-        TextView aboutValue = (TextView) about.findViewById(R.id.value);
-        aboutValue.setTextColor(style.getTextPrimaryColor());
+        TextView aboutValue = (TextView) about.findViewById(R.id.title);
+        aboutTitle.setTextColor(style.getTextPrimaryColor());
+        aboutValue.setTextColor(style.getTextSecondaryColor());
         aboutValue.setText(getString(R.string.about_user_me));
-        aboutTitle.setMaxLines(2);
         aboutTitle.setEllipsize(TextUtils.TruncateAt.END);
         about.findViewById(R.id.divider).setBackgroundColor(ActorSDK.sharedActor().style.getDividerColor());
         about.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +140,16 @@ public abstract class BaseActorSettingsFragment extends BaseFragment implements 
             }
         });
 
-        bind(aboutTitle, userModel.getAbout());
+        bind(userModel.getAbout(), new ValueChangedListener<String>() {
+            @Override
+            public void onChanged(String val, Value<String> valueModel) {
+                if (val != null && !val.isEmpty()) {
+                    aboutTitle.setText(val);
+                } else {
+                    aboutTitle.setText(getString(R.string.edit_about_edittext_hint));
+                }
+            }
+        });
 
         bind(userModel.getPhones(), new ValueChangedListener<ArrayListUserPhone>() {
             @Override
