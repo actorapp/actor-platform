@@ -11,6 +11,7 @@ import im.actor.core.entity.Message;
 import im.actor.core.entity.content.AbsContent;
 import im.actor.core.entity.content.ContactContent;
 import im.actor.core.entity.content.DocumentContent;
+import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.TextContent;
@@ -92,8 +93,10 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
             return 3;
         } else if (content instanceof ContactContent) {
             return 5;
-        } else {
+        } else if (content instanceof LocationContent) {
             return 6;
+        } else {
+            return 7;
         }
     }
 
@@ -118,6 +121,8 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                 return new AudioHolder(this, inflate(R.layout.adapter_dialog_audio, viewGroup));
             case 5:
                 return new ContactHolder(this, inflate(R.layout.adapter_dialog_contact, viewGroup));
+            case 6:
+                return new LocationHolder(this, inflate(R.layout.adapter_dialog_locaton, viewGroup));
             default:
                 return new UnsupportedHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup));
         }

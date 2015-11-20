@@ -14,6 +14,7 @@ public class LocationContent extends AbsContent {
     private double longitude;
     private String street;
     private String place;
+    private String rawJson;
 
     @NotNull
     public static LocationContent create(double longitude, double latitude, @Nullable String street, @Nullable String place) {
@@ -42,8 +43,8 @@ public class LocationContent extends AbsContent {
     public LocationContent(ContentRemoteContainer contentContainer) throws JSONException {
         super(contentContainer);
 
-        String json = ((ApiJsonMessage) contentContainer.getMessage()).getRawJson();
-        JSONObject data = new JSONObject(json).getJSONObject("data");
+        rawJson = ((ApiJsonMessage) contentContainer.getMessage()).getRawJson();
+        JSONObject data = new JSONObject(rawJson).getJSONObject("data");
         JSONObject location = data.getJSONObject("location");
         latitude = location.getDouble("latitude");
         longitude = location.getDouble("longitude");
@@ -68,5 +69,9 @@ public class LocationContent extends AbsContent {
     @Nullable
     public String getPlace() {
         return place;
+    }
+
+    public String getRawJson() {
+        return rawJson;
     }
 }

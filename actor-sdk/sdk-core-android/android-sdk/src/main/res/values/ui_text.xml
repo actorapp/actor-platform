@@ -229,6 +229,20 @@
     <string name="chat_unsupported">Message is unsupported in this version. Please, wait for application update to see message.</string>
     <string name="online">\u25CF online</string>
 
+    <!-- Share menu-->
+    <string name="share_menu_gallery">Gallery</string>
+    <string name="share_menu_video">Video</string>
+    <string name="share_menu_file">File</string>
+    <string name="share_menu_camera">Camera</string>
+    <string name="share_menu_contact">Contact</string>
+    <string name="share_menu_location">Location</string>
+
+    <!-- Map -->
+    <string name="map_title">Location</string>
+    <string name="map_type_normal">Map</string>
+    <string name="map_type_satellite">Satellite</string>
+    <string name="map_type_hybrid">Hybrid</string>
+
     <!-- Profile -->
     <string name="profile_title">Profile</string>
     <string name="profile_shared_header">Shared</string>
