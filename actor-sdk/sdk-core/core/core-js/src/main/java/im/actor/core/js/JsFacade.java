@@ -755,15 +755,7 @@ public class JsFacade implements Exportable {
                 messenger.findTextMessages(peer.convert(), query).start(new CommandCallback<List<MessageSearchEntity>>() {
                     @Override
                     public void onResult(List<MessageSearchEntity> res) {
-                        JsArray<JsMessageSearchEntity> jsRes = JsArray.createArray().cast();
-                        for (MessageSearchEntity e : res) {
-                            jsRes.push(JsMessageSearchEntity.create(e.getRid() + "",
-                                    messenger.buildPeerInfo(Peer.user(e.getSenderId())),
-                                    messenger.getFormatter().formatDate(e.getDate()),
-                                    JsContent.createContent(e.getContent(),
-                                            e.getSenderId())));
-                        }
-                        resolve(jsRes);
+                        resolve(convertSearchRes(res));
                     }
 
                     @Override
@@ -774,6 +766,78 @@ public class JsFacade implements Exportable {
                 });
             }
         });
+    }
+
+    public JsPromise findAllPhotos(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.findAllPhotos(peer.convert()).start(new CommandCallback<List<MessageSearchEntity>>() {
+                    @Override
+                    public void onResult(List<MessageSearchEntity> res) {
+                        resolve(convertSearchRes(res));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "findAllText:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise findAllDocs(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.findAllDocs(peer.convert()).start(new CommandCallback<List<MessageSearchEntity>>() {
+                    @Override
+                    public void onResult(List<MessageSearchEntity> res) {
+                        resolve(convertSearchRes(res));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "findAllText:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise findAllLinks(final JsPeer peer) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.findAllLinks(peer.convert()).start(new CommandCallback<List<MessageSearchEntity>>() {
+                    @Override
+                    public void onResult(List<MessageSearchEntity> res) {
+                        resolve(convertSearchRes(res));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "findAllText:error");
+                        reject(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
+    private JsArray<JsMessageSearchEntity> convertSearchRes(List<MessageSearchEntity> res) {
+        JsArray<JsMessageSearchEntity> jsRes = JsArray.createArray().cast();
+        for (MessageSearchEntity e : res) {
+            jsRes.push(JsMessageSearchEntity.create(e.getRid() + "",
+                    messenger.buildPeerInfo(Peer.user(e.getSenderId())),
+                    messenger.getFormatter().formatDate(e.getDate()),
+                    JsContent.createContent(e.getContent(),
+                            e.getSenderId())));
+        }
+        return jsRes;
     }
 
     public JsPromise findGroups() {
