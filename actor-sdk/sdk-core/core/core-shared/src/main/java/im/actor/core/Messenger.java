@@ -13,11 +13,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.core.api.ApiSearchContentType;
+import im.actor.core.api.ApiSearchPieceText;
 import im.actor.core.api.ApiSex;
 import im.actor.core.api.ApiAuthSession;
 import im.actor.core.entity.FileReference;
 import im.actor.core.entity.Group;
 import im.actor.core.entity.MentionFilterResult;
+import im.actor.core.entity.MessageSearchEntity;
 import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
@@ -823,6 +826,51 @@ public class Messenger {
     @ObjectiveCName("findPeersWithType:")
     public Command<List<PeerSearchEntity>> findPeers(PeerSearchType type) {
         return modules.getSearchModule().findPeers(type);
+    }
+
+    /**
+     * Finding text messages by query
+     *
+     * @param peer  peer for search
+     * @param query query for search
+     * @return found messages
+     */
+    @ObjectiveCName("findTextMessagesWithPeer:withQuery:")
+    public Command<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
+        return modules.getSearchModule().findTextMessages(peer, query);
+    }
+
+    /**
+     * Finding all doc messages
+     *
+     * @param peer peer for search
+     * @return found messages
+     */
+    @ObjectiveCName("findAllDocsWithPeer:")
+    public Command<List<MessageSearchEntity>> findAllDocs(Peer peer) {
+        return modules.getSearchModule().findAllDocs(peer);
+    }
+
+    /**
+     * Finding all messages with links
+     *
+     * @param peer peer for search
+     * @return found messages
+     */
+    @ObjectiveCName("findAllLinksWithPeer:")
+    public Command<List<MessageSearchEntity>> findAllLinks(Peer peer) {
+        return modules.getSearchModule().findAllLinks(peer);
+    }
+
+    /**
+     * Finding all messages with photos
+     *
+     * @param peer peer for search
+     * @return found messages
+     */
+    @ObjectiveCName("findAllPhotosWithPeer:")
+    public Command<List<MessageSearchEntity>> findAllPhotos(Peer peer) {
+        return modules.getSearchModule().findAllPhotos(peer);
     }
 
     //////////////////////////////////////

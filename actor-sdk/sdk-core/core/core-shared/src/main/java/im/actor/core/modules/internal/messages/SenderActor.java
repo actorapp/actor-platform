@@ -123,7 +123,7 @@ public class SenderActor extends ModuleActor {
     // Sending text
 
     public void doSendText(@NotNull Peer peer, @NotNull String text,
-                           @Nullable ArrayList<Integer> mentions, @Nullable String markDownText,
+                           @Nullable ArrayList<Integer> mentions, /*Ignored*/ @Nullable String markDownText,
                            boolean autoDetect) {
 
         text = text.trim();
@@ -154,7 +154,7 @@ public class SenderActor extends ModuleActor {
             }
         }
 
-        TextContent content = TextContent.create(text, markDownText, mentions);
+        TextContent content = TextContent.create(text, null, mentions);
 
         Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content,
                 new ArrayList<Reaction>());
