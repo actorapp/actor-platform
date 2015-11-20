@@ -671,6 +671,22 @@ public class Messenger {
     }
 
     /**
+     * Send Location Message
+     *
+     * @param peer         destination peer
+     * @param longitude    user location longitude
+     * @param latitude     user location latitude
+     * @param street       user location street
+     * @param place        user location place
+     */
+    @ObjectiveCName("sendLocationWithPeer:withLongitude:withLatitude:withStreet:withPlace:")
+    public void sendLocation(@NotNull Peer peer,
+                             @NotNull Double longitude, @NotNull Double latitude,
+                             @Nullable String street, @Nullable String place) {
+        modules.getMessagesModule().sendLoacation(peer, longitude, latitude, street, place);
+    }
+
+    /**
      * Send document without preview
      *
      * @param peer       destination peer

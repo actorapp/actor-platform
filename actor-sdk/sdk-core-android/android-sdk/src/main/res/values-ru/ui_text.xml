@@ -233,6 +233,14 @@
     <string name="share_menu_contact">Контакт</string>
     <string name="share_menu_location">Место</string>
 
+
+    <!-- Map -->
+    <string name="map_title">Место</string>
+    <string name="map_type_normal">Карта</string>
+    <string name="map_type_satellite">Спутник</string>
+    <string name="map_type_hybrid">Гибрид</string>
+
+
     <!-- Profile -->
     <string name="profile_title">Профиль</string>
     <string name="profile_shared_header">Общее</string>
