@@ -43,75 +43,8 @@ public class JsMessage extends JavaScriptObject {
             String date = messenger.getFormatter().formatTime(value.getDate());
             JsDate fullDate = JsDate.create(value.getDate());
 
-            JsContent content;
-            if (value.getContent() instanceof TextContent) {
-                TextContent textContent = (TextContent) value.getContent();
-
-                String text = ((TextContent) value.getContent()).getText();
-
-                String markdownText = null;
-                if (textContent.getTextMessageEx() instanceof ApiTextExMarkdown) {
-                    markdownText = ((ApiTextExMarkdown) textContent.getTextMessageEx()).getMarkdown();
-                }
-
-                content = JsContentText.create(text, markdownText);
-            } else if (value.getContent() instanceof ServiceContent) {
-                content = JsContentService.create(messenger.getFormatter().formatFullServiceMessage(value.getSenderId(), (ServiceContent) value.getContent()));
-            } else if (value.getContent() instanceof DocumentContent) {
-                DocumentContent doc = (DocumentContent) value.getContent();
-
-                String fileName = doc.getName();
-                String fileExtension = doc.getExt();
-                String fileSize = messenger.getFormatter().formatFileSize(doc.getSource().getSize());
-                String fileUrl = null;
-
-                if (doc.getSource() instanceof FileRemoteSource) {
-                    fileUrl = messenger.getFileUrl(((FileRemoteSource) doc.getSource()).getFileReference());
-                }
-
-                boolean isUploading = doc.getSource() instanceof FileLocalSource;
-
-                String thumb = null;
-                if (doc.getFastThumb() != null) {
-                    String thumbBase64 = Base64Utils.toBase64(doc.getFastThumb().getImage());
-                    thumb = "data:image/jpg;base64," + thumbBase64;
-                }
-
-                if (value.getContent() instanceof PhotoContent && thumb != null) {
-                    PhotoContent photoContent = (PhotoContent) value.getContent();
-                    content = JsContentPhoto.create(
-                            fileName, fileExtension, fileSize,
-                            photoContent.getW(), photoContent.getH(), thumb,
-                            fileUrl, isUploading);
-                } else if (value.getContent() instanceof VoiceContent) {
-                    VoiceContent voiceContent = (VoiceContent) value.getContent();
-                    content = JsContentVoice.create(fileName, fileExtension, fileSize, fileUrl,
-                            isUploading, voiceContent.getDuration());
-                } else {
-                    content = JsContentDocument.create(fileName, fileExtension, fileSize,
-                            thumb, fileUrl, isUploading);
-                }
-
-            } else if (value.getContent() instanceof ContactContent) {
-                ContactContent contactContent = (ContactContent) value.getContent();
-                JsArrayString phones = JsArray.createArray().cast();
-                JsArrayString emails = JsArray.createArray().cast();
-                for (String s : contactContent.getEmails()) {
-                    emails.push(s);
-                }
-                for (String s : contactContent.getPhones()) {
-                    phones.push(s);
-                }
-                content = JsContentContact.create(contactContent.getName(),
-                        contactContent.getPhoto64(), phones, emails);
-            } else if (value.getContent() instanceof LocationContent) {
-                LocationContent locationContent = (LocationContent) value.getContent();
-
-                content = JsContentLocation.create(locationContent.getLongitude(), locationContent.getLatitude(),
-                        locationContent.getStreet(), locationContent.getPlace());
-            } else {
-                content = JsContentUnsupported.create();
-            }
+            JsContent content = JsContent.createContent(value.getContent(),
+                    value.getSenderId());
 
             JsArray<JsReaction> reactions = JsArray.createArray().cast();
 
