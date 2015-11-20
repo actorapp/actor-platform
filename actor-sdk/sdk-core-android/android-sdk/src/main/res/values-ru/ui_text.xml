@@ -225,6 +225,21 @@
     <string name="chat_not_member">Вы не участник этой группы</string>
     <string name="chat_unsupported">Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.</string>
 
+    <!-- Share menu-->
+    <string name="share_menu_gallery">Галерея</string>
+    <string name="share_menu_video">Видео</string>
+    <string name="share_menu_file">Файл</string>
+    <string name="share_menu_camera">Камера</string>
+    <string name="share_menu_contact">Контакт</string>
+    <string name="share_menu_location">Место</string>
+
+
+    <!-- Map -->
+    <string name="map_title">Место</string>
+    <string name="map_type_normal">Карта</string>
+    <string name="map_type_satellite">Спутник</string>
+    <string name="map_type_hybrid">Гибрид</string>
+
 
     <!-- Profile -->
     <string name="profile_title">Профиль</string>
