@@ -193,6 +193,7 @@ export const MessageContentTypes = {
   TEXT: 'text',
   PHOTO: 'photo',
   DOCUMENT: 'document',
+  VOICE: 'voice',
   UNSUPPORTED: 'unsupported'
 };
 
