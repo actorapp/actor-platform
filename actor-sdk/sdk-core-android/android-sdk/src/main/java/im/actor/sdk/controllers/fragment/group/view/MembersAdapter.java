@@ -101,7 +101,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
             }
             if (presence.getState().equals(UserPresence.State.ONLINE)) {
                 online.setTextColor(ActorSDK.sharedActor().style.getGroupOnlineColor());
-                s = "\u25CF".concat(s);
+                s = "\u25CF ".concat(s);
             } else {
                 online.setTextColor(ActorSDK.sharedActor().style.getTextSecondaryColor());
             }
