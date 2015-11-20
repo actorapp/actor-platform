@@ -4,19 +4,33 @@
 
 package im.actor.core.modules.internal;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.core.api.ApiMessageSearchItem;
+import im.actor.core.api.ApiMessageSearchResult;
 import im.actor.core.api.ApiPeerSearchResult;
+import im.actor.core.api.ApiSearchAndCondition;
 import im.actor.core.api.ApiSearchCondition;
+import im.actor.core.api.ApiSearchContentType;
+import im.actor.core.api.ApiSearchPeerCondition;
+import im.actor.core.api.ApiSearchPeerContentType;
 import im.actor.core.api.ApiSearchPeerType;
 import im.actor.core.api.ApiSearchPeerTypeCondition;
+import im.actor.core.api.ApiSearchPieceText;
+import im.actor.core.api.rpc.RequestMessageSearch;
 import im.actor.core.api.rpc.RequestPeerSearch;
+import im.actor.core.api.rpc.ResponseMessageSearch;
 import im.actor.core.api.rpc.ResponsePeerSearch;
 import im.actor.core.entity.Dialog;
+import im.actor.core.entity.MessageSearchEntity;
+import im.actor.core.entity.Peer;
 import im.actor.core.entity.PeerSearchEntity;
 import im.actor.core.entity.PeerSearchType;
 import im.actor.core.entity.SearchEntity;
+import im.actor.core.entity.content.AbsContent;
 import im.actor.core.modules.AbsModule;
 import im.actor.core.modules.Modules;
 import im.actor.core.modules.internal.search.SearchActor;
@@ -67,6 +81,72 @@ public class SearchModule extends AbsModule {
             res[i] = contacts[i];
         }
         actorRef.send(new SearchActor.OnContactsUpdated(res));
+    }
+
+    public Command<List<MessageSearchEntity>> findTextMessages(Peer peer, String query) {
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        conditions.add(new ApiSearchPeerCondition(buildApiOutPeer(peer)));
+        conditions.add(new ApiSearchPieceText(query));
+        return findMessages(new ApiSearchAndCondition(conditions));
+    }
+
+    public Command<List<MessageSearchEntity>> findAllDocs(Peer peer) {
+        return findAllContent(peer, ApiSearchContentType.DOCUMENTS);
+    }
+
+    public Command<List<MessageSearchEntity>> findAllLinks(Peer peer) {
+        return findAllContent(peer, ApiSearchContentType.LINKS);
+    }
+
+    public Command<List<MessageSearchEntity>> findAllPhotos(Peer peer) {
+        return findAllContent(peer, ApiSearchContentType.PHOTOS);
+    }
+
+    private Command<List<MessageSearchEntity>> findAllContent(Peer peer, ApiSearchContentType contentType) {
+        ArrayList<ApiSearchCondition> conditions = new ArrayList<>();
+        conditions.add(new ApiSearchPeerCondition(buildApiOutPeer(peer)));
+        conditions.add(new ApiSearchPeerContentType(contentType));
+        return findMessages(new ApiSearchAndCondition(conditions));
+    }
+
+    private Command<List<MessageSearchEntity>> findMessages(final ApiSearchCondition condition) {
+        return new Command<List<MessageSearchEntity>>() {
+            @Override
+            public void start(final CommandCallback<List<MessageSearchEntity>> callback) {
+                request(new RequestMessageSearch(condition), new RpcCallback<ResponseMessageSearch>() {
+                    @Override
+                    public void onResult(final ResponseMessageSearch response) {
+                        updates().executeRelatedResponse(response.getUsers(), response.getGroups(), new Runnable() {
+                            @Override
+                            public void run() {
+                                ArrayList<MessageSearchEntity> res = new ArrayList<MessageSearchEntity>();
+                                for (ApiMessageSearchItem r : response.getSearchResults()) {
+                                    ApiMessageSearchResult itm = r.getResult();
+                                    try {
+                                        res.add(new MessageSearchEntity(
+                                                convert(itm.getPeer()), itm.getRid(),
+                                                itm.getDate(), itm.getSenderId(),
+                                                AbsContent.fromMessage(itm.getContent())));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        };
     }
 
     public Command<List<PeerSearchEntity>> findPeers(final PeerSearchType type) {
