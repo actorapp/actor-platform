@@ -83,9 +83,53 @@
 
                     </LinearLayout>
 
-                    <include
+                    <FrameLayout
                         android:id="@+id/about"
-                        layout="@layout/contact_record" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <im.actor.sdk.view.TintImageView
+                                android:id="@+id/recordIcon"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/value"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="18sp" />
+
+                                <TextView
+                                    android:id="@+id/title"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="16sp"
+                                    android:layout_marginBottom="10dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/div_size"
+                            android:layout_gravity="bottom"
+                            android:layout_marginLeft="72dp"
+                            android:background="@android:color/holo_red_dark" />
+                    </FrameLayout>
 
                     <LinearLayout
                         android:id="@+id/phoneContainer"
