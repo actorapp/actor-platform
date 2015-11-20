@@ -75,6 +75,165 @@
         android:dividerHeight="0dp"
         android:listSelector="@drawable/selector" />
 
+    <FrameLayout
+        android:id="@+id/closeMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/fl_send_panel"
+        android:id="@+id/share_container"
+        android:visibility="invisible"
+        android:orientation="vertical"
+        android:background="@android:color/transparent">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/conv_field_shadow" />
+
+        <TableLayout
+
+            android:paddingTop="20dp"
+            android:layout_gravity="bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:stretchColumns="*"
+            android:background="@color/bg_main">
+
+            <TableRow>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_file"
+                        android:background="@drawable/share_file_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_file" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_video"
+                        android:background="@drawable/share_video_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_video" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_contact"
+                        android:background="@drawable/share_contact_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_contact" />
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_gallery"
+                        android:background="@drawable/share_gallery_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_gallery" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_camera"
+                        android:background="@drawable/share_camera_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_camera" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_location"
+                        android:background="@drawable/share_location_selector" />
+
+                    <ImageButton
+                        android:layout_width="@dimen/share_btn_size"
+                        android:layout_height="@dimen/share_btn_size"
+                        android:id="@+id/share_hide"
+                        android:background="@drawable/share_hide_selector"
+                        android:src="@drawable/attach_hide2" />
+
+                    <TextView
+                        android:id="@+id/location_hide_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_menu_location" />
+                </LinearLayout>
+
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fl_send_panel"

@@ -42,6 +42,7 @@ import im.actor.core.entity.content.DocumentContent;
 import im.actor.core.entity.content.FastThumb;
 import im.actor.core.entity.content.FileLocalSource;
 import im.actor.core.entity.content.FileRemoteSource;
+import im.actor.core.entity.content.LocationContent;
 import im.actor.core.entity.content.PhotoContent;
 import im.actor.core.entity.content.TextContent;
 import im.actor.core.entity.content.VideoContent;
@@ -241,6 +242,27 @@ public class SenderActor extends ModuleActor {
         performUploadFile(rid, descriptor, fileName);
     }
 
+    public void doSendLocation(@NotNull Peer peer,
+                               @NotNull Double longitude, @NotNull Double latitude,
+                               @Nullable String street, @Nullable String place) {
+
+
+        long rid = RandomUtils.nextRid();
+        long date = createPendingDate();
+        long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
+
+
+        LocationContent content = LocationContent.create(longitude, latitude, street, place);
+
+        Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content, new ArrayList<Reaction>());
+        context().getMessagesModule().getConversationActor(peer).send(message);
+
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
+        savePending();
+
+        performSendContent(peer, rid, content);
+    }
+
     public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
                             FastThumb fastThumb, String descriptor, int fileSize) {
         long rid = RandomUtils.nextRid();
@@ -351,6 +373,8 @@ public class SenderActor extends ModuleActor {
                     source.getFileReference().getFileName(),
                     documentContent.getMimeType(),
                     fastThumb, documentEx);
+        } else if (content instanceof LocationContent) {
+            message = new ApiJsonMessage(((LocationContent) content).getRawJson());
         } else if (content instanceof ContactContent) {
             message = new ApiJsonMessage(((ContactContent) content).getRawJson());
         } else {
@@ -450,6 +474,9 @@ public class SenderActor extends ModuleActor {
         } else if (message instanceof SendContact) {
             SendContact sendContact = (SendContact) message;
             doSendContact(sendContact.getPeer(), sendContact.getEmails(), sendContact.getPhones(), sendContact.getName(), sendContact.getBase64photo());
+        } else if (message instanceof SendLocation) {
+            SendLocation sendLocation = (SendLocation) message;
+            doSendLocation(sendLocation.getPeer(), sendLocation.getLongitude(), sendLocation.getLatitude(), sendLocation.getStreet(), sendLocation.getPlace());
         } else {
             drop(message);
         }
@@ -746,6 +773,44 @@ public class SenderActor extends ModuleActor {
 
         public long getRid() {
             return rid;
+        }
+    }
+
+    public static class SendLocation {
+        private Peer peer;
+        private Double longitude;
+        private Double latitude;
+        private String street;
+        private String place;
+
+        public SendLocation(@NotNull Peer peer,
+                            @NotNull Double longitude, @NotNull Double latitude,
+                            @Nullable String street, @Nullable String place) {
+            this.peer = peer;
+            this.longitude = longitude;
+            this.latitude = latitude;
+            this.place = place;
+            this.street = street;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public Double getLongitude() {
+            return longitude;
+        }
+
+        public Double getLatitude() {
+            return latitude;
+        }
+
+        public String getStreet() {
+            return street;
+        }
+
+        public String getPlace() {
+            return place;
         }
     }
 
