@@ -74,6 +74,8 @@ import static im.actor.sdk.util.ViewUtils.expand;
 import static im.actor.sdk.util.ViewUtils.expandMentions;
 import static im.actor.sdk.util.ViewUtils.goneView;
 import static im.actor.sdk.util.ViewUtils.showView;
+import static im.actor.sdk.util.ViewUtils.zoomInView;
+import static im.actor.sdk.util.ViewUtils.zoomOutView;
 import static im.actor.sdk.view.emoji.SmileProcessor.emoji;
 import static im.actor.sdk.util.ActorSDKMessenger.groups;
 import static im.actor.sdk.util.ActorSDKMessenger.messenger;
@@ -1082,13 +1084,13 @@ public class ChatActivity extends ActorEditTextActivity {
             if (s.length() > 0) {
                 sendButton.setTint(ActorSDK.sharedActor().style.getConvSendEnabledColor());
                 sendButton.setEnabled(true);
-                showView(sendButton);
-                goneView(audioButton);
+                zoomInView(sendButton);
+                zoomOutView(audioButton);
             } else {
                 sendButton.setTint(ActorSDK.sharedActor().style.getConvSendDisabledColor());
                 sendButton.setEnabled(false);
-                showView(audioButton);
-                goneView(sendButton);
+                zoomInView(audioButton);
+                zoomOutView(sendButton);
             }
 
 

@@ -64,6 +64,40 @@ public class ViewUtils {
         }
     }
 
+    public static void zoomOutView(final View view) {
+        if (view == null) {
+            return;
+        }
+
+
+        if (view.getVisibility() != View.INVISIBLE) {
+            ScaleAnimation scaleAnimation = new ScaleAnimation(1f, 0, 1f, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            scaleAnimation.setDuration(150);
+            scaleAnimation.setInterpolator(MaterialInterpolator.getInstance());
+            view.clearAnimation();
+            view.startAnimation(scaleAnimation);
+            view.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+    public static void zoomInView(final View view) {
+        if (view == null) {
+            return;
+        }
+
+
+        if (view.getVisibility() != View.VISIBLE) {
+            ScaleAnimation scaleAnimation = new ScaleAnimation(0, 1f, 0, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            scaleAnimation.setDuration(150);
+            scaleAnimation.setInterpolator(MaterialInterpolator.getInstance());
+            view.clearAnimation();
+            view.startAnimation(scaleAnimation);
+            view.setVisibility(View.VISIBLE);
+        }
+
+    }
+
     public static void showView(View view) {
         showView(view, true);
     }
