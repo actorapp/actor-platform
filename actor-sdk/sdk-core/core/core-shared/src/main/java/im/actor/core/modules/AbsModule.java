@@ -4,6 +4,7 @@
 
 package im.actor.core.modules;
 
+import im.actor.core.api.ApiOutPeer;
 import im.actor.core.api.ApiPeer;
 import im.actor.core.api.ApiPeerType;
 import im.actor.core.entity.Group;
@@ -121,6 +122,18 @@ public abstract class AbsModule {
             return new ApiPeer(ApiPeerType.PRIVATE, peer.getPeerId());
         } else if (peer.getPeerType() == PeerType.GROUP) {
             return new ApiPeer(ApiPeerType.GROUP, peer.getPeerId());
+        } else {
+            return null;
+        }
+    }
+
+    public ApiOutPeer buildApiOutPeer(Peer peer) {
+        if (peer.getPeerType() == PeerType.PRIVATE) {
+            return new ApiOutPeer(ApiPeerType.PRIVATE, peer.getPeerId(),
+                    users().getValue(peer.getPeerId()).getAccessHash());
+        } else if (peer.getPeerType() == PeerType.GROUP) {
+            return new ApiOutPeer(ApiPeerType.GROUP, peer.getPeerId(),
+                    groups().getValue(peer.getPeerId()).getAccessHash());
         } else {
             return null;
         }
