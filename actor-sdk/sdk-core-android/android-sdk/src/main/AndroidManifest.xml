@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.LOCATION_HARDWARE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -250,10 +251,23 @@
             android:label="@string/picker_file_activity_title"
             android:theme="@style/PickerTheme.FilePicker" />
 
+        <activity
+            android:name=".controllers.pickers.map.MapPickerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/PickerTheme.FilePicker" />
+
+        <activity
+            android:name=".controllers.conversation.messages.MapActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+
         <service
             android:name="im.actor.sdk.services.KeepAliveService"
             android:enabled="true"
             android:exported="true" />
+
 
     </application>
 </manifest>
