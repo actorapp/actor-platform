@@ -2,6 +2,7 @@ package im.actor.sdk.controllers.conversation.messages;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +93,7 @@ public class AudioHolder extends MessageHolder {
         duration.setTextColor(ActorSDK.sharedActor().style.getConvTimeColor());
         seekBar = (SeekBar) itemView.findViewById(R.id.audioSlide);
         progressView = (CircularView) itemView.findViewById(R.id.progressView);
-        progressView.setColor(context.getResources().getColor(R.color.primary_alt));
+        progressView.setColor(context.getResources().getColor(R.color.primary));
         progressView.setMaxValue(100);
 //        seekBar.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
@@ -125,6 +126,7 @@ public class AudioHolder extends MessageHolder {
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         playBtn = (ImageView) itemView.findViewById(R.id.contact_avatar);
+        playBtn.getBackground().setColorFilter(Color.parseColor("#4295e3"), PorterDuff.Mode.MULTIPLY);
         activity = (Activity) playBtn.getContext();
         callback = new AudioPlayerActor.AudioPlayerCallback() {
             @Override
@@ -189,14 +191,14 @@ public class AudioHolder extends MessageHolder {
 
     private void play(String fileName) {
         if (currentAudio.equals(fileName)) {
-            playBtn.setImageResource(R.drawable.msg_audio_pause_selector);
+            playBtn.setImageResource(R.drawable.ic_pause_white_24dp);
         } else {
             stop();
         }
     }
 
     private void progress(float progress) {
-        playBtn.setImageResource(R.drawable.msg_audio_pause_selector);
+        playBtn.setImageResource(R.drawable.ic_pause_white_24dp);
         duration.setText(ActorSDK.sharedActor().getMessenger().getFormatter().formatDuration((int) (progress * currentDuration / 1000)));
         seekBar.setProgress((int) (100 * progress));
     }
@@ -204,14 +206,14 @@ public class AudioHolder extends MessageHolder {
     private void stop() {
         if (!treckingTouch) {
             seekBar.setProgress(0);
-            playBtn.setImageResource(R.drawable.msg_audio_play_selector);
+            playBtn.setImageResource(R.drawable.ic_play_arrow_white_24dp);
             duration.setText(ActorSDK.sharedActor().getMessenger().getFormatter().formatDuration((int) (currentDuration / 1000)));
         }
         treckingTouch = false;
     }
 
     private void pause() {
-        playBtn.setImageResource(R.drawable.msg_audio_play_selector);
+        playBtn.setImageResource(R.drawable.ic_play_arrow_white_24dp);
     }
 
     @Override

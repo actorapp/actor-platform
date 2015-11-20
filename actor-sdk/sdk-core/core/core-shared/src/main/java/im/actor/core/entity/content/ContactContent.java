@@ -46,7 +46,9 @@ public class ContactContent extends AbsContent {
             }
             contact.put("emails", emailArray);
             contact.put("phones", phoneArray);
-            obj.put("contact", contact);
+            JSONObject data = new JSONObject();
+            data.put("contact", contact);
+            obj.put("data", data);
 
             return new ContactContent(new ContentRemoteContainer(new ApiJsonMessage(obj.toString())));
         } catch (JSONException e) {
