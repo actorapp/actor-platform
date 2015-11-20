@@ -222,7 +222,7 @@
     <string name="chat_doc_send">Send</string>
     <string name="chat_doc_stop">Stop</string>
     <string name="chat_doc_download">Download</string>
-    <string name="chat_voice_record_cancel">slide to cancel</string>
+    <string name="chat_voice_record_cancel">SLIDE TO CANCEL</string>
 
     <string name="chat_not_member">You is not member of this group</string>
 
